@@ -116,7 +116,7 @@ export class ClaimDevHelperService {
     /^\/claims\/[^/]+\/.+/.test(this.url()),
   );
 
-  readonly shouldShowBanner = computed(() => isDevMode() && this.isClaimRoute());
+  readonly shouldShowBanner = computed(() => this.isClaimRoute());
 
   private readonly _tickets = signal<DevTicket[]>([]);
   readonly tickets = this._tickets.asReadonly();
