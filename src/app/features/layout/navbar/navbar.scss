@@ -1,6 +1,59 @@
-// All visual styling delegated to NDBX nx-header tokens.
-// No overrides needed — token values from ndbx.css:
-//   --header-height: 64px
-//   --header-background-color: var(--ui-01)
-//   --header-padding: 1px 32px 0
-//   --header-border-color: var(--ui-04)
+// Breakpoint: iPad mini portrait = 768px
+$mobile-bp: 768px;
+
+.nav-hamburger { display: none; }
+
+@media (max-width: $mobile-bp) {
+  .nav-desktop    { display: none !important; }
+  .nav-hamburger  { display: flex; }
+}
+
+// Mobile dropdown panel
+.nav-mobile-menu {
+  position: fixed;
+  top: var(--header-height, 64px);
+  right: 0;
+  width: 240px;
+  background: var(--ui-01);
+  border-left: 1px solid var(--ui-04);
+  border-bottom: 1px solid var(--ui-04);
+  box-shadow: -4px 4px 16px var(--claim-overlay-shadow);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.nav-mobile-item {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--claim-overlay-hover);
+  }
+}
+
+.nav-mobile-divider {
+  height: 1px;
+  background: var(--ui-04);
+  margin: 8px 0;
+}
+
+.nav-mobile-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+}
+
+.nav-mobile-username {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}

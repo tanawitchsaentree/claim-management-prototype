@@ -7,7 +7,8 @@
     <nx-header-app-title>Commercial Claims</nx-header-app-title>
   </nx-header-brand>
 
-  <nx-header-navigation>
+  <!-- Desktop nav — hidden on mobile -->
+  <nx-header-navigation class="nav-desktop">
     <nx-header-navigation-item>
       <a nxHeaderLink routerLink="/dashboard" routerLinkActive="is-active">Dashboard</a>
     </nx-header-navigation-item>
@@ -23,8 +24,35 @@
   </nx-header-navigation>
 
   <nx-header-actions>
-    <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name">
+    <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name" class="nav-desktop">
       {{ initials }}
+    </button>
+
+    <!-- Hamburger — visible on mobile only -->
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      class="nav-hamburger"
+      [attr.aria-expanded]="mobileOpen()"
+      aria-label="Toggle menu"
+      (click)="toggleMobile()"
+    >
+      <nx-icon [name]="mobileOpen() ? 'close' : 'menu'"></nx-icon>
     </button>
   </nx-header-actions>
 </nx-header>
+
+<!-- Mobile dropdown -->
+@if (mobileOpen()) {
+  <div class="nav-mobile-menu" role="menu">
+    <button type="button" class="nav-mobile-item" (click)="navigateMobile('/dashboard')">Dashboard</button>
+    <button type="button" class="nav-mobile-item" (click)="navigateMobile('/dashboard')">Claims</button>
+    <button type="button" class="nav-mobile-item" (click)="navigateMobile('/parties')">Parties</button>
+    <button type="button" class="nav-mobile-item" (click)="navigateMobile('/tasks')">Task manager</button>
+    <div class="nav-mobile-divider"></div>
+    <div class="nav-mobile-user">
+      <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name">{{ initials }}</button>
+      <span class="nav-mobile-username">{{ auth.user()?.name }}</span>
+    </div>
+  </div>
+}
