@@ -1,0 +1,40 @@
+<div class="ag-overlay">
+  <div class="ag-card">
+    <div class="ag-logo">
+      <nx-icon name="lock" class="ag-lock-icon"></nx-icon>
+    </div>
+
+    <h2 nxHeadline="subsection-medium" class="ag-title">Access Required</h2>
+    <p class="ag-subtitle">Enter the access password to continue.</p>
+
+    <div class="ag-form">
+      <nx-formfield label="Password">
+        <input
+          nxInput
+          type="password"
+          [formControl]="passwordCtrl"
+          (keyup.enter)="onSubmit()"
+          autocomplete="current-password"
+        />
+      </nx-formfield>
+
+      @if (error()) {
+        <p class="ag-error">Incorrect password. Please try again.</p>
+      }
+
+      <button
+        nxButton="primary medium"
+        type="button"
+        class="ag-btn"
+        [disabled]="loading() || !(passwordCtrl.value ?? '').trim()"
+        (click)="onSubmit()"
+      >
+        @if (loading()) {
+          Checking…
+        } @else {
+          Unlock
+        }
+      </button>
+    </div>
+  </div>
+</div>
