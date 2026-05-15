@@ -1,0 +1,565 @@
+{
+  "ticketId": "CHAMP-CLOSURE-001",
+  "module": "Claims",
+  "title": "Manual Claim Closure & Section Closure",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview", "sections"],
+  "walkthroughSteps": [
+    "Navigate to CLM-2024-001 overview tab — status chip should read 'Open'",
+    "Click 'Close claim' button in the right-strip actions area",
+    "In the modal, submit without filling fields — confirm validation errors appear",
+    "Fill Closure Date (today) and Closure Reason (e.g. 'All sections settled') — click Confirm",
+    "Verify the overview status chip updates to 'Closed'",
+    "Verify the closure panel appears below the header showing date and reason",
+    "Reload the page — confirm closed state persists (sessionStorage hydration)"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Closure button disabled when open tasks remain",
+      "plainStatement": "**Close Claim** button is `disabled` *when any task is still open* on this claim.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim open, sections all closed, 5 tasks still pending",
+        "preconditions": [
+          {
+            "text": "5 tasks are open / in-progress",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Visible in Pending tasks widget on overview"
+          },
+          {
+            "text": "Close Claim button is greyed out and disabled",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Hover to see tooltip: 'Cannot close: 5 pending task(s)'"
+          },
+          {
+            "text": "3 sections are Closed",
+            "page": "sections",
+            "role": "setup",
+            "hint": "Pre-closed so sections don't add as a second blocker"
+          },
+          {
+            "text": "Claim CLM-2024-001 is Open",
+            "page": "any",
+            "role": "metadata",
+            "hint": "Shown in claim header status chip"
+          }
+        ],
+        "stateOverrides": {
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Close Claim button is disabled; tooltip shows pending task count",
+        "visualCues": [
+          "Close Claim button appears greyed out",
+          "Tooltip on hover: 'Cannot close: X open task(s)'",
+          "Clicking button does nothing — no modal opens"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     5,
+        "doneTasks":        0,
+        "openSections":     0,
+        "closedSections":   3,
+        "overviewStatus":   "In progress",
+        "canClose":         false,
+        "buttonVisible":    true,
+        "buttonEnabled":    false,
+        "tooltipContains":  "5 pending task(s)"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Hover over the Close Claim button in the right-strip",
+        "expectedResult": "Button is disabled and tooltip shows open task count"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Closure button disabled when open sections remain",
+      "plainStatement": "**Close Claim** button is `disabled` *when any section is still open* — even if all tasks are done.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim open, all tasks done, 3 sections still open",
+        "preconditions": [
+          {
+            "text": "3 sections remain Open",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Visible in Sections widget on overview"
+          },
+          {
+            "text": "Close Claim button is greyed out and disabled",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Hover to see tooltip: 'Cannot close: 3 open section(s)'"
+          },
+          {
+            "text": "All 5 tasks are done",
+            "page": "overview",
+            "role": "setup",
+            "hint": "Pre-completed so tasks don't add as a second blocker"
+          },
+          {
+            "text": "Claim CLM-2024-001 is Open",
+            "page": "any",
+            "role": "metadata",
+            "hint": "Shown in claim header status chip"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Close Claim button is disabled; tooltip shows open section count",
+        "visualCues": [
+          "Close Claim button appears greyed out",
+          "Tooltip on hover: 'Cannot close: X open section(s)'",
+          "Clicking button does nothing — no modal opens"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     0,
+        "doneTasks":        5,
+        "openSections":     3,
+        "closedSections":   0,
+        "overviewStatus":   "In progress",
+        "canClose":         false,
+        "buttonVisible":    true,
+        "buttonEnabled":    false,
+        "tooltipContains":  "3 open section(s)",
+        "taskStatuses": {
+          "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done"
+        }
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Hover over the Close Claim button in the right-strip",
+        "expectedResult": "Button is disabled and tooltip shows open section count"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Closure button disabled when both tasks and sections are open",
+      "plainStatement": "**Close Claim** is `disabled` *when both tasks and sections are open* — tooltip lists both blockers.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Default claim state — mix of open/in-progress tasks, all sections open",
+        "preconditions": [
+          {
+            "text": "5 tasks are a mix of open and in-progress",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Visible in Pending tasks widget"
+          },
+          {
+            "text": "3 sections remain Open",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Visible in Sections widget on overview"
+          },
+          {
+            "text": "Close Claim button is disabled — tooltip shows both blockers",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Hover tooltip: 'Cannot close: 5 pending task(s), 3 open section(s)'"
+          },
+          {
+            "text": "Claim CLM-2024-001 is Open — default state, no overrides needed",
+            "page": "any",
+            "role": "metadata"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Close Claim button disabled; tooltip lists both task and section blockers",
+        "visualCues": [
+          "Close Claim button appears greyed out",
+          "Tooltip shows both task and section blocker counts",
+          "No modal opens on click"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     5,
+        "doneTasks":        0,
+        "openSections":     3,
+        "closedSections":   0,
+        "overviewStatus":   "In progress",
+        "canClose":         false,
+        "buttonVisible":    true,
+        "buttonEnabled":    false,
+        "tooltipContains":  "5 pending task(s)"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Hover over the Close Claim button",
+        "expectedResult": "Tooltip shows combined blocker summary"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Closure modal opens when all blockers resolved; form validates required fields",
+      "plainStatement": "When all blockers are resolved, **Close Claim** becomes `enabled` and the modal opens — *empty form submit shows validation errors*.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All tasks done, all sections closed — claim ready for closure",
+        "preconditions": [
+          {
+            "text": "Close Claim button is enabled (not greyed out)",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "No tooltip appears — button is active"
+          },
+          {
+            "text": "Clicking button opens the closure modal",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Modal shows reason dropdown and date fields"
+          },
+          {
+            "text": "All 5 tasks are done",
+            "page": "overview",
+            "role": "setup",
+            "hint": "Tasks widget shows 0 pending"
+          },
+          {
+            "text": "All 3 sections are Closed",
+            "page": "sections",
+            "role": "setup",
+            "hint": "Navigate to Sections tab to confirm SEC-001/002/003 are Closed"
+          },
+          {
+            "text": "Claim CLM-2024-001 is Open",
+            "page": "any",
+            "role": "metadata",
+            "hint": "Shown in claim header status chip"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Closure modal opens; submitting with empty fields shows validation errors",
+        "visualCues": [
+          "Close Claim button is enabled",
+          "Clicking button opens a multi-step modal",
+          "Step 1 skipped (no blockers) — lands on step 2 (reason)",
+          "Submitting with no reason selected shows inline error",
+          "Error clears when a reason is selected"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     0,
+        "doneTasks":        5,
+        "openSections":     0,
+        "closedSections":   3,
+        "overviewStatus":   "In progress",
+        "canClose":         true,
+        "buttonVisible":    true,
+        "buttonEnabled":    true,
+        "taskStatuses": {
+          "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done"
+        },
+        "sectionStatuses": {
+          "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed"
+        }
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click the Close Claim button, then click Confirm without selecting a reason",
+        "expectedResult": "Validation error appears below the reason dropdown"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Successful closure updates status chip and shows closure panel",
+      "plainStatement": "After **Confirm**, status chip changes to `Closed` and the *closure panel appears* with date, reason, and handler.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All tasks done, all sections closed — claim ready for closure",
+        "preconditions": [
+          {
+            "text": "Close Claim button is enabled",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Button is active — click to open closure modal"
+          },
+          {
+            "text": "After Confirm: status chip changes to 'Closed'",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Closure panel appears with date, reason, handler name"
+          },
+          {
+            "text": "All 5 tasks are done",
+            "page": "overview",
+            "role": "setup",
+            "hint": "Tasks widget shows 0 pending"
+          },
+          {
+            "text": "All 3 sections are Closed",
+            "page": "sections",
+            "role": "setup",
+            "hint": "Navigate to Sections tab to confirm SEC-001/002/003 are Closed"
+          },
+          {
+            "text": "Claim CLM-2024-001 is Open",
+            "page": "any",
+            "role": "metadata",
+            "hint": "Shown in claim header status chip"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "After confirmation: status chip shows Closed, closure panel appears",
+        "visualCues": [
+          "Modal closes after clicking Confirm",
+          "Status chip in header changes to 'Closed' (grey chip)",
+          "Closure panel appears below header: shows date, reason, handler name",
+          "Close Claim button disappears from right-strip"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     0,
+        "doneTasks":        5,
+        "openSections":     0,
+        "closedSections":   3,
+        "overviewStatus":   "In progress",
+        "canClose":         true,
+        "buttonVisible":    true,
+        "buttonEnabled":    true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Complete the closure modal with reason 'Claim Finalised' and click Confirm",
+        "expectedResult": "Status chip = Closed; closure panel visible with entered details"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Closed claim shows read-only closure panel; no closure button visible",
+      "plainStatement": "A `Closed` claim shows a *read-only closure panel* — **no Close Claim button** is rendered.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim already in Closed state with closure details pre-filled",
+        "preconditions": [
+          {
+            "text": "Status chip reads 'Closed' (grey)",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Visible in claim header"
+          },
+          {
+            "text": "Closure panel shows date, reason, and closed-by name",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Date: 2024-02-28 · Reason: Claim Finalised · By: Leonie Fischer"
+          },
+          {
+            "text": "No 'Close Claim' button in right-strip",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Button is hidden when status is Closed"
+          },
+          {
+            "text": "All 5 tasks are done",
+            "page": "overview",
+            "role": "setup",
+            "hint": "Required for valid Closed state"
+          },
+          {
+            "text": "All 3 sections are Closed",
+            "page": "sections",
+            "role": "setup",
+            "hint": "Required for valid Closed state"
+          },
+          {
+            "text": "Claim CLM-2024-001 is already Closed with overviewPatch applied",
+            "page": "any",
+            "role": "metadata",
+            "hint": "Closure date: 2024-02-28 · Reason: Claim Finalised · By: Leonie Fischer"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": { "userId": "u1", "name": "Leonie Fischer" }
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Closure panel visible; Close Claim button absent from right-strip",
+        "visualCues": [
+          "Status chip reads 'Closed' (grey)",
+          "Closure panel shows: date, reason, closed-by name",
+          "No 'Close Claim' button in right-strip",
+          "State persists on page reload (sessionStorage)"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     0,
+        "doneTasks":        5,
+        "openSections":     0,
+        "closedSections":   3,
+        "overviewStatus":   "Closed",
+        "canClose":         false,
+        "buttonVisible":    false,
+        "buttonEnabled":    false,
+        "closedByName":     "Leonie Fischer",
+        "closureReason":    "Claim Finalised"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Observe the overview page — no action needed",
+        "expectedResult": "Closure panel visible with all 3 fields; no close button"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "Closed state persists on page reload via sessionStorage",
+      "plainStatement": "`Closed` state *persists after page reload* via `sessionStorage` — no flash of open state.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Pre-close the claim in state, then reload to verify hydration",
+        "preconditions": [
+          {
+            "text": "After F5: status chip still reads 'Closed'",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "No flash of 'Open' before Closed state appears"
+          },
+          {
+            "text": "Closure panel still visible after reload",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Date, reason, and handler name all preserved"
+          },
+          {
+            "text": "Apply AC-06 setup first (all tasks done, all sections closed, overviewPatch applied)",
+            "page": "overview",
+            "role": "setup",
+            "hint": "Apply AC-06 via the DEV modal, then manually press F5"
+          },
+          {
+            "text": "sessionStorage holds the closure state from the previous apply",
+            "page": "any",
+            "role": "metadata",
+            "hint": "MockStateService hydrates from sessionStorage on init"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": { "userId": "u1", "name": "Leonie Fischer" }
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "After F5 reload, page still shows Closed state — no data loss",
+        "visualCues": [
+          "Closure panel still visible after reload",
+          "Status chip still reads 'Closed'",
+          "No flash of 'Open' state before Closed state appears"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":     0,
+        "doneTasks":        5,
+        "openSections":     0,
+        "closedSections":   3,
+        "overviewStatus":   "Closed",
+        "canClose":         false,
+        "buttonVisible":    false,
+        "buttonEnabled":    false,
+        "closedByName":     "Leonie Fischer",
+        "closureReason":    "Claim Finalised"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Apply this setup, then press F5 to reload the page",
+        "expectedResult": "Closed state persists — no revert to Open"
+      }
+    }
+  ]
+}
