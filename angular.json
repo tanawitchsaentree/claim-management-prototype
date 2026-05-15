@@ -37,7 +37,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/Enterprise-claim/",
+              "baseHref": "/claim-management-prototype/",
               "budgets": [
                 {
                   "type": "initial",

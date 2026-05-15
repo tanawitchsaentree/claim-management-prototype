@@ -1,13 +1,13 @@
 [
-  { "userId": "u1",  "name": "Leonie Fischer",    "role": "claim handler", "email": "leonie.fischer@allianz.com",   "avatar": "LF" },
-  { "userId": "u2",  "name": "Carsten Muster",    "role": "claim handler", "email": "carsten.muster@allianz.com",   "avatar": "CM" },
-  { "userId": "u3",  "name": "Clara Hoffmann",    "role": "claim handler", "email": "clara.hoffmann@allianz.com",   "avatar": "CH" },
-  { "userId": "u4",  "name": "Jonas Weber",       "role": "admin",         "email": "jonas.weber@allianz.com",      "avatar": "JW" },
+  { "userId": "u1",  "name": "Leonie Fischer",    "role": "claim handler", "email": "leonie.fischer@example.com",   "avatar": "LF" },
+  { "userId": "u2",  "name": "Carsten Muster",    "role": "claim handler", "email": "carsten.muster@example.com",   "avatar": "CM" },
+  { "userId": "u3",  "name": "Clara Hoffmann",    "role": "claim handler", "email": "clara.hoffmann@example.com",   "avatar": "CH" },
+  { "userId": "u4",  "name": "Jonas Weber",       "role": "admin",         "email": "jonas.weber@example.com",      "avatar": "JW" },
   { "userId": "u5",  "name": "Anna Müller",       "role": "broker",        "email": "anna.mueller@broker.de",       "avatar": "AM" },
   { "userId": "u6",  "name": "Maximilian Koch",   "role": "broker",        "email": "max.koch@broker.de",           "avatar": "MK" },
   { "userId": "u7",  "name": "Felix Bauer",       "role": "broker",        "email": "felix.bauer@broker.de",        "avatar": "FB" },
   { "userId": "u8",  "name": "Lukas Schneider",   "role": "client",        "email": "l.schneider@liveatea.com",     "avatar": "LS" },
   { "userId": "u9",  "name": "Björn Ö'Brien",     "role": "client",        "email": "bjorn.obrien@adesso.de",       "avatar": "BÖ" },
-  { "userId": "u10", "name": "Mara Mustermann",   "role": "claim handler", "email": "mara.mustermann@allianz.com",  "avatar": "MM" },
-  { "userId": "u11", "name": "Unassigned User",   "role": "claim handler", "email": "unassigned@allianz.com",       "avatar": "UU" }
+  { "userId": "u10", "name": "Mara Mustermann",   "role": "claim handler", "email": "mara.mustermann@example.com",  "avatar": "MM" },
+  { "userId": "u11", "name": "Unassigned User",   "role": "claim handler", "email": "unassigned@example.com",       "avatar": "UU" }
 ]
