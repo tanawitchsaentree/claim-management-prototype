@@ -1,0 +1,21 @@
+<div class="step-footer">
+  @if (showCancel) {
+    <button nxPlainButton type="button" (click)="cancel.emit()">Cancel</button>
+  } @else {
+    <span></span>
+  }
+
+  <div class="step-footer-actions">
+    @if (showBack) {
+      <button nxButton="secondary small" type="button" (click)="back.emit()">
+        <nx-icon name="arrow-left" nxIconPositionStart></nx-icon>
+        Back
+      </button>
+    }
+    <button nxButton="primary small" type="button"
+            [disabled]="nextDisabled"
+            (click)="next.emit()">
+      {{ nextLabel }}
+    </button>
+  </div>
+</div>

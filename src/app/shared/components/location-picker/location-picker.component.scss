@@ -1,0 +1,241 @@
+// ─── Initial ────────────────────────────────────────────────────────
+
+.lp-initial {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.lp-hint {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  margin: 0;
+  font-weight: 600;
+}
+
+.lp-skip-hint {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+// ─── Adding ─────────────────────────────────────────────────────────
+
+.lp-adding {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lp-mode-label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 8px;
+}
+
+.lp-mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+}
+
+.lp-mode-radio-label {
+  display: block;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.lp-mode-radio-desc {
+  display: block;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.lp-divider {
+  border: none;
+  border-top: 1px solid var(--ui-04);
+  margin: 0;
+}
+
+// ─── Search ──────────────────────────────────────────────────────────
+
+.lp-search-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+}
+
+.lp-search-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.lp-results-count {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.lp-empty {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+// ─── Policy list ─────────────────────────────────────────────────────
+
+.lp-policy-list {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.lp-policy-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--ui-04);
+  transition: background 0.1s;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover { background: var(--claim-overlay-hover); }
+
+  &--selected { background: var(--claim-overlay-hover); }
+}
+
+.lp-policy-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lp-policy-item-name {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.lp-policy-item-addr {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.lp-policy-item-meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.lp-inactive-badge {
+  display: inline-block;
+  background: var(--ui-04);
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+
+// ─── Manual entry ────────────────────────────────────────────────────
+
+.lp-manual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+  align-items: start;
+}
+
+.lp-full { grid-column: 1 / -1; }
+
+// ─── Optional section ────────────────────────────────────────────────
+
+.lp-optional-section {
+  margin-top: 8px;
+}
+
+.lp-optional-toggle {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--interactive-primary);
+  cursor: pointer;
+  list-style: none;
+  padding: 4px 0;
+
+  &::marker, &::-webkit-details-marker { display: none; }
+  &::before { content: '+ '; }
+  details[open] > &::before { content: '− '; }
+}
+
+.lp-optional-body {
+  padding-top: 8px;
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────
+
+.lp-adding-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+  margin-top: 8px;
+}
+
+// ─── Selected ────────────────────────────────────────────────────────
+
+.lp-selected {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lp-location-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 12px 16px;
+  background: var(--ui-01);
+}
+
+.lp-location-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lp-location-name {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.lp-location-addr {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.lp-location-meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.lp-location-actions {
+  flex-shrink: 0;
+}
+
+.lp-add-another {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+

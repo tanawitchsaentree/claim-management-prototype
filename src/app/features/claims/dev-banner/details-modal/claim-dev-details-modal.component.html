@@ -1,0 +1,197 @@
+<div class="cddm-header">
+  <div class="cddm-header-row">
+    <span class="cddm-badge">DEV</span>
+    <h2 class="cddm-title">{{ card.title }}</h2>
+    <span class="cddm-ticket-id">{{ ticket.ticketId }}</span>
+    <button nxIconButton="tertiary small"
+            type="button"
+            (click)="onMinimize()"
+            [disabled]="!selectedAc()"
+            aria-label="Minimize modal">
+      <nx-icon name="minus-circle"></nx-icon>
+    </button>
+  </div>
+  <div class="cddm-inspector">
+    <span>Status: <strong>{{ stateInspector().status }}</strong></span>
+    <span class="cddm-sep">·</span>
+    <span>Tasks: <strong>{{ stateInspector().tasks }}</strong></span>
+    <span class="cddm-sep">·</span>
+    <span>Sections: <strong>{{ stateInspector().sections }}</strong></span>
+    <span class="cddm-sep">·</span>
+    <span>Can close:
+      <strong [class.cddm-yes]="stateInspector().canClose" [class.cddm-no]="!stateInspector().canClose">
+        {{ stateInspector().canClose ? 'YES' : 'NO' }}
+      </strong>
+    </span>
+  </div>
+</div>
+
+<div class="cddm-columns">
+
+  <!-- LEFT: AC list -->
+  <div class="cddm-left">
+    <p class="cddm-col-label">Acceptance Criteria</p>
+    <div class="cddm-ac-list">
+      @for (ac of acs; track ac.id) {
+        <div
+          class="cddm-ac-row"
+          [class.cddm-ac-row--selected]="selectedAcId() === ac.id"
+          [class.cddm-ac-row--disabled]="ac.buildStatus === 'todo'"
+          (click)="selectAc(ac.id)"
+          (keydown.enter)="selectAc(ac.id)"
+          (keydown.space)="selectAc(ac.id)"
+          [attr.tabindex]="ac.buildStatus === 'todo' ? -1 : 0"
+          role="radio"
+          [attr.aria-checked]="selectedAcId() === ac.id"
+          [attr.aria-disabled]="ac.buildStatus === 'todo'">
+          <nx-icon
+            [name]="statusIcon(ac.buildStatus)"
+            class="cddm-ac-icon"
+            [class.cddm-ac-icon--done]="ac.buildStatus === 'done'"
+            [class.cddm-ac-icon--todo]="ac.buildStatus === 'todo'">
+          </nx-icon>
+          <div class="cddm-ac-text">
+            <div class="cddm-ac-id-row">
+              <span class="cddm-ac-id">{{ ac.id }}</span>
+              @if (data.helper.isVerified(ticket.ticketId, ac.id)) {
+                <span class="cddm-ac-verified"
+                      [nxTooltip]="getVerifyTooltip(ac.id)"
+                      nxTooltipPosition="right">✓ verified</span>
+              }
+            </div>
+            <span class="cddm-ac-statement"
+                  [nxTooltip]="ac.plainStatement ? ac.statement : ''"
+                  nxTooltipPosition="right"
+                  [innerHTML]="(ac.plainStatement ?? ac.statement) | inlineMarkdown">
+            </span>
+            @if (ac.buildStatus === 'todo') {
+              <span class="cddm-ac-badge cddm-ac-badge--todo">todo</span>
+            }
+            @if (ac.buildStatus === 'partial') {
+              <span class="cddm-ac-badge cddm-ac-badge--partial">partial</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- RIGHT: Detail panel -->
+  <div class="cddm-right">
+    @if (selectedAc(); as ac) {
+      <div class="cddm-detail">
+        <p class="cddm-detail-id"
+           [nxTooltip]="ac.plainStatement ? ac.statement : ''"
+           nxTooltipPosition="bottom"
+           [innerHTML]="ac.id + ' — ' + (ac.plainStatement ?? ac.statement) | inlineMarkdown">
+        </p>
+
+        @if (preconditions().tested.length > 0) {
+          <div class="cddm-detail-section">
+            <p class="cddm-detail-label">What you'll see on this page</p>
+            <ul class="cddm-detail-list">
+              @for (pre of preconditions().tested; track $index) {
+                <li>
+                  <span>{{ pre.text }}</span>
+                  @if (pre.hint) {
+                    <small class="cddm-precon-hint">{{ pre.hint }}</small>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (preconditions().setup.length > 0) {
+          <div class="cddm-detail-section">
+            <button class="cddm-collapse-header"
+                    type="button"
+                    (click)="toggleSetup()">
+              <span>Setup ensuring test isolation</span>
+              <span>{{ setupExpanded() ? '▲' : '▼' }} ({{ preconditions().setup.length }})</span>
+            </button>
+            @if (setupExpanded()) {
+              <ul class="cddm-detail-list">
+                @for (pre of preconditions().setup; track $index) {
+                  <li>
+                    <span>{{ pre.text }}</span>
+                    @if (pre.hint) {
+                      <small class="cddm-precon-hint">{{ pre.hint }}</small>
+                    }
+                    @if (pre.page !== 'any' && shouldShowLink(pre)) {
+                      <button type="button"
+                              class="cddm-precon-link"
+                              (click)="onGoTo(pre)">
+                        Verify on {{ pre.page }} ↗
+                      </button>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+        <div class="cddm-detail-section">
+          <p class="cddm-detail-label">What you'll see</p>
+          <ul class="cddm-detail-list">
+            @for (cue of ac.expectedUI.visualCues; track cue) {
+              <li>{{ cue }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="cddm-detail-section">
+          <p class="cddm-detail-label">How to test</p>
+          <div class="cddm-how-to">
+            <div class="cddm-how-row">
+              <span class="cddm-how-key">Route</span>
+              <code class="cddm-how-val">{{ ac.howToTest.route }}</code>
+            </div>
+            <div class="cddm-how-row">
+              <span class="cddm-how-key">Trigger</span>
+              <span class="cddm-how-val">{{ ac.howToTest.trigger }}</span>
+            </div>
+            <div class="cddm-how-row">
+              <span class="cddm-how-key">Expected</span>
+              <span class="cddm-how-val">{{ ac.howToTest.expectedResult }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cddm-verify-section">
+          @if (ac.buildStatus !== 'done') {
+            <p class="cddm-verify-disabled">
+              Cannot verify — build status: {{ ac.buildStatus }}
+            </p>
+          } @else if (isSelectedAcVerified()) {
+            <div class="cddm-verify-confirmed">
+              <nx-icon name="check-circle" class="cddm-verify-confirmed-icon"></nx-icon>
+              <div class="cddm-verify-confirmed-text">
+                <span>✓ Verified by <strong>{{ getVerifier() }}</strong> on {{ getVerifyDate() }}</span>
+              </div>
+              <button nxButton="tertiary small" type="button" (click)="onUnverify()">Unmark</button>
+            </div>
+          } @else {
+            <button nxButton="primary small" type="button" (click)="onCheck()">
+              ✓ Mark this AC as verified
+            </button>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="cddm-empty">
+        <nx-icon name="chevron-left" class="cddm-empty-icon"></nx-icon>
+        <p>Select an AC to see setup instructions</p>
+      </div>
+    }
+  </div>
+
+</div>
+
+<div class="cddm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="!canApply()" (click)="onApply()">
+    Apply &amp; Navigate
+  </button>
+</div>

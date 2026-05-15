@@ -1,0 +1,74 @@
+.dev-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  min-height: 52px;
+  background: var(--dev-banner-bg);
+  border-bottom: 1px solid var(--dev-banner-border);
+}
+
+.dev-banner__badge {
+  flex-shrink: 0;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 700;
+  color: var(--dev-helper-badge-color);
+  letter-spacing: 0.06em;
+}
+
+.dev-banner__label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 500;
+  color: var(--text-01);
+  white-space: nowrap;
+}
+
+.dev-banner__formfield {
+  min-width: 200px;
+  margin-bottom: 0 !important;
+
+  // collapse label + hint reserved space so formfield = control height only
+  ::ng-deep .nx-formfield__wrapper {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  ::ng-deep .nx-formfield__label {
+    display: none !important;
+  }
+
+  ::ng-deep .nx-formfield-hint__wrapper {
+    display: none !important;
+  }
+}
+
+.dev-banner__muted {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// ─── Result toast ────────────────────────────────────────────────────────────
+
+.dev-banner__result {
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: var(--paragraph-03-font-size);
+  white-space: nowrap;
+
+  &--success {
+    background: var(--dev-banner-success-bg);
+    color: var(--dev-banner-success-color);
+  }
+
+  &--error {
+    background: var(--dev-banner-error-bg);
+    color: var(--dev-banner-error-color);
+  }
+}
+
+.dev-banner__result-warn {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--dev-banner-warn-color);
+}

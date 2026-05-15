@@ -1,0 +1,12 @@
+[
+  { "partyId": "AZ000000009898433", "legalName": "Jonas Kaufmann",     "address": "Blumenstraße 12, 80331 München, Germany", "country": "Germany", "role": "Client", "activePolicyCount": 3 },
+  { "partyId": "AZ000000005234433", "legalName": "Thomas Kaufmann",    "address": "789 Maple Drive, Orlando, FL 32801",       "country": "Germany", "role": "Client", "activePolicyCount": 0 },
+  { "partyId": "AZ000000008373364", "legalName": "Alex Kaufmann",      "address": "Hauptstraße 45A, 50667 Köln, Germany",     "country": "Germany", "role": "Client", "activePolicyCount": 1 },
+  { "partyId": "AZ000000009898437", "legalName": "Kaufmann's Company", "address": "Schillerstraße 10, 60313 Frankfurt",       "country": "Germany", "role": "Client", "activePolicyCount": 2 },
+  { "partyId": "AZ000000009898438", "legalName": "Peter Kaufmann",     "address": "Kantstraße 4, 10623 Berlin, Germany",      "country": "Germany", "role": "Client", "activePolicyCount": 0 },
+  { "partyId": "AZ000000009898439", "legalName": "August Kaufmann",    "address": "Goethestraße 2, 01069 Dresden, Germany",   "country": "Germany", "role": "Client", "activePolicyCount": 1 },
+  { "partyId": "AZ000000009898490", "legalName": "Auto Kaufmann",      "address": "Maximilianstraße 8, 80333 München",        "country": "Germany", "role": "Client", "activePolicyCount": 0 },
+  { "partyId": "AZ000000009898491", "legalName": "Kaufmann Logistics", "address": "Hafenstraße 20, 20359 Hamburg, Germany",   "country": "Germany", "role": "Broker", "activePolicyCount": 0 },
+  { "partyId": "AZ000000009898492", "legalName": "Kaufmann & Partner", "address": "Bahnhofstraße 15, 90402 Nürnberg",        "country": "Germany", "role": "Client", "activePolicyCount": 0 },
+  { "partyId": "AZ000000009898493", "legalName": "Liver Tea Group",    "address": "Leopoldstraße 31, 80802 München",          "country": "Germany", "role": "Client", "activePolicyCount": 1 }
+]

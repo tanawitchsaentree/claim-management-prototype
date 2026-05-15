@@ -1,0 +1,11 @@
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 500;
+  white-space: nowrap;
+  // background and color set via [style] bindings from component — values come
+  // from CSS custom properties defined in styles.scss, never hardcoded here.
+}

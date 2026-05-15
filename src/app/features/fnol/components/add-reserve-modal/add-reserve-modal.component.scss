@@ -1,0 +1,58 @@
+// ─── Host ─────────────────────────────────────────────────────────────────────
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+.arm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.arm-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.arm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
+.arm-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  nx-formfield {
+    width: 100%;
+  }
+}
+
+.arm-checkbox-row {
+  padding: 8px 0 16px;
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+.arm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--ui-04);
+}

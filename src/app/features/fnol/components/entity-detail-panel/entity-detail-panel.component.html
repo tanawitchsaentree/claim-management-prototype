@@ -1,0 +1,100 @@
+<div class="detail-panel">
+
+  <div class="detail-panel__header">
+    <div class="detail-panel__title-row">
+      <h2 class="detail-panel__title">{{ entity.name }}</h2>
+      <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
+    </div>
+    <button nxIconButton="tertiary small" type="button" (click)="onClose()" aria-label="Close panel">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+
+  <div class="detail-panel__info">
+    <div class="info-field">
+      <span class="info-field__label">Currency</span>
+      <span class="info-field__value">{{ currency }}</span>
+    </div>
+    <div class="info-field">
+      <span class="info-field__label">Limit</span>
+      <span class="info-field__value">{{ entity.limit }}</span>
+    </div>
+    <div class="info-field">
+      <span class="info-field__label">Covered by</span>
+      <span class="info-field__value">{{ entity.coveredBy }}</span>
+    </div>
+  </div>
+
+  <div class="detail-panel__section">
+    <div class="section-header">
+      <h3 class="section-header__title">Damage information</h3>
+      <div class="section-header__actions">
+        <button nxButton="secondary small" type="button" [disabled]="true">
+          <nx-icon name="upload" nxIconPositionStart></nx-icon>
+          Upload items
+        </button>
+        <button nxButton="primary small" type="button" (click)="startAddItem()" [disabled]="addingItem">
+          <nx-icon name="plus" nxIconPositionStart></nx-icon>
+          Add item
+        </button>
+      </div>
+    </div>
+
+    @if (addingItem) {
+      <div class="item-form-row" [formGroup]="itemForm">
+        <div class="item-form-row__fields">
+          <nx-formfield label="Description" class="item-form-field item-form-field--description">
+            <input nxInput formControlName="description" autocomplete="off" />
+            @if (itemForm.get('description')?.invalid && itemForm.get('description')?.touched) {
+              <nx-error nxFormfieldError>Min. 3 characters required</nx-error>
+            }
+          </nx-formfield>
+          <nx-formfield label="Cause of loss" class="item-form-field">
+            <nx-dropdown formControlName="causeOfLoss" placeholder="Select">
+              @for (opt of causeOptions; track opt.value) {
+                <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+            @if (itemForm.get('causeOfLoss')?.invalid && itemForm.get('causeOfLoss')?.touched) {
+              <nx-error nxFormfieldError>Required</nx-error>
+            }
+          </nx-formfield>
+          <nx-formfield label="Amount ({{ currency }})" class="item-form-field item-form-field--amount">
+            <input nxInput type="number" formControlName="amount" min="0" autocomplete="off" />
+            @if (itemForm.get('amount')?.invalid && itemForm.get('amount')?.touched) {
+              <nx-error nxFormfieldError>Valid amount required</nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div class="item-form-row__actions">
+          <button nxButton="primary small" type="button" [disabled]="savingItem" (click)="saveItem()">Save</button>
+          <button nxPlainButton type="button" (click)="cancelAddItem()">Cancel</button>
+        </div>
+      </div>
+    }
+
+    @if (!hasItems && !addingItem) {
+      <div class="empty-state">
+        <p class="empty-state__message">No items added yet. Use the buttons above to provide data.</p>
+      </div>
+    }
+
+    @if (hasItems) {
+      <div class="items-list">
+        @for (item of entity.damageItems; track item.itemId) {
+          <div class="item-row">
+            <div class="item-row__main">
+              <span class="item-row__description">{{ item.description }}</span>
+              <span class="item-row__cause">Cause: {{ item.causeOfLoss }}</span>
+            </div>
+            <div class="item-row__meta">
+              <span class="item-row__amount">{{ item.amount | number:'1.0-0' }} {{ item.currency }}</span>
+              <app-status-chip [status]="item.status" domain="damage-item"></app-status-chip>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</div>

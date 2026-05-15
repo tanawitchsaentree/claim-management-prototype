@@ -1,0 +1,24 @@
+<div class="erd-header">
+  <h2 class="erd-title">Edit role</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="erd-body">
+  <p class="erd-subtitle">{{ data.party.legalName }}</p>
+  <p class="erd-hint">Select one or more roles for this party.</p>
+
+  <div class="erd-role-list" [formGroup]="form">
+    @for (role of roleKeys; track role) {
+      <div class="erd-role-item">
+        <nx-checkbox [formControlName]="role">{{ roleLabels[role] }}</nx-checkbox>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="erd-footer">
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="!canSave" (click)="onSave()">Save</button>
+</div>

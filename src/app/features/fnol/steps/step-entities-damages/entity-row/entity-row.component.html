@@ -1,0 +1,67 @@
+<!-- Main entity row -->
+<tr nxTableRow class="entity-row" [class.entity-row--selected]="isChecked()">
+  <td nxCell class="col-check">
+    <nx-checkbox
+      [checked]="isChecked()"
+      [indeterminate]="isIndeterminate()"
+      (checkedChange)="onEntityChecked($event)">
+    </nx-checkbox>
+  </td>
+  <td nxCell class="col-name">
+    <div class="entity-cell">
+      @if (entity.subItems && entity.subItems.length > 0) {
+        <button nxIconButton="tertiary small" type="button"
+                (click)="toggleExpand()"
+                [attr.aria-label]="entity.expanded ? 'Collapse' : 'Expand'">
+          <nx-icon [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+        </button>
+      }
+      <span>{{ entity.name }}</span>
+    </div>
+  </td>
+  <td nxCell class="col-status">
+    <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
+  </td>
+  @if (showCoveredForEvents) {
+    <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '—' }}</td>
+  }
+  <td nxCell class="col-limit">
+    {{ entity.limit }}
+    @if (entity.limit !== '—') {
+      <nx-icon name="info-circle-o" class="limit-info-icon"
+               [nxTooltip]="'Limit details for ' + entity.name"
+               nxTooltipPosition="top">
+      </nx-icon>
+    }
+  </td>
+  <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
+  <td nxCell class="col-action">
+    <button nxIconButton="tertiary small" type="button"
+            [nxContextMenuTriggerFor]="entityMenu"
+            aria-label="Entity actions">
+      <nx-icon name="ellipsis-v"></nx-icon>
+    </button>
+    <nx-context-menu #entityMenu="nxContextMenu">
+      <button nxContextMenuItem type="button">View details</button>
+      <button nxContextMenuItem type="button">Remove</button>
+    </nx-context-menu>
+  </td>
+</tr>
+
+<!-- Sub-item rows -->
+@if (entity.expanded && entity.subItems && entity.subItems.length > 0) {
+  @for (subItem of entity.subItems; track subItem.itemId) {
+    <tr nxTableRow class="sub-item-row">
+      <td nxCell class="col-check">
+        <nx-checkbox
+          [checked]="subItem.selected"
+          (checkedChange)="onSubItemChecked(subItem, $event)">
+        </nx-checkbox>
+      </td>
+      <td nxCell class="col-name sub-item-name" [attr.colspan]="showCoveredForEvents ? 5 : 4">
+        <span class="sub-item__indent">└ {{ subItem.name }}</span>
+      </td>
+      <td nxCell class="col-action"></td>
+    </tr>
+  }
+}

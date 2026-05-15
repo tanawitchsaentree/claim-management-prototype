@@ -1,0 +1,101 @@
+import { Component, inject, signal, effect } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
+import { NxTableModule } from '@allianz/ng-aquila/table';
+import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
+import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
+import { firstValueFrom } from 'rxjs';
+import { ClaimSection, InstructionStatus } from '../../core/models/section.model';
+import { MockSectionService } from '../../core/mock/services/mock-section.service';
+import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+
+const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
+
+@Component({
+  selector: 'app-sections',
+  imports: [
+    CommonModule,
+    NxButtonModule,
+    NxIconModule,
+    NxContextMenuModule,
+    NxTableModule,
+    NxSpinnerModule,
+    NxTooltipModule,
+    NxModalModule,
+    StatusChipComponent,
+  ],
+  templateUrl: './sections.html',
+  styleUrl: './sections.scss',
+})
+export class Sections {
+  private readonly route      = inject(ActivatedRoute);
+  private readonly sectionSvc = inject(MockSectionService);
+  private readonly dialogSvc  = inject(NxDialogService);
+
+  readonly sections         = signal<ClaimSection[]>([]);
+  readonly loading          = signal(true);
+  readonly loadError        = signal(false);
+  readonly closingSectionId = signal<string | null>(null);
+
+  constructor() {
+    effect(async () => {
+      const id = this.route.snapshot.params['id'];
+      if (!id) return;
+      this.loading.set(true);
+      this.loadError.set(false);
+      try {
+        const sections = await firstValueFrom(this.sectionSvc.getByClaimId(id));
+        this.sections.set(sections);
+      } catch {
+        this.loadError.set(true);
+      } finally {
+        this.loading.set(false);
+      }
+    });
+  }
+
+  toggleSection(id: string): void {
+    this.sections.update(list =>
+      list.map(s => s.id === id ? { ...s, expanded: !s.expanded } : s)
+    );
+  }
+
+  statusClass(status: InstructionStatus): string {
+    return status.toLowerCase().replace(/\s+/g, '-');
+  }
+
+  async onCloseSection(section: ClaimSection): Promise<void> {
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Close Section?',
+        message: `Section "${section.name}" will be closed. You can reopen it later from this menu.`,
+        confirmLabel: 'Close Section',
+      } satisfies ConfirmDialogData,
+      width: '400px',
+    });
+
+    const confirmed = await firstValueFrom(ref.afterClosed());
+    if (confirmed !== true) return;
+
+    this.closingSectionId.set(section.id);
+    try {
+      const updated = await firstValueFrom(
+        this.sectionSvc.closeSection(section.id, CURRENT_USER)
+      );
+      this.sections.update(list =>
+        list.map(s => s.id === section.id ? updated : s)
+      );
+    } finally {
+      this.closingSectionId.set(null);
+    }
+  }
+
+  onAction(action: string, name: string): void {
+    console.log(`${action}: ${name}`);
+  }
+}

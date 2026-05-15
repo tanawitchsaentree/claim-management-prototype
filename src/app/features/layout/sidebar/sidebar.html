@@ -1,0 +1,46 @@
+<aside class="app-sidebar" [class.app-sidebar--collapsed]="collapsed">
+
+  @if (isClaimRoute()) {
+    <!-- Claim-level navigation -->
+    <nav class="sidebar-nav">
+      @for (item of claimNavItems(); track item.path) {
+        <a
+          class="nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="nav-item--active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          [title]="collapsed ? item.label : ''"
+        >
+          <nx-icon [name]="item.icon" size="s"></nx-icon>
+          <span class="nav-item__label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  } @else {
+    <!-- Global navigation -->
+    <nav class="sidebar-nav">
+      @for (item of globalNav; track item.path) {
+        <a
+          class="nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="nav-item--active"
+          [routerLinkActiveOptions]="{ exact: !!item.exact }"
+          [title]="collapsed ? item.label : ''"
+        >
+          <nx-icon [name]="item.icon" size="s"></nx-icon>
+          <span class="nav-item__label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  }
+
+  <div class="sidebar-footer">
+    <button class="sidebar-footer__btn" title="Settings">
+      <nx-icon name="setting" size="s"></nx-icon>
+    </button>
+    <button class="sidebar-footer__btn sidebar-footer__collapse" (click)="toggleCollapse()" [title]="collapsed ? 'Expand' : 'Collapse'">
+      <nx-icon [name]="collapsed ? 'chevron-right' : 'chevron-left'" size="s"></nx-icon>
+    </button>
+  </div>
+
+</aside>

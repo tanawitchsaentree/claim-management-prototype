@@ -1,0 +1,104 @@
+<div class="detail-panel">
+
+  <div class="detail-panel__header">
+    <div class="detail-panel__title-row">
+      <h2 class="detail-panel__title">{{ party.legalName }}</h2>
+      @if (party.dbaTradeName) {
+        <span class="detail-panel__dba">DBA: {{ party.dbaTradeName }}</span>
+      }
+    </div>
+    <button nxIconButton="tertiary small" type="button" (click)="onClose()" aria-label="Close panel">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+
+  <div class="detail-panel__summary">
+    <div class="info-field">
+      <span class="info-field__label">UCV ID</span>
+      <span class="info-field__value info-field__value--mono">{{ party.partyId }}</span>
+    </div>
+    <div class="info-field">
+      <span class="info-field__label">Clearance status</span>
+      <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
+    </div>
+    <div class="info-field info-field--full">
+      <span class="info-field__label">Roles</span>
+      <span class="info-field__value">{{ rolesDisplay() }}</span>
+    </div>
+  </div>
+
+  <div class="detail-panel__body">
+
+    <div class="info-section">
+      <h3 class="info-section__title">Contact</h3>
+      <div class="info-grid">
+        <div class="info-field">
+          <span class="info-field__label">Email</span>
+          <span class="info-field__value">{{ party.email || '—' }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field__label">Phone</span>
+          <span class="info-field__value">{{ party.phone || '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section__title">Address</h3>
+      <div class="info-grid">
+        <div class="info-field">
+          <span class="info-field__label">Country</span>
+          <span class="info-field__value">{{ party.country || '—' }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field__label">City</span>
+          <span class="info-field__value">{{ party.city || '—' }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field__label">Postal code</span>
+          <span class="info-field__value">{{ party.postalCode || '—' }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field__label">Street</span>
+          <span class="info-field__value">{{ party.street || '—' }}</span>
+        </div>
+        @if (party.province) {
+          <div class="info-field">
+            <span class="info-field__label">Province</span>
+            <span class="info-field__value">{{ party.province }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section__title">Identification</h3>
+      <div class="info-grid">
+        <div class="info-field">
+          <span class="info-field__label">ID type</span>
+          <span class="info-field__value">{{ idTypeLabel || '—' }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field__label">ID number</span>
+          <span class="info-field__value">{{ party.idNumber || '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section__title">Business</h3>
+      <div class="info-grid">
+        <div class="info-field">
+          <span class="info-field__label">Line of business</span>
+          <span class="info-field__value">{{ party.lineOfBusiness || '—' }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field__label">Operating entity</span>
+          <span class="info-field__value">{{ party.operatingEntity || '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

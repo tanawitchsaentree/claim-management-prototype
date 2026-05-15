@@ -1,0 +1,216 @@
+<ng-container *ngIf="vm$ | async as vm">
+<div class="step-page">
+
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Parties</h1>
+
+  <!-- Toolbar -->
+  <div class="parties-toolbar">
+    <div class="parties-toolbar__left">
+      <span class="parties-toolbar__count">
+        Number of parties: <strong>{{ totalParties(vm.claims) }}</strong>
+      </span>
+      <nx-switcher [checked]="displayBrokerHierarchy" (checkedChange)="displayBrokerHierarchy = $event">
+        Display broker hierarchy
+      </nx-switcher>
+    </div>
+    <div class="parties-toolbar__right">
+      <button nxButton="secondary small" type="button" (click)="onAddPartiesToToolbar(vm.claims)">
+        Add additional parties <nx-icon name="chevron-down-small" nxIconPositionEnd></nx-icon>
+      </button>
+    </div>
+  </div>
+
+  @if (vm.error) {
+    <nx-message context="error">Failed to load parties. Please go back and try again.</nx-message>
+  }
+
+  @if (!vm.loading && !vm.error) {
+    @if (vm.claims.length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__message">No parties yet.</p>
+        <p class="empty-state__hint">Use "Add additional parties" to get started.</p>
+      </div>
+    }
+
+    @if (vm.claims.length > 0) {
+      <table nxTable class="parties-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="col-expand"></th>
+            <th nxHeaderCell class="col-check"></th>
+            <th nxHeaderCell class="col-name">Party</th>
+            <th nxHeaderCell class="col-roles">Roles</th>
+            <th nxHeaderCell class="col-clearance">Clearance status</th>
+            <th nxHeaderCell class="col-action"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (claim of pagedClaims(vm.claims); track claim.claimId) {
+
+            <!-- LEVEL 1: CLAIM ROW -->
+            <tr nxTableRow class="claim-row">
+              <td nxCell colspan="2" class="col-expand">
+                <div class="claim-row__cell">
+                  <button nxIconButton="tertiary small" type="button"
+                          (click)="toggleClaim(claim)"
+                          [attr.aria-label]="claim.expanded ? 'Collapse claim' : 'Expand claim'">
+                    <nx-icon [name]="claim.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+                  </button>
+                  <nx-checkbox
+                    [checked]="isClaimChecked(claim)"
+                    [indeterminate]="isClaimIndeterminate(claim)"
+                    (checkedChange)="toggleClaimSelection(claim)"
+                    [attr.aria-label]="'Select claim ' + claim.claimId">
+                  </nx-checkbox>
+                </div>
+              </td>
+              <td nxCell colspan="3" class="claim-row__label">
+                <strong>Claim ID: {{ claim.claimId }}</strong>
+              </td>
+              <td nxCell class="col-action">
+                <button nxIconButton="tertiary small" type="button"
+                        [nxContextMenuTriggerFor]="claimMenu" aria-label="Claim actions">
+                  <nx-icon name="ellipsis-v"></nx-icon>
+                </button>
+                <nx-context-menu #claimMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="onAddPartiesToClaim(vm.claims, claim)">Add additional parties</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+
+            @if (claim.expanded) {
+
+              <!-- LEVEL 2A: DIRECT PARTIES (no checkbox, no chevron) -->
+              @for (party of claim.directParties; track party.partyId) {
+                <tr nxTableRow class="party-row party-row--direct" @rowExpand
+                    [attr.data-party-id]="party.partyId"
+                    [class.party-row--recently-added]="party.recentlyAdded">
+                  <td nxCell class="col-expand"></td>
+                  <td nxCell class="col-check"></td>
+                  <td nxCell class="col-name"><div class="tree-l2">{{ party.legalName }}</div></td>
+                  <td nxCell class="col-roles">{{ rolesDisplay(party) }}</td>
+                  <td nxCell class="col-clearance">
+                    <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
+                  </td>
+                  <td nxCell class="col-action">
+                    <button nxIconButton="tertiary small" type="button"
+                            [nxContextMenuTriggerFor]="directPartyMenu"
+                            [attr.aria-label]="'Actions for ' + party.legalName">
+                      <nx-icon name="ellipsis-v"></nx-icon>
+                    </button>
+                    <nx-context-menu #directPartyMenu="nxContextMenu">
+                      <button nxContextMenuItem type="button" (click)="onViewDetails(party)">View details</button>
+                      <button nxContextMenuItem type="button" (click)="onEditRole(party)">Edit role</button>
+                      <button nxContextMenuItem type="button" (click)="onRemoveParty(party)">Remove</button>
+                    </nx-context-menu>
+                  </td>
+                </tr>
+              }
+
+              <!-- LEVEL 2B: SECTIONS -->
+              @for (section of claim.sections; track section.sectionId) {
+
+                <!-- SECTION ROW -->
+                <tr nxTableRow class="section-row" @rowExpand>
+                  <td nxCell colspan="2" class="col-expand">
+                    <div class="section-row__cell">
+                      <button nxIconButton="tertiary small" type="button"
+                              (click)="toggleSection(section)"
+                              [attr.aria-label]="section.expanded ? 'Collapse section' : 'Expand section'">
+                        <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+                      </button>
+                      <nx-checkbox
+                        [checked]="isSectionChecked(section)"
+                        (checkedChange)="toggleSectionSelection(section, claim)"
+                        [attr.aria-label]="'Select section ' + section.sectionId">
+                      </nx-checkbox>
+                    </div>
+                  </td>
+                  <td nxCell colspan="3" class="section-row__label">
+                    Section ID: {{ section.sectionId }}
+                  </td>
+                  <td nxCell class="col-action">
+                    <button nxIconButton="tertiary small" type="button"
+                            [nxContextMenuTriggerFor]="sectionMenu" aria-label="Section actions">
+                      <nx-icon name="ellipsis-v"></nx-icon>
+                    </button>
+                    <nx-context-menu #sectionMenu="nxContextMenu">
+                      <button nxContextMenuItem type="button" (click)="onAddPartiesToSection(vm.claims, section, claim)">Add additional parties</button>
+                    </nx-context-menu>
+                  </td>
+                </tr>
+
+                <!-- LEVEL 3: PARTIES IN SECTION (no checkbox, no chevron) -->
+                @if (section.expanded) {
+                  @for (party of section.parties; track party.partyId) {
+                    <tr nxTableRow class="party-row party-row--in-section" @rowExpand
+                        [attr.data-party-id]="party.partyId"
+                        [class.party-row--recently-added]="party.recentlyAdded">
+                      <td nxCell class="col-expand"></td>
+                      <td nxCell class="col-check"></td>
+                      <td nxCell class="col-name"><div class="tree-l3">{{ party.legalName }}</div></td>
+                      <td nxCell class="col-roles">{{ rolesDisplay(party) }}</td>
+                      <td nxCell class="col-clearance">
+                        <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
+                      </td>
+                      <td nxCell class="col-action">
+                        <button nxIconButton="tertiary small" type="button"
+                                [nxContextMenuTriggerFor]="sectionPartyMenu"
+                                [attr.aria-label]="'Actions for ' + party.legalName">
+                          <nx-icon name="ellipsis-v"></nx-icon>
+                        </button>
+                        <nx-context-menu #sectionPartyMenu="nxContextMenu">
+                          <button nxContextMenuItem type="button" (click)="onViewDetails(party)">View details</button>
+                          <button nxContextMenuItem type="button" (click)="onEditRole(party)">Edit role</button>
+                          <button nxContextMenuItem type="button" (click)="onRemoveParty(party)">Remove</button>
+                        </nx-context-menu>
+                      </td>
+                    </tr>
+                  }
+                }
+
+              } <!-- end @for sections -->
+
+            } <!-- end @if claim.expanded -->
+
+          } <!-- end @for claims -->
+        </tbody>
+      </table>
+
+      <div class="parties-pagination">
+        <span class="parties-pagination__per-page">Claims per page: <strong>{{ claimsPerPage }}</strong></span>
+        <nx-pagination [count]="vm.claims.length" [page]="page" [perPage]="claimsPerPage"
+          type="advanced"
+          (goPrev)="page = page - 1"
+          (goNext)="page = page + 1"
+          (goPage)="page = $event">
+        </nx-pagination>
+      </div>
+    }
+  }
+
+  <!-- Footer -->
+  <app-wizard-footer
+    (cancel)="onCancel()"
+    (back)="onBack()"
+    (next)="onNext()">
+  </app-wizard-footer>
+
+</div>
+</ng-container>
+
+<!-- Side sheet (outside ng-container — covers full viewport) -->
+@if (panelOpen) {
+  <div class="side-sheet-backdrop" (click)="onClosePanel()" aria-hidden="true"></div>
+}
+@if (selectedParty) {
+  <div class="side-sheet" [class.side-sheet--open]="panelOpen"
+       role="dialog" aria-modal="true" aria-label="Party details">
+    <app-party-detail-panel
+      [party]="selectedParty"
+      [open]="panelOpen"
+      (closePanel)="onClosePanel()">
+    </app-party-detail-panel>
+  </div>
+}

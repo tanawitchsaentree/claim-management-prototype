@@ -1,0 +1,200 @@
+<ng-container *ngIf="vm$ | async as vm">
+<div class="step-page">
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Summary</h1>
+
+  <!-- Submission confirmation banner -->
+  @if (submitted) {
+    <nx-message context="success" class="submit-banner">
+      <strong>{{ mockClaimIds.length }} claim{{ mockClaimIds.length === 1 ? '' : 's' }} opened:
+        {{ mockClaimIds.join(', ') }}</strong>
+    </nx-message>
+  }
+
+  @if (loadError) {
+    <nx-message context="error">
+      Failed to load summary data. Please go back and try again.
+    </nx-message>
+  }
+
+  <!-- ── Skeleton path ─────────────────────────────────────────────────── -->
+  @if (vm.isSkeletonPath) {
+    <section class="ss-card">
+      <h2 class="section-heading">Skeleton claim</h2>
+      <dl class="ss-list">
+        <div class="ss-row">
+          <dt class="ss-label">Client name</dt>
+          <dd class="ss-value">{{ vm.skeletonClientName }}</dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">Reason</dt>
+          <dd class="ss-value">{{ vm.skeletonReason }}</dd>
+        </div>
+      </dl>
+    </section>
+  }
+
+  <!-- ── Standard path ─────────────────────────────────────────────────── -->
+  @if (!vm.isSkeletonPath) {
+
+    <!-- Card 1: General data -->
+    <section class="ss-card">
+      <h2 class="section-heading">General data</h2>
+      <dl class="ss-list">
+        <div class="ss-row">
+          <dt class="ss-label">Proximate cause</dt>
+          <dd class="ss-value">
+            @if (vm.causesOfLoss.length === 0) { <span class="ss-empty">Not specified</span> }
+            @for (c of vm.causesOfLoss; track c) {
+              <span class="ss-tag">{{ c }}</span>
+            }
+          </dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">Date of loss</dt>
+          <dd class="ss-value">{{ vm.dateOfOccurrence }} at {{ vm.timeOfOccurrence }}</dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">Date received by Allianz</dt>
+          <dd class="ss-value">{{ vm.dateOfNotification }}</dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">Reporter</dt>
+          <dd class="ss-value">Mara Mustermann</dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">Affected policies</dt>
+          <dd class="ss-value">
+            @if (vm.affectedPolicies.length === 0) { <span class="ss-empty">Not specified</span> }
+            @for (p of vm.affectedPolicies; track p) {
+              <span class="ss-tag">{{ p }}</span>
+            }
+          </dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">Types of damage</dt>
+          <dd class="ss-value">
+            @if (vm.damageTypes.length === 0) { <span class="ss-empty">Not specified</span> }
+            @for (d of vm.damageTypes; track d) {
+              <span class="ss-tag">{{ d }}</span>
+            }
+          </dd>
+        </div>
+        <div class="ss-row">
+          <dt class="ss-label">No. of sections</dt>
+          <dd class="ss-value">{{ vm.sectionCount }}</dd>
+        </div>
+        @if (vm.nonCoveredCases.length > 0) {
+          <div class="ss-row">
+            <dt class="ss-label">Non-covered cases</dt>
+            <dd class="ss-value">
+              @for (c of vm.nonCoveredCases; track c) {
+                <p class="ss-non-covered">{{ c }}</p>
+              }
+            </dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <!-- Card 2: Claims to be created -->
+    <section class="ss-card">
+      <h2 class="section-heading">Claims to be created</h2>
+      @for (group of vm.claimGroups; track group.policyNumber; let i = $index) {
+        <details class="ss-accordion" [attr.open]="i === 0 ? '' : null">
+          <summary class="ss-accordion-summary">
+            For policy: <strong>{{ group.policyNumber }}</strong>
+          </summary>
+          <dl class="ss-list ss-accordion-body">
+            <div class="ss-row">
+              <dt class="ss-label">Types of damage</dt>
+              <dd class="ss-value">
+                @if (group.damageTypes.length === 0) { <span class="ss-empty">None</span> }
+                @for (d of group.damageTypes; track d) {
+                  <span class="ss-tag">{{ d }}</span>
+                }
+              </dd>
+            </div>
+            <div class="ss-row">
+              <dt class="ss-label">No. of sections</dt>
+              <dd class="ss-value">{{ group.sectionCount }}</dd>
+            </div>
+            <div class="ss-row">
+              <dt class="ss-label">Parties</dt>
+              <dd class="ss-value">{{ group.partyCount }}</dd>
+            </div>
+            <div class="ss-row">
+              <dt class="ss-label">Total reserve</dt>
+              <dd class="ss-value">
+                {{ group.currency }} {{ group.totalReserve | number:'1.2-2' }}
+              </dd>
+            </div>
+          </dl>
+        </details>
+      }
+      @if (vm.claimGroups.length === 0) {
+        <p class="ss-empty-state">No entities selected — no claims will be created.</p>
+      }
+    </section>
+
+    <!-- Card 3: General configurations -->
+    <section class="ss-card">
+      <h2 class="section-heading">General configurations</h2>
+      <div class="ss-config-row">
+        <nx-switcher [formControl]="accessRestricted">
+          This file has restricted access
+        </nx-switcher>
+      </div>
+    </section>
+
+    <!-- Card 4: Reserves narrative (conditional) -->
+    @if (vm.narrative) {
+      <section class="ss-card">
+        <h2 class="section-heading">Reserve explanation</h2>
+        <div class="ss-narrative">
+          <nx-icon name="info-circle-o" class="ss-narrative__icon"></nx-icon>
+          <span class="ss-narrative__reason">{{ vm.narrativeReasonLabel }}</span>
+        </div>
+        @if (vm.narrative.notes) {
+          <p class="ss-narrative__notes">{{ vm.narrative.notes }}</p>
+        }
+      </section>
+    }
+
+  }
+
+  <!-- Footer -->
+  @if (!submitted) {
+    <app-wizard-footer
+      nextLabel="Submit claim"
+      (cancel)="onCancel()"
+      (back)="onBack()"
+      (next)="onSubmit()">
+    </app-wizard-footer>
+  } @else {
+    <div class="step-footer">
+      <span></span>
+      <button nxButton="secondary small" type="button" (click)="onClose()">Close</button>
+    </div>
+  }
+
+</div>
+</ng-container>
+
+@if (!(vm$ | async) && !loadError) {
+  <div class="step-page">
+    <p class="step-breadcrumb">Claim notification</p>
+    <h1 class="step-title">Summary</h1>
+    <p class="ss-loading">Loading summary…</p>
+  </div>
+}
+
+@if (loadError) {
+  <div class="step-page">
+    <p class="step-breadcrumb">Claim notification</p>
+    <h1 class="step-title">Summary</h1>
+    <nx-message context="error">
+      Failed to load summary data. Please go back and try again.
+    </nx-message>
+  </div>
+}

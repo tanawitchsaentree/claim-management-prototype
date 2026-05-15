@@ -1,0 +1,109 @@
+{
+  "CL-2025-001": {
+    "claimId": "123456",
+    "client": "Otto Kaufmann",
+    "assignedHandler": "Mara Mustermann",
+    "lossEventId": "LE12345678",
+    "status": "Open",
+    "proximateLossCause": "Fire",
+    "riskScore": 3,
+    "riskScoreMax": 5,
+    "riskStatus": "Potential risk",
+    "policyNumber": "POL-2024-001",
+    "policyHolder": "Global Trade Solutions AG",
+    "broker": "Heinrich Braun",
+    "handler": "Leonie Fischer",
+    "supervisor": "Stefan Meier",
+    "priority": "high",
+    "lineOfBusiness": "Property",
+    "dateOfLoss": "2025-01-10",
+    "dateReported": "2025-01-11",
+    "dateCreated": "2025-01-12",
+    "description": "\"This claim relates to a fire at XYZ's warehouse on 12 May 2025. The current incurred value is $4.2M, primarily property damage. Adjuster's report received 18 June, further BI assessment pending. Awaiting client confirmation on machinery replacement costs.\"",
+    "location": {
+      "street": "Industriestraße 44",
+      "city": "Frankfurt",
+      "country": "Germany"
+    },
+    "financialSummary": {
+      "currency": "EUR",
+      "totalReserve": 1250000,
+      "totalPayments": 320000,
+      "totalRecoveries": 45000,
+      "outstanding": 885000
+    }
+  },
+  "CLM-2024-011": {
+    "claimId": "CLM-2024-011",
+    "client": "Liver Tea Group",
+    "assignedHandler": "Mara Mustermann",
+    "lossEventId": "LE20240511",
+    "status": "Closed",
+    "proximateLossCause": "Water damage",
+    "riskScore": 1,
+    "riskScoreMax": 5,
+    "riskStatus": "Low risk",
+    "policyNumber": "POL-2024-001",
+    "policyHolder": "Liver Tea Group",
+    "broker": "Maximilian Koch",
+    "handler": "Mara Mustermann",
+    "supervisor": "Stefan Meier",
+    "priority": "low",
+    "lineOfBusiness": "Property",
+    "dateOfLoss": "2024-05-19",
+    "dateReported": "2024-05-20",
+    "dateCreated": "2024-05-20",
+    "description": "Burst pipe flooding ground floor storage. Stock damage.",
+    "location": {
+      "street": "Lagerstraße 4",
+      "city": "Munich",
+      "country": "Germany"
+    },
+    "financialSummary": {
+      "currency": "EUR",
+      "totalReserve": 0,
+      "totalPayments": 48000,
+      "totalRecoveries": 0,
+      "outstanding": 0
+    },
+    "closureDate": "2024-06-01",
+    "closedBy": { "userId": "usr-007", "name": "Mara Mustermann" },
+    "closureReason": "Claim Finalised",
+    "retentionDate": "2034-06-01",
+    "retentionType": "default"
+  },
+  "CLM-2024-001": {
+    "claimId": "CLM-2024-001",
+    "client": "Kaufmann's Warehouse GmbH",
+    "assignedHandler": "Leonie Fischer",
+    "lossEventId": "LE98765432",
+    "status": "In progress",
+    "proximateLossCause": "Water damage",
+    "riskScore": 2,
+    "riskScoreMax": 5,
+    "riskStatus": "Low risk",
+    "policyNumber": "POL-2023-010",
+    "policyHolder": "Kaufmann's Warehouse GmbH",
+    "broker": "Anna Müller",
+    "handler": "Leonie Fischer",
+    "supervisor": "Stefan Meier",
+    "priority": "high",
+    "lineOfBusiness": "Property",
+    "dateOfLoss": "2024-01-14",
+    "dateReported": "2024-01-15",
+    "dateCreated": "2024-01-15",
+    "description": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",
+    "location": {
+      "street": "Lagerstraße 12",
+      "city": "Hamburg",
+      "country": "Germany"
+    },
+    "financialSummary": {
+      "currency": "EUR",
+      "totalReserve": 425000,
+      "totalPayments": 0,
+      "totalRecoveries": 0,
+      "outstanding": 425000
+    }
+  }
+}

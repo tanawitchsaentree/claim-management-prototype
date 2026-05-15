@@ -1,0 +1,764 @@
+[
+  {
+    "claimId": "CLM-2024-001",
+    "policyNumber": "POL-2023-010",
+    "clientName": "Kaufmann's Warehouse GmbH",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Lukas Schneider",
+    "dateCreated": "2024-01-15",
+    "dateUpdated": "2024-02-10",
+    "lossDate": "2024-01-14",
+    "lossAmount": 425000,
+    "currency": "EUR",
+    "description": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage. Initial assessment indicates structural damage to the roof and walls of approximately 200 sqm. Forklifts and racking systems also damaged. Business interruption expected for 6-8 weeks pending full structural survey and rebuilding work. Insurance adjuster appointed and on-site visit scheduled.",
+    "status": "In progress",
+    "priority": "high",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Germany",
+      "city": "Hamburg"
+    },
+    "lossEventId": "123456"
+  },
+  {
+    "claimId": "CLM-2024-002",
+    "policyNumber": "POL-2024-002",
+    "clientName": "adesso SE",
+    "broker": "Maximilian Koch",
+    "assignee": null,
+    "createdBy": "Bj\u00f6rn \u00d6'Brien",
+    "dateCreated": "2024-02-03",
+    "dateUpdated": "2024-02-03",
+    "lossDate": "2024-02-01",
+    "lossAmount": 87500,
+    "currency": "EUR",
+    "description": "Ransomware attack affecting 3 internal servers. Data encrypted, ransom demand received.",
+    "status": "Open",
+    "priority": "high",
+    "lineOfBusiness": "Cyber",
+    "location": {
+      "country": "Germany",
+      "city": "Dortmund"
+    },
+    "lossEventId": "345678"
+  },
+  {
+    "claimId": "CLM-2024-003",
+    "policyNumber": "POL-2024-003",
+    "clientName": "GBF Logistics GmbH",
+    "broker": "Felix Bauer",
+    "assignee": "Clara Hoffmann",
+    "createdBy": "Jonas Weber",
+    "dateCreated": "2024-02-20",
+    "dateUpdated": "2024-03-01",
+    "lossDate": "2024-02-18",
+    "lossAmount": 312000,
+    "currency": "USD",
+    "description": "Cargo vessel collision in Rotterdam port. Partial loss of containerised goods.",
+    "status": "Priced",
+    "priority": "high",
+    "lineOfBusiness": "Marine",
+    "location": {
+      "country": "Netherlands",
+      "city": "Rotterdam"
+    },
+    "lossEventId": "910111"
+  },
+  {
+    "claimId": "CLM-2024-004",
+    "policyNumber": "POL-2024-004",
+    "clientName": "Marvel SE",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Anna M\u00fcller",
+    "dateCreated": "2024-03-05",
+    "dateUpdated": "2024-03-18",
+    "lossDate": "2024-03-04",
+    "lossAmount": 55000,
+    "currency": "EUR",
+    "description": "Third-party bodily injury claim arising from construction site incident.",
+    "status": "Quoted",
+    "priority": "medium",
+    "lineOfBusiness": "Liability",
+    "location": {
+      "country": "Austria",
+      "city": "Vienna"
+    },
+    "lossEventId": "101112"
+  },
+  {
+    "claimId": "CLM-2024-005",
+    "policyNumber": "POL-2024-005",
+    "clientName": "BMW Budapest Motors",
+    "broker": null,
+    "assignee": null,
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-03-12",
+    "dateUpdated": "2024-04-02",
+    "lossDate": "2024-03-10",
+    "lossAmount": 999999999,
+    "currency": "EUR",
+    "description": "Major machinery breakdown at production line 4. Complete stoppage of assembly operations.",
+    "status": "Bound",
+    "priority": "high",
+    "lineOfBusiness": "Engineering",
+    "location": {
+      "country": "Hungary",
+      "city": "Budapest"
+    },
+    "lossEventId": "111213",
+    "_scenario": "boundary-max-amount"
+  },
+  {
+    "claimId": "CLM-2024-006",
+    "policyNumber": "POL-2024-006",
+    "clientName": "Sch\u00e4fer & S\u00f6hne AG",
+    "broker": "Felix Bauer",
+    "assignee": "Carsten Muster",
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-04-01",
+    "dateUpdated": "2024-04-15",
+    "lossDate": "2024-03-30",
+    "lossAmount": 0,
+    "currency": "CHF",
+    "description": "Suspected theft reported. Investigation ongoing, no confirmed loss amount yet.",
+    "status": "Open",
+    "priority": "low",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Switzerland",
+      "city": "Z\u00fcrich"
+    },
+    "_scenario": "boundary-zero-amount"
+  },
+  {
+    "claimId": "CLM-2024-007",
+    "policyNumber": "POL-2024-007",
+    "clientName": "Nordic Shipping AS",
+    "broker": "Maximilian Koch",
+    "assignee": "Mara Mustermann",
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-04-10",
+    "dateUpdated": "2024-04-20",
+    "lossDate": "2024-04-08",
+    "lossAmount": 185000,
+    "currency": "USD",
+    "description": "Storm damage to vessel hull during North Sea transit.",
+    "status": "Declined",
+    "priority": "medium",
+    "lineOfBusiness": "Marine",
+    "location": {
+      "country": "Norway",
+      "city": "Oslo"
+    }
+  },
+  {
+    "claimId": "CLM-2024-008",
+    "policyNumber": "POL-2024-008",
+    "clientName": "TechStart Pte Ltd",
+    "broker": null,
+    "assignee": "Clara Hoffmann",
+    "createdBy": "Clara Hoffmann",
+    "dateCreated": "2024-04-22",
+    "dateUpdated": "2024-04-22",
+    "lossDate": "2024-04-20",
+    "lossAmount": 34000,
+    "currency": "SGD",
+    "description": "Data breach exposing customer PII. Regulatory notification required.",
+    "status": "In progress",
+    "priority": "high",
+    "lineOfBusiness": "Cyber",
+    "location": {
+      "country": "Singapore",
+      "city": "Singapore"
+    },
+    "_scenario": "partial-data-no-broker"
+  },
+  {
+    "claimId": "CLM-2024-009",
+    "policyNumber": "POL-2024-009",
+    "clientName": "Rhein Constructions GmbH",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Anna M\u00fcller",
+    "dateCreated": "2024-05-02",
+    "dateUpdated": "2024-05-14",
+    "lossDate": "2024-04-30",
+    "lossAmount": 760000,
+    "currency": "EUR",
+    "description": "Crane collapse on construction site injuring two workers and damaging adjacent structure.",
+    "status": "Priced",
+    "priority": "high",
+    "lineOfBusiness": "Engineering",
+    "location": {
+      "country": "Germany",
+      "city": "Cologne"
+    }
+  },
+  {
+    "claimId": "CLM-2024-010",
+    "policyNumber": "POL-2024-010",
+    "clientName": "Pendragon Liability Corp",
+    "broker": "Felix Bauer",
+    "assignee": "Carsten Muster",
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-05-15",
+    "dateUpdated": "2024-05-28",
+    "lossDate": "2024-05-13",
+    "lossAmount": 120000,
+    "currency": "GBP",
+    "description": "Product liability claim \u2014 faulty component caused customer equipment failure.",
+    "status": "Quoted",
+    "priority": "medium",
+    "lineOfBusiness": "Liability",
+    "location": {
+      "country": "United Kingdom",
+      "city": "London"
+    }
+  },
+  {
+    "claimId": "CLM-2024-011",
+    "policyNumber": "POL-2024-001",
+    "clientName": "Liver Tea Group",
+    "broker": "Maximilian Koch",
+    "assignee": "Mara Mustermann",
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-05-20",
+    "dateUpdated": "2024-06-01",
+    "lossDate": "2024-05-19",
+    "lossAmount": 48000,
+    "currency": "EUR",
+    "description": "Burst pipe flooding ground floor storage. Stock damage.",
+    "status": "Closed",
+    "priority": "low",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Germany",
+      "city": "Munich"
+    },
+    "closureDate": "2024-06-01",
+    "closedBy": { "userId": "usr-007", "name": "Mara Mustermann" },
+    "closureReason": "Claim Finalised",
+    "retentionDate": "2034-06-01",
+    "retentionType": "default"
+  },
+  {
+    "claimId": "CLM-2024-012",
+    "policyNumber": "POL-2024-003",
+    "clientName": "GBF Logistics GmbH",
+    "broker": "Felix Bauer",
+    "assignee": null,
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-06-01",
+    "dateUpdated": "2024-06-01",
+    "lossDate": "2024-05-30",
+    "lossAmount": 22000,
+    "currency": "USD",
+    "description": "Missing container contents on arrival. Theft during transit suspected.",
+    "status": "Open",
+    "priority": "low",
+    "lineOfBusiness": "Marine",
+    "location": null,
+    "_scenario": "partial-data-no-location"
+  },
+  {
+    "claimId": "CLM-2024-013",
+    "policyNumber": "POL-2024-002",
+    "clientName": "adesso SE",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Anna M\u00fcller",
+    "dateCreated": "2024-06-15",
+    "dateUpdated": "2024-07-01",
+    "lossDate": "2024-06-13",
+    "lossAmount": 15000,
+    "currency": "EUR",
+    "description": "Phishing attack resulting in unauthorised wire transfer.",
+    "status": "Bound",
+    "priority": "medium",
+    "lineOfBusiness": "Cyber",
+    "location": {
+      "country": "Germany",
+      "city": "Dortmund"
+    }
+  },
+  {
+    "claimId": "CLM-2024-014",
+    "policyNumber": "POL-2024-009",
+    "clientName": "Rhein Constructions GmbH",
+    "broker": null,
+    "assignee": "Clara Hoffmann",
+    "createdBy": "Jonas Weber",
+    "dateCreated": "2024-07-04",
+    "dateUpdated": "2024-07-04",
+    "lossDate": "2024-07-03",
+    "lossAmount": 5500,
+    "currency": "EUR",
+    "description": "Minor scaffolding collapse \u2014 no injuries, minor property damage only.",
+    "status": "Open",
+    "priority": "low",
+    "lineOfBusiness": "Engineering",
+    "location": {
+      "country": "Germany",
+      "city": "Frankfurt"
+    },
+    "_scenario": "partial-data-no-broker"
+  },
+  {
+    "claimId": "CLM-2024-015",
+    "policyNumber": "POL-2024-004",
+    "clientName": "Marvel SE",
+    "broker": "Maximilian Koch",
+    "assignee": "Carsten Muster",
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-07-10",
+    "dateUpdated": "2024-07-22",
+    "lossDate": "2024-07-08",
+    "lossAmount": 230000,
+    "currency": "EUR",
+    "description": "Public liability claim after customer slipped on wet floor in retail premises.",
+    "status": "In progress",
+    "priority": "medium",
+    "lineOfBusiness": "Liability",
+    "location": {
+      "country": "Austria",
+      "city": "Graz"
+    }
+  },
+  {
+    "claimId": "CLM-2024-016",
+    "policyNumber": "POL-2024-006",
+    "clientName": "Sch\u00e4fer & S\u00f6hne AG",
+    "broker": "Felix Bauer",
+    "assignee": "Mara Mustermann",
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-08-01",
+    "dateUpdated": "2024-08-01",
+    "lossDate": "2024-07-30",
+    "lossAmount": 670000,
+    "currency": "CHF",
+    "description": "Landslide caused by unusually heavy rainfall destroyed warehouse perimeter wall and damaged 40% of stock. Emergency containment measures taken. Environmental remediation may be required pending soil assessment. Local authority notification issued. Loss adjuster appointed. Estimated rebuild timeline 4-6 months. Business continuity plan activated with temporary off-site storage arranged at three locations across the canton. Insurance survey team visit scheduled within 72 hours to assess full extent of structural and contents damage. Police report filed. Photos and drone survey footage attached.",
+    "status": "Priced",
+    "priority": "high",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Switzerland",
+      "city": "Bern"
+    },
+    "_scenario": "long-description"
+  },
+  {
+    "claimId": "CLM-2024-017",
+    "policyNumber": "POL-2024-007",
+    "clientName": "Nordic Shipping AS",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Anna M\u00fcller",
+    "dateCreated": "2024-08-15",
+    "dateUpdated": "2024-08-28",
+    "lossDate": "2024-08-14",
+    "lossAmount": 95000,
+    "currency": "USD",
+    "description": "Engine room fire on cargo vessel. Total loss of propulsion system.",
+    "status": "Quoted",
+    "priority": "high",
+    "lineOfBusiness": "Marine",
+    "location": {
+      "country": "Denmark",
+      "city": "Copenhagen"
+    }
+  },
+  {
+    "claimId": "CLM-2024-018",
+    "policyNumber": "POL-2024-008",
+    "clientName": "TechStart Pte Ltd",
+    "broker": "Maximilian Koch",
+    "assignee": "Carsten Muster",
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-09-01",
+    "dateUpdated": "2024-09-01",
+    "lossDate": "2024-08-30",
+    "lossAmount": 8750,
+    "currency": "SGD",
+    "description": "DDoS attack caused 14-hour service outage. Revenue loss and SLA penalties incurred.",
+    "status": "Declined",
+    "priority": "medium",
+    "lineOfBusiness": "Cyber",
+    "location": {
+      "country": "Singapore",
+      "city": "Singapore"
+    }
+  },
+  {
+    "claimId": "CLM-2024-019",
+    "policyNumber": "POL-2024-001",
+    "clientName": "Liver Tea Group",
+    "broker": "Felix Bauer",
+    "assignee": null,
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2019-04-12",
+    "dateUpdated": "2019-06-30",
+    "lossDate": "2019-04-10",
+    "lossAmount": 18000,
+    "currency": "EUR",
+    "description": "Old archived claim \u2014 storm damage to factory roof 5 years ago. Closed.",
+    "status": "Closed",
+    "priority": "low",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Germany",
+      "city": "Bremen"
+    },
+    "_scenario": "date-edge-5-years-old"
+  },
+  {
+    "claimId": "CLM-2024-020",
+    "policyNumber": "POL-2024-010",
+    "clientName": "Bj\u00f6rn \u00d6'Brien & \"Partners\"",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Clara Hoffmann",
+    "createdBy": "Bj\u00f6rn \u00d6'Brien",
+    "dateCreated": "2026-05-07",
+    "dateUpdated": "2026-05-07",
+    "lossDate": "2026-05-06",
+    "lossAmount": 47300,
+    "currency": "GBP",
+    "description": "New claim created today \u2014 liability dispute with M\u00fcller & S\u00f6hne over contractual breach.",
+    "status": "Open",
+    "priority": "medium",
+    "lineOfBusiness": "Liability",
+    "location": {
+      "country": "United Kingdom",
+      "city": "Manchester"
+    },
+    "_scenario": "date-edge-today special-chars-client-name"
+  },
+  {
+    "claimId": "CLM-2024-021",
+    "policyNumber": "POL-2024-009",
+    "clientName": "Rhein Constructions GmbH",
+    "broker": "Felix Bauer",
+    "assignee": "Mara Mustermann",
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-10-05",
+    "dateUpdated": "2024-10-05",
+    "lossDate": "2024-10-04",
+    "lossAmount": 3200,
+    "currency": "EUR",
+    "description": "Claim with no tasks assigned \u2014 edge case for empty task list.",
+    "status": "Open",
+    "priority": "low",
+    "lineOfBusiness": "Engineering",
+    "location": {
+      "country": "Germany",
+      "city": "Stuttgart"
+    },
+    "_scenario": "empty-no-tasks"
+  },
+  {
+    "claimId": "CLM-2024-022",
+    "policyNumber": "POL-2024-001",
+    "clientName": "Liver Tea Group",
+    "broker": "Maximilian Koch",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-05-15",
+    "dateUpdated": "2024-05-20",
+    "lossDate": "2024-05-15",
+    "lossAmount": 62000,
+    "currency": "EUR",
+    "description": "Fire in main production area. Partial loss of equipment.",
+    "status": "In progress",
+    "priority": "high",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Germany",
+      "city": "Munich"
+    },
+    "_scenario": "duplicate-check-test",
+    "causeOfLoss": [
+      "fire"
+    ],
+    "lossEventId": "EVT-022"
+  },
+  {
+    "claimId": "CLM-2024-023",
+    "policyNumber": "POL-2024-001",
+    "clientName": "Liver Tea Group",
+    "broker": "Maximilian Koch",
+    "assignee": null,
+    "createdBy": "Anna M\u00fcller",
+    "dateCreated": "2024-05-16",
+    "dateUpdated": "2024-05-16",
+    "lossDate": "2024-05-15",
+    "lossAmount": 14500,
+    "currency": "EUR",
+    "description": "Secondary water damage claim from same fire event \u2014 sprinkler activation.",
+    "status": "Open",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "Germany",
+      "city": "Munich"
+    },
+    "_scenario": "duplicate-check-test",
+    "causeOfLoss": [
+      "fire",
+      "water-damage"
+    ],
+    "lossEventId": "EVT-023"
+  },
+  {
+    "claimId": "CLM-2024-101",
+    "policyNumber": "POL-2024-010",
+    "clientName": "M\u00fcller GmbH",
+    "broker": "Anna M\u00fcller",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Lukas Schneider",
+    "dateCreated": "2024-06-10",
+    "dateUpdated": "2024-06-18",
+    "lossDate": "2024-06-08",
+    "lossAmount": 185000,
+    "currency": "EUR",
+    "description": "Fire broke out in the main storage hall. Arson suspected. Business operations halted for 3 weeks.",
+    "status": "In progress",
+    "priority": "high",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Frankfurt"
+    },
+    "lossInformation": {
+      "dateOfLoss": {
+        "dateOfOccurrence": "2024-06-08",
+        "timeOfOccurrence": "02:15",
+        "dateOfNotification": "2024-06-08",
+        "timeOfNotification": "06:30"
+      },
+      "lossLocation": {
+        "locationRequired": true,
+        "locationType": "listed-in-policy",
+        "incidentAddress": "Industriestra\u00dfe 12, Frankfurt",
+        "incidentAtDifferentLocation": false,
+        "street": "",
+        "streetNumber": "",
+        "city": "Frankfurt",
+        "postalCode": "60311",
+        "country": "DE"
+      },
+      "causeOfLoss": [
+        "fire",
+        "business-interruption"
+      ],
+      "typeOfDamage": [
+        "material-damage",
+        "financial-loss"
+      ],
+      "lossDescription": "Arson-suspected fire in main storage hall. Extensive structural damage. Sprinkler system activated causing secondary water damage.",
+      "causeDetails": {
+        "fire": {
+          "fireOrigin": "Storage hall B",
+          "fireDepartmentCalled": true,
+          "fireDepartmentReportNumber": "FF-2024-1182"
+        },
+        "waterDamage": null,
+        "theft": null
+      },
+      "events": [
+        {
+          "eventKey": "fire",
+          "causedBy": [
+            "arson"
+          ],
+          "damages": [
+            "material-damage"
+          ],
+          "dateOfOccurrence": "2024-06-08",
+          "timeOfOccurrence": "02:15",
+          "dateOfNotification": "2024-06-08",
+          "timeOfNotification": "06:30"
+        },
+        {
+          "eventKey": "business-interruption",
+          "causedBy": [
+            "fire"
+          ],
+          "damages": [
+            "financial-loss"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "claimId": "CLM-2024-102",
+    "policyNumber": "POL-2024-005",
+    "clientName": "TechPark Berlin AG",
+    "broker": "Maximilian Koch",
+    "assignee": "Mara Mustermann",
+    "createdBy": "Maximilian Koch",
+    "dateCreated": "2024-07-22",
+    "dateUpdated": "2024-07-25",
+    "lossDate": "2024-07-20",
+    "lossAmount": 43000,
+    "currency": "EUR",
+    "description": "Theft of IT equipment from server room. Police report filed.",
+    "status": "Open",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Berlin"
+    },
+    "lossInformation": {
+      "dateOfLoss": {
+        "dateOfOccurrence": "2024-07-20",
+        "timeOfOccurrence": "23:00",
+        "dateOfNotification": "2024-07-21",
+        "timeOfNotification": "08:00"
+      },
+      "lossLocation": {
+        "locationRequired": true,
+        "locationType": "other",
+        "incidentAddress": "",
+        "incidentAtDifferentLocation": false,
+        "street": "Unter den Linden",
+        "streetNumber": "77",
+        "city": "Berlin",
+        "postalCode": "10117",
+        "country": "DE"
+      },
+      "causeOfLoss": [
+        "theft"
+      ],
+      "typeOfDamage": [
+        "loss"
+      ],
+      "lossDescription": "IT equipment stolen from server room overnight. Estimated 12 servers and networking equipment missing.",
+      "causeDetails": {
+        "fire": null,
+        "waterDamage": null,
+        "theft": {
+          "policeReportNumber": "POL-BE-2024-7042",
+          "estimatedValueStolen": 43000,
+          "dateReportedToPolice": "2024-07-21"
+        }
+      },
+      "events": [
+        {
+          "eventKey": "theft",
+          "damages": [
+            "loss"
+          ],
+          "dateOfOccurrence": "2024-07-20",
+          "timeOfOccurrence": "23:00",
+          "dateOfNotification": "2024-07-21",
+          "timeOfNotification": "08:00"
+        }
+      ]
+    }
+  },
+  {
+    "claimId": "CLM-2024-103",
+    "policyNumber": "POL-2024-003",
+    "clientName": "Nordic Renewables GmbH",
+    "broker": "Felix Bauer",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-09-05",
+    "dateUpdated": "2024-09-10",
+    "lossDate": "2024-09-03",
+    "lossAmount": 320000,
+    "currency": "EUR",
+    "description": "Storm caused structural damage to wind turbine array and surrounding facility. Flooding of lower level.",
+    "status": "Open",
+    "priority": "high",
+    "lineOfBusiness": "Engineering",
+    "location": {
+      "country": "DE",
+      "city": "Hamburg"
+    },
+    "lossInformation": {
+      "dateOfLoss": {
+        "dateOfOccurrence": "2024-09-03",
+        "timeOfOccurrence": "11:30",
+        "dateOfNotification": "2024-09-03",
+        "timeOfNotification": "14:00"
+      },
+      "lossLocation": {
+        "locationRequired": true,
+        "locationType": "listed-in-policy",
+        "incidentAddress": "Windpark Elbe, Hamburg",
+        "incidentAtDifferentLocation": false,
+        "street": "",
+        "streetNumber": "",
+        "city": "Hamburg",
+        "postalCode": "20457",
+        "country": "DE"
+      },
+      "causeOfLoss": [
+        "natural-event"
+      ],
+      "typeOfDamage": [
+        "material-damage",
+        "financial-loss"
+      ],
+      "lossDescription": "Storm with wind speeds exceeding 120 km/h damaged turbine array. Lower facility level flooded. Three turbines offline.",
+      "causeDetails": {
+        "fire": null,
+        "waterDamage": {
+          "waterSource": "flooding",
+          "affectedAreaSqm": 450
+        },
+        "theft": null
+      },
+      "events": [
+        {
+          "eventKey": "natural-event",
+          "causedBy": [
+            "storm",
+            "flood"
+          ],
+          "damages": [
+            "material-damage",
+            "financial-loss"
+          ],
+          "dateOfOccurrence": "2024-09-03",
+          "timeOfOccurrence": "11:30",
+          "dateOfNotification": "2024-09-03",
+          "timeOfNotification": "14:00"
+        }
+      ]
+    }
+  },
+  {
+    "claimId": "CLM-2024-021",
+    "policyNumber": "POL-2024-009",
+    "clientName": "Nordhafen Shipping GmbH",
+    "broker": "Felix Bauer",
+    "assignee": "Leonie Fischer",
+    "createdBy": "Felix Bauer",
+    "dateCreated": "2024-03-10",
+    "dateUpdated": "2025-04-15",
+    "lossDate": "2024-03-08",
+    "lossAmount": 95000,
+    "currency": "EUR",
+    "description": "Cargo damage during North Sea transit. Claim initially closed after settlement; new evidence of underpayment prompted reopening.",
+    "status": "Reopened",
+    "priority": "high",
+    "lineOfBusiness": "Marine",
+    "location": {
+      "country": "Germany",
+      "city": "Hamburg"
+    },
+    "closureDate": "2024-09-01",
+    "closedBy": { "userId": "usr-003", "name": "Stefan Meier" },
+    "closureReason": "Claim Finalised",
+    "retentionDate": "2034-09-01",
+    "retentionType": "default",
+    "reopenedDate": "2025-04-15",
+    "reopenedBy": { "userId": "usr-002", "name": "Leonie Fischer" },
+    "reopeningReason": "New survey evidence indicates underpayment of EUR 42,000 on cargo total loss."
+  }
+]

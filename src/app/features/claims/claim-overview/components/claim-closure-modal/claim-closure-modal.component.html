@@ -1,0 +1,142 @@
+<!-- ─── Header ─────────────────────────────────────────────────────────────── -->
+<div class="ccm-header">
+  <h2 class="ccm-title">{{ stepTitle() }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<!-- ─── Body ──────────────────────────────────────────────────────────────── -->
+<div class="ccm-body">
+
+  <!-- STEP 1 — Blockers -->
+  @if (step() === 1) {
+    @if (blockers.length > 0) {
+      <p class="ccm-intro">The following issues must be resolved before this claim can be closed:</p>
+      <ul class="ccm-blocker-list">
+        @for (b of blockers; track b.type) {
+          <li class="ccm-blocker-item">
+            <nx-icon name="exclamation-triangle-o" size="s" class="ccm-blocker-icon"></nx-icon>
+            <span class="ccm-blocker-label">
+              @if (b.count) { <strong>{{ b.count }}</strong> }
+              {{ b.label }}
+              @if (b.amount) { <strong>({{ b.amount | currency:'EUR':'symbol':'1.0-0' }})</strong> }
+              @if (b.type === 'sections') {
+                — <button class="ccm-link-btn" type="button" (click)="onViewSections()">View Sections</button>
+              }
+              @if (b.type === 'tasks') {
+                — <button class="ccm-link-btn" type="button" (click)="onViewTasks()">View Tasks</button>
+              }
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  }
+
+  <!-- STEP 2 — Closure reason -->
+  @if (step() === 2) {
+    @if (showOtherWarning) {
+      <nx-message type="warning" class="ccm-warning">
+        The proximate loss cause is set to "Other". Verify this is correct before closing.
+      </nx-message>
+    }
+    <form [formGroup]="form" class="ccm-form">
+      <nx-formfield label="Closure reason">
+        <nx-dropdown formControlName="reason" placeholder="Select reason">
+          @for (r of closureReasons; track r) {
+            <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-error nxFormfieldError>Closure reason is required.</nx-error>
+      </nx-formfield>
+    </form>
+  }
+
+  <!-- STEP 3 — Confirmation -->
+  @if (step() === 3) {
+    <p class="ccm-intro">All checks passed. Review the closure settings below.</p>
+
+    <!-- Checklist -->
+    <ul class="ccm-checklist">
+      <li class="ccm-check-item">
+        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
+        No pending tasks
+      </li>
+      <li class="ccm-check-item">
+        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
+        No outstanding payments
+      </li>
+      <li class="ccm-check-item">
+        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
+        No open reserves
+      </li>
+      <li class="ccm-check-item">
+        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
+        No active recovery actions
+      </li>
+      <li class="ccm-check-item">
+        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
+        No open litigation
+      </li>
+    </ul>
+
+    <div class="ccm-divider"></div>
+
+    <!-- Retention -->
+    <p class="ccm-section-label">Document retention period</p>
+    <form [formGroup]="form">
+      <nx-radio-group formControlName="retentionType" (groupValueChange)="onRetentionTypeChange($event.value)">
+        <nx-radio labelSize="small" value="default">
+          {{ retentionTypeLabel('default') }}
+        </nx-radio>
+        <nx-radio labelSize="small" value="custom">
+          Custom date
+        </nx-radio>
+        @if (retentionType === 'custom') {
+          <div class="ccm-datefield">
+            <nx-formfield label="Retention date">
+              <input nxInput nxDatefield formControlName="retentionDate" [min]="minRetentionDate()" />
+              <nx-error nxFormfieldError>A retention date is required for custom retention.</nx-error>
+            </nx-formfield>
+          </div>
+        }
+        <nx-radio labelSize="small" value="indefinite">
+          Indefinite
+        </nx-radio>
+      </nx-radio-group>
+    </form>
+
+    @if (saveError()) {
+      <nx-message type="error" class="ccm-save-error">{{ saveError() }}</nx-message>
+    }
+  }
+
+</div>
+
+<!-- ─── Footer ────────────────────────────────────────────────────────────── -->
+<div class="ccm-footer">
+
+  @if (step() === 1) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" (click)="onViewTasks()">View Tasks</button>
+  }
+
+  @if (step() === 2) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="reasonInvalid()" (click)="onContinue()">Continue</button>
+  }
+
+  @if (step() === 3) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
+    <button nxButton="primary small" type="button" [disabled]="form.invalid || saving()" (click)="onCloseClaim()">
+      @if (saving()) {
+        <nx-spinner size="small"></nx-spinner>
+      } @else {
+        Close Claim
+      }
+    </button>
+  }
+
+</div>

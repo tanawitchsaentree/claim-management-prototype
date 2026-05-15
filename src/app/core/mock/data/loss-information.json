@@ -1,0 +1,150 @@
+[
+  {
+    "id": "LI-001",
+    "claimId": "CLM-123456",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2025-03-10",
+      "timeOfOccurrence": "14:30",
+      "dateOfNotification": "2025-03-10",
+      "timeOfNotification": "16:00"
+    },
+    "lossLocation": {
+      "country": "Germany",
+      "postalCode": "80331",
+      "city": "Munich",
+      "address": "Maximilianstrasse 12"
+    },
+    "causeOfLoss": ["fire"],
+    "typeOfDamage": ["structural", "contents"],
+    "lossDescription": "Fire broke out in the server room at 14:30. Fire department arrived within 10 minutes. Significant structural damage to the east wing.",
+    "causeDetails": {
+      "fire": {
+        "fireOrigin": "Server room electrical fault",
+        "fireDepartmentCalled": true,
+        "fireDepartmentReportNumber": "FR-2025-04421"
+      }
+    },
+    "events": [
+      { "eventKey": "fire", "damages": ["structural", "contents"], "causedBy": [] }
+    ],
+    "createdAt": "2025-03-10T16:05:00Z",
+    "updatedAt": "2025-03-10T16:05:00Z"
+  },
+  {
+    "id": "LI-002",
+    "claimId": null,
+    "dateOfLoss": {
+      "dateOfOccurrence": "2025-04-02",
+      "timeOfOccurrence": "09:15",
+      "dateOfNotification": "2025-04-02",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "country": "Austria",
+      "postalCode": "1010",
+      "city": "Vienna",
+      "address": ""
+    },
+    "causeOfLoss": ["water-damage"],
+    "typeOfDamage": ["structural"],
+    "lossDescription": "",
+    "causeDetails": {
+      "waterDamage": {
+        "waterSource": "pipe-burst",
+        "affectedAreaSqm": 45
+      }
+    },
+    "events": [
+      { "eventKey": "water-damage", "damages": ["structural"], "causedBy": [] }
+    ],
+    "createdAt": "2025-04-02T10:05:00Z",
+    "updatedAt": "2025-04-02T10:05:00Z"
+  },
+  {
+    "id": "LI-003",
+    "claimId": "CLM-345678",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2025-02-14",
+      "timeOfOccurrence": "02:00",
+      "dateOfNotification": "2025-02-14",
+      "timeOfNotification": "08:30"
+    },
+    "lossLocation": {
+      "country": "United Kingdom",
+      "postalCode": "EC1A 1BB",
+      "city": "London",
+      "address": "1 Cornhill Street"
+    },
+    "causeOfLoss": ["theft", "fire"],
+    "typeOfDamage": ["contents", "equipment"],
+    "lossDescription": "Break-in overnight. Perpetrators caused fire after theft to destroy evidence. Police notified immediately.",
+    "causeDetails": {
+      "fire": {
+        "fireOrigin": "Arson — post-burglary",
+        "fireDepartmentCalled": true,
+        "fireDepartmentReportNumber": "LFB-2025-00892"
+      },
+      "theft": {
+        "policeReportNumber": "MPS-2025-11432",
+        "estimatedValueStolen": 85000,
+        "dateReportedToPolice": "2025-02-14"
+      }
+    },
+    "events": [
+      { "eventKey": "theft",  "damages": ["contents", "equipment"], "causedBy": [] },
+      { "eventKey": "fire",   "damages": ["equipment"],             "causedBy": [] }
+    ],
+    "createdAt": "2025-02-14T09:00:00Z",
+    "updatedAt": "2025-02-15T11:20:00Z"
+  },
+  {
+    "id": "LI-004",
+    "claimId": "CLM-910111",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-12-01",
+      "timeOfOccurrence": "11:00",
+      "dateOfNotification": "2025-01-15",
+      "timeOfNotification": "14:00"
+    },
+    "lossLocation": {
+      "country": "Netherlands",
+      "postalCode": "1012 JS",
+      "city": "Amsterdam",
+      "address": "Damrak 70"
+    },
+    "causeOfLoss": ["wind-storm"],
+    "typeOfDamage": ["structural", "business-interruption"],
+    "lossDescription": "Storm damage to roof and facade. Business operations interrupted for 3 weeks. Late notification due to ongoing litigation with contractor.",
+    "causeDetails": {},
+    "events": [
+      { "eventKey": "wind-storm", "damages": ["structural", "business-interruption"], "causedBy": [] }
+    ],
+    "createdAt": "2025-01-15T14:10:00Z",
+    "updatedAt": "2025-01-15T14:10:00Z"
+  },
+  {
+    "id": "LI-005",
+    "claimId": null,
+    "dateOfLoss": {
+      "dateOfOccurrence": "2025-04-20",
+      "timeOfOccurrence": "18:45",
+      "dateOfNotification": "2025-04-21",
+      "timeOfNotification": "09:00"
+    },
+    "lossLocation": {
+      "country": "Switzerland",
+      "postalCode": "8001",
+      "city": "Zurich",
+      "address": "Bahnhofstrasse 100"
+    },
+    "causeOfLoss": ["other"],
+    "typeOfDamage": ["vehicle", "structural"],
+    "lossDescription": "Vehicle drove through building facade. Driver fled the scene. Security footage available.",
+    "causeDetails": {},
+    "events": [
+      { "eventKey": "other", "damages": ["vehicle", "structural"], "causedBy": ["event10"] }
+    ],
+    "createdAt": "2025-04-21T09:15:00Z",
+    "updatedAt": "2025-04-21T09:15:00Z"
+  }
+]

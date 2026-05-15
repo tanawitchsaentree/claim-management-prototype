@@ -1,0 +1,53 @@
+:host { display: block; height: 100%; overflow-y: auto; }
+
+.stub-panel {
+  padding: 24px;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__party {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
+
+  &__damage {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+
+  &__meta {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  &__placeholder {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-muted);
+    border: 1px dashed var(--ui-04);
+    border-radius: 4px;
+
+    p { font-size: var(--paragraph-04-font-size); margin: 4px 0; }
+  }
+
+  &__placeholder-icon {
+    font-size: 32px;
+    display: block;
+    margin: 0 auto 12px;
+    color: var(--ui-04);
+  }
+}

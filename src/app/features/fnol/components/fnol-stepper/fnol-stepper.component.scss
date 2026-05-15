@@ -1,0 +1,107 @@
+.fnol-stepper {
+  width: 100%;
+}
+
+.stepper-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepper-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--multi-stepper-vertical-label-gap);
+  position: relative;
+}
+
+.stepper-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+// ─── Dot ──────────────────────────────────────────────────────────
+
+.stepper-dot {
+  width: var(--multi-stepper-item-dot-size);
+  height: var(--multi-stepper-item-dot-size);
+  border-radius: 50%;
+  border: var(--multi-stepper-dot-border-size) solid var(--multi-stepper-line-color);
+  background: var(--multi-stepper-dot-background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.stepper-item--active .stepper-dot {
+  border-color: var(--multi-stepper-dot-touched-color);
+  background: var(--multi-stepper-dot-background-color);
+}
+
+.stepper-item--active .dot-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--multi-stepper-dot-touched-color);
+}
+
+.stepper-item--completed .stepper-dot {
+  border-color: var(--multi-stepper-dot-touched-color);
+  background: var(--multi-stepper-dot-touched-color);
+}
+
+.dot-check {
+  color: var(--multi-stepper-dot-checkmark-color);
+  font-size: 10px;
+}
+
+.stepper-item--pending .dot-inner {
+  display: none;
+}
+
+// ─── Connector line ────────────────────────────────────────────────
+
+.stepper-line {
+  width: var(--multi-stepper-dot-border-size);
+  min-height: var(--multi-stepper-vertical-line-height);
+  flex: 1;
+  background: var(--multi-stepper-line-color);
+  margin: 4px 0;
+}
+
+.stepper-item--completed + .stepper-item .stepper-line,
+.stepper-item--completed .stepper-line {
+  background: var(--multi-stepper-line-filled-color);
+}
+
+// ─── Label ─────────────────────────────────────────────────────────
+
+.stepper-label {
+  font-size: var(--multi-stepper-step-font-size);
+  line-height: var(--multi-stepper-step-line-height);
+  font-weight: var(--multi-stepper-step-font-weight);
+  letter-spacing: var(--multi-stepper-step-letter-spacing);
+  color: var(--multi-stepper-step-color);
+  padding-top: 0;
+  padding-bottom: 32px;
+}
+
+.stepper-item--active .stepper-label {
+  font-weight: 600;
+  color: var(--multi-stepper-dot-touched-color);
+}
+
+.stepper-item--pending .stepper-label {
+  color: var(--text-muted);
+}
+
+// Last item: no bottom padding on label (no line below)
+.stepper-item:last-child .stepper-label {
+  padding-bottom: 0;
+}

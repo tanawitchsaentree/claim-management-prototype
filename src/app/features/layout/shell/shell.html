@@ -1,0 +1,12 @@
+<div class="app-shell">
+  <app-navbar />
+  <div class="app-body">
+    <app-sidebar />
+    <main class="main-content">
+      <router-outlet />
+    </main>
+    @if (showRightStrip()) {
+      <app-claim-right-strip />
+    }
+  </div>
+</div>

@@ -1,0 +1,67 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  max-height: 80vh;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.erd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.erd-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
+.erd-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 16px;
+}
+
+.erd-subtitle {
+  margin: 0 0 4px;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 500;
+  color: var(--text-01);
+}
+
+.erd-hint {
+  margin: 0 0 16px;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.erd-role-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.erd-role-item {
+  padding: 4px 0;
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+.erd-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--ui-04);
+}

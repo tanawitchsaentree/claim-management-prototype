@@ -1,0 +1,156 @@
+<ng-container *ngIf="data$ | async as data">
+<div class="step-page">
+
+  <div class="step-content">
+    <p class="step-breadcrumb">Claim notification</p>
+    <h1 class="step-title">Reserves</h1>
+
+    <!-- Header card -->
+    <div class="reserves-header">
+      <div class="reserves-header__summary">
+        <div class="reserves-header__field">
+          <span class="reserves-header__label">Total reserve</span>
+          <span class="reserves-header__value">{{ data.currency }} {{ data.totalReserve | number:'1.2-2' }}</span>
+        </div>
+        <div class="reserves-header__field">
+          <span class="reserves-header__label">Allianz share</span>
+          <span class="reserves-header__value">{{ data.allianzShare }}%</span>
+        </div>
+        <div class="reserves-header__field">
+          <span class="reserves-header__label">Allianz reserves</span>
+          <span class="reserves-header__value">
+            {{ data.currency }} {{ (data.totalReserve * data.allianzShare / 100) | number:'1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- State 1: no reserves + no saved explanation -->
+      @if (showNarrativeCta && !narrativeOpen) {
+        <div class="narrative-cta">
+          <nx-icon name="info-circle-o" class="narrative-cta__icon"></nx-icon>
+          <span class="narrative-cta__text">No reserves yet —</span>
+          <button nxPlainButton type="button" (click)="openNarrative()">Add explanation</button>
+        </div>
+      }
+
+      <!-- State 2: form expanded -->
+      @if (narrativeOpen) {
+        <form class="narrative-form" [formGroup]="narrativeForm">
+          <p class="narrative-form__question">Why are reserves not yet estimated?</p>
+          <nx-radio-group formControlName="reasonKey" class="narrative-form__radios">
+            @for (opt of narrativeOptions; track opt.value) {
+              <nx-radio [value]="opt.value" labelSize="small">{{ opt.label }}</nx-radio>
+            }
+          </nx-radio-group>
+          <nx-formfield label="Additional notes (optional)" class="narrative-form__notes">
+            <textarea nxInput formControlName="notes" rows="2"
+                      placeholder="Any additional context..."></textarea>
+          </nx-formfield>
+          <div class="narrative-form__actions">
+            <button nxButton="secondary small" type="button" (click)="onCancelNarrative()">Cancel</button>
+            <button nxButton="primary small" type="button"
+                    [disabled]="narrativeForm.invalid"
+                    (click)="onSaveNarrative()">Save</button>
+          </div>
+        </form>
+      }
+
+      <!-- State 3: saved + totalReserve still 0 -->
+      @if (showNarrativeSaved && !narrativeOpen) {
+        <div class="narrative-saved">
+          <div class="narrative-saved__row">
+            <nx-icon name="info-circle-o" class="narrative-saved__icon"></nx-icon>
+            <span class="narrative-saved__reason">{{ narrativeReasonLabel }}</span>
+            <button nxPlainButton type="button" (click)="openNarrative()">Edit</button>
+          </div>
+          @if (narrative?.notes) {
+            <p class="narrative-saved__notes">{{ narrative!.notes }}</p>
+          }
+        </div>
+      }
+      <!-- State 4: totalReserve > 0 → narrative auto-archived, nothing rendered here -->
+    </div>
+
+    <!-- Toolbar -->
+    <div class="reserves-toolbar">
+      <button nxButton="secondary small" type="button" (click)="onAddReserve()">
+        <nx-icon name="plus" nxIconPositionStart></nx-icon>
+        Add reserve
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    @if (reserves.length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__message">No reserves yet.</p>
+        <p class="empty-state__hint">Reserves are auto-generated from your selected parties and damages.</p>
+      </div>
+    }
+
+    <!-- Flat reserves table -->
+    @if (reserves.length > 0) {
+      <table nxTable class="reserves-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="col-section">Section no.</th>
+            <th nxHeaderCell class="col-party">Party</th>
+            <th nxHeaderCell class="col-damage">Damages</th>
+            <th nxHeaderCell class="col-type">Reserves type</th>
+            <th nxHeaderCell class="col-currency">Currency</th>
+            <th nxHeaderCell class="col-amount">Amount</th>
+            <th nxHeaderCell class="col-action"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reserve of reserves; track trackByReserve($index, reserve)) {
+            <tr nxTableRow
+                class="reserve-row"
+                [class.reserve-row--recently-added]="reserve.recentlyAdded"
+                (click)="onViewDetails(reserve)">
+              <td nxCell class="col-section">{{ reserve.sectionNo }}</td>
+              <td nxCell class="col-party">{{ reserve.partyName }}</td>
+              <td nxCell class="col-damage">{{ reserve.damageType }}</td>
+              <td nxCell class="col-type">{{ reserveTypeLabel(reserve.reserveType) }}</td>
+              <td nxCell class="col-currency">{{ reserve.currency }}</td>
+              <td nxCell class="col-amount">{{ reserve.amount | number:'1.2-2' }}</td>
+              <td nxCell class="col-action" (click)="$event.stopPropagation()">
+                <button nxIconButton="tertiary small" type="button"
+                        [nxContextMenuTriggerFor]="rowMenu"
+                        [attr.aria-label]="'Actions for row ' + reserve.sectionNo">
+                  <nx-icon name="ellipsis-v"></nx-icon>
+                </button>
+                <nx-context-menu #rowMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="onViewDetails(reserve)">View details</button>
+                  <button nxContextMenuItem type="button" (click)="onEditReserve(reserve)">Edit</button>
+                  <button nxContextMenuItem type="button" (click)="onRemoveReserve(reserve)">Remove</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <!-- Footer navigation -->
+    <app-wizard-footer
+      (cancel)="onCancel()"
+      (back)="onBack()"
+      (next)="onNext()">
+    </app-wizard-footer>
+  </div>
+
+  <!-- Side panel -->
+  @if (panelOpen) {
+    <div class="side-sheet-backdrop" (click)="onClosePanel()"></div>
+    <aside class="side-sheet" [class.side-sheet--open]="panelOpen">
+      @if (selectedReserve) {
+        <app-reserve-detail-panel-stub
+          [reserve]="selectedReserve"
+          (closePanel)="onClosePanel()">
+        </app-reserve-detail-panel-stub>
+      }
+    </aside>
+  }
+
+</div>
+</ng-container>

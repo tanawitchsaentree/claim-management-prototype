@@ -1,0 +1,100 @@
+:host {
+  display: block;
+  width: 100%;
+  font-size: var(--paragraph-04-font-size);
+}
+
+.cdb-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 24px;
+  background: var(--dev-banner-bg);
+  border-bottom: 1px solid var(--dev-banner-border);
+}
+
+.cdb-badge {
+  flex-shrink: 0;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 700;
+  color: var(--dev-helper-badge-color);
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border: 1px solid var(--dev-helper-border);
+  border-radius: 3px;
+  background: var(--dev-helper-bg);
+  line-height: 1.4;
+}
+
+.cdb-picker {
+  width: 340px;
+  flex-shrink: 0;
+  margin-bottom: 0 !important;
+
+  ::ng-deep .nx-formfield__wrapper {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  ::ng-deep .nx-formfield__label {
+    display: none !important;
+  }
+
+  ::ng-deep .nx-formfield-hint__wrapper {
+    display: none !important;
+  }
+}
+
+.cdb-ac-chip {
+  flex-shrink: 0;
+  cursor: pointer;
+
+  &--restore {
+    ::ng-deep .nx-taglist__tag {
+      background: var(--dev-helper-active-bg);
+      border-color: var(--interactive-primary);
+    }
+  }
+}
+
+.cdb-ticket-option {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 2px 0;
+}
+
+.cdb-ticket-meta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.cdb-ticket-module {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cdb-ticket-id {
+  font-family: monospace;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.cdb-ticket-title {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cdb-ticket-stats {
+  display: flex;
+  gap: 8px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+

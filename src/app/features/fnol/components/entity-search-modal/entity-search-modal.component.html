@@ -1,0 +1,123 @@
+<div class="esm-header">
+  <h2 class="esm-title">{{ title }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="esm-body">
+  <form [formGroup]="filterForm" class="esm-filter-form">
+    <div class="esm-filter-row">
+      <nx-formfield label="Location rule number" class="esm-field">
+        <input nxInput formControlName="locationRuleNumber" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Country" class="esm-field">
+        <nx-dropdown formControlName="country" placeholder="Select">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (c of countries; track c.value) {
+            <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="City" class="esm-field">
+        <input nxInput formControlName="city" autocomplete="off" />
+      </nx-formfield>
+    </div>
+    <div class="esm-filter-row">
+      <nx-formfield label="ZIP / postal code" class="esm-field">
+        <input nxInput formControlName="zipOrPostalCode" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Street and number" class="esm-field">
+        <input nxInput formControlName="streetAndNumber" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Location name" class="esm-field">
+        <input nxInput formControlName="locationName" autocomplete="off" />
+      </nx-formfield>
+    </div>
+    <div class="esm-filter-actions">
+      <div class="esm-filter-btns">
+        <button nxButton="primary small" type="button" [disabled]="!canSearch" (click)="onSearch()">
+          Search
+        </button>
+        <button nxPlainButton type="button" (click)="onReset()">Reset search</button>
+      </div>
+      @if (!canSearch) {
+        <span class="esm-filter-note">Enter at least 2 filter conditions to search</span>
+      }
+    </div>
+  </form>
+
+  <ng-container *ngIf="state$ | async as vm">
+    @if (vm.loading) {
+      <div class="esm-loading">
+        <nx-spinner size="medium"></nx-spinner>
+        <span class="esm-loading-label">Searching…</span>
+      </div>
+    }
+    @if (!vm.loading && vm.searched) {
+      <div class="esm-results">
+        <div class="esm-results-meta">
+          <span class="esm-results-count">Number of locations: <strong>{{ vm.results.length }}</strong></span>
+        </div>
+        @if (vm.error) {
+          <nx-message context="error">Search failed. Please try again.</nx-message>
+        } @else if (vm.results.length === 0) {
+          <p class="esm-empty">No results found. Try different filters.</p>
+        } @else {
+          <table nxTable class="esm-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell class="esm-col-check"></th>
+                <th nxHeaderCell class="esm-col-id">Property ID</th>
+                <th nxHeaderCell class="esm-col-name">Location name</th>
+                <th nxHeaderCell class="esm-col-street">Street and number</th>
+                <th nxHeaderCell class="esm-col-city">City</th>
+                <th nxHeaderCell class="esm-col-country">Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (result of vm.results; track result.propertyId) {
+                <tr nxTableRow [class.esm-row--selected]="isSelected(result.propertyId)">
+                  <td nxCell class="esm-col-check">
+                    <nx-checkbox
+                      [checked]="isSelected(result.propertyId)"
+                      (checkedChange)="toggleRow(result.propertyId)"
+                      [attr.aria-label]="'Select ' + result.locationName">
+                    </nx-checkbox>
+                  </td>
+                  <td nxCell class="esm-col-id">{{ result.propertyId }}</td>
+                  <td nxCell class="esm-col-name">{{ result.locationName }}</td>
+                  <td nxCell class="esm-col-street">{{ result.streetAndNumber }}</td>
+                  <td nxCell class="esm-col-city">{{ result.city }}</td>
+                  <td nxCell class="esm-col-country">{{ result.country }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="esm-footer">
+            @if (selectedCount > 0) {
+              <span class="esm-selected-count">{{ selectedCount }} selected</span>
+            }
+            <div class="esm-footer-actions">
+              <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+              <button nxButton="primary small" type="button"
+                      [disabled]="selectedCount === 0"
+                      (click)="onAdd(vm.results)">
+                Add
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </ng-container>
+
+  <ng-container *ngIf="!(state$ | async)">
+    <div class="esm-footer esm-footer--no-results">
+      <div class="esm-footer-actions">
+        <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+        <button nxButton="primary small" type="button" disabled>Add</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,53 @@
+// ─── FNOL Wizard — shared layout tokens ──────────────────────────────────────
+// Single source of truth for step-page, breadcrumb, title, footer.
+// Every wizard step @use this file instead of redeclaring these classes.
+//
+// Usage:
+//   @use '../../_wizard-layout' as wl;   (adjust relative path as needed)
+//   @include wl.step-page(960px);         // pass max-width for the step
+//   @include wl.step-header;
+//   @include wl.step-footer;
+//
+// DO NOT copy-paste these rules into step component scss files.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@mixin step-page($max-width: 960px) {
+  .step-page {
+    padding: 8px 0 48px;
+    max-width: $max-width;
+  }
+}
+
+@mixin step-header {
+  .step-breadcrumb {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+    margin: 0 0 4px;
+  }
+
+  .step-title {
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text-01);
+    margin: 0 0 24px;
+    line-height: 1.2;
+  }
+}
+
+@mixin step-footer {
+  .step-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ui-04);
+  }
+
+  .step-footer-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+}
+

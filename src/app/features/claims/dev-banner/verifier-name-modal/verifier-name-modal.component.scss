@@ -1,0 +1,47 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  font-size: var(--paragraph-04-font-size);
+}
+
+.vnm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.vnm-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.vnm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 20px;
+
+  nx-formfield { width: 100%; }
+}
+
+.vnm-desc {
+  margin: 0 0 20px;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.vnm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--ui-04);
+}

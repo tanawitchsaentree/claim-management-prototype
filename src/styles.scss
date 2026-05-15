@@ -1,0 +1,370 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// NDBX Light Expert Theme Token Override
+// Replicates the Allianz NDBX light B2B theme (normally from @allianz/ngx-brand-kit)
+// ─────────────────────────────────────────────────────────────────────────────
+:root {
+  // Base palette
+  --ui-background:          #ffffff;
+  --ui-01:                  #ffffff;
+  --ui-02:                  #f2f2f2;
+  --ui-03:                  #e8e8e8;
+  --ui-04:                  #d9d9d9;
+  --ui-05:                  #c4c4c4;
+  --ui-06:                  #000000;
+
+  // Text
+  --text-01:                #404040;
+  // expert.css (injected at runtime by NxExpertModule) overrides --text-02 to #0f2a3d.
+  // ndbx.css defines it as #ffffff (text on brand/dark backgrounds — primary button labels).
+  // Re-assert #ffffff here so primary button text stays white.
+  --text-02:                #ffffff;
+
+  // Project-level muted text — grey secondary text on white backgrounds.
+  // Use this for grey labels, NOT --text-02.
+  --text-muted:             #767676;
+
+  // ng-aquila expert.css (loaded by NxExpertModule) overrides --interactive-primary
+  // to #27abd6 (dark theme value) after ndbx.css sets #007ab3. Re-assert ndbx value here.
+  --interactive-primary:    #007ab3;
+  --interactive-text:       #006192;
+  --hover-secondary:        #f2f2f2;
+  --hover-link:             #005f8a;
+
+  // Focus
+  --focus-box-shadow:       0 0 0 2px #ffffff, 0 0 0 4px #003781;
+  --focus-inset-box-shadow: inset 0 0 0 2px #003781;
+
+  // Semantic
+  --info:                   #003781;
+  --info-hover:             #002d6e;
+  --info-active:            #002360;
+  --success:                #1d8348;
+  --success-hover:          #176b3a;
+  --success-active:         #12562f;
+  --warning:                #f9b233;
+  --warning-hover:          #e0a02e;
+  --warning-active:         #c78d29;
+  --danger:                 #c0392b;
+  --danger-hover:           #a93226;
+  --danger-active:          #922b21;
+
+  // Disabled
+  --disabled-01:            #c4c4c4;
+  --disabled-02:            #e8e8e8;
+  --disabled-03:            #f2f2f2;
+
+  // Negative (inverse / on-dark)
+  --negative:               #ffffff;
+  --negative-01:            #ffffff;
+  --negative-02:            #f2f2f2;
+  --negative-accent:        #003781;
+
+  // Separators
+  --separator-line-color:   #d9d9d9;
+
+  // ── Button tokens ──────────────────────────────────────────────
+  --button-border-radius:                       4px;
+  --button-small-height:                        32px;
+  --button-text-transform:                      none;
+  // --button-medium-height overridden in html body below (beats expert.css runtime injection)
+
+  // ── Formfield tokens ───────────────────────────────────────────
+  --formfield-label-color:                      #404040;
+  --formfield-outline-border-color:             #767676;
+  --formfield-outline-focus-border-color:       #003781;
+  --formfield-outline-hover-border-color:       #404040;
+  --formfield-background-color:                 #ffffff;
+  --formfield-color:                            #404040;
+  --formfield-error-color:                      #c0392b;
+  --formfield-hint-color:                       #767676;
+  --formfield-placeholder-color:                #c4c4c4;
+  // expert.css sets --formfield-outline-background-color: var(--ui-03) = #e8e8e8 (grey).
+  // Re-assert white so inputs have white background by default (matches Figma).
+  --formfield-outline-background-color:         #ffffff;
+
+  // ── Input tokens ───────────────────────────────────────────────
+  --input-border-color:                         #767676;
+  --input-focus-border-color:                   #003781;
+  --input-hover-border-color:                   #404040;
+  --input-color:                                #404040;
+  --input-background-color:                     #ffffff;
+  --input-placeholder-color:                    #c4c4c4;
+
+  // ── Header tokens ──────────────────────────────────────────────
+  --header-background-color:                    #ffffff;
+  --header-text-color:                          #404040;
+  --header-link-color:                          #404040;
+  --header-link-active-color:                   #003781;
+  --header-link-hover-color:                    #003781;
+  --header-separator-color:                     #d9d9d9;
+  --header-navigation-item-active-indicator-color: #003781;
+  --header-height:                              60px;
+
+  // ── Table tokens ───────────────────────────────────────────────
+  --table-header-cell-color:                    #767676;
+  --table-header-cell-background-color:         #ffffff;
+  --table-header-border-top-color:              transparent;
+  --table-header-border-bottom-color:           #404040;
+  --table-cell-color:                           #404040;
+  --table-row-border-color:                     #e8e8e8;
+  --table-hover-background:                     #f8f9fb;
+  --table-background:                           #ffffff;
+  --table-header-cell-font-size:                0.75rem;
+  --table-header-cell-font-weight:              600;
+  --table-header-cell-line-height:              1rem;
+  --table-header-cell-letter-spacing:           0.04em;
+
+  // ── Sidebar / Action tokens ────────────────────────────────────
+  --action-item-color:                          #404040;
+  --action-item-icon-color:                     #767676;
+  --action-hover-background:                    #f2f2f2;
+  --action-selected-background-color:           #e5edfa;
+  --action-selected-color:                      #003781;
+  --action-selected-border-color:               #003781;
+  --sidebar-background-color:                   #ffffff;
+  --sidebar-border-color:                       #d9d9d9;
+
+  // ── Badge tokens ───────────────────────────────────────────────
+  --badge-background-color:                     #e8e8e8;
+  --badge-color:                                #404040;
+  --badge-active-background-color:              #fff3cd;
+  --badge-active-color:                         #7a5200;
+  --badge-positive-background-color:            #d4edda;
+  --badge-positive-color:                       #155724;
+  --badge-critical-background-color:            #f8d7da;
+  --badge-critical-color:                       #721c24;
+
+  // ── Dropdown tokens ────────────────────────────────────────────
+  --dropdown-background-color:                  #ffffff;
+  --dropdown-border-color:                      #767676;
+  --dropdown-item-hover-background-color:       #f2f2f2;
+  --dropdown-item-selected-background-color:    #e5edfa;
+  --dropdown-item-selected-color:               #003781;
+  --dropdown-panel-background-color:            #ffffff;
+  --dropdown-panel-border-color:                #d9d9d9;
+
+  // ── Checkbox tokens ────────────────────────────────────────────
+  --checkbox-background-color:                  #ffffff;
+  --checkbox-border-color:                      #767676;
+  --checkbox-checked-background-color:          #003781;
+  --checkbox-checked-border-color:              #003781;
+  --checkbox-hover-border-color:                #404040;
+  --checkbox-label-color:                       #404040;
+  --checkbox-size:                              18px;
+
+  // ── Context menu tokens ────────────────────────────────────────
+  --context-menu-background-color:              #ffffff;
+  --context-menu-border-color:                  #d9d9d9;
+  --context-menu-item-hover-background-color:   #f2f2f2;
+  --context-menu-item-color:                    #404040;
+
+  // ── Message tokens ─────────────────────────────────────────────
+  --message-info-background-color:              #e5edfa;
+  --message-info-color:                         #003781;
+  --message-info-border-color:                  #003781;
+  --message-error-background-color:             #f8d7da;
+  --message-error-color:                        #721c24;
+  --message-error-border-color:                 #c0392b;
+
+  // ── Typography ─────────────────────────────────────────────────
+  // Scale compressed from NDBX defaults so the UI reads at a tighter density.
+  // paragraph-03 floor raised to 0.875rem (14px) to meet WCAG 2.1 AA minimum.
+  --font-family:                                'Allianz Neo', 'Public Sans Latin', Arial, sans-serif !important;
+  --paragraph-01-font-size:                     1rem;
+  --paragraph-01-line-height:                   1.5rem;
+  --paragraph-01-font-weight:                   400;
+  --paragraph-02-font-size:                     0.875rem;
+  --paragraph-02-line-height:                   1.25rem;
+  --paragraph-02-font-weight:                   400;
+  --paragraph-03-font-size:                     0.875rem;
+  --paragraph-03-line-height:                   1.25rem;
+  --paragraph-03-font-weight:                   400;
+  // formfield label + hint inherit paragraph-05 (12px) by default — override to 14px.
+  --formfield-label-font-size:                  0.875rem;
+  --formfield-hint-font-size:                   0.875rem;
+  // NDBX label scale (used by nx-radio, nx-checkbox, etc.) defaults to 1rem/1.25rem.
+  // Override to match compressed project paragraph scale so labels align with body text.
+  --small-label-font-size:                      var(--paragraph-04-font-size); // 14px
+  --large-label-font-size:                      var(--paragraph-01-font-size); // 16px
+  --heading-06-font-size:                       1.125rem;
+  --heading-06-font-weight:                     700;
+  --heading-05-font-size:                       1.25rem;
+  --heading-05-font-weight:                     700;
+  --headline-secondary-color:                   #404040;
+}
+
+/* ==============================================================
+ * Project-level tokens — values not provided by NDBX
+ *
+ * Status, priority, bar, and overlay colors live here.
+ * Components MUST reference these via var(--claim-*).
+ * Never write the raw hex values in component .scss files.
+ *
+ * Source of truth: extracted from existing code, not invented.
+ * Token names follow the pattern: --claim-<category>-<variant>-<role>
+ * ============================================================== */
+:root {
+  /* ── Claim status chip — background ─────────────────────────── */
+  /* "Open" claim = same blue family as in-progress; shown as blue chip  */
+  --claim-status-open-bg:          #dce9f8;
+  --claim-status-open-color:       #006192;
+  --claim-status-in-progress-bg:   #dce9f8;   /* claim lifecycle (blue) */
+  --claim-status-in-progress-color:#006192;
+  --claim-status-priced-bg:        #e8e8e8;   /* neutral — no dedicated chip color yet */
+  --claim-status-priced-color:     #404040;
+  --claim-status-quoted-bg:        #e8e8e8;   /* neutral — no dedicated chip color yet */
+  --claim-status-quoted-color:     #404040;
+  --claim-status-bound-bg:         #d4edda;
+  --claim-status-bound-color:      #155724;
+  --claim-status-declined-bg:      #f8d7da;
+  --claim-status-declined-color:   #721c24;
+  --claim-status-closed-bg:        #e8e8e8;
+  --claim-status-closed-color:     #767676;
+  --claim-status-reopened-bg:      var(--color-subtle-orange);
+  --claim-status-reopened-color:   var(--color-on-subtle-orange);
+
+  /* ── Task status chip — background ──────────────────────────── */
+  /* Task "in-progress" = amber (different from claim in-progress = blue) */
+  --task-status-open-bg:           #dce9f8;
+  --task-status-open-color:        #006192;
+  --task-status-in-progress-bg:    #fdf3d6;   /* task progress = amber */
+  --task-status-in-progress-color: #7a5200;
+  --task-status-done-bg:           #d4edda;
+  --task-status-done-color:        #155724;
+  /* Aliases used by sections page (task context) */
+  --task-status-pending-bg:        #fdf3d6;
+  --task-status-pending-color:     #7a5200;
+  --task-status-not-assigned-bg:   #e8e8e8;
+  --task-status-not-assigned-color:#767676;
+  --task-status-completed-bg:      #d4edda;
+  --task-status-completed-color:   #155724;
+
+  /* ── Entity status chip ──────────────────────────────────────── */
+  --entity-status-promised-bg:        #e8f4fd;
+  --entity-status-promised-color:     #006192;
+  --entity-status-conditional-bg:     #fdf3d6;
+  --entity-status-conditional-color:  #7a5200;
+  --entity-status-by-extension-bg:    #ede8f5;
+  --entity-status-by-extension-color: #4a2080;
+  --entity-status-not-promised-bg:    #fde2e4;
+  --entity-status-not-promised-color: #b91c1c;
+
+  --damage-item-status-open-bg:       #dce9f8;
+  --damage-item-status-open-color:    #006192;
+  --damage-item-status-assessed-bg:   #fdf3d6;
+  --damage-item-status-assessed-color:#7a5200;
+  --damage-item-status-approved-bg:   #d4edda;
+  --damage-item-status-approved-color:#155724;
+  --damage-item-status-rejected-bg:   #fde2e4;
+  --damage-item-status-rejected-color:#b91c1c;
+
+  /* ── Clearance status chip ──────────────────────────────────── */
+  --clearance-cleared-bg:          #d4edda;
+  --clearance-cleared-color:       #155724;
+  --clearance-not-cleared-bg:      #fde2e4;
+  --clearance-not-cleared-color:   #b91c1c;
+  --clearance-pending-bg:          #fdf3d6;
+  --clearance-pending-color:       #7a5200;
+  --clearance-not-applicable-bg:   #e8e8e8;
+  --clearance-not-applicable-color:#767676;
+
+  --section-not-promised-tint:   #fef2f2;
+  --section-not-promised-border: #fecaca;
+
+  --row-recently-added-bg: #fef9c3;
+
+  /* ── Dev helper banner (dev builds only) ────────────────────────── */
+  --dev-helper-bg:           #fafafa;
+  --dev-helper-border:       #e0e0e0;
+  --dev-helper-active-bg:    #f1f8e9;
+  --dev-helper-active-border:#aed581;
+  --dev-helper-badge-color:  #9e9e9e;
+  --dev-helper-done-bg:      #c8e6c9;
+  --dev-helper-done-color:   #1b5e20;
+  /* Amber tint for the banner itself (distinguishable from page bg) */
+  --dev-banner-bg:           #fff8e1;
+  --dev-banner-border:       #f5d76e;
+  /* Result toast states — reuse message tokens */
+  --dev-banner-success-bg:   var(--dev-helper-done-bg);
+  --dev-banner-success-color:var(--dev-helper-done-color);
+  --dev-banner-error-bg:     var(--message-error-background-color);
+  --dev-banner-error-color:  var(--message-error-color);
+  --dev-banner-warn-bg:      #fdf3d6;
+  --dev-banner-warn-color:   #7a5200;
+
+  /* ── Priority dot ────────────────────────────────────────────── */
+  --claim-priority-high:           #e4003a;
+  --claim-priority-medium:         #fdd25c;
+  --claim-priority-low:            #d9d9d9;
+
+  /* ── Stats bar fills (right-panel claim distribution chart) ──── */
+  --claim-bar-in-progress:         #fdd25c;
+  --claim-bar-priced:              #8a679c;
+  --claim-bar-quoted:              #7fe4e0;
+  --claim-bar-bound:               #ccdd61;
+  --claim-bar-declined:            #e4003a;
+
+  /* ── Overlay / shadow ────────────────────────────────────────── */
+  /* Interactive hover on white — primary blue tint at 6% opacity  */
+  --claim-overlay-hover:           rgba(0, 97, 146, 0.06);
+  /* Sidebar nav item hover — dark scrim at 5% opacity             */
+  --claim-overlay-nav-hover:       rgba(0, 0, 0, 0.05);
+  /* Dropdown / modal shadow                                        */
+  --claim-overlay-shadow:          rgba(0, 0, 0, 0.12);
+  /* Navbar box-shadow scrim                                        */
+  --claim-overlay-navbar-shadow:   rgba(0, 0, 0, 0.15);
+  /* Navbar search input — white at 20% opacity (on dark header)   */
+  --claim-overlay-navbar-input:    rgba(255, 255, 255, 0.2);
+  /* Navbar secondary text — white at 75% opacity (on dark header) */
+  --claim-overlay-navbar-muted:    rgba(255, 255, 255, 0.75);
+  --claim-overlay-backdrop:        rgba(0, 0, 0, 0.25);
+
+  /* ── Table tree indent ───────────────────────────────────────── */
+  /* L1→L2: past one chevron (28px button + 4px gap)              */
+  --tree-child-indent:   32px;
+  /* L1→L3: past two chevrons (two levels deep)                   */
+  --tree-grandchild-indent: 64px;
+}
+
+// expert.css (NxExpertModule) injects a <style> tag at runtime — same :root/:host
+// specificity as above but later in the DOM, so it wins. Use html body to get
+// higher specificity and beat the runtime injection for tokens we need to override.
+html body {
+  // Inputs: white background (expert.css sets --formfield-outline-background-color: #e8e8e8)
+  --formfield-background-color:                #ffffff;
+  --formfield-outline-background-color:        #ffffff;
+  --formfield-outline-focus-background-color:  #ffffff;
+  --formfield-outline-hover-background-color:  #ffffff;
+  --input-background-color:                    #ffffff;
+
+  // Buttons: 38px medium height (expert.css sets 48px)
+  --button-medium-height:                      38px;
+}
+
+// Global resets
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: #f5f5f5 !important;
+  color: #404040 !important;
+  font-family: 'Allianz Neo', 'Public Sans Latin', Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+
+// Allow \n in nxTooltip strings to render as line breaks
+.nx-tooltip { white-space: pre-line; }
+
+code {
+  font-family: monospace;
+  font-size: 13px;
+  background: #f2f2f2;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #404040;
+}

@@ -1,0 +1,421 @@
+:host {
+  display: block;
+}
+
+.co-loading,
+.co-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+}
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+
+.co-card-actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+// ─── Closure block ────────────────────────────────────────────────────────────
+
+.co-closure-block {
+  margin-bottom: 20px;
+}
+
+.co-grid--closure {
+  margin-bottom: 0;
+
+  &:not(:last-child) { margin-bottom: 16px; }
+}
+
+.co-card {
+  background: var(--general-background-color, #ffffff);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.co-card-title {
+  display: block;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  margin: 0 0 20px;
+
+  // when used as h2
+  &:is(h2) {
+    font-size: var(--paragraph-01-font-size);
+    font-weight: 700;
+  }
+}
+
+// ─── Grid ─────────────────────────────────────────────────────────────────────
+
+.co-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.co-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.co-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.co-value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+
+  &--link {
+    color: var(--interactive-primary);
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.co-field-value {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.co-label-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.co-refresh-icon {
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+// ─── Risk score ───────────────────────────────────────────────────────────────
+
+.co-risk-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.co-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+
+  &.risk-high {
+    background: var(--claim-status-declined-bg);
+    color: var(--claim-status-declined-color);
+  }
+  &.risk-medium {
+    background: var(--task-status-in-progress-bg);
+    color: var(--task-status-in-progress-color);
+  }
+  &.risk-low {
+    background: var(--claim-status-bound-bg);
+    color: var(--claim-status-bound-color);
+  }
+}
+
+.co-link {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--interactive-primary);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ─── Risk status chip ─────────────────────────────────────────────────────────
+
+.co-risk-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 500;
+
+  &.risk-high {
+    background: var(--claim-status-declined-bg);
+    color: var(--claim-status-declined-color);
+  }
+  &.risk-medium {
+    background: var(--task-status-in-progress-bg);
+    color: var(--task-status-in-progress-color);
+  }
+  &.risk-low {
+    background: var(--claim-status-bound-bg);
+    color: var(--claim-status-bound-color);
+  }
+}
+
+// ─── Description ─────────────────────────────────────────────────────────────
+
+.co-description {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.co-desc-label {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.co-desc-text {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  line-height: 1.6;
+}
+
+// ─── Financial summary ────────────────────────────────────────────────────────
+
+.co-card--financial .co-card-title {
+  margin-bottom: 16px;
+}
+
+.co-fin-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.co-fin-item {
+  padding: 0 20px;
+  border-right: 1px solid var(--ui-04);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &:first-child { padding-left: 0; }
+  &:last-child  { border-right: none; }
+}
+
+.co-fin-label {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.co-fin-value {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+
+  &--outstanding {
+    color: var(--interactive-primary);
+  }
+}
+
+// ─── Collapse animation ───────────────────────────────────────────────────────
+
+.pt-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+
+  &--open {
+    grid-template-rows: 1fr;
+  }
+}
+
+.pt-collapse__inner {
+  overflow: hidden;
+}
+
+// ─── Pending tasks ────────────────────────────────────────────────────────────
+
+.pt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.co-card-title--inline {
+  margin-bottom: 0;
+}
+
+.co-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-muted);
+
+  &:hover {
+    background: var(--claim-overlay-nav-hover);
+    color: var(--text-01);
+  }
+}
+
+.pt-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.pt-legend__dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--high   { background: var(--claim-priority-high); }
+  &--medium { background: var(--claim-priority-medium); }
+  &--low    { background: var(--claim-priority-low); }
+}
+
+.pt-legend__text {
+  margin-right: 8px;
+}
+
+.pt-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.pt-table {
+  width: 100%;
+}
+
+.pt-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  nx-icon { font-size: 14px; color: var(--text-muted); }
+}
+
+.pt-row:hover td { background: var(--claim-overlay-hover); }
+
+.pt-col--type   { white-space: nowrap; }
+.pt-col--action { width: 90px; white-space: nowrap; }
+.pt-col--date   { white-space: nowrap; }
+.pt-col--desc   { max-width: 320px; }
+.pt-col--key    { white-space: nowrap; }
+
+.pt-cell-truncate {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.pt-task-key {
+  color: var(--interactive-primary);
+  font-weight: 500;
+}
+
+.pt-launch-icon {
+  color: var(--interactive-primary);
+  flex-shrink: 0;
+}
+
+.pt-pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.pt-action-link {
+  color: var(--interactive-primary);
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ─── Activities ───────────────────────────────────────────────────────────────
+
+.co-activities-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0;
+
+  .co-card-title { margin: 0; }
+}
+
+.act-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.act-table { width: 100%; }
+
+.act-col--nowrap { white-space: nowrap; }
+
+.act-col--muted { color: var(--text-muted); }
+
+.act-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.act-log-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--interactive-primary);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}

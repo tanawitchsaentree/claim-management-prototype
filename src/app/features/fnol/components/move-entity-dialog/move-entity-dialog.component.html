@@ -1,0 +1,33 @@
+<div class="med-header">
+  <h2 class="med-title">Move "{{ data.entity.name }}"</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<form [formGroup]="form" class="med-body">
+  <nx-formfield label="Section">
+    <nx-dropdown formControlName="section">
+      @for (s of sectionOptions; track s.key) {
+        <nx-dropdown-item [value]="s.key">{{ s.label }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+
+  <nx-formfield label="Damage group">
+    <nx-dropdown formControlName="damageGroupKey">
+      @for (g of groupOptions; track g.key) {
+        <nx-dropdown-item [value]="g.key">{{ g.label }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+</form>
+
+<div class="med-footer">
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="form.invalid || !hasChanged"
+          (click)="onConfirm()">
+    Move
+  </button>
+</div>

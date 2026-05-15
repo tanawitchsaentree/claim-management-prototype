@@ -1,0 +1,170 @@
+<div class="apm-header">
+  <h2 class="apm-title">Add parties</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="apm-body">
+  <form [formGroup]="filterForm" class="apm-filter-form">
+    <div class="apm-filter-grid">
+      <nx-formfield label="Legal name / Trade (DBA) name" class="apm-field">
+        <input nxInput formControlName="legalName" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Party role" class="apm-field">
+        <nx-dropdown formControlName="partyRole" placeholder="All">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (key of partyRoleKeys; track key) {
+            <nx-dropdown-item [value]="key">{{ partyRoleLabels[key] }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="Country" class="apm-field">
+        <nx-dropdown formControlName="country" placeholder="All">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (opt of countryOptions; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="Clearance status" class="apm-field">
+        <nx-dropdown formControlName="clearanceStatus" placeholder="All">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (key of clearanceKeys; track key) {
+            <nx-dropdown-item [value]="key">{{ clearanceLabels[key] }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="City" class="apm-field">
+        <input nxInput formControlName="city" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Street" class="apm-field">
+        <input nxInput formControlName="street" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Zip code" class="apm-field">
+        <input nxInput formControlName="postalCode" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="UCV ID" class="apm-field">
+        <input nxInput formControlName="partyId" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Email" class="apm-field">
+        <input nxInput formControlName="email" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Phone" class="apm-field">
+        <input nxInput formControlName="phone" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="ID Type" class="apm-field">
+        <nx-dropdown formControlName="idType" placeholder="All">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (key of idTypeKeys; track key) {
+            <nx-dropdown-item [value]="key">{{ idTypeLabels[key] }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="ID Value" class="apm-field">
+        <input nxInput formControlName="idNumber" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Line of Business" class="apm-field">
+        <nx-dropdown formControlName="lineOfBusiness" placeholder="All">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (opt of lobOptions; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="OE" class="apm-field">
+        <nx-dropdown formControlName="operatingEntity" placeholder="All">
+          <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+          @for (opt of oeOptions; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+    </div>
+    <div class="apm-filter-actions">
+      <div class="apm-filter-btns">
+        <button nxButton="primary small" type="button" [disabled]="!canSearch" (click)="onSearch()">
+          Search
+        </button>
+        <button nxPlainButton type="button" (click)="onReset()">Reset search</button>
+      </div>
+      @if (!canSearch) {
+        <span class="apm-filter-note">Enter at least 2 filter conditions to search</span>
+      }
+    </div>
+  </form>
+
+  <ng-container *ngIf="state$ | async as vm">
+    @if (vm.loading) {
+      <div class="apm-loading">
+        <nx-spinner size="medium"></nx-spinner>
+        <span class="apm-loading-label">Searching…</span>
+      </div>
+    }
+    @if (!vm.loading && vm.searched) {
+      <div class="apm-results">
+        <div class="apm-results-meta">
+          <span class="apm-results-count">Number of parties: <strong>{{ vm.results.length }}</strong></span>
+        </div>
+        @if (vm.error) {
+          <nx-message context="error">Search failed. Please try again.</nx-message>
+        } @else if (vm.results.length === 0) {
+          <p class="apm-empty">No parties found. Try different filters.</p>
+        } @else {
+          <table nxTable class="apm-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell class="apm-col-check"></th>
+                <th nxHeaderCell class="apm-col-name">Party</th>
+                <th nxHeaderCell class="apm-col-roles">Roles</th>
+                <th nxHeaderCell class="apm-col-ucv">UCV ID</th>
+                <th nxHeaderCell class="apm-col-clearance">Clearance status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (party of vm.results; track party.partyId) {
+                <tr nxTableRow [class.apm-row--selected]="isSelected(party.partyId)">
+                  <td nxCell class="apm-col-check">
+                    <nx-checkbox
+                      [checked]="isSelected(party.partyId)"
+                      (checkedChange)="toggleRow(party.partyId)"
+                      [attr.aria-label]="'Select ' + party.legalName">
+                    </nx-checkbox>
+                  </td>
+                  <td nxCell class="apm-col-name">{{ party.legalName }}</td>
+                  <td nxCell class="apm-col-roles">{{ rolesDisplay(party) }}</td>
+                  <td nxCell class="apm-col-ucv">{{ party.partyId }}</td>
+                  <td nxCell class="apm-col-clearance">
+                    <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="apm-footer">
+            @if (selectedCount > 0) {
+              <span class="apm-selected-count">{{ selectedCount }} selected</span>
+            }
+            <div class="apm-footer-actions">
+              <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+              <button nxButton="primary small" type="button"
+                      [disabled]="selectedCount === 0"
+                      (click)="onAdd(vm.results)">
+                Add ({{ selectedCount }})
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </ng-container>
+
+  <ng-container *ngIf="!(state$ | async)">
+    <div class="apm-footer apm-footer--no-results">
+      <div class="apm-footer-actions">
+        <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+        <button nxButton="primary small" type="button" disabled>Add (0)</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

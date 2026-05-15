@@ -1,0 +1,653 @@
+// ─── Variables ───────────────────────────────────────────────────
+$header-height:  64px;
+$right-panel-w:  360px;
+// SCSS vars below are aliases for NDBX/project tokens — kept for
+// legacy scss var references within this file. Cleanup tracked in VIOLATIONS.md.
+$blue-active:    var(--interactive-text);
+$gray-bg:        var(--ui-02);
+$text-main:      var(--text-01);
+$text-muted:     var(--text-muted);
+$border-color:   var(--ui-04);
+
+// ─── Page shell ──────────────────────────────────────────────────
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Allianz Neo', 'Public Sans Latin', Arial, sans-serif;
+  font-size: 14px;
+  color: $text-main;
+  background: var(--ui-01);
+}
+
+// ─── Top header ──────────────────────────────────────────────────
+.top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $header-height;
+  background: var(--ui-01);
+  border-bottom: 1px solid $border-color;
+  flex-shrink: 0;
+  z-index: 100;
+  padding: 12px 32px 11px;
+}
+
+.header-first-slot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+}
+
+.header-logo { flex-shrink: 0; }
+
+.header-title-divider {
+  width: 1px;
+  height: 40px;
+  background: $border-color;
+  flex-shrink: 0;
+}
+
+.header-app-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-main;
+  white-space: nowrap;
+  padding-right: 32px;
+}
+
+.top-nav {
+  display: flex;
+  align-items: flex-end;
+  height: 40px;
+  gap: 32px;
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0;
+  height: 28px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 400;
+  color: $text-main;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.12s;
+
+  &:hover { color: $blue-active; }
+
+  &--active {
+    color: $blue-active;
+    font-weight: 700;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: $blue-active;
+    }
+  }
+}
+
+.header-last-slot {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  gap: 8px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--ui-05);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 40px;
+  width: 352px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  font-size: 16px;
+  font-weight: 300;
+  color: $text-main;
+  flex: 1;
+  background: var(--ui-01);
+  height: 100%;
+  &::placeholder { color: var(--ui-05); }
+}
+
+.search-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  background: $blue-active !important;
+  border: none !important;
+  border-radius: 4px !important;
+  margin: 4px 4px 4px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  nx-icon { color: var(--negative) !important; font-size: 16px !important; }
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: #49648c; // no token — avatar slate blue, flagged in VIOLATIONS.md
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--negative);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 24px;
+  letter-spacing: 0.2px;
+}
+
+// ─── Body layout ─────────────────────────────────────────────────
+.body-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+// ─── Main content (left) ─────────────────────────────────────────
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  background: var(--ui-01);
+  min-width: 0;
+}
+
+// ─── Page headline ────────────────────────────────────────────────
+.page-headline-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-headline {
+  font-size: 26px;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 32px;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.headline-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ─── Action cards (right panel) ──────────────────────────────────
+.action-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: var(--ui-01);
+  border: 1px solid $border-color;
+  border-radius: 4px;
+}
+
+.action-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-card-icon {
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1px solid $text-main;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  nx-icon {
+    color: $text-main;
+    font-size: 20px;
+  }
+}
+
+.action-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 28px;
+}
+
+.action-card-btn {
+  width: 100%;
+}
+
+// ─── Widget card ─────────────────────────────────────────────────
+.widget-card {
+  background: var(--ui-01);
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px var(--claim-overlay-shadow);
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+  margin-bottom: 16px;
+}
+
+.widget-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.widget-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--text-01);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.widget-icon {
+  color: $text-main;
+  font-size: 24px;
+}
+
+.widget-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 28px;
+}
+
+.widget-link {
+  font-size: 14px;
+  color: $blue-active;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  &:hover { text-decoration: underline; }
+}
+
+.widget-footer {
+  padding: 12px 24px;
+  border-top: 1px solid $border-color;
+}
+
+.widget-link-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: $blue-active;
+  cursor: pointer;
+  text-decoration: none;
+  nx-icon { font-size: 14px; }
+  &:hover { text-decoration: underline; }
+}
+
+// ─── Toggle row (Show my tasks only) ─────────────────────────────
+.widget-toggle-row {
+  padding: 0 24px 16px;
+}
+
+// ─── Portfolio tabs ───────────────────────────────────────────────
+.portfolio-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid $border-color;
+}
+
+// 32px gap between tabs and table (matches Figma itemSpacing: 32)
+.portfolio-tabs-spacer {
+  height: 32px;
+}
+
+.portfolio-tab {
+  background: none;
+  border: none;
+  padding: 10px 16px 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-muted;
+  cursor: pointer;
+  position: relative;
+  margin-right: 16px;
+
+  &--active {
+    color: $blue-active;
+    font-weight: 700;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: $blue-active;
+    }
+  }
+
+  &:hover:not(&--active) { color: $text-main; }
+}
+
+// ─── Table sort header ────────────────────────────────────────────
+.th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  nx-icon { font-size: 14px; color: var(--text-muted); }
+}
+
+// ─── Data table ──────────────────────────────────────────────────
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    font-size: var(--paragraph-04-font-size);
+    font-weight: 500;
+    color: $text-muted;
+    padding: 8px 24px;
+    text-align: left;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+    background: var(--ui-01);
+  }
+
+  td {
+    font-size: 14px;
+    color: $text-main;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--ui-03);
+    vertical-align: middle;
+  }
+}
+
+.data-row:hover td { background: $gray-bg; }
+
+// Task list table only — vertical divider before Task key col
+.widget-card--tasklist .data-table {
+  td:nth-last-child(2),
+  th:nth-last-child(2) {
+    border-left: 1px solid $border-color;
+  }
+
+  td:nth-child(2) {
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.text-muted    { color: $text-muted; }
+.text-link     { color: $blue-active; font-weight: 500; }
+.text-due-today { color: var(--danger); font-weight: 600; }
+
+.table-action-link {
+  color: $blue-active;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  &:hover { text-decoration: underline; }
+}
+
+// ─── Right panel ─────────────────────────────────────────────────
+.right-panel {
+  width: $right-panel-w;
+  min-width: $right-panel-w;
+  flex-shrink: 0;
+  background: var(--ui-01);
+  border-left: 1px solid $border-color;
+  overflow-y: auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel-card {
+  background: var(--ui-01);
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.panel-card-header {
+  margin-bottom: 12px;
+}
+
+.panel-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 28px;
+}
+
+// ─── Claims stats ────────────────────────────────────────────────
+.stats-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.stats-month-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-main;
+}
+
+.stats-nav-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  &:hover { color: $text-main; }
+}
+
+.stats-total {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stats-number {
+  font-size: 40px;
+  font-weight: 700;
+  color: $text-main;
+  line-height: 1;
+}
+
+.stats-label {
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 28px;
+}
+
+.stats-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stats-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats-bar-label {
+  font-size: 14px;
+  color: $text-main;
+  font-weight: 400;
+}
+
+.stats-bar-track {
+  height: 8px;
+  background: $border-color;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.stats-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  &--opened { background: var(--claim-status-open-bg); }
+  &--closed  { background: var(--claim-bar-bound); }
+}
+
+.stats-bar-value {
+  font-size: var(--paragraph-04-font-size);
+  color: $text-muted;
+  font-weight: 600;
+  text-align: right;
+}
+
+// ─── Payments card ────────────────────────────────────────────────
+.payments-label {
+  font-size: 14px;
+  color: $text-main;
+  margin-bottom: 4px;
+}
+
+.payments-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: $text-main;
+  line-height: 1.1;
+}
+
+.payments-currency {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+// ─── Approvals widget ────────────────────────────────────────────
+.data-table--approvals {
+  th {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-main;
+  }
+
+  td:last-child,
+  th:last-child {
+    border-left: 1px solid $border-color;
+    text-align: center;
+  }
+}
+
+// ─── Approval action btn ──────────────────────────────────────────
+.approval-action-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: $text-muted;
+  border-radius: 4px;
+  &:hover { background: $gray-bg; color: $text-main; }
+}
+
+// ─── Quick links ─────────────────────────────────────────────────
+.quick-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-link-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  font-size: 14px;
+  color: $blue-active;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.1s;
+
+  &:hover { background: var(--claim-overlay-hover); text-decoration: underline; }
+
+  .quick-link-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+}
+
+// ─── VM state helpers ─────────────────────────────────────────────
+.widget-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 24px;
+  color: var(--text-01);
+}
+
+.widget-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  color: var(--negative);
+  background: var(--negative-dimmed, #fff1f3);
+  border-radius: 4px;
+  margin: 16px 0;
+
+  .widget-error-icon { font-size: 18px; flex-shrink: 0; }
+}
+
+.widget-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-muted);
+}
+

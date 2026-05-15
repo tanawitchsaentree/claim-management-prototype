@@ -1,0 +1,19 @@
+<div class="crs-strip">
+  <div class="crs-items">
+    @for (item of items; track item.key) {
+      <button
+        class="crs-btn"
+        [class.crs-btn--active]="activeKey === item.key"
+        (click)="activate(item.key)"
+        [title]="item.label"
+      >
+        <nx-icon [name]="item.icon" size="s"></nx-icon>
+      </button>
+    }
+  </div>
+  <div class="crs-footer">
+    <button class="crs-btn" (click)="toggleCollapse()" [title]="collapsed ? 'Expand' : 'Collapse'">
+      <nx-icon [name]="collapsed ? 'chevron-left' : 'chevron-right'" size="s"></nx-icon>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<div class="page-toolbar">
+  <h1>Sections</h1>
+</div>
+
+<!-- ── Sections Table ── -->
+<div class="table-card">
+  <div class="table-toolbar">
+    <button class="btn-add-entity" type="button">
+      Add Entity <nx-icon name="chevron-down-small"></nx-icon>
+    </button>
+  </div>
+  <table nxTable class="sections-table">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell class="col-toggle"></th>
+        <th nxHeaderCell class="col-entity">Entity</th>
+        <th nxHeaderCell class="col-damage">Damage</th>
+        <th nxHeaderCell class="col-status">Instruction status</th>
+        <th nxHeaderCell class="col-actions">Action</th>
+      </tr>
+    </thead>
+
+    @if (loading()) {
+      <tbody>
+        <tr nxTableRow>
+          <td nxTableCell colspan="5" style="text-align:center;padding:32px">
+            <nx-spinner size="medium"></nx-spinner>
+          </td>
+        </tr>
+      </tbody>
+    }
+
+    @if (loadError()) {
+      <tbody>
+        <tr nxTableRow>
+          <td nxTableCell colspan="5" style="text-align:center;padding:32px;color:var(--message-error-color)">
+            Failed to load sections. Please refresh.
+          </td>
+        </tr>
+      </tbody>
+    }
+
+    @if (!loading() && !loadError()) {
+    <tbody>
+      @for (section of sections(); track section.id) {
+        <!-- Section group header row -->
+        <tr nxTableRow class="section-header-row" [class.section-header-row--closed]="section.status === 'Closed'">
+          <td nxTableCell class="col-toggle">
+            <button nxIconButton="tertiary" type="button"
+              (click)="toggleSection(section.id)"
+              [attr.aria-label]="section.expanded ? 'collapse' : 'expand'">
+              <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+            </button>
+          </td>
+          <td nxTableCell colspan="3">
+            <div class="section-title-cell__inner">
+              <span class="section-title-cell__name">{{ section.name }}</span>
+              @if (section.status === 'Closed') {
+                <app-status-chip status="closed" domain="claim"></app-status-chip>
+              }
+            </div>
+          </td>
+          <td nxTableCell class="col-actions">
+            @if (closingSectionId() === section.id) {
+              <nx-spinner size="small"></nx-spinner>
+            } @else {
+              <button nxIconButton="tertiary" type="button"
+                [nxContextMenuTriggerFor]="sectionCtxMenu" aria-label="section menu">
+                <nx-icon name="ellipsis-v"></nx-icon>
+              </button>
+              <nx-context-menu #sectionCtxMenu="nxContextMenu">
+                <button nxContextMenuItem type="button"
+                  [disabled]="section.status === 'Closed'"
+                  [nxTooltip]="section.status === 'Closed' ? 'Section already closed' : ''"
+                  (click)="onCloseSection(section)">
+                  Close Section
+                </button>
+                <button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
+                <button nxContextMenuItem type="button" (click)="onAction('delete', section.name)">Delete</button>
+              </nx-context-menu>
+            }
+          </td>
+        </tr>
+
+        <!-- Entity rows (only when expanded) -->
+        @if (section.expanded) {
+          @for (entity of section.entities; track entity.id) {
+            <tr nxTableRow class="entity-row">
+              <td nxTableCell class="col-toggle">
+                @if (entity.expandable) {
+                  <button nxIconButton="tertiary" type="button" aria-label="expand entity">
+                    <nx-icon name="chevron-right-small"></nx-icon>
+                  </button>
+                }
+              </td>
+              <td nxTableCell class="col-entity">{{ entity.name }}</td>
+              <td nxTableCell class="col-damage">{{ entity.damage }}</td>
+              <td nxTableCell class="col-status">
+                <span class="status-chip status-chip--{{ statusClass(entity.instructionStatus) }}">
+                  {{ entity.instructionStatus }}
+                </span>
+              </td>
+              <td nxTableCell class="col-actions">
+                <button nxIconButton="tertiary" type="button"
+                  [nxContextMenuTriggerFor]="entityCtxMenu" aria-label="entity menu">
+                  <nx-icon name="ellipsis-v"></nx-icon>
+                </button>
+                <nx-context-menu #entityCtxMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="onAction('assign', entity.name)">Assign provider</button>
+                  <button nxContextMenuItem type="button" (click)="onAction('edit', entity.name)">Edit</button>
+                  <button nxContextMenuItem type="button" (click)="onAction('delete', entity.name)">Delete</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        }
+      }
+    </tbody>
+    }
+  </table>
+</div>

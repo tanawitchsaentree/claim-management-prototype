@@ -1,0 +1,127 @@
+$sidebar-width: 288px;
+$sidebar-collapsed-width: 56px;
+
+:host {
+  display: flex;
+  height: 100%;
+}
+
+.app-sidebar {
+  height: 100%;
+  width: $sidebar-width;
+  background: var(--ui-02);
+  border-right: 1px solid var(--ui-04);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  overflow: hidden;
+
+  &--collapsed {
+    width: $sidebar-collapsed-width;
+
+    .nav-item {
+      justify-content: center;
+      padding: 11px 0;
+    }
+
+    .nav-item__label {
+      opacity: 0;
+      width: 0;
+    }
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+// ─── Nav item ─────────────────────────────────────────────────────────────────
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  color: var(--text-01);
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+
+  nx-icon {
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+
+  &:hover {
+    background: var(--interactive-primary);
+    color: var(--button-primary-text-color);
+
+    nx-icon { color: var(--button-primary-text-color); }
+  }
+
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--button-primary-text-color);
+    font-weight: 600;
+
+    nx-icon { color: var(--button-primary-text-color); }
+
+    &:hover {
+      background: var(--interactive-primary);
+    }
+  }
+}
+
+.nav-item__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 1;
+  width: auto;
+  transition: opacity 0.15s ease, width 0.25s ease;
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid var(--ui-04);
+  flex-shrink: 0;
+
+  .app-sidebar--collapsed & {
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 0;
+  }
+}
+
+.sidebar-footer__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: var(--claim-overlay-nav-hover);
+    color: var(--text-01);
+  }
+}

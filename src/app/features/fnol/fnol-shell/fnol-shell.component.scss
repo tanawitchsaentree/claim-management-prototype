@@ -1,0 +1,121 @@
+.fnol-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ui-01);
+}
+
+// ─── Header ───────────────────────────────────────────────────────
+
+.fnol-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.fnol-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fnol-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ─── Policy popover content ────────────────────────────────────────
+
+.policy-popover {
+  min-width: 260px;
+  padding: 4px 0;
+}
+
+.policy-popover__label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+}
+
+.policy-popover__value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.policy-popover__meta {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0 0 2px;
+}
+
+.policy-popover__footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-04);
+}
+
+.policy-popover__empty {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.fnol-logo { flex-shrink: 0; }
+
+.fnol-brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-01);
+  letter-spacing: 0.5px;
+}
+
+// ─── Body ─────────────────────────────────────────────────────────
+
+.fnol-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+// Wizard: sidebar + content
+.fnol-body--wizard {
+  align-items: stretch;
+}
+
+.fnol-sidebar {
+  width: 288px;
+  flex-shrink: 0;
+  padding: var(--layout-inset-base) 24px var(--layout-inset-base) var(--layout-inset-base);
+  border-right: 1px solid var(--ui-04);
+  overflow-y: auto;
+}
+
+.fnol-content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--layout-inset-base) var(--layout-inset-base) 48px;
+  overflow-y: auto;
+}
+
+// Standalone: no sidebar, full-width content
+.fnol-body--standalone {
+  justify-content: center;
+}
+
+.fnol-content--standalone {
+  max-width: 1100px;
+  width: 100%;
+  padding: var(--layout-inset-base) var(--layout-inset-base) 48px;
+}

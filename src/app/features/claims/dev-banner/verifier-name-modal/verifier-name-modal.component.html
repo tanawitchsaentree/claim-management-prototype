@@ -1,0 +1,30 @@
+<div class="vnm-header">
+  <h2 class="vnm-title">Verification signature</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="vnm-body">
+  <p class="vnm-desc">
+    Enter your name to sign off this acceptance criterion.
+    Used for all future verifications in this session.
+  </p>
+
+  <nx-formfield label="Your name">
+    <input nxInput
+           [formControl]="nameCtrl"
+           (keyup.enter)="onConfirm()"
+           placeholder="e.g. Anna Schmidt"
+           autocomplete="off">
+  </nx-formfield>
+</div>
+
+<div class="vnm-footer">
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="!(nameCtrl.value ?? '').trim()"
+          (click)="onConfirm()">
+    Confirm
+  </button>
+</div>

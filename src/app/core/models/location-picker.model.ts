@@ -1,0 +1,36 @@
+export interface PolicyLocation {
+  id: string;
+  policyNumber: string;
+  name: string;
+  addressLine1: string;
+  addressLine2?: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  state?: string;
+  propertyId?: string;
+  type: string;
+  active: boolean;
+}
+
+export interface LocationItem {
+  id: string;
+  source: 'policy' | 'manual';
+  displayName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  state?: string;
+  propertyId?: string;
+  latitude?: number;
+  longitude?: number;
+  additionalInfo?: string;
+  policyLocationRef?: string;
+}
+
+export interface LocationPickerOutput {
+  locations: LocationItem[];
+  // TODO: per-event location mode (UC-4) — awaiting design
+}

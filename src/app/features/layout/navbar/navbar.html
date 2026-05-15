@@ -1,0 +1,30 @@
+<nx-header>
+  <nx-header-brand>
+    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="16" fill="#003781"/>
+      <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
+    </svg>
+    <nx-header-app-title>Commercial Claims</nx-header-app-title>
+  </nx-header-brand>
+
+  <nx-header-navigation>
+    <nx-header-navigation-item>
+      <a nxHeaderLink routerLink="/dashboard" routerLinkActive="is-active">Dashboard</a>
+    </nx-header-navigation-item>
+    <nx-header-navigation-item>
+      <a nxHeaderLink routerLink="/dashboard" routerLinkActive="is-active">Claims</a>
+    </nx-header-navigation-item>
+    <nx-header-navigation-item>
+      <a nxHeaderLink routerLink="/parties" routerLinkActive="is-active">Parties</a>
+    </nx-header-navigation-item>
+    <nx-header-navigation-item>
+      <a nxHeaderLink routerLink="/tasks" routerLinkActive="is-active">Task manager</a>
+    </nx-header-navigation-item>
+  </nx-header-navigation>
+
+  <nx-header-actions>
+    <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name">
+      {{ initials }}
+    </button>
+  </nx-header-actions>
+</nx-header>

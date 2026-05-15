@@ -1,0 +1,184 @@
+// BLESSED: layout from step-loss-information.component.scss (.step-page, .step-footer, .step-footer-actions)
+.step-page {
+  padding: 8px 0 48px;
+  max-width: 960px;
+}
+
+.step-breadcrumb {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.step-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 24px;
+  line-height: 1.2;
+}
+
+.section-heading {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 16px;
+}
+
+// ── Cards ──────────────────────────────────────────────────────────────────────
+
+.ss-card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+  background: var(--ui-01);
+}
+
+// ── Data list (label + value rows) ─────────────────────────────────────────────
+
+.ss-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ss-row {
+  display: flex;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ui-03);
+
+  &:last-child { border-bottom: none; }
+}
+
+.ss-label {
+  width: 200px;
+  flex-shrink: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  font-weight: 400;
+  padding-top: 2px;
+}
+
+.ss-value {
+  flex: 1;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+// ── Tags (chips for multi-value fields) ────────────────────────────────────────
+
+.ss-tag {
+  display: inline-block;
+  background: var(--ui-02);
+  color: var(--text-01);
+  border-radius: 2px;
+  padding: 1px 8px;
+  font-size: var(--paragraph-03-font-size);
+}
+
+.ss-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.ss-non-covered {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+// ── Accordion (claims to be created) ──────────────────────────────────────────
+
+.ss-accordion {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  margin-bottom: 8px;
+
+  &[open] .ss-accordion-summary::after { transform: rotate(180deg); }
+}
+
+.ss-accordion-summary {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  user-select: none;
+
+  &::-webkit-details-marker { display: none; }
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23404040' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-size: contain;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  &:hover { background: var(--hover-secondary); }
+}
+
+.ss-accordion-body {
+  padding: 0 16px 12px;
+  border-top: 1px solid var(--ui-03);
+}
+
+.ss-empty-state {
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+  margin: 0;
+  padding: 16px 0;
+}
+
+// ── Config row (switcher) ──────────────────────────────────────────────────────
+
+.ss-config-row {
+  display: flex;
+  align-items: center;
+}
+
+// ── Narrative ─────────────────────────────────────────────────────────────────
+
+.ss-narrative {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__icon { color: var(--interactive-primary); flex-shrink: 0; }
+  &__reason { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); }
+  &__notes {
+    margin: 6px 0 0 24px;
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+}
+
+// ── Misc ──────────────────────────────────────────────────────────────────────
+
+.submit-banner { margin-bottom: 16px; }
+.ss-loading { color: var(--text-muted); font-size: var(--paragraph-03-font-size); }
+
+// Footer styles live in WizardFooterComponent
+// .step-footer used only for the post-submit Close button row
+.step-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+}

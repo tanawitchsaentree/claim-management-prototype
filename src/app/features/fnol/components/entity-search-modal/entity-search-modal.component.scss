@@ -1,0 +1,154 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+// ─── Header ─────────────────────────────────────────────────────────────────
+
+.esm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.esm-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+// ─── Body ────────────────────────────────────────────────────────────────────
+
+.esm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+// ─── Filter form ─────────────────────────────────────────────────────────────
+
+.esm-filter-form {
+  margin-bottom: 4px;
+}
+
+.esm-filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.esm-field {
+  margin-bottom: 0 !important;
+}
+
+.esm-filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.esm-filter-btns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.esm-filter-note {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  padding-bottom: 20px;
+}
+
+// ─── Results ─────────────────────────────────────────────────────────────────
+
+.esm-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0;
+  border-top: 1px solid var(--ui-04);
+  margin-top: 8px;
+}
+
+.esm-loading-label {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.esm-results {
+  margin-top: 8px;
+  border-top: 1px solid var(--ui-04);
+  padding-top: 16px;
+}
+
+.esm-results-meta {
+  margin-bottom: 12px;
+}
+
+.esm-results-count {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.esm-empty {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  padding: 24px 0;
+  text-align: center;
+}
+
+// ─── Table ───────────────────────────────────────────────────────────────────
+
+.esm-table {
+  width: 100%;
+  border-top: 1px solid var(--ui-04);
+}
+
+.esm-col-check   { width: 48px; padding-left: 16px !important; }
+.esm-col-id      { width: 160px; }
+.esm-col-name    { min-width: 160px; }
+.esm-col-street  { min-width: 160px; }
+.esm-col-city    { width: 120px; }
+.esm-col-country { width: 120px; }
+
+.esm-row--selected {
+  background: var(--claim-overlay-hover);
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+.esm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--ui-04);
+
+  &--no-results {
+    border-top: none;
+  }
+}
+
+.esm-selected-count {
+  margin-right: auto;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.esm-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

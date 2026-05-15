@@ -1,0 +1,202 @@
+<ng-container *ngIf="vm$ | async as vm">
+<div class="step-page">
+
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Entities &amp; damages</h1>
+
+  <!-- Toolbar -->
+  <div class="ed-toolbar">
+    <div class="ed-toolbar__filters">
+      <div class="ed-toolbar__filter-inputs">
+        <nx-formfield label="Entity" class="filter-field">
+          <input nxInput [formControl]="filterEntityCtrl" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Status" class="filter-field">
+          <nx-dropdown [formControl]="filterStatusCtrl" placeholder="Select">
+            <nx-dropdown-item [value]="null">All</nx-dropdown-item>
+            <nx-dropdown-item value="promised">Promised</nx-dropdown-item>
+            <nx-dropdown-item value="conditional">Conditional</nx-dropdown-item>
+            <nx-dropdown-item value="by-extension">By extension</nx-dropdown-item>
+            <nx-dropdown-item value="not-promised">Not promised</nx-dropdown-item>
+          </nx-dropdown>
+        </nx-formfield>
+      </div>
+      <div class="ed-toolbar__filter-actions">
+        <button nxButton="primary small" type="button">Filter</button>
+        <button nxPlainButton type="button" (click)="resetFilter()">Reset filters</button>
+      </div>
+    </div>
+    <div class="ed-toolbar__meta">
+      <div class="ed-toolbar__meta-left">
+        <span class="ed-count">Number of entities: <strong>{{ totalEntities(vm.data) }}</strong></span>
+        <nx-switcher [checked]="showSelectedOnly" (checkedChange)="showSelectedOnly = $event">
+          Show selected only
+        </nx-switcher>
+      </div>
+      <div class="ed-toolbar__meta-right">
+        <button nxButton="secondary small" type="button" [nxContextMenuTriggerFor]="addEntityMenu">
+          Add Entity <nx-icon name="chevron-down-small" nxIconPositionEnd></nx-icon>
+        </button>
+        <nx-context-menu #addEntityMenu="nxContextMenu">
+          @for (type of entityTypes; track type) {
+            <button nxContextMenuItem type="button" (click)="openSearchModal(type)">
+              {{ entityTypeLabels[type] }}
+            </button>
+          }
+        </nx-context-menu>
+      </div>
+    </div>
+  </div>
+
+  @if (vm.loading) {
+    <div class="loading-state">
+      <nx-spinner size="medium"></nx-spinner>
+      <span class="loading-label">Loading entities…</span>
+    </div>
+  }
+
+  @if (vm.error) {
+    <nx-message context="error">Failed to load entities. Please go back and try again.</nx-message>
+  }
+
+  @if (!vm.loading && !vm.error) {
+    @if (vm.data.sections.length === 0) {
+      <nx-message context="info">No entities found for this policy.</nx-message>
+    }
+
+    @for (section of vm.data.sections; track section.promiseStatus) {
+      <section class="promise-section" [class.promise-section--not-promised]="section.promiseStatus === 'not-promised'">
+
+        <button type="button" class="promise-section__header" (click)="toggleSection(section)">
+          <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'" class="section-chevron"></nx-icon>
+          <strong class="section-label">{{ section.label }}</strong>
+        </button>
+
+        @if (section.expanded) {
+          <div class="promise-section__body">
+            @for (group of section.damageGroups; track group.damageTypeKey) {
+              <div class="damage-group">
+                <button type="button" class="damage-group__header" (click)="toggleGroup(group)">
+                  <nx-icon [name]="group.expanded ? 'chevron-down-small' : 'chevron-right-small'" class="group-chevron"></nx-icon>
+                  <span class="damage-group__title">{{ group.damageType }}</span>
+                </button>
+
+                @if (group.expanded) {
+                  <table nxTable class="ed-table">
+                    <thead>
+                      <tr nxTableRow>
+                        <th nxHeaderCell class="col-check"></th>
+                        <th nxHeaderCell class="col-name">Entity</th>
+                        <th nxHeaderCell class="col-status">Status</th>
+                        @if (section.promiseStatus === 'not-promised') {
+                          <th nxHeaderCell class="col-events">Covered for events</th>
+                        }
+                        <th nxHeaderCell class="col-limit">Limit</th>
+                        <th nxHeaderCell class="col-covered">Covered by</th>
+                        <th nxHeaderCell class="col-action"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (entity of filteredEntities(group); track entity.entityId) {
+                        <tr nxTableRow class="entity-row"
+                            [attr.data-entity-id]="entity.entityId"
+                            [class.entity-row--selected]="isChecked(entity)"
+                            [class.entity-row--recently-added]="entity.recentlyAdded"
+                            [class.entity-row--expandable]="entity.subItems && entity.subItems.length > 0">
+                          <td nxCell class="col-check">
+                            <nx-checkbox
+                              class="entity-checkbox"
+                              [class.entity-checkbox--visible]="hasAnySelection(entity)"
+                              [checked]="isChecked(entity)"
+                              [indeterminate]="isIndeterminate(entity)"
+                              (checkedChange)="onEntityToggle(entity, $event)"
+                              [attr.aria-label]="entity.subItems?.length ? 'Select all items of ' + entity.name : 'Select ' + entity.name">
+                            </nx-checkbox>
+                          </td>
+                          <td nxCell class="col-name">
+                            <div class="entity-cell">
+                              @if (entity.subItems && entity.subItems.length > 0) {
+                                <button nxIconButton="tertiary small" type="button" (click)="entity.expanded = !entity.expanded">
+                                  <nx-icon [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+                                </button>
+                              }
+                              <span>{{ entity.name }}</span>
+                            </div>
+                          </td>
+                          <td nxCell class="col-status">
+                            <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
+                          </td>
+                          @if (section.promiseStatus === 'not-promised') {
+                            <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '—' }}</td>
+                          }
+                          <td nxCell class="col-limit">{{ entity.limit }}</td>
+                          <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
+                          <td nxCell class="col-action">
+                            <button nxIconButton="tertiary small" type="button" [nxContextMenuTriggerFor]="entityMenu" aria-label="Entity actions">
+                              <nx-icon name="ellipsis-v"></nx-icon>
+                            </button>
+                            <nx-context-menu #entityMenu="nxContextMenu">
+                              <button nxContextMenuItem type="button" (click)="onViewDetails(entity)">View details</button>
+                              <button nxContextMenuItem type="button" (click)="onMoveEntity(entity)">Move to…</button>
+                              <button nxContextMenuItem type="button" (click)="onRemoveEntity(entity)">Remove from list</button>
+                            </nx-context-menu>
+                          </td>
+                        </tr>
+                        @if (entity.expanded && entity.subItems && entity.subItems.length > 0) {
+                          @for (sub of entity.subItems; track sub.itemId) {
+                            <tr nxTableRow class="sub-item-row" @rowsExpand>
+                              <td nxCell class="col-check"></td>
+                              <td nxCell class="col-name">
+                                <div class="sub-item__cell">
+                                  <nx-checkbox [checked]="sub.selected" (checkedChange)="onSubItemToggle(entity, sub, $event)"></nx-checkbox>
+                                  <span class="sub-item__name">{{ sub.name }}</span>
+                                </div>
+                              </td>
+                              <td nxCell class="col-status"></td>
+                              @if (section.promiseStatus === 'not-promised') {
+                                <td nxCell class="col-events"></td>
+                              }
+                              <td nxCell class="col-limit"></td>
+                              <td nxCell class="col-covered"></td>
+                              <td nxCell class="col-action"></td>
+                            </tr>
+                          }
+                        }
+                      }
+                    </tbody>
+                  </table>
+                }
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+
+  <!-- Footer -->
+  <app-wizard-footer
+    (cancel)="onCancel()"
+    (back)="onBack()"
+    (next)="onNext()">
+  </app-wizard-footer>
+
+</div>
+
+<!-- Overlay side sheet — floats over table, does not compress it -->
+@if (panelOpen) {
+  <div class="side-sheet-backdrop" (click)="onClosePanel()" aria-hidden="true"></div>
+}
+@if (selectedEntity) {
+  <div class="side-sheet" [class.side-sheet--open]="panelOpen" role="dialog" aria-modal="true" aria-label="Entity details">
+    <app-entity-detail-panel
+      [entity]="selectedEntity"
+      [policyNumber]="policyNumber"
+      [open]="panelOpen"
+      (closePanel)="onClosePanel()"
+      (itemSaved)="onItemSaved()">
+    </app-entity-detail-panel>
+  </div>
+}
+
+</ng-container>

@@ -1,0 +1,83 @@
+[
+  {
+    "fnolId": "FNOL-2024-001",
+    "claimId": "CLM-2024-001",
+    "submittedDate": "2024-01-15",
+    "submitter": "Lukas Schneider",
+    "policyNumber": "POL-2023-010",
+    "lossDate": "2024-01-14",
+    "lossDescription": "Fire broke out in warehouse section B at 03:15 local time. Fire brigade attended. Sprinkler activation caused secondary water damage.",
+    "lossAmount": 425000,
+    "currency": "EUR",
+    "attachments": [
+      { "filename": "fire_report.pdf", "size": 2457600, "mimeType": "application/pdf" },
+      { "filename": "site_photos.zip", "size": 15728640, "mimeType": "application/zip" }
+    ],
+    "status": "Converted"
+  },
+  {
+    "fnolId": "FNOL-2024-002",
+    "claimId": "CLM-2024-002",
+    "submittedDate": "2024-02-03",
+    "submitter": "Björn Ö'Brien",
+    "policyNumber": "POL-2024-002",
+    "lossDate": "2024-02-01",
+    "lossDescription": "Ransomware detected on internal file servers at 09:40. IT team isolated affected machines. Ransom note demands €85,000 in Bitcoin within 72 hours.",
+    "lossAmount": 87500,
+    "currency": "EUR",
+    "attachments": [
+      { "filename": "ransom_note_screenshot.png", "size": 204800, "mimeType": "image/png" },
+      { "filename": "it_incident_report.pdf",     "size": 1048576, "mimeType": "application/pdf" }
+    ],
+    "status": "Converted"
+  },
+  {
+    "fnolId": "FNOL-2024-003",
+    "claimId": null,
+    "submittedDate": "2024-06-10",
+    "submitter": "Anna Müller",
+    "policyNumber": "POL-2024-004",
+    "lossDate": "2024-06-08",
+    "lossDescription": "Customer slipped on wet floor in Marvel SE showroom. Taken to hospital. Extent of injuries unknown at this stage.",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "attachments": [
+      { "filename": "incident_form.pdf", "size": 512000, "mimeType": "application/pdf" }
+    ],
+    "status": "Under review",
+    "_scenario": "not-yet-converted boundary-zero-amount"
+  },
+  {
+    "fnolId": "FNOL-2024-004",
+    "claimId": null,
+    "submittedDate": "2026-05-07",
+    "submitter": "Felix Bauer",
+    "policyNumber": "POL-2024-010",
+    "lossDate": "2026-05-06",
+    "lossDescription": "Liability dispute escalated by Björn Ö'Brien & \"Partners\" regarding alleged contractual breach during Q1 2026 project delivery.",
+    "lossAmount": 47300,
+    "currency": "GBP",
+    "attachments": [],
+    "status": "Submitted",
+    "_scenario": "date-edge-today not-yet-converted no-attachments"
+  },
+  {
+    "fnolId": "FNOL-2024-005",
+    "claimId": "CLM-2024-016",
+    "submittedDate": "2024-08-01",
+    "submitter": "Maximilian Koch",
+    "policyNumber": "POL-2024-006",
+    "lossDate": "2024-07-30",
+    "lossDescription": "Heavy rainfall landslide. Perimeter wall destroyed. Significant stock damage. Environmental concerns flagged. Full extent TBC pending survey.",
+    "lossAmount": 670000,
+    "currency": "CHF",
+    "attachments": [
+      { "filename": "drone_survey.mp4",       "size": 104857600, "mimeType": "video/mp4"         },
+      { "filename": "police_report.pdf",      "size": 768000,    "mimeType": "application/pdf"   },
+      { "filename": "weather_data.xlsx",      "size": 102400,    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+      { "filename": "site_photos_01.jpg",     "size": 3145728,   "mimeType": "image/jpeg"        },
+      { "filename": "site_photos_02.jpg",     "size": 2621440,   "mimeType": "image/jpeg"        }
+    ],
+    "status": "Converted"
+  }
+]

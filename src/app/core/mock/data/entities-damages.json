@@ -1,0 +1,425 @@
+{
+  "POL-2024-001": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-001",
+                "name": "Kaufmann's Warehouse",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "50,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 1,
+                "selected": false,
+                "damageItems": [
+                  {
+                    "itemId": "DMG-001",
+                    "description": "Loading dock door damaged",
+                    "causeOfLoss": "fire",
+                    "amount": 5000,
+                    "currency": "EUR",
+                    "status": "open",
+                    "notes": "Door mechanism warped from heat",
+                    "documents": [
+                      {
+                        "fileId": "DOC-001",
+                        "fileName": "damage_photo_01.jpg",
+                        "fileSize": 245000,
+                        "uploadedAt": "2024-05-15T10:30:00Z"
+                      }
+                    ]
+                  },
+                  {
+                    "itemId": "DMG-002",
+                    "description": "Roof section collapsed",
+                    "causeOfLoss": "fire",
+                    "amount": 15000,
+                    "currency": "EUR",
+                    "status": "assessed",
+                    "documents": []
+                  }
+                ]
+              },
+              {
+                "entityId": "ENT-002",
+                "name": "Kaufmann's Vehicles",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "50,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false,
+                "damageItems": [
+                  {
+                    "itemId": "DMG-010",
+                    "description": "Interior water damage — Vehicle G8P012345642E",
+                    "causeOfLoss": "water-damage",
+                    "amount": 3200,
+                    "currency": "EUR",
+                    "status": "open",
+                    "documents": []
+                  }
+                ],
+                "subItems": [
+                  { "itemId": "G8P012345642E", "name": "Vehicle G8P012345642E", "selected": false },
+                  { "itemId": "G8P004567894R", "name": "Vehicle G8P004567894R", "selected": false }
+                ]
+              },
+              {
+                "entityId": "ENT-003",
+                "name": "Kaufmann's Container Ship",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "80% of New price (EUR)",
+                "coveredBy": "FLExA for Marine Vessels",
+                "documentsCount": 0,
+                "selected": false,
+                "damageItems": [
+                  {
+                    "itemId": "DMG-020",
+                    "description": "Hull breach — port side deck 3",
+                    "causeOfLoss": "storm",
+                    "amount": 42000,
+                    "currency": "EUR",
+                    "status": "assessed",
+                    "notes": "Structural inspection report pending",
+                    "documents": []
+                  }
+                ]
+              },
+              {
+                "entityId": "ENT-004",
+                "name": "Kaufmann's Barge",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "80% of New price (EUR)",
+                "coveredBy": "FLExA for Marine Vessels",
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          },
+          {
+            "damageType": "Financial Loss",
+            "damageTypeKey": "financial-loss",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-005",
+                "name": "Sales of Machinery and Equipment",
+                "status": "conditional",
+                "promiseStatus": "possibly-promised",
+                "limit": "20% of Annual turnover (EUR)",
+                "coveredBy": "Business Interruption caused by FLExA",
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          },
+          {
+            "damageType": "Bodily injury",
+            "damageTypeKey": "bodily-injury",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-006",
+                "name": "Kaufmann's Company Employees",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "150,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "EMP-001", "name": "Employee group A", "selected": false },
+                  { "itemId": "EMP-002", "name": "Employee group B", "selected": false },
+                  { "itemId": "EMP-003", "name": "Employee group C", "selected": false }
+                ]
+              },
+              {
+                "entityId": "ENT-007",
+                "name": "Kaufmann's Company Customers",
+                "status": "by-extension",
+                "promiseStatus": "possibly-promised",
+                "limit": "150,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "CUS-001", "name": "Customer segment A", "selected": false },
+                  { "itemId": "CUS-002", "name": "Customer segment B", "selected": false }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "promiseStatus": "not-promised",
+        "label": "Not promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-101",
+                "name": "Kaufmann's Garage",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "FLExA for Building",
+                "coveredForEvents": ["Flood", "Riot"],
+                "documentsCount": 0,
+                "selected": false
+              },
+              {
+                "entityId": "ENT-102",
+                "name": "Kaufmann's Containers",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "FLExA for Marine Vessels",
+                "coveredForEvents": ["Flood", "Riot"],
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          },
+          {
+            "damageType": "Financial Loss",
+            "damageTypeKey": "financial-loss",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-103",
+                "name": "Equipment transport service",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "Business Interruption caused by FLExA",
+                "coveredForEvents": ["Flood", "Riot"],
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          },
+          {
+            "damageType": "Liability",
+            "damageTypeKey": "liability",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-104",
+                "name": "Kaufmann's Company Employees",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "FLExA for Building",
+                "coveredForEvents": ["Fire"],
+                "documentsCount": 0,
+                "selected": false
+              },
+              {
+                "entityId": "ENT-105",
+                "name": "Kaufmann's Company Customers",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "FLExA for Building",
+                "coveredForEvents": ["Fire"],
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2024-006": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-201",
+                "name": "Müller AG — Reception Equipment",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "30,000 EUR",
+                "coveredBy": "Contents & Equipment",
+                "documentsCount": 2,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "PI-201", "name": "Reception desk unit", "selected": false }
+                ]
+              },
+              {
+                "entityId": "ENT-202",
+                "name": "Müller AG — Server Room Assets",
+                "status": "conditional",
+                "promiseStatus": "possibly-promised",
+                "limit": "60,000 EUR",
+                "coveredBy": "Contents & Equipment",
+                "documentsCount": 4,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "PI-202", "name": "Server rack A", "selected": false },
+                  { "itemId": "PI-203", "name": "Server rack B", "selected": false }
+                ]
+              },
+              {
+                "entityId": "ENT-203",
+                "name": "Müller AG — Ground Floor Safe",
+                "status": "by-extension",
+                "promiseStatus": "possibly-promised",
+                "limit": "10,000 EUR",
+                "coveredBy": "Contents & Equipment",
+                "documentsCount": 0,
+                "selected": false
+              },
+              {
+                "entityId": "ENT-204",
+                "name": "Müller AG — Basement Archive",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "25,000 EUR",
+                "coveredBy": "Property All Risk",
+                "documentsCount": 1,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "PI-204", "name": "Archive section 1", "selected": false }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "promiseStatus": "not-promised",
+        "label": "Not promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-251",
+                "name": "Müller AG — Parking Equipment",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "Contents & Equipment",
+                "coveredForEvents": ["Theft", "Vandalism"],
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2024-009": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-301",
+                "name": "Becker Industries — Roof Structure",
+                "status": "conditional",
+                "promiseStatus": "possibly-promised",
+                "limit": "150,000 EUR",
+                "coveredBy": "Property All Risk",
+                "documentsCount": 5,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "PI-301", "name": "Section A", "selected": false },
+                  { "itemId": "PI-302", "name": "Section B", "selected": false },
+                  { "itemId": "PI-303", "name": "Section C", "selected": false }
+                ]
+              },
+              {
+                "entityId": "ENT-302",
+                "name": "Becker Industries — Outdoor Machinery",
+                "status": "by-extension",
+                "promiseStatus": "possibly-promised",
+                "limit": "40,000 EUR",
+                "coveredBy": "Machinery & Plant",
+                "documentsCount": 0,
+                "selected": false
+              },
+              {
+                "entityId": "ENT-303",
+                "name": "Becker Industries — Production Hall B",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "250,000 EUR",
+                "coveredBy": "Property All Risk",
+                "documentsCount": 2,
+                "selected": false,
+                "subItems": [
+                  { "itemId": "PI-304", "name": "Hall B north wing", "selected": false }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "promiseStatus": "not-promised",
+        "label": "Not promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-351",
+                "name": "Becker Industries — Storage Yard",
+                "status": "not-promised",
+                "promiseStatus": "not-promised",
+                "limit": "—",
+                "coveredBy": "Machinery & Plant",
+                "coveredForEvents": ["Storm", "Hail"],
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

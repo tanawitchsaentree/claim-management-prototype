@@ -1,0 +1,59 @@
+<div class="fnol-shell">
+  <app-dev-helper-banner></app-dev-helper-banner>
+
+  <header class="fnol-header">
+    <div class="fnol-header-brand">
+      <svg class="fnol-logo" width="32" height="32" viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="16" fill="#003781"/>
+        <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
+      </svg>
+      <span class="fnol-brand-name">CHAMP</span>
+    </div>
+
+    <div class="fnol-header-actions">
+      <button nxIconButton="tertiary small" type="button"
+              aria-label="Policy context"
+              [nxPopoverTriggerFor]="policyPopover"
+              nxPopoverTrigger="click"
+              nxPopoverDirection="bottom">
+        <nx-icon name="info-circle-o"></nx-icon>
+      </button>
+    </div>
+  </header>
+
+  <nx-popover #policyPopover>
+    @if (policyContext) {
+      <div class="policy-popover">
+        <p class="policy-popover__label">Claim for</p>
+        <p class="policy-popover__value">{{ policyContext.policyNumber }}</p>
+        <p class="policy-popover__value">{{ policyContext.clientName }}</p>
+        <p class="policy-popover__meta">{{ policyContext.lineOfBusiness }} &middot; Premium: {{ policyContext.premium | number:'1.0-0' }} {{ policyContext.currency }}</p>
+        <p class="policy-popover__meta">Effective: {{ policyContext.effectiveDate | date:'dd-MM-yyyy' }}</p>
+        <div class="policy-popover__footer">
+          <nx-link><a routerLink="/claims" (click)="$event.preventDefault()">View policy details</a></nx-link>
+        </div>
+      </div>
+    } @else {
+      <div class="policy-popover">
+        <p class="policy-popover__empty">No policy selected (skeleton claim)</p>
+      </div>
+    }
+  </nx-popover>
+
+  <div
+    class="fnol-body"
+    [class.fnol-body--wizard]="showStepper$ | async"
+    [class.fnol-body--standalone]="!(showStepper$ | async)"
+  >
+    <aside class="fnol-sidebar" *ngIf="showStepper$ | async">
+      <app-fnol-stepper [steps]="(steps$ | async) ?? []"></app-fnol-stepper>
+    </aside>
+
+    <main
+      class="fnol-content"
+      [class.fnol-content--standalone]="!(showStepper$ | async)"
+    >
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="arm-header">
+  <h2 class="arm-title">{{ data.prefill ? 'Edit reserve' : 'Add reserve' }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="arm-body">
+  <form [formGroup]="form" class="arm-form">
+
+    <nx-formfield label="Party">
+      <nx-dropdown formControlName="partyId" placeholder="Select party">
+        @for (party of parties; track party.partyId) {
+          <nx-dropdown-item [value]="party.partyId">{{ party.legalName }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      @if (form.get('partyId')?.invalid && form.get('partyId')?.touched) {
+        <nx-error nxFormfieldError>Party is required</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Damage type">
+      <nx-dropdown formControlName="damageTypeKey" placeholder="Select damage type">
+        @for (opt of damageOptions; track opt.key) {
+          <nx-dropdown-item [value]="opt.key">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      @if (form.get('damageTypeKey')?.invalid && form.get('damageTypeKey')?.touched) {
+        <nx-error nxFormfieldError>Damage type is required</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Reserve type">
+      <nx-dropdown formControlName="reserveType" placeholder="Select reserve type">
+        @for (opt of reserveTypeOptions; track opt.value) {
+          <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      @if (form.get('reserveType')?.invalid && form.get('reserveType')?.touched) {
+        <nx-error nxFormfieldError>Reserve type is required</nx-error>
+      }
+    </nx-formfield>
+
+    <div class="arm-checkbox-row">
+      <nx-checkbox formControlName="itemLevel">
+        Make reserve on damaged item level
+      </nx-checkbox>
+    </div>
+
+    @if (itemLevel) {
+      <nx-formfield label="Damaged item">
+        <nx-dropdown formControlName="damagedItemId" placeholder="Select damaged item">
+          @if (selectedDamageGroup) {
+            @for (entity of selectedDamageGroup.entities; track entity.entityId) {
+              <nx-dropdown-item [value]="entity.entityId">{{ entity.name }}</nx-dropdown-item>
+            }
+          }
+          @if (!selectedDamageGroup || selectedDamageGroup.entities.length === 0) {
+            <nx-dropdown-item [value]="''" disabled>No items — select damage type first</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        @if (form.get('damagedItemId')?.invalid && form.get('damagedItemId')?.touched) {
+          <nx-error nxFormfieldError>Damaged item is required</nx-error>
+        }
+      </nx-formfield>
+    }
+
+  </form>
+
+  <div class="arm-footer">
+    <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!canAdd"
+            (click)="onAdd()">
+      {{ data.prefill ? 'Save' : 'Add reserve' }}
+    </button>
+  </div>
+</div>

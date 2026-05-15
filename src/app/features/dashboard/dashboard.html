@@ -1,0 +1,349 @@
+<ng-container *ngIf="vm$ | async as vm">
+
+<div class="page-shell">
+
+  <!-- ══════════════════ TOP HEADER ══════════════════ -->
+  <header class="top-header">
+    <div class="header-first-slot">
+      <svg class="header-logo" width="32" height="32" viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="16" fill="#003781"/>
+        <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
+      </svg>
+      <div class="header-title-divider"></div>
+      <span class="header-app-title">Commercial Claims</span>
+      <nav class="top-nav">
+        <button class="nav-tab nav-tab--active">Dashboard</button>
+        <button class="nav-tab">Claims</button>
+        <button class="nav-tab">Parties</button>
+        <button class="nav-tab">Task manager</button>
+        <button class="nav-tab">Administration</button>
+        <button class="nav-tab">Approvals</button>
+      </nav>
+    </div>
+    <div class="header-last-slot">
+      <div class="search-wrapper">
+        <input class="search-input" placeholder="Search..." />
+        <button type="button" class="search-btn" aria-label="search">
+          <nx-icon name="search"></nx-icon>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button nxIconButton="tertiary" type="button" aria-label="notifications">
+          <nx-icon name="bell-o"></nx-icon>
+        </button>
+        <button nxIconButton="tertiary" type="button" aria-label="apps">
+          <nx-icon name="grid"></nx-icon>
+        </button>
+      </div>
+      <div class="user-avatar">MM</div>
+    </div>
+  </header>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="body-layout">
+
+    <!-- ══════════════════ MAIN CONTENT (left) ══════════════════ -->
+    <main class="main-content">
+
+      <!-- Page headline row -->
+      <div class="page-headline-row">
+        <h1 class="page-headline">Welcome Mara Mustermann</h1>
+      </div>
+
+
+      <!-- ── Loading state ── -->
+      @if (vm.loading) {
+        <div class="widget-loading">
+          <nx-spinner size="medium"></nx-spinner>
+          <span class="text-muted">Loading dashboard…</span>
+        </div>
+      }
+
+      <!-- ── Error state ── -->
+      @if (vm.error) {
+        <div class="widget-error">
+          <nx-icon name="exclamation-triangle-o" class="widget-error-icon"></nx-icon>
+          <span>{{ vm.error }}</span>
+        </div>
+      }
+
+      <!-- ── Data states ── -->
+      @if (!vm.loading && !vm.error) {
+
+        <!-- Task list widget -->
+        <div class="widget-card widget-card--tasklist">
+          <div class="widget-header">
+            <div class="widget-header-left">
+              <div class="widget-icon-wrap">
+                <nx-icon name="product-to-do-list" class="widget-icon"></nx-icon>
+              </div>
+              <span class="widget-title">Task list</span>
+            </div>
+            <a class="widget-link">View all tasks</a>
+          </div>
+
+          <div class="widget-toggle-row">
+            <nx-switcher>Show my tasks only</nx-switcher>
+          </div>
+
+          @if (vm.tasks.length === 0) {
+            <div class="widget-empty">No tasks assigned.</div>
+          } @else {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th><span class="th-sort">Task type <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                  <th>Description</th>
+                  <th><span class="th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                  <th><span class="th-sort">Due date <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                  <th>Task key</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (task of vm.tasks; track task.taskId) {
+                  <tr class="data-row">
+                    <td>{{ task.taskType }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>
+                      <app-status-chip [status]="task.status" domain="task"></app-status-chip>
+                    </td>
+                    <td [class.text-due-today]="task.dueDate === 'Today'">{{ task.dueDate }}</td>
+                    <td class="text-link">{{ task.taskKey }}</td>
+                    <td><a class="table-action-link">See details</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+
+          <div class="widget-footer">
+            <a class="widget-link-secondary">
+              <nx-icon name="launch"></nx-icon>
+              Visit task manager for more functionalities
+            </a>
+          </div>
+        </div>
+
+        <!-- Claims portfolio widget -->
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-header-left">
+              <div class="widget-icon-wrap">
+                <nx-icon name="product-board-paper-note" class="widget-icon"></nx-icon>
+              </div>
+              <span class="widget-title">Claims portfolio</span>
+            </div>
+            <a class="widget-link">View all claims</a>
+          </div>
+
+          <div class="portfolio-tabs">
+            <button class="portfolio-tab" [class.portfolio-tab--active]="portfolioTab === 'claims'" (click)="setPortfolioTab('claims')">Claims</button>
+            <button class="portfolio-tab" [class.portfolio-tab--active]="portfolioTab === 'loss-events'" (click)="setPortfolioTab('loss-events')">Loss events</button>
+          </div>
+          <div class="portfolio-tabs-spacer"></div>
+
+          @if (vm.recentClaims.length === 0) {
+            <div class="widget-empty">No claims found.</div>
+          } @else {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Claim ID</th>
+                  <th>Client Name</th>
+                  <th>Status</th>
+                  <th>Date created</th>
+                  <th>Assignee</th>
+                  <th>Created by</th>
+                  <th>Loss event ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (claim of vm.recentClaims; track claim.claimId) {
+                  <tr class="data-row">
+                    <td class="text-link">{{ claim.claimId }}</td>
+                    <td>{{ claim.clientName }}</td>
+                    <td>
+                      <app-status-chip [status]="claim.status" domain="claim"></app-status-chip>
+                    </td>
+                    <td class="text-muted">{{ claim.dateCreated }}</td>
+                    <td>{{ claim.assignee ?? '–' }}</td>
+                    <td>{{ claim.createdBy }}</td>
+                    <td class="text-link">{{ claim.lossEventId ?? '–' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+
+        <!-- Recent approval requests widget -->
+        <div class="widget-card widget-card--approvals">
+          <div class="widget-header">
+            <div class="widget-header-left">
+              <div class="widget-icon-wrap">
+                <nx-icon name="product-check-paper" class="widget-icon"></nx-icon>
+              </div>
+              <span class="widget-title">Recent approval requests</span>
+            </div>
+            <a class="widget-link">View all approvals</a>
+          </div>
+
+          <div class="widget-toggle-row">
+            <nx-switcher>Show my tasks only</nx-switcher>
+          </div>
+
+          <div class="portfolio-tabs">
+            <button class="portfolio-tab portfolio-tab--active">Reserves</button>
+            <button class="portfolio-tab">Payments</button>
+          </div>
+          <div class="portfolio-tabs-spacer"></div>
+
+          @if (vm.urgentApprovals.length === 0) {
+            <div class="widget-empty">No approval requests found.</div>
+          } @else {
+            <table class="data-table data-table--approvals">
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>Claim ID</th>
+                  <th>OE</th>
+                  <th>Line of Business</th>
+                  <th>Reserve type</th>
+                  <th>Currency</th>
+                  <th>Amount</th>
+                  <th>Requester</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (approval of vm.urgentApprovals; track approval.requestId) {
+                  <tr class="data-row">
+                    <td class="text-link">{{ approval.requestId }}</td>
+                    <td class="text-link">{{ approval.claimId }}</td>
+                    <td>{{ approval.oe }}</td>
+                    <td>{{ approval.lineOfBusiness }}</td>
+                    <td>{{ approval.reserveType }}</td>
+                    <td>{{ approval.currency }}</td>
+                    <td>{{ approval.amount | number }}</td>
+                    <td>{{ approval.requester }}</td>
+                    <td>
+                      <button class="approval-action-btn" type="button" aria-label="more actions">
+                        <nx-icon name="ellipsis-v"></nx-icon>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+
+      }
+      <!-- end !loading && !error -->
+
+    </main>
+
+    <!-- ══════════════════ RIGHT PANEL ══════════════════ -->
+    <aside class="right-panel">
+
+      <!-- Action cards -->
+      <div class="action-card">
+        <div class="action-card-top">
+          <div class="action-card-icon">
+            <nx-icon name="product-important-info"></nx-icon>
+          </div>
+          <span class="action-card-title">Register a new claim</span>
+        </div>
+        <button nxButton="primary" type="button" class="action-card-btn" (click)="navigateToFnol()">
+          <nx-icon name="launch" nxIconPositionStart></nx-icon>New claim
+        </button>
+      </div>
+
+      <div class="action-card">
+        <div class="action-card-top">
+          <div class="action-card-icon">
+            <nx-icon name="product-search-document"></nx-icon>
+          </div>
+          <span class="action-card-title">General search</span>
+        </div>
+        <button nxButton="primary" type="button" class="action-card-btn">
+          <nx-icon name="launch" nxIconPositionStart></nx-icon>Go to search
+        </button>
+      </div>
+
+      <!-- Claims stats card -->
+      <div class="panel-card">
+        <div class="stats-month-nav">
+          <button class="stats-nav-btn" type="button" aria-label="previous month">
+            <nx-icon name="chevron-left-small"></nx-icon>
+          </button>
+          <span class="stats-month-label">November 2025</span>
+          <button class="stats-nav-btn" type="button" aria-label="next month">
+            <nx-icon name="chevron-right-small"></nx-icon>
+          </button>
+        </div>
+
+        <div class="stats-total">
+          <span class="stats-number">{{ vm.stats.total }}</span>
+          <span class="stats-label">Claims</span>
+        </div>
+
+        @if (!vm.loading) {
+          <div class="stats-bars">
+            <div class="stats-bar-row">
+              <span class="stats-bar-label">Opened</span>
+              <div class="stats-bar-track">
+                <div class="stats-bar-fill stats-bar-fill--opened"
+                     [style.width.%]="barWidth(vm.stats.opened, vm.stats.total)"></div>
+              </div>
+              <span class="stats-bar-value">{{ vm.stats.opened }}</span>
+            </div>
+            <div class="stats-bar-row">
+              <span class="stats-bar-label">Closed</span>
+              <div class="stats-bar-track">
+                <div class="stats-bar-fill stats-bar-fill--closed"
+                     [style.width.%]="barWidth(vm.stats.closed, vm.stats.total)"></div>
+              </div>
+              <span class="stats-bar-value">{{ vm.stats.closed }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Payments made card -->
+      <div class="panel-card">
+        <div class="stats-month-nav">
+          <button class="stats-nav-btn" type="button" aria-label="previous month">
+            <nx-icon name="chevron-left-small"></nx-icon>
+          </button>
+          <span class="stats-month-label">November 2025</span>
+          <button class="stats-nav-btn" type="button" aria-label="next month">
+            <nx-icon name="chevron-right-small"></nx-icon>
+          </button>
+        </div>
+        <div class="payments-label">Payments made</div>
+        <div class="payments-amount">150,000 <span class="payments-currency">EUR</span></div>
+      </div>
+
+      <!-- Quick links card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <span class="panel-card-title">Quick links</span>
+        </div>
+        <div class="quick-links-list">
+          @for (link of vm.quickLinks; track link.label) {
+            <a class="quick-link-item">
+              <nx-icon name="launch" class="quick-link-icon"></nx-icon>
+              <span>{{ link.label }}</span>
+            </a>
+          }
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+</div>
+
+</ng-container>

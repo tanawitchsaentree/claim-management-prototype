@@ -1,0 +1,276 @@
+@if (vm$ | async; as vm) {
+  @if (vm.loading) {
+    <div class="co-loading">
+      <nx-spinner size="medium"></nx-spinner>
+    </div>
+  } @else if (vm.error) {
+    <div class="co-error">{{ vm.error }}</div>
+  } @else if (vm.claim; as claim) {
+
+    <!-- General Info Card -->
+    <section class="co-card">
+      <h2 class="co-card-title">General information</h2>
+
+      <!-- Row 1: 4 cols -->
+      <div class="co-grid">
+        <div class="co-field">
+          <span class="co-label">Claim ID</span>
+          <span class="co-value">{{ claim.claimId }}</span>
+        </div>
+        <div class="co-field">
+          <span class="co-label">Client</span>
+          <span class="co-value">{{ claim.client }}</span>
+        </div>
+        <div class="co-field">
+          <span class="co-label">Assigned Claim handler</span>
+          <span class="co-value">{{ claim.assignedHandler }}</span>
+        </div>
+        <div class="co-field">
+          <span class="co-label">Loss event ID</span>
+          <a class="co-value co-value--link">{{ claim.lossEventId }}</a>
+        </div>
+      </div>
+
+      <!-- Row 2: status + risk — or closure block when closed -->
+      @if (claim.status === 'Closed' || claim.status === 'Reopened') {
+        <div class="co-closure-block">
+          <div class="co-grid co-grid--closure">
+            <div class="co-field">
+              <span class="co-label">Claim status</span>
+              <div class="co-field-value">
+                <app-status-chip [status]="claim.status"></app-status-chip>
+              </div>
+            </div>
+            <div class="co-field">
+              <span class="co-label">Closure date</span>
+              <span class="co-value">{{ claim.closureDate ? formatDate(claim.closureDate) : '–' }}</span>
+            </div>
+            <div class="co-field">
+              <span class="co-label">Closed by</span>
+              <span class="co-value">{{ claim.closedBy?.name ?? '–' }}</span>
+            </div>
+            <div class="co-field">
+              <span class="co-label">Closure reason</span>
+              <span class="co-value">{{ claim.closureReason ?? '–' }}</span>
+            </div>
+          </div>
+          <div class="co-grid co-grid--closure">
+            <div class="co-field">
+              <span class="co-label">Retention until</span>
+              <span class="co-value">
+                @if (claim.retentionType === 'indefinite') {
+                  Indefinite
+                } @else {
+                  {{ claim.retentionDate ? formatDate(claim.retentionDate) : '–' }}
+                }
+              </span>
+            </div>
+            <div class="co-field">
+              <span class="co-label">Proximate loss cause</span>
+              <span class="co-value">{{ claim.proximateLossCause }}</span>
+            </div>
+            @if (claim.status === 'Reopened') {
+              <div class="co-field">
+                <span class="co-label">Reopened date</span>
+                <span class="co-value">{{ claim.reopenedDate ? formatDate(claim.reopenedDate) : '–' }}</span>
+              </div>
+              <div class="co-field">
+                <span class="co-label">Reopening reason</span>
+                <span class="co-value">{{ claim.reopeningReason ?? '–' }}</span>
+              </div>
+            } @else {
+              <div class="co-field"></div>
+              <div class="co-field"></div>
+            }
+          </div>
+        </div>
+      } @else {
+        <!-- Normal row 2 -->
+        <div class="co-grid co-grid--row2">
+          <div class="co-field">
+            <span class="co-label">Claim status</span>
+            <div class="co-field-value">
+              <app-status-chip [status]="claim.status"></app-status-chip>
+            </div>
+          </div>
+          <div class="co-field">
+            <span class="co-label">Proximate loss cause</span>
+            <span class="co-value">{{ claim.proximateLossCause }}</span>
+          </div>
+          <div class="co-field">
+            <div class="co-label-row">
+              <span class="co-label">Risk score</span>
+              <nx-icon name="refresh" size="s" class="co-refresh-icon"></nx-icon>
+            </div>
+            <div class="co-risk-score">
+              <span class="co-risk-badge" [class]="riskClass(claim.riskScore)">{{ claim.riskScore }}/{{ claim.riskScoreMax }}</span>
+              <a class="co-link">Start investigation</a>
+            </div>
+          </div>
+          <div class="co-field">
+            <span class="co-label">Risk status</span>
+            <div class="co-field-value">
+              <span class="co-risk-status-chip" [class]="riskClass(claim.riskScore)">{{ claim.riskStatus }}</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Description -->
+      <div class="co-description">
+        <span class="co-desc-label">Claim description</span>
+        <p class="co-desc-text">{{ claim.description }}</p>
+      </div>
+
+      <!-- Card actions — bottom-left -->
+      @if (claim.status !== 'Closed' && claim.status !== 'Reopened') {
+        <div class="co-card-actions">
+          @if (closureCheck() === null) {
+            <button nxButton="secondary small" type="button" disabled>
+              <nx-spinner size="small"></nx-spinner>&nbsp;Checking…
+            </button>
+          } @else if (!closureCheck()!.canClose) {
+            <button nxButton="secondary small" type="button" disabled
+              [nxTooltip]="closureTooltip()"
+              nxTooltipPosition="bottom">
+              Close Claim
+            </button>
+          } @else {
+            <button nxButton="primary small" type="button" (click)="openClosureModal(claim)">
+              Close Claim
+            </button>
+          }
+        </div>
+      }
+      @if (claim.status === 'Closed') {
+        <div class="co-card-actions">
+          <button nxButton="secondary small" type="button" disabled
+            nxTooltip="Coming in Phase 4" nxTooltipPosition="bottom">
+            Reopen Claim
+          </button>
+        </div>
+      }
+    </section>
+
+    <!-- Pending Tasks Card -->
+    <section class="co-card">
+      <div class="pt-header">
+        <h2 class="co-card-title co-card-title--inline">{{ vm.tasks.length }} Pending tasks</h2>
+        <div class="pt-header__actions">
+          <button class="co-icon-btn" title="More options">
+            <nx-icon name="ellipsis-v" size="s"></nx-icon>
+          </button>
+          <button class="co-icon-btn" (click)="toggleTasks()" [title]="vm.tasksExpanded ? 'Collapse' : 'Expand'">
+            <nx-icon [name]="vm.tasksExpanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-collapse" [class.pt-collapse--open]="vm.tasksExpanded"><div class="pt-collapse__inner">
+        <!-- Priority legend -->
+        <div class="pt-legend">
+          <span class="pt-legend__dot pt-legend__dot--high"></span>
+          <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'high') }}</strong> high priority tasks</span>
+          <span class="pt-legend__dot pt-legend__dot--medium"></span>
+          <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'medium') }}</strong> medium priority tasks</span>
+          <span class="pt-legend__dot pt-legend__dot--low"></span>
+          <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'low') }}</strong> low priority tasks</span>
+        </div>
+
+        <!-- Table -->
+        <div class="pt-table-wrap">
+        <table nxTable sticky="last" class="pt-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="pt-col--type"><span class="pt-th-sort">Task type <nx-icon name="chevron-down-small"></nx-icon></span></th>
+              <th nxHeaderCell class="pt-col--desc">Description</th>
+              <th nxHeaderCell><span class="pt-th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
+              <th nxHeaderCell><span class="pt-th-sort">Priority <nx-icon name="chevron-down-small"></nx-icon></span></th>
+              <th nxHeaderCell class="pt-col--key">Task key</th>
+              <th nxHeaderCell class="pt-col--date"><span class="pt-th-sort">Last edited <nx-icon name="chevron-down-small"></nx-icon></span></th>
+              <th nxHeaderCell class="pt-col--action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (task of pagedTasks(vm.tasks); track task.taskId) {
+              <tr nxTableRow class="pt-row">
+                <td nxCell class="pt-col--type">{{ task.taskType }}</td>
+                <td nxCell class="pt-col--desc">
+                  <span class="pt-cell-truncate">{{ task.description }}</span>
+                </td>
+                <td nxCell><app-status-chip [status]="task.status" domain="task"></app-status-chip></td>
+                <td nxCell>{{ task.priority | titlecase }}</td>
+                <td nxCell class="pt-col--key">
+                  <span class="pt-task-key">{{ task.taskKey }}</span>
+                  <nx-icon name="launch" size="s" class="pt-launch-icon"></nx-icon>
+                </td>
+                <td nxCell class="pt-col--date">{{ formatDate(task.dueDate) }}</td>
+                <td nxCell><a class="pt-action-link">See details</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        </div>
+
+        @if (vm.tasks.length > tasksPageSize) {
+          <div class="pt-pagination">
+            <nx-pagination
+              [count]="vm.tasks.length"
+              [page]="tasksPage"
+              [perPage]="tasksPageSize"
+              type="advanced"
+              (goPrev)="tasksPage = tasksPage - 1"
+              (goNext)="tasksPage = tasksPage + 1"
+              (goPage)="tasksPage = $event">
+            </nx-pagination>
+          </div>
+        }
+      </div></div>
+    </section>
+
+
+    <!-- Recent Activities Card -->
+    <section class="co-card">
+      <button class="co-activities-toggle" (click)="toggleActivities()">
+        <span class="co-card-title">Recent activities</span>
+        <nx-icon [name]="vm.activitiesExpanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+      </button>
+
+      <div class="pt-collapse" [class.pt-collapse--open]="vm.activitiesExpanded"><div class="pt-collapse__inner">
+        <div class="act-table-wrap">
+          <table nxTable class="act-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell><span class="pt-th-sort">User <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                <th nxHeaderCell><span class="pt-th-sort">Timestamp <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                <th nxHeaderCell><span class="pt-th-sort">Object type <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                <th nxHeaderCell><span class="pt-th-sort">Attribute <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                <th nxHeaderCell>Value old</th>
+                <th nxHeaderCell>Value new</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (act of vm.activities; track act.id) {
+                <tr nxTableRow>
+                  <td nxCell class="act-col--nowrap">{{ act.user }}</td>
+                  <td nxCell class="act-col--nowrap">{{ act.timestamp | date:'dd.MM.yyyy hh:mm a' }}</td>
+                  <td nxCell class="act-col--nowrap">{{ act.objectType }}</td>
+                  <td nxCell>{{ act.attribute }}</td>
+                  <td nxCell class="act-col--muted">{{ act.valueOld ?? '–' }}</td>
+                  <td nxCell>{{ act.valueNew ?? '–' }}</td>
+                </tr>
+              }
+              @empty {
+                <tr nxTableRow>
+                  <td nxCell colspan="6" class="act-empty">No recent activities.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <a class="act-log-link">Go to Activities log</a>
+      </div></div>
+    </section>
+
+  }
+}

@@ -1,0 +1,78 @@
+<div class="step-page">
+
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Create claim without policy</h1>
+
+  @if (createdId) {
+    <!-- Success state -->
+    <nx-message context="success" class="success-banner">
+      <strong>Skeleton claim created: {{ createdId }}</strong>
+      <p class="success-detail">Policy match required within 3 business days.</p>
+    </nx-message>
+    <div class="success-actions">
+      <button nxButton="primary" type="button" (click)="onGoToDashboard()">Go to dashboard</button>
+    </div>
+  } @else {
+    <!-- Warning banner -->
+    <nx-message context="warning" class="warning-banner">
+      This claim will be created without a linked policy. You must match a policy within
+      <strong>3 business days</strong>.
+    </nx-message>
+
+    <form [formGroup]="form" (ngSubmit)="onCreate()" class="skeleton-form" novalidate>
+
+      <!-- Client -->
+      <div class="form-row">
+        <nx-formfield label="Client *">
+          <input nxInput formControlName="clientName" autocomplete="off" />
+          @if (clientNameError) {
+            <nx-error nxFormfieldError>{{ clientNameError }}</nx-error>
+          }
+        </nx-formfield>
+      </div>
+
+      <!-- Reason -->
+      <div class="form-row">
+        <nx-formfield label="Reason for skeleton claim *">
+          <nx-dropdown formControlName="reason" placeholder="Select">
+            @for (opt of reasonOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          @if (reasonError) {
+            <nx-error nxFormfieldError>{{ reasonError }}</nx-error>
+          }
+        </nx-formfield>
+      </div>
+
+      <!-- Notes -->
+      <div class="form-row">
+        <nx-formfield label="Additional notes (optional)">
+          <textarea nxInput formControlName="notes" rows="4"
+                    [attr.maxlength]="maxNotes"
+                    placeholder="Enter any additional context..."></textarea>
+          <span nxFormfieldHint class="notes-hint">
+            {{ notesLength }}/{{ maxNotes }}
+          </span>
+          @if (notesError) {
+            <nx-error nxFormfieldError>{{ notesError }}</nx-error>
+          }
+        </nx-formfield>
+      </div>
+
+      <!-- Footer -->
+      <div class="step-footer">
+        <button nxButton="tertiary" type="button" (click)="onBack()">Back</button>
+        <button nxButton="primary" type="submit" [disabled]="saving">
+          @if (saving) {
+            <nx-spinner size="small" negative></nx-spinner>
+          } @else {
+            Create skeleton claim
+          }
+        </button>
+      </div>
+
+    </form>
+  }
+
+</div>

@@ -1,0 +1,3 @@
+@use '../../../features/fnol/_wizard-layout' as wl;
+
+@include wl.step-footer;

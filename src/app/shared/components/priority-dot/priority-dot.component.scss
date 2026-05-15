@@ -1,0 +1,19 @@
+.priority-dot-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.priority-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  // background set via [style] binding — value comes from
+  // --claim-priority-* tokens in styles.scss, never hardcoded here.
+}
+
+.priority-dot-label {
+  font-size: 14px;
+}

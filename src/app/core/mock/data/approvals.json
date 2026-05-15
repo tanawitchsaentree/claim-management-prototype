@@ -1,0 +1,32 @@
+[
+  {
+    "requestId": "RID123456",
+    "claimId": "123456",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "reserveType": "Indemnity",
+    "currency": "EUR",
+    "amount": 100000,
+    "requester": "Jane Austen"
+  },
+  {
+    "requestId": "RID847625",
+    "claimId": "123456",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "reserveType": "Expenses",
+    "currency": "EUR",
+    "amount": 20000,
+    "requester": "Jane Austen"
+  },
+  {
+    "requestId": "RID909089",
+    "claimId": "123456",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "reserveType": "Expenses",
+    "currency": "EUR",
+    "amount": 35000,
+    "requester": "Jane Austen"
+  }
+]

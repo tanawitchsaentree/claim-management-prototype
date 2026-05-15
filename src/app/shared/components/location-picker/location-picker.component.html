@@ -1,0 +1,190 @@
+<ng-container *ngIf="vm$ | async as vm">
+
+<!-- ── INITIAL state ──────────────────────────────────────────────── -->
+@if (state === 'initial') {
+  <div class="lp-initial">
+    <p class="lp-hint">Where did the loss occur?</p>
+    <button nxButton="secondary" type="button" (click)="openAdding(vm.policyLocations)">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add location
+    </button>
+    <p class="lp-skip-hint">Skip if location is not applicable to this claim.</p>
+  </div>
+}
+
+<!-- ── ADDING state ───────────────────────────────────────────────── -->
+@if (state === 'adding') {
+  <div class="lp-adding">
+    @if (hasPolicyNumber && !editingId) {
+      <p class="lp-mode-label">How would you like to add the location?</p>
+      <nx-radio-group class="lp-mode-radios">
+        <div class="lp-mode-grid">
+          <nx-radio value="find-in-policy" [checked]="addMode === 'find-in-policy'" (valueChange)="setAddMode('find-in-policy')" labelSize="small">
+            <span class="lp-mode-radio-label">Find in policy</span>
+            <span class="lp-mode-radio-desc">This policy covers locations — search through them.</span>
+          </nx-radio>
+          <nx-radio value="manual" [checked]="addMode === 'manual'" (valueChange)="setAddMode('manual')" labelSize="small">
+            <span class="lp-mode-radio-label">Enter manually</span>
+            <span class="lp-mode-radio-desc">The address isn't in the policy or you don't know the exact location.</span>
+          </nx-radio>
+        </div>
+      </nx-radio-group>
+      <hr class="lp-divider" />
+    }
+
+    <!-- ── Find in policy ────────────────────────────────────────── -->
+    @if (addMode === 'find-in-policy') {
+      @if (vm.policyLoadError) {
+        <nx-message context="error">Could not load policy locations. Please try again or enter the address manually.</nx-message>
+      } @else {
+        <div class="lp-search-grid">
+          <nx-formfield label="Location name">
+            <input nxInput [formControl]="searchForm.controls.name" />
+          </nx-formfield>
+          <nx-formfield label="Property ID">
+            <input nxInput [formControl]="searchForm.controls.id" />
+          </nx-formfield>
+          <nx-formfield label="City">
+            <input nxInput [formControl]="searchForm.controls.city" />
+          </nx-formfield>
+          <nx-formfield label="Country">
+            <nx-dropdown [formControl]="searchForm.controls.country" placeholder="All countries">
+              <nx-dropdown-item *ngFor="let c of vm.countries" [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            </nx-dropdown>
+          </nx-formfield>
+        </div>
+        <div class="lp-search-actions">
+          <button nxButton="secondary small" type="button" (click)="onSearch(vm.policyLocations)">Search</button>
+          <button nxPlainButton type="button" (click)="onResetSearch(vm.policyLocations)">Reset</button>
+        </div>
+        <p class="lp-results-count">{{ filteredLocations.length }} location{{ filteredLocations.length !== 1 ? 's' : '' }} found</p>
+        @if (filteredLocations.length === 0) {
+          <p class="lp-empty">No locations match your search.</p>
+        } @else {
+          <div class="lp-policy-list">
+            @for (loc of filteredLocations; track loc.id) {
+              <div class="lp-policy-item"
+                   [class.lp-policy-item--selected]="isPolicyLocationSelected(loc.id)"
+                   (click)="togglePolicyLocation(loc.id)">
+                <nx-checkbox [checked]="isPolicyLocationSelected(loc.id)"
+                  (checkedChange)="togglePolicyLocation(loc.id)"
+                  (click)="$event.stopPropagation()">
+                </nx-checkbox>
+                <div class="lp-policy-item-body">
+                  <span class="lp-policy-item-name">{{ loc.name }}</span>
+                  <span class="lp-policy-item-addr">{{ loc.addressLine1 }}, {{ loc.postalCode }} {{ loc.city }}, {{ loc.country }}</span>
+                  <span class="lp-policy-item-meta">
+                    {{ loc.type }}
+                    @if (loc.propertyId) { &bull; {{ loc.propertyId }} }
+                    @if (!loc.active) { <span class="lp-inactive-badge">Inactive</span> }
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        <div class="lp-adding-footer">
+          <button nxPlainButton type="button" (click)="cancelAdding()">Cancel</button>
+          <button nxButton="primary small" type="button"
+            [disabled]="selectedPolicyIds.size === 0"
+            (click)="confirmPolicySelection()">{{ addButtonLabel }}</button>
+        </div>
+      }
+    }
+
+    <!-- ── Manual entry ──────────────────────────────────────────── -->
+    @if (addMode === 'manual') {
+      <div [formGroup]="manualForm">
+        <div class="lp-manual-grid">
+          <nx-formfield label="Address line 1 *" class="lp-full">
+            <input nxInput formControlName="addressLine1" />
+            <nx-error nxFormfieldError *ngIf="manualForm.get('addressLine1')?.errors?.['required'] && manualSubmitted">Required.</nx-error>
+          </nx-formfield>
+          <nx-formfield label="Address line 2 (optional)" class="lp-full">
+            <input nxInput formControlName="addressLine2" />
+          </nx-formfield>
+          <nx-formfield label="Postal code *">
+            <input nxInput formControlName="postalCode" />
+            <nx-error nxFormfieldError *ngIf="manualForm.get('postalCode')?.errors?.['required'] && manualSubmitted">Required.</nx-error>
+          </nx-formfield>
+          <nx-formfield label="City *">
+            <input nxInput formControlName="city" />
+            <nx-error nxFormfieldError *ngIf="manualForm.get('city')?.errors?.['required'] && manualSubmitted">Required.</nx-error>
+          </nx-formfield>
+          <nx-formfield label="Country *">
+            <nx-dropdown formControlName="country" placeholder="Select country">
+              <nx-dropdown-item *ngFor="let c of vm.countries" [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            </nx-dropdown>
+            <nx-error nxFormfieldError *ngIf="manualForm.get('country')?.errors?.['required'] && manualSubmitted">Required.</nx-error>
+          </nx-formfield>
+          <nx-formfield label="Province / State (optional)">
+            <input nxInput formControlName="state" />
+          </nx-formfield>
+        </div>
+        <details class="lp-optional-section">
+          <summary class="lp-optional-toggle">Optional details</summary>
+          <div class="lp-manual-grid lp-optional-body">
+            <nx-formfield label="Property ID (if known)">
+              <input nxInput formControlName="propertyId" />
+            </nx-formfield>
+            <div></div>
+            <nx-formfield label="Latitude (if known)">
+              <input nxInput type="number" formControlName="latitude" />
+            </nx-formfield>
+            <nx-formfield label="Longitude (if known)">
+              <input nxInput type="number" formControlName="longitude" />
+            </nx-formfield>
+            <nx-formfield label="Additional location information (optional)" class="lp-full">
+              <textarea nxInput formControlName="additionalInfo" rows="3" [maxlength]="300"></textarea>
+              <nx-hint nxFormfieldHint>{{ descLength }}/300</nx-hint>
+            </nx-formfield>
+          </div>
+        </details>
+        <div class="lp-adding-footer">
+          <button nxPlainButton type="button" (click)="cancelAdding()">Cancel</button>
+          <button nxButton="primary small" type="button" (click)="confirmManual()">
+            {{ editingId ? 'Save changes' : 'Add location' }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- ── SELECTED state ─────────────────────────────────────────────── -->
+@if (state === 'selected') {
+  <div class="lp-selected">
+    @for (item of locations; track item.id) {
+      <div class="lp-location-card">
+        <div class="lp-location-card-body">
+          <span class="lp-location-name">{{ item.displayName }}</span>
+          <span class="lp-location-addr">
+            {{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}},
+            {{ item.postalCode }} {{ item.city }}, {{ item.country }}
+          </span>
+          <span class="lp-location-meta">
+            @if (item.propertyId) { {{ item.propertyId }} &bull; }
+            {{ item.source === 'policy' ? 'From policy' : 'Manual entry' }}
+          </span>
+        </div>
+        <div class="lp-location-actions">
+          <button nxIconButton="tertiary small" type="button"
+            [nxContextMenuTriggerFor]="itemMenu"
+            aria-label="Location options">
+            <nx-icon name="ellipsis-h"></nx-icon>
+          </button>
+          <nx-context-menu #itemMenu>
+            <button nxContextMenuItem type="button" (click)="editItem(item)">Edit</button>
+            <button nxContextMenuItem type="button" (click)="removeItem(item.id)">Remove</button>
+          </nx-context-menu>
+        </div>
+      </div>
+    }
+    <button nxButton="secondary small" type="button" class="lp-add-another" (click)="openAdding(vm.policyLocations)">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add another location
+    </button>
+  </div>
+}
+
+</ng-container>

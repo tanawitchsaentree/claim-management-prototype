@@ -1,0 +1,13 @@
+[
+  { "policyNumber": "POL-2024-001", "clientName": "Liver Tea Group",              "lineOfBusiness": "Property",     "effectiveDate": "2024-01-01", "expiryDate": "2025-01-01", "premium": 125000,  "currency": "EUR", "status": "Active"    },
+  { "policyNumber": "POL-2024-002", "clientName": "adesso SE",                    "lineOfBusiness": "Cyber",        "effectiveDate": "2024-03-01", "expiryDate": "2025-03-01", "premium": 48000,   "currency": "EUR", "status": "Active"    },
+  { "policyNumber": "POL-2024-003", "clientName": "GBF Logistics GmbH",           "lineOfBusiness": "Marine",       "effectiveDate": "2024-01-15", "expiryDate": "2025-01-15", "premium": 210000,  "currency": "USD", "status": "Active"    },
+  { "policyNumber": "POL-2024-004", "clientName": "Marvel SE",                    "lineOfBusiness": "Liability",    "effectiveDate": "2024-06-01", "expiryDate": "2025-06-01", "premium": 75000,   "currency": "EUR", "status": "Active"    },
+  { "policyNumber": "POL-2024-005", "clientName": "BMW Budapest Motors",          "lineOfBusiness": "Engineering",  "effectiveDate": "2023-07-01", "expiryDate": "2024-07-01", "premium": 320000,  "currency": "EUR", "status": "Expired"   },
+  { "policyNumber": "POL-2023-010", "clientName": "Kaufmann's Warehouse GmbH",    "lineOfBusiness": "Property",     "effectiveDate": "2023-01-01", "expiryDate": "2024-01-01", "premium": 95000,   "currency": "EUR", "status": "Expired"   },
+  { "policyNumber": "POL-2024-006", "clientName": "Schäfer & Söhne AG",           "lineOfBusiness": "Property",     "effectiveDate": "2024-09-01", "expiryDate": "2025-09-01", "premium": 180000,  "currency": "CHF", "status": "Active"    },
+  { "policyNumber": "POL-2024-007", "clientName": "Nordic Shipping AS",           "lineOfBusiness": "Marine",       "effectiveDate": "2024-02-01", "expiryDate": "2025-02-01", "premium": 550000,  "currency": "USD", "status": "Active"    },
+  { "policyNumber": "POL-2024-008", "clientName": "TechStart Pte Ltd",            "lineOfBusiness": "Cyber",        "effectiveDate": "2024-04-01", "expiryDate": "2025-04-01", "premium": 62000,   "currency": "SGD", "status": "Active"    },
+  { "policyNumber": "POL-2024-009", "clientName": "Rhein Constructions GmbH",     "lineOfBusiness": "Engineering",  "effectiveDate": "2024-05-01", "expiryDate": "2025-05-01", "premium": 430000,  "currency": "EUR", "status": "Active"    },
+  { "policyNumber": "POL-2024-010", "clientName": "Pendragon Liability Corp",     "lineOfBusiness": "Liability",    "effectiveDate": "2024-08-01", "expiryDate": "2025-08-01", "premium": 90000,   "currency": "GBP", "status": "Pending"   }
+]

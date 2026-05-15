@@ -1,0 +1,10 @@
+{
+  "tickets": [
+    {
+      "id": "CHAMP-CLOSURE-001",
+      "file": "closure.json",
+      "module": "Claims",
+      "title": "Manual Claim Closure & Section Closure"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+<nav class="fnol-stepper" aria-label="FNOL progress">
+  <ol class="stepper-list">
+    <li
+      *ngFor="let step of steps; let last = last"
+      class="stepper-item"
+      [class.stepper-item--active]="step.status === 'active'"
+      [class.stepper-item--completed]="step.status === 'completed'"
+      [class.stepper-item--pending]="step.status === 'pending'"
+      [attr.aria-current]="step.status === 'active' ? 'step' : null"
+    >
+      <div class="stepper-indicator">
+        <div class="stepper-dot">
+          <nx-icon *ngIf="step.status === 'completed'" name="check" class="dot-check"></nx-icon>
+          <span *ngIf="step.status !== 'completed'" class="dot-inner"></span>
+        </div>
+        <div *ngIf="!last" class="stepper-line"></div>
+      </div>
+      <span class="stepper-label">{{ step.label }}</span>
+    </li>
+  </ol>
+</nav>

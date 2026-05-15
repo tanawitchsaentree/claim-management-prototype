@@ -1,0 +1,162 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.ccm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.ccm-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
+.ccm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.ccm-intro {
+  margin: 0 0 16px;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+// ─── Blocker list ─────────────────────────────────────────────────────────────
+
+.ccm-blocker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ccm-blocker-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 4px;
+  background: var(--message-error-background-color);
+  border: 1px solid var(--message-error-border-color);
+}
+
+.ccm-blocker-icon {
+  color: var(--message-error-color);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ccm-blocker-label {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--message-error-color);
+  line-height: 1.4;
+}
+
+.ccm-link-btn {
+  background: none;
+  border: none;
+  color: var(--interactive-primary);
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
+.ccm-form {
+  margin-top: 8px;
+
+  nx-formfield { width: 100%; }
+}
+
+.ccm-warning {
+  margin-bottom: 16px;
+}
+
+// ─── Checklist ────────────────────────────────────────────────────────────────
+
+.ccm-checklist {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ccm-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.ccm-check-icon {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.ccm-divider {
+  height: 1px;
+  background: var(--ui-04);
+  margin: 20px 0;
+}
+
+.ccm-section-label {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 12px;
+}
+
+// Vertical radio stack — gap: 8px matches blessed pattern from step-loss-information.scss:161
+nx-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ccm-datefield {
+  margin: 8px 0 8px 24px;
+
+  nx-formfield { width: 100%; }
+}
+
+.ccm-save-error {
+  margin-top: 16px;
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+.ccm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--ui-04);
+  flex-shrink: 0;
+  padding: 16px 24px 20px;
+}

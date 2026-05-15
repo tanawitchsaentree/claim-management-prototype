@@ -1,0 +1,69 @@
+@if (helper.shouldShowBanner()) {
+  <div class="cdb-bar">
+    <span class="cdb-badge">DEV</span>
+
+    <nx-formfield class="cdb-picker">
+      <nx-dropdown
+        [value]="helper.selectedTicket()?.ticketId ?? null"
+        placeholder="Pick a ticket to test"
+        (valueChange)="onTicketSelected($event)">
+        @for (ticket of helper.tickets(); track ticket.ticketId) {
+          <nx-dropdown-item [value]="ticket.ticketId">
+            <div class="cdb-ticket-option">
+              <div class="cdb-ticket-meta">
+                <span class="cdb-ticket-module">{{ ticket.module }}</span>
+                <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
+              </div>
+              <div class="cdb-ticket-title">{{ ticket.title }}</div>
+              <div class="cdb-ticket-stats">
+                <span>{{ ticket.pages.join(' · ') }}</span>
+                <span>
+                  ✅ {{ countByStatus(ticket, 'done') }}
+                  @if (countByStatus(ticket, 'partial') > 0) {
+                    · ⏳ {{ countByStatus(ticket, 'partial') }}
+                  }
+                  @if (countByStatus(ticket, 'todo') > 0) {
+                    · ⬜ {{ countByStatus(ticket, 'todo') }}
+                  }
+                  @if (verifiedCount(ticket) > 0) {
+                    · ✓ {{ verifiedCount(ticket) }} verified
+                  }
+                </span>
+              </div>
+            </div>
+          </nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <button nxButton="primary small" [disabled]="!helper.selectedTicket()" (click)="openDetails()">
+      Open details
+    </button>
+
+    @if (activeAcLabel()) {
+      <nx-tag
+        class="cdb-ac-chip"
+        [removable]="true"
+        deleteAriaLabel="Clear active AC"
+        (clicked)="reopenForActiveAc()"
+        (removed)="clearActiveAc()">
+        {{ activeAcLabel() }}
+      </nx-tag>
+    }
+
+    @if (helper.minimizedAcId(); as minAcId) {
+      <nx-tag
+        class="cdb-ac-chip cdb-ac-chip--restore"
+        [removable]="true"
+        deleteAriaLabel="Dismiss minimized AC"
+        (clicked)="onRestore(minAcId)"
+        (removed)="helper.clearMinimized()">
+        Resume {{ minAcId }} ↑
+      </nx-tag>
+    }
+
+    <button nxButton="tertiary small" (click)="onReset()">
+      Reset
+    </button>
+  </div>
+}
