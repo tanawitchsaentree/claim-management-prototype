@@ -23,6 +23,12 @@
       "file": "bmpcc-241.json",
       "module": "FNOL",
       "title": "Orphan Claim — Notifier + Left-nav"
+    },
+    {
+      "id": "BMPCC-11360",
+      "file": "bmpcc-11360.json",
+      "module": "Claims",
+      "title": "Claim status management & Retention date"
     }
   ]
 }
