@@ -3,7 +3,9 @@
   "module": "FNOL",
   "title": "Loss Location via CWB MFE",
   "targetClaim": "CLM-2024-001",
-  "pages": ["fnol-loss-info"],
+  "pages": [
+    "fnol-loss-info"
+  ],
   "walkthroughSteps": [
     "Apply an AC — banner seeds the FNOL policy state and CWB seed data",
     "Land on /fnol/loss-information; the wizard must already be past the search step",
@@ -38,9 +40,17 @@
         ],
         "stateOverrides": {
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.openLocationPicker"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Third radio option visible after Add location",
@@ -51,7 +61,10 @@
         ]
       },
       "expectedOutcome": {
-        "cwbLocationsCount": { "policyNumber": "POL-2024-001", "expected": 6 }
+        "cwbLocationsCount": {
+          "policyNumber": "POL-2024-001",
+          "expected": 6
+        }
       },
       "howToTest": {
         "route": "/fnol/loss-information",
@@ -81,9 +94,17 @@
         ],
         "stateOverrides": {
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.openCwbModal"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Modal styled to indicate external system",
@@ -94,7 +115,10 @@
         ]
       },
       "expectedOutcome": {
-        "cwbLocationsCount": { "policyNumber": "POL-2024-001", "expected": 6 }
+        "cwbLocationsCount": {
+          "policyNumber": "POL-2024-001",
+          "expected": 6
+        }
       },
       "howToTest": {
         "route": "/fnol/loss-information",
@@ -129,9 +153,17 @@
         ],
         "stateOverrides": {
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.openCwbModal"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Form layout: 3-column grid with read-only and editable fields",
@@ -178,9 +210,17 @@
         ],
         "stateOverrides": {
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.openCwbModal"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Validation gates the Search button",
@@ -191,7 +231,10 @@
         ]
       },
       "expectedOutcome": {
-        "cwbLocationsCount": { "policyNumber": "POL-2024-001", "expected": 6 }
+        "cwbLocationsCount": {
+          "policyNumber": "POL-2024-001",
+          "expected": 6
+        }
       },
       "howToTest": {
         "route": "/fnol/loss-information",
@@ -232,9 +275,18 @@
         ],
         "stateOverrides": {
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.injectCwbAsLoss",
+            "cwbReference": "CWB-LOC-001"
+          }
+        ]
       },
       "expectedUI": {
         "description": "After confirm, picker enters 'selected' state with one CWB-sourced card",

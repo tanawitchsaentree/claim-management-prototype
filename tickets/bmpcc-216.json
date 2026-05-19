@@ -3,7 +3,9 @@
   "module": "FNOL",
   "title": "Duplicate Claim Check",
   "targetClaim": "CLM-2024-001",
-  "pages": ["fnol-loss-info"],
+  "pages": [
+    "fnol-loss-info"
+  ],
   "walkthroughSteps": [
     "Apply an AC — banner injects matching claims and seeds FNOL policy state",
     "Land on /fnol/loss-information already past the search step",
@@ -59,15 +61,32 @@
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Munich" },
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             }
           ],
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
       },
       "expectedUI": {
         "description": "After entering DoL and cause, the warning banner shows 1 duplicate with link",
@@ -136,15 +155,32 @@
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Munich" },
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             }
           ],
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
       },
       "expectedUI": {
         "description": "Loading indicator appears, then banner — no manual submit required",
@@ -201,15 +237,32 @@
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Munich" },
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             }
           ],
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
       },
       "expectedUI": {
         "description": "Each row contains 4 fields separated by bullets",
@@ -267,15 +320,32 @@
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Munich" },
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             }
           ],
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
       },
       "expectedUI": {
         "description": "Anchor uses target=_blank rel=noopener",
@@ -333,15 +403,32 @@
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Munich" },
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             }
           ],
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
       },
       "expectedUI": {
         "description": "Banner closable; Next button continues the wizard",
@@ -404,9 +491,14 @@
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Munich" },
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             },
             {
               "claimId": "CLM-DUP-002",
@@ -424,9 +516,14 @@
               "status": "In progress",
               "priority": "high",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Hamburg" },
+              "location": {
+                "country": "Germany",
+                "city": "Hamburg"
+              },
               "lossEventId": "LE-DUP-002",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             },
             {
               "claimId": "CLM-DUP-003",
@@ -444,9 +541,14 @@
               "status": "Open",
               "priority": "low",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Berlin" },
+              "location": {
+                "country": "Germany",
+                "city": "Berlin"
+              },
               "lossEventId": "LE-DUP-003",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             },
             {
               "claimId": "CLM-DUP-004",
@@ -464,15 +566,32 @@
               "status": "Priced",
               "priority": "medium",
               "lineOfBusiness": "Property",
-              "location": { "country": "Germany", "city": "Cologne" },
+              "location": {
+                "country": "Germany",
+                "city": "Cologne"
+              },
               "lossEventId": "LE-DUP-004",
-              "causeOfLoss": ["fire"]
+              "causeOfLoss": [
+                "fire"
+              ]
             }
           ],
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.openShowAllDuplicates",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
       },
       "expectedUI": {
         "description": "Banner shows 3 preview rows + Show all button → modal with full list",
