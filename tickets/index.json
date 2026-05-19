@@ -17,6 +17,12 @@
       "file": "bmpcc-219.json",
       "module": "FNOL",
       "title": "Loss Location via CWB MFE"
+    },
+    {
+      "id": "BMPCC-241",
+      "file": "bmpcc-241.json",
+      "module": "FNOL",
+      "title": "Orphan Claim — Notifier + Left-nav"
     }
   ]
 }
