@@ -15,8 +15,8 @@
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Notifier section captures free-text Broker / Insured / Internal",
-      "plainStatement": "On the **Loss** page of the orphan flow, three optional free-text fields capture the *Broker*, *Insured*, and *Internal* notifier. **NOTE [accepted-deviation]:** literal spec mentions IPM lookup for Broker; this build uses plain text only — IPM integration deferred until a mock service exists.",
+      "statement": "Notifier section uses a Broker / Insured / Internal radio (Loss Location pattern)",
+      "plainStatement": "On the **Loss information** page of the orphan flow, a *radio toggle* picks the notifier type (`Broker` / `Insured` / `Internal`) — only the relevant input renders below. Picking **Broker** opens the *Search broker* modal (Name management — IPM-backed). Picking **Insured** or **Internal** shows a single free-text input.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -40,11 +40,13 @@
         }
       },
       "expectedUI": {
-        "description": "Loss page with notifier section",
+        "description": "Loss information page with Notifier radio + dynamic field",
         "visualCues": [
           "Section heading 'Notifier' between Reason and Notes",
-          "Three fields: Broker (with hint 'Free text — IPM lookup not yet integrated.'), Insured, Internal notifier",
-          "All three fields optional"
+          "Radio group: Broker / Insured / Internal (Broker default)",
+          "Broker selected: 'Search broker' button opens the Name management modal (filters + table + Add Selected)",
+          "Insured / Internal selected: single labelled free-text input",
+          "Selected broker shows as a card with Legal name + IPM id + Change/Remove actions"
         ]
       },
       "expectedOutcome": {},
