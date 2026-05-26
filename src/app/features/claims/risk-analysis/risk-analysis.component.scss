@@ -1,0 +1,128 @@
+// Page padding mirrors litigation.component.scss (blessed).
+:host {
+  display: block;
+  padding: var(--page-content-top) var(--layout-inset-base) var(--layout-inset-base);
+  background: var(--ui-01);
+  min-height: 100%;
+}
+
+.rai-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 24px;
+  line-height: 1.2;
+}
+
+.rai-loading {
+  display: flex;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.rai-empty {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.rai-card,
+.rai-investigation {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  background: var(--ui-01);
+}
+
+.rai-card__title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.rai-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.rai-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rai-field__label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.rai-field__value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rai-field__plain {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.rai-message {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.rai-message__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.rai-message__body {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  line-height: 1.5;
+}
+
+.rai-factors {
+  margin: 0;
+  padding-left: 20px;
+
+  li {
+    font-size: var(--paragraph-03-font-size);
+    line-height: 1.6;
+  }
+}
+
+.rai-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 0 24px;
+}
+
+.rai-empty-state__illustration {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--ui-02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.rai-empty-state__text {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-01);
+}

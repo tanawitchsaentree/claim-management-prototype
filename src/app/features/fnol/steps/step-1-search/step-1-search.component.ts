@@ -248,6 +248,23 @@ export class Step1SearchComponent implements OnInit, OnDestroy {
     // Phase 2 actions — silently ignore for now
   }
 
+  // BMPCC-11006: convert skeleton → regular claim
+  // Prefills loss-information from the skeleton record, drops the user back
+  // into the standard FNOL flow (search → policy → loss-info → ... → summary).
+  onConvertSkeleton(skeleton: SkeletonClaim): void {
+    if (skeleton.status !== 'awaiting-policy') return;
+    this.fnolState.prefillFromSkeleton(skeleton);
+    this.router.navigate(['/fnol/search']);
+  }
+
+  convertingSkeletonId(): string | null {
+    return this.fnolState.path === 'standard' ? this.fnolState.skeletonClaimId : null;
+  }
+
+  cancelConvert(): void {
+    this.fnolState.reset();
+  }
+
   // ── Client helpers ───────────────────────────────────────────────
 
   isBroker(client: ClientSearchResult): boolean {

@@ -1,0 +1,47 @@
+<app-navbar />
+
+@if (breadcrumb.length) {
+  <div class="shell-toolbar">
+    <div class="shell-toolbar__inner">
+      <ol nxBreadcrumb>
+        @for (item of breadcrumb; track item.label; let last = $last) {
+          <li nxBreadcrumbItem>
+            @if (item.route && !last) {
+              <a [routerLink]="item.route">{{ item.label }}</a>
+            } @else {
+              {{ item.label }}
+            }
+          </li>
+        }
+      </ol>
+    </div>
+  </div>
+}
+
+<div class="shell-page-wrap">
+  @if (toast) {
+    <div nxLayout="grid maxwidth" class="shell-toast">
+      <div nxRow>
+        <div nxCol="12">
+          <nx-message context="success" [closable]="true" (close)="toastClose.emit()">
+            {{ toast }}
+          </nx-message>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (align === 'grid') {
+    <div nxLayout="grid maxwidth" class="shell-page">
+      <div nxRow>
+        <div nxCol="12">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="shell-page shell-page--navbar-aligned">
+      <ng-content></ng-content>
+    </div>
+  }
+</div>

@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, ReactiveFormsModule, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -25,6 +25,8 @@ import { LookupOption, LocationPickerOutput } from '../../../../core/models';
 import { DuplicateCheckService, DuplicateClaim } from '../../../../core/services/duplicate-check.service';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
+import { ScenarioStageService } from '../../../../core/scenario/scenario-stage.service';
+import { FnolLossInfoStage } from '../../../../core/scenario/scenario-stage.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { getErrorMessage } from '../../../../core/validators/error-messages';
@@ -71,14 +73,19 @@ interface LossInfoVM {
   templateUrl: './step-loss-information.component.html',
   styleUrl: './step-loss-information.component.scss',
 })
-export class StepLossInformationComponent implements OnInit {
+export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLossInfoStage {
+  readonly page = 'fnol-loss-info' as const;
+
   private fnolState         = inject(FnolStateService);
   private lookupSvc         = inject(MockLookupService);
   private duplicateCheckSvc = inject(DuplicateCheckService);
   private router            = inject(Router);
   private modalService      = inject(NxDialogService);
+  private stageSvc          = inject(ScenarioStageService);
+  private deregisterStage: (() => void) | null = null;
 
   @ViewChild('duplicatesModalTpl') duplicatesModalTpl!: TemplateRef<void>;
+  @ViewChild(LocationPickerComponent) locationPicker?: LocationPickerComponent;
 
   readonly form            = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
   readonly dateOfLoss      = this.fnolState.getDateOfLossGroup();
@@ -109,6 +116,9 @@ export class StepLossInformationComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    // Register the stage immediately so postLand hooks can find this component.
+    this.deregisterStage = this.stageSvc.register(this);
+
     if (!this.fnolState.selectedPolicy && !this.fnolState.selectedClient) {
       this.router.navigate(['/fnol/search']);
       return;
@@ -151,6 +161,87 @@ export class StepLossInformationComponent implements OnInit {
         map(([dups, dismissed]) => dups.length > 0 && !dismissed)
       ),
     });
+  }
+
+  ngOnDestroy(): void {
+    this.deregisterStage?.();
+  }
+
+  // ── Stage hooks ─────────────────────────────────────────────────────
+  async prefillDuplicate(date: string, causes: string[]): Promise<void> {
+    // Set values; ng-aquila controls subscribe to valueChanges so the existing
+    // duplicates$ pipeline fires through normal channels.
+    this.bannerDismissed$.next(false);
+    this.form.get('causeOfLoss')?.setValue(causes);
+    this.dateOfLoss.get('dateOfOccurrence')?.setValue(date);
+    this.form.get('causeOfLoss')?.markAsDirty();
+    this.dateOfLoss.get('dateOfOccurrence')?.markAsDirty();
+  }
+
+  async openShowAllDuplicates(date: string, causes: string[]): Promise<void> {
+    await this.prefillDuplicate(date, causes);
+    // 1s debounce + ~300ms mock delay; 1500ms is comfortable.
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    if (!this.policyNumber) return;
+    const result = await firstValueFrom(
+      this.duplicateCheckSvc.checkDuplicates(this.policyNumber, date, causes),
+    );
+    if (result.duplicates.length > 0) {
+      this.openDuplicatesModal(result.duplicates);
+    }
+  }
+
+  async openLocationPicker(): Promise<void> {
+    // Wait until the LocationPicker child is mounted and its vm$ resolves.
+    let lp = this.locationPicker;
+    let tries = 0;
+    while (!lp && tries < 20) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      lp = this.locationPicker;
+      tries++;
+    }
+    if (!lp) return;
+    if (lp.locations.length > 0) return;
+    type LpVm = { policyLocations: import('../../../../core/models').PolicyLocation[] };
+    const vm$ = (lp as unknown as { vm$?: Observable<LpVm> }).vm$;
+    if (!vm$) return;
+    const vm = await firstValueFrom(vm$);
+    await lp.addLocation(vm.policyLocations);
+  }
+
+  // CWB scenario stage hooks — kept as no-ops because the picker no longer
+  // exposes a CWB UI mode (CWB modal still lives at shared/ if other flows
+  // need it). injectCwbAsLoss below remains the canonical scripted entry.
+  async selectCwbMode(): Promise<void> { /* no-op: CWB radio removed from picker */ }
+  async openCwbModal(): Promise<void>  { /* no-op: CWB radio removed from picker */ }
+
+  async prefillCwbCountry(_country: string): Promise<void> { /* CWB modal owns the form; left as a no-op for v3 */ }
+  async runCwbSearch(): Promise<void> { /* requires modal-side stage; deferred */ }
+  async selectCwbRow(_cwbReference: string): Promise<void> { /* deferred */ }
+
+  async injectCwbAsLoss(cwbReference: string): Promise<void> {
+    const lp = this.locationPicker;
+    if (!lp) return;
+    const dataMod = await import('../../../../core/mock/data/cwb-locations.json');
+    const seedArr = ((dataMod as { default?: unknown }).default ?? dataMod) as import('../../../../core/models').CwbLocation[];
+    const picked = seedArr.find(c => c.cwbReference === cwbReference);
+    if (!picked) return;
+    const item: import('../../../../core/models').LocationItem = {
+      id: 'cwb-stage-' + picked.cwbReference,
+      source: 'cwb',
+      displayName: picked.locationName,
+      addressLine1: picked.streetAndNumber,
+      postalCode: picked.postalCode,
+      city: picked.city,
+      country: picked.country,
+      propertyId: picked.cwbReference,
+      latitude: picked.latitude,
+      longitude: picked.longitude,
+      cwbReference: picked.cwbReference,
+      locationRuleNumber: picked.locationRuleNumber,
+    };
+    lp.locations = [...lp.locations, item];
+    lp.locationChange.emit({ locations: lp.locations });
   }
 
   // ── Error display helper ────────────────────────────────────────────

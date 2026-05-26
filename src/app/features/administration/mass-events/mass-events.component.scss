@@ -1,0 +1,156 @@
+// Layout: blessed pattern from BLESSED.md:389 (pre-PageShell, verified 2026-05-22).
+// Outer wrap owns vertical padding; nxLayout owns horizontal (inline padding trap).
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--ui-01);
+}
+
+.me-toolbar {
+  background: var(--toolbar-background);
+  border-bottom: 1px solid var(--toolbar-border-bottom-color);
+}
+
+.me-toolbar__inner {
+  display: flex;
+  align-items: center;
+  min-height: var(--toolbar-height);
+  --breadcrumb-font-size: var(--paragraph-04-font-size);
+  --breadcrumb-line-height: 1.4;
+  --breadcrumb-height: 20px;
+}
+
+.me-toast { margin-bottom: 16px; }
+
+.me-page-wrap {
+  padding-top: var(--page-content-top);
+  padding-bottom: var(--layout-inset-base);
+}
+
+.me-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-inset-base);
+}
+
+// ─── Header (eyebrow + title + caption) — blessed step-1-search pattern ─────
+.me-eyebrow {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.me-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.me-caption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 32px;
+}
+
+.me-caption__icon {
+  flex-shrink: 0;
+  color: var(--interactive-text);
+}
+
+// ─── Form — blessed step-1-search (.row1, .form-row--3col) ─────────────────
+.me-form { margin-bottom: 8px; }
+
+.row1 {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 0;
+}
+
+.row1-inputs {
+  flex: 0 0 80%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.row1-actions {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  padding-bottom: 23px;
+}
+
+.form-row {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 0;
+  align-items: start;
+  width: 80%;
+
+  &--3col { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+// ─── Add row ───────────────────────────────────────────────────────────────
+.me-add-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ─── Table ─────────────────────────────────────────────────────────────────
+.me-empty {
+  margin: 0;
+  padding: 24px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.me-table { width: 100%; }
+
+.me-table__action-col {
+  width: 64px;
+  text-align: right;
+}
+
+// ─── Vertical kebab (CSS-drawn 3 dots — does not depend on icon font) ──────
+.me-kebab__dots {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+// ─── Footer ────────────────────────────────────────────────────────────────
+.me-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.me-footer__page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

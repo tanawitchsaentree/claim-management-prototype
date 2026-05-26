@@ -43,7 +43,12 @@ export class MockSkeletonClaimService extends MockBaseService {
     return this.respond(skeleton);
   }
 
-  matchToPolicy(skeletonId: string, policyId: string, userId: string): Observable<SkeletonClaim> {
+  matchToPolicy(
+    skeletonId: string,
+    policyId: string,
+    userId: string,
+    linkedClaimId?: string,
+  ): Observable<SkeletonClaim> {
     const idx = this.skeletons.findIndex(s => s.claimId === skeletonId);
     if (idx === -1) {
       return throwError(() => new Error(`Skeleton claim ${skeletonId} not found`)).pipe(
@@ -56,6 +61,7 @@ export class MockSkeletonClaimService extends MockBaseService {
       policyId,
       linkedBy: userId,
       linkedDate: new Date().toISOString(),
+      ...(linkedClaimId ? { linkedClaimId } : {}),
     };
     return this.respond(this.withComputed(this.skeletons[idx]));
   }

@@ -1,39 +1,122 @@
+<ng-container *ngIf="vm$ | async as vm">
 <div class="step-page">
 
   <p class="step-breadcrumb">Claim notification</p>
   <h1 class="step-title">Create claim without policy</h1>
 
-  @if (createdId) {
-    <!-- Success state -->
-    <nx-message context="success" class="success-banner">
-      <strong>Skeleton claim created: {{ createdId }}</strong>
-      <p class="success-detail">Policy match required within 3 business days.</p>
-    </nx-message>
-    <div class="success-actions">
-      <button nxButton="primary" type="button" (click)="onGoToDashboard()">Go to dashboard</button>
+  <nx-message context="warning" class="warning-banner">
+    This claim will be created without a linked policy. You must match a policy within
+    <strong>3 business days</strong>.
+  </nx-message>
+
+  <!-- Card 1: Notifier (skeleton-only) -->
+  <section class="li-card" [formGroup]="form">
+    <h2 class="section-heading">Notifier</h2>
+    <p class="section-desc">Pick who reported this loss.</p>
+
+    <div class="radio-field">
+      <p class="radio-label">Notifier type</p>
+      <div class="radio-row">
+        <nx-radio labelSize="small" name="notifierType" value="broker"
+                  [checked]="notifierType() === 'broker'"
+                  (valueChange)="setNotifierType('broker')">Broker</nx-radio>
+        <nx-radio labelSize="small" name="notifierType" value="insured"
+                  [checked]="notifierType() === 'insured'"
+                  (valueChange)="setNotifierType('insured')">Insured</nx-radio>
+        <nx-radio labelSize="small" name="notifierType" value="internal"
+                  [checked]="notifierType() === 'internal'"
+                  (valueChange)="setNotifierType('internal')">Internal</nx-radio>
+      </div>
     </div>
-  } @else {
-    <!-- Warning banner -->
-    <nx-message context="warning" class="warning-banner">
-      This claim will be created without a linked policy. You must match a policy within
-      <strong>3 business days</strong>.
-    </nx-message>
 
-    <form [formGroup]="form" (ngSubmit)="onCreate()" class="skeleton-form" novalidate>
+    @if (notifierType() === 'broker') {
+      @if (notifierBroker(); as b) {
+        <div class="notifier-broker-actions">
+          <button nxButton="primary small" type="button" (click)="openBrokerSearch()">
+            Search new broker
+          </button>
+        </div>
+        <div class="broker-row">
+          <table nxTable class="broker-row__table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Legal name</th>
+                <th nxHeaderCell>Trade / DBA name</th>
+                <th nxHeaderCell>Address</th>
+                <th nxHeaderCell>ID</th>
+                <th nxHeaderCell>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr nxTableRow>
+                <td nxCell>{{ b.legalName }}</td>
+                <td nxCell>{{ b.tradeName || '—' }}</td>
+                <td nxCell>{{ b.address || '—' }}</td>
+                <td nxCell><code class="broker-row__id">{{ b.ipmId }}</code></td>
+                <td nxCell>
+                  <span class="broker-row__status" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="two-col-grid">
+          <div data-field="broker">
+            <nx-formfield label="Broker">
+              <input nxInput formControlName="notifierText" autocomplete="off" placeholder="Broker name" />
+            </nx-formfield>
+          </div>
+        </div>
+        <div class="notifier-broker-actions">
+          <button nxButton="primary small" type="button" (click)="openBrokerSearch()">
+            <nx-icon name="search" nxIconPositionStart></nx-icon>
+            Search broker
+          </button>
+        </div>
+      }
+    } @else if (notifierType() === 'insured') {
+      <nx-message context="info" class="notifier-hint">
+        The insured party will be recorded as the notifier of this claim.
+      </nx-message>
+      <div class="two-col-grid">
+        <div data-field="insured">
+          <nx-formfield label="Insured name">
+            <input nxInput formControlName="notifierText" autocomplete="off" placeholder="Insured party name" />
+          </nx-formfield>
+        </div>
+      </div>
+    } @else if (notifierType() === 'internal') {
+      <nx-message context="info" class="notifier-hint">
+        The claim will be recorded as notified internally.
+      </nx-message>
+      <div class="two-col-grid">
+        <div data-field="internal">
+          <nx-formfield label="Internal notifier">
+            <input nxInput formControlName="notifierText" autocomplete="off"
+                   placeholder="Allianz staff who registered this claim" />
+          </nx-formfield>
+        </div>
+      </div>
+    }
+  </section>
 
-      <!-- Client -->
-      <div class="form-row">
-        <nx-formfield label="Client *">
+  <!-- Card 2: Reason for skeleton claim -->
+  <section class="li-card" [formGroup]="form">
+    <h2 class="section-heading">Reason for skeleton claim</h2>
+    <p class="section-desc">Identify the client and why this claim is being created without a policy.</p>
+
+    <div class="two-col-grid">
+      <div data-field="clientName">
+        <nx-formfield label="Client">
           <input nxInput formControlName="clientName" autocomplete="off" />
           @if (clientNameError) {
             <nx-error nxFormfieldError>{{ clientNameError }}</nx-error>
           }
         </nx-formfield>
       </div>
-
-      <!-- Reason -->
-      <div class="form-row">
-        <nx-formfield label="Reason for skeleton claim *">
+      <div data-field="reason">
+        <nx-formfield label="Reason for skeleton claim">
           <nx-dropdown formControlName="reason" placeholder="Select">
             @for (opt of reasonOptions; track opt.value) {
               <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
@@ -44,35 +127,204 @@
           }
         </nx-formfield>
       </div>
+    </div>
 
-      <!-- Notes -->
-      <div class="form-row">
-        <nx-formfield label="Additional notes (optional)">
-          <textarea nxInput formControlName="notes" rows="4"
-                    [attr.maxlength]="maxNotes"
-                    placeholder="Enter any additional context..."></textarea>
-          <span nxFormfieldHint class="notes-hint">
-            {{ notesLength }}/{{ maxNotes }}
-          </span>
-          @if (notesError) {
-            <nx-error nxFormfieldError>{{ notesError }}</nx-error>
-          }
+    <hr class="li-divider" />
+
+    <nx-formfield label="Additional notes (optional)" class="full-width">
+      <textarea nxInput formControlName="notes" rows="3" [maxlength]="maxNotes"
+                placeholder="Enter any additional context..."></textarea>
+      <nx-hint nxFormfieldHint>{{ notesLength }}/{{ maxNotes }}</nx-hint>
+      @if (notesError) {
+        <nx-error nxFormfieldError>{{ notesError }}</nx-error>
+      }
+    </nx-formfield>
+  </section>
+
+  <!-- Card 3: General information (mirrors loss-information) -->
+  <section class="li-card" [formGroup]="lossForm">
+    <h2 class="section-heading">General information</h2>
+    <p class="section-desc">Your selections here determine which cause-specific fields appear below.</p>
+
+    <div class="two-col-grid">
+      <div data-field="causeOfLoss">
+        <nx-formfield label="Cause of loss">
+          <nx-multi-select [options]="vm.causeOfLoss" selectValue="value" selectLabel="label"
+            placeholder="Select cause of loss" formControlName="causeOfLoss"
+            (selectionChange)="onCauseOfLossChange($event)"></nx-multi-select>
+          <nx-error nxFormfieldError *ngIf="submitted && selectedCauses.length === 0">
+            Select at least one cause of loss
+          </nx-error>
         </nx-formfield>
       </div>
-
-      <!-- Footer -->
-      <div class="step-footer">
-        <button nxButton="tertiary" type="button" (click)="onBack()">Back</button>
-        <button nxButton="primary" type="submit" [disabled]="saving">
-          @if (saving) {
-            <nx-spinner size="small" negative></nx-spinner>
-          } @else {
-            Create skeleton claim
-          }
-        </button>
+      <div data-field="typeOfDamage">
+        <nx-formfield label="Type of damage">
+          <nx-multi-select [options]="vm.typeOfDamage" selectValue="value" selectLabel="label"
+            placeholder="Select type of damage" formControlName="typeOfDamage"
+            (selectionChange)="onTypeOfDamageChange($event)"></nx-multi-select>
+          <nx-error nxFormfieldError *ngIf="submitted && selectedDamages.length === 0">
+            Select at least one type of damage
+          </nx-error>
+        </nx-formfield>
       </div>
+    </div>
 
-    </form>
-  }
+    <hr class="li-divider" />
+    <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
+
+    <div class="two-col-grid" [formGroup]="dateOfLoss">
+      <div data-field="dateOfOccurrence">
+        <nx-formfield label="Date of occurrence">
+          <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="occurrencePicker" />
+          <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
+          <nx-datepicker #occurrencePicker></nx-datepicker>
+          <nx-hint nxFormfieldHint>DD-MM-YYYY</nx-hint>
+          <nx-error nxFormfieldError *ngIf="showError(dateOfLoss.get('dateOfOccurrence')!) && dateOfLoss.get('dateOfOccurrence')?.errors?.['required']">
+            Date of occurrence is required
+          </nx-error>
+          <nx-error nxFormfieldError *ngIf="dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']">
+            Date can't be in the future
+          </nx-error>
+        </nx-formfield>
+      </div>
+      <div data-field="timeOfOccurrence">
+        <nx-timefield label="Time of occurrence" formControlName="timeOfOccurrence"></nx-timefield>
+        <p class="field-error" *ngIf="showError(dateOfLoss.get('timeOfOccurrence')!) && dateOfLoss.get('timeOfOccurrence')?.errors?.['required']">
+          Time of occurrence is required
+        </p>
+      </div>
+      <div data-field="dateOfNotification">
+        <nx-formfield label="Date of notification">
+          <input nxDatefield nxInput formControlName="dateOfNotification" [datepicker]="notificationPicker" />
+          <nx-datepicker-toggle nxFormfieldSuffix [for]="notificationPicker"></nx-datepicker-toggle>
+          <nx-datepicker #notificationPicker></nx-datepicker>
+          <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+          <nx-error nxFormfieldError *ngIf="showError(dateOfLoss.get('dateOfNotification')!) && dateOfLoss.get('dateOfNotification')?.errors?.['required']">
+            Date of notification is required
+          </nx-error>
+          <nx-error nxFormfieldError *ngIf="dateOfLoss.get('dateOfNotification')?.errors?.['futureDate']">
+            Date can't be in the future
+          </nx-error>
+        </nx-formfield>
+      </div>
+      <div data-field="timeOfNotification">
+        <nx-timefield label="Time of notification" formControlName="timeOfNotification"></nx-timefield>
+        <p class="field-error" *ngIf="showError(dateOfLoss.get('timeOfNotification')!) && dateOfLoss.get('timeOfNotification')?.errors?.['required']">
+          Time of notification is required
+        </p>
+      </div>
+    </div>
+    <nx-error class="group-error" *ngIf="showGroupError(dateOfLoss, 'dateOrder')">
+      Notification date must be on or after date of occurrence.
+    </nx-error>
+
+    <hr class="li-divider" />
+
+    <nx-formfield label="Loss description (optional)" class="full-width">
+      <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
+      <nx-hint nxFormfieldHint>{{ descLength }}/{{ maxDesc }}</nx-hint>
+    </nx-formfield>
+  </section>
+
+  <!-- Card 4: Locations of loss (mirrors standard FNOL — right after General info) -->
+  <section class="li-card">
+    <h2 class="section-heading">Locations of loss</h2>
+    <app-location-picker
+      [policyNumber]="null"
+      [value]="lossLocation.value"
+      (locationChange)="onLocationChange($event)">
+    </app-location-picker>
+  </section>
+
+  <!-- Card 5: Cause-specific Details (conditional, optional in skeleton) -->
+  <section class="li-card" *ngIf="showCauseSection" [formGroup]="causeDetails">
+    <h2 class="section-heading">Cause-specific details</h2>
+    <ng-container *ngIf="showFireSection" formGroupName="fire">
+      <h3 class="sub-heading">Fire</h3>
+      <div class="two-col-grid">
+        <nx-formfield label="Fire origin (optional)">
+          <input nxInput formControlName="fireOrigin" />
+        </nx-formfield>
+        <div class="radio-field">
+          <p class="radio-label">Fire department called?</p>
+          <div class="radio-row">
+            <nx-radio name="fireDept" [value]="true" [checked]="fireDeptCalled === true" (valueChange)="setFireDeptCalled(true)" labelSize="small">Yes</nx-radio>
+            <nx-radio name="fireDept" [value]="false" [checked]="fireDeptCalled === false" (valueChange)="setFireDeptCalled(false)" labelSize="small">No</nx-radio>
+          </div>
+        </div>
+        <nx-formfield label="Fire department report number (optional)">
+          <input nxInput formControlName="fireDepartmentReportNumber" />
+        </nx-formfield>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="showWaterSection" formGroupName="waterDamage">
+      <h3 class="sub-heading">Water damage</h3>
+      <div class="two-col-grid">
+        <nx-formfield label="Water source (optional)">
+          <nx-dropdown formControlName="waterSource" placeholder="Select water source">
+            <nx-dropdown-item *ngFor="let s of vm.waterSources" [value]="s.value">{{ s.label }}</nx-dropdown-item>
+          </nx-dropdown>
+        </nx-formfield>
+        <nx-formfield label="Affected area (m²) (optional)">
+          <input nxInput type="number" formControlName="affectedAreaSqm" min="0" />
+        </nx-formfield>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="showTheftSection" formGroupName="theft">
+      <h3 class="sub-heading">Theft</h3>
+      <div class="two-col-grid">
+        <nx-formfield label="Police report number (optional)">
+          <input nxInput formControlName="policeReportNumber" />
+        </nx-formfield>
+        <nx-formfield label="Estimated value stolen (optional)">
+          <input nxInput type="number" formControlName="estimatedValueStolen" min="0" />
+        </nx-formfield>
+        <nx-formfield label="Date reported to police (optional)">
+          <input nxDatefield nxInput formControlName="dateReportedToPolice" [datepicker]="theftDatePicker" />
+          <nx-datepicker-toggle nxFormfieldSuffix [for]="theftDatePicker"></nx-datepicker-toggle>
+          <nx-datepicker #theftDatePicker></nx-datepicker>
+        </nx-formfield>
+      </div>
+    </ng-container>
+  </section>
+
+  <!-- Card 6: Events Details (optional in skeleton — fill in detail after policy match) -->
+  <section class="li-card">
+    <h2 class="section-heading">Events details</h2>
+    <p class="section-desc">Optional at this stage — you can complete details once the policy is matched.</p>
+    @if (eventsArray.length === 0) {
+      <p class="section-empty">Select Cause of loss to see event details.</p>
+    }
+    @for (ctrl of eventsArray.controls; track trackByEventKey($index, ctrl); let i = $index) {
+      <div class="event-block" [class.event-block--divider]="i > 0" [attr.data-field]="'damages-' + i">
+        <h3 class="sub-heading">{{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}</h3>
+        @if (getCausedByOptions(eventGroup(i).get('eventKey')!.value); as causedByOpts) {
+          <div class="field-group">
+            <p class="field-label">Caused by (optional)</p>
+            <div class="checkbox-row">
+              @for (opt of causedByOpts; track opt.value) {
+                <nx-checkbox [checked]="isCausedByChecked(i, opt.value)" (checkedChange)="onCausedByToggle(i, opt.value, $event)">{{ opt.label }}</nx-checkbox>
+              }
+            </div>
+          </div>
+        }
+        <div class="field-group">
+          <p class="field-label">Damages caused by {{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }} (optional)</p>
+          <div class="checkbox-row">
+            @for (dmg of availableDamages(vm); track dmg.value) {
+              <nx-checkbox [checked]="isDamageChecked(i, dmg.value)" (checkedChange)="onDamageToggle(i, dmg.value, $event)">{{ dmg.label }}</nx-checkbox>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
+  <app-wizard-footer
+    (cancel)="onCancel()"
+    (back)="onBack()"
+    (next)="onNext()">
+  </app-wizard-footer>
 
 </div>
+</ng-container>

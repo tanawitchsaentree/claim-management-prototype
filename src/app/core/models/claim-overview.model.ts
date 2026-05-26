@@ -47,6 +47,16 @@ export interface ClaimOverview {
   reopenedDate?: string;
   reopenedBy?: { userId: string; name: string };
   reopeningReason?: string;
+
+  // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
+  hasOpenPayments?:   boolean;
+  hasOpenReserves?:   boolean;
+  hasActiveRecovery?: boolean;
+  hasOpenDeductible?: boolean;
+  hasActiveLitigation?: boolean;
+  hasActiveProvider?: boolean;
+  hasUnpaidBills?:    boolean;
+  hasIncompleteReports?: boolean;
 }
 
 export interface ClaimActivity {

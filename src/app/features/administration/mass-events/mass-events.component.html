@@ -1,0 +1,188 @@
+<app-navbar />
+
+<!-- Grey toolbar with breadcrumb -->
+<div class="me-toolbar">
+  <div nxLayout="grid maxwidth" class="me-toolbar__inner">
+    <div nxRow><div nxCol="12">
+      <ol nxBreadcrumb>
+        @for (item of breadcrumb; track item.label; let last = $last) {
+          <li nxBreadcrumbItem>
+            @if (item.route && !last) {
+              <a [routerLink]="item.route">{{ item.label }}</a>
+            } @else {
+              {{ item.label }}
+            }
+          </li>
+        }
+      </ol>
+    </div></div>
+  </div>
+</div>
+
+<!-- Toast banner (above content, same horizontal alignment) -->
+@if (toast()) {
+  <div nxLayout="grid maxwidth" class="me-toast">
+    <div nxRow>
+      <div nxCol="12">
+        <nx-message context="success" [closable]="true" (close)="toast.set(null)">
+          {{ toast() }}
+        </nx-message>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Page wrapper owns vertical padding; nxLayout owns horizontal (trap) -->
+<div class="me-page-wrap">
+  <div nxLayout="grid maxwidth" class="me-page">
+    <div nxRow><div nxCol="12">
+
+  <!-- Header: eyebrow + h1 + caption -->
+  <p class="me-eyebrow">Administration</p>
+  <h1 class="me-title">Mass events</h1>
+  <p class="me-caption">
+    Manage mass events that link related claims to a single incident.
+    <nx-icon name="info-circle-o" size="s" class="me-caption__icon"></nx-icon>
+  </p>
+
+  <!-- Filter form: row1 = inputs(80%) + Filter/Reset(20%); row2-3 = inputs(80%) -->
+  <form [formGroup]="filterForm" class="me-form" (ngSubmit)="onFilter()">
+    <div class="row1">
+      <div class="row1-inputs">
+        <nx-formfield label="Mass Event ID">
+          <input nxInput formControlName="id" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Mass Event code">
+          <input nxInput formControlName="code" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Mass Event name">
+          <input nxInput formControlName="name" autocomplete="off" />
+        </nx-formfield>
+      </div>
+      <div class="row1-actions">
+        <button nxButton="primary small" type="submit">Filter</button>
+        <button nxButton="tertiary small" type="button" (click)="onReset()">Reset</button>
+      </div>
+    </div>
+
+    <div class="form-row form-row--3col">
+      <nx-formfield label="Date start from">
+        <input nxDatefield nxInput formControlName="dateStartFrom" [datepicker]="fromPicker" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="fromPicker"></nx-datepicker-toggle>
+        <nx-datepicker #fromPicker></nx-datepicker>
+        <span nxFormfieldHint>YYYY-MM-DD</span>
+      </nx-formfield>
+      <nx-formfield label="Date start to">
+        <input nxDatefield nxInput formControlName="dateStartTo" [datepicker]="toPicker" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="toPicker"></nx-datepicker-toggle>
+        <nx-datepicker #toPicker></nx-datepicker>
+        <span nxFormfieldHint>YYYY-MM-DD</span>
+      </nx-formfield>
+      <nx-formfield label="Country">
+        <nx-dropdown formControlName="country" placeholder="Select">
+          @for (c of countries; track c) {
+            <nx-dropdown-item [value]="c">{{ c }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+    </div>
+
+    <div class="form-row form-row--3col">
+      <nx-formfield label="Region">
+        <nx-dropdown formControlName="region" placeholder="Select">
+          @for (r of regions; track r) {
+            <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="Loss cause">
+        <nx-dropdown formControlName="lossCause" placeholder="Select">
+          @for (l of lossCauses; track l) {
+            <nx-dropdown-item [value]="l">{{ l }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+    </div>
+  </form>
+
+  <!-- Add row -->
+  <div class="me-add-row">
+    <button nxButton="secondary small" type="button" (click)="onAdd()">
+      Add Mass Event
+    </button>
+  </div>
+
+  <!-- Table -->
+  @if (loading()) {
+    <p class="me-empty">Loading mass events…</p>
+  } @else if (total() === 0) {
+    <p class="me-empty">No mass events match the filters.</p>
+  } @else {
+    <table nxTable class="me-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell>Mass Event ID</th>
+          <th nxHeaderCell>Mass Event code</th>
+          <th nxHeaderCell>Mass Event name</th>
+          <th nxHeaderCell>Date started</th>
+          <th nxHeaderCell>Date ended</th>
+          <th nxHeaderCell>Country</th>
+          <th nxHeaderCell>Region</th>
+          <th nxHeaderCell class="me-table__action-col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of pagedRows(); track row.id) {
+          <tr nxTableRow>
+            <td nxCell>
+              <nx-link size="small">
+                <a (click)="openDetail(row); $event.preventDefault()" href="#">{{ row.id }}</a>
+              </nx-link>
+            </td>
+            <td nxCell>{{ row.code }}</td>
+            <td nxCell>{{ row.name }}</td>
+            <td nxCell>{{ formatDate(row.dateStart) }}</td>
+            <td nxCell>{{ formatDate(row.dateEnd) }}</td>
+            <td nxCell>{{ row.country }}</td>
+            <td nxCell>{{ row.region }}</td>
+            <td nxCell class="me-table__action-col">
+              <button nxIconButton="tertiary small" type="button"
+                      [nxContextMenuTriggerFor]="rowMenu"
+                      class="me-kebab"
+                      aria-label="Row actions">
+                <span class="me-kebab__dots" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </span>
+              </button>
+              <nx-context-menu #rowMenu="nxContextMenu">
+                <button nxContextMenuItem type="button" (click)="openDetail(row)">Open details</button>
+                <button nxContextMenuItem type="button" (click)="onDelete(row)">Delete</button>
+              </nx-context-menu>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="me-footer">
+      <span class="me-footer__page-size">
+        Items per page:
+        <strong>{{ pageSize }}</strong>
+      </span>
+      @if (total() > pageSize) {
+        <nx-pagination
+          type="advanced"
+          [count]="total()"
+          [page]="page()"
+          [perPage]="pageSize"
+          (goPrev)="page.set(page() - 1)"
+          (goNext)="page.set(page() + 1)"
+          (goPage)="page.set($event)">
+        </nx-pagination>
+      }
+    </div>
+  }
+
+    </div></div>
+  </div>
+</div>

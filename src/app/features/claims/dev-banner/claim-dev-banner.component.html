@@ -4,34 +4,39 @@
 
     <nx-formfield class="cdb-picker">
       <nx-dropdown
-        [value]="helper.selectedTicket()?.ticketId ?? null"
+        [formControl]="ticketCtrl"
         placeholder="Pick a ticket to test"
-        (valueChange)="onTicketSelected($event)">
-        @for (ticket of helper.tickets(); track ticket.ticketId) {
-          <nx-dropdown-item [value]="ticket.ticketId">
-            <div class="cdb-ticket-option">
-              <div class="cdb-ticket-meta">
-                <span class="cdb-ticket-module">{{ ticket.module }}</span>
-                <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
-              </div>
-              <div class="cdb-ticket-title">{{ ticket.title }}</div>
-              <div class="cdb-ticket-stats">
-                <span>{{ ticket.pages.join(' · ') }}</span>
-                <span>
-                  ✅ {{ countByStatus(ticket, 'done') }}
-                  @if (countByStatus(ticket, 'partial') > 0) {
-                    · ⏳ {{ countByStatus(ticket, 'partial') }}
-                  }
-                  @if (countByStatus(ticket, 'todo') > 0) {
-                    · ⬜ {{ countByStatus(ticket, 'todo') }}
-                  }
-                  @if (verifiedCount(ticket) > 0) {
-                    · ✓ {{ verifiedCount(ticket) }} verified
-                  }
-                </span>
-              </div>
-            </div>
-          </nx-dropdown-item>
+        [showFilter]="true"
+        filterPlaceholder="Search tickets…"
+        (selectionChange)="onTicketSelectionChange($event)">
+        @for (group of groupedTickets(); track group.module) {
+          <nx-dropdown-group [label]="group.module">
+            @for (ticket of group.tickets; track ticket.ticketId) {
+              <nx-dropdown-item [value]="ticket.ticketId">
+                <div class="cdb-ticket-option">
+                  <div class="cdb-ticket-meta">
+                    <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
+                  </div>
+                  <div class="cdb-ticket-title">{{ ticket.title }}</div>
+                  <div class="cdb-ticket-stats">
+                    <span>{{ ticket.pages.join(' · ') }}</span>
+                    <span>
+                      ✅ {{ countByStatus(ticket, 'done') }}
+                      @if (countByStatus(ticket, 'partial') > 0) {
+                        · ⏳ {{ countByStatus(ticket, 'partial') }}
+                      }
+                      @if (countByStatus(ticket, 'todo') > 0) {
+                        · ⬜ {{ countByStatus(ticket, 'todo') }}
+                      }
+                      @if (verifiedCount(ticket) > 0) {
+                        · ✓ {{ verifiedCount(ticket) }} verified
+                      }
+                    </span>
+                  </div>
+                </div>
+              </nx-dropdown-item>
+            }
+          </nx-dropdown-group>
         }
       </nx-dropdown>
     </nx-formfield>

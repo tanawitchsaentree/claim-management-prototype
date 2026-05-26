@@ -1,10 +1,12 @@
 <nx-header>
   <nx-header-brand>
-    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-      <circle cx="16" cy="16" r="16" fill="#003781"/>
-      <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
-    </svg>
-    <nx-header-app-title>Commercial Claims</nx-header-app-title>
+    <a routerLink="/dashboard" class="nav-brand-link" aria-label="Go to dashboard">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="16" fill="#003781"/>
+        <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
+      </svg>
+      <nx-header-app-title>Commercial Claims</nx-header-app-title>
+    </a>
   </nx-header-brand>
 
   <!-- Desktop nav — hidden on mobile -->
@@ -20,6 +22,12 @@
     </nx-header-navigation-item>
     <nx-header-navigation-item>
       <a nxHeaderLink routerLink="/tasks" routerLinkActive="is-active">Task manager</a>
+    </nx-header-navigation-item>
+    <nx-header-navigation-item>
+      <a nxHeaderLink routerLink="/administration" routerLinkActive="is-active">Administration</a>
+    </nx-header-navigation-item>
+    <nx-header-navigation-item>
+      <a nxHeaderLink routerLink="/approvals" routerLinkActive="is-active">Approvals</a>
     </nx-header-navigation-item>
   </nx-header-navigation>
 
@@ -49,6 +57,8 @@
     <button type="button" class="nav-mobile-item" (click)="navigateMobile('/dashboard')">Claims</button>
     <button type="button" class="nav-mobile-item" (click)="navigateMobile('/parties')">Parties</button>
     <button type="button" class="nav-mobile-item" (click)="navigateMobile('/tasks')">Task manager</button>
+    <button type="button" class="nav-mobile-item" (click)="navigateMobile('/administration')">Administration</button>
+    <button type="button" class="nav-mobile-item" (click)="navigateMobile('/approvals')">Approvals</button>
     <div class="nav-mobile-divider"></div>
     <div class="nav-mobile-user">
       <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name">{{ initials }}</button>

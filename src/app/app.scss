@@ -17,3 +17,19 @@
   padding: 24px;
   background-color: #f4f6f9;
 }
+
+.dev-banner-row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.dev-banner-row > app-claim-dev-banner {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dev-banner-row > app-dev-helper-banner {
+  flex: 0 0 auto;
+  border-left: 1px solid var(--dev-banner-border);
+}

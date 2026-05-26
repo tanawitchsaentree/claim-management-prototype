@@ -1,0 +1,154 @@
+// Detail panel styles. Layout owned by parent (.lit-detail flex slot).
+
+.lit-detail-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ui-01);
+  padding: 0;
+  gap: 0;
+}
+
+.lit-detail__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 16px;
+}
+
+.lit-detail__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+// Bordered summary card (no full grey fill — Figma shows white with thin border)
+.lit-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 16px 20px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.lit-summary__field { display: flex; flex-direction: column; gap: 4px; }
+.lit-summary__label { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
+.lit-summary__value { font-size: var(--paragraph-02-font-size); font-weight: 600; color: var(--text-01); }
+.lit-summary__status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  button { padding: 0; min-width: auto; color: var(--text-muted); }
+}
+
+.lit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  // Match Figma: 56px header — 14px text @ weight 400 (no bold flip on expand),
+  // 18/24 padding (18 + 20 line-height + 18 = 56). 12px gap between panels.
+  nx-expansion-panel {
+    --accordion-regular-font-size: var(--paragraph-04-font-size);     // 14px
+    --accordion-regular-line-height: 1.25rem;                          // 20px
+    --accordion-regular-font-weight: 400;
+    --accordion-regular-header-active-font-weight: 400;
+    --accordion-regular-header-padding: 18px 24px;                     // → 56px tall
+    --accordion-regular-body-padding: 20px 24px;
+    --accordion-regular-header-top-margin: 12px;
+  }
+
+  // Inner stack inside each panel — same gap as before .lit-section__body removal.
+  nx-expansion-panel ::ng-deep .nx-expansion-panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+// Reuse step-1-search blessed pattern
+.form-row {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+
+  &--2col { grid-template-columns: 1fr 1fr; }
+}
+
+// Party block — vertical: label+value row, then Add button below
+.lit-party {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lit-party__row {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.lit-party__label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.lit-party__value {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+// Inline editable expense grid (5 columns: subtype | currency | amount | section | trash)
+.lit-expense-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 40px;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 0;
+
+  &--head {
+    padding: 8px 0 0;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+}
+
+.lit-expense-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.lit-case-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.lit-case-empty {
+  padding: 32px 0;
+  border-bottom: 1px solid var(--ui-04);
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+}
+
+.lit-detail__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 24px;
+}

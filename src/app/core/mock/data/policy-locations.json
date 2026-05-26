@@ -130,5 +130,29 @@
     "propertyId": "DEU-KWH-0002",
     "type": "Storage",
     "active": true
+  },
+  {
+    "id": "LOC-012",
+    "policyNumber": "POL-2024-021",
+    "name": "Jonas Kaufmann — Munich Warehouse",
+    "addressLine1": "Industriestraße 12",
+    "postalCode": "80807",
+    "city": "Munich",
+    "country": "DE",
+    "propertyId": "DEU-JKM-0001",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-013",
+    "policyNumber": "POL-2024-021",
+    "name": "Jonas Kaufmann — Berlin Office",
+    "addressLine1": "Friedrichstraße 88",
+    "postalCode": "10117",
+    "city": "Berlin",
+    "country": "DE",
+    "propertyId": "DEU-JKM-0002",
+    "type": "Office",
+    "active": true
   }
 ]

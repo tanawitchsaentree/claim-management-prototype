@@ -307,6 +307,22 @@
   margin: 6px 0 0;
 }
 
+// ─── Converting banner (BMPCC-11006) ──────────────────────────────
+.converting-banner {
+  margin-bottom: 16px;
+}
+
+.converting-banner__detail {
+  font-size: var(--paragraph-03-font-size);
+  margin: 4px 0 0;
+  color: inherit;
+  opacity: 0.85;
+}
+
+.converting-banner__link {
+  margin: 6px 0 0;
+}
+
 // ─── Skeleton empty state (compact variant) ───────────────────────
 .empty-state--compact {
   padding: 32px 24px;

@@ -1,0 +1,26 @@
+<app-page-shell align="navbar">
+  @for (group of groups; track group.title) {
+    <section class="admin-group">
+      <h2 class="admin-group__title">{{ group.title }}</h2>
+
+      <div class="admin-cards">
+        @for (card of group.cards; track card.key) {
+          <article class="admin-card">
+            <span class="admin-card__icon-circle"
+                  [class]="'admin-card__icon-circle--' + card.iconAccent">
+              <nx-icon [name]="card.icon" size="m"
+                       [class]="'admin-card__icon--' + card.iconAccent"></nx-icon>
+            </span>
+
+            <h3 class="admin-card__title">{{ card.title }}</h3>
+            <p class="admin-card__desc">{{ card.description }}</p>
+
+            <nx-link size="small" class="admin-card__link">
+              <a (click)="open(card); $event.preventDefault()" href="#">Open</a>
+            </nx-link>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</app-page-shell>

@@ -8,6 +8,19 @@
     <nx-icon name="info-circle-o" size="s" class="subtitle-icon"></nx-icon>
   </p>
 
+  <!-- Converting from skeleton banner (BMPCC-11006) -->
+  @if (convertingSkeletonId()) {
+    <nx-message context="info" class="converting-banner">
+      <strong>Converting from {{ convertingSkeletonId() }}</strong>
+      <p class="converting-banner__detail">
+        Search and select a policy to continue. The original skeleton claim will be linked once you finish.
+      </p>
+      <p class="converting-banner__link">
+        <button nxPlainButton type="button" (click)="cancelConvert()">Cancel conversion</button>
+      </p>
+    </nx-message>
+  }
+
   <!-- Form-level validation banner -->
   @if (validationError) {
     <div class="form-validation-banner" role="alert">
@@ -383,7 +396,7 @@
                 <ng-template nxContextMenuContent let-skeleton="skeleton">
                   <button nxContextMenuItem type="button" (click)="onViewClaim(skeleton.claimId)">View claim</button>
                   @if (skeleton.status === 'awaiting-policy') {
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Match policy</button>
+                    <button nxContextMenuItem type="button" (click)="onConvertSkeleton(skeleton)">Convert to claim</button>
                     <button nxContextMenuItem type="button" (click)="onComingSoon()">Extend SLA</button>
                     <button nxContextMenuItem type="button" (click)="onComingSoon()">Abandon claim</button>
                   }

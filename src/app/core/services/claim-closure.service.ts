@@ -34,7 +34,7 @@ export class ClaimClosureService {
           openSections: this.sectionSvc.getOpenSectionsCount(claimId),
         }).pipe(
           map(({ tasks, openSections }) =>
-            this.buildBlockerResult(tasks, openSections)
+            this.buildBlockerResult(claim, tasks, openSections)
           ),
           delay(MOCK_DELAY_MS),
         );
@@ -42,7 +42,7 @@ export class ClaimClosureService {
     );
   }
 
-  private buildBlockerResult(tasks: Task[], openSections: number): BlockerCheckResult {
+  private buildBlockerResult(claim: ClaimOverview, tasks: Task[], openSections: number): BlockerCheckResult {
     const blockers: Blocker[] = [];
 
     const pending = tasks.filter(t => t.status !== 'done');
@@ -62,18 +62,31 @@ export class ClaimClosureService {
       });
     }
 
-    // Checks 3-9: stubbed — integrate real data in future phases
-    const stubs: Array<{ type: Blocker['type']; label: string }> = [
-      { type: 'payments',   label: 'Outstanding payments must be settled' },
-      { type: 'reserves',   label: 'Open reserves must be closed or released' },
-      { type: 'recovery',   label: 'Active recovery actions must be resolved' },
-      { type: 'deductible', label: 'Deductible collections must be confirmed' },
-      { type: 'litigation', label: 'Open litigation must be resolved' },
-      { type: 'provider',   label: 'Provider instructions must be finalised' },
-      { type: 'bills',      label: 'Unpaid bills must be cleared' },
-      { type: 'reports',    label: 'Required reports must be submitted' },
-    ];
-    void stubs;
+    // BMPCC-11360 AC2 — additional blocker flags read from claim overview.
+    if (claim.hasOpenPayments) {
+      blockers.push({ type: 'payments',   label: 'Outstanding payments must be settled' });
+    }
+    if (claim.hasOpenReserves) {
+      blockers.push({ type: 'reserves',   label: 'Open reserves must be closed or released' });
+    }
+    if (claim.hasActiveRecovery) {
+      blockers.push({ type: 'recovery',   label: 'Active recovery actions must be resolved' });
+    }
+    if (claim.hasOpenDeductible) {
+      blockers.push({ type: 'deductible', label: 'Deductible collections must be confirmed' });
+    }
+    if (claim.hasActiveLitigation) {
+      blockers.push({ type: 'litigation', label: 'Open litigation must be resolved' });
+    }
+    if (claim.hasActiveProvider) {
+      blockers.push({ type: 'provider',   label: 'Provider instructions must be finalised' });
+    }
+    if (claim.hasUnpaidBills) {
+      blockers.push({ type: 'bills',      label: 'Unpaid bills must be cleared' });
+    }
+    if (claim.hasIncompleteReports) {
+      blockers.push({ type: 'reports',    label: 'Required reports must be submitted' });
+    }
 
     return { canClose: blockers.length === 0, blockers };
   }
@@ -86,6 +99,10 @@ export class ClaimClosureService {
         }
 
         const now = new Date().toISOString().split('T')[0];
+        const retentionDate = payload.retentionType === 'indefinite'
+          ? undefined
+          : (payload.retentionDate ?? this.defaultRetentionDate(now));
+
         const closed: ClaimOverview = {
           ...claim,
           status: 'Closed',
@@ -93,20 +110,56 @@ export class ClaimClosureService {
           closedBy: payload.confirmedBy,
           closureReason: payload.reason,
           retentionType: payload.retentionType,
-          retentionDate: payload.retentionDate ?? this.defaultRetentionDate(now),
+          retentionDate,
         };
 
         return of(closed).pipe(
           delay(MOCK_DELAY_MS),
-          tap(result => this.mockState.patchOverview(claimId, result)),
+          tap(result => {
+            this.mockState.patchOverview(claimId, result);
+            // BMPCC-11360 AC4 — loss event auto-closes when all linked claims are closed.
+            this.maybeCloseLossEvent(result.lossEventId);
+          }),
         );
       }),
     );
   }
 
-  // Phase 4 implementation
-  reopenClaim(_claimId: string, _payload: ReopenPayload): Observable<ClaimOverview> {
-    return throwError(() => new Error('reopenClaim: Not implemented in Phase 2'));
+  /**
+   * Auto-close the loss event if every claim sharing the same lossEventId is now Closed.
+   * Reads from MockStateService.state().overviews so it sees current sessionStorage state.
+   */
+  private maybeCloseLossEvent(lossEventId: string | null | undefined): void {
+    if (!lossEventId) return;
+    const all = Object.values(this.mockState.state().overviews);
+    const linked = all.filter(c => c.lossEventId === lossEventId);
+    if (linked.length === 0) return;
+    const allClosed = linked.every(c => c.status === 'Closed');
+    if (!allClosed) return;
+    // Loss event itself isn't an entity in the overview shape — annotate via tap log.
+    // (Hook reserved for future Kafka publish step described in BMPCC-11360.)
+    console.info('[claim-closure] Loss event auto-closed:', lossEventId);
+  }
+
+  reopenClaim(claimId: string, payload: ReopenPayload): Observable<ClaimOverview> {
+    return this.overviewSvc.getOverview(claimId).pipe(
+      switchMap(claim => {
+        if (claim.status !== 'Closed') {
+          return throwError(() => new Error(`Claim ${claimId} is not closed.`));
+        }
+        const now = new Date().toISOString().split('T')[0];
+        const reopened: ClaimOverview = {
+          ...claim,
+          status: 'Reopened',
+          reopenedDate: now,
+          reopeningReason: payload.reason,
+        };
+        return of(reopened).pipe(
+          delay(MOCK_DELAY_MS),
+          tap(result => this.mockState.patchOverview(claimId, result)),
+        );
+      }),
+    );
   }
 
   private defaultRetentionDate(fromDate: string): string {

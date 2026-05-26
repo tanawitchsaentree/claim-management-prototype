@@ -1,0 +1,17 @@
+[
+  {
+    "id": "123456.1-LIT-1",
+    "claimId": "123456.1",
+    "clientName": "Mark Kaufmann",
+    "type": "Coverage",
+    "startDate": "2026-01-22",
+    "status": "In progress",
+    "title": "Coverage dispute over BI claim",
+    "description": "Insured contests denial of business interruption coverage following the storm event of 2025-11-04.",
+    "jurisdiction": "Munich Regional Court",
+    "expenses": [
+      { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 1000.00, "section": "BI" }
+    ],
+    "cases": []
+  }
+]

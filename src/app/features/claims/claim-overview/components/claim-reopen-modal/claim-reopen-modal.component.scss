@@ -1,0 +1,40 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.crm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.crm-title { @include modal.title; }
+
+.crm-body { @include modal.body; }
+
+.crm-intro {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.crm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  nx-formfield { width: 100%; min-width: 0; }
+}
+
+.crm-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-width: 0;
+
+  > * { min-width: 0; }
+}
+
+.crm-footer { @include modal.footer; }

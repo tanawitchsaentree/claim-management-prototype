@@ -1,0 +1,311 @@
+{
+  "ticketId": "BMPCC-11360",
+  "module": "Claims",
+  "title": "Claim status management & Retention date",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview"],
+  "walkthroughSteps": [
+    "Apply an AC — banner seeds blockers / retention state on the target claim",
+    "Land on /claims/CLM-2024-001/overview",
+    "Hover Close Claim to see blocker breakdown (when applicable)",
+    "Open closure modal → step 3 retention options (Default 10y / Custom / Indefinite)",
+    "Custom date picker — only dates beyond default 10-year period are selectable",
+    "After closure → status chip 'Closed' + closure panel shows retention info",
+    "Reopen flow requires a non-zero reserve to be raised"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Close Claim action is on Claim Overview; handler must select a closure reason",
+      "plainStatement": "**Close Claim** action is *accessible on the Claim Overview page*. Handler must select one of three reasons (`Claim Finalised` / `Claim Not Pursued` / `Claim Rejected`) before the claim can be closed.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All blockers cleared so Close Claim is enabled",
+        "preconditions": [
+          { "text": "Close Claim button is enabled (primary blue)", "page": "overview", "role": "tested-visible" },
+          { "text": "Closure modal step 2 has a required Reason dropdown", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" }
+        },
+        "postLand": [{ "kind": "overview.openClosureModal" }]
+      },
+      "expectedUI": {
+        "description": "Close Claim opens modal; reason dropdown required on step 2",
+        "visualCues": [
+          "Close Claim button rendered as primary action in the right-strip",
+          "Modal opens to step 2 (Reason)",
+          "Three reasons available; submitting empty surfaces inline error"
+        ]
+      },
+      "expectedOutcome": {
+        "canClose": true,
+        "buttonEnabled": true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Close Claim → click Continue without selecting a reason",
+        "expectedResult": "Validation error appears below reason dropdown"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Closure blocked when payments / recoveries / litigation / provider / bills / reports are outstanding",
+      "plainStatement": "Closure is **blocked** when *any* of the listed activities are outstanding. The blocker tooltip lists which activity needs resolution. (BMPCC-11360 AC2 — activity flags driven by mock claim data.)",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Tasks + sections cleared, but payments / litigation / bills flagged outstanding",
+        "preconditions": [
+          { "text": "Close Claim button disabled with tooltip listing all blockers", "page": "overview", "role": "tested-visible" },
+          { "text": "Tooltip mentions payments, litigation and bills (each as a blocker)", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "hasOpenPayments": true,
+              "hasActiveLitigation": true,
+              "hasUnpaidBills": true
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Close button disabled with multi-blocker tooltip",
+        "visualCues": [
+          "Close Claim button greyed out",
+          "Tooltip text: '3 blocker(s) must be resolved' (or full label when single-blocker)",
+          "No modal opens on click"
+        ]
+      },
+      "expectedOutcome": {
+        "canClose": false,
+        "buttonEnabled": false
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Hover Close Claim",
+        "expectedResult": "Disabled state with tooltip showing the outstanding activities"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Soft reminder when proximate cause of loss is 'Other'",
+      "plainStatement": "When the **proximate cause of loss** is set to `Other`, the closure modal shows a *soft (non-blocking)* reminder prompting the handler to update before proceeding. Handler can still close the claim.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All clear + proximateLossCause overridden to 'Other'",
+        "preconditions": [
+          { "text": "Modal step 2 shows a yellow warning banner about 'Other' cause", "page": "overview", "role": "tested-visible" },
+          { "text": "User can still proceed and confirm closure", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": { "proximateLossCause": "Other" }
+          }
+        },
+        "postLand": [{ "kind": "overview.openClosureModal" }]
+      },
+      "expectedUI": {
+        "description": "Warning banner inside modal step 2",
+        "visualCues": [
+          "nx-message warning banner: 'The proximate loss cause is set to \"Other\"…'",
+          "Continue button still enabled (warning is non-blocking)"
+        ]
+      },
+      "expectedOutcome": {
+        "canClose": true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Open closure modal — observe step 2",
+        "expectedResult": "Warning visible above Reason dropdown; user can proceed"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Retention date defaults to 10 years; handler can override to Custom or Indefinite",
+      "plainStatement": "On step 3 of the closure modal, three retention options are available: **Default (10 years)**, **Custom** (must extend beyond default), and **Indefinite**. Default is auto-applied; Custom unlocks a date picker pinned to ≥ default + 10y; Indefinite stores no date.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Clear blockers + auto-open closure modal so user can navigate to step 3",
+        "preconditions": [
+          { "text": "Step 3 shows three radio options (Default / Custom / Indefinite)", "page": "overview", "role": "tested-visible" },
+          { "text": "Custom radio opens a date picker; min date is 10 years from today", "page": "overview", "role": "tested-visible" },
+          { "text": "Indefinite radio shows no extra fields and stores no retentionDate", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" }
+        },
+        "postLand": [{ "kind": "overview.openClosureModal" }]
+      },
+      "expectedUI": {
+        "description": "Retention radio group with calendar picker for Custom",
+        "visualCues": [
+          "'Default (10 years — until …)' radio with computed date label",
+          "'Custom date' radio reveals a datefield with calendar toggle",
+          "Datefield hint: 'Must extend beyond the default 10-year period.'",
+          "'Indefinite' radio stores no date"
+        ]
+      },
+      "expectedOutcome": {
+        "canClose": true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Open modal → Reason → Continue → step 3",
+        "expectedResult": "Retention options visible; Custom unlocks calendar"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Closed claim shows closure date and retention info on the file",
+      "plainStatement": "After closure, the **claim file** shows: `Closure date`, `Closed by`, `Closure reason`, and `Retention until` (Indefinite or formatted date). All read-only.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim already closed via overviewPatch — Default 10-year retention",
+        "preconditions": [
+          { "text": "Status chip reads 'Closed'", "page": "overview", "role": "tested-visible" },
+          { "text": "Closure panel shows date, reason and 'Retention until' value", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": { "userId": "u1", "name": "Leonie Fischer" },
+              "retentionType": "default",
+              "retentionDate": "2034-02-28"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Closure panel populated",
+        "visualCues": [
+          "Status chip: Closed (grey)",
+          "Closure date: 28.02.24",
+          "Closure reason: Claim Finalised",
+          "Retention until: 28.02.34"
+        ]
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Closed",
+        "buttonVisible": false,
+        "closedByName": "Leonie Fischer",
+        "closureReason": "Claim Finalised"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Observe the page",
+        "expectedResult": "Retention until shows 28.02.34"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Indefinite retention renders as 'Indefinite' on the claim file",
+      "plainStatement": "When retention is set to **Indefinite**, the closure panel displays `Indefinite` *instead of* a calendar date.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Closed claim with indefinite retention",
+        "preconditions": [
+          { "text": "'Retention until' field reads 'Indefinite'", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": { "userId": "u1", "name": "Leonie Fischer" },
+              "retentionType": "indefinite"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Closure panel with indefinite retention",
+        "visualCues": [
+          "Status: Closed",
+          "Retention until: Indefinite (literal text — no date)"
+        ]
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Closed",
+        "buttonVisible": false
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Observe the closure panel",
+        "expectedResult": "'Retention until' text reads 'Indefinite'"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "Reopen requires a reserve to be raised; status updates to Reopened with date visible",
+      "plainStatement": "A `Closed` claim can be **reopened** only if a *non-zero reserve* is raised. After reopen, status updates to `Reopened` and the **reopening date** is visible on the file.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Pre-closed claim ready to reopen",
+        "preconditions": [
+          { "text": "Reopen Claim button is visible (status is Closed)", "page": "overview", "role": "tested-visible" },
+          { "text": "Reopen modal blocks submit when reserveAmount < 1", "page": "overview", "role": "tested-visible" },
+          { "text": "After reopen: status chip shows Reopened + reopened date in panel", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": { "userId": "u1", "name": "Leonie Fischer" },
+              "retentionType": "default",
+              "retentionDate": "2034-02-28"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Reopen flow with mandatory reserve",
+        "visualCues": [
+          "Reopen Claim button enabled in right-strip",
+          "Modal: Reason (≥ 8 chars) + Reserve type + Reserve amount (must be > 0)",
+          "After Reopen: status 'Reopened' + Reopened date row visible in closure panel"
+        ]
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Closed",
+        "buttonVisible": false
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Reopen Claim → fill reason + amount → submit",
+        "expectedResult": "Status chip flips to Reopened; reopened date row appears"
+      }
+    }
+  ]
+}

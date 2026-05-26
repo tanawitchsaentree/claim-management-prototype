@@ -1,0 +1,116 @@
+<div class="cnp">
+  <!-- Header -->
+  <header class="cnp__header">
+    <button class="cnp__filter-trigger" type="button"
+            [nxContextMenuTriggerFor]="filterMenu"
+            [attr.aria-label]="'Change filter — current: ' + currentFilterLabel()">
+      <span class="cnp__filter-label">{{ currentFilterLabel() }} ({{ totalCount() }})</span>
+      <nx-icon name="chevron-down" size="s"></nx-icon>
+    </button>
+
+    <nx-context-menu #filterMenu="nxContextMenu">
+      @for (opt of filterOptions; track opt.value) {
+        <button nxContextMenuItem type="button" (click)="setFilter(opt.value)">
+          {{ opt.label }}
+        </button>
+      }
+    </nx-context-menu>
+
+    <div class="cnp__header-actions">
+      <button nxButton="secondary small" type="button" (click)="onAddNote()">
+        <nx-icon name="plus" nxIconPositionStart></nx-icon>
+        Add note
+      </button>
+      <button nxButton="tertiary small" type="button" (click)="onViewAll()">
+        <nx-icon name="launch" nxIconPositionStart></nx-icon>
+        View all
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="cnp__empty">Loading notes…</p>
+  } @else if (totalCount() === 0) {
+    <p class="cnp__empty">No notes match this filter.</p>
+  } @else {
+
+    <!-- PINNED section -->
+    @if (pinnedNotes().length > 0) {
+      <section class="cnp-block cnp-block--pinned">
+        <nx-eyebrow size="s" class="cnp-block__eyebrow">PINNED ({{ pinnedNotes().length }})</nx-eyebrow>
+        @for (note of pinnedNotes(); track note.id) {
+          <ng-container *ngTemplateOutlet="noteCard; context: { note, showPinMarker: true }"></ng-container>
+        }
+      </section>
+    }
+
+    <!-- ACTIVITY section -->
+    @if (activityVisible().length > 0) {
+      <section class="cnp-block">
+        <nx-eyebrow size="s" class="cnp-block__eyebrow">ACTIVITY ({{ activityAll().length }})</nx-eyebrow>
+        @for (note of activityVisible(); track note.id) {
+          <ng-container *ngTemplateOutlet="noteCard; context: { note, showPinMarker: false }"></ng-container>
+        }
+
+        @if (hasMoreActivity()) {
+          <div class="cnp__load-more">
+            <button nxButton="tertiary small" type="button" (click)="loadMore()">
+              Load more
+            </button>
+          </div>
+        }
+      </section>
+    }
+  }
+</div>
+
+<!-- Note card template (single source) -->
+<ng-template #noteCard let-note="note" let-showPinMarker="showPinMarker">
+  <article class="cnp-note">
+    <span nxAvatar size="small" [accentColor]="note.author.accent" class="cnp-note__avatar">
+      {{ note.author.initials }}
+    </span>
+
+    <div class="cnp-note__main">
+      <header class="cnp-note__head">
+        <div class="cnp-note__head-row">
+          <span class="cnp-note__author">
+            @if (showPinMarker) {
+              <nx-icon name="bookmark" size="s" class="cnp-note__pin-marker" aria-label="Pinned"></nx-icon>
+            }
+            {{ note.author.name }}
+          </span>
+          @if (sectionLabel(note.section); as label) {
+            <span class="cnp-note__chip">{{ label }}</span>
+          }
+        </div>
+        <span class="cnp-note__time">{{ formatTimestamp(note.timestamp) }}</span>
+      </header>
+
+      <p class="cnp-note__body" [class.cnp-note__body--clamp]="!expanded(note.id)">
+        {{ note.body }}
+      </p>
+
+      @if (note.body.length > 140) {
+        <button class="cnp-note__more" type="button" (click)="toggleExpand(note.id)">
+          {{ expanded(note.id) ? 'Show less' : 'Show more' }}
+        </button>
+      }
+    </div>
+
+    <button nxIconButton="tertiary small" type="button"
+            class="cnp-note__menu-btn"
+            [nxContextMenuTriggerFor]="noteMenu"
+            aria-label="Note actions">
+      <nx-icon name="ellipsis-v"></nx-icon>
+    </button>
+
+    <nx-context-menu #noteMenu="nxContextMenu">
+      <button nxContextMenuItem type="button" (click)="togglePin(note.id)">
+        {{ note.pinned ? 'Unpin' : 'Pin' }}
+      </button>
+      <button nxContextMenuItem type="button" (click)="onEditNote(note)">Edit</button>
+      <button nxContextMenuItem type="button" (click)="onDeleteNote(note)">Delete</button>
+    </nx-context-menu>
+  </article>
+</ng-template>

@@ -266,7 +266,10 @@
             "SEC-002": "Closed",
             "SEC-003": "Closed"
           }
-        }
+        },
+        "postLand": [
+          { "kind": "overview.openClosureModal" }
+        ]
       },
       "expectedUI": {
         "description": "Closure modal opens; submitting with empty fields shows validation errors",
@@ -353,7 +356,10 @@
             "SEC-002": "Closed",
             "SEC-003": "Closed"
           }
-        }
+        },
+        "postLand": [
+          { "kind": "overview.confirmClosure", "reason": "Claim Finalised" }
+        ]
       },
       "expectedUI": {
         "description": "After confirmation: status chip shows Closed, closure panel appears",

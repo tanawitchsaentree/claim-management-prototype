@@ -4,6 +4,12 @@
   gap: 0;
   padding: 8px 0 48px;
   max-width: 1100px;
+
+  // Expand to use available width when the right panel is open.
+  &--squeezed {
+    max-width: none;       // use whatever the wizard shell gives us
+    width: 100%;
+  }
 }
 
 .step-content { flex: 1; min-width: 0; }
@@ -104,6 +110,13 @@
     font-size: var(--paragraph-04-font-size);
     color: var(--text-muted);
   }
+
+  &__timestamp {
+    margin: 6px 0 0 22px;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    font-style: italic;
+  }
 }
 
 // Toolbar
@@ -113,17 +126,89 @@
   margin-bottom: 12px;
 }
 
+// Two-pane layout (full mode = list only; squeezed = list + detail)
+.reserves-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+}
+
+.reserves-list {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+// Compact list = fixed width that fits all 3 columns + ⓘ comfortably.
+// 80px (No.) + 160px (Party) + 200px (Damages incl. ⓘ) + cell padding = ~480px.
+.reserves-list--compact {
+  flex: 0 0 480px;
+  width: 480px;
+  overflow-x: hidden;
+}
+
 // Table
 .reserves-table {
   width: 100%;
 
+  .col-toggle   { width: 40px; }
   .col-section  { width: 100px; }
   .col-party    { min-width: 160px; }
-  .col-damage   { min-width: 140px; }
+  .col-damage   { width: 200px; min-width: 200px; }
   .col-type     { min-width: 120px; }
   .col-currency { width: 90px; }
   .col-amount   { width: 110px; text-align: right; }
   .col-action   { width: 52px; text-align: right; }
+}
+
+// Compact mode: hide non-essential columns
+.reserves-list--compact .col-hide-when-compact { display: none; }
+
+// In compact mode, give the visible columns enough room.
+.reserves-list--compact {
+  .col-toggle  { display: none; }
+  .col-section { width: 80px;  min-width: 80px; }
+  .col-party   { width: 160px; min-width: 160px; }
+  .col-damage  { width: 200px; min-width: 200px; }
+}
+
+// Damage cell: text fills cell width, icon pinned to right edge so icons
+// align vertically across rows. Flex on an inner block (not on <td>) so
+// NDBX's table-cell display stays intact.
+.col-damage__inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.col-damage__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.col-damage__info {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--interactive-primary);
+}
+
+.row-toggle {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover { color: var(--text-01); }
 }
 
 .reserve-row {
@@ -132,6 +217,338 @@
   &:hover td { background: var(--claim-overlay-hover); }
 
   &--recently-added td { background: var(--task-status-open-bg); }
+
+  &--selected td { background: var(--claim-overlay-hover); }
+}
+
+.reserve-subrow td {
+  background: var(--ui-02);
+  font-size: var(--paragraph-04-font-size);
+}
+
+// Detail panel (right pane on squeezed). Min-width keeps content readable
+// even when viewport is narrow — list can scroll horizontally if needed.
+.reserves-detail {
+  flex: 1 1 0;
+  min-width: 480px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reserves-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.reserves-detail__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.reserves-detail__save-state {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.reserves-detail__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+  margin-top: 16px;
+}
+
+.reserves-detail__summary {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 16px 20px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px 24px;
+}
+
+.summary-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.summary-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.reserves-detail__placeholder {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────
+.detail-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.detail-tab {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 400;
+  color: var(--text-01);
+  cursor: pointer;
+  position: relative;
+
+  &:hover { color: var(--interactive-primary); }
+
+  &--active {
+    color: var(--interactive-primary);
+    font-weight: 600;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 3px;
+      background: var(--interactive-primary);
+    }
+  }
+}
+
+.detail-toggle-row {
+  display: flex;
+  align-items: center;
+}
+
+// ─── Damaged-item cards ───────────────────────────────────────────────────
+.damaged-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.damaged-item {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 16px 20px;
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+
+  &--expanded {
+    box-shadow: 0 1px 4px var(--claim-overlay-shadow);
+  }
+}
+
+.damaged-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.damaged-item__title {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.damaged-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.damaged-item__toggle {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease;
+
+  &:hover { color: var(--text-01); }
+}
+
+.damaged-item__amount {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.damaged-item__amount-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.damaged-item__amount-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.damaged-item__body {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.damaged-item__add-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ─── Sub-table inside expanded damaged-item ───────────────────────────────
+.sub-table {
+  width: 100%;
+
+  th, td { padding-top: 8px; padding-bottom: 8px; }
+
+  .sub-col-type     { min-width: 160px; }
+  .sub-col-currency { width: 100px; }
+  .sub-col-amount   { width: 140px; text-align: right; }
+  .sub-col-coins    { width: 130px; }
+  .sub-col-action   { width: 56px; text-align: right; }
+}
+
+.sub-row td { vertical-align: middle; }
+
+.sub-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  background: var(--ui-02);
+  border: 1px dashed var(--ui-04);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.sub-empty__text {
+  margin: 0;
+  max-width: 360px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+// ─── View-mode segmented toggle (left list, squeezed) ────────────────────
+.view-mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.vmt-btn {
+  background: var(--ui-01);
+  border: none;
+  padding: 6px 12px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  cursor: pointer;
+  border-right: 1px solid var(--ui-04);
+
+  &:last-child { border-right: none; }
+  &:hover { background: var(--claim-overlay-hover); color: var(--text-01); }
+
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--negative);
+  }
+}
+
+// ─── Policy group (all-grouped mode) ─────────────────────────────────────
+.policy-group + .policy-group { margin-top: 16px; }
+
+.policy-group__header {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+// Subdued style for sections from other policies
+.reserve-row--cross-policy {
+  td { color: var(--text-muted); }
+  &:hover td { background: var(--ui-02); }
+}
+
+// ─── Read-only detail (cross-policy) ─────────────────────────────────────
+.reserves-detail--readonly {
+  background: var(--ui-02);
+  border-color: var(--ui-04);
+}
+
+.reserves-detail__lock {
+  color: var(--text-muted);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.reserves-detail__readonly-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--claim-status-in-progress-bg);
+  color: var(--claim-status-in-progress-color);
+  border-radius: 4px;
+  font-size: var(--paragraph-04-font-size);
+
+  strong { font-weight: 600; }
+}
+
+// Disable interactive controls when read-only
+.reserves-detail--readonly {
+  .sub-field ::ng-deep .nx-formfield__wrapper { pointer-events: none; opacity: 0.6; }
+  .damaged-item__toggle,
+  .damaged-item__actions { pointer-events: none; opacity: 0.5; }
+}
+
+.sub-field {
+  margin-bottom: 0 !important;
+
+  ::ng-deep .nx-formfield__wrapper {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  ::ng-deep .nx-formfield__label { display: none !important; }
+  ::ng-deep .nx-formfield-hint__wrapper { display: none !important; }
 }
 
 // Empty state

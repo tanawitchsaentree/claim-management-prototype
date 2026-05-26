@@ -1,8 +1,5 @@
 <div class="cd-header">
   <h2 class="cd-title">{{ data.title }}</h2>
-  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
-    <nx-icon name="close"></nx-icon>
-  </button>
 </div>
 
 <div class="cd-body">
@@ -10,7 +7,7 @@
 </div>
 
 <div class="cd-footer">
-  <button nxPlainButton type="button" (click)="onCancel()">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">
     {{ data.cancelLabel ?? 'Cancel' }}
   </button>
   <button nxButton="primary small" type="button"

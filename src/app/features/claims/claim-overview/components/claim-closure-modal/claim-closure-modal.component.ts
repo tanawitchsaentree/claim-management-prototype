@@ -97,9 +97,11 @@ export class ClaimClosureModalComponent implements OnInit {
     return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
   });
 
+  // Custom retention can only EXTEND beyond the default 10-year period
+  // (BMPCC-11360 AC7 — "extend beyond the default where required").
   readonly minRetentionDate = computed(() => {
     const d = new Date();
-    d.setDate(d.getDate() + 1);
+    d.setFullYear(d.getFullYear() + 10);
     return d.toISOString().split('T')[0];
   });
 

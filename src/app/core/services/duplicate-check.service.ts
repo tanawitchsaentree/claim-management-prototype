@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, catchError } from 'rxjs/operators';
 import { Claim } from '../models';
 import { ACTIVE_SCENARIO } from '../mock/mock-config';
-import claimsData from '../mock/data/claims.json';
+import { MockStateService } from '../mock/state/mock-state.service';
 
 export interface DuplicateClaim {
   claimId: string;
@@ -21,7 +21,10 @@ export interface DuplicateCheckResult {
 
 @Injectable({ providedIn: 'root' })
 export class DuplicateCheckService {
-  private readonly claims = claimsData as unknown as Claim[];
+  private readonly stateSvc = inject(MockStateService);
+  private get claims(): Claim[] {
+    return this.stateSvc.state().claims;
+  }
 
   // TODO [FNOL-DUP-1]: Confirm with product whether duplicate check should also
   // run at skeleton-claim creation stage (currently only on loss-information).

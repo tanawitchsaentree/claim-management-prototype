@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--ui-01);
+}
+
+// ─── Toolbar (breadcrumb) ──────────────────────────────────────────────────
+// Aligned to navbar menu items (--header-padding 1px 32px 0 = 32px gutter),
+// not to inner page content. Breadcrumb scaled down — secondary nav, not h1.
+.shell-toolbar {
+  background: var(--toolbar-background);
+  border-bottom: 1px solid var(--toolbar-border-bottom-color);
+}
+
+.shell-toolbar__inner {
+  display: flex;
+  align-items: center;
+  min-height: var(--toolbar-height);
+  padding: 0 var(--layout-inset-base);    // 32px = matches nx-header
+  --breadcrumb-font-size: var(--paragraph-04-font-size);
+  --breadcrumb-line-height: 1.4;
+  --breadcrumb-height: 20px;
+}
+
+// ─── Page wrapper ──────────────────────────────────────────────────────────
+// Outer wrap owns vertical padding — nxLayout="grid maxwidth" sets its own
+// inline horizontal padding on its host (RUNTIME_OVERRIDES.md trap).
+.shell-page-wrap {
+  padding-top: var(--page-content-top);
+  padding-bottom: var(--layout-inset-base);
+}
+
+.shell-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-inset-base);
+}
+
+// Variant: align inner content with navbar menu items (32px gutter), skipping
+// nxLayout/nxRow/nxCol nesting that would push content to ~64px.
+.shell-page--navbar-aligned {
+  padding: 0 var(--layout-inset-base);
+}
+
+.shell-toast {
+  margin-bottom: 16px;
+}

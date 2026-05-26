@@ -1,0 +1,84 @@
+// Layout (navbar/page-wrap/spacing/horizontal alignment) is owned by
+// <app-page-shell align="navbar">. This file only styles content projected
+// into the shell.
+
+// ─── Group ─────────────────────────────────────────────────────────────────
+.admin-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  & + & { margin-top: 24px; }
+}
+
+.admin-group__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  line-height: 1.3;
+}
+
+// ─── Cards row ─────────────────────────────────────────────────────────────
+// Fixed 448px cards with 33px gap (matches Figma 3-card row across 1408 content).
+.admin-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 33px;
+}
+
+.admin-card {
+  width: 448px;
+  height: 268px;
+  display: grid;
+  grid-template-rows: 64px auto auto auto;
+  gap: 16px;
+  padding: 16px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+// Tinted circle around the product icon — colors taken from Figma spec
+// (these are brand-spec values, not NDBX tokens).
+.admin-card__icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+
+  &--green  { background: var(--admin-card-icon-green-bg); }
+  &--red    { background: var(--admin-card-icon-red-bg); }
+  &--purple { background: var(--admin-card-icon-purple-bg); }
+
+  nx-icon { font-size: 40px; line-height: 1; }
+}
+
+.admin-card__icon {
+  &--green  { color: var(--admin-card-icon-green-color); }
+  &--red    { color: var(--admin-card-icon-red-color); }
+  &--purple { color: var(--admin-card-icon-purple-color); }
+}
+
+.admin-card__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-01);
+  line-height: 1.4;
+}
+
+.admin-card__desc {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 400;
+  color: var(--text-01);
+  line-height: 1.5;
+}
+
+.admin-card__link {
+  align-self: start;
+}

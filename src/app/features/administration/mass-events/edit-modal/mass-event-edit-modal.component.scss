@@ -1,0 +1,135 @@
+// Bottom-sheet modal layout — docks to viewport bottom, gutter top/L/R = 32px.
+// Layout overrides for the dialog overlay live in the panelClass rule in the
+// host's styles.scss (see .me-edit-modal-panel) so they apply to NDBX wrapper.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ui-01);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+// ─── Close ─────────────────────────────────────────────────────────────────
+.me-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  z-index: 1;
+  border-radius: 4px;
+
+  &:hover {
+    color: var(--hover-link);
+    background: var(--claim-overlay-hover);
+  }
+}
+
+// CSS-drawn ✕ — two crossed bars, no icon font dependency.
+.me-modal__close-x {
+  position: relative;
+  width: 16px;
+  height: 16px;
+
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+  }
+  &::before { transform: rotate(45deg); }
+  &::after  { transform: rotate(-45deg); }
+}
+
+// ─── Header ────────────────────────────────────────────────────────────────
+.me-modal__header {
+  flex-shrink: 0;
+  padding: 32px 32px 0;
+}
+
+.me-modal__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-01);
+}
+
+// ─── Body — scrollable ─────────────────────────────────────────────────────
+.me-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+// ─── Section ───────────────────────────────────────────────────────────────
+.me-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.me-section__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.me-section__textarea {
+  width: 656px;
+  max-width: 100%;
+}
+
+// ─── Grid (4 / 3 / 2 col) ──────────────────────────────────────────────────
+// Stacked formfields width 100% mandatory (CONTEXT.md NDBX gotcha).
+.me-grid {
+  display: grid;
+  gap: 32px 32px;
+
+  &--4col { grid-template-columns: repeat(4, 1fr); }
+  &--3col { grid-template-columns: repeat(3, 1fr); }
+  &--2col { grid-template-columns: repeat(2, 1fr); }
+
+  nx-formfield { width: 100%; }
+}
+
+// Empty col 4 placeholder so CSS auto-flow keeps the next row aligned to col 1.
+.me-grid__spacer {
+  display: block;
+  visibility: hidden;
+}
+
+// Description always starts at col 1 and spans 2 cols (under CAT + Product).
+.me-section__textarea {
+  grid-column: 1 / span 2;
+}
+
+// ─── Footer ────────────────────────────────────────────────────────────────
+.me-modal__footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--ui-04);
+  padding: 16px 40px;
+  background: var(--ui-01);
+}
+
+.me-modal__footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}

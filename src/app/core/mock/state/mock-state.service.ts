@@ -4,12 +4,30 @@ import { ClaimSection, SectionStatus } from '../../models/section.model';
 import { Task, TaskStatus } from '../../models/task.model';
 import { Claim } from '../../models/claim.model';
 import { LossInformation } from '../../models/loss-information.model';
+import { CwbLocation } from '../../models/cwb-location.model';
+import { Note } from '../../models/note.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 
 export interface ScenarioOverrides {
   taskStatuses?:    Record<string, TaskStatus>;
   sectionStatuses?: Record<string, SectionStatus>;
   overviewPatch?:   { claimId: string; patch: Partial<ClaimOverview> };
+  claimsAppend?:    Claim[];
+  fnolStateOverride?: {
+    selectedPolicy?: { policyId: string; policyNumber: string };
+    selectedClient?: { clientId: string; clientName: string };
+    path?:           'standard' | 'orphan' | null;
+    // BMPCC-11006: prefill the happy-path FNOL form from a skeleton claim
+    // so the demo can land on /fnol/search with every step's fields already
+    // populated; user navigates through the wizard themselves. The skeleton
+    // ID resolves against `skeleton-claims.json`.
+    convertFromSkeletonId?: string;
+    // Optional hint for the prefill: the policy number to drop into the
+    // search form so the user only needs one click to find the right row.
+    convertSuggestedPolicyNumber?: string;
+  };
+  cwbLocationsAppend?: CwbLocation[];
+  notesAppend?: { claimId: string; notes: Note[] };
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -98,6 +116,9 @@ export class MockStateService {
     import('../services/mock-section.service').then(m =>
       this.injector.get(m.MockSectionService).resetCache()
     );
+    import('../services/mock-cwb.service').then(m =>
+      this.injector.get(m.MockCwbService).resetCache()
+    );
   }
 
   async resetAsync(): Promise<void> {
@@ -105,8 +126,10 @@ export class MockStateService {
     sessionStorage.removeItem(STORAGE_SCENARIO_KEY);
     this._state.set(defaultState());
     this._scenario.set(MOCK_SCENARIOS['default']);
-    const m = await import('../services/mock-section.service');
-    this.injector.get(m.MockSectionService).resetCache();
+    const sectionMod = await import('../services/mock-section.service');
+    this.injector.get(sectionMod.MockSectionService).resetCache();
+    const cwbMod = await import('../services/mock-cwb.service');
+    this.injector.get(cwbMod.MockCwbService).resetCache();
   }
 
   loadScenario(name: string): void {
@@ -136,6 +159,27 @@ export class MockStateService {
       if (existing) {
         next = { ...next, overviews: { ...next.overviews, [claimId]: { ...existing, ...patch } } };
       }
+    }
+
+    if (overrides.claimsAppend?.length) {
+      const incoming = overrides.claimsAppend;
+      const existingIds = new Set(next.claims.map(c => c.claimId));
+      const fresh = incoming.filter(c => !existingIds.has(c.claimId));
+      next = { ...next, claims: [...next.claims, ...fresh] };
+    }
+
+    if (overrides.cwbLocationsAppend?.length) {
+      const rows = overrides.cwbLocationsAppend;
+      import('../services/mock-cwb.service').then(m =>
+        this.injector.get(m.MockCwbService).appendLocations(rows)
+      );
+    }
+
+    if (overrides.notesAppend) {
+      const { claimId, notes } = overrides.notesAppend;
+      import('../services/mock-notes.service').then(m =>
+        this.injector.get(m.MockNotesService).appendNotes(claimId, notes)
+      );
     }
 
     this._state.set(next);

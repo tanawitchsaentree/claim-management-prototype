@@ -5,6 +5,36 @@
       "file": "closure.json",
       "module": "Claims",
       "title": "Manual Claim Closure & Section Closure"
+    },
+    {
+      "id": "BMPCC-216",
+      "file": "bmpcc-216.json",
+      "module": "FNOL",
+      "title": "Duplicate Claim Check"
+    },
+    {
+      "id": "BMPCC-219",
+      "file": "bmpcc-219.json",
+      "module": "FNOL",
+      "title": "Loss Location via CWB MFE"
+    },
+    {
+      "id": "BMPCC-241",
+      "file": "bmpcc-241.json",
+      "module": "FNOL",
+      "title": "Orphan Claim — Notifier + Left-nav"
+    },
+    {
+      "id": "BMPCC-11006",
+      "file": "bmpcc-11006.json",
+      "module": "FNOL",
+      "title": "Orphan Claim — Convert to Regular (one-click prefill, full walkthrough)"
+    },
+    {
+      "id": "BMPCC-11360",
+      "file": "bmpcc-11360.json",
+      "module": "Claims",
+      "title": "Claim status management & Retention date"
     }
   ]
 }

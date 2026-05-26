@@ -1,0 +1,188 @@
+{
+  "ticketId": "BMPCC-241",
+  "module": "FNOL",
+  "title": "Orphan Claim — Notifier + Left-nav (Loss → Summary)",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["fnol-skeleton"],
+  "walkthroughSteps": [
+    "Apply an AC — banner pushes FNOL state into orphan path",
+    "Land on /fnol/skeleton-create — left nav shows 2 steps (Loss / Summary)",
+    "Fill Client + Reason on Loss page",
+    "Optional: fill Broker / Insured / Internal notifier free-text fields",
+    "Click 'Next' — navigate to /fnol/skeleton-summary",
+    "Review Loss + Notifier blocks, click 'Create' to register the skeleton claim"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Notifier section uses a Broker / Insured / Internal radio (Loss Location pattern)",
+      "plainStatement": "On the **Loss information** page of the orphan flow, a *radio toggle* picks the notifier type (`Broker` / `Insured` / `Internal`) — only the relevant input renders below. Picking **Broker** opens the *Search broker* modal (Name management — IPM-backed). Picking **Insured** or **Internal** shows a single free-text input.",
+      "page": "fnol-skeleton",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Push FNOL state into orphan path so the user lands on Loss page directly",
+        "preconditions": [
+          {
+            "text": "Left navigation pane shows 2 steps: Loss (active) and Summary",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Notifier section visible with 3 optional free-text fields",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "path": "orphan"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Loss information page with Notifier radio + dynamic field",
+        "visualCues": [
+          "Section heading 'Notifier' between Reason and Notes",
+          "Radio group: Broker / Insured / Internal (Broker default)",
+          "Broker selected: 'Search broker' button opens the Name management modal (filters + table + Add Selected)",
+          "Insured / Internal selected: single labelled free-text input",
+          "Selected broker shows as a card with Legal name + IPM id + Change/Remove actions"
+        ]
+      },
+      "expectedOutcome": {},
+      "howToTest": {
+        "route": "/fnol/skeleton-create",
+        "trigger": "Scroll the Loss form, observe the Notifier section",
+        "expectedResult": "Three optional text fields render with placeholder text"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Left navigation shows Loss / Summary for orphan flow",
+      "plainStatement": "The FNOL **left navigation** shows two steps for the orphan path: `Loss` (active on /fnol/skeleton-create) and `Summary` (active on /fnol/skeleton-summary). Re-uses the existing FnolStepperComponent.",
+      "page": "fnol-skeleton",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01 — orphan path active",
+        "preconditions": [
+          {
+            "text": "Sidebar stepper shows 'Loss' active and 'Summary' pending",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking Next from Loss → Summary marks Loss completed and Summary active",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "path": "orphan"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Sidebar stepper with two visible steps",
+        "visualCues": [
+          "Step 1: Loss (active dot + label)",
+          "Step 2: Summary (pending dot)"
+        ]
+      },
+      "expectedOutcome": {},
+      "howToTest": {
+        "route": "/fnol/skeleton-create",
+        "trigger": "Observe the FNOL shell sidebar",
+        "expectedResult": "Two steps render — Loss + Summary"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Loss page button reads 'Next' (was 'Create skeleton claim')",
+      "plainStatement": "The footer button on the Loss page is **Next** — it does *not* submit the claim, only navigates to the Summary page. Submission happens on Summary.",
+      "page": "fnol-skeleton",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same setup",
+        "preconditions": [
+          {
+            "text": "Loss page primary button is labelled 'Next'",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking Next does not create the claim — it navigates to Summary",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "path": "orphan"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Footer with Back + Next",
+        "visualCues": [
+          "Back button (tertiary) on the left",
+          "Next button (primary) on the right",
+          "No spinner on Next — pure navigation"
+        ]
+      },
+      "expectedOutcome": {},
+      "howToTest": {
+        "route": "/fnol/skeleton-create",
+        "trigger": "Fill Client + Reason → click Next",
+        "expectedResult": "Navigate to /fnol/skeleton-summary"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Summary page reviews Loss + Notifier and creates on Confirm",
+      "plainStatement": "The Summary page shows two read-only review blocks (`Loss` + `Notifier`) and a **Create** button that submits the skeleton claim. Success state shows a banner with the new claim ID and a 'Go to dashboard' action.",
+      "page": "fnol-skeleton",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same setup — orphan path",
+        "preconditions": [
+          {
+            "text": "Summary page shows 'Loss' card with Client / Reason / Notes",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Summary page shows 'Notifier' card with Broker / Insured / Internal notifier",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking Create registers the skeleton and shows success banner with claim ID",
+            "page": "fnol-skeleton",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "path": "orphan"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Two review cards + Back + Create",
+        "visualCues": [
+          "Info banner: 'Review the details below. Click Create to register…'",
+          "Loss card with 3 fields (Client / Reason / Notes)",
+          "Notifier card with 3 fields (Broker / Insured / Internal notifier)",
+          "Footer: Back + Create"
+        ]
+      },
+      "expectedOutcome": {},
+      "howToTest": {
+        "route": "/fnol/skeleton-summary",
+        "trigger": "Land on Summary; click Create",
+        "expectedResult": "Success banner shows the new skeleton claim ID; toast 'Skeleton claim created'"
+      }
+    }
+  ]
+}

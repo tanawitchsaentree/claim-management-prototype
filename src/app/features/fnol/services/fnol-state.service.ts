@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { LocationPickerOutput } from '../../../core/models';
+import { LocationItem, LocationPickerOutput } from '../../../core/models';
 import {
   FnolSelectedClient,
   FnolSelectedPolicy,
@@ -9,6 +9,8 @@ import {
   StepConfig,
 } from '../models/fnol-form.model';
 import { Policy } from '../../../core/models';
+import { SkeletonClaim } from '../../../core/models/skeleton-claim.model';
+import { CAUSE_SCHEMAS } from '../config/cause-schemas';
 
 const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information'  },
@@ -18,8 +20,11 @@ const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'summary',          route: '/fnol/summary',          label: 'Summary'            },
 ];
 
-// Skeleton path steps — TBD Phase 2
-const SKELETON_PATH_STEPS: StepConfig[] = [];
+// Orphan / skeleton-claim path steps (BMPCC-241)
+const SKELETON_PATH_STEPS: StepConfig[] = [
+  { key: 'skeleton-create',  route: '/fnol/skeleton-create',  label: 'Loss information' },
+  { key: 'skeleton-summary', route: '/fnol/skeleton-summary', label: 'Summary'          },
+];
 
 // Provided in root so FormGroup state persists across wizard navigation.
 @Injectable({ providedIn: 'root' })
@@ -154,6 +159,110 @@ export class FnolStateService {
   setSkeleton(value: SkeletonFormValue, claimId: string): void {
     this.skeleton = value;
     this.skeletonClaimId = claimId;
+  }
+
+  // Convert flow (BMPCC-11006): prefill happy-path form from a skeleton claim,
+  // remember which skeleton we are converting so summary can link them.
+  prefillFromSkeleton(skeleton: SkeletonClaim): void {
+    this.reset();
+    this.path = 'standard';
+    this.skeletonClaimId = skeleton.claimId;
+    if (skeleton.lossDate) {
+      this.getDateOfLossGroup().patchValue({
+        dateOfOccurrence: skeleton.lossDate,
+      });
+    }
+    if (skeleton.lossDescription) {
+      this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.lossDescription);
+    }
+  }
+
+  // BMPCC-11006 demo helper: prefill every wizard form from a skeleton claim
+  // so the user lands at /fnol/search with everything teed up and can simply
+  // click through Search → select policy → Continue → Next on every step.
+  // No step is skipped — the demo proves the convert flow end to end.
+  // Schema-driven: cause is inferred from skeleton.lossDescription against
+  // CAUSE_SCHEMAS keys; events FormArray is rebuilt to match step-loss-info's
+  // own _createEventGroup shape so its required `damages` validator clears.
+  prefillFullFromSkeleton(skeleton: SkeletonClaim, opts?: {
+    policyNumber?: string;
+    causeOfLoss?: string[];
+    typeOfDamage?: string[];
+    timeOfOccurrence?: string;
+    dateOfNotification?: string;
+    timeOfNotification?: string;
+    location?: LocationItem;
+  }): void {
+    this.path = 'standard';
+    this.skeletonClaimId = skeleton.claimId;
+    // Search form — user lands on /fnol/search with name + policy + date set
+    // so they only need to click Search and pick the row.
+    this.fnolForm.get('search.clientName')?.setValue(skeleton.clientName ?? '');
+    this.fnolForm.get('search.policyNumber')?.setValue(opts?.policyNumber ?? '');
+    this.fnolForm.get('search.dateOfLoss')?.setValue(skeleton.lossDate ?? '');
+    // Loss-information form
+    this.getDateOfLossGroup().patchValue({
+      dateOfOccurrence:   skeleton.lossDate ?? null,
+      timeOfOccurrence:   opts?.timeOfOccurrence   ?? '09:00',
+      dateOfNotification: opts?.dateOfNotification ?? skeleton.lossDate ?? null,
+      timeOfNotification: opts?.timeOfNotification ?? '10:00',
+    });
+    this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.lossDescription ?? '');
+
+    // Schema-driven cause inference: scan skeleton.lossDescription for the
+    // first CAUSE_SCHEMAS key. Falls back to 'other-event' if nothing matches
+    // — never hardcoded to 'fire'.
+    const inferredCauseKeys = opts?.causeOfLoss ?? this.inferCauseKeys(skeleton.lossDescription);
+    const damageValues      = opts?.typeOfDamage ?? ['material-damage'];
+
+    this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(inferredCauseKeys);
+    this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(damageValues);
+
+    // Rebuild events FormArray to mirror step-loss-information._createEventGroup
+    // shape — without this the events have no `damages` and Next fails validation.
+    const eventsArray = this.getLossEventsArray();
+    eventsArray.clear();
+    inferredCauseKeys.forEach(causeKey => {
+      const schema = CAUSE_SCHEMAS[causeKey];
+      const controls: Record<string, FormControl> = {
+        eventKey: new FormControl(causeKey),
+        damages:  new FormControl<string[]>(damageValues, [Validators.required]),
+      };
+      if (schema?.causedByOptions?.length) {
+        controls['causedBy'] = new FormControl<string[]>([schema.causedByOptions[0].value]);
+      }
+      eventsArray.push(new FormGroup(controls));
+    });
+
+    // Loss location: caller supplies a real PolicyLocation (resolved via
+    // MockPolicyLocationService); only fall back to a manual stub if absent
+    // so the validator still clears.
+    if (opts?.location) {
+      this.getLossLocationControl().setValue({ locations: [opts.location] });
+    } else {
+      this.getLossLocationControl().setValue({
+        locations: [{
+          id: 'convert-loss-location',
+          source: 'manual',
+          displayName: skeleton.clientName ?? 'Loss location',
+          addressLine1: '',
+          postalCode: '',
+          city: '',
+          country: '',
+        }],
+      });
+    }
+  }
+
+  /** Match each CAUSE_SCHEMAS key against the skeleton description (case-insensitive). */
+  private inferCauseKeys(description: string | undefined): string[] {
+    if (!description) return ['other-event'];
+    const lower = description.toLowerCase();
+    const matches = Object.keys(CAUSE_SCHEMAS).filter(key => {
+      const label = CAUSE_SCHEMAS[key].causeLabel.toLowerCase();
+      return lower.includes(key) || lower.includes(label);
+    });
+    return matches.length ? matches.slice(0, 1) : ['other-event'];
   }
 
   markStepComplete(step: string): void {

@@ -1,0 +1,88 @@
+<div class="step-page">
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Summary</h1>
+
+  @if (createdId()) {
+    <nx-message context="success" class="success-banner">
+      <strong>Skeleton claim created: {{ createdId() }}</strong>
+      <p class="success-detail">Policy match required within 3 business days.</p>
+    </nx-message>
+    <div class="step-footer">
+      <button nxButton="primary" type="button" (click)="onGoToDashboard()">Go to dashboard</button>
+    </div>
+  } @else {
+    @if (draft; as d) {
+      <nx-message context="info" class="info-banner">
+        Review the details below. Click <strong>Create</strong> to register the skeleton claim.
+      </nx-message>
+
+      <section class="review-card">
+        <h2 class="review-card__title">Loss details</h2>
+        <dl class="review-grid">
+          <dt>Client</dt>          <dd>{{ d.clientName || '—' }}</dd>
+          <dt>Reason</dt>          <dd>{{ reasonLabel(d.reason) }}</dd>
+          <dt>Notes</dt>           <dd>{{ d.notes || '—' }}</dd>
+        </dl>
+      </section>
+
+      <section class="review-card">
+        <h2 class="review-card__title">General information</h2>
+        <dl class="review-grid">
+          <dt>Cause of loss</dt>        <dd>{{ causeLabels() || '—' }}</dd>
+          <dt>Type of damage</dt>       <dd>{{ damageLabels() || '—' }}</dd>
+          <dt>Date of occurrence</dt>   <dd>{{ dateValue('dateOfOccurrence') || '—' }}</dd>
+          <dt>Time of occurrence</dt>   <dd>{{ dateValue('timeOfOccurrence') || '—' }}</dd>
+          <dt>Date of notification</dt> <dd>{{ dateValue('dateOfNotification') || '—' }}</dd>
+          <dt>Time of notification</dt> <dd>{{ dateValue('timeOfNotification') || '—' }}</dd>
+          <dt>Loss description</dt>     <dd>{{ lossDescription() || '—' }}</dd>
+        </dl>
+      </section>
+
+      <section class="review-card">
+        <h2 class="review-card__title">Locations of loss</h2>
+        @if (locations().length === 0) {
+          <p class="review-empty">No locations selected.</p>
+        } @else {
+          <ul class="review-list">
+            @for (loc of locations(); track loc.id) {
+              <li>{{ loc.displayName }}{{ loc.city ? ' · ' + loc.city : '' }}{{ loc.country ? ' · ' + loc.country : '' }}</li>
+            }
+          </ul>
+        }
+      </section>
+
+      <section class="review-card">
+        <h2 class="review-card__title">Notifier</h2>
+        <dl class="review-grid">
+          @if (d.brokerName) {
+            <dt>Broker</dt>
+            <dd>
+              {{ d.brokerName }}
+              @if (d.brokerIpmId) { <small class="review-id">· {{ d.brokerIpmId }}</small> }
+            </dd>
+          } @else if (d.insuredName) {
+            <dt>Insured</dt>
+            <dd>{{ d.insuredName }}</dd>
+          } @else if (d.internalNotifier) {
+            <dt>Internal notifier</dt>
+            <dd>{{ d.internalNotifier }}</dd>
+          } @else {
+            <dt>Notifier</dt>
+            <dd>—</dd>
+          }
+        </dl>
+      </section>
+
+      <div class="step-footer">
+        <button nxButton="tertiary" type="button" (click)="onBack()" [disabled]="saving()">Back</button>
+        <button nxButton="primary" type="button" (click)="onCreate()" [disabled]="saving()">
+          @if (saving()) {
+            <nx-spinner size="small" negative></nx-spinner>
+          } @else {
+            Create
+          }
+        </button>
+      </div>
+    }
+  }
+</div>

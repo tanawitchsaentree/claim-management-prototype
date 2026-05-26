@@ -1,0 +1,169 @@
+<article class="lit-detail-card">
+  <header class="lit-detail__top">
+    <h2 class="lit-detail__title">Litigation summary</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="close.emit()" aria-label="Close detail">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </header>
+
+  <section class="lit-summary">
+    <div class="lit-summary__field">
+      <span class="lit-summary__label">Litigation number</span>
+      <span class="lit-summary__value">{{ model.id }}</span>
+    </div>
+    <div class="lit-summary__field">
+      <span class="lit-summary__label">Client name</span>
+      <span class="lit-summary__value">{{ model.clientName }}</span>
+    </div>
+    <div class="lit-summary__field">
+      <span class="lit-summary__label">Claim ID</span>
+      <span class="lit-summary__value">{{ model.claimId }}</span>
+    </div>
+    <div class="lit-summary__field">
+      <span class="lit-summary__label">Litigation status</span>
+      <div class="lit-summary__status">
+        <app-status-chip [status]="chipStatus(model.status)" domain="claim" [label]="model.status"></app-status-chip>
+        <button nxPlainButton type="button" aria-label="Edit status" (click)="notImplemented('Edit status')">
+          <nx-icon name="pencil" size="s"></nx-icon>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <form [formGroup]="form" class="lit-form" (ngSubmit)="onSave()">
+    <nx-accordion [multi]="true">
+
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Litigation details</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <div class="form-row form-row--2col">
+          <nx-formfield label="Litigation start date">
+            <input nxDatefield nxInput formControlName="startDate" placeholder="Enter" [datepicker]="startPicker" />
+            <nx-datepicker-toggle nxFormfieldSuffix [for]="startPicker"></nx-datepicker-toggle>
+            <nx-datepicker #startPicker></nx-datepicker>
+            <span nxFormfieldHint>DD-MM-YYYY</span>
+          </nx-formfield>
+          <nx-formfield label="Litigation type">
+            <nx-dropdown formControlName="type" placeholder="Select">
+              @for (t of types; track t) { <nx-dropdown-item [value]="t">{{ t }}</nx-dropdown-item> }
+            </nx-dropdown>
+          </nx-formfield>
+        </div>
+        <nx-formfield label="Litigation title">
+          <input nxInput formControlName="title" placeholder="Enter" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Litigation description">
+          <input nxInput formControlName="description" placeholder="Enter" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Jurisdiction name">
+          <input nxInput formControlName="jurisdiction" placeholder="Enter" autocomplete="off" />
+        </nx-formfield>
+      </nx-expansion-panel>
+
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Party details</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <div class="lit-party">
+          <div class="lit-party__row">
+            <span class="lit-party__label">Plaintiff:</span>
+            <span class="lit-party__value">{{ model.plaintiff?.name ?? 'Plaintiff not selected' }}</span>
+          </div>
+          <button nxButton="primary small" type="button" (click)="openAddParty('plaintiff')">Add plaintiff</button>
+        </div>
+        <div class="lit-party">
+          <div class="lit-party__row">
+            <span class="lit-party__label">Defendant:</span>
+            <span class="lit-party__value">{{ model.defendant?.name ?? 'Defendant not selected' }}</span>
+          </div>
+          <button nxButton="primary small" type="button" (click)="openAddParty('defendant')">Add defendant</button>
+        </div>
+      </nx-expansion-panel>
+
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Lawyer/attorney management</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <div class="lit-party">
+          <div class="lit-party__row">
+            <span class="lit-party__label">Attorney:</span>
+            <span class="lit-party__value">{{ model.attorney?.name ?? 'Attorney not selected' }}</span>
+          </div>
+          <button nxButton="primary small" type="button" (click)="openAddParty('attorney')">Add attorney</button>
+        </div>
+        <div class="lit-party">
+          <div class="lit-party__row">
+            <span class="lit-party__label">Opposing lawyer/law firm:</span>
+            <span class="lit-party__value">{{ model.opposingLawyer?.name ?? 'Not selected' }}</span>
+          </div>
+          <button nxButton="primary small" type="button" (click)="openAddParty('opposing-lawyer')">Add opposing lawyer/law firm</button>
+        </div>
+      </nx-expansion-panel>
+
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Fee and budget for litigation</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <nx-tab-group>
+          <nx-tab label="Expenses">
+            <div class="lit-expense-grid lit-expense-grid--head">
+              <span>Reserves Sub-type</span><span>Currency</span><span>Amount</span><span>Section</span><span></span>
+            </div>
+            @for (exp of expenses(); track exp.rowId) {
+              <div class="lit-expense-grid">
+                <nx-formfield>
+                  <nx-dropdown [value]="exp.subType" (selectionChange)="updateExpense(exp.rowId, 'subType', $event.value)">
+                    @for (s of subTypes; track s) { <nx-dropdown-item [value]="s">{{ s }}</nx-dropdown-item> }
+                  </nx-dropdown>
+                </nx-formfield>
+                <nx-formfield>
+                  <nx-dropdown [value]="exp.currency" (selectionChange)="updateExpense(exp.rowId, 'currency', $event.value)">
+                    @for (c of currencies; track c) { <nx-dropdown-item [value]="c">{{ c }}</nx-dropdown-item> }
+                  </nx-dropdown>
+                </nx-formfield>
+                <nx-formfield>
+                  <input nxInput type="number" [value]="exp.amount" (change)="updateExpense(exp.rowId, 'amount', +$any($event.target).value)" />
+                </nx-formfield>
+                <nx-formfield>
+                  <nx-dropdown [value]="exp.section" (selectionChange)="updateExpense(exp.rowId, 'section', $event.value)">
+                    @for (sec of sections; track sec) { <nx-dropdown-item [value]="sec">{{ sec }}</nx-dropdown-item> }
+                  </nx-dropdown>
+                </nx-formfield>
+                <button nxPlainButton type="button" (click)="removeExpense(exp.rowId)" aria-label="Remove expense">
+                  <nx-icon name="trash-o" size="s"></nx-icon>
+                </button>
+              </div>
+            }
+            <div class="lit-expense-actions">
+              <button nxButton="secondary small" type="button" (click)="addExpense()">Add expense</button>
+            </div>
+          </nx-tab>
+        </nx-tab-group>
+      </nx-expansion-panel>
+
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Case management</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <nx-tab-group>
+          <nx-tab label="Case">
+            <div class="lit-case-actions">
+              <button nxButton="primary small" type="button" (click)="notImplemented('Add case')">Add case</button>
+            </div>
+            <div class="lit-case-empty"><p>No cases are available to display.</p></div>
+          </nx-tab>
+          <nx-tab label="Hearings">
+            <div class="lit-case-empty"><p>No hearings yet.</p></div>
+          </nx-tab>
+        </nx-tab-group>
+      </nx-expansion-panel>
+
+    </nx-accordion>
+
+    <footer class="lit-detail__footer">
+      <button nxButton="secondary small" type="button" (click)="close.emit()">Cancel</button>
+      <button nxButton="primary small" type="submit">Save</button>
+    </footer>
+  </form>
+</article>

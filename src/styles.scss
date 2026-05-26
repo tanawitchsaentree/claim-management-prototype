@@ -324,6 +324,25 @@
   --tree-child-indent:   32px;
   /* L1→L3: past two chevrons (two levels deep)                   */
   --tree-grandchild-indent: 64px;
+
+  /* ── Page chrome → content gap ────────────────────────────────── */
+  /* Single canonical value for the gap between top chrome (navbar +  */
+  /* optional toolbar/breadcrumb) and page content (eyebrow/h1/etc.). */
+  /* Equals blessed step-1-search stack: layout-inset-base 32 + 8 = 40. */
+  --page-content-top: 40px;
+
+  /* ── Bottom-sheet modal (Mass Event edit pattern) ─────────────── */
+  /* Modal docks to viewport bottom; 32px gutter top/left/right.     */
+  /* Width = min(viewport - 2*gutter, max-width).                    */
+  --bottom-sheet-max-width: 1408px;
+
+  /* ── Admin card tinted icon circles (Figma brand-spec) ───────── */
+  --admin-card-icon-green-bg:    #dfeede;
+  --admin-card-icon-green-color: #407d71;
+  --admin-card-icon-red-bg:      #eecdd5;
+  --admin-card-icon-red-color:   #b71e3f;
+  --admin-card-icon-purple-bg:   #dad0e1;
+  --admin-card-icon-purple-color:#5a3982;
 }
 
 // expert.css (NxExpertModule) injects a <style> tag at runtime — same :root/:host
@@ -367,4 +386,61 @@ code {
   padding: 1px 6px;
   border-radius: 3px;
   color: #404040;
+}
+
+// ── Bottom-sheet modal panel (Mass Event edit pattern) ──────────────────────
+// Overrides NDBX modal default scale animation with a slide-up animation while
+// the dialog is centered horizontally. The panelClass goes on .cdk-overlay-pane;
+// we target the inner nx-modal-container for the actual transform.
+.me-edit-modal-panel {
+  width: min(100vw - 2 * var(--layout-inset-base), var(--bottom-sheet-max-width)) !important;
+  max-width: none !important;
+  height: calc(100vh - var(--layout-inset-base)) !important;
+  max-height: calc(100vh - var(--layout-inset-base)) !important;
+  margin-top: var(--layout-inset-base) !important;
+  padding: 0 !important;
+  align-self: flex-end;
+
+  // Override NDBX modal-container animation (modal.mjs:312):
+  //   default :host  transform: scale(1.3); opacity: 0
+  //   .nx-modal-container--entering  transform: scale(1); opacity: 1
+  //   .nx-modal-container--exiting   transform: scale(1.3); opacity: 0
+  // We replace scale(1.3) with translateY(100%) for slide behavior.
+  .nx-modal-container,
+  .nx-modal__container,
+  nx-modal-container {
+    transform: translateY(100%) !important;
+    opacity: 1 !important;
+    border-radius: 8px 8px 0 0 !important;
+    box-shadow: 0 -8px 24px var(--claim-overlay-shadow) !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    transition: transform 280ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+
+    &.nx-modal-container--entering {
+      transform: translateY(0) !important;
+      opacity: 1 !important;
+    }
+    &.nx-modal-container--exiting {
+      transform: translateY(100%) !important;
+      opacity: 1 !important;
+    }
+  }
+}
+
+// ─── Global route transitions (View Transitions API via withViewTransitions) ───
+// Cross-fade only — keeps spatial continuity, avoids the heavy slide feeling.
+// Browsers without support fall back to instant change automatically.
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-old(root) { animation-name: route-fade-out; }
+::view-transition-new(root) { animation-name: route-fade-in; }
+@keyframes route-fade-out { to   { opacity: 0; } }
+@keyframes route-fade-in  { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
 }

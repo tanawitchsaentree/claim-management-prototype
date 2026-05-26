@@ -1,0 +1,178 @@
+import { Component, Input, OnChanges, SimpleChanges, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
+import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxAvatarModule } from '@allianz/ng-aquila/avatar';
+import { NxEyebrowModule } from '@allianz/ng-aquila/eyebrow';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
+import { Note, NoteSection } from '../../../core/models';
+import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
+
+type FilterValue = 'all' | 'pinned' | 'recovery' | 'litigation' | 'general';
+
+const SECTION_LABEL: Record<Exclude<NoteSection, null>, string> = {
+  recovery:   'Recovery',
+  litigation: 'Litigation',
+  general:    'General',
+};
+
+const PINNED_LIMIT = 3;
+const PAGE_STEP   = 5;
+
+const EN_WEEKDAY: Record<number, string> = {
+  0: 'Sun', 1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat',
+};
+
+@Component({
+  selector: 'app-claim-notes-panel',
+  standalone: true,
+  imports: [
+    CommonModule,
+    NxIconModule,
+    NxButtonModule,
+    NxAvatarModule,
+    NxEyebrowModule,
+    NxContextMenuModule,
+  ],
+  templateUrl: './claim-notes-panel.component.html',
+  styleUrl: './claim-notes-panel.component.scss',
+})
+export class ClaimNotesPanelComponent implements OnChanges {
+  @Input({ required: true }) claimId!: string;
+
+  private readonly notesSvc = inject(MockNotesService);
+
+  readonly notes        = signal<Note[]>([]);
+  readonly loading      = signal(false);
+  readonly filter       = signal<FilterValue>('all');
+  readonly visibleCount = signal(PAGE_STEP);
+
+  readonly filterOptions: { value: FilterValue; label: string }[] = [
+    { value: 'all',        label: 'All notes'  },
+    { value: 'pinned',     label: 'Pinned'     },
+    { value: 'recovery',   label: 'Recovery'   },
+    { value: 'litigation', label: 'Litigation' },
+    { value: 'general',    label: 'General'    },
+  ];
+
+  readonly currentFilterLabel = computed(() =>
+    this.filterOptions.find(o => o.value === this.filter())?.label ?? 'All notes',
+  );
+
+  /** Pinned notes (max 3) — only shown when filter allows pinned. */
+  readonly pinnedNotes = computed<Note[]>(() => {
+    const f = this.filter();
+    if (f !== 'all' && f !== 'pinned') return [];
+    return [...this.notes()]
+      .filter(n => n.pinned)
+      .sort((a, b) => +new Date(b.timestamp) - +new Date(a.timestamp))
+      .slice(0, PINNED_LIMIT);
+  });
+
+  /** Activity = non-pinned (no duplication with pinned section). */
+  readonly activityAll = computed<Note[]>(() => {
+    const f = this.filter();
+    let list = this.notes().filter(n => !n.pinned);
+    if (f === 'pinned')     list = [];   // pinned-only filter hides activity
+    if (f === 'recovery')   list = list.filter(n => n.section === 'recovery');
+    if (f === 'litigation') list = list.filter(n => n.section === 'litigation');
+    if (f === 'general')    list = list.filter(n => n.section === 'general');
+    return [...list].sort((a, b) => +new Date(b.timestamp) - +new Date(a.timestamp));
+  });
+
+  readonly activityVisible = computed<Note[]>(() =>
+    this.activityAll().slice(0, this.visibleCount()),
+  );
+
+  readonly hasMoreActivity = computed(() =>
+    this.activityVisible().length < this.activityAll().length,
+  );
+
+  readonly totalCount = computed(() =>
+    this.pinnedNotes().length + this.activityAll().length,
+  );
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['claimId'] && this.claimId) this.load();
+  }
+
+  private async load(): Promise<void> {
+    this.loading.set(true);
+    const data = await firstValueFrom(this.notesSvc.getByClaim(this.claimId));
+    this.notes.set(data);
+    this.loading.set(false);
+  }
+
+  setFilter(value: FilterValue): void {
+    this.filter.set(value);
+    this.visibleCount.set(PAGE_STEP);
+  }
+
+  loadMore(): void {
+    this.visibleCount.update(v => v + PAGE_STEP);
+  }
+
+  sectionLabel(section: NoteSection): string | null {
+    return section ? SECTION_LABEL[section] : null;
+  }
+
+  /** Relative-then-absolute timestamp (English).
+   *  Boundary: < 60 seconds = "Just now"; >= 60s switches to minute-based. */
+  formatTimestamp(iso: string): string {
+    const now  = new Date();
+    const d    = new Date(iso);
+    const diff = now.getTime() - d.getTime();
+    const sec  = 1000;
+    const min  = 60 * sec;
+    const hour = 60 * min;
+    const day  = 24 * hour;
+
+    if (diff < 60 * sec)  return 'Just now';
+    if (diff < hour) {
+      const m = Math.floor(diff / min);
+      return `${m} min${m === 1 ? '' : 's'} ago`;
+    }
+    if (diff < 24 * hour) {
+      const h = Math.floor(diff / hour);
+      return `${h} hour${h === 1 ? '' : 's'} ago`;
+    }
+
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    const sameDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth()    === b.getMonth() &&
+      a.getDate()     === b.getDate();
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    if (sameDay(d, now))       return `Today, ${hh}:${mm}`;
+    if (sameDay(d, yesterday)) return `Yesterday, ${hh}:${mm}`;
+
+    if (diff < 7 * day) return `${EN_WEEKDAY[d.getDay()]}, ${hh}:${mm}`;
+
+    const dd  = String(d.getDate()).padStart(2, '0');
+    const mo  = String(d.getMonth() + 1).padStart(2, '0');
+    const yr  = d.getFullYear();
+    return `${dd}.${mo}.${yr}, ${hh}:${mm}`;
+  }
+
+  async togglePin(noteId: string): Promise<void> {
+    const next = await firstValueFrom(this.notesSvc.togglePin(this.claimId, noteId));
+    this.notes.set(next);
+  }
+
+  isExpanded = signal<Record<string, boolean>>({});
+  toggleExpand(id: string): void {
+    const next = { ...this.isExpanded() };
+    next[id] = !next[id];
+    this.isExpanded.set(next);
+  }
+  expanded(id: string): boolean { return !!this.isExpanded()[id]; }
+
+  onEditNote(_note: Note):   void { /* phase 2 */ }
+  onDeleteNote(_note: Note): void { /* phase 2 */ }
+  onAddNote():               void { /* phase 2 */ }
+  onViewAll():               void { /* phase 2 */ }
+}

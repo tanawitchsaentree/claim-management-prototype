@@ -1,0 +1,136 @@
+<!-- Close ✕ — CSS-drawn (does not depend on icon font) -->
+<button class="me-modal__close" type="button" aria-label="Close" (click)="onCancel()">
+  <span class="me-modal__close-x" aria-hidden="true"></span>
+</button>
+
+<!-- Headline -->
+<header class="me-modal__header">
+  <h2 class="me-modal__title">{{ title() }}</h2>
+</header>
+
+<!-- Body — scrolls if needed; tabindex=0 lets keyboard users scroll content
+     in browsers that don't natively focus scroll containers (Edge/Chrome). -->
+<form [formGroup]="form" class="me-modal__body" tabindex="0" (ngSubmit)="onSubmit()">
+
+  <!-- Section: General information -->
+  <section class="me-section">
+    <h3 class="me-section__title">General information</h3>
+
+    <!-- Per Figma 50863:26627 — fixed 4-col grid; row 1-2 fill cols 1-3,
+         col 4 stays empty as visual breathing room. Description spans cols 1-2. -->
+    <div class="me-grid me-grid--4col">
+      @if (isEdit()) {
+        <nx-formfield label="Mass Event ID">
+          <input nxInput [value]="massEventId()" disabled />
+        </nx-formfield>
+        <nx-formfield label="Mass Event code">
+          <input nxInput formControlName="code" />
+        </nx-formfield>
+        <nx-formfield label="Mass Event name">
+          <input nxInput formControlName="name" />
+        </nx-formfield>
+        <nx-formfield label="Mass Event type">
+          <nx-dropdown formControlName="type">
+            @for (t of types; track t) {
+              <nx-dropdown-item [value]="t">{{ t }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      } @else {
+        <nx-formfield label="Mass Event code">
+          <input nxInput formControlName="code" />
+        </nx-formfield>
+        <nx-formfield label="Mass Event name">
+          <input nxInput formControlName="name" />
+        </nx-formfield>
+        <nx-formfield label="Mass Event type">
+          <nx-dropdown formControlName="type">
+            @for (t of types; track t) {
+              <nx-dropdown-item [value]="t">{{ t }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+        <span class="me-grid__spacer" aria-hidden="true"></span>
+      }
+
+      <nx-formfield label="Global CAT code (optional)">
+        <input nxInput formControlName="globalCatCode" />
+      </nx-formfield>
+      <nx-formfield label="Product code (optional)">
+        <input nxInput formControlName="productCode" />
+      </nx-formfield>
+      <nx-formfield label="Loss causes">
+        <nx-dropdown formControlName="lossCause">
+          @for (l of lossCauses; track l) {
+            <nx-dropdown-item [value]="l">{{ l }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <span class="me-grid__spacer" aria-hidden="true"></span>
+
+      <nx-formfield label="Description" class="me-section__textarea">
+        <textarea nxInput formControlName="description" rows="3"></textarea>
+      </nx-formfield>
+    </div>
+  </section>
+
+  <!-- Section: Event period -->
+  <section class="me-section">
+    <h3 class="me-section__title">Event period</h3>
+
+    <div class="me-grid me-grid--2col">
+      <nx-formfield label="Start date">
+        <input nxDatefield nxInput formControlName="dateStart" [datepicker]="startPicker" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="startPicker"></nx-datepicker-toggle>
+        <nx-datepicker #startPicker></nx-datepicker>
+        <span nxFormfieldHint>YYYY-MM-DD</span>
+      </nx-formfield>
+
+      <nx-timefield label="Start time" formControlName="timeStart"></nx-timefield>
+
+      <nx-formfield label="End date">
+        <input nxDatefield nxInput formControlName="dateEnd" [datepicker]="endPicker" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="endPicker"></nx-datepicker-toggle>
+        <nx-datepicker #endPicker></nx-datepicker>
+        <span nxFormfieldHint>YYYY-MM-DD</span>
+      </nx-formfield>
+
+      <nx-timefield label="End time" formControlName="timeEnd"></nx-timefield>
+    </div>
+  </section>
+
+  <!-- Section: Event location -->
+  <section class="me-section">
+    <h3 class="me-section__title">Event location</h3>
+
+    <div class="me-grid me-grid--3col">
+      <nx-formfield label="Country">
+        <nx-dropdown formControlName="country">
+          @for (c of countries; track c) {
+            <nx-dropdown-item [value]="c">{{ c }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+
+      <nx-formfield label="Region(s)">
+        <nx-dropdown formControlName="region">
+          @for (r of regions; track r) {
+            <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+
+      <nx-formfield label="Applicable postcode(s)">
+        <input nxInput formControlName="postcodes" placeholder="50000, 14000" />
+      </nx-formfield>
+    </div>
+  </section>
+</form>
+
+<!-- Footer -->
+<footer class="me-modal__footer">
+  <div class="me-modal__footer-actions">
+    <button nxButton="tertiary" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary" type="button" (click)="onSubmit()">{{ submitLabel() }}</button>
+  </div>
+</footer>

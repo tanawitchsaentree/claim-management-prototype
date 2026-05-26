@@ -15,7 +15,7 @@ export interface PolicyLocation {
 
 export interface LocationItem {
   id: string;
-  source: 'policy' | 'manual';
+  source: 'policy' | 'manual' | 'cwb';
   displayName: string;
   addressLine1: string;
   addressLine2?: string;
@@ -28,6 +28,8 @@ export interface LocationItem {
   longitude?: number;
   additionalInfo?: string;
   policyLocationRef?: string;
+  cwbReference?: string;
+  locationRuleNumber?: string;
 }
 
 export interface LocationPickerOutput {

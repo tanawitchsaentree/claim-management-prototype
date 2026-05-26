@@ -1,0 +1,132 @@
+@use '../../styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.plm-header { @include modal.header; }
+.plm-header-row { @include modal.header-row; }
+.plm-title { @include modal.title; }
+.plm-subtitle { @include modal.subtitle; }
+
+.plm-body { @include modal.body; }
+
+.plm-form { display: flex; flex-direction: column; gap: 12px; }
+
+.plm-search-row__inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+
+  > * { min-width: 0; }
+  nx-formfield { width: 100%; }
+}
+
+.plm-search-row__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.plm-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--ui-04);
+}
+
+.plm-section__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.plm-section__title {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.plm-section__meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.plm-empty {
+  margin: 4px 0;
+  padding: 8px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.plm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plm-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--ui-01);
+
+  &:hover { background: var(--claim-overlay-hover); }
+  &--selected { background: var(--claim-overlay-hover); border-color: var(--interactive-primary); }
+}
+
+.plm-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.plm-item__name {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.plm-item__addr {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.plm-item__meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.plm-inactive {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--claim-status-declined-bg);
+  color: var(--claim-status-declined-color);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.plm-footer {
+  @include modal.footer;
+  justify-content: space-between;       // link left, primary actions right
+}
+
+.plm-fallback-link {
+  font-weight: 500;
+}
+
+.plm-footer__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

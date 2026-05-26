@@ -18,6 +18,11 @@ export const FNOL_ROUTES: Routes = [
           import('./steps/step-skeleton-create/step-skeleton-create.component').then(m => m.StepSkeletonCreateComponent),
       },
       {
+        path: 'skeleton-summary',
+        loadComponent: () =>
+          import('./steps/step-skeleton-summary/step-skeleton-summary.component').then(m => m.StepSkeletonSummaryComponent),
+      },
+      {
         path: 'loss-information',
         loadComponent: () =>
           import('./steps/step-loss-information/step-loss-information.component').then(m => m.StepLossInformationComponent),

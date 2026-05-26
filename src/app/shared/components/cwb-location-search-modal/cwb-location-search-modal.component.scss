@@ -1,0 +1,176 @@
+@use '../../styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.cwb-header { @include modal.header; }
+.cwb-header-row { @include modal.header-row; }
+.cwb-title { @include modal.title; }
+.cwb-subtitle { @include modal.subtitle; }
+
+.cwb-ext-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--claim-status-in-progress-bg);
+  color: var(--claim-status-in-progress-color);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cwb-body { @include modal.body; }
+
+// ─── Search row (80/20 pattern, matches broker-search-modal) ────────────
+.cwb-form { display: flex; flex-direction: column; }
+
+.cwb-search-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.cwb-search-row__inputs {
+  flex: 0 0 80%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+
+  > * { min-width: 0; }
+  nx-formfield { width: 100%; }
+}
+
+.cwb-search-row__actions {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding-top: 22px;
+  white-space: nowrap;
+
+  > button { flex: 0 0 auto; }
+}
+
+// ─── Sections (results + manual entry) ──────────────────────────────────
+// margin-top is supplied by body's `gap` (modal-layout mixin). Only the
+// top-padding/border belong here so dividers don't compound spacing.
+.cwb-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--ui-04);
+}
+
+.cwb-section__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.cwb-section__title {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cwb-section__meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+// ─── Results table ──────────────────────────────────────────────────────
+.cwb-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  color: var(--text-muted);
+}
+
+.cwb-loading-label { font-size: var(--paragraph-03-font-size); }
+
+.cwb-empty {
+  margin: 4px 0;
+  padding: 8px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.cwb-table { width: 100%; }
+.cwb-col-pick { width: 48px; }
+.cwb-row--selected { background: var(--claim-overlay-hover); cursor: pointer; }
+
+.cwb-ref {
+  font-family: monospace;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+// ─── Manual entry form ──────────────────────────────────────────────────
+.cwb-manual-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cwb-manual-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+
+  > * { min-width: 0; }
+  nx-formfield { width: 100%; }
+}
+
+.cwb-manual-form > nx-formfield { width: 100%; }
+
+.cwb-manual-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cwb-manual-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cwb-manual-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 12px;
+  background: var(--ui-02);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+}
+
+.cwb-manual-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cwb-manual-item__addr {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  font-weight: 500;
+}
+
+.cwb-manual-item__country {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.cwb-footer { @include modal.footer; }

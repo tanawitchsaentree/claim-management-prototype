@@ -30,9 +30,14 @@
 }
 
 .co-grid--closure {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 0;
 
   &:not(:last-child) { margin-bottom: 16px; }
+}
+
+.co-grid--row2 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .co-card {
@@ -61,7 +66,7 @@
 
 .co-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 20px 24px;
   margin-bottom: 20px;
 }
@@ -92,6 +97,17 @@
 
     &:hover { text-decoration: underline; }
   }
+
+  &--link-external {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.co-link-icon {
+  color: var(--interactive-primary);
+  font-size: 14px;
 }
 
 .co-field-value {
@@ -109,6 +125,21 @@
 .co-refresh-icon {
   color: var(--text-muted);
   cursor: pointer;
+}
+
+.co-info-icon {
+  color: var(--text-muted);
+  cursor: help;
+  // Force icon to match the label font-size so it cannot push the label
+  // baseline / row-height. Without this constraint the icon's intrinsic
+  // box would make Mass Event's label taller than neighbouring labels
+  // (Claim ID / Client / …) and the value row would drop out of horizontal
+  // alignment with them.
+  font-size: var(--paragraph-03-font-size);
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  flex: 0 0 auto;
 }
 
 // ─── Risk score ───────────────────────────────────────────────────────────────

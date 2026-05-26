@@ -1,0 +1,98 @@
+// Universal modal layout — every NxDialogService-opened component uses this.
+//
+// Spacing comes from NDBX's NxModalContainer (padding: var(--modal-padding) = 40px).
+// Component-side mixins ONLY handle structure: flex, borders, gaps. NEVER add
+// horizontal padding here — the wrapper already pads 40px on each side.
+//
+// Usage:
+//   @use '../../shared/styles/modal-layout' as modal;
+//   :host { @include modal.shell; }
+//   .my-header { @include modal.header; }
+//   .my-body   { @include modal.body; }
+//   .my-footer { @include modal.footer; }
+//
+// Vertical rhythm (NDBX wrapper already pads 40px on all 4 sides):
+//   - header: 20px padding-bottom + bottom-border
+//   - body:   24px padding-top + 24px padding-bottom + 20px gap between blocks
+//   - footer: 20px padding-top + top-border, right-aligned actions, 8px gap
+//
+// Why 20/24 (not 16): in a 40px-padded shell, 16px below a divider reads as
+// "stuck" against the line. 20–24 gives the title/footer the same visual
+// gravity as the wrapper's 40px outer padding. Body gets symmetric pt/pb so
+// content never touches the footer divider.
+
+$header-pb: 20px;
+$body-pt:   24px;
+$body-pb:   24px;
+$content-gap: 20px;
+$footer-pt: 20px;
+$action-gap: 8px;
+
+@mixin shell {
+  // NxModalContainer (NDBX wrapper) owns padding (40px), max-height, overflow.
+  // Component-side mixins ONLY declare flex-column so header/body/footer stack
+  // vertically. Do NOT add max-height here — it stacks on top of NDBX's wrapper
+  // height + 80px outer padding and pushes the modal past the viewport on
+  // 14" notebooks. The body scroll already works as long as `<footer>` is a
+  // sibling of `.x-body` (see [[modal-footer-outside-body]]).
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@mixin header {
+  // Mirror footer trick: pull header out to wrapper edges so the bottom-border
+  // is full-width and top-spacing is just NDBX's wrapper top-padding (40px).
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 var(--modal-padding) $header-pb;
+  margin: 0 calc(-1 * var(--modal-padding)) 0;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+@mixin header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@mixin title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+@mixin subtitle {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+@mixin body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;             // body is the scroll container — header/footer stay sticky
+  padding-top: $body-pt;
+  padding-bottom: $body-pb;     // symmetric — content never touches footer divider
+  display: flex;
+  flex-direction: column;
+  gap: $content-gap;
+}
+
+@mixin footer {
+  // Pull footer out to the wrapper edges (NDBX pattern). Cancels the
+  // NxModalContainer's 40px bottom + horizontal padding so the footer's
+  // border-top sits flush against the dialog's bottom-left/right corners.
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $action-gap;
+  padding: $footer-pt var(--modal-padding) $footer-pt;
+  margin: 0 calc(-1 * var(--modal-padding)) calc(-1 * var(--modal-padding));
+  border-top: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}

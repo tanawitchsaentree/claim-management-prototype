@@ -41,6 +41,10 @@ export interface SkeletonFormValue {
   clientName: string;
   reason: SkeletonReason;
   notes?: string;
+  brokerName?: string;
+  brokerIpmId?: string;
+  insuredName?: string;
+  internalNotifier?: string;
 }
 
 export interface FnolFormValue {

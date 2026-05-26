@@ -1,0 +1,54 @@
+@use '../../styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.mle-header { @include modal.header; }
+.mle-header-row { @include modal.header-row; }
+.mle-title { @include modal.title; }
+.mle-subtitle { @include modal.subtitle; }
+
+.mle-body { @include modal.body; }
+
+.mle-form { display: flex; flex-direction: column; gap: 16px; }
+
+.mle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+
+  > * { min-width: 0; }
+  nx-formfield { width: 100%; }
+}
+
+.mle-full { grid-column: 1 / -1; }
+
+.mle-optional {
+  border-top: 1px solid var(--ui-04);
+  padding-top: 12px;
+}
+
+.mle-optional-toggle {
+  cursor: pointer;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &::-webkit-details-marker { display: none; }
+  &::before {
+    content: '\25B8';
+    transition: transform 0.15s ease;
+  }
+}
+
+details[open] > .mle-optional-toggle::before {
+  transform: rotate(90deg);
+}
+
+.mle-optional-body { margin-top: 12px; }
+
+.mle-footer { @include modal.footer; }

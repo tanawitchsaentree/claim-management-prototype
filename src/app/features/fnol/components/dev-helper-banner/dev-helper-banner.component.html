@@ -1,43 +1,29 @@
 <ng-container *ngIf="isVisible$ | async">
   <div class="dev-banner">
-    <span class="dev-banner__badge">DEV</span>
+    <span class="dev-banner__scope">FNOL helper:</span>
 
     <ng-container [ngSwitch]="currentPage$ | async">
 
       <!-- ─── SEARCH PAGE ─── -->
       <ng-container *ngSwitchCase="'search'">
-        <span class="dev-banner__label">Quick select:</span>
-        <nx-formfield class="dev-banner__formfield">
-          <nx-dropdown [formControl]="presetCtrl">
-            <nx-dropdown-item *ngFor="let p of presets" [value]="p.value">
-              {{ p.label }}
-            </nx-dropdown-item>
-          </nx-dropdown>
-        </nx-formfield>
-        <button nxButton="primary small" type="button" [disabled]="filling"
+        <span class="dev-banner__hint">Skip the search — pre-fill a sample client &amp; policy.</span>
+        <button nxButton="secondary small" type="button" [disabled]="filling"
                 (click)="onFill('search')">
-          <nx-icon name="lightning" nxIconPositionStart *ngIf="!filling"></nx-icon>
+          <nx-icon name="bolt" nxIconPositionStart *ngIf="!filling"></nx-icon>
           <nx-spinner size="small" *ngIf="filling"></nx-spinner>
-          Fill
+          Pre-fill form
         </button>
       </ng-container>
 
       <!-- ─── LOSS INFO PAGE ─── -->
       <ng-container *ngSwitchCase="'loss-info'">
         <ng-container *ngIf="isReady('loss-info'); else needsPolicy">
-          <span class="dev-banner__label">Scenario:</span>
-          <nx-formfield class="dev-banner__formfield">
-            <nx-dropdown [formControl]="scenarioCtrl">
-              <nx-dropdown-item *ngFor="let s of scenarios" [value]="s.key">
-                {{ s.label }}
-              </nx-dropdown-item>
-            </nx-dropdown>
-          </nx-formfield>
-          <button nxButton="primary small" type="button" [disabled]="filling"
+          <span class="dev-banner__hint">Pre-fill cause, dates &amp; description with a sample loss.</span>
+          <button nxButton="secondary small" type="button" [disabled]="filling"
                   (click)="onFill('loss-info')">
-            <nx-icon name="lightning" nxIconPositionStart *ngIf="!filling"></nx-icon>
+            <nx-icon name="bolt" nxIconPositionStart *ngIf="!filling"></nx-icon>
             <nx-spinner size="small" *ngIf="filling"></nx-spinner>
-            Fill
+            Pre-fill form
           </button>
         </ng-container>
       </ng-container>
@@ -45,30 +31,30 @@
       <!-- ─── ENTITIES PAGE ─── -->
       <ng-container *ngSwitchCase="'entities'">
         <ng-container *ngIf="isReady('entities'); else needsPolicy">
-          <span class="dev-banner__label">Auto-select first entity</span>
-          <button nxButton="primary small" type="button" [disabled]="filling"
+          <span class="dev-banner__hint">Auto-select the first entity for this policy.</span>
+          <button nxButton="secondary small" type="button" [disabled]="filling"
                   (click)="onFill('entities')">
-            <nx-icon name="lightning" nxIconPositionStart *ngIf="!filling"></nx-icon>
+            <nx-icon name="bolt" nxIconPositionStart *ngIf="!filling"></nx-icon>
             <nx-spinner size="small" *ngIf="filling"></nx-spinner>
-            Fill
+            Pre-fill form
           </button>
         </ng-container>
       </ng-container>
 
       <!-- ─── PAGES WITH NO FILL ACTION ─── -->
       <ng-container *ngSwitchCase="'parties'">
-        <span class="dev-banner__muted">Dev helper not available on this page</span>
+        <span class="dev-banner__muted">No pre-fill on this page.</span>
       </ng-container>
       <ng-container *ngSwitchCase="'reserves'">
-        <span class="dev-banner__muted">Dev helper not available on this page</span>
+        <span class="dev-banner__muted">No pre-fill on this page.</span>
       </ng-container>
       <ng-container *ngSwitchCase="'summary'">
-        <span class="dev-banner__muted">Dev helper not available on this page</span>
+        <span class="dev-banner__muted">No pre-fill on this page.</span>
       </ng-container>
 
       <!-- ─── OTHER / UNKNOWN ─── -->
       <ng-container *ngSwitchDefault>
-        <span class="dev-banner__muted">Dev helper not available on this page</span>
+        <span class="dev-banner__muted">No pre-fill on this page.</span>
       </ng-container>
 
     </ng-container>
@@ -88,5 +74,5 @@
 </ng-container>
 
 <ng-template #needsPolicy>
-  <span class="dev-banner__muted">Select a policy first (go to Search)</span>
+  <span class="dev-banner__muted">Select a policy first (go to Search).</span>
 </ng-template>

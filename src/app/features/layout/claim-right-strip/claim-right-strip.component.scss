@@ -1,7 +1,22 @@
 :host {
   display: flex;
-  flex-direction: column;
   height: 100%;
+}
+
+.crs-host {
+  display: flex;
+  height: 100%;
+}
+
+// Slot wraps the panel so the slide animation runs on a width-controlled
+// container instead of the panel's :host (which has overflow-y: auto).
+.crs-panel-slot {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  app-claim-notes-panel { display: block; height: 100%; }
 }
 
 .crs-strip {
@@ -20,6 +35,15 @@
   flex-direction: column;
   padding: 8px 0;
   gap: 2px;
+  overflow: hidden;
+  transition: max-height 0.2s ease, opacity 0.15s ease;
+
+  .crs-strip--collapsed & {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    pointer-events: none;
+  }
 }
 
 .crs-footer {
@@ -28,8 +52,11 @@
   align-items: center;
   padding: 8px 0;
   border-top: 1px solid var(--ui-04);
+
+  .crs-strip--collapsed & { border-top: none; }
 }
 
+// Tab buttons (5 nav icons) — mirror sidebar.scss .nav-item state pattern
 .crs-btn {
   display: flex;
   align-items: center;
@@ -41,7 +68,6 @@
   cursor: pointer;
   color: var(--text-muted);
   transition: background 0.15s, color 0.15s;
-  position: relative;
 
   &:hover {
     background: var(--interactive-primary);
@@ -56,5 +82,25 @@
       background: var(--interactive-primary);
       color: var(--button-primary-text-color);
     }
+  }
+}
+
+// Footer toggle (collapse / expand) — mirror sidebar-footer__btn 1:1
+.crs-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: var(--claim-overlay-nav-hover);
+    color: var(--text-01);
   }
 }

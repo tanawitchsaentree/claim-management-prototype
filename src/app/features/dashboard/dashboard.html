@@ -5,29 +5,31 @@
   <!-- ══════════════════ TOP HEADER ══════════════════ -->
   <header class="top-header">
     <div class="header-first-slot">
-      <svg class="header-logo" width="32" height="32" viewBox="0 0 32 32">
-        <circle cx="16" cy="16" r="16" fill="#003781"/>
-        <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
-      </svg>
-      <div class="header-title-divider"></div>
-      <span class="header-app-title">Commercial Claims</span>
+      <a routerLink="/dashboard" class="header-brand-link" aria-label="Go to dashboard">
+        <svg class="header-logo" width="32" height="32" viewBox="0 0 32 32">
+          <circle cx="16" cy="16" r="16" fill="#003781"/>
+          <text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Arial">A</text>
+        </svg>
+        <div class="header-title-divider"></div>
+        <span class="header-app-title">Commercial Claims</span>
+      </a>
       <nav class="top-nav">
-        <button class="nav-tab nav-tab--active">Dashboard</button>
-        <button class="nav-tab">Claims</button>
-        <button class="nav-tab">Parties</button>
-        <button class="nav-tab">Task manager</button>
-        <button class="nav-tab">Administration</button>
-        <button class="nav-tab">Approvals</button>
+        <a routerLink="/dashboard" routerLinkActive="nav-tab--active" [routerLinkActiveOptions]="{ exact: true }" class="nav-tab">Dashboard</a>
+        <a routerLink="/dashboard" class="nav-tab">Claims</a>
+        <a routerLink="/parties" routerLinkActive="nav-tab--active" class="nav-tab">Parties</a>
+        <a routerLink="/tasks" routerLinkActive="nav-tab--active" class="nav-tab">Task manager</a>
+        <a routerLink="/administration" routerLinkActive="nav-tab--active" class="nav-tab">Administration</a>
+        <a routerLink="/approvals" routerLinkActive="nav-tab--active" class="nav-tab">Approvals</a>
       </nav>
     </div>
     <div class="header-last-slot">
-      <div class="search-wrapper">
+      <div class="search-wrapper desktop-only">
         <input class="search-input" placeholder="Search..." />
         <button type="button" class="search-btn" aria-label="search">
           <nx-icon name="search"></nx-icon>
         </button>
       </div>
-      <div class="header-actions">
+      <div class="header-actions desktop-only">
         <button nxIconButton="tertiary" type="button" aria-label="notifications">
           <nx-icon name="bell-o"></nx-icon>
         </button>
@@ -35,9 +37,63 @@
           <nx-icon name="grid"></nx-icon>
         </button>
       </div>
-      <div class="user-avatar">MM</div>
+      <div class="user-avatar desktop-only">MM</div>
+
+      <!-- Mobile / iPad portrait controls -->
+      <button nxIconButton="tertiary" type="button"
+              class="mobile-only header-icon-btn"
+              aria-label="Search"
+              [attr.aria-expanded]="mobileSearchOpen()"
+              (click)="toggleMobileSearch()">
+        <nx-icon name="search"></nx-icon>
+      </button>
+      <button nxIconButton="tertiary" type="button"
+              class="mobile-only header-icon-btn"
+              aria-label="Toggle menu"
+              [attr.aria-expanded]="mobileMenuOpen()"
+              (click)="toggleMobileMenu()">
+        <nx-icon [name]="mobileMenuOpen() ? 'close' : 'menu'"></nx-icon>
+      </button>
     </div>
   </header>
+
+  <!-- Mobile search row (expands under header on ≤1024px) -->
+  @if (mobileSearchOpen()) {
+    <div class="mobile-search-row mobile-only">
+      <div class="search-wrapper">
+        <input class="search-input" placeholder="Search..." autofocus />
+        <button type="button" class="search-btn" aria-label="search">
+          <nx-icon name="search"></nx-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Mobile dropdown menu (≤1024px) -->
+  @if (mobileMenuOpen()) {
+    <div class="mobile-menu mobile-only" role="menu">
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Dashboard</button>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Claims</button>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Parties</button>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Task manager</button>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Administration</button>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Approvals</button>
+      <div class="mobile-menu-divider"></div>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">
+        <nx-icon name="bell-o" class="mobile-menu-icon"></nx-icon>
+        Notifications
+      </button>
+      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">
+        <nx-icon name="grid" class="mobile-menu-icon"></nx-icon>
+        Apps
+      </button>
+      <div class="mobile-menu-divider"></div>
+      <div class="mobile-menu-user">
+        <div class="user-avatar">MM</div>
+        <span class="mobile-menu-username">Mara Mustermann</span>
+      </div>
+    </div>
+  }
 
   <!-- ══════════════════ BODY ══════════════════ -->
   <div class="body-layout">

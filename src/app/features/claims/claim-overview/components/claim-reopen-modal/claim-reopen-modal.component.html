@@ -1,0 +1,47 @@
+<div class="crm-header">
+  <h2 class="crm-title">Reopen claim</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="crm-body">
+  <p class="crm-intro">
+    Reopen <strong>{{ claim.claimId }}</strong>. Provide a reason and an initial reserve to track follow-up work.
+  </p>
+
+  <form [formGroup]="form" class="crm-form">
+    <nx-formfield label="Reopening reason">
+      <textarea nxInput formControlName="reason" rows="3"
+                placeholder="Briefly describe why this claim is being reopened…"></textarea>
+      <nx-error nxFormfieldError *ngIf="form.get('reason')?.errors?.['required']">Reason is required.</nx-error>
+      <nx-error nxFormfieldError *ngIf="form.get('reason')?.errors?.['minlength']">At least 8 characters.</nx-error>
+    </nx-formfield>
+
+    <div class="crm-form-row">
+      <nx-formfield label="Reserve type">
+        <input nxInput formControlName="reserveType" />
+      </nx-formfield>
+      <nx-formfield label="Reserve amount">
+        <input nxInput type="number" formControlName="reserveAmount" />
+        <nx-hint nxFormfieldHint>Required — reopening must raise a reserve (BMPCC-11360 AC5).</nx-hint>
+        <nx-error nxFormfieldError *ngIf="form.get('reserveAmount')?.errors?.['required']">Reserve amount is required.</nx-error>
+        <nx-error nxFormfieldError *ngIf="form.get('reserveAmount')?.errors?.['min']">Must be greater than 0.</nx-error>
+      </nx-formfield>
+    </div>
+  </form>
+
+  @if (saveError) {
+    <nx-message type="error">{{ saveError }}</nx-message>
+  }
+</div>
+
+<div class="crm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="form.invalid || saving"
+          (click)="onReopen()">
+    @if (saving) { <nx-spinner size="small"></nx-spinner> }
+    @else        { Reopen }
+  </button>
+</div>

@@ -1,41 +1,30 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { combineLatest, firstValueFrom } from 'rxjs';
-import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
-import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
+import { firstValueFrom } from 'rxjs';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption } from '../../../../core/models/lookup.model';
-import { ReserveType } from '../../../../core/models/reserve.model';
-import { DamageGroup } from '../../../../core/models/entity-damage.model';
-import { Party } from '../../../../core/models/party.model';
+import { Reserve, ReserveType } from '../../../../core/models/reserve.model';
 
 export interface AddReserveModalData {
   policyNumber: string;
-  prefill?: import('../../../../core/models/reserve.model').Reserve;
+  // Existing sections (reserves) the user can pick from.
+  sections:    Reserve[];
+  // Optional: open the modal pre-filled for a specific section
+  preselectSectionId?: string;
 }
 
 export interface AddReserveResult {
-  partyId: string;
-  partyName: string;
-  damageTypeKey: string;
-  damageType: string;
-  reserveType: ReserveType;
-  damagedItemId?: string;
-  currency: string;
-  amount: number;
-}
-
-interface DamageOption {
-  key: string;
-  label: string;
-  entities: { entityId: string; name: string }[];
+  reserveId:     string;          // selected section
+  reserveType:   ReserveType;     // tab to add to
+  itemLevel:     boolean;
+  damagedItemId?: string;          // required when itemLevel = true
 }
 
 @Component({
@@ -58,92 +47,75 @@ export class AddReserveModalComponent implements OnInit {
   readonly data     = inject<AddReserveModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<AddReserveModalComponent, AddReserveResult | null>>(NxModalRef);
 
-  private readonly partiesSvc  = inject(MockPartiesService);
-  private readonly entitiesSvc = inject(MockEntitiesDamagesService);
-  private readonly lookupSvc   = inject(MockLookupService);
-  private readonly fb          = inject(FormBuilder);
+  private readonly lookupSvc = inject(MockLookupService);
+  private readonly fb        = inject(FormBuilder);
 
-  parties: Party[] = [];
-  damageOptions: DamageOption[] = [];
   reserveTypeOptions: LookupOption[] = [];
 
   readonly form = this.fb.group({
-    partyId:       ['', Validators.required],
-    damageTypeKey: ['', Validators.required],
-    reserveType:   ['', Validators.required],
-    itemLevel:     [false],
-    damagedItemId: [''],
+    reserveId:     new FormControl<string | null>(null, Validators.required),
+    reserveType:   new FormControl<ReserveType | null>('indemnity' as ReserveType, Validators.required),
+    itemLevel:     new FormControl<boolean>(false),
+    damagedItemId: new FormControl<string | null>(null),
   });
 
-  get itemLevel(): boolean { return !!this.form.get('itemLevel')?.value; }
+  // Reactive helpers
+  readonly selectedReserveId = signal<string | null>(null);
+  readonly itemLevel = signal<boolean>(false);
 
-  get selectedDamageGroup(): DamageOption | undefined {
-    return this.damageOptions.find(d => d.key === this.form.get('damageTypeKey')?.value);
-  }
+  readonly selectedSection = computed<Reserve | null>(() => {
+    const id = this.selectedReserveId();
+    if (!id) return null;
+    return this.data.sections.find(s => s.reserveId === id) ?? null;
+  });
+
+  readonly damagedItemOptions = computed(() => this.selectedSection()?.damagedItems ?? []);
 
   get canAdd(): boolean {
     const v = this.form.value;
-    if (!v.partyId || !v.damageTypeKey || !v.reserveType) return false;
+    if (!v.reserveId || !v.reserveType) return false;
     if (v.itemLevel && !v.damagedItemId) return false;
     return true;
   }
 
-  async ngOnInit(): Promise<void> {
-    const [parties, entitiesData, reserveTypes] = await firstValueFrom(
-      combineLatest([
-        this.partiesSvc.getPartiesForPolicy(this.data.policyNumber),
-        this.entitiesSvc.getByPolicyId(this.data.policyNumber),
-        this.lookupSvc.getReserveTypes(),
-      ]),
-    );
-    this.parties = parties;
-    this.damageOptions = this.buildDamageOptions(
-      entitiesData.sections.flatMap(s => s.damageGroups),
-    );
-    this.reserveTypeOptions = reserveTypes;
+  sectionLabel(r: Reserve): string {
+    return `Section ${r.sectionNo}: ${r.partyName} — ${r.damageType}`;
+  }
 
-    if (this.data.prefill) {
-      const p = this.data.prefill;
-      this.form.patchValue({
-        partyId:       p.partyId,
-        damageTypeKey: p.damageTypeKey ?? '',
-        reserveType:   p.reserveType ?? '',
-      });
+  async ngOnInit(): Promise<void> {
+    this.reserveTypeOptions = await firstValueFrom(this.lookupSvc.getReserveTypes());
+
+    // No subscribe — handle changes via template event handlers below.
+
+    if (this.data.preselectSectionId) {
+      this.form.patchValue({ reserveId: this.data.preselectSectionId });
     }
+  }
+
+  onSectionChange(id: string | null): void {
+    this.selectedReserveId.set(id);
+    this.form.patchValue({ reserveId: id, damagedItemId: null });
+  }
+
+  onItemLevelChange(checked: boolean): void {
+    this.itemLevel.set(checked);
+    this.form.patchValue({ itemLevel: checked });
+    const ctrl = this.form.get('damagedItemId')!;
+    if (checked) ctrl.setValidators(Validators.required);
+    else { ctrl.clearValidators(); ctrl.setValue(null); }
+    ctrl.updateValueAndValidity();
   }
 
   onCancel(): void { this.modalRef.close(null); }
 
   async onAdd(): Promise<void> {
     if (!this.canAdd) { this.form.markAllAsTouched(); return; }
-
-    const v           = this.form.value;
-    const party       = this.parties.find(p => p.partyId === v.partyId)!;
-    const damageGroup = this.damageOptions.find(d => d.key === v.damageTypeKey)!;
-
+    const v = this.form.value;
     this.modalRef.close({
-      partyId:       party.partyId,
-      partyName:     party.legalName,
-      damageTypeKey: damageGroup.key,
-      damageType:    damageGroup.label,
+      reserveId:     v.reserveId!,
       reserveType:   v.reserveType as ReserveType,
+      itemLevel:     !!v.itemLevel,
       damagedItemId: v.itemLevel ? (v.damagedItemId ?? undefined) : undefined,
-      currency:      'EUR',
-      amount:        0,
     });
-  }
-
-  private buildDamageOptions(groups: DamageGroup[]): DamageOption[] {
-    const seen = new Map<string, DamageOption>();
-    for (const group of groups) {
-      if (!seen.has(group.damageTypeKey)) {
-        seen.set(group.damageTypeKey, {
-          key:      group.damageTypeKey,
-          label:    group.damageType,
-          entities: group.entities.map(e => ({ entityId: e.entityId, name: e.name })),
-        });
-      }
-    }
-    return Array.from(seen.values());
   }
 }

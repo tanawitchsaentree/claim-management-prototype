@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, isDevMode, computed } from '@angular/core';
+import { Component, OnInit, effect, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -9,14 +10,25 @@ import { ClaimDevHelperService, DevTicket, BuildStatus } from './claim-dev-helpe
 @Component({
   selector: 'app-claim-dev-banner',
   standalone: true,
-  imports: [CommonModule, NxFormfieldModule, NxDropdownModule, NxButtonModule, NxTaglistModule],
+  imports: [CommonModule, ReactiveFormsModule, NxFormfieldModule, NxDropdownModule, NxButtonModule, NxTaglistModule],
   templateUrl: './claim-dev-banner.component.html',
   styleUrl: './claim-dev-banner.component.scss',
 })
 export class ClaimDevBannerComponent implements OnInit {
   readonly helper = inject(ClaimDevHelperService);
 
-  readonly visible = isDevMode();
+  readonly visible = true;
+
+  readonly ticketCtrl = new FormControl<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const id = this.helper.selectedTicket()?.ticketId ?? null;
+      if (this.ticketCtrl.value !== id) {
+        this.ticketCtrl.setValue(id, { emitEvent: false });
+      }
+    });
+  }
 
   readonly activeAcLabel = computed<string | null>(() => {
     const acId = this.helper.activeAcId();
@@ -28,6 +40,18 @@ export class ClaimDevBannerComponent implements OnInit {
     return acId;
   });
 
+  // Tickets grouped by module — for dropdown's <nx-dropdown-group> headers.
+  readonly groupedTickets = computed<Array<{ module: string; tickets: DevTicket[] }>>(() => {
+    const map = new Map<string, DevTicket[]>();
+    for (const t of this.helper.tickets()) {
+      const key = t.module || 'Other';
+      const list = map.get(key) ?? [];
+      list.push(t);
+      map.set(key, list);
+    }
+    return Array.from(map.entries()).map(([module, tickets]) => ({ module, tickets }));
+  });
+
   ngOnInit(): void {
     if (!this.visible) return;
     this.helper.loadTickets();
@@ -35,6 +59,10 @@ export class ClaimDevBannerComponent implements OnInit {
 
   onTicketSelected(id: string | null): void {
     this.helper.selectTicket(id ?? null);
+  }
+
+  onTicketSelectionChange(event: { value: string | null } | null): void {
+    this.helper.selectTicket(event?.value ?? null);
   }
 
   openDetails(): void {

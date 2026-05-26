@@ -1,19 +1,29 @@
-<div class="crs-strip">
-  <div class="crs-items">
-    @for (item of items; track item.key) {
-      <button
-        class="crs-btn"
-        [class.crs-btn--active]="activeKey === item.key"
-        (click)="activate(item.key)"
-        [title]="item.label"
-      >
-        <nx-icon [name]="item.icon" size="s"></nx-icon>
+<div class="crs-host">
+  <div class="crs-strip" [class.crs-strip--collapsed]="collapsed">
+    <div class="crs-items">
+      @for (item of items; track item.key) {
+        <button
+          class="crs-btn"
+          [class.crs-btn--active]="activeKey === item.key"
+          (click)="activate(item.key)"
+          [title]="item.label"
+        >
+          <nx-icon [name]="item.icon" size="s"></nx-icon>
+        </button>
+      }
+    </div>
+    <div class="crs-footer">
+      <button class="crs-toggle" type="button"
+              (click)="toggleCollapse()"
+              [title]="collapsed ? 'Expand' : 'Collapse'">
+        <nx-icon [name]="collapsed ? 'chevron-right' : 'chevron-left'" size="s"></nx-icon>
       </button>
-    }
+    </div>
   </div>
-  <div class="crs-footer">
-    <button class="crs-btn" (click)="toggleCollapse()" [title]="collapsed ? 'Expand' : 'Collapse'">
-      <nx-icon [name]="collapsed ? 'chevron-left' : 'chevron-right'" size="s"></nx-icon>
-    </button>
-  </div>
+
+  @if (activeKey === 'comments' && currentClaimId(); as id) {
+    <div class="crs-panel-slot" @panelSlide>
+      <app-claim-notes-panel [claimId]="id"></app-claim-notes-panel>
+    </div>
+  }
 </div>

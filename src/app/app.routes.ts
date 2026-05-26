@@ -8,6 +8,21 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/dashboard/dashboard').then((m) => m.Dashboard),
   },
+  {
+    path: 'administration',
+    loadComponent: () =>
+      import('./features/administration/administration.component').then((m) => m.AdministrationComponent),
+  },
+  {
+    path: 'administration/mass-events',
+    loadComponent: () =>
+      import('./features/administration/mass-events/mass-events.component').then((m) => m.MassEventsComponent),
+  },
+  {
+    path: 'approvals',
+    loadComponent: () =>
+      import('./features/approvals/approvals.component').then((m) => m.ApprovalsComponent),
+  },
   // FNOL wizard (own layout shell, no sidebar)
   {
     path: 'fnol',
@@ -44,8 +59,16 @@ export const routes: Routes = [
       { path: 'claims/:id/limits',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/recoveries', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/providers',  redirectTo: 'claims/:id/overview', pathMatch: 'full' },
-      { path: 'claims/:id/risk',       redirectTo: 'claims/:id/overview', pathMatch: 'full' },
-      { path: 'claims/:id/litigation', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
+      {
+        path: 'claims/:id/risk',
+        loadComponent: () =>
+          import('./features/claims/risk-analysis/risk-analysis.component').then((m) => m.RiskAnalysisComponent),
+      },
+      {
+        path: 'claims/:id/litigation',
+        loadComponent: () =>
+          import('./features/claims/litigation/litigation.component').then((m) => m.LitigationComponent),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

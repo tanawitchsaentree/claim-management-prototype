@@ -29,6 +29,17 @@
           <span class="co-label">Loss event ID</span>
           <a class="co-value co-value--link">{{ claim.lossEventId }}</a>
         </div>
+        <div class="co-field">
+          <span class="co-label">
+            Mass Event
+            <nx-icon
+              name="info-circle-o"
+              class="co-info-icon"
+              [nxTooltip]="massEventTooltip"
+              nxTooltipPosition="top"></nx-icon>
+          </span>
+          <span class="co-value">ME-2025.102</span>
+        </div>
       </div>
 
       <!-- Row 2: status + risk — or closure block when closed -->
@@ -144,8 +155,7 @@
       }
       @if (claim.status === 'Closed') {
         <div class="co-card-actions">
-          <button nxButton="secondary small" type="button" disabled
-            nxTooltip="Coming in Phase 4" nxTooltipPosition="bottom">
+          <button nxButton="secondary small" type="button" (click)="openReopenModal(claim)">
             Reopen Claim
           </button>
         </div>

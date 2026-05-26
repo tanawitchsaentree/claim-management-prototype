@@ -1,5 +1,5 @@
 <div class="arm-header">
-  <h2 class="arm-title">{{ data.prefill ? 'Edit reserve' : 'Add reserve' }}</h2>
+  <h2 class="arm-title">Add reserve</h2>
   <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
@@ -8,30 +8,24 @@
 <div class="arm-body">
   <form [formGroup]="form" class="arm-form">
 
-    <nx-formfield label="Party">
-      <nx-dropdown formControlName="partyId" placeholder="Select party">
-        @for (party of parties; track party.partyId) {
-          <nx-dropdown-item [value]="party.partyId">{{ party.legalName }}</nx-dropdown-item>
+    <nx-formfield label="Section">
+      <nx-dropdown placeholder="Select"
+                   [value]="form.get('reserveId')?.value"
+                   (valueChange)="onSectionChange($event)">
+        @for (s of data.sections; track s.reserveId) {
+          <nx-dropdown-item [value]="s.reserveId">{{ sectionLabel(s) }}</nx-dropdown-item>
+        }
+        @if (data.sections.length === 0) {
+          <nx-dropdown-item [value]="null" disabled>No sections available — add parties &amp; damages first</nx-dropdown-item>
         }
       </nx-dropdown>
-      @if (form.get('partyId')?.invalid && form.get('partyId')?.touched) {
-        <nx-error nxFormfieldError>Party is required</nx-error>
-      }
-    </nx-formfield>
-
-    <nx-formfield label="Damage type">
-      <nx-dropdown formControlName="damageTypeKey" placeholder="Select damage type">
-        @for (opt of damageOptions; track opt.key) {
-          <nx-dropdown-item [value]="opt.key">{{ opt.label }}</nx-dropdown-item>
-        }
-      </nx-dropdown>
-      @if (form.get('damageTypeKey')?.invalid && form.get('damageTypeKey')?.touched) {
-        <nx-error nxFormfieldError>Damage type is required</nx-error>
+      @if (form.get('reserveId')?.invalid && form.get('reserveId')?.touched) {
+        <nx-error nxFormfieldError>Section is required</nx-error>
       }
     </nx-formfield>
 
     <nx-formfield label="Reserve type">
-      <nx-dropdown formControlName="reserveType" placeholder="Select reserve type">
+      <nx-dropdown formControlName="reserveType" placeholder="Select">
         @for (opt of reserveTypeOptions; track opt.value) {
           <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
         }
@@ -42,21 +36,21 @@
     </nx-formfield>
 
     <div class="arm-checkbox-row">
-      <nx-checkbox formControlName="itemLevel">
-        Make reserve on damaged item level
+      <nx-checkbox [checked]="itemLevel()"
+                   (checkedChange)="onItemLevelChange($event)"
+                   [disabled]="!selectedSection() || damagedItemOptions().length === 0">
+        Make reserve on a damaged item level
       </nx-checkbox>
     </div>
 
-    @if (itemLevel) {
+    @if (itemLevel()) {
       <nx-formfield label="Damaged item">
         <nx-dropdown formControlName="damagedItemId" placeholder="Select damaged item">
-          @if (selectedDamageGroup) {
-            @for (entity of selectedDamageGroup.entities; track entity.entityId) {
-              <nx-dropdown-item [value]="entity.entityId">{{ entity.name }}</nx-dropdown-item>
-            }
+          @for (item of damagedItemOptions(); track item.damagedItemId) {
+            <nx-dropdown-item [value]="item.damagedItemId">{{ item.itemName }}</nx-dropdown-item>
           }
-          @if (!selectedDamageGroup || selectedDamageGroup.entities.length === 0) {
-            <nx-dropdown-item [value]="''" disabled>No items — select damage type first</nx-dropdown-item>
+          @if (damagedItemOptions().length === 0) {
+            <nx-dropdown-item [value]="null" disabled>No items on this section</nx-dropdown-item>
           }
         </nx-dropdown>
         @if (form.get('damagedItemId')?.invalid && form.get('damagedItemId')?.touched) {
@@ -66,13 +60,13 @@
     }
 
   </form>
+</div>
 
-  <div class="arm-footer">
-    <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button"
-            [disabled]="!canAdd"
-            (click)="onAdd()">
-      {{ data.prefill ? 'Save' : 'Add reserve' }}
-    </button>
-  </div>
+<div class="arm-footer">
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="!canAdd"
+          (click)="onAdd()">
+    Add
+  </button>
 </div>

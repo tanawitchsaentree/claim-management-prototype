@@ -1,0 +1,207 @@
+<div class="cwb-header">
+  <div class="cwb-header-row">
+    <span class="cwb-ext-badge" aria-label="External system">
+      <nx-icon name="link" size="s"></nx-icon>
+      External system
+    </span>
+    <h2 class="cwb-title">Commercial Work Bench (CWB) — Location search</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="cwb-subtitle">Retrieve property records from CWB. Select one or more, or enter an address manually.</p>
+</div>
+
+<div class="cwb-body">
+
+  <!-- ─── Search section ──────────────────────────────────────────────── -->
+  <form [formGroup]="form" class="cwb-form">
+    <div class="cwb-search-row">
+      <div class="cwb-search-row__inputs">
+        <nx-formfield label="Policy number">
+          <input nxInput formControlName="policyNumber" autocomplete="off" />
+          <nx-hint nxFormfieldHint>Pre-filled · read-only</nx-hint>
+        </nx-formfield>
+        <nx-formfield label="Location rule number">
+          <input nxInput formControlName="locationRuleNumber" autocomplete="off" />
+          <nx-hint nxFormfieldHint>Derived · read-only</nx-hint>
+        </nx-formfield>
+        <nx-formfield label="Country *">
+          <nx-dropdown formControlName="country" placeholder="Select country">
+            @for (c of (countries$ | async) ?? []; track c.value) {
+              <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          @if (showError('country')) {
+            <nx-error nxFormfieldError>Country is required.</nx-error>
+          }
+        </nx-formfield>
+
+        <nx-formfield label="City">
+          <input nxInput formControlName="city" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="ZIP / postal code">
+          <input nxInput formControlName="postalCode" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Street and number">
+          <input nxInput formControlName="streetAndNumber" autocomplete="off" />
+        </nx-formfield>
+      </div>
+      <div class="cwb-search-row__actions">
+        <button nxButton="primary small" type="button" (click)="onSearch()">Search</button>
+        <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- ─── Results section ─────────────────────────────────────────────── -->
+  <ng-container *ngIf="state$ | async as vm">
+    @if (vm.loading) {
+      <div class="cwb-loading">
+        <nx-spinner size="medium"></nx-spinner>
+        <span class="cwb-loading-label">Querying CWB…</span>
+      </div>
+    } @else if (vm.searched) {
+      <section class="cwb-section">
+        <header class="cwb-section__header">
+          <h3 class="cwb-section__title">Search results</h3>
+          <span class="cwb-section__meta">
+            {{ vm.results.length }} found
+            @if (selectedRefs().size > 0) { · {{ selectedRefs().size }} selected }
+          </span>
+        </header>
+
+        @if (vm.error) {
+          <nx-message context="error">CWB unreachable. Try again or enter the address manually below.</nx-message>
+        } @else if (vm.results.length === 0) {
+          <p class="cwb-empty">No locations match. Adjust filters or enter an address manually below.</p>
+        } @else {
+          <table nxTable class="cwb-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell class="cwb-col-pick"></th>
+                <th nxHeaderCell>CWB ref</th>
+                <th nxHeaderCell>Location</th>
+                <th nxHeaderCell>Address</th>
+                <th nxHeaderCell>City</th>
+                <th nxHeaderCell>Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of vm.results; track r.cwbReference) {
+                <tr nxTableRow [class.cwb-row--selected]="isSelected(r.cwbReference)"
+                    (click)="toggleRow(r.cwbReference, !isSelected(r.cwbReference))">
+                  <td nxCell class="cwb-col-pick">
+                    <nx-checkbox
+                      [checked]="isSelected(r.cwbReference)"
+                      (checkedChange)="toggleRow(r.cwbReference, $event)"
+                      (click)="$event.stopPropagation()">
+                    </nx-checkbox>
+                  </td>
+                  <td nxCell><code class="cwb-ref">{{ r.cwbReference }}</code></td>
+                  <td nxCell>{{ r.locationName }}</td>
+                  <td nxCell>{{ r.streetAndNumber }}, {{ r.postalCode }}</td>
+                  <td nxCell>{{ r.city }}</td>
+                  <td nxCell>{{ r.country }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+    }
+  </ng-container>
+
+  <!-- ─── Manual entry section ────────────────────────────────────────── -->
+  <section class="cwb-section">
+    <header class="cwb-section__header">
+      <h3 class="cwb-section__title">Or enter address manually</h3>
+      <span class="cwb-section__meta">Use when CWB has no record for the loss location</span>
+    </header>
+
+    <form [formGroup]="manualForm" class="cwb-manual-form">
+      <div class="cwb-manual-grid">
+        <nx-formfield label="Country *">
+          <nx-dropdown formControlName="country" placeholder="Select">
+            @for (c of (countries$ | async) ?? []; track c.value) {
+              <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          @if (showError('country', 'manual')) {
+            <nx-error nxFormfieldError>Country is required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="City *">
+          <input nxInput formControlName="city" autocomplete="off" />
+          @if (showError('city', 'manual')) {
+            <nx-error nxFormfieldError>City is required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="ZIP / postal code *">
+          <input nxInput formControlName="postalCode" autocomplete="off" />
+          @if (showError('postalCode', 'manual')) {
+            <nx-error nxFormfieldError>Postal code is required.</nx-error>
+          }
+        </nx-formfield>
+
+        <nx-formfield label="Street and number *">
+          <input nxInput formControlName="streetAndNumber" autocomplete="off" />
+          @if (showError('streetAndNumber', 'manual')) {
+            <nx-error nxFormfieldError>Street and number is required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Address line 2">
+          <input nxInput formControlName="addressLine2" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="State / province">
+          <input nxInput formControlName="state" autocomplete="off" />
+        </nx-formfield>
+      </div>
+
+      <nx-formfield label="Notes">
+        <textarea nxInput formControlName="notes" rows="2"
+                  placeholder="Internal context for this manual entry"></textarea>
+        @if (showError('notes', 'manual')) {
+          <nx-error nxFormfieldError>Maximum 300 characters.</nx-error>
+        }
+      </nx-formfield>
+
+      <div class="cwb-manual-actions">
+        <button nxButton="secondary small" type="button" (click)="addManual()">
+          <nx-icon name="plus" nxIconPositionStart></nx-icon>
+          Add manual address
+        </button>
+      </div>
+    </form>
+
+    @if (manualEntries().length > 0) {
+      <ul class="cwb-manual-list" aria-label="Manual entries to add">
+        @for (e of manualEntries(); track $index) {
+          <li class="cwb-manual-item">
+            <div class="cwb-manual-item__body">
+              <span class="cwb-manual-item__addr">{{ e.streetAndNumber }}, {{ e.postalCode }} {{ e.city }}</span>
+              <span class="cwb-manual-item__country">{{ e.country }}@if (e.state) { · {{ e.state }} }</span>
+            </div>
+            <button nxIconButton="tertiary small" type="button" (click)="removeManual($index)" aria-label="Remove">
+              <nx-icon name="trash"></nx-icon>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+</div>
+
+<!-- ─── Footer ──────────────────────────────────────────────────────── -->
+<ng-container *ngIf="state$ | async as vm">
+  <footer class="cwb-footer">
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!hasAnySelection()"
+            (click)="onConfirm(vm.results)">
+      Add selected
+      @if (addCount() > 0) { ({{ addCount() }}) }
+    </button>
+  </footer>
+</ng-container>

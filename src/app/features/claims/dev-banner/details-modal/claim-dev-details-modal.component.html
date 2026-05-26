@@ -86,15 +86,22 @@
            [innerHTML]="ac.id + ' — ' + (ac.plainStatement ?? ac.statement) | inlineMarkdown">
         </p>
 
-        @if (preconditions().tested.length > 0) {
+        @if (preconditions().setup.length > 0) {
           <div class="cddm-detail-section">
-            <p class="cddm-detail-label">What you'll see on this page</p>
+            <p class="cddm-detail-label">Test isolation setup</p>
             <ul class="cddm-detail-list">
-              @for (pre of preconditions().tested; track $index) {
+              @for (pre of preconditions().setup; track $index) {
                 <li>
                   <span>{{ pre.text }}</span>
                   @if (pre.hint) {
                     <small class="cddm-precon-hint">{{ pre.hint }}</small>
+                  }
+                  @if (pre.page !== 'any' && shouldShowLink(pre)) {
+                    <button type="button"
+                            class="cddm-precon-link"
+                            (click)="onGoTo(pre)">
+                      Verify on {{ pre.page }} ↗
+                    </button>
                   }
                 </li>
               }
@@ -102,38 +109,8 @@
           </div>
         }
 
-        @if (preconditions().setup.length > 0) {
-          <div class="cddm-detail-section">
-            <button class="cddm-collapse-header"
-                    type="button"
-                    (click)="toggleSetup()">
-              <span>Setup ensuring test isolation</span>
-              <span>{{ setupExpanded() ? '▲' : '▼' }} ({{ preconditions().setup.length }})</span>
-            </button>
-            @if (setupExpanded()) {
-              <ul class="cddm-detail-list">
-                @for (pre of preconditions().setup; track $index) {
-                  <li>
-                    <span>{{ pre.text }}</span>
-                    @if (pre.hint) {
-                      <small class="cddm-precon-hint">{{ pre.hint }}</small>
-                    }
-                    @if (pre.page !== 'any' && shouldShowLink(pre)) {
-                      <button type="button"
-                              class="cddm-precon-link"
-                              (click)="onGoTo(pre)">
-                        Verify on {{ pre.page }} ↗
-                      </button>
-                    }
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-        }
-
         <div class="cddm-detail-section">
-          <p class="cddm-detail-label">What you'll see</p>
+          <p class="cddm-detail-label">Expected behavior</p>
           <ul class="cddm-detail-list">
             @for (cue of ac.expectedUI.visualCues; track cue) {
               <li>{{ cue }}</li>

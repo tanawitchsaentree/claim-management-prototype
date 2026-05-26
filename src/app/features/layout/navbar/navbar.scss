@@ -1,5 +1,15 @@
-// Breakpoint: iPad mini portrait = 768px
-$mobile-bp: 768px;
+// Breakpoint: covers all iPads in portrait (iPad mini 744 → iPad Pro 12.9" 1024).
+// iPad Pro 12.9 landscape (1366) and laptops stay on desktop nav.
+$mobile-bp: 1024px;
+
+.nav-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
 
 .nav-hamburger { display: none; }
 

@@ -1,0 +1,86 @@
+<div class="plm-header">
+  <div class="plm-header-row">
+    <h2 class="plm-title">Find location in policy</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="plm-subtitle">
+    Policy <strong>{{ data.policyNumber }}</strong> · select one or more covered locations.
+  </p>
+</div>
+
+<div class="plm-body">
+
+  <form [formGroup]="searchForm" class="plm-form" (ngSubmit)="onSearch()">
+    <div class="plm-search-row__inputs">
+      <nx-formfield label="Location name">
+        <input nxInput formControlName="name" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Property ID">
+        <input nxInput formControlName="id" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="City">
+        <input nxInput formControlName="city" autocomplete="off" />
+      </nx-formfield>
+    </div>
+    <div class="plm-search-row__actions">
+      <button nxButton="primary small" type="submit">Search</button>
+      <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
+    </div>
+  </form>
+
+  <section class="plm-section">
+    <header class="plm-section__header">
+      <h3 class="plm-section__title">Results</h3>
+      <span class="plm-section__meta">
+        {{ filtered().length }} location{{ filtered().length === 1 ? '' : 's' }}
+        @if (selectedIds().size > 0) { · {{ selectedIds().size }} selected }
+      </span>
+    </header>
+
+    @if (filtered().length === 0) {
+      <p class="plm-empty">No locations match your search.</p>
+    } @else {
+      <div class="plm-list" role="list">
+        @for (loc of filtered(); track loc.id) {
+          <div class="plm-item" role="listitem"
+               [class.plm-item--selected]="isSelected(loc.id)"
+               (click)="toggleRow(loc.id, !isSelected(loc.id))">
+            <nx-checkbox
+              [checked]="isSelected(loc.id)"
+              (checkedChange)="toggleRow(loc.id, $event)"
+              (click)="$event.stopPropagation()"
+              aria-label="Select location">
+            </nx-checkbox>
+            <div class="plm-item__body">
+              <span class="plm-item__name">{{ loc.name }}</span>
+              <span class="plm-item__addr">{{ loc.addressLine1 }}, {{ loc.postalCode }} {{ loc.city }}, {{ loc.country }}</span>
+              <span class="plm-item__meta">
+                {{ loc.type }}
+                @if (loc.propertyId) { &bull; {{ loc.propertyId }} }
+                @if (!loc.active) { <span class="plm-inactive">Inactive</span> }
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>
+
+<footer class="plm-footer">
+  <button nxPlainButton type="button" class="plm-fallback-link" (click)="onAddManually()">
+    <nx-icon name="plus" nxIconPositionStart></nx-icon>
+    Can't find it? Add manually
+  </button>
+  <div class="plm-footer__actions">
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!hasSelection()"
+            (click)="onConfirm()">
+      Add selected
+      @if (selectedIds().size > 0) { ({{ selectedIds().size }}) }
+    </button>
+  </div>
+</footer>

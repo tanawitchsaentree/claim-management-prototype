@@ -1,0 +1,131 @@
+@use '../../styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.bsm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bsm-title { @include modal.title; }
+
+.bsm-body { @include modal.body; }
+
+.bsm-tabs {
+  margin-bottom: 16px;
+}
+
+.bsm-form { display: flex; flex-direction: column; }
+
+.bsm-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  margin-top: 16px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.bsm-table-toolbar__count {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+// Two-pane search row pattern matching step-1-search:
+//   left  → 80% — input grid (3 cols × 3 rows)
+//   right → 20% — primary Search button + Reset link, vertically centered
+.bsm-search-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.bsm-search-row__inputs {
+  flex: 0 0 80%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+
+  > * { min-width: 0; }
+}
+
+.bsm-search-row__spacer { display: block; }
+
+.bsm-search-row__actions {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding-top: 22px;            // align with formfield input baseline
+  white-space: nowrap;
+
+  > button { flex: 0 0 auto; }
+}
+
+.bsm-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+}
+
+.bsm-empty {
+  padding: 12px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.bsm-table { width: 100%; }
+.bsm-col-pick { width: 56px; }
+.bsm-row--selected { background: var(--claim-overlay-hover); cursor: pointer; }
+.bsm-row--selected td:first-child { background: transparent; }
+
+.bsm-id {
+  font-family: monospace;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.bsm-status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.bsm-status--cleared {
+  background: var(--claim-status-bound-bg);
+  color: var(--claim-status-bound-color);
+}
+.bsm-status--not-cleared {
+  background: var(--claim-status-declined-bg);
+  color: var(--claim-status-declined-color);
+}
+.bsm-status--pending {
+  background: var(--claim-status-open-bg);
+  color: var(--claim-status-open-color);
+}
+
+.bsm-table-footer {
+  margin-top: 8px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.bsm-page-size strong {
+  color: var(--interactive-primary);
+  cursor: pointer;
+}
+
+.bsm-footer { @include modal.footer; }

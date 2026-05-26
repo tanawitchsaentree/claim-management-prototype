@@ -66,9 +66,6 @@ export class ClaimDevDetailsModalComponent implements OnInit {
     };
   });
 
-  readonly setupExpanded = signal(false);
-  toggleSetup(): void { this.setupExpanded.update(v => !v); }
-
   readonly stateInspector = computed(() => {
     const state   = this.stateSvc.state();
     const claimId = this.ticket.targetClaim;
@@ -119,7 +116,8 @@ export class ClaimDevDetailsModalComponent implements OnInit {
     await this.data.helper.applyAC(ac.id);
     this.data.helper.setMinimized(ac.id);
     this.modalRef.close();
-    this.router.navigateByUrl(this.data.helper.pageRoute(pre.page, claimId));
+    await this.router.navigateByUrl(this.data.helper.pageRoute(pre.page, claimId));
+    await this.data.helper.runPostLandFor(ac.id);
   }
 
   onMinimize(): void {
@@ -136,11 +134,16 @@ export class ClaimDevDetailsModalComponent implements OnInit {
 
   async onApply(): Promise<void> {
     const ac = this.selectedAc();
+    console.log('[onApply] start', ac?.id, ac?.buildStatus);
     if (!ac || ac.buildStatus !== 'done') return;
     await this.data.helper.applyAC(ac.id);
+    console.log('[onApply] applyAC done; navigating to', ac.howToTest.route);
     this.data.helper.clearMinimized();
     this.modalRef.close();
-    this.router.navigateByUrl(ac.howToTest.route);
+    const ok = await this.router.navigateByUrl(ac.howToTest.route);
+    console.log('[onApply] navigate result:', ok);
+    await this.data.helper.runPostLandFor(ac.id);
+    console.log('[onApply] postLand done');
   }
 
   async onCheck(): Promise<void> {

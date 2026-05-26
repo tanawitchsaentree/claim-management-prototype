@@ -96,7 +96,11 @@
         @if (retentionType === 'custom') {
           <div class="ccm-datefield">
             <nx-formfield label="Retention date">
-              <input nxInput nxDatefield formControlName="retentionDate" [min]="minRetentionDate()" />
+              <input nxDatefield nxInput formControlName="retentionDate"
+                     [datepicker]="retentionPicker" [min]="minRetentionDate()" />
+              <nx-datepicker-toggle nxFormfieldSuffix [for]="retentionPicker"></nx-datepicker-toggle>
+              <nx-datepicker #retentionPicker></nx-datepicker>
+              <nx-hint nxFormfieldHint>Must extend beyond the default 10-year period.</nx-hint>
               <nx-error nxFormfieldError>A retention date is required for custom retention.</nx-error>
             </nx-formfield>
           </div>

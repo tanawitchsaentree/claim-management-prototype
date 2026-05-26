@@ -1,0 +1,59 @@
+<div class="aplp-header">
+  <h2 class="aplp-title">{{ title }}</h2>
+  <div class="aplp-header__actions">
+    <button nxButton="primary small" type="button" disabled>Add new {{ data.kind === 'opposing-lawyer' ? 'lawyer' : data.kind }}</button>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+</div>
+
+<div class="aplp-body">
+  <table nxTable class="aplp-table">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell class="aplp-col-check"></th>
+        <th nxHeaderCell sortable>Name</th>
+        <th nxHeaderCell sortable>Role</th>
+        <th nxHeaderCell sortable>NC clearing status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (visibleRows().length === 0) {
+        <tr nxTableRow>
+          <td nxCell colspan="4" class="aplp-empty">No matching parties.</td>
+        </tr>
+      }
+      @for (p of visibleRows(); track p.partyId) {
+        <tr nxTableRow [class.aplp-row--selected]="isSelected(p.partyId)">
+          <td nxCell class="aplp-col-check">
+            <nx-checkbox [checked]="isSelected(p.partyId)" (checkedChange)="select(p.partyId)" aria-label="Select party"></nx-checkbox>
+          </td>
+          <td nxCell>{{ p.legalName }}</td>
+          <td nxCell>{{ rolesDisplay(p) }}</td>
+          <td nxCell>
+            <app-status-chip [status]="clearanceChip(p.clearanceStatus)" domain="claim" [label]="clearanceLabels[p.clearanceStatus]"></app-status-chip>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (rows().length > pageSize) {
+    <nx-pagination
+      class="aplp-pagination"
+      [page]="page()"
+      [count]="rows().length"
+      [perPage]="pageSize"
+      ariaLabel="Party search pagination"
+      (goPage)="goToPage($event)"
+      (goPrev)="goToPage(page() - 1)"
+      (goNext)="goToPage(page() + 1)">
+    </nx-pagination>
+  }
+</div>
+
+<div class="aplp-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="!selectedId()" (click)="onAdd()">Add</button>
+</div>

@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -32,7 +32,7 @@ const EMPTY_VM: DashboardVM = {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, StatusChipComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, StatusChipComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -41,6 +41,24 @@ export class Dashboard {
   private claimSvc    = inject(MockClaimService);
   private approvalSvc = inject(MockApprovalService);
   private router      = inject(Router);
+
+  // ── Responsive header state (≤1024px) ────────────────────────────────
+  readonly mobileMenuOpen = signal(false);
+  readonly mobileSearchOpen = signal(false);
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update(v => !v);
+    if (this.mobileMenuOpen()) this.mobileSearchOpen.set(false);
+  }
+
+  toggleMobileSearch(): void {
+    this.mobileSearchOpen.update(v => !v);
+    if (this.mobileSearchOpen()) this.mobileMenuOpen.set(false);
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+  }
 
   readonly vm$: Observable<DashboardVM> = combineLatest([
     this.taskSvc.getAll(),

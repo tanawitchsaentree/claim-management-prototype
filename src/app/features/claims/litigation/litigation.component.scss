@@ -1,0 +1,102 @@
+// Layout: list (default = full width) ↔ list-compact + detail (squeezed).
+// Pattern source: step-reserves.component.scss .step-page--squeezed (BLESSED reserves).
+
+:host {
+  display: block;
+  padding: var(--page-content-top) var(--layout-inset-base) var(--layout-inset-base);
+  background: var(--ui-01);
+  min-height: 100%;
+}
+
+.lit-page {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--layout-inset-base);
+  width: 100%;
+  max-width: 1200px;
+
+  &--squeezed {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+.lit-list {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// Compact list = fits No. + Status + Action only (480px is the reserves blessed
+// width that keeps three columns readable while leaving room for the detail).
+.lit-list--compact {
+  flex: 0 0 480px;
+  width: 480px;
+  overflow-x: hidden;
+}
+
+.lit-list__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.lit-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lit-empty {
+  margin: 0;
+  padding: 24px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.lit-table {
+  width: 100%;
+
+  &__action { width: 64px; text-align: right; }
+}
+
+.lit-row--active { background: var(--ui-02); }
+
+.lit-id-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--interactive-text);
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover { color: var(--interactive-text-hover); }
+}
+
+// Kebab — same CSS-drawn dots used in mass-events
+.lit-kebab__dots {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+// Detail pane
+.lit-detail {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: block;
+}

@@ -1,0 +1,29 @@
+.toast-stack {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: 380px;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 280px;
+  box-shadow: 0 4px 16px var(--claim-overlay-shadow);
+  border-radius: 4px;
+  background: var(--ui-01);
+
+  // NxMessage already paints its own bg + border. The shadow on the wrapper
+  // gives the toast its lifted feel. Keep .toast as a thin positioning shell.
+  ::ng-deep .nx-message { margin: 0; }
+}
+
+.toast__desc {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+}

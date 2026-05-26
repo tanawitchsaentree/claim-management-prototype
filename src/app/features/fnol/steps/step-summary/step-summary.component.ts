@@ -13,6 +13,7 @@ import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
+import { MockSkeletonClaimService } from '../../../../core/mock/services/mock-skeleton-claim.service';
 import { EntitiesDamagesData } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
 import { LookupOption } from '../../../../core/models/lookup.model';
@@ -65,6 +66,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly reservesSvc  = inject(MockReservesService);
   private readonly partiesSvc   = inject(MockPartiesService);
   private readonly lookupSvc    = inject(MockLookupService);
+  private readonly skeletonSvc  = inject(MockSkeletonClaimService);
   private readonly router       = inject(Router);
 
   readonly vm$ = new BehaviorSubject<SummaryViewModel | null>(null);
@@ -108,6 +110,22 @@ export class StepSummaryComponent implements OnInit {
       summary:  this.vm$.value,
     };
     console.log('[Summary] Submitting claim state:', state);
+
+    // BMPCC-11006: if this submission converts a skeleton, link it to the
+    // newly-created regular claim so the skeleton transitions to 'matched'.
+    const skeletonId = this.fnolState.skeletonClaimId;
+    const policyNumber = this.fnolState.selectedPolicy?.policyNumber;
+    if (skeletonId && this.fnolState.path === 'standard' && policyNumber) {
+      const newClaimId = this.mockClaimIds[0];
+      try {
+        await firstValueFrom(
+          this.skeletonSvc.matchToPolicy(skeletonId, policyNumber, 'Current User', newClaimId),
+        );
+      } catch (err) {
+        console.error('[Summary] matchToPolicy failed:', err);
+      }
+    }
+
     this.fnolState.markStepComplete('summary');
     this.submitted = true;
   }

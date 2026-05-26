@@ -1,0 +1,42 @@
+[
+  {
+    "claimId": "123456.1",
+    "riskScore": 4,
+    "investigationStatus": "Not started",
+    "riskStatus": "Potential risk",
+    "aiReasoning": "The risk score of 4/5 is appropriate given the combination of suspicious timing, urgency pressure, and documentation gaps observed in this marine claim. The missing reinsurance certificate, delayed fund transfer confirmation and repeated follow-ups by Allianz Mexico highlight procedural irregularities that align with marine-specific fraud indicators such as documentation gaps and timing patterns.",
+    "keyRiskFactors": [
+      "Suspicious timing of claim filing and fund transfer delays",
+      "Missing reinsurance certificate despite multiple requests",
+      "Urgency pressure tactics noted in communication",
+      "Incomplete claim documentation flagged",
+      "Prior claim history indicating potential pattern concerns"
+    ]
+  },
+  {
+    "claimId": "CL-2024-002",
+    "riskScore": 2,
+    "investigationStatus": "Not started",
+    "riskStatus": "Low risk",
+    "aiReasoning": "Risk indicators are limited. Claim is well-documented, third-party reports align with insured's account, and there are no anomalies in timing or communication patterns.",
+    "keyRiskFactors": [
+      "Documentation complete and verifiable",
+      "Witness statements consistent",
+      "No prior claim history concerns"
+    ]
+  },
+  {
+    "claimId": "CL-2024-003",
+    "riskScore": 3,
+    "investigationStatus": "In progress",
+    "riskStatus": "Potential risk",
+    "aiReasoning": "Mixed signals: documentation is complete but timing of the loss event sits within an unusual window relative to the policy effective date. Manual review recommended.",
+    "keyRiskFactors": [
+      "Loss event close to policy inception",
+      "Broker submitted claim outside normal hours",
+      "Estimated value at upper bound of policy limit"
+    ],
+    "assignee": "James Carter",
+    "deadline": "2026-06-15"
+  }
+]

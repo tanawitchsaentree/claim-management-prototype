@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ME-2025.102", "code": "Y66JGR02", "name": "US-CA Earthquake 2025",
+    "type": "Earthquake", "dateStart": "2025-05-13", "dateEnd": "2025-05-18",
+    "country": "United States", "region": "North Coast", "lossCause": "Earthquake"
+  },
+  {
+    "id": "ME-2025.101", "code": "X23BFR01", "name": "US-FL Storm 2025",
+    "type": "Storm", "dateStart": "2025-05-10", "dateEnd": "2025-05-18",
+    "country": "United States", "region": "South East", "lossCause": "Natural Event"
+  },
+  {
+    "id": "ME-2025.100", "code": "X76BFR09", "name": "Normandy Flood 2025",
+    "type": "Flood", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "France", "region": "Normandy", "lossCause": "Flood"
+  },
+  {
+    "id": "ME-2025.99", "code": "Y98JGR08", "name": "Australia Bushfire 2025",
+    "type": "Wildfire", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "Australia", "region": "Saxony", "lossCause": "Fire"
+  },
+  {
+    "id": "ME-2025.98", "code": "Y25JPL03", "name": "US-CA Bushfire 2025",
+    "type": "Wildfire", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "United States", "region": "North Coast", "lossCause": "Fire"
+  },
+  {
+    "id": "ME-2025.97", "code": "Y25JPL05", "name": "Poland Flood 2025",
+    "type": "Flood", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "Poland", "region": "Silesia", "lossCause": "Flood"
+  },
+  {
+    "id": "ME-2025.96", "code": "Z25ISP01", "name": "Czech Republic Flood 2025",
+    "type": "Flood", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "Czech Republic", "region": "Pardubice", "lossCause": "Flood"
+  },
+  {
+    "id": "ME-2025.95", "code": "Z15ISP04", "name": "US-ND Snowstorm 2025",
+    "type": "Storm", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "United States", "region": "Missouri Plateau", "lossCause": "Natural Event"
+  },
+  {
+    "id": "ME-2025.94", "code": "Z25PIT01", "name": "Canada Snowstorm 2025",
+    "type": "Storm", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "Canada", "region": "Alberta", "lossCause": "Natural Event"
+  },
+  {
+    "id": "ME-2025.93", "code": "Z35PIT03", "name": "Colombia Landslide 2025",
+    "type": "Landslide", "dateStart": "2025-05-08", "dateEnd": "2025-05-18",
+    "country": "Colombia", "region": "Antioquia", "lossCause": "Natural Event"
+  }
+]

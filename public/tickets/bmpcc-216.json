@@ -1,0 +1,619 @@
+{
+  "ticketId": "BMPCC-216",
+  "module": "FNOL",
+  "title": "Duplicate Claim Check",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "fnol-loss-info"
+  ],
+  "walkthroughSteps": [
+    "Apply an AC — banner injects matching claims and seeds FNOL policy state",
+    "Land on /fnol/loss-information already past the search step",
+    "Enter Date of occurrence DD-MM-YYYY (01-06-2024) and pick Cause of loss 'Fire'",
+    "Wait ~1s (debounce) — duplicate-check warning banner appears",
+    "Open a duplicate link in a new tab to confirm deep-link",
+    "If 4+ duplicates exist, click 'Show all' to confirm the modal lists them all"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Duplicate banner appears when policy + DoL + cause match an existing claim",
+      "plainStatement": "On `/fnol/loss-information`, entering **DoL** and **cause of loss** for a policy that already has a matching claim shows a *warning banner* listing the existing claim.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Inject CLM-DUP-001 matching POL-2024-001 + 2024-06-01 + cause 'fire'; seed FNOL policy",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "page": "fnol-loss-info",
+            "role": "setup",
+            "hint": "Banner pre-selects the policy so the user lands on loss-information"
+          },
+          {
+            "text": "Existing claim CLM-DUP-001 has the same policy + lossDate + cause",
+            "page": "any",
+            "role": "metadata",
+            "hint": "Injected via claimsAppend"
+          },
+          {
+            "text": "After filling DoL=01-06-2024 and Cause=Fire, the warning banner appears",
+            "page": "fnol-loss-info",
+            "role": "tested-visible",
+            "hint": "Wait ~1s after entering values for the debounced check to fire"
+          }
+        ],
+        "stateOverrides": {
+          "claimsAppend": [
+            {
+              "claimId": "CLM-DUP-001",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Leonie Fischer",
+              "createdBy": "Lukas Schneider",
+              "dateCreated": "2024-06-02",
+              "dateUpdated": "2024-06-02",
+              "lossDate": "2024-06-01",
+              "lossAmount": 25000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim — fire damage at warehouse.",
+              "status": "Open",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
+              "lossEventId": "LE-DUP-001",
+              "causeOfLoss": [
+                "fire"
+              ]
+            }
+          ],
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "After entering DoL and cause, the warning banner shows 1 duplicate with link",
+        "visualCues": [
+          "Warning banner (nx-message context='warning') visible",
+          "Banner copy: '1 existing claim was found with the same policy, date, and cause of loss'",
+          "Banner lists CLM-DUP-001 with date 01-06-2024, client 'Liver Tea Group', status 'Open'",
+          "Claim ID is a clickable link"
+        ]
+      },
+      "expectedOutcome": {
+        "claimExists": "CLM-DUP-001",
+        "duplicateClaimsCount": {
+          "policyNumber": "POL-2024-001",
+          "lossDate": "2024-06-01",
+          "expected": 1
+        }
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Fill 'Date of occurrence' = 01-06-2024 and Cause of loss = 'Fire'",
+        "expectedResult": "After ~1s debounce, warning banner shows CLM-DUP-001"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Duplicate check fires automatically on cause + date change (debounced)",
+      "plainStatement": "The duplicate check *fires automatically* when **cause of loss** or **date of occurrence** changes, with a `1s debounce`. **NOTE [accepted-deviation]:** literal AC-02 said *date-only* trigger; implementation uses *cause+date* per DESIGN DECISION FNOL-DUP-4 (cause-aware narrowing avoids false positives). Treated as `done` — pending product sign-off.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01 — single duplicate seeded",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Loading indicator briefly appears while the debounced check is in flight",
+            "page": "fnol-loss-info",
+            "role": "tested-visible",
+            "hint": "'Checking for duplicate claims…' with spinner"
+          },
+          {
+            "text": "Banner appears within ~2s of last keystroke",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "claimsAppend": [
+            {
+              "claimId": "CLM-DUP-001",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Leonie Fischer",
+              "createdBy": "Lukas Schneider",
+              "dateCreated": "2024-06-02",
+              "dateUpdated": "2024-06-02",
+              "lossDate": "2024-06-01",
+              "lossAmount": 25000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim.",
+              "status": "Open",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
+              "lossEventId": "LE-DUP-001",
+              "causeOfLoss": [
+                "fire"
+              ]
+            }
+          ],
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Loading indicator appears, then banner — no manual submit required",
+        "visualCues": [
+          "While typing/changing fields, no banner is shown",
+          "After ~1s debounce, 'Checking for duplicate claims…' appears briefly",
+          "Banner replaces loading indicator with the duplicate result"
+        ]
+      },
+      "expectedOutcome": {
+        "claimExists": "CLM-DUP-001"
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Type DoL '01-06-2024'; pause typing; change cause of loss",
+        "expectedResult": "Loading indicator → warning banner. Each cause/date change re-fires after debounce."
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Each duplicate row shows claim ID, loss date, client name, status",
+      "plainStatement": "Each row in the duplicate list shows the **claim ID** (link), **loss date**, **client name**, and **status**. **NOTE [accepted-deviation]:** literal AC-03 also called for separate `claimNumber` and policy number columns; current preview row shows only the four fields above (`step-loss-information.component.html:42–43`). Treated as `done` — pending product sign-off on whether to add the extra columns.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Single duplicate so all four fields are visible",
+        "preconditions": [
+          {
+            "text": "Banner row shows 'CLM-DUP-001 • 01-06-2024 • Liver Tea Group • Open'",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          },
+          {
+            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          }
+        ],
+        "stateOverrides": {
+          "claimsAppend": [
+            {
+              "claimId": "CLM-DUP-001",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Leonie Fischer",
+              "createdBy": "Lukas Schneider",
+              "dateCreated": "2024-06-02",
+              "dateUpdated": "2024-06-02",
+              "lossDate": "2024-06-01",
+              "lossAmount": 25000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim.",
+              "status": "Open",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
+              "lossEventId": "LE-DUP-001",
+              "causeOfLoss": [
+                "fire"
+              ]
+            }
+          ],
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Each row contains 4 fields separated by bullets",
+        "visualCues": [
+          "Claim ID rendered as anchor",
+          "Loss date in DD-MM-YYYY format",
+          "Client name in plain text",
+          "Status in plain text (e.g. Open)"
+        ]
+      },
+      "expectedOutcome": {
+        "claimExists": "CLM-DUP-001"
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Fill DoL + cause to surface the banner",
+        "expectedResult": "Row shows all 4 fields"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Clicking a duplicate claim link opens it in a new tab",
+      "plainStatement": "The duplicate claim ID is a *deep-link* — clicking opens **/claims/:id** in a `new tab` (`target='_blank'` with `rel='noopener'`).",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Single duplicate to click",
+        "preconditions": [
+          {
+            "text": "Click CLM-DUP-001 in the banner — the existing claim opens in a new tab",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          },
+          {
+            "text": "FNOL state still intact when returning — banner still visible",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "claimsAppend": [
+            {
+              "claimId": "CLM-DUP-001",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Leonie Fischer",
+              "createdBy": "Lukas Schneider",
+              "dateCreated": "2024-06-02",
+              "dateUpdated": "2024-06-02",
+              "lossDate": "2024-06-01",
+              "lossAmount": 25000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim.",
+              "status": "Open",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
+              "lossEventId": "LE-DUP-001",
+              "causeOfLoss": [
+                "fire"
+              ]
+            }
+          ],
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Anchor uses target=_blank rel=noopener",
+        "visualCues": [
+          "Right-click → 'Open in new tab' equivalent works",
+          "Cmd/Ctrl-click opens new tab",
+          "FNOL wizard state preserved on return"
+        ]
+      },
+      "expectedOutcome": {
+        "claimExists": "CLM-DUP-001"
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Click a duplicate claim ID in the banner",
+        "expectedResult": "New tab opens at /claims/CLM-DUP-001/overview"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Banner is dismissible and the user can proceed",
+      "plainStatement": "The banner has a **close (×)** button — dismissing it lets the user *continue the FNOL flow* without resolving the duplicate. (Proceed is implicit via the wizard's Next/Continue button.)",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Single duplicate so banner appears and can be dismissed",
+        "preconditions": [
+          {
+            "text": "Click × on the banner — banner disappears",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          },
+          {
+            "text": "After dismiss, Next/Continue still works in the wizard footer",
+            "page": "fnol-loss-info",
+            "role": "tested-visible",
+            "hint": "Banner is advisory, not blocking"
+          }
+        ],
+        "stateOverrides": {
+          "claimsAppend": [
+            {
+              "claimId": "CLM-DUP-001",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Leonie Fischer",
+              "createdBy": "Lukas Schneider",
+              "dateCreated": "2024-06-02",
+              "dateUpdated": "2024-06-02",
+              "lossDate": "2024-06-01",
+              "lossAmount": 25000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim.",
+              "status": "Open",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
+              "lossEventId": "LE-DUP-001",
+              "causeOfLoss": [
+                "fire"
+              ]
+            }
+          ],
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.prefillDuplicate",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Banner closable; Next button continues the wizard",
+        "visualCues": [
+          "× icon visible top-right of banner",
+          "Click × → banner removed from DOM",
+          "Form remains valid for navigation if other required fields are filled"
+        ]
+      },
+      "expectedOutcome": {
+        "claimExists": "CLM-DUP-001"
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Surface banner; click ×; confirm Next button still navigates",
+        "expectedResult": "Banner dismissed; wizard proceeds normally"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "When more than 3 duplicates match, 'Show all' opens a modal listing them",
+      "plainStatement": "If **>3 duplicates** match, the banner shows the *first 3* and a `Show all N duplicates` button — clicking it opens a modal with a *sortable table* listing every duplicate.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Inject 4 matching duplicates so the 'Show all' button renders",
+        "preconditions": [
+          {
+            "text": "Banner shows 3 preview rows + 'Show all 4 duplicates' button",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Click 'Show all' — modal lists CLM-DUP-001 through CLM-DUP-004",
+            "page": "fnol-loss-info",
+            "role": "tested-visible",
+            "hint": "Modal table is sortable on each column header"
+          },
+          {
+            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          }
+        ],
+        "stateOverrides": {
+          "claimsAppend": [
+            {
+              "claimId": "CLM-DUP-001",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Leonie Fischer",
+              "createdBy": "Lukas Schneider",
+              "dateCreated": "2024-06-02",
+              "dateUpdated": "2024-06-02",
+              "lossDate": "2024-06-01",
+              "lossAmount": 25000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim 1.",
+              "status": "Open",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Munich"
+              },
+              "lossEventId": "LE-DUP-001",
+              "causeOfLoss": [
+                "fire"
+              ]
+            },
+            {
+              "claimId": "CLM-DUP-002",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Carsten Muster",
+              "createdBy": "Carsten Muster",
+              "dateCreated": "2024-06-03",
+              "dateUpdated": "2024-06-04",
+              "lossDate": "2024-06-01",
+              "lossAmount": 41000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim 2.",
+              "status": "In progress",
+              "priority": "high",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Hamburg"
+              },
+              "lossEventId": "LE-DUP-002",
+              "causeOfLoss": [
+                "fire"
+              ]
+            },
+            {
+              "claimId": "CLM-DUP-003",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": null,
+              "createdBy": "Mara Mustermann",
+              "dateCreated": "2024-06-05",
+              "dateUpdated": "2024-06-05",
+              "lossDate": "2024-06-01",
+              "lossAmount": 8500,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim 3.",
+              "status": "Open",
+              "priority": "low",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Berlin"
+              },
+              "lossEventId": "LE-DUP-003",
+              "causeOfLoss": [
+                "fire"
+              ]
+            },
+            {
+              "claimId": "CLM-DUP-004",
+              "policyNumber": "POL-2024-001",
+              "clientName": "Liver Tea Group",
+              "broker": "Anna Müller",
+              "assignee": "Clara Hoffmann",
+              "createdBy": "Clara Hoffmann",
+              "dateCreated": "2024-06-06",
+              "dateUpdated": "2024-06-06",
+              "lossDate": "2024-06-01",
+              "lossAmount": 12000,
+              "currency": "EUR",
+              "description": "Seeded duplicate-test claim 4.",
+              "status": "Priced",
+              "priority": "medium",
+              "lineOfBusiness": "Property",
+              "location": {
+                "country": "Germany",
+                "city": "Cologne"
+              },
+              "lossEventId": "LE-DUP-004",
+              "causeOfLoss": [
+                "fire"
+              ]
+            }
+          ],
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "fnol-loss-info.openShowAllDuplicates",
+            "date": "2024-06-01",
+            "causes": [
+              "fire"
+            ]
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Banner shows 3 preview rows + Show all button → modal with full list",
+        "visualCues": [
+          "Banner copy: '4 existing claims were found with the same policy, date, and cause of loss'",
+          "Preview list contains exactly 3 rows",
+          "'Show all 4 duplicates' button visible",
+          "Modal opens with sortable nxTable showing 4 rows"
+        ]
+      },
+      "expectedOutcome": {
+        "duplicateClaimsCount": {
+          "policyNumber": "POL-2024-001",
+          "lossDate": "2024-06-01",
+          "expected": 4
+        }
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Fill DoL=01-06-2024 + Cause=Fire; surface banner; click 'Show all 4 duplicates'",
+        "expectedResult": "Modal lists CLM-DUP-001…004 in a sortable table"
+      }
+    }
+  ]
+}

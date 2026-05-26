@@ -9,5 +9,8 @@
   { "policyNumber": "POL-2024-007", "clientName": "Nordic Shipping AS",           "lineOfBusiness": "Marine",       "effectiveDate": "2024-02-01", "expiryDate": "2025-02-01", "premium": 550000,  "currency": "USD", "status": "Active"    },
   { "policyNumber": "POL-2024-008", "clientName": "TechStart Pte Ltd",            "lineOfBusiness": "Cyber",        "effectiveDate": "2024-04-01", "expiryDate": "2025-04-01", "premium": 62000,   "currency": "SGD", "status": "Active"    },
   { "policyNumber": "POL-2024-009", "clientName": "Rhein Constructions GmbH",     "lineOfBusiness": "Engineering",  "effectiveDate": "2024-05-01", "expiryDate": "2025-05-01", "premium": 430000,  "currency": "EUR", "status": "Active"    },
-  { "policyNumber": "POL-2024-010", "clientName": "Pendragon Liability Corp",     "lineOfBusiness": "Liability",    "effectiveDate": "2024-08-01", "expiryDate": "2025-08-01", "premium": 90000,   "currency": "GBP", "status": "Pending"   }
+  { "policyNumber": "POL-2024-010", "clientName": "Pendragon Liability Corp",     "lineOfBusiness": "Liability",    "effectiveDate": "2024-08-01", "expiryDate": "2025-08-01", "premium": 90000,   "currency": "GBP", "status": "Pending"   },
+  { "policyNumber": "POL-2024-021", "clientName": "Jonas Kaufmann",               "lineOfBusiness": "Property",     "effectiveDate": "2024-01-15", "expiryDate": "2025-01-15", "premium": 88000,   "currency": "EUR", "status": "Active"    },
+  { "policyNumber": "POL-2024-022", "clientName": "Jonas Kaufmann",               "lineOfBusiness": "Liability",    "effectiveDate": "2024-02-01", "expiryDate": "2025-02-01", "premium": 42000,   "currency": "EUR", "status": "Active"    },
+  { "policyNumber": "POL-2024-023", "clientName": "Jonas Kaufmann",               "lineOfBusiness": "Engineering",  "effectiveDate": "2024-04-01", "expiryDate": "2025-04-01", "premium": 156000,  "currency": "EUR", "status": "Active"    }
 ]

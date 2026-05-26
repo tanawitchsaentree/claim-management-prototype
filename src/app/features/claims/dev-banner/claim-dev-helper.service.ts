@@ -7,10 +7,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockStateService, ScenarioOverrides } from '../../../core/mock/state/mock-state.service';
 import { DevToolStorageService } from '../../../core/storage/dev-tool-storage.service';
+import { FnolStateService } from '../../fnol/services/fnol-state.service';
+import { ScenarioStageService } from '../../../core/scenario/scenario-stage.service';
+import { PostLandHook } from '../../../core/scenario/scenario-stage.model';
+import { MockSkeletonClaimService } from '../../../core/mock/services/mock-skeleton-claim.service';
+import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
+import { LocationItem } from '../../../core/models';
+
+export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-skeleton' | 'fnol-summary' | 'any';
 
 export interface PreconditionItem {
   text:  string;
-  page:  'overview' | 'sections' | 'any';
+  page:  PreconditionPage;
   role:  'tested-visible' | 'setup' | 'metadata';
   hint?: string;
 }
@@ -27,12 +35,13 @@ export interface TicketAC {
   id:             string;
   statement:      string;
   plainStatement?: string;
-  page:           'overview' | 'sections' | 'any';
+  page:           PreconditionPage;
   buildStatus:    BuildStatus;
   setup: {
     description:    string;
     preconditions:  Array<string | PreconditionItem>;
     stateOverrides: ScenarioOverrides;
+    postLand?:      PostLandHook[];
   };
   expectedUI: {
     description: string;
@@ -65,7 +74,7 @@ export interface DevTicket {
   module:              string;
   title:               string;
   targetClaim:         string;
-  pages:               Array<'overview' | 'sections' | 'any'>;
+  pages:               PreconditionPage[];
   walkthroughSteps:    string[];
   acceptanceCriteria:  TicketAC[];
 }
@@ -95,13 +104,17 @@ interface TicketIndex {
 
 @Injectable({ providedIn: 'root' })
 export class ClaimDevHelperService {
-  private readonly stateSvc  = inject(MockStateService);
-  private readonly http      = inject(HttpClient);
-  private readonly dialogSvc = inject(NxDialogService);
-  private readonly router    = inject(Router);
-  private readonly storage   = inject(DevToolStorageService);
+  private readonly stateSvc    = inject(MockStateService);
+  private readonly fnolStateSvc = inject(FnolStateService);
+  private readonly skeletonSvc = inject(MockSkeletonClaimService);
+  private readonly policyLocationSvc = inject(MockPolicyLocationService);
+  private readonly stageSvc    = inject(ScenarioStageService);
+  private readonly http        = inject(HttpClient);
+  private readonly dialogSvc   = inject(NxDialogService);
+  private readonly router      = inject(Router);
+  private readonly storage     = inject(DevToolStorageService);
 
-  readonly enabled = isDevMode();
+  readonly enabled = true;
 
   private readonly url = toSignal(
     this.router.events.pipe(
@@ -112,11 +125,16 @@ export class ClaimDevHelperService {
     { initialValue: this.router.url },
   );
 
-  private readonly isClaimRoute = computed(() =>
-    /^\/claims\/[^/]+\/.+/.test(this.url()),
+  private readonly isFeatureRoute = computed(() =>
+    /^\/(claims\/[^/]+|fnol)\/.+/.test(this.url()),
   );
 
-  readonly shouldShowBanner = computed(() => this.isClaimRoute());
+  private readonly isFnolRoute = computed(() =>
+    /^\/fnol\//.test(this.url()),
+  );
+
+  readonly shouldShowBanner = computed(() => this.isFeatureRoute());
+  readonly shouldShowFnolHelper = computed(() => this.isFnolRoute());
 
   private readonly _tickets = signal<DevTicket[]>([]);
   readonly tickets = this._tickets.asReadonly();
@@ -203,15 +221,17 @@ export class ClaimDevHelperService {
   }
 
   private async loadAllTickets(): Promise<void> {
+    const base = document.baseURI;
+    const bust = `?t=${Date.now()}`;
     const index = await firstValueFrom(
-      this.http.get<TicketIndex>('/tickets/index.json').pipe(catchError(() => of(null))),
+      this.http.get<TicketIndex>(`${base}tickets/index.json${bust}`).pipe(catchError(() => of(null))),
     );
     if (!index) return;
 
     const loaded = await Promise.all(
       index.tickets.map(entry =>
         firstValueFrom(
-          this.http.get<DevTicket>(`/tickets/${entry.file}`).pipe(catchError(() => of(null))),
+          this.http.get<DevTicket>(`${base}tickets/${entry.file}${bust}`).pipe(catchError(() => of(null))),
         ),
       ),
     );
@@ -231,14 +251,90 @@ export class ClaimDevHelperService {
 
   async applyAC(acId: string): Promise<void> {
     if (!this.enabled) return;
-    const cards = this.availableCards();
-    for (const card of cards) {
-      const ac = card.ticket.acceptanceCriteria.find(a => a.id === acId);
+    // Search the currently-selected ticket first (so AC-02 in BMPCC-216 doesn't
+    // collide with AC-02 in CHAMP-CLOSURE-001). Fall back to scanning all
+    // tickets if no ticket is selected.
+    const selected = this.selectedTicket();
+    const orderedTickets: DevTicket[] = selected
+      ? [selected, ...this._tickets().filter(t => t.ticketId !== selected.ticketId)]
+      : this._tickets();
+    for (const ticket of orderedTickets) {
+      const ac = ticket.acceptanceCriteria.find(a => a.id === acId);
       if (ac) {
         await this.stateSvc.resetAsync();
         this.stateSvc.loadStatePreset(ac.setup.stateOverrides);
+        await this.applyFnolStateOverride(ac.setup.stateOverrides);
+        await new Promise(resolve => setTimeout(resolve, 0));
         this.activeAcId.set(acId);
         return;
+      }
+    }
+  }
+
+  async runPostLandFor(acId: string): Promise<void> {
+    if (!this.enabled) return;
+    const selected = this.selectedTicket();
+    const orderedTickets: DevTicket[] = selected
+      ? [selected, ...this._tickets().filter(t => t.ticketId !== selected.ticketId)]
+      : this._tickets();
+    for (const ticket of orderedTickets) {
+      const ac = ticket.acceptanceCriteria.find(a => a.id === acId);
+      if (ac) {
+        await this.stageSvc.run(ac.setup.postLand);
+        return;
+      }
+    }
+  }
+
+  private async applyFnolStateOverride(overrides: ScenarioOverrides): Promise<void> {
+    const seed = overrides.fnolStateOverride;
+    if (!seed) return;
+    this.fnolStateSvc.reset();
+    if (seed.selectedClient) this.fnolStateSvc.setSelectedClient(seed.selectedClient);
+    if (seed.selectedPolicy) this.fnolStateSvc.setSelectedPolicy(seed.selectedPolicy);
+    if (seed.path !== undefined) this.fnolStateSvc.path = seed.path;
+    if (seed.convertFromSkeletonId) {
+      const skeleton = await firstValueFrom(
+        this.skeletonSvc.getById(seed.convertFromSkeletonId).pipe(catchError(() => of(null))),
+      );
+      if (skeleton) {
+        const policyNumber = seed.convertSuggestedPolicyNumber;
+        // Resolve the real policy location so loss-info gets a backed
+        // PolicyLocation (no hardcoded Munich address). Only the first
+        // active location is used; user can edit/replace in the UI.
+        let location: LocationItem | undefined;
+        if (policyNumber) {
+          const locs = await firstValueFrom(
+            this.policyLocationSvc.getByPolicyNumber(policyNumber).pipe(catchError(() => of([]))),
+          );
+          const active = locs.find(l => l.active) ?? locs[0];
+          if (active) {
+            location = {
+              id:                active.id,
+              source:            'policy',
+              displayName:       active.name,
+              addressLine1:      active.addressLine1,
+              postalCode:        active.postalCode,
+              city:              active.city,
+              country:           active.country,
+              propertyId:        active.propertyId,
+              policyLocationRef: active.id,
+            };
+          }
+        }
+        this.fnolStateSvc.prefillFullFromSkeleton(skeleton, { policyNumber, location });
+        // Fire the dev-fill bridge that auto-runs Search and pre-selects the
+        // matching policy row. Delayed 250ms because Step1SearchComponent
+        // subscribes inside its ngOnInit — the Subject has to fire AFTER the
+        // router has placed the component in the tree.
+        if (policyNumber) {
+          setTimeout(() => {
+            this.fnolStateSvc.devSearchFill$.next({
+              policyNumber,
+              clientName: skeleton.clientName ?? '',
+            });
+          }, 250);
+        }
       }
     }
   }
@@ -248,7 +344,12 @@ export class ClaimDevHelperService {
   setMinimized(acId: string): void { this._minimizedAcId.set(acId); }
   clearMinimized(): void { this._minimizedAcId.set(null); }
 
-  pageRoute(page: 'overview' | 'sections', claimId: string): string {
+  pageRoute(page: PreconditionPage, claimId: string): string {
+    if (page === 'fnol-search')    return '/fnol/search';
+    if (page === 'fnol-loss-info') return '/fnol/loss-information';
+    if (page === 'fnol-skeleton')  return '/fnol/skeleton-create';
+    if (page === 'fnol-summary')   return '/fnol/summary';
+    if (page === 'any') return '';
     return `/claims/${claimId}/${page}`;
   }
 

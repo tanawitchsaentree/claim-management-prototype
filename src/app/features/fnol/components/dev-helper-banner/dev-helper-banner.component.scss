@@ -8,18 +8,24 @@
   border-bottom: 1px solid var(--dev-banner-border);
 }
 
-.dev-banner__badge {
+.dev-banner__scope {
   flex-shrink: 0;
   font-size: var(--paragraph-04-font-size);
-  font-weight: 700;
-  color: var(--dev-helper-badge-color);
-  letter-spacing: 0.06em;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding-right: 4px;
 }
 
 .dev-banner__label {
   font-size: var(--paragraph-03-font-size);
   font-weight: 500;
   color: var(--text-01);
+  white-space: nowrap;
+}
+
+.dev-banner__hint {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
   white-space: nowrap;
 }
 

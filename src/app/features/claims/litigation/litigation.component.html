@@ -1,0 +1,71 @@
+<div class="lit-page" [class.lit-page--squeezed]="isSqueezed()">
+  <!-- Left: list pane -->
+  <section class="lit-list" [class.lit-list--compact]="isSqueezed()">
+    <header class="lit-list__header">
+      <h1 class="lit-title">Litigation</h1>
+      <button nxButton="primary small" type="button" (click)="create()">
+        Create litigation
+      </button>
+    </header>
+
+    @if (loading()) {
+      <p class="lit-empty">Loading…</p>
+    } @else if (rows().length === 0) {
+      <p class="lit-empty">No litigations yet. Use “Create litigation” to start one.</p>
+    } @else {
+      <table nxTable class="lit-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell>Litigation no</th>
+            @if (!isSqueezed()) {
+              <th nxHeaderCell>Litigation type</th>
+              <th nxHeaderCell>Start date</th>
+            }
+            <th nxHeaderCell>Litigation status</th>
+            <th nxHeaderCell class="lit-table__action">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.id) {
+            <tr nxTableRow [class.lit-row--active]="selected()?.id === row.id">
+              <td nxCell>
+                <button class="lit-id-link" type="button" (click)="open(row)">{{ row.id }}</button>
+              </td>
+              @if (!isSqueezed()) {
+                <td nxCell>{{ row.type || '—' }}</td>
+                <td nxCell>{{ formatDate(row.startDate) }}</td>
+              }
+              <td nxCell>
+                <app-status-chip [status]="chipStatus(row.status)" domain="claim" [label]="row.status"></app-status-chip>
+              </td>
+              <td nxCell class="lit-table__action">
+                <button nxIconButton="tertiary small" type="button"
+                        [nxContextMenuTriggerFor]="rowMenu"
+                        class="lit-kebab"
+                        aria-label="Row actions">
+                  <span class="lit-kebab__dots" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                  </span>
+                </button>
+                <nx-context-menu #rowMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="open(row)">Open litigation</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <!-- Right: detail pane (squeeze mode) -->
+  @if (selected(); as sel) {
+    <aside class="lit-detail" @detailSlide>
+      <app-litigation-detail
+        [model]="sel"
+        (close)="closeDetail()"
+        (save)="onUpdate($event)">
+      </app-litigation-detail>
+    </aside>
+  }
+</div>

@@ -1,0 +1,192 @@
+:host {
+  display: block;
+  width: 384px;
+  height: 100%;
+  background: var(--ui-02);
+  border-left: 1px solid var(--ui-04);
+  overflow-y: auto;
+}
+
+.cnp {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+// ─── Header ─────────────────────────────────────────────────────────────────
+.cnp__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.cnp__filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  color: var(--text-01);
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+
+  nx-icon { color: var(--interactive-primary); }
+  &:hover { color: var(--interactive-primary); }
+}
+
+.cnp__filter-label { white-space: nowrap; }
+
+.cnp__header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+// ─── Empty / loading ────────────────────────────────────────────────────────
+.cnp__empty {
+  margin: 0;
+  padding: 16px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// ─── Block (PINNED / ACTIVITY) ─────────────────────────────────────────────
+// Spacing rhythm: 24px above eyebrow (separates from prior block),
+// 12px below eyebrow (lead into first note), 16px between notes.
+// First block has no top margin (header above already provides spacing).
+.cnp-block {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+
+  &:first-of-type { margin-top: 16px; }
+}
+
+.cnp-block__eyebrow {
+  margin-bottom: 12px;
+}
+
+// ─── Note card ──────────────────────────────────────────────────────────────
+// Layout: [avatar 32px] [main fills] [menu-btn anchored top-right].
+// Menu position is constant regardless of chip presence or wrapping.
+.cnp-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 16px;
+
+  &:last-child { padding-bottom: 0; }
+}
+
+// Force 32px avatar — NDBX nxAvatar size="small" sets width + height
+// + min-width all from --avatar-small-size, so all three must be overridden
+// or the avatar squashes vertically while keeping the wider min-width.
+.cnp-note__avatar {
+  flex-shrink: 0;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+}
+
+.cnp-note__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+// Two-line meta: row 1 = author + chip, row 2 = timestamp.
+.cnp-note__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cnp-note__head-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cnp-note__author {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  line-height: 1.3;
+}
+
+.cnp-note__pin-marker {
+  color: var(--interactive-primary);
+}
+
+.cnp-note__time {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.cnp-note__chip {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 12px;
+  background: var(--ui-04);
+  color: var(--text-01);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+// Menu button is the 3rd flex child of .cnp-note (after avatar + main),
+// pinned top-right of the row. flex-shrink: 0 keeps it from collapsing.
+.cnp-note__menu-btn {
+  flex-shrink: 0;
+  margin-top: -4px;     // optical alignment with author baseline
+}
+
+.cnp-note__body {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 400;
+  color: var(--text-01);
+  line-height: 1.5;
+  white-space: pre-wrap;
+
+  &--clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.cnp-note__more {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--interactive-primary);
+}
+
+// ─── Load more ─────────────────────────────────────────────────────────────
+.cnp__load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}

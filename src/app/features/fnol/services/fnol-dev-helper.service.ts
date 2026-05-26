@@ -24,7 +24,7 @@ export class FnolDevHelperService {
   private readonly locationSvc = inject(MockPolicyLocationService);
   private readonly entitiesSvc = inject(MockEntitiesDamagesService);
 
-  get isEnabled(): boolean { return isDevMode(); }
+  get isEnabled(): boolean { return true; }
 
   readonly currentPage$: Observable<DevPage> = this.router.events.pipe(
     filter((e): e is NavigationEnd => e instanceof NavigationEnd),
