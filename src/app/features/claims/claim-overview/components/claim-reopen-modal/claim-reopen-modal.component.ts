@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
+import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -30,6 +31,7 @@ export interface ClaimReopenModalResult {
     NxModalModule,
     NxFormfieldModule,
     NxInputModule,
+    NxDropdownModule,
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
@@ -44,10 +46,21 @@ export class ClaimReopenModalComponent {
   private readonly fb         = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
 
+  // Common reopening reasons — analytics-friendly enum so the activity log
+  // can group by reason instead of free-text. "Other" stays as the escape
+  // hatch; the optional note field captures specifics.
+  readonly reopenReasons: string[] = [
+    'New evidence received',
+    'Additional damage discovered',
+    'Settlement disputed by claimant',
+    'Recovery / subrogation opportunity',
+    'Court ruling / litigation outcome',
+    'Other',
+  ];
+
   readonly form = this.fb.group({
-    reason:        ['', [Validators.required, Validators.minLength(8)]],
-    reserveAmount: [0,  [Validators.required, Validators.min(1)]],
-    reserveType:   ['Initial reserve', Validators.required],
+    reason: [null as string | null, Validators.required],
+    note:   [''],
   });
 
   saving = false;
@@ -62,10 +75,11 @@ export class ClaimReopenModalComponent {
     this.saving = true;
     this.saveError = null;
     const v = this.form.value;
+    const reason = v.note?.trim() ? `${v.reason} — ${v.note!.trim()}` : v.reason!;
     const payload: ReopenPayload = {
-      reason:        v.reason!,
-      reserveAmount: v.reserveAmount ?? 0,
-      reserveType:   v.reserveType ?? 'Initial reserve',
+      reason,
+      reserveAmount: 0,
+      reserveType:   'Initial reserve',
       reopenedBy:    { userId: 'usr-current', name: this.claim.assignedHandler },
     };
     try {

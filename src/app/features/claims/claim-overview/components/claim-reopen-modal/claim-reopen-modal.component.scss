@@ -28,13 +28,4 @@
   nx-formfield { width: 100%; min-width: 0; }
 }
 
-.crm-form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  min-width: 0;
-
-  > * { min-width: 0; }
-}
-
 .crm-footer { @include modal.footer; }
