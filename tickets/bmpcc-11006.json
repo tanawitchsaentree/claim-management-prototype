@@ -1,0 +1,81 @@
+{
+  "ticketId": "BMPCC-11006",
+  "module": "FNOL",
+  "title": "Orphan Claim — Convert to Regular (one-click prefill, full walkthrough)",
+  "targetClaim": "CLM-2024-SKEL-001",
+  "pages": ["fnol-search"],
+  "walkthroughSteps": [
+    "Apply AC-01 — banner sets the active conversion to skeleton CLM-2024-SKEL-001 and prefills every wizard step",
+    "Land on /fnol/search — info banner reads 'Converting from CLM-2024-SKEL-001'; Client name + Policy number + Date of loss already filled",
+    "Click Search → matching policy POL-2024-021 (Jonas Kaufmann) shows in the table",
+    "Select POL-2024-021 → click 'Continue with policy'",
+    "Land on /fnol/loss-information — date / time / cause / damage / description / loss location ALREADY prefilled. Review, click Next.",
+    "Walk Entities & Damages → Parties → Reserves → Summary; nothing else is required",
+    "Click Confirm on Summary — the skeleton is matched to the new regular claim",
+    "Fallback: 'Cancel conversion' on the search banner clears all prefilled state and drops back to a blank /fnol/search"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "One Apply prefills every wizard step; user navigates through Search → Loss → … → Summary themselves",
+      "plainStatement": "Applying this AC stages a complete Convert-to-Regular demo:\n- Active skeleton: **CLM-2024-SKEL-001** (Jonas Kaufmann, Fire at Munich warehouse)\n- `/fnol/search` info banner: **'Converting from CLM-2024-SKEL-001'**\n- Search form prefilled: **Client name = Jonas Kaufmann**, **Policy number = POL-2024-021**, **Date of loss = 04-05-2024** — user just clicks Search\n- `/fnol/loss-information` prefilled: occurrence + notification dates / times, **Cause = Fire**, **Damage = Material damage**, description = 'Fire at Munich warehouse', loss location = 'Munich Warehouse, Industriestraße 12, 80807 Munich, Germany'\n- Downstream steps (Entities & Damages / Parties / Reserves / Summary) inherit the prefilled FNOL state and only need a Next click each\n- The user is never skipped past a step — they walk it themselves with prepared context\n- 'Cancel conversion' on the search banner clears state cleanly",
+      "page": "fnol-search",
+      "buildStatus": "done",
+      "setup": {
+        "description": "One-shot Convert demo: prefill every step, no skipping",
+        "preconditions": [
+          {
+            "text": "Search step shows 'Converting from CLM-2024-SKEL-001' info banner with a 'Cancel conversion' link",
+            "page": "fnol-search",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Search form is prefilled — Client name 'Jonas Kaufmann', Policy number 'POL-2024-021', Date of loss '04-05-2024'",
+            "page": "fnol-search",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking Search returns POL-2024-021 (Jonas Kaufmann, Property) — selectable to continue",
+            "page": "fnol-search",
+            "role": "tested-visible"
+          },
+          {
+            "text": "After Continue, /fnol/loss-information lands with date/time/cause/damage/description/loss location all prefilled — no validation errors block Next",
+            "page": "fnol-loss-info",
+            "role": "tested-visible",
+            "hint": "Reachable via the wizard footer; navigate to it after Continue"
+          },
+          {
+            "text": "Cancel conversion on the search banner clears prefilled state",
+            "page": "fnol-search",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "convertFromSkeletonId": "CLM-2024-SKEL-001",
+            "convertSuggestedPolicyNumber": "POL-2024-021"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "/fnol/search with banner + prefilled form; downstream steps prefilled too",
+        "visualCues": [
+          "nx-message context='info' banner: 'Converting from CLM-2024-SKEL-001'",
+          "Plain-button 'Cancel conversion' inside the banner",
+          "Client name input shows 'Jonas Kaufmann'",
+          "Policy number input shows 'POL-2024-021'",
+          "Date of loss shows 04-05-2024",
+          "On /fnol/loss-information after Continue: every required field already populated",
+          "Wizard 'Next' button enabled on every step without typing"
+        ]
+      },
+      "expectedOutcome": {},
+      "howToTest": {
+        "route": "/fnol/search",
+        "trigger": "Apply AC-01 → Search → select POL-2024-021 → Continue → walk wizard with Next",
+        "expectedResult": "Every step lands prefilled; user only navigates, never re-enters data"
+      }
+    }
+  ]
+}

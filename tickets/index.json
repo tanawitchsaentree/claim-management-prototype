@@ -25,6 +25,12 @@
       "title": "Orphan Claim — Notifier + Left-nav"
     },
     {
+      "id": "BMPCC-11006",
+      "file": "bmpcc-11006.json",
+      "module": "FNOL",
+      "title": "Orphan Claim — Convert to Regular (one-click prefill, full walkthrough)"
+    },
+    {
       "id": "BMPCC-11360",
       "file": "bmpcc-11360.json",
       "module": "Claims",
