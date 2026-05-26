@@ -7,8 +7,6 @@ import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/mod
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
-import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
-import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -47,8 +45,6 @@ const CLOSURE_REASONS: ClosureReason[] = [
     NxFormfieldModule,
     NxDropdownModule,
     NxRadioModule,
-    NxDatefieldModule,
-    NxInputModule,
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
@@ -73,7 +69,6 @@ export class ClaimClosureModalComponent implements OnInit {
   readonly form: FormGroup = this.fb.group({
     reason:        [null, Validators.required],
     retentionType: ['default', Validators.required],
-    retentionDate: [null],
   });
 
   readonly stepTitle = computed(() => {
@@ -97,14 +92,6 @@ export class ClaimClosureModalComponent implements OnInit {
     return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
   });
 
-  // Custom retention can only EXTEND beyond the default 10-year period
-  // (BMPCC-11360 AC7 — "extend beyond the default where required").
-  readonly minRetentionDate = computed(() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() + 10);
-    return d.toISOString().split('T')[0];
-  });
-
   get blockers() { return this.data.blockers.blockers; }
   get canClose()  { return this.data.blockers.canClose; }
   get claim()     { return this.data.claim; }
@@ -116,21 +103,6 @@ export class ClaimClosureModalComponent implements OnInit {
     if (this.canClose) {
       this.step.set(2);
     }
-  }
-
-  get retentionType(): string {
-    return this.form.get('retentionType')?.value ?? 'default';
-  }
-
-  onRetentionTypeChange(val: string): void {
-    const ctrl = this.form.get('retentionDate')!;
-    if (val === 'custom') {
-      ctrl.setValidators(Validators.required);
-    } else {
-      ctrl.clearValidators();
-      ctrl.setValue(null);
-    }
-    ctrl.updateValueAndValidity();
   }
 
   onCancel(): void {
@@ -152,13 +124,12 @@ export class ClaimClosureModalComponent implements OnInit {
     this.saving.set(true);
     this.saveError.set(null);
 
-    const { reason, retentionType, retentionDate } = this.form.value;
+    const { reason, retentionType } = this.form.value;
     try {
       const closedClaim = await firstValueFrom(
         this.closureSvc.closeClaim(this.claim.claimId, {
           reason,
           retentionType,
-          retentionDate: retentionType === 'custom' ? retentionDate : undefined,
           confirmedBy: { userId: 'usr-current', name: this.claim.assignedHandler },
         })
       );
@@ -197,7 +168,6 @@ export class ClaimClosureModalComponent implements OnInit {
   retentionTypeLabel(type: string): string {
     switch (type) {
       case 'default':    return `Default (10 years — until ${this.defaultRetentionDate()})`;
-      case 'custom':     return 'Custom date';
       case 'indefinite': return 'Indefinite';
       default: return type;
     }

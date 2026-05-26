@@ -55,56 +55,12 @@
 
   <!-- STEP 3 — Confirmation -->
   @if (step() === 3) {
-    <p class="ccm-intro">All checks passed. Review the closure settings below.</p>
-
-    <!-- Checklist -->
-    <ul class="ccm-checklist">
-      <li class="ccm-check-item">
-        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
-        No pending tasks
-      </li>
-      <li class="ccm-check-item">
-        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
-        No outstanding payments
-      </li>
-      <li class="ccm-check-item">
-        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
-        No open reserves
-      </li>
-      <li class="ccm-check-item">
-        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
-        No active recovery actions
-      </li>
-      <li class="ccm-check-item">
-        <nx-icon name="check" size="s" class="ccm-check-icon"></nx-icon>
-        No open litigation
-      </li>
-    </ul>
-
-    <div class="ccm-divider"></div>
-
-    <!-- Retention -->
     <p class="ccm-section-label">Document retention period</p>
     <form [formGroup]="form">
-      <nx-radio-group formControlName="retentionType" (groupValueChange)="onRetentionTypeChange($event.value)">
+      <nx-radio-group formControlName="retentionType">
         <nx-radio labelSize="small" value="default">
           {{ retentionTypeLabel('default') }}
         </nx-radio>
-        <nx-radio labelSize="small" value="custom">
-          Custom date
-        </nx-radio>
-        @if (retentionType === 'custom') {
-          <div class="ccm-datefield">
-            <nx-formfield label="Retention date">
-              <input nxDatefield nxInput formControlName="retentionDate"
-                     [datepicker]="retentionPicker" [min]="minRetentionDate()" />
-              <nx-datepicker-toggle nxFormfieldSuffix [for]="retentionPicker"></nx-datepicker-toggle>
-              <nx-datepicker #retentionPicker></nx-datepicker>
-              <nx-hint nxFormfieldHint>Must extend beyond the default 10-year period.</nx-hint>
-              <nx-error nxFormfieldError>A retention date is required for custom retention.</nx-error>
-            </nx-formfield>
-          </div>
-        }
         <nx-radio labelSize="small" value="indefinite">
           Indefinite
         </nx-radio>
