@@ -1,0 +1,71 @@
+.leo-id-label {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.leo-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 24px;
+  line-height: 1.2;
+}
+
+.leo-info { margin-bottom: 16px; }
+
+.leo-card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 24px;
+  background: var(--ui-01);
+}
+
+.leo-section-heading {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 16px;
+}
+
+.leo-claim-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leo-claim-row { display: block; }
+
+.leo-claim-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-01);
+
+  &:hover { background: var(--hover-secondary); }
+  &:focus-visible { outline: 2px solid var(--interactive-primary); outline-offset: 2px; }
+}
+
+.leo-claim-id {
+  font-weight: 600;
+  font-size: var(--paragraph-02-font-size);
+  flex: 0 0 auto;
+}
+
+.leo-claim-meta {
+  flex: 1;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.leo-claim-chev { color: var(--text-muted); flex: 0 0 auto; }

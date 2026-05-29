@@ -1,0 +1,26 @@
+<app-page-shell [breadcrumb]="breadcrumb" align="grid">
+  <p class="leo-id-label">Loss event</p>
+  <h1 class="leo-title">{{ lossEventId() }}</h1>
+
+  <nx-message context="info" class="leo-info">
+    This loss event produced multiple claims. Open any claim below to continue.
+  </nx-message>
+
+  <section class="leo-card">
+    <h2 class="leo-section-heading">Derived claims</h2>
+    <ul class="leo-claim-list">
+      @for (c of derivedClaims; track c.claimId) {
+        <li class="leo-claim-row">
+          <button class="leo-claim-link" type="button" (click)="openClaim(c.claimId)">
+            <span class="leo-claim-id">{{ c.claimId }}</span>
+            <span class="leo-claim-meta">
+              {{ c.damageTypes.join(', ') }} · {{ c.sectionCount }} section{{ c.sectionCount === 1 ? '' : 's' }}
+              · {{ c.currency }} {{ c.totalReserve | number:'1.0-0' }}
+            </span>
+            <nx-icon name="chevron-right" class="leo-claim-chev"></nx-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  </section>
+</app-page-shell>

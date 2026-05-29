@@ -81,19 +81,9 @@
           </dd>
         </div>
         <div class="ss-row">
-          <dt class="ss-label">No. of sections</dt>
-          <dd class="ss-value">{{ vm.sectionCount }}</dd>
+          <dt class="ss-label">No. of claims</dt>
+          <dd class="ss-value">{{ vm.claimGroups.length }}</dd>
         </div>
-        @if (vm.nonCoveredCases.length > 0) {
-          <div class="ss-row">
-            <dt class="ss-label">Non-covered cases</dt>
-            <dd class="ss-value">
-              @for (c of vm.nonCoveredCases; track c) {
-                <p class="ss-non-covered">{{ c }}</p>
-              }
-            </dd>
-          </div>
-        }
       </dl>
     </section>
 
@@ -113,6 +103,12 @@
                 @for (d of group.damageTypes; track d) {
                   <span class="ss-tag">{{ d }}</span>
                 }
+              </dd>
+            </div>
+            <div class="ss-row">
+              <dt class="ss-label">Earliest section date</dt>
+              <dd class="ss-value">
+                {{ group.earliestSectionDate }} at {{ group.earliestSectionTime }}
               </dd>
             </div>
             <div class="ss-row">
@@ -174,7 +170,12 @@
   } @else {
     <div class="step-footer">
       <span></span>
-      <button nxButton="secondary small" type="button" (click)="onClose()">Close</button>
+      <button nxButton="primary small" type="button"
+              [disabled]="startClaimDisabled"
+              [title]="startClaimTooltip"
+              (click)="onStartClaim()">
+        Start Claim
+      </button>
     </div>
   }
 

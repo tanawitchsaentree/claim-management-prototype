@@ -429,9 +429,12 @@
 .text-muted  { color: var(--text-muted); }
 
 .table-action-link {
+  background: none;
+  border: none;
+  padding: 0;
   color: var(--interactive-text);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   text-decoration: none;
   &:hover { text-decoration: underline; }

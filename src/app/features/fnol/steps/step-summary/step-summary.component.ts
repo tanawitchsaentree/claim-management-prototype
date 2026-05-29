@@ -25,6 +25,8 @@ export interface ClaimGroup {
   partyCount: number;
   totalReserve: number;
   currency: string;
+  earliestSectionDate: string;
+  earliestSectionTime: string;
 }
 
 export interface SummaryViewModel {
@@ -34,8 +36,6 @@ export interface SummaryViewModel {
   dateOfNotification: string;
   affectedPolicies: string[];
   damageTypes: string[];
-  sectionCount: number;
-  nonCoveredCases: string[];
   claimGroups: ClaimGroup[];
   narrative: ReserveNarrative | null;
   narrativeReasonLabel: string;
@@ -72,7 +72,10 @@ export class StepSummaryComponent implements OnInit {
   readonly vm$ = new BehaviorSubject<SummaryViewModel | null>(null);
   loadError  = false;
   submitted  = false;
-  mockClaimIds = ['CL-2025-001', 'CL-2025-002'];
+  private readonly allMockClaimIds = ['CL-2025-001', 'CL-2025-002', 'CL-2025-003'];
+  get mockClaimIds(): string[] {
+    return this.allMockClaimIds.slice(0, Math.max(1, this.claimGroupCount));
+  }
   accessRestricted = new FormControl(false);
 
   get policyNumber(): string { return this.fnolState.selectedPolicy?.policyNumber ?? ''; }
@@ -80,14 +83,9 @@ export class StepSummaryComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const isOrphan = this.fnolState.path === 'orphan';
 
-    if (isOrphan && this.fnolState.selectedClient) {
-      // skeleton path — valid
-    } else if (!isOrphan && this.fnolState.selectedPolicy) {
-      // standard path — valid
-    } else {
-      this.router.navigate(['/fnol/search']);
-      return;
-    }
+    const validSkeleton = isOrphan && this.fnolState.selectedClient;
+    const validStandard = !isOrphan && this.fnolState.selectedPolicy;
+    if (!validSkeleton && !validStandard) { this.router.navigate(['/fnol/search']); return; }
 
     try {
       const vm = await this.buildViewModel();
@@ -130,9 +128,25 @@ export class StepSummaryComponent implements OnInit {
     this.submitted = true;
   }
 
-  onClose(): void { this.router.navigate(['/claims/CL-2025-001/overview']); }
+  // Start Claim post-submit nav: 1 group → claim overview, >1 → loss-event overview, 0 → disabled.
+  get claimGroupCount(): number { return this.vm$.value?.claimGroups.length ?? 0; }
+  get startClaimDisabled(): boolean { return this.claimGroupCount === 0; }
+  get startClaimTooltip(): string {
+    if (this.claimGroupCount === 0) return 'No claim groups derived — review entities & damages.';
+    if (this.claimGroupCount > 1) return 'Multiple claims detected — opens the Loss Event Overview.';
+    return '';
+  }
 
-  // ── Private ───────────────────────────────────────────────────────────────────
+  onStartClaim(): void {
+    const count = this.claimGroupCount;
+    if (count === 0) return;
+    if (count === 1) {
+      this.router.navigate(['/claims', this.mockClaimIds[0], 'overview']);
+      return;
+    }
+    const lossEventId = `LE-${this.mockClaimIds[0]?.replace(/^CL-/, '') ?? '2025-001'}`;
+    this.router.navigate(['/loss-events', lossEventId, 'overview']);
+  }
 
   private async buildViewModel(): Promise<SummaryViewModel> {
     if (this.fnolState.path === 'orphan') {
@@ -144,8 +158,6 @@ export class StepSummaryComponent implements OnInit {
         dateOfNotification: '—',
         affectedPolicies: [],
         damageTypes: [],
-        sectionCount: 0,
-        nonCoveredCases: [],
         claimGroups: [],
         narrative: null,
         narrativeReasonLabel: '',
@@ -177,10 +189,11 @@ export class StepSummaryComponent implements OnInit {
 
     const damageTypeKeys = [...new Set(allEntities.map(e => e.damageTypeKey).filter(Boolean))];
     const damageTypes = damageTypeKeys.map(k => this.label(damageLookups, k));
-    const sectionCount = allEntities.length;
 
-    const nonCoveredCases = this.buildNonCoveredCases(entitiesData, damageLookups);
-    const claimGroups = this.buildClaimGroups(entitiesData, reservesData, parties.length, damageLookups);
+    const lossDateIso = dateOfLoss.get('dateOfOccurrence')?.value as string | null;
+    const claimGroups = this.buildClaimGroups(
+      entitiesData, reservesData, parties.length, damageLookups, lossDateIso,
+    );
 
     const narrative = reservesData.narrative && !reservesData.narrative.archivedAt
       ? reservesData.narrative : null;
@@ -195,8 +208,6 @@ export class StepSummaryComponent implements OnInit {
       dateOfNotification: this.formatDate(dateOfLoss.get('dateOfNotification')?.value),
       affectedPolicies:   [this.policyNumber],
       damageTypes,
-      sectionCount,
-      nonCoveredCases,
       claimGroups,
       narrative,
       narrativeReasonLabel,
@@ -211,29 +222,68 @@ export class StepSummaryComponent implements OnInit {
     reserves: ReservesPolicyData,
     partyCount: number,
     damageLookups: LookupOption[],
+    lossDateIso: string | null,
   ): ClaimGroup[] {
     const allEntities = data.sections.flatMap(s => s.damageGroups).flatMap(g => g.entities);
     const damageTypeKeys = [...new Set(allEntities.map(e => e.damageTypeKey).filter(Boolean))];
     const total = reserves.reserves.reduce((s, r) => s + (r.amount ?? 0), 0);
-    return [{
+
+    // PO-OPEN: should per-section date live in the loss-info events FormArray?
+    // For now mock 3-5 timestamps in a 24h window and surface the minimum.
+    const earliest = this.deriveEarliestSectionDate(lossDateIso, allEntities.length || 3);
+
+    const baseGroup: ClaimGroup = {
       policyNumber: this.policyNumber || '—',
       damageTypes:  damageTypeKeys.map(k => this.label(damageLookups, k)),
       sectionCount: allEntities.length,
       partyCount,
       totalReserve: total,
       currency:     reserves.currency,
-    }];
+      earliestSectionDate: earliest.date,
+      earliestSectionTime: earliest.time,
+    };
+
+    // Demo-only multi-claim split (policy prefix "POL-2024-MC") so Start Claim
+    // → loss-event-overview can be exercised. Real backend groups by coverage.
+    if ((this.policyNumber ?? '').startsWith('POL-2024-MC')) {
+      const split = this.splitGroupForDemo(baseGroup);
+      return split;
+    }
+
+    return [baseGroup];
   }
 
-  private buildNonCoveredCases(data: EntitiesDamagesData, damageLookups: LookupOption[]): string[] {
-    const notPromised = data.sections.find(s => s.promiseStatus === 'not-promised');
-    if (!notPromised) return [];
-    return notPromised.damageGroups.slice(0, 1).flatMap(g =>
-      g.entities.slice(0, 1).map(e => {
-        const dmg = this.label(damageLookups, e.damageTypeKey);
-        return `Section 001: ${dmg} of ${e.name} - Case not included in any of client's policies`;
-      })
-    );
+  private splitGroupForDemo(g: ClaimGroup): ClaimGroup[] {
+    const splits = 3;
+    const perPartyCount = Math.max(1, Math.floor(g.partyCount / splits));
+    const perReserve = Math.round((g.totalReserve / splits) * 100) / 100;
+    return Array.from({ length: splits }, (_, i) => ({
+      ...g,
+      policyNumber: `${g.policyNumber} · group ${i + 1}`,
+      sectionCount: Math.max(1, Math.floor(g.sectionCount / splits)),
+      partyCount: perPartyCount,
+      totalReserve: perReserve,
+    }));
+  }
+
+  private deriveEarliestSectionDate(
+    lossDateIso: string | null, sectionHint: number,
+  ): { date: string; time: string } {
+    if (!lossDateIso) return { date: '—', time: '—' };
+    const base = new Date(`${lossDateIso}T00:00:00`);
+    if (Number.isNaN(base.getTime())) return { date: '—', time: '—' };
+    const count = Math.min(5, Math.max(3, sectionHint));
+    let minOffset = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < count; i++) {
+      const m = ((i * 137) + 19) % (24 * 60);
+      if (m < minOffset) minOffset = m;
+    }
+    const e = new Date(base.getTime() + minOffset * 60_000);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return {
+      date: `${pad(e.getDate())}-${pad(e.getMonth() + 1)}-${e.getFullYear()}`,
+      time: `${pad(e.getHours())}:${pad(e.getMinutes())}`,
+    };
   }
 
   private label(opts: LookupOption[], key: string | undefined): string {

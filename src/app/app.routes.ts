@@ -29,6 +29,15 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./features/fnol/fnol.routes').then(m => m.FNOL_ROUTES),
   },
+  // BMPCC-FNOL-SUMMARY (2026-05-27): placeholder Loss Event Overview — landing
+  // page when an FNOL submission produces multiple derived claims.
+  {
+    path: 'loss-events/:id/overview',
+    loadComponent: () =>
+      import('./features/loss-events/loss-event-overview/loss-event-overview.component').then(
+        (m) => m.LossEventOverviewComponent,
+      ),
+  },
   // Shell layout routes
   {
     path: '',
