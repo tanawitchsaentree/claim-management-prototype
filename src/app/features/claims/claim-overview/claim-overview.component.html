@@ -9,7 +9,15 @@
 
     <!-- General Info Card -->
     <section class="co-card">
-      <h2 class="co-card-title">General information</h2>
+      <div class="co-card-title-row">
+        <h2 class="co-card-title">General information</h2>
+        @if (claim.status !== 'Closed' && claim.status !== 'Reopened') {
+          <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
+            <nx-icon name="edit" class="co-edit-icon"></nx-icon>
+            Edit loss information
+          </a>
+        }
+      </div>
 
       <!-- Row 1: 4 cols -->
       <div class="co-grid">
@@ -29,17 +37,55 @@
           <span class="co-label">Loss event ID</span>
           <a class="co-value co-value--link">{{ claim.lossEventId }}</a>
         </div>
-        <div class="co-field">
-          <span class="co-label">
-            Mass Event
-            <nx-icon
-              name="info-circle-o"
-              class="co-info-icon"
-              [nxTooltip]="massEventTooltip"
-              nxTooltipPosition="top"></nx-icon>
-          </span>
-          <span class="co-value">ME-2025.102</span>
-        </div>
+        @if (vm.massEvent; as me) {
+          <div class="co-field">
+            <span class="co-label">
+              Mass Event
+              <button type="button"
+                      class="co-info-btn"
+                      aria-label="Mass event details"
+                      #meTrigger="nxPopoverTrigger"
+                      [nxPopoverTriggerFor]="massEventPopover"
+                      nxPopoverTrigger="click"
+                      nxPopoverDirection="bottom">
+                <nx-icon name="info-circle-o" class="co-info-icon"></nx-icon>
+              </button>
+            </span>
+            <span class="co-value">{{ me.id }}</span>
+          </div>
+
+          <nx-popover #massEventPopover>
+            <div class="me-popover">
+              <div class="me-popover__header">
+                <span class="me-popover__id">{{ me.id }}</span>
+                <span class="me-popover__name">{{ me.name }}</span>
+              </div>
+              <dl class="me-popover__fields">
+                <div class="me-popover__row">
+                  <dt>Type</dt>
+                  <dd>
+                    <span class="me-popover__cat-badge me-popover__cat-badge--{{ me.catType === 'CAT' ? 'cat' : 'noncat' }}">{{ me.catType }}</span>
+                  </dd>
+                </div>
+                <div class="me-popover__row">
+                  <dt>Code</dt>
+                  <dd>{{ me.code }}</dd>
+                </div>
+                <div class="me-popover__row">
+                  <dt>Period</dt>
+                  <dd>{{ me.dateStart }} – {{ me.dateEnd }}</dd>
+                </div>
+                <div class="me-popover__row">
+                  <dt>Location</dt>
+                  <dd>{{ me.country }} · {{ me.region }}</dd>
+                </div>
+              </dl>
+              <div class="me-popover__footer">
+                <nx-link><a (click)="meTrigger.close(); openMassEventDetail()">View full details →</a></nx-link>
+              </div>
+            </div>
+          </nx-popover>
+        }
       </div>
 
       <!-- Row 2: status + risk — or closure block when closed -->
@@ -63,6 +109,10 @@
             <div class="co-field">
               <span class="co-label">Closure reason</span>
               <span class="co-value">{{ claim.closureReason ?? '–' }}</span>
+            </div>
+            <div class="co-field">
+              <span class="co-label">Date of Loss</span>
+              <span class="co-value">{{ formatDate(claim.dateOfLoss) }}</span>
             </div>
           </div>
           <div class="co-grid co-grid--closure">
@@ -107,6 +157,10 @@
           <div class="co-field">
             <span class="co-label">Proximate loss cause</span>
             <span class="co-value">{{ claim.proximateLossCause }}</span>
+          </div>
+          <div class="co-field">
+            <span class="co-label">Date of Loss</span>
+            <span class="co-value">{{ formatDate(claim.dateOfLoss) }}</span>
           </div>
           <div class="co-field">
             <div class="co-label-row">
@@ -165,7 +219,13 @@
     <!-- Pending Tasks Card -->
     <section class="co-card">
       <div class="pt-header">
-        <h2 class="co-card-title co-card-title--inline">{{ vm.tasks.length }} Pending tasks</h2>
+        <h2 class="co-card-title co-card-title--inline">
+          @if (pendingTasks(vm.tasks).length === 0) {
+            All tasks done
+          } @else {
+            {{ pendingTasks(vm.tasks).length }} Pending task{{ pendingTasks(vm.tasks).length === 1 ? '' : 's' }}
+          }
+        </h2>
         <div class="pt-header__actions">
           <button class="co-icon-btn" title="More options">
             <nx-icon name="ellipsis-v" size="s"></nx-icon>
@@ -177,15 +237,23 @@
       </div>
 
       <div class="pt-collapse" [class.pt-collapse--open]="vm.tasksExpanded"><div class="pt-collapse__inner">
-        <!-- Priority legend -->
-        <div class="pt-legend">
-          <span class="pt-legend__dot pt-legend__dot--high"></span>
-          <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'high') }}</strong> high priority tasks</span>
-          <span class="pt-legend__dot pt-legend__dot--medium"></span>
-          <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'medium') }}</strong> medium priority tasks</span>
-          <span class="pt-legend__dot pt-legend__dot--low"></span>
-          <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'low') }}</strong> low priority tasks</span>
-        </div>
+        <!-- Priority legend — only shown when there are pending tasks -->
+        @if (pendingTasks(vm.tasks).length > 0) {
+          <div class="pt-legend">
+            @if (taskCountByPriority(vm.tasks, 'high') > 0) {
+              <span class="pt-legend__dot pt-legend__dot--high"></span>
+              <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'high') }}</strong> high priority</span>
+            }
+            @if (taskCountByPriority(vm.tasks, 'medium') > 0) {
+              <span class="pt-legend__dot pt-legend__dot--medium"></span>
+              <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'medium') }}</strong> medium priority</span>
+            }
+            @if (taskCountByPriority(vm.tasks, 'low') > 0) {
+              <span class="pt-legend__dot pt-legend__dot--low"></span>
+              <span class="pt-legend__text"><strong>{{ taskCountByPriority(vm.tasks, 'low') }}</strong> low priority</span>
+            }
+          </div>
+        }
 
         <!-- Table -->
         <div class="pt-table-wrap">
@@ -211,8 +279,10 @@
                 <td nxCell><app-status-chip [status]="task.status" domain="task"></app-status-chip></td>
                 <td nxCell>{{ task.priority | titlecase }}</td>
                 <td nxCell class="pt-col--key">
-                  <span class="pt-task-key">{{ task.taskKey }}</span>
-                  <nx-icon name="launch" size="s" class="pt-launch-icon"></nx-icon>
+                  <span class="pt-task-key-cell">
+                    <span class="pt-task-key">{{ task.taskKey }}</span>
+                    <nx-icon name="launch" class="pt-launch-icon"></nx-icon>
+                  </span>
                 </td>
                 <td nxCell class="pt-col--date">{{ formatDate(task.dueDate) }}</td>
                 <td nxCell><a class="pt-action-link">See details</a></td>

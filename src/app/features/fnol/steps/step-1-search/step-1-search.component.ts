@@ -16,7 +16,14 @@ import { NxPaginationModule } from '@allianz/ng-aquila/pagination';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
+import { NxDialogService } from '@allianz/ng-aquila/modal';
+import { firstValueFrom } from 'rxjs';
 import { FnolStateService } from '../../services/fnol-state.service';
+import {
+  ConvertSkeletonModalComponent,
+  ConvertSkeletonModalData,
+  ConvertSkeletonModalResult,
+} from './convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
 import { MockClientSearchService } from '../../../../core/mock/services/mock-client-search.service';
 import { MockSkeletonSearchService } from '../../../../core/mock/services/mock-skeleton-search.service';
@@ -72,6 +79,7 @@ export class Step1SearchComponent implements OnInit, OnDestroy {
   private clientSvc    = inject(MockClientSearchService);
   private skeletonSvc  = inject(MockSkeletonSearchService);
   private router       = inject(Router);
+  private dialogSvc    = inject(NxDialogService);
 
   readonly years             = UNDERWRITING_YEARS;
   readonly linesOfBusiness   = lookupsData.linesOfBusiness;
@@ -251,18 +259,26 @@ export class Step1SearchComponent implements OnInit, OnDestroy {
   // BMPCC-11006: convert skeleton → regular claim
   // Prefills loss-information from the skeleton record, drops the user back
   // into the standard FNOL flow (search → policy → loss-info → ... → summary).
-  onConvertSkeleton(skeleton: SkeletonClaim): void {
+  async onConvertSkeleton(skeleton: SkeletonClaim): Promise<void> {
     if (skeleton.status !== 'awaiting-policy') return;
+
+    const data: ConvertSkeletonModalData = { skeleton };
+    const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
+      data,
+      width: '960px',
+      maxWidth: '92vw',
+    });
+    const policy = await firstValueFrom(ref.afterClosed()) as ConvertSkeletonModalResult;
+    if (!policy) return;   // cancelled
+
+    // Seed convert state + selected policy, then go straight into the wizard.
     this.fnolState.prefillFromSkeleton(skeleton);
-    this.router.navigate(['/fnol/search']);
-  }
-
-  convertingSkeletonId(): string | null {
-    return this.fnolState.path === 'standard' ? this.fnolState.skeletonClaimId : null;
-  }
-
-  cancelConvert(): void {
-    this.fnolState.reset();
+    this.fnolState.setSelectedPolicy(
+      { policyId: policy.policyNumber, policyNumber: policy.policyNumber },
+      policy,
+    );
+    this.fnolState.path = 'standard';
+    this.router.navigate(['/fnol/loss-information']);
   }
 
   // ── Client helpers ───────────────────────────────────────────────

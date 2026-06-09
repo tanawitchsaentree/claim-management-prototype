@@ -57,6 +57,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'claims/:id/loss-information/edit',
+        loadComponent: () =>
+          import('./features/claims/edit-loss-information/edit-loss-information.component').then(
+            (m) => m.EditLossInformationComponent
+          ),
+      },
+      {
         path: 'claims/:id/sections',
         loadComponent: () =>
           import('./features/sections/sections').then((m) => m.Sections),

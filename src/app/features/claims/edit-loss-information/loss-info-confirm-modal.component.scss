@@ -1,0 +1,123 @@
+:host { display: block; }
+
+.licm-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  &:hover { color: var(--text-01); }
+}
+
+.licm-close-x {
+  display: block;
+  width: 14px;
+  height: 14px;
+  position: relative;
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0;
+    width: 100%; height: 1.5px;
+    background: currentColor;
+  }
+  &::before { transform: rotate(45deg); }
+  &::after  { transform: rotate(-45deg); }
+}
+
+.licm-header {
+  padding: 24px 48px 0 24px;
+  margin-bottom: 20px;
+}
+
+.licm-title {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  margin: 0 0 6px;
+}
+
+.licm-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.licm-body {
+  padding: 0 24px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.licm-no-changes {
+  font-size: 14px;
+  color: var(--text-muted);
+  padding: 16px 0;
+}
+
+.licm-diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--ui-04);
+    text-align: left;
+  }
+
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--ui-03);
+    vertical-align: middle;
+  }
+}
+
+.licm-field-label {
+  font-weight: 600;
+  color: var(--text-01);
+  width: 140px;
+}
+
+.licm-original {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  max-width: 160px;
+  word-break: break-word;
+}
+
+.licm-arrow {
+  color: var(--text-muted);
+  width: 24px;
+  text-align: center;
+  nx-icon { font-size: 12px; }
+}
+
+.licm-updated {
+  color: var(--text-01);
+  font-weight: 500;
+  max-width: 160px;
+  word-break: break-word;
+}
+
+.licm-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px 24px;
+  border-top: 1px solid var(--ui-04);
+  margin-top: 20px;
+}

@@ -101,6 +101,12 @@ export class MockStateService {
     this.persist();
   }
 
+  patchActivities(updater: (items: ClaimActivity[]) => ClaimActivity[]): void {
+    const cur = this._state();
+    this._state.set({ ...cur, activities: updater(cur.activities) });
+    this.persist();
+  }
+
   patchLossInformation(updater: (items: LossInformation[]) => LossInformation[]): void {
     const cur = this._state();
     this._state.set({ ...cur, lossInformation: updater(cur.lossInformation) });

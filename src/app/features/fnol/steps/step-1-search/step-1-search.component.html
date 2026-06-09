@@ -8,19 +8,6 @@
     <nx-icon name="info-circle-o" size="s" class="subtitle-icon"></nx-icon>
   </p>
 
-  <!-- Converting from skeleton banner (BMPCC-11006) -->
-  @if (convertingSkeletonId()) {
-    <nx-message context="info" class="converting-banner">
-      <strong>Converting from {{ convertingSkeletonId() }}</strong>
-      <p class="converting-banner__detail">
-        Search and select a policy to continue. The original skeleton claim will be linked once you finish.
-      </p>
-      <p class="converting-banner__link">
-        <button nxPlainButton type="button" (click)="cancelConvert()">Cancel conversion</button>
-      </p>
-    </nx-message>
-  }
-
   <!-- Form-level validation banner -->
   @if (validationError) {
     <div class="form-validation-banner" role="alert">
@@ -200,7 +187,7 @@
             @if (state.clients.length === 0) {
               <div class="results-empty">No clients match your search criteria.</div>
             } @else {
-              <table class="results-table">
+              <div class="results-table-wrap"><table class="results-table">
                 <thead>
                   <tr>
                     <th class="col-radio"></th>
@@ -254,7 +241,7 @@
                     </tr>
                   }
                 </tbody>
-              </table>
+              </table></div>
               <div class="results-footer">
                 <span class="items-per-page">Items per page: <strong>{{ pageSize }}</strong> <nx-icon name="chevron-down-small"></nx-icon></span>
                 <nx-pagination [count]="state.clients.length" [page]="clientPage" [perPage]="pageSize"
@@ -272,7 +259,7 @@
             @if (state.policies.length === 0) {
               <div class="results-empty">No policies match your search criteria.</div>
             } @else {
-              <table class="results-table">
+              <div class="results-table-wrap"><table class="results-table">
                 <thead>
                   <tr>
                     <th class="col-radio"></th>
@@ -310,7 +297,7 @@
                     </tr>
                   }
                 </tbody>
-              </table>
+              </table></div>
               <div class="results-footer">
                 <span class="items-per-page">Items per page: <strong>{{ pageSize }}</strong> <nx-icon name="chevron-down-small"></nx-icon></span>
                 <nx-pagination [count]="state.policies.length" [page]="policyPage" [perPage]="pageSize"
@@ -335,10 +322,9 @@
                 </p>
               </div>
             } @else {
-              <table class="results-table">
+              <div class="results-table-wrap"><table class="results-table">
                 <thead>
                   <tr>
-                    <th class="col-radio"></th>
                     <th><span class="th-sort">Claim ID <nx-icon name="chevron-down-small"></nx-icon></span></th>
                     <th><span class="th-sort">Client <nx-icon name="chevron-down-small"></nx-icon></span></th>
                     <th>Status</th>
@@ -351,11 +337,6 @@
                 <tbody>
                   @for (skeleton of state.skeletons; track skeleton.claimId) {
                     <tr class="results-row {{ getSkeletonRowClass(skeleton) }}">
-                      <td class="col-radio">
-                        @if (skeleton.status === 'awaiting-policy') {
-                          <input type="radio" class="row-radio" name="skeletonSelect" />
-                        }
-                      </td>
                       <td>
                         <button class="table-action-link" type="button" (click)="onViewClaim(skeleton.claimId)">
                           {{ skeleton.claimId }}
@@ -389,7 +370,7 @@
                     </tr>
                   }
                 </tbody>
-              </table>
+              </table></div>
 
               <!-- Skeleton row context menu -->
               <nx-context-menu #skeletonMenu="nxContextMenu">
@@ -424,7 +405,7 @@
       @if (state$ | async; as state) {
         @if (showRegisterSkeleton(state)) {
           <span class="btn-tooltip-wrap" [nxTooltip]="registerSkeletonTooltip(state)" nxTooltipPosition="top">
-            <button nxButton="secondary" type="button"
+            <button nxButton="secondary small" type="button"
                     [disabled]="registerSkeletonDisabled(state)"
                     (click)="onRegisterSkeleton(state)">
               {{ getSkeletonButtonLabel() }}
@@ -433,7 +414,7 @@
         }
         @if (showRegisterClaim(state)) {
           <span class="btn-tooltip-wrap" [nxTooltip]="registerClaimTooltip(state)" nxTooltipPosition="top">
-            <button nxButton="primary" type="button"
+            <button nxButton="primary small" type="button"
                     [disabled]="registerClaimDisabled(state)"
                     (click)="onRegisterClaim()">
               Register a claim

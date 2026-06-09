@@ -81,6 +81,11 @@ export class BrokerSearchModalComponent implements OnInit {
   });
 
   readonly selectedId = signal<string | null>(null);
+  readonly showAdvanced = signal(false);
+
+  toggleAdvanced(): void {
+    this.showAdvanced.update(v => !v);
+  }
 
   private readonly searchTrigger$ = new ReplaySubject<BrokerSearchFilters>(1);
   readonly state$: Observable<SearchState> = this.searchTrigger$.pipe(

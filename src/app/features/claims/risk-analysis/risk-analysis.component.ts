@@ -103,7 +103,7 @@ export class RiskAnalysisComponent implements OnInit {
 
   startInvestigation(): void {
     const data: StartInvestigationModalData = { claimId: this.claimId };
-    const ref = this.dialogSvc.open(StartInvestigationModalComponent, { data, width: '480px', maxWidth: '92vw' });
+    const ref = this.dialogSvc.open(StartInvestigationModalComponent, { data, width: '600px', maxWidth: '92vw' });
     ref.afterClosed().subscribe(async (result: StartInvestigationResult | null | undefined) => {
       if (!result) return;
       const updated = await firstValueFrom(this.svc.startInvestigation(this.claimId, result.assignee, result.deadline));

@@ -130,7 +130,9 @@
 <!-- Footer -->
 <footer class="me-modal__footer">
   <div class="me-modal__footer-actions">
-    <button nxButton="tertiary" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary" type="button" (click)="onSubmit()">{{ submitLabel() }}</button>
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">{{ isView() ? 'Close' : 'Cancel' }}</button>
+    @if (!isView()) {
+      <button nxButton="primary small" type="button" (click)="onSubmit()">{{ submitLabel() }}</button>
+    }
   </div>
 </footer>

@@ -3,8 +3,8 @@
     "claimId": "CLM-2024-001",
     "policyNumber": "POL-2023-010",
     "clientName": "Kaufmann's Warehouse GmbH",
-    "broker": "Anna M\u00fcller",
-    "assignee": "Leonie Fischer",
+    "broker": "Anna Müller",
+    "assignee": "Klaus Schmidt",
     "createdBy": "Lukas Schneider",
     "dateCreated": "2024-01-15",
     "dateUpdated": "2024-02-10",
@@ -19,7 +19,8 @@
       "country": "Germany",
       "city": "Hamburg"
     },
-    "lossEventId": "123456"
+    "lossEventId": "123456",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-002",
@@ -27,7 +28,7 @@
     "clientName": "adesso SE",
     "broker": "Maximilian Koch",
     "assignee": null,
-    "createdBy": "Bj\u00f6rn \u00d6'Brien",
+    "createdBy": "Björn Ö'Brien",
     "dateCreated": "2024-02-03",
     "dateUpdated": "2024-02-03",
     "lossDate": "2024-02-01",
@@ -41,7 +42,8 @@
       "country": "Germany",
       "city": "Dortmund"
     },
-    "lossEventId": "345678"
+    "lossEventId": "345678",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-003",
@@ -63,15 +65,16 @@
       "country": "Netherlands",
       "city": "Rotterdam"
     },
-    "lossEventId": "910111"
+    "lossEventId": "910111",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-004",
     "policyNumber": "POL-2024-004",
     "clientName": "Marvel SE",
-    "broker": "Anna M\u00fcller",
-    "assignee": "Leonie Fischer",
-    "createdBy": "Anna M\u00fcller",
+    "broker": "Anna Müller",
+    "assignee": "Klaus Schmidt",
+    "createdBy": "Anna Müller",
     "dateCreated": "2024-03-05",
     "dateUpdated": "2024-03-18",
     "lossDate": "2024-03-04",
@@ -85,7 +88,8 @@
       "country": "Austria",
       "city": "Vienna"
     },
-    "lossEventId": "101112"
+    "lossEventId": "101112",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-005",
@@ -108,12 +112,13 @@
       "city": "Budapest"
     },
     "lossEventId": "111213",
-    "_scenario": "boundary-max-amount"
+    "_scenario": "boundary-max-amount",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-006",
     "policyNumber": "POL-2024-006",
-    "clientName": "Sch\u00e4fer & S\u00f6hne AG",
+    "clientName": "Schäfer & Söhne AG",
     "broker": "Felix Bauer",
     "assignee": "Carsten Muster",
     "createdBy": "Felix Bauer",
@@ -128,9 +133,10 @@
     "lineOfBusiness": "Property",
     "location": {
       "country": "Switzerland",
-      "city": "Z\u00fcrich"
+      "city": "Zürich"
     },
-    "_scenario": "boundary-zero-amount"
+    "_scenario": "boundary-zero-amount",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-007",
@@ -151,7 +157,8 @@
     "location": {
       "country": "Norway",
       "city": "Oslo"
-    }
+    },
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-008",
@@ -173,15 +180,16 @@
       "country": "Singapore",
       "city": "Singapore"
     },
-    "_scenario": "partial-data-no-broker"
+    "_scenario": "partial-data-no-broker",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-009",
     "policyNumber": "POL-2024-009",
     "clientName": "Rhein Constructions GmbH",
-    "broker": "Anna M\u00fcller",
-    "assignee": "Leonie Fischer",
-    "createdBy": "Anna M\u00fcller",
+    "broker": "Anna Müller",
+    "assignee": "Klaus Schmidt",
+    "createdBy": "Anna Müller",
     "dateCreated": "2024-05-02",
     "dateUpdated": "2024-05-14",
     "lossDate": "2024-04-30",
@@ -194,7 +202,8 @@
     "location": {
       "country": "Germany",
       "city": "Cologne"
-    }
+    },
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-010",
@@ -208,14 +217,15 @@
     "lossDate": "2024-05-13",
     "lossAmount": 120000,
     "currency": "GBP",
-    "description": "Product liability claim \u2014 faulty component caused customer equipment failure.",
+    "description": "Product liability claim — faulty component caused customer equipment failure.",
     "status": "Quoted",
     "priority": "medium",
     "lineOfBusiness": "Liability",
     "location": {
       "country": "United Kingdom",
       "city": "London"
-    }
+    },
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-011",
@@ -238,10 +248,14 @@
       "city": "Munich"
     },
     "closureDate": "2024-06-01",
-    "closedBy": { "userId": "usr-007", "name": "Mara Mustermann" },
+    "closedBy": {
+      "userId": "usr-007",
+      "name": "Mara Mustermann"
+    },
     "closureReason": "Claim Finalised",
     "retentionDate": "2034-06-01",
-    "retentionType": "default"
+    "retentionType": "default",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-012",
@@ -260,15 +274,16 @@
     "priority": "low",
     "lineOfBusiness": "Marine",
     "location": null,
-    "_scenario": "partial-data-no-location"
+    "_scenario": "partial-data-no-location",
+    "group": "GPG-001"
   },
   {
     "claimId": "CLM-2024-013",
     "policyNumber": "POL-2024-002",
     "clientName": "adesso SE",
-    "broker": "Anna M\u00fcller",
-    "assignee": "Leonie Fischer",
-    "createdBy": "Anna M\u00fcller",
+    "broker": "Anna Müller",
+    "assignee": "Anna Weber",
+    "createdBy": "Anna Müller",
     "dateCreated": "2024-06-15",
     "dateUpdated": "2024-07-01",
     "lossDate": "2024-06-13",
@@ -281,7 +296,8 @@
     "location": {
       "country": "Germany",
       "city": "Dortmund"
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-014",
@@ -295,7 +311,7 @@
     "lossDate": "2024-07-03",
     "lossAmount": 5500,
     "currency": "EUR",
-    "description": "Minor scaffolding collapse \u2014 no injuries, minor property damage only.",
+    "description": "Minor scaffolding collapse — no injuries, minor property damage only.",
     "status": "Open",
     "priority": "low",
     "lineOfBusiness": "Engineering",
@@ -303,14 +319,15 @@
       "country": "Germany",
       "city": "Frankfurt"
     },
-    "_scenario": "partial-data-no-broker"
+    "_scenario": "partial-data-no-broker",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-015",
     "policyNumber": "POL-2024-004",
     "clientName": "Marvel SE",
     "broker": "Maximilian Koch",
-    "assignee": "Carsten Muster",
+    "assignee": "Anna Weber",
     "createdBy": "Maximilian Koch",
     "dateCreated": "2024-07-10",
     "dateUpdated": "2024-07-22",
@@ -324,12 +341,13 @@
     "location": {
       "country": "Austria",
       "city": "Graz"
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-016",
     "policyNumber": "POL-2024-006",
-    "clientName": "Sch\u00e4fer & S\u00f6hne AG",
+    "clientName": "Schäfer & Söhne AG",
     "broker": "Felix Bauer",
     "assignee": "Mara Mustermann",
     "createdBy": "Felix Bauer",
@@ -346,15 +364,16 @@
       "country": "Switzerland",
       "city": "Bern"
     },
-    "_scenario": "long-description"
+    "_scenario": "long-description",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-017",
     "policyNumber": "POL-2024-007",
     "clientName": "Nordic Shipping AS",
-    "broker": "Anna M\u00fcller",
-    "assignee": "Leonie Fischer",
-    "createdBy": "Anna M\u00fcller",
+    "broker": "Anna Müller",
+    "assignee": "Anna Weber",
+    "createdBy": "Anna Müller",
     "dateCreated": "2024-08-15",
     "dateUpdated": "2024-08-28",
     "lossDate": "2024-08-14",
@@ -367,7 +386,8 @@
     "location": {
       "country": "Denmark",
       "city": "Copenhagen"
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-018",
@@ -388,7 +408,8 @@
     "location": {
       "country": "Singapore",
       "city": "Singapore"
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-019",
@@ -402,7 +423,7 @@
     "lossDate": "2019-04-10",
     "lossAmount": 18000,
     "currency": "EUR",
-    "description": "Old archived claim \u2014 storm damage to factory roof 5 years ago. Closed.",
+    "description": "Old archived claim — storm damage to factory roof 5 years ago. Closed.",
     "status": "Closed",
     "priority": "low",
     "lineOfBusiness": "Property",
@@ -410,21 +431,22 @@
       "country": "Germany",
       "city": "Bremen"
     },
-    "_scenario": "date-edge-5-years-old"
+    "_scenario": "date-edge-5-years-old",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-020",
     "policyNumber": "POL-2024-010",
-    "clientName": "Bj\u00f6rn \u00d6'Brien & \"Partners\"",
-    "broker": "Anna M\u00fcller",
+    "clientName": "Björn Ö'Brien & \"Partners\"",
+    "broker": "Anna Müller",
     "assignee": "Clara Hoffmann",
-    "createdBy": "Bj\u00f6rn \u00d6'Brien",
+    "createdBy": "Björn Ö'Brien",
     "dateCreated": "2026-05-07",
     "dateUpdated": "2026-05-07",
     "lossDate": "2026-05-06",
     "lossAmount": 47300,
     "currency": "GBP",
-    "description": "New claim created today \u2014 liability dispute with M\u00fcller & S\u00f6hne over contractual breach.",
+    "description": "New claim created today — liability dispute with Müller & Söhne over contractual breach.",
     "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Liability",
@@ -432,7 +454,8 @@
       "country": "United Kingdom",
       "city": "Manchester"
     },
-    "_scenario": "date-edge-today special-chars-client-name"
+    "_scenario": "date-edge-today special-chars-client-name",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-021",
@@ -446,7 +469,7 @@
     "lossDate": "2024-10-04",
     "lossAmount": 3200,
     "currency": "EUR",
-    "description": "Claim with no tasks assigned \u2014 edge case for empty task list.",
+    "description": "Claim with no tasks assigned — edge case for empty task list.",
     "status": "Open",
     "priority": "low",
     "lineOfBusiness": "Engineering",
@@ -454,7 +477,8 @@
       "country": "Germany",
       "city": "Stuttgart"
     },
-    "_scenario": "empty-no-tasks"
+    "_scenario": "empty-no-tasks",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-022",
@@ -480,7 +504,8 @@
     "causeOfLoss": [
       "fire"
     ],
-    "lossEventId": "EVT-022"
+    "lossEventId": "EVT-022",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-023",
@@ -488,13 +513,13 @@
     "clientName": "Liver Tea Group",
     "broker": "Maximilian Koch",
     "assignee": null,
-    "createdBy": "Anna M\u00fcller",
+    "createdBy": "Anna Müller",
     "dateCreated": "2024-05-16",
     "dateUpdated": "2024-05-16",
     "lossDate": "2024-05-15",
     "lossAmount": 14500,
     "currency": "EUR",
-    "description": "Secondary water damage claim from same fire event \u2014 sprinkler activation.",
+    "description": "Secondary water damage claim from same fire event — sprinkler activation.",
     "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Property",
@@ -507,13 +532,14 @@
       "fire",
       "water-damage"
     ],
-    "lossEventId": "EVT-023"
+    "lossEventId": "EVT-023",
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-101",
     "policyNumber": "POL-2024-010",
-    "clientName": "M\u00fcller GmbH",
-    "broker": "Anna M\u00fcller",
+    "clientName": "Müller GmbH",
+    "broker": "Anna Müller",
     "assignee": "Leonie Fischer",
     "createdBy": "Lukas Schneider",
     "dateCreated": "2024-06-10",
@@ -539,7 +565,7 @@
       "lossLocation": {
         "locationRequired": true,
         "locationType": "listed-in-policy",
-        "incidentAddress": "Industriestra\u00dfe 12, Frankfurt",
+        "incidentAddress": "Industriestraße 12, Frankfurt",
         "incidentAtDifferentLocation": false,
         "street": "",
         "streetNumber": "",
@@ -589,7 +615,8 @@
           ]
         }
       ]
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-102",
@@ -657,7 +684,8 @@
           "timeOfNotification": "08:00"
         }
       ]
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-103",
@@ -730,7 +758,8 @@
           "timeOfNotification": "14:00"
         }
       ]
-    }
+    },
+    "group": "GPG-002"
   },
   {
     "claimId": "CLM-2024-021",
@@ -753,12 +782,19 @@
       "city": "Hamburg"
     },
     "closureDate": "2024-09-01",
-    "closedBy": { "userId": "usr-003", "name": "Stefan Meier" },
+    "closedBy": {
+      "userId": "usr-003",
+      "name": "Stefan Meier"
+    },
     "closureReason": "Claim Finalised",
     "retentionDate": "2034-09-01",
     "retentionType": "default",
     "reopenedDate": "2025-04-15",
-    "reopenedBy": { "userId": "usr-002", "name": "Leonie Fischer" },
-    "reopeningReason": "New survey evidence indicates underpayment of EUR 42,000 on cargo total loss."
+    "reopenedBy": {
+      "userId": "usr-002",
+      "name": "Leonie Fischer"
+    },
+    "reopeningReason": "New survey evidence indicates underpayment of EUR 42,000 on cargo total loss.",
+    "group": "GPG-002"
   }
 ]

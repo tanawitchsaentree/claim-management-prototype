@@ -29,15 +29,16 @@ $footer-pt: 20px;
 $action-gap: 8px;
 
 @mixin shell {
-  // NxModalContainer (NDBX wrapper) owns padding (40px), max-height, overflow.
-  // Component-side mixins ONLY declare flex-column so header/body/footer stack
-  // vertically. Do NOT add max-height here — it stacks on top of NDBX's wrapper
-  // height + 80px outer padding and pushes the modal past the viewport on
-  // 14" notebooks. The body scroll already works as long as `<footer>` is a
-  // sibling of `.x-body` (see [[modal-footer-outside-body]]).
+  // NxModalContainer (NDBX wrapper) owns padding (40px). Component shell stacks
+  // header/body/footer vertically and caps total height so the BODY scrolls
+  // internally instead of the whole dialog growing past the viewport.
+  //
+  // 100vh minus: 80px wrapper padding (40px top+bottom) + ~32px breathing room
+  // so the dialog never touches the screen edges on a 14" notebook (~800px tall).
   display: flex;
   flex-direction: column;
   min-width: 0;
+  max-height: calc(100vh - 112px);
 }
 
 @mixin header {

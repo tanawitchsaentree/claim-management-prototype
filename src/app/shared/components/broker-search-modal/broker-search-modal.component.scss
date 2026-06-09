@@ -35,37 +35,55 @@
   font-weight: 500;
 }
 
-// Two-pane search row pattern matching step-1-search:
-//   left  → 80% — input grid (3 cols × 3 rows)
-//   right → 20% — primary Search button + Reset link, vertically centered
-.bsm-search-row {
+// Primary search — name field (flex 1) + Search/Reset on one row.
+.bsm-primary-row {
   display: flex;
   align-items: flex-start;
-  gap: 24px;
+  gap: 16px;
 }
 
-.bsm-search-row__inputs {
-  flex: 0 0 80%;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px 24px;
-  align-items: start;
-
-  > * { min-width: 0; }
-}
-
-.bsm-search-row__spacer { display: block; }
-
-.bsm-search-row__actions {
+.bsm-primary-row__inputs {
   flex: 1 1 auto;
   display: flex;
-  flex-direction: row;
+  gap: 16px;
+
+  > * { flex: 1 1 0; min-width: 0; }
+}
+
+.bsm-primary-row__actions {
+  flex: 0 0 auto;
+  display: flex;
   align-items: center;
   gap: 8px;
   padding-top: 22px;            // align with formfield input baseline
   white-space: nowrap;
+}
 
-  > button { flex: 0 0 auto; }
+// Advanced filters toggle
+.bsm-advanced-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--interactive-text);
+  cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+
+// Advanced filters grid — 3 columns, only shown when expanded
+.bsm-advanced-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+  margin-top: 12px;
+
+  > * { min-width: 0; }
 }
 
 .bsm-loading {
@@ -84,7 +102,13 @@
   font-style: italic;
 }
 
-.bsm-table { width: 100%; }
+// Table scrolls horizontally inside the modal instead of widening it
+.bsm-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bsm-table { width: 100%; min-width: 640px; }
 .bsm-col-pick { width: 56px; }
 .bsm-row--selected { background: var(--claim-overlay-hover); cursor: pointer; }
 .bsm-row--selected td:first-child { background: transparent; }

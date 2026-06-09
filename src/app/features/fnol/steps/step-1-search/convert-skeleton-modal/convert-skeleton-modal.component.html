@@ -1,0 +1,81 @@
+<!-- Header — skeleton context, always visible (sticky) -->
+<div class="csm-header">
+  <div class="csm-header-row">
+    <h2 class="csm-title">Converting {{ skeleton.claimId }}</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="csm-context">
+    {{ skeleton.clientName }} &middot; {{ skeleton.lossDescription }}
+    @if (skeleton.lossDate) { &middot; Loss date {{ skeleton.lossDate }} }
+  </p>
+</div>
+
+<!-- Body — eligible policy list (scrolls internally) -->
+<div class="csm-body" nxModalContent>
+  <p class="csm-intro">Select a policy to link this skeleton claim to.</p>
+
+  @if (loading()) {
+    <div class="csm-loading">
+      <nx-spinner size="small"></nx-spinner>
+      <span>Loading policies…</span>
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="csm-empty">No policies found.</div>
+  } @else {
+    <table class="csm-table">
+      <thead>
+        <tr>
+          <th class="csm-col-radio"></th>
+          <th>Policy number</th>
+          <th>Client</th>
+          <th>Line of business</th>
+          <th>Coverage</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.policy.policyNumber) {
+          <tr class="csm-row"
+              [class.csm-row--eligible]="row.eligible"
+              [class.csm-row--ineligible]="!row.eligible"
+              [class.csm-row--selected]="selectedNumber() === row.policy.policyNumber"
+              (click)="select(row)">
+            <td class="csm-col-radio">
+              @if (row.eligible) {
+                <input type="radio" name="policySelect" class="csm-radio"
+                       [checked]="selectedNumber() === row.policy.policyNumber"
+                       (change)="select(row)" />
+              }
+            </td>
+            <td>{{ row.policy.policyNumber }}</td>
+            <td>{{ row.policy.clientName }}</td>
+            <td>{{ row.policy.lineOfBusiness }}</td>
+            <td class="csm-coverage">{{ row.policy.effectiveDate }} – {{ row.policy.expiryDate }}</td>
+            <td>
+              @if (row.eligible) {
+                <span class="csm-status csm-status--ok">{{ row.policy.status }}</span>
+              } @else {
+                <span class="csm-reason">
+                  <nx-icon name="exclamation-circle-o" class="csm-reason-icon"></nx-icon>
+                  {{ row.reason }}
+                </span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<!-- Footer — modal zone: small buttons -->
+<div class="csm-footer" nxModalActions>
+  <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="!canContinue()"
+          (click)="onContinue()">
+    Continue conversion
+  </button>
+</div>

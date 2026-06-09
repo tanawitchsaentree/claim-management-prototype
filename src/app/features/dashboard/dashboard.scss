@@ -9,6 +9,15 @@ $text-main:      var(--text-01);
 $text-muted:     var(--text-muted);
 $border-color:   var(--ui-04);
 
+// ─── Spacing scale (see .claude/SPACING.md) ──────────────────────
+$sp-xs:   4px;
+$sp-sm:   8px;
+$sp-md:   12px;
+$sp-base: 16px;
+$sp-lg:   20px;
+$sp-xl:   24px;
+$sp-2xl:  32px;
+
 // ─── Page shell ──────────────────────────────────────────────────
 .page-shell {
   display: flex;
@@ -104,6 +113,12 @@ $border-color:   var(--ui-04);
       height: 4px;
       background: $blue-active;
     }
+  }
+
+  &--disabled {
+    color: $text-muted;
+    cursor: not-allowed;
+    &:hover { color: $text-muted; }
   }
 }
 
@@ -257,6 +272,36 @@ $header-bp: 1024px;
   .header-app-title { padding-right: 16px; }
   .desktop-only { display: none !important; }
   .mobile-only { display: flex; }
+
+  // ── Page shell: allow full-page scroll on mobile ────────────────
+  .page-shell {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  // ── Body layout: stack vertically, main content first ───────────
+  .body-layout {
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+  }
+
+  .main-content {
+    overflow-y: visible;
+    padding: 16px;
+    order: 1;
+  }
+
+  .right-panel {
+    width: 100%;
+    min-width: 0;
+    border-left: none;
+    border-top: 1px solid var(--ui-04);
+    padding: 16px;
+    overflow-y: visible;
+    order: 2;
+  }
 }
 
 // ─── Body layout ─────────────────────────────────────────────────
@@ -316,10 +361,10 @@ $header-bp: 1024px;
 }
 
 .action-card-icon {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   background: none;
-  border: 1px solid $text-main;
+  border: 1px solid $border-color;   // ui-04 — light, not text-01
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -327,15 +372,15 @@ $header-bp: 1024px;
   flex-shrink: 0;
   nx-icon {
     color: $text-main;
-    font-size: 20px;
+    font-size: 16px;   // 50% of container
   }
 }
 
 .action-card-title {
-  font-size: 20px;
+  font-size: 16px;   // matches panel-card-title
   font-weight: 600;
   color: $text-main;
-  line-height: 28px;
+  line-height: 1.4;
 }
 
 .action-card-btn {
@@ -347,7 +392,7 @@ $header-bp: 1024px;
   background: var(--ui-01);
   border: 1px solid $border-color;
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin-bottom: $sp-xl;
   overflow: hidden;
   box-shadow: 0 1px 4px var(--claim-overlay-shadow);
 }
@@ -356,20 +401,19 @@ $header-bp: 1024px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 24px 0;
-  margin-bottom: 16px;
+  padding: $sp-lg $sp-xl $sp-md;   // 20 24 14 — top / sides / bottom
 }
 
 .widget-header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .widget-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--text-01);
+  width: 32px;
+  height: 32px;
+  border: 1px solid $border-color;   // ui-04, not text-01
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -379,14 +423,14 @@ $header-bp: 1024px;
 
 .widget-icon {
   color: $text-main;
-  font-size: 24px;
+  font-size: 16px;   // 50% of 32px container
 }
 
 .widget-title {
   font-size: 20px;
   font-weight: 600;
   color: $text-main;
-  line-height: 28px;
+  line-height: 1.4;
 }
 
 .widget-link {
@@ -397,53 +441,57 @@ $header-bp: 1024px;
   text-decoration: none;
   white-space: nowrap;
   &:hover { text-decoration: underline; }
+  &--disabled {
+    color: $text-muted;
+    cursor: not-allowed;
+    &:hover { text-decoration: none; }
+  }
 }
 
 .widget-footer {
-  padding: 12px 24px;
+  padding: $sp-md $sp-xl;   // 12 24
   border-top: 1px solid $border-color;
 }
 
 .widget-link-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: $sp-xs;   // 4px — tighter than before, icon is decorative
   font-size: 14px;
   color: $blue-active;
   cursor: pointer;
   text-decoration: none;
-  nx-icon { font-size: 16px; }
+  nx-icon { font-size: 14px; }   // match text size
   &:hover { text-decoration: underline; }
 }
 
 // ─── Toggle row (Show my tasks only) ─────────────────────────────
 .widget-toggle-row {
-  padding: 0 24px 16px;
+  padding: 0 $sp-xl $sp-md;   // 0 24 12
 }
 
 // ─── Portfolio tabs ───────────────────────────────────────────────
 .portfolio-tabs {
   display: flex;
   gap: 0;
-  padding: 0 24px;
+  padding: 0 $sp-xl;
   border-bottom: 1px solid $border-color;
 }
 
-// 32px gap between tabs and table (matches Figma itemSpacing: 32)
 .portfolio-tabs-spacer {
-  height: 32px;
+  height: $sp-sm;   // 8px — visual break only, not dead space
 }
 
 .portfolio-tab {
   background: none;
   border: none;
-  padding: 10px 16px 10px 0;
+  padding: $sp-sm $sp-base $sp-sm 0;   // 8 16 8 0
   font-size: 14px;
   font-weight: 500;
   color: $text-muted;
   cursor: pointer;
   position: relative;
-  margin-right: 16px;
+  margin-right: $sp-base;
 
   &--active {
     color: $blue-active;
@@ -464,55 +512,86 @@ $header-bp: 1024px;
 .th-sort {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  nx-icon { font-size: 16px; color: var(--text-muted); }
+  gap: $sp-xs;   // 4px
+  nx-icon { font-size: 14px; color: var(--text-muted); }   // smaller than th text
 }
 
 // ─── Data table ──────────────────────────────────────────────────
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  th {
-    font-size: var(--paragraph-04-font-size);
-    font-weight: 500;
-    color: $text-muted;
-    padding: 8px 24px;
-    text-align: left;
-    border-bottom: 1px solid $border-color;
-    white-space: nowrap;
-    background: var(--ui-01);
-  }
-
-  td {
-    font-size: 14px;
-    color: $text-main;
-    padding: 10px 24px;
-    border-bottom: 1px solid var(--ui-03);
-    vertical-align: middle;
-  }
+.data-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.data-row:hover td { background: $gray-bg; }
+// NDBX nxTable override — align with dashboard design tokens
+.dash-table {
+  width: 100%;
 
-// Task list table only — vertical divider before Task key col
-.widget-card--tasklist .data-table {
-  td:nth-last-child(2),
-  th:nth-last-child(2) {
-    border-left: 1px solid $border-color;
+  // Override NDBX header cell padding to match dashboard $sp-xl inset
+  ::ng-deep .nx-header-cell {
+    padding: 10px $sp-xl !important;
+    font-size: var(--paragraph-04-font-size) !important;
+    color: $text-muted !important;
+    background: var(--ui-01) !important;
   }
 
-  td:nth-child(2) {
-    max-width: 260px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  // Override NDBX table cell padding
+  ::ng-deep .nx-table-cell {
+    padding: 12px $sp-xl !important;
+    font-size: 14px !important;
+    color: $text-main !important;
+    vertical-align: middle !important;
+  }
+
+  // First/last cell horizontal edge padding
+  ::ng-deep .nx-header-cell:first-child,
+  ::ng-deep .nx-table-cell:first-child { padding-left: $sp-xl !important; }
+  ::ng-deep .nx-header-cell:last-child,
+  ::ng-deep .nx-table-cell:last-child  { padding-right: $sp-xl !important; }
+}
+
+// Specific columns that must not wrap (dates, IDs, amounts)
+.dash-col--nowrap {
+  white-space: nowrap;
+
+  ::ng-deep .nx-header-cell,
+  &.nx-header-cell,
+  &.nx-table-cell { white-space: nowrap; }
+}
+
+// Description / client name — truncate long text
+.dash-col--desc {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  ::ng-deep .nx-table-cell { white-space: nowrap; }
+}
+
+// Task list — vertical divider before Task key (2nd-to-last) column
+.widget-card--tasklist .dash-table {
+  ::ng-deep .nx-header-cell:nth-last-child(2),
+  ::ng-deep .nx-table-cell:nth-last-child(2) {
+    border-left: 1px solid $border-color;
   }
 }
 
 .text-muted    { color: $text-muted; }
 .text-link     { color: $blue-active; font-weight: 500; }
 .text-due-today { color: var(--danger); font-weight: 600; }
+.text-overdue { color: var(--danger); font-weight: 600; }
+
+.overdue-cell {
+  display: flex;
+  align-items: center;
+  gap: $sp-xs;   // 4px
+}
+
+.overdue-icon {
+  font-size: 12px;   // must not exceed td text-size (14px)
+  color: var(--danger);
+  flex-shrink: 0;
+}
 
 .table-action-link {
   color: $blue-active;
@@ -550,10 +629,10 @@ $header-bp: 1024px;
 }
 
 .panel-card-title {
-  font-size: 20px;
+  font-size: 16px;   // panel is 360px wide — 20px too heavy
   font-weight: 600;
   color: $text-main;
-  line-height: 28px;
+  line-height: 1.4;
 }
 
 // ─── Claims stats ────────────────────────────────────────────────
@@ -579,6 +658,11 @@ $header-bp: 1024px;
   display: flex;
   align-items: center;
   &:hover { color: $text-main; }
+  &--disabled, &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    &:hover { color: $text-muted; }
+  }
 }
 
 .stats-total {
@@ -662,16 +746,10 @@ $header-bp: 1024px;
   font-weight: 400;
 }
 
-// ─── Approvals widget ────────────────────────────────────────────
-.data-table--approvals {
-  th {
-    font-size: 14px;
-    font-weight: 600;
-    color: $text-main;
-  }
-
-  td:last-child,
-  th:last-child {
+// ─── Approvals widget — action column divider ────────────────────
+.widget-card--approvals .dash-table {
+  ::ng-deep .nx-header-cell:last-child,
+  ::ng-deep .nx-table-cell:last-child {
     border-left: 1px solid $border-color;
     text-align: center;
   }
@@ -743,4 +821,47 @@ $header-bp: 1024px;
   text-align: center;
   color: var(--text-muted);
 }
+
+// ─── Role badge ───────────────────────────────────────────────────
+.page-role-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  &--claims-handler  { background: var(--ui-03); color: $text-muted; }
+  &--kcm             { background: var(--claim-status-in-progress-bg, #e3f2fd); color: var(--claim-status-in-progress-color, #1565c0); }
+  &--aviation-handler{ background: var(--task-status-in-progress-bg, #fff8e6); color: var(--task-status-in-progress-color, #7a5200); }
+}
+
+// ─── KCM scope selector ───────────────────────────────────────────
+.scope-tabs {
+  display: flex;
+  gap: $sp-xs;   // 4px between pills
+  padding: 0 $sp-xl $sp-md;   // 0 24 12 — aligns with card inset
+}
+
+.scope-tab {
+  font-size: 13px;
+  padding: $sp-xs $sp-md;   // 4 12
+  border-radius: 12px;
+  border: 1px solid $border-color;
+  background: var(--ui-01);
+  color: $text-muted;
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+  &:hover { background: var(--ui-02); }
+  &--active { background: var(--interactive-primary); color: #fff; border-color: var(--interactive-primary); }
+}
+
+// ─── Dormant / "You" nx-badge sizing ─────────────────────────────
+.row--dormant td { background: var(--warning-dimmed, #fff8e6); }
+
+.dormant-nx-badge, .by-me-nx-badge {
+  margin-left: 6px;
+  vertical-align: middle;
+  font-size: 11px;
+}
+
 

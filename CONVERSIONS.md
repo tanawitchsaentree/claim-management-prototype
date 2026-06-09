@@ -92,6 +92,70 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-06-09 — BMPCC-415-F2 (Edit Loss Info follow-up: full diff + policyNumber)
+
+- **Source:** gap verification after BMPCC-415 build
+- **Files modified:** `edit-loss-information.component.ts` (computeDiffs + policyNumber signal), `edit-loss-information.component.html` ([policyNumber] binding)
+- **GAP 2 fixed:** `computeDiffs()` now covers all 16 editable fields: date/time of occurrence, date/time of notification, cause of loss, type of damage, loss description, fire origin, fire dept called, fire dept report number, water source, affected area m², police report number, estimated value stolen, date reported to police, per-event damages
+- **GAP 4 fixed:** `policyNumber` signal fetched from `overviewSvc.getOverview(claimId)` on init; bound to `[policyNumber]="policyNumber()"` on LocationPickerComponent
+- **DEFERRED — do not implement without explicit instruction:**
+  - ⚑ FormGroup duplication: `edit-loss-information` FormGroup is a copy of `FnolStateService`'s lossInformation group. If FNOL form fields change, edit form must be updated manually. Fix: extract shared `buildLossInfoFormGroup()` factory. Deferred until FNOL fields change.
+  - ⚑ CanDeactivate guard: browser Back button and nav-link clicks bypass the discard modal. Fix: implement Angular `CanDeactivate` route guard. Deferred — low frequency UX issue.
+
+---
+
+## 2026-06-09 — BMPCC-415 (Edit Loss Information — targeted edit screen)
+
+- **Source:** BMPCC-415 + Drishya discussion 05 Jun
+- **Module:** Claims / Edit Loss Information
+- **Files created:** `features/claims/edit-loss-information/edit-loss-information.component.*`, `loss-info-confirm-modal.component.*`, `loss-info-discard-modal.component.*`
+- **Files modified:** `app.routes.ts` (+1 route), `claim-overview.component.*` (edit entry point + RouterLink), `mock-claim-overview.service.ts` (appendActivities), `mock-state.service.ts` (patchActivities), `fnol-state.service.ts` (prefillFromExistingLossInfo), `loss-information.json` (+CLM-2024-001 record)
+- **Deviations / PLACEHOLDER flags:**
+  - ⚑ `region: string` (singular) in MassEvent stays deferred — unrelated to this ticket
+  - ⚑ Location picker in edit context: LocationPickerComponent is self-contained (no FnolStateService dep) and renders correctly. However, `policyNumber` is passed as `null` in edit mode — policy-location lookup won't work. Location displayed as-is from LossInformation.lossLocation. Full location edit parity requires passing claimId → policyNumber mapping. Noted in template as a comment.
+  - ⚑ `prefillFromExistingLossInfo()` added to FnolStateService but edit screen uses its own FormGroup (intentional isolation). The service method is available for future wizard-edit hybrid flows.
+  - ⚑ Confirmation modal shows field-level diffs for 7 key fields. Cause details sub-fields (water/theft) are not fully diffed. Extend `computeDiffs()` when needed.
+- **Wizard regression:** Edit screen uses completely independent FormGroup — does NOT touch `FnolStateService.fnolForm`. FNOL creation wizard is unchanged. Regression risk = zero.
+- **CWB Location verdict:** LocationPickerComponent works outside wizard shell. Policy-location search not available (policyNumber=null) but existing location displays correctly.
+
+---
+
+## 2026-06-09 — BMPCC-ME-POPOVER (Mass Event popover on Claim Overview)
+
+- **Source:** BMPCC Sr.3 open point (verbal)
+- **Module:** Claim Overview
+- **Files touched:** `mass-event.model.ts`, `claim-overview.model.ts`, `claim.model.ts`, `mass-events.json`, `claim-overview.json`, `mass-event-edit-modal.component.*`, `claim-overview.component.*`
+- **Deviations / PLACEHOLDER flags:**
+  - ⚑ `MassEvent.region` is `string` (singular) — Confluence spec says Region(s) implying array. Deferred because changing to `string[]` requires admin UI + mock updates. Track as follow-up.
+- **catType assignment logic:** Earthquake / Storm / Flood / Wildfire / Landslide → `CAT` (all are natural catastrophes). Colombia Landslide assigned `Non-CAT` as an example of non-CAT event for demo contrast.
+- **Mock claim links:** CLM-2024-001 → ME-2025.102, CL-2025-001 → ME-2025.101, CLM-2024-011 (Closed/Liver Tea) → unlinked (demos hidden state)
+- **"View full details":** Opens existing `MassEventEditModalComponent` in new `mode: 'view'` — form disabled, Save hidden, Cancel → Close
+- **Notes:** Signal-in-async-pipe reactivity issue — mass event data is loaded inside `combineLatest` pipeline and stored in `OverviewVM.massEvent` (not a standalone signal) so `vm$` emits once with all data and template renders correctly in one pass
+
+---
+
+## 2026-06-08 — DASH-P2 (Dashboard Phase 2 — Role-based redesign, all 10 feedback items)
+
+- **Source:** user research brief (verbal)
+- **Module:** Dashboard
+- **Files touched:** `core/services/auth.ts`, `core/models/dashboard-extended.model.ts`, `core/models/index.ts`, `core/models/claim.model.ts`, `core/mock/data/heads-up.json`, `core/mock/data/news.json`, `core/mock/data/calendar-events.json`, `core/mock/data/provider-expenses.json`, `core/mock/data/claims.json` (+group field), `core/mock/services/mock-dashboard-extended.service.ts`, `features/dashboard/dashboard.ts`, `features/dashboard/dashboard.html`, `features/dashboard/dashboard.scss`, `features/dashboard/widgets/financial-closure-banner.ts`, `features/dashboard/widgets/kpi-row.ts`, `features/dashboard/widgets/heads-up-panel.ts`, `features/dashboard/widgets/calendar-widget.ts`, `features/dashboard/widgets/news-panel.ts`, `features/dashboard/widgets/expense-breakdown.ts`, `features/dashboard/widgets/persona-switcher.ts`, `app.ts`
+- **Deviations / PLACEHOLDER flags:**
+  - ⚑ `DORMANT_DAYS = 30` — threshold hardcoded; needs business sign-off on per-LOB rules
+  - ⚑ `bigReserveMovements: 3` in KPI row — hardcoded placeholder; needs `ReserveMovement` model + real service wired (requires separate data model sprint)
+  - ⚑ `€50k` reserve movement threshold in banner copy — placeholder value; confirm with business
+  - ⚑ Payments card still shows static "150,000 EUR" — needs real payment aggregation service
+  - ⚑ Aviation handler role defined as `dashboardRole: 'aviation-handler'` — not mapped to existing `'admin'|'adjuster'|'claimant'` RBAC system; needs proper role model decision
+  - ⚑ Calendar integration is internal mock only — no Microsoft Graph API; decision on Outlook integration deferred
+  - "Submitted by me" filter matches by `requester === user.name` (string match) — should use user ID when backend provides it
+- **Schema changes:** `User` extended with `dashboardRole: DashboardRole` and `group: string`; `Claim` extended with `group?: string`; new `dashboard-extended.model.ts` (HeadsUpItem, NewsItem, CalendarEvent, ProviderExpense, FinancialClosurePeriod, KpiData)
+- **Notes:**
+  - `AuthService` now uses `localStorage('dashboard:persona')` for persona persistence across reload — intentional for dev demo, remove before production auth wired
+  - KCM KPI row `bigReserveMovements` is the only deliberately fake number in the UI — it has a `title` tooltip flagging it as placeholder so testers aren't misled
+  - All new widget components use Angular signals + `toSignal` pattern; zero `.subscribe()` calls introduced
+  - `NxMessageModule` was available but not imported — used custom CSS banner to avoid adding another NDBX module for a single component; can swap to `nx-message` later
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

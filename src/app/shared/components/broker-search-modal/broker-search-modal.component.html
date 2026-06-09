@@ -20,8 +20,9 @@
 
   <form [formGroup]="form" class="bsm-form" (ngSubmit)="onSearch()">
 
-    <div class="bsm-search-row">
-      <div class="bsm-search-row__inputs">
+    <!-- Primary search — always visible: name field + actions on one row -->
+    <div class="bsm-primary-row">
+      <div class="bsm-primary-row__inputs">
         @if (partyType() === 'company') {
           <nx-formfield label="Legal Name / Trade (DBA) Name">
             <input nxInput formControlName="legalName"
@@ -35,6 +36,21 @@
             <input nxInput formControlName="lastName" autocomplete="off" />
           </nx-formfield>
         }
+      </div>
+      <div class="bsm-primary-row__actions">
+        <button nxButton="primary small" type="submit">Search</button>
+        <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Advanced filters toggle -->
+    <button type="button" class="bsm-advanced-toggle" (click)="toggleAdvanced()">
+      <nx-icon [name]="showAdvanced() ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+      {{ showAdvanced() ? 'Fewer filters' : 'More filters' }}
+    </button>
+
+    @if (showAdvanced()) {
+      <div class="bsm-advanced-grid">
         <nx-formfield label="Country">
           <nx-dropdown formControlName="country" placeholder="Select">
             <nx-dropdown-item [value]="''">Any</nx-dropdown-item>
@@ -45,10 +61,9 @@
         </nx-formfield>
         @if (partyType() === 'company') {
           <nx-formfield label="Role">
-            <input nxInput formControlName="role" autocomplete="off" />
+            <input nxInput formControlName="role" autocomplete="off" readonly />
           </nx-formfield>
         }
-
         <nx-formfield label="Zip code">
           <input nxInput formControlName="zipCode" autocomplete="off" />
         </nx-formfield>
@@ -58,7 +73,6 @@
         <nx-formfield label="City">
           <input nxInput formControlName="city" autocomplete="off" />
         </nx-formfield>
-
         <nx-formfield label="ID type">
           <nx-dropdown formControlName="idType" placeholder="Select">
             <nx-dropdown-item [value]="''">Any</nx-dropdown-item>
@@ -70,13 +84,8 @@
         <nx-formfield label="ID Value">
           <input nxInput formControlName="idValue" autocomplete="off" />
         </nx-formfield>
-        <div class="bsm-search-row__spacer"></div>
       </div>
-      <div class="bsm-search-row__actions">
-        <button nxButton="primary small" type="submit">Search</button>
-        <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
-      </div>
-    </div>
+    }
   </form>
 
   <ng-container *ngIf="state$ | async as vm">
@@ -96,7 +105,7 @@
         </div>
 
         @if (partyType() === 'company') {
-          <table nxTable class="bsm-table">
+          <div class="bsm-table-wrap"><table nxTable class="bsm-table">
             <thead>
               <tr nxTableRow>
                 <th nxHeaderCell class="bsm-col-pick"></th>
@@ -129,9 +138,9 @@
                 </tr>
               }
             </tbody>
-          </table>
+          </table></div>
         } @else {
-          <table nxTable class="bsm-table">
+          <div class="bsm-table-wrap"><table nxTable class="bsm-table">
             <thead>
               <tr nxTableRow>
                 <th nxHeaderCell class="bsm-col-pick"></th>
@@ -166,7 +175,7 @@
                 </tr>
               }
             </tbody>
-          </table>
+          </table></div>
         }
 
         <div class="bsm-table-footer">

@@ -52,8 +52,14 @@
   align-items: center;
   padding: 8px 0;
   border-top: 1px solid var(--ui-04);
+  flex-shrink: 0;
 
-  .crs-strip--collapsed & { border-top: none; }
+  // Collapsed: move toggle to top so it's always visible regardless of viewport height
+  .crs-strip--collapsed & {
+    border-top: none;
+    order: -1;   // render above crs-items
+    border-bottom: 1px solid var(--ui-04);
+  }
 }
 
 // Tab buttons (5 nav icons) — mirror sidebar.scss .nav-item state pattern

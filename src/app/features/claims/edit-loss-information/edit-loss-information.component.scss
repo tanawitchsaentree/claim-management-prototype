@@ -1,0 +1,135 @@
+:host { display: block; }
+
+.eli-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 32px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+// ─── Page layout ──────────────────────────────────────────────────────
+.eli-page {
+  max-width: 960px;
+  padding: 0 0 48px;
+}
+
+// ─── Page header ──────────────────────────────────────────────────────
+.eli-header {
+  margin-bottom: 24px;
+}
+
+.eli-breadcrumb {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.eli-title {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  margin: 0;
+  line-height: 1.3;
+}
+
+// ─── Footer — wizard step-footer pattern ─────────────────────────
+.eli-step-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+}
+
+// ─── Cards — matches li-card from step-loss-information ───────────────
+.eli-card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+  background: var(--ui-01);
+}
+
+.eli-section-heading {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 16px;
+}
+
+.eli-sub-heading {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 12px;
+}
+
+.eli-section-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+
+.eli-divider {
+  border: none;
+  border-top: 1px solid var(--ui-04);
+  margin: 20px 0;
+}
+
+.eli-full-width {
+  width: 100%;
+}
+
+// ─── Two-col grid — matches step-loss-information ────────────────────
+.two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+  align-items: start;
+}
+
+// ─── CWB location note ────────────────────────────────────────────────
+.eli-cwb-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.eli-note-icon {
+  font-size: 14px;
+  color: var(--interactive-primary);
+  flex-shrink: 0;
+}
+
+// ─── Radio field ─────────────────────────────────────────────────────
+.eli-radio-field { display: flex; flex-direction: column; gap: 6px; }
+.eli-radio-label { font-size: 14px; font-weight: 600; color: var(--text-01); margin: 0; }
+.eli-radio-row   { display: flex; gap: 16px; }
+
+// ─── Events ──────────────────────────────────────────────────────────
+.eli-event-block {
+  padding: 0;
+  &--divider { border-top: 1px solid var(--ui-03); margin-top: 20px; padding-top: 20px; }
+}
+
+.eli-field-group { margin-bottom: 16px; }
+.eli-field-label { font-size: 14px; font-weight: 600; color: var(--text-01); margin: 0 0 8px; }
+.eli-checkbox-row { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+
+.eli-empty {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.eli-group-error {
+  font-size: 13px;
+  color: var(--danger);
+  margin: 4px 0 0;
+}
+

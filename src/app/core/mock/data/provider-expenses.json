@@ -1,0 +1,6 @@
+[
+  { "category": "adjuster", "label": "Loss Adjusters", "amount": 184500, "currency": "EUR" },
+  { "category": "legal",    "label": "Legal Counsel",  "amount": 97200,  "currency": "EUR" },
+  { "category": "expert",   "label": "Expert Witnesses","amount": 63800, "currency": "EUR" },
+  { "category": "other",    "label": "Other Providers", "amount": 28400, "currency": "EUR" }
+]

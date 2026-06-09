@@ -11,11 +11,11 @@ import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxTimefieldModule } from '@allianz/ng-aquila/timefield';
 import { MassEvent } from '../../../../core/models';
 
-export type MassEventModalMode = 'edit' | 'create';
+export type MassEventModalMode = 'edit' | 'create' | 'view';
 
 export interface MassEventModalData {
   mode: MassEventModalMode;
-  event?: MassEvent;             // required when mode === 'edit'
+  event?: MassEvent;             // required when mode === 'edit' | 'view'
   existingIds?: string[];        // used in create mode to generate next ID
 }
 
@@ -48,6 +48,7 @@ export class MassEventEditModalComponent {
   readonly mode      = signal<MassEventModalMode>(this.data.mode);
   readonly isEdit    = computed(() => this.mode() === 'edit');
   readonly isCreate  = computed(() => this.mode() === 'create');
+  readonly isView    = computed(() => this.mode() === 'view');
 
   readonly types      = ['Type #1', 'Type #2', 'Type #3'];
   readonly countries  = ['United States', 'France', 'Australia', 'Poland', 'Czech Republic', 'Canada', 'Colombia', 'Germany', 'United Kingdom'];
@@ -73,13 +74,21 @@ export class MassEventEditModalComponent {
     postcodes:      new FormControl<string>((this.seed.postcodes ?? []).join(', '), { nonNullable: true }),
   });
 
-  readonly title = computed(() =>
-    this.isEdit() ? (this.data.event?.name || 'Mass event') : 'Mass Event creation'
-  );
+  readonly title = computed(() => {
+    if (this.isView())   return this.data.event?.name || 'Mass Event';
+    if (this.isEdit())   return this.data.event?.name || 'Mass event';
+    return 'Mass Event creation';
+  });
 
   readonly submitLabel = computed(() => (this.isEdit() ? 'Save' : 'Create Mass Event'));
 
   readonly massEventId = computed(() => this.data.event?.id ?? '');
+
+  constructor() {
+    if (this.isView()) {
+      this.form.disable();
+    }
+  }
 
   onCancel(): void {
     this.ref.close(null);

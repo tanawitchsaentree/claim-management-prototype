@@ -1,0 +1,14 @@
+[
+  { "id": "cal-001", "title": "Reserve review — BMW Budapest Motors", "date": "2026-06-09", "type": "review", "claimId": "CLM-2024-005" },
+  { "id": "cal-002", "title": "Site visit: Schäfer & Söhne AG", "date": "2026-06-10", "type": "meeting", "claimId": "CLM-2024-016" },
+  { "id": "cal-003", "title": "Litigation team call — Rhein Constructions", "date": "2026-06-10", "type": "meeting", "claimId": "CLM-2024-009" },
+  { "id": "cal-004", "title": "AML check deadline — 12 claims", "date": "2026-06-11", "type": "deadline" },
+  { "id": "cal-005", "title": "Cyber disclosure filing — adesso SE", "date": "2026-06-11", "type": "deadline", "claimId": "CLM-2024-013" },
+  { "id": "cal-006", "title": "Loss adjuster report: GBF Logistics", "date": "2026-06-12", "type": "review", "claimId": "CLM-2024-003" },
+  { "id": "cal-007", "title": "Weekly claims portfolio review", "date": "2026-06-13", "type": "meeting" },
+  { "id": "cal-008", "title": "Marine survey: Nordic Shipping AS", "date": "2026-06-14", "type": "review", "claimId": "CLM-2024-017" },
+  { "id": "cal-009", "title": "System maintenance window", "date": "2026-06-14", "type": "deadline" },
+  { "id": "cal-010", "title": "Q2 closure prep meeting", "date": "2026-06-18", "type": "meeting" },
+  { "id": "cal-011", "title": "Reserve submission deadline — Q2", "date": "2026-06-24", "type": "deadline" },
+  { "id": "cal-012", "title": "Q2 Financial closure begins", "date": "2026-06-25", "type": "deadline" }
+]

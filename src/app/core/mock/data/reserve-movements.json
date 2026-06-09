@@ -1,0 +1,14 @@
+[
+  { "id": "rm-001", "claimId": "CLM-2024-005", "amountBefore": 850000, "amountAfter": 980000, "delta": 130000, "date": "2026-06-07", "reason": "Independent engineering survey revised structural repair estimate upward" },
+  { "id": "rm-002", "claimId": "CLM-2024-009", "amountBefore": 620000, "amountAfter": 760000, "delta": 140000, "date": "2026-06-06", "reason": "Litigation risk uplift following worker injury claim filed in court" },
+  { "id": "rm-003", "claimId": "CLM-2024-016", "amountBefore": 450000, "amountAfter": 670000, "delta": 220000, "date": "2026-06-05", "reason": "Environmental remediation scope extended after soil contamination confirmed" },
+  { "id": "rm-004", "claimId": "CLM-2024-001", "amountBefore": 380000, "amountAfter": 425000, "delta": 45000, "date": "2026-06-04", "reason": "Sprinkler activation secondary damage reassessed by adjuster" },
+  { "id": "rm-005", "claimId": "CLM-2024-003", "amountBefore": 295000, "amountAfter": 312000, "delta": 17000, "date": "2026-06-04", "reason": "Additional cargo inspection revealed further water-damaged containers" },
+  { "id": "rm-006", "claimId": "CLM-2024-017", "amountBefore": 70000, "amountAfter": 95000, "delta": 25000, "date": "2026-06-03", "reason": "Interim survey report updated engine replacement cost estimate" },
+  { "id": "rm-007", "claimId": "CLM-2024-013", "amountBefore": 12000, "amountAfter": 15000, "delta": 3000, "date": "2026-06-02", "reason": "Forensic investigation fee added to indemnity reserve" },
+  { "id": "rm-008", "claimId": "CLM-2024-008", "amountBefore": 30000, "amountAfter": 34000, "delta": 4000, "date": "2026-06-01", "reason": "Regulatory notification costs added following PDPC filing" },
+  { "id": "rm-009", "claimId": "CLM-2024-005", "amountBefore": 780000, "amountAfter": 850000, "delta": 70000, "date": "2026-05-28", "reason": "Machinery spare parts cost revised after supply chain delay confirmed" },
+  { "id": "rm-010", "claimId": "CLM-2024-009", "amountBefore": 580000, "amountAfter": 620000, "delta": 40000, "date": "2026-05-25", "reason": "Crane removal and site clearance costs added by adjuster" },
+  { "id": "rm-011", "claimId": "CLM-2024-004", "amountBefore": 50000, "amountAfter": 55000, "delta": 5000, "date": "2026-05-22", "reason": "Medical report revised prognosis — physiotherapy costs extended 6 months" },
+  { "id": "rm-012", "claimId": "CLM-2024-002", "amountBefore": 83000, "amountAfter": 87500, "delta": 4500, "date": "2026-05-20", "reason": "Decryption specialist invoice received and added to expense reserve" }
+]

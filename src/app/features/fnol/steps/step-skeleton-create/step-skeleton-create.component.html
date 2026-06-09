@@ -35,6 +35,9 @@
           <button nxButton="primary small" type="button" (click)="openBrokerSearch()">
             Search new broker
           </button>
+          <button nxButton="tertiary small" type="button" (click)="clearBroker()">
+            Remove broker
+          </button>
         </div>
         <div class="broker-row">
           <table nxTable class="broker-row__table">
@@ -61,13 +64,9 @@
           </table>
         </div>
       } @else {
-        <div class="two-col-grid">
-          <div data-field="broker">
-            <nx-formfield label="Broker">
-              <input nxInput formControlName="notifierText" autocomplete="off" placeholder="Broker name" />
-            </nx-formfield>
-          </div>
-        </div>
+        <!-- Broker must be selected from the search (verified: IPM ID + clearance).
+             Free-text entry removed — no unverified brokers. -->
+        <p class="broker-empty__text">No broker selected. Search to pick a verified broker.</p>
         <div class="notifier-broker-actions">
           <button nxButton="primary small" type="button" (click)="openBrokerSearch()">
             <nx-icon name="search" nxIconPositionStart></nx-icon>

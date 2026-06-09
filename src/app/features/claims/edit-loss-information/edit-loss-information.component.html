@@ -1,0 +1,205 @@
+@if (loading()) {
+  <div class="eli-loading">
+    <nx-spinner size="medium"></nx-spinner>
+    <span>Loading loss information…</span>
+  </div>
+} @else {
+
+<div class="eli-page" [formGroup]="form">
+
+  <!-- Page header -->
+  <div class="eli-header">
+    <div class="eli-header-left">
+      <p class="eli-breadcrumb">{{ claimId() }}</p>
+      <h1 class="eli-title">Edit loss information</h1>
+    </div>
+  </div>
+
+  <!-- Card 1: General information -->
+  <section class="eli-card">
+    <h2 class="eli-section-heading">General information</h2>
+    <p class="eli-section-desc">Your selections here determine which cause-specific fields appear below.</p>
+
+    <div class="two-col-grid">
+      <nx-formfield label="Cause of loss">
+        <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
+          placeholder="Select cause of loss" formControlName="causeOfLoss"
+          (selectionChange)="onCauseOfLossChange($event)">
+        </nx-multi-select>
+      </nx-formfield>
+      <nx-formfield label="Type of damage">
+        <nx-multi-select [options]="typeOfDamageOptions()" selectValue="value" selectLabel="label"
+          placeholder="Select type of damage" formControlName="typeOfDamage">
+        </nx-multi-select>
+      </nx-formfield>
+    </div>
+
+    <hr class="eli-divider" />
+    <h3 class="eli-sub-heading">When did the loss occur?</h3>
+
+    <div class="two-col-grid" [formGroup]="dateOfLoss">
+      <nx-formfield label="Date of occurrence">
+        <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="occPicker" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="occPicker"></nx-datepicker-toggle>
+        <nx-datepicker #occPicker></nx-datepicker>
+        <nx-hint nxFormfieldHint>DD-MM-YYYY</nx-hint>
+        <nx-error nxFormfieldError *ngIf="submitAttempted && dateOfLoss.get('dateOfOccurrence')?.errors?.['required']">Date of occurrence is required</nx-error>
+        <nx-error nxFormfieldError *ngIf="dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']">Date can't be in the future</nx-error>
+      </nx-formfield>
+      <div>
+        <nx-timefield label="Time of occurrence" formControlName="timeOfOccurrence"></nx-timefield>
+      </div>
+      <nx-formfield label="Date of notification">
+        <input nxDatefield nxInput formControlName="dateOfNotification" [datepicker]="notifPicker" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="notifPicker"></nx-datepicker-toggle>
+        <nx-datepicker #notifPicker></nx-datepicker>
+        <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+        <nx-error nxFormfieldError *ngIf="submitAttempted && dateOfLoss.get('dateOfNotification')?.errors?.['required']">Date of notification is required</nx-error>
+      </nx-formfield>
+      <div>
+        <nx-timefield label="Time of notification" formControlName="timeOfNotification"></nx-timefield>
+      </div>
+    </div>
+    @if (dateOfLoss.errors?.['dateOrder']) {
+      <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
+    }
+
+    <hr class="eli-divider" />
+
+    <nx-formfield label="Loss description (optional)" class="eli-full-width">
+      <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
+      <nx-hint nxFormfieldHint>{{ (form.get('lossDescription')?.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
+    </nx-formfield>
+  </section>
+
+  <!-- Card 2: Location (CWB Location Picker) -->
+  <section class="eli-card">
+    <h2 class="eli-section-heading">Locations of loss</h2>
+    <p class="eli-section-desc eli-cwb-note">
+      <nx-icon name="info-circle-o" class="eli-note-icon"></nx-icon>
+      Location picker is shown in read-only context here. Changes to location require re-opening from the FNOL flow.
+    </p>
+    <!-- CWB Location MFE: LocationPickerComponent is self-contained (no FnolStateService dep).
+         Renders correctly outside wizard. Location changes are reflected via (locationChange). -->
+    <app-location-picker
+      [policyNumber]="policyNumber()"
+      [value]="lossLocation.value"
+      (locationChange)="lossLocation.setValue($event); form.markAsDirty()">
+    </app-location-picker>
+  </section>
+
+  <!-- Card 3: Cause-specific details (conditional) -->
+  @if (showFireDetails() || showWaterDetails() || showTheftDetails()) {
+    <section class="eli-card" [formGroup]="causeDetails">
+      <h2 class="eli-section-heading">Cause-specific details</h2>
+      @if (showFireDetails()) {
+        <ng-container formGroupName="fire">
+          <h3 class="eli-sub-heading">Fire</h3>
+          <div class="two-col-grid">
+            <nx-formfield label="Fire origin (optional)">
+              <input nxInput formControlName="fireOrigin" />
+            </nx-formfield>
+            <div class="eli-radio-field">
+              <p class="eli-radio-label">Fire department called?</p>
+              <div class="eli-radio-row">
+                <nx-radio name="fireDeptEdit" [value]="true"  [checked]="fireDeptCalled === true"  (valueChange)="setFireDeptCalled(true)"  labelSize="small">Yes</nx-radio>
+                <nx-radio name="fireDeptEdit" [value]="false" [checked]="fireDeptCalled === false" (valueChange)="setFireDeptCalled(false)" labelSize="small">No</nx-radio>
+              </div>
+            </div>
+            <nx-formfield label="Fire department report number (optional)">
+              <input nxInput formControlName="fireDepartmentReportNumber" />
+            </nx-formfield>
+          </div>
+        </ng-container>
+      }
+      @if (showWaterDetails()) {
+        <ng-container formGroupName="waterDamage">
+          <h3 class="eli-sub-heading">Water damage</h3>
+          <div class="two-col-grid">
+            <nx-formfield label="Water source (optional)">
+              <nx-dropdown formControlName="waterSource" placeholder="Select water source">
+                @for (s of waterSources(); track s.value) {
+                  <nx-dropdown-item [value]="s.value">{{ s.label }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+            <nx-formfield label="Affected area (m²) (optional)">
+              <input nxInput type="number" formControlName="affectedAreaSqm" min="0" />
+            </nx-formfield>
+          </div>
+        </ng-container>
+      }
+      @if (showTheftDetails()) {
+        <ng-container formGroupName="theft">
+          <h3 class="eli-sub-heading">Theft</h3>
+          <div class="two-col-grid">
+            <nx-formfield label="Police report number (optional)">
+              <input nxInput formControlName="policeReportNumber" />
+            </nx-formfield>
+            <nx-formfield label="Estimated value stolen (optional)">
+              <input nxInput type="number" formControlName="estimatedValueStolen" min="0" />
+            </nx-formfield>
+            <nx-formfield label="Date reported to police (optional)">
+              <input nxDatefield nxInput formControlName="dateReportedToPolice" [datepicker]="theftPicker" />
+              <nx-datepicker-toggle nxFormfieldSuffix [for]="theftPicker"></nx-datepicker-toggle>
+              <nx-datepicker #theftPicker></nx-datepicker>
+            </nx-formfield>
+          </div>
+        </ng-container>
+      }
+    </section>
+  }
+
+  <!-- Card 4: Events details -->
+  <section class="eli-card">
+    <h2 class="eli-section-heading">Events details</h2>
+    @if (eventsArray.length === 0) {
+      <p class="eli-empty">Select Cause of loss to see event details.</p>
+    } @else {
+      @for (ctrl of eventsArray.controls; track ctrl; let i = $index) {
+        <div class="eli-event-block" [class.eli-event-block--divider]="i > 0">
+          <h3 class="eli-sub-heading">{{ getEventKey(i) }}</h3>
+          @if (getEventCauseOptions(getEventKey(i)).length > 0) {
+            <div class="eli-field-group">
+              <p class="eli-field-label">Caused by</p>
+              <div class="eli-checkbox-row">
+                @for (opt of getEventCauseOptions(getEventKey(i)); track opt.value) {
+                  <nx-checkbox [checked]="isEventCauseSelected(getEventGroup(i), opt.value)"
+                               (checkedChange)="toggleEventCause(getEventGroup(i), opt.value)">
+                    {{ opt.label }}
+                  </nx-checkbox>
+                }
+              </div>
+            </div>
+          }
+          <div class="eli-field-group">
+            <p class="eli-field-label">Damages</p>
+            <div class="eli-checkbox-row">
+              @for (dmg of typeOfDamageOptions(); track dmg.value) {
+                <nx-checkbox [checked]="isEventDamageSelected(getEventGroup(i), dmg.value)"
+                             (checkedChange)="toggleEventDamage(getEventGroup(i), dmg.value)">
+                  {{ dmg.label }}
+                </nx-checkbox>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </section>
+
+
+  <!-- Footer — mirrors wizard step-footer pattern -->
+  <div class="eli-step-footer">
+    <button nxButton="tertiary small" type="button" (click)="onDiscard()">Discard</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!isDirty() || saving()"
+            (click)="onSaveChanges()">
+      @if (saving()) { <nx-spinner size="small"></nx-spinner>&nbsp; }
+      Save changes
+    </button>
+  </div>
+
+</div>
+
+}

@@ -191,7 +191,7 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
       targetSectionId,
     };
 
-    const ref = this.dialogSvc.open(AddPartyModalComponent, { data: modalData, width: '960px' });
+    const ref = this.dialogSvc.open(AddPartyModalComponent, { data: modalData, width: '960px', maxWidth: '92vw' });
     const selected = await firstValueFrom(ref.afterClosed()) as Party[] | undefined;
     if (!selected || selected.length === 0) return;
 
@@ -229,7 +229,7 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
 
   async onEditRole(party: Party): Promise<void> {
     const data: EditRoleDialogData = { party };
-    const ref = this.dialogSvc.open(EditRoleDialogComponent, { data, width: '480px' });
+    const ref = this.dialogSvc.open(EditRoleDialogComponent, { data, width: '600px', maxWidth: '92vw' });
     const newRoles = await firstValueFrom(ref.afterClosed()) as PartyRole[] | null | undefined;
     if (!newRoles || newRoles.length === 0) return;
     await firstValueFrom(this.partiesSvc.updateParty(this.policyNumber, party.partyId, { roles: newRoles }));
@@ -244,7 +244,7 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
       cancelLabel: 'Cancel',
       confirmDanger: true,
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '480px' });
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
     const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
     if (!confirmed) return;
     await firstValueFrom(this.partiesSvc.removeParty(this.policyNumber, party.partyId));

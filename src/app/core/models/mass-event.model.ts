@@ -1,8 +1,11 @@
+export type MassEventCatType = 'CAT' | 'Non-CAT';
+
 export interface MassEvent {
   id:         string;          // ME-2025.102
   code:       string;          // Y66JGR02
   name:       string;          // US-CA Earthquake 2025
-  type?:      string;
+  catType?:   MassEventCatType; // CAT = natural catastrophe, Non-CAT = man-made/other
+  type?:      string;           // event category: Earthquake, Storm, Flood, etc.
   dateStart:  string;          // ISO yyyy-mm-dd
   dateEnd:    string;          // ISO yyyy-mm-dd
   timeStart?: string;          // HH:mm

@@ -146,7 +146,7 @@ export class StepSkeletonCreateComponent implements OnInit {
 
   async openBrokerSearch(): Promise<void> {
     const ref = this.dialogSvc.open(BrokerSearchModalComponent, {
-      data: {}, width: '1040px', maxWidth: '95vw',
+      data: {}, width: '960px', maxWidth: '92vw',
     });
     const picked = await firstValueFrom(ref.afterClosed()) as BrokerSearchModalResult;
     if (!picked) return;
@@ -154,7 +154,10 @@ export class StepSkeletonCreateComponent implements OnInit {
     this.form.controls.notifierText.setValue(picked.legalName);
   }
 
-  clearBroker(): void { this.notifierBroker.set(null); }
+  clearBroker(): void {
+    this.notifierBroker.set(null);
+    this.form.controls.notifierText.setValue('');
+  }
 
   statusLabel(s: Broker['status']): string {
     return s === 'cleared' ? 'Cleared' : s === 'not-cleared' ? 'Not cleared' : 'Pending';

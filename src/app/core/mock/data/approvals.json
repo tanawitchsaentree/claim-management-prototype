@@ -1,32 +1,52 @@
 [
   {
     "requestId": "RID123456",
-    "claimId": "123456",
+    "claimId": "CLM-2024-001",
     "oe": "Germany",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity",
     "currency": "EUR",
     "amount": 100000,
-    "requester": "Jane Austen"
+    "requester": "Klaus Schmidt"
   },
   {
     "requestId": "RID847625",
-    "claimId": "123456",
+    "claimId": "CLM-2024-009",
     "oe": "Germany",
-    "lineOfBusiness": "Property",
+    "lineOfBusiness": "Engineering",
     "reserveType": "Expenses",
     "currency": "EUR",
     "amount": 20000,
-    "requester": "Jane Austen"
+    "requester": "Mara Mustermann"
   },
   {
     "requestId": "RID909089",
-    "claimId": "123456",
+    "claimId": "CLM-2024-004",
+    "oe": "Austria",
+    "lineOfBusiness": "Liability",
+    "reserveType": "Indemnity",
+    "currency": "EUR",
+    "amount": 55000,
+    "requester": "Klaus Schmidt"
+  },
+  {
+    "requestId": "RID334471",
+    "claimId": "CLM-2024-013",
     "oe": "Germany",
-    "lineOfBusiness": "Property",
+    "lineOfBusiness": "Cyber",
     "reserveType": "Expenses",
     "currency": "EUR",
+    "amount": 15000,
+    "requester": "Anna Weber"
+  },
+  {
+    "requestId": "RID556782",
+    "claimId": "CLM-2024-007",
+    "oe": "Norway",
+    "lineOfBusiness": "Marine",
+    "reserveType": "Recoveries",
+    "currency": "USD",
     "amount": 35000,
-    "requester": "Jane Austen"
+    "requester": "Mara Mustermann"
   }
 ]

@@ -10,6 +10,7 @@ import {
 } from '../models/fnol-form.model';
 import { Policy } from '../../../core/models';
 import { SkeletonClaim } from '../../../core/models/skeleton-claim.model';
+import { LossInformation } from '../../../core/models/loss-information.model';
 import { CAUSE_SCHEMAS } from '../config/cause-schemas';
 
 const HAPPY_PATH_STEPS: StepConfig[] = [
@@ -84,6 +85,9 @@ export class FnolStateService {
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;
   skeletonClaimId: string | null = null;
+  // Full skeleton being converted — kept so the search page can show rich
+  // context (client + loss event) while the user picks a policy.
+  convertingSkeleton: SkeletonClaim | null = null;
 
   // ── Step config ────────────────────────────────────────────────────
 
@@ -167,6 +171,7 @@ export class FnolStateService {
     this.reset();
     this.path = 'standard';
     this.skeletonClaimId = skeleton.claimId;
+    this.convertingSkeleton = skeleton;
     if (skeleton.lossDate) {
       this.getDateOfLossGroup().patchValue({
         dateOfOccurrence: skeleton.lossDate,
@@ -254,6 +259,40 @@ export class FnolStateService {
     }
   }
 
+  // BMPCC-415: prefill the loss-information FormGroup from an existing LossInformation
+  // record (edit flow). Follows prefillFromSkeleton() pattern. Does NOT reset the
+  // full form — caller controls context. Only patches lossInformation sub-group.
+  prefillFromExistingLossInfo(li: LossInformation): void {
+    this.getDateOfLossGroup().patchValue({
+      dateOfOccurrence:   li.dateOfLoss?.dateOfOccurrence   ?? null,
+      timeOfOccurrence:   li.dateOfLoss?.timeOfOccurrence   ?? null,
+      dateOfNotification: li.dateOfLoss?.dateOfNotification ?? null,
+      timeOfNotification: li.dateOfLoss?.timeOfNotification ?? null,
+    });
+    this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(li.causeOfLoss ?? []);
+    this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(li.typeOfDamage ?? []);
+    this.fnolForm.get('lossInformation.lossDescription')?.setValue(li.lossDescription ?? '');
+
+    if (li.causeDetails) {
+      this.getCauseDetailsGroup().patchValue(li.causeDetails as object);
+    }
+
+    // Rebuild events FormArray
+    const eventsArray = this.getLossEventsArray();
+    eventsArray.clear();
+    (li.events ?? []).forEach(ev => {
+      eventsArray.push(new FormGroup({
+        eventKey: new FormControl(ev.eventKey),
+        damages:  new FormControl<string[]>(ev.damages ?? [], [Validators.required]),
+        ...(ev.causedBy ? { causedBy: new FormControl<string[]>(ev.causedBy) } : {}),
+      }));
+    });
+
+    if (li.lossLocation) {
+      this.getLossLocationControl().setValue({ locations: [] });
+    }
+  }
+
   /** Match each CAUSE_SCHEMAS key against the skeleton description (case-insensitive). */
   private inferCauseKeys(description: string | undefined): string[] {
     if (!description) return ['other-event'];
@@ -279,5 +318,6 @@ export class FnolStateService {
     this.path = null;
     this.skeleton = null;
     this.skeletonClaimId = null;
+    this.convertingSkeleton = null;
   }
 }

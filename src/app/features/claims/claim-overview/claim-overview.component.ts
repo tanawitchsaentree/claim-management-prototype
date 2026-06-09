@@ -1,18 +1,22 @@
 import { Component, inject, OnDestroy, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, combineLatest, firstValueFrom, switchMap } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, firstValueFrom, of, switchMap } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxPaginationModule } from '@allianz/ng-aquila/pagination';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxPopoverModule } from '@allianz/ng-aquila/popover';
+import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
+import { MockMassEventService } from '../../../core/mock/services/mock-mass-event.service';
 import { ClaimClosureService } from '../../../core/services/claim-closure.service';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { ScenarioStageService } from '../../../core/scenario/scenario-stage.service';
@@ -20,6 +24,7 @@ import { OverviewStage, ClosureReason as StageClosureReason } from '../../../cor
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
+import { MassEvent } from '../../../core/models/mass-event.model';
 import { Task } from '../../../core/models/task.model';
 import {
   ClaimClosureModalComponent,
@@ -29,6 +34,10 @@ import {
   ClaimReopenModalComponent,
   ClaimReopenModalResult,
 } from './components/claim-reopen-modal/claim-reopen-modal.component';
+import {
+  MassEventEditModalComponent,
+  MassEventModalData,
+} from '../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
 
 interface OverviewVM {
   loading: boolean;
@@ -38,6 +47,7 @@ interface OverviewVM {
   activitiesExpanded: boolean;
   tasks: Task[];
   tasksExpanded: boolean;
+  massEvent: MassEvent | null;
 }
 
 const EMPTY_VM: OverviewVM = {
@@ -48,6 +58,7 @@ const EMPTY_VM: OverviewVM = {
   activitiesExpanded: false,
   tasks: [],
   tasksExpanded: true,
+  massEvent: null,
 };
 
 const TASKS_PAGE_SIZE = 10;
@@ -57,12 +68,15 @@ const TASKS_PAGE_SIZE = 10;
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     NxIconModule,
     NxButtonModule,
     NxSpinnerModule,
     NxTableModule,
     NxPaginationModule,
     NxTooltipModule,
+    NxPopoverModule,
+    NxLinkModule,
     NxModalModule,
     StatusChipComponent,
   ],
@@ -79,6 +93,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly stateSvc       = inject(MockStateService);
   private readonly stageSvc       = inject(ScenarioStageService);
   private readonly dialogSvc      = inject(NxDialogService);
+  private readonly massEventSvc   = inject(MockMassEventService);
   private readonly destroyRef     = inject(DestroyRef);
   private readonly toast          = inject(ToastService);
   private deregisterStage: (() => void) | null = null;
@@ -88,11 +103,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   tasksPage = 1;
 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
-
-  readonly massEventTooltip =
-    'ME-2025.102 — Storm Bernd (Munich region)\n' +
-    'Cluster of 142 linked claims · Opened 04 May 2025\n' +
-    'Linked claims share reserves treaty and CAT code.';
 
   private readonly state$ = toObservable(this.stateSvc.state);
 
@@ -112,11 +122,18 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
           overview: this.overviewSvc.getOverviewWithActivities(claimId),
           tasks:    this.taskSvc.getByClaimId(claimId),
           closure:  this.closureSvc.validateBlockers(claimId),
-        });
+        }).pipe(
+          switchMap(({ overview, tasks, closure }) => {
+            const massEventId = overview.claim?.massEventId;
+            return combineLatest({
+              massEvent: massEventId ? this.massEventSvc.getById(massEventId) : of(null),
+            }).pipe(map(({ massEvent }) => ({ overview, tasks, closure, massEvent })));
+          })
+        );
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe({
-      next: ({ overview, tasks, closure }) => {
+      next: ({ overview, tasks, closure, massEvent }) => {
         this.closureCheck.set(closure);
         this.vm$.next({
           loading: false, error: null,
@@ -125,10 +142,11 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
           activitiesExpanded: false,
           tasks,
           tasksExpanded: true,
+          massEvent: massEvent ?? null,
         });
       },
       error: () =>
-        this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.' }),
+        this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.', massEvent: null }),
     });
   }
 
@@ -257,8 +275,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     return `dot--${priority}`;
   }
 
+  pendingTasks(tasks: Task[]): Task[] {
+    return tasks.filter(t => t.status !== 'done');
+  }
+
   taskCountByPriority(tasks: Task[], priority: string): number {
-    return tasks.filter(t => t.priority === priority).length;
+    return this.pendingTasks(tasks).filter(t => t.priority === priority).length;
   }
 
   formatAmount(amount: number, currency: string): string {
@@ -268,6 +290,16 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   pagedTasks(tasks: Task[]): Task[] {
     const start = (this.tasksPage - 1) * TASKS_PAGE_SIZE;
     return tasks.slice(start, start + TASKS_PAGE_SIZE);
+  }
+
+  openMassEventDetail(): void {
+    const me = this.vm$.value.massEvent;
+    if (!me) return;
+    const data: MassEventModalData = { mode: 'view', event: me };
+    // Use the same bottom-sheet panel as the admin Mass Events page so the
+    // modal has a proper height constraint + scroll (the component's SCSS
+    // assumes the .me-edit-modal-panel wrapper).
+    this.dialogSvc.open(MassEventEditModalComponent, { data, panelClass: 'me-edit-modal-panel' });
   }
 
   formatDate(iso: string): string {

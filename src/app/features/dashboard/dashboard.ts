@@ -1,17 +1,30 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
+import { NxBadgeModule } from '@allianz/ng-aquila/badge';
+import { NxTableModule } from '@allianz/ng-aquila/table';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { MockTaskService } from '../../core/mock/services/mock-task.service';
 import { MockClaimService } from '../../core/mock/services/mock-claim.service';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
-import { Claim, ClaimStats, DashboardVM, QuickLink } from '../../core/models';
+import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
+import { AuthService } from '../../core/services/auth';
+import { Claim, ClaimStats, DashboardVM, QuickLink, Task, UrgentApproval, ReserveMovement } from '../../core/models';
+
+// Widgets
+import { FinancialClosureBannerComponent } from './widgets/financial-closure-banner';
+import { KpiRowComponent } from './widgets/kpi-row';
+import { HeadsUpPanelComponent } from './widgets/heads-up-panel';
+import { CalendarWidgetComponent } from './widgets/calendar-widget';
+import { NewsPanelComponent } from './widgets/news-panel';
+import { ExpenseBreakdownComponent } from './widgets/expense-breakdown';
 
 const QUICK_LINKS: QuickLink[] = [
   { label: 'AGCS Corporate Rules Book' },
@@ -20,19 +33,23 @@ const QUICK_LINKS: QuickLink[] = [
 ];
 
 const EMPTY_VM: DashboardVM = {
-  loading: true,
-  error: null,
-  tasks: [],
-  recentClaims: [],
+  loading: true, error: null, tasks: [], recentClaims: [],
   stats: { total: 0, opened: 0, closed: 0 },
-  quickLinks: QUICK_LINKS,
-  portfolioTab: 'claims',
-  urgentApprovals: [],
+  quickLinks: QUICK_LINKS, portfolioTab: 'claims', urgentApprovals: [],
 };
+
+const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, RouterLinkActive, NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, StatusChipComponent],
+  standalone: true,
+  imports: [
+    CommonModule, RouterLink, RouterLinkActive,
+    NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxBadgeModule, NxTableModule,
+    StatusChipComponent,
+    FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
+    CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -40,36 +57,31 @@ export class Dashboard {
   private taskSvc     = inject(MockTaskService);
   private claimSvc    = inject(MockClaimService);
   private approvalSvc = inject(MockApprovalService);
+  private extSvc      = inject(MockDashboardExtendedService);
+  readonly auth       = inject(AuthService);
   private router      = inject(Router);
 
-  // ── Responsive header state (≤1024px) ────────────────────────────────
-  readonly mobileMenuOpen = signal(false);
+  // ── Header state ─────────────────────────────────────────────────────
+  readonly mobileMenuOpen   = signal(false);
   readonly mobileSearchOpen = signal(false);
 
-  toggleMobileMenu(): void {
-    this.mobileMenuOpen.update(v => !v);
-    if (this.mobileMenuOpen()) this.mobileSearchOpen.set(false);
-  }
+  // ── Toggle state ─────────────────────────────────────────────────────
+  readonly showMyTasksOnly     = signal(false);
+  readonly showMyApprovalsOnly = signal(false);
+  readonly claimsScope         = signal<'mine' | 'group' | 'all'>(
+    (localStorage.getItem('dashboard:claims-scope') as 'mine' | 'group' | 'all') ?? 'mine'
+  );
 
-  toggleMobileSearch(): void {
-    this.mobileSearchOpen.update(v => !v);
-    if (this.mobileSearchOpen()) this.mobileMenuOpen.set(false);
-  }
-
-  closeMobileMenu(): void {
-    this.mobileMenuOpen.set(false);
-  }
-
+  // ── Core vm$ ─────────────────────────────────────────────────────────
   readonly vm$: Observable<DashboardVM> = combineLatest([
     this.taskSvc.getAll(),
     this.claimSvc.getAll(),
     this.approvalSvc.getAll(),
   ]).pipe(
     map(([tasks, claims, urgentApprovals]) => ({
-      loading: false,
-      error: null,
-      tasks: tasks.slice(0, 7),
-      recentClaims: claims.slice(0, 5),
+      loading: false, error: null,
+      tasks,
+      recentClaims: claims,
       stats: this.buildStats(claims),
       quickLinks: QUICK_LINKS,
       portfolioTab: 'claims' as const,
@@ -79,23 +91,122 @@ export class Dashboard {
     catchError(err => of({
       loading: false,
       error: (err as { message?: string })?.message ?? 'Failed to load dashboard data.',
-      tasks: [],
-      recentClaims: [],
-      stats: { total: 0, opened: 0, closed: 0 },
-      quickLinks: QUICK_LINKS,
-      portfolioTab: 'claims' as const,
-      urgentApprovals: [],
+      tasks: [], recentClaims: [], stats: { total: 0, opened: 0, closed: 0 },
+      quickLinks: QUICK_LINKS, portfolioTab: 'claims' as const, urgentApprovals: [],
     }))
   );
+  private readonly vm = toSignal(this.vm$, { initialValue: EMPTY_VM });
 
+  // ── Extended data ────────────────────────────────────────────────────
+  readonly headsUp$          = this.extSvc.getHeadsUp();
+  readonly news$             = this.extSvc.getNews();
+  readonly calendarEvents$   = this.extSvc.getCalendarEvents();
+  readonly providerExpenses$ = this.extSvc.getProviderExpenses();
+  readonly closurePeriod$    = this.extSvc.getFinancialClosurePeriod();
+  readonly reserveMovements$ = this.extSvc.getReserveMovements();
+
+  readonly headsUp          = toSignal(this.headsUp$,          { initialValue: [] });
+  readonly news             = toSignal(this.news$,             { initialValue: [] });
+  readonly calendarEvents   = toSignal(this.calendarEvents$,   { initialValue: [] });
+  readonly providerExpenses = toSignal(this.providerExpenses$, { initialValue: [] });
+  readonly closurePeriod    = toSignal(this.closurePeriod$,    {
+    initialValue: { active: false, start: '', end: '', message: '' }
+  });
+  readonly reserveMovements = toSignal(this.reserveMovements$, { initialValue: [] as ReserveMovement[] });
+
+  // ── Filtered display lists ────────────────────────────────────────────
+  readonly displayedTasks = computed<Task[]>(() => {
+    const tasks = this.vm().tasks;
+    const name  = this.auth.user()?.name ?? '';
+    const filtered = this.showMyTasksOnly()
+      ? tasks.filter(t => t.assignee === name)
+      : tasks;
+    return filtered.slice(0, 7);
+  });
+
+  readonly displayedApprovals = computed<UrgentApproval[]>(() => {
+    const approvals = this.vm().urgentApprovals;
+    if (!this.showMyApprovalsOnly()) return approvals;
+    const name = this.auth.user()?.name ?? '';
+    return approvals.filter(a => a.requester === name);
+  });
+
+  readonly displayedClaims = computed<Claim[]>(() => {
+    const claims = this.vm().recentClaims;
+    const scope  = this.claimsScope();
+    const user   = this.auth.user();
+    if (!user) return claims.slice(0, 5);
+    let filtered: Claim[];
+    if (scope === 'mine')  filtered = claims.filter(c => c.assignee === user.name);
+    else if (scope === 'group') filtered = claims.filter(c => c.group === user.group);
+    else filtered = claims;
+    return filtered.slice(0, 5);
+  });
+
+  // ── KPI data (KCM) ───────────────────────────────────────────────────
+  // ⚑ €50k threshold — confirm with business; 7-day window is also a placeholder
+  private readonly BIG_RESERVE_THRESHOLD = 50000;
+  private readonly RESERVE_WINDOW_DAYS   = 7;
+
+  readonly kpiData = computed(() => {
+    const allClaims    = this.vm().recentClaims;
+    const allApprovals = this.vm().urgentApprovals;
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - this.RESERVE_WINDOW_DAYS);
+    const bigMovements = this.reserveMovements().filter(r =>
+      r.delta >= this.BIG_RESERVE_THRESHOLD &&
+      new Date(r.date) >= cutoff
+    ).length;
+    return {
+      openClaims:          allClaims.filter(c => c.status === 'Open' || c.status === 'In progress').length,
+      pendingApprovals:    allApprovals.length,
+      bigReserveMovements: bigMovements,
+    };
+  });
+
+  // ── Portfolio tab ────────────────────────────────────────────────────
   portfolioTab: 'claims' | 'loss-events' = 'claims';
 
-  navigateToFnol(): void {
-    this.router.navigate(['/fnol/search']);
+  // ── Overdue / dormant helpers ─────────────────────────────────────────
+  isOverdue(dueDate: string): boolean {
+    if (!dueDate) return false;
+    return new Date(dueDate) < new Date(new Date().toDateString());
   }
 
-  setPortfolioTab(tab: 'claims' | 'loss-events'): void {
-    this.portfolioTab = tab;
+  isDormant(dateUpdated: string): boolean {
+    if (!dateUpdated) return false;
+    const diff = (Date.now() - new Date(dateUpdated).getTime()) / 86400000;
+    return diff > DORMANT_DAYS;
+  }
+
+  daysSinceUpdate(dateUpdated: string): number {
+    return Math.floor((Date.now() - new Date(dateUpdated).getTime()) / 86400000);
+  }
+
+  // ── Mobile header ─────────────────────────────────────────────────────
+  toggleMobileMenu():  void { this.mobileMenuOpen.update(v => !v); if (this.mobileMenuOpen()) this.mobileSearchOpen.set(false); }
+  toggleMobileSearch():void { this.mobileSearchOpen.update(v => !v); if (this.mobileSearchOpen()) this.mobileMenuOpen.set(false); }
+  closeMobileMenu():   void { this.mobileMenuOpen.set(false); }
+
+  setPortfolioTab(tab: 'claims' | 'loss-events'): void { this.portfolioTab = tab; }
+
+  setClaimsScope(scope: 'mine' | 'group' | 'all'): void {
+    this.claimsScope.set(scope);
+    localStorage.setItem('dashboard:claims-scope', scope);
+  }
+
+  navigateToFnol(): void { this.router.navigate(['/fnol/search']); }
+
+  initials(): string {
+    const name = this.auth.user()?.name ?? '';
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  roleBadgeLabel(): string {
+    const role = this.auth.user()?.dashboardRole;
+    if (role === 'kcm') return 'Key Case Manager';
+    if (role === 'aviation-handler') return 'Aviation Handler';
+    return 'Claims Handler';
   }
 
   barWidth(value: number, total: number): number {

@@ -26,6 +26,8 @@ export interface Claim {
   lineOfBusiness: LineOfBusiness;
   location: ClaimLocation | null;
   lossEventId: string | null;
+  massEventId?: string;
+  group?: string;
   causeOfLoss?: string[];
   _scenario?: string;
 }

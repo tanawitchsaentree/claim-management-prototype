@@ -329,7 +329,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   openDuplicatesModal(all: DuplicateClaim[]): void {
     this.modalDuplicates = all;
-    this.modalService.open(this.duplicatesModalTpl, { showCloseIcon: true, width: '900px', ariaLabelledBy: 'dup-modal-title' });
+    this.modalService.open(this.duplicatesModalTpl, { showCloseIcon: true, width: '960px', maxWidth: '92vw', ariaLabelledBy: 'dup-modal-title' });
   }
 
   // ── Computed flags ──────────────────────────────────────────────────

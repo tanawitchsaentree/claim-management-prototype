@@ -8,6 +8,12 @@ import policiesData from '../data/policies.json';
 export class MockPolicySearchService extends MockBaseService {
   private readonly policies = policiesData as PolicySearchResult[];
 
+  // Full list — used by the skeleton-convert modal which evaluates eligibility
+  // (client match + coverage period) against the complete policy set.
+  getAllPolicies(): Observable<PolicySearchResult[]> {
+    return this.list([...this.policies]);
+  }
+
   searchPolicies(criteria: Partial<FnolSearchCriteria>): Observable<PolicySearchResult[]> {
     const hasAnyCriteria = Object.values(criteria).some(v => v !== null && v !== undefined && v !== '');
     if (!hasAnyCriteria) {

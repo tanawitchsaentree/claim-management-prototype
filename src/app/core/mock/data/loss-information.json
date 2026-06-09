@@ -1,5 +1,23 @@
 [
   {
+    "id": "LI-CLM-2024-001",
+    "claimId": "CLM-2024-001",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-01-14",
+      "timeOfOccurrence": "02:30",
+      "dateOfNotification": "2024-01-15",
+      "timeOfNotification": "08:00"
+    },
+    "lossLocation": { "locationRequired": true, "locationType": "listed-in-policy", "incidentAddress": "Lagerstraße 12, Hamburg", "incidentAtDifferentLocation": false, "street": "Lagerstraße", "streetNumber": "12", "city": "Hamburg", "postalCode": "20457", "country": "Germany" },
+    "causeOfLoss": ["fire"],
+    "typeOfDamage": ["material-damage", "financial-loss"],
+    "lossDescription": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",
+    "causeDetails": { "fire": { "fireOrigin": "Warehouse section B", "fireDepartmentCalled": true, "fireDepartmentReportNumber": "FF-HH-2024-0114" } },
+    "events": [{ "eventKey": "fire", "damages": ["material-damage", "financial-loss"], "causedBy": [] }],
+    "createdAt": "2024-01-15T08:05:00Z",
+    "updatedAt": "2024-01-15T08:05:00Z"
+  },
+  {
     "id": "LI-001",
     "claimId": "CLM-123456",
     "dateOfLoss": {

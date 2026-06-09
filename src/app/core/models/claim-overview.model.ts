@@ -48,6 +48,9 @@ export interface ClaimOverview {
   reopenedBy?: { userId: string; name: string };
   reopeningReason?: string;
 
+  // Mass Event link
+  massEventId?: string;
+
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
   hasOpenPayments?:   boolean;
   hasOpenReserves?:   boolean;

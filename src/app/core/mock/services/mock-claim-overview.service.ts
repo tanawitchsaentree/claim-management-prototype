@@ -20,6 +20,10 @@ export class MockClaimOverviewService extends MockBaseService {
     return this.list(filtered.length ? filtered : activities);
   }
 
+  appendActivities(claimId: string, entries: ClaimActivity[]): void {
+    this.stateSvc.patchActivities(existing => [...entries, ...existing]);
+  }
+
   getOverviewWithActivities(claimId: string): Observable<{ claim: ClaimOverview; activities: ClaimActivity[] }> {
     return combineLatest({
       claim: this.getOverview(claimId),

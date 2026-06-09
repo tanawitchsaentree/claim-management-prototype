@@ -345,7 +345,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
         cancelLabel:   'Keep editing',
         confirmDanger: true,
       };
-      const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '480px' });
+      const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
       const discard = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
       if (!discard) return;
     }
@@ -549,7 +549,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
       confirmLabel:  'Remove',
       confirmDanger: true,
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '480px' });
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
     const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
     if (!confirmed) return;
     await firstValueFrom(this.reservesSvc.removeReserve(this.policyNumber, reserve.reserveId));

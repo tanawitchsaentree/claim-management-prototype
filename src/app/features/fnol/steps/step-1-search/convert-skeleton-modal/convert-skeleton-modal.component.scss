@@ -1,0 +1,116 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+// Standard centered modal: shell caps height (calc(100vh - 112px)) and the
+// body scrolls internally so the dialog never overflows a 14" notebook.
+:host { @include modal.shell; }
+
+.csm-header { @include modal.header; }
+
+.csm-header-row { @include modal.header-row; }
+
+.csm-title { @include modal.title; }
+
+.csm-context {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.csm-body { @include modal.body; }
+
+.csm-intro {
+  font-size: 14px;
+  color: var(--text-01);
+  margin: 0 0 12px;
+}
+
+.csm-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.csm-empty {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+// ─── Policy table ─────────────────────────────────────────────────
+.csm-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--ui-04);
+    white-space: nowrap;
+  }
+
+  td {
+    font-size: 14px;
+    color: var(--text-01);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--ui-03);
+    vertical-align: middle;
+  }
+}
+
+.csm-col-radio { width: 36px; text-align: center; }
+
+.csm-radio {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--interactive-primary);
+}
+
+.csm-coverage { white-space: nowrap; color: var(--text-muted); }
+
+.csm-row--eligible {
+  cursor: pointer;
+  &:hover td { background: var(--ui-02); }
+}
+
+.csm-row--selected td {
+  background: var(--action-selected-background-color, #e6f0f7);
+}
+
+// Ineligible: greyed but still readable
+.csm-row--ineligible {
+  cursor: not-allowed;
+  td { color: var(--text-muted); background: var(--ui-02); }
+}
+
+.csm-status--ok {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--claim-status-open-bg, #e8f5e9);
+  color: var(--claim-status-open-color, #2e7d32);
+}
+
+.csm-reason {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--danger, #c0392b);
+}
+
+.csm-reason-icon { font-size: 14px; flex-shrink: 0; }
+
+// ─── Footer ───────────────────────────────────────────────────────
+.csm-footer { @include modal.footer; }

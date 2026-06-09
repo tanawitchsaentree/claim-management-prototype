@@ -1,0 +1,42 @@
+<button class="licm-close" type="button" aria-label="Close" (click)="onCancel()">
+  <span class="licm-close-x" aria-hidden="true"></span>
+</button>
+
+<header class="licm-header">
+  <h2 class="licm-title">Confirm loss information changes</h2>
+  <p class="licm-subtitle">The following fields will be updated for claim <strong>{{ data.claimId }}</strong>.</p>
+</header>
+
+<div class="licm-body">
+  @if (data.diffs.length === 0) {
+    <p class="licm-no-changes">No fields were changed.</p>
+  } @else {
+    <table class="licm-diff-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Original</th>
+          <th></th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (diff of data.diffs; track diff.label) {
+          <tr>
+            <td class="licm-field-label">{{ diff.label }}</td>
+            <td class="licm-original">{{ diff.original || '–' }}</td>
+            <td class="licm-arrow"><nx-icon name="arrow-right"></nx-icon></td>
+            <td class="licm-updated">{{ diff.updated || '–' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<footer class="licm-footer">
+  <button nxButton="tertiary" type="button" (click)="onCancel()">Back to editing</button>
+  <button nxButton="primary" type="button" (click)="onConfirm()" [disabled]="data.diffs.length === 0">
+    Confirm changes
+  </button>
+</footer>

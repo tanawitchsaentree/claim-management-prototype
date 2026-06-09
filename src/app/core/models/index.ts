@@ -19,3 +19,4 @@ export * from './note.model';
 export * from './mass-event.model';
 export * from './litigation.model';
 export * from './risk-analysis.model';
+export * from './dashboard-extended.model';

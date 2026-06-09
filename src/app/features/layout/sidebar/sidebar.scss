@@ -23,11 +23,15 @@ $sidebar-collapsed-width: 56px;
     .nav-item {
       justify-content: center;
       padding: 11px 0;
+      gap: 0;   // remove gap — label is hidden, icon should be perfectly centered
     }
 
     .nav-item__label {
       opacity: 0;
       width: 0;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
     }
   }
 }
