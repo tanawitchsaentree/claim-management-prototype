@@ -191,8 +191,14 @@ export class StepSummaryComponent implements OnInit {
     const damageTypes = damageTypeKeys.map(k => this.label(damageLookups, k));
 
     const lossDateIso = dateOfLoss.get('dateOfOccurrence')?.value as string | null;
+
+    // Change 1: Proximate Loss date/time = EARLIEST across all claim sections.
+    // Single source of truth — General data "Date of loss" and the accordion
+    // "Earliest section date" both read this same computation.
+    const earliest = this.deriveEarliestSectionDate(lossDateIso, allEntities.length || 3);
+
     const claimGroups = this.buildClaimGroups(
-      entitiesData, reservesData, parties.length, damageLookups, lossDateIso,
+      entitiesData, reservesData, parties.length, damageLookups, earliest,
     );
 
     const narrative = reservesData.narrative && !reservesData.narrative.archivedAt
@@ -203,8 +209,8 @@ export class StepSummaryComponent implements OnInit {
 
     return {
       causesOfLoss,
-      dateOfOccurrence:   this.formatDate(dateOfLoss.get('dateOfOccurrence')?.value),
-      timeOfOccurrence:   dateOfLoss.get('timeOfOccurrence')?.value ?? '—',
+      dateOfOccurrence:   earliest.date,
+      timeOfOccurrence:   earliest.time,
       dateOfNotification: this.formatDate(dateOfLoss.get('dateOfNotification')?.value),
       affectedPolicies:   [this.policyNumber],
       damageTypes,
@@ -222,15 +228,11 @@ export class StepSummaryComponent implements OnInit {
     reserves: ReservesPolicyData,
     partyCount: number,
     damageLookups: LookupOption[],
-    lossDateIso: string | null,
+    earliest: { date: string; time: string },
   ): ClaimGroup[] {
     const allEntities = data.sections.flatMap(s => s.damageGroups).flatMap(g => g.entities);
     const damageTypeKeys = [...new Set(allEntities.map(e => e.damageTypeKey).filter(Boolean))];
     const total = reserves.reserves.reduce((s, r) => s + (r.amount ?? 0), 0);
-
-    // PO-OPEN: should per-section date live in the loss-info events FormArray?
-    // For now mock 3-5 timestamps in a 24h window and surface the minimum.
-    const earliest = this.deriveEarliestSectionDate(lossDateIso, allEntities.length || 3);
 
     const baseGroup: ClaimGroup = {
       policyNumber: this.policyNumber || '—',

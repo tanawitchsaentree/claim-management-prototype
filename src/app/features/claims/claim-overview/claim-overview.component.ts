@@ -226,7 +226,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
 
     const ref = this.dialogSvc.open(ClaimClosureModalComponent, {
       data: { claim, blockers: check },
-      width: '560px',
+      width: '600px',
+      maxWidth: '92vw',
     });
 
     const result = await firstValueFrom(ref.afterClosed()) as ClaimClosureModalResult | undefined;
@@ -245,8 +246,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   async openReopenModal(claim: ClaimOverview): Promise<void> {
     const ref = this.dialogSvc.open(ClaimReopenModalComponent, {
       data: { claim },
-      width: '640px',
-      maxWidth: '95vw',
+      width: '600px',
+      maxWidth: '92vw',
     });
     const result = await firstValueFrom(ref.afterClosed()) as ClaimReopenModalResult | undefined;
     if (!result) return;

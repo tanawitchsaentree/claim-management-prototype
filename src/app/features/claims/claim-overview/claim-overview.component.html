@@ -91,6 +91,7 @@
       <!-- Row 2: status + risk — or closure block when closed -->
       @if (claim.status === 'Closed' || claim.status === 'Reopened') {
         <div class="co-closure-block">
+          <!-- Row 1: loss attributes — status + proximate cause + date of loss together -->
           <div class="co-grid co-grid--closure">
             <div class="co-field">
               <span class="co-label">Claim status</span>
@@ -99,23 +100,25 @@
               </div>
             </div>
             <div class="co-field">
-              <span class="co-label">Closure date</span>
-              <span class="co-value">{{ claim.closureDate ? formatDate(claim.closureDate) : '–' }}</span>
-            </div>
-            <div class="co-field">
-              <span class="co-label">Closed by</span>
-              <span class="co-value">{{ claim.closedBy?.name ?? '–' }}</span>
-            </div>
-            <div class="co-field">
-              <span class="co-label">Closure reason</span>
-              <span class="co-value">{{ claim.closureReason ?? '–' }}</span>
+              <span class="co-label">Proximate loss cause</span>
+              <span class="co-value">{{ claim.proximateLossCause }}</span>
             </div>
             <div class="co-field">
               <span class="co-label">Date of Loss</span>
               <span class="co-value">{{ formatDate(claim.dateOfLoss) }}</span>
             </div>
           </div>
+          <!-- Row 2: closure group — all close-claim fields kept together -->
           <div class="co-grid co-grid--closure">
+            <div class="co-field">
+              <span class="co-label">Closure date</span>
+              <span class="co-value">{{ claim.closureDate ? formatDate(claim.closureDate) : '–' }}</span>
+            </div>
+            <!-- 'Closed by' removed — same person as the claim handler (redundant) -->
+            <div class="co-field">
+              <span class="co-label">Closure reason</span>
+              <span class="co-value">{{ claim.closureReason ?? '–' }}</span>
+            </div>
             <div class="co-field">
               <span class="co-label">Retention until</span>
               <span class="co-value">
@@ -126,10 +129,6 @@
                 }
               </span>
             </div>
-            <div class="co-field">
-              <span class="co-label">Proximate loss cause</span>
-              <span class="co-value">{{ claim.proximateLossCause }}</span>
-            </div>
             @if (claim.status === 'Reopened') {
               <div class="co-field">
                 <span class="co-label">Reopened date</span>
@@ -139,9 +138,6 @@
                 <span class="co-label">Reopening reason</span>
                 <span class="co-value">{{ claim.reopeningReason ?? '–' }}</span>
               </div>
-            } @else {
-              <div class="co-field"></div>
-              <div class="co-field"></div>
             }
           </div>
         </div>

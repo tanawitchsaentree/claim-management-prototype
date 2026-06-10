@@ -201,7 +201,7 @@
               </thead>
               <tbody>
                 @for (claim of displayedClaims(); track claim.claimId) {
-                  <tr nxTableRow [class.row--dormant]="isDormant(claim.dateUpdated) && claim.status !== 'Closed' && claim.status !== 'Declined'">
+                  <tr nxTableRow>
                     <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']">{{ claim.claimId }}</a></td>
                     <td nxCell>{{ claim.clientName }}</td>
                     <td nxCell>

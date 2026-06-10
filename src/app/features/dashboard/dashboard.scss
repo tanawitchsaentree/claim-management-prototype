@@ -856,7 +856,7 @@ $header-bp: 1024px;
 }
 
 // ─── Dormant / "You" nx-badge sizing ─────────────────────────────
-.row--dormant td { background: var(--warning-dimmed, #fff8e6); }
+// No row tint — the Dormant badge already signals the state. Tints removed per rule.
 
 .dormant-nx-badge, .by-me-nx-badge {
   margin-left: 6px;

@@ -51,7 +51,7 @@
           </dd>
         </div>
         <div class="ss-row">
-          <dt class="ss-label">Date of loss</dt>
+          <dt class="ss-label">Date of loss (proximate)</dt>
           <dd class="ss-value">{{ vm.dateOfOccurrence }} at {{ vm.timeOfOccurrence }}</dd>
         </div>
         <div class="ss-row">
@@ -99,7 +99,7 @@
             <div class="ss-row">
               <dt class="ss-label">Types of damage</dt>
               <dd class="ss-value">
-                @if (group.damageTypes.length === 0) { <span class="ss-empty">None</span> }
+                @if (group.damageTypes.length === 0) { <span class="ss-empty">Not specified</span> }
                 @for (d of group.damageTypes; track d) {
                   <span class="ss-tag">{{ d }}</span>
                 }
