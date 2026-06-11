@@ -58,3 +58,32 @@ export interface KpiData {
   pendingApprovals: number;
   bigReserveMovements: number;
 }
+
+// Loss events — groups of claims arising from one event (e.g. a storm).
+// Shown in the Claims portfolio "Loss events" tab.
+// (Named *Summary to avoid colliding with LossEvent in loss-information.model.)
+export interface LossEventSummary {
+  lossEventId: string;
+  name: string;
+  eventDate: string;
+  oe: string;
+  lineOfBusiness: string;
+  claimCount: number;
+  totalReserve: number;
+  currency: string;
+  status: 'Open' | 'Monitoring' | 'Closed';
+}
+
+// Payment approval requests — shown in the Recent approval requests
+// "Payments" tab (parallel to reserve approvals).
+export interface PaymentApproval {
+  requestId: string;
+  claimId: string;
+  oe: string;
+  lineOfBusiness: string;
+  paymentType: 'Indemnity' | 'Expense' | 'Provider' | 'Settlement';
+  payee: string;
+  currency: string;
+  amount: number;
+  requester: string;
+}

@@ -16,7 +16,7 @@ import { MockClaimService } from '../../core/mock/services/mock-claim.service';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
 import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
 import { AuthService } from '../../core/services/auth';
-import { Claim, ClaimStats, DashboardVM, QuickLink, Task, UrgentApproval, ReserveMovement } from '../../core/models';
+import { Claim, ClaimStats, DashboardVM, QuickLink, Task, UrgentApproval, ReserveMovement, LossEventSummary, PaymentApproval } from '../../core/models';
 
 // Widgets
 import { FinancialClosureBannerComponent } from './widgets/financial-closure-banner';
@@ -104,6 +104,8 @@ export class Dashboard {
   readonly providerExpenses$ = this.extSvc.getProviderExpenses();
   readonly closurePeriod$    = this.extSvc.getFinancialClosurePeriod();
   readonly reserveMovements$ = this.extSvc.getReserveMovements();
+  readonly lossEvents$       = this.extSvc.getLossEvents();
+  readonly paymentApprovals$ = this.extSvc.getPaymentApprovals();
 
   readonly headsUp          = toSignal(this.headsUp$,          { initialValue: [] });
   readonly news             = toSignal(this.news$,             { initialValue: [] });
@@ -113,6 +115,8 @@ export class Dashboard {
     initialValue: { active: false, start: '', end: '', message: '' }
   });
   readonly reserveMovements = toSignal(this.reserveMovements$, { initialValue: [] as ReserveMovement[] });
+  readonly lossEvents       = toSignal(this.lossEvents$,       { initialValue: [] as LossEventSummary[] });
+  readonly paymentApprovals = toSignal(this.paymentApprovals$, { initialValue: [] as PaymentApproval[] });
 
   // ── Filtered display lists ────────────────────────────────────────────
   readonly displayedTasks = computed<Task[]>(() => {
@@ -129,6 +133,16 @@ export class Dashboard {
     if (!this.showMyApprovalsOnly()) return approvals;
     const name = this.auth.user()?.name ?? '';
     return approvals.filter(a => a.requester === name);
+  });
+
+  // Recent approval requests — tab between reserve approvals and payment approvals.
+  readonly approvalsTab = signal<'reserves' | 'payments'>('reserves');
+
+  readonly displayedPayments = computed<PaymentApproval[]>(() => {
+    const payments = this.paymentApprovals();
+    if (!this.showMyApprovalsOnly()) return payments;
+    const name = this.auth.user()?.name ?? '';
+    return payments.filter(p => p.requester === name);
   });
 
   readonly displayedClaims = computed<Claim[]>(() => {
@@ -189,6 +203,7 @@ export class Dashboard {
   closeMobileMenu():   void { this.mobileMenuOpen.set(false); }
 
   setPortfolioTab(tab: 'claims' | 'loss-events'): void { this.portfolioTab = tab; }
+  setApprovalsTab(tab: 'reserves' | 'payments'): void { this.approvalsTab.set(tab); }
 
   setClaimsScope(scope: 'mine' | 'group' | 'all'): void {
     this.claimsScope.set(scope);

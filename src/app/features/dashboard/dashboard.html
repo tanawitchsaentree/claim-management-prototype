@@ -120,6 +120,9 @@
                   <th nxHeaderCell><span class="th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
                   <th nxHeaderCell class="dash-col--nowrap"><span class="th-sort">Due date <nx-icon name="chevron-down-small"></nx-icon></span></th>
                   <th nxHeaderCell class="dash-col--nowrap">Task key</th>
+                  @if (!showMyTasksOnly()) {
+                    <th nxHeaderCell class="dash-col--nowrap">Assignee</th>
+                  }
                   <th nxHeaderCell>Action</th>
                 </tr>
               </thead>
@@ -142,6 +145,9 @@
                       }
                     </td>
                     <td nxCell class="text-link dash-col--nowrap">{{ task.taskKey }}</td>
+                    @if (!showMyTasksOnly()) {
+                      <td nxCell class="dash-col--nowrap">{{ task.assignee || '–' }}</td>
+                    }
                     <td nxCell><a class="table-action-link" [routerLink]="['/claims', task.claimId, 'overview']">See details</a></td>
                   </tr>
                 }
@@ -182,7 +188,42 @@
           <div class="portfolio-tabs-spacer"></div>
 
           @if (portfolioTab === 'loss-events') {
-            <div class="widget-empty">No loss events to display.</div>
+            @if (lossEvents().length === 0) {
+              <div class="widget-empty">No loss events to display.</div>
+            } @else {
+              <div class="data-table-wrap">
+              <table nxTable sticky="last" class="dash-table">
+                <thead>
+                  <tr nxTableRow>
+                    <th nxHeaderCell class="dash-col--nowrap">Loss event ID</th>
+                    <th nxHeaderCell>Event name</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Event date</th>
+                    <th nxHeaderCell>OE</th>
+                    <th nxHeaderCell>Line of Business</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Claims</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Total reserve</th>
+                    <th nxHeaderCell>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (event of lossEvents(); track event.lossEventId) {
+                    <tr nxTableRow>
+                      <td nxCell class="text-link dash-col--nowrap">
+                        <a class="text-link" [routerLink]="['/loss-events', event.lossEventId, 'overview']">{{ event.lossEventId }}</a>
+                      </td>
+                      <td nxCell>{{ event.name }}</td>
+                      <td nxCell class="text-muted dash-col--nowrap">{{ event.eventDate }}</td>
+                      <td nxCell>{{ event.oe }}</td>
+                      <td nxCell>{{ event.lineOfBusiness }}</td>
+                      <td nxCell class="dash-col--nowrap">{{ event.claimCount }}</td>
+                      <td nxCell class="dash-col--nowrap">{{ event.currency }} {{ event.totalReserve | number }}</td>
+                      <td nxCell><app-status-chip [status]="event.status" domain="claim"></app-status-chip></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+              </div>
+            }
           } @else if (displayedClaims().length === 0) {
             <div class="widget-empty">No claims found for this scope.</div>
           } @else {
@@ -240,55 +281,105 @@
             <nx-switcher [checked]="showMyApprovalsOnly()" (checkedChange)="showMyApprovalsOnly.set($event)">Show submitted by me only</nx-switcher>
           </div>
           <div class="portfolio-tabs">
-            <button class="portfolio-tab portfolio-tab--active">Reserves</button>
-            <button class="portfolio-tab">Payments</button>
+            <button class="portfolio-tab" [class.portfolio-tab--active]="approvalsTab() === 'reserves'" (click)="setApprovalsTab('reserves')">Reserves</button>
+            <button class="portfolio-tab" [class.portfolio-tab--active]="approvalsTab() === 'payments'" (click)="setApprovalsTab('payments')">Payments</button>
           </div>
           <div class="portfolio-tabs-spacer"></div>
 
-          @if (displayedApprovals().length === 0) {
-            <div class="widget-empty">
-              @if (showMyApprovalsOnly()) { No approvals submitted by you. } @else { No approval requests found. }
-            </div>
-          } @else {
-            <div class="data-table-wrap">
-            <table nxTable sticky="last" class="dash-table">
-              <thead>
-                <tr nxTableRow>
-                  <th nxHeaderCell class="dash-col--nowrap">Request ID</th>
-                  <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
-                  <th nxHeaderCell>OE</th>
-                  <th nxHeaderCell>Line of Business</th>
-                  <th nxHeaderCell>Reserve type</th>
-                  <th nxHeaderCell>Currency</th>
-                  <th nxHeaderCell class="dash-col--nowrap">Amount</th>
-                  <th nxHeaderCell>Requester</th>
-                  <th nxHeaderCell>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (approval of displayedApprovals(); track approval.requestId) {
+          @if (approvalsTab() === 'reserves') {
+            @if (displayedApprovals().length === 0) {
+              <div class="widget-empty">
+                @if (showMyApprovalsOnly()) { No reserve approvals submitted by you. } @else { No reserve approval requests found. }
+              </div>
+            } @else {
+              <div class="data-table-wrap">
+              <table nxTable sticky="last" class="dash-table">
+                <thead>
                   <tr nxTableRow>
-                    <td nxCell class="text-link dash-col--nowrap">{{ approval.requestId }}</td>
-                    <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', approval.claimId, 'overview']">{{ approval.claimId }}</a></td>
-                    <td nxCell>{{ approval.oe }}</td>
-                    <td nxCell>{{ approval.lineOfBusiness }}</td>
-                    <td nxCell>{{ approval.reserveType }}</td>
-                    <td nxCell>{{ approval.currency }}</td>
-                    <td nxCell class="dash-col--nowrap">{{ approval.amount | number }}</td>
-                    <td nxCell>
-                      {{ approval.requester }}
-                      @if (approval.requester === auth.user()?.name) {
-                        <nx-badge type="positive" class="by-me-nx-badge">You</nx-badge>
-                      }
-                    </td>
-                    <td nxCell>
-                      <button class="approval-action-btn" type="button" aria-label="more actions"><nx-icon name="ellipsis-v"></nx-icon></button>
-                    </td>
+                    <th nxHeaderCell class="dash-col--nowrap">Request ID</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
+                    <th nxHeaderCell>OE</th>
+                    <th nxHeaderCell>Line of Business</th>
+                    <th nxHeaderCell>Reserve type</th>
+                    <th nxHeaderCell>Currency</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Amount</th>
+                    <th nxHeaderCell>Requester</th>
+                    <th nxHeaderCell>Action</th>
                   </tr>
-                }
-              </tbody>
-            </table>
-            </div>
+                </thead>
+                <tbody>
+                  @for (approval of displayedApprovals(); track approval.requestId) {
+                    <tr nxTableRow>
+                      <td nxCell class="text-link dash-col--nowrap">{{ approval.requestId }}</td>
+                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', approval.claimId, 'overview']">{{ approval.claimId }}</a></td>
+                      <td nxCell>{{ approval.oe }}</td>
+                      <td nxCell>{{ approval.lineOfBusiness }}</td>
+                      <td nxCell>{{ approval.reserveType }}</td>
+                      <td nxCell>{{ approval.currency }}</td>
+                      <td nxCell class="dash-col--nowrap">{{ approval.amount | number }}</td>
+                      <td nxCell>
+                        {{ approval.requester }}
+                        @if (approval.requester === auth.user()?.name) {
+                          <nx-badge type="positive" class="by-me-nx-badge">You</nx-badge>
+                        }
+                      </td>
+                      <td nxCell>
+                        <button class="approval-action-btn" type="button" aria-label="more actions"><nx-icon name="ellipsis-v"></nx-icon></button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+              </div>
+            }
+          } @else {
+            @if (displayedPayments().length === 0) {
+              <div class="widget-empty">
+                @if (showMyApprovalsOnly()) { No payment approvals submitted by you. } @else { No payment approval requests found. }
+              </div>
+            } @else {
+              <div class="data-table-wrap">
+              <table nxTable sticky="last" class="dash-table">
+                <thead>
+                  <tr nxTableRow>
+                    <th nxHeaderCell class="dash-col--nowrap">Request ID</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
+                    <th nxHeaderCell>OE</th>
+                    <th nxHeaderCell>Line of Business</th>
+                    <th nxHeaderCell>Payment type</th>
+                    <th nxHeaderCell>Payee</th>
+                    <th nxHeaderCell>Currency</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Amount</th>
+                    <th nxHeaderCell>Requester</th>
+                    <th nxHeaderCell>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (payment of displayedPayments(); track payment.requestId) {
+                    <tr nxTableRow>
+                      <td nxCell class="text-link dash-col--nowrap">{{ payment.requestId }}</td>
+                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']">{{ payment.claimId }}</a></td>
+                      <td nxCell>{{ payment.oe }}</td>
+                      <td nxCell>{{ payment.lineOfBusiness }}</td>
+                      <td nxCell>{{ payment.paymentType }}</td>
+                      <td nxCell>{{ payment.payee }}</td>
+                      <td nxCell>{{ payment.currency }}</td>
+                      <td nxCell class="dash-col--nowrap">{{ payment.amount | number }}</td>
+                      <td nxCell>
+                        {{ payment.requester }}
+                        @if (payment.requester === auth.user()?.name) {
+                          <nx-badge type="positive" class="by-me-nx-badge">You</nx-badge>
+                        }
+                      </td>
+                      <td nxCell>
+                        <button class="approval-action-btn" type="button" aria-label="more actions"><nx-icon name="ellipsis-v"></nx-icon></button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+              </div>
+            }
           }
         </div>
 

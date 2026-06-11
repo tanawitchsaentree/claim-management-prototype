@@ -1,0 +1,57 @@
+[
+  {
+    "requestId": "PAY-778001",
+    "claimId": "CLM-2024-001",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "paymentType": "Indemnity",
+    "payee": "Kaufmann's Warehouse GmbH",
+    "currency": "EUR",
+    "amount": 85000,
+    "requester": "Klaus Schmidt"
+  },
+  {
+    "requestId": "PAY-778002",
+    "claimId": "CLM-2024-009",
+    "oe": "Germany",
+    "lineOfBusiness": "Engineering",
+    "paymentType": "Expense",
+    "payee": "TechnoSurvey Loss Adjusters",
+    "currency": "EUR",
+    "amount": 12400,
+    "requester": "Mara Mustermann"
+  },
+  {
+    "requestId": "PAY-778003",
+    "claimId": "CLM-2024-007",
+    "oe": "Norway",
+    "lineOfBusiness": "Marine",
+    "paymentType": "Settlement",
+    "payee": "Nordic Shipping AS",
+    "currency": "USD",
+    "amount": 240000,
+    "requester": "Mara Mustermann"
+  },
+  {
+    "requestId": "PAY-778004",
+    "claimId": "CLM-2024-013",
+    "oe": "Germany",
+    "lineOfBusiness": "Cyber",
+    "paymentType": "Provider",
+    "payee": "CyberDefense Forensics Ltd",
+    "currency": "EUR",
+    "amount": 31800,
+    "requester": "Anna Weber"
+  },
+  {
+    "requestId": "PAY-778005",
+    "claimId": "CLM-2024-004",
+    "oe": "Austria",
+    "lineOfBusiness": "Liability",
+    "paymentType": "Indemnity",
+    "payee": "Rhein Constructions GmbH",
+    "currency": "EUR",
+    "amount": 47500,
+    "requester": "Klaus Schmidt"
+  }
+]

@@ -18,6 +18,7 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     'declined':    'claim-status-declined',
     'closed':      'claim-status-closed',
     'reopened':    'claim-status-reopened',
+    'monitoring':  'claim-status-in-progress',
   },
   task: {
     'open':         'task-status-open',

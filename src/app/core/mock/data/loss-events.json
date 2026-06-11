@@ -1,0 +1,68 @@
+[
+  {
+    "lossEventId": "EVT-022",
+    "name": "Storm Bernd — Rhineland",
+    "eventDate": "2024-07-14",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "claimCount": 8,
+    "totalReserve": 2450000,
+    "currency": "EUR",
+    "status": "Open"
+  },
+  {
+    "lossEventId": "EVT-023",
+    "name": "North Sea Gale — Marine Fleet",
+    "eventDate": "2024-09-02",
+    "oe": "Norway",
+    "lineOfBusiness": "Marine",
+    "claimCount": 5,
+    "totalReserve": 1820000,
+    "currency": "USD",
+    "status": "Open"
+  },
+  {
+    "lossEventId": "123456",
+    "name": "Warehouse Fire Cluster — Bavaria",
+    "eventDate": "2024-03-12",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "claimCount": 3,
+    "totalReserve": 940000,
+    "currency": "EUR",
+    "status": "Monitoring"
+  },
+  {
+    "lossEventId": "345678",
+    "name": "Alpine Flood — Tyrol Region",
+    "eventDate": "2024-05-20",
+    "oe": "Austria",
+    "lineOfBusiness": "Engineering",
+    "claimCount": 4,
+    "totalReserve": 1310000,
+    "currency": "EUR",
+    "status": "Open"
+  },
+  {
+    "lossEventId": "910111",
+    "name": "Cyber Outage — adesso Supply Chain",
+    "eventDate": "2024-06-08",
+    "oe": "Germany",
+    "lineOfBusiness": "Cyber",
+    "claimCount": 2,
+    "totalReserve": 560000,
+    "currency": "EUR",
+    "status": "Monitoring"
+  },
+  {
+    "lossEventId": "101112",
+    "name": "Hail Damage — Lower Saxony",
+    "eventDate": "2023-11-30",
+    "oe": "Germany",
+    "lineOfBusiness": "Property",
+    "claimCount": 6,
+    "totalReserve": 0,
+    "currency": "EUR",
+    "status": "Closed"
+  }
+]
