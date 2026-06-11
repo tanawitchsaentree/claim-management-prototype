@@ -174,16 +174,27 @@ export class ClaimDevDetailsModalComponent implements OnInit {
   }
 
   getVerifyDate(): string {
-    const iso = this.selectedAcVerification()?.verifiedAt;
-    if (!iso) return '';
-    return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    return this.fmtDate(this.selectedAcVerification()?.verifiedAt);
   }
 
   getVerifyTooltip(acId: string): string {
     const v = this.data.helper.getVerification(this.ticket.ticketId, acId);
     if (!v) return '';
-    const date = new Date(v.verifiedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const date = this.fmtDate(v.verifiedAt, true);
     return `Verified by ${v.verifiedBy} · ${date}`;
+  }
+
+  // App-wide standard: DD-MM-YYYY (with HH:mm when withTime).
+  private fmtDate(iso: string | undefined, withTime = false): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const base = `${dd}-${mm}-${d.getFullYear()}`;
+    if (!withTime) return base;
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mi = String(d.getMinutes()).padStart(2, '0');
+    return `${base} ${hh}:${mi}`;
   }
 
   private normalize(raw: Array<string | PreconditionItem>): PreconditionItem[] {

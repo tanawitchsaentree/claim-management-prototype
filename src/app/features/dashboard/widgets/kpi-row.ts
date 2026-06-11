@@ -62,13 +62,19 @@ import { KpiData } from '../../../core/models';
       right: 16px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 28px;
-      opacity: 0.12;
-      color: var(--interactive-primary);
+      font-size: 32px;
+      // Tinted accent icon — clearly visible, not a ghost. Light hues (amber)
+      // need more presence than blue, so 0.18 was too faint on white; 0.4
+      // reads at a glance while staying secondary to the value. Each tile
+      // tints its icon to match its left-accent colour (not all primary blue).
+      opacity: 0.4;
     }
-    .kpi-tile--open    { border-left: 4px solid var(--claim-status-open-color, #2e7d32); }
-    .kpi-tile--pending { border-left: 4px solid var(--warning, #f9b233); }
-    .kpi-tile--reserves{ border-left: 4px solid var(--interactive-primary); }
+    .kpi-tile--open    { border-left: 4px solid var(--claim-status-open-color, #2e7d32);
+      .kpi-icon { color: var(--claim-status-open-color, #2e7d32); } }
+    .kpi-tile--pending { border-left: 4px solid var(--warning, #f9b233);
+      .kpi-icon { color: var(--warning, #f9b233); } }
+    .kpi-tile--reserves{ border-left: 4px solid var(--interactive-primary);
+      .kpi-icon { color: var(--interactive-primary); } }
 
     @media (max-width: 1024px) {
       .kpi-row { flex-direction: column; }

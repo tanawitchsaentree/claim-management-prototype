@@ -6,7 +6,6 @@ import { AuthService, PERSONAS } from '../../../core/services/auth';
 const ROLE_LABEL: Record<string, string> = {
   'claims-handler': 'All',
   'kcm': 'KCM',
-  'aviation-handler': 'Aviation',
 };
 
 @Component({

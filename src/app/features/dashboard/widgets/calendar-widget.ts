@@ -1,5 +1,6 @@
-import { Component, Input, computed, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { CalendarEvent } from '../../../core/models';
 
@@ -17,7 +18,7 @@ function formatDateLabel(dateStr: string): string {
 @Component({
   selector: 'app-calendar-widget',
   standalone: true,
-  imports: [CommonModule, NxIconModule],
+  imports: [CommonModule, RouterLink, NxIconModule],
   template: `
     <div class="panel-card">
       <div class="panel-card-header">
@@ -25,55 +26,72 @@ function formatDateLabel(dateStr: string): string {
       </div>
 
       @if (grouped().length === 0) {
-        <div class="widget-empty" style="padding:8px 0 4px">No upcoming events.</div>
+        <div class="cal-empty">No upcoming events.</div>
       } @else {
         <div class="cal-list">
           @for (group of grouped(); track group.date) {
             <div class="cal-day-group">
               <div class="cal-day-label">{{ group.label }}</div>
               @for (ev of group.events; track ev.id) {
-                <div class="cal-event">
-                  <nx-icon [name]="typeIcon(ev.type)" class="cal-icon cal-icon--{{ ev.type }}"></nx-icon>
-                  <span class="cal-title">{{ ev.title }}</span>
-                </div>
+                @if (ev.claimId) {
+                  <a class="cal-event cal-event--link"
+                     [routerLink]="['/claims', ev.claimId, 'overview']"
+                     [title]="ev.title + ' — open claim ' + ev.claimId">
+                    <nx-icon [name]="typeIcon(ev.type)" class="cal-icon cal-icon--{{ ev.type }}"></nx-icon>
+                    <span class="cal-title">{{ ev.title }}</span>
+                    <nx-icon name="chevron-right-small" class="cal-go"></nx-icon>
+                  </a>
+                } @else {
+                  <div class="cal-event">
+                    <nx-icon [name]="typeIcon(ev.type)" class="cal-icon cal-icon--{{ ev.type }}"></nx-icon>
+                    <span class="cal-title">{{ ev.title }}</span>
+                  </div>
+                }
               }
             </div>
           }
         </div>
       }
-
-      <div class="cal-footer">
-        <a class="widget-link widget-link--disabled" aria-disabled="true" title="Full calendar coming soon">
-          View full calendar
-        </a>
-      </div>
     </div>
   `,
   styles: [`
     :host { display: block; }
-    .cal-list { max-height: 260px; overflow-y: auto; }
-    .cal-day-group { margin-bottom: 10px; }
+
+    /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
+       from reaching this standalone component). Keep in sync with .panel-card. */
+    .panel-card {
+      background: var(--ui-01);
+      border: 1px solid var(--ui-04);
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .panel-card-header { margin-bottom: 12px; }
+    .panel-card-title { font-size: 16px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
+
+    .cal-empty { font-size: 14px; color: var(--text-muted); padding: 4px 0 8px; }
+    .cal-list { max-height: 320px; overflow-y: auto; padding-right: 4px; }
+    .cal-day-group { margin-bottom: 16px; &:last-child { margin-bottom: 0; } }
     .cal-day-label {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .06em; color: var(--text-muted); margin-bottom: 4px;
-      padding-bottom: 3px; border-bottom: 1px solid var(--ui-03);
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--text-muted); margin-bottom: 8px;
+      padding-bottom: 4px; border-bottom: 1px solid var(--ui-03);
     }
     .cal-event {
-      display: flex; align-items: center; gap: 6px;
-      padding: 4px 0; font-size: 13px; color: var(--text-01);
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 0; font-size: 14px; color: var(--text-01);
+      text-decoration: none;
+    }
+    .cal-event--link {
+      cursor: pointer; border-radius: 4px;
+      margin: 0 -8px; padding: 8px;
+      &:hover { background: var(--ui-02); .cal-go { opacity: 1; } }
     }
     .cal-icon { font-size: 14px; flex-shrink: 0; }
     .cal-icon--deadline { color: var(--danger, #c0392b); }
     .cal-icon--meeting  { color: var(--interactive-primary); }
     .cal-icon--review   { color: var(--warning, #f9b233); }
-    .cal-title { line-height: 1.3; }
-    .cal-footer { padding-top: 10px; border-top: 1px solid var(--ui-03); margin-top: 4px; }
-    .widget-link {
-      font-size: 13px; color: var(--interactive-text); font-weight: 600;
-      cursor: pointer; text-decoration: none;
-      &:hover { text-decoration: underline; }
-      &--disabled { color: var(--text-muted); cursor: not-allowed; &:hover { text-decoration: none; } }
-    }
+    .cal-title { flex: 1; line-height: 1.4; }
+    .cal-go { font-size: 14px; flex-shrink: 0; color: var(--text-muted); opacity: 0; transition: opacity .12s; }
   `],
 })
 export class CalendarWidgetComponent {

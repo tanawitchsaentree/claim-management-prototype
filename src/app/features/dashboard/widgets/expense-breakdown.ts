@@ -36,6 +36,17 @@ import { ProviderExpense } from '../../../core/models';
   `,
   styles: [`
     :host { display: block; }
+
+    /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
+       from reaching this standalone component). Keep in sync with .panel-card. */
+    .panel-card {
+      background: var(--ui-01);
+      border: 1px solid var(--ui-04);
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .panel-card-title { font-size: 16px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
+
     .exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
     .exp-period { font-size: 12px; color: var(--text-muted); }
     .exp-list { display: flex; flex-direction: column; gap: 10px; }

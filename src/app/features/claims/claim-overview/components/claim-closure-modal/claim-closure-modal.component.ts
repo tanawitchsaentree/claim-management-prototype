@@ -89,7 +89,10 @@ export class ClaimClosureModalComponent implements OnInit {
   readonly defaultRetentionDate = computed(() => {
     const d = new Date();
     d.setFullYear(d.getFullYear() + 10);
-    return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    // App-wide standard: DD-MM-YYYY (dash, 4-digit year).
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}-${mm}-${d.getFullYear()}`;
   });
 
   get blockers() { return this.data.blockers.blockers; }

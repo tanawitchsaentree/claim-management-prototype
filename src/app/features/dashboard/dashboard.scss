@@ -832,7 +832,6 @@ $header-bp: 1024px;
   letter-spacing: .05em;
   &--claims-handler  { background: var(--ui-03); color: $text-muted; }
   &--kcm             { background: var(--claim-status-in-progress-bg, #e3f2fd); color: var(--claim-status-in-progress-color, #1565c0); }
-  &--aviation-handler{ background: var(--task-status-in-progress-bg, #fff8e6); color: var(--task-status-in-progress-color, #7a5200); }
 }
 
 // ─── KCM scope selector ───────────────────────────────────────────

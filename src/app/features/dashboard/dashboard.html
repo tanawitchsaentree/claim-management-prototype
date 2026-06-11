@@ -314,18 +314,14 @@
           <div class="action-card-icon"><nx-icon name="product-search-document"></nx-icon></div>
           <span class="action-card-title">General search</span>
         </div>
-        <button nxButton="primary small" type="button" class="action-card-btn">
+        <button nxButton="primary small" type="button" class="action-card-btn" (click)="navigateToSearch()">
           <nx-icon name="launch" nxIconPositionStart></nx-icon>Go to search
         </button>
       </div>
 
       <!-- Claims stats card -->
       <div class="panel-card">
-        <div class="stats-month-nav">
-          <button class="stats-nav-btn stats-nav-btn--disabled" type="button" aria-label="previous month" disabled><nx-icon name="chevron-left-small"></nx-icon></button>
-          <span class="stats-month-label">All time</span>
-          <button class="stats-nav-btn stats-nav-btn--disabled" type="button" aria-label="next month" disabled><nx-icon name="chevron-right-small"></nx-icon></button>
-        </div>
+        <div class="panel-card-header"><span class="panel-card-title">Claims · All time</span></div>
         <div class="stats-total">
           <span class="stats-number">{{ vm.stats.total }}</span>
           <span class="stats-label">Claims</span>
@@ -348,12 +344,7 @@
 
       <!-- Payments made card -->
       <div class="panel-card">
-        <div class="stats-month-nav">
-          <button class="stats-nav-btn stats-nav-btn--disabled" type="button" aria-label="previous month" disabled><nx-icon name="chevron-left-small"></nx-icon></button>
-          <span class="stats-month-label">All time</span>
-          <button class="stats-nav-btn stats-nav-btn--disabled" type="button" aria-label="next month" disabled><nx-icon name="chevron-right-small"></nx-icon></button>
-        </div>
-        <div class="payments-label">Payments made</div>
+        <div class="panel-card-header"><span class="panel-card-title">Payments · All time</span></div>
         <div class="payments-amount">150,000 <span class="payments-currency">EUR</span></div>
       </div>
 
@@ -363,19 +354,18 @@
       <!-- News & updates (all roles) -->
       <app-news-panel [items]="news()"></app-news-panel>
 
-      <!-- Expense breakdown (aviation only) -->
-      @if (auth.isAviation()) {
-        <app-expense-breakdown [items]="providerExpenses()"></app-expense-breakdown>
-      }
+      <!-- Expense breakdown (all roles — merged in from former Aviation persona) -->
+      <app-expense-breakdown [items]="providerExpenses()"></app-expense-breakdown>
 
       <!-- Quick links -->
       <div class="panel-card">
         <div class="panel-card-header"><span class="panel-card-title">Quick links</span></div>
         <div class="quick-links-list">
           @for (link of vm.quickLinks; track link.label) {
-            <a class="quick-link-item">
-              <nx-icon name="launch" class="quick-link-icon"></nx-icon>
+            <a class="quick-link-item" [href]="link.url" target="_blank" rel="noopener noreferrer"
+               [title]="link.label + ' (opens in a new tab)'">
               <span>{{ link.label }}</span>
+              <nx-icon name="launch" class="quick-link-icon"></nx-icon>
             </a>
           }
         </div>

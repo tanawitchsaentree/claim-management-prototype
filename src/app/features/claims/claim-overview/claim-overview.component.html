@@ -329,7 +329,7 @@
               @for (act of vm.activities; track act.id) {
                 <tr nxTableRow>
                   <td nxCell class="act-col--nowrap">{{ act.user }}</td>
-                  <td nxCell class="act-col--nowrap">{{ act.timestamp | date:'dd.MM.yyyy hh:mm a' }}</td>
+                  <td nxCell class="act-col--nowrap">{{ act.timestamp | date:'dd-MM-yyyy HH:mm' }}</td>
                   <td nxCell class="act-col--nowrap">{{ act.objectType }}</td>
                   <td nxCell>{{ act.attribute }}</td>
                   <td nxCell class="act-col--muted">{{ act.valueOld ?? '–' }}</td>

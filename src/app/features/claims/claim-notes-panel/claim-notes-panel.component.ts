@@ -155,7 +155,7 @@ export class ClaimNotesPanelComponent implements OnChanges {
     const dd  = String(d.getDate()).padStart(2, '0');
     const mo  = String(d.getMonth() + 1).padStart(2, '0');
     const yr  = d.getFullYear();
-    return `${dd}.${mo}.${yr}, ${hh}:${mm}`;
+    return `${dd}-${mo}-${yr}, ${hh}:${mm}`;
   }
 
   async togglePin(noteId: string): Promise<void> {

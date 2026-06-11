@@ -70,13 +70,13 @@
         <input nxDatefield nxInput formControlName="dateStartFrom" [datepicker]="fromPicker" />
         <nx-datepicker-toggle nxFormfieldSuffix [for]="fromPicker"></nx-datepicker-toggle>
         <nx-datepicker #fromPicker></nx-datepicker>
-        <span nxFormfieldHint>YYYY-MM-DD</span>
+        <span nxFormfieldHint>DD-MM-YYYY</span>
       </nx-formfield>
       <nx-formfield label="Date start to">
         <input nxDatefield nxInput formControlName="dateStartTo" [datepicker]="toPicker" />
         <nx-datepicker-toggle nxFormfieldSuffix [for]="toPicker"></nx-datepicker-toggle>
         <nx-datepicker #toPicker></nx-datepicker>
-        <span nxFormfieldHint>YYYY-MM-DD</span>
+        <span nxFormfieldHint>DD-MM-YYYY</span>
       </nx-formfield>
       <nx-formfield label="Country">
         <nx-dropdown formControlName="country" placeholder="Select">

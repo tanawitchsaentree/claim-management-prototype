@@ -50,6 +50,36 @@ const SEVERITY_ICON: Record<string, string> = {
   `,
   styles: [`
     :host { display: block; }
+
+    /* Widget shell — ported from dashboard.scss so this standalone component
+       matches its inline sibling widgets (encapsulation blocks dashboard.scss
+       from reaching here). Keep values in sync with .widget-* there. */
+    .widget-card {
+      background: var(--ui-01);
+      border: 1px solid var(--ui-04);
+      border-radius: 8px;
+      margin-bottom: 24px;          /* $sp-xl — same gap as sibling widgets */
+      overflow: hidden;
+      box-shadow: 0 1px 4px var(--claim-overlay-shadow);
+    }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 12px;      /* $sp-lg $sp-xl $sp-md */
+    }
+    .widget-header-left { display: flex; align-items: center; gap: 10px; }
+    .widget-icon-wrap {
+      width: 32px; height: 32px;
+      border: 1px solid var(--ui-04);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .widget-icon { color: var(--text-01); font-size: 16px; }
+    .widget-title { font-size: 20px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
+    .widget-empty { padding: 24px; text-align: center; color: var(--text-muted); }
+
     .hu-list { padding: 0 0 8px; }
     .hu-row {
       display: flex;
@@ -58,8 +88,8 @@ const SEVERITY_ICON: Record<string, string> = {
       padding: 12px 24px;
       border-bottom: 1px solid var(--ui-03);
       &:last-child { border-bottom: none; }
-      &--critical { background: rgba(192,57,43,.04); }
-      &--warning  { background: rgba(249,178,51,.04); }
+      // No row tint — the severity icon colour already signals critical/warning.
+      // (No-row-tint rule: state goes on the badge/icon, never the row background.)
     }
     .hu-severity-icon { font-size: 18px; margin-top: 2px; flex-shrink: 0; }
     .hu-icon--critical { color: var(--danger, #c0392b); }

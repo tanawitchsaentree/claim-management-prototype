@@ -46,6 +46,18 @@ const TYPE_ICON: Record<string, string> = {
   `,
   styles: [`
     :host { display: block; }
+
+    /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
+       from reaching this standalone component). Keep in sync with .panel-card. */
+    .panel-card {
+      background: var(--ui-01);
+      border: 1px solid var(--ui-04);
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .panel-card-header { margin-bottom: 12px; }
+    .panel-card-title { font-size: 16px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
+
     .news-list { display: flex; flex-direction: column; gap: 2px; }
     .news-item {
       border-radius: 3px;

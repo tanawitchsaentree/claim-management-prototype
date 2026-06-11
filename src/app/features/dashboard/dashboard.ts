@@ -27,9 +27,9 @@ import { NewsPanelComponent } from './widgets/news-panel';
 import { ExpenseBreakdownComponent } from './widgets/expense-breakdown';
 
 const QUICK_LINKS: QuickLink[] = [
-  { label: 'AGCS Corporate Rules Book' },
-  { label: 'Link 1' },
-  { label: 'Link 2' },
+  { label: 'AGCS Corporate Rules Book', url: 'https://www.allianz.com/en/about-us/strategy-values/business-model.html' },
+  { label: 'Claims Handling Guidelines',  url: 'https://www.allianz.com/en/about-us.html' },
+  { label: 'Reserve Policy Handbook',     url: 'https://www.allianz.com/en/about-us.html' },
 ];
 
 const EMPTY_VM: DashboardVM = {
@@ -196,6 +196,7 @@ export class Dashboard {
   }
 
   navigateToFnol(): void { this.router.navigate(['/fnol/search']); }
+  navigateToSearch(): void { this.router.navigate(['/fnol/search']); }
 
   initials(): string {
     const name = this.auth.user()?.name ?? '';
@@ -205,7 +206,6 @@ export class Dashboard {
   roleBadgeLabel(): string {
     const role = this.auth.user()?.dashboardRole;
     if (role === 'kcm') return 'Key Case Manager';
-    if (role === 'aviation-handler') return 'Aviation Handler';
     return 'Claims Handler';
   }
 

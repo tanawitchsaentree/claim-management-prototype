@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 
-export type DashboardRole = 'claims-handler' | 'kcm' | 'aviation-handler';
+export type DashboardRole = 'claims-handler' | 'kcm';
 
 export interface User {
   id: string;
@@ -28,14 +28,6 @@ export const PERSONAS: User[] = [
     dashboardRole: 'kcm',
     group: 'GPG-001',
   },
-  {
-    id: 'usr-anna',
-    name: 'Anna Weber',
-    email: 'anna.weber@claimsystem.com',
-    role: 'adjuster',
-    dashboardRole: 'aviation-handler',
-    group: 'GPG-002',
-  },
 ];
 
 const STORAGE_KEY = 'dashboard:persona';
@@ -55,7 +47,6 @@ export class AuthService {
 
   readonly user       = this.currentUser.asReadonly();
   readonly isKcm      = computed(() => this.currentUser().dashboardRole === 'kcm');
-  readonly isAviation = computed(() => this.currentUser().dashboardRole === 'aviation-handler');
 
   readonly personas = PERSONAS;
 

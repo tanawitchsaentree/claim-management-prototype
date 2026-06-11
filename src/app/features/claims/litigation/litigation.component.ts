@@ -75,7 +75,7 @@ export class LitigationComponent implements OnInit {
   formatDate(iso: string): string {
     if (!iso) return '—';
     const [y, m, d] = iso.split('-');
-    return `${d}.${m}.${y}`;
+    return `${d}-${m}-${y}`;
   }
 
   chipStatus(s: LitigationStatus): string { return STATUS_CHIP_MAP[s]; }

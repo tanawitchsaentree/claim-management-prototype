@@ -305,6 +305,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
 
   formatDate(iso: string): string {
     const [y, m, d] = iso.split('-');
-    return `${d}.${m}.${y.slice(2)}`;
+    return `${d}-${m}-${y}`;
   }
 }
