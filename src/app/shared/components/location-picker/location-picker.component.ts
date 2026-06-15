@@ -42,6 +42,9 @@ interface LocationPickerVM {
 export class LocationPickerComponent implements OnInit {
   @Input() policyNumber: string | null | undefined = null;
   @Input() value: LocationPickerOutput | null = null;
+  /** FNOL only — shows the "you can add/update later via Edit Claim" hint.
+   *  Off on the Edit Claim screen itself (where that hint would be circular). */
+  @Input() showEditLaterHint = false;
   @Output() locationChange = new EventEmitter<LocationPickerOutput>();
 
   private policyLocationSvc = inject(MockPolicyLocationService);

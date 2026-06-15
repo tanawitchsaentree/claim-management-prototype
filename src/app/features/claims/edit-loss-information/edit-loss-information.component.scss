@@ -92,20 +92,6 @@
   align-items: start;
 }
 
-// ─── CWB location note ────────────────────────────────────────────────
-.eli-cwb-note {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-
-.eli-note-icon {
-  font-size: 14px;
-  color: var(--interactive-primary);
-  flex-shrink: 0;
-}
-
 // ─── Radio field ─────────────────────────────────────────────────────
 .eli-radio-field { display: flex; flex-direction: column; gap: 6px; }
 .eli-radio-label { font-size: 14px; font-weight: 600; color: var(--text-01); margin: 0; }

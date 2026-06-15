@@ -1,4 +1,9 @@
-:host { display: block; }
+@use '../../../shared/styles/modal-layout' as modal;
+
+// Standard centered modal: blessed shell mixin owns header/body/footer spacing
+// (NDBX wrapper already pads 40px) so this matches every other dialog. Was
+// hand-rolled before — CX flagged the inconsistent spacing.
+:host { @include modal.shell; }
 
 .licm-close {
   position: absolute;
@@ -14,6 +19,7 @@
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
+  z-index: 1;
   &:hover { color: var(--text-01); }
 }
 
@@ -33,29 +39,11 @@
   &::after  { transform: rotate(-45deg); }
 }
 
-.licm-header {
-  padding: 24px 48px 0 24px;
-  margin-bottom: 20px;
-}
+.licm-header { @include modal.header; }
+.licm-title  { @include modal.title; }
+.licm-subtitle { @include modal.subtitle; }
 
-.licm-title {
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 700;
-  color: var(--text-01);
-  margin: 0 0 6px;
-}
-
-.licm-subtitle {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0;
-}
-
-.licm-body {
-  padding: 0 24px;
-  max-height: 360px;
-  overflow-y: auto;
-}
+.licm-body { @include modal.body; }
 
 .licm-no-changes {
   font-size: 14px;
@@ -93,8 +81,11 @@
 }
 
 .licm-original {
+  // No line-through: strikethrough is a visual-only signal that screen readers
+  // skip, and it hurts legibility for low-vision users. Semantics come from the
+  // "Original" column header + the arrow → "Updated". Keep it muted so the
+  // updated value still reads as primary, but fully legible.
   color: var(--text-muted);
-  text-decoration: line-through;
   max-width: 160px;
   word-break: break-word;
 }
@@ -113,11 +104,4 @@
   word-break: break-word;
 }
 
-.licm-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 20px 24px 24px;
-  border-top: 1px solid var(--ui-04);
-  margin-top: 20px;
-}
+.licm-footer { @include modal.footer; }

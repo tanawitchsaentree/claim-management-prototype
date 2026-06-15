@@ -7,7 +7,7 @@
   <p class="licm-subtitle">The following fields will be updated for claim <strong>{{ data.claimId }}</strong>.</p>
 </header>
 
-<div class="licm-body">
+<div class="licm-body" nxModalContent>
   @if (data.diffs.length === 0) {
     <p class="licm-no-changes">No fields were changed.</p>
   } @else {
@@ -34,7 +34,7 @@
   }
 </div>
 
-<footer class="licm-footer">
+<footer class="licm-footer" nxModalActions>
   <button nxButton="tertiary" type="button" (click)="onCancel()">Back to editing</button>
   <button nxButton="primary" type="button" (click)="onConfirm()" [disabled]="data.diffs.length === 0">
     Confirm changes

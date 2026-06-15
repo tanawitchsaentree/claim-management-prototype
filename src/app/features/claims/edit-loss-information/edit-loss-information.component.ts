@@ -248,7 +248,7 @@ export class EditLossInformationComponent implements OnInit {
 
     const diffs = this.computeDiffs();
     const data: LossInfoConfirmModalData = { claimId: this.claimId(), diffs };
-    const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px' });
+    const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px', maxWidth: '92vw' });
     const result = await firstValueFrom(ref.afterClosed());
     if (result !== 'confirmed') return;
 

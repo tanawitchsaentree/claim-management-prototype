@@ -7,7 +7,10 @@
         <nx-icon name="plus" nxIconPositionStart></nx-icon>
         Add location
       </button>
-      <p class="lp-skip-hint">Skip if location is not applicable to this claim.</p>
+      <p class="lp-skip-hint">
+        Skip if location is not applicable to this claim.
+        @if (showEditLaterHint) { You can add or update this later via Edit Claim. }
+      </p>
     </div>
   } @else {
     <div class="lp-selected">

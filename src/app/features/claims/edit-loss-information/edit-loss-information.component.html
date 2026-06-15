@@ -75,12 +75,10 @@
   <!-- Card 2: Location (CWB Location Picker) -->
   <section class="eli-card">
     <h2 class="eli-section-heading">Locations of loss</h2>
-    <p class="eli-section-desc eli-cwb-note">
-      <nx-icon name="info-circle-o" class="eli-note-icon"></nx-icon>
-      Location picker is shown in read-only context here. Changes to location require re-opening from the FNOL flow.
-    </p>
+    <p class="eli-section-desc">Update the location of loss below.</p>
     <!-- CWB Location MFE: LocationPickerComponent is self-contained (no FnolStateService dep).
-         Renders correctly outside wizard. Location changes are reflected via (locationChange). -->
+         Editable here — location changes are captured via (locationChange); there is
+         no FNOL re-open path, this edit screen is the place to change location. -->
     <app-location-picker
       [policyNumber]="policyNumber()"
       [value]="lossLocation.value"
