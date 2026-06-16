@@ -71,7 +71,13 @@ export const routes: Routes = [
       // Stub routes — redirect to overview until dedicated pages are built
       { path: 'claims/:id/policy',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/parties',    redirectTo: 'claims/:id/overview', pathMatch: 'full' },
-      { path: 'claims/:id/financial',  redirectTo: 'claims/:id/overview', pathMatch: 'full' },
+      {
+        path: 'claims/:id/financial',
+        loadComponent: () =>
+          import('./features/claims/financial-overview/financial-overview.component').then(
+            m => m.FinancialOverviewComponent
+          ),
+      },
       { path: 'claims/:id/limits',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/recoveries', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/providers',  redirectTo: 'claims/:id/overview', pathMatch: 'full' },

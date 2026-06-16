@@ -1,0 +1,222 @@
+<!-- ── Page header ─────────────────────────────────────────────────────── -->
+<div class="fo-header">
+  <h1 class="fo-title">Financial overview</h1>
+  <div class="fo-controls">
+
+    <!-- Currency selector -->
+    <div class="fo-currency-control">
+      <span class="fo-currency-label">Currency</span>
+      <div class="fo-currency-options">
+        @for (c of currencies; track c) {
+          <button
+            [nxButton]="currency() === c ? 'primary small' : 'secondary small'"
+            type="button"
+            (click)="currency.set(c)">
+            {{ c }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="fo-controls-divider"></div>
+
+    <!-- Level toggle -->
+    <div class="fo-level-toggle">
+      <button
+        [nxButton]="level() === 'claim' ? 'primary small' : 'secondary small'"
+        type="button"
+        (click)="level.set('claim')">
+        Claim level
+      </button>
+      <button
+        [nxButton]="level() === 'section' ? 'primary small' : 'secondary small'"
+        type="button"
+        (click)="level.set('section')">
+        Section level
+      </button>
+    </div>
+
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="fo-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
+} @else if (fo(); as fo) {
+
+  <!-- ── KPI summary cards ──────────────────────────────────────────────── -->
+  <div class="fo-kpis">
+    @for (kpi of kpis; track kpi.label) {
+      <div class="fo-kpi-card">
+        <span class="fo-kpi-label">{{ kpi.label }}</span>
+        <span class="fo-kpi-value">{{ kpi.value | currency:'EUR':'symbol':'1.0-0' }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- ── Tabs ───────────────────────────────────────────────────────────── -->
+  <nx-tab-group class="fo-tabs" [selectedIndex]="activeTab()" (selectedIndexChange)="activeTab.set($event)">
+
+    <!-- TAB: Payments -->
+    <nx-tab>
+      <ng-template nxTabLabel>Payments ({{ fo.payments.length }})</ng-template>
+      <div class="fo-tab-content">
+        <div class="fo-toolbar">
+          <button nxButton="primary small" class="fo-toolbar__action">
+            <nx-icon name="plus" class="nx-margin-right-2xs"></nx-icon>
+            Make payment
+          </button>
+        </div>
+        <table nxTable class="fo-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Payment ID</th>
+              <th nxHeaderCell>Reinsurance ID</th>
+              <th nxHeaderCell>Payee</th>
+              <th nxHeaderCell>Handler</th>
+              <th nxHeaderCell>Section / Type</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell class="fo-cell--right">Payment amount</th>
+              <th nxHeaderCell>Currency</th>
+              <th nxHeaderCell>Payment date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of fo.payments; track p.paymentId) {
+              <tr nxTableRow>
+                <td nxCell>{{ p.paymentId }}</td>
+                <td nxCell>{{ p.reinsuranceId }}</td>
+                <td nxCell>{{ p.payee }}</td>
+                <td nxCell>{{ p.handler }}</td>
+                <td nxCell>{{ p.sectionType }}</td>
+                <td nxCell>
+                  <span class="fo-badge fo-badge--{{ p.status.toLowerCase() }}">{{ p.status }}</span>
+                </td>
+                <td nxCell class="fo-cell--right">{{ p.amount | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell>{{ p.currency }}</td>
+                <td nxCell>{{ p.paymentDate }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </nx-tab>
+
+    <!-- TAB: Reserves -->
+    <nx-tab>
+      <ng-template nxTabLabel>Reserves ({{ fo.reserves.length }})</ng-template>
+      <div class="fo-tab-content">
+        <div class="fo-toolbar">
+          <button nxButton="primary small" class="fo-toolbar__action">
+            <nx-icon name="plus" class="nx-margin-right-2xs"></nx-icon>
+            Add reserve
+          </button>
+        </div>
+        <table nxTable class="fo-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Reserve ID</th>
+              <th nxHeaderCell>Party</th>
+              <th nxHeaderCell>Damaged item</th>
+              <th nxHeaderCell>Section</th>
+              <th nxHeaderCell>Reserve sub-type</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell class="fo-cell--right">Reserve value</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of fo.reserves; track r.reserveId) {
+              <tr nxTableRow>
+                <td nxCell>{{ r.reserveId }}</td>
+                <td nxCell>{{ r.party }}</td>
+                <td nxCell>{{ r.damagedItem }}</td>
+                <td nxCell>{{ r.section }}</td>
+                <td nxCell>{{ r.reserveSubType }}</td>
+                <td nxCell>
+                  <span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span>
+                </td>
+                <td nxCell class="fo-cell--right">{{ r.reserveValue | currency:'EUR':'symbol':'1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </nx-tab>
+
+    <!-- TAB: Transaction summary -->
+    <nx-tab>
+      <ng-template nxTabLabel>Transaction summary</ng-template>
+      <div class="fo-tab-content">
+        <table nxTable class="fo-table fo-table--wide">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Transaction</th>
+              <th nxHeaderCell>Date</th>
+              <th nxHeaderCell class="fo-cell--right">Indemnity</th>
+              <th nxHeaderCell class="fo-cell--right">Expense</th>
+              <th nxHeaderCell class="fo-cell--right">Total payment</th>
+              <th nxHeaderCell class="fo-cell--right">Ind. recovery</th>
+              <th nxHeaderCell class="fo-cell--right">Exp. recovery</th>
+              <th nxHeaderCell class="fo-cell--right">Total recovery</th>
+              <th nxHeaderCell class="fo-cell--right">Recoveries</th>
+              <th nxHeaderCell class="fo-cell--right">Total incurred</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of fo.transactions; track t.transactionId) {
+              <tr nxTableRow>
+                <td nxCell>{{ t.description }}</td>
+                <td nxCell>{{ t.date }}</td>
+                <td nxCell class="fo-cell--right">{{ t.indemnityPayment | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ t.expensePayment | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ t.totalPayment | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ t.indemnityRecovery | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ t.expenseRecovery | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ t.totalRecovery | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ t.recoveries | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right fo-cell--incurred">{{ t.totalIncurred | currency:'EUR':'symbol':'1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </nx-tab>
+
+    <!-- TAB: Financial details -->
+    <nx-tab>
+      <ng-template nxTabLabel>Financial details</ng-template>
+      <div class="fo-tab-content">
+        @if (fo.details.ibnr > 0) {
+          <div class="fo-details-meta">
+            <span class="fo-details-label">IBNR</span>
+            <span class="fo-details-value">{{ fo.details.ibnr | currency:currency():'symbol':'1.0-0' }}</span>
+          </div>
+        }
+        <table nxTable class="fo-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell></th>
+              <th nxHeaderCell class="fo-cell--right">Gross</th>
+              <th nxHeaderCell class="fo-cell--right">Gross net</th>
+              <th nxHeaderCell class="fo-cell--right">Net</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of fo.details.rows; track row.label) {
+              <tr nxTableRow>
+                <td nxCell>{{ row.label }}</td>
+                <td nxCell class="fo-cell--right">{{ row.gross | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ row.grossNet | currency:'EUR':'symbol':'1.0-0' }}</td>
+                <td nxCell class="fo-cell--right">{{ row.net | currency:'EUR':'symbol':'1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </nx-tab>
+
+  </nx-tab-group>
+
+} @else {
+  <p class="fo-empty">No financial data available for this claim.</p>
+}

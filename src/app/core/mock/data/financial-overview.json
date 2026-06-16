@@ -1,0 +1,167 @@
+[
+  {
+    "claimId": "CLM-2024-001",
+    "summary": {
+      "outstandingReserves": 113000,
+      "completedPayments": 144000,
+      "pendingPayments": 40000,
+      "recoveries": 0,
+      "incurred": 993000
+    },
+    "details": {
+      "currency": "EUR",
+      "ibnr": 0,
+      "rows": [
+        { "label": "Insured",   "gross": 100000, "grossNet": 100000, "net": 100000 },
+        { "label": "Reserve",   "gross": 100000, "grossNet": 100000, "net": 100000 },
+        { "label": "Payments",  "gross": 100000, "grossNet": 100000, "net": 100000 },
+        { "label": "Recoveries","gross": 100000, "grossNet": 100000, "net": 100000 }
+      ]
+    },
+    "payments": [
+      {
+        "paymentId": "123456-1",
+        "reinsuranceId": "R00001",
+        "payee": "Otto Kaufmann",
+        "handler": "Maya Mustermann",
+        "sectionType": "Expenses",
+        "status": "Pending",
+        "amount": 30000,
+        "currency": "EUR",
+        "paymentDate": "24-12-2024"
+      },
+      {
+        "paymentId": "123456-2",
+        "reinsuranceId": "R00002",
+        "payee": "Bruce Wayne",
+        "handler": "Maya Mustermann",
+        "sectionType": "Expenses",
+        "status": "Credit",
+        "amount": 30000,
+        "currency": "EUR",
+        "paymentDate": "24-12-2024"
+      },
+      {
+        "paymentId": "123456-3",
+        "reinsuranceId": "R00003",
+        "payee": "Peter Parker",
+        "handler": "Maya Mustermann",
+        "sectionType": "Indemnity",
+        "status": "Done",
+        "amount": 30000,
+        "currency": "EUR",
+        "paymentDate": "24-12-2024"
+      },
+      {
+        "paymentId": "123456-4",
+        "reinsuranceId": "R00004",
+        "payee": "Billie Baggery",
+        "handler": "Maya Mustermann",
+        "sectionType": "Indemnity",
+        "status": "Done",
+        "amount": 30000,
+        "currency": "EUR",
+        "paymentDate": "24-12-2024"
+      },
+      {
+        "paymentId": "123456-5",
+        "reinsuranceId": "R00005",
+        "payee": "Harry Potter",
+        "handler": "Maya Mustermann",
+        "sectionType": "Indemnity",
+        "status": "Pending",
+        "amount": 30000,
+        "currency": "EUR",
+        "paymentDate": "24-12-2024"
+      }
+    ],
+    "reserves": [
+      {
+        "reserveId": "123478-1",
+        "party": "R00016",
+        "damagedItem": "Peter Para / M1",
+        "section": "Building 1",
+        "reserveSubType": "Indemnity",
+        "status": "Approved",
+        "reserveValue": 5000
+      },
+      {
+        "reserveId": "123478-2",
+        "party": "R00016",
+        "damagedItem": "Peter Para / M1",
+        "section": "Building 1",
+        "reserveSubType": "Indemnity",
+        "status": "Approved",
+        "reserveValue": 5000
+      },
+      {
+        "reserveId": "123478-3",
+        "party": "R00016",
+        "damagedItem": "Peter Para / n/a",
+        "section": "n/a",
+        "reserveSubType": "Expenses",
+        "status": "Approved",
+        "reserveValue": 5000
+      },
+      {
+        "reserveId": "123478-4",
+        "party": "R00016",
+        "damagedItem": "Carla Clark / Liability",
+        "section": "Appointments",
+        "reserveSubType": "Indemnity",
+        "status": "Pending",
+        "reserveValue": 10000
+      },
+      {
+        "reserveId": "123478-5",
+        "party": "R00016",
+        "damagedItem": "Peter Para / M1",
+        "section": "Building 1",
+        "reserveSubType": "Property Damage",
+        "status": "Approved",
+        "reserveValue": 10000
+      }
+    ],
+    "transactions": [
+      {
+        "transactionId": "T-001",
+        "date": "30.01.2024",
+        "indemnityPayment": 0,
+        "expensePayment": 29000,
+        "totalPayment": 29000,
+        "indemnityRecovery": 0,
+        "expenseRecovery": 0,
+        "totalRecovery": 0,
+        "recoveries": 0,
+        "totalIncurred": 100000,
+        "description": "Payment: Cycle & Co — EURO/EUR × 1.10"
+      },
+      {
+        "transactionId": "T-002",
+        "date": "14.12.2024",
+        "indemnityPayment": 0,
+        "expensePayment": 20000,
+        "totalPayment": 20000,
+        "indemnityRecovery": 0,
+        "expenseRecovery": 0,
+        "totalRecovery": 0,
+        "recoveries": 0,
+        "totalIncurred": 400000,
+        "description": "Reserve: Cycle & Co — EURO/EUR × 1.10"
+      },
+      {
+        "transactionId": "T-003",
+        "date": "14.12.2024",
+        "indemnityPayment": 1000000,
+        "expensePayment": 0,
+        "totalPayment": 1000000,
+        "indemnityRecovery": 0,
+        "expenseRecovery": 0,
+        "totalRecovery": 0,
+        "recoveries": 0,
+        "totalIncurred": 10240000,
+        "description": "Reserve: Cycle & Co — EURO/EUR × 1.10"
+      }
+    ]
+  }
+]
