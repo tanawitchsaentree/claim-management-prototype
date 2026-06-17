@@ -137,10 +137,72 @@
     <section class="ss-card">
       <h2 class="section-heading">General configurations</h2>
       <div class="ss-config-row">
-        <nx-switcher [formControl]="accessRestricted">
+        <nx-switcher [formControl]="accessRestricted" (checkedChange)="onToggleRestriction($event)">
           This file has restricted access
         </nx-switcher>
       </div>
+
+      @if (isRestricted) {
+        <div class="ss-restriction">
+
+          <!-- Reason dropdown -->
+          <div class="ss-restriction-row">
+            <nx-formfield label="Restriction reason" class="ss-restriction-field">
+              <nx-dropdown [formControl]="$any(restrictionForm.get('reason'))" placeholder="Select reason">
+                @for (r of restrictionReasons; track r) {
+                  <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+
+            @if (isOtherReason) {
+              <nx-formfield label="Specify reason" class="ss-restriction-field">
+                <input nxInput [formControl]="$any(restrictionForm.get('otherReason'))" placeholder="Enter reason" />
+              </nx-formfield>
+            }
+          </div>
+
+          <!-- Access list -->
+          <div class="ss-access-list">
+            <p class="ss-access-list__heading">Users with access</p>
+
+            @for (entry of accessList(); track entry.userId; let i = $index) {
+              <div class="ss-access-entry">
+                <div class="ss-access-entry__info">
+                  <span class="ss-access-entry__name">{{ entry.name }}</span>
+                  <span class="ss-access-entry__role">{{ entry.role }}</span>
+                </div>
+                @if (i === 0) {
+                  <span class="ss-access-entry__creator">Creator</span>
+                } @else {
+                  <button nxIconButton="tertiary small" type="button" (click)="removeUserFromList(entry.userId)" aria-label="Remove user">
+                    <nx-icon name="trash-o"></nx-icon>
+                  </button>
+                }
+              </div>
+            }
+
+            <!-- User search -->
+            <div class="ss-user-search">
+              <nx-formfield class="ss-user-search__field">
+                <input nxInput [formControl]="userSearchControl" placeholder="Search by name or email" />
+                <nx-icon nxFormfieldSuffix name="search"></nx-icon>
+              </nx-formfield>
+              @if (userSearchResults().length > 0) {
+                <div class="ss-user-results">
+                  @for (user of userSearchResults(); track user.userId) {
+                    <button type="button" class="ss-user-result" (click)="addUserToList(user)">
+                      <span class="ss-user-result__name">{{ user.name }}</span>
+                      <span class="ss-user-result__role">{{ user.role }}</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+        </div>
+      }
     </section>
 
     <!-- Card 4: Reserves narrative (conditional) -->

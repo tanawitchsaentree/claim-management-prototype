@@ -1,3 +1,29 @@
+export interface AccessListEntry {
+  userId:   string;
+  name:     string;
+  role:     string;
+  email?:   string;
+  addedAt:  string;
+}
+
+export interface FileRestriction {
+  isRestricted:  boolean;
+  reason?:       string;
+  restrictedBy?: { userId: string; name: string };
+  restrictedAt?: string;
+  accessList:    AccessListEntry[];
+}
+
+export const RESTRICTION_REASONS = [
+  'VIP client',
+  'Legal hold',
+  'Sensitive data',
+  'Regulatory investigation',
+  'Other',
+] as const;
+
+export type RestrictionReason = typeof RESTRICTION_REASONS[number];
+
 export interface ClaimFinancialSummary {
   currency: string;
   totalReserve: number;
@@ -50,6 +76,9 @@ export interface ClaimOverview {
 
   // Mass Event link
   massEventId?: string;
+
+  // File restriction (BMPCC-10994) — informational only, no enforcement
+  restriction?: FileRestriction;
 
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
   hasOpenPayments?:   boolean;

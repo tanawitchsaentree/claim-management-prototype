@@ -11,7 +11,7 @@
     <section class="co-card">
       <div class="co-card-title-row">
         <h2 class="co-card-title">General information</h2>
-        @if (claim.status !== 'Closed' && claim.status !== 'Reopened') {
+        @if (claim.status !== 'Closed') {
           <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
             <nx-icon name="edit" class="co-edit-icon"></nx-icon>
             Edit loss information
@@ -209,7 +209,69 @@
           </button>
         </div>
       }
+      @if (!claim.restriction?.isRestricted) {
+        <div class="co-card-actions co-card-actions--restrict">
+          <button nxButton="tertiary small" type="button" (click)="enableRestriction(claim)">
+            <nx-icon name="lock" class="co-btn-icon"></nx-icon>
+            Restrict file access
+          </button>
+        </div>
+      }
     </section>
+
+    <!-- File Restriction Card (BMPCC-10994) -->
+    @if (claim.restriction?.isRestricted) {
+      <section class="co-card">
+        <div class="co-card-title-row">
+          <div class="co-restriction-title-group">
+            <h2 class="co-card-title">File restriction</h2>
+            <span class="co-restriction-badge">Restricted</span>
+          </div>
+          <nx-switcher [checked]="true" (checkedChange)="$event === false && showRemoveConfirm.set(true)">
+            File restricted
+          </nx-switcher>
+        </div>
+
+        @if (showRemoveConfirm()) {
+          <div class="co-restriction-confirm">
+            <nx-icon name="warning-circle-o" class="co-restriction-confirm__icon"></nx-icon>
+            <div class="co-restriction-confirm__body">
+              <p class="co-restriction-confirm__text">Remove restriction? All users will be able to access this file.</p>
+              <div class="co-restriction-confirm__actions">
+                <button nxButton="tertiary small" type="button" (click)="showRemoveConfirm.set(false)">Cancel</button>
+                <button nxButton="primary small" type="button" (click)="confirmRemoveRestriction(claim)">Remove restriction</button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="co-restriction-info">
+          <div class="co-field">
+            <span class="co-label">Reason</span>
+            <span class="co-value">{{ claim.restriction!.reason ?? '–' }}</span>
+          </div>
+          <div class="co-field">
+            <span class="co-label">Restricted by</span>
+            <span class="co-value">{{ claim.restriction!.restrictedBy?.name ?? '–' }}</span>
+          </div>
+          <div class="co-field">
+            <span class="co-label">Restricted on</span>
+            <span class="co-value">{{ claim.restriction!.restrictedAt ? formatDate(claim.restriction!.restrictedAt) : '–' }}</span>
+          </div>
+          <div class="co-field">
+            <span class="co-label">Access granted to</span>
+            <span class="co-value">{{ claim.restriction!.accessList.length }} user{{ claim.restriction!.accessList.length === 1 ? '' : 's' }}</span>
+          </div>
+        </div>
+
+        <div class="co-card-actions">
+          <button nxButton="secondary small" type="button" (click)="openManageAccessModal(claim.restriction!, claim.claimId)">
+            <nx-icon name="user-o" class="co-btn-icon"></nx-icon>
+            Manage access
+          </button>
+        </div>
+      </section>
+    }
 
     <!-- Pending Tasks Card -->
     <section class="co-card">

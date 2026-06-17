@@ -1,0 +1,132 @@
+.x-header {
+  padding: 24px 24px 0;
+}
+
+.x-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 4px;
+}
+
+.x-subtitle {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.x-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.x-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--ui-04);
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ── Access list ───────────────────────────────────────────────────────────────
+
+.ma-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ma-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ui-03);
+
+  &:last-child { border-bottom: none; }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 500;
+    color: var(--text-01);
+  }
+
+  &__meta {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+
+  &__creator {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+
+.ma-search {
+  &__label {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+    margin: 0 0 8px;
+  }
+
+  &__wrap {
+    position: relative;
+    width: 320px;
+  }
+
+  &__field { width: 100%; }
+
+  &__results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--ui-01);
+    border: 1px solid var(--ui-04);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    z-index: 100;
+    overflow: hidden;
+  }
+}
+
+.ma-result {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover { background: var(--hover-secondary); }
+
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 500;
+    color: var(--text-01);
+  }
+
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+}

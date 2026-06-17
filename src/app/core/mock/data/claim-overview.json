@@ -106,6 +106,16 @@
       "totalPayments": 0,
       "totalRecoveries": 0,
       "outstanding": 425000
+    },
+    "restriction": {
+      "isRestricted": true,
+      "reason": "VIP client",
+      "restrictedBy": { "userId": "U001", "name": "Mara Mustermann" },
+      "restrictedAt": "2024-01-15",
+      "accessList": [
+        { "userId": "U001", "name": "Mara Mustermann", "role": "Claims Handler", "email": "mara.mustermann@allianz.com", "addedAt": "2024-01-15" },
+        { "userId": "U002", "name": "Klaus Becker",    "role": "Claims Manager", "email": "klaus.becker@allianz.com",    "addedAt": "2024-01-15" }
+      ]
     }
   }
 }

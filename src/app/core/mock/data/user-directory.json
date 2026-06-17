@@ -1,0 +1,12 @@
+[
+  { "userId": "U001", "name": "Mara Mustermann",  "role": "Claims Handler",     "email": "mara.mustermann@allianz.com"  },
+  { "userId": "U002", "name": "Klaus Becker",     "role": "Claims Manager",     "email": "klaus.becker@allianz.com"     },
+  { "userId": "U003", "name": "Anna Schulz",      "role": "Legal Counsel",      "email": "anna.schulz@allianz.com"      },
+  { "userId": "U004", "name": "Leonie Fischer",   "role": "Claims Handler",     "email": "leonie.fischer@allianz.com"   },
+  { "userId": "U005", "name": "Stefan Meier",     "role": "Supervisor",         "email": "stefan.meier@allianz.com"     },
+  { "userId": "U006", "name": "Heinrich Braun",   "role": "Compliance Officer", "email": "heinrich.braun@allianz.com"   },
+  { "userId": "U007", "name": "Julia Weber",      "role": "Claims Handler",     "email": "julia.weber@allianz.com"      },
+  { "userId": "U008", "name": "Maximilian Koch",  "role": "Claims Manager",     "email": "maximilian.koch@allianz.com"  },
+  { "userId": "U009", "name": "Sophie Hoffmann",  "role": "Legal Counsel",      "email": "sophie.hoffmann@allianz.com"  },
+  { "userId": "U010", "name": "Felix Wagner",     "role": "Compliance Officer", "email": "felix.wagner@allianz.com"     }
+]

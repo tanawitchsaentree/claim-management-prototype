@@ -1,0 +1,52 @@
+<div class="x-header">
+  <h2 class="x-title">Manage file access</h2>
+  <p class="x-subtitle">Only listed users can access this claim file.</p>
+</div>
+
+<div class="x-body">
+
+  <!-- Current access list -->
+  <div class="ma-list">
+    @for (entry of accessList(); track entry.userId; let i = $index) {
+      <div class="ma-entry">
+        <div class="ma-entry__info">
+          <span class="ma-entry__name">{{ entry.name }}</span>
+          <span class="ma-entry__meta">{{ entry.role }} · Added {{ entry.addedAt }}</span>
+        </div>
+        @if (i === 0) {
+          <span class="ma-entry__creator">Creator</span>
+        } @else {
+          <button nxIconButton="tertiary small" type="button" (click)="removeUser(entry.userId)" aria-label="Remove user">
+            <nx-icon name="trash-o"></nx-icon>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Add user search -->
+  <div class="ma-search">
+    <p class="ma-search__label">Add user</p>
+    <div class="ma-search__wrap">
+      <nx-formfield class="ma-search__field">
+        <input nxInput [formControl]="searchControl" placeholder="Search by name or email" />
+        <nx-icon nxFormfieldSuffix name="search"></nx-icon>
+      </nx-formfield>
+      @if (searchResults().length > 0) {
+        <div class="ma-search__results">
+          @for (user of searchResults(); track user.userId) {
+            <button type="button" class="ma-result" (click)="addUser(user)">
+              <span class="ma-result__name">{{ user.name }}</span>
+              <span class="ma-result__role">{{ user.role }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+</div>
+
+<div class="x-footer">
+  <button nxButton="primary small" type="button" (click)="close()">Close</button>
+</div>

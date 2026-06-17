@@ -12,6 +12,7 @@ import { Policy } from '../../../core/models';
 import { SkeletonClaim } from '../../../core/models/skeleton-claim.model';
 import { LossInformation } from '../../../core/models/loss-information.model';
 import { CAUSE_SCHEMAS } from '../config/cause-schemas';
+import { FileRestriction, AccessListEntry } from '../../../core/models/claim-overview.model';
 
 const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information'  },
@@ -81,6 +82,9 @@ export class FnolStateService {
 
   selectedClient: FnolSelectedClient | null = null;
   selectedPolicy: FnolSelectedPolicy | null = null;
+
+  // File restriction state (BMPCC-10994) — set from summary step
+  restriction: FileRestriction = { isRestricted: false, accessList: [] };
   selectedPolicyFull: Policy | null = null;
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;

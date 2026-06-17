@@ -38,6 +38,13 @@ import {
   MassEventEditModalComponent,
   MassEventModalData,
 } from '../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
+import {
+  ManageAccessModalComponent,
+  ManageAccessModalData,
+  ManageAccessModalResult,
+} from './components/manage-access-modal/manage-access-modal.component';
+import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
+import { FileRestriction, RESTRICTION_REASONS } from '../../../core/models/claim-overview.model';
 
 interface OverviewVM {
   loading: boolean;
@@ -78,6 +85,7 @@ const TASKS_PAGE_SIZE = 10;
     NxPopoverModule,
     NxLinkModule,
     NxModalModule,
+    NxSwitcherModule,
     StatusChipComponent,
   ],
   templateUrl: './claim-overview.component.html',
@@ -306,5 +314,51 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   formatDate(iso: string): string {
     const [y, m, d] = iso.split('-');
     return `${d}-${m}-${y}`;
+  }
+
+  // ── File restriction (BMPCC-10994) ─────────────────────────────────
+
+  readonly restrictionReasons = [...RESTRICTION_REASONS];
+  readonly showRemoveConfirm = signal(false);
+
+  async openManageAccessModal(restriction: FileRestriction, claimId: string): Promise<void> {
+    const ref = this.dialogSvc.open(ManageAccessModalComponent, {
+      data: { restriction, claimId } satisfies ManageAccessModalData,
+      width: '600px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as ManageAccessModalResult | undefined;
+    if (!result) return;
+    const cur = this.vm$.value;
+    if (!cur.claim) return;
+    this.vm$.next({ ...cur, claim: { ...cur.claim, restriction: result } });
+  }
+
+  enableRestriction(claim: ClaimOverview): void {
+    const updated: FileRestriction = {
+      isRestricted: true,
+      accessList: [],
+    };
+    const cur = this.vm$.value;
+    this.vm$.next({ ...cur, claim: { ...claim, restriction: updated } });
+  }
+
+  confirmRemoveRestriction(claim: ClaimOverview): void {
+    const cur = this.vm$.value;
+    this.vm$.next({
+      ...cur,
+      claim: { ...claim, restriction: { isRestricted: false, accessList: [] } },
+    });
+    this.showRemoveConfirm.set(false);
+    this.toast.success('Restriction removed', 'All users can now access this claim file.');
+  }
+
+  updateRestrictionReason(claim: ClaimOverview, reason: string): void {
+    if (!claim.restriction) return;
+    const cur = this.vm$.value;
+    this.vm$.next({
+      ...cur,
+      claim: { ...claim, restriction: { ...claim.restriction, reason } },
+    });
   }
 }
