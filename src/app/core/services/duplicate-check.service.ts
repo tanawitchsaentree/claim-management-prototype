@@ -27,7 +27,9 @@ export class DuplicateCheckService {
   }
 
   // TODO [FNOL-DUP-1]: Confirm with product whether duplicate check should also
-  // run at skeleton-claim creation stage (currently only on loss-information).
+  // run at skeleton-claim creation stage. This service is generic — it is NOT
+  // restricted to FNOL. The edit-loss-information flow is a separate consumer
+  // pending product decision (BMPCC-11681 Q9).
   //
   // PENDING [FNOL-DUP-5]: debounceTime(1000ms) and banner preview cap (3 items) are
   // hardcoded for MVP. Per-OE configurable parameters deferred post-MVP.

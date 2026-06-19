@@ -4,6 +4,7 @@ import { ClaimSection, SectionStatus } from '../../models/section.model';
 import { Task, TaskStatus } from '../../models/task.model';
 import { Claim } from '../../models/claim.model';
 import { LossInformation } from '../../models/loss-information.model';
+import { LossEventSummary } from '../../models/dashboard-extended.model';
 import { CwbLocation } from '../../models/cwb-location.model';
 import { Note } from '../../models/note.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
@@ -35,6 +36,7 @@ import sectionsData from '../data/sections.json';
 import tasksData from '../data/tasks.json';
 import claimsData from '../data/claims.json';
 import lossInfoData from '../data/loss-information.json';
+import lossEventsData from '../data/loss-events.json';
 
 export interface MockState {
   overviews:        Record<string, ClaimOverview>;
@@ -43,10 +45,13 @@ export interface MockState {
   tasks:            Task[];
   claims:           Claim[];
   lossInformation:  LossInformation[];
+  lossEvents:       LossEventSummary[];
 }
 
 const STORAGE_KEY          = 'champ-mock-state';
 const STORAGE_SCENARIO_KEY = 'champ-mock-scenario';
+const STORAGE_VERSION_KEY  = 'champ-mock-version';
+const STATE_VERSION        = '14434-open-sections';
 
 function defaultState(): MockState {
   return {
@@ -56,6 +61,7 @@ function defaultState(): MockState {
     tasks:           tasksData      as unknown as Task[],
     claims:          claimsData     as unknown as Claim[],
     lossInformation: lossInfoData   as unknown as LossInformation[],
+    lossEvents:      lossEventsData as unknown as LossEventSummary[],
   };
 }
 
@@ -110,6 +116,17 @@ export class MockStateService {
   patchLossInformation(updater: (items: LossInformation[]) => LossInformation[]): void {
     const cur = this._state();
     this._state.set({ ...cur, lossInformation: updater(cur.lossInformation) });
+    this.persist();
+  }
+
+  patchLossEvent(lossEventId: string, partial: Partial<LossEventSummary>): void {
+    const cur = this._state();
+    this._state.set({
+      ...cur,
+      lossEvents: cur.lossEvents.map(e =>
+        e.lossEventId === lossEventId ? { ...e, ...partial } : e
+      ),
+    });
     this.persist();
   }
 
@@ -194,6 +211,13 @@ export class MockStateService {
 
   private hydrateState(): MockState {
     try {
+      const version = sessionStorage.getItem(STORAGE_VERSION_KEY);
+      if (version !== STATE_VERSION) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(STORAGE_SCENARIO_KEY);
+        sessionStorage.setItem(STORAGE_VERSION_KEY, STATE_VERSION);
+        return defaultState();
+      }
       const raw = sessionStorage.getItem(STORAGE_KEY);
       if (raw) return JSON.parse(raw) as MockState;
     } catch {

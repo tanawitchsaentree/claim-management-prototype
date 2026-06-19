@@ -11,6 +11,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { firstValueFrom } from 'rxjs';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { ClaimOverview } from '../../../../../core/models/claim-overview.model';
@@ -27,7 +28,7 @@ export interface ClaimClosureModalResult {
   activity: ClaimActivity;
 }
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4;
 
 const CLOSURE_REASONS: ClosureReason[] = [
   'Claim Finalised',
@@ -49,6 +50,7 @@ const CLOSURE_REASONS: ClosureReason[] = [
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
+    NxCheckboxModule,
   ],
   templateUrl: './claim-closure-modal.component.html',
   styleUrl: './claim-closure-modal.component.scss',
@@ -66,6 +68,20 @@ export class ClaimClosureModalComponent implements OnInit {
 
   readonly closureReasons = CLOSURE_REASONS;
 
+  readonly checklistItems: string[] = [
+    'All payments processed',
+    'All bills received',
+    'All recoveries & deductibles collected',
+    'Reserves released to zero',
+    'Final reports completed',
+  ];
+  readonly checklistChecked = signal<boolean[]>(this.checklistItems.map(() => false));
+  readonly checklistAllDone = computed(() => this.checklistChecked().every(v => v));
+
+  toggleChecklistItem(index: number): void {
+    this.checklistChecked.update(arr => arr.map((v, i) => i === index ? !v : v));
+  }
+
   readonly form: FormGroup = this.fb.group({
     reason:        [null, Validators.required],
     retentionType: ['default', Validators.required],
@@ -74,8 +90,9 @@ export class ClaimClosureModalComponent implements OnInit {
   readonly stepTitle = computed(() => {
     switch (this.step()) {
       case 1: return 'Close Claim — Validation';
-      case 2: return 'Close Claim — Reason';
-      case 3: return 'Close Claim — Confirmation';
+      case 2: return 'Close Claim — Pre-closure Checklist';
+      case 3: return 'Close Claim — Reason';
+      case 4: return 'Close Claim — Confirmation';
     }
   });
 
@@ -113,17 +130,22 @@ export class ClaimClosureModalComponent implements OnInit {
   }
 
   onBack(): void {
-    if (this.step() === 3) this.step.set(2);
+    const s = this.step();
+    if (s === 3) this.step.set(2);
+    else if (s === 4) this.step.set(3);
   }
 
   onContinue(): void {
-    if (this.step() === 2 && !this.reasonInvalid()) {
+    const s = this.step();
+    if (s === 2 && this.checklistAllDone()) {
       this.step.set(3);
+    } else if (s === 3 && !this.reasonInvalid()) {
+      this.step.set(4);
     }
   }
 
   async onCloseClaim(): Promise<void> {
-    if (this.form.invalid || this.saving()) return;
+    if (this.step() !== 4 || this.form.invalid || this.saving()) return;
     this.saving.set(true);
     this.saveError.set(null);
 
@@ -166,6 +188,11 @@ export class ClaimClosureModalComponent implements OnInit {
   onViewSections(): void {
     this.modalRef.close(undefined);
     this.router.navigate(['/claims', this.claim.claimId, 'sections']);
+  }
+
+  onViewLitigation(): void {
+    this.modalRef.close(undefined);
+    this.router.navigate(['/claims', this.claim.claimId, 'litigation']);
   }
 
   retentionTypeLabel(type: string): string {

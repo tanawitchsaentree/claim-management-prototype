@@ -17,6 +17,7 @@ import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
+import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MockLossInformationService } from '../../../core/mock/services/mock-loss-information.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
@@ -44,6 +45,7 @@ import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.compone
     NxCheckboxModule, NxTimefieldModule, NxDatefieldModule,
     NxDropdownModule, NxMultiSelectComponent, NxRadioModule,
     NxMessageModule, NxModalModule, NxSpinnerModule,
+    NxAccordionModule,
     LocationPickerComponent,
   ],
   templateUrl: './edit-loss-information.component.html',
@@ -209,6 +211,11 @@ export class EditLossInformationComponent implements OnInit {
     addIf('Type of damage',  (orig.typeOfDamage ?? []).join(', '), (cur.typeOfDamage ?? []).join(', '));
     addIf('Loss description', orig.lossDescription, cur.lossDescription);
 
+    // Loss location (compare by displayName of first location as proxy)
+    const origLoc = (orig.lossLocation as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
+    const curLoc  = (cur.lossLocation  as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
+    addIf('Loss location', origLoc, curLoc);
+
     // Fire cause details
     const oCd = orig.causeDetails as unknown as LossInformation['causeDetails'];
     const nCd = cur.causeDetails  as unknown as LossInformation['causeDetails'];
@@ -276,6 +283,9 @@ export class EditLossInformationComponent implements OnInit {
       this.form.markAsPristine();
       this.toast.success('Loss information updated', `${activities.length} field(s) changed on ${this.claimId()}`);
       this.router.navigate(['/claims', this.claimId(), 'overview']);
+    } catch {
+      this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
+      // Form stays dirty — user remains on edit screen to retry.
     } finally {
       this.saving.set(false);
     }

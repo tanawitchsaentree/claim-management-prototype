@@ -64,6 +64,18 @@ const POLICY_SEEDS: PolicySeed[] = [
     allianzShare: 40,
     currency: 'CHF',
   },
+  {
+    policyNumber: 'POL-2023-010',
+    policyLabel:  'Property — POL-2023-010 — Kaufmann\'s Warehouse GmbH',
+    parties: [
+      { partyId: 'P-KWG-1', partyName: 'Otto Kaufmann' },
+    ],
+    damageTypes: [
+      { key: 'material-damage', label: 'Material damage' },
+    ],
+    allianzShare: 50,
+    currency: 'EUR',
+  },
 ];
 
 @Injectable({ providedIn: 'root' })

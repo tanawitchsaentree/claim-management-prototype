@@ -1,0 +1,80 @@
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.scm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scm-title { @include modal.title; }
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
+.scm-body { @include modal.body; }
+
+.scm-intro {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+// ─── Blocker list ─────────────────────────────────────────────────────────────
+
+.scm-blocker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scm-blocker-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scm-blocker-icon {
+  color: var(--danger);
+  flex-shrink: 0;
+}
+
+.scm-blocker-label {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  line-height: 1.4;
+}
+
+// ─── Checklist ────────────────────────────────────────────────────────────────
+
+.scm-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scm-check-item {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
+.scm-form {
+  nx-formfield { width: 100%; }
+}
+
+.scm-save-error { margin-top: 12px; }
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+.scm-footer { @include modal.footer; }

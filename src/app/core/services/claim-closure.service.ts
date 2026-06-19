@@ -5,23 +5,46 @@ import { MockTaskService } from '../mock/services/mock-task.service';
 import { MockClaimOverviewService } from '../mock/services/mock-claim-overview.service';
 import { MockSectionService } from '../mock/services/mock-section.service';
 import { MockStateService } from '../mock/state/mock-state.service';
-import { ClaimOverview } from '../models/claim-overview.model';
+import { MockLitigationService } from '../mock/services/mock-litigation.service';
+import { MockReservesService } from '../mock/services/mock-reserves.service';
+import { ClaimOverview, ClaimActivity } from '../models/claim-overview.model';
 import { Task } from '../models/task.model';
+import { Litigation } from '../models/litigation.model';
+import { ReservesPolicyData } from '../models/reserve.model';
 import {
   BlockerCheckResult,
   Blocker,
   ClosurePayload,
   ReopenPayload,
+  validateClaimTransition,
+  validateSectionTransition,
 } from '../models/claim-closure.model';
+import { ClaimSection } from '../models/section.model';
+import { ToastService } from '../../shared/components/toast/toast.service';
 
 const MOCK_DELAY_MS = 300;
 
 @Injectable({ providedIn: 'root' })
 export class ClaimClosureService {
-  private readonly taskSvc     = inject(MockTaskService);
-  private readonly overviewSvc = inject(MockClaimOverviewService);
-  private readonly sectionSvc  = inject(MockSectionService);
-  private readonly mockState   = inject(MockStateService);
+  private readonly taskSvc       = inject(MockTaskService);
+  private readonly overviewSvc   = inject(MockClaimOverviewService);
+  private readonly sectionSvc    = inject(MockSectionService);
+  private readonly mockState     = inject(MockStateService);
+  private readonly litigationSvc = inject(MockLitigationService);
+  private readonly reservesSvc   = inject(MockReservesService);
+  private readonly toast         = inject(ToastService);
+
+  validateSectionBlockers(section: ClaimSection): BlockerCheckResult {
+    const blockers: Blocker[] = [];
+    if (section.hasOpenDeductible)   blockers.push({ type: 'deductible', label: 'Open Manage Deductible task must be closed' });
+    if (section.hasActiveLitigation) blockers.push({ type: 'litigation', label: 'Active litigation assignment must be resolved' });
+    if (section.hasSubrogation)      blockers.push({ type: 'recovery',   label: 'Pending subrogation activity must be resolved' });
+    if (section.hasActiveSalvage)    blockers.push({ type: 'recovery',   label: 'Pending salvage activity must be resolved' });
+    if (section.hasOpenReserves)     blockers.push({ type: 'reserves',   label: 'Pending reserves must be released' });
+    if (section.hasOpenPayments)     blockers.push({ type: 'payments',   label: 'Pending payments must be settled' });
+    if (section.hasActiveProvider)   blockers.push({ type: 'provider',   label: 'Active provider assignment must be finalised' });
+    return { canClose: blockers.length === 0, blockers };
+  }
 
   validateBlockers(claimId: string): Observable<BlockerCheckResult> {
     return this.overviewSvc.getOverview(claimId).pipe(
@@ -32,9 +55,13 @@ export class ClaimClosureService {
         return forkJoin({
           tasks:        this.taskSvc.getByClaimId(claimId),
           openSections: this.sectionSvc.getOpenSectionsCount(claimId),
+          activeLit:    this.litigationSvc.search({ claimId, status: 'In progress' }),
+          reservesData: claim.policyNumber
+            ? this.reservesSvc.getReservesForPolicy(claim.policyNumber)
+            : of(null),
         }).pipe(
-          map(({ tasks, openSections }) =>
-            this.buildBlockerResult(claim, tasks, openSections)
+          map(({ tasks, openSections, activeLit, reservesData }) =>
+            this.buildBlockerResult(claim, tasks, openSections, activeLit, reservesData)
           ),
           delay(MOCK_DELAY_MS),
         );
@@ -42,14 +69,20 @@ export class ClaimClosureService {
     );
   }
 
-  private buildBlockerResult(claim: ClaimOverview, tasks: Task[], openSections: number): BlockerCheckResult {
+  private buildBlockerResult(
+    claim: ClaimOverview,
+    tasks: Task[],
+    openSections: number,
+    activeLit: Litigation[],
+    reservesData: ReservesPolicyData | null,
+  ): BlockerCheckResult {
     const blockers: Blocker[] = [];
 
     const pending = tasks.filter(t => t.status !== 'done');
     if (pending.length > 0) {
       blockers.push({
         type: 'tasks',
-        label: 'pending task(s) must be resolved before closure',
+        label: `${pending.length} pending task(s) must be resolved before closure`,
         count: pending.length,
       });
     }
@@ -57,26 +90,47 @@ export class ClaimClosureService {
     if (openSections > 0) {
       blockers.push({
         type: 'sections',
-        label: 'open section(s) must be closed before claim closure',
+        label: `${openSections} open section(s) must be closed before claim closure`,
         count: openSections,
       });
     }
 
-    // BMPCC-11360 AC2 — additional blocker flags read from claim overview.
+    // BMPCC-14435 — Litigation: deep check via MockLitigationService.
+    // Falls back to boolean flag only if no policyNumber/claimId lookup was possible.
+    if (activeLit.length > 0) {
+      blockers.push({
+        type:  'litigation',
+        label: `${activeLit.length} active litigation case(s) must be resolved`,
+        count: activeLit.length,
+      });
+    } else if (claim.hasActiveLitigation) {
+      blockers.push({ type: 'litigation', label: 'Open litigation must be resolved' });
+    }
+
+    // BMPCC-14435 — Reserves: deep check via MockReservesService.
+    // Falls back to boolean flag if policy data unavailable.
+    const openReserves = reservesData?.reserves.filter(r => (r.amount ?? 0) > 0) ?? [];
+    if (openReserves.length > 0) {
+      const total = openReserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
+      blockers.push({
+        type:   'reserves',
+        label:  `${openReserves.length} open reserve line(s) must be released`,
+        count:  openReserves.length,
+        amount: total,
+      });
+    } else if (claim.hasOpenReserves) {
+      blockers.push({ type: 'reserves', label: 'Open reserves must be closed or released' });
+    }
+
+    // BMPCC-11360 AC2 — flag-only blockers (no domain service yet).
     if (claim.hasOpenPayments) {
       blockers.push({ type: 'payments',   label: 'Outstanding payments must be settled' });
-    }
-    if (claim.hasOpenReserves) {
-      blockers.push({ type: 'reserves',   label: 'Open reserves must be closed or released' });
     }
     if (claim.hasActiveRecovery) {
       blockers.push({ type: 'recovery',   label: 'Active recovery actions must be resolved' });
     }
     if (claim.hasOpenDeductible) {
       blockers.push({ type: 'deductible', label: 'Deductible collections must be confirmed' });
-    }
-    if (claim.hasActiveLitigation) {
-      blockers.push({ type: 'litigation', label: 'Open litigation must be resolved' });
     }
     if (claim.hasActiveProvider) {
       blockers.push({ type: 'provider',   label: 'Provider instructions must be finalised' });
@@ -94,8 +148,10 @@ export class ClaimClosureService {
   closeClaim(claimId: string, payload: ClosurePayload): Observable<ClaimOverview> {
     return this.overviewSvc.getOverview(claimId).pipe(
       switchMap(claim => {
-        if (claim.status === 'Closed') {
-          return throwError(() => new Error(`Claim ${claimId} is already closed.`));
+        if (!validateClaimTransition(claim.status as import('../models/claim.model').ClaimStatus, 'Closed')) {
+          const msg = `Invalid transition: ${claim.status} → Closed for claim ${claimId}.`;
+          console.error('[claim-closure]', msg);
+          return throwError(() => new Error(msg));
         }
 
         const now = new Date().toISOString().split('T')[0];
@@ -127,25 +183,47 @@ export class ClaimClosureService {
 
   /**
    * Auto-close the loss event if every claim sharing the same lossEventId is now Closed.
-   * Reads from MockStateService.state().overviews so it sees current sessionStorage state.
+   * BMPCC-14434 GAP-1: writes status to LossEventSummary state and fires a toast.
+   * Kafka publish hook is reserved for a future backend integration step.
    */
   private maybeCloseLossEvent(lossEventId: string | null | undefined): void {
     if (!lossEventId) return;
-    const all = Object.values(this.mockState.state().overviews);
-    const linked = all.filter(c => c.lossEventId === lossEventId);
+    const state = this.mockState.state();
+    const linked = Object.values(state.overviews).filter(c => c.lossEventId === lossEventId);
     if (linked.length === 0) return;
-    const allClosed = linked.every(c => c.status === 'Closed');
-    if (!allClosed) return;
-    // Loss event itself isn't an entity in the overview shape — annotate via tap log.
-    // (Hook reserved for future Kafka publish step described in BMPCC-11360.)
-    console.info('[claim-closure] Loss event auto-closed:', lossEventId);
+    if (!linked.every(c => c.status === 'Closed')) return;
+
+    // Guard: only close if not already closed in state.
+    const existing = state.lossEvents.find(e => e.lossEventId === lossEventId);
+    if (existing?.status === 'Closed') return;
+
+    this.mockState.patchLossEvent(lossEventId, { status: 'Closed' });
+
+    const activity: ClaimActivity = {
+      id:         `act-le-close-${Date.now()}`,
+      claimId:    linked[0].claimId,
+      user:       'System',
+      timestamp:  new Date().toISOString(),
+      objectType: 'Loss Event',
+      attribute:  'Status',
+      valueOld:   existing?.status ?? 'Open',
+      valueNew:   'Closed',
+    };
+    this.mockState.patchActivities(items => [activity, ...items]);
+
+    this.toast.success(
+      `Loss Event ${lossEventId} auto-closed`,
+      'All linked claims are resolved.',
+    );
   }
 
   reopenClaim(claimId: string, payload: ReopenPayload): Observable<ClaimOverview> {
     return this.overviewSvc.getOverview(claimId).pipe(
       switchMap(claim => {
-        if (claim.status !== 'Closed') {
-          return throwError(() => new Error(`Claim ${claimId} is not closed.`));
+        if (!validateClaimTransition(claim.status as import('../models/claim.model').ClaimStatus, 'Reopened')) {
+          const msg = `Invalid transition: ${claim.status} → Reopened for claim ${claimId}.`;
+          console.error('[claim-closure]', msg);
+          return throwError(() => new Error(msg));
         }
         const now = new Date().toISOString().split('T')[0];
         const reopened: ClaimOverview = {

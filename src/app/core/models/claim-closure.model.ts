@@ -1,3 +1,33 @@
+import { ClaimStatus } from './claim.model';
+import { SectionStatus } from './section.model';
+
+// ─── Status transition validation ─────────────────────────────────────────
+
+const CLAIM_TRANSITIONS: Partial<Record<ClaimStatus, ClaimStatus[]>> = {
+  'Open':        ['In progress', 'Closed'],
+  'In progress': ['Closed'],
+  'Closed':      ['Reopened'],
+  'Reopened':    ['In progress', 'Closed'],
+};
+
+/**
+ * Validates a claim status transition. Statuses outside the closure lifecycle
+ * (Priced/Quoted/Bound/Declined) are unrestricted — they have no CLAIM_TRANSITIONS
+ * entry, so the function returns true.
+ */
+export function validateClaimTransition(from: ClaimStatus, to: ClaimStatus): boolean {
+  const allowed = CLAIM_TRANSITIONS[from];
+  if (!allowed) return true;
+  return allowed.includes(to);
+}
+
+/** Section closure only permits Open → Closed. Re-opening requires an explicit reopen flow. */
+export function validateSectionTransition(from: SectionStatus, to: SectionStatus): boolean {
+  return from === 'Open' && to === 'Closed';
+}
+
+// ─── Blocker types ─────────────────────────────────────────────────────────
+
 export type BlockerType =
   | 'tasks'
   | 'sections'

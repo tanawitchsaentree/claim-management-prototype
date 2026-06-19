@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HeadsUpItem, NewsItem, CalendarEvent, ProviderExpense, FinancialClosurePeriod, ReserveMovement, LossEventSummary, PaymentApproval } from '../../models';
+import { MockStateService } from '../state/mock-state.service';
 import headsUpData from '../data/heads-up.json';
 import newsData from '../data/news.json';
 import calendarData from '../data/calendar-events.json';
 import providerData from '../data/provider-expenses.json';
 import reserveMovementsData from '../data/reserve-movements.json';
-import lossEventsData from '../data/loss-events.json';
 import paymentApprovalsData from '../data/payment-approvals.json';
 
 @Injectable({ providedIn: 'root' })
 export class MockDashboardExtendedService {
+  private readonly stateSvc = inject(MockStateService);
   getHeadsUp(): Observable<HeadsUpItem[]> {
     return of(headsUpData as HeadsUpItem[]);
   }
@@ -32,7 +34,9 @@ export class MockDashboardExtendedService {
   }
 
   getLossEvents(): Observable<LossEventSummary[]> {
-    return of(lossEventsData as unknown as LossEventSummary[]);
+    return of(this.stateSvc.state().lossEvents).pipe(
+      map(events => events as LossEventSummary[])
+    );
   }
 
   getPaymentApprovals(): Observable<PaymentApproval[]> {

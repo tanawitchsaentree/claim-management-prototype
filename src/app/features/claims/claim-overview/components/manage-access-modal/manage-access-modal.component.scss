@@ -1,5 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
 .x-header {
-  padding: 24px 24px 0;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
 }
 
 .x-title {
@@ -16,9 +25,9 @@
 }
 
 .x-body {
-  padding: 20px 24px;
+  flex: 1;
   overflow-y: auto;
-  max-height: 420px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -29,6 +38,7 @@
   border-top: 1px solid var(--ui-04);
   display: flex;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 // ── Access list ───────────────────────────────────────────────────────────────

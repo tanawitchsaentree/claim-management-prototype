@@ -4,6 +4,41 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-06-16 — BMPCC-14435 Cross-domain closure validations — Litigation & Reserves deep check
+
+- **Source:** BMPCC-14435 audit findings → BUILD task
+- **Module:** Claims — `ClaimClosureService`, `claim-closure-modal`
+- **Files touched:** 7
+  - `src/app/core/services/claim-closure.service.ts`
+  - `src/app/core/mock/services/mock-reserves.service.ts`
+  - `src/app/core/mock/data/litigations.json`
+  - `src/app/features/claims/claim-overview/components/claim-closure-modal/claim-closure-modal.component.ts`
+  - `src/app/features/claims/claim-overview/components/claim-closure-modal/claim-closure-modal.component.html`
+  - `src/app/features/claims/claim-overview/components/claim-closure-modal/claim-closure-modal.component.scss`
+  - `public/tickets/bmpcc-14435.json` (new)
+  - `public/tickets/index.json`
+- **Changes:**
+  1. **Litigation deep check (BMPCC-14435):** `validateBlockers()` now calls `MockLitigationService.search({ claimId, status: 'In progress' })` via `forkJoin`. If results.length > 0 → blocker pushed with real count. Falls back to `hasActiveLitigation` flag only if query returns empty but flag is set.
+  2. **Reserves deep check (BMPCC-14435):** `validateBlockers()` calls `MockReservesService.getReservesForPolicy(claim.policyNumber)`. Open reserve lines (amount > 0) → blocker with count + total EUR amount. Falls back to `hasOpenReserves` flag.
+  3. **Mock data — litigation:** Added 2 "In progress" litigation entries for `CLM-2024-001` (`CLM-2024-001-LIT-1`, `-LIT-2`) so AC-01 fires without any state override. Existing `123456.1-LIT-1` preserved.
+  4. **Mock data — reserves:** Added `POL-2023-010` to `POLICY_SEEDS` in `MockReservesService` so CLM-2024-001's policy generates seeded reserve lines. Reserve total fires from `buildFromSeed()` — no state override needed for demo.
+  5. **Blocker labels enriched:** All labels now include count inline (e.g. "2 active litigation case(s) must be resolved"). Removed redundant `b.count` prefix in template — label carries the number.
+  6. **Navigation links:** Added `onViewLitigation()` → navigates to `/claims/:id/litigation` (real route). "Go to Reserves" rendered but disabled (muted + cursor:not-allowed + title tooltip) — `/claims/:id/financial` redirects to overview, no dedicated reserves route exists. Remaining 6 flag-only domains show italic "Feature not available" text only.
+  7. **Demo ticket `bmpcc-14435.json`:** 3 ACs — AC-01 (litigation only), AC-02 (reserves + provider flag), AC-03 (all three simultaneously). AC-01 and AC-03 need no `overviewPatch` — real data fires.
+- **Domain wiring status (as of 2026-06-16):**
+  - ✅ **Litigation** — wired to `MockLitigationService.search()`, navigation link live
+  - ✅ **Reserves** — wired to `MockReservesService.getReservesForPolicy()`, count + amount shown
+  - ⬜ **Payments** — flag-only (`hasOpenPayments`); no `MockPaymentsService` exists yet
+  - ⬜ **Recovery** — flag-only (`hasActiveRecovery`); no `MockRecoveryService` exists yet
+  - ⬜ **Deductible** — flag-only (`hasOpenDeductible`); no service yet
+  - ⬜ **Provider** — flag-only (`hasActiveProvider`); no service yet
+  - ⬜ **Bills** — flag-only (`hasUnpaidBills`); no service yet
+  - ⬜ **Reports** — flag-only (`hasIncompleteReports`); no service yet
+  - Future PI: each ⬜ domain requires model + mock service + mock data + wire into `validateBlockers()` — ~M effort per domain.
+- **Verification:** `npm run build` ✓ (0 errors); `npm run audit:all` ✓ (no new violations).
+
+---
+
 ## 2026-05-27 — FNOL Summary update (PO requested 4 changes)
 
 - **Source:** verbal brief — 4 PO change requests on `/fnol/summary` (step-summary)
@@ -153,6 +188,22 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
   - KCM KPI row `bigReserveMovements` is the only deliberately fake number in the UI — it has a `title` tooltip flagging it as placeholder so testers aren't misled
   - All new widget components use Angular signals + `toSignal` pattern; zero `.subscribe()` calls introduced
   - `NxMessageModule` was available but not imported — used custom CSS banner to avoid adding another NDBX module for a single component; can swap to `nx-message` later
+
+---
+
+## 2026-06-16 — BMPCC-11681 (Claim Edit — Environment fixes D7/D8 + inaccuracy corrections)
+
+- **Source:** Environment audit review session
+- **Module:** `edit-loss-information`, `claim-overview`, `duplicate-check.service`
+- **Files touched:** 3
+  - `src/app/features/claims/edit-loss-information/edit-loss-information.component.ts`
+  - `src/app/features/claims/claim-overview/claim-overview.component.html`
+  - `src/app/core/services/duplicate-check.service.ts`
+- **Changes:**
+  1. **D8 — Save error handling:** Added `catch` block to `onSaveChanges()`. On failure: `toast.error('Failed to save', 'Please try again...')` fires, form stays dirty, user stays on edit screen. Previously `try/finally` silently swallowed save errors with no user feedback.
+  2. **D7 — computeDiffs() lossLocation gap:** Added loss location diff using first location's `displayName` as the comparable value. All other fields (causeDetails fire/water/theft, events) were already covered. Loading state (spinner on page-load + save button) was confirmed present — the audit inaccuracy was incorrect.
+  3. **D4 — Reopened allows edit:** Changed edit button visibility from `status !== 'Closed' && status !== 'Reopened'` → `status !== 'Closed'`. Reopened = claim is active for further work; blocking edit was incorrect. The "Close Claim" button at line 186 retains the `&& status !== 'Reopened'` guard (correct — can't close a freshly reopened claim). **ASSUMPTION:** Confirm with Product that Reopened claims should be editable. Flag: BMPCC-11681 Q open.
+  4. **D2 — Comment clarification:** Updated `duplicate-check.service.ts` TODO comment to clarify it asks about skeleton-create stage only; the service itself is not restricted to FNOL, and edit-loss-information is a separate pending consumer.
 
 ---
 

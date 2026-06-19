@@ -13,5 +13,35 @@
       { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 1000.00, "section": "BI" }
     ],
     "cases": []
+  },
+  {
+    "id": "CLM-2024-001-LIT-1",
+    "claimId": "CLM-2024-001",
+    "clientName": "Otto Kaufmann",
+    "type": "Coverage",
+    "startDate": "2026-02-10",
+    "status": "In progress",
+    "title": "Coverage dispute — water damage exclusion",
+    "description": "Insured contests application of flood exclusion clause to the November 2025 storm-water ingress event.",
+    "jurisdiction": "Munich Regional Court",
+    "expenses": [
+      { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 3500.00, "section": "Material damage" }
+    ],
+    "cases": []
+  },
+  {
+    "id": "CLM-2024-001-LIT-2",
+    "claimId": "CLM-2024-001",
+    "clientName": "Martha Nielsen",
+    "type": "Third party",
+    "startDate": "2026-03-14",
+    "status": "In progress",
+    "title": "Third-party liability — neighbouring property",
+    "description": "Neighbouring property owner claims damages caused by water overflow from insured's warehouse during the loss event.",
+    "jurisdiction": "Munich Regional Court",
+    "expenses": [
+      { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 1200.00, "section": "Liability" }
+    ],
+    "cases": []
   }
 ]

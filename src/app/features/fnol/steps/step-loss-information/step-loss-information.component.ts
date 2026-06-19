@@ -19,6 +19,7 @@ import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
+import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput } from '../../../../core/models';
@@ -69,6 +70,7 @@ interface LossInfoVM {
     StatusChipComponent,
     RouterLink,
     WizardFooterComponent,
+    NxAccordionModule,
   ],
   templateUrl: './step-loss-information.component.html',
   styleUrl: './step-loss-information.component.scss',

@@ -209,69 +209,80 @@
           </button>
         </div>
       }
-      @if (!claim.restriction?.isRestricted) {
-        <div class="co-card-actions co-card-actions--restrict">
-          <button nxButton="tertiary small" type="button" (click)="enableRestriction(claim)">
-            <nx-icon name="lock" class="co-btn-icon"></nx-icon>
-            Restrict file access
-          </button>
+    </section>
+
+    <!-- File Restriction Card (BMPCC-10994) — always visible -->
+    <section class="co-card" [formGroup]="restrictionForm">
+      <h2 class="co-card-title">File restriction</h2>
+
+      <div class="co-restrict-toggle-row">
+        <nx-switcher [formControl]="restrictionToggle" (checkedChange)="onToggleRestriction($event)">
+          This file has restricted access
+        </nx-switcher>
+      </div>
+
+      @if (isRestricted) {
+        <div class="co-restrict-body">
+
+          <!-- Reason -->
+          <div class="co-restrict-reason-row">
+            <nx-formfield label="Restriction reason" class="co-restrict-field">
+              <nx-dropdown [formControl]="$any(restrictionForm.get('reason'))"
+                           placeholder="Select reason"
+                           (selectionChange)="saveRestrictionToClaim()">
+                @for (r of restrictionReasons; track r) {
+                  <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+            @if (isOtherReason) {
+              <nx-formfield label="Specify reason" class="co-restrict-field">
+                <input nxInput [formControl]="$any(restrictionForm.get('otherReason'))"
+                       placeholder="Enter reason"
+                       (blur)="saveRestrictionToClaim()" />
+              </nx-formfield>
+            }
+          </div>
+
+          <!-- Access list -->
+          <div class="co-restrict-access">
+            <p class="co-restrict-access__heading">Users with access</p>
+
+            @for (entry of coAccessList(); track entry.userId; let i = $index) {
+              <div class="co-restrict-entry">
+                <div class="co-restrict-entry__info">
+                  <span class="co-restrict-entry__name">{{ entry.name }}</span>
+                  <span class="co-restrict-entry__role">{{ entry.role }}</span>
+                </div>
+                <button nxIconButton="tertiary small" type="button"
+                        (click)="removeCoUser(entry.userId)"
+                        aria-label="Remove user">
+                  <nx-icon name="trash-o"></nx-icon>
+                </button>
+              </div>
+            }
+
+            <div class="co-restrict-search">
+              <nx-formfield class="co-restrict-search__field">
+                <input nxInput [formControl]="coUserSearchControl" placeholder="Search by name or email" />
+                <nx-icon nxFormfieldSuffix name="search"></nx-icon>
+              </nx-formfield>
+              @if (coUserSearchResults().length > 0) {
+                <div class="co-restrict-results">
+                  @for (user of coUserSearchResults(); track user.userId) {
+                    <button type="button" class="co-restrict-result" (click)="addCoUser(user)">
+                      <span class="co-restrict-result__name">{{ user.name }}</span>
+                      <span class="co-restrict-result__role">{{ user.role }}</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
         </div>
       }
     </section>
-
-    <!-- File Restriction Card (BMPCC-10994) -->
-    @if (claim.restriction?.isRestricted) {
-      <section class="co-card">
-        <div class="co-card-title-row">
-          <div class="co-restriction-title-group">
-            <h2 class="co-card-title">File restriction</h2>
-            <span class="co-restriction-badge">Restricted</span>
-          </div>
-          <nx-switcher [checked]="true" (checkedChange)="$event === false && showRemoveConfirm.set(true)">
-            File restricted
-          </nx-switcher>
-        </div>
-
-        @if (showRemoveConfirm()) {
-          <div class="co-restriction-confirm">
-            <nx-icon name="warning-circle-o" class="co-restriction-confirm__icon"></nx-icon>
-            <div class="co-restriction-confirm__body">
-              <p class="co-restriction-confirm__text">Remove restriction? All users will be able to access this file.</p>
-              <div class="co-restriction-confirm__actions">
-                <button nxButton="tertiary small" type="button" (click)="showRemoveConfirm.set(false)">Cancel</button>
-                <button nxButton="primary small" type="button" (click)="confirmRemoveRestriction(claim)">Remove restriction</button>
-              </div>
-            </div>
-          </div>
-        }
-
-        <div class="co-restriction-info">
-          <div class="co-field">
-            <span class="co-label">Reason</span>
-            <span class="co-value">{{ claim.restriction!.reason ?? '–' }}</span>
-          </div>
-          <div class="co-field">
-            <span class="co-label">Restricted by</span>
-            <span class="co-value">{{ claim.restriction!.restrictedBy?.name ?? '–' }}</span>
-          </div>
-          <div class="co-field">
-            <span class="co-label">Restricted on</span>
-            <span class="co-value">{{ claim.restriction!.restrictedAt ? formatDate(claim.restriction!.restrictedAt) : '–' }}</span>
-          </div>
-          <div class="co-field">
-            <span class="co-label">Access granted to</span>
-            <span class="co-value">{{ claim.restriction!.accessList.length }} user{{ claim.restriction!.accessList.length === 1 ? '' : 's' }}</span>
-          </div>
-        </div>
-
-        <div class="co-card-actions">
-          <button nxButton="secondary small" type="button" (click)="openManageAccessModal(claim.restriction!, claim.claimId)">
-            <nx-icon name="user-o" class="co-btn-icon"></nx-icon>
-            Manage access
-          </button>
-        </div>
-      </section>
-    }
 
     <!-- Pending Tasks Card -->
     <section class="co-card">

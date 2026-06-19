@@ -11,10 +11,13 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom } from 'rxjs';
 import { ClaimSection, InstructionStatus } from '../../core/models/section.model';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
+import { ClaimClosureService } from '../../core/services/claim-closure.service';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-
-const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
+import {
+  SectionClosureModalComponent,
+  SectionClosureModalData,
+  SectionClosureModalResult,
+} from './section-closure-modal/section-closure-modal.component';
 
 @Component({
   selector: 'app-sections',
@@ -35,12 +38,12 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
 export class Sections {
   private readonly route      = inject(ActivatedRoute);
   private readonly sectionSvc = inject(MockSectionService);
+  private readonly closureSvc = inject(ClaimClosureService);
   private readonly dialogSvc  = inject(NxDialogService);
 
-  readonly sections         = signal<ClaimSection[]>([]);
-  readonly loading          = signal(true);
-  readonly loadError        = signal(false);
-  readonly closingSectionId = signal<string | null>(null);
+  readonly sections  = signal<ClaimSection[]>([]);
+  readonly loading   = signal(true);
+  readonly loadError = signal(false);
 
   constructor() {
     effect(async () => {
@@ -70,29 +73,18 @@ export class Sections {
   }
 
   async onCloseSection(section: ClaimSection): Promise<void> {
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Close Section?',
-        message: `Section "${section.name}" will be closed. You can reopen it later from this menu.`,
-        confirmLabel: 'Close Section',
-      } satisfies ConfirmDialogData,
-      width: '400px',
+    const { canClose, blockers } = this.closureSvc.validateSectionBlockers(section);
+
+    const ref = this.dialogSvc.open(SectionClosureModalComponent, {
+      data: { section, blockers, canClose } satisfies SectionClosureModalData,
+      width: '600px',
+      maxWidth: '92vw',
     });
 
-    const confirmed = await firstValueFrom(ref.afterClosed());
-    if (confirmed !== true) return;
+    const result = await firstValueFrom(ref.afterClosed()) as SectionClosureModalResult | undefined;
+    if (!result) return;
 
-    this.closingSectionId.set(section.id);
-    try {
-      const updated = await firstValueFrom(
-        this.sectionSvc.closeSection(section.id, CURRENT_USER)
-      );
-      this.sections.update(list =>
-        list.map(s => s.id === section.id ? updated : s)
-      );
-    } finally {
-      this.closingSectionId.set(null);
-    }
+    this.sections.update(list => list.map(s => s.id === section.id ? result : s));
   }
 
   onAction(action: string, name: string): void {

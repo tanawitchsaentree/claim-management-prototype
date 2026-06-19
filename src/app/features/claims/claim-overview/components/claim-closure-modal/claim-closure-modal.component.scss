@@ -66,6 +66,19 @@
   text-decoration: underline;
 }
 
+.ccm-link-disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+.ccm-link-na {
+  color: var(--text-muted);
+  font-size: inherit;
+  font-style: italic;
+}
+
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
 .ccm-form {

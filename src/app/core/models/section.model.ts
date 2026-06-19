@@ -9,7 +9,17 @@ export interface SectionEntity {
   expandable:        boolean;
 }
 
-export interface ClaimSection {
+export interface SectionBlockers {
+  hasOpenDeductible:  boolean;
+  hasActiveLitigation: boolean;
+  hasSubrogation:     boolean;
+  hasActiveSalvage:   boolean;
+  hasOpenReserves:    boolean;
+  hasOpenPayments:    boolean;
+  hasActiveProvider:  boolean;
+}
+
+export interface ClaimSection extends SectionBlockers {
   id:          string;
   claimId:     string;
   name:        string;

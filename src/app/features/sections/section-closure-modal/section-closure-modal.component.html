@@ -1,0 +1,86 @@
+<!-- Header -->
+<div class="scm-header">
+  <h2 class="scm-title">{{ stepTitle() }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<!-- Body -->
+<div class="scm-body">
+
+  <!-- STEP 1 — Blockers -->
+  @if (step() === 1) {
+    <p class="scm-intro">The following issues must be resolved before this section can be closed:</p>
+    <ul class="scm-blocker-list">
+      @for (b of blockers; track b.type + b.label) {
+        <li class="scm-blocker-item">
+          <nx-icon name="exclamation-triangle-o" size="s" class="scm-blocker-icon"></nx-icon>
+          <span class="scm-blocker-label">{{ b.label }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- STEP 2 — Pre-closure checklist -->
+  @if (step() === 2) {
+    <p class="scm-intro">Confirm all items below are complete before proceeding:</p>
+    <ul class="scm-checklist">
+      @for (item of checklistItems; track item; let i = $index) {
+        <li class="scm-check-item">
+          <nx-checkbox labelSize="small"
+            [checked]="checklistChecked()[i]"
+            (checkedChange)="toggleChecklistItem(i)">
+            {{ item }}
+          </nx-checkbox>
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- STEP 3 — Closure reason -->
+  @if (step() === 3) {
+    <form [formGroup]="form" class="scm-form">
+      <nx-formfield label="Closure reason">
+        <nx-dropdown formControlName="reason" placeholder="Select reason">
+          @for (r of closureReasons; track r) {
+            <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-error nxFormfieldError>Closure reason is required.</nx-error>
+      </nx-formfield>
+    </form>
+
+    @if (saveError()) {
+      <nx-message type="error" class="scm-save-error">{{ saveError() }}</nx-message>
+    }
+  }
+
+</div>
+
+<!-- Footer -->
+<div class="scm-footer">
+
+  @if (step() === 1) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  }
+
+  @if (step() === 2) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button"
+      [disabled]="!checklistAllDone()" (click)="onContinue()">
+      Continue
+    </button>
+  }
+
+  @if (step() === 3) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
+    <button nxButton="primary small" type="button"
+      [disabled]="reasonInvalid() || saving()" (click)="onCloseSection()">
+      @if (saving()) { <nx-spinner size="small"></nx-spinner> }
+      @else { Close Section }
+    </button>
+  }
+
+</div>

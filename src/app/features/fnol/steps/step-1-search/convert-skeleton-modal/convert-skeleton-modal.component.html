@@ -13,7 +13,7 @@
 </div>
 
 <!-- Body — eligible policy list (scrolls internally) -->
-<div class="csm-body" nxModalContent>
+<div class="csm-body">
   <p class="csm-intro">Select a policy to link this skeleton claim to.</p>
 
   @if (loading()) {
@@ -71,7 +71,7 @@
 </div>
 
 <!-- Footer — modal zone: small buttons -->
-<div class="csm-footer" nxModalActions>
+<div class="csm-footer">
   <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
   <button nxButton="primary small" type="button"
           [disabled]="!canContinue()"

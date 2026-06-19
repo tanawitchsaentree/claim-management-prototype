@@ -35,6 +35,18 @@
       "file": "bmpcc-11360.json",
       "module": "Claims",
       "title": "Claim status management & Retention date"
+    },
+    {
+      "id": "BMPCC-14435",
+      "file": "bmpcc-14435.json",
+      "module": "Claims",
+      "title": "Cross-domain closure validations — Litigation & Reserves deep check"
+    },
+    {
+      "id": "BMPCC-14434",
+      "file": "bmpcc-14434.json",
+      "module": "Claims",
+      "title": "Section & Claims Hierarchy Validations"
     }
   ]
 }

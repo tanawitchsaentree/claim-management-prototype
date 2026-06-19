@@ -568,73 +568,115 @@
 
 // ─── File restriction (BMPCC-10994) ──────────────────────────────────────────
 
-.co-card-actions--restrict {
-  border-top: none;
-  margin-top: 4px;
-  padding-top: 0;
-}
-
 .co-btn-icon {
   font-size: 14px;
   margin-right: 4px;
 }
 
-.co-restriction-title-group {
+.co-restrict-toggle-row {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.co-restriction-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  background: #fff3e0;
-  color: #e65100;
-  border: 1px solid #ffb74d;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.co-restriction-info {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px 24px;
-  margin-bottom: 4px;
-}
-
-.co-restriction-confirm {
+.co-restrict-body {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-03);
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.co-restrict-reason-row {
+  display: flex;
+  gap: 16px;
   align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #fff8e1;
-  border: 1px solid #ffe082;
-  border-radius: 4px;
-  margin-bottom: 20px;
+}
 
-  &__icon {
-    color: #f57c00;
-    flex-shrink: 0;
-    margin-top: 2px;
+.co-restrict-field {
+  width: 280px;
+}
+
+.co-restrict-access {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  &__heading {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+    margin: 0 0 8px;
   }
+}
 
-  &__body {
+.co-restrict-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ui-03);
+
+  &__info {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1px;
   }
 
-  &__text {
-    margin: 0;
+  &__name {
     font-size: var(--paragraph-03-font-size);
     color: var(--text-01);
+    font-weight: 500;
   }
 
-  &__actions {
-    display: flex;
-    gap: 8px;
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+}
+
+.co-restrict-search {
+  margin-top: 8px;
+  position: relative;
+  width: 320px;
+
+  &__field { width: 100%; }
+}
+
+.co-restrict-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.co-restrict-result {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover { background: var(--hover-secondary); }
+
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
   }
 }

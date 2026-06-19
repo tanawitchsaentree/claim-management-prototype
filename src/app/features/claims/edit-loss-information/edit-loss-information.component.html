@@ -70,6 +70,75 @@
       <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
       <nx-hint nxFormfieldHint>{{ (form.get('lossDescription')?.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
     </nx-formfield>
+
+    <!-- Cause-specific details — sub-section inside General information card -->
+    @if (showFireDetails() || showWaterDetails() || showTheftDetails()) {
+      <hr class="eli-divider" />
+      <nx-accordion [multi]="true" variant="light" [formGroup]="causeDetails">
+        @if (showFireDetails()) {
+          <nx-expansion-panel [expanded]="true" formGroupName="fire">
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title>Fire details</nx-expansion-panel-title>
+            </nx-expansion-panel-header>
+            <div class="two-col-grid eli-cause-details-grid">
+              <nx-formfield label="Fire origin (optional)">
+                <input nxInput formControlName="fireOrigin" />
+              </nx-formfield>
+              <div class="eli-radio-field">
+                <p class="eli-radio-label">Fire department called?</p>
+                <div class="eli-radio-row">
+                  <nx-radio name="fireDeptEdit" [value]="true"  [checked]="fireDeptCalled === true"  (valueChange)="setFireDeptCalled(true)"  labelSize="small">Yes</nx-radio>
+                  <nx-radio name="fireDeptEdit" [value]="false" [checked]="fireDeptCalled === false" (valueChange)="setFireDeptCalled(false)" labelSize="small">No</nx-radio>
+                </div>
+              </div>
+              <nx-formfield label="Fire department report number (optional)">
+                <input nxInput formControlName="fireDepartmentReportNumber" />
+              </nx-formfield>
+            </div>
+          </nx-expansion-panel>
+        }
+        @if (showWaterDetails()) {
+          <nx-expansion-panel [expanded]="true" formGroupName="waterDamage">
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title>Water damage details</nx-expansion-panel-title>
+            </nx-expansion-panel-header>
+            <div class="two-col-grid eli-cause-details-grid">
+              <nx-formfield label="Water source (optional)">
+                <nx-dropdown formControlName="waterSource" placeholder="Select water source">
+                  @for (s of waterSources(); track s.value) {
+                    <nx-dropdown-item [value]="s.value">{{ s.label }}</nx-dropdown-item>
+                  }
+                </nx-dropdown>
+              </nx-formfield>
+              <nx-formfield label="Affected area (m²) (optional)">
+                <input nxInput type="number" formControlName="affectedAreaSqm" min="0" />
+              </nx-formfield>
+            </div>
+          </nx-expansion-panel>
+        }
+        @if (showTheftDetails()) {
+          <nx-expansion-panel [expanded]="true" formGroupName="theft">
+            <nx-expansion-panel-header>
+              <nx-expansion-panel-title>Theft details</nx-expansion-panel-title>
+            </nx-expansion-panel-header>
+            <div class="two-col-grid eli-cause-details-grid">
+              <nx-formfield label="Police report number (optional)">
+                <input nxInput formControlName="policeReportNumber" />
+              </nx-formfield>
+              <nx-formfield label="Estimated value stolen (optional)">
+                <input nxInput type="number" formControlName="estimatedValueStolen" min="0" />
+              </nx-formfield>
+              <nx-formfield label="Date reported to police (optional)">
+                <input nxDatefield nxInput formControlName="dateReportedToPolice" [datepicker]="theftPicker" />
+                <nx-datepicker-toggle nxFormfieldSuffix [for]="theftPicker"></nx-datepicker-toggle>
+                <nx-datepicker #theftPicker></nx-datepicker>
+                <nx-hint nxFormfieldHint>DD-MM-YYYY</nx-hint>
+              </nx-formfield>
+            </div>
+          </nx-expansion-panel>
+        }
+      </nx-accordion>
+    }
   </section>
 
   <!-- Card 2: Location (CWB Location Picker) -->
@@ -86,70 +155,7 @@
     </app-location-picker>
   </section>
 
-  <!-- Card 3: Cause-specific details (conditional) -->
-  @if (showFireDetails() || showWaterDetails() || showTheftDetails()) {
-    <section class="eli-card" [formGroup]="causeDetails">
-      <h2 class="eli-section-heading">Cause-specific details</h2>
-      @if (showFireDetails()) {
-        <ng-container formGroupName="fire">
-          <h3 class="eli-sub-heading">Fire</h3>
-          <div class="two-col-grid">
-            <nx-formfield label="Fire origin (optional)">
-              <input nxInput formControlName="fireOrigin" />
-            </nx-formfield>
-            <div class="eli-radio-field">
-              <p class="eli-radio-label">Fire department called?</p>
-              <div class="eli-radio-row">
-                <nx-radio name="fireDeptEdit" [value]="true"  [checked]="fireDeptCalled === true"  (valueChange)="setFireDeptCalled(true)"  labelSize="small">Yes</nx-radio>
-                <nx-radio name="fireDeptEdit" [value]="false" [checked]="fireDeptCalled === false" (valueChange)="setFireDeptCalled(false)" labelSize="small">No</nx-radio>
-              </div>
-            </div>
-            <nx-formfield label="Fire department report number (optional)">
-              <input nxInput formControlName="fireDepartmentReportNumber" />
-            </nx-formfield>
-          </div>
-        </ng-container>
-      }
-      @if (showWaterDetails()) {
-        <ng-container formGroupName="waterDamage">
-          <h3 class="eli-sub-heading">Water damage</h3>
-          <div class="two-col-grid">
-            <nx-formfield label="Water source (optional)">
-              <nx-dropdown formControlName="waterSource" placeholder="Select water source">
-                @for (s of waterSources(); track s.value) {
-                  <nx-dropdown-item [value]="s.value">{{ s.label }}</nx-dropdown-item>
-                }
-              </nx-dropdown>
-            </nx-formfield>
-            <nx-formfield label="Affected area (m²) (optional)">
-              <input nxInput type="number" formControlName="affectedAreaSqm" min="0" />
-            </nx-formfield>
-          </div>
-        </ng-container>
-      }
-      @if (showTheftDetails()) {
-        <ng-container formGroupName="theft">
-          <h3 class="eli-sub-heading">Theft</h3>
-          <div class="two-col-grid">
-            <nx-formfield label="Police report number (optional)">
-              <input nxInput formControlName="policeReportNumber" />
-            </nx-formfield>
-            <nx-formfield label="Estimated value stolen (optional)">
-              <input nxInput type="number" formControlName="estimatedValueStolen" min="0" />
-            </nx-formfield>
-            <nx-formfield label="Date reported to police (optional)">
-              <input nxDatefield nxInput formControlName="dateReportedToPolice" [datepicker]="theftPicker" />
-              <nx-datepicker-toggle nxFormfieldSuffix [for]="theftPicker"></nx-datepicker-toggle>
-              <nx-datepicker #theftPicker></nx-datepicker>
-              <nx-hint nxFormfieldHint>DD-MM-YYYY</nx-hint>
-            </nx-formfield>
-          </div>
-        </ng-container>
-      }
-    </section>
-  }
-
-  <!-- Card 4: Events details -->
+  <!-- Card 3: Events details -->
   <section class="eli-card">
     <h2 class="eli-section-heading">Events details</h2>
     @if (eventsArray.length === 0) {

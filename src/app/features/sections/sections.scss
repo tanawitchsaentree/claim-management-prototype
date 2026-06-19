@@ -396,14 +396,14 @@ $brand-blue:          #003781;
 
   // let NDBX handle most table styling — only set what we need
   th[nxHeaderCell] {
-    font-size: 16px !important;
+    font-size: var(--paragraph-03-font-size) !important;
     font-weight: 600 !important;
     padding: 8px !important;
     white-space: nowrap;
   }
 
   td[nxTableCell] {
-    font-size: 16px !important;
+    font-size: var(--paragraph-03-font-size) !important;
     padding: 8px !important;
     vertical-align: middle !important;
   }

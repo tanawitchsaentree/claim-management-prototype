@@ -125,14 +125,14 @@
 .section-desc {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: -8px 0 16px;
+  margin: -8px 0 24px; // $sp-xl — between-group gap must be ≥2× within-group (24 > 12)
 }
 
 .sub-heading {
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 12px;
+  margin: 0 0 16px; // $sp-base — heading-to-first-field gap
   line-height: var(--paragraph-02-line-height);
 }
 
@@ -191,7 +191,7 @@
 // ─── Checkbox group ─────────────────────────────────────────────────────
 
 .field-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px; // $sp-lg — between field groups within event block
 }
 
 .field-label {
@@ -223,6 +223,12 @@
 
 .li-sub-heading {
   margin-top: 0;
+}
+
+// ─── Cause-details expansion panel (inside General information card) ────
+
+.cause-details-grid {
+  padding-top: 8px;
 }
 
 // ─── Toggle / dates ─────────────────────────────────────────────────────

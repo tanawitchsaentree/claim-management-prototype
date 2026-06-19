@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal, DestroyRef } from '@angul
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
+import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, firstValueFrom, of, switchMap } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -13,6 +13,11 @@ import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
+import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
+import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
+import { NxInputModule } from '@allianz/ng-aquila/input';
+import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock/services/mock-user-directory.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
@@ -38,13 +43,8 @@ import {
   MassEventEditModalComponent,
   MassEventModalData,
 } from '../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
-import {
-  ManageAccessModalComponent,
-  ManageAccessModalData,
-  ManageAccessModalResult,
-} from './components/manage-access-modal/manage-access-modal.component';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
-import { FileRestriction, RESTRICTION_REASONS } from '../../../core/models/claim-overview.model';
+import { FileRestriction, RESTRICTION_REASONS, AccessListEntry } from '../../../core/models/claim-overview.model';
 
 interface OverviewVM {
   loading: boolean;
@@ -86,6 +86,10 @@ const TASKS_PAGE_SIZE = 10;
     NxLinkModule,
     NxModalModule,
     NxSwitcherModule,
+    NxDropdownModule,
+    NxFormfieldModule,
+    NxInputModule,
+    ReactiveFormsModule,
     StatusChipComponent,
   ],
   templateUrl: './claim-overview.component.html',
@@ -104,6 +108,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly massEventSvc   = inject(MockMassEventService);
   private readonly destroyRef     = inject(DestroyRef);
   private readonly toast          = inject(ToastService);
+  private readonly userDir        = inject(MockUserDirectoryService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
@@ -115,9 +120,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly state$ = toObservable(this.stateSvc.state);
 
   ngOnInit(): void {
-    // Register the stage immediately so postLand hooks can find this component
-    // even if they fire before the first vm$ update (race-condition fix).
     this.deregisterStage = this.stageSvc.register(this);
+    this.setupCoUserSearch();
 
     combineLatest([
       this.route.paramMap,
@@ -152,6 +156,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
           tasksExpanded: true,
           massEvent: massEvent ?? null,
         });
+        if (overview.claim) { this.initRestrictionForm(overview.claim); }
       },
       error: () =>
         this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.', massEvent: null }),
@@ -319,46 +324,80 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   // ── File restriction (BMPCC-10994) ─────────────────────────────────
 
   readonly restrictionReasons = [...RESTRICTION_REASONS];
-  readonly showRemoveConfirm = signal(false);
 
-  async openManageAccessModal(restriction: FileRestriction, claimId: string): Promise<void> {
-    const ref = this.dialogSvc.open(ManageAccessModalComponent, {
-      data: { restriction, claimId } satisfies ManageAccessModalData,
-      width: '600px',
-      maxWidth: '92vw',
+  readonly restrictionForm = new FormGroup({
+    isRestricted: new FormControl(false),
+    reason:       new FormControl<string>(''),
+    otherReason:  new FormControl(''),
+  });
+
+  get isRestricted(): boolean { return !!this.restrictionForm.get('isRestricted')?.value; }
+  get selectedReason(): string { return this.restrictionForm.get('reason')?.value ?? ''; }
+  get isOtherReason(): boolean { return this.selectedReason === 'Other'; }
+  get restrictionToggle(): FormControl { return this.restrictionForm.get('isRestricted') as FormControl; }
+
+  readonly coAccessList = signal<AccessListEntry[]>([]);
+  readonly coUserSearchControl = new FormControl('');
+  readonly coUserSearchResults = signal<UserDirectoryEntry[]>([]);
+
+  private initRestrictionForm(claim: ClaimOverview): void {
+    const r = claim.restriction;
+    this.restrictionForm.patchValue({
+      isRestricted: r?.isRestricted ?? false,
+      reason: r?.reason ?? '',
     });
-    const result = await firstValueFrom(ref.afterClosed()) as ManageAccessModalResult | undefined;
-    if (!result) return;
+    this.coAccessList.set(r?.accessList ?? []);
+  }
+
+  onToggleRestriction(checked: boolean): void {
+    this.restrictionForm.get('isRestricted')!.setValue(checked);
+    if (!checked) {
+      this.restrictionForm.get('reason')!.setValue('');
+      this.coAccessList.set([]);
+    }
+    this.saveRestrictionToClaim();
+  }
+
+  saveRestrictionToClaim(): void {
     const cur = this.vm$.value;
     if (!cur.claim) return;
-    this.vm$.next({ ...cur, claim: { ...cur.claim, restriction: result } });
-  }
-
-  enableRestriction(claim: ClaimOverview): void {
-    const updated: FileRestriction = {
-      isRestricted: true,
-      accessList: [],
+    const isRestricted = this.isRestricted;
+    const restriction: FileRestriction = {
+      isRestricted,
+      reason: isRestricted ? (this.isOtherReason ? (this.restrictionForm.get('otherReason')?.value ?? '') : this.selectedReason) : undefined,
+      accessList: isRestricted ? this.coAccessList() : [],
     };
-    const cur = this.vm$.value;
-    this.vm$.next({ ...cur, claim: { ...claim, restriction: updated } });
+    this.vm$.next({ ...cur, claim: { ...cur.claim, restriction } });
   }
 
-  confirmRemoveRestriction(claim: ClaimOverview): void {
-    const cur = this.vm$.value;
-    this.vm$.next({
-      ...cur,
-      claim: { ...claim, restriction: { isRestricted: false, accessList: [] } },
-    });
-    this.showRemoveConfirm.set(false);
-    this.toast.success('Restriction removed', 'All users can now access this claim file.');
+  addCoUser(user: UserDirectoryEntry): void {
+    const entry: AccessListEntry = {
+      userId:  user.userId,
+      name:    user.name,
+      role:    user.role,
+      email:   user.email,
+      addedAt: new Date().toISOString().split('T')[0],
+    };
+    this.coAccessList.update(list => [...list, entry]);
+    this.coUserSearchControl.setValue('');
+    this.coUserSearchResults.set([]);
+    this.saveRestrictionToClaim();
   }
 
-  updateRestrictionReason(claim: ClaimOverview, reason: string): void {
-    if (!claim.restriction) return;
-    const cur = this.vm$.value;
-    this.vm$.next({
-      ...cur,
-      claim: { ...claim, restriction: { ...claim.restriction, reason } },
+  removeCoUser(userId: string): void {
+    this.coAccessList.update(list => list.filter(e => e.userId !== userId));
+    this.saveRestrictionToClaim();
+  }
+
+  private setupCoUserSearch(): void {
+    this.coUserSearchControl.valueChanges.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(q => q && q.length >= 2 ? this.userDir.search(q) : of([])),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(results => {
+      const addedIds = new Set(this.coAccessList().map(e => e.userId));
+      this.coUserSearchResults.set(results.filter(u => !addedIds.has(u.userId)));
     });
   }
 }

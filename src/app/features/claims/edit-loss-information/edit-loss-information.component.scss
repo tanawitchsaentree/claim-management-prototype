@@ -97,6 +97,9 @@
 .eli-radio-label { font-size: 14px; font-weight: 600; color: var(--text-01); margin: 0; }
 .eli-radio-row   { display: flex; gap: 16px; }
 
+// ─── Cause-details expansion panel (inside General information card) ────
+.eli-cause-details-grid { padding-top: 8px; }
+
 // ─── Events ──────────────────────────────────────────────────────────
 .eli-event-block {
   padding: 0;

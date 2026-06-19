@@ -61,24 +61,20 @@
             </div>
           </td>
           <td nxTableCell class="col-actions">
-            @if (closingSectionId() === section.id) {
-              <nx-spinner size="small"></nx-spinner>
-            } @else {
-              <button nxIconButton="tertiary" type="button"
-                [nxContextMenuTriggerFor]="sectionCtxMenu" aria-label="section menu">
-                <nx-icon name="ellipsis-v"></nx-icon>
+            <button nxIconButton="tertiary" type="button"
+              [nxContextMenuTriggerFor]="sectionCtxMenu" aria-label="section menu">
+              <nx-icon name="ellipsis-v"></nx-icon>
+            </button>
+            <nx-context-menu #sectionCtxMenu="nxContextMenu">
+              <button nxContextMenuItem type="button"
+                [disabled]="section.status === 'Closed'"
+                [nxTooltip]="section.status === 'Closed' ? 'Section already closed' : ''"
+                (click)="onCloseSection(section)">
+                Close Section
               </button>
-              <nx-context-menu #sectionCtxMenu="nxContextMenu">
-                <button nxContextMenuItem type="button"
-                  [disabled]="section.status === 'Closed'"
-                  [nxTooltip]="section.status === 'Closed' ? 'Section already closed' : ''"
-                  (click)="onCloseSection(section)">
-                  Close Section
-                </button>
-                <button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
-                <button nxContextMenuItem type="button" (click)="onAction('delete', section.name)">Delete</button>
-              </nx-context-menu>
-            }
+              <button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
+              <button nxContextMenuItem type="button" (click)="onAction('delete', section.name)">Delete</button>
+            </nx-context-menu>
           </td>
         </tr>
 
