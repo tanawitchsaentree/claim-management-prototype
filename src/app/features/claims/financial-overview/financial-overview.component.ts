@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -7,8 +7,9 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
+import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
-import { FinancialOverview } from '../../../core/models/financial-overview.model';
+import { FinancialOverview, FinancialSection, FinancialRecovery } from '../../../core/models/financial-overview.model';
 
 type LevelToggle = 'claim' | 'section';
 
@@ -23,6 +24,7 @@ type LevelToggle = 'claim' | 'section';
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
+    NxDropdownModule,
   ],
   templateUrl: './financial-overview.component.html',
   styleUrl:    './financial-overview.component.scss',
@@ -31,16 +33,20 @@ export class FinancialOverviewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly svc   = inject(MockFinancialOverviewService);
 
-  readonly loading   = signal(true);
-  readonly fo        = signal<FinancialOverview | null>(null);
-  readonly level     = signal<LevelToggle>('claim');
-  readonly currency  = signal('EUR');
-  readonly activeTab = signal(0);
+  readonly loading    = signal(true);
+  readonly fo         = signal<FinancialOverview | null>(null);
+  readonly level      = signal<LevelToggle>('claim');
+  readonly currency   = signal('EUR');
+  readonly activeTab  = signal(0);
+  readonly sectionId  = signal('');
 
-  get currencies(): string[] {
-    const payments = this.fo()?.payments.map(p => p.currency) ?? [];
-    return [...new Set(['EUR', ...payments])];
-  }
+  readonly sections = computed<FinancialSection[]>(() => this.fo()?.sections ?? []);
+
+  readonly activeSection = computed<FinancialSection | null>(() => {
+    const sections = this.sections();
+    if (!sections.length) return null;
+    return sections.find(s => s.sectionId === this.sectionId()) ?? sections[0];
+  });
 
   get kpis() {
     const s = this.fo()?.summary;
@@ -58,11 +64,12 @@ export class FinancialOverviewComponent implements OnInit {
     const claimId = this.route.snapshot.paramMap.get('id')
       ?? this.route.parent?.snapshot.paramMap.get('id')
       ?? '';
-    console.log('[FO] claimId=', claimId);
     this.loading.set(true);
     const data = await firstValueFrom(this.svc.getByClaimId(claimId));
-    console.log('[FO] data=', data);
     this.fo.set(data);
+    if (data?.sections?.length) {
+      this.sectionId.set(data.sections[0].sectionId);
+    }
     this.loading.set(false);
   }
 }
