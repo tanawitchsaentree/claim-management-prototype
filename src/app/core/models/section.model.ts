@@ -1,5 +1,6 @@
-export type SectionStatus      = 'Open' | 'Closed';
-export type InstructionStatus  = 'Pending' | 'Not assigned' | 'In progress' | 'Completed';
+export type SectionStatus        = 'Open' | 'Closed';
+export type InstructionStatus    = 'Pending' | 'Not assigned' | 'In progress' | 'Completed';
+export type SectionClosureReason = 'Section Finalised' | 'Section Not Pursued' | 'Section Rejected';
 
 export interface SectionEntity {
   id:                string;
@@ -20,12 +21,13 @@ export interface SectionBlockers {
 }
 
 export interface ClaimSection extends SectionBlockers {
-  id:          string;
-  claimId:     string;
-  name:        string;
-  status:      SectionStatus;
-  expanded:    boolean;
-  entities:    SectionEntity[];
-  closureDate?: string;
-  closedBy?:   { userId: string; name: string };
+  id:             string;
+  claimId:        string;
+  name:           string;
+  status:         SectionStatus;
+  expanded:       boolean;
+  entities:       SectionEntity[];
+  closureDate?:   string;
+  closedBy?:      { userId: string; name: string };
+  closureReason?: SectionClosureReason;
 }

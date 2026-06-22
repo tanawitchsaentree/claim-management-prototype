@@ -1,12 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { ClaimSection } from '../../models/section.model';
+import { ClaimSection, SectionClosureReason } from '../../models/section.model';
+import { ClaimActivity } from '../../models/claim-overview.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
+import { ToastService } from '../../../shared/components/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class MockSectionService extends MockBaseService {
   private readonly stateSvc = inject(MockStateService);
+  private readonly toast    = inject(ToastService);
 
   // In-memory mutable state — seeded from MockStateService on first access per claimId
   private readonly cache = new Map<string, ClaimSection[]>();
@@ -32,18 +35,33 @@ export class MockSectionService extends MockBaseService {
   closeSection(
     sectionId: string,
     closedBy: { userId: string; name: string },
+    closureReason?: SectionClosureReason,
   ): Observable<ClaimSection> {
     for (const [, sections] of this.cache) {
       const target = sections.find(s => s.id === sectionId);
       if (target) {
-        target.status      = 'Closed';
-        target.closureDate = new Date().toISOString().split('T')[0];
-        target.closedBy    = closedBy;
+        target.status        = 'Closed';
+        target.closureDate   = new Date().toISOString().split('T')[0];
+        target.closedBy      = closedBy;
+        target.closureReason = closureReason;
         this.stateSvc.patchSection(sectionId, {
-          status:      target.status,
-          closureDate: target.closureDate,
-          closedBy:    target.closedBy,
+          status:        target.status,
+          closureDate:   target.closureDate,
+          closedBy:      target.closedBy,
+          closureReason: target.closureReason,
         });
+        const activity: ClaimActivity = {
+          id:         `act-sec-close-${Date.now()}`,
+          claimId:    target.claimId,
+          user:       closedBy.name,
+          timestamp:  new Date().toISOString(),
+          objectType: 'Section',
+          attribute:  'Status',
+          valueOld:   'Open',
+          valueNew:   'Closed',
+        };
+        this.stateSvc.patchActivities(items => [activity, ...items]);
+        this.toast.success(`Section ${sectionId} closed`, closureReason);
         return this.respond({ ...target });
       }
     }

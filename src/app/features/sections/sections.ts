@@ -12,6 +12,7 @@ import { firstValueFrom } from 'rxjs';
 import { ClaimSection, InstructionStatus } from '../../core/models/section.model';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
+import { ToastService } from '../../shared/components/toast/toast.service';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import {
   SectionClosureModalComponent,
@@ -40,6 +41,7 @@ export class Sections {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly dialogSvc  = inject(NxDialogService);
+  private readonly toast      = inject(ToastService);
 
   readonly sections  = signal<ClaimSection[]>([]);
   readonly loading   = signal(true);
@@ -84,7 +86,16 @@ export class Sections {
     const result = await firstValueFrom(ref.afterClosed()) as SectionClosureModalResult | undefined;
     if (!result) return;
 
-    this.sections.update(list => list.map(s => s.id === section.id ? result : s));
+    const updated = this.sections().map(s => s.id === section.id ? result : s);
+    this.sections.set(updated);
+
+    const allClosed = updated.every(s => s.status === 'Closed');
+    if (allClosed) {
+      this.toast.info(
+        'All sections closed',
+        'Claim can now be closed — navigate to Overview.',
+      );
+    }
   }
 
   onAction(action: string, name: string): void {

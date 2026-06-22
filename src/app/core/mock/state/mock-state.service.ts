@@ -1,6 +1,6 @@
 import { Injectable, Injector, inject, signal, Signal } from '@angular/core';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
-import { ClaimSection, SectionStatus } from '../../models/section.model';
+import { ClaimSection, SectionStatus, SectionBlockers } from '../../models/section.model';
 import { Task, TaskStatus } from '../../models/task.model';
 import { Claim } from '../../models/claim.model';
 import { LossInformation } from '../../models/loss-information.model';
@@ -12,6 +12,7 @@ import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 export interface ScenarioOverrides {
   taskStatuses?:    Record<string, TaskStatus>;
   sectionStatuses?: Record<string, SectionStatus>;
+  sectionBlockers?: Record<string, Partial<SectionBlockers>>;
   overviewPatch?:   { claimId: string; patch: Partial<ClaimOverview> };
   claimsAppend?:    Claim[];
   fnolStateOverride?: {
@@ -174,6 +175,11 @@ export class MockStateService {
     if (overrides.sectionStatuses) {
       const map = overrides.sectionStatuses;
       next = { ...next, sections: next.sections.map(s => map[s.id] ? { ...s, status: map[s.id] } : s) };
+    }
+
+    if (overrides.sectionBlockers) {
+      const map = overrides.sectionBlockers;
+      next = { ...next, sections: next.sections.map(s => map[s.id] ? { ...s, ...map[s.id] } : s) };
     }
 
     if (overrides.overviewPatch) {

@@ -10,8 +10,8 @@ import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { firstValueFrom } from 'rxjs';
-import { ClaimSection } from '../../../core/models/section.model';
-import { Blocker, ClosureReason } from '../../../core/models/claim-closure.model';
+import { ClaimSection, SectionClosureReason } from '../../../core/models/section.model';
+import { Blocker } from '../../../core/models/claim-closure.model';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 
 export interface SectionClosureModalData {
@@ -24,10 +24,10 @@ export type SectionClosureModalResult = ClaimSection;
 
 type Step = 1 | 2 | 3;
 
-const CLOSURE_REASONS: ClosureReason[] = [
-  'Claim Finalised',
-  'Claim Not Pursued',
-  'Claim Rejected',
+const CLOSURE_REASONS: SectionClosureReason[] = [
+  'Section Finalised',
+  'Section Not Pursued',
+  'Section Rejected',
 ];
 
 const CHECKLIST_ITEMS = [
@@ -74,7 +74,7 @@ export class SectionClosureModalComponent {
   readonly checklistAllDone = computed(() => this.checklistChecked().every(v => v));
 
   readonly form = this.fb.group({
-    reason: [null as ClosureReason | null, Validators.required],
+    reason: [null as SectionClosureReason | null, Validators.required],
   });
 
   readonly stepTitle = computed(() => {
@@ -109,8 +109,9 @@ export class SectionClosureModalComponent {
     this.saving.set(true);
     this.saveError.set(null);
     try {
+      const reason = this.form.get('reason')!.value as SectionClosureReason;
       const closed = await firstValueFrom(
-        this.sectionSvc.closeSection(this.section.id, CURRENT_USER)
+        this.sectionSvc.closeSection(this.section.id, CURRENT_USER, reason)
       );
       this.modalRef.close(closed);
     } catch {
