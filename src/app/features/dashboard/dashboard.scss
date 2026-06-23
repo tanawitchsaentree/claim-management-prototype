@@ -28,6 +28,11 @@ $sp-2xl:  32px;
   font-size: 14px;
   color: $text-main;
   background: var(--ui-01);
+
+  // Restore icon font that gets overridden by the blanket font-family above
+  nx-icon {
+    font-family: 'Allianz-Icons' !important;
+  }
 }
 
 // ─── Top header ──────────────────────────────────────────────────
