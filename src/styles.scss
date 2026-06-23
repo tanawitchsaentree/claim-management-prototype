@@ -374,10 +374,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-// Prevent body font-family from overriding NDBX icon glyph on :before pseudo-element
-[class*="nx-icon--"]:before,
-.allianz-icon:before,
-.ndbx-icon:before {
+// nx-icon--* classes set content but not font-family on :before — body font-family
+// overrides the inherited value. Force it back on every icon class.
+[class*="nx-icon--"] {
+  font-family: 'Allianz-Icons' !important;
+}
+[class*="nx-icon--"]:before {
   font-family: 'Allianz-Icons' !important;
 }
 
