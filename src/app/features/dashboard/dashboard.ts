@@ -10,6 +10,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { NxTableModule } from '@allianz/ng-aquila/table';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { MockTaskService } from '../../core/mock/services/mock-task.service';
 import { MockClaimService } from '../../core/mock/services/mock-claim.service';
@@ -45,7 +46,7 @@ const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
   standalone: true,
   imports: [
     CommonModule, RouterLink, RouterLinkActive,
-    NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxBadgeModule, NxTableModule,
+    NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxBadgeModule, NxTableModule, NxContextMenuModule,
     StatusChipComponent,
     FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
     CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,

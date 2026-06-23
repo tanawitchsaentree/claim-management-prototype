@@ -317,14 +317,19 @@
                       <td nxCell>{{ approval.reserveType }}</td>
                       <td nxCell>{{ approval.currency }}</td>
                       <td nxCell class="dash-col--nowrap">{{ approval.amount | number }}</td>
+                      <td nxCell>{{ approval.requester }}</td>
                       <td nxCell>
-                        {{ approval.requester }}
-                        @if (approval.requester === auth.user()?.name) {
-                          <nx-badge type="positive" class="by-me-nx-badge">You</nx-badge>
-                        }
-                      </td>
-                      <td nxCell>
-                        <button class="approval-action-btn" type="button" aria-label="more actions"><nx-icon name="ellipsis-v"></nx-icon></button>
+                        <button nxIconButton="tertiary small" type="button"
+                                [nxContextMenuTriggerFor]="approvalMenu"
+                                aria-label="more actions">
+                          <nx-icon name="ellipsis-v"></nx-icon>
+                        </button>
+                        <nx-context-menu #approvalMenu="nxContextMenu">
+                          <button nxContextMenuItem type="button">View details</button>
+                          <button nxContextMenuItem type="button">Approve</button>
+                          <button nxContextMenuItem type="button">Reject</button>
+                          <button nxContextMenuItem type="button">Withdraw</button>
+                        </nx-context-menu>
                       </td>
                     </tr>
                   }
@@ -365,14 +370,19 @@
                       <td nxCell>{{ payment.payee }}</td>
                       <td nxCell>{{ payment.currency }}</td>
                       <td nxCell class="dash-col--nowrap">{{ payment.amount | number }}</td>
+                      <td nxCell>{{ payment.requester }}</td>
                       <td nxCell>
-                        {{ payment.requester }}
-                        @if (payment.requester === auth.user()?.name) {
-                          <nx-badge type="positive" class="by-me-nx-badge">You</nx-badge>
-                        }
-                      </td>
-                      <td nxCell>
-                        <button class="approval-action-btn" type="button" aria-label="more actions"><nx-icon name="ellipsis-v"></nx-icon></button>
+                        <button nxIconButton="tertiary small" type="button"
+                                [nxContextMenuTriggerFor]="paymentMenu"
+                                aria-label="more actions">
+                          <nx-icon name="ellipsis-v"></nx-icon>
+                        </button>
+                        <nx-context-menu #paymentMenu="nxContextMenu">
+                          <button nxContextMenuItem type="button">View details</button>
+                          <button nxContextMenuItem type="button">Approve</button>
+                          <button nxContextMenuItem type="button">Reject</button>
+                          <button nxContextMenuItem type="button">Withdraw</button>
+                        </nx-context-menu>
                       </td>
                     </tr>
                   }

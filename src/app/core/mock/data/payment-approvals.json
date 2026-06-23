@@ -1,57 +1,57 @@
 [
   {
-    "requestId": "PAY-778001",
-    "claimId": "CLM-2024-001",
-    "oe": "Germany",
-    "lineOfBusiness": "Property",
+    "requestId": "PAY-483201",
+    "claimId": "CL-C-00063373-2026.537.1",
+    "oe": "DE",
+    "lineOfBusiness": "property",
     "paymentType": "Indemnity",
-    "payee": "Kaufmann's Warehouse GmbH",
+    "payee": "extern.r_archana@allianz.com",
     "currency": "EUR",
-    "amount": 85000,
-    "requester": "Klaus Schmidt"
+    "amount": 8500,
+    "requester": "iroti.mahajan@allianz.com"
   },
   {
-    "requestId": "PAY-778002",
-    "claimId": "CLM-2024-009",
-    "oe": "Germany",
-    "lineOfBusiness": "Engineering",
+    "requestId": "PAY-270301",
+    "claimId": "CL-C-00063671-2026.119.1",
+    "oe": "DE",
+    "lineOfBusiness": "property",
     "paymentType": "Expense",
-    "payee": "TechnoSurvey Loss Adjusters",
+    "payee": "ruby-isabelle.costigan@allianz.com",
     "currency": "EUR",
-    "amount": 12400,
-    "requester": "Mara Mustermann"
+    "amount": 1240,
+    "requester": "ruby-isabelle.costigan@allianz.com"
   },
   {
-    "requestId": "PAY-778003",
-    "claimId": "CLM-2024-007",
-    "oe": "Norway",
-    "lineOfBusiness": "Marine",
-    "paymentType": "Settlement",
-    "payee": "Nordic Shipping AS",
-    "currency": "USD",
-    "amount": 240000,
-    "requester": "Mara Mustermann"
-  },
-  {
-    "requestId": "PAY-778004",
-    "claimId": "CLM-2024-013",
-    "oe": "Germany",
-    "lineOfBusiness": "Cyber",
+    "requestId": "PAY-215601",
+    "claimId": "CL-C-00063659-2026.77.1",
+    "oe": "DE",
+    "lineOfBusiness": "property",
     "paymentType": "Provider",
-    "payee": "CyberDefense Forensics Ltd",
+    "payee": "extern.r_archana@allianz.com",
     "currency": "EUR",
-    "amount": 31800,
-    "requester": "Anna Weber"
+    "amount": 3180,
+    "requester": "extern.r_archana@allianz.com"
   },
   {
-    "requestId": "PAY-778005",
-    "claimId": "CLM-2024-004",
-    "oe": "Austria",
-    "lineOfBusiness": "Liability",
-    "paymentType": "Indemnity",
-    "payee": "Rhein Constructions GmbH",
+    "requestId": "PAY-562301",
+    "claimId": "CL-C-00063659-2026.51.1",
+    "oe": "DE",
+    "lineOfBusiness": "property",
+    "paymentType": "Settlement",
+    "payee": "extern.r_archana@allianz.com",
     "currency": "EUR",
-    "amount": 47500,
-    "requester": "Klaus Schmidt"
+    "amount": 4750,
+    "requester": "extern.r_archana@allianz.com"
+  },
+  {
+    "requestId": "PAY-562302",
+    "claimId": "CL-C-00063659-2026.51.2",
+    "oe": "DE",
+    "lineOfBusiness": "property",
+    "paymentType": "Indemnity",
+    "payee": "iroti.mahajan@allianz.com",
+    "currency": "EUR",
+    "amount": 2200,
+    "requester": "iroti.mahajan@allianz.com"
   }
 ]
