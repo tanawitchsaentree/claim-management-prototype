@@ -52,7 +52,7 @@ export interface MockState {
 const STORAGE_KEY          = 'champ-mock-state';
 const STORAGE_SCENARIO_KEY = 'champ-mock-scenario';
 const STORAGE_VERSION_KEY  = 'champ-mock-version';
-const STATE_VERSION        = '14434-open-sections';
+const STATE_VERSION        = '14434-section-blockers';
 
 function defaultState(): MockState {
   return {

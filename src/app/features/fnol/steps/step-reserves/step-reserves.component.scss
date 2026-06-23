@@ -4,6 +4,7 @@
   gap: 0;
   padding: 8px 0 48px;
   max-width: 1100px;
+  width: 100%;
 
   // Expand to use available width when the right panel is open.
   &--squeezed {
@@ -132,6 +133,10 @@
   align-items: flex-start;
   gap: 24px;
   width: 100%;
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+  }
 }
 
 .reserves-list {
@@ -146,6 +151,16 @@
   flex: 0 0 480px;
   width: 480px;
   overflow-x: hidden;
+
+  @media (max-width: 1024px) {
+    flex: 0 0 320px;
+    width: 320px;
+  }
+
+  @media (max-width: 720px) {
+    flex: 0 0 auto;
+    width: 100%;
+  }
 }
 
 // Table
@@ -171,6 +186,24 @@
   .col-section { width: 80px;  min-width: 80px; }
   .col-party   { width: 160px; min-width: 160px; }
   .col-damage  { width: 200px; min-width: 200px; }
+}
+
+// At narrow breakpoint reduce column widths to fit 320px list
+@media (max-width: 1024px) {
+  .reserves-list--compact {
+    .col-section { width: 60px;  min-width: 60px; }
+    .col-party   { width: 120px; min-width: 120px; }
+    .col-damage  { width: 140px; min-width: 140px; }
+  }
+}
+
+// At stacked breakpoint reset all columns to natural widths
+@media (max-width: 720px) {
+  .reserves-list--compact {
+    .col-section { width: auto; min-width: 60px; }
+    .col-party   { width: auto; min-width: 100px; }
+    .col-damage  { width: auto; min-width: 120px; }
+  }
 }
 
 // Damage cell: text fills cell width, icon pinned to right edge so icons
@@ -230,7 +263,7 @@
 // even when viewport is narrow — list can scroll horizontally if needed.
 .reserves-detail {
   flex: 1 1 0;
-  min-width: 480px;
+  min-width: 320px;
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
   border-radius: 4px;
@@ -238,6 +271,12 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @media (max-width: 720px) {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .reserves-detail__header {
