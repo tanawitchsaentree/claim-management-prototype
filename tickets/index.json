@@ -47,6 +47,12 @@
       "file": "bmpcc-14434.json",
       "module": "Claims",
       "title": "Section & Claims Hierarchy Validations"
+    },
+    {
+      "id": "BMPCC-14437",
+      "file": "bmpcc-14437.json",
+      "module": "Claims",
+      "title": "Payment-triggered auto-close & retention date"
     }
   ]
 }

@@ -1,0 +1,110 @@
+{
+  "ticketId": "BMPCC-14437",
+  "module": "Claims",
+  "title": "Auto-closure on final payment — section & claim cascade with retention date",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["sections", "overview"],
+  "walkthroughSteps": [
+    "Apply AC-01 — SEC-001 has a Pending payment seeded; all other blockers clear",
+    "Navigate to /claims/CLM-2024-001/sections",
+    "Observe SEC-001 is Open and shows a Pending payment badge",
+    "Click 'Simulate final payment (Section 001)' in the dev banner",
+    "Observe SEC-001 auto-closes to Closed — toast: 'Section 001 auto-closed — final payment received'",
+    "Observe claim also auto-closes because SEC-001 was the last open section",
+    "Navigate to /claims/CLM-2024-001/overview to confirm claim status is Closed",
+    "Apply AC-02 — all sections Closed, all tasks done; open the closure modal",
+    "Observe the retention date label reads 'Default (10 years — until DD-MM-YYYY)' on the overview page"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Final payment event triggers section auto-close — if last open section, claim auto-closes",
+      "plainStatement": "When the final payment for a section is received (simulated via dev banner), the system checks all remaining section blockers (excluding hasOpenPayments which just cleared). If all other blockers are resolved, the section is auto-closed with reason 'Auto-closed via final payment'. If that was the last Open section on the claim, the claim also auto-closes. Toasts confirm each closure.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-001 has a single Pending payment seeded via paymentStatuses mutation. All section blockers except hasOpenPayments are false so auto-close proceeds once the payment clears. SEC-002 and SEC-003 are already Closed so SEC-001 is the last open section — claim should cascade-close.",
+        "preconditions": [
+          { "text": "SEC-001 status is Open and shows a Pending payment indicator", "page": "sections", "role": "tested-visible" },
+          { "text": "Dev banner shows 'Simulate final payment (Section 001)' button", "page": "sections", "role": "tested-visible" },
+          { "text": "After click: SEC-001 row updates to Closed chip", "page": "sections", "role": "tested-visible" },
+          { "text": "Toast reads 'Section 001 auto-closed — final payment received'", "page": "sections", "role": "tested-visible" },
+          { "text": "Claim status on overview is Closed after cascade", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Open", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveLitigation": false,
+              "hasSubrogation": false,
+              "hasActiveSalvage": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": true,
+              "hasActiveProvider": false
+            }
+          },
+          "paymentStatuses": {
+            "PAY-SEC-001-001": "Pending"
+          }
+        },
+        "postLand": [{ "kind": "sections.simulateFinalPayment", "sectionId": "SEC-001" }]
+      },
+      "expectedUI": {
+        "description": "Section auto-closes and claim cascades to Closed",
+        "visualCues": [
+          "SEC-001 chip changes from 'Open' to 'Closed'",
+          "Toast: 'Section 001 auto-closed — final payment received'",
+          "Claim status chip on overview changes to 'Closed'",
+          "Activity log gains 'Section Status: Open → Closed (Auto-closed via final payment)'"
+        ]
+      },
+      "expectedOutcome": {
+        "sectionStatus": "Closed",
+        "claimStatus": "Closed",
+        "activityLogged": true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "action": "Click 'Simulate final payment (Section 001)' in the dev banner after applying AC-01"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Default retention date assigned at closure = closureDate + 10 years",
+      "plainStatement": "When a claim is closed (manually or via auto-close), the system assigns a default retention date equal to the closure date plus 10 years. The claim overview page displays this as 'Default (10 years — until DD-MM-YYYY)' in the retention date field.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All sections Closed, all tasks done, and no blockers present. postLand opens the closure modal so the handler can see the default retention date label before confirming closure. The computed value uses today's date + 10 years.",
+        "preconditions": [
+          { "text": "Closure modal step 3 shows retention date field", "page": "overview", "role": "tested-visible" },
+          { "text": "Retention date label reads 'Default (10 years — until DD-MM-YYYY)'", "page": "overview", "role": "tested-visible" },
+          { "text": "After closure confirmed: overview shows retentionDate set to closureDate + 10 years", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" }
+        },
+        "postLand": [{ "kind": "overview.openClosureModal" }]
+      },
+      "expectedUI": {
+        "description": "Closure modal displays computed retention date; overview reflects it after close",
+        "visualCues": [
+          "Modal step 3: retention date hint text 'Default (10 years — until DD-MM-YYYY)'",
+          "Date shown is today + 10 years in DD-MM-YYYY format",
+          "After confirming closure: overview card shows the same retention date"
+        ]
+      },
+      "expectedOutcome": {
+        "retentionDateOffset": "+10years",
+        "retentionDateVisible": true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "action": "Apply AC-02, wait for modal to open, inspect retention date label on step 3"
+      }
+    }
+  ]
+}
