@@ -771,6 +771,19 @@ $header-bp: 1024px;
   &:hover { background: $gray-bg; color: $text-main; }
 }
 
+.dash-kebab-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  border-radius: 4px;
+  font-size: 18px;
+  line-height: 1;
+  font-family: inherit;
+  &:hover { background: $gray-bg; }
+}
+
 // ─── Quick links ─────────────────────────────────────────────────
 .quick-links-list {
   display: flex;
