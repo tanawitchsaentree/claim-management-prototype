@@ -778,8 +778,10 @@ $header-bp: 1024px;
   cursor: pointer;
   color: var(--interactive-primary);
   border-radius: 4px;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: 1px;
   font-family: inherit;
   &:hover { background: $gray-bg; }
 }
