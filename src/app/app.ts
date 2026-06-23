@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -54,5 +54,15 @@ export class App implements OnInit {
 
   onUnlocked(): void {
     this.unlocked.set(true);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(e: KeyboardEvent): void {
+    // Cmd+Shift+R (Mac) or Ctrl+Shift+R (Win) → clear sessionStorage then reload
+    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'R') {
+      e.preventDefault();
+      sessionStorage.clear();
+      window.location.reload();
+    }
   }
 }
