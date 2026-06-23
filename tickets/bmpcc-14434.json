@@ -1,0 +1,172 @@
+{
+  "ticketId": "BMPCC-14434",
+  "module": "Claims",
+  "title": "Section & Claims Hierarchy Validations",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["sections"],
+  "walkthroughSteps": [
+    "Apply AC-01 — SEC-001 has open deductible + salvage blockers",
+    "Navigate to /claims/CLM-2024-001/sections",
+    "Click ⋮ → Close Section on Section 001 → modal shows 2 blockers",
+    "Apply AC-02 — SEC-002 has litigation + reserves + payments blockers",
+    "Click ⋮ → Close Section on Section 002 → modal shows 3 blockers",
+    "Apply AC-03 — SEC-003 has provider blocker only",
+    "Click ⋮ → Close Section on Section 003 → modal shows 1 blocker",
+    "Apply AC-04 — all sections clear, close SEC-001 → checklist → reason → closed",
+    "Apply AC-05 — all sections clear → close all 3 → go to overview → Close Claim available"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Section closure blocked when deductible + salvage open",
+      "plainStatement": "When Section 001 has an open deductible task and pending salvage activity, clicking Close Section opens a modal showing both blockers. The modal has no Continue button — only Cancel.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-001 mock data has hasOpenDeductible=true and hasActiveSalvage=true. No state overrides needed — blockers come from section flags.",
+        "preconditions": [
+          { "text": "Section 001 status is Open", "page": "sections", "role": "tested-visible" },
+          { "text": "Close Section modal shows 'Open Manage Deductible task must be closed'", "page": "sections", "role": "tested-visible" },
+          { "text": "Close Section modal shows 'Pending salvage activity must be resolved'", "page": "sections", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Blocker modal step 1 — 2 blocker items",
+        "visualCues": [
+          "Modal title: 'Close Section — Blockers'",
+          "2 red blocker rows visible",
+          "Only Cancel button in footer"
+        ]
+      },
+      "expectedOutcome": { "canClose": false, "buttonEnabled": false },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "action": "Click ⋮ → Close Section on Section 001"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Section closure blocked when litigation + reserves + payments open",
+      "plainStatement": "Section 002 has active litigation, open reserves, and pending payments — modal shows all 3 blockers.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-002 mock data has hasActiveLitigation=true, hasOpenReserves=true, hasOpenPayments=true.",
+        "preconditions": [
+          { "text": "Section 002 status is Open", "page": "sections", "role": "tested-visible" },
+          { "text": "Modal shows 3 distinct blocker rows", "page": "sections", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Blocker modal step 1 — 3 blocker items",
+        "visualCues": [
+          "Blocker: 'Active litigation assignment must be resolved'",
+          "Blocker: 'Pending reserves must be released'",
+          "Blocker: 'Pending payments must be settled'"
+        ]
+      },
+      "expectedOutcome": { "canClose": false, "buttonEnabled": false },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "action": "Click ⋮ → Close Section on Section 002"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Section closure blocked when active provider assignment",
+      "plainStatement": "Section 003 has an active provider assignment — modal shows 1 blocker.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-003 mock data has hasActiveProvider=true.",
+        "preconditions": [
+          { "text": "Section 003 status is Open", "page": "sections", "role": "tested-visible" },
+          { "text": "Modal shows 1 blocker: active provider", "page": "sections", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Blocker modal step 1 — 1 blocker item",
+        "visualCues": [
+          "Blocker: 'Active provider assignment must be finalised'"
+        ]
+      },
+      "expectedOutcome": { "canClose": false, "buttonEnabled": false },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "action": "Click ⋮ → Close Section on Section 003"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Section closes successfully when no blockers — checklist + reason required",
+      "plainStatement": "When a section has no blockers, the modal opens at the pre-closure checklist (step 2). Handler must tick all 5 items then select a closure reason before Close Section executes.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All section blocker flags set to false so modal skips step 1.",
+        "preconditions": [
+          { "text": "Section 001 has no blockers", "page": "sections", "role": "tested-visible" },
+          { "text": "Modal opens at checklist step", "page": "sections", "role": "tested-visible" },
+          { "text": "Continue disabled until all 5 checkboxes ticked", "page": "sections", "role": "tested-visible" },
+          { "text": "After reason selected: Close Section button enabled", "page": "sections", "role": "tested-visible" },
+          { "text": "Section row shows Closed chip after modal closes", "page": "sections", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "sectionBlockers": {
+            "SEC-001": { "hasOpenDeductible": false, "hasActiveLitigation": false, "hasSubrogation": false, "hasActiveSalvage": false, "hasOpenReserves": false, "hasOpenPayments": false, "hasActiveProvider": false },
+            "SEC-002": { "hasOpenDeductible": false, "hasActiveLitigation": false, "hasSubrogation": false, "hasActiveSalvage": false, "hasOpenReserves": false, "hasOpenPayments": false, "hasActiveProvider": false },
+            "SEC-003": { "hasOpenDeductible": false, "hasActiveLitigation": false, "hasSubrogation": false, "hasActiveSalvage": false, "hasOpenReserves": false, "hasOpenPayments": false, "hasActiveProvider": false }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Modal opens at step 2 — checklist, then step 3 — reason",
+        "visualCues": [
+          "Modal title: 'Close Section — Pre-closure Checklist'",
+          "5 checkboxes, Continue disabled until all checked",
+          "Step 3: dropdown for closure reason",
+          "Close Section button spins then section row updates to Closed"
+        ]
+      },
+      "expectedOutcome": { "canClose": true, "buttonEnabled": true },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "action": "Click ⋮ → Close Section on any section"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Claim closure only available when all sections are Closed",
+      "plainStatement": "With all 3 sections Closed, navigating to Claim Overview shows the Close Claim button enabled. If any section is still Open, sections blocker appears in claim closure modal.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All sections closed + all tasks done so only section blocker gate is tested.",
+        "preconditions": [
+          { "text": "Close Claim button is enabled", "page": "overview", "role": "tested-visible" },
+          { "text": "Claim closure modal proceeds past step 1", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" }
+        },
+        "postLand": [{ "kind": "overview.openClosureModal" }]
+      },
+      "expectedUI": {
+        "description": "Claim closure modal step 1 has no section blocker",
+        "visualCues": [
+          "Close Claim button active on overview page",
+          "Modal step 1 does not show sections blocker"
+        ]
+      },
+      "expectedOutcome": { "canClose": true, "buttonEnabled": true },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "action": "Click Close Claim"
+      }
+    }
+  ]
+}
