@@ -52,7 +52,7 @@
       "id": "BMPCC-14437",
       "file": "bmpcc-14437.json",
       "module": "Claims",
-      "title": "Payment-triggered auto-close & retention date"
+      "title": "Closure via Last Payment"
     }
   ]
 }
