@@ -3,9 +3,6 @@
 
 :host {
   display: block;
-  padding: var(--page-content-top) var(--layout-inset-base) var(--layout-inset-base);
-  background: var(--ui-01);
-  min-height: 100%;
 }
 
 .lit-page {
@@ -42,13 +39,6 @@
   margin-bottom: 16px;
 }
 
-.lit-title {
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-01);
-  margin: 0;
-  line-height: 1.2;
-}
 
 .lit-empty {
   margin: 0;

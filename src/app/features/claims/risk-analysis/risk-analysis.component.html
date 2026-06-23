@@ -1,4 +1,4 @@
-<h1 class="rai-title">Risk analysis and investigation</h1>
+<h1 class="page-title">Risk analysis and investigation</h1>
 
 @if (loading()) {
   <div class="rai-loading">
@@ -7,44 +7,86 @@
 } @else if (!model()) {
   <p class="rai-empty">No risk analysis available for this claim.</p>
 } @else {
+
+  <!-- General information -->
   <section class="rai-card">
     <h2 class="rai-card__title">General information</h2>
     <div class="rai-grid">
+
       <div class="rai-field">
-        <span class="rai-field__label">Risk score</span>
-        <div class="rai-field__value">
-          <app-status-chip [status]="scoreChip()" domain="claim" [label]="model()!.riskScore + '/5'"></app-status-chip>
-          <button nxIconButton="tertiary small" type="button" (click)="refreshScore()" [disabled]="refreshing()" aria-label="Refresh score">
+        <div class="rai-field__label-row">
+          <span class="rai-field__label">Risk score</span>
+          <button type="button"
+                  (click)="refreshScore()"
+                  [disabled]="refreshing()"
+                  aria-label="Refresh score"
+                  class="rai-refresh-btn">
             @if (refreshing()) {
               <nx-spinner nxSize="small"></nx-spinner>
             } @else {
-              <nx-icon name="refresh" size="s"></nx-icon>
+              <nx-icon name="refresh" class="rai-refresh-icon"></nx-icon>
             }
           </button>
         </div>
+        <div class="rai-field__value-row">
+          <app-status-chip [status]="scoreChip()" domain="claim" [label]="model()!.riskScore + '/5'"></app-status-chip>
+          <span class="rai-field__timestamp">{{ model()!.lastScoreUpdated | date:'dd-MM-yyyy, HH:mm' }}</span>
+        </div>
       </div>
+
       <div class="rai-field">
-        <span class="rai-field__label">Investigation status</span>
-        <app-status-chip [status]="investigationChip()" domain="claim" [label]="model()!.investigationStatus"></app-status-chip>
+        <div class="rai-field__label-row">
+          <span class="rai-field__label">Risk status</span>
+        </div>
+        <div class="rai-field__value-row">
+          <app-status-chip [status]="riskStatusChip()" domain="claim" [label]="model()!.riskStatus"></app-status-chip>
+        </div>
       </div>
+
       <div class="rai-field">
-        <span class="rai-field__label">Risk status</span>
-        <app-status-chip [status]="riskStatusChip()" domain="claim" [label]="model()!.riskStatus"></app-status-chip>
+        <div class="rai-field__label-row">
+          <span class="rai-field__label">Investigation status</span>
+        </div>
+        <div class="rai-field__value-row">
+          <span class="rai-field__plain">{{ model()!.investigationStatus }}</span>
+        </div>
       </div>
+
+      <div class="rai-field">
+        <div class="rai-field__label-row">
+          <span class="rai-field__label">Investigation outcome</span>
+        </div>
+        <div class="rai-field__value-row">
+          <span class="rai-field__plain">{{ model()!.investigationOutcome }}</span>
+        </div>
+      </div>
+
     </div>
+
+    @if (!isNoRisk()) {
+      <div class="rai-card__actions">
+        <button nxButton="secondary small" type="button"
+                (click)="markNoRisk()"
+                [disabled]="markingNoRisk()">
+          Mark as "No risk"
+        </button>
+      </div>
+    }
   </section>
 
-  <nx-message context="info" class="rai-message">
-    <h3 class="rai-message__title">
-      <nx-icon name="sparkle" size="s"></nx-icon>
+  <!-- AI reasoning -->
+  <div class="rai-ai-card">
+    <h3 class="rai-ai-card__title">
+      <nx-icon name="product-artificial-intelligence" size="s"></nx-icon>
       AI reasoning: Detailed analysis explanation
     </h3>
-    <p class="rai-message__body">{{ model()!.aiReasoning }}</p>
-  </nx-message>
+    <p class="rai-ai-card__body">{{ model()!.aiReasoning }}</p>
+  </div>
 
-  <nx-message context="error" class="rai-message">
-    <h3 class="rai-message__title">
-      <nx-icon name="warning-triangle" size="s"></nx-icon>
+  <!-- Key risk factors -->
+  <div class="rai-risk-card">
+    <h3 class="rai-risk-card__title">
+      <nx-icon name="warning-o" size="s"></nx-icon>
       Key risk factors
     </h3>
     <ul class="rai-factors">
@@ -52,15 +94,16 @@
         <li>{{ factor }}</li>
       }
     </ul>
-  </nx-message>
+  </div>
 
+  <!-- Investigation state -->
   @if (!hasInvestigation()) {
     <div class="rai-empty-state">
       <div class="rai-empty-state__illustration" aria-hidden="true">
-        <nx-icon name="search" size="l"></nx-icon>
+        <nx-icon name="find" size="l"></nx-icon>
       </div>
       <p class="rai-empty-state__text">Investigation not started</p>
-      <button nxButton="primary" type="button" (click)="startInvestigation()">Start investigation</button>
+      <button nxButton="primary" type="button" (click)="startInvestigation()">Start referral process</button>
     </div>
   } @else {
     <section class="rai-investigation">

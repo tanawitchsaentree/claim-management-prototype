@@ -8,11 +8,7 @@
 }
 
 .fo-title {
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-01);
-  margin: 0;
-  line-height: 1.2;
+  margin: 0; // keep for specificity — .page-title supplies font/size
 }
 
 // ─── Right-side controls ──────────────────────────────────────────────────────

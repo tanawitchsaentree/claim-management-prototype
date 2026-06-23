@@ -224,7 +224,50 @@
       @if (isRestricted) {
         <div class="co-restrict-body">
 
-          <!-- Reason -->
+          <!-- Access list + add user (primary — used most often) -->
+          <div class="co-restrict-access">
+
+            <div class="co-restrict-search">
+              <div class="co-restrict-search__input-wrap">
+                <input class="co-restrict-search__input" type="text"
+                       [formControl]="coUserSearchControl"
+                       placeholder="Search to add user" />
+                <nx-icon name="search" class="co-restrict-search__icon"></nx-icon>
+              </div>
+              @if (coUserSearchResults().length > 0) {
+                <div class="co-restrict-results">
+                  @for (user of coUserSearchResults(); track user.userId) {
+                    <button type="button" class="co-restrict-result" (click)="addCoUser(user)">
+                      <span class="co-restrict-result__name">{{ user.name }}</span>
+                      <span class="co-restrict-result__role">{{ user.role }}</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <p class="co-restrict-access__heading">Users with access</p>
+
+            @if (coAccessList().length === 0) {
+              <p class="co-restrict-access__empty">No users added yet.</p>
+            }
+            @for (entry of coAccessList(); track entry.userId) {
+              <div class="co-restrict-entry">
+                <div class="co-restrict-entry__info">
+                  <span class="co-restrict-entry__name">{{ entry.name }}</span>
+                  <span class="co-restrict-entry__role">{{ entry.role }}</span>
+                </div>
+                <button nxIconButton="tertiary small" type="button"
+                        (click)="removeCoUser(entry.userId)"
+                        aria-label="Remove user">
+                  <nx-icon name="trash-o"></nx-icon>
+                </button>
+              </div>
+            }
+
+          </div>
+
+          <!-- Reason (secondary metadata) -->
           <div class="co-restrict-reason-row">
             <nx-formfield label="Restriction reason" class="co-restrict-field">
               <nx-dropdown [formControl]="$any(restrictionForm.get('reason'))"
@@ -242,42 +285,6 @@
                        (blur)="saveRestrictionToClaim()" />
               </nx-formfield>
             }
-          </div>
-
-          <!-- Access list -->
-          <div class="co-restrict-access">
-            <p class="co-restrict-access__heading">Users with access</p>
-
-            @for (entry of coAccessList(); track entry.userId; let i = $index) {
-              <div class="co-restrict-entry">
-                <div class="co-restrict-entry__info">
-                  <span class="co-restrict-entry__name">{{ entry.name }}</span>
-                  <span class="co-restrict-entry__role">{{ entry.role }}</span>
-                </div>
-                <button nxIconButton="tertiary small" type="button"
-                        (click)="removeCoUser(entry.userId)"
-                        aria-label="Remove user">
-                  <nx-icon name="trash-o"></nx-icon>
-                </button>
-              </div>
-            }
-
-            <div class="co-restrict-search">
-              <nx-formfield class="co-restrict-search__field">
-                <input nxInput [formControl]="coUserSearchControl" placeholder="Search by name or email" />
-                <nx-icon nxFormfieldSuffix name="search"></nx-icon>
-              </nx-formfield>
-              @if (coUserSearchResults().length > 0) {
-                <div class="co-restrict-results">
-                  @for (user of coUserSearchResults(); track user.userId) {
-                    <button type="button" class="co-restrict-result" (click)="addCoUser(user)">
-                      <span class="co-restrict-result__name">{{ user.name }}</span>
-                      <span class="co-restrict-result__role">{{ user.role }}</span>
-                    </button>
-                  }
-                </div>
-              }
-            </div>
           </div>
 
         </div>

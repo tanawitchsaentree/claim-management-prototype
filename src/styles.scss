@@ -376,6 +376,19 @@ body {
 
 a { text-decoration: none; color: inherit; }
 
+// ── Page-level title — use on every claim sub-page h1 ───────────────────────
+// Single source of truth: 28px / 400 weight / 24px bottom margin.
+// Shell .main-content owns the outer padding (24px all sides) — pages must NOT
+// add their own :host padding on top of it.
+h1.page-title,
+.page-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  line-height: 1.2;
+  margin: 0 0 24px;
+}
+
 // Allow \n in nxTooltip strings to render as line breaks
 .nx-tooltip { white-space: pre-line; }
 

@@ -16,12 +16,24 @@ export class MockRiskService extends MockBaseService {
   refresh(claimId: string): Observable<RiskAnalysis | null> {
     const idx = this.cache.findIndex(r => r.claimId === claimId);
     if (idx < 0) return this.respond(null);
-    // Mock AI re-evaluation: nudge score within bounds and recompute label.
     const next = this.cache[idx];
-    const drift = Math.random() < 0.5 ? -1 : 1;
-    next.riskScore = Math.max(1, Math.min(5, next.riskScore + drift)) as RiskScore;
-    next.riskStatus = this.deriveRiskStatus(next.riskScore);
+    const drift = next.riskScore >= 5 ? -1 : next.riskScore <= 1 ? 1 : (next.riskScore % 2 === 0 ? -1 : 1);
+    next.riskScore       = Math.max(1, Math.min(5, next.riskScore + drift)) as RiskScore;
+    next.riskStatus      = this.deriveRiskStatus(next.riskScore);
+    next.lastScoreUpdated = new Date().toISOString();
     return this.respond(this.clone(next));
+  }
+
+  markNoRisk(claimId: string): Observable<RiskAnalysis | null> {
+    const idx = this.cache.findIndex(r => r.claimId === claimId);
+    if (idx < 0) return this.respond(null);
+    this.cache[idx] = {
+      ...this.cache[idx],
+      riskScore:        1,
+      riskStatus:       'Low risk',
+      lastScoreUpdated: new Date().toISOString(),
+    };
+    return this.respond(this.clone(this.cache[idx]));
   }
 
   startInvestigation(claimId: string, assignee: string, deadline: string): Observable<RiskAnalysis | null> {
