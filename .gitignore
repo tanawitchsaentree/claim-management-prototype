@@ -50,3 +50,4 @@ CLAUDE.md
 VIOLATIONS.md
 DESIGN_PRINCIPLES.md
 scripts/
+${local_app_data}\
