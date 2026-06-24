@@ -1,4 +1,5 @@
 $mobile-bp: 1024px;
+$medium-bp: 1360px;
 
 // ── Shell ──────────────────────────────────────────────────────────
 .app-header {
@@ -12,6 +13,10 @@ $mobile-bp: 1024px;
   flex-shrink: 0;
   z-index: 100;
   position: relative;
+
+  @media (max-width: $medium-bp) {
+    padding: 0 16px;
+  }
 }
 
 // ── Left: brand + nav ─────────────────────────────────────────────
@@ -44,6 +49,10 @@ $mobile-bp: 1024px;
   color: var(--text-01);
   white-space: nowrap;
   padding-right: 32px;
+
+  @media (max-width: $medium-bp) {
+    padding-right: 16px;
+  }
 }
 
 // ── Nav items ─────────────────────────────────────────────────────
@@ -52,6 +61,10 @@ $mobile-bp: 1024px;
   align-items: stretch;
   height: 100%;
   gap: 32px;
+
+  @media (max-width: $medium-bp) {
+    gap: 16px;
+  }
 }
 
 .app-header__nav-item {
@@ -107,6 +120,20 @@ $mobile-bp: 1024px;
   overflow: hidden;
   height: 40px;
   width: 280px;
+
+  @media (max-width: $medium-bp) {
+    width: 180px;
+  }
+
+  @media (max-width: 1180px) {
+    width: 40px;
+    border: none;
+    background: transparent;
+  }
+}
+
+.app-header__search--icon-only {
+  .app-header__search-input { display: none; }
 }
 
 .app-header__search-input {
@@ -120,6 +147,10 @@ $mobile-bp: 1024px;
   background: var(--ui-01);
   height: 100%;
   &::placeholder { color: var(--text-muted); }
+
+  @media (max-width: 1180px) {
+    display: none;
+  }
 }
 
 .app-header__search-btn {
@@ -135,6 +166,12 @@ $mobile-bp: 1024px;
   justify-content: center;
   flex-shrink: 0;
   nx-icon { color: var(--ui-01); font-size: 16px; }
+
+  @media (max-width: 1180px) {
+    margin: 0;
+    background: transparent;
+    nx-icon { color: var(--text-01); }
+  }
 }
 
 .app-header__actions {
