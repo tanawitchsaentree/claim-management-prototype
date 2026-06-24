@@ -207,7 +207,7 @@
 }
 
 .cddm-detail-id {
-  margin: 0 0 16px;
+  margin: 0 0 6px;
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
   color: var(--text-01);
@@ -218,6 +218,24 @@
   code   {
     font-family: monospace;
     font-weight: 400;
+    background: var(--dev-helper-bg);
+    border: 1px solid var(--dev-helper-border);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+}
+
+.cddm-detail-plain {
+  margin: 0 0 16px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.5;
+
+  strong { font-weight: 600; color: var(--text-01); }
+  em     { font-style: italic; }
+  code   {
+    font-family: monospace;
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
     border-radius: 3px;

@@ -19,6 +19,8 @@ import { MockDashboardExtendedService } from '../../core/mock/services/mock-dash
 import { AuthService } from '../../core/services/auth';
 import { Claim, ClaimStats, DashboardVM, QuickLink, Task, UrgentApproval, ReserveMovement, LossEventSummary, PaymentApproval } from '../../core/models';
 
+import { Navbar } from '../layout/navbar/navbar';
+
 // Widgets
 import { FinancialClosureBannerComponent } from './widgets/financial-closure-banner';
 import { KpiRowComponent } from './widgets/kpi-row';
@@ -47,7 +49,7 @@ const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
   imports: [
     CommonModule, RouterLink, RouterLinkActive,
     NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxBadgeModule, NxTableModule, NxContextMenuModule,
-    StatusChipComponent,
+    StatusChipComponent, Navbar,
     FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
     CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,
   ],

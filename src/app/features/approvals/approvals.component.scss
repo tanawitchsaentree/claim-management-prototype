@@ -1,0 +1,177 @@
+:host { display: block; min-height: 100vh; background: var(--ui-background); }
+
+.approvals-outer {
+  padding-top: 24px;
+  padding-bottom: 32px;
+}
+
+.approvals-page {
+  // nxLayout="grid maxwidth" handles horizontal padding + max-width (1472px) + centering
+}
+
+// ── Filter bar ────────────────────────────────────────────────────
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 16px 0;
+  flex-wrap: wrap;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 160px;
+  flex: 1;
+  max-width: 240px;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-01);
+  white-space: nowrap;
+}
+
+.filter-input {
+  height: 36px;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 14px;
+  color: var(--text-01);
+  background: var(--ui-01);
+  outline: none;
+  &:focus { border-color: var(--interactive-primary); }
+
+  &--date {
+    font-size: 13px;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding-bottom: 1px;
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────
+.tabs-row {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--ui-04);
+  margin-top: 20px;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-01);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+
+  &--active {
+    font-weight: 600;
+    color: var(--interactive-text);
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--interactive-text);
+    }
+  }
+
+  &:hover:not(.tab-btn--active) { background: var(--ui-02); }
+}
+
+// ── Toggle row ────────────────────────────────────────────────────
+.toggle-row {
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+}
+
+// ── Table ─────────────────────────────────────────────────────────
+.table-card {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.approvals-table {
+  width: 100%;
+  table-layout: fixed;
+
+  .col-expand   { width: 40px; padding: 0 !important; }
+  .col-req-id   { width: 120px; }
+  .col-claim-id { width: 200px; }
+  .col-oe       { width: 50px; }
+  .col-lob      { width: 90px; }
+  .col-type     { width: 130px; }
+  .col-currency { width: 70px; }
+  .col-amount   { width: 80px; }
+  .col-requester{ width: 200px; }
+  .col-date     { width: 110px; }
+  .col-action   { width: 56px; text-align: center !important; padding: 0 !important; }
+
+  th[nxHeaderCell] {
+    font-weight: 600 !important;
+    padding: 8px 10px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  td[nxTableCell] {
+    padding: 8px 10px !important;
+    vertical-align: middle !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 32px !important;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// ── Links ─────────────────────────────────────────────────────────
+.text-link {
+  color: var(--interactive-text);
+  text-decoration: none;
+  font-weight: 500;
+  &:hover { text-decoration: underline; }
+}
+
+// ── NDBX overrides ────────────────────────────────────────────────
+button[nxIconButton] {
+  color: var(--text-01) !important;
+  background: transparent !important;
+  &:hover { background: var(--hover-secondary) !important; }
+  nx-icon { color: var(--text-01) !important; }
+}
+
+button[nxButton="secondary small"] {
+  background: transparent !important;
+  color: var(--interactive-primary) !important;
+  border: 2px solid var(--interactive-primary) !important;
+}
+
+button[nxButton="tertiary small"] {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  border: none !important;
+}

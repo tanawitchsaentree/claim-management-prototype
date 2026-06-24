@@ -1,12 +1,12 @@
 // ─── Variables ───────────────────────────────────────────────────
 $sidebar-width:       288px;
 $header-height:       64px;
-$blue-active:         #006192;
-$gray-bg:             #f5f5f5;   // sidebar + right strip background
-$text-main:           #404040;
-$text-muted:          #767676;
-$border-color:        #d9d9d9;
-$brand-blue:          #003781;
+$blue-active:         var(--interactive-text);
+$gray-bg:             var(--ui-02);
+$text-main:           var(--text-01);
+$text-muted:          var(--text-muted);
+$border-color:        var(--ui-04);
+$brand-blue:          var(--info);
 
 // ─── Full page shell ─────────────────────────────────────────────
 .page-shell {
@@ -25,7 +25,7 @@ $brand-blue:          #003781;
   align-items: center;
   justify-content: space-between;
   height: $header-height;
-  background: #fff;
+  background: var(--ui-01);
   border-bottom: 1px solid $border-color;
   flex-shrink: 0;
   z-index: 100;
@@ -84,10 +84,10 @@ $brand-blue:          #003781;
   position: relative;
   transition: color 0.12s;
 
-  &:hover { color: #006192; }
+  &:hover { color: var(--interactive-text); }
 
   &--active {
-    color: #006192;
+    color: var(--interactive-text);
     font-weight: 700;
 
     &::after {
@@ -97,7 +97,7 @@ $brand-blue:          #003781;
       left: 0;
       right: 0;
       height: 4px;
-      background: #006192;
+      background: var(--interactive-text);
       border-radius: 0;
     }
   }
@@ -122,7 +122,7 @@ $brand-blue:          #003781;
 .search-wrapper {
   display: flex;
   align-items: center;
-  border: 1px solid #767676;
+  border: 1px solid var(--text-muted);
   border-radius: 4px;
   overflow: hidden;
   height: 40px;
@@ -137,16 +137,16 @@ $brand-blue:          #003781;
   font-weight: 300;
   color: $text-main;
   flex: 1;
-  background: #fff;
+  background: var(--ui-01);
   height: 100%;
-  &::placeholder { color: #767676; }
+  &::placeholder { color: var(--text-muted); }
 }
 
 .search-btn {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px !important;
-  background: #006192 !important;
+  background: var(--interactive-text) !important;
   border: none !important;
   border-radius: 4px !important;
   margin: 4px 4px 4px 0;
@@ -155,18 +155,18 @@ $brand-blue:          #003781;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  nx-icon { color: #fff !important; font-size: 16px !important; }
+  nx-icon { color: var(--ui-01) !important; font-size: 16px !important; }
 }
 
 .user-avatar {
   width: 32px;
   height: 32px;
-  background: #49648c;
+  background: var(--avatar-bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--text-02);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -186,7 +186,7 @@ $brand-blue:          #003781;
   width: $sidebar-width;
   min-width: $sidebar-width;
   flex-shrink: 0;
-  background: $gray-bg;          // ← #f2f2f2 as in screenshot
+  background: $gray-bg;
   border-right: 1px solid $border-color;
   display: flex;
   flex-direction: column;
@@ -243,21 +243,21 @@ $brand-blue:          #003781;
   }
 
   &:hover:not(.side-nav-item--active) {
-    background: rgba(0,0,0,0.05);
+    background: var(--claim-overlay-nav-hover);
   }
 
   // ── ACTIVE: solid blue fill, white text + icon ──
   &--active {
     background: $blue-active;
-    color: #ffffff;
+    color: var(--text-02);
     font-weight: 600;
 
     .side-nav-icon {
-      color: #ffffff;
-      nx-icon { color: #ffffff !important; }
+      color: var(--text-02);
+      nx-icon { color: var(--text-02) !important; }
     }
 
-    .side-nav-label { color: #ffffff; }
+    .side-nav-label { color: var(--text-02); }
   }
 }
 
@@ -287,7 +287,7 @@ $brand-blue:          #003781;
   nx-icon { color: $text-muted; font-size: 18px; }
 
   &:hover {
-    background: darken($gray-bg, 5%);
+    background: var(--ui-03);
     color: $text-main;
     nx-icon { color: $text-main; }
   }
@@ -305,7 +305,7 @@ $brand-blue:          #003781;
   flex: 1;
   overflow-y: auto;
   padding: 32px;
-  background: #ffffff;
+  background: var(--ui-background);
   min-width: 0;
 }
 
@@ -326,8 +326,8 @@ $brand-blue:          #003781;
   gap: 8px;
   padding: 8px 16px;
   background: transparent;
-  color: #006192;
-  border: 2px solid #006192;
+  color: var(--interactive-text);
+  border: 2px solid var(--interactive-text);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
@@ -337,17 +337,17 @@ $brand-blue:          #003781;
 
   nx-icon {
     font-size: 16px;
-    color: #006192;
+    color: var(--interactive-text);
   }
 
   &:hover {
-    background: rgba(0, 97, 146, 0.06);
+    background: var(--claim-overlay-hover);
   }
 }
 
 // ─── Table card ───────────────────────────────────────────────────
 .table-card {
-  background: #fff;
+  background: var(--ui-01);
   overflow: hidden;
 }
 
@@ -383,25 +383,31 @@ $brand-blue:          #003781;
 // ─── Sections table ───────────────────────────────────────────────
 .sections-table {
   width: 100%;
+  table-layout: fixed;
 
-  .col-toggle  { width: 40px; padding: 0 !important; }
-  .col-entity  { min-width: 200px; }
-  .col-damage  { min-width: 200px; }
-  .col-status  { width: 180px; }
-  .col-actions { width: 56px; text-align: center !important; padding: 0 !important; }
+  .col-toggle   { width: 48px;  padding: 0 !important; }
+  .col-entity   { width: 22%; }
+  .col-damage   { width: 28%; }
+  .col-status   { width: 160px; }
+  .col-provider { width: 180px; }
+  .col-actions  { width: 56px; text-align: center !important; padding: 0 !important; }
 
-  // let NDBX handle most table styling — only set what we need
   th[nxHeaderCell] {
     font-size: var(--paragraph-03-font-size) !important;
     font-weight: 600 !important;
-    padding: 8px !important;
+    padding: 8px 12px !important;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   td[nxTableCell] {
     font-size: var(--paragraph-03-font-size) !important;
-    padding: 8px !important;
+    padding: 8px 12px !important;
     vertical-align: middle !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -416,10 +422,10 @@ $brand-blue:          #003781;
   font-weight: 400;
   white-space: nowrap;
 
-  &--pending      { background: #fdf3d6; color: #7a5200; }
-  &--not-assigned { background: #e8e8e8; color: $text-muted; }
-  &--in-progress  { background: #dce9f8; color: #006192; }
-  &--completed    { background: #d4edda; color: #155724; }
+  &--pending      { background: var(--task-status-pending-bg);       color: var(--task-status-pending-color); }
+  &--not-assigned { background: var(--ui-03);                         color: var(--text-muted); }
+  &--in-progress  { background: var(--claim-status-in-progress-bg);   color: var(--claim-status-in-progress-color); }
+  &--completed    { background: var(--claim-status-bound-bg);         color: var(--claim-status-bound-color); }
 }
 
 // ─── Right strip ──────────────────────────────────────────────────
@@ -447,7 +453,7 @@ $brand-blue:          #003781;
     border-radius: 0 4px 4px 0 !important;
     width: 44px !important;
     margin-right: -4px !important;
-    nx-icon { color: #fff !important; }
+    nx-icon { color: var(--text-02) !important; }
   }
 }
 
@@ -460,44 +466,44 @@ $brand-blue:          #003781;
 
 // ─── ng-aquila light theme overrides ─────────────────────────────
 button[nxIconButton] {
-  color: $text-main !important;
+  color: var(--text-01) !important;
   background: transparent !important;
-  &:hover { background: darken($gray-bg, 5%) !important; }
-  nx-icon { color: $text-main !important; }
+  &:hover { background: var(--hover-secondary) !important; }
+  nx-icon { color: var(--text-01) !important; }
 }
 
 button[nxButton="primary"],
 button[nxButton="primary small"] {
-  background: $brand-blue !important;
-  color: #fff !important;
-  border-color: $brand-blue !important;
-  &:hover { background: darken($brand-blue, 8%) !important; }
+  background: var(--info) !important;
+  color: var(--text-02) !important;
+  border-color: var(--info) !important;
+  &:hover { background: var(--info-hover) !important; }
 }
 
 button[nxButton="secondary"],
 button[nxButton="secondary small"] {
   background: transparent !important;
-  color: $brand-blue !important;
-  border: 1px solid $brand-blue !important;
-  &:hover { background: #f0f4fb !important; }
+  color: var(--info) !important;
+  border: 1px solid var(--info) !important;
+  &:hover { background: var(--action-hover-background) !important; }
 }
 
 .nx-context-menu {
-  background: #fff !important;
-  border: 1px solid $border-color !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+  background: var(--ui-01) !important;
+  border: 1px solid var(--ui-04) !important;
+  box-shadow: 0 4px 12px var(--claim-overlay-shadow) !important;
   border-radius: 4px !important;
   min-width: 160px !important;
 }
 
 button[nxContextMenuItem] {
-  color: $text-main !important;
+  color: var(--text-01) !important;
   font-size: 14px !important;
   padding: 10px 16px !important;
   background: transparent !important;
   width: 100% !important;
   text-align: left !important;
-  &:hover { background: $gray-bg !important; color: $brand-blue !important; }
+  &:hover { background: var(--ui-02) !important; color: var(--info) !important; }
 }
 
-[nxHeadline] { color: $text-main !important; }
+[nxHeadline] { color: var(--text-01) !important; }

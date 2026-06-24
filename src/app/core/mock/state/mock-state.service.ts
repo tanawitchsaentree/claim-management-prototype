@@ -30,6 +30,7 @@ export interface ScenarioOverrides {
   };
   cwbLocationsAppend?: CwbLocation[];
   notesAppend?: { claimId: string; notes: Note[] };
+  paymentStatuses?: Record<string, 'Pending' | 'Processed' | 'Final'>;
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -52,7 +53,7 @@ export interface MockState {
 const STORAGE_KEY          = 'champ-mock-state';
 const STORAGE_SCENARIO_KEY = 'champ-mock-scenario';
 const STORAGE_VERSION_KEY  = 'champ-mock-version';
-const STATE_VERSION        = '14434-section-blockers';
+const STATE_VERSION        = '14437-payments-provider';
 
 function defaultState(): MockState {
   return {
@@ -143,6 +144,12 @@ export class MockStateService {
     import('../services/mock-cwb.service').then(m =>
       this.injector.get(m.MockCwbService).resetCache()
     );
+    import('../services/mock-provider.service').then(m =>
+      this.injector.get(m.MockProviderService).resetCache()
+    );
+    import('../services/mock-payments.service').then(m =>
+      this.injector.get(m.MockPaymentsService).resetCache()
+    );
   }
 
   async resetAsync(): Promise<void> {
@@ -154,6 +161,10 @@ export class MockStateService {
     this.injector.get(sectionMod.MockSectionService).resetCache();
     const cwbMod = await import('../services/mock-cwb.service');
     this.injector.get(cwbMod.MockCwbService).resetCache();
+    const providerMod = await import('../services/mock-provider.service');
+    this.injector.get(providerMod.MockProviderService).resetCache();
+    const paymentsMod = await import('../services/mock-payments.service');
+    this.injector.get(paymentsMod.MockPaymentsService).resetCache();
   }
 
   loadScenario(name: string): void {
@@ -208,6 +219,13 @@ export class MockStateService {
       const { claimId, notes } = overrides.notesAppend;
       import('../services/mock-notes.service').then(m =>
         this.injector.get(m.MockNotesService).appendNotes(claimId, notes)
+      );
+    }
+
+    if (overrides.paymentStatuses) {
+      const statuses = overrides.paymentStatuses;
+      import('../services/mock-payments.service').then(m =>
+        this.injector.get(m.MockPaymentsService).patchStatus(statuses)
       );
     }
 

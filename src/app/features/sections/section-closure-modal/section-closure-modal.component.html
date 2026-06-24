@@ -12,14 +12,69 @@
   <!-- STEP 1 — Blockers -->
   @if (step() === 1) {
     <p class="scm-intro">The following issues must be resolved before this section can be closed:</p>
-    <ul class="scm-blocker-list">
-      @for (b of blockers; track b.type + b.label) {
-        <li class="scm-blocker-item">
-          <nx-icon name="exclamation-triangle-o" size="s" class="scm-blocker-icon"></nx-icon>
-          <span class="scm-blocker-label">{{ b.label }}</span>
-        </li>
+    <div class="scm-blocker-list">
+      @for (b of blockers; track b.type + b.label; let i = $index) {
+        @let blockerId = b.type + '-' + i;
+        @let hasItems = b.items && b.items.length > 0;
+
+        <div class="scm-blocker-card" [class.scm-blocker-card--expanded]="isExpanded(blockerId)">
+
+          <!-- Card header — always visible -->
+          <div class="scm-blocker-card__header"
+            [class.scm-blocker-card__header--clickable]="hasItems"
+            (click)="hasItems ? toggleBlocker(blockerId) : null">
+            <nx-icon name="exclamation-triangle-o" size="s" class="scm-blocker-icon"></nx-icon>
+            <span class="scm-blocker-label">{{ b.label }}</span>
+            @if (b.items && b.items.length > 0) {
+              <span class="scm-blocker-count">{{ b.items.length }}</span>
+            }
+            @if (hasItems) {
+              <nx-icon
+                [name]="isExpanded(blockerId) ? 'chevron-up-small' : 'chevron-down-small'"
+                size="s"
+                class="scm-blocker-chevron">
+              </nx-icon>
+            }
+          </div>
+
+          <!-- Expanded items -->
+          @if (hasItems && isExpanded(blockerId)) {
+            <div class="scm-blocker-items">
+              @for (item of b.items; track item.id) {
+                <div class="scm-item">
+                  <div class="scm-item__main">
+                    <div class="scm-item__top">
+                      <span class="scm-item__title">{{ item.title }}</span>
+                      <span class="scm-item__status scm-item__status--{{ item.severity }}">{{ item.status }}</span>
+                    </div>
+                    <p class="scm-item__desc">{{ item.description }}</p>
+                    <div class="scm-item__meta">
+                      @if (item.assignee) {
+                        <span class="scm-item__meta-chip">
+                          <nx-icon name="user-o" size="s"></nx-icon>
+                          {{ item.assignee }}
+                        </span>
+                      }
+                      <span class="scm-item__meta-chip">
+                        <nx-icon name="calendar-o" size="s"></nx-icon>
+                        {{ item.lastUpdated }}
+                      </span>
+                      @if (item.link) {
+                        <a class="scm-item__link" [routerLink]="item.link" (click)="onCancel()">
+                          Go to {{ item.ownerDomain }}
+                          <nx-icon name="arrow-right-o" size="s"></nx-icon>
+                        </a>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+        </div>
       }
-    </ul>
+    </div>
   }
 
   <!-- STEP 2 — Pre-closure checklist -->

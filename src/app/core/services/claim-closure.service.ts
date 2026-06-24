@@ -7,10 +7,9 @@ import { MockSectionService } from '../mock/services/mock-section.service';
 import { MockStateService } from '../mock/state/mock-state.service';
 import { MockLitigationService } from '../mock/services/mock-litigation.service';
 import { MockReservesService } from '../mock/services/mock-reserves.service';
+import { MockPaymentsService } from '../mock/services/mock-payments.service';
+import { MockProviderService } from '../mock/services/mock-provider.service';
 import { ClaimOverview, ClaimActivity } from '../models/claim-overview.model';
-import { Task } from '../models/task.model';
-import { Litigation } from '../models/litigation.model';
-import { ReservesPolicyData } from '../models/reserve.model';
 import {
   BlockerCheckResult,
   Blocker,
@@ -21,6 +20,8 @@ import {
 } from '../models/claim-closure.model';
 import { ClaimSection } from '../models/section.model';
 import { ToastService } from '../../shared/components/toast/toast.service';
+import { buildBlockerResult } from './claim-closure-blocker.builder';
+import { MOCK_BLOCKER_ITEMS } from '../mock/data/blocker-items.mock';
 
 const MOCK_DELAY_MS = 300;
 
@@ -32,17 +33,19 @@ export class ClaimClosureService {
   private readonly mockState     = inject(MockStateService);
   private readonly litigationSvc = inject(MockLitigationService);
   private readonly reservesSvc   = inject(MockReservesService);
+  private readonly paymentsSvc   = inject(MockPaymentsService);
+  private readonly providerSvc   = inject(MockProviderService);
   private readonly toast         = inject(ToastService);
 
   validateSectionBlockers(section: ClaimSection): BlockerCheckResult {
     const blockers: Blocker[] = [];
-    if (section.hasOpenDeductible)   blockers.push({ type: 'deductible', label: 'Open Manage Deductible task must be closed' });
-    if (section.hasActiveLitigation) blockers.push({ type: 'litigation', label: 'Active litigation assignment must be resolved' });
-    if (section.hasSubrogation)      blockers.push({ type: 'recovery',   label: 'Pending subrogation activity must be resolved' });
-    if (section.hasActiveSalvage)    blockers.push({ type: 'recovery',   label: 'Pending salvage activity must be resolved' });
-    if (section.hasOpenReserves)     blockers.push({ type: 'reserves',   label: 'Pending reserves must be released' });
-    if (section.hasOpenPayments)     blockers.push({ type: 'payments',   label: 'Pending payments must be settled' });
-    if (section.hasActiveProvider)   blockers.push({ type: 'provider',   label: 'Active provider assignment must be finalised' });
+    if (section.hasOpenDeductible)   blockers.push({ type: 'deductible', label: 'Open Manage Deductible task must be closed',    items: MOCK_BLOCKER_ITEMS['deductible'] });
+    if (section.hasActiveLitigation) blockers.push({ type: 'litigation', label: 'Active litigation assignment must be resolved', items: MOCK_BLOCKER_ITEMS['litigation'] });
+    if (section.hasSubrogation)      blockers.push({ type: 'recovery',   label: 'Pending subrogation activity must be resolved', items: MOCK_BLOCKER_ITEMS['recovery'] });
+    if (section.hasActiveSalvage)    blockers.push({ type: 'recovery',   label: 'Pending salvage activity must be resolved',     items: MOCK_BLOCKER_ITEMS['recovery'] });
+    if (section.hasOpenReserves)     blockers.push({ type: 'reserves',   label: 'Pending reserves must be released',             items: MOCK_BLOCKER_ITEMS['reserves'] });
+    if (section.hasOpenPayments)     blockers.push({ type: 'payments',   label: 'Pending payments must be settled',              items: MOCK_BLOCKER_ITEMS['payments'] });
+    if (section.hasActiveProvider)   blockers.push({ type: 'provider',   label: 'Active provider assignment must be finalised',  items: MOCK_BLOCKER_ITEMS['provider'] });
     return { canClose: blockers.length === 0, blockers };
   }
 
@@ -53,96 +56,22 @@ export class ClaimClosureService {
           return of({ canClose: true, blockers: [] } as BlockerCheckResult).pipe(delay(MOCK_DELAY_MS));
         }
         return forkJoin({
-          tasks:        this.taskSvc.getByClaimId(claimId),
-          openSections: this.sectionSvc.getOpenSectionsCount(claimId),
-          activeLit:    this.litigationSvc.search({ claimId, status: 'In progress' }),
-          reservesData: claim.policyNumber
+          tasks:           this.taskSvc.getByClaimId(claimId),
+          openSections:    this.sectionSvc.getOpenSectionsCount(claimId),
+          activeLit:       this.litigationSvc.search({ claimId, status: 'In progress' }),
+          reservesData:    claim.policyNumber
             ? this.reservesSvc.getReservesForPolicy(claim.policyNumber)
             : of(null),
+          pendingPayments: this.paymentsSvc.getOpenPaymentsForClaim(claimId),
+          activeProviders: this.providerSvc.getActiveAssignmentsForClaim(claimId),
         }).pipe(
-          map(({ tasks, openSections, activeLit, reservesData }) =>
-            this.buildBlockerResult(claim, tasks, openSections, activeLit, reservesData)
+          map(({ tasks, openSections, activeLit, reservesData, pendingPayments, activeProviders }) =>
+            buildBlockerResult(claim, tasks, openSections, activeLit, reservesData, pendingPayments, activeProviders)
           ),
           delay(MOCK_DELAY_MS),
         );
       }),
     );
-  }
-
-  private buildBlockerResult(
-    claim: ClaimOverview,
-    tasks: Task[],
-    openSections: number,
-    activeLit: Litigation[],
-    reservesData: ReservesPolicyData | null,
-  ): BlockerCheckResult {
-    const blockers: Blocker[] = [];
-
-    const pending = tasks.filter(t => t.status !== 'done');
-    if (pending.length > 0) {
-      blockers.push({
-        type: 'tasks',
-        label: `${pending.length} pending task(s) must be resolved before closure`,
-        count: pending.length,
-      });
-    }
-
-    if (openSections > 0) {
-      blockers.push({
-        type: 'sections',
-        label: `${openSections} open section(s) must be closed before claim closure`,
-        count: openSections,
-      });
-    }
-
-    // BMPCC-14435 — Litigation: deep check via MockLitigationService.
-    // Falls back to boolean flag only if no policyNumber/claimId lookup was possible.
-    if (activeLit.length > 0) {
-      blockers.push({
-        type:  'litigation',
-        label: `${activeLit.length} active litigation case(s) must be resolved`,
-        count: activeLit.length,
-      });
-    } else if (claim.hasActiveLitigation) {
-      blockers.push({ type: 'litigation', label: 'Open litigation must be resolved' });
-    }
-
-    // BMPCC-14435 — Reserves: deep check via MockReservesService.
-    // Falls back to boolean flag if policy data unavailable.
-    const openReserves = reservesData?.reserves.filter(r => (r.amount ?? 0) > 0) ?? [];
-    if (openReserves.length > 0) {
-      const total = openReserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
-      blockers.push({
-        type:   'reserves',
-        label:  `${openReserves.length} open reserve line(s) must be released`,
-        count:  openReserves.length,
-        amount: total,
-      });
-    } else if (claim.hasOpenReserves) {
-      blockers.push({ type: 'reserves', label: 'Open reserves must be closed or released' });
-    }
-
-    // BMPCC-11360 AC2 — flag-only blockers (no domain service yet).
-    if (claim.hasOpenPayments) {
-      blockers.push({ type: 'payments',   label: 'Outstanding payments must be settled' });
-    }
-    if (claim.hasActiveRecovery) {
-      blockers.push({ type: 'recovery',   label: 'Active recovery actions must be resolved' });
-    }
-    if (claim.hasOpenDeductible) {
-      blockers.push({ type: 'deductible', label: 'Deductible collections must be confirmed' });
-    }
-    if (claim.hasActiveProvider) {
-      blockers.push({ type: 'provider',   label: 'Provider instructions must be finalised' });
-    }
-    if (claim.hasUnpaidBills) {
-      blockers.push({ type: 'bills',      label: 'Unpaid bills must be cleared' });
-    }
-    if (claim.hasIncompleteReports) {
-      blockers.push({ type: 'reports',    label: 'Required reports must be submitted' });
-    }
-
-    return { canClose: blockers.length === 0, blockers };
   }
 
   closeClaim(claimId: string, payload: ClosurePayload): Observable<ClaimOverview> {
@@ -215,6 +144,69 @@ export class ClaimClosureService {
       `Loss Event ${lossEventId} auto-closed`,
       'All linked claims are resolved.',
     );
+  }
+
+  autoCloseSection(
+    claimId: string,
+    sectionId: string,
+    triggeredBy: 'finalPayment',
+  ): Observable<ClaimSection> {
+    const state = this.mockState.state();
+    const section = state.sections.find(s => s.id === sectionId && s.claimId === claimId);
+    if (!section) {
+      return throwError(() => new Error(`Section ${sectionId} not found on claim ${claimId}`));
+    }
+
+    const blockers = this.validateSectionBlockers(section).blockers.filter(
+      b => triggeredBy === 'finalPayment' ? b.type !== 'payments' : true,
+    );
+    if (blockers.length > 0) {
+      const labels = blockers.map(b => b.label).join('; ');
+      return throwError(() => new Error(`Cannot auto-close section ${sectionId}: ${labels}`));
+    }
+
+    const systemUser = { userId: 'system', name: 'System' };
+    return this.sectionSvc.closeSection(sectionId, systemUser, 'Section Finalised').pipe(
+      tap(closed => {
+        this.toast.success(
+          `Section ${closed.name} auto-closed — final payment received`,
+        );
+        this.maybeAutoCloseClaim(claimId);
+      }),
+    );
+  }
+
+  triggerFinalPaymentAndClose(claimId: string, sectionId: string): Observable<ClaimSection> {
+    return this.paymentsSvc.triggerFinalPayment(claimId, sectionId).pipe(
+      switchMap(() => this.autoCloseSection(claimId, sectionId, 'finalPayment')),
+    );
+  }
+
+  private maybeAutoCloseClaim(claimId: string): void {
+    const state = this.mockState.state();
+    const sections = state.sections.filter(s => s.claimId === claimId);
+    if (sections.length === 0) return;
+    if (!sections.every(s => s.status === 'Closed')) return;
+
+    const overview = state.overviews[claimId];
+    if (!overview || overview.status === 'Closed') return;
+
+    // Apply closure directly on mock state to avoid subscribing inside a service.
+    // This mirrors the side-effects in closeClaim() without needing an Observable subscription.
+    const systemUser = { userId: 'system', name: 'System' };
+    const now = new Date().toISOString().split('T')[0];
+    const retentionDate = this.defaultRetentionDate(now);
+    const closed: ClaimOverview = {
+      ...overview,
+      status: 'Closed',
+      closureDate: now,
+      closedBy: systemUser,
+      closureReason: 'Claim Finalised',
+      retentionType: 'default',
+      retentionDate,
+    };
+    this.mockState.patchOverview(claimId, closed);
+    this.maybeCloseLossEvent(closed.lossEventId);
   }
 
   reopenClaim(claimId: string, payload: ReopenPayload): Observable<ClaimOverview> {

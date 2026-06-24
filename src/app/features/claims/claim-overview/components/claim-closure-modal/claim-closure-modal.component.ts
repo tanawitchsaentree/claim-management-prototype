@@ -195,6 +195,16 @@ export class ClaimClosureModalComponent implements OnInit {
     this.router.navigate(['/claims', this.claim.claimId, 'litigation']);
   }
 
+  onViewPayments(): void {
+    this.modalRef.close(undefined);
+    this.router.navigate(['/claims', this.claim.claimId, 'payments']);
+  }
+
+  onViewProvider(): void {
+    this.modalRef.close(undefined);
+    this.router.navigate(['/claims', this.claim.claimId, 'provider']);
+  }
+
   retentionTypeLabel(type: string): string {
     switch (type) {
       case 'default':    return `Default (10 years — until ${this.defaultRetentionDate()})`;

@@ -173,12 +173,12 @@
   white-space: nowrap;
 
   // payment statuses
-  &--pending  { background: #FFF3CD; color: #856404; }
-  &--credit   { background: #D1ECF1; color: #0C5460; }
-  &--done     { background: #D4EDDA; color: #155724; }
-  &--rejected { background: #F8D7DA; color: #721C24; }
+  &--pending  { background: var(--fo-badge-pending-bg);  color: var(--fo-badge-pending-color); }
+  &--credit   { background: var(--fo-badge-credit-bg);   color: var(--fo-badge-credit-color); }
+  &--done     { background: var(--fo-badge-done-bg);     color: var(--fo-badge-done-color); }
+  &--rejected { background: var(--fo-badge-rejected-bg); color: var(--fo-badge-rejected-color); }
   // reserve statuses
-  &--approved { background: #D4EDDA; color: #155724; }
+  &--approved { background: var(--fo-badge-approved-bg); color: var(--fo-badge-approved-color); }
 }
 
 // ─── Section level ────────────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 [
   {
     "requestId": "PAY-483201",
+    "paymentId": "PMT-C-00063373-2026.537.1.4",
     "claimId": "CL-C-00063373-2026.537.1",
     "oe": "DE",
     "lineOfBusiness": "property",
@@ -8,10 +9,12 @@
     "payee": "extern.r_archana@allianz.com",
     "currency": "EUR",
     "amount": 8500,
-    "requester": "iroti.mahajan@allianz.com"
+    "requester": "iroti.mahajan@allianz.com",
+    "reviewerEmail": "leonie.fischer@allianz.com"
   },
   {
     "requestId": "PAY-270301",
+    "paymentId": "PMT-C-00016836-2026.690.1.1",
     "claimId": "CL-C-00063671-2026.119.1",
     "oe": "DE",
     "lineOfBusiness": "property",
@@ -19,10 +22,12 @@
     "payee": "ruby-isabelle.costigan@allianz.com",
     "currency": "EUR",
     "amount": 1240,
-    "requester": "ruby-isabelle.costigan@allianz.com"
+    "requester": "ruby-isabelle.costigan@allianz.com",
+    "reviewerEmail": "leonie.fischer@allianz.com"
   },
   {
     "requestId": "PAY-215601",
+    "paymentId": "PMT-C-00063373-2026.479.1.6",
     "claimId": "CL-C-00063659-2026.77.1",
     "oe": "DE",
     "lineOfBusiness": "property",
@@ -30,10 +35,12 @@
     "payee": "extern.r_archana@allianz.com",
     "currency": "EUR",
     "amount": 3180,
-    "requester": "extern.r_archana@allianz.com"
+    "requester": "extern.r_archana@allianz.com",
+    "reviewerEmail": "leonie.fischer@allianz.com"
   },
   {
     "requestId": "PAY-562301",
+    "paymentId": "PMT-C-00063659-2026.51.1.2",
     "claimId": "CL-C-00063659-2026.51.1",
     "oe": "DE",
     "lineOfBusiness": "property",
@@ -41,10 +48,12 @@
     "payee": "extern.r_archana@allianz.com",
     "currency": "EUR",
     "amount": 4750,
-    "requester": "extern.r_archana@allianz.com"
+    "requester": "extern.r_archana@allianz.com",
+    "reviewerEmail": "leonie.fischer@allianz.com"
   },
   {
     "requestId": "PAY-562302",
+    "paymentId": "PMT-C-00063659-2026.51.1.3",
     "claimId": "CL-C-00063659-2026.51.2",
     "oe": "DE",
     "lineOfBusiness": "property",
@@ -52,6 +61,7 @@
     "payee": "iroti.mahajan@allianz.com",
     "currency": "EUR",
     "amount": 2200,
-    "requester": "iroti.mahajan@allianz.com"
+    "requester": "iroti.mahajan@allianz.com",
+    "reviewerEmail": "leonie.fischer@allianz.com"
   }
 ]

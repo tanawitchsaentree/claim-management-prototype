@@ -8,6 +8,7 @@ export interface SectionEntity {
   damage:            string;
   instructionStatus: InstructionStatus;
   expandable:        boolean;
+  assignedProvider?: string | null;
 }
 
 export interface SectionBlockers {

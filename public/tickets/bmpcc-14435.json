@@ -1,43 +1,71 @@
 {
   "ticketId": "BMPCC-14435",
   "module": "Claims",
-  "title": "Cross-domain closure validations — Litigation & Reserves deep check",
+  "title": "Cross-domain closure validations \u2014 Litigation & Reserves deep check",
   "targetClaim": "CLM-2024-001",
-  "pages": ["overview"],
+  "pages": [
+    "overview"
+  ],
   "walkthroughSteps": [
-    "Apply AC-01 — seeds 2 active litigation cases on CLM-2024-001",
+    "Apply AC-01 \u2014 seeds 2 active litigation cases on CLM-2024-001",
     "Land on /claims/CLM-2024-001/overview",
-    "Click Close Claim → modal step 1 shows litigation blocker with count + Go to Litigation link",
-    "Click Go to Litigation → modal closes, routed to /claims/CLM-2024-001/litigation",
-    "Apply AC-02 — seeds open reserves + provider flag on CLM-2024-001",
-    "Click Close Claim → modal shows reserves blocker with count + EUR total amount",
-    "Observe reserves 'Go to Reserves' is visually disabled (Feature not available — no route yet)",
-    "Apply AC-03 — all blockers present simultaneously: 2 litigation + 1 open reserve line + provider flag"
+    "Click Close Claim \u2192 modal step 1 shows litigation blocker with count + Go to Litigation link",
+    "Click Go to Litigation \u2192 modal closes, routed to /claims/CLM-2024-001/litigation",
+    "Apply AC-02 \u2014 seeds open reserves + provider flag on CLM-2024-001",
+    "Click Close Claim \u2192 modal shows reserves blocker with count + EUR total amount",
+    "Observe reserves 'Go to Reserves' is visually disabled (Feature not available \u2014 no route yet)",
+    "Apply AC-03 \u2014 all blockers present simultaneously: 2 litigation + 1 open reserve line + provider flag"
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Litigation blocker fires from real service query — shows count + Go to Litigation link",
-      "plainStatement": "When **active litigation cases** exist for the claim (status = 'In progress'), the closure modal step 1 shows a blocker listing the **count of active cases** and a **Go to Litigation** button that navigates to the litigation page on click.",
+      "statement": "Litigation blocker shows case count + Go to Litigation link",
+      "plainStatement": "When 2 active litigation cases exist, the closure modal shows a blocker with the count and a Go to Litigation link that navigates on click.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "CLM-2024-001 already has 2 'In progress' litigation entries in mock data — no flag override needed. Tasks + sections must be clear so only litigation blocks closure.",
+        "description": "CLM-2024-001 already has 2 'In progress' litigation entries in mock data \u2014 no flag override needed. Tasks + sections must be clear so only litigation blocks closure.",
         "preconditions": [
-          { "text": "Close Claim shows litigation blocker with count '2'", "page": "overview", "role": "tested-visible" },
-          { "text": "'Go to Litigation' link is present in blocker item", "page": "overview", "role": "tested-visible" },
-          { "text": "Clicking 'Go to Litigation' closes modal and navigates to /claims/CLM-2024-001/litigation", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Close Claim shows litigation blocker with count '2'",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "'Go to Litigation' link is present in blocker item",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking 'Go to Litigation' closes modal and navigates to /claims/CLM-2024-001/litigation",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
-          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
-          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" }
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          }
         },
-        "postLand": [{ "kind": "overview.openClosureModal" }]
+        "postLand": [
+          {
+            "kind": "overview.openClosureModal"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Litigation blocker with real count from service query",
         "visualCues": [
-          "Modal step 1 — blocker label: '2 active litigation case(s) must be resolved'",
+          "Modal step 1 \u2014 blocker label: '2 active litigation case(s) must be resolved'",
           "'Go to Litigation' link rendered as an underlined blue button",
           "Clicking link: modal closes, browser routes to /claims/CLM-2024-001/litigation"
         ]
@@ -54,19 +82,37 @@
     },
     {
       "id": "AC-02",
-      "statement": "Reserves blocker fires from real service query — shows count + EUR total amount",
-      "plainStatement": "When **open reserve lines** exist for the claim's policy (amount > 0), the closure modal step 1 shows a blocker listing the **count of open reserve lines** and the **total reserved amount in EUR**.",
+      "statement": "Reserves blocker shows line count + EUR total",
+      "plainStatement": "When open reserve lines exist, the closure modal shows a blocker with the count and total EUR amount. Provider flag shows as a flag-only blocker (no link).",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "CLM-2024-001 is linked to POL-2023-010 which has seeded reserve lines in MockReservesService. Tasks + sections cleared, litigation cleared via flag override. Provider flag set to demonstrate a flag-only blocker alongside a deep blocker.",
         "preconditions": [
-          { "text": "Reserves blocker shows count and EUR total", "page": "overview", "role": "tested-visible" },
-          { "text": "Provider blocker shows with 'Feature not available' text (no link)", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Reserves blocker shows count and EUR total",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Provider blocker shows with 'Feature not available' text (no link)",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
-          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
-          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          },
           "overviewPatch": {
             "claimId": "CLM-2024-001",
             "patch": {
@@ -74,14 +120,18 @@
             }
           }
         },
-        "postLand": [{ "kind": "overview.openClosureModal" }]
+        "postLand": [
+          {
+            "kind": "overview.openClosureModal"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Reserves blocker with count + amount; provider with generic label",
         "visualCues": [
-          "Modal step 1 — reserves blocker: 'X open reserve line(s) must be released — EUR YY,YYY'",
+          "Modal step 1 \u2014 reserves blocker: 'X open reserve line(s) must be released \u2014 EUR YY,YYY'",
           "'Go to Reserves' rendered but visually muted/disabled (no route yet)",
-          "Provider blocker: 'Provider instructions must be finalised — Feature not available' (italic muted)"
+          "Provider blocker: 'Provider instructions must be finalised \u2014 Feature not available' (italic muted)"
         ]
       },
       "expectedOutcome": {
@@ -96,18 +146,32 @@
     },
     {
       "id": "AC-03",
-      "statement": "Multiple cross-domain blockers visible simultaneously — deep + flag-only",
-      "plainStatement": "When litigation, reserves, and provider flag are all outstanding, the modal shows **all three blockers** simultaneously — 2 deep (real service query) and 1 flag-only — demonstrating that both check types coexist correctly.",
+      "statement": "All three blockers visible at once \u2014 deep + flag-only",
+      "plainStatement": "Litigation (count 2), reserves (count + amount), and provider (flag-only) all appear simultaneously in the same modal step.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Tasks + sections cleared. CLM-2024-001 already has 2 active litigation records in mock data. Reserves are seeded for POL-2023-010. Provider flag set. No hasActiveLitigation override needed — the real service query fires.",
+        "description": "Tasks + sections cleared. CLM-2024-001 already has 2 active litigation records in mock data. Reserves are seeded for POL-2023-010. Provider flag set. No hasActiveLitigation override needed \u2014 the real service query fires.",
         "preconditions": [
-          { "text": "Modal shows 3 blockers: litigation (count 2), reserves (count + amount), provider (flag-only)", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Modal shows 3 blockers: litigation (count 2), reserves (count + amount), provider (flag-only)",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
-          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
-          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed" },
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          },
           "overviewPatch": {
             "claimId": "CLM-2024-001",
             "patch": {
@@ -115,14 +179,18 @@
             }
           }
         },
-        "postLand": [{ "kind": "overview.openClosureModal" }]
+        "postLand": [
+          {
+            "kind": "overview.openClosureModal"
+          }
+        ]
       },
       "expectedUI": {
         "description": "All three blockers shown; litigation and reserves are enriched with detail",
         "visualCues": [
-          "Litigation: '2 active litigation case(s) must be resolved — Go to Litigation'",
-          "Reserves: 'X open reserve line(s) must be released — EUR YYY,YYY'",
-          "Provider: 'Provider instructions must be finalised — Feature not available'"
+          "Litigation: '2 active litigation case(s) must be resolved \u2014 Go to Litigation'",
+          "Reserves: 'X open reserve line(s) must be released \u2014 EUR YYY,YYY'",
+          "Provider: 'Provider instructions must be finalised \u2014 Feature not available'"
         ]
       },
       "expectedOutcome": {

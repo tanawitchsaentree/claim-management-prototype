@@ -8,7 +8,7 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, catchError, of } from 'rxjs';
 import { ClaimSection, InstructionStatus } from '../../core/models/section.model';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
@@ -46,6 +46,7 @@ export class Sections {
   readonly sections  = signal<ClaimSection[]>([]);
   readonly loading   = signal(true);
   readonly loadError = signal(false);
+  readonly devMode   = true; // always show dev tools in prototype
 
   constructor() {
     effect(async () => {
@@ -95,6 +96,29 @@ export class Sections {
         'All sections closed',
         'Claim can now be closed — navigate to Overview.',
       );
+    }
+  }
+
+  async onSimulateFinalPayment(section: ClaimSection): Promise<void> {
+    const claimId = this.route.snapshot.params['id'];
+    try {
+      const closed = await firstValueFrom(
+        this.closureSvc.triggerFinalPaymentAndClose(claimId, section.id).pipe(
+          catchError(err => {
+            this.toast.error(
+              'Simulate Final Payment failed',
+              err?.message ?? 'Check section blockers.',
+            );
+            return of(null);
+          }),
+        ),
+      );
+      if (!closed) return;
+      this.sections.update(list =>
+        list.map(s => s.id === closed.id ? { ...s, ...closed } : s),
+      );
+    } catch (err: unknown) {
+      this.toast.error('Simulate Final Payment failed', String(err));
     }
   }
 

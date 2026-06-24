@@ -21,3 +21,5 @@ export * from './litigation.model';
 export * from './risk-analysis.model';
 export * from './dashboard-extended.model';
 export * from './financial-overview.model';
+export * from './payment.model';
+export * from './provider-assignment.model';

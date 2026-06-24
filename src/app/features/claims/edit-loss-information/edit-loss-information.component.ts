@@ -64,6 +64,7 @@ export class EditLossInformationComponent implements OnInit {
   readonly claimId      = signal<string>('');
   readonly loading      = signal(true);
   readonly saving       = signal(false);
+  readonly saveSuccess  = signal(false);
   readonly original     = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
   readonly maxDesc   = 500;
@@ -77,7 +78,13 @@ export class EditLossInformationComponent implements OnInit {
       dateOfNotification: new FormControl<string | null>(null, [Validators.required, FnolStateService.futureDateValidator]),
       timeOfNotification: new FormControl<string | null>(null, [Validators.required]),
     }, { validators: FnolStateService.dateOrderValidator }),
-    lossLocation:    new FormControl<LocationPickerOutput>({ locations: [] }),
+    lossLocation: new FormControl<LocationPickerOutput>(
+      { locations: [] },
+      [ctrl => {
+        const v = ctrl.value as LocationPickerOutput | null;
+        return (v?.locations?.length ?? 0) > 0 ? null : { locationRequired: true };
+      }]
+    ),
     causeOfLoss:     new FormControl<string[]>([], []),
     typeOfDamage:    new FormControl<string[]>([], []),
     lossDescription: new FormControl('', [Validators.maxLength(500)]),
@@ -120,7 +127,7 @@ export class EditLossInformationComponent implements OnInit {
   get fireDeptCalled(): boolean | null { return this.causeDetails.get('fire.fireDepartmentCalled')?.value as boolean | null; }
   setFireDeptCalled(val: boolean): void { this.causeDetails.get('fire.fireDepartmentCalled')?.setValue(val); }
 
-  readonly showFireDetails  = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('fire'))),         { initialValue: false });
+  readonly showFireDetails  = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(() => false)), { initialValue: false });
   readonly showWaterDetails = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('water-damage'))), { initialValue: false });
   readonly showTheftDetails = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('theft'))),        { initialValue: false });
 
@@ -155,6 +162,7 @@ export class EditLossInformationComponent implements OnInit {
       causeOfLoss:     li.causeOfLoss     ?? [],
       typeOfDamage:    li.typeOfDamage    ?? [],
       lossDescription: li.lossDescription ?? '',
+      lossLocation:    (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
     });
     if (li.causeDetails) {
       this.causeDetails.patchValue(li.causeDetails as object);
@@ -259,6 +267,7 @@ export class EditLossInformationComponent implements OnInit {
     const result = await firstValueFrom(ref.afterClosed());
     if (result !== 'confirmed') return;
 
+    this.saveSuccess.set(false);
     this.saving.set(true);
     const formValue = this.form.getRawValue() as unknown as LossInformationFormValue;
     try {
@@ -281,6 +290,7 @@ export class EditLossInformationComponent implements OnInit {
       }
 
       this.form.markAsPristine();
+      this.saveSuccess.set(true);
       this.toast.success('Loss information updated', `${activities.length} field(s) changed on ${this.claimId()}`);
       this.router.navigate(['/claims', this.claimId(), 'overview']);
     } catch {

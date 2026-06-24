@@ -1,55 +1,42 @@
-<nx-header>
-  <nx-header-brand>
-    <a routerLink="/dashboard" class="nav-brand-link" aria-label="Go to dashboard">
+<header class="app-header">
+  <div class="app-header__left">
+    <a routerLink="/dashboard" class="app-header__brand" aria-label="Go to dashboard">
       <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <path d="M32,16.0025349 C32,6.852218 25.1554458,0 16.0015193,0 C6.84303485,0 0,6.852218 0,16.0025349 C0,25.1634981 6.84303485,32 16.0015193,32 C25.1554458,32 32,25.1634981 32,16.0025349 Z M29.2819295,16.0025349 C29.2819295,23.7835234 23.6882854,29.4408112 16.0015193,29.4408112 C8.31475327,29.4408112 2.71908334,23.7835234 2.71908334,16.0025349 C2.71908334,8.21901141 8.31475327,2.5617237 16.0015193,2.5617237 C23.6882854,2.5617237 29.2819295,8.2539924 29.2819295,16.0025349 Z M11.6577723,24.9779468 L11.6577723,9.34651458 L8.93868895,9.34651458 C7.59358086,9.34651458 7.06485614,9.84435995 7.06485614,11.2248416 L7.06485614,24.9779468 L11.6577723,24.9779468 Z M20.3488114,24.9779468 L24.9397018,24.9779468 L24.9397018,11.2248416 C24.9397018,9.84435995 24.407432,9.34651458 23.0608046,9.34651458 L20.3488114,9.34651458 L20.3488114,24.9779468 Z M18.3108917,24.9779468 L18.3108917,7.31863118 C18.3108917,5.9112801 17.8105276,5.4382763 16.444149,5.4382763 L12.311588,5.4382763 L12.311588,7.40988593 L12.5587314,7.40988593 C13.5022315,7.40988593 13.6845504,7.62230672 13.6845504,8.75842839 L13.6845504,24.9779468 L18.3108917,24.9779468 Z" fill="#003781"/>
       </svg>
-      <nx-header-app-title>Commercial Claims</nx-header-app-title>
+      <div class="app-header__divider"></div>
+      <span class="app-header__title">Commercial Claims</span>
     </a>
-  </nx-header-brand>
+    <nav class="app-header__nav nav-desktop">
+      <a routerLink="/dashboard" routerLinkActive="app-header__nav-item--active" [routerLinkActiveOptions]="{ exact: true }" class="app-header__nav-item">Dashboard</a>
+      <a class="app-header__nav-item app-header__nav-item--disabled">Claims</a>
+      <a routerLink="/parties" routerLinkActive="app-header__nav-item--active" class="app-header__nav-item">Parties</a>
+      <a routerLink="/tasks" routerLinkActive="app-header__nav-item--active" class="app-header__nav-item">Task manager</a>
+      <a routerLink="/administration" routerLinkActive="app-header__nav-item--active" class="app-header__nav-item">Administration</a>
+      <a routerLink="/approvals" routerLinkActive="app-header__nav-item--active" class="app-header__nav-item">Approvals</a>
+    </nav>
+  </div>
 
-  <!-- Desktop nav — hidden on mobile -->
-  <nx-header-navigation class="nav-desktop">
-    <nx-header-navigation-item>
-      <a nxHeaderLink routerLink="/dashboard" routerLinkActive="is-active">Dashboard</a>
-    </nx-header-navigation-item>
-    <nx-header-navigation-item>
-      <a nxHeaderLink routerLink="/dashboard" routerLinkActive="is-active">Claims</a>
-    </nx-header-navigation-item>
-    <nx-header-navigation-item>
-      <a nxHeaderLink routerLink="/parties" routerLinkActive="is-active">Parties</a>
-    </nx-header-navigation-item>
-    <nx-header-navigation-item>
-      <a nxHeaderLink routerLink="/tasks" routerLinkActive="is-active">Task manager</a>
-    </nx-header-navigation-item>
-    <nx-header-navigation-item>
-      <a nxHeaderLink routerLink="/administration" routerLinkActive="is-active">Administration</a>
-    </nx-header-navigation-item>
-    <nx-header-navigation-item>
-      <a nxHeaderLink routerLink="/approvals" routerLinkActive="is-active">Approvals</a>
-    </nx-header-navigation-item>
-  </nx-header-navigation>
+  <div class="app-header__right nav-desktop">
+    <div class="app-header__search">
+      <input class="app-header__search-input" placeholder="Search..." />
+      <button type="button" class="app-header__search-btn" aria-label="search">
+        <nx-icon name="search"></nx-icon>
+      </button>
+    </div>
+    <div class="app-header__actions">
+      <button nxIconButton="tertiary small" type="button" aria-label="notifications"><nx-icon name="bell-o"></nx-icon></button>
+      <button nxIconButton="tertiary small" type="button" aria-label="apps"><nx-icon name="grid"></nx-icon></button>
+    </div>
+    <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name ?? ''" class="app-header__avatar-btn">{{ initials }}</button>
+  </div>
 
-  <nx-header-actions>
-    <button nxAvatar size="small" type="button" [attr.aria-label]="auth.user()?.name" class="nav-desktop">
-      {{ initials }}
-    </button>
+  <button nxIconButton="tertiary small" type="button" class="nav-hamburger"
+    [attr.aria-expanded]="mobileOpen()" aria-label="Toggle menu" (click)="toggleMobile()">
+    <nx-icon [name]="mobileOpen() ? 'close' : 'menu'"></nx-icon>
+  </button>
+</header>
 
-    <!-- Hamburger — visible on mobile only -->
-    <button
-      nxIconButton="tertiary small"
-      type="button"
-      class="nav-hamburger"
-      [attr.aria-expanded]="mobileOpen()"
-      aria-label="Toggle menu"
-      (click)="toggleMobile()"
-    >
-      <nx-icon [name]="mobileOpen() ? 'close' : 'menu'"></nx-icon>
-    </button>
-  </nx-header-actions>
-</nx-header>
-
-<!-- Mobile dropdown -->
 @if (mobileOpen()) {
   <div class="nav-mobile-menu" role="menu">
     <button type="button" class="nav-mobile-item" (click)="navigateMobile('/dashboard')">Dashboard</button>

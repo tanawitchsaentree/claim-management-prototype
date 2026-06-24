@@ -34,6 +34,7 @@ export type BlockerType =
   | 'payments'
   | 'reserves'
   | 'recovery'
+  | 'subrogation'
   | 'deductible'
   | 'litigation'
   | 'provider'
@@ -42,11 +43,24 @@ export type BlockerType =
 
 export type ClosureReason = 'Claim Finalised' | 'Claim Not Pursued' | 'Claim Rejected';
 
+export interface BlockerItem {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  lastUpdated: string;
+  assignee?: string;
+  ownerDomain: string;
+  link?: string;
+  severity: 'hard' | 'warning';
+}
+
 export interface Blocker {
   type: BlockerType;
   label: string;
   count?: number;
   amount?: number;
+  items?: BlockerItem[];
 }
 
 export interface BlockerCheckResult {

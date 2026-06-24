@@ -10,4 +10,5 @@ export interface UrgentApproval {
   currency: string;
   amount: number;
   requester: string;
+  reviewerEmail?: string;
 }

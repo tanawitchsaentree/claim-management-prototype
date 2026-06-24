@@ -1,7 +1,8 @@
+import { ProviderType } from './provider-assignment.model';
+
 export type HeadsUpSeverity = 'info' | 'warning' | 'critical';
 export type NewsType = 'info' | 'warning' | 'urgent';
 export type CalendarEventType = 'deadline' | 'meeting' | 'review';
-export type ProviderType = 'adjuster' | 'legal' | 'expert' | 'other';
 
 export interface HeadsUpItem {
   id: string;
@@ -78,6 +79,7 @@ export interface LossEventSummary {
 // "Payments" tab (parallel to reserve approvals).
 export interface PaymentApproval {
   requestId: string;
+  paymentId: string;
   claimId: string;
   oe: string;
   lineOfBusiness: string;
@@ -86,4 +88,5 @@ export interface PaymentApproval {
   currency: string;
   amount: number;
   requester: string;
+  reviewerEmail?: string;
 }

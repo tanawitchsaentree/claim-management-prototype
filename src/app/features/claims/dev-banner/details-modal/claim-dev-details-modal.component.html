@@ -59,11 +59,7 @@
                       nxTooltipPosition="right">✓ verified</span>
               }
             </div>
-            <span class="cddm-ac-statement"
-                  [nxTooltip]="ac.plainStatement ? ac.statement : ''"
-                  nxTooltipPosition="right"
-                  [innerHTML]="(ac.plainStatement ?? ac.statement) | inlineMarkdown">
-            </span>
+            <span class="cddm-ac-statement" [innerHTML]="ac.statement | inlineMarkdown"></span>
             @if (ac.buildStatus === 'todo') {
               <span class="cddm-ac-badge cddm-ac-badge--todo">todo</span>
             }
@@ -80,11 +76,10 @@
   <div class="cddm-right">
     @if (selectedAc(); as ac) {
       <div class="cddm-detail">
-        <p class="cddm-detail-id"
-           [nxTooltip]="ac.plainStatement ? ac.statement : ''"
-           nxTooltipPosition="bottom"
-           [innerHTML]="ac.id + ' — ' + (ac.plainStatement ?? ac.statement) | inlineMarkdown">
-        </p>
+        <p class="cddm-detail-id" [innerHTML]="ac.id + ' — ' + ac.statement | inlineMarkdown"></p>
+        @if (ac.plainStatement) {
+          <p class="cddm-detail-plain" [innerHTML]="ac.plainStatement | inlineMarkdown"></p>
+        }
 
         @if (preconditions().setup.length > 0) {
           <div class="cddm-detail-section">

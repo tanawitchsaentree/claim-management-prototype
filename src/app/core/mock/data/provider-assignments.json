@@ -1,0 +1,20 @@
+[
+  {
+    "assignmentId": "PA-001",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-003",
+    "providerName": "Allianz Expertise Center",
+    "providerType": "adjuster",
+    "status": "Active",
+    "assignedDate": "2024-12-10"
+  },
+  {
+    "assignmentId": "PA-002",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-001",
+    "providerName": "Munich Legal Counsel GmbH",
+    "providerType": "legal",
+    "status": "Completed",
+    "assignedDate": "2024-11-05"
+  }
+]

@@ -343,6 +343,26 @@
   --admin-card-icon-red-color:   #b71e3f;
   --admin-card-icon-purple-bg:   #dad0e1;
   --admin-card-icon-purple-color:#5a3982;
+
+  /* ── Page / layout chrome ──────────────────────────────────── */
+  /* Slightly blue-tinted page content area background.          */
+  --page-content-bg:             #f4f6f9;
+
+  /* ── User avatar ───────────────────────────────────────────── */
+  /* Slate-blue fill for the initials avatar in the header.      */
+  --avatar-bg:                   #49648c;
+
+  /* ── Financial overview badge (payment & reserve statuses) ─── */
+  --fo-badge-pending-bg:         #FFF3CD;
+  --fo-badge-pending-color:      #856404;
+  --fo-badge-credit-bg:          #D1ECF1;
+  --fo-badge-credit-color:       #0C5460;
+  --fo-badge-done-bg:            #D4EDDA;
+  --fo-badge-done-color:         #155724;
+  --fo-badge-rejected-bg:        #F8D7DA;
+  --fo-badge-rejected-color:     #721C24;
+  --fo-badge-approved-bg:        #D4EDDA;
+  --fo-badge-approved-color:     #155724;
 }
 
 // expert.css (NxExpertModule) injects a <style> tag at runtime — same :root/:host

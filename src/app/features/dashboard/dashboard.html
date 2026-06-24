@@ -2,66 +2,7 @@
 
 <div class="page-shell">
 
-  <!-- ══ TOP HEADER ══════════════════════════════════════════════════════ -->
-  <header class="top-header">
-    <div class="header-first-slot">
-      <a routerLink="/dashboard" class="header-brand-link" aria-label="Go to dashboard">
-        <svg class="header-logo" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <path d="M32,16.0025349 C32,6.852218 25.1554458,0 16.0015193,0 C6.84303485,0 0,6.852218 0,16.0025349 C0,25.1634981 6.84303485,32 16.0015193,32 C25.1554458,32 32,25.1634981 32,16.0025349 Z M29.2819295,16.0025349 C29.2819295,23.7835234 23.6882854,29.4408112 16.0015193,29.4408112 C8.31475327,29.4408112 2.71908334,23.7835234 2.71908334,16.0025349 C2.71908334,8.21901141 8.31475327,2.5617237 16.0015193,2.5617237 C23.6882854,2.5617237 29.2819295,8.2539924 29.2819295,16.0025349 Z M11.6577723,24.9779468 L11.6577723,9.34651458 L8.93868895,9.34651458 C7.59358086,9.34651458 7.06485614,9.84435995 7.06485614,11.2248416 L7.06485614,24.9779468 L11.6577723,24.9779468 Z M20.3488114,24.9779468 L24.9397018,24.9779468 L24.9397018,11.2248416 C24.9397018,9.84435995 24.407432,9.34651458 23.0608046,9.34651458 L20.3488114,9.34651458 L20.3488114,24.9779468 Z M18.3108917,24.9779468 L18.3108917,7.31863118 C18.3108917,5.9112801 17.8105276,5.4382763 16.444149,5.4382763 L12.311588,5.4382763 L12.311588,7.40988593 L12.5587314,7.40988593 C13.5022315,7.40988593 13.6845504,7.62230672 13.6845504,8.75842839 L13.6845504,24.9779468 L18.3108917,24.9779468 Z" fill="#003781"/>
-        </svg>
-        <div class="header-title-divider"></div>
-        <span class="header-app-title">Commercial Claims</span>
-      </a>
-      <nav class="top-nav">
-        <a routerLink="/dashboard" routerLinkActive="nav-tab--active" [routerLinkActiveOptions]="{ exact: true }" class="nav-tab">Dashboard</a>
-        <a class="nav-tab nav-tab--disabled" aria-disabled="true" title="Claims list coming soon">Claims</a>
-        <a routerLink="/parties" routerLinkActive="nav-tab--active" class="nav-tab">Parties</a>
-        <a routerLink="/tasks" routerLinkActive="nav-tab--active" class="nav-tab">Task manager</a>
-        <a routerLink="/administration" routerLinkActive="nav-tab--active" class="nav-tab">Administration</a>
-        <a routerLink="/approvals" routerLinkActive="nav-tab--active" class="nav-tab">Approvals</a>
-      </nav>
-    </div>
-    <div class="header-last-slot">
-      <div class="search-wrapper desktop-only">
-        <input class="search-input" placeholder="Search..." />
-        <button type="button" class="search-btn" aria-label="search"><nx-icon name="search"></nx-icon></button>
-      </div>
-      <div class="header-actions desktop-only">
-        <button nxIconButton="tertiary" type="button" aria-label="notifications"><nx-icon name="bell-o"></nx-icon></button>
-        <button nxIconButton="tertiary" type="button" aria-label="apps"><nx-icon name="grid"></nx-icon></button>
-      </div>
-      <div class="user-avatar desktop-only" [title]="auth.user()?.name ?? ''">
-        {{ initials() }}
-      </div>
-      <button nxIconButton="tertiary" type="button" class="mobile-only header-icon-btn" aria-label="Search" [attr.aria-expanded]="mobileSearchOpen()" (click)="toggleMobileSearch()"><nx-icon name="search"></nx-icon></button>
-      <button nxIconButton="tertiary" type="button" class="mobile-only header-icon-btn" aria-label="Toggle menu" [attr.aria-expanded]="mobileMenuOpen()" (click)="toggleMobileMenu()"><nx-icon [name]="mobileMenuOpen() ? 'close' : 'menu'"></nx-icon></button>
-    </div>
-  </header>
-
-  @if (mobileSearchOpen()) {
-    <div class="mobile-search-row mobile-only">
-      <div class="search-wrapper">
-        <input class="search-input" placeholder="Search..." autofocus />
-        <button type="button" class="search-btn" aria-label="search"><nx-icon name="search"></nx-icon></button>
-      </div>
-    </div>
-  }
-
-  @if (mobileMenuOpen()) {
-    <div class="mobile-menu mobile-only" role="menu">
-      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Dashboard</button>
-      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Claims</button>
-      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Parties</button>
-      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Task manager</button>
-      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Administration</button>
-      <button type="button" class="mobile-menu-item" (click)="closeMobileMenu()">Approvals</button>
-      <div class="mobile-menu-divider"></div>
-      <div class="mobile-menu-user">
-        <div class="user-avatar">{{ initials() }}</div>
-        <span class="mobile-menu-username">{{ auth.user()?.name }}</span>
-      </div>
-    </div>
-  }
+  <app-navbar></app-navbar>
 
   <!-- ══ BODY ════════════════════════════════════════════════════════════ -->
   <div class="body-layout">
@@ -138,10 +79,11 @@
                       @if (isOverdue(task.dueDate) && task.status !== 'done') {
                         <span class="overdue-cell">
                           <nx-icon name="exclamation-triangle-o" class="overdue-icon"></nx-icon>
-                          {{ task.dueDate }}
+                          {{ task.dueDate | date:'dd-MM-yyyy' }}
+                          <span class="overdue-days">({{ daysSinceUpdate(task.dueDate) }}d overdue)</span>
                         </span>
                       } @else {
-                        {{ task.dueDate }}
+                        {{ task.dueDate | date:'dd-MM-yyyy' }}
                       }
                     </td>
                     <td nxCell class="text-link dash-col--nowrap">{{ task.taskKey }}</td>
@@ -317,7 +259,7 @@
                       <td nxCell>{{ approval.reserveType }}</td>
                       <td nxCell>{{ approval.currency }}</td>
                       <td nxCell class="dash-col--nowrap">{{ approval.amount | number }}</td>
-                      <td nxCell>{{ approval.requester }}</td>
+                      <td nxCell>{{ approval.requester }}@if (approval.reviewerEmail === auth.user()?.email) { <nx-badge type="active" class="by-me-nx-badge">You</nx-badge> }</td>
                       <td nxCell>
                         <button class="dash-kebab-btn" type="button"
                                 [nxContextMenuTriggerFor]="approvalMenu"
@@ -345,7 +287,7 @@
               <table nxTable sticky="last" class="dash-table">
                 <thead>
                   <tr nxTableRow>
-                    <th nxHeaderCell class="dash-col--nowrap">Request ID</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Payment ID</th>
                     <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
                     <th nxHeaderCell>OE</th>
                     <th nxHeaderCell>Line of Business</th>
@@ -360,7 +302,7 @@
                 <tbody>
                   @for (payment of displayedPayments(); track payment.requestId) {
                     <tr nxTableRow>
-                      <td nxCell class="text-link dash-col--nowrap">{{ payment.requestId }}</td>
+                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']">{{ payment.paymentId }}</a></td>
                       <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']">{{ payment.claimId }}</a></td>
                       <td nxCell>{{ payment.oe }}</td>
                       <td nxCell>{{ payment.lineOfBusiness }}</td>
@@ -368,7 +310,7 @@
                       <td nxCell>{{ payment.payee }}</td>
                       <td nxCell>{{ payment.currency }}</td>
                       <td nxCell class="dash-col--nowrap">{{ payment.amount | number }}</td>
-                      <td nxCell>{{ payment.requester }}</td>
+                      <td nxCell>{{ payment.requester }}@if (payment.reviewerEmail === auth.user()?.email) { <nx-badge type="active" class="by-me-nx-badge">You</nx-badge> }</td>
                       <td nxCell>
                         <button class="dash-kebab-btn" type="button"
                                 [nxContextMenuTriggerFor]="paymentMenu"

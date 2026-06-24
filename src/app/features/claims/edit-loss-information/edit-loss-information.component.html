@@ -74,7 +74,7 @@
     <!-- Cause-specific details — sub-section inside General information card -->
     @if (showFireDetails() || showWaterDetails() || showTheftDetails()) {
       <hr class="eli-divider" />
-      <nx-accordion [multi]="true" variant="light" [formGroup]="causeDetails">
+      <nx-accordion [multi]="true" variant="regular" [formGroup]="causeDetails">
         @if (showFireDetails()) {
           <nx-expansion-panel [expanded]="true" formGroupName="fire">
             <nx-expansion-panel-header>
@@ -142,17 +142,17 @@
   </section>
 
   <!-- Card 2: Location (CWB Location Picker) -->
-  <section class="eli-card">
-    <h2 class="eli-section-heading">Locations of loss</h2>
-    <p class="eli-section-desc">Update the location of loss below.</p>
-    <!-- CWB Location MFE: LocationPickerComponent is self-contained (no FnolStateService dep).
-         Editable here — location changes are captured via (locationChange); there is
-         no FNOL re-open path, this edit screen is the place to change location. -->
+  <section class="eli-card" [class.eli-card--error]="submitAttempted && lossLocation.invalid">
+    <h2 class="eli-section-heading">Loss location <span class="eli-required">*</span></h2>
+    <p class="eli-section-desc">At least one loss location is required.</p>
     <app-location-picker
       [policyNumber]="policyNumber()"
       [value]="lossLocation.value"
-      (locationChange)="lossLocation.setValue($event); form.markAsDirty()">
+      (locationChange)="lossLocation.setValue($event); lossLocation.markAsDirty(); form.markAsDirty()">
     </app-location-picker>
+    @if (submitAttempted && lossLocation.invalid) {
+      <p class="eli-field-error">Loss location is required.</p>
+    }
   </section>
 
   <!-- Card 3: Events details -->
@@ -193,6 +193,12 @@
     }
   </section>
 
+
+  @if (saveSuccess()) {
+    <nx-message context="success" class="eli-save-success">
+      Loss information updated successfully.
+    </nx-message>
+  }
 
   <!-- Footer — mirrors wizard step-footer pattern -->
   <div class="eli-step-footer">

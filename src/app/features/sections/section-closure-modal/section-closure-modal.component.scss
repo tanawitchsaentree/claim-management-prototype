@@ -23,21 +23,38 @@
   color: var(--text-01);
 }
 
-// ─── Blocker list ─────────────────────────────────────────────────────────────
+// ─── Blocker cards ────────────────────────────────────────────────────────────
 
 .scm-blocker-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.scm-blocker-item {
+.scm-blocker-card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--ui-01);
+
+  &--expanded {
+    border-color: var(--ui-03);
+  }
+}
+
+.scm-blocker-card__header {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 10px 14px;
+  background: var(--ui-02);
+
+  &--clickable {
+    cursor: pointer;
+    user-select: none;
+    &:hover { background: var(--ui-03); }
+  }
 }
 
 .scm-blocker-icon {
@@ -49,6 +66,99 @@
   font-size: var(--paragraph-02-font-size);
   color: var(--text-01);
   line-height: 1.4;
+  flex: 1;
+}
+
+.scm-blocker-count {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--danger);
+  color: var(--ui-01);
+  border-radius: 10px;
+  padding: 1px 7px;
+  flex-shrink: 0;
+}
+
+.scm-blocker-chevron {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+// ─── Expanded items ───────────────────────────────────────────────────────────
+
+.scm-blocker-items {
+  padding: 0;
+  border-top: 1px solid var(--ui-04);
+}
+
+.scm-item {
+  display: flex;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ui-04);
+  &:last-child { border-bottom: none; }
+}
+
+.scm-item__main { flex: 1; min-width: 0; }
+
+.scm-item__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.scm-item__title {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.scm-item__status {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+
+  &--hard    { background: rgba(var(--negative-rgb, 210, 53, 29), 0.1); color: var(--danger); }
+  &--warning { background: rgba(var(--warning-rgb, 255, 165, 0), 0.12); color: var(--warning); }
+}
+
+.scm-item__desc {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+.scm-item__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.scm-item__meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  nx-icon { opacity: 0.6; }
+}
+
+.scm-item__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--interactive-text);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: auto;
+  &:hover { text-decoration: underline; }
 }
 
 // ─── Checklist ────────────────────────────────────────────────────────────────

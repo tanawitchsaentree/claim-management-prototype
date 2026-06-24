@@ -1,0 +1,57 @@
+[
+  {
+    "paymentId": "PAY-001",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-001",
+    "payee": "Otto Kaufmann",
+    "amount": 45000,
+    "currency": "EUR",
+    "status": "Final",
+    "isFinalPayment": true,
+    "paymentDate": "2025-02-14"
+  },
+  {
+    "paymentId": "PAY-002",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-001",
+    "payee": "Allianz Expertise Center",
+    "amount": 12500,
+    "currency": "EUR",
+    "status": "Processed",
+    "isFinalPayment": false,
+    "paymentDate": "2025-01-20"
+  },
+  {
+    "paymentId": "PAY-003",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-002",
+    "payee": "Munich Machinery Repair GmbH",
+    "amount": 78000,
+    "currency": "EUR",
+    "status": "Pending",
+    "isFinalPayment": false,
+    "paymentDate": "2025-03-01"
+  },
+  {
+    "paymentId": "PAY-004",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-002",
+    "payee": "Business Interruption Indemnity",
+    "amount": 31500,
+    "currency": "EUR",
+    "status": "Pending",
+    "isFinalPayment": false,
+    "paymentDate": "2025-03-05"
+  },
+  {
+    "paymentId": "PAY-005",
+    "claimId": "CLM-2024-001",
+    "sectionId": "SEC-008",
+    "payee": "Kaufmann's Warehouse — Final Settlement",
+    "amount": 22000,
+    "currency": "EUR",
+    "status": "Pending",
+    "isFinalPayment": false,
+    "paymentDate": "2025-04-10"
+  }
+]

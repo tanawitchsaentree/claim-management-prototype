@@ -225,6 +225,7 @@
   @if (!submitted) {
     <app-wizard-footer
       nextLabel="Submit claim"
+      [nextDisabled]="claimGroupCount === 0"
       (cancel)="onCancel()"
       (back)="onBack()"
       (next)="onSubmit()">

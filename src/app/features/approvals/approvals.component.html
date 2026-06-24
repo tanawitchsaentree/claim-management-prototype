@@ -1,0 +1,158 @@
+<app-navbar />
+
+<div class="approvals-outer">
+<div nxLayout="grid maxwidth" class="approvals-page">
+
+  <!-- ── Filter bar ── -->
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label class="filter-label">Claim ID</label>
+      <input class="filter-input" type="text" [(ngModel)]="filterClaimId" placeholder="" />
+    </div>
+    <div class="filter-field">
+      <label class="filter-label">Requester</label>
+      <input class="filter-input" type="text" [(ngModel)]="filterRequester" placeholder="" />
+    </div>
+    <div class="filter-field">
+      <label class="filter-label">Date Requested</label>
+      <input class="filter-input filter-input--date" type="date" />
+    </div>
+    <div class="filter-actions">
+      <button nxButton="secondary small" type="button" (click)="applyFilter()">Filter</button>
+      <button nxButton="tertiary small" type="button" (click)="resetFilter()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ── Tabs ── -->
+  <div class="tabs-row">
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'reserves'" (click)="activeTab.set('reserves')">Reserves</button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'payments'" (click)="activeTab.set('payments')">Payments</button>
+  </div>
+
+  <!-- ── My limit toggle ── -->
+  <div class="toggle-row">
+    <nx-switcher [checked]="showMineOnly()" (checkedChange)="showMineOnly.set($event)">
+      Show approvals within my limit only
+    </nx-switcher>
+  </div>
+
+  <!-- ── Reserves table ── -->
+  @if (activeTab() === 'reserves') {
+    <div class="table-card">
+      <table nxTable class="approvals-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="col-expand"></th>
+            <th nxHeaderCell class="col-req-id">Request ID</th>
+            <th nxHeaderCell class="col-claim-id">Claim ID</th>
+            <th nxHeaderCell class="col-oe">OE</th>
+            <th nxHeaderCell class="col-lob">Line of Business</th>
+            <th nxHeaderCell class="col-type">Reserve type</th>
+            <th nxHeaderCell class="col-currency">Currency</th>
+            <th nxHeaderCell class="col-amount">Amount</th>
+            <th nxHeaderCell class="col-requester">Requester</th>
+            <th nxHeaderCell class="col-date">Date requested</th>
+            <th nxHeaderCell class="col-action">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (filteredReserves().length === 0) {
+            <tr nxTableRow>
+              <td nxTableCell colspan="11" class="empty-cell">No approval requests found.</td>
+            </tr>
+          }
+          @for (item of filteredReserves(); track item.requestId) {
+            <tr nxTableRow>
+              <td nxTableCell class="col-expand"></td>
+              <td nxTableCell class="col-req-id">
+                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.requestId }}</a>
+              </td>
+              <td nxTableCell class="col-claim-id">
+                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.claimId }}</a>
+              </td>
+              <td nxTableCell class="col-oe">{{ item.oe }}</td>
+              <td nxTableCell class="col-lob">{{ item.lineOfBusiness }}</td>
+              <td nxTableCell class="col-type">{{ item.reserveType }}</td>
+              <td nxTableCell class="col-currency">{{ item.currency }}</td>
+              <td nxTableCell class="col-amount">{{ item.amount | number:'1.0-0' }}</td>
+              <td nxTableCell class="col-requester">{{ item.requester }}</td>
+              <td nxTableCell class="col-date">–</td>
+              <td nxTableCell class="col-action">
+                <button nxIconButton="tertiary" type="button"
+                  [nxContextMenuTriggerFor]="reserveMenu" aria-label="actions">
+                  <nx-icon name="ellipsis-v"></nx-icon>
+                </button>
+                <nx-context-menu #reserveMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="onAction('approve', item.requestId)">Approve</button>
+                  <button nxContextMenuItem type="button" (click)="onAction('reject', item.requestId)">Reject</button>
+                  <button nxContextMenuItem type="button" (click)="onAction('view', item.requestId)">View details</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- ── Payments table ── -->
+  @if (activeTab() === 'payments') {
+    <div class="table-card">
+      <table nxTable class="approvals-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="col-expand"></th>
+            <th nxHeaderCell class="col-req-id">Payment ID</th>
+            <th nxHeaderCell class="col-claim-id">Claim ID</th>
+            <th nxHeaderCell class="col-oe">OE</th>
+            <th nxHeaderCell class="col-lob">Line of Business</th>
+            <th nxHeaderCell class="col-type">Payment type</th>
+            <th nxHeaderCell class="col-currency">Currency</th>
+            <th nxHeaderCell class="col-amount">Amount</th>
+            <th nxHeaderCell class="col-requester">Requester</th>
+            <th nxHeaderCell class="col-date">Date requested</th>
+            <th nxHeaderCell class="col-action">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (filteredPayments().length === 0) {
+            <tr nxTableRow>
+              <td nxTableCell colspan="11" class="empty-cell">No payment approval requests found.</td>
+            </tr>
+          }
+          @for (item of filteredPayments(); track item.requestId) {
+            <tr nxTableRow>
+              <td nxTableCell class="col-expand"></td>
+              <td nxTableCell class="col-req-id">
+                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.paymentId }}</a>
+              </td>
+              <td nxTableCell class="col-claim-id">
+                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.claimId }}</a>
+              </td>
+              <td nxTableCell class="col-oe">{{ item.oe }}</td>
+              <td nxTableCell class="col-lob">{{ item.lineOfBusiness }}</td>
+              <td nxTableCell class="col-type">{{ item.paymentType }}</td>
+              <td nxTableCell class="col-currency">{{ item.currency }}</td>
+              <td nxTableCell class="col-amount">{{ item.amount | number:'1.0-0' }}</td>
+              <td nxTableCell class="col-requester">{{ item.requester }}</td>
+              <td nxTableCell class="col-date">–</td>
+              <td nxTableCell class="col-action">
+                <button nxIconButton="tertiary" type="button"
+                  [nxContextMenuTriggerFor]="paymentMenu" aria-label="actions">
+                  <nx-icon name="ellipsis-v"></nx-icon>
+                </button>
+                <nx-context-menu #paymentMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="onAction('approve', item.requestId)">Approve</button>
+                  <button nxContextMenuItem type="button" (click)="onAction('reject', item.requestId)">Reject</button>
+                  <button nxContextMenuItem type="button" (click)="onAction('view', item.requestId)">View details</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>
+</div>

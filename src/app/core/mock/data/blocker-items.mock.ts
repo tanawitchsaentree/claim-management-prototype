@@ -1,0 +1,67 @@
+import { BlockerItem } from '../../models/claim-closure.model';
+
+export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
+  litigation: [
+    {
+      id: 'CLM-LIT-001',
+      title: 'CLM-LIT-001',
+      description: 'Property damage dispute',
+      status: 'Active',
+      lastUpdated: '2026-06-10',
+      assignee: 'Legal Team',
+      ownerDomain: 'Litigation',
+      link: '/claims/CLM-2024-001/litigation',
+      severity: 'hard',
+    },
+    {
+      id: 'CLM-LIT-002',
+      title: 'CLM-LIT-002',
+      description: 'Liability allocation — contributory negligence',
+      status: 'Pending review',
+      lastUpdated: '2026-06-15',
+      assignee: 'External counsel',
+      ownerDomain: 'Litigation',
+      link: '/claims/CLM-2024-001/litigation',
+      severity: 'hard',
+    },
+  ],
+  reserves: [
+    {
+      id: 'RSV-001',
+      title: 'RSV-001',
+      description: 'Property repair reserve — EUR 50,000',
+      status: 'Open',
+      lastUpdated: '2026-06-01',
+      assignee: 'John Smith',
+      ownerDomain: 'Reserves',
+      link: '/claims/CLM-2024-001/financial',
+      severity: 'hard',
+    },
+    {
+      id: 'RSV-002',
+      title: 'RSV-002',
+      description: 'Legal cost reserve — EUR 25,000',
+      status: 'Open',
+      lastUpdated: '2026-06-08',
+      assignee: 'Legal Team',
+      ownerDomain: 'Reserves',
+      link: '/claims/CLM-2024-001/financial',
+      severity: 'warning',
+    },
+  ],
+  payments: [
+    {
+      id: 'PAY-001',
+      title: 'PAY-001',
+      description: 'Indemnity payment — EUR 15,000',
+      status: 'Pending settlement',
+      lastUpdated: '2026-06-18',
+      assignee: 'Finance Team',
+      ownerDomain: 'Payments',
+      severity: 'hard',
+    },
+  ],
+  deductible: [],
+  recovery: [],
+  provider: [],
+};

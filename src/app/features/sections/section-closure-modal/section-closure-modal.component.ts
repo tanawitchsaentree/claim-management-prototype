@@ -12,6 +12,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { firstValueFrom } from 'rxjs';
 import { ClaimSection, SectionClosureReason } from '../../../core/models/section.model';
 import { Blocker } from '../../../core/models/claim-closure.model';
+import { RouterModule } from '@angular/router';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 
 export interface SectionClosureModalData {
@@ -46,6 +47,7 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     NxModalModule,
     NxButtonModule,
     NxIconModule,
@@ -64,9 +66,10 @@ export class SectionClosureModalComponent {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly fb         = inject(FormBuilder);
 
-  readonly step    = signal<Step>(this.data.canClose ? 2 : 1);
-  readonly saving  = signal(false);
+  readonly step      = signal<Step>(this.data.canClose ? 2 : 1);
+  readonly saving    = signal(false);
   readonly saveError = signal<string | null>(null);
+  readonly expanded  = signal<Set<string>>(new Set());
 
   readonly closureReasons  = CLOSURE_REASONS;
   readonly checklistItems  = CHECKLIST_ITEMS;
@@ -92,6 +95,18 @@ export class SectionClosureModalComponent {
 
   toggleChecklistItem(i: number): void {
     this.checklistChecked.update(arr => arr.map((v, idx) => idx === i ? !v : v));
+  }
+
+  toggleBlocker(key: string): void {
+    this.expanded.update(set => {
+      const next = new Set(set);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  }
+
+  isExpanded(key: string): boolean {
+    return this.expanded().has(key);
   }
 
   onCancel(): void { this.modalRef.close(undefined); }

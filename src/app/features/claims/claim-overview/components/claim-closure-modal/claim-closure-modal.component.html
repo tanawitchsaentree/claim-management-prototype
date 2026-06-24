@@ -32,7 +32,13 @@
               @if (b.type === 'reserves') {
                 — <button class="ccm-link-btn ccm-link-disabled" type="button" disabled title="Feature not available">Go to Reserves</button>
               }
-              @if (b.type === 'payments' || b.type === 'recovery' || b.type === 'deductible' || b.type === 'provider' || b.type === 'bills' || b.type === 'reports') {
+              @if (b.type === 'payments') {
+                — <button class="ccm-link-btn" type="button" (click)="onViewPayments()">Go to Payments</button>
+              }
+              @if (b.type === 'provider') {
+                — <button class="ccm-link-btn" type="button" (click)="onViewProvider()">Go to Provider</button>
+              }
+              @if (b.type === 'recovery' || b.type === 'deductible' || b.type === 'bills' || b.type === 'reports') {
                 — <span class="ccm-link-na" title="Feature not available">Feature not available</span>
               }
             </span>

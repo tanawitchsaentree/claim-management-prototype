@@ -1,33 +1,171 @@
-// Breakpoint: covers all iPads in portrait (iPad mini 744 → iPad Pro 12.9" 1024).
-// iPad Pro 12.9 landscape (1366) and laptops stay on desktop nav.
 $mobile-bp: 1024px;
 
-.nav-brand-link {
-  display: inline-flex;
+// ── Shell ──────────────────────────────────────────────────────────
+.app-header {
+  display: flex;
   align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
+  justify-content: space-between;
+  height: 64px;
+  background: var(--ui-01);
+  border-bottom: 1px solid var(--ui-04);
+  padding: 0 32px;
+  flex-shrink: 0;
+  z-index: 100;
+  position: relative;
 }
 
+// ── Left: brand + nav ─────────────────────────────────────────────
+.app-header__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 100%;
+}
+
+.app-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.app-header__divider {
+  width: 1px;
+  height: 40px;
+  background: var(--ui-04);
+  flex-shrink: 0;
+}
+
+.app-header__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-01);
+  white-space: nowrap;
+  padding-right: 32px;
+}
+
+// ── Nav items ─────────────────────────────────────────────────────
+.app-header__nav {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  gap: 32px;
+}
+
+.app-header__nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  height: 100%;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-01);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.12s;
+  text-decoration: none;
+
+  &:hover { color: var(--interactive-text); }
+
+  &--active {
+    color: var(--interactive-text);
+    font-weight: 700;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--interactive-text);
+    }
+  }
+
+  &--disabled {
+    color: var(--text-muted);
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+// ── Right: search + actions + avatar ─────────────────────────────
+.app-header__right {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+}
+
+.app-header__search {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--text-muted);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 40px;
+  width: 280px;
+}
+
+.app-header__search-input {
+  border: none;
+  outline: none;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-01);
+  flex: 1;
+  background: var(--ui-01);
+  height: 100%;
+  &::placeholder { color: var(--text-muted); }
+}
+
+.app-header__search-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--interactive-text);
+  border: none;
+  border-radius: 4px;
+  margin: 4px 4px 4px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  nx-icon { color: var(--ui-01); font-size: 16px; }
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  gap: 4px;
+}
+
+.app-header__avatar-btn {
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+
+// ── Mobile ────────────────────────────────────────────────────────
 .nav-hamburger { display: none; }
 
 @media (max-width: $mobile-bp) {
-  .nav-desktop    { display: none !important; }
-  .nav-hamburger  { display: flex; }
+  .nav-desktop  { display: none !important; }
+  .nav-hamburger { display: flex; }
 }
 
-// Mobile dropdown panel
 .nav-mobile-menu {
   position: fixed;
-  top: var(--header-height, 64px);
+  top: 64px;
   right: 0;
   width: 240px;
   background: var(--ui-01);
   border-left: 1px solid var(--ui-04);
   border-bottom: 1px solid var(--ui-04);
-  box-shadow: -4px 4px 16px var(--claim-overlay-shadow);
+  box-shadow: -4px 4px 16px rgba(0,0,0,0.12);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -41,13 +179,10 @@ $mobile-bp: 1024px;
   background: none;
   border: none;
   text-align: left;
-  font-size: var(--paragraph-02-font-size);
+  font-size: 16px;
   color: var(--text-01);
   cursor: pointer;
-
-  &:hover {
-    background: var(--claim-overlay-hover);
-  }
+  &:hover { background: var(--ui-02); }
 }
 
 .nav-mobile-divider {
@@ -64,6 +199,6 @@ $mobile-bp: 1024px;
 }
 
 .nav-mobile-username {
-  font-size: var(--paragraph-03-font-size);
+  font-size: 14px;
   color: var(--text-01);
 }

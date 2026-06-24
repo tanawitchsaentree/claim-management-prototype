@@ -15,6 +15,7 @@
         <th nxHeaderCell class="col-entity">Entity</th>
         <th nxHeaderCell class="col-damage">Damage</th>
         <th nxHeaderCell class="col-status">Instruction status</th>
+        <th nxHeaderCell class="col-provider">Provider</th>
         <th nxHeaderCell class="col-actions">Action</th>
       </tr>
     </thead>
@@ -51,12 +52,10 @@
               <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
             </button>
           </td>
-          <td nxTableCell colspan="3">
+          <td nxTableCell colspan="4">
             <div class="section-title-cell__inner">
               <span class="section-title-cell__name">{{ section.name }}</span>
-              @if (section.status === 'Closed') {
-                <app-status-chip status="closed" domain="claim"></app-status-chip>
-              }
+              <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
             </div>
           </td>
           <td nxTableCell class="col-actions">
@@ -71,6 +70,12 @@
                 (click)="onCloseSection(section)">
                 Close Section
               </button>
+              @if (devMode && section.status !== 'Closed') {
+                <button nxContextMenuItem type="button"
+                  (click)="onSimulateFinalPayment(section)">
+                  Simulate Final Payment
+                </button>
+              }
               <button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
               <button nxContextMenuItem type="button" (click)="onAction('delete', section.name)">Delete</button>
             </nx-context-menu>
@@ -95,17 +100,8 @@
                   {{ entity.instructionStatus }}
                 </span>
               </td>
-              <td nxTableCell class="col-actions">
-                <button nxIconButton="tertiary" type="button"
-                  [nxContextMenuTriggerFor]="entityCtxMenu" aria-label="entity menu">
-                  <nx-icon name="ellipsis-v"></nx-icon>
-                </button>
-                <nx-context-menu #entityCtxMenu="nxContextMenu">
-                  <button nxContextMenuItem type="button" (click)="onAction('assign', entity.name)">Assign provider</button>
-                  <button nxContextMenuItem type="button" (click)="onAction('edit', entity.name)">Edit</button>
-                  <button nxContextMenuItem type="button" (click)="onAction('delete', entity.name)">Delete</button>
-                </nx-context-menu>
-              </td>
+              <td nxCell class="text-muted">{{ entity.assignedProvider ?? '–' }}</td>
+              <td nxTableCell class="col-actions"></td>
             </tr>
           }
         }

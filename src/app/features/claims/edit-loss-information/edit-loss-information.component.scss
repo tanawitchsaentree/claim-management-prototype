@@ -100,6 +100,11 @@
 // ─── Cause-details expansion panel (inside General information card) ────
 .eli-cause-details-grid { padding-top: 8px; }
 
+// Compact regular accordion — tighter header padding
+.eli-card {
+  --accordion-regular-header-padding: 8px 16px;
+}
+
 // ─── Events ──────────────────────────────────────────────────────────
 .eli-event-block {
   padding: 0;
@@ -120,5 +125,20 @@
   font-size: 13px;
   color: var(--danger);
   margin: 4px 0 0;
+}
+
+.eli-card--error {
+  border-color: var(--danger);
+}
+
+.eli-required {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.eli-field-error {
+  font-size: 13px;
+  color: var(--danger);
+  margin: 8px 0 0;
 }
 

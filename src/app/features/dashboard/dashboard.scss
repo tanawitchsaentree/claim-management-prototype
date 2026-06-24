@@ -29,10 +29,6 @@ $sp-2xl:  32px;
   color: $text-main;
   background: var(--ui-01);
 
-  // Restore icon font that gets overridden by the blanket font-family above
-  nx-icon {
-    font-family: 'Allianz-Icons' !important;
-  }
 }
 
 // ─── Top header ──────────────────────────────────────────────────
@@ -183,7 +179,7 @@ $sp-2xl:  32px;
 .user-avatar {
   width: 32px;
   height: 32px;
-  background: #49648c; // no token — avatar slate blue, flagged in VIOLATIONS.md
+  background: var(--avatar-bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
