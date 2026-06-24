@@ -66,9 +66,10 @@
 
     <hr class="eli-divider" />
 
-    <nx-formfield label="Loss description (optional)" class="eli-full-width">
+    <nx-formfield label="Loss description" class="eli-full-width">
       <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
       <nx-hint nxFormfieldHint>{{ (form.get('lossDescription')?.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
+      <nx-error nxFormfieldError *ngIf="submitAttempted && form.get('lossDescription')?.errors?.['required']">Loss description is required</nx-error>
     </nx-formfield>
 
     <!-- Cause-specific details — sub-section inside General information card -->
@@ -142,17 +143,14 @@
   </section>
 
   <!-- Card 2: Location (CWB Location Picker) -->
-  <section class="eli-card" [class.eli-card--error]="submitAttempted && lossLocation.invalid">
-    <h2 class="eli-section-heading">Loss location <span class="eli-required">*</span></h2>
-    <p class="eli-section-desc">At least one loss location is required.</p>
+  <section class="eli-card">
+    <h2 class="eli-section-heading">Locations of loss</h2>
+    <p class="eli-section-desc">Update the location of loss below.</p>
     <app-location-picker
       [policyNumber]="policyNumber()"
       [value]="lossLocation.value"
-      (locationChange)="lossLocation.setValue($event); lossLocation.markAsDirty(); form.markAsDirty()">
+      (locationChange)="lossLocation.setValue($event); form.markAsDirty()">
     </app-location-picker>
-    @if (submitAttempted && lossLocation.invalid) {
-      <p class="eli-field-error">Loss location is required.</p>
-    }
   </section>
 
   <!-- Card 3: Events details -->

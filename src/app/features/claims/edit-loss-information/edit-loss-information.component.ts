@@ -78,16 +78,10 @@ export class EditLossInformationComponent implements OnInit {
       dateOfNotification: new FormControl<string | null>(null, [Validators.required, FnolStateService.futureDateValidator]),
       timeOfNotification: new FormControl<string | null>(null, [Validators.required]),
     }, { validators: FnolStateService.dateOrderValidator }),
-    lossLocation: new FormControl<LocationPickerOutput>(
-      { locations: [] },
-      [ctrl => {
-        const v = ctrl.value as LocationPickerOutput | null;
-        return (v?.locations?.length ?? 0) > 0 ? null : { locationRequired: true };
-      }]
-    ),
+    lossLocation:    new FormControl<LocationPickerOutput>({ locations: [] }),
     causeOfLoss:     new FormControl<string[]>([], []),
     typeOfDamage:    new FormControl<string[]>([], []),
-    lossDescription: new FormControl('', [Validators.maxLength(500)]),
+    lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
     causeDetails: new FormGroup({
       fire: new FormGroup({
         fireOrigin:                  new FormControl(''),
