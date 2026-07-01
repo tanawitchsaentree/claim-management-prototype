@@ -6,6 +6,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
@@ -35,6 +36,7 @@ interface LocationPickerVM {
     NxIconModule,
     NxContextMenuModule,
     NxMessageModule,
+    NxTableModule,
   ],
   templateUrl: './location-picker.component.html',
   styleUrl:    './location-picker.component.scss',

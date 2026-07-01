@@ -42,7 +42,7 @@ export interface ClaimOverview {
   claimId: string;
   client: string;
   assignedHandler: string;
-  lossEventId: string;
+  lossEventId?: string;
   status: string;
   proximateLossCause: string;
   riskScore: number;
@@ -50,13 +50,14 @@ export interface ClaimOverview {
   riskStatus: string;
   policyNumber: string;
   policyHolder: string;
-  broker: string;
+  broker?: string;
+  clientContact?: string;
   handler: string;
   supervisor: string;
   priority: 'high' | 'medium' | 'low';
   lineOfBusiness: string;
   dateOfLoss: string;
-  dateReported: string;
+  dateReported?: string;
   dateCreated: string;
   description: string;
   location: ClaimLocation;

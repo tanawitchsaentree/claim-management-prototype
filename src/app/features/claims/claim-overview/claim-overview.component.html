@@ -33,9 +33,23 @@
           <span class="co-label">Assigned Claim handler</span>
           <span class="co-value">{{ claim.assignedHandler }}</span>
         </div>
+        @if (claim.lossEventId) {
+          <div class="co-field">
+            <span class="co-label">Loss event ID</span>
+            <a class="co-value co-value--link">{{ claim.lossEventId }}</a>
+          </div>
+        }
         <div class="co-field">
-          <span class="co-label">Loss event ID</span>
-          <a class="co-value co-value--link">{{ claim.lossEventId }}</a>
+          <span class="co-label">Broker</span>
+          <span class="co-value">{{ claim.broker ?? '–' }}</span>
+        </div>
+        <div class="co-field">
+          <span class="co-label">Notification date</span>
+          <span class="co-value">{{ claim.dateReported ? formatDate(claim.dateReported) : '–' }}</span>
+        </div>
+        <div class="co-field">
+          <span class="co-label">Client contact</span>
+          <span class="co-value">{{ claim.clientContact ?? '–' }}</span>
         </div>
         @if (vm.massEvent; as me) {
           <div class="co-field">

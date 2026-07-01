@@ -1,5 +1,35 @@
 [
   {
+    "id": "LI-CL-2025-001",
+    "claimId": "CL-2025-001",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2025-01-10",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2025-01-11",
+      "timeOfNotification": "10:30"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-001",
+          "source": "cwb",
+          "displayName": "Global Trade Solutions AG — Frankfurt",
+          "addressLine1": "Industriestraße 44",
+          "postalCode": "60329",
+          "city": "Frankfurt",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": ["fire"],
+    "typeOfDamage": ["material-damage"],
+    "lossDescription": "This claim relates to a fire at XYZ's warehouse on 12 May 2025. The current incurred value is $4.2M, primarily property damage.",
+    "causeDetails": { "fire": { "fireOrigin": "Warehouse section A", "fireDepartmentCalled": true, "fireDepartmentReportNumber": "FF-FRA-2025-0110" } },
+    "events": [{ "eventKey": "fire", "damages": ["material-damage"], "causedBy": [] }],
+    "createdAt": "2025-01-11T10:30:00Z",
+    "updatedAt": "2025-01-11T10:30:00Z"
+  },
+  {
     "id": "LI-CLM-2024-001",
     "claimId": "CLM-2024-001",
     "dateOfLoss": {
@@ -8,7 +38,19 @@
       "dateOfNotification": "2024-01-15",
       "timeOfNotification": "08:00"
     },
-    "lossLocation": { "locationRequired": true, "locationType": "listed-in-policy", "incidentAddress": "Lagerstraße 12, Hamburg", "incidentAtDifferentLocation": false, "street": "Lagerstraße", "streetNumber": "12", "city": "Hamburg", "postalCode": "20457", "country": "Germany" },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-002",
+          "source": "cwb",
+          "displayName": "Kaufmann's Warehouse GmbH — Hamburg",
+          "addressLine1": "Lagerstraße 12",
+          "postalCode": "20457",
+          "city": "Hamburg",
+          "country": "Germany"
+        }
+      ]
+    },
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["material-damage", "financial-loss"],
     "lossDescription": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",

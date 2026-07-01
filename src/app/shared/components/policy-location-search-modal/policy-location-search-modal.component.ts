@@ -8,6 +8,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { NxTableModule } from '@allianz/ng-aquila/table';
 import { PolicyLocation } from '../../../core/models';
 
 export interface PolicyLocationSearchModalData {
@@ -33,6 +34,7 @@ export type PolicyLocationSearchModalResult =
     NxIconModule,
     NxCheckboxModule,
     NxMessageModule,
+    NxTableModule,
   ],
   templateUrl: './policy-location-search-modal.component.html',
   styleUrl: './policy-location-search-modal.component.scss',

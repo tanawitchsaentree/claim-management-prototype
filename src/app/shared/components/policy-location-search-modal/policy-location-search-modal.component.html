@@ -34,7 +34,7 @@
     <header class="plm-section__header">
       <h3 class="plm-section__title">Results</h3>
       <span class="plm-section__meta">
-        {{ filtered().length }} location{{ filtered().length === 1 ? '' : 's' }}
+        @if (filtered().length > 1) { {{ filtered().length }} locations }
         @if (selectedIds().size > 0) { · {{ selectedIds().size }} selected }
       </span>
     </header>
@@ -42,28 +42,45 @@
     @if (filtered().length === 0) {
       <p class="plm-empty">No locations match your search.</p>
     } @else {
-      <div class="plm-list" role="list">
-        @for (loc of filtered(); track loc.id) {
-          <div class="plm-item" role="listitem"
-               [class.plm-item--selected]="isSelected(loc.id)"
-               (click)="toggleRow(loc.id, !isSelected(loc.id))">
-            <nx-checkbox
-              [checked]="isSelected(loc.id)"
-              (checkedChange)="toggleRow(loc.id, $event)"
-              (click)="$event.stopPropagation()"
-              aria-label="Select location">
-            </nx-checkbox>
-            <div class="plm-item__body">
-              <span class="plm-item__name">{{ loc.name }}</span>
-              <span class="plm-item__addr">{{ loc.addressLine1 }}, {{ loc.postalCode }} {{ loc.city }}, {{ loc.country }}</span>
-              <span class="plm-item__meta">
-                {{ loc.type }}
-                @if (loc.propertyId) { &bull; {{ loc.propertyId }} }
-                @if (!loc.active) { <span class="plm-inactive">Inactive</span> }
-              </span>
-            </div>
-          </div>
-        }
+      <div class="plm-table-wrap">
+        <table nxTable class="plm-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="plm-col--check"></th>
+              <th nxHeaderCell>Location name</th>
+              <th nxHeaderCell>Number and Street</th>
+              <th nxHeaderCell>Postal code</th>
+              <th nxHeaderCell>City</th>
+              <th nxHeaderCell>Country</th>
+              <th nxHeaderCell>Property ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (loc of filtered(); track loc.id) {
+              <tr nxTableRow class="plm-row"
+                  [class.plm-row--selected]="isSelected(loc.id)"
+                  (click)="toggleRow(loc.id, !isSelected(loc.id))">
+                <td nxCell class="plm-col--check">
+                  <nx-checkbox
+                    [checked]="isSelected(loc.id)"
+                    (checkedChange)="toggleRow(loc.id, $event)"
+                    (click)="$event.stopPropagation()"
+                    aria-label="Select location">
+                  </nx-checkbox>
+                </td>
+                <td nxCell>
+                  {{ loc.name }}
+                  @if (!loc.active) { <span class="plm-inactive">Inactive</span> }
+                </td>
+                <td nxCell>{{ loc.addressLine1 }}@if (loc.addressLine2) {, {{ loc.addressLine2 }}}</td>
+                <td nxCell>{{ loc.postalCode }}</td>
+                <td nxCell>{{ loc.city }}</td>
+                <td nxCell>{{ loc.country }}</td>
+                <td nxCell>{{ loc.propertyId ?? '–' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     }
   </section>

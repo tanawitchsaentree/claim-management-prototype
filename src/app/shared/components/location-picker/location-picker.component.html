@@ -14,36 +14,45 @@
     </div>
   } @else {
     <div class="lp-selected">
-      @for (item of locations; track item.id) {
-        <div class="lp-location-card">
-          <div class="lp-location-card-body">
-            <span class="lp-location-name">{{ item.displayName }}</span>
-            <span class="lp-location-addr">
-              {{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}},
-              {{ item.postalCode }} {{ item.city }}, {{ item.country }}
-            </span>
-            <span class="lp-location-meta">
-              @if (item.propertyId) { {{ item.propertyId }} &bull; }
-              @switch (item.source) {
-                @case ('policy') { From policy }
-                @case ('cwb')    { From CWB }
-                @default         { Manual entry }
-              }
-            </span>
-          </div>
-          <div class="lp-location-actions">
-            <button nxIconButton="tertiary small" type="button"
-              [nxContextMenuTriggerFor]="itemMenu"
-              aria-label="Location options">
-              <nx-icon name="ellipsis-h"></nx-icon>
-            </button>
-            <nx-context-menu #itemMenu>
-              <button nxContextMenuItem type="button" (click)="editItem(item)">Edit</button>
-              <button nxContextMenuItem type="button" (click)="removeItem(item.id)">Remove</button>
-            </nx-context-menu>
-          </div>
-        </div>
+      @if (locations.length > 1) {
+        <p class="lp-counter">{{ locations.length }} locations</p>
       }
+      <div class="lp-table-wrap">
+        <table nxTable class="lp-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Number and Street</th>
+              <th nxHeaderCell>Postal code</th>
+              <th nxHeaderCell>City</th>
+              <th nxHeaderCell>Province / State</th>
+              <th nxHeaderCell>Country</th>
+              <th nxHeaderCell class="lp-col--action"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of locations; track item.id) {
+              <tr nxTableRow>
+                <td nxCell>{{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}}</td>
+                <td nxCell>{{ item.postalCode }}</td>
+                <td nxCell>{{ item.city }}</td>
+                <td nxCell>{{ item.state ?? '–' }}</td>
+                <td nxCell>{{ item.country }}</td>
+                <td nxCell class="lp-col--action">
+                  <button nxIconButton="tertiary small" type="button"
+                    [nxContextMenuTriggerFor]="itemMenu"
+                    aria-label="Location options">
+                    <nx-icon name="ellipsis-h"></nx-icon>
+                  </button>
+                  <nx-context-menu #itemMenu>
+                    <button nxContextMenuItem type="button" (click)="editItem(item)">Edit</button>
+                    <button nxContextMenuItem type="button" (click)="removeItem(item.id)">Remove</button>
+                  </nx-context-menu>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
       <button nxButton="secondary small" type="button" class="lp-add-another"
               (click)="addLocation(vm.policyLocations)">
         <nx-icon name="plus" nxIconPositionStart></nx-icon>
