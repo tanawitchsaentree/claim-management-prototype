@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-241",
   "module": "FNOL",
   "title": "Orphan Claim — Notifier + Left-nav (Loss → Summary)",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": ["fnol-skeleton"],
   "walkthroughSteps": [
     "Apply an AC — banner pushes FNOL state into orphan path",

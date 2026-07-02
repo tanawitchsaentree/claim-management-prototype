@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-14437",
   "module": "Claims",
   "title": "Closure via Last Payment",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": [
     "sections"
   ],

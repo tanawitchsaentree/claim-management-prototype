@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-14434",
   "module": "Claims",
   "title": "Section & Claims Hierarchy Validations",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": [
     "sections"
   ],

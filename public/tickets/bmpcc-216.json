@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-216",
   "module": "FNOL",
   "title": "Duplicate Claim Check",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": [
     "fnol-loss-info"
   ],
