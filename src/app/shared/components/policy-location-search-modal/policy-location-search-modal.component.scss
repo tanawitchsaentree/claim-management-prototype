@@ -1,6 +1,11 @@
 @use '../../styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+  // Bottom sheet fills the full panel height — override centered-modal max-height
+  max-height: 100% !important;
+  height: 100%;
+}
 
 .plm-header { @include modal.header; }
 .plm-header-row { @include modal.header-row; }

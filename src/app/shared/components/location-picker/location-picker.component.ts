@@ -105,8 +105,7 @@ export class LocationPickerComponent implements OnInit {
       PolicyLocationSearchModalResult
     >(PolicyLocationSearchModalComponent, {
       data: { policyNumber: this.policyNumber!, policyLocations: this.allPolicyLocations },
-      width: '960px',
-      maxWidth: '95vw',
+      panelClass: 'me-edit-modal-panel',
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;

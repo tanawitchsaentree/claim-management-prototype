@@ -60,18 +60,22 @@ $medium-bp: 1360px;
   display: flex;
   align-items: stretch;
   height: 100%;
-  gap: 32px;
+  gap: 4px;
 
   @media (max-width: $medium-bp) {
-    gap: 16px;
+    gap: 4px;
   }
 }
 
 .app-header__nav-item {
   display: flex;
   align-items: center;
-  padding: 0;
+  padding: 0 14px;
   height: 100%;
+
+  @media (max-width: $medium-bp) {
+    padding: 0 10px;
+  }
   background: none;
   border: none;
   font-size: 16px;
