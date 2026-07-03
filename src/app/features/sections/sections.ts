@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
@@ -38,6 +38,7 @@ import {
 })
 export class Sections {
   private readonly route      = inject(ActivatedRoute);
+  private readonly router     = inject(Router);
   private readonly sectionSvc = inject(MockSectionService);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly dialogSvc  = inject(NxDialogService);
@@ -92,10 +93,8 @@ export class Sections {
 
     const allClosed = updated.every(s => s.status === 'Closed');
     if (allClosed) {
-      this.toast.info(
-        'All sections closed',
-        'Claim can now be closed — navigate to Overview.',
-      );
+      const claimId = this.route.snapshot.params['id'];
+      this.router.navigate(['/claims', claimId, 'overview']);
     }
   }
 
