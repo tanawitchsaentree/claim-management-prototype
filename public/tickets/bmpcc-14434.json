@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-14434",
   "module": "Claims",
   "title": "Section & Claims Hierarchy Validations",
-  "targetClaim": "CL-2025-001",
+  "targetClaim": "CLM-2024-001",
   "pages": [
     "sections"
   ],
@@ -59,7 +59,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 Close Section on Section 001"
+        "trigger": "Click \u22ee \u2192 Close Section on Section 001",
+        "expectedResult": "Modal shows 2 red blocker rows (deductible + salvage); only Cancel button in footer"
       }
     },
     {
@@ -98,7 +99,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 Close Section on Section 002"
+        "trigger": "Click \u22ee \u2192 Close Section on Section 002",
+        "expectedResult": "Modal shows 3 red blocker rows (litigation + reserves + payments); only Cancel button in footer"
       }
     },
     {
@@ -135,7 +137,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 Close Section on Section 003"
+        "trigger": "Click \u22ee \u2192 Close Section on Section 003",
+        "expectedResult": "Modal shows 1 red blocker row (active provider); only Cancel button in footer"
       }
     },
     {
@@ -220,7 +223,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 Close Section on any section"
+        "trigger": "Click \u22ee \u2192 Close Section on any section",
+        "expectedResult": "Modal opens directly at pre-closure checklist (step 2); Continue disabled until all 5 checkboxes ticked; Close Section enabled after reason selected"
       }
     },
     {
@@ -254,7 +258,10 @@
           "sectionStatuses": {
             "SEC-001": "Closed",
             "SEC-002": "Closed",
-            "SEC-003": "Closed"
+            "SEC-003": "Closed",
+            "SEC-004": "Closed",
+            "SEC-005": "Closed",
+            "SEC-008": "Closed"
           }
         },
         "postLand": [
@@ -276,7 +283,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "action": "Click Close Claim"
+        "trigger": "Click Close Claim",
+        "expectedResult": "Claim closure modal step 1 shows no sections blocker; Close Claim button is active"
       }
     }
   ]

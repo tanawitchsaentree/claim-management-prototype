@@ -1,0 +1,129 @@
+<app-navbar />
+
+<!-- Toolbar / breadcrumb -->
+<div class="cl-toolbar">
+  <div nxLayout="grid maxwidth" class="cl-toolbar__inner">
+    <div nxRow><div nxCol="12">
+      <ol nxBreadcrumb>
+        <li nxBreadcrumbItem>Claims</li>
+      </ol>
+    </div></div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="cl-page-wrap">
+  <div nxLayout="grid maxwidth" class="cl-page">
+    <div nxRow><div nxCol="12">
+
+      <p class="cl-eyebrow">Claims</p>
+      <h1 class="cl-title">All claims</h1>
+      <p class="cl-caption">Browse and filter all claims across your portfolio.</p>
+
+      <!-- Filter form -->
+      <form [formGroup]="filterForm" class="cl-form" (ngSubmit)="onFilter()">
+        <div class="row1">
+          <div class="row1-inputs">
+            <nx-formfield label="Search">
+              <input nxInput formControlName="search" placeholder="Claim ID, client name…" autocomplete="off" />
+            </nx-formfield>
+            <nx-formfield label="Status">
+              <nx-dropdown formControlName="status" placeholder="All statuses">
+                @for (s of statuses; track s) {
+                  <nx-dropdown-item [value]="s">{{ s }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+            <nx-formfield label="Line of business">
+              <nx-dropdown formControlName="lineOfBusiness" placeholder="All lines">
+                @for (l of linesOfBusiness; track l) {
+                  <nx-dropdown-item [value]="l">{{ l }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
+          <div class="row1-actions">
+            <button nxButton="primary small" type="submit">Filter</button>
+            <button nxButton="tertiary small" type="button" (click)="onReset()">Reset</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Results count -->
+      @if (!loading()) {
+        <p class="cl-count">
+          {{ total() }} {{ total() === 1 ? 'claim' : 'claims' }} found
+        </p>
+      }
+
+      <!-- Table -->
+      @if (loading()) {
+        <p class="cl-empty">Loading claims…</p>
+      } @else if (total() === 0) {
+        <p class="cl-empty">No claims match the filters.</p>
+      } @else {
+        <table nxTable class="cl-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="cl-col--nowrap">Claim ID</th>
+              <th nxHeaderCell>Client name</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell>Line of business</th>
+              <th nxHeaderCell>Priority</th>
+              <th nxHeaderCell class="cl-col--nowrap">Date created</th>
+              <th nxHeaderCell>Assignee</th>
+              <th nxHeaderCell class="cl-col--nowrap">Loss event</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (claim of pagedRows(); track claim.claimId) {
+              <tr nxTableRow>
+                <td nxCell class="cl-col--nowrap">
+                  <a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']">
+                    {{ claim.claimId }}
+                  </a>
+                </td>
+                <td nxCell>{{ claim.clientName }}</td>
+                <td nxCell>
+                  <app-status-chip [status]="claim.status" domain="claim" />
+                  @if (isDormant(claim.dateUpdated) && claim.status !== 'Closed' && claim.status !== 'Declined') {
+                    <nx-badge type="critical"
+                      [title]="'No activity for ' + daysSince(claim.dateUpdated) + ' days'"
+                      class="cl-dormant-badge">Dormant</nx-badge>
+                  }
+                </td>
+                <td nxCell>{{ claim.lineOfBusiness }}</td>
+                <td nxCell>
+                  <span class="cl-priority cl-priority--{{ claim.priority }}">
+                    {{ priorityLabel(claim.priority) }}
+                  </span>
+                </td>
+                <td nxCell class="cl-col--nowrap cl-muted">{{ claim.dateCreated }}</td>
+                <td nxCell>{{ claim.assignee ?? '–' }}</td>
+                <td nxCell class="cl-col--nowrap">{{ claim.lossEventId ?? '–' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="cl-footer">
+          <span class="cl-footer__count">
+            Items per page: <strong>{{ pageSize }}</strong>
+          </span>
+          @if (total() > pageSize) {
+            <nx-pagination
+              type="advanced"
+              [count]="total()"
+              [page]="page()"
+              [perPage]="pageSize"
+              (goPrev)="page.set(page() - 1)"
+              (goNext)="page.set(page() + 1)"
+              (goPage)="page.set($event)">
+            </nx-pagination>
+          }
+        </div>
+      }
+
+    </div></div>
+  </div>
+</div>

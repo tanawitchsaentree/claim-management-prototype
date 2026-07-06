@@ -40,14 +40,14 @@
   @else if (vm().claim; as claim) {
     <div class="ref-body">
 
-      <!-- Status + priority -->
-      <div class="ref-section ref-section--status">
-        <app-status-chip [status]="claim.status" domain="claim" />
-        <span class="ref-priority ref-priority--{{ claim.priority }}">{{ claim.priority }}</span>
-      </div>
-
       <!-- Core fields -->
       <dl class="ref-fields">
+        <dt>Status</dt>
+        <dd><app-status-chip [status]="claim.status" domain="claim" /></dd>
+
+        <dt>Priority</dt>
+        <dd><span class="ref-priority ref-priority--{{ claim.priority }}">{{ claim.priority }}</span></dd>
+
         <dt>Client</dt>
         <dd>{{ claim.client }}</dd>
 

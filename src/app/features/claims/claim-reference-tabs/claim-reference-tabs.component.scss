@@ -88,22 +88,3 @@
   text-overflow: ellipsis;
 }
 
-// ─── Reference view (full-width when ref tab active) ─────────────────────────
-.rt-ref-view {
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-
-  app-claim-reference-panel {
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-
-  // Override panel width in tab mode — takes full content area width
-  ::ng-deep .ref-panel {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid var(--ui-04);
-  }
-}

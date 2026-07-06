@@ -72,7 +72,7 @@ export class Dashboard {
   readonly showMyTasksOnly     = signal(false);
   readonly showMyApprovalsOnly = signal(false);
   readonly claimsScope         = signal<'mine' | 'group' | 'all'>(
-    (localStorage.getItem('dashboard:claims-scope') as 'mine' | 'group' | 'all') ?? 'mine'
+    (localStorage.getItem('dashboard:claims-scope') as 'mine' | 'group' | 'all') ?? 'all'
   );
 
   // ── Core vm$ ─────────────────────────────────────────────────────────

@@ -19,6 +19,11 @@ export const routes: Routes = [
       import('./features/administration/mass-events/mass-events.component').then((m) => m.MassEventsComponent),
   },
   {
+    path: 'claims',
+    loadComponent: () =>
+      import('./features/claims/claims-list/claims-list.component').then((m) => m.ClaimsListComponent),
+  },
+  {
     path: 'approvals',
     loadComponent: () =>
       import('./features/approvals/approvals.component').then((m) => m.ApprovalsComponent),

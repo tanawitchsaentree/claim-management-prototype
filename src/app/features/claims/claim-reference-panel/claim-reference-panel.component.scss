@@ -2,6 +2,8 @@
   display: block;
   height: 100%;
   overflow: hidden;
+  // Bump status-chip font size — paragraph-04 is too small at panel width
+  --paragraph-04-font-size: 13px;
 }
 
 .ref-panel {
@@ -131,14 +133,6 @@
   padding: 0;
 }
 
-// ─── Status + priority row ───────────────────────────────────────────────────
-.ref-section--status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--ui-04);
-}
 
 .ref-priority {
   font-size: 11px;
