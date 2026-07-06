@@ -5,7 +5,7 @@
     "claimId": "CLM-2024-001",
     "taskType": "Review",
     "description": "Review damage assessment report from loss adjuster",
-    "status": "open",
+    "status": "done",
     "dueDate": "2026-05-10",
     "priority": "high",
     "assignee": "Klaus Schmidt"
@@ -16,7 +16,7 @@
     "claimId": "CLM-2024-001",
     "taskType": "Contact",
     "description": "Contact Kaufmann's Warehouse management for statement",
-    "status": "open",
+    "status": "done",
     "dueDate": "2026-05-15",
     "priority": "high",
     "assignee": "Klaus Schmidt"
@@ -27,7 +27,7 @@
     "claimId": "CLM-2024-001",
     "taskType": "Document",
     "description": "Request additional documentation — invoice copies and stock lists",
-    "status": "in-progress",
+    "status": "done",
     "dueDate": "2026-05-20",
     "priority": "medium",
     "assignee": "Carsten Muster"
@@ -38,7 +38,7 @@
     "claimId": "CLM-2024-001",
     "taskType": "Site visit",
     "description": "Schedule provider site visit for structural assessment",
-    "status": "open",
+    "status": "done",
     "dueDate": "2026-06-05",
     "priority": "medium",
     "assignee": "Leonie Fischer"
@@ -49,7 +49,7 @@
     "claimId": "CLM-2024-001",
     "taskType": "Finance",
     "description": "Update reserve estimate following adjuster preliminary report",
-    "status": "open",
+    "status": "done",
     "dueDate": "2026-06-06",
     "priority": "low",
     "assignee": "Mara Mustermann"

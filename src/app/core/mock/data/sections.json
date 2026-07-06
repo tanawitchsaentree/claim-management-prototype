@@ -3,42 +3,46 @@
     "id": "SEC-001",
     "claimId": "CLM-2024-001",
     "name": "Section 001",
-    "status": "Open",
+    "status": "Closed",
     "expanded": true,
-    "hasOpenDeductible": true,
+    "hasOpenDeductible": false,
     "hasActiveLitigation": false,
     "hasSubrogation": false,
-    "hasActiveSalvage": true,
+    "hasActiveSalvage": false,
     "hasOpenReserves": false,
     "hasOpenPayments": false,
     "hasActiveProvider": false,
+    "closureDate": "2026-06-20",
+    "closedBy": { "userId": "usr-ks", "name": "Klaus Schmidt" },
     "entities": [
-      { "id": "SE-001", "name": "Kaufmann's Warehouse", "damage": "Material damage",   "instructionStatus": "Pending",      "expandable": false, "assignedProvider": null },
-      { "id": "SE-002", "name": "Forklift",             "damage": "Material damage",   "instructionStatus": "Pending",      "expandable": false, "assignedProvider": null }
+      { "id": "SE-001", "name": "Kaufmann's Warehouse", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
+      { "id": "SE-002", "name": "Forklift",             "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
   },
   {
     "id": "SEC-002",
     "claimId": "CLM-2024-001",
     "name": "Section 002",
-    "status": "Open",
+    "status": "Closed",
     "expanded": true,
     "hasOpenDeductible": false,
-    "hasActiveLitigation": true,
+    "hasActiveLitigation": false,
     "hasSubrogation": false,
     "hasActiveSalvage": false,
-    "hasOpenReserves": true,
-    "hasOpenPayments": true,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
     "hasActiveProvider": false,
+    "closureDate": "2026-06-22",
+    "closedBy": { "userId": "usr-lf", "name": "Leonie Fischer" },
     "entities": [
-      { "id": "SE-003", "name": "Sales of Machinery and Equipment", "damage": "Business interruption", "instructionStatus": "Not assigned", "expandable": false, "assignedProvider": null }
+      { "id": "SE-003", "name": "Sales of Machinery and Equipment", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
   },
   {
     "id": "SEC-003",
     "claimId": "CLM-2024-001",
     "name": "Section 003",
-    "status": "Open",
+    "status": "Closed",
     "expanded": false,
     "hasOpenDeductible": false,
     "hasActiveLitigation": false,
@@ -46,7 +50,9 @@
     "hasActiveSalvage": false,
     "hasOpenReserves": false,
     "hasOpenPayments": false,
-    "hasActiveProvider": true,
+    "hasActiveProvider": false,
+    "closureDate": "2026-06-25",
+    "closedBy": { "userId": "usr-cm", "name": "Carsten Muster" },
     "entities": []
   },
   {
@@ -131,17 +137,19 @@
     "id": "SEC-008",
     "claimId": "CLM-2024-001",
     "name": "Section 004 — Payment Demo",
-    "status": "Open",
+    "status": "Closed",
     "expanded": false,
     "hasOpenDeductible": false,
     "hasActiveLitigation": false,
     "hasSubrogation": false,
     "hasActiveSalvage": false,
     "hasOpenReserves": false,
-    "hasOpenPayments": true,
+    "hasOpenPayments": false,
     "hasActiveProvider": false,
+    "closureDate": "2026-06-28",
+    "closedBy": { "userId": "usr-lf", "name": "Leonie Fischer" },
     "entities": [
-      { "id": "SE-010", "name": "Final Settlement", "damage": "Material damage", "instructionStatus": "In progress", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-010", "name": "Final Settlement", "damage": "Material damage", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
   }
 ]
