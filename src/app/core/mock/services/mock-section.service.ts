@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { ClaimSection, SectionClosureReason } from '../../models/section.model';
+import { ClaimSection, SectionClosureReason, SectionEntity } from '../../models/section.model';
 import { ClaimActivity } from '../../models/claim-overview.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
@@ -70,6 +70,31 @@ export class MockSectionService extends MockBaseService {
       'id',
       sectionId,
     ) as unknown as Observable<ClaimSection>;
+  }
+
+  patchEntity(sectionId: string, entityId: string, patch: Partial<SectionEntity>): Observable<SectionEntity> {
+    for (const [, sections] of this.cache) {
+      const section = sections.find(s => s.id === sectionId);
+      if (!section) continue;
+      const idx = section.entities.findIndex(e => e.id === entityId);
+      if (idx === -1) continue;
+      const updated = { ...section.entities[idx], ...patch };
+      section.entities = section.entities.map((e, i) => i === idx ? updated : e);
+      this.stateSvc.patchSection(sectionId, { entities: [...section.entities] });
+      const activity: ClaimActivity = {
+        id:         `act-entity-edit-${Date.now()}`,
+        claimId:    section.claimId,
+        user:       'Leonie Fischer',
+        timestamp:  new Date().toISOString(),
+        objectType: 'Section Entity',
+        attribute:  'Damage type',
+        valueOld:   section.entities[idx]?.damage ?? '',
+        valueNew:   patch.damage ?? updated.damage,
+      };
+      this.stateSvc.patchActivities(items => [activity, ...items]);
+      return this.respond({ ...updated });
+    }
+    return this.respond({} as SectionEntity);
   }
 
   getOpenSectionsCount(claimId: string): Observable<number> {

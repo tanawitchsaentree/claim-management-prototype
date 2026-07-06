@@ -9,7 +9,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom, catchError, of } from 'rxjs';
-import { ClaimSection, InstructionStatus } from '../../core/models/section.model';
+import { ClaimSection, SectionEntity, InstructionStatus } from '../../core/models/section.model';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
@@ -19,6 +19,11 @@ import {
   SectionClosureModalData,
   SectionClosureModalResult,
 } from './section-closure-modal/section-closure-modal.component';
+import {
+  EditEntityDamageModalComponent,
+  EditEntityDamageModalData,
+  EditEntityDamageModalResult,
+} from './edit-entity-damage-modal/edit-entity-damage-modal.component';
 
 @Component({
   selector: 'app-sections',
@@ -119,6 +124,26 @@ export class Sections {
     } catch (err: unknown) {
       this.toast.error('Simulate Final Payment failed', String(err));
     }
+  }
+
+  async onEditEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
+    const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
+      data: { entity } satisfies EditEntityDamageModalData,
+      width: '480px',
+      maxWidth: '92vw',
+    });
+
+    const result = await firstValueFrom(ref.afterClosed()) as EditEntityDamageModalResult | undefined;
+    if (!result) return;
+
+    await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
+    this.sections.update(list =>
+      list.map(s => s.id === section.id
+        ? { ...s, entities: s.entities.map(e => e.id === entity.id ? { ...e, ...result } : e) }
+        : s
+      )
+    );
+    this.toast.success(`Entity "${entity.name}" updated`);
   }
 
   onAction(action: string, name: string): void {

@@ -1,0 +1,40 @@
+<!-- Header -->
+<div class="eed-header">
+  <h2 class="eed-title">Edit Entity — {{ data.entity.name }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="cancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<!-- Body -->
+<div class="eed-body" [formGroup]="form">
+
+  <nx-formfield label="Damage type">
+    <nx-dropdown formControlName="damage" placeholder="Select damage type">
+      @for (opt of damageOptions; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    @if (form.get('damage')?.invalid && form.get('damage')?.touched) {
+      <nx-error>Please select a damage type</nx-error>
+    }
+  </nx-formfield>
+
+  <nx-formfield label="Instruction status">
+    <nx-dropdown formControlName="instructionStatus" placeholder="Select status">
+      @for (opt of instructionStatusOptions; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    @if (form.get('instructionStatus')?.invalid && form.get('instructionStatus')?.touched) {
+      <nx-error>Please select an instruction status</nx-error>
+    }
+  </nx-formfield>
+
+</div>
+
+<!-- Footer -->
+<div class="eed-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Save changes</button>
+</div>

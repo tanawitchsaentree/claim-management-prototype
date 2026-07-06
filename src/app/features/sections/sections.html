@@ -101,7 +101,16 @@
                 </span>
               </td>
               <td nxCell class="text-muted">{{ entity.assignedProvider ?? '–' }}</td>
-              <td nxTableCell class="col-actions"></td>
+              <td nxTableCell class="col-actions">
+                @if (section.status !== 'Closed') {
+                  <button nxIconButton="tertiary" type="button"
+                    aria-label="Edit entity"
+                    nxTooltip="Edit damage & status"
+                    (click)="onEditEntity(section, entity)">
+                    <nx-icon name="pencil"></nx-icon>
+                  </button>
+                }
+              </td>
             </tr>
           }
         }
