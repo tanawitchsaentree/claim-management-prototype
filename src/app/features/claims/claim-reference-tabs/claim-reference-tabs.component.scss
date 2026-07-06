@@ -1,0 +1,109 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+// ─── Tab strip ───────────────────────────────────────────────────────────────
+.rt-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--ui-02);
+  border-bottom: 2px solid var(--ui-04);
+  padding: 0 8px;
+  min-height: 36px;
+}
+
+.rt-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  position: relative;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--text-01);
+    background: var(--ui-03);
+  }
+
+  &--active {
+    color: var(--text-01);
+    border-bottom-color: var(--interactive-primary);
+    background: var(--ui-01);
+    font-weight: 500;
+  }
+}
+
+.rt-tab__icon {
+  opacity: 0.5;
+
+  .rt-tab--active & { opacity: 1; }
+}
+
+.rt-tab__badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--interactive-primary);
+  color: var(--button-primary-text-color);
+  padding: 1px 5px;
+  border-radius: 8px;
+}
+
+.rt-tab__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0;
+  margin-left: 2px;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: var(--ui-04);
+    color: var(--text-01);
+  }
+}
+
+.rt-tab__label {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Reference view (full-width when ref tab active) ─────────────────────────
+.rt-ref-view {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+
+  app-claim-reference-panel {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  // Override panel width in tab mode — takes full content area width
+  ::ng-deep .ref-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--ui-04);
+  }
+}

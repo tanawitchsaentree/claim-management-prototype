@@ -1,0 +1,42 @@
+<!-- Tab bar strip — sits below navbar, above page content -->
+<div class="rt-bar">
+
+  <!-- Primary claim tab (always present) -->
+  <button
+    class="rt-tab"
+    [class.rt-tab--active]="activeTab() === 'primary'"
+    type="button"
+    (click)="activeTab.set('primary')">
+    <nx-icon name="product-board-paper-note" size="s" class="rt-tab__icon"></nx-icon>
+    <span class="rt-tab__label">Primary claim</span>
+  </button>
+
+  <!-- Reference claim tab -->
+  @if (svc.refClaimId(); as refId) {
+    <button
+      class="rt-tab"
+      [class.rt-tab--active]="activeTab() === refId"
+      type="button"
+      (click)="activeTab.set(refId)">
+      <span class="rt-tab__badge">Ref</span>
+      <span class="rt-tab__label">{{ refId }}</span>
+      <button
+        class="rt-tab__close"
+        type="button"
+        (click)="$event.stopPropagation(); svc.close()"
+        aria-label="Close reference tab">
+        <nx-icon name="close" size="s"></nx-icon>
+      </button>
+    </button>
+  }
+
+</div>
+
+<!-- Reference panel shown inline when ref tab is active -->
+@if (activeTab() !== 'primary' && svc.refClaimId()) {
+  <div class="rt-ref-view">
+    <app-claim-reference-panel
+      [claimId]="svc.refClaimId()!"
+      (closePanel)="svc.close()" />
+  </div>
+}

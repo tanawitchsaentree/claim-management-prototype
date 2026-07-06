@@ -1,5 +1,10 @@
 <div class="app-shell">
   <app-navbar />
+
+  @if (refSvc.isTabsMode() && showRightStrip()) {
+    <app-claim-reference-tabs />
+  }
+
   <div class="app-body">
     <app-sidebar />
     <main class="main-content">
@@ -8,16 +13,10 @@
     @if (showRightStrip()) {
       <app-claim-right-strip />
     }
-    @if (refPanelEnabled && showRightStrip()) {
-      @if (showRefPanel()) {
-        <app-claim-reference-panel
-          [claimId]="refClaimId()!"
-          (closePanel)="closeRefPanel()" />
-      } @else {
-        <button class="ref-open-btn" type="button" (click)="openRefPanel()" title="Open reference claim">
-          <span class="ref-open-btn__label">Ref</span>
-        </button>
-      }
+    @if (refSvc.isPanelMode() && showRightStrip() && refSvc.refClaimId()) {
+      <app-claim-reference-panel
+        [claimId]="refSvc.refClaimId()!"
+        (closePanel)="refSvc.close()" />
     }
   </div>
 </div>

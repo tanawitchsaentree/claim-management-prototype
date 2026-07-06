@@ -98,3 +98,34 @@
   color: var(--text-muted);
 }
 
+// ─── Reference view section (right side) ─────────────────────────────────────
+.cdb-spacer {
+  flex: 1;
+}
+
+.cdb-ref-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cdb-ref-picker {
+  width: 220px;
+  flex-shrink: 0;
+  margin-bottom: 0 !important;
+
+  ::ng-deep .nx-formfield__wrapper {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  ::ng-deep .nx-formfield__label {
+    display: none !important;
+  }
+
+  ::ng-deep .nx-formfield-hint__wrapper {
+    display: none !important;
+  }
+}
+

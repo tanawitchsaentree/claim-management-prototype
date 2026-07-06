@@ -6,6 +6,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxTaglistModule } from '@allianz/ng-aquila/taglist';
 import { ClaimDevHelperService, DevTicket, BuildStatus } from './claim-dev-helper.service';
+import { ReferenceViewService, ReferenceVariant } from '../claim-reference-panel/reference-view.service';
 
 @Component({
   selector: 'app-claim-dev-banner',
@@ -15,17 +16,32 @@ import { ClaimDevHelperService, DevTicket, BuildStatus } from './claim-dev-helpe
   styleUrl: './claim-dev-banner.component.scss',
 })
 export class ClaimDevBannerComponent implements OnInit {
-  readonly helper = inject(ClaimDevHelperService);
+  readonly helper  = inject(ClaimDevHelperService);
+  readonly refSvc  = inject(ReferenceViewService);
 
   readonly visible = true;
 
-  readonly ticketCtrl = new FormControl<string | null>(null);
+  readonly ticketCtrl   = new FormControl<string | null>(null);
+  readonly variantCtrl  = new FormControl<ReferenceVariant>('none');
+
+  readonly variantOptions: { value: ReferenceVariant; label: string }[] = [
+    { value: 'none',  label: 'Off'               },
+    { value: 'panel', label: 'Variant 1 — Side panel' },
+    { value: 'tabs',  label: 'Variant 2 — Tab bar'    },
+  ];
 
   constructor() {
     effect(() => {
       const id = this.helper.selectedTicket()?.ticketId ?? null;
       if (this.ticketCtrl.value !== id) {
         this.ticketCtrl.setValue(id, { emitEvent: false });
+      }
+    });
+    // Keep dropdown in sync when refSvc.variant changes externally (e.g. close btn)
+    effect(() => {
+      const v = this.refSvc.variant();
+      if (this.variantCtrl.value !== v) {
+        this.variantCtrl.setValue(v, { emitEvent: false });
       }
     });
   }
@@ -88,6 +104,11 @@ export class ClaimDevBannerComponent implements OnInit {
     if (!card) return;
     this.helper.clearMinimized();
     this.helper.openDetailsFor(card, acId);
+  }
+
+  onVariantChange(event: { value: ReferenceVariant } | null): void {
+    const v = event?.value ?? 'none';
+    this.refSvc.setVariant(v, this.helper.currentClaimId());
   }
 
   onReset(): void {

@@ -135,6 +135,7 @@ export class ClaimDevHelperService {
 
   readonly shouldShowBanner = computed(() => this.isFeatureRoute());
   readonly shouldShowFnolHelper = computed(() => this.isFnolRoute());
+  readonly isOverviewRoute = computed(() => /^\/claims\/[^/]+\/overview/.test(this.url()));
 
   private readonly _tickets = signal<DevTicket[]>([]);
   readonly tickets = this._tickets.asReadonly();
