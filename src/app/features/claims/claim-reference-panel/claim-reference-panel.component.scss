@@ -1,0 +1,239 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ref-panel {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  height: 100%;
+  background: var(--ui-01);
+  border-left: 1px solid var(--ui-04);
+  overflow: hidden;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+.ref-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--ui-02);
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.ref-header__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ref-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--interactive-primary);
+  color: var(--button-primary-text-color);
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.ref-claim-id {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-01);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ref-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.ref-header__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: var(--ui-04);
+    color: var(--text-01);
+  }
+}
+
+// ─── State screens (loading / not-found) ─────────────────────────────────────
+.ref-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  flex: 1;
+}
+
+.ref-state--loading {
+  flex-direction: row;
+  gap: 8px;
+  padding: 24px;
+  justify-content: flex-start;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.ref-spinner { animation: spin 0.8s linear infinite; }
+
+.ref-state__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0;
+}
+
+.ref-state__desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ─── Body ────────────────────────────────────────────────────────────────────
+.ref-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  flex: 1;
+  padding: 0;
+}
+
+// ─── Status + priority row ───────────────────────────────────────────────────
+.ref-section--status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.ref-priority {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--ui-03);
+  color: var(--text-01);
+
+  &--high   { background: var(--negative-01, #fde8e8); color: var(--negative, #c0392b); }
+  &--medium { background: var(--warning-01, #fef3e2); color: var(--warning, #d35400); }
+  &--low    { background: var(--positive-01, #eaf4eb); color: var(--positive, #27ae60); }
+}
+
+// ─── Key-value fields ────────────────────────────────────────────────────────
+.ref-fields {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0;
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ui-04);
+
+  dt, dd {
+    padding: 5px 16px;
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  dt {
+    color: var(--text-muted);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  dd {
+    color: var(--text-01);
+    font-weight: 500;
+    word-break: break-word;
+  }
+}
+
+// ─── Generic section block ───────────────────────────────────────────────────
+.ref-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ui-04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ref-section__label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+// ─── Financials ──────────────────────────────────────────────────────────────
+.ref-fin-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+
+  &__label { font-size: 12px; color: var(--text-muted); }
+  &__value { font-size: 13px; font-weight: 600; color: var(--text-01); }
+}
+
+// ─── Sections list ───────────────────────────────────────────────────────────
+.ref-sections-summary {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.ref-sec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+
+  &__name {
+    font-size: 12px;
+    color: var(--text-01);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

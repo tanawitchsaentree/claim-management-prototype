@@ -8,5 +8,16 @@
     @if (showRightStrip()) {
       <app-claim-right-strip />
     }
+    @if (refPanelEnabled && showRightStrip()) {
+      @if (showRefPanel()) {
+        <app-claim-reference-panel
+          [claimId]="refClaimId()!"
+          (closePanel)="closeRefPanel()" />
+      } @else {
+        <button class="ref-open-btn" type="button" (click)="openRefPanel()" title="Open reference claim">
+          <span class="ref-open-btn__label">Ref</span>
+        </button>
+      }
+    }
   </div>
 </div>

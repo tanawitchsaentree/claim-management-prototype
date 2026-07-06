@@ -10,8 +10,14 @@ export class MockClaimOverviewService extends MockBaseService {
 
   getOverview(claimId: string): Observable<ClaimOverview> {
     const overviews = this.stateSvc.state().overviews;
+    // Explicit null return when claimId not in mock data — callers should guard.
+    // Fallback to CL-2025-001 only for the primary routed view (legacy behaviour).
     const item = overviews[claimId] ?? overviews['CL-2025-001'];
     return this.respond(item);
+  }
+
+  hasOverview(claimId: string): boolean {
+    return claimId in this.stateSvc.state().overviews;
   }
 
   getActivities(claimId: string): Observable<ClaimActivity[]> {

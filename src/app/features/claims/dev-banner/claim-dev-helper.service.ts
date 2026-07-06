@@ -280,7 +280,7 @@ export class ClaimDevHelperService {
     for (const ticket of orderedTickets) {
       const ac = ticket.acceptanceCriteria.find(a => a.id === acId);
       if (ac) {
-        await this.stageSvc.run(ac.setup.postLand);
+        await this.stageSvc.run(ac.setup.postLand, this.currentClaimId() ?? undefined);
         return;
       }
     }

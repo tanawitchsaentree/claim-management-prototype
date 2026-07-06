@@ -97,6 +97,7 @@ const TASKS_PAGE_SIZE = 10;
 })
 export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage {
   readonly page = 'overview' as const;
+  claimId: string | undefined;
 
   private readonly route          = inject(ActivatedRoute);
   private readonly overviewSvc    = inject(MockClaimOverviewService);
@@ -129,6 +130,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     ]).pipe(
       switchMap(([params]) => {
         const claimId = params.get('id') ?? 'CL-2025-001';
+        this.claimId = claimId;
         this.vm$.next(EMPTY_VM);
         return combineLatest({
           overview: this.overviewSvc.getOverviewWithActivities(claimId),

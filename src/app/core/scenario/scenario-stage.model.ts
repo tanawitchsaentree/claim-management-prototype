@@ -17,12 +17,14 @@ export type PostLandHook =
 
 export interface OverviewStage {
   readonly page: 'overview';
+  readonly claimId?: string;
   openClosureModalAuto(): Promise<void>;
   confirmClosure(reason: ClosureReason): Promise<void>;
 }
 
 export interface FnolLossInfoStage {
   readonly page: 'fnol-loss-info';
+  readonly claimId?: string;
   prefillDuplicate(date: string, causes: string[]): Promise<void>;
   openShowAllDuplicates(date: string, causes: string[]): Promise<void>;
   openLocationPicker(): Promise<void>;

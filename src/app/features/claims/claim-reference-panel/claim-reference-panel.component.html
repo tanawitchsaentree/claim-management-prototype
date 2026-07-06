@@ -1,0 +1,102 @@
+<div class="ref-panel" @refPanelSlide>
+
+  <!-- Header -->
+  <div class="ref-header">
+    <div class="ref-header__left">
+      <span class="ref-badge">Reference</span>
+      <span class="ref-claim-id">{{ claimId }}</span>
+    </div>
+    <div class="ref-header__actions">
+      <a class="ref-header__icon-btn" [routerLink]="['/claims', claimId, 'overview']" title="Open in full view">
+        <nx-icon name="launch" size="s"></nx-icon>
+      </a>
+      <button class="ref-header__icon-btn" type="button" (click)="closePanel.emit()" title="Close reference panel" aria-label="Close reference panel">
+        <nx-icon name="close" size="s"></nx-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (vm().loading) {
+    <div class="ref-state ref-state--loading">
+      <nx-icon name="refresh" size="s" class="ref-spinner"></nx-icon>
+      <span>Loading reference claim…</span>
+    </div>
+  }
+
+  <!-- Not found -->
+  @else if (vm().notFound) {
+    <div class="ref-state ref-state--not-found">
+      <nx-icon name="info-circle-o" size="m"></nx-icon>
+      <p class="ref-state__title">Claim not found</p>
+      <p class="ref-state__desc">
+        <strong>{{ claimId }}</strong> is not available in the current demo data set.
+        Try CLM-2024-001 or CLM-2024-011.
+      </p>
+    </div>
+  }
+
+  <!-- Data -->
+  @else if (vm().claim; as claim) {
+    <div class="ref-body">
+
+      <!-- Status + priority -->
+      <div class="ref-section ref-section--status">
+        <app-status-chip [status]="claim.status" domain="claim" />
+        <span class="ref-priority ref-priority--{{ claim.priority }}">{{ claim.priority }}</span>
+      </div>
+
+      <!-- Core fields -->
+      <dl class="ref-fields">
+        <dt>Client</dt>
+        <dd>{{ claim.client }}</dd>
+
+        <dt>Handler</dt>
+        <dd>{{ claim.handler }}</dd>
+
+        <dt>Line of business</dt>
+        <dd>{{ claim.lineOfBusiness }}</dd>
+
+        <dt>Cause of loss</dt>
+        <dd>{{ claim.proximateLossCause || '–' }}</dd>
+
+        <dt>Loss date</dt>
+        <dd>{{ claim.dateOfLoss }}</dd>
+
+        <dt>Date created</dt>
+        <dd>{{ claim.dateCreated }}</dd>
+      </dl>
+
+      <!-- Financials summary -->
+      <div class="ref-section">
+        <p class="ref-section__label">Financials</p>
+        <div class="ref-fin-row">
+          <span class="ref-fin-row__label">Total reserve</span>
+          <span class="ref-fin-row__value">
+            {{ claim.financialSummary.currency }} {{ claim.financialSummary.totalReserve | number }}
+          </span>
+        </div>
+        <div class="ref-fin-row">
+          <span class="ref-fin-row__label">Total payments</span>
+          <span class="ref-fin-row__value">
+            {{ claim.financialSummary.currency }} {{ claim.financialSummary.totalPayments | number }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Sections -->
+      <div class="ref-section">
+        <p class="ref-section__label">Sections</p>
+        <p class="ref-sections-summary">{{ sectionsSummary(vm().sections) }}</p>
+        @for (sec of vm().sections; track sec.id) {
+          <div class="ref-sec-row">
+            <span class="ref-sec-row__name">{{ sec.name }}</span>
+            <app-status-chip [status]="sec.status" domain="claim" />
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+
+</div>

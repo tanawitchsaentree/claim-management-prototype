@@ -10,50 +10,63 @@ import {
 
 const STAGE_READY_TIMEOUT_MS = 4000;
 
+// Key includes claimId to prevent collision when two claim views are alive
+// simultaneously (e.g. primary claim + reference panel). Format: 'page::claimId'
+// for claim-scoped pages, bare 'page' for non-claim pages (fnol-loss-info).
+type StageKey = string;
+
+function stageKey(stage: Stage): StageKey {
+  if ('claimId' in stage && stage.claimId) return `${stage.page}::${stage.claimId}`;
+  return stage.page;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ScenarioStageService {
   private readonly appRef = inject(ApplicationRef);
-  private readonly stages = new Map<StagePage, Stage>();
-  private readonly readyEvents$ = new Subject<StagePage>();
+  private readonly stages = new Map<StageKey, Stage>();
+  private readonly readyEvents$ = new Subject<StageKey>();
 
   register(stage: Stage): () => void {
-    this.stages.set(stage.page, stage);
-    this.readyEvents$.next(stage.page);
+    const key = stageKey(stage);
+    this.stages.set(key, stage);
+    this.readyEvents$.next(key);
     return () => {
-      if (this.stages.get(stage.page) === stage) this.stages.delete(stage.page);
+      if (this.stages.get(key) === stage) this.stages.delete(key);
     };
   }
 
-  private get(page: StagePage): Stage | null {
-    return this.stages.get(page) ?? null;
+  private get(page: StagePage, claimId?: string): Stage | null {
+    const key = claimId ? `${page}::${claimId}` : page;
+    return this.stages.get(key) ?? null;
   }
 
-  private async waitForStage<T extends Stage>(page: StagePage): Promise<T | null> {
-    const existing = this.get(page);
+  private async waitForStage<T extends Stage>(page: StagePage, claimId?: string): Promise<T | null> {
+    const existing = this.get(page, claimId);
     if (existing) return existing as T;
+    const key = claimId ? `${page}::${claimId}` : page;
     const ready$ = this.readyEvents$.pipe(
-      filter(p => p === page),
+      filter(k => k === key),
       take(1),
       timeout(STAGE_READY_TIMEOUT_MS),
       catchError(() => of(null)),
     );
     const got = await firstValueFrom(ready$);
     if (!got) return null;
-    return (this.get(page) as T) ?? null;
+    return (this.get(page, claimId) as T) ?? null;
   }
 
   private async waitForStable(): Promise<void> {
     await firstValueFrom(this.appRef.isStable.pipe(filter(s => s), take(1)));
   }
 
-  async run(hooks: PostLandHook[] | undefined): Promise<void> {
+  async run(hooks: PostLandHook[] | undefined, claimId?: string): Promise<void> {
     if (!hooks?.length) return;
     await this.waitForStable();
     // Settle: let component ngOnInit + ViewChild queries finish.
     await new Promise(resolve => setTimeout(resolve, 50));
     for (const hook of hooks) {
       try {
-        await this.execute(hook);
+        await this.execute(hook, claimId);
       } catch (err) {
         console.warn('[ScenarioStage] hook failed:', hook, err);
       }
@@ -62,15 +75,15 @@ export class ScenarioStageService {
     }
   }
 
-  private async execute(hook: PostLandHook): Promise<void> {
+  private async execute(hook: PostLandHook, claimId?: string): Promise<void> {
     switch (hook.kind) {
       case 'overview.openClosureModal': {
-        const s = await this.waitForStage<OverviewStage>('overview');
+        const s = await this.waitForStage<OverviewStage>('overview', claimId);
         if (s) await s.openClosureModalAuto();
         return;
       }
       case 'overview.confirmClosure': {
-        const s = await this.waitForStage<OverviewStage>('overview');
+        const s = await this.waitForStage<OverviewStage>('overview', claimId);
         if (s) await s.confirmClosure(hook.reason);
         return;
       }
