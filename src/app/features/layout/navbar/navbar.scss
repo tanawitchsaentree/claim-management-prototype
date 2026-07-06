@@ -112,7 +112,7 @@ $medium-bp: 1360px;
 .app-header__right {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 12px;
   height: 100%;
 }
 
@@ -181,12 +181,10 @@ $medium-bp: 1360px;
 .app-header__actions {
   display: flex;
   align-items: center;
-  padding-left: 16px;
   gap: 4px;
 }
 
 .app-header__avatar-btn {
-  margin-left: 16px;
   flex-shrink: 0;
 }
 
