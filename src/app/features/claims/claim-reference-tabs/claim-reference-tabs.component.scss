@@ -3,17 +3,28 @@
   width: 100%;
 }
 
-// ─── Tab strip ───────────────────────────────────────────────────────────────
+// ─── Tab strip ────────────────────────────────────────────────────────────────
 .rt-bar {
   display: flex;
   align-items: stretch;
-  gap: 0;
   background: var(--ui-02);
   border-bottom: 2px solid var(--ui-04);
   padding: 0 8px;
   min-height: 36px;
+  position: relative; // popover anchor
 }
 
+// ─── Scrollable ref tabs container ───────────────────────────────────────────
+.rt-tabs-scroll {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+// ─── Tab ─────────────────────────────────────────────────────────────────────
 .rt-tab {
   display: inline-flex;
   align-items: center;
@@ -27,8 +38,8 @@
   font-size: 13px;
   color: var(--text-muted);
   transition: color 0.15s, border-color 0.15s, background 0.15s;
-  position: relative;
   white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover {
     color: var(--text-01);
@@ -41,11 +52,18 @@
     background: var(--ui-01);
     font-weight: 500;
   }
+
+  // Primary tab: visual separator before ref tabs
+  &--primary {
+    flex-shrink: 0;
+    border-right: 1px solid var(--ui-04);
+    padding-right: 16px;
+    margin-right: 4px;
+  }
 }
 
 .rt-tab__icon {
   opacity: 0.5;
-
   .rt-tab--active & { opacity: 1; }
 }
 
@@ -83,8 +101,108 @@
 }
 
 .rt-tab__label {
-  max-width: 160px;
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+// ─── Add tab button ───────────────────────────────────────────────────────────
+.rt-add-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.rt-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: background 0.12s, color 0.12s;
+
+  &:hover,
+  &--open {
+    background: var(--ui-03);
+    color: var(--text-01);
+  }
+}
+
+// ─── Search popover ───────────────────────────────────────────────────────────
+.rt-popover-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.rt-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 300px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.rt-popover__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid var(--ui-04);
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-01);
+  outline: none;
+
+  &::placeholder { color: var(--text-muted); }
+}
+
+.rt-popover__empty,
+.rt-popover__hint {
+  padding: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.rt-popover__list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.rt-popover__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover { background: var(--ui-03); }
+}
+
+.rt-popover__claim-id {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-01);
+}
+
+.rt-popover__client {
+  font-size: 12px;
+  color: var(--text-muted);
+}

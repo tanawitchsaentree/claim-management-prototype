@@ -1,33 +1,84 @@
-<!-- Tab bar strip — sits below navbar, above page content -->
+<!-- Tab bar strip — below navbar, above all page content -->
 <div class="rt-bar">
 
-  <!-- Primary claim tab -->
+  <!-- Primary tab — always leftmost, never closeable -->
   <button
-    class="rt-tab"
-    [class.rt-tab--active]="activeTab() === 'primary'"
+    class="rt-tab rt-tab--primary"
+    [class.rt-tab--active]="activeTabId() === 'primary'"
     type="button"
     (click)="goToPrimary()">
     <nx-icon name="product-board-paper-note" size="s" class="rt-tab__icon"></nx-icon>
     <span class="rt-tab__label">{{ svc.primaryClaimId() }}</span>
   </button>
 
-  <!-- Reference claim tab — full claim, navigates like a real browser tab -->
-  @if (svc.refClaimId(); as refId) {
-    <button
-      class="rt-tab"
-      [class.rt-tab--active]="activeTab() === 'ref'"
-      type="button"
-      (click)="goToRef()">
-      <span class="rt-tab__badge">Ref</span>
-      <span class="rt-tab__label">{{ refId }}</span>
+  <!-- Scrollable reference tabs -->
+  <div class="rt-tabs-scroll">
+    @for (tab of svc.refTabs(); track tab.id) {
       <button
-        class="rt-tab__close"
+        class="rt-tab"
+        [class.rt-tab--active]="activeTabId() === tab.id"
         type="button"
-        (click)="$event.stopPropagation(); closeRef()"
-        aria-label="Close reference tab">
-        <nx-icon name="close" size="s"></nx-icon>
+        (click)="goToRef(tab)">
+        <span class="rt-tab__badge">Ref</span>
+        <span class="rt-tab__label">{{ tab.claimId }}</span>
+        <button
+          class="rt-tab__close"
+          type="button"
+          (click)="$event.stopPropagation(); closeRef(tab)"
+          [attr.aria-label]="'Close ' + tab.claimId">
+          <nx-icon name="close" size="s"></nx-icon>
+        </button>
       </button>
-    </button>
+    }
+  </div>
+
+  <!-- Add tab button + search popover -->
+  @if (svc.canAddRefTab()) {
+    <div class="rt-add-wrap">
+      <button
+        class="rt-add-btn"
+        [class.rt-add-btn--open]="showAddPopover()"
+        type="button"
+        aria-label="Open reference claim in new tab"
+        (click)="toggleAddPopover()">
+        <nx-icon name="plus" size="s"></nx-icon>
+      </button>
+
+      @if (showAddPopover()) {
+        <!-- Backdrop: click-outside closes popover -->
+        <div class="rt-popover-backdrop" (click)="closeAddPopover()"></div>
+
+        <div class="rt-popover" (keydown.escape)="closeAddPopover()">
+          <input
+            class="rt-popover__input"
+            type="text"
+            placeholder="Search claim ID or client…"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="onSearchInput($event)"
+            autofocus />
+
+          @if (searching()) {
+            <div class="rt-popover__empty">Searching…</div>
+          } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
+            <div class="rt-popover__empty">No claims found</div>
+          } @else if (searchResults().length > 0) {
+            <ul class="rt-popover__list" role="listbox">
+              @for (claim of searchResults(); track claim.claimId) {
+                <li
+                  class="rt-popover__item"
+                  role="option"
+                  (click)="selectResult(claim)">
+                  <span class="rt-popover__claim-id">{{ claim.claimId }}</span>
+                  <span class="rt-popover__client">{{ claim.clientName }}</span>
+                </li>
+              }
+            </ul>
+          } @else {
+            <div class="rt-popover__hint">Type at least 2 characters to search</div>
+          }
+        </div>
+      }
+    </div>
   }
 
 </div>
