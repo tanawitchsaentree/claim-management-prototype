@@ -18,10 +18,11 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Override registry
+        run: echo "registry=https://registry.npmjs.org/" > .npmrc
+
       - name: Install dependencies
-        run: npm install
-        env:
-          npm_config_registry: https://registry.npmjs.org/
+        run: npm ci
 
       - name: Build
         run: npx ng build
