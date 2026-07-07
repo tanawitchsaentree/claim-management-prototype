@@ -73,7 +73,7 @@ export class SectionClosureModalComponent {
 
   readonly closureReasons  = CLOSURE_REASONS;
   readonly checklistItems  = CHECKLIST_ITEMS;
-  readonly checklistChecked = signal<boolean[]>(CHECKLIST_ITEMS.map(() => false));
+  readonly checklistChecked = signal<boolean[]>(CHECKLIST_ITEMS.map(() => true));
   readonly checklistAllDone = computed(() => this.checklistChecked().every(v => v));
 
   readonly form = this.fb.group({
