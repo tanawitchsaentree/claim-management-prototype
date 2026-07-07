@@ -487,13 +487,12 @@ $header-bp: 1024px;
 .portfolio-tab {
   background: none;
   border: none;
-  padding: $sp-sm $sp-base $sp-sm 0;   // 8 16 8 0
+  padding: $sp-sm $sp-base;
   font-size: 14px;
   font-weight: 500;
   color: $text-muted;
   cursor: pointer;
   position: relative;
-  margin-right: $sp-base;
 
   &--active {
     color: $blue-active;
