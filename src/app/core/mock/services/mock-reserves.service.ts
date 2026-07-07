@@ -110,9 +110,9 @@ export class MockReservesService {
 
         const buildDamagedItems = (sectionPrefix: string): DamagedItem[] => {
           const itemSeeds = [
-            { name: "Kaufmann's Warehouse: Gate", indemnity: 2000,  expenses: 0,    recoveries: 0    },
-            { name: 'MDT3562: Burnt tires',        indemnity: 10000, expenses: 0,    recoveries: 0    },
-            { name: 'MDT8921: Burnt tires',        indemnity: 18000, expenses: 10000, recoveries: 10000 },
+            { name: "Kaufmann's Warehouse: Gate", indemnity: 0, expenses: 0, recoveries: 0 },
+            { name: 'MDT3562: Burnt tires',        indemnity: 0, expenses: 0, recoveries: 0 },
+            { name: 'MDT8921: Burnt tires',        indemnity: 0, expenses: 0, recoveries: 0 },
           ];
           return itemSeeds.map((s, i) => {
             const itemId = `${sectionPrefix}-DI-${i + 1}`;

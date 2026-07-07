@@ -28,7 +28,7 @@
     "payee": "Munich Machinery Repair GmbH",
     "amount": 78000,
     "currency": "EUR",
-    "status": "Pending",
+    "status": "Processed",
     "isFinalPayment": false,
     "paymentDate": "2025-03-01"
   },
@@ -39,7 +39,7 @@
     "payee": "Business Interruption Indemnity",
     "amount": 31500,
     "currency": "EUR",
-    "status": "Pending",
+    "status": "Processed",
     "isFinalPayment": false,
     "paymentDate": "2025-03-05"
   },
@@ -50,7 +50,7 @@
     "payee": "Kaufmann's Warehouse — Final Settlement",
     "amount": 22000,
     "currency": "EUR",
-    "status": "Pending",
+    "status": "Processed",
     "isFinalPayment": false,
     "paymentDate": "2025-04-10"
   }
