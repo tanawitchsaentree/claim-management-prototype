@@ -19,10 +19,10 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --force
 
       - name: Build
-        run: npx --yes ng build
+        run: npx ng build
 
       - name: Copy index.html to 404.html
         run: cp dist/claim-management/browser/index.html dist/claim-management/browser/404.html
