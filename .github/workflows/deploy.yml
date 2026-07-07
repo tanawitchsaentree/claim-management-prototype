@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build:prod
+        run: npx ng build --configuration production
 
       - name: Copy index.html to 404.html
         run: cp dist/claim-management/browser/index.html dist/claim-management/browser/404.html
