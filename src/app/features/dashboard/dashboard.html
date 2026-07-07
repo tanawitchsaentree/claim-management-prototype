@@ -184,10 +184,12 @@
                     <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']" [claimPreview]="claim.claimId">{{ claim.claimId }}</a></td>
                     <td nxCell>{{ claim.clientName }}</td>
                     <td nxCell>
-                      <app-status-chip [status]="claim.status" domain="claim"></app-status-chip>
-                      @if (isDormant(claim.dateUpdated) && claim.status !== 'Closed' && claim.status !== 'Declined') {
-                        <nx-badge type="critical" [title]="'No activity for ' + daysSinceUpdate(claim.dateUpdated) + ' days'" class="dormant-nx-badge">Dormant</nx-badge>
-                      }
+                      <div class="dash-status-cell">
+                        <app-status-chip [status]="claim.status" domain="claim"></app-status-chip>
+                        @if (isDormant(claim.dateUpdated) && claim.status !== 'Closed' && claim.status !== 'Declined') {
+                          <nx-badge type="critical" [title]="'No activity for ' + daysSinceUpdate(claim.dateUpdated) + ' days'" class="dormant-nx-badge">Dormant</nx-badge>
+                        }
+                      </div>
                     </td>
                     <td nxCell class="text-muted dash-col--nowrap">{{ claim.dateCreated }}</td>
                     <td nxCell>{{ claim.assignee ?? '–' }}</td>

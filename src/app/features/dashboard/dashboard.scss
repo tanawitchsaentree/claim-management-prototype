@@ -872,10 +872,16 @@ $header-bp: 1024px;
 // ─── Dormant / "You" nx-badge sizing ─────────────────────────────
 // No row tint — the Dormant badge already signals the state. Tints removed per rule.
 
+.dash-status-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
 .dormant-nx-badge, .by-me-nx-badge {
-  margin-left: 6px;
-  vertical-align: middle;
   font-size: 11px;
+  flex-shrink: 0;
 }
 
 
