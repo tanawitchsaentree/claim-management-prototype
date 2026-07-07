@@ -3,7 +3,7 @@
     "id": "SEC-001",
     "claimId": "CLM-2024-001",
     "name": "Section 001",
-    "status": "Closed",
+    "status": "Open",
     "expanded": true,
     "hasOpenDeductible": false,
     "hasActiveLitigation": false,
@@ -12,8 +12,6 @@
     "hasOpenReserves": false,
     "hasOpenPayments": false,
     "hasActiveProvider": false,
-    "closureDate": "2026-06-20",
-    "closedBy": { "userId": "usr-ks", "name": "Klaus Schmidt" },
     "entities": [
       { "id": "SE-001", "name": "Kaufmann's Warehouse", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
       { "id": "SE-002", "name": "Forklift",             "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
