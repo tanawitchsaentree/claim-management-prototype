@@ -138,9 +138,7 @@
                 <thead>
                   <tr nxTableRow>
                     <th nxHeaderCell class="dash-col--nowrap">Loss event ID</th>
-                    <th nxHeaderCell>Event name</th>
-                    <th nxHeaderCell class="dash-col--nowrap">Event date</th>
-                    <th nxHeaderCell>OE</th>
+                    <th nxHeaderCell class="dash-col--nowrap">Date of loss</th>
                     <th nxHeaderCell>Line of Business</th>
                     <th nxHeaderCell class="dash-col--nowrap">Claims</th>
                     <th nxHeaderCell class="dash-col--nowrap">Total reserve</th>
@@ -153,9 +151,7 @@
                       <td nxCell class="text-link dash-col--nowrap">
                         <a class="text-link" [routerLink]="['/loss-events', event.lossEventId, 'overview']">{{ event.lossEventId }}</a>
                       </td>
-                      <td nxCell>{{ event.name }}</td>
                       <td nxCell class="text-muted dash-col--nowrap">{{ event.eventDate }}</td>
-                      <td nxCell>{{ event.oe }}</td>
                       <td nxCell>{{ event.lineOfBusiness }}</td>
                       <td nxCell class="dash-col--nowrap">{{ event.claimCount }}</td>
                       <td nxCell class="dash-col--nowrap">{{ event.currency }} {{ event.totalReserve | number }}</td>
