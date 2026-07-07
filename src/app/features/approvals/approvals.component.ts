@@ -15,6 +15,7 @@ import { AuthService } from '../../core/services/auth';
 import { UrgentApproval } from '../../core/models/approval.model';
 import { PaymentApproval } from '../../core/models/dashboard-extended.model';
 import { firstValueFrom } from 'rxjs';
+import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.directive';
 
 @Component({
   selector: 'app-approvals',
@@ -30,6 +31,7 @@ import { firstValueFrom } from 'rxjs';
     NxSwitcherModule,
     NxGridModule,
     Navbar,
+    ClaimPreviewDirective,
   ],
   templateUrl: './approvals.component.html',
   styleUrl: './approvals.component.scss',

@@ -1,7 +1,15 @@
 <div class="app-shell">
   <app-navbar />
 
-  @if (refSvc.isTabsMode()) {
+  @if (previewSvc.visible()) {
+    <app-claim-preview-popover
+      [style.top.px]="previewSvc.y()"
+      [style.left.px]="previewSvc.x()"
+      style="position:fixed;z-index:1200;">
+    </app-claim-preview-popover>
+  }
+
+  @if (refSvc.isTabsMode() && refSvc.refTabs().length > 0) {
     <app-claim-reference-tabs />
   }
 

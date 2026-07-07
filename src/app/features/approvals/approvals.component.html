@@ -68,7 +68,7 @@
                 <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.requestId }}</a>
               </td>
               <td nxTableCell class="col-claim-id">
-                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.claimId }}</a>
+                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']" [claimPreview]="item.claimId">{{ item.claimId }}</a>
               </td>
               <td nxTableCell class="col-oe">{{ item.oe }}</td>
               <td nxTableCell class="col-lob">{{ item.lineOfBusiness }}</td>
@@ -127,7 +127,7 @@
                 <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.paymentId }}</a>
               </td>
               <td nxTableCell class="col-claim-id">
-                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.claimId }}</a>
+                <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']" [claimPreview]="item.claimId">{{ item.claimId }}</a>
               </td>
               <td nxTableCell class="col-oe">{{ item.oe }}</td>
               <td nxTableCell class="col-lob">{{ item.lineOfBusiness }}</td>

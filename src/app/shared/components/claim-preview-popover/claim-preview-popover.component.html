@@ -1,0 +1,46 @@
+<div class="cpop"
+     (mouseenter)="onCardMouseEnter()"
+     (mouseleave)="onCardMouseLeave()">
+
+  @if (vm().loading) {
+    <div class="cpop__loading">
+      <nx-icon name="refresh" class="cpop__spinner"></nx-icon>
+      <span>Loading…</span>
+    </div>
+  } @else if (vm().notFound) {
+    <div class="cpop__not-found">
+      <nx-icon name="info-circle-o"></nx-icon>
+      <span>Claim not found</span>
+    </div>
+  } @else if (vm().claim; as claim) {
+    <div class="cpop__header">
+      <span class="cpop__id">{{ previewSvc.claimId() }}</span>
+      <app-status-chip [status]="claim.status" domain="claim" />
+    </div>
+
+    <dl class="cpop__fields">
+      <dt>Client</dt>
+      <dd>{{ claim.client }}</dd>
+      <dt>Handler</dt>
+      <dd>{{ claim.assignedHandler }}</dd>
+      <dt>Cause of loss</dt>
+      <dd>{{ claim.proximateLossCause || '–' }}</dd>
+      <dt>Sections</dt>
+      <dd>{{ closedSections() }}/{{ totalSections() }} closed</dd>
+      <dt>Total reserve</dt>
+      <dd>{{ claim.financialSummary.currency }} {{ claim.financialSummary.totalReserve | number }}</dd>
+    </dl>
+
+    <div class="cpop__footer">
+      <button nxButton="tertiary small" type="button" (click)="openInPanel()">
+        <nx-icon name="link" nxIconPositionStart></nx-icon>
+        Open in panel
+      </button>
+      <a nxButton="secondary small" [routerLink]="['/claims', previewSvc.claimId(), 'overview']"
+         (click)="previewSvc.hide()">
+        Full view
+        <nx-icon name="launch" nxIconPositionEnd></nx-icon>
+      </a>
+    </div>
+  }
+</div>

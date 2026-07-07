@@ -79,7 +79,8 @@
             @for (claim of pagedRows(); track claim.claimId) {
               <tr nxTableRow>
                 <td nxCell class="cl-col--nowrap">
-                  <a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']">
+                  <a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']"
+                     [claimPreview]="claim.claimId">
                     {{ claim.claimId }}
                   </a>
                 </td>

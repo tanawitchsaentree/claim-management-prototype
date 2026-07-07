@@ -7,17 +7,20 @@ import { Sidebar } from '../sidebar/sidebar';
 import { ClaimRightStripComponent } from '../claim-right-strip/claim-right-strip.component';
 import { ClaimReferenceTabsComponent } from '../../claims/claim-reference-tabs/claim-reference-tabs.component';
 import { ReferenceViewService } from '../../claims/claim-reference-panel/reference-view.service';
+import { ClaimPreviewService } from '../../../shared/services/claim-preview.service';
+import { ClaimPreviewPopoverComponent } from '../../../shared/components/claim-preview-popover/claim-preview-popover.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Sidebar, ClaimRightStripComponent, ClaimReferenceTabsComponent],
+  imports: [RouterOutlet, Navbar, Sidebar, ClaimRightStripComponent, ClaimReferenceTabsComponent, ClaimPreviewPopoverComponent],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
 export class Shell {
   private readonly router = inject(Router);
-  readonly refSvc = inject(ReferenceViewService);
+  readonly refSvc     = inject(ReferenceViewService);
+  readonly previewSvc = inject(ClaimPreviewService);
 
   private readonly url$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),

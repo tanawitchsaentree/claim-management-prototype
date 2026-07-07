@@ -11,7 +11,7 @@
     <ul class="leo-claim-list">
       @for (c of derivedClaims; track c.claimId) {
         <li class="leo-claim-row">
-          <button class="leo-claim-link" type="button" (click)="openClaim(c.claimId)">
+          <button class="leo-claim-link" type="button" (click)="openClaim(c.claimId)" [claimPreview]="c.claimId">
             <span class="leo-claim-id">{{ c.claimId }}</span>
             <span class="leo-claim-meta">
               {{ c.damageTypes.join(', ') }} · {{ c.sectionCount }} section{{ c.sectionCount === 1 ? '' : 's' }}

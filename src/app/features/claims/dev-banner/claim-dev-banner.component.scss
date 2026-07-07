@@ -30,11 +30,17 @@
 .cdb-picker {
   width: 340px;
   flex-shrink: 0;
+  align-self: center;
   margin-bottom: 0 !important;
 
   ::ng-deep .nx-formfield__wrapper {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+  }
+
+  ::ng-deep .nx-formfield__row {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 
   ::ng-deep .nx-formfield__label {
@@ -113,11 +119,17 @@
 .cdb-ref-picker {
   width: 220px;
   flex-shrink: 0;
+  align-self: center;
   margin-bottom: 0 !important;
 
   ::ng-deep .nx-formfield__wrapper {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+  }
+
+  ::ng-deep .nx-formfield__row {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 
   ::ng-deep .nx-formfield__label {

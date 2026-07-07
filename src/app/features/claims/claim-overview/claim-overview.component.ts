@@ -19,6 +19,7 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock/services/mock-user-directory.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
 import { MockMassEventService } from '../../../core/mock/services/mock-mass-event.service';
@@ -91,6 +92,7 @@ const TASKS_PAGE_SIZE = 10;
     NxInputModule,
     ReactiveFormsModule,
     StatusChipComponent,
+    ClaimPreviewDirective,
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss',

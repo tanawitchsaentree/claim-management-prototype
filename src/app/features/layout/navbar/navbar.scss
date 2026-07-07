@@ -189,7 +189,7 @@ $medium-bp: 1360px;
 }
 
 // ── Mobile ────────────────────────────────────────────────────────
-.nav-hamburger { display: none; }
+.nav-hamburger { display: none !important; }
 
 @media (max-width: $mobile-bp) {
   .nav-desktop  { display: none !important; }

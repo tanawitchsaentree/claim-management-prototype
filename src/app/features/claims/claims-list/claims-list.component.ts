@@ -16,6 +16,7 @@ import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { Navbar } from '../../layout/navbar/navbar';
 import { BreadcrumbItem } from '../../../shared/components/page-shell/page-shell.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/models';
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
 
@@ -40,6 +41,7 @@ const PAGE_SIZE = 15;
     NxBreadcrumbModule,
     NxGridModule,
     StatusChipComponent,
+    ClaimPreviewDirective,
   ],
   templateUrl: './claims-list.component.html',
   styleUrl: './claims-list.component.scss',

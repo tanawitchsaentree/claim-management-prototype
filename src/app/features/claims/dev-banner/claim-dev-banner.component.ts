@@ -25,9 +25,10 @@ export class ClaimDevBannerComponent implements OnInit {
   readonly variantCtrl  = new FormControl<ReferenceVariant>('none');
 
   readonly variantOptions: { value: ReferenceVariant; label: string }[] = [
-    { value: 'none',  label: 'Off'               },
-    { value: 'panel', label: 'Variant 1 — Side panel' },
-    { value: 'tabs',  label: 'Variant 2 — Tab bar'    },
+    { value: 'none',    label: 'Off'                      },
+    { value: 'panel',   label: 'Variant 1 — Side panel'   },
+    { value: 'tabs',    label: 'Variant 2 — Tab bar'      },
+    { value: 'popover', label: 'Variant 3 — Hover preview' },
   ];
 
   constructor() {

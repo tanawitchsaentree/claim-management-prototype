@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 
-export type ReferenceVariant = 'none' | 'panel' | 'tabs';
+export type ReferenceVariant = 'none' | 'panel' | 'tabs' | 'popover';
 
 export interface RefTab {
   id: string;
@@ -17,9 +17,10 @@ export class ReferenceViewService {
   readonly activeRefTabId = signal<string | null>(null);
   readonly primaryClaimId = signal<string | null>(null);
 
-  readonly isActive    = computed(() => this.variant() !== 'none');
-  readonly isPanelMode = computed(() => this.variant() === 'panel');
-  readonly isTabsMode  = computed(() => this.variant() === 'tabs');
+  readonly isActive      = computed(() => this.variant() !== 'none');
+  readonly isPanelMode   = computed(() => this.variant() === 'panel');
+  readonly isTabsMode    = computed(() => this.variant() === 'tabs');
+  readonly isPopoverMode = computed(() => this.variant() === 'popover');
   readonly canAddRefTab = computed(() => this.refTabs().length < MAX_REF_TABS);
   readonly refTabCount  = computed(() => this.refTabs().length);
 
@@ -66,18 +67,17 @@ export class ReferenceViewService {
 
   setVariant(v: ReferenceVariant, primaryClaimId?: string | null): void {
     this.variant.set(v);
-    if (v !== 'none') {
-      if (primaryClaimId) this.primaryClaimId.set(primaryClaimId);
-      if (this.refTabs().length === 0) {
-        const pid = primaryClaimId ?? this.primaryClaimId();
-        const fallbackId = DEMO_CLAIM_IDS.find(id => id !== pid) ?? DEMO_CLAIM_IDS[0];
-        this.openRefTab(fallbackId);
-      }
-    }
-    if (v === 'none') {
+    if (v === 'none' || v === 'popover') {
       this.refTabs.set([]);
       this.activeRefTabId.set(null);
-      this.primaryClaimId.set(null);
+      if (v === 'none') this.primaryClaimId.set(null);
+      return;
+    }
+    if (primaryClaimId) this.primaryClaimId.set(primaryClaimId);
+    if (this.refTabs().length === 0) {
+      const pid = primaryClaimId ?? this.primaryClaimId();
+      const fallbackId = DEMO_CLAIM_IDS.find(id => id !== pid) ?? DEMO_CLAIM_IDS[0];
+      this.openRefTab(fallbackId);
     }
   }
 

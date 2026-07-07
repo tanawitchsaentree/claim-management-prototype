@@ -185,7 +185,7 @@
               <tbody>
                 @for (claim of displayedClaims(); track claim.claimId) {
                   <tr nxTableRow>
-                    <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']">{{ claim.claimId }}</a></td>
+                    <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']" [claimPreview]="claim.claimId">{{ claim.claimId }}</a></td>
                     <td nxCell>{{ claim.clientName }}</td>
                     <td nxCell>
                       <app-status-chip [status]="claim.status" domain="claim"></app-status-chip>
@@ -253,7 +253,7 @@
                   @for (approval of displayedApprovals(); track approval.requestId) {
                     <tr nxTableRow>
                       <td nxCell class="text-link dash-col--nowrap">{{ approval.requestId }}</td>
-                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', approval.claimId, 'overview']">{{ approval.claimId }}</a></td>
+                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', approval.claimId, 'overview']" [claimPreview]="approval.claimId">{{ approval.claimId }}</a></td>
                       <td nxCell>{{ approval.oe }}</td>
                       <td nxCell>{{ approval.lineOfBusiness }}</td>
                       <td nxCell>{{ approval.reserveType }}</td>
@@ -303,7 +303,7 @@
                   @for (payment of displayedPayments(); track payment.requestId) {
                     <tr nxTableRow>
                       <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']">{{ payment.paymentId }}</a></td>
-                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']">{{ payment.claimId }}</a></td>
+                      <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']" [claimPreview]="payment.claimId">{{ payment.claimId }}</a></td>
                       <td nxCell>{{ payment.oe }}</td>
                       <td nxCell>{{ payment.lineOfBusiness }}</td>
                       <td nxCell>{{ payment.paymentType }}</td>

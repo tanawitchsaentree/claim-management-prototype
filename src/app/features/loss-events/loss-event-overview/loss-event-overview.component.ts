@@ -7,6 +7,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { PageShellComponent, BreadcrumbItem } from '../../../shared/components/page-shell/page-shell.component';
+import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 
 interface DerivedClaim {
   claimId: string;
@@ -29,6 +30,7 @@ interface DerivedClaim {
     NxIconModule,
     NxMessageModule,
     PageShellComponent,
+    ClaimPreviewDirective,
   ],
   templateUrl: './loss-event-overview.component.html',
   styleUrl: './loss-event-overview.component.scss',
