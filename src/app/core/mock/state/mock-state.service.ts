@@ -53,7 +53,7 @@ export interface MockState {
 const STORAGE_KEY          = 'champ-mock-state';
 const STORAGE_SCENARIO_KEY = 'champ-mock-scenario';
 const STORAGE_VERSION_KEY  = 'champ-mock-version';
-const STATE_VERSION        = 'ready-to-close-default-v2';
+const STATE_VERSION        = 'ready-to-close-default-v3';
 
 function defaultState(): MockState {
   return {
