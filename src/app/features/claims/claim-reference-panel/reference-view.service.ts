@@ -7,7 +7,7 @@ export interface RefTab {
   claimId: string;
 }
 
-const MAX_REF_TABS = 5;
+export const MAX_REF_TABS = 3;
 const DEMO_CLAIM_IDS = ['CLM-2024-011', 'CLM-2024-001', 'CL-2025-001'];
 
 @Injectable({ providedIn: 'root' })
@@ -21,16 +21,18 @@ export class ReferenceViewService {
   readonly isPanelMode = computed(() => this.variant() === 'panel');
   readonly isTabsMode  = computed(() => this.variant() === 'tabs');
   readonly canAddRefTab = computed(() => this.refTabs().length < MAX_REF_TABS);
+  readonly refTabCount  = computed(() => this.refTabs().length);
 
-  // Backward-compat: panel mode still reads this; resolves to first ref tab
-  readonly refClaimId = computed<string | null>(() =>
-    this.refTabs()[0]?.claimId ?? null
-  );
-
+  // Active tab object (used by panel to load claim data)
   readonly activeRefTab = computed<RefTab | null>(() => {
     const id = this.activeRefTabId();
-    return this.refTabs().find(t => t.id === id) ?? null;
+    return this.refTabs().find(t => t.id === id) ?? this.refTabs()[0] ?? null;
   });
+
+  // Backward-compat: first ref tab claimId (panel mode single-tab legacy)
+  readonly refClaimId = computed<string | null>(() =>
+    this.activeRefTab()?.claimId ?? null
+  );
 
   openRefTab(claimId: string): void {
     if (claimId === this.primaryClaimId()) return;
@@ -56,6 +58,10 @@ export class ReferenceViewService {
       const newActive = next[idx - 1] ?? next[idx] ?? null;
       this.activeRefTabId.set(newActive?.id ?? null);
     }
+    // If no tabs left, close panel mode too
+    if (next.length === 0 && this.variant() === 'panel') {
+      this.variant.set('none');
+    }
   }
 
   setVariant(v: ReferenceVariant, primaryClaimId?: string | null): void {
@@ -72,6 +78,15 @@ export class ReferenceViewService {
       this.refTabs.set([]);
       this.activeRefTabId.set(null);
       this.primaryClaimId.set(null);
+    }
+  }
+
+  // Called by strip icon toggle — opens panel mode with primaryClaimId
+  togglePanelMode(primaryClaimId: string): void {
+    if (this.variant() === 'panel') {
+      this.close();
+    } else {
+      this.setVariant('panel', primaryClaimId);
     }
   }
 

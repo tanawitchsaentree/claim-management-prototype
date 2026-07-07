@@ -1,46 +1,113 @@
 <div class="ref-panel" @refPanelSlide>
 
-  <!-- Header -->
-  <div class="ref-header">
-    <div class="ref-header__left">
-      <span class="ref-badge">Reference</span>
-      <span class="ref-claim-id">{{ claimId }}</span>
+  <!-- ── Internal tab bar ────────────────────────────────────────────────── -->
+  <div class="ref-tabs">
+    <div class="ref-tabs__scroll">
+      @for (tab of svc.refTabs(); track tab.id) {
+        <button
+          class="ref-tab"
+          [class.ref-tab--active]="svc.activeRefTabId() === tab.id"
+          type="button"
+          (click)="selectTab(tab)">
+          <span class="ref-tab__label">{{ tab.claimId }}</span>
+          <button
+            class="ref-tab__close"
+            type="button"
+            [attr.aria-label]="'Close ' + tab.claimId"
+            (click)="closeTab(tab, $event)">
+            <nx-icon name="close" size="s"></nx-icon>
+          </button>
+        </button>
+      }
     </div>
-    <div class="ref-header__actions">
-      <a class="ref-header__icon-btn" [routerLink]="['/claims', claimId, 'overview']" title="Open in full view">
-        <nx-icon name="launch" size="s"></nx-icon>
-      </a>
-      <button class="ref-header__icon-btn" type="button" (click)="closePanel.emit()" title="Close reference panel" aria-label="Close reference panel">
-        <nx-icon name="close" size="s"></nx-icon>
-      </button>
+
+    <!-- Add tab button -->
+    <div class="ref-add-wrap">
+      @if (svc.canAddRefTab()) {
+        <button
+          class="ref-add-btn"
+          [class.ref-add-btn--open]="showSearch()"
+          type="button"
+          aria-label="Open reference claim"
+          (click)="toggleSearch()">
+          <nx-icon name="plus" size="s"></nx-icon>
+        </button>
+      } @else {
+        <button
+          class="ref-add-btn ref-add-btn--disabled"
+          type="button"
+          [nxTooltip]="'Maximum ' + maxTabs + ' reference claims open'"
+          nxTooltipPosition="left"
+          disabled>
+          <nx-icon name="plus" size="s"></nx-icon>
+        </button>
+      }
+
+      @if (showSearch()) {
+        <div class="ref-search-backdrop" (click)="closeSearch()"></div>
+        <div class="ref-search-popover" (keydown.escape)="closeSearch()">
+          <input
+            class="ref-search-input"
+            type="text"
+            placeholder="Search claim ID or client…"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="onSearchInput($event)"
+            autofocus />
+          @if (searching()) {
+            <div class="ref-search-hint">Searching…</div>
+          } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
+            <div class="ref-search-hint">No claims found</div>
+          } @else if (searchResults().length > 0) {
+            <ul class="ref-search-list" role="listbox">
+              @for (c of searchResults(); track c.claimId) {
+                <li class="ref-search-item" role="option" (click)="selectClaim(c)">
+                  <span class="ref-search-item__id">{{ c.claimId }}</span>
+                  <span class="ref-search-item__client">{{ c.clientName }}</span>
+                </li>
+              }
+            </ul>
+          } @else {
+            <div class="ref-search-hint">Type at least 2 characters</div>
+          }
+        </div>
+      }
     </div>
+
+    <!-- Panel close button -->
+    <button class="ref-panel-close" type="button" (click)="svc.close()" aria-label="Close reference panel">
+      <nx-icon name="chevron-right" size="s"></nx-icon>
+    </button>
   </div>
 
-  <!-- Loading -->
+  <!-- ── Content area ─────────────────────────────────────────────────────── -->
+
   @if (vm().loading) {
     <div class="ref-state ref-state--loading">
       <nx-icon name="refresh" size="s" class="ref-spinner"></nx-icon>
-      <span>Loading reference claim…</span>
+      <span>Loading…</span>
     </div>
-  }
-
-  <!-- Not found -->
-  @else if (vm().notFound) {
+  } @else if (vm().notFound) {
     <div class="ref-state ref-state--not-found">
       <nx-icon name="info-circle-o" size="m"></nx-icon>
       <p class="ref-state__title">Claim not found</p>
       <p class="ref-state__desc">
-        <strong>{{ claimId }}</strong> is not available in the current demo data set.
+        <strong>{{ svc.activeRefTab()?.claimId }}</strong> is not in the demo data set.
         Try CLM-2024-001 or CLM-2024-011.
       </p>
     </div>
-  }
+  } @else if (vm().claim; as claim) {
 
-  <!-- Data -->
-  @else if (vm().claim; as claim) {
+    <!-- Launch in full view link -->
+    <div class="ref-claim-header">
+      <span class="ref-claim-id">{{ svc.activeRefTab()?.claimId }}</span>
+      <a class="ref-header__icon-btn"
+         [routerLink]="['/claims', svc.activeRefTab()?.claimId, 'overview']"
+         title="Open in full view">
+        <nx-icon name="launch" size="s"></nx-icon>
+      </a>
+    </div>
+
     <div class="ref-body">
-
-      <!-- Core fields -->
       <dl class="ref-fields">
         <dt>Status</dt>
         <dd><app-status-chip [status]="claim.status" domain="claim" /></dd>
@@ -67,7 +134,6 @@
         <dd>{{ claim.dateCreated }}</dd>
       </dl>
 
-      <!-- Financials summary -->
       <div class="ref-section">
         <p class="ref-section__label">Financials</p>
         <div class="ref-fin-row">
@@ -84,7 +150,6 @@
         </div>
       </div>
 
-      <!-- Sections -->
       <div class="ref-section">
         <p class="ref-section__label">Sections</p>
         <p class="ref-sections-summary">{{ sectionsSummary(vm().sections) }}</p>
@@ -95,7 +160,6 @@
           </div>
         }
       </div>
-
     </div>
   }
 

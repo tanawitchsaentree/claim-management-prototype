@@ -17,6 +17,34 @@
   flex-shrink: 0;
 
   app-claim-notes-panel { display: block; height: 100%; }
+
+  &--ref {
+    app-claim-reference-panel { display: block; height: 100%; }
+  }
+}
+
+// Reference icon badge
+.crs-btn--ref {
+  position: relative;
+}
+
+.crs-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  background: var(--negative, #c0392b);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .crs-strip {

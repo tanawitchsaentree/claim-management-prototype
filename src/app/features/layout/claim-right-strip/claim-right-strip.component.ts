@@ -5,7 +5,10 @@ import { filter, map, startWith } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { ClaimNotesPanelComponent } from '../../claims/claim-notes-panel/claim-notes-panel.component';
+import { ClaimReferencePanelComponent } from '../../claims/claim-reference-panel/claim-reference-panel.component';
+import { ReferenceViewService } from '../../claims/claim-reference-panel/reference-view.service';
 
 interface StripItem {
   icon: string;
@@ -16,7 +19,7 @@ interface StripItem {
 @Component({
   selector: 'app-claim-right-strip',
   standalone: true,
-  imports: [CommonModule, NxIconModule, ClaimNotesPanelComponent],
+  imports: [CommonModule, NxIconModule, NxTooltipModule, ClaimNotesPanelComponent, ClaimReferencePanelComponent],
   templateUrl: './claim-right-strip.component.html',
   styleUrl: './claim-right-strip.component.scss',
   animations: [
@@ -32,10 +35,23 @@ interface StripItem {
           style({ width: 0, opacity: 0 })),
       ]),
     ]),
+    trigger('refPanelSlide', [
+      transition(':enter', [
+        style({ width: 0, opacity: 0 }),
+        animate('220ms cubic-bezier(0.2, 0, 0, 1)',
+          style({ width: '360px', opacity: 1 })),
+      ]),
+      transition(':leave', [
+        style({ width: '360px', opacity: 1, overflow: 'hidden' }),
+        animate('180ms cubic-bezier(0.4, 0, 1, 1)',
+          style({ width: 0, opacity: 0 })),
+      ]),
+    ]),
   ],
 })
 export class ClaimRightStripComponent {
   private readonly router = inject(Router);
+  readonly refSvc = inject(ReferenceViewService);
 
   activeKey: string | null = null;
   collapsed = false;
@@ -60,8 +76,23 @@ export class ClaimRightStripComponent {
     return m && m[1] !== 'new' ? m[1] : null;
   });
 
+  readonly refTabCount = computed(() => this.refSvc.refTabCount());
+  readonly refPanelOpen = computed(() => this.refSvc.isPanelMode());
+
   activate(key: string): void {
     this.activeKey = this.activeKey === key ? null : key;
+  }
+
+  toggleRefPanel(): void {
+    const id = this.currentClaimId();
+    if (!id) return;
+    if (this.refSvc.isPanelMode()) {
+      this.refSvc.close();
+    } else {
+      // Close any other open strip panel when opening reference
+      this.activeKey = null;
+      this.refSvc.setVariant('panel', id);
+    }
   }
 
   closePanel(): void {

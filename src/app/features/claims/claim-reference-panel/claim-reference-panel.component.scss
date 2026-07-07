@@ -16,6 +16,196 @@
   overflow: hidden;
 }
 
+// ─── Internal tab bar ────────────────────────────────────────────────────────
+.ref-tabs {
+  display: flex;
+  align-items: stretch;
+  background: var(--ui-02);
+  border-bottom: 2px solid var(--ui-04);
+  min-height: 36px;
+  flex-shrink: 0;
+}
+
+.ref-tabs__scroll {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.ref-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+
+  &:hover { color: var(--text-01); background: var(--ui-03); }
+
+  &--active {
+    color: var(--text-01);
+    border-bottom-color: var(--interactive-primary);
+    background: var(--ui-01);
+    font-weight: 600;
+  }
+}
+
+.ref-tab__label {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ref-tab__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.1s, color 0.1s;
+
+  &:hover { background: var(--ui-04); color: var(--text-01); }
+}
+
+.ref-add-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+.ref-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: background 0.12s, color 0.12s;
+
+  &:hover, &--open { background: var(--ui-03); color: var(--text-01); }
+  &--disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.ref-panel-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 100%;
+  border: none;
+  border-left: 1px solid var(--ui-04);
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover { background: var(--ui-03); color: var(--text-01); }
+}
+
+// ─── Search popover ───────────────────────────────────────────────────────────
+.ref-search-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.ref-search-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 280px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.ref-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: none;
+  border-bottom: 1px solid var(--ui-04);
+  background: transparent;
+  font-size: 13px;
+  color: var(--text-01);
+  outline: none;
+  &::placeholder { color: var(--text-muted); }
+}
+
+.ref-search-hint {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.ref-search-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ref-search-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+  &:hover { background: var(--ui-03); }
+
+  &__id { font-size: 12px; font-weight: 500; color: var(--text-01); }
+  &__client { font-size: 11px; color: var(--text-muted); }
+}
+
+// ─── Claim header row (id + launch) ──────────────────────────────────────────
+.ref-claim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--ui-02);
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.ref-claim-id {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
 // ─── Header ──────────────────────────────────────────────────────────────────
 .ref-header {
   display: flex;

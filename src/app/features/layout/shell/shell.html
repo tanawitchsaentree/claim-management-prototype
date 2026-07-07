@@ -13,10 +13,5 @@
     @if (showRightStrip()) {
       <app-claim-right-strip />
     }
-    @if (refSvc.isPanelMode() && showRightStrip() && refSvc.refClaimId()) {
-      <app-claim-reference-panel
-        [claimId]="refSvc.refClaimId()!"
-        (closePanel)="refSvc.close()" />
-    }
   </div>
 </div>

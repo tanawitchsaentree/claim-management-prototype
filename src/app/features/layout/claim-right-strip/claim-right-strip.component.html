@@ -1,17 +1,31 @@
 <div class="crs-host">
   <div class="crs-strip" [class.crs-strip--collapsed]="collapsed">
     <div class="crs-items">
+      <!-- Standard strip items -->
       @for (item of items; track item.key) {
         <button
           class="crs-btn"
           [class.crs-btn--active]="activeKey === item.key"
           (click)="activate(item.key)"
-          [title]="item.label"
-        >
+          [title]="item.label">
           <nx-icon [name]="item.icon" size="s"></nx-icon>
         </button>
       }
+
+      <!-- References icon with badge count -->
+      <button
+        class="crs-btn crs-btn--ref"
+        [class.crs-btn--active]="refPanelOpen()"
+        type="button"
+        title="Reference claims"
+        (click)="toggleRefPanel()">
+        <nx-icon name="link" size="s"></nx-icon>
+        @if (refTabCount() > 0) {
+          <span class="crs-badge">{{ refTabCount() }}</span>
+        }
+      </button>
     </div>
+
     <div class="crs-footer">
       <button class="crs-toggle" type="button"
               (click)="toggleCollapse()"
@@ -21,9 +35,17 @@
     </div>
   </div>
 
+  <!-- Comments panel -->
   @if (activeKey === 'comments' && currentClaimId(); as id) {
     <div class="crs-panel-slot" @panelSlide>
       <app-claim-notes-panel [claimId]="id"></app-claim-notes-panel>
+    </div>
+  }
+
+  <!-- Reference panel — tab bar lives inside the panel itself -->
+  @if (refPanelOpen()) {
+    <div class="crs-panel-slot crs-panel-slot--ref" @refPanelSlide>
+      <app-claim-reference-panel></app-claim-reference-panel>
     </div>
   }
 </div>

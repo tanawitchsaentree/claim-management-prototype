@@ -5,14 +5,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Navbar } from '../navbar/navbar';
 import { Sidebar } from '../sidebar/sidebar';
 import { ClaimRightStripComponent } from '../claim-right-strip/claim-right-strip.component';
-import { ClaimReferencePanelComponent } from '../../claims/claim-reference-panel/claim-reference-panel.component';
 import { ClaimReferenceTabsComponent } from '../../claims/claim-reference-tabs/claim-reference-tabs.component';
 import { ReferenceViewService } from '../../claims/claim-reference-panel/reference-view.service';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Sidebar, ClaimRightStripComponent, ClaimReferencePanelComponent, ClaimReferenceTabsComponent],
+  imports: [RouterOutlet, Navbar, Sidebar, ClaimRightStripComponent, ClaimReferenceTabsComponent],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
