@@ -18,11 +18,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Override registry
-        run: echo "registry=https://registry.npmjs.org/" > .npmrc
-
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci
 
       - name: Build
         run: npx ng build
