@@ -1,0 +1,175 @@
+{
+  "ticketId": "CHAMP-READY-CLOSE",
+  "module": "Claims",
+  "title": "Claim ready to close — all tasks done, all sections resolved",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview"],
+  "walkthroughSteps": [
+    "Land on CLM-2024-001 overview — status chip reads 'In progress'",
+    "Observe Tasks widget: all 5 tasks show as Done",
+    "Observe Sections widget: all 6 sections are Closed",
+    "Click 'Close Claim' — button is enabled, no tooltip blocker",
+    "In the modal, skip straight to Step 2 (no blockers) — select Closure Reason and confirm",
+    "Status chip updates to 'Closed'; closure panel appears with date, reason, and handler"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "All tasks completed — Tasks widget shows 0 pending",
+      "plainStatement": "Every task on CLM-2024-001 is marked **Done** — the Tasks widget on the overview shows **0 pending tasks**.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All 5 tasks for CLM-2024-001 set to done; all sections closed",
+        "preconditions": [
+          {
+            "text": "Tasks widget shows 0 pending / 5 done",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "All task rows should have 'Done' status badge"
+          },
+          {
+            "text": "Sections widget shows 6/6 Closed",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "All section rows show Closed status"
+          },
+          {
+            "text": "Close Claim button is enabled",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Button is active — no tooltip blocker on hover"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Overview shows fully resolved claim — all tasks done, all sections closed, Close Claim enabled",
+        "visualCues": [
+          "Tasks widget: 0 pending, all rows show Done badge",
+          "Sections widget: all rows show Closed status",
+          "Close Claim button is active (not greyed out)",
+          "No tooltip appears on hover over Close Claim"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":   0,
+        "doneTasks":      5,
+        "openSections":   0,
+        "closedSections": 6,
+        "overviewStatus": "In progress",
+        "canClose":       true,
+        "buttonVisible":  true,
+        "buttonEnabled":  true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Observe Tasks widget and Sections widget on load",
+        "expectedResult": "0 pending tasks, all sections closed, Close Claim button enabled"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Close Claim modal opens at Step 2 — no blocker step shown",
+      "plainStatement": "Clicking **Close Claim** opens the modal **directly at Step 2** (reason selection) — Step 1 (blockers) is skipped because there are no blockers.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same state as AC-01 — all tasks done, all sections cleared",
+        "preconditions": [
+          {
+            "text": "Close Claim button is enabled",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Click it to open the closure modal"
+          },
+          {
+            "text": "Modal opens at Step 2 — reason dropdown visible immediately",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "No blocker checklist step shown before the reason form"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
+            "SEC-002": { "hasActiveLitigation": false, "hasOpenReserves": false, "hasOpenPayments": false },
+            "SEC-003": { "hasActiveProvider": false },
+            "SEC-008": { "hasOpenPayments": false }
+          }
+        },
+        "postLand": [
+          { "kind": "overview.openClosureModal" }
+        ]
+      },
+      "expectedUI": {
+        "description": "Closure modal at Step 2 — reason dropdown, no blocker list",
+        "visualCues": [
+          "Modal header shows 'Close Claim'",
+          "Step 1 (blockers) not visible — modal starts at reason selection",
+          "Reason dropdown is present and focused",
+          "Confirm button present but requires reason selection first"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks":   0,
+        "doneTasks":      5,
+        "openSections":   0,
+        "closedSections": 6,
+        "overviewStatus": "In progress",
+        "canClose":       true,
+        "buttonVisible":  true,
+        "buttonEnabled":  true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Close Claim button",
+        "expectedResult": "Modal opens directly at reason selection — no blocker list displayed"
+      }
+    }
+  ]
+}

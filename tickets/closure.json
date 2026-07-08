@@ -2,7 +2,7 @@
   "ticketId": "CHAMP-CLOSURE-001",
   "module": "Claims",
   "title": "Manual Claim Closure & Section Closure",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": ["overview", "sections"],
   "walkthroughSteps": [
     "Navigate to CLM-2024-001 overview tab — status chip should read 'Open'",

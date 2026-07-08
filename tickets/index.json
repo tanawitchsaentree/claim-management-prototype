@@ -7,6 +7,12 @@
       "title": "Manual Claim Closure & Section Closure"
     },
     {
+      "id": "CHAMP-READY-CLOSE",
+      "file": "ready-to-close.json",
+      "module": "Claims",
+      "title": "Claim ready to close — all tasks done, all sections resolved"
+    },
+    {
       "id": "BMPCC-216",
       "file": "bmpcc-216.json",
       "module": "FNOL",

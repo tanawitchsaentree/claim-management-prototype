@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-219",
   "module": "FNOL",
   "title": "Loss Location via CWB MFE",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": [
     "fnol-loss-info"
   ],

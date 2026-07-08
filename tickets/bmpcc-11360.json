@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-11360",
   "module": "Claims",
   "title": "Claim status management & Retention date",
-  "targetClaim": "CLM-2024-001",
+  "targetClaim": "CL-2025-001",
   "pages": [
     "overview"
   ],
