@@ -15,9 +15,20 @@
       <span class="info-field__label">Currency</span>
       <span class="info-field__value">{{ currency }}</span>
     </div>
-    <div class="info-field">
+    <div class="info-field" [class.info-field--multi]="hasLossLocation && entity.limits?.length">
       <span class="info-field__label">Limit</span>
-      <span class="info-field__value">{{ entity.limit }}</span>
+      @if (hasLossLocation && entity.limits?.length) {
+        <ul class="limit-list limit-list--panel">
+          @for (lim of entity.limits; track lim.label) {
+            <li class="limit-list__item">
+              <span class="limit-list__label">{{ lim.label }}</span>
+              <span class="limit-list__value">{{ lim.value }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <span class="info-field__value">{{ entity.limit }}</span>
+      }
     </div>
     <div class="info-field">
       <span class="info-field__label">Covered by</span>

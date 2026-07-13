@@ -53,7 +53,9 @@ export class EntityDetailPanelComponent implements OnChanges {
   });
 
   ngOnChanges(): void {
-    const match = this.entity?.limit?.match(/\b(EUR|USD|GBP|CHF)\b/);
+    const hasLoc = (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
+    const currencySource = (hasLoc ? this.entity?.limits?.[0]?.value : null) ?? this.entity?.limit ?? '';
+    const match = currencySource.match(/\b(EUR|USD|GBP|CHF)\b/);
     this.currency = match?.[1] ?? 'EUR';
     this.loadCauseOptions();
     // Reset add form when entity switches
@@ -62,6 +64,10 @@ export class EntityDetailPanelComponent implements OnChanges {
 
   get hasItems(): boolean {
     return (this.entity?.damageItems?.length ?? 0) > 0;
+  }
+
+  get hasLossLocation(): boolean {
+    return (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
   }
 
   @HostListener('document:keydown.escape')

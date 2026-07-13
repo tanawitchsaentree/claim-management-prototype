@@ -14,7 +14,7 @@ import { MockSkeletonClaimService } from '../../../core/mock/services/mock-skele
 import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
 import { LocationItem } from '../../../core/models';
 
-export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-skeleton' | 'fnol-summary' | 'any';
+export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-entities-damages' | 'fnol-skeleton' | 'fnol-summary' | 'any';
 
 export interface PreconditionItem {
   text:  string;
@@ -346,10 +346,11 @@ export class ClaimDevHelperService {
   clearMinimized(): void { this._minimizedAcId.set(null); }
 
   pageRoute(page: PreconditionPage, claimId: string): string {
-    if (page === 'fnol-search')    return '/fnol/search';
-    if (page === 'fnol-loss-info') return '/fnol/loss-information';
-    if (page === 'fnol-skeleton')  return '/fnol/skeleton-create';
-    if (page === 'fnol-summary')   return '/fnol/summary';
+    if (page === 'fnol-search')             return '/fnol/search';
+    if (page === 'fnol-loss-info')          return '/fnol/loss-information';
+    if (page === 'fnol-entities-damages')   return '/fnol/entities-damages';
+    if (page === 'fnol-skeleton')           return '/fnol/skeleton-create';
+    if (page === 'fnol-summary')            return '/fnol/summary';
     if (page === 'any') return '';
     return `/claims/${claimId}/${page}`;
   }

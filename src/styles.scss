@@ -558,3 +558,43 @@ code {
   padding: 8px 12px 12px;
   border-top: 1px solid var(--ui-04);
 }
+
+// ─── Entity detail side sheet (global — Angular scoping cannot apply here) ────
+
+.side-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--claim-overlay-backdrop);
+  z-index: 90;
+  animation: side-sheet-backdrop-in 0.2s ease-out;
+}
+
+@keyframes side-sheet-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.side-sheet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 600px;
+  max-width: 100vw;
+  background: var(--ui-01);
+  box-shadow: -4px 0 24px var(--claim-overlay-shadow);
+  z-index: 100;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0, 0, 0.1, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 100vw;
+  }
+}

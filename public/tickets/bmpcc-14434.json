@@ -218,8 +218,19 @@
         ]
       },
       "expectedOutcome": {
-        "canClose": true,
-        "buttonEnabled": true
+        "sectionBlockers": {
+          "SEC-001": {
+            "hasOpenDeductible": false,
+            "hasActiveLitigation": false,
+            "hasSubrogation": false,
+            "hasActiveSalvage": false,
+            "hasOpenReserves": false,
+            "hasOpenPayments": false,
+            "hasActiveProvider": false
+          }
+        },
+        "sectionStatus": "Open",
+        "activityLogged": false
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",

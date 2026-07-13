@@ -199,21 +199,14 @@
       <!-- Card actions — bottom-left -->
       @if (claim.status !== 'Closed' && claim.status !== 'Reopened') {
         <div class="co-card-actions">
-          @if (closureCheck() === null) {
-            <button nxButton="secondary small" type="button" disabled>
+          <button nxButton="primary small" type="button" (click)="openClosureModal(claim)"
+            [disabled]="closureCheck() === null">
+            @if (closureCheck() === null) {
               <nx-spinner size="small"></nx-spinner>&nbsp;Checking…
-            </button>
-          } @else if (!closureCheck()!.canClose) {
-            <button nxButton="secondary small" type="button" disabled
-              [nxTooltip]="closureTooltip()"
-              nxTooltipPosition="bottom">
+            } @else {
               Close Claim
-            </button>
-          } @else {
-            <button nxButton="primary small" type="button" (click)="openClosureModal(claim)">
-              Close Claim
-            </button>
-          }
+            }
+          </button>
         </div>
       }
       @if (claim.status === 'Closed') {

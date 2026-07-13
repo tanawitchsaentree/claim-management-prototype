@@ -83,6 +83,10 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   policyNumber     = '';
   showSelectedOnly = false;
 
+  get hasLossLocation(): boolean {
+    return (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
+  }
+
   selectedEntity: EntityRow | null = null;
   panelOpen = false;
   private scrollLocked = false;

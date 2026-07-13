@@ -23,60 +23,68 @@
   color: var(--text-01);
 }
 
-// ─── Blocker list ─────────────────────────────────────────────────────────────
+// ─── Condition checklist (step 1) ────────────────────────────────────────────
 
-.ccm-blocker-list {
+.ccm-condition-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
-.ccm-blocker-item {
+.ccm-condition-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-radius: 4px;
-  background: var(--message-error-background-color);
-  border: 1px solid var(--message-error-border-color);
+  background: var(--ui-02);
+  border: 1px solid var(--ui-04);
+
+  &--blocked {
+    background: var(--message-error-background-color);
+    border-color: var(--message-error-border-color);
+  }
 }
 
-.ccm-blocker-icon {
-  color: var(--message-error-color);
+.ccm-condition-icon {
   flex-shrink: 0;
   margin-top: 2px;
+
+  &--cleared { color: var(--positive); }
+  &--blocked { color: var(--message-error-color); }
 }
 
-.ccm-blocker-label {
+.ccm-condition-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ccm-condition-label {
   font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  line-height: 1.4;
+}
+
+.ccm-condition-detail {
+  font-size: var(--paragraph-03-font-size);
   color: var(--message-error-color);
   line-height: 1.4;
 }
 
-.ccm-link-btn {
-  background: none;
-  border: none;
-  color: var(--interactive-primary);
-  cursor: pointer;
-  font-size: inherit;
-  padding: 0;
-  text-decoration: underline;
-}
+.ccm-condition-badge {
+  flex-shrink: 0;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--message-error-color);
+  white-space: nowrap;
+  margin-top: 2px;
 
-.ccm-link-disabled {
-  color: var(--text-muted);
-  cursor: not-allowed;
-  text-decoration: none;
-  opacity: 0.6;
-}
-
-.ccm-link-na {
-  color: var(--text-muted);
-  font-size: inherit;
-  font-style: italic;
+  &--ok { color: var(--positive); }
 }
 
 // ─── Form ─────────────────────────────────────────────────────────────────────
@@ -89,35 +97,6 @@
   margin-bottom: 16px;
 }
 
-// ─── Checklist ────────────────────────────────────────────────────────────────
-
-.ccm-checklist {
-  list-style: none;
-  margin: 0 0 20px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.ccm-check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--paragraph-02-font-size);
-  color: var(--text-01);
-}
-
-.ccm-check-icon {
-  color: var(--success);
-  flex-shrink: 0;
-}
-
-.ccm-divider {
-  height: 1px;
-  background: var(--ui-04);
-  margin: 20px 0;
-}
 
 .ccm-section-label {
   font-size: var(--paragraph-02-font-size);

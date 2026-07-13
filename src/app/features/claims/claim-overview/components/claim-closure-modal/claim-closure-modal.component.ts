@@ -11,7 +11,6 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { firstValueFrom } from 'rxjs';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { ClaimOverview } from '../../../../../core/models/claim-overview.model';
@@ -36,6 +35,22 @@ const CLOSURE_REASONS: ClosureReason[] = [
   'Claim Rejected',
 ];
 
+interface ChecklistCondition {
+  label: string;
+  /** Blocker types that block this condition. Cleared if none are present in blockers. */
+  blockerTypes: string[];
+}
+
+const CLOSURE_CONDITIONS: ChecklistCondition[] = [
+  { label: 'All sections closed',                   blockerTypes: ['sections']              },
+  { label: 'All payments processed',                 blockerTypes: ['payments']              },
+  { label: 'All bills received',                     blockerTypes: ['bills']                 },
+  { label: 'Recoveries & deductibles collected',     blockerTypes: ['recovery', 'deductible']},
+  { label: 'Reserves released',                      blockerTypes: ['reserves']              },
+  { label: 'Litigation completed',                   blockerTypes: ['litigation']            },
+  { label: 'Final reports completed',                blockerTypes: ['reports']               },
+];
+
 @Component({
   selector: 'app-claim-closure-modal',
   standalone: true,
@@ -50,7 +65,6 @@ const CLOSURE_REASONS: ClosureReason[] = [
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    NxCheckboxModule,
   ],
   templateUrl: './claim-closure-modal.component.html',
   styleUrl: './claim-closure-modal.component.scss',
@@ -67,20 +81,7 @@ export class ClaimClosureModalComponent implements OnInit {
   readonly saveError = signal<string | null>(null);
 
   readonly closureReasons = CLOSURE_REASONS;
-
-  readonly checklistItems: string[] = [
-    'All payments processed',
-    'All bills received',
-    'All recoveries & deductibles collected',
-    'Reserves released to zero',
-    'Final reports completed',
-  ];
-  readonly checklistChecked = signal<boolean[]>(this.checklistItems.map(() => false));
-  readonly checklistAllDone = computed(() => this.checklistChecked().every(v => v));
-
-  toggleChecklistItem(index: number): void {
-    this.checklistChecked.update(arr => arr.map((v, i) => i === index ? !v : v));
-  }
+  readonly conditions = CLOSURE_CONDITIONS;
 
   readonly form: FormGroup = this.fb.group({
     reason:        [null, Validators.required],
@@ -89,9 +90,9 @@ export class ClaimClosureModalComponent implements OnInit {
 
   readonly stepTitle = computed(() => {
     switch (this.step()) {
-      case 1: return 'Close Claim — Validation';
-      case 2: return 'Close Claim — Pre-closure Checklist';
-      case 3: return 'Close Claim — Reason';
+      case 1: return 'Close Claim — Pre-closure Checklist';
+      case 2: return 'Close Claim — Reason';
+      case 3: return 'Close Claim — Confirmation';
       case 4: return 'Close Claim — Confirmation';
     }
   });
@@ -115,14 +116,22 @@ export class ClaimClosureModalComponent implements OnInit {
   get blockers() { return this.data.blockers.blockers; }
   get canClose()  { return this.data.blockers.canClose; }
   get claim()     { return this.data.claim; }
+
+  isConditionCleared(condition: ChecklistCondition): boolean {
+    return !this.blockers.some(b => condition.blockerTypes.includes(b.type));
+  }
+
+  blockerLabelFor(condition: ChecklistCondition): string | null {
+    const hit = this.blockers.find(b => condition.blockerTypes.includes(b.type));
+    return hit ? hit.label : null;
+  }
   get showOtherWarning() {
     return this.claim.proximateLossCause?.toLowerCase() === 'other';
   }
 
   ngOnInit(): void {
-    if (this.canClose) {
-      this.step.set(2);
-    }
+    // Always start at step 1 (pre-closure checklist) regardless of canClose.
+    // Continue button on step 1 is gated by canClose.
   }
 
   onCancel(): void {
@@ -131,21 +140,22 @@ export class ClaimClosureModalComponent implements OnInit {
 
   onBack(): void {
     const s = this.step();
-    if (s === 3) this.step.set(2);
+    if (s === 2) this.step.set(1);
+    else if (s === 3) this.step.set(2);
     else if (s === 4) this.step.set(3);
   }
 
   onContinue(): void {
     const s = this.step();
-    if (s === 2 && this.checklistAllDone()) {
+    if (s === 1 && this.canClose) {
+      this.step.set(2);
+    } else if (s === 2 && !this.reasonInvalid()) {
       this.step.set(3);
-    } else if (s === 3 && !this.reasonInvalid()) {
-      this.step.set(4);
     }
   }
 
   async onCloseClaim(): Promise<void> {
-    if (this.step() !== 4 || this.form.invalid || this.saving()) return;
+    if (this.step() !== 3 || this.form.invalid || this.saving()) return;
     this.saving.set(true);
     this.saveError.set(null);
 

@@ -16,7 +16,12 @@
                 "name": "Kaufmann's Warehouse",
                 "status": "promised",
                 "promiseStatus": "possibly-promised",
-                "limit": "50,000 EUR",
+                "limit": "500,000 EUR",
+                "limits": [
+                  { "label": "Building",               "value": "500,000 EUR" },
+                  { "label": "Contents",               "value": "150,000 EUR" },
+                  { "label": "Business interruption",  "value": "200,000 EUR" }
+                ],
                 "coveredBy": "FLExA for Building",
                 "documentsCount": 1,
                 "selected": false,

@@ -192,3 +192,34 @@
     max-width: 140px;
   }
 }
+
+// ─── Multi-limit list inside detail panel ────────────────────────────────────
+
+.info-field--multi {
+  align-items: flex-start;
+}
+
+.limit-list--panel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .limit-list__item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: var(--paragraph-03-font-size);
+  }
+
+  .limit-list__label {
+    color: var(--text-muted);
+  }
+
+  .limit-list__value {
+    color: var(--text-01);
+    font-weight: 500;
+  }
+}

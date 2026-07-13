@@ -1,0 +1,69 @@
+{
+  "ticketId": "CHAMP-NO-LOSS-LOC",
+  "module": "FNOL",
+  "title": "Entities & Damages — Handling No Loss Location Selected",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["fnol-entities-damages"],
+  "walkthroughSteps": [
+    "Apply AC-01 — seeds a policy with no loss location (lossLocation.locations = [])",
+    "Navigate to /fnol/entities-damages",
+    "Observe: page loads, entity table renders, Limit column shows single-value string (not multi-limit list)",
+    "Open any entity detail panel — Limit field shows single string, no crash"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Given no loss location was selected, when Entities & Damages loads, then no location group or limits section is shown and no error occurs.",
+      "plainStatement": "When `lossLocation.locations` is empty, the Entities & Damages page loads without error. The Limit column shows the plain string value (`entity.limit`) rather than the per-location multi-limit list. No location group header or limit breakdown section is rendered.",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed a policy with no loss location selected. Only fnolStateOverride.selectedPolicy is set so the page doesn't redirect to /fnol/search. lossLocation defaults to { locations: [] } on reset — no additional override needed.",
+        "preconditions": [
+          {
+            "text": "Policy POL-2024-001 is selected",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "lossLocation is empty (no locations selected in step-loss-information)",
+            "page": "fnol-entities-damages",
+            "role": "metadata"
+          },
+          {
+            "text": "Entities & Damages page loads without error — no blank screen, no console crash",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Limit column shows plain string (e.g. '500,000 EUR') not a multi-row breakdown list",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Entity table renders normally. The Limit column for ENT-001 (Kaufmann's Warehouse) shows '500,000 EUR' as a single string — not the 3-row Building / Contents / Business interruption breakdown.",
+        "visualCues": [
+          "Entities & Damages page visible with entity table",
+          "No console error or blank-page crash",
+          "Limit column: single plain text value, no ul/li limit breakdown",
+          "Entity detail panel (side sheet): Limit info-field shows single string"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Apply AC-01 then navigate to /fnol/entities-damages",
+        "expectedResult": "Page loads, entity table renders, Limit column shows plain string — no multi-limit list, no error"
+      }
+    }
+  ]
+}

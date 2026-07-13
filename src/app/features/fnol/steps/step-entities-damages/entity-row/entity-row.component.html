@@ -26,12 +26,23 @@
     <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '—' }}</td>
   }
   <td nxCell class="col-limit">
-    {{ entity.limit }}
-    @if (entity.limit !== '—') {
-      <nx-icon name="info-circle-o" class="limit-info-icon"
-               [nxTooltip]="'Limit details for ' + entity.name"
-               nxTooltipPosition="top">
-      </nx-icon>
+    @if (entity.limits?.length) {
+      <ul class="limit-list">
+        @for (lim of entity.limits; track lim.label) {
+          <li class="limit-list__item">
+            <span class="limit-list__label">{{ lim.label }}</span>
+            <span class="limit-list__value">{{ lim.value }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      {{ entity.limit }}
+      @if (entity.limit !== '—') {
+        <nx-icon name="info-circle-o" class="limit-info-icon"
+                 [nxTooltip]="'Limit details for ' + entity.name"
+                 nxTooltipPosition="top">
+        </nx-icon>
+      }
     }
   </td>
   <td nxCell class="col-covered">{{ entity.coveredBy }}</td>

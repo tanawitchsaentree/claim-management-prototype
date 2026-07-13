@@ -71,8 +71,8 @@
         ]
       },
       "expectedOutcome": {
-        "canClose": false,
-        "buttonEnabled": false
+        "claimStatus": "In progress",
+        "activityLogged": false
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

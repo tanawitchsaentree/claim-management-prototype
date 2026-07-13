@@ -63,6 +63,11 @@ export interface EntitySearchFilters {
   locationName?: string;
 }
 
+export interface LocationLimit {
+  label: string;
+  value: string;
+}
+
 export interface SubItem {
   itemId: string;
   name: string;
@@ -75,6 +80,7 @@ export interface EntityRow {
   status: EntityStatus;
   promiseStatus: PromiseStatus;
   limit: string;
+  limits?: LocationLimit[];
   coveredBy: string;
   coveredForEvents?: string[];
   documentsCount: number;

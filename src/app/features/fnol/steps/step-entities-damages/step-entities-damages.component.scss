@@ -182,7 +182,7 @@
 .col-name    { min-width: 200px; }
 .col-status  { width: 130px; }
 .col-events  { width: 160px; }
-.col-limit   { width: 200px; }
+.col-limit   { min-width: 260px; }
 .col-covered { min-width: 160px; }
 .col-action  { width: 52px; }
 
@@ -242,43 +242,35 @@
   color: var(--text-01);
 }
 
-// ─── Overlay side sheet ──────────────────────────────────────────────────────
+// ─── Overlay side sheet — styles live in src/styles.scss (global scope) ──────
 
-.side-sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  background: var(--claim-overlay-backdrop);
-  z-index: 90;
-  animation: backdrop-fade-in 0.2s ease-out;
-}
+// ─── Multiple limits list ────────────────────────────────────────────────────
 
-@keyframes backdrop-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.side-sheet {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 600px;
-  max-width: 100vw;
-  background: var(--ui-01);
-  box-shadow: -4px 0 24px var(--claim-overlay-shadow);
-  z-index: 100;
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0, 0, 0.1, 1);
+.limit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 2px;
 
-  &--open {
-    transform: translateX(0);
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: var(--paragraph-03-font-size);
+    line-height: 1.4;
   }
 
-  @media (max-width: 768px) {
-    width: 100vw;
+  &__label {
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  &__value {
+    color: var(--text-01);
+    font-weight: 500;
+    white-space: nowrap;
   }
 }
 

@@ -2,7 +2,7 @@
   "ticketId": "CHAMP-CLOSURE-001",
   "module": "Claims",
   "title": "Manual Claim Closure & Section Closure",
-  "targetClaim": "CL-2025-001",
+  "targetClaim": "CLM-2024-001",
   "pages": ["overview", "sections"],
   "walkthroughSteps": [
     "Navigate to CLM-2024-001 overview tab — status chip should read 'Open'",
@@ -21,7 +21,7 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Claim open, sections all closed, 5 tasks still pending",
+        "description": "Claim open, all sections closed, 5 tasks still pending (overridden from done base)",
         "preconditions": [
           {
             "text": "5 tasks are open / in-progress",
@@ -36,7 +36,7 @@
             "hint": "Hover to see tooltip: 'Cannot close: 5 pending task(s)'"
           },
           {
-            "text": "3 sections are Closed",
+            "text": "All sections are Closed",
             "page": "sections",
             "role": "setup",
             "hint": "Pre-closed so sections don't add as a second blocker"
@@ -49,10 +49,15 @@
           }
         ],
         "stateOverrides": {
+          "taskStatuses": {
+            "t1": "open",
+            "t2": "open",
+            "t3": "open",
+            "t4": "in-progress",
+            "t5": "in-progress"
+          },
           "sectionStatuses": {
-            "SEC-001": "Closed",
-            "SEC-002": "Closed",
-            "SEC-003": "Closed"
+            "SEC-001": "Closed"
           }
         }
       },
@@ -60,7 +65,7 @@
         "description": "Close Claim button is disabled; tooltip shows pending task count",
         "visualCues": [
           "Close Claim button appears greyed out",
-          "Tooltip on hover: 'Cannot close: X open task(s)'",
+          "Tooltip on hover: 'Cannot close: 5 pending task(s)'",
           "Clicking button does nothing — no modal opens"
         ]
       },
@@ -68,7 +73,7 @@
         "pendingTasks":     5,
         "doneTasks":        0,
         "openSections":     0,
-        "closedSections":   3,
+        "closedSections":   6,
         "overviewStatus":   "In progress",
         "canClose":         false,
         "buttonVisible":    true,
@@ -88,7 +93,7 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Claim open, all tasks done, 3 sections still open",
+        "description": "Claim open, all tasks done, 3 sections forced open",
         "preconditions": [
           {
             "text": "3 sections remain Open",
@@ -106,7 +111,7 @@
             "text": "All 5 tasks are done",
             "page": "overview",
             "role": "setup",
-            "hint": "Pre-completed so tasks don't add as a second blocker"
+            "hint": "Tasks widget shows 0 pending"
           },
           {
             "text": "Claim CLM-2024-001 is Open",
@@ -122,6 +127,11 @@
             "t3": "done",
             "t4": "done",
             "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Open",
+            "SEC-003": "Open"
           }
         }
       },
@@ -129,7 +139,7 @@
         "description": "Close Claim button is disabled; tooltip shows open section count",
         "visualCues": [
           "Close Claim button appears greyed out",
-          "Tooltip on hover: 'Cannot close: X open section(s)'",
+          "Tooltip on hover: 'Cannot close: 3 open section(s)'",
           "Clicking button does nothing — no modal opens"
         ]
       },
@@ -137,7 +147,7 @@
         "pendingTasks":     0,
         "doneTasks":        5,
         "openSections":     3,
-        "closedSections":   0,
+        "closedSections":   3,
         "overviewStatus":   "In progress",
         "canClose":         false,
         "buttonVisible":    true,
@@ -160,7 +170,7 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Default claim state — mix of open/in-progress tasks, all sections open",
+        "description": "Claim open, 5 pending tasks (overridden), 3 sections forced open",
         "preconditions": [
           {
             "text": "5 tasks are a mix of open and in-progress",
@@ -181,12 +191,25 @@
             "hint": "Hover tooltip: 'Cannot close: 5 pending task(s), 3 open section(s)'"
           },
           {
-            "text": "Claim CLM-2024-001 is Open — default state, no overrides needed",
+            "text": "Claim CLM-2024-001 is Open",
             "page": "any",
             "role": "metadata"
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "open",
+            "t2": "open",
+            "t3": "open",
+            "t4": "in-progress",
+            "t5": "in-progress"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Open",
+            "SEC-003": "Open"
+          }
+        }
       },
       "expectedUI": {
         "description": "Close Claim button disabled; tooltip lists both task and section blockers",
@@ -200,7 +223,7 @@
         "pendingTasks":     5,
         "doneTasks":        0,
         "openSections":     3,
-        "closedSections":   0,
+        "closedSections":   3,
         "overviewStatus":   "In progress",
         "canClose":         false,
         "buttonVisible":    true,
@@ -241,10 +264,10 @@
             "hint": "Tasks widget shows 0 pending"
           },
           {
-            "text": "All 3 sections are Closed",
+            "text": "All sections are Closed",
             "page": "sections",
             "role": "setup",
-            "hint": "Navigate to Sections tab to confirm SEC-001/002/003 are Closed"
+            "hint": "Navigate to Sections tab to confirm all sections are Closed"
           },
           {
             "text": "Claim CLM-2024-001 is Open",
@@ -262,9 +285,7 @@
             "t5": "done"
           },
           "sectionStatuses": {
-            "SEC-001": "Closed",
-            "SEC-002": "Closed",
-            "SEC-003": "Closed"
+            "SEC-001": "Closed"
           }
         },
         "postLand": [
@@ -285,16 +306,13 @@
         "pendingTasks":     0,
         "doneTasks":        5,
         "openSections":     0,
-        "closedSections":   3,
+        "closedSections":   6,
         "overviewStatus":   "In progress",
         "canClose":         true,
         "buttonVisible":    true,
         "buttonEnabled":    true,
         "taskStatuses": {
           "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done"
-        },
-        "sectionStatuses": {
-          "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed"
         }
       },
       "howToTest": {
@@ -331,10 +349,10 @@
             "hint": "Tasks widget shows 0 pending"
           },
           {
-            "text": "All 3 sections are Closed",
+            "text": "All sections are Closed",
             "page": "sections",
             "role": "setup",
-            "hint": "Navigate to Sections tab to confirm SEC-001/002/003 are Closed"
+            "hint": "Navigate to Sections tab to confirm all sections are Closed"
           },
           {
             "text": "Claim CLM-2024-001 is Open",
@@ -352,9 +370,7 @@
             "t5": "done"
           },
           "sectionStatuses": {
-            "SEC-001": "Closed",
-            "SEC-002": "Closed",
-            "SEC-003": "Closed"
+            "SEC-001": "Closed"
           }
         },
         "postLand": [
@@ -374,7 +390,7 @@
         "pendingTasks":     0,
         "doneTasks":        5,
         "openSections":     0,
-        "closedSections":   3,
+        "closedSections":   6,
         "overviewStatus":   "In progress",
         "canClose":         true,
         "buttonVisible":    true,
@@ -420,7 +436,7 @@
             "hint": "Required for valid Closed state"
           },
           {
-            "text": "All 3 sections are Closed",
+            "text": "All sections are Closed",
             "page": "sections",
             "role": "setup",
             "hint": "Required for valid Closed state"
@@ -441,9 +457,7 @@
             "t5": "done"
           },
           "sectionStatuses": {
-            "SEC-001": "Closed",
-            "SEC-002": "Closed",
-            "SEC-003": "Closed"
+            "SEC-001": "Closed"
           },
           "overviewPatch": {
             "claimId": "CLM-2024-001",
@@ -469,7 +483,7 @@
         "pendingTasks":     0,
         "doneTasks":        5,
         "openSections":     0,
-        "closedSections":   3,
+        "closedSections":   6,
         "overviewStatus":   "Closed",
         "canClose":         false,
         "buttonVisible":    false,
@@ -505,10 +519,10 @@
             "hint": "Date, reason, and handler name all preserved"
           },
           {
-            "text": "Apply AC-06 setup first (all tasks done, all sections closed, overviewPatch applied)",
+            "text": "Apply AC-06 setup first, then manually press F5",
             "page": "overview",
             "role": "setup",
-            "hint": "Apply AC-06 via the DEV modal, then manually press F5"
+            "hint": "Apply AC-06 via the DEV modal, then press F5"
           },
           {
             "text": "sessionStorage holds the closure state from the previous apply",
@@ -526,9 +540,7 @@
             "t5": "done"
           },
           "sectionStatuses": {
-            "SEC-001": "Closed",
-            "SEC-002": "Closed",
-            "SEC-003": "Closed"
+            "SEC-001": "Closed"
           },
           "overviewPatch": {
             "claimId": "CLM-2024-001",
@@ -553,7 +565,7 @@
         "pendingTasks":     0,
         "doneTasks":        5,
         "openSections":     0,
-        "closedSections":   3,
+        "closedSections":   6,
         "overviewStatus":   "Closed",
         "canClose":         false,
         "buttonVisible":    false,

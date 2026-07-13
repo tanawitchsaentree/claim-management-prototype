@@ -227,16 +227,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.closureCheck.set({ canClose: false, blockers: [] });
   }
 
-  closureTooltip(): string {
-    const check = this.closureCheck();
-    if (!check || check.canClose) return '';
-    const parts = check.blockers
-      .filter(b => b.count != null && b.count > 0)
-      .map(b => `${b.count} ${b.type === 'tasks' ? 'pending task(s)' : 'open section(s)'}`);
-    if (parts.length) return `Cannot close: ${parts.join(', ')}`;
-    return `Cannot close: ${check.blockers.length} blocker(s) must be resolved`;
-  }
-
   async openClosureModal(claim: ClaimOverview): Promise<void> {
     const check = this.closureCheck();
     if (!check) return;

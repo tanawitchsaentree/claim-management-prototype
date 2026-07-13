@@ -129,7 +129,20 @@
                           @if (section.promiseStatus === 'not-promised') {
                             <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '—' }}</td>
                           }
-                          <td nxCell class="col-limit">{{ entity.limit }}</td>
+                          <td nxCell class="col-limit">
+                            @if (hasLossLocation && entity.limits?.length) {
+                              <ul class="limit-list">
+                                @for (lim of entity.limits; track lim.label) {
+                                  <li class="limit-list__item">
+                                    <span class="limit-list__label">{{ lim.label }}</span>
+                                    <span class="limit-list__value">{{ lim.value }}</span>
+                                  </li>
+                                }
+                              </ul>
+                            } @else {
+                              {{ entity.limit }}
+                            }
+                          </td>
                           <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
                           <td nxCell class="col-action">
                             <button nxIconButton="tertiary small" type="button" [nxContextMenuTriggerFor]="entityMenu" aria-label="Entity actions">

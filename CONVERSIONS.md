@@ -4,6 +4,52 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-07-13 — CHAMP-PRECLOSURE-CHECKLIST (Pre-closure Checklist — Always-clickable Close Claim)
+
+- **Source:** verbal brief — replace disabled+tooltip button with always-clickable button opening checklist pop-up consistent with section closure UX
+- **Module:** Claims — `/claims/:id/overview`, `ClaimClosureModalComponent`
+- **Changes:**
+  - `claim-overview.component.html` — 3-branch button (loading/disabled+tooltip/primary) → single primary button, disabled only while `closureCheck() === null`
+  - `claim-overview.component.ts` — removed `closureTooltip()` method
+  - `claim-closure-modal.component.ts` — Step 1 renamed to "Pre-closure Checklist"; replaced free-text blockers list with 7 derived conditions (`CLOSURE_CONDITIONS`); `ngOnInit` always starts at step 1 (no skip to step 2); added `isConditionCleared()`/`blockerLabelFor()` helpers; removed `checklistItems`/`checklistChecked`/`checklistAllDone`/`toggleChecklistItem`; step flow now 1→2→3 (was 1=blockers, 2=checklist, 3=reason, 4=confirm)
+  - `claim-closure-modal.component.html` — Step 1 rewritten as 7-row condition list (check-circle-o / exclamation-triangle-o icons, Clear/Blocked badges); Steps 2/3 absorb old 3/4
+  - `claim-closure-modal.component.scss` — replaced blocker/checklist CSS with `.ccm-condition-*` classes; removed stale `.ccm-checklist`/`.ccm-blocker-*` styles
+- **Audit result:** 50 ACs, 47/47 ✅ (2 new ACs skipped — runtime-only, expected)
+
+---
+
+## 2026-07-13 — CHAMP-NO-LOSS-LOC (Entities & Damages — Handling No Loss Location Selected)
+
+- **Source:** verbal brief — 1 AC: no crash / no multi-limit list when lossLocation is empty
+- **Module:** FNOL — `/fnol/entities-damages`
+- **New page enum:** `fnol-entities-damages` → `/fnol/entities-damages` — added to `PreconditionPage`, `pageRoute()`, PROJECT.md
+- **Code change:** `hasLossLocation` getter added to `StepEntitiesDamagesComponent` and `EntityDetailPanelComponent`; both gate `entity.limits` display on `lossLocation.locations.length > 0`. `ngOnChanges` currency parse also gated.
+- **No new ScenarioOverrides entity:** `fnolStateOverride.selectedPolicy` is sufficient — lossLocation defaults to `{ locations: [] }` on `MockStateService.reset()`, so no explicit empty-location override needed.
+- **Audit result:** 47/47 ✅ (AC-01 skipped — runtime-only, expected)
+
+---
+
+## 2026-07-13 — CHAMP-CLOSE-SECTION (Close Section — Pre-condition Validation & Lifecycle)
+
+- **Source:** verbal brief — "Close Section" feature with 7 hard blockers, confirmation modal, closureDate persistence
+- **Module:** Claims — `Sections` page, `SectionClosureModalComponent`, `ClaimClosureService`
+- **File:** `public/tickets/close-section.json` (new)
+- **ACs authored:** 5 (done: 5, partial: 0, todo: 0)
+- **Deviations:**
+  - **AC button-disabled:** Brief says "button must remain disabled until all blockers are resolved." Implementation: button always opens the modal; modal step 1 shows blockers with only Cancel if any blocker exists. Same guard, modal-based. Consistent with `bmpcc-14434` pattern (sign-off implicit). Marked `done`.
+  - **AC checklist step:** Brief says "confirmation modal requiring mandatory Closure Reason." Implementation has an additional pre-closure checklist (step 2 of 3) before the reason dropdown. Matches AC-04 of `bmpcc-14434` which is already signed off.
+  - **Bills / Reports blockers:** Brief lists "Bills not yet received" + "Final reports not completed" as hard blockers. These are absent from `SectionBlockers` model — no `hasPendingBills` / `hasIncompleteReports` flags exist. Cannot mark done. Not included in this ticket — require a separate model + service sprint. Track as `todo` follow-up.
+- **Schema changes:** none — `sectionBlockers` mutation entity already exists (v2.2)
+- **Files touched:** 2 (created `public/tickets/close-section.json`; updated `public/tickets/index.json`)
+- **Pre-existing audit fixes also applied in this session:**
+  - `closure.json` — fixed `targetClaim` (`CL-2025-001` → `CLM-2024-001`); rewrote stateOverrides for AC-01/03 (base tasks are now all `done` — must explicitly override to pending); corrected `closedSections` counts (CLM-2024-001 has 6 sections, not 3)
+  - `bmpcc-14435.json` AC-01 — dropped `canClose`/`buttonEnabled` assertions (litigation deep-check is runtime-only via `MockLitigationService`; not simulatable in Node); replaced with runtime-only keys `claimStatus`/`activityLogged`
+  - `bmpcc-14437.json` — fixed `targetClaim` (`CL-2025-001` → `CLM-2024-001`); replaced non-schema `stateOverrides` keys (`claimId`, `sectionId`, `scenario`, `paymentId`) with proper `sectionBlockers` + `paymentStatuses` entities
+  - `bmpcc-14434.json` AC-04 — replaced `canClose`/`buttonEnabled` (claim-level metric; misleading for a section-level AC) with `sectionBlockers` + `sectionStatus` (runtime-only) assertions
+- **Verification:** `npm run audit:ac-logic` → 47/47 ✅ (was 31/42 before fixes)
+
+---
+
 ## 2026-06-16 — BMPCC-14435 Cross-domain closure validations — Litigation & Reserves deep check
 
 - **Source:** BMPCC-14435 audit findings → BUILD task

@@ -70,13 +70,7 @@
                 (click)="onCloseSection(section)">
                 Close Section
               </button>
-              @if (devMode && section.status !== 'Closed') {
-                <button nxContextMenuItem type="button"
-                  (click)="onSimulateFinalPayment(section)">
-                  Simulate Final Payment
-                </button>
-              }
-              <button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
+<button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
               <button nxContextMenuItem type="button" (click)="onAction('delete', section.name)">Delete</button>
             </nx-context-menu>
           </td>

@@ -9,63 +9,37 @@
 <!-- ─── Body ──────────────────────────────────────────────────────────────── -->
 <div class="ccm-body">
 
-  <!-- STEP 1 — Blockers -->
+  <!-- STEP 1 — Pre-closure checklist (status derived from blockers) -->
   @if (step() === 1) {
-    @if (blockers.length > 0) {
-      <p class="ccm-intro">The following issues must be resolved before this claim can be closed:</p>
-      <ul class="ccm-blocker-list">
-        @for (b of blockers; track b.type) {
-          <li class="ccm-blocker-item">
-            <nx-icon name="exclamation-triangle-o" size="s" class="ccm-blocker-icon"></nx-icon>
-            <span class="ccm-blocker-label">
-              {{ b.label }}
-              @if (b.amount) { — <strong>{{ b.amount | currency:'EUR':'symbol':'1.0-0' }}</strong> }
-              @if (b.type === 'sections') {
-                — <button class="ccm-link-btn" type="button" (click)="onViewSections()">View Sections</button>
-              }
-              @if (b.type === 'tasks') {
-                — <button class="ccm-link-btn" type="button" (click)="onViewTasks()">View Tasks</button>
-              }
-              @if (b.type === 'litigation') {
-                — <button class="ccm-link-btn" type="button" (click)="onViewLitigation()">Go to Litigation</button>
-              }
-              @if (b.type === 'reserves') {
-                — <button class="ccm-link-btn ccm-link-disabled" type="button" disabled title="Feature not available">Go to Reserves</button>
-              }
-              @if (b.type === 'payments') {
-                — <button class="ccm-link-btn" type="button" (click)="onViewPayments()">Go to Payments</button>
-              }
-              @if (b.type === 'provider') {
-                — <button class="ccm-link-btn" type="button" (click)="onViewProvider()">Go to Provider</button>
-              }
-              @if (b.type === 'recovery' || b.type === 'deductible' || b.type === 'bills' || b.type === 'reports') {
-                — <span class="ccm-link-na" title="Feature not available">Feature not available</span>
-              }
-            </span>
-          </li>
-        }
-      </ul>
-    }
-  }
-
-  <!-- STEP 2 — Pre-closure checklist -->
-  @if (step() === 2) {
-    <p class="ccm-intro">Confirm all items below are complete before proceeding:</p>
-    <ul class="ccm-checklist">
-      @for (item of checklistItems; track item; let i = $index) {
-        <li class="ccm-check-item">
-          <nx-checkbox labelSize="small"
-            [checked]="checklistChecked()[i]"
-            (checkedChange)="toggleChecklistItem(i)">
-            {{ item }}
-          </nx-checkbox>
+    <p class="ccm-intro">Review all closure conditions before proceeding:</p>
+    <ul class="ccm-condition-list">
+      @for (cond of conditions; track cond.label) {
+        @let cleared = isConditionCleared(cond);
+        @let detail  = blockerLabelFor(cond);
+        <li class="ccm-condition-row" [class.ccm-condition-row--blocked]="!cleared">
+          <nx-icon
+            [name]="cleared ? 'check-circle-o' : 'exclamation-triangle-o'"
+            size="s"
+            class="ccm-condition-icon"
+            [class.ccm-condition-icon--cleared]="cleared"
+            [class.ccm-condition-icon--blocked]="!cleared">
+          </nx-icon>
+          <div class="ccm-condition-text">
+            <span class="ccm-condition-label">{{ cond.label }}</span>
+            @if (!cleared && detail) {
+              <span class="ccm-condition-detail">{{ detail }}</span>
+            }
+          </div>
+          <span class="ccm-condition-badge" [class.ccm-condition-badge--ok]="cleared">
+            {{ cleared ? 'Clear' : 'Blocked' }}
+          </span>
         </li>
       }
     </ul>
   }
 
-  <!-- STEP 3 — Closure reason -->
-  @if (step() === 3) {
+  <!-- STEP 2 — Closure reason -->
+  @if (step() === 2) {
     @if (showOtherWarning) {
       <nx-message type="warning" class="ccm-warning">
         The proximate loss cause is set to "Other". Verify this is correct before closing.
@@ -83,8 +57,8 @@
     </form>
   }
 
-  <!-- STEP 4 — Confirmation -->
-  @if (step() === 4) {
+  <!-- STEP 3 — Confirmation (document retention) -->
+  @if (step() === 3) {
     <p class="ccm-section-label">Document retention period</p>
     <form [formGroup]="form">
       <nx-radio-group formControlName="retentionType">
@@ -109,21 +83,16 @@
 
   @if (step() === 1) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button" (click)="onViewTasks()">View Tasks</button>
+    <button nxButton="primary small" type="button" [disabled]="!canClose" (click)="onContinue()">Continue</button>
   }
 
   @if (step() === 2) {
-    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button" [disabled]="!checklistAllDone()" (click)="onContinue()">Continue</button>
-  }
-
-  @if (step() === 3) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
     <button nxButton="primary small" type="button" [disabled]="reasonInvalid()" (click)="onContinue()">Continue</button>
   }
 
-  @if (step() === 4) {
+  @if (step() === 3) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
     <button nxButton="primary small" type="button" [disabled]="form.invalid || saving()" (click)="onCloseClaim()">

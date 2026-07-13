@@ -28,7 +28,7 @@ mutations:
     - cwbLocationsAppend
 
 pages:
-  enum: [overview, sections, fnol-search, fnol-loss-info, fnol-skeleton, fnol-summary, any]
+  enum: [overview, sections, fnol-search, fnol-loss-info, fnol-entities-damages, fnol-skeleton, fnol-summary, any]
   defined-in: src/app/features/claims/dev-banner/claim-dev-helper.service.ts:12
 
 deviation-marker: "[accepted-deviation]"
@@ -233,6 +233,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 | `sections` | `/claims/:claimId/sections` | Closure cross-page setup |
 | `fnol-search` | `/fnol/search` | BMPCC-11006 landing (Convert orphan banner) |
 | `fnol-loss-info` | `/fnol/loss-information` | BMPCC-216 / 219 / 11006 |
+| `fnol-entities-damages` | `/fnol/entities-damages` | CHAMP-NO-LOSS-LOC |
 | `fnol-skeleton` | `/fnol/skeleton-create` | BMPCC-241 (orphan create) |
 | `fnol-summary` | `/fnol/summary` | Wizard summary (step-summary) |
 | `any` | (empty string) | Metadata-only preconditions; no link rendered |
