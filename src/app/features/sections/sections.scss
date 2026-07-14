@@ -388,8 +388,9 @@ $brand-blue:          var(--info);
   .col-toggle   { width: 48px;  padding: 0 !important; }
   .col-entity   { width: 28%; }
   .col-damage   { width: 32%; }
-  .col-coverage { width: 240px; }
-  .col-actions  { width: 56px; text-align: center !important; padding: 0 !important; }
+  .col-coverage  { width: 200px; }
+  .col-comments  { width: 96px; text-align: center !important; }
+  .col-actions   { width: 56px; text-align: center !important; padding: 0 !important; }
 
   th[nxHeaderCell] {
     font-size: var(--paragraph-03-font-size) !important;
@@ -531,6 +532,23 @@ button[nxContextMenuItem] {
 }
 
 [nxHeadline] { color: var(--text-01) !important; }
+
+.sec-comment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 12px;
+  background: var(--interactive-primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  &:hover { opacity: 0.85; }
+}
 
 .sec-kebab-btn {
   background: none;

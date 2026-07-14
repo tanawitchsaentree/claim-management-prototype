@@ -9,6 +9,7 @@ import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { ClaimNotesPanelComponent } from '../../claims/claim-notes-panel/claim-notes-panel.component';
 import { ClaimReferencePanelComponent } from '../../claims/claim-reference-panel/claim-reference-panel.component';
 import { ReferenceViewService } from '../../claims/claim-reference-panel/reference-view.service';
+import { RightStripService } from '../../../core/services/right-strip.service';
 
 interface StripItem {
   icon: string;
@@ -38,8 +39,9 @@ interface StripItem {
   ],
 })
 export class ClaimRightStripComponent {
-  private readonly router = inject(Router);
-  readonly refSvc = inject(ReferenceViewService);
+  private readonly router   = inject(Router);
+  readonly refSvc           = inject(ReferenceViewService);
+  private readonly stripSvc = inject(RightStripService);
 
   activeKey: string | null = null;
   collapsed = false;
@@ -60,6 +62,11 @@ export class ClaimRightStripComponent {
   private readonly urlSignal = toSignal(this.url$, { initialValue: this.router.url });
 
   readonly currentClaimId = computed<string | null>(() => {
+    const requested = this.stripSvc.requestedPanel();
+    if (requested) {
+      // consume and activate on next microtask to avoid signal write-during-read
+      Promise.resolve().then(() => { this.activate(this.stripSvc.consume()!); });
+    }
     const m = this.urlSignal().match(/^\/claims\/([^/]+)/);
     return m && m[1] !== 'new' ? m[1] : null;
   });

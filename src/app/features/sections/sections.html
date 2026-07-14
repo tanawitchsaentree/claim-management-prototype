@@ -15,6 +15,7 @@
         <th nxHeaderCell class="col-entity">Entity</th>
         <th nxHeaderCell class="col-damage">Damage</th>
         <th nxHeaderCell class="col-coverage">Coverage review</th>
+        <th nxHeaderCell class="col-comments">Comments</th>
         <th nxHeaderCell class="col-actions">Action</th>
       </tr>
     </thead>
@@ -51,7 +52,7 @@
               <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
             </button>
           </td>
-          <td nxTableCell colspan="3">
+          <td nxTableCell colspan="4">
             <div class="section-title-cell__inner">
               <span class="section-title-cell__name">{{ section.name }}</span>
               <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
@@ -108,6 +109,18 @@
                     <span class="coverage-empty">–</span>
                   }
                 </div>
+              </td>
+              <td nxTableCell class="col-comments">
+                @let count = noteCountFor(entity.name);
+                @if (count > 0) {
+                  <button class="sec-comment-badge" type="button"
+                    (click)="openComments()"
+                    [nxTooltip]="count + ' comment' + (count > 1 ? 's' : '')">
+                    {{ count }}
+                  </button>
+                } @else {
+                  <span class="coverage-empty">–</span>
+                }
               </td>
               <td nxTableCell class="col-actions">
                 <button class="sec-kebab-btn" type="button"

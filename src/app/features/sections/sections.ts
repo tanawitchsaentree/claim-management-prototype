@@ -10,6 +10,9 @@ import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom, catchError, of } from 'rxjs';
 import { ClaimSection, SectionEntity, CoverageReview } from '../../core/models/section.model';
+import { MockNotesService } from '../../core/mock/services/mock-notes.service';
+import { RightStripService } from '../../core/services/right-strip.service';
+import { Note } from '../../core/models/note.model';
 import {
   CoverageReviewModalComponent,
   CoverageReviewModalData,
@@ -59,10 +62,24 @@ export class Sections {
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly dialogSvc  = inject(NxDialogService);
   private readonly toast      = inject(ToastService);
+  private readonly notesSvc   = inject(MockNotesService);
+  private readonly stripSvc   = inject(RightStripService);
 
-  readonly sections  = signal<ClaimSection[]>([]);
-  readonly loading   = signal(true);
-  readonly loadError = signal(false);
+  readonly sections   = signal<ClaimSection[]>([]);
+  readonly loading    = signal(true);
+  readonly loadError  = signal(false);
+  readonly allNotes   = signal<Note[]>([]);
+
+  noteCountFor(entityName: string): number {
+    return this.allNotes().filter(n =>
+      n.body.toLowerCase().includes(entityName.toLowerCase()) ||
+      (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
+    ).length;
+  }
+
+  openComments(): void {
+    this.stripSvc.open('comments');
+  }
   readonly devMode   = true; // always show dev tools in prototype
 
   constructor() {
@@ -72,8 +89,12 @@ export class Sections {
       this.loading.set(true);
       this.loadError.set(false);
       try {
-        const sections = await firstValueFrom(this.sectionSvc.getByClaimId(id));
+        const [sections, notes] = await Promise.all([
+          firstValueFrom(this.sectionSvc.getByClaimId(id)),
+          firstValueFrom(this.notesSvc.getByClaim(id)),
+        ]);
         this.sections.set(sections);
+        this.allNotes.set(notes);
       } catch {
         this.loadError.set(true);
       } finally {
