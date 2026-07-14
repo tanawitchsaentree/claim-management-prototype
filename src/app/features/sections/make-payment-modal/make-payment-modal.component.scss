@@ -1,0 +1,26 @@
+.mpm-header {
+  padding: 24px 24px 0;
+  .mpm-title    { margin: 0; font-size: 20px; font-weight: 600; color: var(--text-01); }
+  .mpm-subtitle { margin: 4px 0 0; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+}
+
+.mpm-body {
+  padding: 16px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mpm-row {
+  display: flex;
+  gap: 12px;
+  .mpm-amount   { flex: 1; }
+  .mpm-currency { width: 100px; flex-shrink: 0; }
+}
+
+.mpm-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px 24px;
+}

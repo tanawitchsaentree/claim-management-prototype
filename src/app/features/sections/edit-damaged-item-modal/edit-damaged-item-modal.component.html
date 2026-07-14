@@ -1,0 +1,30 @@
+<div class="edm-header">
+  <h2 class="edm-title">Edit damaged item</h2>
+  <p class="edm-subtitle">{{ data.item.name }}</p>
+</div>
+
+<div class="edm-body" [formGroup]="form">
+  <nx-formfield label="Item name">
+    <input nxInput formControlName="name" />
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Description">
+    <textarea nxInput formControlName="description" rows="3"></textarea>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Damage type">
+    <nx-dropdown formControlName="damage">
+      @for (opt of damageOptions; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+</div>
+
+<div class="edm-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Save changes</button>
+</div>

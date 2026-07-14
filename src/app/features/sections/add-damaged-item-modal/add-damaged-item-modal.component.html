@@ -1,0 +1,31 @@
+<div class="adm-header">
+  <h2 class="adm-title">Add damaged item</h2>
+  <p class="adm-subtitle">{{ data.entityName }}</p>
+</div>
+
+<div class="adm-body" [formGroup]="form">
+  <nx-formfield label="Item name">
+    <input nxInput formControlName="name" placeholder="e.g. Loading dock door" />
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Description">
+    <textarea nxInput formControlName="description" rows="3"
+              placeholder="Describe the damage…"></textarea>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Damage type">
+    <nx-dropdown formControlName="damage" placeholder="Select damage type">
+      @for (opt of damageOptions; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+</div>
+
+<div class="adm-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Add item</button>
+</div>

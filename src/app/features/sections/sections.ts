@@ -37,6 +37,17 @@ import {
   AddCommentModalComponent,
   AddCommentModalData,
 } from './add-comment-modal/add-comment-modal.component';
+import {
+  MakePaymentModalComponent,
+  MakePaymentModalData,
+  MakePaymentModalResult,
+} from './make-payment-modal/make-payment-modal.component';
+import {
+  InstructProviderModalComponent,
+  InstructProviderModalData,
+  InstructProviderModalResult,
+} from './instruct-provider-modal/instruct-provider-modal.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-sections',
@@ -53,6 +64,9 @@ import {
     CoverageReviewModalComponent,
     AddCommentModalComponent,
     EntityDetailPanelComponent,
+    MakePaymentModalComponent,
+    InstructProviderModalComponent,
+    ConfirmDialogComponent,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -67,31 +81,13 @@ export class Sections {
   private readonly notesSvc   = inject(MockNotesService);
   private readonly stripSvc   = inject(RightStripService);
 
-  readonly sections      = signal<ClaimSection[]>([]);
-  readonly loading       = signal(true);
-  readonly loadError     = signal(false);
-  readonly allNotes      = signal<Note[]>([]);
+  readonly sections       = signal<ClaimSection[]>([]);
+  readonly loading        = signal(true);
+  readonly loadError      = signal(false);
+  readonly allNotes       = signal<Note[]>([]);
   readonly selectedEntity = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
 
-  openEntityDetail(section: ClaimSection, entity: SectionEntity): void {
-    this.selectedEntity.set({ entity, section });
-  }
-
-  closeEntityDetail(): void {
-    this.selectedEntity.set(null);
-  }
-
-  noteCountFor(entityName: string): number {
-    return this.allNotes().filter(n =>
-      n.body.toLowerCase().includes(entityName.toLowerCase()) ||
-      (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
-    ).length;
-  }
-
-  openComments(): void {
-    this.stripSvc.open('comments');
-  }
-  readonly devMode   = true; // always show dev tools in prototype
+  readonly devMode = true;
 
   constructor() {
     effect(async () => {
@@ -120,6 +116,53 @@ export class Sections {
     );
   }
 
+  openEntityDetail(section: ClaimSection, entity: SectionEntity): void {
+    this.selectedEntity.set({ entity, section });
+  }
+
+  closeEntityDetail(): void {
+    this.selectedEntity.set(null);
+  }
+
+  noteCountFor(entityName: string): number {
+    return this.allNotes().filter(n =>
+      n.body.toLowerCase().includes(entityName.toLowerCase()) ||
+      (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
+    ).length;
+  }
+
+  openComments(): void {
+    this.stripSvc.open('comments');
+  }
+
+  coverageClass(review: CoverageReview): string {
+    return review.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z-]/g, '');
+  }
+
+  // ── Section kebab actions ──────────────────────────────────────
+
+  async onMakePayment(section: ClaimSection): Promise<void> {
+    const ref = this.dialogSvc.open(MakePaymentModalComponent, {
+      data: { section } satisfies MakePaymentModalData,
+      width: '500px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as MakePaymentModalResult | undefined;
+    if (!result) return;
+    this.toast.success(`Payment of ${result.amount} ${result.currency} submitted for ${section.name}`);
+  }
+
+  async onInstructProvider(section: ClaimSection): Promise<void> {
+    const ref = this.dialogSvc.open(InstructProviderModalComponent, {
+      data: { section } satisfies InstructProviderModalData,
+      width: '500px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as InstructProviderModalResult | undefined;
+    if (!result) return;
+    this.toast.success(`Instruction sent to ${result.provider} for ${section.name}`);
+  }
+
   async onCloseSection(section: ClaimSection): Promise<void> {
     const { canClose, blockers } = this.closureSvc.validateSectionBlockers(section);
 
@@ -142,28 +185,16 @@ export class Sections {
     }
   }
 
-  async onSimulateFinalPayment(section: ClaimSection): Promise<void> {
+  onAddComment(attachTo: string): void {
     const claimId = this.route.snapshot.params['id'];
-    try {
-      const closed = await firstValueFrom(
-        this.closureSvc.triggerFinalPaymentAndClose(claimId, section.id).pipe(
-          catchError(err => {
-            this.toast.error(
-              'Simulate Final Payment failed',
-              err?.message ?? 'Check section blockers.',
-            );
-            return of(null);
-          }),
-        ),
-      );
-      if (!closed) return;
-      this.sections.update(list =>
-        list.map(s => s.id === closed.id ? { ...s, ...closed } : s),
-      );
-    } catch (err: unknown) {
-      this.toast.error('Simulate Final Payment failed', String(err));
-    }
+    this.dialogSvc.open(AddCommentModalComponent, {
+      data: { claimId, attachTo } satisfies AddCommentModalData,
+      width: '480px',
+      maxWidth: '92vw',
+    });
   }
+
+  // ── Entity kebab actions ───────────────────────────────────────
 
   async onEditEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
@@ -171,7 +202,6 @@ export class Sections {
       width: '480px',
       maxWidth: '92vw',
     });
-
     const result = await firstValueFrom(ref.afterClosed()) as EditEntityDamageModalResult | undefined;
     if (!result) return;
 
@@ -185,8 +215,27 @@ export class Sections {
     this.toast.success(`Entity "${entity.name}" updated`);
   }
 
-  coverageClass(review: CoverageReview): string {
-    return review.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z-]/g, '');
+  async onDeleteEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete entity',
+        message: `Remove "${entity.name}" from ${section.name}? This cannot be undone.`,
+        confirmLabel: 'Delete',
+        confirmDanger: true,
+      } satisfies ConfirmDialogData,
+      width: '400px',
+      maxWidth: '92vw',
+    });
+    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+    if (!confirmed) return;
+
+    this.sections.update(list =>
+      list.map(s => s.id === section.id
+        ? { ...s, entities: s.entities.filter(e => e.id !== entity.id) }
+        : s
+      )
+    );
+    this.toast.success(`Entity "${entity.name}" removed`);
   }
 
   async onOverrideCoverageReview(section: ClaimSection, entity: SectionEntity): Promise<void> {
@@ -195,7 +244,6 @@ export class Sections {
       width: '480px',
       maxWidth: '92vw',
     });
-
     const result = await firstValueFrom(ref.afterClosed()) as CoverageReviewModalResult | undefined;
     if (!result) return;
 
@@ -209,16 +257,23 @@ export class Sections {
     this.toast.success(`Coverage review updated for "${entity.name}"`);
   }
 
-  onAddComment(attachTo: string): void {
+  async onSimulateFinalPayment(section: ClaimSection): Promise<void> {
     const claimId = this.route.snapshot.params['id'];
-    this.dialogSvc.open(AddCommentModalComponent, {
-      data: { claimId, attachTo } satisfies AddCommentModalData,
-      width: '480px',
-      maxWidth: '92vw',
-    });
-  }
-
-  onAction(action: string, name: string): void {
-    console.log(`${action}: ${name}`);
+    try {
+      const closed = await firstValueFrom(
+        this.closureSvc.triggerFinalPaymentAndClose(claimId, section.id).pipe(
+          catchError(err => {
+            this.toast.error('Simulate Final Payment failed', err?.message ?? 'Check section blockers.');
+            return of(null);
+          }),
+        ),
+      );
+      if (!closed) return;
+      this.sections.update(list =>
+        list.map(s => s.id === closed.id ? { ...s, ...closed } : s),
+      );
+    } catch (err: unknown) {
+      this.toast.error('Simulate Final Payment failed', String(err));
+    }
   }
 }

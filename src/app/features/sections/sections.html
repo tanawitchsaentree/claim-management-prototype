@@ -111,17 +111,22 @@
             <nx-context-menu #sectionMenu="nxContextMenu">
               <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
-                (click)="onAction('make-payment', section.name)">
+                (click)="onMakePayment(section)">
                 Make payment
               </button>
               <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
-                (click)="onAction('instruct-provider', section.name)">
+                (click)="onInstructProvider(section)">
                 Instruct provider
               </button>
               <button nxContextMenuItem type="button"
                 (click)="onAddComment(section.name)">
                 Add note
+              </button>
+              <button nxContextMenuItem type="button"
+                [disabled]="section.status === 'Closed'"
+                (click)="onCloseSection(section)">
+                Close section
               </button>
             </nx-context-menu>
           </td>
@@ -143,15 +148,25 @@
               <td nxTableCell class="col-coverage">
                 <div class="coverage-cell">
                   @if (entity.coverageReview) {
-                    <span class="coverage-chip coverage-chip--{{ coverageClass(entity.coverageReview) }}">
-                      {{ entity.coverageReview }}
-                    </span>
+                    <button class="coverage-chip-btn"
+                      [disabled]="section.status === 'Closed'"
+                      (click)="onOverrideCoverageReview(section, entity)"
+                      [nxTooltip]="section.status === 'Closed' ? '' : 'Click to override'"
+                      nxTooltipPosition="top">
+                      <span class="coverage-chip coverage-chip--{{ coverageClass(entity.coverageReview) }}">
+                        {{ entity.coverageReview }}
+                      </span>
+                    </button>
                     @if (entity.coverageReviewOverridden) {
                       <nx-icon name="pencil" size="s" class="coverage-overridden-icon"
                                [nxTooltip]="entity.coverageReviewNote ?? ''" nxTooltipPosition="top"></nx-icon>
                     }
                   } @else {
-                    <span class="coverage-empty">–</span>
+                    <button class="coverage-chip-btn"
+                      [disabled]="section.status === 'Closed'"
+                      (click)="onOverrideCoverageReview(section, entity)">
+                      <span class="coverage-empty">Set review</span>
+                    </button>
                   }
                 </div>
               </td>
@@ -178,7 +193,12 @@
                   </button>
                   <button nxContextMenuItem type="button"
                     [disabled]="section.status === 'Closed'"
-                    (click)="onAction('delete', entity.name)">
+                    (click)="onEditEntity(section, entity)">
+                    Edit
+                  </button>
+                  <button nxContextMenuItem type="button"
+                    [disabled]="section.status === 'Closed'"
+                    (click)="onDeleteEntity(section, entity)">
                     Delete
                   </button>
                 </nx-context-menu>

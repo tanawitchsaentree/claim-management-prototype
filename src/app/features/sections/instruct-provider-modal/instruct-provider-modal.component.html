@@ -1,0 +1,34 @@
+<div class="ipm-header">
+  <h2 class="ipm-title">Instruct provider</h2>
+  <p class="ipm-subtitle">{{ data.section.name }}</p>
+</div>
+
+<div class="ipm-body" [formGroup]="form">
+  <nx-formfield label="Provider">
+    <nx-dropdown formControlName="provider" placeholder="Select provider">
+      @for (p of providers; track p) {
+        <nx-dropdown-item [value]="p">{{ p }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Priority">
+    <nx-dropdown formControlName="priority">
+      @for (p of priorities; track p) {
+        <nx-dropdown-item [value]="p">{{ p }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+
+  <nx-formfield label="Instruction">
+    <textarea nxInput formControlName="instruction" rows="4"
+              placeholder="Describe what the provider needs to do…"></textarea>
+    <nx-error nxFormfieldError>Minimum 10 characters required.</nx-error>
+  </nx-formfield>
+</div>
+
+<div class="ipm-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Send instruction</button>
+</div>

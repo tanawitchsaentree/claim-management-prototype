@@ -523,6 +523,15 @@ $brand-blue:          var(--info);
   }
 }
 
+.coverage-chip-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  &:disabled { cursor: default; }
+  &:not(:disabled):hover .coverage-chip { opacity: 0.8; }
+}
+
 .coverage-overridden-icon { color: var(--interactive-primary); }
 
 .coverage-empty { color: var(--text-muted); }
