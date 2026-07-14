@@ -65,18 +65,17 @@
             <nx-context-menu #sectionMenu="nxContextMenu">
               <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
-                (click)="onAction('edit', section.name)">
-                Edit
-              </button>
-              <button nxContextMenuItem type="button"
-                (click)="onAddComment(section.name)">
-                Add comment
+                (click)="onAction('make-payment', section.name)">
+                Make payment
               </button>
               <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
-                [nxTooltip]="section.status === 'Closed' ? 'Section already closed' : ''"
-                (click)="onCloseSection(section)">
-                Close
+                (click)="onAction('instruct-provider', section.name)">
+                Instruct provider
+              </button>
+              <button nxContextMenuItem type="button"
+                (click)="onAddComment(section.name)">
+                Add note
               </button>
             </nx-context-menu>
           </td>
@@ -128,18 +127,13 @@
                   aria-label="Entity actions">⋮</button>
                 <nx-context-menu #entityMenu="nxContextMenu">
                   <button nxContextMenuItem type="button"
-                    [disabled]="section.status === 'Closed'"
-                    (click)="onEditEntity(section, entity)">
-                    Edit
-                  </button>
-                  <button nxContextMenuItem type="button"
-                    (click)="onAddComment(entity.name)">
-                    Add comment
+                    (click)="onAction('view-details', entity.name)">
+                    View details
                   </button>
                   <button nxContextMenuItem type="button"
                     [disabled]="section.status === 'Closed'"
-                    (click)="onAction('close', entity.name)">
-                    Close
+                    (click)="onAction('delete', entity.name)">
+                    Delete
                   </button>
                 </nx-context-menu>
               </td>
