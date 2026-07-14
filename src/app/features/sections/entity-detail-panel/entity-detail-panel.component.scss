@@ -1,0 +1,98 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ui-01);
+  overflow: hidden;
+}
+
+.edp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+
+  &__left { display: flex; flex-direction: column; gap: 2px; }
+}
+
+.edp-title  { margin: 0; font-size: 18px; font-weight: 600; color: var(--text-01); }
+.edp-damage { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+
+.edp-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edp-card {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 6px;
+  padding: 16px;
+
+  &__label { margin: 0 0 8px; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  &__title { margin: 0; font-size: 15px; font-weight: 600; color: var(--text-01); }
+  &__titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+}
+
+.edp-status-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+
+  &--pending     { background: var(--task-status-pending-bg, #fff8e1);   color: var(--task-status-pending-color, #e65100); }
+  &--completed   { background: var(--claim-status-bound-bg, #e8f5e9);    color: var(--claim-status-bound-color, #2e7d32); }
+  &--in-progress { background: var(--claim-status-in-progress-bg, #e3f2fd); color: var(--claim-status-in-progress-color, #1565c0); }
+  &--not-assigned { background: var(--ui-03); color: var(--text-muted); }
+}
+
+.edp-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.edp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  &__label { font-size: var(--paragraph-04-font-size, 12px); color: var(--text-muted); }
+  &__value { font-size: var(--paragraph-03-font-size); color: var(--text-01); font-weight: 500; }
+}
+
+.edp-empty { margin: 8px 0 0; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+
+.edp-table {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.edp-col-action { width: 40px; text-align: center !important; padding: 0 !important; }
+
+.sec-kebab-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  border-radius: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 1px;
+  font-family: inherit;
+  &:hover { background: var(--ui-02); }
+}

@@ -8,6 +8,84 @@ $text-muted:          var(--text-muted);
 $border-color:        var(--ui-04);
 $brand-blue:          var(--info);
 
+// ─── Split layout ────────────────────────────────────────────────
+.sec-split {
+  display: flex;
+  gap: 0;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.sec-tree {
+  width: 280px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--ui-04);
+  padding: 0 0 24px;
+  min-height: 300px;
+
+  &__header {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 16px 12px;
+    color: var(--text-01);
+    border-bottom: 1px solid var(--ui-04);
+  }
+
+  &__section { padding: 0; }
+
+  &__section-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+    cursor: pointer;
+    text-align: left;
+    &:hover { background: var(--ui-02); }
+    nx-icon { flex-shrink: 0; }
+  }
+
+  &__entity-btn {
+    display: block;
+    width: 100%;
+    padding: 7px 16px 7px 36px;
+    background: none;
+    border: none;
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: left;
+    &:hover { background: var(--ui-02); color: var(--text-01); }
+
+    &--active {
+      background: var(--ui-03);
+      color: var(--interactive-primary);
+      font-weight: 500;
+      border-right: 2px solid var(--interactive-primary);
+    }
+  }
+}
+
+.sec-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.sec-detail {
+  width: 480px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--ui-04);
+  height: calc(100vh - 180px);
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+}
+
 // ─── Full page shell ─────────────────────────────────────────────
 .page-shell {
   display: flex;

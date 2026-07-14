@@ -6,6 +6,37 @@
   </button>
 </div>
 
+<!-- ── Split layout ── -->
+<div class="sec-split" [class.sec-split--detail-open]="selectedEntity()">
+
+<!-- ── Left: tree nav (only when detail open) ── -->
+@if (selectedEntity()) {
+  <div class="sec-tree">
+    <div class="sec-tree__header">Sections</div>
+    @for (section of sections(); track section.id) {
+      <div class="sec-tree__section">
+        <button class="sec-tree__section-btn" type="button" (click)="toggleSection(section.id)">
+          <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'" size="s"></nx-icon>
+          {{ section.name }}
+        </button>
+        @if (section.expanded) {
+          @for (entity of section.entities; track entity.id) {
+            <button class="sec-tree__entity-btn"
+              [class.sec-tree__entity-btn--active]="selectedEntity()?.entity?.id === entity.id"
+              type="button"
+              (click)="openEntityDetail(section, entity)">
+              {{ entity.name }}
+            </button>
+          }
+        }
+      </div>
+    }
+  </div>
+}
+
+<!-- ── Center: main table ── -->
+<div class="sec-main">
+
 <!-- ── Sections Table ── -->
 <div class="table-card">
   <table nxTable class="sections-table">
@@ -127,7 +158,7 @@
                   aria-label="Entity actions">⋮</button>
                 <nx-context-menu #entityMenu="nxContextMenu">
                   <button nxContextMenuItem type="button"
-                    (click)="onAction('view-details', entity.name)">
+                    (click)="openEntityDetail(section, entity)">
                     View details
                   </button>
                   <button nxContextMenuItem type="button"
@@ -145,3 +176,18 @@
     }
   </table>
 </div>
+
+</div><!-- /.sec-main -->
+
+<!-- ── Right: entity detail panel ── -->
+@if (selectedEntity(); as sel) {
+  <div class="sec-detail">
+    <app-section-entity-detail
+      [entity]="sel.entity"
+      [section]="sel.section"
+      (closed)="closeEntityDetail()">
+    </app-section-entity-detail>
+  </div>
+}
+
+</div><!-- /.sec-split -->

@@ -1,0 +1,82 @@
+<div class="edp-header">
+  <div class="edp-header__left">
+    <h2 class="edp-title">{{ entity.name }}</h2>
+    <span class="edp-damage">{{ entity.damage }}</span>
+  </div>
+  <button nxIconButton="tertiary small" type="button" (click)="closed.emit()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="edp-body">
+
+  <!-- Instruction status -->
+  <div class="edp-card">
+    <p class="edp-card__label">Instruction status</p>
+    <span class="edp-status-chip edp-status-chip--{{ entity.instructionStatus.toLowerCase().replace(' ', '-') }}">
+      {{ entity.instructionStatus }}
+    </span>
+  </div>
+
+  <!-- Entity details -->
+  <div class="edp-card">
+    <h3 class="edp-card__title">Entity details</h3>
+    <div class="edp-fields">
+      <div class="edp-field">
+        <span class="edp-field__label">Coverage review</span>
+        <span class="edp-field__value">{{ entity.coverageReview ?? '–' }}</span>
+      </div>
+      <div class="edp-field">
+        <span class="edp-field__label">Provider</span>
+        <span class="edp-field__value">{{ entity.assignedProvider ?? '–' }}</span>
+      </div>
+      <div class="edp-field">
+        <span class="edp-field__label">Section</span>
+        <span class="edp-field__value">{{ section.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Damaged items -->
+  <div class="edp-card">
+    <div class="edp-card__titlebar">
+      <h3 class="edp-card__title">Damaged items</h3>
+      <button nxButton="primary small" type="button" [disabled]="section.status === 'Closed'">
+        Add damaged item
+      </button>
+    </div>
+
+    @if (items.length === 0) {
+      <p class="edp-empty">No damaged items recorded.</p>
+    } @else {
+      <table nxTable class="edp-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell>Item</th>
+            <th nxHeaderCell>Description</th>
+            <th nxHeaderCell>Damage</th>
+            <th nxHeaderCell class="edp-col-action"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items; track item.name) {
+            <tr nxTableRow>
+              <td nxTableCell>{{ item.name }}</td>
+              <td nxTableCell>{{ item.description }}</td>
+              <td nxTableCell>{{ item.damage }}</td>
+              <td nxTableCell class="edp-col-action">
+                <button class="sec-kebab-btn" type="button"
+                  [nxContextMenuTriggerFor]="itemMenu" aria-label="Item actions">⋮</button>
+                <nx-context-menu #itemMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button">Edit</button>
+                  <button nxContextMenuItem type="button">Delete</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+</div>

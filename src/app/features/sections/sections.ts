@@ -32,6 +32,7 @@ import {
   EditEntityDamageModalData,
   EditEntityDamageModalResult,
 } from './edit-entity-damage-modal/edit-entity-damage-modal.component';
+import { EntityDetailPanelComponent } from './entity-detail-panel/entity-detail-panel.component';
 import {
   AddCommentModalComponent,
   AddCommentModalData,
@@ -51,6 +52,7 @@ import {
     StatusChipComponent,
     CoverageReviewModalComponent,
     AddCommentModalComponent,
+    EntityDetailPanelComponent,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -65,10 +67,19 @@ export class Sections {
   private readonly notesSvc   = inject(MockNotesService);
   private readonly stripSvc   = inject(RightStripService);
 
-  readonly sections   = signal<ClaimSection[]>([]);
-  readonly loading    = signal(true);
-  readonly loadError  = signal(false);
-  readonly allNotes   = signal<Note[]>([]);
+  readonly sections      = signal<ClaimSection[]>([]);
+  readonly loading       = signal(true);
+  readonly loadError     = signal(false);
+  readonly allNotes      = signal<Note[]>([]);
+  readonly selectedEntity = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
+
+  openEntityDetail(section: ClaimSection, entity: SectionEntity): void {
+    this.selectedEntity.set({ entity, section });
+  }
+
+  closeEntityDetail(): void {
+    this.selectedEntity.set(null);
+  }
 
   noteCountFor(entityName: string): number {
     return this.allNotes().filter(n =>
