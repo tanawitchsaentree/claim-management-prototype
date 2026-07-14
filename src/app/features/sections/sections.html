@@ -12,25 +12,40 @@
 <!-- ── Left: tree nav (only when detail open) ── -->
 @if (selectedEntity()) {
   <div class="sec-tree">
-    <div class="sec-tree__header">Sections</div>
-    @for (section of sections(); track section.id) {
-      <div class="sec-tree__section">
-        <button class="sec-tree__section-btn" type="button" (click)="toggleSection(section.id)">
-          <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'" size="s"></nx-icon>
-          {{ section.name }}
-        </button>
-        @if (section.expanded) {
-          @for (entity of section.entities; track entity.id) {
-            <button class="sec-tree__entity-btn"
-              [class.sec-tree__entity-btn--active]="selectedEntity()?.entity?.id === entity.id"
-              type="button"
-              (click)="openEntityDetail(section, entity)">
-              {{ entity.name }}
-            </button>
+    <table nxTable class="sec-tree__table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell class="sec-tree__col-toggle"></th>
+          <th nxHeaderCell class="sec-tree__col-name">Entity</th>
+          <th nxHeaderCell class="sec-tree__col-action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (section of sections(); track section.id) {
+          <!-- section header row -->
+          <tr nxTableRow class="sec-tree__section-row">
+            <td nxTableCell class="sec-tree__col-toggle">
+              <button nxIconButton="tertiary" type="button" (click)="toggleSection(section.id)">
+                <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+              </button>
+            </td>
+            <td nxTableCell colspan="2" class="sec-tree__section-name">{{ section.name }}</td>
+          </tr>
+          <!-- entity rows -->
+          @if (section.expanded) {
+            @for (entity of section.entities; track entity.id) {
+              <tr nxTableRow class="sec-tree__entity-row"
+                [class.sec-tree__entity-row--active]="selectedEntity()?.entity?.id === entity.id"
+                (click)="openEntityDetail(section, entity)">
+                <td nxTableCell class="sec-tree__col-toggle"></td>
+                <td nxTableCell class="sec-tree__entity-name">{{ entity.name }}</td>
+                <td nxTableCell class="sec-tree__col-action"></td>
+              </tr>
+            }
           }
         }
-      </div>
-    }
+      </tbody>
+    </table>
   </div>
 }
 
