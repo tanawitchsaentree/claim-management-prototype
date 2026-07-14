@@ -54,45 +54,6 @@
     "entities": []
   },
   {
-    "id": "SEC-004",
-    "claimId": "CLM-2024-001",
-    "name": "Section 001",
-    "status": "Closed",
-    "expanded": true,
-    "hasOpenDeductible": false,
-    "hasActiveLitigation": false,
-    "hasSubrogation": false,
-    "hasActiveSalvage": false,
-    "hasOpenReserves": false,
-    "hasOpenPayments": false,
-    "hasActiveProvider": false,
-    "closureDate": "2025-03-10",
-    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
-    "entities": [
-      { "id": "SE-004", "name": "Office Building A", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" },
-      { "id": "SE-005", "name": "Server Room",        "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
-    ]
-  },
-  {
-    "id": "SEC-005",
-    "claimId": "CLM-2024-001",
-    "name": "Section 002",
-    "status": "Closed",
-    "expanded": true,
-    "hasOpenDeductible": false,
-    "hasActiveLitigation": false,
-    "hasSubrogation": false,
-    "hasActiveSalvage": false,
-    "hasOpenReserves": false,
-    "hasOpenPayments": false,
-    "hasActiveProvider": false,
-    "closureDate": "2025-03-12",
-    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
-    "entities": [
-      { "id": "SE-006", "name": "Data Loss — Financial Records", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Additional information required" }
-    ]
-  },
-  {
     "id": "SEC-006",
     "claimId": "CLM-2024-011",
     "name": "Section 001",

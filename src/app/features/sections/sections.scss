@@ -42,13 +42,13 @@ $brand-blue:          var(--info);
     td.sec-tree__col-toggle { padding-left: 4px !important; max-width: none !important; }
     &:hover td { background: var(--ui-02) !important; color: var(--text-01) !important; }
 
-    &--active td {
-      background: #e8f0fb !important;
-      color: var(--interactive-primary) !important;
-      font-weight: 500 !important;
-    }
-    &--active td.sec-tree__col-toggle {
-      border-left: 3px solid var(--interactive-primary);
+    &--active {
+      box-shadow: inset 3px 0 0 var(--interactive-primary);
+      td {
+        background: #e8f0fb !important;
+        color: var(--interactive-primary) !important;
+        font-weight: 500 !important;
+      }
     }
   }
 
