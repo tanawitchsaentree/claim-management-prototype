@@ -1,13 +1,13 @@
 [
-  { "userId": "u1",  "name": "Leonie Fischer",    "role": "claim handler", "email": "leonie.fischer@example.com",   "avatar": "LF" },
-  { "userId": "u2",  "name": "Carsten Muster",    "role": "claim handler", "email": "carsten.muster@example.com",   "avatar": "CM" },
-  { "userId": "u3",  "name": "Clara Hoffmann",    "role": "claim handler", "email": "clara.hoffmann@example.com",   "avatar": "CH" },
-  { "userId": "u4",  "name": "Jonas Weber",       "role": "admin",         "email": "jonas.weber@example.com",      "avatar": "JW" },
-  { "userId": "u5",  "name": "Anna Müller",       "role": "broker",        "email": "anna.mueller@broker.de",       "avatar": "AM" },
-  { "userId": "u6",  "name": "Maximilian Koch",   "role": "broker",        "email": "max.koch@broker.de",           "avatar": "MK" },
-  { "userId": "u7",  "name": "Felix Bauer",       "role": "broker",        "email": "felix.bauer@broker.de",        "avatar": "FB" },
-  { "userId": "u8",  "name": "Lukas Schneider",   "role": "client",        "email": "l.schneider@liveatea.com",     "avatar": "LS" },
-  { "userId": "u9",  "name": "Björn Ö'Brien",     "role": "client",        "email": "bjorn.obrien@adesso.de",       "avatar": "BÖ" },
-  { "userId": "u10", "name": "Mara Mustermann",   "role": "claim handler", "email": "mara.mustermann@example.com",  "avatar": "MM" },
-  { "userId": "u11", "name": "Unassigned User",   "role": "claim handler", "email": "unassigned@example.com",       "avatar": "UU" }
+  { "userId": "u1",  "name": "Nina Feld",        "role": "claim handler", "email": "nina.feld@example.com",        "avatar": "NF" },
+  { "userId": "u2",  "name": "Dirk Haas",        "role": "claim handler", "email": "dirk.haas@example.com",        "avatar": "DH" },
+  { "userId": "u3",  "name": "Elke Dorn",        "role": "claim handler", "email": "elke.dorn@example.com",        "avatar": "ED" },
+  { "userId": "u4",  "name": "Bernd Wulf",       "role": "admin",         "email": "bernd.wulf@example.com",       "avatar": "BW" },
+  { "userId": "u5",  "name": "Greta Böck",       "role": "broker",        "email": "g.boeck@broker.de",            "avatar": "GB" },
+  { "userId": "u6",  "name": "Marcus Fehr",      "role": "broker",        "email": "m.fehr@broker.de",             "avatar": "MF" },
+  { "userId": "u7",  "name": "Ralf Kern",        "role": "broker",        "email": "r.kern@broker.de",             "avatar": "RK" },
+  { "userId": "u8",  "name": "Lars Greve",       "role": "client",        "email": "l.greve@liveatea.com",         "avatar": "LG" },
+  { "userId": "u9",  "name": "Oskar Veld",       "role": "client",        "email": "o.veld@adesso.de",             "avatar": "OV" },
+  { "userId": "u10", "name": "Lena Zorn",        "role": "claim handler", "email": "lena.zorn@example.com",        "avatar": "LZ" },
+  { "userId": "u11", "name": "Unassigned User",  "role": "claim handler", "email": "unassigned@example.com",       "avatar": "UU" }
 ]

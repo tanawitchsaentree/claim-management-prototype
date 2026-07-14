@@ -1,8 +1,8 @@
 {
   "CL-2025-001": {
     "claimId": "123456",
-    "client": "Otto Kaufmann",
-    "assignedHandler": "Mara Mustermann",
+    "client": "Tobias Grau",
+    "assignedHandler": "Lena Zorn",
     "lossEventId": "LE12345678",
     "massEventId": "ME-2025.101",
     "status": "Open",
@@ -12,10 +12,10 @@
     "riskStatus": "Potential risk",
     "policyNumber": "POL-2024-001",
     "policyHolder": "Global Trade Solutions AG",
-    "broker": "Heinrich Braun",
+    "broker": "Dieter Voss",
     "clientContact": "Thomas Weber",
-    "handler": "Leonie Fischer",
-    "supervisor": "Stefan Meier",
+    "handler": "Nina Feld",
+    "supervisor": "Werner Baum",
     "priority": "high",
     "lineOfBusiness": "Property",
     "dateOfLoss": "2025-01-10",
@@ -38,7 +38,7 @@
   "CLM-2024-011": {
     "claimId": "CLM-2024-011",
     "client": "Liver Tea Group",
-    "assignedHandler": "Mara Mustermann",
+    "assignedHandler": "Lena Zorn",
     "lossEventId": "LE20240511",
     "status": "Closed",
     "proximateLossCause": "Water damage",
@@ -47,10 +47,10 @@
     "riskStatus": "Low risk",
     "policyNumber": "POL-2024-001",
     "policyHolder": "Liver Tea Group",
-    "broker": "Maximilian Koch",
+    "broker": "Marcus Fehr",
     "clientContact": "Sandra Hoffmann",
-    "handler": "Mara Mustermann",
-    "supervisor": "Stefan Meier",
+    "handler": "Lena Zorn",
+    "supervisor": "Werner Baum",
     "priority": "low",
     "lineOfBusiness": "Property",
     "dateOfLoss": "2024-05-19",
@@ -70,7 +70,7 @@
       "outstanding": 0
     },
     "closureDate": "2024-06-01",
-    "closedBy": { "userId": "usr-007", "name": "Mara Mustermann" },
+    "closedBy": { "userId": "usr-007", "name": "Lena Zorn" },
     "closureReason": "Claim Finalised",
     "retentionDate": "2034-06-01",
     "retentionType": "default"
@@ -78,7 +78,7 @@
   "CLM-2024-001": {
     "claimId": "CLM-2024-001",
     "client": "Kaufmann's Warehouse GmbH",
-    "assignedHandler": "Leonie Fischer",
+    "assignedHandler": "Nina Feld",
     "lossEventId": "LE98765432",
     "massEventId": "ME-2025.102",
     "status": "In progress",
@@ -88,9 +88,9 @@
     "riskStatus": "Low risk",
     "policyNumber": "POL-2023-010",
     "policyHolder": "Kaufmann's Warehouse GmbH",
-    "broker": "Anna Müller",
-    "handler": "Leonie Fischer",
-    "supervisor": "Stefan Meier",
+    "broker": "Greta Böck",
+    "handler": "Nina Feld",
+    "supervisor": "Werner Baum",
     "priority": "high",
     "lineOfBusiness": "Property",
     "dateOfLoss": "2024-01-14",
@@ -112,11 +112,11 @@
     "restriction": {
       "isRestricted": true,
       "reason": "VIP client",
-      "restrictedBy": { "userId": "U001", "name": "Mara Mustermann" },
+      "restrictedBy": { "userId": "U001", "name": "Lena Zorn" },
       "restrictedAt": "2024-01-15",
       "accessList": [
-        { "userId": "U001", "name": "Mara Mustermann", "role": "Claims Handler", "email": "mara.mustermann@allianz.com", "addedAt": "2024-01-15" },
-        { "userId": "U002", "name": "Klaus Becker",    "role": "Claims Manager", "email": "klaus.becker@allianz.com",    "addedAt": "2024-01-15" }
+        { "userId": "U001", "name": "Lena Zorn", "role": "Claims Handler", "email": "lena.zorn@allianz.com", "addedAt": "2024-01-15" },
+        { "userId": "U002", "name": "Tobias Grau",    "role": "Claims Manager", "email": "tobias.grau@allianz.com",    "addedAt": "2024-01-15" }
       ]
     }
   }

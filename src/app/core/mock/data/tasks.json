@@ -8,7 +8,7 @@
     "status": "done",
     "dueDate": "2026-05-10",
     "priority": "high",
-    "assignee": "Klaus Schmidt"
+    "assignee": "Georg Stein"
   },
   {
     "taskId": "t2",
@@ -19,7 +19,7 @@
     "status": "done",
     "dueDate": "2026-05-15",
     "priority": "high",
-    "assignee": "Klaus Schmidt"
+    "assignee": "Georg Stein"
   },
   {
     "taskId": "t3",
@@ -30,7 +30,7 @@
     "status": "done",
     "dueDate": "2026-05-20",
     "priority": "medium",
-    "assignee": "Carsten Muster"
+    "assignee": "Dirk Haas"
   },
   {
     "taskId": "t4",
@@ -41,7 +41,7 @@
     "status": "done",
     "dueDate": "2026-06-05",
     "priority": "medium",
-    "assignee": "Leonie Fischer"
+    "assignee": "Nina Feld"
   },
   {
     "taskId": "t5",
@@ -52,7 +52,7 @@
     "status": "done",
     "dueDate": "2026-06-06",
     "priority": "low",
-    "assignee": "Mara Mustermann"
+    "assignee": "Lena Zorn"
   },
   {
     "taskId": "t6",
@@ -63,7 +63,7 @@
     "status": "in-progress",
     "dueDate": "2026-05-25",
     "priority": "low",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t7",
@@ -74,7 +74,7 @@
     "status": "open",
     "dueDate": "2026-06-07",
     "priority": "medium",
-    "assignee": "Klaus Schmidt"
+    "assignee": "Georg Stein"
   },
   {
     "taskId": "t8",
@@ -85,7 +85,7 @@
     "status": "done",
     "dueDate": "2026-05-28",
     "priority": "high",
-    "assignee": "Carsten Muster"
+    "assignee": "Dirk Haas"
   },
   {
     "taskId": "t9",
@@ -96,7 +96,7 @@
     "status": "in-progress",
     "dueDate": "2026-05-30",
     "priority": "high",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t10",
@@ -107,7 +107,7 @@
     "status": "done",
     "dueDate": "2026-07-10",
     "priority": "medium",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t11",
@@ -118,7 +118,7 @@
     "status": "open",
     "dueDate": "2026-06-08",
     "priority": "medium",
-    "assignee": "Mara Mustermann"
+    "assignee": "Lena Zorn"
   },
   {
     "taskId": "t12",
@@ -129,7 +129,7 @@
     "status": "open",
     "dueDate": "2026-06-09",
     "priority": "high",
-    "assignee": "Klaus Schmidt"
+    "assignee": "Georg Stein"
   },
   {
     "taskId": "t13",
@@ -140,7 +140,7 @@
     "status": "in-progress",
     "dueDate": "2026-06-01",
     "priority": "high",
-    "assignee": "Leonie Fischer"
+    "assignee": "Nina Feld"
   },
   {
     "taskId": "t14",
@@ -151,7 +151,7 @@
     "status": "done",
     "dueDate": "2026-06-19",
     "priority": "high",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t15",
@@ -162,7 +162,7 @@
     "status": "open",
     "dueDate": "2026-06-23",
     "priority": "high",
-    "assignee": "Mara Mustermann",
+    "assignee": "Lena Zorn",
     "_scenario": "long-title"
   },
   {
@@ -174,7 +174,7 @@
     "status": "open",
     "dueDate": "2026-06-03",
     "priority": "low",
-    "assignee": "Carsten Muster"
+    "assignee": "Dirk Haas"
   },
   {
     "taskId": "t17",
@@ -185,7 +185,7 @@
     "status": "done",
     "dueDate": "2026-06-25",
     "priority": "medium",
-    "assignee": "Mara Mustermann"
+    "assignee": "Lena Zorn"
   },
   {
     "taskId": "t18",
@@ -196,7 +196,7 @@
     "status": "open",
     "dueDate": "2026-06-10",
     "priority": "high",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t19",
@@ -207,7 +207,7 @@
     "status": "in-progress",
     "dueDate": "2026-06-11",
     "priority": "high",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t20",
@@ -218,7 +218,7 @@
     "status": "open",
     "dueDate": "2026-06-12",
     "priority": "high",
-    "assignee": "Klaus Schmidt"
+    "assignee": "Georg Stein"
   },
   {
     "taskId": "t21",
@@ -229,7 +229,7 @@
     "status": "in-progress",
     "dueDate": "2026-06-12",
     "priority": "high",
-    "assignee": "Leonie Fischer"
+    "assignee": "Nina Feld"
   },
   {
     "taskId": "t22",
@@ -240,7 +240,7 @@
     "status": "open",
     "dueDate": "2026-06-26",
     "priority": "medium",
-    "assignee": "Carsten Muster"
+    "assignee": "Dirk Haas"
   },
   {
     "taskId": "t23",
@@ -251,7 +251,7 @@
     "status": "done",
     "dueDate": "2026-06-04",
     "priority": "medium",
-    "assignee": "Carsten Muster"
+    "assignee": "Dirk Haas"
   },
   {
     "taskId": "t24",
@@ -262,7 +262,7 @@
     "status": "open",
     "dueDate": "2026-06-30",
     "priority": "medium",
-    "assignee": "Anna Weber"
+    "assignee": "Greta Böck"
   },
   {
     "taskId": "t25",
@@ -273,7 +273,7 @@
     "status": "in-progress",
     "dueDate": "2026-07-01",
     "priority": "medium",
-    "assignee": "Anna Weber"
+    "assignee": "Greta Böck"
   },
   {
     "taskId": "t26",
@@ -284,7 +284,7 @@
     "status": "open",
     "dueDate": "2026-07-03",
     "priority": "medium",
-    "assignee": "Anna Weber"
+    "assignee": "Greta Böck"
   },
   {
     "taskId": "t27",
@@ -295,7 +295,7 @@
     "status": "open",
     "dueDate": "2026-07-15",
     "priority": "high",
-    "assignee": "Mara Mustermann"
+    "assignee": "Lena Zorn"
   },
   {
     "taskId": "t28",
@@ -306,7 +306,7 @@
     "status": "in-progress",
     "dueDate": "2026-06-11",
     "priority": "high",
-    "assignee": "Mara Mustermann"
+    "assignee": "Lena Zorn"
   },
   {
     "taskId": "t29",
@@ -317,18 +317,18 @@
     "status": "open",
     "dueDate": "2026-07-05",
     "priority": "high",
-    "assignee": "Leonie Fischer"
+    "assignee": "Nina Feld"
   },
   {
     "taskId": "t30",
     "taskKey": "TSK-030",
     "claimId": "CLM-2024-020",
     "taskType": "Contact",
-    "description": "Initial contact with Björn Ö'Brien to gather loss details",
+    "description": "Initial contact with Oskar Veld to gather loss details",
     "status": "open",
     "dueDate": "2026-06-20",
     "priority": "medium",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   },
   {
     "taskId": "t31",
@@ -339,6 +339,6 @@
     "status": "open",
     "dueDate": "2026-07-20",
     "priority": "low",
-    "assignee": "Clara Hoffmann"
+    "assignee": "Elke Dorn"
   }
 ]

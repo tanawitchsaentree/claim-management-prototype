@@ -19,11 +19,11 @@
       ]
     },
     "payments": [
-      { "paymentId": "123456-1", "reinsuranceId": "R00001", "payee": "Otto Kaufmann",  "handler": "Maya Mustermann", "sectionType": "Expenses",  "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-2", "reinsuranceId": "R00002", "payee": "Bruce Wayne",    "handler": "Maya Mustermann", "sectionType": "Expenses",  "status": "Credit",  "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-3", "reinsuranceId": "R00003", "payee": "Peter Parker",   "handler": "Maya Mustermann", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-4", "reinsuranceId": "R00004", "payee": "Billie Baggery", "handler": "Maya Mustermann", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-5", "reinsuranceId": "R00005", "payee": "Harry Potter",   "handler": "Maya Mustermann", "sectionType": "Indemnity", "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
+      { "paymentId": "123456-1", "reinsuranceId": "R00001", "payee": "Tobias Grau",  "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-2", "reinsuranceId": "R00002", "payee": "Georg Stein",    "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Credit",  "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-3", "reinsuranceId": "R00003", "payee": "Dirk Haas",   "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-4", "reinsuranceId": "R00004", "payee": "Elke Dorn", "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-5", "reinsuranceId": "R00005", "payee": "Viktor Bann",   "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
     ],
     "reserves": [
       { "reserveId": "123478-1", "party": "R00016", "damagedItem": "Peter Para / M1",         "section": "Building 1",   "reserveType": "Indemnity", "reserveSubType": "Property Damage",       "status": "Approved", "reserveValue": 5000,  "currency": "EUR" },
@@ -55,9 +55,9 @@
           { "movementType": "Total",     "outstandingReserves": 315000, "completedPayments": 160000, "pendingPayments": 40000, "recoveries": 0, "incurred": 900000 }
         ],
         "payments": [
-          { "paymentId": "123456-3", "reinsuranceId": "RI0017", "payee": "Mark Twain",    "handler": "Mara Mustermann", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-          { "paymentId": "123456-2", "reinsuranceId": "RI0018", "payee": "Bilbo Baggins", "handler": "Mara Mustermann", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-          { "paymentId": "123456-1", "reinsuranceId": "RI0019", "payee": "Harry Potter",  "handler": "Mara Mustermann", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
+          { "paymentId": "123456-3", "reinsuranceId": "RI0017", "payee": "Finn Dahl",    "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+          { "paymentId": "123456-2", "reinsuranceId": "RI0018", "payee": "Oskar Veld", "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+          { "paymentId": "123456-1", "reinsuranceId": "RI0019", "payee": "Viktor Bann",  "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
         ],
         "reserves": [
           { "reserveId": "123678-1", "party": "Peter Pane | PD", "damagedItem": "Building 1", "section": "Building 1", "reserveType": "Indemnity", "reserveSubType": "Property Damage",        "status": "Approved", "reserveValue": 15000, "currency": "EUR" },
@@ -83,12 +83,12 @@
           { "movementType": "Total",     "outstandingReserves": 55000, "completedPayments": 50000, "pendingPayments": 15000, "recoveries": 0, "incurred": 280000 }
         ],
         "payments": [
-          { "paymentId": "123456-6", "reinsuranceId": "RI0020", "payee": "Clark Kent",   "handler": "Mara Mustermann", "sectionType": "Expenses",  "status": "Pending", "amount": 10000, "currency": "USD", "paymentDate": "15-01-2025" },
-          { "paymentId": "123456-7", "reinsuranceId": "RI0021", "payee": "Bruce Banner", "handler": "Mara Mustermann", "sectionType": "Indemnity", "status": "Done",    "amount": 40000, "currency": "USD", "paymentDate": "15-01-2025" }
+          { "paymentId": "123456-6", "reinsuranceId": "RI0020", "payee": "Roland Kemp",   "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Pending", "amount": 10000, "currency": "USD", "paymentDate": "15-01-2025" },
+          { "paymentId": "123456-7", "reinsuranceId": "RI0021", "payee": "Lars Greve", "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 40000, "currency": "USD", "paymentDate": "15-01-2025" }
         ],
         "reserves": [
-          { "reserveId": "123678-6", "party": "Clark Kent | LI", "damagedItem": "Vehicle 1", "section": "Liability", "reserveType": "Indemnity", "reserveSubType": "Indemnity", "status": "Approved", "reserveValue": 50000, "currency": "USD" },
-          { "reserveId": "123678-7", "party": "Clark Kent | LI", "damagedItem": "Vehicle 1", "section": "Liability", "reserveType": "Expenses",  "reserveSubType": "Expenses",  "status": "Pending",  "reserveValue": 5000,  "currency": "USD" }
+          { "reserveId": "123678-6", "party": "Roland Kemp | LI", "damagedItem": "Vehicle 1", "section": "Liability", "reserveType": "Indemnity", "reserveSubType": "Indemnity", "status": "Approved", "reserveValue": 50000, "currency": "USD" },
+          { "reserveId": "123678-7", "party": "Roland Kemp | LI", "damagedItem": "Vehicle 1", "section": "Liability", "reserveType": "Expenses",  "reserveSubType": "Expenses",  "status": "Pending",  "reserveValue": 5000,  "currency": "USD" }
         ],
         "recoveries": [
           { "recoveryId": "REC-S2-001", "reinsuranceId": "RI0020", "party": "Hannover Re", "section": "Liability", "recoveryType": "Subrogation", "status": "Pending", "amount": 5000, "currency": "USD", "recoveryDate": "25-01-2025" }

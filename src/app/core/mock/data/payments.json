@@ -3,7 +3,7 @@
     "paymentId": "PAY-001",
     "claimId": "CLM-2024-001",
     "sectionId": "SEC-001",
-    "payee": "Otto Kaufmann",
+    "payee": "Tobias Grau",
     "amount": 45000,
     "currency": "EUR",
     "status": "Final",

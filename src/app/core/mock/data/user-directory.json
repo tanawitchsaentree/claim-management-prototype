@@ -1,12 +1,12 @@
 [
-  { "userId": "U001", "name": "Mara Mustermann",  "role": "Claims Handler",     "email": "mara.mustermann@allianz.com"  },
-  { "userId": "U002", "name": "Klaus Becker",     "role": "Claims Manager",     "email": "klaus.becker@allianz.com"     },
-  { "userId": "U003", "name": "Anna Schulz",      "role": "Legal Counsel",      "email": "anna.schulz@allianz.com"      },
-  { "userId": "U004", "name": "Leonie Fischer",   "role": "Claims Handler",     "email": "leonie.fischer@allianz.com"   },
-  { "userId": "U005", "name": "Stefan Meier",     "role": "Supervisor",         "email": "stefan.meier@allianz.com"     },
-  { "userId": "U006", "name": "Heinrich Braun",   "role": "Compliance Officer", "email": "heinrich.braun@allianz.com"   },
-  { "userId": "U007", "name": "Julia Weber",      "role": "Claims Handler",     "email": "julia.weber@allianz.com"      },
-  { "userId": "U008", "name": "Maximilian Koch",  "role": "Claims Manager",     "email": "maximilian.koch@allianz.com"  },
-  { "userId": "U009", "name": "Sophie Hoffmann",  "role": "Legal Counsel",      "email": "sophie.hoffmann@allianz.com"  },
-  { "userId": "U010", "name": "Felix Wagner",     "role": "Compliance Officer", "email": "felix.wagner@allianz.com"     }
+  { "userId": "U001", "name": "Lena Zorn",      "role": "Claims Handler",     "email": "lena.zorn@allianz.com"      },
+  { "userId": "U002", "name": "Tobias Grau",    "role": "Claims Manager",     "email": "tobias.grau@allianz.com"    },
+  { "userId": "U003", "name": "Petra Kohl",     "role": "Legal Counsel",      "email": "petra.kohl@allianz.com"     },
+  { "userId": "U004", "name": "Nina Feld",      "role": "Claims Handler",     "email": "nina.feld@allianz.com"      },
+  { "userId": "U005", "name": "Werner Baum",    "role": "Supervisor",         "email": "werner.baum@allianz.com"    },
+  { "userId": "U006", "name": "Dieter Voss",    "role": "Compliance Officer", "email": "dieter.voss@allianz.com"    },
+  { "userId": "U007", "name": "Sabine Rand",    "role": "Claims Handler",     "email": "sabine.rand@allianz.com"    },
+  { "userId": "U008", "name": "Marcus Fehr",    "role": "Claims Manager",     "email": "marcus.fehr@allianz.com"    },
+  { "userId": "U009", "name": "Irene Saal",     "role": "Legal Counsel",      "email": "irene.saal@allianz.com"     },
+  { "userId": "U010", "name": "Ralf Kern",      "role": "Compliance Officer", "email": "ralf.kern@allianz.com"      }
 ]

@@ -32,7 +32,7 @@
   {
     "id": "act-004",
     "claimId": "CL-2025-001",
-    "user": "Leonie Fischer",
+    "user": "Nina Feld",
     "timestamp": "2025-01-14T08:45:00Z",
     "objectType": "Document",
     "attribute": "Fire brigade report",
@@ -42,7 +42,7 @@
   {
     "id": "act-005",
     "claimId": "CL-2025-001",
-    "user": "Stefan Meier",
+    "user": "Werner Baum",
     "timestamp": "2025-01-15T10:20:00Z",
     "objectType": "Party",
     "attribute": "Loss adjuster",

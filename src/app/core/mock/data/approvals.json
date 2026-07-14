@@ -7,8 +7,8 @@
     "reserveType": "Indemnity, Expenses",
     "currency": "EUR",
     "amount": 9900,
-    "requester": "iroti.mahajan@allianz.com",
-    "reviewerEmail": "leonie.fischer@allianz.com"
+    "requester": "c.wolff@allianz.com",
+    "reviewerEmail": "n.feld@allianz.com"
   },
   {
     "requestId": "REQ270243",
@@ -18,8 +18,8 @@
     "reserveType": "Indemnity",
     "currency": "EUR",
     "amount": 2000,
-    "requester": "ruby-isabelle.costigan@allianz.com",
-    "reviewerEmail": "leonie.fischer@allianz.com"
+    "requester": "m.haas@allianz.com",
+    "reviewerEmail": "n.feld@allianz.com"
   },
   {
     "requestId": "REQ215587",
@@ -29,8 +29,8 @@
     "reserveType": "Indemnity, Expenses",
     "currency": "EUR",
     "amount": 2000,
-    "requester": "extern.r_archana@allianz.com",
-    "reviewerEmail": "leonie.fischer@allianz.com"
+    "requester": "extern.d.kiel@allianz.com",
+    "reviewerEmail": "n.feld@allianz.com"
   },
   {
     "requestId": "REQ562237",
@@ -40,8 +40,8 @@
     "reserveType": "Indemnity, Expenses",
     "currency": "EUR",
     "amount": 1800,
-    "requester": "extern.r_archana@allianz.com",
-    "reviewerEmail": "leonie.fischer@allianz.com"
+    "requester": "extern.d.kiel@allianz.com",
+    "reviewerEmail": "n.feld@allianz.com"
   },
   {
     "requestId": "REQ562292",
@@ -51,7 +51,7 @@
     "reserveType": "Indemnity",
     "currency": "EUR",
     "amount": 1200,
-    "requester": "extern.r_archana@allianz.com",
-    "reviewerEmail": "leonie.fischer@allianz.com"
+    "requester": "extern.d.kiel@allianz.com",
+    "reviewerEmail": "n.feld@allianz.com"
   }
 ]

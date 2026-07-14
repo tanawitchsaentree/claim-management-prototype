@@ -31,7 +31,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2026-06-22",
-    "closedBy": { "userId": "usr-lf", "name": "Leonie Fischer" },
+    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
       { "id": "SE-003", "name": "Sales of Machinery and Equipment", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
@@ -50,7 +50,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2026-06-25",
-    "closedBy": { "userId": "usr-cm", "name": "Carsten Muster" },
+    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": []
   },
   {
@@ -67,7 +67,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2025-03-10",
-    "closedBy": { "userId": "usr-lf", "name": "Leonie Fischer" },
+    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
       { "id": "SE-004", "name": "Office Building A", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
       { "id": "SE-005", "name": "Server Room",        "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
@@ -87,7 +87,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2025-03-12",
-    "closedBy": { "userId": "usr-lf", "name": "Leonie Fischer" },
+    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
       { "id": "SE-006", "name": "Data Loss — Financial Records", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
@@ -106,7 +106,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2024-05-28",
-    "closedBy": { "userId": "usr-cm", "name": "Carsten Muster" },
+    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
       { "id": "SE-007", "name": "Schäfer Main Warehouse", "damage": "Material damage",        "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
       { "id": "SE-008", "name": "Conveyor System",         "damage": "Machinery breakdown",    "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
@@ -126,7 +126,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2024-05-30",
-    "closedBy": { "userId": "usr-cm", "name": "Carsten Muster" },
+    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
       { "id": "SE-009", "name": "Production Line B", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
@@ -145,7 +145,7 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2026-06-28",
-    "closedBy": { "userId": "usr-lf", "name": "Leonie Fischer" },
+    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
       { "id": "SE-010", "name": "Final Settlement", "damage": "Material damage", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
     ]
