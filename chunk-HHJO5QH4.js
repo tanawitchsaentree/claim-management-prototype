@@ -1,0 +1,1 @@
+import{Z as n,va as r}from"./chunk-FCDE5RES.js";var s=class t{requestedPanel=r(null);open(e){this.requestedPanel.set(e)}consume(){let e=this.requestedPanel();return this.requestedPanel.set(null),e}static \u0275fac=function(a){return new(a||t)};static \u0275prov=n({token:t,factory:t.\u0275fac,providedIn:"root"})};export{s as a};
