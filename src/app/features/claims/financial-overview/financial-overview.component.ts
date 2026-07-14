@@ -1,6 +1,8 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -12,6 +14,7 @@ import { FinancialOverview, FinancialSection } from '../../../core/models/financ
 
 export type FinancialView = 'overview' | 'payments' | 'reserves' | 'recovery';
 type LevelToggle = 'claim' | 'section';
+const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recovery'];
 
 @Component({
   selector: 'app-financial-overview',
@@ -40,10 +43,14 @@ export class FinancialOverviewComponent implements OnInit {
   readonly sectionId = signal('');
   readonly expandedReserveIds = signal<Set<string>>(new Set());
 
+  private readonly viewParam = toSignal(
+    this.route.queryParamMap.pipe(map(p => p.get('view') ?? 'overview')),
+    { initialValue: this.route.snapshot.queryParamMap.get('view') ?? 'overview' },
+  );
+
   readonly view = computed<FinancialView>(() => {
-    const v = this.route.snapshot.queryParamMap.get('view') ?? 'overview';
-    return (['overview', 'payments', 'reserves', 'recovery'] as FinancialView[]).includes(v as FinancialView)
-      ? (v as FinancialView) : 'overview';
+    const v = this.viewParam();
+    return VALID_VIEWS.includes(v as FinancialView) ? (v as FinancialView) : 'overview';
   });
 
   readonly sections = computed<FinancialSection[]>(() => this.fo()?.sections ?? []);

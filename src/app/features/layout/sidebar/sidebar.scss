@@ -101,6 +101,28 @@ $sidebar-collapsed-width: 56px;
   border: none;
   text-align: left;
   cursor: pointer;
+  color: var(--text-01);
+
+  nx-icon { color: var(--text-muted); }
+
+  &:hover {
+    background: var(--interactive-primary);
+    color: var(--button-primary-text-color);
+    nx-icon { color: var(--button-primary-text-color); }
+  }
+
+  &.nav-item--active {
+    background: var(--ui-03);
+    color: var(--text-01);
+    font-weight: 600;
+    nx-icon { color: var(--text-01); }
+
+    &:hover {
+      background: var(--interactive-primary);
+      color: var(--button-primary-text-color);
+      nx-icon { color: var(--button-primary-text-color); }
+    }
+  }
 }
 
 .nav-group__chevron {
@@ -119,6 +141,18 @@ $sidebar-collapsed-width: 56px;
   padding-left: 44px;
   font-weight: 400;
   font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+
+  &:hover {
+    background: var(--interactive-primary);
+    color: var(--button-primary-text-color);
+  }
+
+  &.nav-item--active {
+    background: var(--interactive-primary);
+    color: var(--button-primary-text-color);
+    font-weight: 600;
+  }
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────

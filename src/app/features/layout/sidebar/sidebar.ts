@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -64,17 +64,20 @@ export class Sidebar {
   private readonly router = inject(Router);
 
   collapsed = false;
-  readonly expandedGroups = signal<Set<string>>(new Set(['financial']));
+  readonly expandedGroups = signal<Set<string>>(new Set());
 
-  private readonly url$ = this.router.events.pipe(
+  private readonly fullUrl$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
     map(e => (e as NavigationEnd).urlAfterRedirects),
     startWith(this.router.url),
   );
-  private readonly urlSignal = toSignal(this.url$, { initialValue: this.router.url });
+  private readonly fullUrlSignal = toSignal(this.fullUrl$, { initialValue: this.router.url });
+
+  // path only, no query string
+  readonly pathSignal = computed(() => this.fullUrlSignal().split('?')[0]);
 
   readonly claimId = computed(() => {
-    const match = this.urlSignal().match(/^\/claims\/([^/]+)/);
+    const match = this.pathSignal().match(/^\/claims\/([^/]+)/);
     return match ? match[1] : null;
   });
 
@@ -100,16 +103,27 @@ export class Sidebar {
     });
   });
 
+  constructor() {
+    // Auto-expand financial group when navigating to financial page
+    effect(() => {
+      if (this.pathSignal().includes('/financial')) {
+        const s = new Set(this.expandedGroups());
+        s.add('financial');
+        this.expandedGroups.set(s);
+      }
+    });
+  }
+
   isGroupExpanded(key: string): boolean {
     return this.expandedGroups().has(key);
   }
 
   isGroupActive(group: NavGroup): boolean {
-    return this.urlSignal().split('?')[0].includes('/financial');
+    return this.pathSignal().includes('/financial');
   }
 
   isChildActive(child: NavItem): boolean {
-    const url = this.urlSignal();
+    const url = this.fullUrlSignal();
     const [pathPart, queryPart] = url.split('?');
     if (!pathPart.endsWith('/financial')) return false;
     const params = new URLSearchParams(queryPart ?? '');
