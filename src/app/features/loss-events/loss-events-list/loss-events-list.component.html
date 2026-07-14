@@ -1,0 +1,126 @@
+<app-navbar />
+
+<!-- Toolbar / breadcrumb -->
+<div class="lel-toolbar">
+  <div nxLayout="grid maxwidth" class="lel-toolbar__inner">
+    <div nxRow><div nxCol="12">
+      <ol nxBreadcrumb>
+        <li nxBreadcrumbItem>Loss events</li>
+      </ol>
+    </div></div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="lel-page-wrap">
+  <div nxLayout="grid maxwidth" class="lel-page">
+    <div nxRow><div nxCol="12">
+
+      <p class="lel-eyebrow">Loss events</p>
+      <h1 class="lel-title">All loss events</h1>
+      <p class="lel-caption">Browse and filter all loss events across your portfolio.</p>
+
+      <!-- Filter form -->
+      <form [formGroup]="filterForm" class="lel-form" (ngSubmit)="onFilter()">
+        <div class="row1">
+          <div class="row1-inputs">
+            <nx-formfield label="Search">
+              <input nxInput formControlName="search" placeholder="Event ID, name, OE…" autocomplete="off" />
+            </nx-formfield>
+            <nx-formfield label="Status">
+              <nx-dropdown formControlName="status" placeholder="All statuses">
+                @for (s of statuses; track s) {
+                  <nx-dropdown-item [value]="s">{{ s }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+            <nx-formfield label="Line of business">
+              <nx-dropdown formControlName="lineOfBusiness" placeholder="All lines">
+                @for (l of linesOfBusiness; track l) {
+                  <nx-dropdown-item [value]="l">{{ l }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
+          <div class="row1-actions">
+            <button nxButton="primary small" type="submit">Filter</button>
+            <button nxButton="tertiary small" type="button" (click)="onReset()">Reset</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Results count -->
+      @if (!loading()) {
+        <p class="lel-count">
+          {{ total() }} {{ total() === 1 ? 'loss event' : 'loss events' }} found
+        </p>
+      }
+
+      <!-- Table -->
+      @if (loading()) {
+        <p class="lel-empty">Loading loss events…</p>
+      } @else if (total() === 0) {
+        <p class="lel-empty">No loss events match the filters.</p>
+      } @else {
+        <table nxTable class="lel-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="lel-col--nowrap">Loss event ID</th>
+              <th nxHeaderCell>Name</th>
+              <th nxHeaderCell class="lel-col--nowrap">Date of loss</th>
+              <th nxHeaderCell>OE</th>
+              <th nxHeaderCell>Line of business</th>
+              <th nxHeaderCell class="lel-col--nowrap">Claims</th>
+              <th nxHeaderCell class="lel-col--nowrap">Total reserve</th>
+              <th nxHeaderCell>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (event of pagedRows(); track event.lossEventId) {
+              <tr nxTableRow>
+                <td nxCell class="lel-col--nowrap">
+                  <a class="text-link" [routerLink]="['/loss-events', event.lossEventId, 'overview']">
+                    {{ event.lossEventId }}
+                  </a>
+                </td>
+                <td nxCell>{{ event.name }}</td>
+                <td nxCell class="lel-col--nowrap lel-muted">{{ event.eventDate }}</td>
+                <td nxCell>{{ event.oe }}</td>
+                <td nxCell>{{ event.lineOfBusiness }}</td>
+                <td nxCell class="lel-col--nowrap">{{ event.claimCount }}</td>
+                <td nxCell class="lel-col--nowrap">
+                  @if (event.totalReserve > 0) {
+                    {{ event.currency }} {{ event.totalReserve | number }}
+                  } @else {
+                    <span class="lel-muted">—</span>
+                  }
+                </td>
+                <td nxCell>
+                  <app-status-chip [status]="event.status" domain="claim" />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="lel-footer">
+          <span class="lel-footer__count">
+            Items per page: <strong>{{ pageSize }}</strong>
+          </span>
+          @if (total() > pageSize) {
+            <nx-pagination
+              type="advanced"
+              [count]="total()"
+              [page]="page()"
+              [perPage]="pageSize"
+              (goPrev)="page.set(page() - 1)"
+              (goNext)="page.set(page() + 1)"
+              (goPage)="page.set($event)">
+            </nx-pagination>
+          }
+        </div>
+      }
+
+    </div></div>
+  </div>
+</div>

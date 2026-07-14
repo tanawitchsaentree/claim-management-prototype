@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--ui-01);
+}
+
+.lel-toolbar {
+  background: var(--toolbar-background);
+  border-bottom: 1px solid var(--toolbar-border-bottom-color);
+}
+
+.lel-toolbar__inner {
+  display: flex;
+  align-items: center;
+  min-height: var(--toolbar-height);
+  --breadcrumb-font-size: var(--paragraph-04-font-size);
+  --breadcrumb-line-height: 1.4;
+  --breadcrumb-height: 20px;
+}
+
+.lel-page-wrap {
+  padding-top: var(--page-content-top);
+  padding-bottom: var(--layout-inset-base);
+}
+
+.lel-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-inset-base);
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.lel-eyebrow {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.lel-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.lel-caption {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 32px;
+}
+
+// ─── Filter form ─────────────────────────────────────────────────────────────
+
+.lel-form { margin-bottom: 8px; }
+
+.row1 {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 0;
+}
+
+.row1-inputs {
+  flex: 0 0 80%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.row1-actions {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  padding-bottom: 23px;
+}
+
+// ─── Count ───────────────────────────────────────────────────────────────────
+
+.lel-count {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+
+// ─── Table ───────────────────────────────────────────────────────────────────
+
+.lel-empty {
+  margin: 0;
+  padding: 24px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.lel-table { width: 100%; }
+
+.lel-col--nowrap { white-space: nowrap; }
+
+.lel-muted { color: var(--text-muted); }
+
+// ─── Footer / pagination ─────────────────────────────────────────────────────
+
+.lel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.lel-footer__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
