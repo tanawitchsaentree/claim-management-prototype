@@ -64,7 +64,8 @@ export class Sidebar {
   private readonly router = inject(Router);
 
   collapsed = false;
-  readonly expandedGroups = signal<Set<string>>(new Set());
+  readonly expandedGroups  = signal<Set<string>>(new Set());
+  readonly collapsedGroups = signal<Set<string>>(new Set());
 
   private readonly fullUrl$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
@@ -104,6 +105,7 @@ export class Sidebar {
   });
 
   isGroupExpanded(key: string): boolean {
+    if (this.collapsedGroups().has(key)) return false;
     if (this.expandedGroups().has(key)) return true;
     if (key === 'financial' && this.pathSignal().includes('/financial')) return true;
     return false;
@@ -123,9 +125,21 @@ export class Sidebar {
   }
 
   toggleGroup(key: string): void {
-    const s = new Set(this.expandedGroups());
-    s.has(key) ? s.delete(key) : s.add(key);
-    this.expandedGroups.set(s);
+    if (this.isGroupExpanded(key)) {
+      const c = new Set(this.collapsedGroups());
+      c.add(key);
+      this.collapsedGroups.set(c);
+      const e = new Set(this.expandedGroups());
+      e.delete(key);
+      this.expandedGroups.set(e);
+    } else {
+      const c = new Set(this.collapsedGroups());
+      c.delete(key);
+      this.collapsedGroups.set(c);
+      const e = new Set(this.expandedGroups());
+      e.add(key);
+      this.expandedGroups.set(e);
+    }
   }
 
   toggleCollapse(): void {

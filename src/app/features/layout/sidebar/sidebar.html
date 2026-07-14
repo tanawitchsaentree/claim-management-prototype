@@ -6,7 +6,9 @@
 
         @if (isGroup(entry)) {
           <!-- Collapsible group -->
-          <div class="nav-group" [class.nav-group--active]="isGroupActive(entry)">
+          <div class="nav-group"
+               [class.nav-group--active]="isGroupActive(entry)"
+               [class.nav-group--expanded]="isGroupExpanded(entry.groupKey)">
             <button
               class="nav-item nav-group__header"
               [class.nav-item--active]="isGroupActive(entry)"
@@ -15,24 +17,24 @@
               <nx-icon [name]="entry.icon" size="s"></nx-icon>
               <span class="nav-item__label">{{ entry.label }}</span>
               @if (!collapsed) {
-                <nx-icon
-                  class="nav-group__chevron"
-                  [name]="isGroupExpanded(entry.groupKey) ? 'chevron-up' : 'chevron-down'"
-                  size="s">
-                </nx-icon>
+                <nx-icon class="nav-group__chevron" name="chevron-down" size="s"></nx-icon>
               }
             </button>
-            @if (isGroupExpanded(entry.groupKey) && !collapsed) {
-              <div class="nav-group__children">
-                @for (child of entry.children; track child.path + (child.queryParams?.['view'] ?? '')) {
-                  <a
-                    class="nav-item nav-item--child"
-                    [class.nav-item--active]="isChildActive(child)"
-                    [routerLink]="child.path"
-                    [queryParams]="child.queryParams ?? {}">
-                    <span class="nav-item__label">{{ child.label }}</span>
-                  </a>
-                }
+            @if (!collapsed) {
+              <div class="nav-group__children"
+                   [class.nav-group__children--closed]="!isGroupExpanded(entry.groupKey)"
+                   [style.visibility]="isGroupExpanded(entry.groupKey) ? 'visible' : 'hidden'">
+                <div>
+                  @for (child of entry.children; track child.path + (child.queryParams?.['view'] ?? '')) {
+                    <a
+                      class="nav-item nav-item--child"
+                      [class.nav-item--active]="isChildActive(child)"
+                      [routerLink]="child.path"
+                      [queryParams]="child.queryParams ?? {}">
+                      <span class="nav-item__label">{{ child.label }}</span>
+                    </a>
+                  }
+                </div>
               </div>
             }
           </div>
