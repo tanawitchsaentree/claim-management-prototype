@@ -55,10 +55,28 @@
       "title": "Section & Claims Hierarchy Validations"
     },
     {
+      "id": "CHAMP-CLOSE-SECTION",
+      "file": "close-section.json",
+      "module": "Claims",
+      "title": "Close Section — Pre-condition Validation & Lifecycle"
+    },
+    {
       "id": "BMPCC-14437",
       "file": "bmpcc-14437.json",
       "module": "Claims",
       "title": "Closure via Last Payment"
+    },
+    {
+      "id": "CHAMP-NO-LOSS-LOC",
+      "file": "bmpcc-no-loss-location.json",
+      "module": "FNOL",
+      "title": "Entities & Damages — Handling No Loss Location Selected"
+    },
+    {
+      "id": "CHAMP-PRECLOSURE-CHECKLIST",
+      "file": "champ-preclosure-checklist.json",
+      "module": "Claims",
+      "title": "Pre-closure Checklist — Always-clickable Close Claim with status checklist"
     }
   ]
 }

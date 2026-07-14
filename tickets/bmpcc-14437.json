@@ -2,7 +2,7 @@
   "ticketId": "BMPCC-14437",
   "module": "Claims",
   "title": "Closure via Last Payment",
-  "targetClaim": "CL-2025-001",
+  "targetClaim": "CLM-2024-001",
   "pages": [
     "sections"
   ],
@@ -43,14 +43,24 @@
           }
         ],
         "stateOverrides": {
-          "claimId": "CLM-2024-001",
-          "sectionId": "SEC-008",
-          "paymentId": "PAY-005",
-          "scenario": "finalPaymentAutoClose",
           "sectionStatuses": {
             "SEC-001": "Closed",
             "SEC-002": "Closed",
             "SEC-003": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-008": {
+              "hasOpenPayments": true,
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasActiveSalvage": false,
+              "hasOpenDeductible": false,
+              "hasActiveProvider": false,
+              "hasSubrogation": false
+            }
+          },
+          "paymentStatuses": {
+            "PAY-005": "Pending"
           }
         }
       },
@@ -112,9 +122,22 @@
           }
         ],
         "stateOverrides": {
-          "claimId": "CLM-2024-001",
-          "sectionId": "SEC-002",
-          "scenario": "finalPaymentBlocked"
+          "sectionBlockers": {
+            "SEC-002": {
+              "hasActiveLitigation": true,
+              "hasOpenReserves": true,
+              "hasOpenPayments": true,
+              "hasSubrogation": false,
+              "hasActiveSalvage": false,
+              "hasOpenDeductible": false,
+              "hasActiveProvider": false
+            }
+          },
+          "paymentStatuses": {
+            "PAY-003": "Pending",
+            "PAY-004": "Pending",
+            "PAY-005": "Pending"
+          }
         }
       },
       "expectedUI": {

@@ -1,0 +1,135 @@
+{
+  "ticketId": "CHAMP-PRECLOSURE-CHECKLIST",
+  "module": "Claims",
+  "title": "Pre-closure Checklist — Always-clickable Close Claim button with status checklist",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview"],
+  "walkthroughSteps": [
+    "Apply AC-01 — CLM-2024-001 has open tasks + open sections (blockers present)",
+    "Land on /claims/CLM-2024-001/overview",
+    "Observe: 'Close Claim' button is visible and clickable (primary style, not disabled/tooltipped)",
+    "Click 'Close Claim' — modal opens at Pre-closure Checklist",
+    "Observe: 7 condition rows, blocked items show red exclamation icon + 'Blocked' badge",
+    "Observe: 'Continue' button is disabled because not all conditions are clear",
+    "Apply AC-02 — all tasks done, all sections closed, no other blockers",
+    "Click 'Close Claim' — modal checklist shows all 7 rows with green check + 'Clear' badge",
+    "Observe: 'Continue' button is now enabled",
+    "Click Continue → Reason step → select reason → Continue → Confirmation → Close Claim"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Given blockers exist, Close Claim is always clickable; modal opens and shows blocked conditions with Continue disabled.",
+      "plainStatement": "The **Close Claim** button is always rendered as an enabled primary button (never disabled with a tooltip). When clicked with active blockers, the modal opens at the **Pre-closure Checklist** step — each condition row shows a **Blocked** badge (red) or **Clear** badge (green). The **Continue** button is disabled while any condition is blocked.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "CLM-2024-001 with open tasks and open sections so blockers are present in the checklist.",
+        "preconditions": [
+          {
+            "text": "'Close Claim' button is rendered and clickable (primary style, not disabled)",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking 'Close Claim' opens modal — title 'Close Claim — Pre-closure Checklist'",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "'All sections closed' row shows Blocked badge (red icon)",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "'Continue' button in modal footer is disabled",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "open",
+            "t2": "in-progress",
+            "t3": "open"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Close Claim button is primary (enabled). Modal checklist shows conditions with blocked rows for tasks and sections. Continue is disabled.",
+        "visualCues": [
+          "Close Claim button: primary style, not greyed out, no tooltip",
+          "Modal title: 'Close Claim — Pre-closure Checklist'",
+          "Blocked rows: red exclamation icon, red 'Blocked' badge, detail text from blocker label",
+          "Clear rows: green check icon, green 'Clear' badge",
+          "Continue footer button is disabled"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click 'Close Claim' button",
+        "expectedResult": "Modal opens at checklist, blocked rows visible, Continue disabled"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Given all conditions are clear, the checklist shows all green and Continue is enabled.",
+      "plainStatement": "When all closure conditions are met (tasks done, sections closed, no other blockers), all 7 checklist rows show a **Clear** badge (green check icon) and the **Continue** button is enabled. Proceeding leads to Reason → Confirmation → successful claim closure.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All tasks done, all sections closed, no litigation/reserves/payments/provider blockers on CLM-2024-001.",
+        "preconditions": [
+          {
+            "text": "All 7 checklist rows show 'Clear' badge",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "'Continue' button is enabled",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking Continue navigates to Reason step",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "All 7 condition rows show green check icon + 'Clear' badge. Continue is enabled. Flow: checklist → reason → confirmation → closed.",
+        "visualCues": [
+          "All rows: green check icon (check-circle-o), green 'Clear' badge",
+          "No red rows",
+          "Continue button enabled",
+          "After Continue: modal title changes to 'Close Claim — Reason'",
+          "After second Continue (with reason): 'Close Claim — Confirmation' with retention selection",
+          "After Close Claim: status chip updates to Closed"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click 'Close Claim', then Continue, select reason, Continue, Close Claim",
+        "expectedResult": "Claim status changes to Closed, closure panel visible"
+      }
+    }
+  ]
+}
