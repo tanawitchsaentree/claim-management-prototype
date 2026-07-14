@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, effect, untracked } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -103,24 +103,10 @@ export class Sidebar {
     });
   });
 
-  constructor() {
-    // Auto-expand financial group when navigating to financial page
-    effect(() => {
-      const isFinancial = this.pathSignal().includes('/financial');
-      if (isFinancial) {
-        untracked(() => {
-          const s = new Set(this.expandedGroups());
-          if (!s.has('financial')) {
-            s.add('financial');
-            this.expandedGroups.set(s);
-          }
-        });
-      }
-    });
-  }
-
   isGroupExpanded(key: string): boolean {
-    return this.expandedGroups().has(key);
+    if (this.expandedGroups().has(key)) return true;
+    if (key === 'financial' && this.pathSignal().includes('/financial')) return true;
+    return false;
   }
 
   isGroupActive(group: NavGroup): boolean {
