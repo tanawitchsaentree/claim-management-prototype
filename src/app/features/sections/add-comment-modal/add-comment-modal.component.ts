@@ -9,6 +9,7 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { Note } from '../../../core/models/note.model';
 import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
+import { RightStripService } from '../../../core/services/right-strip.service';
 import { firstValueFrom } from 'rxjs';
 
 export interface AddCommentModalData {
@@ -41,7 +42,8 @@ const CATEGORY_OPTIONS: Note['section'][] = ['general', 'recovery', 'litigation'
 export class AddCommentModalComponent {
   readonly data     = inject<AddCommentModalData>(NX_MODAL_DATA);
   readonly modalRef = inject(NxModalRef);
-  private readonly notesSvc = inject(MockNotesService);
+  private readonly notesSvc  = inject(MockNotesService);
+  private readonly stripSvc  = inject(RightStripService);
 
   readonly categories = CATEGORY_OPTIONS;
 
@@ -61,6 +63,7 @@ export class AddCommentModalComponent {
       this.notesSvc.addNote(this.data.claimId, { title, section: category, body })
     );
     this.modalRef.close({ notes } satisfies AddCommentModalResult);
+    this.stripSvc.open('comments');
   }
 
   cancel(): void {
