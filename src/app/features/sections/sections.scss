@@ -77,8 +77,8 @@ $brand-blue:          var(--info);
 }
 
 .sec-detail {
-  width: 480px;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
   border-left: 1px solid var(--ui-04);
   height: calc(100vh - 180px);
   position: sticky;

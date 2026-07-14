@@ -1,5 +1,5 @@
 <!-- ── Page header ── -->
-<div class="sec-page-header">
+<div class="sec-page-header" [style.display]="selectedEntity() ? 'none' : ''">
   <h1 class="page-title">Sections</h1>
   <button class="btn-add-entity" type="button">
     Add Entity <nx-icon name="chevron-down-small"></nx-icon>
@@ -34,8 +34,8 @@
   </div>
 }
 
-<!-- ── Center: main table ── -->
-<div class="sec-main">
+<!-- ── Center: main table (hidden when detail open) ── -->
+<div class="sec-main" [style.display]="selectedEntity() ? 'none' : ''">
 
 <!-- ── Sections Table ── -->
 <div class="table-card">
