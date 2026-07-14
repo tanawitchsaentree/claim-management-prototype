@@ -17,7 +17,6 @@
         <tr nxTableRow>
           <th nxHeaderCell class="sec-tree__col-toggle"></th>
           <th nxHeaderCell class="sec-tree__col-name">Entity</th>
-          <th nxHeaderCell class="sec-tree__col-action"></th>
         </tr>
       </thead>
       <tbody>
@@ -29,7 +28,7 @@
                 <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
               </button>
             </td>
-            <td nxTableCell colspan="2" class="sec-tree__section-name">{{ section.name }}</td>
+            <td nxTableCell class="sec-tree__section-name">{{ section.name }}</td>
           </tr>
           <!-- entity rows -->
           @if (section.expanded) {
@@ -39,7 +38,6 @@
                 (click)="openEntityDetail(section, entity)">
                 <td nxTableCell class="sec-tree__col-toggle"></td>
                 <td nxTableCell class="sec-tree__entity-name">{{ entity.name }}</td>
-                <td nxTableCell class="sec-tree__col-action"></td>
               </tr>
             }
           }

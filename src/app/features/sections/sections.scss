@@ -24,7 +24,6 @@ $brand-blue:          var(--info);
   &__table { width: 100%; }
 
   &__col-toggle { width: 48px; padding: 0 !important; }
-  &__col-action { width: 32px; }
   &__col-name   { }
 
   &__section-row td { font-weight: 600 !important; }
@@ -32,18 +31,28 @@ $brand-blue:          var(--info);
 
   &__entity-row {
     cursor: pointer;
-    td { color: var(--text-muted) !important; font-size: var(--paragraph-03-font-size) !important; padding-left: 48px !important; }
+    td {
+      color: var(--text-muted) !important;
+      font-size: var(--paragraph-03-font-size) !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 0 !important;
+    }
+    td.sec-tree__col-toggle { padding-left: 4px !important; max-width: none !important; }
     &:hover td { background: var(--ui-02) !important; color: var(--text-01) !important; }
 
     &--active td {
       background: #e8f0fb !important;
       color: var(--interactive-primary) !important;
       font-weight: 500 !important;
-      border-right: 2px solid var(--interactive-primary);
+    }
+    &--active td.sec-tree__col-toggle {
+      border-left: 3px solid var(--interactive-primary);
     }
   }
 
-  &__entity-name { }
+  &__entity-name { padding-left: 16px !important; }
 }
 
 .sec-main {
