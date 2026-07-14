@@ -29,6 +29,10 @@ import {
   EditEntityDamageModalData,
   EditEntityDamageModalResult,
 } from './edit-entity-damage-modal/edit-entity-damage-modal.component';
+import {
+  AddCommentModalComponent,
+  AddCommentModalData,
+} from './add-comment-modal/add-comment-modal.component';
 
 @Component({
   selector: 'app-sections',
@@ -43,6 +47,7 @@ import {
     NxModalModule,
     StatusChipComponent,
     CoverageReviewModalComponent,
+    AddCommentModalComponent,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -170,6 +175,15 @@ export class Sections {
       )
     );
     this.toast.success(`Coverage review updated for "${entity.name}"`);
+  }
+
+  onAddComment(attachTo: string): void {
+    const claimId = this.route.snapshot.params['id'];
+    this.dialogSvc.open(AddCommentModalComponent, {
+      data: { claimId, attachTo } satisfies AddCommentModalData,
+      width: '480px',
+      maxWidth: '92vw',
+    });
   }
 
   onAction(action: string, name: string): void {

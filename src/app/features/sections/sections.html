@@ -68,6 +68,10 @@
                 Edit
               </button>
               <button nxContextMenuItem type="button"
+                (click)="onAddComment(section.name)">
+                Add comment
+              </button>
+              <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
                 [nxTooltip]="section.status === 'Closed' ? 'Section already closed' : ''"
                 (click)="onCloseSection(section)">
@@ -122,6 +126,10 @@
                     [disabled]="section.status === 'Closed'"
                     (click)="onEditEntity(section, entity)">
                     Edit
+                  </button>
+                  <button nxContextMenuItem type="button"
+                    (click)="onAddComment(entity.name)">
+                    Add comment
                   </button>
                   <button nxContextMenuItem type="button"
                     [disabled]="section.status === 'Closed'"
