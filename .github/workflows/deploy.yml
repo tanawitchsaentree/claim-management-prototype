@@ -18,6 +18,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Override registry
+        run: echo "registry=https://registry.npmjs.org/" > .npmrc
+
       - name: Install dependencies
         run: npm ci
 
