@@ -88,6 +88,13 @@ export const routes: Routes = [
             m => m.FinancialOverviewComponent
           ),
       },
+      {
+        path: 'claims/:id/notes',
+        loadComponent: () =>
+          import('./features/claims/claim-notes-full/claim-notes-full.component').then(
+            m => m.ClaimNotesFullComponent
+          ),
+      },
       { path: 'claims/:id/limits',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/recoveries', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/providers',  redirectTo: 'claims/:id/overview', pathMatch: 'full' },

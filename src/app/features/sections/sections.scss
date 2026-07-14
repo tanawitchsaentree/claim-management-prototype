@@ -386,10 +386,9 @@ $brand-blue:          var(--info);
   table-layout: fixed;
 
   .col-toggle   { width: 48px;  padding: 0 !important; }
-  .col-entity   { width: 22%; }
-  .col-damage   { width: 28%; }
-  .col-status   { width: 160px; }
-  .col-provider { width: 180px; }
+  .col-entity   { width: 28%; }
+  .col-damage   { width: 32%; }
+  .col-coverage { width: 240px; }
   .col-actions  { width: 56px; text-align: center !important; padding: 0 !important; }
 
   th[nxHeaderCell] {
@@ -412,21 +411,46 @@ $brand-blue:          var(--info);
 }
 
 
-// ─── Status chips ─────────────────────────────────────────────────
-.status-chip {
-  display: inline-flex;
+
+// ─── Coverage review column ───────────────────────────────────────
+.coverage-cell {
+  display: flex;
   align-items: center;
-  padding: 4px 12px;
+  gap: 6px;
+  overflow: visible;
+
+  .coverage-edit-btn { opacity: 0; transition: opacity 0.15s; }
+}
+
+.entity-row:hover .coverage-edit-btn { opacity: 1; }
+
+.coverage-chip {
+  display: inline-block;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   white-space: nowrap;
 
-  &--pending      { background: var(--task-status-pending-bg);       color: var(--task-status-pending-color); }
-  &--not-assigned { background: var(--ui-03);                         color: var(--text-muted); }
-  &--in-progress  { background: var(--claim-status-in-progress-bg);   color: var(--claim-status-in-progress-color); }
-  &--completed    { background: var(--claim-status-bound-bg);         color: var(--claim-status-bound-color); }
+  &--standard-review {
+    background: var(--claim-status-bound-bg, #e8f5e9);
+    color: var(--claim-status-bound-color, #2e7d32);
+  }
+
+  &--additional-information-required {
+    background: var(--task-status-pending-bg, #fff8e1);
+    color: var(--task-status-pending-color, #e65100);
+  }
+
+  &--enhanced-review-required {
+    background: var(--message-error-background, #fdecea);
+    color: var(--message-error-color, #c62828);
+  }
 }
+
+.coverage-overridden-icon { color: var(--interactive-primary); }
+
+.coverage-empty { color: var(--text-muted); }
 
 // ─── Right strip ──────────────────────────────────────────────────
 .right-strip {
@@ -507,3 +531,18 @@ button[nxContextMenuItem] {
 }
 
 [nxHeadline] { color: var(--text-01) !important; }
+
+.sec-kebab-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  border-radius: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 1px;
+  font-family: inherit;
+  &:hover { background: var(--ui-02); }
+}

@@ -165,16 +165,54 @@
 
 .scm-checklist {
   list-style: none;
-  margin: 0;
+  margin: 12px 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .scm-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ui-04);
+  background: var(--ui-01);
+  flex-wrap: wrap;
+  &:last-child { border-bottom: none; }
+
+  &--fail { background: #fff8f7; }
+}
+
+.scm-check-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  &--pass { color: var(--positive, #27a25e); }
+  &--fail { color: var(--danger, #d2351d); }
+}
+
+.scm-check-label {
   font-size: var(--paragraph-02-font-size);
   color: var(--text-01);
+  flex: 1;
+}
+
+.scm-check-hint {
+  width: 100%;
+  padding-left: 24px;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--danger, #d2351d);
+}
+
+.scm-checklist-error {
+  margin: 10px 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--danger, #d2351d);
+  font-weight: 500;
 }
 
 // ─── Form ─────────────────────────────────────────────────────────────────────

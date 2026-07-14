@@ -15,7 +15,7 @@
       <!-- References icon with badge count -->
       <button
         class="crs-btn crs-btn--ref"
-        [class.crs-btn--active]="refPanelOpen()"
+        [class.crs-btn--active]="activeKey === 'references'"
         type="button"
         title="Reference claims"
         (click)="toggleRefPanel()">
@@ -35,17 +35,15 @@
     </div>
   </div>
 
-  <!-- Comments panel -->
-  @if (activeKey === 'comments' && currentClaimId(); as id) {
-    <div class="crs-panel-slot" @panelSlide>
-      <app-claim-notes-panel [claimId]="id"></app-claim-notes-panel>
-    </div>
-  }
-
-  <!-- Reference panel — tab bar lives inside the panel itself -->
-  @if (refPanelOpen()) {
-    <div class="crs-panel-slot crs-panel-slot--ref" @refPanelSlide>
-      <app-claim-reference-panel></app-claim-reference-panel>
+  <!-- Single panel slot — animates open/close only, content swaps inside without animation -->
+  @if (isPanelOpen()) {
+    <div class="crs-panel-slot" [class.crs-panel-slot--ref]="activeKey === 'references'" @panelSlide>
+      @if (activeKey === 'comments' && currentClaimId(); as id) {
+        <app-claim-notes-panel [claimId]="id"></app-claim-notes-panel>
+      }
+      @if (activeKey === 'references') {
+        <app-claim-reference-panel></app-claim-reference-panel>
+      }
     </div>
   }
 </div>

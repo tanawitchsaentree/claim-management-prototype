@@ -9,7 +9,12 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom, catchError, of } from 'rxjs';
-import { ClaimSection, SectionEntity, InstructionStatus } from '../../core/models/section.model';
+import { ClaimSection, SectionEntity, CoverageReview } from '../../core/models/section.model';
+import {
+  CoverageReviewModalComponent,
+  CoverageReviewModalData,
+  CoverageReviewModalResult,
+} from './coverage-review-modal/coverage-review-modal.component';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
@@ -37,6 +42,7 @@ import {
     NxTooltipModule,
     NxModalModule,
     StatusChipComponent,
+    CoverageReviewModalComponent,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -75,10 +81,6 @@ export class Sections {
     this.sections.update(list =>
       list.map(s => s.id === id ? { ...s, expanded: !s.expanded } : s)
     );
-  }
-
-  statusClass(status: InstructionStatus): string {
-    return status.toLowerCase().replace(/\s+/g, '-');
   }
 
   async onCloseSection(section: ClaimSection): Promise<void> {
@@ -144,6 +146,30 @@ export class Sections {
       )
     );
     this.toast.success(`Entity "${entity.name}" updated`);
+  }
+
+  coverageClass(review: CoverageReview): string {
+    return review.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z-]/g, '');
+  }
+
+  async onOverrideCoverageReview(section: ClaimSection, entity: SectionEntity): Promise<void> {
+    const ref = this.dialogSvc.open(CoverageReviewModalComponent, {
+      data: { entity } satisfies CoverageReviewModalData,
+      width: '480px',
+      maxWidth: '92vw',
+    });
+
+    const result = await firstValueFrom(ref.afterClosed()) as CoverageReviewModalResult | undefined;
+    if (!result) return;
+
+    await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
+    this.sections.update(list =>
+      list.map(s => s.id === section.id
+        ? { ...s, entities: s.entities.map(e => e.id === entity.id ? { ...e, ...result } : e) }
+        : s
+      )
+    );
+    this.toast.success(`Coverage review updated for "${entity.name}"`);
   }
 
   onAction(action: string, name: string): void {

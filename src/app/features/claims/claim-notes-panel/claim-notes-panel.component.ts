@@ -1,11 +1,15 @@
 import { Component, Input, OnChanges, SimpleChanges, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxAvatarModule } from '@allianz/ng-aquila/avatar';
 import { NxEyebrowModule } from '@allianz/ng-aquila/eyebrow';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
+import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
+import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { Note, NoteSection } from '../../../core/models';
 import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
 
@@ -29,11 +33,14 @@ const EN_WEEKDAY: Record<number, string> = {
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     NxIconModule,
     NxButtonModule,
     NxAvatarModule,
     NxEyebrowModule,
     NxContextMenuModule,
+    NxDropdownModule,
+    NxFormfieldModule,
   ],
   templateUrl: './claim-notes-panel.component.html',
   styleUrl: './claim-notes-panel.component.scss',
@@ -42,11 +49,27 @@ export class ClaimNotesPanelComponent implements OnChanges {
   @Input({ required: true }) claimId!: string;
 
   private readonly notesSvc = inject(MockNotesService);
+  private readonly router   = inject(Router);
 
   readonly notes        = signal<Note[]>([]);
   readonly loading      = signal(false);
   readonly filter       = signal<FilterValue>('all');
   readonly visibleCount = signal(PAGE_STEP);
+  readonly showAddForm  = signal(false);
+
+  readonly addForm = new FormGroup({
+    title:    new FormControl(''),
+    attachTo: new FormControl('CLAIM'),
+    category: new FormControl<NoteSection>(null),
+    body:     new FormControl(''),
+  });
+
+  readonly attachOptions = ['CLAIM', 'SECTION', 'PARTY'];
+  readonly categoryOptions: { value: NoteSection; label: string }[] = [
+    { value: 'general',    label: 'General' },
+    { value: 'recovery',   label: 'Recovery' },
+    { value: 'litigation', label: 'Litigation' },
+  ];
 
   readonly filterOptions: { value: FilterValue; label: string }[] = [
     { value: 'all',        label: 'All notes'  },
@@ -173,6 +196,31 @@ export class ClaimNotesPanelComponent implements OnChanges {
 
   onEditNote(_note: Note):   void { /* phase 2 */ }
   onDeleteNote(_note: Note): void { /* phase 2 */ }
-  onAddNote():               void { /* phase 2 */ }
-  onViewAll():               void { /* phase 2 */ }
+  onTranslate():             void { /* phase 2 */ }
+  onViewAll(): void {
+    this.router.navigate(['/claims', this.claimId, 'notes']);
+  }
+
+  onAddNote(): void {
+    this.showAddForm.set(true);
+  }
+
+  cancelAddNote(): void {
+    this.showAddForm.set(false);
+    this.addForm.reset({ attachTo: 'CLAIM', title: '', category: null, body: '' });
+  }
+
+  async submitAddNote(): Promise<void> {
+    const { title, category, body } = this.addForm.value;
+    if (!body?.trim()) return;
+    const next = await firstValueFrom(
+      this.notesSvc.addNote(this.claimId, {
+        title:   title?.trim() ?? '',
+        section: category ?? null,
+        body:    body.trim(),
+      }),
+    );
+    this.notes.set(next);
+    this.cancelAddNote();
+  }
 }

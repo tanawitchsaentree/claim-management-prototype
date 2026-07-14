@@ -18,8 +18,6 @@
     <main class="main-content">
       <router-outlet />
     </main>
-    @if (showRightStrip()) {
-      <app-claim-right-strip />
-    }
+    <app-claim-right-strip [style.display]="showRightStrip() ? '' : 'none'" />
   </div>
 </div>

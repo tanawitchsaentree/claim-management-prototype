@@ -13,8 +13,8 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "entities": [
-      { "id": "SE-001", "name": "Kaufmann's Warehouse", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
-      { "id": "SE-002", "name": "Forklift",             "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-001", "name": "Kaufmann's Warehouse", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" },
+      { "id": "SE-002", "name": "Forklift",             "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Additional information required", "coverageReviewOverridden": true, "coverageReviewNote": "Client requested additional documentation for forklift depreciation." }
     ]
   },
   {
@@ -33,7 +33,7 @@
     "closureDate": "2026-06-22",
     "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
-      { "id": "SE-003", "name": "Sales of Machinery and Equipment", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-003", "name": "Sales of Machinery and Equipment", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Enhanced review required", "coverageReviewOverridden": true, "coverageReviewNote": "Complex BI calculation requires senior underwriter sign-off." }
     ]
   },
   {
@@ -69,8 +69,8 @@
     "closureDate": "2025-03-10",
     "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
-      { "id": "SE-004", "name": "Office Building A", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
-      { "id": "SE-005", "name": "Server Room",        "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-004", "name": "Office Building A", "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" },
+      { "id": "SE-005", "name": "Server Room",        "damage": "Material damage",   "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
     ]
   },
   {
@@ -89,7 +89,7 @@
     "closureDate": "2025-03-12",
     "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
-      { "id": "SE-006", "name": "Data Loss — Financial Records", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-006", "name": "Data Loss — Financial Records", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Additional information required" }
     ]
   },
   {
@@ -108,8 +108,8 @@
     "closureDate": "2024-05-28",
     "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
-      { "id": "SE-007", "name": "Schäfer Main Warehouse", "damage": "Material damage",        "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" },
-      { "id": "SE-008", "name": "Conveyor System",         "damage": "Machinery breakdown",    "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-007", "name": "Schäfer Main Warehouse", "damage": "Material damage",        "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" },
+      { "id": "SE-008", "name": "Conveyor System",         "damage": "Machinery breakdown",    "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Enhanced review required", "coverageReviewOverridden": true, "coverageReviewNote": "Machinery breakdown with disputed maintenance records." }
     ]
   },
   {
@@ -128,7 +128,7 @@
     "closureDate": "2024-05-30",
     "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
-      { "id": "SE-009", "name": "Production Line B", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-009", "name": "Production Line B", "damage": "Business interruption", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
     ]
   },
   {
@@ -147,7 +147,7 @@
     "closureDate": "2026-06-28",
     "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
-      { "id": "SE-010", "name": "Final Settlement", "damage": "Material damage", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center" }
+      { "id": "SE-010", "name": "Final Settlement", "damage": "Material damage", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
     ]
   }
 ]

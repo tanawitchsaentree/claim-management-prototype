@@ -77,20 +77,29 @@
     </div>
   }
 
-  <!-- STEP 2 — Pre-closure checklist -->
+  <!-- STEP 2 — Pre-closure checklist (system validated) -->
   @if (step() === 2) {
-    <p class="scm-intro">Confirm all items below are complete before proceeding:</p>
+    <p class="scm-intro">System validation — all checks must pass before this section can be closed:</p>
     <ul class="scm-checklist">
-      @for (item of checklistItems; track item; let i = $index) {
-        <li class="scm-check-item">
-          <nx-checkbox labelSize="small"
-            [checked]="checklistChecked()[i]"
-            (checkedChange)="toggleChecklistItem(i)">
-            {{ item }}
-          </nx-checkbox>
+      @for (item of checklistItems; track item.label) {
+        <li class="scm-check-item" [class.scm-check-item--fail]="!item.passed">
+          <nx-icon
+            [name]="item.passed ? 'check-circle' : 'exclamation-circle'"
+            size="s"
+            class="scm-check-icon"
+            [class.scm-check-icon--pass]="item.passed"
+            [class.scm-check-icon--fail]="!item.passed">
+          </nx-icon>
+          <span class="scm-check-label">{{ item.label }}</span>
+          @if (!item.passed) {
+            <span class="scm-check-hint">{{ item.failHint }}</span>
+          }
         </li>
       }
     </ul>
+    @if (!checklistAllDone()) {
+      <p class="scm-checklist-error">Resolve all failing checks before closing this section.</p>
+    }
   }
 
   <!-- STEP 3 — Closure reason -->

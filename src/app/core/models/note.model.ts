@@ -12,6 +12,7 @@ export interface Note {
   claimId:   string;
   author:    NoteAuthor;
   timestamp: string;        // ISO
+  title?:    string;
   body:      string;
   section:   NoteSection;
   pinned:    boolean;

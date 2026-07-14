@@ -5,6 +5,7 @@
   <div nxLayout="grid maxwidth" class="cl-toolbar__inner">
     <div nxRow><div nxCol="12">
       <ol nxBreadcrumb>
+        <li nxBreadcrumbItem><a routerLink="/dashboard">Dashboard</a></li>
         <li nxBreadcrumbItem>Claims</li>
       </ol>
     </div></div>
@@ -16,7 +17,10 @@
   <div nxLayout="grid maxwidth" class="cl-page">
     <div nxRow><div nxCol="12">
 
-      <p class="cl-eyebrow">Claims</p>
+      <a class="cl-back" routerLink="/dashboard">
+        <nx-icon name="arrow-left" size="s"></nx-icon>
+        Back to dashboard
+      </a>
       <h1 class="cl-title">All claims</h1>
       <p class="cl-caption">Browse and filter all claims across your portfolio.</p>
 

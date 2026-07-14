@@ -20,6 +20,23 @@ export class MockNotesService extends MockBaseService {
     return this.respond(structuredClone(fresh));
   }
 
+  addNote(claimId: string, payload: { title: string; section: Note['section']; body: string }): Observable<Note[]> {
+    const list = this.cache.get(claimId) ?? structuredClone(this.raw[claimId] ?? []);
+    const note: Note = {
+      id:        `note-${Date.now()}`,
+      claimId,
+      author:    { name: 'Current User', initials: 'CU', accent: 'blue' },
+      timestamp: new Date().toISOString(),
+      title:     payload.title || undefined,
+      body:      payload.body,
+      section:   payload.section,
+      pinned:    false,
+    };
+    const next = [note, ...list];
+    this.cache.set(claimId, next);
+    return this.respond(structuredClone(next));
+  }
+
   togglePin(claimId: string, noteId: string): Observable<Note[]> {
     const list = this.cache.get(claimId) ?? [];
     const next = list.map(n => n.id === noteId ? { ...n, pinned: !n.pinned } : n);

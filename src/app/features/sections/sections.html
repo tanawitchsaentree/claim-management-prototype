@@ -14,8 +14,7 @@
         <th nxHeaderCell class="col-toggle"></th>
         <th nxHeaderCell class="col-entity">Entity</th>
         <th nxHeaderCell class="col-damage">Damage</th>
-        <th nxHeaderCell class="col-status">Instruction status</th>
-        <th nxHeaderCell class="col-provider">Provider</th>
+        <th nxHeaderCell class="col-coverage">Coverage review</th>
         <th nxHeaderCell class="col-actions">Action</th>
       </tr>
     </thead>
@@ -52,26 +51,28 @@
               <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
             </button>
           </td>
-          <td nxTableCell colspan="4">
+          <td nxTableCell colspan="3">
             <div class="section-title-cell__inner">
               <span class="section-title-cell__name">{{ section.name }}</span>
               <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
             </div>
           </td>
           <td nxTableCell class="col-actions">
-            <button nxIconButton="tertiary" type="button"
-              [nxContextMenuTriggerFor]="sectionCtxMenu" aria-label="section menu">
-              <nx-icon name="ellipsis-v"></nx-icon>
-            </button>
-            <nx-context-menu #sectionCtxMenu="nxContextMenu">
+            <button class="sec-kebab-btn" type="button"
+              [nxContextMenuTriggerFor]="sectionMenu"
+              aria-label="Section actions">⋮</button>
+            <nx-context-menu #sectionMenu="nxContextMenu">
+              <button nxContextMenuItem type="button"
+                [disabled]="section.status === 'Closed'"
+                (click)="onAction('edit', section.name)">
+                Edit
+              </button>
               <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
                 [nxTooltip]="section.status === 'Closed' ? 'Section already closed' : ''"
                 (click)="onCloseSection(section)">
-                Close Section
+                Close
               </button>
-<button nxContextMenuItem type="button" (click)="onAction('edit', section.name)">Edit</button>
-              <button nxContextMenuItem type="button" (click)="onAction('delete', section.name)">Delete</button>
             </nx-context-menu>
           </td>
         </tr>
@@ -89,21 +90,45 @@
               </td>
               <td nxTableCell class="col-entity">{{ entity.name }}</td>
               <td nxTableCell class="col-damage">{{ entity.damage }}</td>
-              <td nxTableCell class="col-status">
-                <span class="status-chip status-chip--{{ statusClass(entity.instructionStatus) }}">
-                  {{ entity.instructionStatus }}
-                </span>
+              <td nxTableCell class="col-coverage">
+                <div class="coverage-cell">
+                  @if (entity.coverageReview) {
+                    <span class="coverage-chip coverage-chip--{{ coverageClass(entity.coverageReview) }}">
+                      {{ entity.coverageReview }}
+                    </span>
+                    @if (entity.coverageReviewOverridden) {
+                      <nx-icon name="pencil" size="s" class="coverage-overridden-icon"
+                               [nxTooltip]="entity.coverageReviewNote ?? ''" nxTooltipPosition="top"></nx-icon>
+                    }
+                  } @else {
+                    <span class="coverage-empty">–</span>
+                  }
+                  @if (section.status !== 'Closed') {
+                    <button nxIconButton="tertiary small" type="button"
+                            class="coverage-edit-btn"
+                            aria-label="Override coverage review"
+                            (click)="onOverrideCoverageReview(section, entity)">
+                      <nx-icon name="edit" size="s"></nx-icon>
+                    </button>
+                  }
+                </div>
               </td>
-              <td nxCell class="text-muted">{{ entity.assignedProvider ?? '–' }}</td>
               <td nxTableCell class="col-actions">
-                @if (section.status !== 'Closed') {
-                  <button nxIconButton="tertiary" type="button"
-                    aria-label="Edit entity"
-                    nxTooltip="Edit damage & status"
+                <button class="sec-kebab-btn" type="button"
+                  [nxContextMenuTriggerFor]="entityMenu"
+                  aria-label="Entity actions">⋮</button>
+                <nx-context-menu #entityMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button"
+                    [disabled]="section.status === 'Closed'"
                     (click)="onEditEntity(section, entity)">
-                    <nx-icon name="pencil"></nx-icon>
+                    Edit
                   </button>
-                }
+                  <button nxContextMenuItem type="button"
+                    [disabled]="section.status === 'Closed'"
+                    (click)="onAction('close', entity.name)">
+                    Close
+                  </button>
+                </nx-context-menu>
               </td>
             </tr>
           }

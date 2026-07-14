@@ -1,14 +1,18 @@
 export type SectionStatus        = 'Open' | 'Closed';
 export type InstructionStatus    = 'Pending' | 'Not assigned' | 'In progress' | 'Completed';
 export type SectionClosureReason = 'Section Finalised' | 'Section Not Pursued' | 'Section Rejected';
+export type CoverageReview       = 'Standard Review' | 'Additional information required' | 'Enhanced review required';
 
 export interface SectionEntity {
-  id:                string;
-  name:              string;
-  damage:            string;
-  instructionStatus: InstructionStatus;
-  expandable:        boolean;
-  assignedProvider?: string | null;
+  id:                       string;
+  name:                     string;
+  damage:                   string;
+  instructionStatus:        InstructionStatus;
+  expandable:               boolean;
+  assignedProvider?:        string | null;
+  coverageReview?:          CoverageReview;
+  coverageReviewNote?:      string;
+  coverageReviewOverridden?: boolean;
 }
 
 export interface SectionBlockers {

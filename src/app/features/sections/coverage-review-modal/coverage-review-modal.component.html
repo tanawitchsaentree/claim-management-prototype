@@ -1,0 +1,37 @@
+<div class="crm-header">
+  <h2 class="crm-title">Coverage review</h2>
+  <p class="crm-subtitle">{{ data.entity.name }} — {{ data.entity.damage }}</p>
+</div>
+
+<div class="crm-body" [formGroup]="form">
+
+  @if (isOverride) {
+    <p class="crm-current">
+      Current: <strong>{{ data.entity.coverageReview }}</strong>
+      @if (data.entity.coverageReviewOverridden) {
+        <span class="crm-badge">Overridden</span>
+      }
+    </p>
+  }
+
+  <nx-formfield label="Coverage review">
+    <nx-dropdown formControlName="coverageReview">
+      @for (opt of options; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Reason for override">
+    <textarea nxInput formControlName="note" rows="3"
+              placeholder="Explain why the coverage review differs from the FNOL assessment…"></textarea>
+    <nx-error nxFormfieldError>A reason is required when overriding coverage review.</nx-error>
+  </nx-formfield>
+
+</div>
+
+<div class="crm-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Confirm override</button>
+</div>

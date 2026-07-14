@@ -1,20 +1,27 @@
 <div class="cnp">
   <!-- Header -->
   <header class="cnp__header">
-    <button class="cnp__filter-trigger" type="button"
-            [nxContextMenuTriggerFor]="filterMenu"
-            [attr.aria-label]="'Change filter — current: ' + currentFilterLabel()">
-      <span class="cnp__filter-label">{{ currentFilterLabel() }} ({{ totalCount() }})</span>
-      <nx-icon name="chevron-down" size="s"></nx-icon>
-    </button>
+    <div class="cnp__header-top">
+      <button class="cnp__filter-trigger" type="button"
+              [nxContextMenuTriggerFor]="filterMenu"
+              [attr.aria-label]="'Change filter — current: ' + currentFilterLabel()">
+        <span class="cnp__filter-label">{{ currentFilterLabel() }} ({{ totalCount() }})</span>
+        <nx-icon name="chevron-down" size="s"></nx-icon>
+      </button>
 
-    <nx-context-menu #filterMenu="nxContextMenu">
-      @for (opt of filterOptions; track opt.value) {
-        <button nxContextMenuItem type="button" (click)="setFilter(opt.value)">
-          {{ opt.label }}
-        </button>
-      }
-    </nx-context-menu>
+      <nx-context-menu #filterMenu="nxContextMenu">
+        @for (opt of filterOptions; track opt.value) {
+          <button nxContextMenuItem type="button" (click)="setFilter(opt.value)">
+            {{ opt.label }}
+          </button>
+        }
+      </nx-context-menu>
+
+      <button class="cnp__translate-btn" type="button" (click)="onTranslate()" aria-label="Translate notes">
+        <nx-icon name="globe" size="s"></nx-icon>
+        Translate
+      </button>
+    </div>
 
     <div class="cnp__header-actions">
       <button nxButton="secondary small" type="button" (click)="onAddNote()">
@@ -27,6 +34,55 @@
       </button>
     </div>
   </header>
+
+  <!-- Add note inline form -->
+  @if (showAddForm()) {
+    <div class="cnp-add-form" [formGroup]="addForm">
+      <div class="cnp-add-form__field">
+        <label class="cnp-add-form__label">Title</label>
+        <div class="cnp-add-form__input-wrap">
+          <input class="cnp-add-form__input" formControlName="title" placeholder="Enter title" />
+        </div>
+      </div>
+
+      <div class="cnp-add-form__field">
+        <label class="cnp-add-form__label">Attach to</label>
+        <nx-formfield class="cnp-add-form__select">
+          <nx-dropdown formControlName="attachTo">
+            @for (opt of attachOptions; track opt) {
+              <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      </div>
+
+      <div class="cnp-add-form__field">
+        <label class="cnp-add-form__label">Notes category</label>
+        <nx-formfield class="cnp-add-form__select">
+          <nx-dropdown formControlName="category" placeholder="Select">
+            @for (opt of categoryOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      </div>
+
+      <div class="cnp-add-form__field">
+        <label class="cnp-add-form__label">Note</label>
+        <div class="cnp-add-form__textarea-wrap">
+          <textarea class="cnp-add-form__textarea" formControlName="body"
+                    placeholder="Enter note" rows="5"></textarea>
+        </div>
+      </div>
+
+      <div class="cnp-add-form__actions">
+        <button nxButton="secondary small" type="button" (click)="cancelAddNote()">Cancel</button>
+        <button nxButton="primary small" type="button"
+                [disabled]="!addForm.value.body?.trim()"
+                (click)="submitAddNote()">Add</button>
+      </div>
+    </div>
+  }
 
   @if (loading()) {
     <p class="cnp__empty">Loading notes…</p>

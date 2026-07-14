@@ -30,10 +30,17 @@
 }
 
 // ─── Header ────────────────────────────────────────────────────────────────
-.cl-eyebrow {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0 0 4px;
+.cl-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--interactive-primary);
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 500;
+  text-decoration: none;
+  margin: 0 0 8px;
+
+  &:hover { text-decoration: underline; }
 }
 
 .cl-title {

@@ -2,7 +2,7 @@
   display: block;
   width: 384px;
   height: 100%;
-  background: var(--ui-02);
+  background: var(--ui-01);
   border-left: 1px solid var(--ui-04);
   overflow-y: auto;
 }
@@ -19,6 +19,12 @@
   flex-direction: column;
   gap: 12px;
   margin-bottom: 8px;
+}
+
+.cnp__header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .cnp__filter-trigger {
@@ -39,8 +45,112 @@
 
 .cnp__filter-label { white-space: nowrap; }
 
+.cnp__translate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 500;
+  white-space: nowrap;
+
+  nx-icon { flex-shrink: 0; }
+
+  &:hover { text-decoration: underline; }
+}
+
 .cnp__header-actions {
   display: flex;
+  gap: 8px;
+}
+
+// ─── Add note inline form ────────────────────────────────────────────────────
+.cnp-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0 8px;
+  border-bottom: 1px solid var(--ui-04);
+  margin-bottom: 8px;
+}
+
+.cnp-add-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cnp-add-form__label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cnp-add-form__input-wrap {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  background: var(--ui-01);
+  padding: 0 12px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+
+  &:focus-within {
+    border-color: var(--interactive-primary);
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 0;
+  }
+}
+
+.cnp-add-form__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  &::placeholder { color: var(--text-muted); }
+}
+
+// nx-formfield inside the form — strip top spacing reserved for label
+.cnp-add-form__select {
+  width: 100%;
+  margin-top: -16px;   // collapse the formfield's internal label-area reservation
+}
+
+.cnp-add-form__textarea-wrap {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  background: var(--ui-01);
+  padding: 10px 12px;
+
+  &:focus-within {
+    border-color: var(--interactive-primary);
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 0;
+  }
+}
+
+.cnp-add-form__textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  resize: vertical;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  line-height: 1.5;
+  font-family: inherit;
+  &::placeholder { color: var(--text-muted); }
+}
+
+.cnp-add-form__actions {
+  display: flex;
+  justify-content: flex-end;
   gap: 8px;
 }
 

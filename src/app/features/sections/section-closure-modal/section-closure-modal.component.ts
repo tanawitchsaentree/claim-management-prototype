@@ -6,7 +6,6 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { firstValueFrom } from 'rxjs';
@@ -31,13 +30,11 @@ const CLOSURE_REASONS: SectionClosureReason[] = [
   'Section Rejected',
 ];
 
-const CHECKLIST_ITEMS = [
-  'All payments processed',
-  'All bills received',
-  'All recoveries & deductibles collected',
-  'Reserves released to zero',
-  'Final reports completed',
-];
+interface ChecklistItem {
+  label: string;
+  passed: boolean;
+  failHint: string;
+}
 
 const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
 
@@ -53,7 +50,6 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    NxCheckboxModule,
     NxFormfieldModule,
     NxDropdownModule,
   ],
@@ -71,10 +67,18 @@ export class SectionClosureModalComponent {
   readonly saveError = signal<string | null>(null);
   readonly expanded  = signal<Set<string>>(new Set());
 
-  readonly closureReasons  = CLOSURE_REASONS;
-  readonly checklistItems  = CHECKLIST_ITEMS;
-  readonly checklistChecked = signal<boolean[]>(CHECKLIST_ITEMS.map(() => true));
-  readonly checklistAllDone = computed(() => this.checklistChecked().every(v => v));
+  readonly closureReasons = CLOSURE_REASONS;
+
+  readonly checklistItems: ChecklistItem[] = [
+    { label: 'No open deductible tasks',          passed: !this.data.section.hasOpenDeductible,   failHint: 'Open deductible task must be closed first.' },
+    { label: 'No active litigation',              passed: !this.data.section.hasActiveLitigation, failHint: 'Active litigation must be resolved.' },
+    { label: 'No pending subrogation or salvage', passed: !this.data.section.hasSubrogation && !this.data.section.hasActiveSalvage, failHint: 'Pending recovery activity must be resolved.' },
+    { label: 'Reserves released to zero',         passed: !this.data.section.hasOpenReserves,     failHint: 'All reserves must be released before closing.' },
+    { label: 'All payments settled',              passed: !this.data.section.hasOpenPayments,     failHint: 'Pending payments must be settled.' },
+    { label: 'No active provider assignment',     passed: !this.data.section.hasActiveProvider,   failHint: 'Active provider assignment must be finalised.' },
+  ];
+
+  readonly checklistAllDone = computed(() => this.checklistItems.every(i => i.passed));
 
   readonly form = this.fb.group({
     reason: [null as SectionClosureReason | null, Validators.required],
@@ -92,10 +96,6 @@ export class SectionClosureModalComponent {
   get section()  { return this.data.section; }
 
   readonly reasonInvalid = computed(() => this.form.get('reason')!.invalid);
-
-  toggleChecklistItem(i: number): void {
-    this.checklistChecked.update(arr => arr.map((v, idx) => idx === i ? !v : v));
-  }
 
   toggleBlocker(key: string): void {
     this.expanded.update(set => {

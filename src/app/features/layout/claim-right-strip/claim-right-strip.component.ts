@@ -25,24 +25,12 @@ interface StripItem {
   animations: [
     trigger('panelSlide', [
       transition(':enter', [
-        style({ width: 0, opacity: 0 }),
+        style({ width: 0, opacity: 0, overflow: 'hidden' }),
         animate('220ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ width: '384px', opacity: 1 })),
+          style({ width: '*', opacity: 1 })),
       ]),
       transition(':leave', [
-        style({ width: '384px', opacity: 1, overflow: 'hidden' }),
-        animate('180ms cubic-bezier(0.4, 0, 1, 1)',
-          style({ width: 0, opacity: 0 })),
-      ]),
-    ]),
-    trigger('refPanelSlide', [
-      transition(':enter', [
-        style({ width: 0, opacity: 0 }),
-        animate('220ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ width: '360px', opacity: 1 })),
-      ]),
-      transition(':leave', [
-        style({ width: '360px', opacity: 1, overflow: 'hidden' }),
+        style({ overflow: 'hidden' }),
         animate('180ms cubic-bezier(0.4, 0, 1, 1)',
           style({ width: 0, opacity: 0 })),
       ]),
@@ -77,22 +65,24 @@ export class ClaimRightStripComponent {
   });
 
   readonly refTabCount = computed(() => this.refSvc.refTabCount());
-  readonly refPanelOpen = computed(() => this.refSvc.isPanelMode());
+
+  isPanelOpen(): boolean {
+    return this.activeKey !== null;
+  }
 
   activate(key: string): void {
     this.activeKey = this.activeKey === key ? null : key;
+    // keep refSvc in sync when references tab is activated
+    const id = this.currentClaimId();
+    if (this.activeKey === 'references' && id) {
+      this.refSvc.setVariant('panel', id);
+    } else {
+      this.refSvc.close();
+    }
   }
 
   toggleRefPanel(): void {
-    const id = this.currentClaimId();
-    if (!id) return;
-    if (this.refSvc.isPanelMode()) {
-      this.refSvc.close();
-    } else {
-      // Close any other open strip panel when opening reference
-      this.activeKey = null;
-      this.refSvc.setVariant('panel', id);
-    }
+    this.activate('references');
   }
 
   closePanel(): void {
