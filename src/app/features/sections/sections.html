@@ -1,9 +1,11 @@
 <!-- ── Page header ── -->
-<div class="sec-page-header" [style.display]="selectedEntity() ? 'none' : ''">
+<div class="sec-page-header">
   <h1 class="page-title">Sections</h1>
-  <button class="btn-add-entity" type="button">
-    Add Entity <nx-icon name="chevron-down-small"></nx-icon>
-  </button>
+  @if (!selectedEntity()) {
+    <button class="btn-add-entity" type="button">
+      Add Entity <nx-icon name="chevron-down-small"></nx-icon>
+    </button>
+  }
 </div>
 
 <!-- ── Split layout ── -->

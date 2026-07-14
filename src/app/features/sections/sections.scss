@@ -16,10 +16,21 @@ $brand-blue:          var(--info);
   width: 100%;
 }
 
+@keyframes slideInLeft {
+  from { transform: translateX(-16px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(24px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
 .sec-tree {
   width: 300px;
   flex-shrink: 0;
   border-right: 1px solid var(--ui-04);
+  animation: slideInLeft 0.22s ease-out;
 
   &__table { width: 100%; }
 
@@ -68,6 +79,7 @@ $brand-blue:          var(--info);
   position: sticky;
   top: 0;
   overflow: hidden;
+  animation: slideInRight 0.25s ease-out;
 }
 
 // ─── Full page shell ─────────────────────────────────────────────
