@@ -1,0 +1,49 @@
+// ─── NDBX token re-assertions ────────────────────────────────────────────────
+// NxExpertModule overrides these at runtime — re-assert to keep them correct.
+:root {
+  --interactive-primary: #007ab3;      // restore after NxExpertModule override
+  --text-02: #ffffff;                  // restore — NxExpertModule changes this
+
+  // ─── Project-level tokens (define your own below) ────────────────────────
+  // These are not provided by NDBX — add as needed for your project.
+
+  // Text
+  --text-muted: #767676;               // secondary/hint text on white backgrounds
+
+  // Page layout
+  --page-content-top: 40px;           // gap between top chrome and page content
+
+  // Hover overlays
+  --hover-primary: rgba(0, 122, 179, 0.06);
+  --hover-secondary: rgba(0, 0, 0, 0.04);
+
+  // Status chip colors — customize per your domain
+  // --status-open-bg: #dce9f8;
+  // --status-open-color: #006192;
+  // --status-closed-bg: #e8e8e8;
+  // --status-closed-color: #767676;
+}
+
+// ─── Typography scale override ────────────────────────────────────────────────
+// NDBX default paragraph scale is large (20/18/16px).
+// Override for UI density. Floor is 14px (WCAG 2.1 AA minimum).
+:root {
+  --paragraph-01-font-size: 16px;
+  --paragraph-02-font-size: 14px;
+  --paragraph-03-font-size: 14px;
+  --paragraph-04-font-size: 14px;
+  --formfield-label-font-size: 14px;
+  --formfield-hint-font-size: 14px;
+}
+
+// ─── Radio label size ─────────────────────────────────────────────────────────
+// Requires labelSize="small" on every <nx-radio> to activate.
+:root {
+  --small-label-font-size: 14px;
+}
+
+// ─── Global formfield width ───────────────────────────────────────────────────
+// nx-formfield does not auto-fill parent — set width globally.
+nx-formfield {
+  width: 100%;
+}
