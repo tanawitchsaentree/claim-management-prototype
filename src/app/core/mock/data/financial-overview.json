@@ -12,40 +12,107 @@
       "currency": "EUR",
       "ibnr": 0,
       "rows": [
-        { "label": "Insured",    "gross": 100000, "grossNet": 100000, "net": 100000 },
-        { "label": "Reserve",    "gross": 100000, "grossNet": 100000, "net": 100000 },
-        { "label": "Payments",   "gross": 100000, "grossNet": 100000, "net": 100000 },
-        { "label": "Recoveries", "gross": 100000, "grossNet": 100000, "net": 100000 }
+        { "label": "Insured",    "gross": 993000, "grossNet": 900000, "net": 850000 },
+        { "label": "Reserve",    "gross": 113000, "grossNet": 100000, "net":  90000 },
+        { "label": "Payments",   "gross": 144000, "grossNet": 130000, "net": 120000 },
+        { "label": "Recoveries", "gross":      0, "grossNet":      0, "net":      0 }
       ]
     },
     "payments": [
       { "paymentId": "123456-1", "reinsuranceId": "R00001", "payee": "Tobias Grau",  "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-2", "reinsuranceId": "R00002", "payee": "Georg Stein",    "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Credit",  "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-3", "reinsuranceId": "R00003", "payee": "Dirk Haas",   "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-4", "reinsuranceId": "R00004", "payee": "Elke Dorn", "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-      { "paymentId": "123456-5", "reinsuranceId": "R00005", "payee": "Viktor Bann",   "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
+      { "paymentId": "123456-2", "reinsuranceId": "R00002", "payee": "Georg Stein",  "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Credit",  "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-3", "reinsuranceId": "R00003", "payee": "Dirk Haas",    "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-4", "reinsuranceId": "R00004", "payee": "Elke Dorn",    "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+      { "paymentId": "123456-5", "reinsuranceId": "R00005", "payee": "Viktor Bann",  "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Pending", "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
     ],
     "reserves": [
-      { "reserveId": "123478-1", "party": "R00016", "damagedItem": "Peter Para / M1",         "section": "Building 1",   "reserveType": "Indemnity", "reserveSubType": "Property Damage",       "status": "Approved", "reserveValue": 5000,  "currency": "EUR" },
-      { "reserveId": "123478-2", "party": "R00016", "damagedItem": "Peter Para / M1",         "section": "Building 1",   "reserveType": "Indemnity", "reserveSubType": "Additional Expenditure", "status": "Approved", "reserveValue": 5000,  "currency": "EUR" },
-      { "reserveId": "123478-3", "party": "R00016", "damagedItem": "Peter Para / n/a",        "section": "n/a",          "reserveType": "Expenses",  "reserveSubType": "Loss Adjustor fees",    "status": "Approved", "reserveValue": 5000,  "currency": "EUR" },
-      { "reserveId": "123478-4", "party": "R00016", "damagedItem": "Carla Clark / Liability", "section": "Appointments", "reserveType": "Indemnity", "reserveSubType": "Indemnity",             "status": "Pending",  "reserveValue": 10000, "currency": "EUR" },
-      { "reserveId": "123478-5", "party": "R00016", "damagedItem": "Peter Para / M1",         "section": "Building 1",   "reserveType": "Indemnity", "reserveSubType": "Property Damage",       "status": "Approved", "reserveValue": 10000, "currency": "EUR" }
+      {
+        "reserveId": "RES-001",
+        "party": "Section 1 | PD",
+        "damagedItem": "Building 1",
+        "section": "Section 1: - Property Damage",
+        "reserveType": "Indemnity",
+        "reserveSubType": "Property Damage",
+        "status": "Approved",
+        "reserveValue": 5000,
+        "currency": "EUR",
+        "history": [
+          { "date": "01-06-2024", "amount": 3000, "reason": "Initial reserve set", "user": "Nina Feld" },
+          { "date": "15-07-2024", "amount": 5000, "reason": "Revised after adjuster report", "user": "Lena Zorn" }
+        ]
+      },
+      {
+        "reserveId": "RES-002",
+        "party": "Section 1 | PD",
+        "damagedItem": "Building 1",
+        "section": "Section 1: - Property Damage",
+        "reserveType": "Indemnity",
+        "reserveSubType": "Additional Expenditure",
+        "status": "Approved",
+        "reserveValue": 5000,
+        "currency": "EUR",
+        "history": [
+          { "date": "01-06-2024", "amount": 5000, "reason": "Initial reserve set", "user": "Nina Feld" }
+        ]
+      },
+      {
+        "reserveId": "RES-003",
+        "party": "Section 1 | BI",
+        "damagedItem": "n/a",
+        "section": "Section 1: - Business Interruption",
+        "reserveType": "Expenses",
+        "reserveSubType": "Loss Adjustor fees",
+        "status": "Approved",
+        "reserveValue": 5000,
+        "currency": "EUR",
+        "history": [
+          { "date": "02-06-2024", "amount": 5000, "reason": "Initial reserve set", "user": "Dirk Haas" }
+        ]
+      },
+      {
+        "reserveId": "RES-004",
+        "party": "Section 2 | LD",
+        "damagedItem": "Vehicle 1",
+        "section": "Section 2: - Liability",
+        "reserveType": "Indemnity",
+        "reserveSubType": "Indemnity",
+        "status": "Pending",
+        "reserveValue": 10000,
+        "currency": "EUR",
+        "history": [
+          { "date": "10-06-2024", "amount": 8000,  "reason": "Initial reserve set", "user": "Georg Stein" },
+          { "date": "20-07-2024", "amount": 10000, "reason": "Updated after legal review", "user": "Petra Kohl" }
+        ]
+      },
+      {
+        "reserveId": "RES-005",
+        "party": "Section 1 | PD",
+        "damagedItem": "Building 1",
+        "section": "Section 1: - Property Damage",
+        "reserveType": "Indemnity",
+        "reserveSubType": "Property Damage",
+        "status": "Approved",
+        "reserveValue": 10000,
+        "currency": "EUR",
+        "history": [
+          { "date": "01-06-2024", "amount": 10000, "reason": "Initial reserve set", "user": "Nina Feld" }
+        ]
+      }
     ],
     "recoveries": [
-      { "recoveryId": "REC-001", "reinsuranceId": "R00001", "party": "Munich Re",       "section": "Building 1", "recoveryType": "Reinsurance",   "status": "Approved", "amount": 50000, "currency": "EUR", "recoveryDate": "15-01-2025" },
-      { "recoveryId": "REC-002", "reinsuranceId": "R00002", "party": "Swiss Re",        "section": "Building 1", "recoveryType": "Reinsurance",   "status": "Pending",  "amount": 25000, "currency": "EUR", "recoveryDate": "20-01-2025" },
-      { "recoveryId": "REC-003", "reinsuranceId": "R00003", "party": "Hannover Re",     "section": "Liability",  "recoveryType": "Subrogation",   "status": "Pending",  "amount": 10000, "currency": "EUR", "recoveryDate": "25-01-2025" }
+      { "recoveryId": "REC-001", "bookingId": "DED-001-1", "reinsuranceId": "R00001", "party": "Munich Re",   "section": "Section 1: - Property Damage",    "recoveryType": "Reinsurance", "status": "Approved", "amount": 50000, "currency": "EUR", "recoveryDate": "15-01-2025", "bookingDate": "15-01-2025" },
+      { "recoveryId": "REC-002", "bookingId": "DED-001-2", "reinsuranceId": "R00002", "party": "Swiss Re",    "section": "Section 1: - Property Damage",    "recoveryType": "Reinsurance", "status": "Pending",  "amount": 25000, "currency": "EUR", "recoveryDate": "20-01-2025", "bookingDate": "20-01-2025" },
+      { "recoveryId": "REC-003", "bookingId": "DED-001-3", "reinsuranceId": "R00003", "party": "Hannover Re", "section": "Section 2: - Business Interruption","recoveryType": "Deductible",  "status": "Pending",  "amount": 10000, "currency": "EUR", "recoveryDate": "25-01-2025", "bookingDate": "25-01-2025" }
     ],
     "transactions": [
-      { "transactionId": "T-001", "date": "30.01.2024", "description": "Payment: Cycle & Co — EURO/EUR × 1.10",  "indemnityPayment": 0,       "expensePayment": 29000, "totalPayment": 29000,   "indemnityRecovery": 0, "expenseRecovery": 0, "totalRecovery": 0, "recoveries": 0, "totalIncurred": 100000   },
-      { "transactionId": "T-002", "date": "14.12.2024", "description": "Reserve: Cycle & Co — EURO/EUR × 1.10", "indemnityPayment": 0,       "expensePayment": 20000, "totalPayment": 20000,   "indemnityRecovery": 0, "expenseRecovery": 0, "totalRecovery": 0, "recoveries": 0, "totalIncurred": 400000   },
-      { "transactionId": "T-003", "date": "14.12.2024", "description": "Reserve: Cycle & Co — EURO/EUR × 1.10", "indemnityPayment": 1000000, "expensePayment": 0,     "totalPayment": 1000000, "indemnityRecovery": 0, "expenseRecovery": 0, "totalRecovery": 0, "recoveries": 0, "totalIncurred": 10240000 }
+      { "transactionId": "T-001", "date": "30.01.2024", "description": "Payment: Building Repair — EUR/EUR × 1.00",  "indemnityPayment": 0,       "expensePayment": 29000, "totalPayment": 29000,   "indemnityRecovery": 0, "expenseRecovery": 0, "totalRecovery": 0, "recoveries": 0, "totalIncurred": 100000   },
+      { "transactionId": "T-002", "date": "14.12.2024", "description": "Reserve: Property Damage — EUR/EUR × 1.00", "indemnityPayment": 0,       "expensePayment": 20000, "totalPayment": 20000,   "indemnityRecovery": 0, "expenseRecovery": 0, "totalRecovery": 0, "recoveries": 0, "totalIncurred": 400000   },
+      { "transactionId": "T-003", "date": "14.12.2024", "description": "Reserve: Business Interruption — EUR/EUR × 1.00", "indemnityPayment": 1000000, "expensePayment": 0, "totalPayment": 1000000, "indemnityRecovery": 0, "expenseRecovery": 0, "totalRecovery": 0, "recoveries": 0, "totalIncurred": 10240000 }
     ],
     "sections": [
       {
         "sectionId": "S1",
-        "sectionName": "Section #1",
+        "sectionName": "Section 1: - Property Damage",
         "currency": "EUR",
         "exchangeRate": 1.0,
         "baseCurrency": "EUR",
@@ -56,24 +123,24 @@
         ],
         "payments": [
           { "paymentId": "123456-3", "reinsuranceId": "RI0017", "payee": "Finn Dahl",    "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
-          { "paymentId": "123456-2", "reinsuranceId": "RI0018", "payee": "Oskar Veld", "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
+          { "paymentId": "123456-2", "reinsuranceId": "RI0018", "payee": "Oskar Veld",   "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" },
           { "paymentId": "123456-1", "reinsuranceId": "RI0019", "payee": "Viktor Bann",  "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 30000, "currency": "EUR", "paymentDate": "24-12-2024" }
         ],
         "reserves": [
-          { "reserveId": "123678-1", "party": "Peter Pane | PD", "damagedItem": "Building 1", "section": "Building 1", "reserveType": "Indemnity", "reserveSubType": "Property Damage",        "status": "Approved", "reserveValue": 15000, "currency": "EUR" },
-          { "reserveId": "123678-2", "party": "Peter Pane | PD", "damagedItem": "Building 1", "section": "Building 1", "reserveType": "Indemnity", "reserveSubType": "Additional Expenditure",  "status": "Approved", "reserveValue": 3000,  "currency": "EUR" },
-          { "reserveId": "123678-3", "party": "Peter Pane | BI", "damagedItem": "n/a",        "section": "n/a",        "reserveType": "Indemnity", "reserveSubType": "Revenue/income",         "status": "Approved", "reserveValue": 20000, "currency": "EUR" },
-          { "reserveId": "123678-4", "party": "Peter Pane | BI", "damagedItem": "n/a",        "section": "n/a",        "reserveType": "Expenses",  "reserveSubType": "Loss Adjustor fees",     "status": "Pending",  "reserveValue": 5000,  "currency": "EUR" },
-          { "reserveId": "123678-5", "party": "Carlo Clerk | LD","damagedItem": "Apartment",  "section": "Liability",  "reserveType": "Indemnity", "reserveSubType": "Property Damage",        "status": "Pending",  "reserveValue": 10000, "currency": "EUR" }
+          { "reserveId": "123678-1", "party": "Section 1 | PD", "damagedItem": "Building 1", "section": "Section 1: - Property Damage",        "reserveType": "Indemnity", "reserveSubType": "Property Damage",       "status": "Approved", "reserveValue": 15000, "currency": "EUR", "history": [{ "date": "01-06-2024", "amount": 15000, "reason": "Initial reserve", "user": "Nina Feld" }] },
+          { "reserveId": "123678-2", "party": "Section 1 | PD", "damagedItem": "Building 1", "section": "Section 1: - Property Damage",        "reserveType": "Indemnity", "reserveSubType": "Additional Expenditure","status": "Approved", "reserveValue": 3000,  "currency": "EUR", "history": [{ "date": "01-06-2024", "amount": 3000,  "reason": "Initial reserve", "user": "Nina Feld" }] },
+          { "reserveId": "123678-3", "party": "Section 1 | BI", "damagedItem": "n/a",        "section": "Section 1: - Business Interruption", "reserveType": "Indemnity", "reserveSubType": "Revenue/income",        "status": "Approved", "reserveValue": 20000, "currency": "EUR", "history": [{ "date": "02-06-2024", "amount": 20000, "reason": "Initial reserve", "user": "Nina Feld" }] },
+          { "reserveId": "123678-4", "party": "Section 1 | BI", "damagedItem": "n/a",        "section": "Section 1: - Business Interruption", "reserveType": "Expenses",  "reserveSubType": "Loss Adjustor fees",    "status": "Pending",  "reserveValue": 5000,  "currency": "EUR", "history": [{ "date": "03-06-2024", "amount": 5000,  "reason": "Initial reserve", "user": "Dirk Haas" }] },
+          { "reserveId": "123678-5", "party": "Section 2 | LD", "damagedItem": "Vehicle 1",  "section": "Section 2: - Liability",            "reserveType": "Indemnity", "reserveSubType": "Property Damage",       "status": "Pending",  "reserveValue": 10000, "currency": "EUR", "history": [{ "date": "10-06-2024", "amount": 10000, "reason": "Initial reserve", "user": "Georg Stein" }] }
         ],
         "recoveries": [
-          { "recoveryId": "REC-S1-001", "reinsuranceId": "RI0017", "party": "Munich Re",   "section": "Building 1", "recoveryType": "Reinsurance", "status": "Approved", "amount": 30000, "currency": "EUR", "recoveryDate": "15-01-2025" },
-          { "recoveryId": "REC-S1-002", "reinsuranceId": "RI0018", "party": "Swiss Re",    "section": "Building 1", "recoveryType": "Reinsurance", "status": "Pending",  "amount": 15000, "currency": "EUR", "recoveryDate": "20-01-2025" }
+          { "recoveryId": "REC-S1-001", "bookingId": "DED-S1-1", "reinsuranceId": "RI0017", "party": "Munich Re", "section": "Section 1: - Property Damage", "recoveryType": "Reinsurance", "status": "Approved", "amount": 30000, "currency": "EUR", "recoveryDate": "15-01-2025", "bookingDate": "15-01-2025" },
+          { "recoveryId": "REC-S1-002", "bookingId": "DED-S1-2", "reinsuranceId": "RI0018", "party": "Swiss Re",  "section": "Section 1: - Property Damage", "recoveryType": "Deductible",  "status": "Pending",  "amount": 15000, "currency": "EUR", "recoveryDate": "20-01-2025", "bookingDate": "20-01-2025" }
         ]
       },
       {
         "sectionId": "S2",
-        "sectionName": "Section #2",
+        "sectionName": "Section 2: - Business Interruption",
         "currency": "USD",
         "exchangeRate": 1.10,
         "baseCurrency": "EUR",
@@ -83,15 +150,15 @@
           { "movementType": "Total",     "outstandingReserves": 55000, "completedPayments": 50000, "pendingPayments": 15000, "recoveries": 0, "incurred": 280000 }
         ],
         "payments": [
-          { "paymentId": "123456-6", "reinsuranceId": "RI0020", "payee": "Roland Kemp",   "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Pending", "amount": 10000, "currency": "USD", "paymentDate": "15-01-2025" },
-          { "paymentId": "123456-7", "reinsuranceId": "RI0021", "payee": "Lars Greve", "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 40000, "currency": "USD", "paymentDate": "15-01-2025" }
+          { "paymentId": "123456-6", "reinsuranceId": "RI0020", "payee": "Roland Kemp", "handler": "Lena Zorn", "sectionType": "Expenses",  "status": "Pending", "amount": 10000, "currency": "USD", "paymentDate": "15-01-2025" },
+          { "paymentId": "123456-7", "reinsuranceId": "RI0021", "payee": "Lars Greve",  "handler": "Lena Zorn", "sectionType": "Indemnity", "status": "Done",    "amount": 40000, "currency": "USD", "paymentDate": "15-01-2025" }
         ],
         "reserves": [
-          { "reserveId": "123678-6", "party": "Roland Kemp | LI", "damagedItem": "Vehicle 1", "section": "Liability", "reserveType": "Indemnity", "reserveSubType": "Indemnity", "status": "Approved", "reserveValue": 50000, "currency": "USD" },
-          { "reserveId": "123678-7", "party": "Roland Kemp | LI", "damagedItem": "Vehicle 1", "section": "Liability", "reserveType": "Expenses",  "reserveSubType": "Expenses",  "status": "Pending",  "reserveValue": 5000,  "currency": "USD" }
+          { "reserveId": "123678-6", "party": "Section 2 | LI", "damagedItem": "Vehicle 1", "section": "Section 2: - Business Interruption", "reserveType": "Indemnity", "reserveSubType": "Indemnity", "status": "Approved", "reserveValue": 50000, "currency": "USD", "history": [{ "date": "01-07-2024", "amount": 50000, "reason": "Initial reserve", "user": "Nina Feld" }] },
+          { "reserveId": "123678-7", "party": "Section 2 | LI", "damagedItem": "Vehicle 1", "section": "Section 2: - Business Interruption", "reserveType": "Expenses",  "reserveSubType": "Expenses",  "status": "Pending",  "reserveValue": 5000,  "currency": "USD", "history": [{ "date": "01-07-2024", "amount": 5000,  "reason": "Initial reserve", "user": "Dirk Haas"  }] }
         ],
         "recoveries": [
-          { "recoveryId": "REC-S2-001", "reinsuranceId": "RI0020", "party": "Hannover Re", "section": "Liability", "recoveryType": "Subrogation", "status": "Pending", "amount": 5000, "currency": "USD", "recoveryDate": "25-01-2025" }
+          { "recoveryId": "REC-S2-001", "bookingId": "DED-S2-1", "reinsuranceId": "RI0020", "party": "Hannover Re", "section": "Section 2: - Business Interruption", "recoveryType": "Subrogation", "status": "Pending", "amount": 5000, "currency": "USD", "recoveryDate": "25-01-2025", "bookingDate": "25-01-2025" }
         ]
       }
     ]

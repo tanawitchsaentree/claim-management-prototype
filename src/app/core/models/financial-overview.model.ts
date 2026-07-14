@@ -49,6 +49,7 @@ export interface FinancialReserve {
 
 export interface FinancialRecovery {
   recoveryId:    string;
+  bookingId:     string;
   reinsuranceId: string;
   party:         string;
   section:       string;
@@ -57,6 +58,18 @@ export interface FinancialRecovery {
   amount:        number;
   currency:      string;
   recoveryDate:  string;
+  bookingDate:   string;
+}
+
+export interface ReserveHistoryEntry {
+  date:   string;
+  amount: number;
+  reason: string;
+  user:   string;
+}
+
+export interface FinancialReserveWithHistory extends FinancialReserve {
+  history?: ReserveHistoryEntry[];
 }
 
 export interface FinancialTransaction {

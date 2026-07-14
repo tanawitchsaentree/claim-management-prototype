@@ -93,6 +93,34 @@ $sidebar-collapsed-width: 56px;
   transition: opacity 0.15s ease, width 0.25s ease;
 }
 
+// ─── Nav group (collapsible) ──────────────────────────────────────────────────
+
+.nav-group__header {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-group__chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+.nav-group__children {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item--child {
+  padding-left: 44px;
+  font-weight: 400;
+  font-size: var(--paragraph-03-font-size);
+}
+
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
 .sidebar-footer {
