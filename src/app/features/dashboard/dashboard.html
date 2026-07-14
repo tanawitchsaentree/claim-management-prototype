@@ -111,7 +111,9 @@
               <div class="widget-icon-wrap"><nx-icon name="product-board-paper-note" class="widget-icon"></nx-icon></div>
               <span class="widget-title">Claims portfolio</span>
             </div>
-            <a routerLink="/claims" class="widget-link">View all claims</a>
+            @if (portfolioTab === 'claims') {
+              <a routerLink="/claims" class="widget-link">View all claims</a>
+            }
           </div>
 
           <!-- KCM scope selector -->
