@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NxModalModule, NX_MODAL_DATA, NxModalRef } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -25,6 +26,7 @@ const CATEGORY_OPTIONS: Note['section'][] = ['general', 'recovery', 'litigation'
   selector: 'app-add-comment-modal',
   standalone: true,
   imports: [
+    TitleCasePipe,
     ReactiveFormsModule,
     NxModalModule,
     NxButtonModule,
