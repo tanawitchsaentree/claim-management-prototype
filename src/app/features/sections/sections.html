@@ -107,14 +107,6 @@
                   } @else {
                     <span class="coverage-empty">–</span>
                   }
-                  @if (section.status !== 'Closed') {
-                    <button nxIconButton="tertiary small" type="button"
-                            class="coverage-edit-btn"
-                            aria-label="Override coverage review"
-                            (click)="onOverrideCoverageReview(section, entity)">
-                      <nx-icon name="edit" size="s"></nx-icon>
-                    </button>
-                  }
                 </div>
               </td>
               <td nxTableCell class="col-actions">
