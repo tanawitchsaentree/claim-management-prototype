@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, computed, inject, signal } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, computed, inject, signal, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -47,15 +47,18 @@ const EN_WEEKDAY: Record<number, string> = {
 })
 export class ClaimNotesPanelComponent implements OnChanges {
   @Input({ required: true }) claimId!: string;
+  @Input() highlightNoteId: string | null = null;
 
   private readonly notesSvc = inject(MockNotesService);
   private readonly router   = inject(Router);
+  private readonly elRef    = inject(ElementRef);
 
-  readonly notes        = signal<Note[]>([]);
-  readonly loading      = signal(false);
-  readonly filter       = signal<FilterValue>('all');
-  readonly visibleCount = signal(PAGE_STEP);
-  readonly showAddForm  = signal(false);
+  readonly notes           = signal<Note[]>([]);
+  readonly loading         = signal(false);
+  readonly filter          = signal<FilterValue>('all');
+  readonly visibleCount    = signal(PAGE_STEP);
+  readonly showAddForm     = signal(false);
+  readonly highlightedId   = signal<string | null>(null);
 
   readonly addForm = new FormGroup({
     title:    new FormControl(''),
@@ -118,6 +121,9 @@ export class ClaimNotesPanelComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['claimId'] && this.claimId) this.load();
+    if (changes['highlightNoteId'] && this.highlightNoteId) {
+      this.scrollToNote(this.highlightNoteId);
+    }
   }
 
   private async load(): Promise<void> {
@@ -125,6 +131,26 @@ export class ClaimNotesPanelComponent implements OnChanges {
     const data = await firstValueFrom(this.notesSvc.getByClaim(this.claimId));
     this.notes.set(data);
     this.loading.set(false);
+    if (this.highlightNoteId) {
+      this.scrollToNote(this.highlightNoteId);
+    }
+  }
+
+  private scrollToNote(noteId: string): void {
+    // ensure visibleCount shows enough notes to include this one
+    const allNotes = this.activityAll();
+    const idx = allNotes.findIndex(n => n.id === noteId);
+    if (idx >= 0 && idx >= this.visibleCount()) {
+      this.visibleCount.set(idx + 1);
+    }
+
+    this.highlightedId.set(noteId);
+    setTimeout(() => {
+      const el = this.elRef.nativeElement.querySelector(`[data-note-id="${noteId}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // clear highlight after animation finishes
+      setTimeout(() => this.highlightedId.set(null), 2000);
+    }, 100);
   }
 
   setFilter(value: FilterValue): void {

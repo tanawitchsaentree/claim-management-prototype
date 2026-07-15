@@ -131,8 +131,16 @@ export class Sections {
     ).length;
   }
 
-  openComments(): void {
-    this.stripSvc.open('comments');
+  openComments(entityName?: string): void {
+    if (entityName) {
+      const note = this.allNotes().find(n =>
+        n.body.toLowerCase().includes(entityName.toLowerCase()) ||
+        (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
+      );
+      this.stripSvc.open('comments', note?.id);
+    } else {
+      this.stripSvc.open('comments');
+    }
   }
 
   coverageClass(review: CoverageReview): string {

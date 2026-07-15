@@ -174,7 +174,7 @@
                 @let count = noteCountFor(entity.name);
                 @if (count > 0) {
                   <button class="sec-comment-badge" type="button"
-                    (click)="openComments()"
+                    (click)="openComments(entity.name)"
                     [nxTooltip]="count + ' comment' + (count > 1 ? 's' : '')">
                     {{ count }}
                   </button>

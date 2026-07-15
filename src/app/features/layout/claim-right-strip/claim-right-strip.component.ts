@@ -45,6 +45,7 @@ export class ClaimRightStripComponent {
 
   activeKey: string | null = null;
   collapsed = false;
+  pendingHighlightId: string | null = null;
 
   readonly items: StripItem[] = [
     { icon: 'info-circle-o',   label: 'Claim info',    key: 'info' },
@@ -65,7 +66,10 @@ export class ClaimRightStripComponent {
     const requested = this.stripSvc.requestedPanel();
     if (requested) {
       // consume and activate on next microtask to avoid signal write-during-read
-      Promise.resolve().then(() => { this.activate(this.stripSvc.consume()!); });
+      Promise.resolve().then(() => {
+        this.pendingHighlightId = this.stripSvc.consumeHighlight();
+        this.activate(this.stripSvc.consume()!);
+      });
     }
     const m = this.urlSignal().match(/^\/claims\/([^/]+)/);
     return m && m[1] !== 'new' ? m[1] : null;

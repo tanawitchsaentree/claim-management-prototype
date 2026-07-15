@@ -182,13 +182,27 @@
 // ─── Note card ──────────────────────────────────────────────────────────────
 // Layout: [avatar 32px] [main fills] [menu-btn anchored top-right].
 // Menu position is constant regardless of chip presence or wrapping.
+@keyframes note-flash {
+  0%   { background: var(--info-light, #e3f0fb); }
+  60%  { background: var(--info-light, #e3f0fb); }
+  100% { background: transparent; }
+}
+
 .cnp-note {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding-bottom: 16px;
+  border-radius: 6px;
+  transition: background 0.2s;
 
   &:last-child { padding-bottom: 0; }
+
+  &--highlighted {
+    animation: note-flash 1.8s ease-out forwards;
+    padding: 8px;
+    margin: -8px;
+  }
 }
 
 // Force 32px avatar — NDBX nxAvatar size="small" sets width + height

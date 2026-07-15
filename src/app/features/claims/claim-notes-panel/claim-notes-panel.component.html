@@ -122,7 +122,7 @@
 
 <!-- Note card template (single source) -->
 <ng-template #noteCard let-note="note" let-showPinMarker="showPinMarker">
-  <article class="cnp-note">
+  <article class="cnp-note" [class.cnp-note--highlighted]="highlightedId() === note.id" [attr.data-note-id]="note.id">
     <span nxAvatar size="small" [accentColor]="note.author.accent" class="cnp-note__avatar">
       {{ note.author.initials }}
     </span>
