@@ -1,5 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -51,6 +52,17 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/componen
 
 @Component({
   selector: 'app-sections',
+  animations: [
+    trigger('rowExpand', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-4px)' }),
+        animate('160ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('120ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' })),
+      ]),
+    ]),
+  ],
   imports: [
     CommonModule,
     NxButtonModule,

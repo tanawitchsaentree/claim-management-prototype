@@ -67,8 +67,9 @@ export class ClaimRightStripComponent {
     if (requested) {
       // consume and activate on next microtask to avoid signal write-during-read
       Promise.resolve().then(() => {
+        const key = this.stripSvc.consume()!;
         this.pendingHighlightId = this.stripSvc.consumeHighlight();
-        this.activate(this.stripSvc.consume()!);
+        this.activate(key, true);
       });
     }
     const m = this.urlSignal().match(/^\/claims\/([^/]+)/);
@@ -81,8 +82,8 @@ export class ClaimRightStripComponent {
     return this.activeKey !== null;
   }
 
-  activate(key: string): void {
-    this.activeKey = this.activeKey === key ? null : key;
+  activate(key: string, forceOpen = false): void {
+    this.activeKey = (!forceOpen && this.activeKey === key) ? null : key;
     // keep refSvc in sync when references tab is activated
     const id = this.currentClaimId();
     if (this.activeKey === 'references' && id) {

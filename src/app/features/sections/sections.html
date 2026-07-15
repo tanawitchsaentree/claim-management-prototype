@@ -135,7 +135,7 @@
         <!-- Entity rows (only when expanded) -->
         @if (section.expanded) {
           @for (entity of section.entities; track entity.id) {
-            <tr nxTableRow class="entity-row">
+            <tr nxTableRow class="entity-row" @rowExpand>
               <td nxTableCell class="col-toggle">
                 @if (entity.expandable) {
                   <button nxIconButton="tertiary" type="button" aria-label="expand entity">
