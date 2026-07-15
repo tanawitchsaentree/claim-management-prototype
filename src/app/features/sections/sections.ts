@@ -247,6 +247,8 @@ export class Sections {
     const result = await firstValueFrom(ref.afterClosed()) as CoverageReviewModalResult | undefined;
     if (!result) return;
 
+    const claimId = this.route.snapshot.params['id'];
+
     await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
     this.sections.update(list =>
       list.map(s => s.id === section.id
@@ -254,6 +256,16 @@ export class Sections {
         : s
       )
     );
+
+    const updatedNotes = await firstValueFrom(
+      this.notesSvc.addNote(claimId, {
+        title:   `Coverage review override — ${entity.name}`,
+        section: 'general',
+        body:    `Coverage review changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`,
+      })
+    );
+    this.allNotes.set(updatedNotes);
+
     this.toast.success(`Coverage review updated for "${entity.name}"`);
   }
 
