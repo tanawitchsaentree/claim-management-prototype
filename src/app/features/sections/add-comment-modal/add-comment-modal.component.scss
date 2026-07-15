@@ -1,35 +1,15 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  overflow: hidden;
-}
+@use '../../../shared/styles/modal-layout' as modal;
 
-.acm-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
-}
+:host { @include modal.shell; }
 
-.acm-title   { margin: 0 0 4px; font-size: 18px; font-weight: 600; color: var(--text-01); }
-.acm-subtitle { margin: 0; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+.acm-header { @include modal.header; }
+.acm-title  { @include modal.title; }
+.acm-subtitle { @include modal.subtitle; }
 
 .acm-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
+  @include modal.body;
   gap: 0;
-
   nx-formfield { width: 100%; }
 }
 
-.acm-footer {
-  padding: 16px 24px 20px;
-  border-top: 1px solid var(--ui-04);
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  flex-shrink: 0;
-}
+.acm-footer { @include modal.footer; }

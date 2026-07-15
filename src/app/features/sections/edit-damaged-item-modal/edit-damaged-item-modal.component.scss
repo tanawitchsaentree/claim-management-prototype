@@ -1,19 +1,15 @@
-.edm-header {
-  padding: 24px 24px 0;
-  .edm-title    { margin: 0; font-size: 20px; font-weight: 600; color: var(--text-01); }
-  .edm-subtitle { margin: 4px 0 0; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
-}
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.edm-header   { @include modal.header; }
+.edm-title    { @include modal.title; }
+.edm-subtitle { @include modal.subtitle; }
 
 .edm-body {
-  padding: 16px 24px 0;
-  display: flex;
-  flex-direction: column;
+  @include modal.body;
   gap: 0;
+  nx-formfield { width: 100%; }
 }
 
-.edm-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 16px 24px 24px;
-}
+.edm-footer { @include modal.footer; }

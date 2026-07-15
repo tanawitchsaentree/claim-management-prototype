@@ -1,19 +1,15 @@
-.ipm-header {
-  padding: 24px 24px 0;
-  .ipm-title    { margin: 0; font-size: 20px; font-weight: 600; color: var(--text-01); }
-  .ipm-subtitle { margin: 4px 0 0; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
-}
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.ipm-header   { @include modal.header; }
+.ipm-title    { @include modal.title; }
+.ipm-subtitle { @include modal.subtitle; }
 
 .ipm-body {
-  padding: 16px 24px 0;
-  display: flex;
-  flex-direction: column;
+  @include modal.body;
   gap: 0;
+  nx-formfield { width: 100%; }
 }
 
-.ipm-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 16px 24px 24px;
-}
+.ipm-footer { @include modal.footer; }

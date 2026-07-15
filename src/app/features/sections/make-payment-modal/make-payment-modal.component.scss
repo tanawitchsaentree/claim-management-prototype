@@ -1,14 +1,15 @@
-.mpm-header {
-  padding: 24px 24px 0;
-  .mpm-title    { margin: 0; font-size: 20px; font-weight: 600; color: var(--text-01); }
-  .mpm-subtitle { margin: 4px 0 0; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
-}
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.mpm-header   { @include modal.header; }
+.mpm-title    { @include modal.title; }
+.mpm-subtitle { @include modal.subtitle; }
 
 .mpm-body {
-  padding: 16px 24px 0;
-  display: flex;
-  flex-direction: column;
+  @include modal.body;
   gap: 0;
+  nx-formfield { width: 100%; }
 }
 
 .mpm-row {
@@ -18,9 +19,4 @@
   .mpm-currency { width: 100px; flex-shrink: 0; }
 }
 
-.mpm-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 16px 24px 24px;
-}
+.mpm-footer { @include modal.footer; }
