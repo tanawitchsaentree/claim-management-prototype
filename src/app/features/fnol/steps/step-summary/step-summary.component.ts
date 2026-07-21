@@ -7,6 +7,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
+import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -68,6 +69,7 @@ const CREATOR: AccessListEntry = {
     NxIconModule,
     NxMessageModule,
     NxSwitcherModule,
+    NxRadioModule,
     NxDropdownModule,
     NxFormfieldModule,
     NxInputModule,
@@ -114,6 +116,8 @@ export class StepSummaryComponent implements OnInit {
   readonly userSearchResults = signal<UserDirectoryEntry[]>([]);
 
   get accessRestricted(): FormControl { return this.restrictionForm.get('isRestricted') as FormControl; }
+
+  readonly recoveryPotential = new FormControl<'yes' | 'no' | null>(null);
 
   get policyNumber(): string { return this.fnolState.selectedPolicy?.policyNumber ?? ''; }
 
@@ -185,6 +189,7 @@ export class StepSummaryComponent implements OnInit {
       restrictedAt:  this.isRestricted ? new Date().toISOString().split('T')[0] : undefined,
       accessList:    this.isRestricted ? this.accessList() : [],
     };
+    this.fnolState.recoveryPotential = this.recoveryPotential.value ?? null;
 
     const skeletonId = this.fnolState.skeletonClaimId;
     const policyNumber = this.fnolState.selectedPolicy?.policyNumber;

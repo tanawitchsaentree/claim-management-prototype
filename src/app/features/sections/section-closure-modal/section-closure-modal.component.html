@@ -116,7 +116,7 @@
     </form>
 
     @if (saveError()) {
-      <nx-message type="error" class="scm-save-error">{{ saveError() }}</nx-message>
+      <nx-message context="error" class="scm-save-error">{{ saveError() }}</nx-message>
     }
   }
 

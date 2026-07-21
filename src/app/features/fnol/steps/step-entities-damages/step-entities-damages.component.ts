@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
@@ -13,8 +13,6 @@ import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
-import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
@@ -62,8 +60,6 @@ interface EntitiesDamagesVM {
     NxMessageModule,
     NxFormfieldModule,
     NxInputModule,
-    NxDropdownModule,
-    NxSwitcherModule,
     NxContextMenuModule,
     NxTooltipModule,
     NxModalModule,
@@ -80,8 +76,7 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   private readonly router      = inject(Router);
   private readonly dialog      = inject(NxDialogService);
 
-  policyNumber     = '';
-  showSelectedOnly = false;
+  policyNumber = '';
 
   get hasLossLocation(): boolean {
     return (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
@@ -93,9 +88,6 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
 
   readonly entityTypes: EntityType[] = ['building', 'vehicle', 'marine', 'employee', 'financial', 'other'];
   readonly entityTypeLabels = ENTITY_TYPE_LABELS;
-
-  readonly filterEntityCtrl = new FormControl('');
-  readonly filterStatusCtrl = new FormControl<string | null>(null);
 
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
   vm$!: Observable<EntitiesDamagesVM>;
@@ -148,23 +140,7 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   // ── Filter ─────────────────────────────────────────────────────────────────
 
   filteredEntities(group: DamageGroup): EntityRow[] {
-    let entities = group.entities;
-    const nameFilter = this.filterEntityCtrl.value?.toLowerCase().trim();
-    if (nameFilter) entities = entities.filter(e => e.name.toLowerCase().includes(nameFilter));
-    const statusFilter = this.filterStatusCtrl.value;
-    if (statusFilter) entities = entities.filter(e => e.status === statusFilter);
-    if (this.showSelectedOnly) {
-      entities = entities.filter(e =>
-        e.subItems?.length ? e.subItems.some(s => s.selected) : e.selected,
-      );
-    }
-    return entities;
-  }
-
-  resetFilter(): void {
-    this.filterEntityCtrl.setValue('');
-    this.filterStatusCtrl.setValue(null);
-    this.showSelectedOnly = false;
+    return group.entities;
   }
 
   toggleSection(section: PromiseSection): void { section.expanded = !section.expanded; }

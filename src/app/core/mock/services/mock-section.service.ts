@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { ClaimSection, SectionClosureReason, SectionEntity } from '../../models/section.model';
+import { ClaimSection, InstructionStatus, SectionClosureReason, SectionReopenReason, SectionEntity } from '../../models/section.model';
 import { ClaimActivity } from '../../models/claim-overview.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
@@ -72,6 +72,53 @@ export class MockSectionService extends MockBaseService {
     ) as unknown as Observable<ClaimSection>;
   }
 
+  reopenSection(
+    sectionId: string,
+    reopenedBy: { userId: string; name: string },
+    reopeningReason: SectionReopenReason,
+  ): Observable<ClaimSection> {
+    for (const [, sections] of this.cache) {
+      const target = sections.find(s => s.id === sectionId);
+      if (target) {
+        target.status          = 'Open';
+        target.reopenedDate    = new Date().toISOString().split('T')[0];
+        target.reopenedBy      = reopenedBy;
+        target.reopeningReason = reopeningReason;
+        this.stateSvc.patchSection(sectionId, {
+          status:          target.status,
+          reopenedDate:    target.reopenedDate,
+          reopenedBy:      target.reopenedBy,
+          reopeningReason: target.reopeningReason,
+        });
+        const activity: ClaimActivity = {
+          id:         `act-sec-reopen-${Date.now()}`,
+          claimId:    target.claimId,
+          user:       reopenedBy.name,
+          timestamp:  new Date().toISOString(),
+          objectType: 'Section',
+          attribute:  'Status',
+          valueOld:   'Closed',
+          valueNew:   'Open',
+        };
+        this.stateSvc.patchActivities(items => [activity, ...items]);
+        return this.respond({ ...target });
+      }
+    }
+    return this.respond({} as ClaimSection);
+  }
+
+  patchSection(sectionId: string, patch: Partial<ClaimSection>): Observable<ClaimSection> {
+    for (const [, sections] of this.cache) {
+      const idx = sections.findIndex(s => s.id === sectionId);
+      if (idx === -1) continue;
+      const updated = { ...sections[idx], ...patch };
+      sections[idx] = updated;
+      this.stateSvc.patchSection(sectionId, patch);
+      return this.respond({ ...updated });
+    }
+    return this.respond({} as ClaimSection);
+  }
+
   patchEntity(sectionId: string, entityId: string, patch: Partial<SectionEntity>): Observable<SectionEntity> {
     for (const [, sections] of this.cache) {
       const section = sections.find(s => s.id === sectionId);
@@ -93,6 +140,26 @@ export class MockSectionService extends MockBaseService {
       };
       this.stateSvc.patchActivities(items => [activity, ...items]);
       return this.respond({ ...updated });
+    }
+    return this.respond({} as SectionEntity);
+  }
+
+  addEntity(
+    sectionId: string,
+    entity: { name: string; damage: string; instructionStatus: InstructionStatus },
+  ): Observable<SectionEntity> {
+    for (const [, sections] of this.cache) {
+      const section = sections.find(s => s.id === sectionId);
+      if (!section) continue;
+      const newEntity: SectionEntity = {
+        id:               `SE-${Date.now()}`,
+        name:             entity.name,
+        damage:           entity.damage,
+        instructionStatus: entity.instructionStatus,
+        expandable:       false,
+      };
+      section.entities = [...section.entities, newEntity];
+      return this.respond({ ...newEntity });
     }
     return this.respond({} as SectionEntity);
   }

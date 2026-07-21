@@ -1,0 +1,71 @@
+<div class="sdp-header">
+  <div class="sdp-header__left">
+    @if (editingName()) {
+      <nx-formfield class="sdp-name-field">
+        <input nxInput [value]="nameDraft()" (input)="nameDraft.set($any($event.target).value)"
+               (keydown.enter)="saveName()" (keydown.escape)="cancelEditName()" />
+      </nx-formfield>
+      <div class="sdp-name-actions">
+        <button nxIconButton="tertiary small" type="button" (click)="saveName()" aria-label="Save name">
+          <nx-icon name="check"></nx-icon>
+        </button>
+        <button nxIconButton="tertiary small" type="button" (click)="cancelEditName()" aria-label="Cancel">
+          <nx-icon name="close"></nx-icon>
+        </button>
+      </div>
+    } @else {
+      <h2 class="sdp-title">{{ section.name }}</h2>
+      <button nxIconButton="tertiary small" type="button" (click)="startEditName()" aria-label="Edit section name">
+        <nx-icon name="pencil" size="s"></nx-icon>
+      </button>
+    }
+  </div>
+  <button nxIconButton="tertiary small" type="button" (click)="closed.emit()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="sdp-body">
+  <div class="sdp-card">
+    <p class="sdp-card__label">Status</p>
+    <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
+  </div>
+
+  <div class="sdp-card">
+    <h3 class="sdp-card__title">Section details</h3>
+    <div class="sdp-fields">
+      <div class="sdp-field">
+        <span class="sdp-field__label">Entities</span>
+        <span class="sdp-field__value">{{ section.entities.length }}</span>
+      </div>
+      @if (section.closureDate) {
+        <div class="sdp-field">
+          <span class="sdp-field__label">Closure date</span>
+          <span class="sdp-field__value">{{ section.closureDate }}</span>
+        </div>
+        <div class="sdp-field">
+          <span class="sdp-field__label">Closed by</span>
+          <span class="sdp-field__value">{{ section.closedBy?.name ?? '–' }}</span>
+        </div>
+        <div class="sdp-field">
+          <span class="sdp-field__label">Closure reason</span>
+          <span class="sdp-field__value">{{ section.closureReason ?? '–' }}</span>
+        </div>
+      }
+      @if (section.reopenedDate) {
+        <div class="sdp-field">
+          <span class="sdp-field__label">Reopened date</span>
+          <span class="sdp-field__value">{{ section.reopenedDate }}</span>
+        </div>
+        <div class="sdp-field">
+          <span class="sdp-field__label">Reopened by</span>
+          <span class="sdp-field__value">{{ section.reopenedBy?.name ?? '–' }}</span>
+        </div>
+        <div class="sdp-field">
+          <span class="sdp-field__label">Reopening reason</span>
+          <span class="sdp-field__value">{{ section.reopeningReason ?? '–' }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

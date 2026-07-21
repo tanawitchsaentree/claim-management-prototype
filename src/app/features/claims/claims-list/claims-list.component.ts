@@ -59,7 +59,7 @@ export class ClaimsListComponent {
   ];
 
   readonly statuses: ClaimStatus[] = [
-    'Open', 'In progress', 'Priced', 'Quoted', 'Bound', 'Declined', 'Closed', 'Reopened',
+    'Open', 'In progress', 'Priced', 'Quoted', 'Bound', 'Declined', 'Closed',
   ];
 
   readonly linesOfBusiness: LineOfBusiness[] = [

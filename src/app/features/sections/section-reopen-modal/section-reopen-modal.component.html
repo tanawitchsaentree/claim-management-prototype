@@ -1,0 +1,37 @@
+<div class="srm-header">
+  <h2 class="srm-title">Reopen section</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="srm-body">
+  <p class="srm-intro">
+    Reopen <strong>{{ section.name }}</strong>. Select a mandatory reason for the audit trail.
+  </p>
+
+  <form [formGroup]="form" class="srm-form">
+    <nx-formfield label="Reopening reason">
+      <nx-dropdown formControlName="reason" placeholder="Select reason">
+        @for (r of reopenReasons; track r) {
+          <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      <nx-error nxFormfieldError>Reason is required.</nx-error>
+    </nx-formfield>
+  </form>
+
+  @if (saveError) {
+    <nx-message context="error">{{ saveError }}</nx-message>
+  }
+</div>
+
+<div class="srm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="form.invalid || saving"
+          (click)="onReopen()">
+    @if (saving) { <nx-spinner size="small"></nx-spinner> }
+    @else        { Reopen }
+  </button>
+</div>

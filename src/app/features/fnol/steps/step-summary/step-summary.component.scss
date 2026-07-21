@@ -278,6 +278,25 @@
   }
 }
 
+// ── Recovery Potential ────────────────────────────────────────────────────────
+
+.ss-config-row--top { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--ui-04); }
+
+.ss-recovery-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+  &__text  { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); }
+  &__hint  { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+}
+
+.ss-recovery-radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
 // ── Misc ──────────────────────────────────────────────────────────────────────
 
 .submit-banner { margin-bottom: 16px; }

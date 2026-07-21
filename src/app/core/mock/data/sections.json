@@ -110,5 +110,45 @@
     "entities": [
       { "id": "SE-010", "name": "Final Settlement", "damage": "Material damage", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
     ]
+  },
+  {
+    "id": "SEC-024-A",
+    "claimId": "CLM-2024-024",
+    "name": "Cargo — Hull",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "reopenedDate": "2025-04-15",
+    "reopenedBy": { "userId": "usr-002", "name": "Nina Feld" },
+    "reopeningReason": "New information received",
+    "entities": [
+      { "id": "SE-024-1", "name": "Cargo Container A", "damage": "Physical damage", "instructionStatus": "In progress", "expandable": false, "coverageReview": "Standard Review" }
+    ]
+  },
+  {
+    "id": "SEC-024-B",
+    "claimId": "CLM-2024-024",
+    "name": "Cargo — Liability",
+    "status": "Closed",
+    "expanded": false,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "closureDate": "2024-09-01",
+    "closedBy": { "userId": "usr-003", "name": "Werner Baum" },
+    "closureReason": "Section Finalised",
+    "entities": [
+      { "id": "SE-024-2", "name": "Third-party Liability", "damage": "Liability", "instructionStatus": "Completed", "expandable": false, "coverageReview": "Standard Review" }
+    ]
   }
 ]

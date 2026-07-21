@@ -39,7 +39,7 @@
   @if (isPanelOpen()) {
     <div class="crs-panel-slot" [class.crs-panel-slot--ref]="activeKey === 'references'" @panelSlide>
       @if (activeKey === 'comments' && currentClaimId(); as id) {
-        <app-claim-notes-panel [claimId]="id" [highlightNoteId]="pendingHighlightId"></app-claim-notes-panel>
+        <app-claim-notes-panel [claimId]="id" [highlightNoteId]="pendingHighlightId" [quickAddEntity]="pendingQuickAddEntity"></app-claim-notes-panel>
       }
       @if (activeKey === 'references') {
         <app-claim-reference-panel></app-claim-reference-panel>

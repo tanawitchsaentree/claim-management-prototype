@@ -774,7 +774,7 @@
     "lossAmount": 95000,
     "currency": "EUR",
     "description": "Cargo damage during North Sea transit. Claim initially closed after settlement; new evidence of underpayment prompted reopening.",
-    "status": "Reopened",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Marine",
     "location": {

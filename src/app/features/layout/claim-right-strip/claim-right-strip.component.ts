@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -46,6 +46,7 @@ export class ClaimRightStripComponent {
   activeKey: string | null = null;
   collapsed = false;
   pendingHighlightId: string | null = null;
+  pendingQuickAddEntity: string | null = null;
 
   readonly items: StripItem[] = [
     { icon: 'info-circle-o',   label: 'Claim info',    key: 'info' },
@@ -63,20 +64,24 @@ export class ClaimRightStripComponent {
   private readonly urlSignal = toSignal(this.url$, { initialValue: this.router.url });
 
   readonly currentClaimId = computed<string | null>(() => {
-    const requested = this.stripSvc.requestedPanel();
-    if (requested) {
-      // consume and activate on next microtask to avoid signal write-during-read
-      Promise.resolve().then(() => {
-        const key = this.stripSvc.consume()!;
-        this.pendingHighlightId = this.stripSvc.consumeHighlight();
-        this.activate(key, true);
-      });
-    }
     const m = this.urlSignal().match(/^\/claims\/([^/]+)/);
     return m && m[1] !== 'new' ? m[1] : null;
   });
 
   readonly refTabCount = computed(() => this.refSvc.refTabCount());
+
+  constructor() {
+    // Runs whenever another component requests a panel via RightStripService,
+    // regardless of whether anything is currently reading currentClaimId().
+    effect(() => {
+      const requested = this.stripSvc.requestedPanel();
+      if (!requested) return;
+      const key = this.stripSvc.consume()!;
+      this.pendingHighlightId = this.stripSvc.consumeHighlight();
+      this.pendingQuickAddEntity = this.stripSvc.consumeQuickAdd();
+      this.activate(key, true);
+    });
+  }
 
   isPanelOpen(): boolean {
     return this.activeKey !== null;

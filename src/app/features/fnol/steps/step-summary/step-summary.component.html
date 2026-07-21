@@ -203,6 +203,18 @@
 
         </div>
       }
+
+      <!-- Recovery Potential -->
+      <div class="ss-config-row ss-config-row--top">
+        <div class="ss-recovery-label">
+          <span class="ss-recovery-label__text">Recovery potential</span>
+          <span class="ss-recovery-label__hint">Optional — can be updated after claim creation</span>
+        </div>
+        <nx-radio-group [formControl]="recoveryPotential" class="ss-recovery-radio-group">
+          <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+          <nx-radio value="no"  labelSize="small">No</nx-radio>
+        </nx-radio-group>
+      </div>
     </section>
 
     <!-- Card 4: Reserves narrative (conditional) -->

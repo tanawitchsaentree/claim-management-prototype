@@ -1,43 +1,96 @@
 <div class="crm-header">
-  <h2 class="crm-title">Reopen claim</h2>
+  <h2 class="crm-title">{{ stepTitle() }}</h2>
   <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
 </div>
 
 <div class="crm-body">
-  <p class="crm-intro">
-    Reopen <strong>{{ claim.claimId }}</strong>. Pick a reason and add an optional note for context.
-  </p>
 
-  <form [formGroup]="form" class="crm-form">
-    <nx-formfield label="Reopening reason">
-      <nx-dropdown formControlName="reason" placeholder="Select reason">
-        @for (r of reopenReasons; track r) {
-          <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
-        }
-      </nx-dropdown>
-      <nx-error nxFormfieldError>Reason is required.</nx-error>
-    </nx-formfield>
+  <!-- Step 1 — Reason -->
+  @if (step() === 1) {
+    <p class="crm-intro">
+      Reopen <strong>{{ claim.claimId }}</strong>. Pick a reason and add an optional note for context.
+    </p>
 
-    <nx-formfield label="Note (optional)">
-      <textarea nxInput formControlName="note" rows="3"
-                placeholder="Add context for the audit trail…"></textarea>
-      <nx-hint nxFormfieldHint>Visible in the claim's activity log.</nx-hint>
-    </nx-formfield>
-  </form>
+    <form [formGroup]="form" class="crm-form">
+      <nx-formfield label="Reopening reason">
+        <nx-dropdown formControlName="reason" placeholder="Select reason">
+          @for (r of reopenReasons; track r) {
+            <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-error nxFormfieldError>Reason is required.</nx-error>
+      </nx-formfield>
 
-  @if (saveError) {
-    <nx-message type="error">{{ saveError }}</nx-message>
+      <nx-formfield label="Note (optional)">
+        <textarea nxInput formControlName="note" rows="3"
+                  placeholder="Add context for the audit trail…"></textarea>
+        <nx-hint nxFormfieldHint>Visible in the claim's activity log.</nx-hint>
+      </nx-formfield>
+    </form>
   }
+
+  <!-- Step 2 — Section selection -->
+  @if (step() === 2) {
+    @if (loadingSecs()) {
+      <div class="crm-loading">
+        <nx-spinner size="medium"></nx-spinner>
+      </div>
+    } @else if (closedSections().length === 0) {
+      <nx-message context="info">No closed sections found. Only the claim will be reopened.</nx-message>
+    } @else if (isSingleSection()) {
+      <p class="crm-intro">
+        The following section will be reopened automatically:
+      </p>
+      <div class="crm-section-list">
+        <div class="crm-section-item crm-section-item--auto">
+          <nx-icon name="check-circle-o" class="crm-section-icon"></nx-icon>
+          <span class="crm-section-name">{{ closedSections()[0].name }}</span>
+        </div>
+      </div>
+    } @else {
+      <p class="crm-intro">
+        Select which closed sections to reopen. Unselected sections remain closed and can be reopened later.
+      </p>
+      <div class="crm-section-list">
+        @for (section of closedSections(); track section.id) {
+          <label class="crm-section-item">
+            <nx-checkbox
+              [checked]="isSelected(section.id)"
+              (checkedChange)="toggleSection(section.id)">
+              {{ section.name }}
+            </nx-checkbox>
+          </label>
+        }
+      </div>
+      @if (selectedIds().size === 0) {
+        <p class="crm-selection-hint">Select at least one section to continue.</p>
+      }
+    }
+  }
+
+  @if (saveError()) {
+    <nx-message context="error">{{ saveError() }}</nx-message>
+  }
+
 </div>
 
 <div class="crm-footer">
-  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="form.invalid || saving"
-          (click)="onReopen()">
-    @if (saving) { <nx-spinner size="small"></nx-spinner> }
-    @else        { Reopen }
-  </button>
+  @if (step() === 1) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="form.invalid"
+            (click)="onContinue()">
+      Continue
+    </button>
+  } @else {
+    <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!canContinue() || saving()"
+            (click)="onReopen()">
+      @if (saving()) { <nx-spinner size="small"></nx-spinner> }
+      @else          { Reopen }
+    </button>
+  }
 </div>

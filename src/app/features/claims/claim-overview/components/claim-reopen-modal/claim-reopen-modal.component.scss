@@ -29,3 +29,47 @@
 }
 
 .crm-footer { @include modal.footer; }
+
+.crm-loading {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.crm-section-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.crm-section-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  cursor: pointer;
+
+  &--auto {
+    cursor: default;
+    background: var(--ui-02);
+  }
+}
+
+.crm-section-icon {
+  color: var(--positive-01);
+  flex-shrink: 0;
+}
+
+.crm-section-name {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.crm-selection-hint {
+  margin: 4px 0 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--message-warning-color, var(--ui-05));
+}

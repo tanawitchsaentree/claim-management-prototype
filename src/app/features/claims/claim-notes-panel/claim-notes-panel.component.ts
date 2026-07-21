@@ -48,6 +48,7 @@ const EN_WEEKDAY: Record<number, string> = {
 export class ClaimNotesPanelComponent implements OnChanges {
   @Input({ required: true }) claimId!: string;
   @Input() highlightNoteId: string | null = null;
+  @Input() quickAddEntity: string | null = null;
 
   private readonly notesSvc = inject(MockNotesService);
   private readonly router   = inject(Router);
@@ -58,6 +59,7 @@ export class ClaimNotesPanelComponent implements OnChanges {
   readonly filter          = signal<FilterValue>('all');
   readonly visibleCount    = signal(PAGE_STEP);
   readonly showAddForm     = signal(false);
+  readonly quickAddMode    = signal(false);
   readonly highlightedId   = signal<string | null>(null);
 
   readonly addForm = new FormGroup({
@@ -123,6 +125,9 @@ export class ClaimNotesPanelComponent implements OnChanges {
     if (changes['claimId'] && this.claimId) this.load();
     if (changes['highlightNoteId'] && this.highlightNoteId) {
       this.scrollToNote(this.highlightNoteId);
+    }
+    if (changes['quickAddEntity'] && this.quickAddEntity) {
+      this.startQuickAdd(this.quickAddEntity);
     }
   }
 
@@ -228,11 +233,20 @@ export class ClaimNotesPanelComponent implements OnChanges {
   }
 
   onAddNote(): void {
+    this.quickAddMode.set(false);
     this.showAddForm.set(true);
+  }
+
+  /** Opened from a "See details" comment icon / kebab "Add note" action — only the Note field is shown. */
+  private startQuickAdd(entityName: string): void {
+    this.quickAddMode.set(true);
+    this.showAddForm.set(true);
+    this.addForm.patchValue({ attachTo: 'SECTION', title: entityName, category: 'general' });
   }
 
   cancelAddNote(): void {
     this.showAddForm.set(false);
+    this.quickAddMode.set(false);
     this.addForm.reset({ attachTo: 'CLAIM', title: '', category: null, body: '' });
   }
 

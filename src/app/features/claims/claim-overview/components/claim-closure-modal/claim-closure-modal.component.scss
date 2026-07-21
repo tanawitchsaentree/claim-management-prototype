@@ -23,103 +23,155 @@
   color: var(--text-01);
 }
 
-// ─── Condition checklist (step 1) ────────────────────────────────────────────
+// ─── Blocker cards ────────────────────────────────────────────────────────────
 
-.ccm-condition-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.ccm-blocker-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 12px;
 }
 
-.ccm-condition-row {
+.ccm-blocker-card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--ui-01);
+
+  &--expanded { border-color: var(--ui-03); }
+}
+
+.ccm-blocker-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  border-radius: 4px;
   background: var(--ui-02);
-  border: 1px solid var(--ui-04);
 
-  &--blocked {
-    background: var(--message-error-background-color);
-    border-color: var(--message-error-border-color);
+  &--clickable {
+    cursor: pointer;
+    user-select: none;
+    &:hover { background: var(--ui-03); }
   }
 }
 
-.ccm-condition-icon {
-  flex-shrink: 0;
-  margin-top: 2px;
+.ccm-blocker-icon  { color: var(--danger); flex-shrink: 0; }
+.ccm-blocker-label { font-size: var(--paragraph-02-font-size); color: var(--text-01); line-height: 1.4; flex: 1; }
+.ccm-blocker-count {
+  font-size: 11px; font-weight: 600;
+  background: var(--danger); color: var(--ui-01);
+  border-radius: 10px; padding: 1px 7px; flex-shrink: 0;
+}
+.ccm-blocker-chevron { color: var(--text-muted); flex-shrink: 0; transition: transform 0.15s; }
 
-  &--cleared { color: var(--positive); }
-  &--blocked { color: var(--message-error-color); }
+// ─── Expanded items ───────────────────────────────────────────────────────────
+
+.ccm-blocker-items {
+  padding: 0;
+  border-top: 1px solid var(--ui-04);
 }
 
-.ccm-condition-text {
-  flex: 1;
+.ccm-item {
+  display: flex;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ui-04);
+  &:last-child { border-bottom: none; }
+}
+
+.ccm-item__main { flex: 1; min-width: 0; }
+
+.ccm-item__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ccm-item__title { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); }
+
+.ccm-item__status {
+  font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 10px; flex-shrink: 0;
+  &--hard    { background: rgba(210, 53, 29, 0.1); color: var(--danger); }
+  &--warning { background: rgba(255, 165, 0, 0.12); color: var(--warning); }
+}
+
+.ccm-item__desc {
+  font-size: var(--paragraph-03-font-size); color: var(--text-muted);
+  margin: 0 0 6px; line-height: 1.4;
+}
+
+.ccm-item__meta {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+}
+
+.ccm-item__meta-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--text-muted);
+  nx-icon { opacity: 0.6; }
+}
+
+// ─── Checklist ────────────────────────────────────────────────────────────────
+
+.ccm-checklist {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
-.ccm-condition-label {
-  font-size: var(--paragraph-02-font-size);
-  color: var(--text-01);
-  line-height: 1.4;
+.ccm-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  flex-wrap: wrap;
 }
 
-.ccm-condition-detail {
-  font-size: var(--paragraph-03-font-size);
-  color: var(--message-error-color);
-  line-height: 1.4;
-}
-
-.ccm-condition-badge {
+.ccm-check-icon {
   flex-shrink: 0;
+  margin-top: 1px;
+  &--pass { color: var(--positive, #27a25e); }
+  &--fail { color: var(--danger, #d2351d); }
+}
+
+.ccm-check-label { font-size: var(--paragraph-02-font-size); color: var(--text-01); flex: 1; }
+
+.ccm-check-hint {
+  width: 100%;
+  padding-left: 24px;
   font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--message-error-color);
-  white-space: nowrap;
-  margin-top: 2px;
-
-  &--ok { color: var(--positive); }
+  color: var(--danger, #d2351d);
 }
 
-// ─── Form ─────────────────────────────────────────────────────────────────────
-
-.ccm-form {
-  nx-formfield { width: 100%; }
+.ccm-checklist-error {
+  margin: 10px 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--danger, #d2351d);
+  font-weight: 500;
 }
 
-.ccm-warning {
-  margin-bottom: 16px;
-}
+// ─── Form / Reason ────────────────────────────────────────────────────────────
 
+.ccm-form { nx-formfield { width: 100%; } }
+
+.ccm-warning  { margin-bottom: 16px; }
+.ccm-save-error { margin-top: 12px; }
 
 .ccm-section-label {
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 12px;
+  margin: 16px 0 12px;
 }
 
-// Vertical radio stack — gap: 8px matches blessed pattern from step-loss-information.scss:161
 nx-radio-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.ccm-datefield {
-  margin: 8px 0 8px 24px;
-
-  nx-formfield { width: 100%; }
-}
-
-.ccm-save-error {
-  margin-top: 0;
 }
 
 // ─── Footer ──────────────────────────────────────────────────────────────────

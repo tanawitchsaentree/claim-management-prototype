@@ -1,4 +1,4 @@
-export type ClaimStatus = 'In progress' | 'Priced' | 'Quoted' | 'Bound' | 'Declined' | 'Open' | 'Closed' | 'Reopened';
+export type ClaimStatus = 'In progress' | 'Priced' | 'Quoted' | 'Bound' | 'Declined' | 'Open' | 'Closed';
 export type Priority = 'high' | 'medium' | 'low';
 export type LineOfBusiness = 'Property' | 'Liability' | 'Marine' | 'Cyber' | 'Engineering';
 export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'SGD';

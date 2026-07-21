@@ -1,0 +1,31 @@
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.srm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.srm-title { @include modal.title; }
+
+.srm-body { @include modal.body; }
+
+.srm-intro {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.srm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  nx-formfield { width: 100%; min-width: 0; }
+}
+
+.srm-footer { @include modal.footer; }

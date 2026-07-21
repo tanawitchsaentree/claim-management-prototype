@@ -85,6 +85,9 @@ export class FnolStateService {
 
   // File restriction state (BMPCC-10994) — set from summary step
   restriction: FileRestriction = { isRestricted: false, accessList: [] };
+
+  // Recovery Potential flag — optional, captured during FNOL Summary
+  recoveryPotential: 'yes' | 'no' | null = null;
   selectedPolicyFull: Policy | null = null;
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;

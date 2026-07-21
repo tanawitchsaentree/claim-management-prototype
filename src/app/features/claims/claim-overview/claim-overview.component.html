@@ -7,6 +7,14 @@
     <div class="co-error">{{ vm.error }}</div>
   } @else if (vm.claim; as claim) {
 
+    <!-- Reopened banner: shown whenever claim has been reopened -->
+    @if (claim.reopenedDate) {
+      <nx-message context="warning" class="co-reopen-banner">
+        This claim was reopened on {{ formatDate(claim.reopenedDate) }}
+        @if (claim.reopeningReason) { — {{ claim.reopeningReason }} }
+      </nx-message>
+    }
+
     <!-- General Info Card -->
     <section class="co-card">
       <div class="co-card-title-row">
@@ -103,7 +111,7 @@
       </div>
 
       <!-- Row 2: status + risk — or closure block when closed -->
-      @if (claim.status === 'Closed' || claim.status === 'Reopened') {
+      @if (claim.status === 'Closed' || claim.reopenedDate) {
         <div class="co-closure-block">
           <!-- Single 5-col grid so columns align vertically with the identity row
                above and row 1 fills completely (no lopsided gap on the right).
@@ -142,10 +150,10 @@
                 }
               </span>
             </div>
-            @if (claim.status === 'Reopened') {
+            @if (claim.reopenedDate) {
               <div class="co-field">
                 <span class="co-label">Reopened date</span>
-                <span class="co-value">{{ claim.reopenedDate ? formatDate(claim.reopenedDate) : '–' }}</span>
+                <span class="co-value">{{ formatDate(claim.reopenedDate) }}</span>
               </div>
               <div class="co-field">
                 <span class="co-label">Reopening reason</span>
@@ -190,6 +198,27 @@
         </div>
       }
 
+      <!-- Recovery Potential -->
+      <div class="co-recovery-row">
+        <span class="co-label">Recovery potential</span>
+        <div class="co-recovery-value">
+          @if (claim.recoveryPotential === 'yes') {
+            <span class="co-recovery-chip co-recovery-chip--yes">Yes</span>
+          } @else if (claim.recoveryPotential === 'no') {
+            <span class="co-recovery-chip co-recovery-chip--no">No</span>
+          } @else {
+            <span class="co-value">–</span>
+          }
+          @if (claim.status !== 'Closed') {
+            <nx-link class="co-recovery-edit-btn">
+              <a (click)="openRecoveryPotentialModal(claim)">
+                {{ claim.recoveryPotential ? 'Update' : 'Set' }}
+              </a>
+            </nx-link>
+          }
+        </div>
+      </div>
+
       <!-- Description -->
       <div class="co-description">
         <span class="co-desc-label">Claim description</span>
@@ -197,7 +226,7 @@
       </div>
 
       <!-- Card actions — bottom-left -->
-      @if (claim.status !== 'Closed' && claim.status !== 'Reopened') {
+      @if (claim.status !== 'Closed') {
         <div class="co-card-actions">
           <button nxButton="primary small" type="button" (click)="openClosureModal(claim)"
             [disabled]="closureCheck() === null">

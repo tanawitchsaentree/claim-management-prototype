@@ -1,0 +1,14 @@
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.ase-header { @include modal.header; }
+.ase-title  { @include modal.title; }
+
+.ase-body {
+  @include modal.body;
+  gap: 0;
+  nx-formfield { width: 100%; }
+}
+
+.ase-footer { @include modal.footer; }

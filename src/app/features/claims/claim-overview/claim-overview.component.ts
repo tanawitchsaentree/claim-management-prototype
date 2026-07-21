@@ -12,12 +12,14 @@ import { NxPaginationModule } from '@allianz/ng-aquila/pagination';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock/services/mock-user-directory.service';
+import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
@@ -46,6 +48,7 @@ import {
 } from '../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { FileRestriction, RESTRICTION_REASONS, AccessListEntry } from '../../../core/models/claim-overview.model';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface OverviewVM {
   loading: boolean;
@@ -85,6 +88,7 @@ const TASKS_PAGE_SIZE = 10;
     NxTooltipModule,
     NxPopoverModule,
     NxLinkModule,
+    NxMessageModule,
     NxModalModule,
     NxSwitcherModule,
     NxDropdownModule,
@@ -93,6 +97,7 @@ const TASKS_PAGE_SIZE = 10;
     ReactiveFormsModule,
     StatusChipComponent,
     ClaimPreviewDirective,
+    ConfirmDialogComponent,
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss',
@@ -112,6 +117,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly destroyRef     = inject(DestroyRef);
   private readonly toast          = inject(ToastService);
   private readonly userDir        = inject(MockUserDirectoryService);
+  private readonly sectionSvc    = inject(MockSectionService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
@@ -119,6 +125,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   tasksPage = 1;
 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
+  readonly closedSectionsCount = signal<number>(0);
 
   private readonly state$ = toObservable(this.stateSvc.state);
 
@@ -160,7 +167,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
           tasksExpanded: true,
           massEvent: massEvent ?? null,
         });
-        if (overview.claim) { this.initRestrictionForm(overview.claim); }
+        if (overview.claim) {
+          this.initRestrictionForm(overview.claim);
+          this.refreshClosedSectionsCount(overview.claim.claimId);
+        }
       },
       error: () =>
         this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.', massEvent: null }),
@@ -177,6 +187,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       await new Promise(r => setTimeout(r, 50));
     }
     return null;
+  }
+
+  private refreshClosedSectionsCount(claimId: string): void {
+    firstValueFrom(this.sectionSvc.getByClaimId(claimId))
+      .then(secs => this.closedSectionsCount.set(secs.filter(s => s.status === 'Closed').length))
+      .catch(() => this.closedSectionsCount.set(0));
   }
 
   ngOnDestroy(): void {
@@ -250,6 +266,32 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.toast.success('Claim closed', `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`);
   }
 
+  async openRecoveryPotentialModal(claim: ClaimOverview): Promise<void> {
+    const current = claim.recoveryPotential ?? null;
+    const next: 'yes' | 'no' = current === 'yes' ? 'no' : 'yes';
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: next === 'yes' ? 'Set recovery potential' : 'Update recovery potential',
+        message: next === 'yes'
+          ? 'Mark this claim as having recovery potential? A task will be created for recovery analysis.'
+          : 'Change recovery potential to No? Please add a note to explain why recovery is no longer expected.',
+        confirmLabel: next === 'yes' ? 'Set to Yes' : 'Set to No',
+      } satisfies ConfirmDialogData,
+      width: '400px',
+      maxWidth: '92vw',
+    });
+    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+    if (!confirmed) return;
+    const cur = this.vm$.value;
+    if (!cur.claim) return;
+    this.vm$.next({ ...cur, claim: { ...cur.claim, recoveryPotential: next } });
+    if (next === 'yes') {
+      this.toast.success('Recovery potential set to Yes', 'A task has been created for recovery analysis.');
+    } else {
+      this.toast.success('Recovery potential updated to No');
+    }
+  }
+
   async openReopenModal(claim: ClaimOverview): Promise<void> {
     const ref = this.dialogSvc.open(ClaimReopenModalComponent, {
       data: { claim },
@@ -258,9 +300,36 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
     const result = await firstValueFrom(ref.afterClosed()) as ClaimReopenModalResult | undefined;
     if (!result) return;
+
     const cur = this.vm$.value;
-    this.vm$.next({ ...cur, claim: result.reopenedClaim });
-    this.toast.success('Claim reopened', result.reopenedClaim.claimId);
+    const activity: ClaimActivity = {
+      id:         `act-${Date.now()}`,
+      claimId:    claim.claimId,
+      user:       claim.assignedHandler,
+      timestamp:  new Date().toISOString(),
+      objectType: 'Claim',
+      attribute:  'Status',
+      valueOld:   claim.status,
+      valueNew:   'Open',
+    };
+    this.vm$.next({
+      ...cur,
+      claim: result.reopenedClaim,
+      activities: [activity, ...cur.activities],
+    });
+
+    const allSections = await firstValueFrom(this.sectionSvc.getByClaimId(claim.claimId)).catch(() => []);
+    const remainingAfter = allSections.filter(s => s.status === 'Closed').length;
+    const reopened = result.reopenedSectionIds.length;
+
+    let subtitle = result.reopenedClaim.claimId;
+    if (reopened > 0 && remainingAfter > 0) {
+      subtitle = `${reopened} section${reopened > 1 ? 's' : ''} reopened. ${remainingAfter} section${remainingAfter > 1 ? 's' : ''} remain closed.`;
+    } else if (reopened > 0) {
+      subtitle = `${reopened} section${reopened > 1 ? 's' : ''} reopened.`;
+    }
+    this.toast.success('Claim reopened', subtitle);
+    this.refreshClosedSectionsCount(claim.claimId);
   }
 
   toggleActivities(): void {

@@ -6,45 +6,18 @@
 
   <!-- Toolbar -->
   <div class="ed-toolbar">
-    <div class="ed-toolbar__filters">
-      <div class="ed-toolbar__filter-inputs">
-        <nx-formfield label="Entity" class="filter-field">
-          <input nxInput [formControl]="filterEntityCtrl" autocomplete="off" />
-        </nx-formfield>
-        <nx-formfield label="Status" class="filter-field">
-          <nx-dropdown [formControl]="filterStatusCtrl" placeholder="Select">
-            <nx-dropdown-item [value]="null">All</nx-dropdown-item>
-            <nx-dropdown-item value="promised">Promised</nx-dropdown-item>
-            <nx-dropdown-item value="conditional">Conditional</nx-dropdown-item>
-            <nx-dropdown-item value="by-extension">By extension</nx-dropdown-item>
-            <nx-dropdown-item value="not-promised">Not promised</nx-dropdown-item>
-          </nx-dropdown>
-        </nx-formfield>
-      </div>
-      <div class="ed-toolbar__filter-actions">
-        <button nxButton="primary small" type="button">Filter</button>
-        <button nxPlainButton type="button" (click)="resetFilter()">Reset filters</button>
-      </div>
-    </div>
-    <div class="ed-toolbar__meta">
-      <div class="ed-toolbar__meta-left">
-        <span class="ed-count">Number of entities: <strong>{{ totalEntities(vm.data) }}</strong></span>
-        <nx-switcher [checked]="showSelectedOnly" (checkedChange)="showSelectedOnly = $event">
-          Show selected only
-        </nx-switcher>
-      </div>
-      <div class="ed-toolbar__meta-right">
-        <button nxButton="secondary small" type="button" [nxContextMenuTriggerFor]="addEntityMenu">
-          Add Entity <nx-icon name="chevron-down-small" nxIconPositionEnd></nx-icon>
-        </button>
-        <nx-context-menu #addEntityMenu="nxContextMenu">
-          @for (type of entityTypes; track type) {
-            <button nxContextMenuItem type="button" (click)="openSearchModal(type)">
-              {{ entityTypeLabels[type] }}
-            </button>
-          }
-        </nx-context-menu>
-      </div>
+    <span class="ed-count">Number of entities: <strong>{{ totalEntities(vm.data) }}</strong></span>
+    <div class="ed-toolbar__actions">
+      <button nxButton="secondary small" type="button" [nxContextMenuTriggerFor]="addEntityMenu">
+        Add Entity <nx-icon name="chevron-down-small" nxIconPositionEnd></nx-icon>
+      </button>
+      <nx-context-menu #addEntityMenu="nxContextMenu">
+        @for (type of entityTypes; track type) {
+          <button nxContextMenuItem type="button" (click)="openSearchModal(type)">
+            {{ entityTypeLabels[type] }}
+          </button>
+        }
+      </nx-context-menu>
     </div>
   </div>
 
@@ -57,6 +30,13 @@
 
   @if (vm.error) {
     <nx-message context="error">Failed to load entities. Please go back and try again.</nx-message>
+  }
+
+  @if (!hasLossLocation) {
+    <nx-message context="info" class="ed-no-location-banner">
+      No location of loss was added — limits are shown per policy coverage instead of per location.
+      You can add a location later via Edit Claim.
+    </nx-message>
   }
 
   @if (!vm.loading && !vm.error) {

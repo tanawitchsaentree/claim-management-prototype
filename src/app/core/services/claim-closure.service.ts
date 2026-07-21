@@ -212,21 +212,35 @@ export class ClaimClosureService {
   reopenClaim(claimId: string, payload: ReopenPayload): Observable<ClaimOverview> {
     return this.overviewSvc.getOverview(claimId).pipe(
       switchMap(claim => {
-        if (!validateClaimTransition(claim.status as import('../models/claim.model').ClaimStatus, 'Reopened')) {
-          const msg = `Invalid transition: ${claim.status} → Reopened for claim ${claimId}.`;
+        if (!validateClaimTransition(claim.status as import('../models/claim.model').ClaimStatus, 'Open')) {
+          const msg = `Invalid transition: ${claim.status} → Open for claim ${claimId}.`;
           console.error('[claim-closure]', msg);
           return throwError(() => new Error(msg));
         }
         const now = new Date().toISOString().split('T')[0];
         const reopened: ClaimOverview = {
           ...claim,
-          status: 'Reopened',
+          status: 'Open',
           reopenedDate: now,
           reopeningReason: payload.reason,
+          reopenedBy: payload.reopenedBy,
         };
         return of(reopened).pipe(
           delay(MOCK_DELAY_MS),
-          tap(result => this.mockState.patchOverview(claimId, result)),
+          tap(result => {
+            this.mockState.patchOverview(claimId, result);
+            const activity: ClaimActivity = {
+              id:         `act-claim-reopen-${Date.now()}`,
+              claimId,
+              user:       payload.reopenedBy.name,
+              timestamp:  new Date().toISOString(),
+              objectType: 'Claim',
+              attribute:  'Status',
+              valueOld:   'Closed',
+              valueNew:   'Open',
+            };
+            this.mockState.patchActivities(items => [activity, ...items]);
+          }),
         );
       }),
     );

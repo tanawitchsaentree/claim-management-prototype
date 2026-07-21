@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -95,7 +96,12 @@ export class SectionClosureModalComponent {
   get blockers() { return this.data.blockers; }
   get section()  { return this.data.section; }
 
-  readonly reasonInvalid = computed(() => this.form.get('reason')!.invalid);
+  private readonly reasonStatus = toSignal(
+    this.form.get('reason')!.statusChanges,
+    { initialValue: this.form.get('reason')!.status }
+  );
+
+  readonly reasonInvalid = computed(() => this.reasonStatus() !== 'VALID');
 
   toggleBlocker(key: string): void {
     this.expanded.update(set => {

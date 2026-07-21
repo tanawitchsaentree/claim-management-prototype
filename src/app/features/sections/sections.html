@@ -1,18 +1,18 @@
 <!-- ── Page header ── -->
 <div class="sec-page-header">
   <h1 class="page-title">Sections</h1>
-  @if (!selectedEntity()) {
-    <button class="btn-add-entity" type="button">
-      Add Entity <nx-icon name="chevron-down-small"></nx-icon>
+  @if (!hasDetailOpen()) {
+    <button class="btn-add-entity" nxButton="secondary small" type="button" (click)="onAddEntity()">
+      Add Entity
     </button>
   }
 </div>
 
 <!-- ── Split layout ── -->
-<div class="sec-split" [class.sec-split--detail-open]="selectedEntity()">
+<div class="sec-split" [class.sec-split--detail-open]="hasDetailOpen()">
 
 <!-- ── Left: tree nav (only when detail open) ── -->
-@if (selectedEntity()) {
+@if (hasDetailOpen()) {
   <div class="sec-tree">
     <table nxTable class="sec-tree__table">
       <thead>
@@ -24,9 +24,11 @@
       <tbody>
         @for (section of sections(); track section.id) {
           <!-- section header row -->
-          <tr nxTableRow class="sec-tree__section-row">
+          <tr nxTableRow class="sec-tree__section-row"
+            [class.sec-tree__section-row--active]="selectedSection()?.id === section.id"
+            (click)="openSectionDetail(section)">
             <td nxTableCell class="sec-tree__col-toggle">
-              <button nxIconButton="tertiary" type="button" (click)="toggleSection(section.id)">
+              <button nxIconButton="tertiary" type="button" (click)="toggleSection(section.id); $event.stopPropagation()">
                 <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
               </button>
             </td>
@@ -50,7 +52,7 @@
 }
 
 <!-- ── Center: main table (hidden when detail open) ── -->
-<div class="sec-main" [style.display]="selectedEntity() ? 'none' : ''">
+<div class="sec-main" [style.display]="hasDetailOpen() ? 'none' : ''">
 
 <!-- ── Sections Table ── -->
 <div class="table-card">
@@ -110,6 +112,10 @@
               aria-label="Section actions">⋮</button>
             <nx-context-menu #sectionMenu="nxContextMenu">
               <button nxContextMenuItem type="button"
+                (click)="openSectionDetail(section)">
+                Edit
+              </button>
+              <button nxContextMenuItem type="button"
                 [disabled]="section.status === 'Closed'"
                 (click)="onMakePayment(section)">
                 Make payment
@@ -128,6 +134,11 @@
                 (click)="onCloseSection(section)">
                 Close section
               </button>
+              <button nxContextMenuItem type="button"
+                [disabled]="section.status !== 'Closed'"
+                (click)="onReopenSection(section)">
+                Reopen section
+              </button>
             </nx-context-menu>
           </td>
         </tr>
@@ -138,8 +149,10 @@
             <tr nxTableRow class="entity-row" @rowExpand>
               <td nxTableCell class="col-toggle">
                 @if (entity.expandable) {
-                  <button nxIconButton="tertiary" type="button" aria-label="expand entity">
-                    <nx-icon name="chevron-right-small"></nx-icon>
+                  <button nxIconButton="tertiary" type="button"
+                    (click)="toggleEntityExpand(section, entity.id)"
+                    aria-label="expand entity">
+                    <nx-icon [name]="isEntityExpanded(entity) ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
                   </button>
                 }
               </td>
@@ -161,16 +174,13 @@
                 </div>
               </td>
               <td nxTableCell class="col-comments">
-                @let count = noteCountFor(entity.name);
-                @if (count > 0) {
-                  <button class="sec-comment-badge" type="button"
-                    (click)="openComments(entity.name)"
-                    [nxTooltip]="count + ' comment' + (count > 1 ? 's' : '')">
-                    {{ count }}
-                  </button>
-                } @else {
-                  <span class="coverage-empty">–</span>
-                }
+                <button class="sec-comment-icon-btn" type="button"
+                  [disabled]="!hasNoteFor(entity.name)"
+                  (click)="viewEntityComments(entity.name)"
+                  [nxTooltip]="hasNoteFor(entity.name) ? 'View comments' : 'No comments'"
+                  [attr.aria-label]="hasNoteFor(entity.name) ? 'View comments' : 'No comments'">
+                  <nx-icon name="speech-bubble-o" size="s"></nx-icon>
+                </button>
               </td>
               <td nxTableCell class="col-actions">
                 <button class="sec-kebab-btn" type="button"
@@ -213,7 +223,7 @@
 
 </div><!-- /.sec-main -->
 
-<!-- ── Right: entity detail panel ── -->
+<!-- ── Right: entity or section detail panel ── -->
 @if (selectedEntity(); as sel) {
   <div class="sec-detail">
     <app-section-entity-detail
@@ -221,6 +231,13 @@
       [section]="sel.section"
       (closed)="closeEntityDetail()">
     </app-section-entity-detail>
+  </div>
+} @else if (selectedSection(); as sec) {
+  <div class="sec-detail">
+    <app-section-detail
+      [section]="sec"
+      (closed)="closeSectionDetail()">
+    </app-section-detail>
   </div>
 }
 

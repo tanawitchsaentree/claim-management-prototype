@@ -6,8 +6,7 @@ import { SectionStatus } from './section.model';
 const CLAIM_TRANSITIONS: Partial<Record<ClaimStatus, ClaimStatus[]>> = {
   'Open':        ['In progress', 'Closed'],
   'In progress': ['Closed'],
-  'Closed':      ['Reopened'],
-  'Reopened':    ['In progress', 'Closed'],
+  'Closed':      ['Open'],
 };
 
 /**
@@ -21,9 +20,13 @@ export function validateClaimTransition(from: ClaimStatus, to: ClaimStatus): boo
   return allowed.includes(to);
 }
 
-/** Section closure only permits Open → Closed. Re-opening requires an explicit reopen flow. */
+const SECTION_TRANSITIONS: Partial<Record<SectionStatus, SectionStatus[]>> = {
+  'Open':   ['Closed'],
+  'Closed': ['Open'],
+};
+
 export function validateSectionTransition(from: SectionStatus, to: SectionStatus): boolean {
-  return from === 'Open' && to === 'Closed';
+  return SECTION_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
 // ─── Blocker types ─────────────────────────────────────────────────────────

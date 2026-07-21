@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,11 +8,11 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { RightStripService } from '../../core/services/right-strip.service';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom, catchError, of } from 'rxjs';
-import { ClaimSection, SectionEntity, CoverageReview } from '../../core/models/section.model';
+import { ClaimSection, SectionEntity, CoverageReview, InstructionStatus } from '../../core/models/section.model';
 import { MockNotesService } from '../../core/mock/services/mock-notes.service';
-import { RightStripService } from '../../core/services/right-strip.service';
 import { Note } from '../../core/models/note.model';
 import {
   CoverageReviewModalComponent,
@@ -34,10 +34,7 @@ import {
   EditEntityDamageModalResult,
 } from './edit-entity-damage-modal/edit-entity-damage-modal.component';
 import { EntityDetailPanelComponent } from './entity-detail-panel/entity-detail-panel.component';
-import {
-  AddCommentModalComponent,
-  AddCommentModalData,
-} from './add-comment-modal/add-comment-modal.component';
+import { SectionDetailPanelComponent } from './section-detail-panel/section-detail-panel.component';
 import {
   MakePaymentModalComponent,
   MakePaymentModalData,
@@ -49,6 +46,16 @@ import {
   InstructProviderModalResult,
 } from './instruct-provider-modal/instruct-provider-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  AddSectionEntityModalComponent,
+  AddSectionEntityModalData,
+  AddSectionEntityModalResult,
+} from './add-section-entity-modal/add-section-entity-modal.component';
+import {
+  SectionReopenModalComponent,
+  SectionReopenModalData,
+  SectionReopenModalResult,
+} from './section-reopen-modal/section-reopen-modal.component';
 
 @Component({
   selector: 'app-sections',
@@ -74,11 +81,12 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/componen
     NxModalModule,
     StatusChipComponent,
     CoverageReviewModalComponent,
-    AddCommentModalComponent,
     EntityDetailPanelComponent,
+    SectionDetailPanelComponent,
     MakePaymentModalComponent,
     InstructProviderModalComponent,
     ConfirmDialogComponent,
+    AddSectionEntityModalComponent,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -97,7 +105,9 @@ export class Sections {
   readonly loading        = signal(true);
   readonly loadError      = signal(false);
   readonly allNotes       = signal<Note[]>([]);
-  readonly selectedEntity = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
+  readonly selectedEntity  = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
+  readonly selectedSection = signal<ClaimSection | null>(null);
+  readonly hasDetailOpen   = computed(() => !!this.selectedEntity() || !!this.selectedSection());
 
   readonly devMode = true;
 
@@ -129,6 +139,7 @@ export class Sections {
   }
 
   openEntityDetail(section: ClaimSection, entity: SectionEntity): void {
+    this.selectedSection.set(null);
     this.selectedEntity.set({ entity, section });
   }
 
@@ -136,27 +147,34 @@ export class Sections {
     this.selectedEntity.set(null);
   }
 
-  noteCountFor(entityName: string): number {
-    return this.allNotes().filter(n =>
-      n.body.toLowerCase().includes(entityName.toLowerCase()) ||
-      (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
-    ).length;
+  openSectionDetail(section: ClaimSection): void {
+    this.selectedEntity.set(null);
+    this.selectedSection.set(section);
   }
 
-  openComments(entityName?: string): void {
-    if (entityName) {
-      const note = this.allNotes().find(n =>
-        n.body.toLowerCase().includes(entityName.toLowerCase()) ||
-        (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
-      );
-      this.stripSvc.open('comments', note?.id);
-    } else {
-      this.stripSvc.open('comments');
-    }
+  closeSectionDetail(): void {
+    this.selectedSection.set(null);
   }
 
   coverageClass(review: CoverageReview): string {
     return review.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z-]/g, '');
+  }
+
+  private noteFor(entityName: string): Note | undefined {
+    return this.allNotes().find(n =>
+      n.body.toLowerCase().includes(entityName.toLowerCase()) ||
+      (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
+    );
+  }
+
+  hasNoteFor(entityName: string): boolean {
+    return !!this.noteFor(entityName);
+  }
+
+  viewEntityComments(entityName: string): void {
+    const note = this.noteFor(entityName);
+    if (!note) return;
+    this.stripSvc.open('comments', note.id);
   }
 
   // ── Section kebab actions ──────────────────────────────────────
@@ -205,13 +223,49 @@ export class Sections {
     }
   }
 
-  onAddComment(attachTo: string): void {
-    const claimId = this.route.snapshot.params['id'];
-    this.dialogSvc.open(AddCommentModalComponent, {
-      data: { claimId, attachTo } satisfies AddCommentModalData,
+  async onAddEntity(): Promise<void> {
+    const ref = this.dialogSvc.open(AddSectionEntityModalComponent, {
+      data: { sections: this.sections() } satisfies AddSectionEntityModalData,
       width: '480px',
       maxWidth: '92vw',
     });
+    const result = await firstValueFrom(ref.afterClosed()) as AddSectionEntityModalResult | undefined;
+    if (!result) return;
+    await firstValueFrom(this.sectionSvc.addEntity(result.sectionId, {
+      name:              result.name,
+      damage:            result.damage,
+      instructionStatus: result.instructionStatus,
+    }));
+    this.sections.update(list =>
+      list.map(s => s.id === result.sectionId
+        ? { ...s, entities: [...s.entities, {
+            id: `SE-${Date.now()}`,
+            name: result.name,
+            damage: result.damage,
+            instructionStatus: result.instructionStatus,
+            expandable: false,
+          }] }
+        : s
+      )
+    );
+    this.toast.success(`Entity "${result.name}" added`);
+  }
+
+  toggleEntityExpand(section: ClaimSection, entityId: string): void {
+    this.sections.update(list =>
+      list.map(s => s.id === section.id
+        ? { ...s, entities: s.entities.map(e => e.id === entityId ? { ...e, expanded: !(e as SectionEntity & { expanded?: boolean }).expanded } : e) }
+        : s
+      )
+    );
+  }
+
+  isEntityExpanded(entity: SectionEntity): boolean {
+    return (entity as SectionEntity & { expanded?: boolean }).expanded ?? false;
+  }
+
+  onAddComment(attachTo: string): void {
+    this.stripSvc.openAddNote(attachTo);
   }
 
   // ── Entity kebab actions ───────────────────────────────────────
@@ -287,6 +341,24 @@ export class Sections {
     this.allNotes.set(updatedNotes);
 
     this.toast.success(`Coverage review updated for "${entity.name}"`);
+  }
+
+  async onReopenSection(section: ClaimSection): Promise<void> {
+    const ref = this.dialogSvc.open(SectionReopenModalComponent, {
+      data: {
+        section,
+        reopenedByName: 'Leonie Fischer',
+      } satisfies SectionReopenModalData,
+      width: '480px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as SectionReopenModalResult | undefined;
+    if (!result) return;
+
+    this.sections.update(list =>
+      list.map(s => s.id === section.id ? { ...s, ...result.reopenedSection } : s)
+    );
+    this.toast.success(`Section "${result.reopenedSection.name}" reopened`);
   }
 
   async onSimulateFinalPayment(section: ClaimSection): Promise<void> {

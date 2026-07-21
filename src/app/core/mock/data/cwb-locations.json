@@ -7,7 +7,7 @@
     "country": "DE",
     "city": "Munich",
     "postalCode": "80331",
-    "streetAndNumber": "Industriestraße 12",
+    "streetAndNumber": "12 Industriestraße",
     "latitude": 48.1372,
     "longitude": 11.5755,
     "propertyType": "Manufacturing"
@@ -20,7 +20,7 @@
     "country": "DE",
     "city": "Hamburg",
     "postalCode": "22045",
-    "streetAndNumber": "Lagerstraße 5",
+    "streetAndNumber": "5 Lagerstraße",
     "latitude": 53.5511,
     "longitude": 9.9937,
     "propertyType": "Storage"
@@ -33,7 +33,7 @@
     "country": "DE",
     "city": "Berlin",
     "postalCode": "10117",
-    "streetAndNumber": "Friedrichstraße 200",
+    "streetAndNumber": "200 Friedrichstraße",
     "latitude": 52.5172,
     "longitude": 13.3886,
     "propertyType": "Office"
@@ -46,7 +46,7 @@
     "country": "DE",
     "city": "Cologne",
     "postalCode": "50667",
-    "streetAndNumber": "Hauptstraße 88",
+    "streetAndNumber": "88 Hauptstraße",
     "latitude": 50.9375,
     "longitude": 6.9603,
     "propertyType": "Distribution"
@@ -59,7 +59,7 @@
     "country": "DE",
     "city": "Frankfurt",
     "postalCode": "60311",
-    "streetAndNumber": "Zeil 100",
+    "streetAndNumber": "100 Zeil",
     "latitude": 50.1109,
     "longitude": 8.6821,
     "propertyType": "Office"
@@ -72,7 +72,7 @@
     "country": "FR",
     "city": "Lyon",
     "postalCode": "69001",
-    "streetAndNumber": "Rue de la République 45",
+    "streetAndNumber": "45 Rue de la République",
     "latitude": 45.7640,
     "longitude": 4.8357,
     "propertyType": "Office"
@@ -85,7 +85,7 @@
     "country": "CH",
     "city": "Zurich",
     "postalCode": "8001",
-    "streetAndNumber": "Bahnhofstrasse 22",
+    "streetAndNumber": "22 Bahnhofstrasse",
     "latitude": 47.3769,
     "longitude": 8.5417,
     "propertyType": "Manufacturing"
@@ -98,7 +98,7 @@
     "country": "IT",
     "city": "Milan",
     "postalCode": "20121",
-    "streetAndNumber": "Via Dante 7",
+    "streetAndNumber": "7 Via Dante",
     "latitude": 45.4642,
     "longitude": 9.1900,
     "propertyType": "Office"
@@ -111,7 +111,7 @@
     "country": "NL",
     "city": "Rotterdam",
     "postalCode": "3011",
-    "streetAndNumber": "Maashaven 14",
+    "streetAndNumber": "14 Maashaven",
     "latitude": 51.9244,
     "longitude": 4.4777,
     "propertyType": "Industrial"
@@ -124,7 +124,7 @@
     "country": "DE",
     "city": "Düsseldorf",
     "postalCode": "40213",
-    "streetAndNumber": "Königsallee 50",
+    "streetAndNumber": "50 Königsallee",
     "latitude": 51.2277,
     "longitude": 6.7735,
     "propertyType": "Office"

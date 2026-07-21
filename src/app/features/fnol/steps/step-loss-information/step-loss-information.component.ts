@@ -282,10 +282,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       errors.push({ fieldId: 'typeOfDamage', message: 'Type of damage: select at least one option' });
     }
 
-    if ((this.lossLocation.value?.locations?.length ?? 0) === 0) {
-      errors.push({ fieldId: 'lossLocation', message: 'Location of loss: add at least one location' });
-    }
-
     for (let i = 0; i < this.eventsArray.length; i++) {
       const grp = this.eventGroup(i);
       if ((grp.get('damages')?.value as string[])?.length === 0) {
@@ -484,16 +480,15 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     this.submitAttempted = true;
     this.markAllTouched(this.form);
 
-    const causeValid    = this.selectedCauses.length > 0;
-    const damageValid   = this.selectedDamages.length > 0;
-    const eventsValid   = this.eventsArray.controls.every(
+    const causeValid  = this.selectedCauses.length > 0;
+    const damageValid = this.selectedDamages.length > 0;
+    const eventsValid = this.eventsArray.controls.every(
       c => ((c.get('damages')?.value as string[]) ?? []).length > 0
     );
-    const locationValid = (this.lossLocation.value?.locations?.length ?? 0) > 0;
 
     this.formErrors = this.collectErrors();
 
-    if (!causeValid || !damageValid || !eventsValid || !locationValid || this.form.invalid) {
+    if (!causeValid || !damageValid || !eventsValid || this.form.invalid) {
       this.scrollToErrorSummary();
       return;
     }

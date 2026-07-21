@@ -119,5 +119,48 @@
         { "userId": "U002", "name": "Tobias Grau",    "role": "Claims Manager", "email": "tobias.grau@allianz.com",    "addedAt": "2024-01-15" }
       ]
     }
+  },
+  "CLM-2024-024": {
+    "claimId": "CLM-2024-024",
+    "client": "Nordhafen Shipping GmbH",
+    "assignedHandler": "Nina Feld",
+    "lossEventId": "LE20240308",
+    "status": "Open",
+    "proximateLossCause": "Cargo damage",
+    "riskScore": 3,
+    "riskScoreMax": 5,
+    "riskStatus": "Potential risk",
+    "policyNumber": "POL-2024-009",
+    "policyHolder": "Nordhafen Shipping GmbH",
+    "broker": "Ralf Kern",
+    "clientContact": "Ingrid Sander",
+    "handler": "Nina Feld",
+    "supervisor": "Werner Baum",
+    "priority": "high",
+    "lineOfBusiness": "Marine",
+    "dateOfLoss": "2024-03-08",
+    "dateReported": "2024-03-10",
+    "dateCreated": "2024-03-10",
+    "description": "Cargo damage during North Sea transit. Claim initially closed after settlement; new evidence of underpayment prompted reopening.",
+    "location": {
+      "street": "Hafenstraße 12",
+      "city": "Hamburg",
+      "country": "Germany"
+    },
+    "financialSummary": {
+      "currency": "EUR",
+      "totalReserve": 25000,
+      "totalPayments": 70000,
+      "totalRecoveries": 0,
+      "outstanding": 25000
+    },
+    "closureDate": "2024-09-01",
+    "closedBy": { "userId": "usr-003", "name": "Werner Baum" },
+    "closureReason": "Claim Finalised",
+    "retentionDate": "2034-09-01",
+    "retentionType": "default",
+    "reopenedDate": "2025-04-15",
+    "reopenedBy": { "userId": "usr-002", "name": "Nina Feld" },
+    "reopeningReason": "New evidence received"
   }
 }

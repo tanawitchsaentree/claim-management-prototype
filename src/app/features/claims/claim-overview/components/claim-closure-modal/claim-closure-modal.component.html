@@ -9,42 +9,96 @@
 <!-- ─── Body ──────────────────────────────────────────────────────────────── -->
 <div class="ccm-body">
 
-  <!-- STEP 1 — Pre-closure checklist (status derived from blockers) -->
+  <!-- STEP 1 — Expandable blocker cards -->
   @if (step() === 1) {
-    <p class="ccm-intro">Review all closure conditions before proceeding:</p>
-    <ul class="ccm-condition-list">
-      @for (cond of conditions; track cond.label) {
-        @let cleared = isConditionCleared(cond);
-        @let detail  = blockerLabelFor(cond);
-        <li class="ccm-condition-row" [class.ccm-condition-row--blocked]="!cleared">
-          <nx-icon
-            [name]="cleared ? 'check-circle-o' : 'exclamation-triangle-o'"
-            size="s"
-            class="ccm-condition-icon"
-            [class.ccm-condition-icon--cleared]="cleared"
-            [class.ccm-condition-icon--blocked]="!cleared">
-          </nx-icon>
-          <div class="ccm-condition-text">
-            <span class="ccm-condition-label">{{ cond.label }}</span>
-            @if (!cleared && detail) {
-              <span class="ccm-condition-detail">{{ detail }}</span>
+    <p class="ccm-intro">The following issues must be resolved before this claim can be closed:</p>
+    <div class="ccm-blocker-list">
+      @for (b of blockers; track b.type + b.label; let i = $index) {
+        @let blockerId = b.type + '-' + i;
+        @let hasItems = b.items && b.items.length > 0;
+        <div class="ccm-blocker-card" [class.ccm-blocker-card--expanded]="isExpanded(blockerId)">
+          <div class="ccm-blocker-card__header"
+            [class.ccm-blocker-card__header--clickable]="hasItems"
+            (click)="hasItems ? toggleBlocker(blockerId) : null">
+            <nx-icon name="exclamation-triangle-o" size="s" class="ccm-blocker-icon"></nx-icon>
+            <span class="ccm-blocker-label">{{ b.label }}</span>
+            @if (hasItems) {
+              <span class="ccm-blocker-count">{{ b.items!.length }}</span>
+              <nx-icon
+                [name]="isExpanded(blockerId) ? 'chevron-up-small' : 'chevron-down-small'"
+                size="s" class="ccm-blocker-chevron">
+              </nx-icon>
             }
           </div>
-          <span class="ccm-condition-badge" [class.ccm-condition-badge--ok]="cleared">
-            {{ cleared ? 'Clear' : 'Blocked' }}
-          </span>
+          @if (hasItems && isExpanded(blockerId)) {
+            <div class="ccm-blocker-items">
+              @for (item of b.items; track item.id) {
+                <div class="ccm-item">
+                  <div class="ccm-item__main">
+                    <div class="ccm-item__top">
+                      <span class="ccm-item__title">{{ item.title }}</span>
+                      <span class="ccm-item__status ccm-item__status--{{ item.severity }}">{{ item.status }}</span>
+                    </div>
+                    <p class="ccm-item__desc">{{ item.description }}</p>
+                    <div class="ccm-item__meta">
+                      @if (item.assignee) {
+                        <span class="ccm-item__meta-chip">
+                          <nx-icon name="user-o" size="s"></nx-icon> {{ item.assignee }}
+                        </span>
+                      }
+                      <span class="ccm-item__meta-chip">
+                        <nx-icon name="calendar-o" size="s"></nx-icon> {{ item.lastUpdated }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- STEP 2 — Pre-closure checklist -->
+  @if (step() === 2) {
+    <p class="ccm-intro">System validation — all checks must pass before the claim can be closed:</p>
+    <ul class="ccm-checklist">
+      @for (item of checklistItems; track item.label) {
+        <li class="ccm-check-item" [class.ccm-check-item--fail]="!item.passed">
+          <nx-icon
+            [name]="item.passed ? 'check-circle' : 'exclamation-circle'"
+            size="s"
+            class="ccm-check-icon"
+            [class.ccm-check-icon--pass]="item.passed"
+            [class.ccm-check-icon--fail]="!item.passed">
+          </nx-icon>
+          <span class="ccm-check-label">{{ item.label }}</span>
+          @if (!item.passed) {
+            <span class="ccm-check-hint">{{ item.failHint }}</span>
+          }
         </li>
       }
     </ul>
+    @if (!checklistAllDone()) {
+      <p class="ccm-checklist-error">Resolve all failing checks before closing this claim.</p>
+    }
   }
 
-  <!-- STEP 2 — Closure reason -->
-  @if (step() === 2) {
+  <!-- STEP 3 — Reason + retention -->
+  @if (step() === 3) {
+    @if (showRecoveryWarning) {
+      <nx-message context="warning" class="ccm-warning">
+        Recovery potential is marked <strong>Yes</strong> but no recovery case has been created.
+        You may still close — or update Recovery Potential to No and capture a note.
+      </nx-message>
+    }
     @if (showOtherWarning) {
-      <nx-message type="warning" class="ccm-warning">
+      <nx-message context="warning" class="ccm-warning">
         The proximate loss cause is set to "Other". Verify this is correct before closing.
       </nx-message>
     }
+
     <form [formGroup]="form" class="ccm-form">
       <nx-formfield label="Closure reason">
         <nx-dropdown formControlName="reason" placeholder="Select reason">
@@ -55,10 +109,7 @@
         <nx-error nxFormfieldError>Closure reason is required.</nx-error>
       </nx-formfield>
     </form>
-  }
 
-  <!-- STEP 3 — Confirmation (document retention) -->
-  @if (step() === 3) {
     <p class="ccm-section-label">Document retention period</p>
     <form [formGroup]="form">
       <nx-radio-group formControlName="retentionType">
@@ -72,7 +123,7 @@
     </form>
 
     @if (saveError()) {
-      <nx-message type="error" class="ccm-save-error">{{ saveError() }}</nx-message>
+      <nx-message context="error" class="ccm-save-error">{{ saveError() }}</nx-message>
     }
   }
 
@@ -83,24 +134,23 @@
 
   @if (step() === 1) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button" [disabled]="!canClose" (click)="onContinue()">Continue</button>
   }
 
   @if (step() === 2) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
-    <button nxButton="primary small" type="button" [disabled]="reasonInvalid()" (click)="onContinue()">Continue</button>
+    <button nxButton="primary small" type="button"
+      [disabled]="!checklistAllDone()" (click)="onContinue()">
+      Continue
+    </button>
   }
 
   @if (step() === 3) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
-    <button nxButton="primary small" type="button" [disabled]="form.invalid || saving()" (click)="onCloseClaim()">
-      @if (saving()) {
-        <nx-spinner size="small"></nx-spinner>
-      } @else {
-        Close Claim
-      }
+    <button nxButton="primary small" type="button"
+      [disabled]="form.invalid || saving()" (click)="onCloseClaim()">
+      @if (saving()) { <nx-spinner size="small"></nx-spinner> }
+      @else { Close Claim }
     </button>
   }
 

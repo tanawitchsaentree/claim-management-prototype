@@ -158,8 +158,10 @@ export class Dashboard {
     if (scope === 'mine')  filtered = claims.filter(c => c.assignee === user.name);
     else if (scope === 'group') filtered = claims.filter(c => c.group === user.group);
     else filtered = claims;
+    if (filtered.length === 0 && scope !== 'all') return claims.slice(0, 5);
     return filtered.slice(0, 5);
   });
+
 
   // ── KPI data (KCM) ───────────────────────────────────────────────────
   // ⚑ €50k threshold — confirm with business; 7-day window is also a placeholder

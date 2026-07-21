@@ -81,6 +81,9 @@ export interface ClaimOverview {
   // File restriction (BMPCC-10994) — informational only, no enforcement
   restriction?: FileRestriction;
 
+  // Recovery Potential flag — captured during FNOL, editable post-creation
+  recoveryPotential?: 'yes' | 'no' | null;
+
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
   hasOpenPayments?:   boolean;
   hasOpenReserves?:   boolean;

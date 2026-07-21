@@ -38,34 +38,38 @@
   <!-- Add note inline form -->
   @if (showAddForm()) {
     <div class="cnp-add-form" [formGroup]="addForm">
-      <div class="cnp-add-form__field">
-        <label class="cnp-add-form__label">Title</label>
-        <div class="cnp-add-form__input-wrap">
-          <input class="cnp-add-form__input" formControlName="title" placeholder="Enter title" />
+      @if (quickAddMode()) {
+        <p class="cnp-add-form__quick-add-target">Note for "{{ addForm.value.title }}"</p>
+      } @else {
+        <div class="cnp-add-form__field">
+          <label class="cnp-add-form__label">Title</label>
+          <div class="cnp-add-form__input-wrap">
+            <input class="cnp-add-form__input" formControlName="title" placeholder="Enter title" />
+          </div>
         </div>
-      </div>
 
-      <div class="cnp-add-form__field">
-        <label class="cnp-add-form__label">Attach to</label>
-        <nx-formfield class="cnp-add-form__select">
-          <nx-dropdown formControlName="attachTo">
-            @for (opt of attachOptions; track opt) {
-              <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-        </nx-formfield>
-      </div>
+        <div class="cnp-add-form__field">
+          <label class="cnp-add-form__label">Attach to</label>
+          <nx-formfield class="cnp-add-form__select">
+            <nx-dropdown formControlName="attachTo">
+              @for (opt of attachOptions; track opt) {
+                <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+          </nx-formfield>
+        </div>
 
-      <div class="cnp-add-form__field">
-        <label class="cnp-add-form__label">Notes category</label>
-        <nx-formfield class="cnp-add-form__select">
-          <nx-dropdown formControlName="category" placeholder="Select">
-            @for (opt of categoryOptions; track opt.value) {
-              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-        </nx-formfield>
-      </div>
+        <div class="cnp-add-form__field">
+          <label class="cnp-add-form__label">Notes category</label>
+          <nx-formfield class="cnp-add-form__select">
+            <nx-dropdown formControlName="category" placeholder="Select">
+              @for (opt of categoryOptions; track opt.value) {
+                <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+          </nx-formfield>
+        </div>
+      }
 
       <div class="cnp-add-form__field">
         <label class="cnp-add-form__label">Note</label>

@@ -1,0 +1,43 @@
+<div class="ase-header">
+  <h2 class="ase-title">Add entity</h2>
+</div>
+
+<div class="ase-body" [formGroup]="form">
+
+  <nx-formfield label="Section">
+    <nx-dropdown formControlName="sectionId" placeholder="Select section">
+      @for (s of openSections; track s.id) {
+        <nx-dropdown-item [value]="s.id">{{ s.name }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Entity name">
+    <input nxInput formControlName="name" placeholder="e.g. Building A" />
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Damage type">
+    <nx-dropdown formControlName="damage" placeholder="Select damage type">
+      @for (opt of damageOptions; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
+
+  <nx-formfield label="Instruction status">
+    <nx-dropdown formControlName="instructionStatus">
+      @for (opt of instructionStatusOptions; track opt) {
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+
+</div>
+
+<div class="ase-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Add entity</button>
+</div>

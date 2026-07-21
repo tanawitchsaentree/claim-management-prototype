@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -13,8 +13,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom } from 'rxjs';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
-import { ClaimOverview } from '../../../../../core/models/claim-overview.model';
-import { ClaimActivity } from '../../../../../core/models/claim-overview.model';
+import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import { BlockerCheckResult, ClosureReason } from '../../../../../core/models/claim-closure.model';
 
 export interface ClaimClosureModalData {
@@ -27,7 +26,7 @@ export interface ClaimClosureModalResult {
   activity: ClaimActivity;
 }
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3;
 
 const CLOSURE_REASONS: ClosureReason[] = [
   'Claim Finalised',
@@ -35,21 +34,11 @@ const CLOSURE_REASONS: ClosureReason[] = [
   'Claim Rejected',
 ];
 
-interface ChecklistCondition {
+interface ChecklistItem {
   label: string;
-  /** Blocker types that block this condition. Cleared if none are present in blockers. */
-  blockerTypes: string[];
+  passed: boolean;
+  failHint: string;
 }
-
-const CLOSURE_CONDITIONS: ChecklistCondition[] = [
-  { label: 'All sections closed',                   blockerTypes: ['sections']              },
-  { label: 'All payments processed',                 blockerTypes: ['payments']              },
-  { label: 'All bills received',                     blockerTypes: ['bills']                 },
-  { label: 'Recoveries & deductibles collected',     blockerTypes: ['recovery', 'deductible']},
-  { label: 'Reserves released',                      blockerTypes: ['reserves']              },
-  { label: 'Litigation completed',                   blockerTypes: ['litigation']            },
-  { label: 'Final reports completed',                blockerTypes: ['reports']               },
-];
 
 @Component({
   selector: 'app-claim-closure-modal',
@@ -69,19 +58,31 @@ const CLOSURE_CONDITIONS: ChecklistCondition[] = [
   templateUrl: './claim-closure-modal.component.html',
   styleUrl: './claim-closure-modal.component.scss',
 })
-export class ClaimClosureModalComponent implements OnInit {
+export class ClaimClosureModalComponent {
   readonly data     = inject<ClaimClosureModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<ClaimClosureModalComponent, ClaimClosureModalResult>>(NxModalRef);
   private readonly fb         = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly router     = inject(Router);
 
-  readonly step = signal<Step>(1);
-  readonly saving = signal(false);
+  readonly step    = signal<Step>(this.data.blockers.canClose ? 2 : 1);
+  readonly saving  = signal(false);
   readonly saveError = signal<string | null>(null);
+  readonly expanded = signal<Set<string>>(new Set());
 
   readonly closureReasons = CLOSURE_REASONS;
-  readonly conditions = CLOSURE_CONDITIONS;
+
+  readonly checklistItems: ChecklistItem[] = [
+    { label: 'All sections closed',              passed: !this.data.blockers.blockers.some(b => b.type === 'sections'),              failHint: 'All sections must be closed before closing the claim.' },
+    { label: 'All payments processed',           passed: !this.data.blockers.blockers.some(b => b.type === 'payments'),              failHint: 'Pending payments must be settled.' },
+    { label: 'All bills received',               passed: !this.data.blockers.blockers.some(b => b.type === 'bills'),                 failHint: 'Outstanding bills must be received.' },
+    { label: 'Recoveries & deductibles cleared', passed: !this.data.blockers.blockers.some(b => ['recovery','deductible'].includes(b.type)), failHint: 'Open recovery or deductible tasks must be resolved.' },
+    { label: 'Reserves released',                passed: !this.data.blockers.blockers.some(b => b.type === 'reserves'),              failHint: 'All reserves must be released.' },
+    { label: 'Litigation completed',             passed: !this.data.blockers.blockers.some(b => b.type === 'litigation'),            failHint: 'Active litigation must be resolved.' },
+    { label: 'Final reports completed',          passed: !this.data.blockers.blockers.some(b => b.type === 'reports'),               failHint: 'All required reports must be completed.' },
+  ];
+
+  readonly checklistAllDone = computed(() => this.checklistItems.every(i => i.passed));
 
   readonly form: FormGroup = this.fb.group({
     reason:        [null, Validators.required],
@@ -90,10 +91,9 @@ export class ClaimClosureModalComponent implements OnInit {
 
   readonly stepTitle = computed(() => {
     switch (this.step()) {
-      case 1: return 'Close Claim — Pre-closure Checklist';
-      case 2: return 'Close Claim — Reason';
-      case 3: return 'Close Claim — Confirmation';
-      case 4: return 'Close Claim — Confirmation';
+      case 1: return 'Close Claim — Blockers';
+      case 2: return 'Close Claim — Pre-closure Checklist';
+      case 3: return 'Close Claim — Reason & Retention';
     }
   });
 
@@ -107,58 +107,48 @@ export class ClaimClosureModalComponent implements OnInit {
   readonly defaultRetentionDate = computed(() => {
     const d = new Date();
     d.setFullYear(d.getFullYear() + 10);
-    // App-wide standard: DD-MM-YYYY (dash, 4-digit year).
     const dd = String(d.getDate()).padStart(2, '0');
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     return `${dd}-${mm}-${d.getFullYear()}`;
   });
 
   get blockers() { return this.data.blockers.blockers; }
-  get canClose()  { return this.data.blockers.canClose; }
-  get claim()     { return this.data.claim; }
+  get claim()    { return this.data.claim; }
 
-  isConditionCleared(condition: ChecklistCondition): boolean {
-    return !this.blockers.some(b => condition.blockerTypes.includes(b.type));
-  }
-
-  blockerLabelFor(condition: ChecklistCondition): string | null {
-    const hit = this.blockers.find(b => condition.blockerTypes.includes(b.type));
-    return hit ? hit.label : null;
-  }
   get showOtherWarning() {
     return this.claim.proximateLossCause?.toLowerCase() === 'other';
   }
 
-  ngOnInit(): void {
-    // Always start at step 1 (pre-closure checklist) regardless of canClose.
-    // Continue button on step 1 is gated by canClose.
+  get showRecoveryWarning() {
+    return this.claim.recoveryPotential === 'yes' && !this.claim.hasActiveRecovery;
   }
 
-  onCancel(): void {
-    this.modalRef.close(undefined);
+  toggleBlocker(key: string): void {
+    this.expanded.update(set => {
+      const next = new Set(set);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
   }
+
+  isExpanded(key: string): boolean {
+    return this.expanded().has(key);
+  }
+
+  onCancel(): void { this.modalRef.close(undefined); }
 
   onBack(): void {
-    const s = this.step();
-    if (s === 2) this.step.set(1);
-    else if (s === 3) this.step.set(2);
-    else if (s === 4) this.step.set(3);
+    if (this.step() === 3) this.step.set(2);
   }
 
   onContinue(): void {
-    const s = this.step();
-    if (s === 1 && this.canClose) {
-      this.step.set(2);
-    } else if (s === 2 && !this.reasonInvalid()) {
-      this.step.set(3);
-    }
+    if (this.step() === 2 && this.checklistAllDone()) this.step.set(3);
   }
 
   async onCloseClaim(): Promise<void> {
-    if (this.step() !== 3 || this.form.invalid || this.saving()) return;
+    if (this.form.invalid || this.saving()) return;
     this.saving.set(true);
     this.saveError.set(null);
-
     const { reason, retentionType } = this.form.value;
     try {
       const closedClaim = await firstValueFrom(
@@ -168,7 +158,6 @@ export class ClaimClosureModalComponent implements OnInit {
           confirmedBy: { userId: 'usr-current', name: this.claim.assignedHandler },
         })
       );
-
       const now = new Date().toISOString();
       const activity: ClaimActivity = {
         id: `act-${Date.now()}`,
@@ -180,46 +169,15 @@ export class ClaimClosureModalComponent implements OnInit {
         valueOld: this.claim.status,
         valueNew: 'Closed',
       };
-
       this.modalRef.close({ closedClaim, activity });
-    } catch (err) {
+    } catch {
       this.saveError.set('Failed to close claim. Please try again.');
       this.saving.set(false);
     }
   }
 
-  onViewTasks(): void {
-    this.modalRef.close(undefined);
-    setTimeout(() => {
-      document.querySelector('.pt-header')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 150);
-  }
-
-  onViewSections(): void {
-    this.modalRef.close(undefined);
-    this.router.navigate(['/claims', this.claim.claimId, 'sections']);
-  }
-
-  onViewLitigation(): void {
-    this.modalRef.close(undefined);
-    this.router.navigate(['/claims', this.claim.claimId, 'litigation']);
-  }
-
-  onViewPayments(): void {
-    this.modalRef.close(undefined);
-    this.router.navigate(['/claims', this.claim.claimId, 'payments']);
-  }
-
-  onViewProvider(): void {
-    this.modalRef.close(undefined);
-    this.router.navigate(['/claims', this.claim.claimId, 'provider']);
-  }
-
   retentionTypeLabel(type: string): string {
-    switch (type) {
-      case 'default':    return `Default (10 years — until ${this.defaultRetentionDate()})`;
-      case 'indefinite': return 'Indefinite';
-      default: return type;
-    }
+    if (type === 'default') return `Default (10 years — until ${this.defaultRetentionDate()})`;
+    return 'Indefinite';
   }
 }
