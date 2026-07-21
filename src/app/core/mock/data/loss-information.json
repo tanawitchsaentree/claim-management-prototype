@@ -14,7 +14,7 @@
           "id": "loc-001",
           "source": "cwb",
           "displayName": "Global Trade Solutions AG — Frankfurt",
-          "addressLine1": "44 Industriestraße",
+          "addressLine1": "Industriestraße 44",
           "postalCode": "60329",
           "city": "Frankfurt",
           "country": "Germany"
@@ -44,7 +44,7 @@
           "id": "loc-002",
           "source": "cwb",
           "displayName": "Kaufmann's Warehouse GmbH — Hamburg",
-          "addressLine1": "12 Lagerstraße",
+          "addressLine1": "Lagerstraße 12",
           "postalCode": "20457",
           "city": "Hamburg",
           "country": "Germany"

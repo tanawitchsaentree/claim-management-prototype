@@ -6,7 +6,7 @@
     </button>
   </div>
   <p class="plm-subtitle">
-    Policy <strong>{{ data.policyNumber }}</strong> · select one or more covered locations.
+    Policy <strong>{{ data.policyNumber }}</strong> · select the covered location.
   </p>
 </div>
 
@@ -35,7 +35,6 @@
       <h3 class="plm-section__title">Results</h3>
       <span class="plm-section__meta">
         @if (filtered().length > 1) { {{ filtered().length }} locations }
-        @if (selectedIds().size > 0) { · {{ selectedIds().size }} selected }
       </span>
     </header>
 
@@ -59,14 +58,15 @@
             @for (loc of filtered(); track loc.id) {
               <tr nxTableRow class="plm-row"
                   [class.plm-row--selected]="isSelected(loc.id)"
-                  (click)="toggleRow(loc.id, !isSelected(loc.id))">
+                  (click)="selectRow(loc.id)">
                 <td nxCell class="plm-col--check">
-                  <nx-checkbox
+                  <nx-radio
+                    name="plm-location"
+                    labelSize="small"
                     [checked]="isSelected(loc.id)"
-                    (checkedChange)="toggleRow(loc.id, $event)"
-                    (click)="$event.stopPropagation()"
+                    (click)="selectRow(loc.id); $event.stopPropagation()"
                     aria-label="Select location">
-                  </nx-checkbox>
+                  </nx-radio>
                 </td>
                 <td nxCell>
                   {{ loc.name }}
@@ -96,8 +96,7 @@
     <button nxButton="primary small" type="button"
             [disabled]="!hasSelection()"
             (click)="onConfirm()">
-      Add selected
-      @if (selectedIds().size > 0) { ({{ selectedIds().size }}) }
+      Add location
     </button>
   </div>
 </footer>

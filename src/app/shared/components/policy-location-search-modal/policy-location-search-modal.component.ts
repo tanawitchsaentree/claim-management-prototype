@@ -6,7 +6,7 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { PolicyLocation } from '../../../core/models';
@@ -32,7 +32,7 @@ export type PolicyLocationSearchModalResult =
     NxInputModule,
     NxButtonModule,
     NxIconModule,
-    NxCheckboxModule,
+    NxRadioModule,
     NxMessageModule,
     NxTableModule,
   ],
@@ -50,8 +50,8 @@ export class PolicyLocationSearchModalComponent implements OnInit {
   });
 
   readonly filtered     = signal<PolicyLocation[]>([]);
-  readonly selectedIds  = signal<Set<string>>(new Set());
-  readonly hasSelection = computed(() => this.selectedIds().size > 0);
+  readonly selectedId   = signal<string | null>(null);
+  readonly hasSelection = computed(() => this.selectedId() !== null);
 
   ngOnInit(): void {
     this.filtered.set(this.data.policyLocations);
@@ -74,12 +74,10 @@ export class PolicyLocationSearchModalComponent implements OnInit {
     this.filtered.set(this.data.policyLocations);
   }
 
-  isSelected(id: string): boolean { return this.selectedIds().has(id); }
+  isSelected(id: string): boolean { return this.selectedId() === id; }
 
-  toggleRow(id: string, checked: boolean): void {
-    const next = new Set(this.selectedIds());
-    checked ? next.add(id) : next.delete(id);
-    this.selectedIds.set(next);
+  selectRow(id: string): void {
+    this.selectedId.set(id);
   }
 
   onCancel(): void { this.modalRef.close(null); }
@@ -90,11 +88,10 @@ export class PolicyLocationSearchModalComponent implements OnInit {
   }
 
   onConfirm(): void {
-    if (!this.hasSelection()) return;
-    const ids = this.selectedIds();
-    this.modalRef.close({
-      kind: 'picked',
-      locations: this.data.policyLocations.filter(l => ids.has(l.id)),
-    });
+    const id = this.selectedId();
+    if (!id) return;
+    const location = this.data.policyLocations.find(l => l.id === id);
+    if (!location) return;
+    this.modalRef.close({ kind: 'picked', locations: [location] });
   }
 }

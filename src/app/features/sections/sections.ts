@@ -11,7 +11,7 @@ import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { RightStripService } from '../../core/services/right-strip.service';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom, catchError, of } from 'rxjs';
-import { ClaimSection, SectionEntity, CoverageReview, InstructionStatus } from '../../core/models/section.model';
+import { ClaimSection, SectionEntity, InstructionStatus } from '../../core/models/section.model';
 import { MockNotesService } from '../../core/mock/services/mock-notes.service';
 import { Note } from '../../core/models/note.model';
 import {
@@ -154,10 +154,6 @@ export class Sections {
 
   closeSectionDetail(): void {
     this.selectedSection.set(null);
-  }
-
-  coverageClass(review: CoverageReview): string {
-    return review.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z-]/g, '');
   }
 
   private noteFor(entityName: string): Note | undefined {

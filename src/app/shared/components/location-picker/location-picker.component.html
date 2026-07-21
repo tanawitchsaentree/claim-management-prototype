@@ -14,9 +14,6 @@
     </div>
   } @else {
     <div class="lp-selected">
-      @if (locations.length > 1) {
-        <p class="lp-counter">{{ locations.length }} locations</p>
-      }
       <div class="lp-table-wrap">
         <table nxTable class="lp-table">
           <thead>
@@ -53,11 +50,6 @@
           </tbody>
         </table>
       </div>
-      <button nxButton="secondary small" type="button" class="lp-add-another"
-              (click)="addLocation(vm.policyLocations)">
-        <nx-icon name="plus" nxIconPositionStart></nx-icon>
-        Add another location
-      </button>
     </div>
   }
 

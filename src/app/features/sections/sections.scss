@@ -472,10 +472,10 @@ $brand-blue:          var(--info);
   table-layout: fixed;
 
   .col-toggle   { width: 48px;  padding: 0 !important; }
-  .col-entity   { width: 28%; }
-  .col-damage   { width: 32%; }
-  .col-coverage  { width: 200px; }
-  .col-comments  { width: 72px; text-align: center !important; }
+  .col-entity   { width: 24%; }
+  .col-damage   { width: 26%; }
+  .col-coverage  { width: 240px; }
+  .col-comments  { width: 56px; text-align: center !important; padding: 8px 4px !important; }
   .col-actions   { width: 56px; text-align: center !important; padding: 0 !important; }
 
   th[nxHeaderCell] {
@@ -495,6 +495,8 @@ $brand-blue:          var(--info);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  td.col-coverage { overflow: visible; }
 }
 
 
@@ -518,21 +520,8 @@ $brand-blue:          var(--info);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
-
-  &--standard-review {
-    background: var(--claim-status-bound-bg, #e8f5e9);
-    color: var(--claim-status-bound-color, #2e7d32);
-  }
-
-  &--additional-information-required {
-    background: var(--task-status-pending-bg, #fff8e1);
-    color: var(--task-status-pending-color, #e65100);
-  }
-
-  &--enhanced-review-required {
-    background: var(--message-error-background, #fdecea);
-    color: var(--message-error-color, #c62828);
-  }
+  background: var(--ui-03);
+  color: var(--text-01);
 }
 
 .coverage-chip-btn {

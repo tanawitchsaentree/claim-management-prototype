@@ -165,7 +165,8 @@ export class LocationPickerComponent implements OnInit {
   }
 
   private _commitItems(items: LocationItem[]): void {
-    this.locations = [...this.locations, ...items];
+    // Single-location-only: a newly picked location replaces whatever was there.
+    this.locations = items.slice(0, 1);
     this._emit();
   }
 
