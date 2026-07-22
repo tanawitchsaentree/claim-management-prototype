@@ -115,20 +115,82 @@
         }
       },
       "expectedUI": {
-        "description": "All 7 condition rows show green check icon + 'Clear' badge. Continue is enabled. Flow: checklist → reason → confirmation → closed.",
+        "description": "All 7 condition rows show green check icon + 'Clear' badge. Continue is enabled. Flow: checklist → reason & retention → confirmation warning → closed.",
         "visualCues": [
           "All rows: green check icon (check-circle-o), green 'Clear' badge",
           "No red rows",
           "Continue button enabled",
-          "After Continue: modal title changes to 'Close Claim — Reason'",
-          "After second Continue (with reason): 'Close Claim — Confirmation' with retention selection",
+          "After Continue: modal title changes to 'Close Claim — Reason & Retention'",
+          "After selecting reason + Continue: modal title changes to 'Close Claim — Confirmation'",
           "After Close Claim: status chip updates to Closed"
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click 'Close Claim', then Continue, select reason, Continue, Close Claim",
+        "trigger": "Click 'Close Claim', then Continue, select reason, Continue, Yes — Close Claim",
         "expectedResult": "Claim status changes to Closed, closure panel visible"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "After the Reason & Retention step, a single combined confirmation warning gates the final Close Claim action; clicking No returns the handler to the checklist.",
+      "plainStatement": "Clicking **Continue** on the Reason & Retention step opens **Close Claim — Confirmation** — a single warning dialog covering 4 handler-attested items: no pending bills, recoveries & deductibles resolved, final reports completed, and Provider Management survey completed/rejected-with-rationale. These are **not** system-validated. Default state is unconfirmed. Clicking **Yes — Close Claim** proceeds to closure processing. Clicking **No** blocks closure and returns the handler to the **Pre-closure Checklist** step (not just Back to Reason).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same all-clear setup as AC-02 — reach the Reason & Retention step, then Continue into the Confirmation step.",
+        "preconditions": [
+          {
+            "text": "Modal title reads 'Close Claim — Confirmation' after Continue from Reason & Retention",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "A single warning message lists all 4 confirmation items — not 4 separate pop-ups",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Footer shows 'No' and 'Yes — Close Claim' buttons",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Clicking 'No' returns to the Pre-closure Checklist step, not the Reason step",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "One combined nx-message warning listing the 4 handler-attested items as a bullet list, followed by No/Yes footer buttons.",
+        "visualCues": [
+          "Modal title: 'Close Claim — Confirmation'",
+          "Single warning message (context=warning), not four separate dialogs",
+          "4 bullet items: bills received/processed, recoveries & deductibles, final reports, Provider Management survey",
+          "Footer: 'No' (secondary) and 'Yes — Close Claim' (primary)",
+          "Clicking 'No' navigates back to the Pre-closure Checklist step (step 2), not the Reason step",
+          "Clicking 'Yes — Close Claim' proceeds to closure processing — claim status becomes Closed"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click 'Close Claim' → Continue past checklist → select reason → Continue → observe Confirmation step → click No, then redo and click Yes",
+        "expectedResult": "Clicking No returns to the checklist step; clicking Yes closes the claim"
       }
     }
   ]
