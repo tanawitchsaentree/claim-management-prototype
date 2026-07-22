@@ -45,10 +45,17 @@ import {
 import {
   MassEventEditModalComponent,
   MassEventModalData,
+  MassEventModalResult,
 } from '../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { FileRestriction, RESTRICTION_REASONS, AccessListEntry } from '../../../core/models/claim-overview.model';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AuthService } from '../../../core/services/auth';
+import {
+  MassEventSearchModalComponent,
+  MassEventSearchModalData,
+  MassEventSearchModalResult,
+} from '../../../shared/components/mass-event-search-modal/mass-event-search-modal.component';
 
 interface OverviewVM {
   loading: boolean;
@@ -98,6 +105,7 @@ const TASKS_PAGE_SIZE = 10;
     StatusChipComponent,
     ClaimPreviewDirective,
     ConfirmDialogComponent,
+    MassEventSearchModalComponent,
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss',
@@ -114,6 +122,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly stageSvc       = inject(ScenarioStageService);
   private readonly dialogSvc      = inject(NxDialogService);
   private readonly massEventSvc   = inject(MockMassEventService);
+  readonly auth                   = inject(AuthService);
   private readonly destroyRef     = inject(DestroyRef);
   private readonly toast          = inject(ToastService);
   private readonly userDir        = inject(MockUserDirectoryService);
@@ -377,6 +386,102 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // modal has a proper height constraint + scroll (the component's SCSS
     // assumes the .me-edit-modal-panel wrapper).
     this.dialogSvc.open(MassEventEditModalComponent, { data, panelClass: 'me-edit-modal-panel' });
+  }
+
+  // ── Mass Event linking (admin/KCM only — gated in template via auth.isKcm()) ──
+
+  async onChangeMassEvent(claim: ClaimOverview): Promise<void> {
+    const currentMassEventId = claim.massEventId;
+    const ref = this.dialogSvc.open<MassEventSearchModalComponent, MassEventSearchModalData, MassEventSearchModalResult>(
+      MassEventSearchModalComponent,
+      { data: { currentMassEventId }, panelClass: 'me-edit-modal-panel' },
+    );
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result) return;
+
+    let event: MassEvent;
+    if (result.kind === 'fallback-manual') {
+      const created = await this.createMassEventManually();
+      if (!created) return;
+      event = created;
+    } else {
+      event = result.event;
+    }
+
+    if (currentMassEventId && currentMassEventId !== event.id) {
+      const confirmed = await firstValueFrom(
+        this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+          data: {
+            title: 'Replace linked mass event?',
+            message: `This claim is already linked to ${currentMassEventId}. Linking ${event.id} will replace that link.`,
+            confirmLabel: 'Replace link',
+          },
+          width: '440px',
+        }).afterClosed(),
+      );
+      if (!confirmed) return;
+    }
+
+    const user = this.auth.user();
+    await firstValueFrom(this.massEventSvc.linkClaim(claim.claimId, event.id, { userId: user.id, name: user.name }));
+    await this.refreshMassEvent(claim.claimId, event.id, 'pending');
+    this.toast.success('Mass event linked', `${event.id} — pending confirmation`);
+  }
+
+  /** Opens the full create form; the new event is persisted (findable everywhere) but never auto-linked here. */
+  private async createMassEventManually(): Promise<MassEvent | null> {
+    const data: MassEventModalData = { mode: 'create', existingIds: this.massEventSvc.allIds() };
+    const ref = this.dialogSvc.open<MassEventEditModalComponent, MassEventModalData, MassEventModalResult | null>(
+      MassEventEditModalComponent,
+      { data, panelClass: 'me-edit-modal-panel' },
+    );
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result) return null;
+    return firstValueFrom(this.massEventSvc.addEvent(result.event));
+  }
+
+  async onConfirmMassEventLink(claim: ClaimOverview): Promise<void> {
+    if (!claim.massEventId) return;
+    await firstValueFrom(this.massEventSvc.confirmLink(claim.claimId));
+    await this.refreshMassEvent(claim.claimId, claim.massEventId, 'confirmed');
+    this.toast.success('Mass event link confirmed', claim.massEventId);
+  }
+
+  async onUnlinkMassEvent(claim: ClaimOverview): Promise<void> {
+    const massEventId = claim.massEventId;
+    if (!massEventId) return;
+
+    const confirmed = await firstValueFrom(
+      this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+        data: {
+          title: 'Unlink mass event?',
+          message: `Remove the link to ${massEventId} from this claim?`,
+          confirmLabel: 'Unlink',
+          confirmDanger: true,
+        },
+        width: '440px',
+      }).afterClosed(),
+    );
+    if (!confirmed) return;
+
+    await firstValueFrom(this.massEventSvc.unlinkClaim(claim.claimId));
+    await this.refreshMassEvent(claim.claimId, undefined, undefined);
+    this.toast.success('Mass event unlinked', massEventId);
+  }
+
+  private async refreshMassEvent(
+    claimId: string,
+    massEventId: string | undefined,
+    linkStatus: 'pending' | 'confirmed' | undefined,
+  ): Promise<void> {
+    const massEvent = massEventId ? await firstValueFrom(this.massEventSvc.getById(massEventId)) : null;
+    const cur = this.vm$.value;
+    if (cur.claim?.claimId !== claimId) return;
+    this.vm$.next({
+      ...cur,
+      claim: { ...cur.claim, massEventId, massEventLinkStatus: linkStatus },
+      massEvent,
+    });
   }
 
   formatDate(iso: string): string {

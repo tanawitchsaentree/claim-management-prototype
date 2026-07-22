@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
+import { NxModalRef, NX_MODAL_DATA, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -9,7 +9,17 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxTimefieldModule } from '@allianz/ng-aquila/timefield';
-import { MassEvent } from '../../../../core/models';
+import { NxTableModule } from '@allianz/ng-aquila/table';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
+import { firstValueFrom } from 'rxjs';
+import { MassEvent, Claim } from '../../../../core/models';
+import { MockMassEventService } from '../../../../core/mock/services/mock-mass-event.service';
+import {
+  ClaimSearchModalComponent,
+  ClaimSearchModalData,
+  ClaimSearchModalResult,
+} from '../../../../shared/components/claim-search-modal/claim-search-modal.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 export type MassEventModalMode = 'edit' | 'create' | 'view';
 
@@ -37,6 +47,8 @@ export interface MassEventModalResult {
     NxDropdownModule,
     NxDatefieldModule,
     NxTimefieldModule,
+    NxTableModule,
+    NxContextMenuModule,
   ],
   templateUrl: './mass-event-edit-modal.component.html',
   styleUrl: './mass-event-edit-modal.component.scss',
@@ -44,6 +56,8 @@ export interface MassEventModalResult {
 export class MassEventEditModalComponent {
   private readonly ref  = inject<NxModalRef<MassEventEditModalComponent, MassEventModalResult | null>>(NxModalRef);
   private readonly data = inject<MassEventModalData>(NX_MODAL_DATA);
+  private readonly massEventSvc = inject(MockMassEventService);
+  private readonly dialogSvc    = inject(NxDialogService);
 
   readonly mode      = signal<MassEventModalMode>(this.data.mode);
   readonly isEdit    = computed(() => this.mode() === 'edit');
@@ -84,10 +98,57 @@ export class MassEventEditModalComponent {
 
   readonly massEventId = computed(() => this.data.event?.id ?? '');
 
+  readonly linkedClaims = signal<Claim[]>([]);
+
   constructor() {
     if (this.isView()) {
       this.form.disable();
     }
+    if ((this.isEdit() || this.isView()) && this.massEventId()) {
+      this.loadLinkedClaims();
+    }
+  }
+
+  private async loadLinkedClaims(): Promise<void> {
+    const claims = await firstValueFrom(this.massEventSvc.getLinkedClaims(this.massEventId()));
+    this.linkedClaims.set(claims);
+  }
+
+  async onLinkClaim(): Promise<void> {
+    const ref = this.dialogSvc.open<ClaimSearchModalComponent, ClaimSearchModalData, ClaimSearchModalResult>(
+      ClaimSearchModalComponent,
+      { data: { excludeClaimIds: this.linkedClaims().map(c => c.claimId) }, panelClass: 'me-edit-modal-panel' },
+    );
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result) return;
+
+    await firstValueFrom(
+      this.massEventSvc.linkClaim(result.claim.claimId, this.massEventId(), { userId: 'usr-current', name: 'Current User' }),
+    );
+    await this.loadLinkedClaims();
+  }
+
+  async onConfirmClaimLink(claim: Claim): Promise<void> {
+    await firstValueFrom(this.massEventSvc.confirmLink(claim.claimId));
+    await this.loadLinkedClaims();
+  }
+
+  async onUnlinkClaim(claim: Claim): Promise<void> {
+    const confirmed = await firstValueFrom(
+      this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+        data: {
+          title: 'Unlink claim?',
+          message: `Remove the link between ${claim.claimId} and this mass event?`,
+          confirmLabel: 'Unlink',
+          confirmDanger: true,
+        },
+        width: '440px',
+      }).afterClosed(),
+    );
+    if (!confirmed) return;
+
+    await firstValueFrom(this.massEventSvc.unlinkClaim(claim.claimId));
+    await this.loadLinkedClaims();
   }
 
   onCancel(): void {

@@ -100,7 +100,10 @@
 // Stacked formfields width 100% mandatory (CONTEXT.md NDBX gotcha).
 .me-grid {
   display: grid;
-  gap: 32px 32px;
+  // 20px, not 32px — nx-formfield already reserves ~44px below each input
+  // for hint/error text even when neither is present, so 32px on top of
+  // that made every row look far more spread out than the visual design.
+  gap: 20px 32px;
 
   &--4col { grid-template-columns: repeat(4, 1fr); }
   &--3col { grid-template-columns: repeat(3, 1fr); }
@@ -118,6 +121,58 @@
 // Description always starts at col 1 and spans 2 cols (under CAT + Product).
 .me-section__textarea {
   grid-column: 1 / span 2;
+}
+
+// ─── Linked claims ───────────────────────────────────────────────────────────
+.me-section__titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.me-linked-empty {
+  margin: 0;
+  padding: 16px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.me-linked-table {
+  width: 100%;
+
+  td[nxCell], th[nxHeaderCell] { padding: 18px 16px !important; }
+}
+
+.me-linked-table__action-col {
+  width: 64px;
+  text-align: right;
+}
+
+.me-link-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+
+  &--pending   { background: var(--task-status-pending-bg, #fff8e1); color: var(--task-status-pending-color, #e65100); }
+  &--confirmed { background: var(--claim-status-bound-bg, #e8f5e9);  color: var(--claim-status-bound-color, #2e7d32); }
+}
+
+.me-kebab__dots {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
 }
 
 // ─── Footer ────────────────────────────────────────────────────────────────

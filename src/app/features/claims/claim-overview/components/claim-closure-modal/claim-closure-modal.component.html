@@ -122,6 +122,20 @@
       </nx-radio-group>
     </form>
 
+  }
+
+  <!-- STEP 4 — Post-checklist confirmation warning -->
+  @if (step() === 4) {
+    <nx-message context="warning" class="ccm-warning">
+      <strong>Please confirm the following before closing this claim.</strong>
+      This is a handler-attested check — it is not validated automatically.
+    </nx-message>
+    <ul class="ccm-confirm-list">
+      @for (statement of confirmationStatements; track statement) {
+        <li class="ccm-confirm-item">{{ statement }}</li>
+      }
+    </ul>
+
     @if (saveError()) {
       <nx-message context="error" class="ccm-save-error">{{ saveError() }}</nx-message>
     }
@@ -148,9 +162,17 @@
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
     <button nxButton="primary small" type="button"
-      [disabled]="form.invalid || saving()" (click)="onCloseClaim()">
+      [disabled]="form.invalid" (click)="onContinueToConfirmation()">
+      Continue
+    </button>
+  }
+
+  @if (step() === 4) {
+    <button nxButton="secondary small" type="button" [disabled]="saving()" (click)="onDeclineConfirmation()">No</button>
+    <button nxButton="primary small" type="button"
+      [disabled]="saving()" (click)="onCloseClaim()">
       @if (saving()) { <nx-spinner size="small"></nx-spinner> }
-      @else { Close Claim }
+      @else { Yes — Close Claim }
     </button>
   }
 

@@ -448,16 +448,37 @@ code {
   //   .nx-modal-container--entering  transform: scale(1); opacity: 1
   //   .nx-modal-container--exiting   transform: scale(1.3); opacity: 0
   // We replace scale(1.3) with translateY(100%) for slide behavior.
+  //
+  // IMPORTANT: NxModalContainer.getAnimationDuration() (modal.mjs) reads the
+  // --transitionDuration custom property with parseFloat() (no unit parsing)
+  // and uses that single value as the setTimeout for BOTH the enter and exit
+  // JS state machine — but only the EXIT side matters here: afterClosed()
+  // (and thus _overlayRef.dispose(), which yanks the CDK backdrop instantly,
+  // no fade) doesn't fire until this timer elapses. Several flows in this
+  // app chain a second dialogSvc.open() off of afterClosed() (e.g. "Can't
+  // find it? Create manually" closing the search modal then opening the
+  // create form) — if this timer runs any longer than the exit CSS's real
+  // duration, there's a dead window with literally no backdrop where the
+  // real page flashes through, undimmed, before the next dialog opens.
+  // So: keep --transitionDuration matched to the EXIT duration (short, so
+  // chained dialogs hand off quickly) — the ENTER side has no such
+  // disposal step to desync, so its own CSS transition can run longer than
+  // this timer for a smoother single-dialog open. Must be set directly on
+  // nx-modal-container's own selector below — custom properties are
+  // inherited, but the component's :host rule declares this SAME property
+  // directly on itself, and a directly-declared value always wins over an
+  // inherited one regardless of !important.
   .nx-modal-container,
   .nx-modal__container,
   nx-modal-container {
+    --transitionDuration: 160 !important;
     transform: translateY(100%) !important;
-    opacity: 1 !important;
+    opacity: 0 !important;
     border-radius: 8px 8px 0 0 !important;
     box-shadow: 0 -8px 24px var(--claim-overlay-shadow) !important;
     height: 100% !important;
     max-height: 100% !important;
-    transition: transform 280ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1), opacity 320ms ease-out !important;
 
     &.nx-modal-container--entering {
       transform: translateY(0) !important;
@@ -465,7 +486,8 @@ code {
     }
     &.nx-modal-container--exiting {
       transform: translateY(100%) !important;
-      opacity: 1 !important;
+      opacity: 0 !important;
+      transition: transform 160ms cubic-bezier(0.4, 0, 1, 1), opacity 140ms ease-in !important;
     }
   }
 }

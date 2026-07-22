@@ -125,6 +125,62 @@
       </nx-formfield>
     </div>
   </section>
+
+  <!-- Section: Linked claims — only meaningful once the event has an ID -->
+  @if (!isCreate()) {
+  <section class="me-section">
+    <div class="me-section__titlebar">
+      <h3 class="me-section__title">Linked claims</h3>
+      <button nxButton="secondary small" type="button" (click)="onLinkClaim()">
+        + Link claim
+      </button>
+    </div>
+
+    @if (linkedClaims().length === 0) {
+      <p class="me-linked-empty">No claims are linked to this mass event.</p>
+    } @else {
+      <table nxTable class="me-linked-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell>Claim ID</th>
+            <th nxHeaderCell>Client</th>
+            <th nxHeaderCell>Status</th>
+            <th nxHeaderCell class="me-linked-table__action-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (claim of linkedClaims(); track claim.claimId) {
+            <tr nxTableRow>
+              <td nxCell>{{ claim.claimId }}</td>
+              <td nxCell>{{ claim.clientName }}</td>
+              <td nxCell>
+                <span class="me-link-status-badge me-link-status-badge--{{ claim.massEventLinkStatus }}">
+                  {{ claim.massEventLinkStatus === 'confirmed' ? 'Confirmed' : 'Pending confirmation' }}
+                </span>
+              </td>
+              <td nxCell class="me-linked-table__action-col">
+                <button nxIconButton="tertiary small" type="button"
+                        [nxContextMenuTriggerFor]="linkedClaimMenu"
+                        class="me-kebab"
+                        aria-label="Linked claim actions">
+                  <span class="me-kebab__dots" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                  </span>
+                </button>
+                <nx-context-menu #linkedClaimMenu="nxContextMenu">
+                  @if (claim.massEventLinkStatus === 'pending') {
+                    <button nxContextMenuItem type="button" (click)="onConfirmClaimLink(claim)">Confirm link</button>
+                  }
+                  <button nxContextMenuItem type="button" (click)="onUnlinkClaim(claim)">Unlink</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+  }
 </form>
 
 <!-- Footer -->

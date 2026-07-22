@@ -102,11 +102,26 @@
                   <dd>{{ me.country }} · {{ me.region }}</dd>
                 </div>
               </dl>
+              @if (claim.massEventLinkStatus === 'pending') {
+                <span class="me-popover__pending-badge">Pending confirmation</span>
+              }
               <div class="me-popover__footer">
                 <nx-link><a (click)="meTrigger.close(); openMassEventDetail()">View full details →</a></nx-link>
+                @if (auth.isKcm()) {
+                  @if (claim.massEventLinkStatus === 'pending') {
+                    <nx-link><a (click)="meTrigger.close(); onConfirmMassEventLink(claim)">Confirm link</a></nx-link>
+                  }
+                  <nx-link><a (click)="meTrigger.close(); onChangeMassEvent(claim)">Change mass event</a></nx-link>
+                  <nx-link class="me-popover__unlink"><a (click)="meTrigger.close(); onUnlinkMassEvent(claim)">Unlink</a></nx-link>
+                }
               </div>
             </div>
           </nx-popover>
+        } @else if (auth.isKcm()) {
+          <div class="co-field">
+            <span class="co-label">Mass Event</span>
+            <nx-link size="small"><a (click)="onChangeMassEvent(claim)">+ Link mass event</a></nx-link>
+          </div>
         }
       </div>
 

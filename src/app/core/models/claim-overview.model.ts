@@ -1,3 +1,5 @@
+import { MassEventLinkStatus } from './claim.model';
+
 export interface AccessListEntry {
   userId:   string;
   name:     string;
@@ -77,6 +79,8 @@ export interface ClaimOverview {
 
   // Mass Event link
   massEventId?: string;
+  massEventLinkStatus?: MassEventLinkStatus;
+  massEventLinkedBy?: { userId: string; name: string; at: string };
 
   // File restriction (BMPCC-10994) — informational only, no enforcement
   restriction?: FileRestriction;

@@ -1,0 +1,97 @@
+<div class="mesm-header">
+  <div class="mesm-header-row">
+    <h2 class="mesm-title">Find Mass Event</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="mesm-subtitle">Search and select the mass event to link to this claim.</p>
+</div>
+
+<div class="mesm-body">
+
+  <form [formGroup]="searchForm" class="mesm-form" (ngSubmit)="onSearch()">
+    <div class="mesm-search-row__inputs">
+      <nx-formfield label="Mass Event ID">
+        <input nxInput formControlName="id" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Mass Event code">
+        <input nxInput formControlName="code" autocomplete="off" />
+      </nx-formfield>
+      <nx-formfield label="Mass Event name">
+        <input nxInput formControlName="name" autocomplete="off" />
+      </nx-formfield>
+    </div>
+    <div class="mesm-search-row__actions">
+      <button nxButton="primary small" type="submit">Search</button>
+      <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
+    </div>
+  </form>
+
+  <section class="mesm-section">
+    <header class="mesm-section__header">
+      <h3 class="mesm-section__title">Results</h3>
+      <span class="mesm-section__meta">
+        @if (results().length > 1) { {{ results().length }} mass events }
+      </span>
+    </header>
+
+    @if (results().length === 0) {
+      <p class="mesm-empty">No mass events match your search.</p>
+    } @else {
+      <div class="mesm-table-wrap">
+        <table nxTable class="mesm-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="mesm-col--check"></th>
+              <th nxHeaderCell>Mass Event ID</th>
+              <th nxHeaderCell>Code</th>
+              <th nxHeaderCell>Name</th>
+              <th nxHeaderCell>Period</th>
+              <th nxHeaderCell>Country</th>
+              <th nxHeaderCell>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (event of results(); track event.id) {
+              <tr nxTableRow class="mesm-row"
+                  [class.mesm-row--selected]="isSelected(event.id)"
+                  (click)="selectRow(event.id)">
+                <td nxCell class="mesm-col--check">
+                  <nx-radio
+                    name="mesm-event"
+                    labelSize="small"
+                    [checked]="isSelected(event.id)"
+                    (click)="selectRow(event.id); $event.stopPropagation()"
+                    aria-label="Select mass event">
+                  </nx-radio>
+                </td>
+                <td nxCell>{{ event.id }}</td>
+                <td nxCell>{{ event.code }}</td>
+                <td nxCell>{{ event.name }}</td>
+                <td nxCell>{{ event.dateStart }} – {{ event.dateEnd }}</td>
+                <td nxCell>{{ event.country }}</td>
+                <td nxCell>{{ event.region }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>
+
+<footer class="mesm-footer">
+  <button nxPlainButton type="button" class="mesm-fallback-link" (click)="onCreateManually()">
+    <nx-icon name="plus" nxIconPositionStart></nx-icon>
+    Can't find it? Create manually
+  </button>
+  <div class="mesm-footer__actions">
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!hasSelection()"
+            (click)="onConfirm()">
+      Link Mass Event
+    </button>
+  </div>
+</footer>

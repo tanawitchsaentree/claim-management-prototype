@@ -161,6 +161,36 @@
 .ccm-warning  { margin-bottom: 16px; }
 .ccm-save-error { margin-top: 12px; }
 
+// ─── Confirmation warning list ─────────────────────────────────────────────────
+
+.ccm-confirm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ccm-confirm-item {
+  position: relative;
+  padding-left: 18px;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  line-height: 1.4;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+}
+
 .ccm-section-label {
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;

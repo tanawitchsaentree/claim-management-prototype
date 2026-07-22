@@ -127,9 +127,10 @@ export class MassEventsComponent {
   async onAdd(): Promise<void> {
     const result = await this.openModal({
       mode: 'create',
-      existingIds: this.all().map(e => e.id),
+      existingIds: this.svc.allIds(),
     });
     if (!result) return;
+    await firstValueFrom(this.svc.addEvent(result.event));
     this.all.update(rows => [result.event, ...rows]);
     this.flashToast(`Mass event "${result.event.name}" created`);
   }

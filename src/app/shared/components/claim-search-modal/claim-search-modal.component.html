@@ -1,0 +1,79 @@
+<div class="csm-header">
+  <div class="csm-header-row">
+    <h2 class="csm-title">Find claim</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="csm-subtitle">Search by claim ID, client name, or description.</p>
+</div>
+
+<div class="csm-body">
+
+  <form [formGroup]="searchForm" class="csm-form" (ngSubmit)="onSearch()">
+    <nx-formfield label="Search">
+      <input nxInput formControlName="query" autocomplete="off" placeholder="e.g. CLM-2024-001" />
+    </nx-formfield>
+    <div class="csm-form__actions">
+      <button nxButton="primary small" type="submit">Search</button>
+      <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
+    </div>
+  </form>
+
+  <section class="csm-section">
+    <header class="csm-section__header">
+      <h3 class="csm-section__title">Results</h3>
+      <span class="csm-section__meta">
+        @if (results().length > 1) { {{ results().length }} claims }
+      </span>
+    </header>
+
+    @if (results().length === 0) {
+      <p class="csm-empty">No claims match your search.</p>
+    } @else {
+      <div class="csm-table-wrap">
+        <table nxTable class="csm-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="csm-col--check"></th>
+              <th nxHeaderCell>Claim ID</th>
+              <th nxHeaderCell>Client</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell>Loss date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (claim of results(); track claim.claimId) {
+              <tr nxTableRow class="csm-row"
+                  [class.csm-row--selected]="isSelected(claim.claimId)"
+                  (click)="selectRow(claim.claimId)">
+                <td nxCell class="csm-col--check">
+                  <nx-radio
+                    name="csm-claim"
+                    labelSize="small"
+                    [checked]="isSelected(claim.claimId)"
+                    (click)="selectRow(claim.claimId); $event.stopPropagation()"
+                    aria-label="Select claim">
+                  </nx-radio>
+                </td>
+                <td nxCell>{{ claim.claimId }}</td>
+                <td nxCell>{{ claim.clientName }}</td>
+                <td nxCell>{{ claim.status }}</td>
+                <td nxCell>{{ claim.lossDate }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>
+
+<footer class="csm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button"
+          [disabled]="!hasSelection()"
+          (click)="onConfirm()">
+    Select claim
+  </button>
+</footer>

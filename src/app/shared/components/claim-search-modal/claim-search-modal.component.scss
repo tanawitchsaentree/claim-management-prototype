@@ -1,0 +1,85 @@
+@use '../../styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+  max-height: 100% !important;
+  height: 100%;
+}
+
+.csm-header { @include modal.header; }
+.csm-header-row { @include modal.header-row; }
+.csm-title { @include modal.title; }
+.csm-subtitle { @include modal.subtitle; }
+
+.csm-body { @include modal.body; }
+
+.csm-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+
+  nx-formfield { flex: 1; }
+}
+
+.csm-form__actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.csm-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--ui-04);
+}
+
+.csm-section__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.csm-section__title {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.csm-section__meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.csm-empty {
+  margin: 4px 0;
+  padding: 8px 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.csm-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+}
+
+.csm-table {
+  width: 100%;
+
+  td[nxCell], th[nxHeaderCell] { padding: 18px 16px !important; }
+}
+
+.csm-col--check { width: 48px; }
+
+.csm-row {
+  cursor: pointer;
+  &--selected td { background: var(--claim-overlay-hover); }
+  &:hover td { background: var(--claim-overlay-hover); }
+}
+
+.csm-footer {
+  @include modal.footer;
+}

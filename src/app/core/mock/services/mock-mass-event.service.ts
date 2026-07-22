@@ -1,11 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MassEvent, MassEventFilters } from '../../models';
+import { MassEvent, MassEventFilters, Claim, MassEventLinkStatus } from '../../models';
 import { MockBaseService } from './mock-base.service';
+import { MockStateService } from '../state/mock-state.service';
 import rawData from '../data/mass-events.json';
 
 @Injectable({ providedIn: 'root' })
 export class MockMassEventService extends MockBaseService {
+  private readonly stateSvc = inject(MockStateService);
+
   private cache: MassEvent[] = (rawData as unknown as MassEvent[]).map(e => ({ ...e }));
 
   search(filters?: MassEventFilters): Observable<MassEvent[]> {
@@ -18,11 +21,60 @@ export class MockMassEventService extends MockBaseService {
     return this.respond(found ? { ...found } : null);
   }
 
+  /** All claims currently pointing at this mass event, admin/KCM-only view. */
+  getLinkedClaims(massEventId: string): Observable<Claim[]> {
+    const linked = this.stateSvc.state().claims.filter(c => c.massEventId === massEventId);
+    return this.respond(linked.map(c => ({ ...c })));
+  }
+
+  /** Creates a new link in 'pending' state — never auto-confirms. */
+  linkClaim(claimId: string, massEventId: string, by: { userId: string; name: string }): Observable<void> {
+    const linkedBy = { userId: by.userId, name: by.name, at: new Date().toISOString() };
+    this.stateSvc.patchClaims(claims =>
+      claims.map(c => c.claimId === claimId
+        ? { ...c, massEventId, massEventLinkStatus: 'pending' as MassEventLinkStatus, massEventLinkedBy: linkedBy }
+        : c
+      )
+    );
+    this.stateSvc.patchOverview(claimId, { massEventId, massEventLinkStatus: 'pending', massEventLinkedBy: linkedBy });
+    return this.respond(undefined);
+  }
+
+  confirmLink(claimId: string): Observable<void> {
+    this.stateSvc.patchClaims(claims =>
+      claims.map(c => c.claimId === claimId ? { ...c, massEventLinkStatus: 'confirmed' as MassEventLinkStatus } : c)
+    );
+    this.stateSvc.patchOverview(claimId, { massEventLinkStatus: 'confirmed' });
+    return this.respond(undefined);
+  }
+
+  unlinkClaim(claimId: string): Observable<void> {
+    this.stateSvc.patchClaims(claims =>
+      claims.map(c => c.claimId === claimId
+        ? { ...c, massEventId: undefined, massEventLinkStatus: undefined, massEventLinkedBy: undefined }
+        : c
+      )
+    );
+    this.stateSvc.patchOverview(claimId, { massEventId: undefined, massEventLinkStatus: undefined, massEventLinkedBy: undefined });
+    return this.respond(undefined);
+  }
+
   /** Used by ScenarioOverrides.massEventsAppend so AC tickets can seed events. */
   appendEvents(events: MassEvent[]): void {
     const ids = new Set(this.cache.map(e => e.id));
     const fresh = events.filter(e => !ids.has(e.id));
     this.cache = [...this.cache, ...fresh];
+  }
+
+  /** Persists a newly created event so it's findable via search()/getById() everywhere. */
+  addEvent(event: MassEvent): Observable<MassEvent> {
+    this.appendEvents([event]);
+    return this.respond({ ...event });
+  }
+
+  /** IDs already in the shared cache — used to seed the create-modal's next-ID generator. */
+  allIds(): string[] {
+    return this.cache.map(e => e.id);
   }
 
   resetState(): void {

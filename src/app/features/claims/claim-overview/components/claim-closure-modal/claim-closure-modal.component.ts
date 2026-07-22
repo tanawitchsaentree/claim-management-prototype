@@ -26,7 +26,7 @@ export interface ClaimClosureModalResult {
   activity: ClaimActivity;
 }
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4;
 
 const CLOSURE_REASONS: ClosureReason[] = [
   'Claim Finalised',
@@ -39,6 +39,14 @@ interface ChecklistItem {
   passed: boolean;
   failHint: string;
 }
+
+// Handler-attested only — no system/API validation exists for these against another BC.
+const CONFIRMATION_STATEMENTS: string[] = [
+  'All bills against this section/claim have been received and processed',
+  'All pending subrogation, salvage, or recovery activity has been resolved (or recovery potential confirmed as none)',
+  'All final reports are completed',
+  'Provider Management survey is completed, or rejected with a rationale provided',
+];
 
 @Component({
   selector: 'app-claim-closure-modal',
@@ -84,6 +92,8 @@ export class ClaimClosureModalComponent {
 
   readonly checklistAllDone = computed(() => this.checklistItems.every(i => i.passed));
 
+  readonly confirmationStatements = CONFIRMATION_STATEMENTS;
+
   readonly form: FormGroup = this.fb.group({
     reason:        [null, Validators.required],
     retentionType: ['default', Validators.required],
@@ -94,6 +104,7 @@ export class ClaimClosureModalComponent {
       case 1: return 'Close Claim — Blockers';
       case 2: return 'Close Claim — Pre-closure Checklist';
       case 3: return 'Close Claim — Reason & Retention';
+      case 4: return 'Close Claim — Confirmation';
     }
   });
 
@@ -139,10 +150,24 @@ export class ClaimClosureModalComponent {
 
   onBack(): void {
     if (this.step() === 3) this.step.set(2);
+    if (this.step() === 4) this.step.set(3);
   }
 
   onContinue(): void {
     if (this.step() === 2 && this.checklistAllDone()) this.step.set(3);
+  }
+
+  onContinueToConfirmation(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.step.set(4);
+  }
+
+  /** Handler clicks "No" — closure is blocked; return to the checklist, not just the reason step. */
+  onDeclineConfirmation(): void {
+    this.step.set(2);
   }
 
   async onCloseClaim(): Promise<void> {

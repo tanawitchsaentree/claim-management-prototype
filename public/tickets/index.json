@@ -13,6 +13,42 @@
       "title": "Claim ready to close — all tasks done, all sections resolved"
     },
     {
+      "id": "CHAMP-CLOSE-SECTION",
+      "file": "close-section.json",
+      "module": "Claims",
+      "title": "Close Section — Pre-condition Validation & Lifecycle"
+    },
+    {
+      "id": "CHAMP-PRECLOSURE-CHECKLIST",
+      "file": "champ-preclosure-checklist.json",
+      "module": "Claims",
+      "title": "Pre-closure Checklist — Always-clickable Close Claim with status checklist"
+    },
+    {
+      "id": "BMPCC-11360",
+      "file": "bmpcc-11360.json",
+      "module": "Claims",
+      "title": "Claim status management & Retention date"
+    },
+    {
+      "id": "BMPCC-14434",
+      "file": "bmpcc-14434.json",
+      "module": "Claims",
+      "title": "Section & Claims Hierarchy Validations"
+    },
+    {
+      "id": "BMPCC-14435",
+      "file": "bmpcc-14435.json",
+      "module": "Claims",
+      "title": "Cross-domain closure validations — Litigation & Reserves deep check"
+    },
+    {
+      "id": "BMPCC-14437",
+      "file": "bmpcc-14437.json",
+      "module": "Claims",
+      "title": "Closure via Last Payment"
+    },
+    {
       "id": "BMPCC-216",
       "file": "bmpcc-216.json",
       "module": "FNOL",
@@ -37,46 +73,10 @@
       "title": "Orphan Claim — Convert to Regular (one-click prefill, full walkthrough)"
     },
     {
-      "id": "BMPCC-11360",
-      "file": "bmpcc-11360.json",
-      "module": "Claims",
-      "title": "Claim status management & Retention date"
-    },
-    {
-      "id": "BMPCC-14435",
-      "file": "bmpcc-14435.json",
-      "module": "Claims",
-      "title": "Cross-domain closure validations — Litigation & Reserves deep check"
-    },
-    {
-      "id": "BMPCC-14434",
-      "file": "bmpcc-14434.json",
-      "module": "Claims",
-      "title": "Section & Claims Hierarchy Validations"
-    },
-    {
-      "id": "CHAMP-CLOSE-SECTION",
-      "file": "close-section.json",
-      "module": "Claims",
-      "title": "Close Section — Pre-condition Validation & Lifecycle"
-    },
-    {
-      "id": "BMPCC-14437",
-      "file": "bmpcc-14437.json",
-      "module": "Claims",
-      "title": "Closure via Last Payment"
-    },
-    {
       "id": "CHAMP-NO-LOSS-LOC",
       "file": "bmpcc-no-loss-location.json",
       "module": "FNOL",
       "title": "Entities & Damages — Handling No Loss Location Selected"
-    },
-    {
-      "id": "CHAMP-PRECLOSURE-CHECKLIST",
-      "file": "champ-preclosure-checklist.json",
-      "module": "Claims",
-      "title": "Pre-closure Checklist — Always-clickable Close Claim with status checklist"
     }
   ]
 }

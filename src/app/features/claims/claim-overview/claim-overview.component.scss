@@ -2,7 +2,7 @@
   display: block;
 }
 
-.co-partial-reopen-banner {
+.co-partial-reopen-banner, .co-reopen-banner {
   display: block;
   margin-bottom: 16px;
 }
@@ -254,12 +254,29 @@
   &--noncat { background: var(--ui-03); color: var(--text-muted); }
 }
 
+.me-popover__pending-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--task-status-pending-bg, #fff8e1);
+  color: var(--task-status-pending-color, #e65100);
+}
+
 .me-popover__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid var(--ui-04);
   font-size: 13px;
 }
+
+.me-popover__unlink a { color: var(--danger, #d2351d) !important; }
 
 // ─── Risk score ───────────────────────────────────────────────────────────────
 
