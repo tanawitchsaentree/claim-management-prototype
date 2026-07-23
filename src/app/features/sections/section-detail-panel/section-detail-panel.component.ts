@@ -26,6 +26,7 @@ import { StatusChipComponent } from '../../../shared/components/status-chip/stat
 })
 export class SectionDetailPanelComponent {
   @Input({ required: true }) section!: ClaimSection;
+  @Input() claimClosed = false;
   @Output() closed = new EventEmitter<void>();
 
   private readonly sectionSvc = inject(MockSectionService);

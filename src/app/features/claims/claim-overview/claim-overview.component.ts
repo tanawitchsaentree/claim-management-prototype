@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, firstValueFrom, of, switchMap } from 'rxjs';
@@ -115,6 +115,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   claimId: string | undefined;
 
   private readonly route          = inject(ActivatedRoute);
+  private readonly router         = inject(Router);
   private readonly overviewSvc    = inject(MockClaimOverviewService);
   private readonly taskSvc        = inject(MockTaskService);
   private readonly closureSvc     = inject(ClaimClosureService);
@@ -337,7 +338,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     } else if (reopened > 0) {
       subtitle = `${reopened} section${reopened > 1 ? 's' : ''} reopened.`;
     }
-    this.toast.success('Claim reopened', subtitle);
+    const action = reopened > 0
+      ? { label: 'View sections', onClick: () => this.router.navigate(['/claims', claim.claimId, 'sections']) }
+      : undefined;
+    this.toast.success('Claim reopened', subtitle, action);
     this.refreshClosedSectionsCount(claim.claimId);
   }
 

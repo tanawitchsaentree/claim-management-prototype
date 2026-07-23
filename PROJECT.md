@@ -7,7 +7,7 @@ deployed: https://tanawitchsaentree.github.io/claim-management-prototype/
 
 ticket-schema:
   required: [ticketId, module, title, targetClaim, pages, walkthroughSteps, acceptanceCriteria]
-  optional: []
+  optional: [epicId]
   file-location: public/tickets/<lowercase-ticket-id>.json
   registry: public/tickets/index.json
 
@@ -78,6 +78,10 @@ A finished ticket adds a row to `CONVERSIONS.md`.
 ```ts
 interface DevTicket {
   ticketId: string;          // e.g. "BMPCC-219"
+  epicId?: string;           // parent Jira epic ID — ONLY set when confirmed (e.g. from a
+                             // Jira tracker screenshot/export); never guess. Surfaced in the
+                             // dev-banner dropdown and details modal as "Epic: <epicId>" so a
+                             // reader can tell which repo tickets share the same Jira epic.
   module: string;            // e.g. "FNOL" | "Claims"
   title: string;
   targetClaim: string;       // a claimId; used for state-inspector header even on FNOL tickets

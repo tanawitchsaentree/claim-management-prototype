@@ -55,6 +55,7 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
 export class EntityDetailPanelComponent {
   @Input({ required: true }) entity!: SectionEntity;
   @Input({ required: true }) section!: ClaimSection;
+  @Input() claimClosed = false;
   @Output() closed = new EventEmitter<void>();
 
   private readonly dialogSvc = inject(NxDialogService);

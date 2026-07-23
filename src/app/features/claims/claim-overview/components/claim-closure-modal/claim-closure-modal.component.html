@@ -80,22 +80,20 @@
         </li>
       }
     </ul>
-    @if (!checklistAllDone()) {
-      <p class="ccm-checklist-error">Resolve all failing checks before closing this claim.</p>
-    }
   }
 
   <!-- STEP 3 — Reason + retention -->
   @if (step() === 3) {
-    @if (showRecoveryWarning) {
+    @if (showRecoveryWarning || showOtherWarning) {
       <nx-message context="warning" class="ccm-warning">
-        Recovery potential is marked <strong>Yes</strong> but no recovery case has been created.
-        You may still close — or update Recovery Potential to No and capture a note.
-      </nx-message>
-    }
-    @if (showOtherWarning) {
-      <nx-message context="warning" class="ccm-warning">
-        The proximate loss cause is set to "Other". Verify this is correct before closing.
+        <ul class="ccm-warning-list">
+          @if (showRecoveryWarning) {
+            <li>Recovery potential is <strong>Yes</strong> but no recovery case has been created.</li>
+          }
+          @if (showOtherWarning) {
+            <li>Proximate loss cause is set to "Other" — verify this is correct.</li>
+          }
+        </ul>
       </nx-message>
     }
 
@@ -126,10 +124,7 @@
 
   <!-- STEP 4 — Post-checklist confirmation warning -->
   @if (step() === 4) {
-    <nx-message context="warning" class="ccm-warning">
-      <strong>Please confirm the following before closing this claim.</strong>
-      This is a handler-attested check — it is not validated automatically.
-    </nx-message>
+    <p class="ccm-intro">Please confirm before closing:</p>
     <ul class="ccm-confirm-list">
       @for (statement of confirmationStatements; track statement) {
         <li class="ccm-confirm-item">{{ statement }}</li>

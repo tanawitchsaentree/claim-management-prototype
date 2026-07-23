@@ -1,5 +1,6 @@
 {
   "ticketId": "BMPCC-14434",
+  "epicId": "BMPCC-14434",
   "module": "Claims",
   "title": "Section & Claims Hierarchy Validations",
   "targetClaim": "CLM-2024-001",
@@ -9,11 +10,11 @@
   "walkthroughSteps": [
     "Apply AC-01 \u2014 SEC-001 has open deductible + salvage blockers",
     "Navigate to /claims/CLM-2024-001/sections",
-    "Click \u22ee \u2192 Close Section on Section 001 \u2192 modal shows 2 blockers",
+    "Click \u22ee \u2192 Close Section on 'Property Damage \u2014 Warehouse & Forklift' (SEC-001) \u2192 modal shows 2 blockers",
     "Apply AC-02 \u2014 SEC-002 has litigation + reserves + payments blockers",
-    "Click \u22ee \u2192 Close Section on Section 002 \u2192 modal shows 3 blockers",
+    "Click \u22ee \u2192 Close Section on 'Business Interruption \u2014 Machinery Sales' (SEC-002) \u2192 modal shows 3 blockers",
     "Apply AC-03 \u2014 SEC-003 has provider blocker only",
-    "Click \u22ee \u2192 Close Section on Section 003 \u2192 modal shows 1 blocker",
+    "Click \u22ee \u2192 Close Section on 'Contents & Fixtures Damage' (SEC-003) \u2192 modal shows 1 blocker",
     "Apply AC-04 \u2014 all sections clear, close SEC-001 \u2192 checklist \u2192 reason \u2192 closed",
     "Apply AC-05 \u2014 all sections clear \u2192 close all 3 \u2192 go to overview \u2192 Close Claim available"
   ],
@@ -21,14 +22,14 @@
     {
       "id": "AC-01",
       "statement": "Deductible + salvage blockers prevent section close",
-      "plainStatement": "Section 001 has an open deductible task and pending salvage. Clicking Close Section shows both blockers \u2014 no Continue button.",
+      "plainStatement": "'Property Damage \u2014 Warehouse & Forklift' (SEC-001) has an open deductible task and pending salvage. Clicking Close Section shows both blockers \u2014 no Continue button.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
         "description": "SEC-001 mock data has hasOpenDeductible=true and hasActiveSalvage=true. No state overrides needed \u2014 blockers come from section flags.",
         "preconditions": [
           {
-            "text": "Section 001 status is Open",
+            "text": "'Property Damage — Warehouse & Forklift' (SEC-001) status is Open",
             "page": "sections",
             "role": "tested-visible"
           },
@@ -59,21 +60,21 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "trigger": "Click \u22ee \u2192 Close Section on Section 001",
+        "trigger": "Click \u22ee \u2192 Close Section on 'Property Damage \u2014 Warehouse & Forklift' (SEC-001)",
         "expectedResult": "Modal shows 2 red blocker rows (deductible + salvage); only Cancel button in footer"
       }
     },
     {
       "id": "AC-02",
       "statement": "Litigation + reserves + payments block section close",
-      "plainStatement": "Section 002 has three active blockers (litigation, reserves, payments). Modal shows all three.",
+      "plainStatement": "'Business Interruption — Machinery Sales' (SEC-002) has three active blockers (litigation, reserves, payments). Modal shows all three.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
         "description": "SEC-002 mock data has hasActiveLitigation=true, hasOpenReserves=true, hasOpenPayments=true.",
         "preconditions": [
           {
-            "text": "Section 002 status is Open",
+            "text": "'Business Interruption — Machinery Sales' (SEC-002) status is Open",
             "page": "sections",
             "role": "tested-visible"
           },
@@ -99,21 +100,21 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "trigger": "Click \u22ee \u2192 Close Section on Section 002",
+        "trigger": "Click \u22ee \u2192 Close Section on 'Business Interruption \u2014 Machinery Sales' (SEC-002)",
         "expectedResult": "Modal shows 3 red blocker rows (litigation + reserves + payments); only Cancel button in footer"
       }
     },
     {
       "id": "AC-03",
       "statement": "Active provider assignment blocks section close",
-      "plainStatement": "Section 003 has one blocker (active provider). Modal shows the single blocker only.",
+      "plainStatement": "'Contents & Fixtures Damage' (SEC-003) has one blocker (active provider). Modal shows the single blocker only.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
         "description": "SEC-003 mock data has hasActiveProvider=true.",
         "preconditions": [
           {
-            "text": "Section 003 status is Open",
+            "text": "'Contents & Fixtures Damage' (SEC-003) status is Open",
             "page": "sections",
             "role": "tested-visible"
           },
@@ -137,7 +138,7 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "trigger": "Click \u22ee \u2192 Close Section on Section 003",
+        "trigger": "Click \u22ee \u2192 Close Section on 'Contents & Fixtures Damage' (SEC-003)",
         "expectedResult": "Modal shows 1 red blocker row (active provider); only Cancel button in footer"
       }
     },
@@ -151,7 +152,7 @@
         "description": "All section blocker flags set to false so modal skips step 1.",
         "preconditions": [
           {
-            "text": "Section 001 has no blockers",
+            "text": "'Property Damage — Warehouse & Forklift' (SEC-001) has no blockers",
             "page": "sections",
             "role": "tested-visible"
           },

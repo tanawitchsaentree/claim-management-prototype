@@ -3,6 +3,9 @@
     <span class="cddm-badge">DEV</span>
     <h2 class="cddm-title">{{ card.title }}</h2>
     <span class="cddm-ticket-id">{{ ticket.ticketId }}</span>
+    @if (ticket.epicId) {
+      <span class="cddm-ticket-epic">Epic: {{ ticket.epicId }}</span>
+    }
     <button nxIconButton="tertiary small"
             type="button"
             (click)="onMinimize()"

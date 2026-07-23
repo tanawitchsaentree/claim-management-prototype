@@ -163,7 +163,7 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 'Simulate Final Payment' on Section 002 (SEC-002) without clearing blockers.",
+        "action": "Click \u22ee \u2192 'Simulate Final Payment' on 'Business Interruption \u2014 Machinery Sales' (SEC-002) without clearing blockers.",
         "expectedResult": "Error toast fires with blocker details; SEC-002 remains Open"
       },
       "devNotes": "autoCloseSection() filters blockers excluding 'payments' type \u2192 finds litigation + reserves blockers still present \u2192 returns throwError() with blocker labels \u2192 catchError in onSimulateFinalPayment() fires toast.error('Simulate Final Payment failed', err.message). closeSection() is never called."

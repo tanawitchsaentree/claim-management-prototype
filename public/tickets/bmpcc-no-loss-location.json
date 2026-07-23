@@ -1,5 +1,6 @@
 {
   "ticketId": "CHAMP-NO-LOSS-LOC",
+  "epicId": "BMPCC-14545",
   "module": "FNOL",
   "title": "Entities & Damages — Handling No Loss Location Selected",
   "targetClaim": "CLM-2024-001",

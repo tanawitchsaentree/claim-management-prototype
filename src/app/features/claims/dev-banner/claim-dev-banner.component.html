@@ -16,6 +16,9 @@
                 <div class="cdb-ticket-option">
                   <div class="cdb-ticket-meta">
                     <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
+                    @if (ticket.epicId) {
+                      <span class="cdb-ticket-epic">Epic: {{ ticket.epicId }}</span>
+                    }
                   </div>
                   <div class="cdb-ticket-title">{{ ticket.title }}</div>
                   <div class="cdb-ticket-stats">

@@ -2,17 +2,6 @@
   display: block;
 }
 
-.co-partial-reopen-banner, .co-reopen-banner {
-  display: block;
-  margin-bottom: 16px;
-}
-
-.co-partial-reopen-link {
-  color: inherit;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 .co-loading,
 .co-error {
   display: flex;
@@ -612,7 +601,7 @@
   border-top: 1px solid var(--ui-03);
   display: flex;
   flex-direction: column;
-  gap: 24px; // section-to-section gap
+  gap: 16px; // section-to-section gap
 }
 
 .co-restrict-reason-row {
@@ -674,7 +663,7 @@
 
 .co-restrict-search {
   margin-top: 0;
-  margin-bottom: 20px; // search → "Users with access" heading (far = different group)
+  margin-bottom: 12px; // search → "Users with access" heading (far = different group)
   position: relative;
   width: 100%;
   max-width: 360px;
@@ -752,13 +741,6 @@
 }
 
 // ─── Recovery Potential ───────────────────────────────────────────────────────
-
-.co-recovery-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 16px;
-}
 
 .co-recovery-value {
   display: flex;

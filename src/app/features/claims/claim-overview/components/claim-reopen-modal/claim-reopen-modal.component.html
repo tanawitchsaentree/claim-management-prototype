@@ -45,8 +45,13 @@
       </p>
       <div class="crm-section-list">
         <div class="crm-section-item crm-section-item--auto">
-          <nx-icon name="check-circle-o" class="crm-section-icon"></nx-icon>
-          <span class="crm-section-name">{{ closedSections()[0].name }}</span>
+          <div class="crm-section-item__row">
+            <nx-icon name="check-circle-o" class="crm-section-icon"></nx-icon>
+            <span class="crm-section-name">{{ closedSections()[0].name }}</span>
+          </div>
+          <p class="crm-section-entities">
+            {{ entitySummary(closedSections()[0]) }}
+          </p>
         </div>
       </div>
     } @else {
@@ -55,13 +60,18 @@
       </p>
       <div class="crm-section-list">
         @for (section of closedSections(); track section.id) {
-          <label class="crm-section-item">
-            <nx-checkbox
-              [checked]="isSelected(section.id)"
-              (checkedChange)="toggleSection(section.id)">
-              {{ section.name }}
-            </nx-checkbox>
-          </label>
+          <div class="crm-section-item">
+            <label class="crm-section-item__row">
+              <nx-checkbox
+                [checked]="isSelected(section.id)"
+                (checkedChange)="toggleSection(section.id)">
+                {{ section.name }}
+              </nx-checkbox>
+            </label>
+            <p class="crm-section-entities">
+              {{ entitySummary(section) }}
+            </p>
+          </div>
         }
       </div>
       @if (selectedIds().size === 0) {

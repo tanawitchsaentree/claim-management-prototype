@@ -45,17 +45,22 @@
 
 .crm-section-item {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   padding: 10px 12px;
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  cursor: pointer;
 
   &--auto {
-    cursor: default;
     background: var(--ui-02);
   }
+}
+
+.crm-section-item__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .crm-section-icon {
@@ -66,6 +71,13 @@
 .crm-section-name {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
+}
+
+.crm-section-entities {
+  margin: 0;
+  padding-left: 24px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
 }
 
 .crm-selection-hint {

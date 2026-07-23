@@ -29,7 +29,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 12px;
 }
 
 .ccm-blocker-card {
@@ -116,7 +115,7 @@
 
 .ccm-checklist {
   list-style: none;
-  margin: 12px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -147,19 +146,17 @@
   color: var(--danger, #d2351d);
 }
 
-.ccm-checklist-error {
-  margin: 10px 0 0;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--danger, #d2351d);
-  font-weight: 500;
-}
-
 // ─── Form / Reason ────────────────────────────────────────────────────────────
 
 .ccm-form { nx-formfield { width: 100%; } }
 
-.ccm-warning  { margin-bottom: 16px; }
-.ccm-save-error { margin-top: 12px; }
+.ccm-warning  { margin: 0; }
+
+.ccm-warning-list {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.ccm-save-error { margin: 0; }
 
 // ─── Confirmation warning list ─────────────────────────────────────────────────
 
@@ -195,7 +192,7 @@
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 16px 0 12px;
+  margin: 0 0 4px;
 }
 
 nx-radio-group {

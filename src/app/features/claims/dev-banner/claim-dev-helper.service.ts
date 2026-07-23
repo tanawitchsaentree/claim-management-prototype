@@ -71,6 +71,8 @@ export interface TicketAC {
 
 export interface DevTicket {
   ticketId:            string;
+  /** Parent Jira epic ID, when a confirmed mapping exists — do not guess, leave unset otherwise. */
+  epicId?:             string;
   module:              string;
   title:               string;
   targetClaim:         string;

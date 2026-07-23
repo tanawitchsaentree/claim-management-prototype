@@ -42,7 +42,7 @@
     <div class="edp-card__titlebar">
       <h3 class="edp-card__title">Damaged items</h3>
       <button nxButton="primary small" type="button"
-        [disabled]="section.status === 'Closed'"
+        [disabled]="claimClosed || section.status === 'Closed'"
         (click)="onAddItem()">
         Add damaged item
       </button>
@@ -71,10 +71,10 @@
                   [nxContextMenuTriggerFor]="itemMenu" aria-label="Item actions">⋮</button>
                 <nx-context-menu #itemMenu="nxContextMenu">
                   <button nxContextMenuItem type="button"
-                    [disabled]="section.status === 'Closed'"
+                    [disabled]="claimClosed || section.status === 'Closed'"
                     (click)="onEditItem(item)">Edit</button>
                   <button nxContextMenuItem type="button"
-                    [disabled]="section.status === 'Closed'"
+                    [disabled]="claimClosed || section.status === 'Closed'"
                     (click)="onDeleteItem(item)">Delete</button>
                 </nx-context-menu>
               </td>

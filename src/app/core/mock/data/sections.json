@@ -2,7 +2,7 @@
   {
     "id": "SEC-001",
     "claimId": "CLM-2024-001",
-    "name": "Section 001",
+    "name": "Property Damage — Warehouse & Forklift",
     "status": "Open",
     "expanded": true,
     "hasOpenDeductible": false,
@@ -20,7 +20,7 @@
   {
     "id": "SEC-002",
     "claimId": "CLM-2024-001",
-    "name": "Section 002",
+    "name": "Business Interruption — Machinery Sales",
     "status": "Closed",
     "expanded": true,
     "hasOpenDeductible": false,
@@ -39,7 +39,7 @@
   {
     "id": "SEC-003",
     "claimId": "CLM-2024-001",
-    "name": "Section 003",
+    "name": "Contents & Fixtures Damage",
     "status": "Closed",
     "expanded": false,
     "hasOpenDeductible": false,
@@ -56,7 +56,7 @@
   {
     "id": "SEC-006",
     "claimId": "CLM-2024-011",
-    "name": "Section 001",
+    "name": "Property Damage — Main Warehouse & Conveyor",
     "status": "Closed",
     "expanded": true,
     "hasOpenDeductible": false,
@@ -76,7 +76,7 @@
   {
     "id": "SEC-007",
     "claimId": "CLM-2024-011",
-    "name": "Section 002",
+    "name": "Business Interruption — Production Line B",
     "status": "Closed",
     "expanded": false,
     "hasOpenDeductible": false,

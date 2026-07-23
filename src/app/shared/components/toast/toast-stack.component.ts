@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { ToastService, ToastTone } from './toast.service';
+import { NxLinkModule } from '@allianz/ng-aquila/link';
+import { Toast, ToastService, ToastTone } from './toast.service';
 
 // NDBX has no first-class toast/snackbar primitive — only NxMessage (inline
 // banner) and NxNotificationPanel (dropdown list). We compose a fixed-position
@@ -12,7 +13,7 @@ import { ToastService, ToastTone } from './toast.service';
 @Component({
   selector: 'app-toast-stack',
   standalone: true,
-  imports: [CommonModule, NxIconModule, NxMessageModule],
+  imports: [CommonModule, NxIconModule, NxMessageModule, NxLinkModule],
   template: `
     <div class="toast-stack" aria-live="polite" aria-atomic="true">
       @for (t of toasts(); track t.id) {
@@ -23,6 +24,11 @@ import { ToastService, ToastTone } from './toast.service';
             <strong>{{ t.title }}</strong>
             @if (t.description) {
               <p class="toast__desc">{{ t.description }}</p>
+            }
+            @if (t.action) {
+              <nx-link size="small" class="toast__action">
+                <a (click)="onAction(t)">{{ t.action.label }}</a>
+              </nx-link>
             }
           </nx-message>
         </div>
@@ -51,5 +57,10 @@ export class ToastStackComponent {
   // Map our tone → NxMessage `context` (success | warning | error | info).
   contextFor(tone: ToastTone): 'success' | 'warning' | 'error' | 'info' {
     return tone;
+  }
+
+  onAction(t: Toast): void {
+    t.action?.onClick();
+    this.svc.dismiss(t.id);
   }
 }

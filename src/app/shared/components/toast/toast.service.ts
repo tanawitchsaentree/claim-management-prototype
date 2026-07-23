@@ -2,12 +2,18 @@ import { Injectable, signal } from '@angular/core';
 
 export type ToastTone = 'success' | 'info' | 'warning' | 'error';
 
+export interface ToastAction {
+  label:   string;
+  onClick: () => void;
+}
+
 export interface Toast {
   id:    string;
   tone:  ToastTone;
   title: string;
   description?: string;
   durationMs?: number;
+  action?: ToastAction;
 }
 
 const DEFAULT_DURATION_MS = 4000;
@@ -27,8 +33,8 @@ export class ToastService {
     return id;
   }
 
-  success(title: string, description?: string): string {
-    return this.show({ tone: 'success', title, description });
+  success(title: string, description?: string, action?: ToastAction): string {
+    return this.show({ tone: 'success', title, description, action });
   }
 
   info(title: string, description?: string): string {

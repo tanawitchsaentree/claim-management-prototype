@@ -27,3 +27,8 @@
   color: var(--text-muted);
   font-size: var(--paragraph-04-font-size);
 }
+
+.toast__action {
+  display: block;
+  margin-top: 8px;
+}

@@ -15,9 +15,11 @@
       </div>
     } @else {
       <h2 class="sdp-title">{{ section.name }}</h2>
-      <button nxIconButton="tertiary small" type="button" (click)="startEditName()" aria-label="Edit section name">
-        <nx-icon name="pencil" size="s"></nx-icon>
-      </button>
+      @if (!claimClosed) {
+        <button nxIconButton="tertiary small" type="button" (click)="startEditName()" aria-label="Edit section name">
+          <nx-icon name="pencil" size="s"></nx-icon>
+        </button>
+      }
     }
   </div>
   <button nxIconButton="tertiary small" type="button" (click)="closed.emit()" aria-label="Close">

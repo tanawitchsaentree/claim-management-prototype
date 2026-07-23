@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MockClaimOverviewService } from '../../core/mock/services/mock-claim-overview.service';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
@@ -100,6 +101,7 @@ export class Sections {
   private readonly toast      = inject(ToastService);
   private readonly notesSvc   = inject(MockNotesService);
   private readonly stripSvc   = inject(RightStripService);
+  private readonly overviewSvc = inject(MockClaimOverviewService);
 
   readonly sections       = signal<ClaimSection[]>([]);
   readonly loading        = signal(true);
@@ -108,6 +110,7 @@ export class Sections {
   readonly selectedEntity  = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
   readonly selectedSection = signal<ClaimSection | null>(null);
   readonly hasDetailOpen   = computed(() => !!this.selectedEntity() || !!this.selectedSection());
+  readonly claimClosed    = signal(false);
 
   readonly devMode = true;
 
@@ -118,12 +121,14 @@ export class Sections {
       this.loading.set(true);
       this.loadError.set(false);
       try {
-        const [sections, notes] = await Promise.all([
+        const [sections, notes, claim] = await Promise.all([
           firstValueFrom(this.sectionSvc.getByClaimId(id)),
           firstValueFrom(this.notesSvc.getByClaim(id)),
+          firstValueFrom(this.overviewSvc.getOverview(id)),
         ]);
         this.sections.set(sections);
         this.allNotes.set(notes);
+        this.claimClosed.set(claim.status === 'Closed');
       } catch {
         this.loadError.set(true);
       } finally {

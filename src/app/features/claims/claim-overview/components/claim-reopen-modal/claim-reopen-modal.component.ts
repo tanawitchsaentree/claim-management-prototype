@@ -120,6 +120,11 @@ export class ClaimReopenModalComponent {
     return this.selectedIds().has(id);
   }
 
+  entitySummary(section: ClaimSection): string {
+    if (section.entities.length === 0) return 'No linked entities';
+    return section.entities.map(e => e.name).join(', ');
+  }
+
   toggleSection(id: string): void {
     this.selectedIds.update(set => {
       const next = new Set(set);

@@ -2,7 +2,10 @@
 <div class="sec-page-header">
   <h1 class="page-title">Sections</h1>
   @if (!hasDetailOpen()) {
-    <button class="btn-add-entity" nxButton="secondary small" type="button" (click)="onAddEntity()">
+    <button class="btn-add-entity" nxButton="secondary small" type="button"
+      [disabled]="claimClosed()"
+      [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
+      (click)="onAddEntity()">
       Add Entity
     </button>
   }
@@ -112,30 +115,32 @@
               aria-label="Section actions">⋮</button>
             <nx-context-menu #sectionMenu="nxContextMenu">
               <button nxContextMenuItem type="button"
+                [disabled]="claimClosed()"
                 (click)="openSectionDetail(section)">
                 Edit
               </button>
               <button nxContextMenuItem type="button"
-                [disabled]="section.status === 'Closed'"
+                [disabled]="claimClosed() || section.status === 'Closed'"
                 (click)="onMakePayment(section)">
                 Make payment
               </button>
               <button nxContextMenuItem type="button"
-                [disabled]="section.status === 'Closed'"
+                [disabled]="claimClosed() || section.status === 'Closed'"
                 (click)="onInstructProvider(section)">
                 Instruct provider
               </button>
               <button nxContextMenuItem type="button"
+                [disabled]="claimClosed()"
                 (click)="onAddComment(section.name)">
                 Add note
               </button>
               <button nxContextMenuItem type="button"
-                [disabled]="section.status === 'Closed'"
+                [disabled]="claimClosed() || section.status === 'Closed'"
                 (click)="onCloseSection(section)">
                 Close section
               </button>
               <button nxContextMenuItem type="button"
-                [disabled]="section.status !== 'Closed'"
+                [disabled]="claimClosed() || section.status !== 'Closed'"
                 (click)="onReopenSection(section)">
                 Reopen section
               </button>
@@ -192,21 +197,22 @@
                     View details
                   </button>
                   <button nxContextMenuItem type="button"
-                    [disabled]="section.status === 'Closed'"
+                    [disabled]="claimClosed() || section.status === 'Closed'"
                     (click)="onEditEntity(section, entity)">
                     Edit
                   </button>
                   <button nxContextMenuItem type="button"
-                    [disabled]="section.status === 'Closed'"
+                    [disabled]="claimClosed() || section.status === 'Closed'"
                     (click)="onOverrideCoverageReview(section, entity)">
                     {{ entity.coverageReview ? 'Override coverage review' : 'Set coverage review' }}
                   </button>
                   <button nxContextMenuItem type="button"
+                    [disabled]="claimClosed()"
                     (click)="onAddComment(entity.name)">
                     Add note
                   </button>
                   <button nxContextMenuItem type="button"
-                    [disabled]="section.status === 'Closed'"
+                    [disabled]="claimClosed() || section.status === 'Closed'"
                     (click)="onDeleteEntity(section, entity)">
                     Delete
                   </button>
@@ -229,6 +235,7 @@
     <app-section-entity-detail
       [entity]="sel.entity"
       [section]="sel.section"
+      [claimClosed]="claimClosed()"
       (closed)="closeEntityDetail()">
     </app-section-entity-detail>
   </div>
@@ -236,6 +243,7 @@
   <div class="sec-detail">
     <app-section-detail
       [section]="sec"
+      [claimClosed]="claimClosed()"
       (closed)="closeSectionDetail()">
     </app-section-detail>
   </div>
