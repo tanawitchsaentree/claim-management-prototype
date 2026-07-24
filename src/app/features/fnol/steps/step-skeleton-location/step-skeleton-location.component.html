@@ -1,0 +1,26 @@
+<div class="step-page">
+
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Location</h1>
+  <p class="step-subtitle">
+    This claim has no linked policy yet, so locations are entered manually —
+    there is no contract location to select from.
+  </p>
+
+  <section class="li-card">
+    <h2 class="section-heading">Locations of loss</h2>
+    <app-location-picker
+      [policyNumber]="null"
+      [value]="lossLocation.value"
+      [showEditLaterHint]="true"
+      (locationChange)="onLocationChange($event)">
+    </app-location-picker>
+  </section>
+
+  <app-wizard-footer
+    (cancel)="onCancel()"
+    (back)="onBack()"
+    (next)="onNext()">
+  </app-wizard-footer>
+
+</div>

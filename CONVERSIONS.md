@@ -4,6 +4,21 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-07-24 — BMPCC-241 update (Notifier — remove Internal; add Parties + Location steps)
+
+- **Source:** verbal brief (UI/UX description, Marlene's scenario) — orphan claim flow gaps: internal staff should never appear as notifier; Parties and Location were missing entirely, only Loss→Summary existed
+- **Module:** FNOL — orphan/skeleton claim path (`/fnol/skeleton-*`)
+- **Changes:**
+  1. **Notifier — removed "Internal":** `step-skeleton-create.component.{ts,html}` — `NotifierType` now `'broker' | 'insured'` only; removed the Internal radio, its free-text field, restore-from-existing branch, and payload field. Cascaded removal of `internalNotifier` from `SkeletonFormValue` (`fnol-form.model.ts`), `CreateSkeletonData` (`skeleton-claim.model.ts`), and the Notifier review card in `step-skeleton-summary.component.{ts,html}`.
+  2. **New step — Parties:** `step-skeleton-parties/` (new component, flat party list — no claim/section tree since there's no policy to hang a hierarchy off). Starts empty; on `ngOnInit` seeds the broker selected on the notifier screen as the first party (once, dedup by name). "Add party" reuses `AddPartyModalComponent` unmodified (its `policyNumber`/`targetClaimId` fields are already just pass-through, never read internally — confirmed before reusing). Not mandatory — `onNext()` has no gating. Added `getOrphanParties/addOrphanParty/removeOrphanParty/updateOrphanParty/resetOrphanParties` to `MockPartiesService` (flat array, keyed `claimId: 'ORPHAN'`, separate from the policy-keyed cache used by the happy path).
+  3. **New step — Location:** `step-skeleton-location/` (new component) — extracted the "Locations of loss" card that already lived inside `step-skeleton-create` into its own stepper step. Reuses `LocationPickerComponent` with `[policyNumber]="null"`, which was already routing straight to manual entry (no contract-location search) — no component changes needed, just relocation.
+  4. **Stepper + routing:** `SKELETON_PATH_STEPS` in `fnol-state.service.ts` grew from 2 → 4 steps: Loss → Parties → Location → Summary. Added `/fnol/skeleton-parties` and `/fnol/skeleton-location` routes. Rewired every `onNext()`/`onBack()` in the chain accordingly.
+  5. **Dev banner:** added `fnol-skeleton-parties` / `fnol-skeleton-location` to `PreconditionPage` + `pageRoute()` mapping so tickets can link directly into the new steps.
+- **Ticket sync:** `bmpcc-241.json` — AC-01 (no Internal option), AC-02 (4 steps not 2), AC-03 (Next → Parties, not Summary), AC-04 (Summary shows Parties card too) all rewritten to match; added AC-05 (Parties: empty-start/broker-carryover/add-party/not-mandatory) and AC-06 (Location: manual-only, no contract option). ACs 51→53.
+- **Audit result:** `audit:ac-logic` 53 ACs, 40 ✅ / 9 ❌ (pre-existing `closedSections` mismatches in unrelated closure tickets, confirmed present before this change) / 4 skipped. `audit:stage-pattern`, `audit:ac-route-overrides`, `audit:wizard-footer` all pass.
+
+---
+
 ## 2026-07-13 — CHAMP-PRECLOSURE-CHECKLIST (Pre-closure Checklist — Always-clickable Close Claim)
 
 - **Source:** verbal brief — replace disabled+tooltip button with always-clickable button opening checklist pop-up consistent with section closure UX

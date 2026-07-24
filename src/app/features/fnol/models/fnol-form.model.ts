@@ -44,7 +44,6 @@ export interface SkeletonFormValue {
   brokerName?: string;
   brokerIpmId?: string;
   insuredName?: string;
-  internalNotifier?: string;
 }
 
 export interface FnolFormValue {

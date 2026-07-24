@@ -24,8 +24,10 @@ const HAPPY_PATH_STEPS: StepConfig[] = [
 
 // Orphan / skeleton-claim path steps (BMPCC-241)
 const SKELETON_PATH_STEPS: StepConfig[] = [
-  { key: 'skeleton-create',  route: '/fnol/skeleton-create',  label: 'Loss information' },
-  { key: 'skeleton-summary', route: '/fnol/skeleton-summary', label: 'Summary'          },
+  { key: 'skeleton-create',   route: '/fnol/skeleton-create',   label: 'Loss information' },
+  { key: 'skeleton-parties',  route: '/fnol/skeleton-parties',  label: 'Parties'          },
+  { key: 'skeleton-location', route: '/fnol/skeleton-location', label: 'Location'         },
+  { key: 'skeleton-summary',  route: '/fnol/skeleton-summary',  label: 'Summary'          },
 ];
 
 // Provided in root so FormGroup state persists across wizard navigation.

@@ -9,9 +9,11 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockSkeletonClaimService } from '../../../../core/mock/services/mock-skeleton-claim.service';
+import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LocationItem, LookupOption } from '../../../../core/models';
+import { Party, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
 
 const REASON_LABELS: Record<SkeletonReason, string> = {
   policy_not_issued:    'Policy not yet issued',
@@ -36,12 +38,14 @@ const REASON_LABELS: Record<SkeletonReason, string> = {
 export class StepSkeletonSummaryComponent implements OnInit {
   private fnolState   = inject(FnolStateService);
   private skeletonSvc = inject(MockSkeletonClaimService);
+  private partiesSvc  = inject(MockPartiesService);
   private lookupSvc   = inject(MockLookupService);
   private router      = inject(Router);
   private toast       = inject(ToastService);
 
   readonly saving    = signal(false);
   readonly createdId = signal<string | null>(null);
+  readonly parties   = signal<Party[]>([]);
 
   private causeOpts: LookupOption[] = [];
   private damageOpts: LookupOption[] = [];
@@ -59,6 +63,11 @@ export class StepSkeletonSummaryComponent implements OnInit {
     }
     this.lookupSvc.getCauseOfLoss().subscribe(o => this.causeOpts = o);
     this.lookupSvc.getTypeOfDamage().subscribe(o => this.damageOpts = o);
+    this.partiesSvc.getOrphanParties().subscribe(p => this.parties.set(p));
+  }
+
+  rolesDisplay(party: Party): string {
+    return party.roles.map(r => PARTY_ROLE_LABELS[r]).join(', ');
   }
 
   private lossInfo(): { [k: string]: unknown } {
@@ -90,7 +99,7 @@ export class StepSkeletonSummaryComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/fnol/skeleton-create']);
+    this.router.navigate(['/fnol/skeleton-location']);
   }
 
   async onCreate(): Promise<void> {
@@ -105,9 +114,8 @@ export class StepSkeletonSummaryComponent implements OnInit {
           notes:            draft.notes,
           lossDate:         null,
           createdBy:        'Current User',
-          brokerName:       draft.brokerName,
-          insuredName:      draft.insuredName,
-          internalNotifier: draft.internalNotifier,
+          brokerName:  draft.brokerName,
+          insuredName: draft.insuredName,
         }),
       );
       this.fnolState.setSkeleton(draft, skeleton.claimId);

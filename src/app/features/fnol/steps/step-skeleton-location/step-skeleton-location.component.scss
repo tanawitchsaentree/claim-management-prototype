@@ -1,0 +1,41 @@
+.step-page {
+  padding: 8px 0 48px;
+  max-width: 960px;
+}
+
+.step-breadcrumb {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.step-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.step-subtitle {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  margin: 0 0 24px;
+  max-width: 640px;
+}
+
+.li-card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+  background: var(--ui-01);
+}
+
+.section-heading {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 16px;
+  line-height: var(--paragraph-01-line-height);
+}

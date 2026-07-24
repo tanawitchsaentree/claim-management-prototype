@@ -23,9 +23,6 @@
         <nx-radio labelSize="small" name="notifierType" value="insured"
                   [checked]="notifierType() === 'insured'"
                   (valueChange)="setNotifierType('insured')">Insured</nx-radio>
-        <nx-radio labelSize="small" name="notifierType" value="internal"
-                  [checked]="notifierType() === 'internal'"
-                  (valueChange)="setNotifierType('internal')">Internal</nx-radio>
       </div>
     </div>
 
@@ -82,18 +79,6 @@
         <div data-field="insured">
           <nx-formfield label="Insured name">
             <input nxInput formControlName="notifierText" autocomplete="off" placeholder="Insured party name" />
-          </nx-formfield>
-        </div>
-      </div>
-    } @else if (notifierType() === 'internal') {
-      <nx-message context="info" class="notifier-hint">
-        The claim will be recorded as notified internally.
-      </nx-message>
-      <div class="two-col-grid">
-        <div data-field="internal">
-          <nx-formfield label="Internal notifier">
-            <input nxInput formControlName="notifierText" autocomplete="off"
-                   placeholder="Allianz staff who registered this claim" />
           </nx-formfield>
         </div>
       </div>
@@ -223,17 +208,6 @@
       <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
       <nx-hint nxFormfieldHint>{{ descLength }}/{{ maxDesc }}</nx-hint>
     </nx-formfield>
-  </section>
-
-  <!-- Card 4: Locations of loss (mirrors standard FNOL — right after General info) -->
-  <section class="li-card">
-    <h2 class="section-heading">Locations of loss</h2>
-    <app-location-picker
-      [policyNumber]="null"
-      [value]="lossLocation.value"
-      [showEditLaterHint]="true"
-      (locationChange)="onLocationChange($event)">
-    </app-location-picker>
   </section>
 
   <!-- Card 6: Events Details (optional in skeleton — fill in detail after policy match) -->

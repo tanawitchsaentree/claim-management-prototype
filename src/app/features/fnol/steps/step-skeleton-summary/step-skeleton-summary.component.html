@@ -52,6 +52,19 @@
       </section>
 
       <section class="review-card">
+        <h2 class="review-card__title">Parties</h2>
+        @if (parties().length === 0) {
+          <p class="review-empty">No parties added.</p>
+        } @else {
+          <ul class="review-list">
+            @for (party of parties(); track party.partyId) {
+              <li>{{ party.legalName }} · {{ rolesDisplay(party) }}</li>
+            }
+          </ul>
+        }
+      </section>
+
+      <section class="review-card">
         <h2 class="review-card__title">Notifier</h2>
         <dl class="review-grid">
           @if (d.brokerName) {
@@ -63,9 +76,6 @@
           } @else if (d.insuredName) {
             <dt>Insured</dt>
             <dd>{{ d.insuredName }}</dd>
-          } @else if (d.internalNotifier) {
-            <dt>Internal notifier</dt>
-            <dd>{{ d.internalNotifier }}</dd>
           } @else {
             <dt>Notifier</dt>
             <dd>—</dd>

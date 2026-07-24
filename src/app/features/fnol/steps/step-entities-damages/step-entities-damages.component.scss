@@ -238,6 +238,22 @@
     font-weight: 500;
     white-space: nowrap;
   }
+
+  &--popover {
+    gap: 6px;
+  }
+}
+
+.limit-list__more-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--interactive-text);
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover { color: var(--interactive-primary); }
 }
 
 // Footer styles live in WizardFooterComponent

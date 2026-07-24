@@ -35,5 +35,4 @@ export interface CreateSkeletonData {
   // Notifier free-text fields (BMPCC-241 — orphan claim)
   brokerName?: string;
   insuredName?: string;
-  internalNotifier?: string;
 }

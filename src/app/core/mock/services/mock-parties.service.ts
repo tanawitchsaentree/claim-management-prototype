@@ -9,6 +9,10 @@ export class MockPartiesService extends MockBaseService {
   private readonly raw = rawData as Party[];
   private readonly cache = new Map<string, Party[]>();
 
+  // Orphan claim (BMPCC-241) — flat party list, no claim/section hierarchy,
+  // starts empty (no policy to seed parties from).
+  private orphanParties: Party[] = [];
+
   getPartiesForPolicy(policyNumber: string): Observable<Party[]> {
     const cached = this.cache.get(policyNumber);
     if (cached) return this.respond(cached);
@@ -29,6 +33,35 @@ export class MockPartiesService extends MockBaseService {
 
   searchAll(filters: Partial<PartyFilters>): Observable<Party[]> {
     return this.respond(this.applyFilters(this.raw, filters));
+  }
+
+  // ── Orphan claim (no policy) ─────────────────────────────────────────────
+
+  getOrphanParties(): Observable<Party[]> {
+    return this.respond(this.orphanParties);
+  }
+
+  addOrphanParty(party: Party): Observable<boolean> {
+    if (this.orphanParties.some(p => p.partyId === party.partyId)) return this.respond(false);
+    this.orphanParties = [...this.orphanParties, { ...party, claimId: 'ORPHAN', sectionId: undefined }];
+    return this.respond(true);
+  }
+
+  removeOrphanParty(partyId: string): Observable<boolean> {
+    const before = this.orphanParties.length;
+    this.orphanParties = this.orphanParties.filter(p => p.partyId !== partyId);
+    return this.respond(this.orphanParties.length !== before);
+  }
+
+  updateOrphanParty(partyId: string, changes: Partial<Party>): Observable<boolean> {
+    const party = this.orphanParties.find(p => p.partyId === partyId);
+    if (!party) return this.respond(false);
+    Object.assign(party, changes);
+    return this.respond(true);
+  }
+
+  resetOrphanParties(): void {
+    this.orphanParties = [];
   }
 
   addParty(

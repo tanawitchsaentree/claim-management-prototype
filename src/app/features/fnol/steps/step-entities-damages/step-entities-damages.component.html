@@ -112,10 +112,31 @@
                           <td nxCell class="col-limit">
                             @if (hasLossLocation && entity.limits?.length) {
                               <ul class="limit-list">
-                                @for (lim of entity.limits; track lim.label) {
+                                @for (lim of visibleLimits(entity); track lim.label) {
                                   <li class="limit-list__item">
                                     <span class="limit-list__label">{{ lim.label }}</span>
                                     <span class="limit-list__value">{{ lim.value }}</span>
+                                  </li>
+                                }
+                                @if (hiddenLimits(entity).length) {
+                                  <li class="limit-list__item limit-list__item--more">
+                                    <button type="button" class="limit-list__more-btn"
+                                            #limitsTrigger="nxPopoverTrigger"
+                                            [nxPopoverTriggerFor]="limitsPopover"
+                                            nxPopoverTrigger="click"
+                                            nxPopoverDirection="bottom">
+                                      +{{ hiddenLimits(entity).length }} more
+                                    </button>
+                                    <nx-popover #limitsPopover>
+                                      <ul class="limit-list limit-list--popover">
+                                        @for (lim of hiddenLimits(entity); track lim.label) {
+                                          <li class="limit-list__item">
+                                            <span class="limit-list__label">{{ lim.label }}</span>
+                                            <span class="limit-list__value">{{ lim.value }}</span>
+                                          </li>
+                                        }
+                                      </ul>
+                                    </nx-popover>
                                   </li>
                                 }
                               </ul>

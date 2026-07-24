@@ -239,6 +239,8 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 | `fnol-loss-info` | `/fnol/loss-information` | BMPCC-216 / 219 / 11006 |
 | `fnol-entities-damages` | `/fnol/entities-damages` | CHAMP-NO-LOSS-LOC |
 | `fnol-skeleton` | `/fnol/skeleton-create` | BMPCC-241 (orphan create) |
+| `fnol-skeleton-parties` | `/fnol/skeleton-parties` | BMPCC-241 (orphan parties — no policy, starts empty) |
+| `fnol-skeleton-location` | `/fnol/skeleton-location` | BMPCC-241 (orphan location — manual entry, no contract-location option) |
 | `fnol-summary` | `/fnol/summary` | Wizard summary (step-summary) |
 | `any` | (empty string) | Metadata-only preconditions; no link rendered |
 

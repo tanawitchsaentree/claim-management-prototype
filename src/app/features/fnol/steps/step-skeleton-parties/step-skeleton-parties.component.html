@@ -1,0 +1,97 @@
+<ng-container *ngIf="vm$ | async as vm">
+<div class="step-page">
+
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Parties</h1>
+  <p class="step-subtitle">
+    This claim has no linked policy yet, so parties start empty. Add anyone
+    involved — for example, another insurer that has reached out about this loss.
+  </p>
+
+  <!-- Toolbar -->
+  <div class="parties-toolbar">
+    <div class="parties-toolbar__left">
+      <span class="parties-toolbar__count">
+        Number of parties: <strong>{{ vm.parties.length }}</strong>
+      </span>
+    </div>
+    <div class="parties-toolbar__right">
+      <button nxButton="secondary small" type="button" (click)="onAddParties(vm.parties)">
+        Add party <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      </button>
+    </div>
+  </div>
+
+  @if (vm.error) {
+    <nx-message context="error">Failed to load parties. Please go back and try again.</nx-message>
+  }
+
+  @if (!vm.loading && !vm.error) {
+    @if (vm.parties.length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__message">No parties yet.</p>
+        <p class="empty-state__hint">Use "Add party" to get started — this step is optional.</p>
+      </div>
+    } @else {
+      <table nxTable class="parties-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="col-name">Party</th>
+            <th nxHeaderCell class="col-roles">Roles</th>
+            <th nxHeaderCell class="col-clearance">Clearance status</th>
+            <th nxHeaderCell class="col-action"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (party of vm.parties; track trackByParty($index, party)) {
+            <tr nxTableRow class="party-row" @rowExpand
+                [attr.data-party-id]="party.partyId"
+                [class.party-row--recently-added]="party.recentlyAdded">
+              <td nxCell class="col-name">{{ party.legalName }}</td>
+              <td nxCell class="col-roles">{{ rolesDisplay(party) }}</td>
+              <td nxCell class="col-clearance">
+                <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
+              </td>
+              <td nxCell class="col-action">
+                <button nxIconButton="tertiary small" type="button"
+                        [nxContextMenuTriggerFor]="partyMenu"
+                        [attr.aria-label]="'Actions for ' + party.legalName">
+                  <nx-icon name="ellipsis-v"></nx-icon>
+                </button>
+                <nx-context-menu #partyMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button" (click)="onViewDetails(party)">View details</button>
+                  <button nxContextMenuItem type="button" (click)="onEditRole(party)">Edit role</button>
+                  <button nxContextMenuItem type="button" (click)="onRemoveParty(party)">Remove</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+
+  <!-- Footer -->
+  <app-wizard-footer
+    (cancel)="onCancel()"
+    (back)="onBack()"
+    (next)="onNext()">
+  </app-wizard-footer>
+
+</div>
+</ng-container>
+
+<!-- Side sheet (outside ng-container — covers full viewport) -->
+@if (panelOpen) {
+  <div class="side-sheet-backdrop" (click)="onClosePanel()" aria-hidden="true"></div>
+}
+@if (selectedParty) {
+  <div class="side-sheet" [class.side-sheet--open]="panelOpen"
+       role="dialog" aria-modal="true" aria-label="Party details">
+    <app-party-detail-panel
+      [party]="selectedParty"
+      [open]="panelOpen"
+      (closePanel)="onClosePanel()">
+    </app-party-detail-panel>
+  </div>
+}

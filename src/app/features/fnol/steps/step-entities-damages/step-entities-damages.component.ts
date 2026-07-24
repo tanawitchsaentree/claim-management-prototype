@@ -16,11 +16,12 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
+import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
 import {
   EntitiesDamagesData, DamageGroup, EntityRow, PromiseSection,
-  SubItem, EntityType, EntitySearchResult, ENTITY_TYPE_LABELS,
+  SubItem, EntityType, EntitySearchResult, ENTITY_TYPE_LABELS, LocationLimit,
 } from '../../../../core/models';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EntityDetailPanelComponent } from '../../components/entity-detail-panel/entity-detail-panel.component';
@@ -34,6 +35,8 @@ interface EntitiesDamagesVM {
   loading: boolean;
   error: boolean;
 }
+
+const LIMIT_CAP = 3;
 
 @Component({
   selector: 'app-step-entities-damages',
@@ -63,6 +66,7 @@ interface EntitiesDamagesVM {
     NxContextMenuModule,
     NxTooltipModule,
     NxModalModule,
+    NxPopoverModule,
     StatusChipComponent,
     EntityDetailPanelComponent,
     WizardFooterComponent,
@@ -124,6 +128,16 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
     if (!entity.subItems?.length) return false;
     const n = entity.subItems.filter(s => s.selected).length;
     return n > 0 && n < entity.subItems.length;
+  }
+
+  // ── Limit list overflow ──────────────────────────────────────────────────────
+
+  visibleLimits(entity: EntityRow): LocationLimit[] {
+    return entity.limits?.slice(0, LIMIT_CAP) ?? [];
+  }
+
+  hiddenLimits(entity: EntityRow): LocationLimit[] {
+    return entity.limits?.slice(LIMIT_CAP) ?? [];
   }
 
   onEntityToggle(entity: EntityRow, checked: boolean): void {

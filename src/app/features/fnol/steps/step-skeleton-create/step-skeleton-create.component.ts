@@ -23,12 +23,11 @@ import { FnolStateService } from '../../services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { BrokerSearchModalComponent, BrokerSearchModalResult } from '../../../../shared/components/broker-search-modal/broker-search-modal.component';
-import { Broker, LookupOption, LocationPickerOutput } from '../../../../core/models';
-import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
+import { Broker, LookupOption } from '../../../../core/models';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 
-export type NotifierType = 'broker' | 'insured' | 'internal';
+export type NotifierType = 'broker' | 'insured';
 
 interface ReasonOption { value: SkeletonReason; label: string; }
 
@@ -64,7 +63,6 @@ const REASON_OPTIONS: ReasonOption[] = [
     NxTimefieldModule,
     NxDatefieldModule,
     NxTableModule,
-    LocationPickerComponent,
     WizardFooterComponent,
   ],
   templateUrl: './step-skeleton-create.component.html',
@@ -95,7 +93,6 @@ export class StepSkeletonCreateComponent implements OnInit {
   // Shared loss-info FormGroup (same shape as happy path)
   readonly lossForm     = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
   readonly dateOfLoss   = this.fnolState.getDateOfLossGroup();
-  readonly lossLocation = this.fnolState.getLossLocationControl();
   readonly causeDetails = this.fnolState.getCauseDetailsGroup();
   readonly eventsArray  = this.fnolState.getLossEventsArray();
 
@@ -130,9 +127,6 @@ export class StepSkeletonCreateComponent implements OnInit {
       } else if (existing.insuredName) {
         this.notifierType.set('insured');
         this.form.controls.notifierText.setValue(existing.insuredName);
-      } else if (existing.internalNotifier) {
-        this.notifierType.set('internal');
-        this.form.controls.notifierText.setValue(existing.internalNotifier);
       }
     }
   }
@@ -202,8 +196,6 @@ export class StepSkeletonCreateComponent implements OnInit {
   get showWaterSection(): boolean { return this.selectedCauses.includes('water-damage'); }
   get showTheftSection(): boolean { return this.selectedCauses.includes('theft'); }
   get showCauseSection(): boolean { return this.showFireSection || this.showWaterSection || this.showTheftSection; }
-
-  onLocationChange(o: LocationPickerOutput): void { this.lossLocation.setValue(o); }
 
   getCauseLabel(key: string): string { return getCauseSchema(key)?.causeLabel ?? key; }
   getCausedByOptions(key: string): LookupOption[] | null {
@@ -298,15 +290,14 @@ export class StepSkeletonCreateComponent implements OnInit {
         clientName:       raw.clientName ?? '',
         reason:           raw.reason as SkeletonReason,
         notes:            raw.notes ?? undefined,
-        brokerName:       type === 'broker'   ? (broker?.legalName ?? undefined) : undefined,
-        brokerIpmId:      type === 'broker'   ? (broker?.ipmId     ?? undefined) : undefined,
-        insuredName:      type === 'insured'  ? (text || undefined)              : undefined,
-        internalNotifier: type === 'internal' ? (text || undefined)              : undefined,
+        brokerName:  type === 'broker'  ? (broker?.legalName ?? undefined) : undefined,
+        brokerIpmId: type === 'broker'  ? (broker?.ipmId     ?? undefined) : undefined,
+        insuredName: type === 'insured' ? (text || undefined)              : undefined,
       },
       this.fnolState.skeletonClaimId ?? '',
     );
     this.fnolState.path = 'orphan';
-    this.router.navigate(['/fnol/skeleton-summary']);
+    this.router.navigate(['/fnol/skeleton-parties']);
   }
 
   private markAllTouched(g: AbstractControl): void {
