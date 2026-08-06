@@ -292,7 +292,7 @@
             <p class="co-restrict-access__heading">Users with access</p>
 
             @if (coAccessList().length === 0) {
-              <p class="co-restrict-access__empty">No users added yet.</p>
+              <app-empty-state message="No users added yet."></app-empty-state>
             }
             @for (entry of coAccessList(); track entry.userId) {
               <div class="co-restrict-entry">
@@ -460,7 +460,9 @@
               }
               @empty {
                 <tr nxTableRow>
-                  <td nxCell colspan="6" class="act-empty">No recent activities.</td>
+                  <td nxCell colspan="6" class="act-empty">
+                    <app-empty-state message="No recent activities found."></app-empty-state>
+                  </td>
                 </tr>
               }
             </tbody>

@@ -22,6 +22,7 @@ import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
@@ -105,6 +106,7 @@ const TASKS_PAGE_SIZE = 10;
     ReactiveFormsModule,
     StatusChipComponent,
     AppDatePipe,
+    EmptyStateComponent,
     ClaimPreviewDirective,
     ConfirmDialogComponent,
     MassEventSearchModalComponent,
