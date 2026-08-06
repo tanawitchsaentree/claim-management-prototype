@@ -4,6 +4,16 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-06 — Fix stale `closedSections` fixtures in closure.json / ready-to-close.json
+
+- **Source:** collaboration-readiness audit flagged 9 `audit:ac-logic` failures, all `closedSections` count mismatches
+- **Root cause:** commit `26c6c56` ("remove duplicate sections from mock data") cut `CLM-2024-001`'s section count in `sections.json` from 6 to 4 (removed SEC-004, SEC-005 as duplicates). `closure.json` and `ready-to-close.json` were never updated to match — their `expectedOutcome.closedSections` values, and two `ready-to-close.json` UI-text strings ("all 6 sections", "6/6 Closed"), still assumed 6 total sections.
+- **Fix:** `closure.json` — AC-01/04/05/06/07 (`SEC-001: Closed` override, 3 of 4 sections default-closed + 1 flipped = 4 closed) `closedSections` 6→4; AC-02/03 (3 sections forced Open, 1 remains closed) `closedSections` 3→1. `ready-to-close.json` — AC-01/02 (all 4 sections forced closed) `closedSections` 6→4, plus the two literal "6 sections"/"6/6 Closed" text strings → "4 sections"/"4/4 Closed".
+- **Not touched:** everything else in both tickets (openSections, canClose, buttonEnabled, tooltipContains, closedByName, closureReason) was already correct — only the closedSections arithmetic was stale.
+- **Audit result:** `audit:ac-logic` 53 ACs, 49 ✅ / 0 ❌ / 4 skipped (was 40 ✅ / 9 ❌ / 4 skipped).
+
+---
+
 ## 2026-07-24 — BMPCC-241 update (Notifier — remove Internal; add Parties + Location steps)
 
 - **Source:** verbal brief (UI/UX description, Marlene's scenario) — orphan claim flow gaps: internal staff should never appear as notifier; Parties and Location were missing entirely, only Loss→Summary existed

@@ -7,7 +7,7 @@
   "walkthroughSteps": [
     "Land on CLM-2024-001 overview — status chip reads 'In progress'",
     "Observe Tasks widget: all 5 tasks show as Done",
-    "Observe Sections widget: all 6 sections are Closed",
+    "Observe Sections widget: all 4 sections are Closed",
     "Click 'Close Claim' — button is enabled, no tooltip blocker",
     "In the modal, skip straight to Step 2 (no blockers) — select Closure Reason and confirm",
     "Status chip updates to 'Closed'; closure panel appears with date, reason, and handler"
@@ -29,7 +29,7 @@
             "hint": "All task rows should have 'Done' status badge"
           },
           {
-            "text": "Sections widget shows 6/6 Closed",
+            "text": "Sections widget shows 4/4 Closed",
             "page": "overview",
             "role": "tested-visible",
             "hint": "All section rows show Closed status"
@@ -87,7 +87,7 @@
         "pendingTasks":   0,
         "doneTasks":      5,
         "openSections":   0,
-        "closedSections": 6,
+        "closedSections": 4,
         "overviewStatus": "In progress",
         "canClose":       true,
         "buttonVisible":  true,
@@ -159,7 +159,7 @@
         "pendingTasks":   0,
         "doneTasks":      5,
         "openSections":   0,
-        "closedSections": 6,
+        "closedSections": 4,
         "overviewStatus": "In progress",
         "canClose":       true,
         "buttonVisible":  true,
