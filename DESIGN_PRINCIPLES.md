@@ -115,6 +115,23 @@
 
 ---
 
+## Component Variant Contracts
+
+Governance rule for every primitive below: **VARIES** = safe to change per-usage. **FIXED** = single source, do not fork — change it in the shared component/token, never inline. If you think you need a variant not listed here, that's a sign to extend the shared component's API, not to copy its markup.
+
+- **Modal** — VARIES: content, width tier (per `MODAL_WIDTH.md`), step count. FIXED: header structure (title + close button), footer button placement (right-aligned, Cancel left of primary), button size (`small`), `_modal-layout.scss` mixin usage.
+- **Status chip** (`app-status-chip`) — VARIES: status value, domain (`claim`/`task`/`entity`/`damage-item`/`clearance`/`risk-severity`/`recovery`/`policy`/`skeleton-claim`). FIXED: shape (pill or text variant), size, color mapping — single source in `status-chip.component.ts`'s `TOKEN_MAP`, never a local hex or local status-color class.
+- **Empty state** (`app-empty-state`) — VARIES: message, hint, icon, optional `[action]`/`[body]` projected content. FIXED: layout, typography, spacing (`empty-state.component.scss`). A table/list with no rows either uses this component or carries an explicit `<!-- audit-exempt: reason -->` comment — never a bespoke "no data" `<p>`.
+- **Page header** (`app-page-header`) — VARIES: title, eyebrow, subtitle, back button, projected `[actions]`. FIXED: structure, spacing (32px bottom margin), typography (28px/400 title, 14px muted eyebrow/subtitle). Pages with no existing header (claim overview, approvals) or a fundamentally different purpose (dashboard's personalized greeting) are exempt — don't force a header onto a page that never had one.
+- **Card** — VARIES: content. FIXED: header pattern, body spacing (`BLESSED.md` card-body section), border/shadow.
+- **Table** — VARIES: columns, data. FIXED: NDBX `nxTable` base (no hand-rolled `<table>`), header styling, empty-state requirement (see Empty state above).
+- **Toast** — VARIES: message, tone (`success`/`error`/`info`/`warning`). FIXED: position (fixed stack), duration defaults (4000ms, 6000ms for error), API — `ToastService` only, never a local `setTimeout` + raw `nx-message` reimplementation.
+- **Date display** — FIXED entirely: `AppDatePipe` only (`| appDate` / `| appDate:'withTime'`), `DD-MM-YYYY` format. No local `formatDate()` methods, no `toLocaleDateString()` in components (one named exception: `calendar-widget.ts`'s deliberately different weekday/month-name label — not a duplicate of this convention).
+- **Status colors** — FIXED entirely: single source in `styles.scss`'s `--claim-status-*`/`--task-status-*`/`--clearance-*`/etc. custom properties, consumed only through `app-status-chip`. Audit-enforced (`audit:status-colors`) — no raw hex in any status/clearance/recovery/risk-severity-named selector outside `shared/components/status-chip/`.
+- **Button size** — FIXED inside modals: every `<button nxButton>` in a `*-modal.component.html` must include `small`. FIXED across sibling groups: direct-sibling buttons in one template must not mix small and non-small. VARIES: buttons projected into `app-empty-state`'s `[action]` slot are exempt (full-size CTA is intentional there). Audit-enforced (`audit:button-size`).
+
+---
+
 ## เมื่อไม่แน่ใจ
 
 1. ดู component ใกล้เคียงใน project เป็น pattern หลัก (`sections.html` / `dashboard.html`)

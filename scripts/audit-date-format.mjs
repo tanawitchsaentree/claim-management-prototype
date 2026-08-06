@@ -5,7 +5,8 @@
  * (src/app/shared/pipes/app-date.pipe.ts), not a hand-rolled per-component
  * formatter. Flags:
  *   1. A local `formatDate(` method declaration in any component.
- *   2. `toLocaleDateString(` calls outside the one documented exception.
+ *   2. `toLocaleDateString(` / `toLocaleTimeString(` calls outside the one
+ *      documented exception.
  *
  * Exception: calendar-widget.ts's `toLocaleDateString('en-GB', { weekday,
  * day, month })` renders a deliberately different, human-readable calendar
@@ -30,7 +31,7 @@ const EXCEPTIONS = [
 ];
 
 const FORMAT_DATE_DECL = /\bformatDate\s*\(/;
-const TO_LOCALE_DATE_STRING = /\btoLocaleDateString\s*\(/;
+const TO_LOCALE_DATE_OR_TIME_STRING = /\btoLocale(Date|Time)String\s*\(/;
 
 function walkTs(dir, files = []) {
   for (const entry of readdirSync(dir)) {
@@ -53,8 +54,8 @@ for (const file of files) {
     if (FORMAT_DATE_DECL.test(line) && /(private|public|protected)?\s*formatDate\s*\(.*\)\s*:\s*string\s*\{?$/.test(line.trim())) {
       violations.push(`${relative(root, file)}:${i + 1}: local formatDate() declaration — use AppDatePipe instead\n    ${line.trim()}`);
     }
-    if (TO_LOCALE_DATE_STRING.test(line)) {
-      violations.push(`${relative(root, file)}:${i + 1}: toLocaleDateString() — use AppDatePipe instead\n    ${line.trim()}`);
+    if (TO_LOCALE_DATE_OR_TIME_STRING.test(line)) {
+      violations.push(`${relative(root, file)}:${i + 1}: toLocaleDateString()/toLocaleTimeString() — use AppDatePipe instead\n    ${line.trim()}`);
     }
   }
 }
