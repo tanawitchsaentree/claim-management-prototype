@@ -1,5 +1,25 @@
 # Contributing
 
+## Prerequisites — Allianz Nexus registry access
+
+`npm install` will fail without this. This project depends on `@allianz/ng-aquila` and `@allianz/ngx-brand-kit`, which are internal Allianz packages published only to Allianz's private Nexus registry — they do not exist on the public npmjs.org registry, and no public mirror exists.
+
+- **`.npmrc` is intentionally not tracked in git** (see `.gitignore`) — it points at an internal Allianz hostname, and while it holds no credentials itself, registry URLs for internal infrastructure shouldn't be committed to a repo that may end up outside Allianz's network (e.g. a public fork, a screenshot, a copy-pasted issue).
+
+**Steps for a new contributor:**
+1. Request access to the Allianz Nexus npm registry through the standard Allianz internal-tooling access process (ask your onboarding buddy or team lead which process applies to you — this varies by team/region and isn't something this repo can document generically).
+2. Once you have registry access, copy the template and fill in the real host:
+   ```bash
+   cp .npmrc.example .npmrc
+   ```
+   Then edit `.npmrc` and replace `<nexus-host>` with the actual registry hostname you were given.
+3. Run `npm install`.
+
+**What failure looks like without access** (so you can self-diagnose):
+- `npm install` failing with `404 Not Found` on `@allianz/ng-aquila` or `@allianz/ngx-brand-kit` → your `.npmrc` is missing, or still has the placeholder host from `.npmrc.example`.
+- `npm install` failing with `401 Unauthorized` / `403 Forbidden` → `.npmrc` points at the right host, but your account doesn't have registry access yet (or a VPN/network connection to Allianz's internal network is required and isn't active).
+- `npm install` succeeding but pulling from `registry.npmjs.org` for these two packages → check you don't have a global `~/.npmrc` overriding the project-local one; the internal packages aren't published there at all, so this will always 404 regardless of credentials.
+
 ## Setup
 
 ```bash
@@ -55,4 +75,4 @@ Verified 2026-08-06 by cloning a snapshot of the tracked tree into an empty dire
 
 **What's still local-only, by design:** `.claude/settings.local.json` (per-developer permission settings) and `.claude/projects/` (Claude Code's own session memory, which bakes in an absolute local file path) stay gitignored — they aren't shared project knowledge, they're personal tool state. `.npmrc` (internal Allianz Nexus registry URL) also stays gitignored; a new contributor needs Allianz network access to get one, not one from this repo.
 
-**Known gap this smoke test surfaced, not yet fixed:** the fresh clone's `npm install` succeeded here only because it ran on a machine already configured to resolve `@allianz/ng-aquila` / `@allianz/ngx-brand-kit` from the internal Nexus registry (via a local `.npmrc`, which is intentionally not in git). A contributor without that registry access cannot `npm install` at all. This is a real onboarding blocker, but it's a credentials/network problem, not something a `.gitignore` or script fix can solve — flag it explicitly when inviting an external contributor.
+**Note on this smoke test:** it ran on a machine already configured with Nexus registry access via a local `.npmrc`. A contributor without that access cannot `npm install` at all — see "Prerequisites" at the top of this file.

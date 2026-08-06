@@ -1,0 +1,3 @@
+registry=https://<nexus-host>/repository/npm-public/
+always-auth=false
+strict-ssl=false
