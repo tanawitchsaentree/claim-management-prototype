@@ -45,8 +45,6 @@ Thumbs.db
 
 # Internal dev tooling — never commit
 .npmrc
-VIOLATIONS.md
-DESIGN_PRINCIPLES.md
 ${local_app_data}\
 
 # Claude Code local-only state (per-developer, not shared knowledge)
