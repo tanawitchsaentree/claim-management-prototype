@@ -30,6 +30,7 @@ import { MockSkeletonSearchService } from '../../../../core/mock/services/mock-s
 import { PolicySearchResult, ClientSearchResult } from '../../models/fnol-form.model';
 import { SkeletonClaim } from '../../../../core/models/skeleton-claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import lookupsData from '../../../../core/mock/data/lookups.json';
 
 type SearchState =
@@ -60,6 +61,7 @@ const BANNER_DISMISSED_KEY = 'dismissed-skeleton-banner';
     NxMessageModule,
     NxContextMenuModule,
     StatusChipComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './step-1-search.component.html',
   styleUrl: './step-1-search.component.scss',

@@ -195,6 +195,9 @@
 </ng-container>
 
 <!-- Modal: all duplicate claims -->
+<!-- audit-exempt: this modal only opens via "Show all N duplicates", which is
+     itself only shown when duplicates already exist — the table can never
+     render empty. -->
 <ng-template #duplicatesModalTpl>
   <h2 class="nx-modal__title" id="dup-modal-title">Existing claims found</h2>
   <p class="dup-modal-intro">{{ modalDuplicates.length }} claims match this policy and date of loss.</p>

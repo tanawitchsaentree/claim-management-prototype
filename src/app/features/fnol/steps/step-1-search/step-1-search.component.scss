@@ -139,12 +139,6 @@
   nx-icon { font-size: 18px; flex-shrink: 0; }
 }
 
-.results-empty {
-  padding: 24px 0;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
 .results-table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -308,22 +302,6 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   margin: 6px 0 0;
 }
 
-// ─── Skeleton empty state (compact variant) ───────────────────────
-.empty-state--compact {
-  padding: 32px 24px;
-  gap: 8px;
-
-  .empty-state__icon { font-size: 32px; }
-
-  .empty-state__subtitle {
-    font-size: var(--paragraph-04-font-size);
-    color: var(--text-muted);
-    max-width: 420px;
-    text-align: center;
-    margin: 0;
-  }
-}
-
 .policy-count-link {
   background: none;
   border: none;
@@ -337,53 +315,20 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
 }
 
 // ─── Empty state ──────────────────────────────────────────────────
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 48px 24px;
-  gap: 12px;
+// Content projected into <app-empty-state>'s [body] slot (see empty-state.component.scss
+// for the slot's own layout rules — max-width/text-align/color).
+.empty-state__you-can {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
 
-  &__icon {
-    font-size: 48px;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-  }
-
-  &__title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-01);
-    margin: 0;
-  }
-
-  &__body {
-    text-align: left;
-    max-width: 400px;
-  }
-
-  &__you-can {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin: 0 0 4px;
-  }
-
-  &__list {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin: 0;
-    padding-left: 20px;
-    line-height: 1.6;
-  }
-
-  &__actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.empty-state__list {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
 }
 
 // Wrapper span that receives hover events for tooltip on disabled buttons

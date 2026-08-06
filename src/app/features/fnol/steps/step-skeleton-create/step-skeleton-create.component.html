@@ -36,6 +36,8 @@
             Remove broker
           </button>
         </div>
+        <!-- audit-exempt: renders exactly one confirmed broker's row (gated by
+             the @if above), never zero — not a list, no empty case exists. -->
         <div class="broker-row">
           <table nxTable class="broker-row__table">
             <thead>

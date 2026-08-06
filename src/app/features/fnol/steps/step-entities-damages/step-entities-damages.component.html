@@ -61,6 +61,10 @@
                   <span class="damage-group__title">{{ group.damageType }}</span>
                 </button>
 
+                <!-- audit-exempt: a damage-group entry only exists when it has
+                     entities (built from the source data upstream) — the
+                     zero-entities-for-this-policy case is already handled by
+                     the nx-message banner above, at the sections level. -->
                 @if (group.expanded) {
                   <table nxTable class="ed-table">
                     <thead>

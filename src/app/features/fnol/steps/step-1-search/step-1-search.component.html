@@ -141,17 +141,15 @@
 
         <!-- Empty state (no clients, policies, OR skeletons) -->
         @if (isEmptyResults(state)) {
-          <div class="empty-state">
-            <nx-icon name="product-search-document" class="empty-state__icon"></nx-icon>
-            <p class="empty-state__title">No clients or policies match your search</p>
-            <div class="empty-state__body">
+          <app-empty-state message="No clients or policies match your search" icon="product-search-document">
+            <div body>
               <p class="empty-state__you-can">You can:</p>
               <ul class="empty-state__list">
                 <li>Adjust your search criteria and try again</li>
                 <li>Create a claim for urgent cases that cannot wait for policy confirmation</li>
               </ul>
             </div>
-            <div class="empty-state__actions">
+            <div action>
               <button nxButton="primary" type="button" (click)="onRegisterSkeleton(state)">
                 Register a skeleton claim
               </button>
@@ -159,7 +157,7 @@
                 Refine search
               </button>
             </div>
-          </div>
+          </app-empty-state>
         } @else {
 
           <!-- Tabs -->
@@ -185,7 +183,7 @@
           <!-- ── Clients tab ─────────────────────────────────────────── -->
           @if (activeTab === 0) {
             @if (state.clients.length === 0) {
-              <div class="results-empty">No clients match your search criteria.</div>
+              <app-empty-state message="No clients found."></app-empty-state>
             } @else {
               <div class="results-table-wrap"><table class="results-table">
                 <thead>
@@ -257,7 +255,7 @@
           <!-- ── Policies tab ────────────────────────────────────────── -->
           @if (activeTab === 1) {
             @if (state.policies.length === 0) {
-              <div class="results-empty">No policies match your search criteria.</div>
+              <app-empty-state message="No policies found."></app-empty-state>
             } @else {
               <div class="results-table-wrap"><table class="results-table">
                 <thead>
@@ -313,14 +311,9 @@
           <!-- ── Skeleton Claims tab ─────────────────────────────────── -->
           @if (activeTab === 2) {
             @if (state.skeletons.length === 0) {
-              <div class="empty-state empty-state--compact">
-                <nx-icon name="file-text" class="empty-state__icon"></nx-icon>
-                <p class="empty-state__title">No skeleton claims for this search</p>
-                <p class="empty-state__subtitle">
-                  Skeleton claims are created when a policy cannot be identified during registration.
-                  This is normal for most searches.
-                </p>
-              </div>
+              <app-empty-state message="No skeleton claims for this search" icon="file-text"
+                hint="Skeleton claims are created when a policy cannot be identified during registration. This is normal for most searches.">
+              </app-empty-state>
             } @else {
               <div class="results-table-wrap"><table class="results-table">
                 <thead>
@@ -395,7 +388,7 @@
 
   <!-- Footer -->
   <div class="step-footer">
-    <button nxButton="tertiary" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
     <div class="step-footer-actions">
       @if (state$ | async; as state) {
         @if (showRegisterSkeleton(state)) {
@@ -416,6 +409,10 @@
             </button>
           </span>
         }
+        <!-- audit-exempt: same empty-state CTA as app-empty-state's [action] slot
+             above (isEmptyResults is mutually exclusive with the small-sized
+             buttons this footer otherwise shows) — full-size by the empty-state
+             exemption, not a missed small. -->
         @if (isEmptyResults(state)) {
           <button nxButton="primary" type="button" (click)="onRegisterSkeleton(state)">
             Register a skeleton claim
