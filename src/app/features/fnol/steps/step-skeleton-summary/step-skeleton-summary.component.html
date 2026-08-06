@@ -41,7 +41,7 @@
       <section class="review-card">
         <h2 class="review-card__title">Locations of loss</h2>
         @if (locations().length === 0) {
-          <p class="review-empty">No locations selected.</p>
+          <app-empty-state message="No locations selected."></app-empty-state>
         } @else {
           <ul class="review-list">
             @for (loc of locations(); track loc.id) {
@@ -54,7 +54,7 @@
       <section class="review-card">
         <h2 class="review-card__title">Parties</h2>
         @if (parties().length === 0) {
-          <p class="review-empty">No parties added.</p>
+          <app-empty-state message="No parties added."></app-empty-state>
         } @else {
           <ul class="review-list">
             @for (party of parties(); track party.partyId) {

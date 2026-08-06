@@ -14,6 +14,7 @@ import { ToastService } from '../../../../shared/components/toast/toast.service'
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LocationItem, LookupOption } from '../../../../core/models';
 import { Party, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 const REASON_LABELS: Record<SkeletonReason, string> = {
   policy_not_issued:    'Policy not yet issued',
@@ -31,6 +32,7 @@ const REASON_LABELS: Record<SkeletonReason, string> = {
     NxIconModule,
     NxMessageModule,
     NxSpinnerModule,
+    EmptyStateComponent,
   ],
   templateUrl: './step-skeleton-summary.component.html',
   styleUrl: './step-skeleton-summary.component.scss',

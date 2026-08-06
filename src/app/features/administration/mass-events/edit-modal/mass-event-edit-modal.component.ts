@@ -20,6 +20,7 @@ import {
   ClaimSearchModalResult,
 } from '../../../../shared/components/claim-search-modal/claim-search-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 export type MassEventModalMode = 'edit' | 'create' | 'view';
 
@@ -49,6 +50,7 @@ export interface MassEventModalResult {
     NxTimefieldModule,
     NxTableModule,
     NxContextMenuModule,
+    EmptyStateComponent,
   ],
   templateUrl: './mass-event-edit-modal.component.html',
   styleUrl: './mass-event-edit-modal.component.scss',

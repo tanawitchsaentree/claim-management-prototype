@@ -37,7 +37,7 @@
     </header>
 
     @if (results().length === 0) {
-      <p class="mesm-empty">No mass events match your search.</p>
+      <app-empty-state message="No mass events found."></app-empty-state>
     } @else {
       <div class="mesm-table-wrap">
         <table nxTable class="mesm-table">

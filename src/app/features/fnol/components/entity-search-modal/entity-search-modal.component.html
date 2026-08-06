@@ -62,7 +62,7 @@
         @if (vm.error) {
           <nx-message context="error">Search failed. Please try again.</nx-message>
         } @else if (vm.results.length === 0) {
-          <p class="esm-empty">No results found. Try different filters.</p>
+          <app-empty-state message="No results found." hint="Try different filters."></app-empty-state>
         } @else {
           <table nxTable class="esm-table">
             <thead>

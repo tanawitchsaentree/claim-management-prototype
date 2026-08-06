@@ -13,6 +13,7 @@ import { MockSectionService } from '../../../core/mock/services/mock-section.ser
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ClaimOverview } from '../../../core/models/claim-overview.model';
 import { ClaimSection } from '../../../core/models/section.model';
 import { Claim } from '../../../core/models/claim.model';
@@ -30,7 +31,7 @@ const EMPTY_VM: RefVM = { claim: null, sections: [], notFound: false, loading: t
 @Component({
   selector: 'app-claim-reference-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NxIconModule, NxButtonModule, NxTooltipModule, StatusChipComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NxIconModule, NxButtonModule, NxTooltipModule, StatusChipComponent, EmptyStateComponent],
   templateUrl: './claim-reference-panel.component.html',
   styleUrl: './claim-reference-panel.component.scss',
   animations: [

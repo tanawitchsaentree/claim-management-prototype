@@ -1,5 +1,10 @@
 <ng-container *ngIf="vm$ | async as vm">
 
+  <!-- audit-exempt: this is an inline form prompt ("Where did the loss
+       occur?" + Add location CTA), left-aligned and bold, not a passive
+       "no data" list state — app-empty-state's centered/italic canonical
+       shape would read as a data-absence message here, not a form question.
+       Table only renders once a location exists (see @else below). -->
   @if (locations.length === 0) {
     <div class="lp-initial">
       <p class="lp-hint">Where did the loss occur?</p>

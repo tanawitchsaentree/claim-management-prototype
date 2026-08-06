@@ -26,6 +26,7 @@ import { AddReserveModalComponent, AddReserveResult } from '../../components/add
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-step-reserves',
@@ -48,6 +49,7 @@ import { ToastService } from '../../../../shared/components/toast/toast.service'
     ReserveDetailPanelStubComponent,
     ConfirmDialogComponent,
     WizardFooterComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './step-reserves.component.html',
   styleUrl: './step-reserves.component.scss',

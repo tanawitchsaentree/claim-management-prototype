@@ -109,7 +109,7 @@
         @if (vm.error) {
           <nx-message context="error">Search failed. Please try again.</nx-message>
         } @else if (vm.results.length === 0) {
-          <p class="apm-empty">No parties found. Try different filters.</p>
+          <app-empty-state message="No parties found." hint="Try different filters."></app-empty-state>
         } @else {
           <table nxTable class="apm-table">
             <thead>

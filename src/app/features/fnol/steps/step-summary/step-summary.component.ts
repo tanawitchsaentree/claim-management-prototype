@@ -24,6 +24,7 @@ import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/re
 import { LookupOption } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 export interface ClaimGroup {
   policyNumber: string;
@@ -75,6 +76,7 @@ const CREATOR: AccessListEntry = {
     NxFormfieldModule,
     NxInputModule,
     WizardFooterComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './step-summary.component.html',
   styleUrl: './step-summary.component.scss',

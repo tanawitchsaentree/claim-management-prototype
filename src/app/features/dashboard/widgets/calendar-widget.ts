@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { CalendarEvent } from '../../../core/models';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 const TYPE_ICON: Record<string, string> = {
   deadline: 'clock-o',
@@ -18,7 +19,7 @@ function formatDateLabel(dateStr: string): string {
 @Component({
   selector: 'app-calendar-widget',
   standalone: true,
-  imports: [CommonModule, RouterLink, NxIconModule],
+  imports: [CommonModule, RouterLink, NxIconModule, EmptyStateComponent],
   template: `
     <div class="panel-card">
       <div class="panel-card-header">
@@ -26,7 +27,7 @@ function formatDateLabel(dateStr: string): string {
       </div>
 
       @if (grouped().length === 0) {
-        <div class="cal-empty">No upcoming events.</div>
+        <app-empty-state message="No upcoming events."></app-empty-state>
       } @else {
         <div class="cal-list">
           @for (group of grouped(); track group.date) {
@@ -68,7 +69,6 @@ function formatDateLabel(dateStr: string): string {
     .panel-card-header { margin-bottom: 12px; }
     .panel-card-title { font-size: 16px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
 
-    .cal-empty { font-size: 14px; color: var(--text-muted); padding: 4px 0 8px; }
     .cal-list { max-height: 320px; overflow-y: auto; padding-right: 4px; }
     .cal-day-group { margin-bottom: 16px; &:last-child { margin-bottom: 0; } }
     .cal-day-label {

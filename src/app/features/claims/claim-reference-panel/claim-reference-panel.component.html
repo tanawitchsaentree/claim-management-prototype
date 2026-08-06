@@ -53,6 +53,9 @@
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchInput($event)"
             autofocus />
+          <!-- audit-exempt: tiny inline popover hint shares this class with the
+               "Searching…" state — app-empty-state's 24px padding is too much
+               chrome for a compact autocomplete dropdown row. -->
           @if (searching()) {
             <div class="ref-search-hint">Searching…</div>
           } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
@@ -87,14 +90,12 @@
       <span>Loading…</span>
     </div>
   } @else if (vm().notFound) {
-    <div class="ref-state ref-state--not-found">
-      <nx-icon name="info-circle-o" size="m"></nx-icon>
-      <p class="ref-state__title">Claim not found</p>
-      <p class="ref-state__desc">
+    <app-empty-state message="Claim not found" icon="info-circle-o">
+      <p body>
         <strong>{{ svc.activeRefTab()?.claimId }}</strong> is not in the demo data set.
         Try CLM-2024-001 or CLM-2024-011.
       </p>
-    </div>
+    </app-empty-state>
   } @else if (vm().claim; as claim) {
 
     <!-- Launch in full view link -->

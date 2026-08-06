@@ -48,9 +48,7 @@
             <nx-switcher [checked]="showMyTasksOnly()" (checkedChange)="showMyTasksOnly.set($event)">Show my tasks only</nx-switcher>
           </div>
           @if (displayedTasks().length === 0) {
-            <div class="widget-empty">
-              @if (showMyTasksOnly()) { No tasks assigned to you. } @else { No tasks assigned. }
-            </div>
+            <app-empty-state [message]="showMyTasksOnly() ? 'No tasks assigned to you yet.' : 'No tasks assigned yet.'"></app-empty-state>
           } @else {
             <div class="data-table-wrap">
             <table nxTable sticky="last" class="dash-table">
@@ -135,7 +133,7 @@
 
           @if (portfolioTab === 'loss-events') {
             @if (lossEvents().length === 0) {
-              <div class="widget-empty">No loss events to display.</div>
+              <app-empty-state message="No loss events found."></app-empty-state>
             } @else {
               <div class="data-table-wrap">
               <table nxTable sticky="last" class="dash-table">
@@ -230,9 +228,7 @@
 
           @if (approvalsTab() === 'reserves') {
             @if (displayedApprovals().length === 0) {
-              <div class="widget-empty">
-                @if (showMyApprovalsOnly()) { No reserve approvals submitted by you. } @else { No reserve approval requests found. }
-              </div>
+              <app-empty-state [message]="showMyApprovalsOnly() ? 'No reserve approvals submitted by you.' : 'No reserve approval requests found.'"></app-empty-state>
             } @else {
               <div class="data-table-wrap">
               <table nxTable sticky="last" class="dash-table">
@@ -279,9 +275,7 @@
             }
           } @else {
             @if (displayedPayments().length === 0) {
-              <div class="widget-empty">
-                @if (showMyApprovalsOnly()) { No payment approvals submitted by you. } @else { No payment approval requests found. }
-              </div>
+              <app-empty-state [message]="showMyApprovalsOnly() ? 'No payment approvals submitted by you.' : 'No payment approval requests found.'"></app-empty-state>
             } @else {
               <div class="data-table-wrap">
               <table nxTable sticky="last" class="dash-table">

@@ -91,7 +91,7 @@
   @if (loading()) {
     <p class="cnp__empty">Loading notes…</p>
   } @else if (totalCount() === 0) {
-    <p class="cnp__empty">No notes match this filter.</p>
+    <app-empty-state message="No notes found."></app-empty-state>
   } @else {
 
     <!-- PINNED section -->

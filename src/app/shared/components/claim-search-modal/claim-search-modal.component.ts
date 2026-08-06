@@ -11,6 +11,7 @@ import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { Claim } from '../../../core/models';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface ClaimSearchModalData {
   excludeClaimIds?: string[];
@@ -31,6 +32,7 @@ export type ClaimSearchModalResult = { claim: Claim } | null;
     NxIconModule,
     NxRadioModule,
     NxTableModule,
+    EmptyStateComponent,
   ],
   templateUrl: './claim-search-modal.component.html',
   styleUrl: './claim-search-modal.component.scss',

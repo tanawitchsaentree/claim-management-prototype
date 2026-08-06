@@ -12,6 +12,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { Note, NoteSection } from '../../../core/models';
 import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 type FilterValue = 'all' | 'pinned' | 'recovery' | 'litigation' | 'general';
 
@@ -41,6 +42,7 @@ const EN_WEEKDAY: Record<number, string> = {
     NxContextMenuModule,
     NxDropdownModule,
     NxFormfieldModule,
+    EmptyStateComponent,
   ],
   templateUrl: './claim-notes-panel.component.html',
   styleUrl: './claim-notes-panel.component.scss',

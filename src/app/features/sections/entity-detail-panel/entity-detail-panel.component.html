@@ -49,7 +49,7 @@
     </div>
 
     @if (items().length === 0) {
-      <p class="edp-empty">No damaged items recorded.</p>
+      <app-empty-state message="No damaged items recorded."></app-empty-state>
     } @else {
       <table nxTable class="edp-table">
         <thead>

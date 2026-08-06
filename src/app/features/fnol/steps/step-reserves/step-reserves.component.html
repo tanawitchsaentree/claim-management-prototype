@@ -83,10 +83,7 @@
 
     <!-- Empty state -->
     @if (reserves.length === 0 && !isSqueezed()) {
-      <div class="empty-state">
-        <p class="empty-state__message">No reserves yet.</p>
-        <p class="empty-state__hint">Reserves are auto-generated from your selected parties and damages.</p>
-      </div>
+      <app-empty-state message="No reserves yet." hint="Reserves are auto-generated from your selected parties and damages."></app-empty-state>
     }
 
     <!-- Two-pane layout: list (left) + detail panel (right) -->
@@ -353,17 +350,13 @@
                       }
 
                       @if ((item.subReserves[activeTab()] ?? []).length === 0) {
-                        <div class="sub-empty">
-                          <p class="sub-empty__text">
-                            There are no {{ typeLabels[activeTab()] | lowercase }} reserves added to this section.
-                            Click on the button below to add a new reserve.
-                          </p>
+                        <app-empty-state [message]="'There are no ' + (typeLabels[activeTab()] | lowercase) + ' reserves added to this section.'">
                           @if (!isCrossPolicy()) {
-                            <button nxButton="primary small" type="button" (click)="onAddSubReserve(item)">
+                            <button action nxButton="primary small" type="button" (click)="onAddSubReserve(item)">
                               Add reserve
                             </button>
                           }
-                        </div>
+                        </app-empty-state>
                       } @else {
                         <table nxTable class="sub-table" [@rowFade]="(item.subReserves[activeTab()] ?? []).length">
                           <thead>

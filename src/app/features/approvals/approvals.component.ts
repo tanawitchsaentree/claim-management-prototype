@@ -16,6 +16,7 @@ import { UrgentApproval } from '../../core/models/approval.model';
 import { PaymentApproval } from '../../core/models/dashboard-extended.model';
 import { firstValueFrom } from 'rxjs';
 import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.directive';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-approvals',
@@ -32,6 +33,7 @@ import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.dir
     NxGridModule,
     Navbar,
     ClaimPreviewDirective,
+    EmptyStateComponent,
   ],
   templateUrl: './approvals.component.html',
   styleUrl: './approvals.component.scss',

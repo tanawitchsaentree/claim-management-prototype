@@ -299,20 +299,6 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 .ref-spinner { animation: spin 0.8s linear infinite; }
 
-.ref-state__title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-01);
-  margin: 0;
-}
-
-.ref-state__desc {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin: 0;
-  line-height: 1.5;
-}
-
 // ─── Body ────────────────────────────────────────────────────────────────────
 .ref-body {
   display: flex;

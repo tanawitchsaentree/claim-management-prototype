@@ -10,6 +10,7 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
@@ -52,6 +53,7 @@ const ORPHAN_TARGET_CLAIM_ID = 'ORPHAN';
     NxMessageModule,
     NxModalModule,
     StatusChipComponent,
+    EmptyStateComponent,
     PartyDetailPanelComponent,
     WizardFooterComponent,
   ],

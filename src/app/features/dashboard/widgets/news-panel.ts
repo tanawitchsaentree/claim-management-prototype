@@ -2,6 +2,7 @@ import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NewsItem } from '../../../core/models';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 const TYPE_ICON: Record<string, string> = {
   info:    'product-important-info',
@@ -12,7 +13,7 @@ const TYPE_ICON: Record<string, string> = {
 @Component({
   selector: 'app-news-panel',
   standalone: true,
-  imports: [CommonModule, NxIconModule],
+  imports: [CommonModule, NxIconModule, EmptyStateComponent],
   template: `
     <div class="panel-card">
       <div class="panel-card-header">
@@ -20,7 +21,7 @@ const TYPE_ICON: Record<string, string> = {
       </div>
 
       @if (items.length === 0) {
-        <div style="font-size:13px;color:var(--text-muted);padding:4px 0">No updates.</div>
+        <app-empty-state message="No updates."></app-empty-state>
       } @else {
         <div class="news-list">
           @for (item of items; track item.id) {

@@ -21,7 +21,9 @@
     <tbody>
       @if (visibleRows().length === 0) {
         <tr nxTableRow>
-          <td nxCell colspan="4" class="aplp-empty">No matching parties.</td>
+          <td nxCell colspan="4" class="aplp-empty">
+            <app-empty-state message="No parties found."></app-empty-state>
+          </td>
         </tr>
       }
       @for (p of visibleRows(); track p.partyId) {

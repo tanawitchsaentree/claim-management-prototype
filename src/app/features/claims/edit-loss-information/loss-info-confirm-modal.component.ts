@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 export interface LossInfoDiffField {
   label: string;
@@ -20,7 +21,7 @@ export type LossInfoConfirmModalResult = 'confirmed' | null;
 @Component({
   selector: 'app-loss-info-confirm-modal',
   standalone: true,
-  imports: [CommonModule, NxModalModule, NxButtonModule, NxIconModule],
+  imports: [CommonModule, NxModalModule, NxButtonModule, NxIconModule, EmptyStateComponent],
   templateUrl: './loss-info-confirm-modal.component.html',
   styleUrl: './loss-info-confirm-modal.component.scss',
 })

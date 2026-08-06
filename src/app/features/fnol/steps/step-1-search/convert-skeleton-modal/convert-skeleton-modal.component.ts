@@ -8,6 +8,7 @@ import { firstValueFrom } from 'rxjs';
 import { MockPolicySearchService } from '../../../../../core/mock/services/mock-policy-search.service';
 import { PolicySearchResult } from '../../../models/fnol-form.model';
 import { SkeletonClaim } from '../../../../../core/models/skeleton-claim.model';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
 
 export interface ConvertSkeletonModalData {
   skeleton: SkeletonClaim;
@@ -25,7 +26,7 @@ interface PolicyRow {
 @Component({
   selector: 'app-convert-skeleton-modal',
   standalone: true,
-  imports: [CommonModule, NxModalModule, NxButtonModule, NxIconModule, NxSpinnerModule],
+  imports: [CommonModule, NxModalModule, NxButtonModule, NxIconModule, NxSpinnerModule, EmptyStateComponent],
   templateUrl: './convert-skeleton-modal.component.html',
   styleUrl: './convert-skeleton-modal.component.scss',
 })

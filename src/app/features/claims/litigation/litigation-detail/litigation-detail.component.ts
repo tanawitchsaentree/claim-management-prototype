@@ -12,6 +12,7 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { Litigation, LitigationStatus, LitigationType, LitigationExpense } from '../../../../core/models';
 import { Party } from '../../../../core/models/party.model';
@@ -44,6 +45,7 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
     NxAccordionModule,
     NxModalModule,
     StatusChipComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './litigation-detail.component.html',
   styleUrl: './litigation-detail.component.scss',

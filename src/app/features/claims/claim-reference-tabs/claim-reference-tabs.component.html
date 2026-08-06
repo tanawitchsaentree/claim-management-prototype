@@ -57,6 +57,9 @@
             (ngModelChange)="onSearchInput($event)"
             autofocus />
 
+          <!-- audit-exempt: tiny inline popover hint shares this class with the
+               "Searching…" state — app-empty-state's 24px padding is too much
+               chrome for a compact autocomplete dropdown row. -->
           @if (searching()) {
             <div class="rt-popover__empty">Searching…</div>
           } @else if (searchResults().length === 0 && searchQuery().length >= 2) {

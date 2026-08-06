@@ -1,0 +1,20 @@
+@if (icon) {
+  <div class="empty-state empty-state--icon">
+    <nx-icon [name]="icon" class="empty-state__icon"></nx-icon>
+    <p class="empty-state__message">{{ message }}</p>
+    @if (hint) {
+      <p class="empty-state__hint">{{ hint }}</p>
+    }
+    <ng-content select="[body]"></ng-content>
+    <ng-content select="[action]"></ng-content>
+  </div>
+} @else {
+  <div class="empty-state empty-state--text">
+    <p class="empty-state__message">{{ message }}</p>
+    @if (hint) {
+      <p class="empty-state__hint">{{ hint }}</p>
+    }
+    <ng-content select="[body]"></ng-content>
+    <ng-content select="[action]"></ng-content>
+  </div>
+}

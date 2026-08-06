@@ -10,6 +10,7 @@ import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { PolicyLocation } from '../../../core/models';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface PolicyLocationSearchModalData {
   policyNumber: string;
@@ -35,6 +36,7 @@ export type PolicyLocationSearchModalResult =
     NxRadioModule,
     NxMessageModule,
     NxTableModule,
+    EmptyStateComponent,
   ],
   templateUrl: './policy-location-search-modal.component.html',
   styleUrl: './policy-location-search-modal.component.scss',

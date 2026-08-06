@@ -14,6 +14,7 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { Observable, Subject, switchMap, catchError, of, map } from 'rxjs';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import {
   Party, PartyFilters, PartyRole, ClearanceStatus, IdType,
   PARTY_ROLE_LABELS, CLEARANCE_STATUS_LABELS, ID_TYPE_LABELS,
@@ -50,6 +51,7 @@ interface SearchState {
     NxSpinnerModule,
     NxMessageModule,
     StatusChipComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './add-party-modal.component.html',
   styleUrl: './add-party-modal.component.scss',

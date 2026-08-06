@@ -85,9 +85,7 @@
     }
 
     @if (!hasItems && !addingItem) {
-      <div class="empty-state">
-        <p class="empty-state__message">No items added yet. Use the buttons above to provide data.</p>
-      </div>
+      <app-empty-state message="No items added yet." hint="Use the buttons above to provide data."></app-empty-state>
     }
 
     @if (hasItems) {

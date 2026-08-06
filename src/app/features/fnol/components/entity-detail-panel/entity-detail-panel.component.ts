@@ -8,6 +8,7 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { EntityRow, DamageItem } from '../../../../core/models/entity-damage.model';
 import { LookupOption } from '../../../../core/models/lookup.model';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
@@ -26,6 +27,7 @@ import { FnolStateService } from '../../services/fnol-state.service';
     NxInputModule,
     NxDropdownModule,
     StatusChipComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './entity-detail-panel.component.html',
   styleUrl: './entity-detail-panel.component.scss',

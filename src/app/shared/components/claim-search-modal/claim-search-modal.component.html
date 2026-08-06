@@ -29,7 +29,7 @@
     </header>
 
     @if (results().length === 0) {
-      <p class="csm-empty">No claims match your search.</p>
+      <app-empty-state message="No claims found."></app-empty-state>
     } @else {
       <div class="csm-table-wrap">
         <table nxTable class="csm-table">

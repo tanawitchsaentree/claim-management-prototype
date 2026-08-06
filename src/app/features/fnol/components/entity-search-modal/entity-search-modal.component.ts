@@ -20,6 +20,7 @@ import {
   ENTITY_TYPE_LABELS,
   COUNTRY_OPTIONS,
 } from '../../../../core/models/entity-damage.model';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 export interface EntitySearchModalData {
   policyNumber: string;
@@ -49,6 +50,7 @@ interface SearchState {
     NxCheckboxModule,
     NxSpinnerModule,
     NxMessageModule,
+    EmptyStateComponent,
   ],
   templateUrl: './entity-search-modal.component.html',
   styleUrl: './entity-search-modal.component.scss',

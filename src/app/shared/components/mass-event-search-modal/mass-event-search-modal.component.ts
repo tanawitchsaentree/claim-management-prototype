@@ -11,6 +11,7 @@ import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { MassEvent } from '../../../core/models';
 import { MockMassEventService } from '../../../core/mock/services/mock-mass-event.service';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface MassEventSearchModalData {
   currentMassEventId?: string;
@@ -34,6 +35,7 @@ export type MassEventSearchModalResult =
     NxIconModule,
     NxRadioModule,
     NxTableModule,
+    EmptyStateComponent,
   ],
   templateUrl: './mass-event-search-modal.component.html',
   styleUrl: './mass-event-search-modal.component.scss',

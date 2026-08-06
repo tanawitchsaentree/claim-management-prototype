@@ -39,7 +39,7 @@
     </header>
 
     @if (filtered().length === 0) {
-      <p class="plm-empty">No locations match your search.</p>
+      <app-empty-state message="No locations found."></app-empty-state>
     } @else {
       <div class="plm-table-wrap">
         <table nxTable class="plm-table">

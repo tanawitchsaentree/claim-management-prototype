@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { HeadsUpItem } from '../../../core/models';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 const SEVERITY_ICON: Record<string, string> = {
   info:     'product-important-info',
@@ -13,7 +14,7 @@ const SEVERITY_ICON: Record<string, string> = {
 @Component({
   selector: 'app-heads-up-panel',
   standalone: true,
-  imports: [CommonModule, NxIconModule, RouterLink],
+  imports: [CommonModule, NxIconModule, RouterLink, EmptyStateComponent],
   template: `
     <div class="widget-card">
       <div class="widget-header">
@@ -26,7 +27,7 @@ const SEVERITY_ICON: Record<string, string> = {
       </div>
 
       @if (items.length === 0) {
-        <div class="widget-empty">No claims currently under monitoring.</div>
+        <app-empty-state message="No claims currently under monitoring."></app-empty-state>
       } @else {
         <div class="hu-list">
           @for (item of items; track item.id) {
@@ -80,7 +81,6 @@ const SEVERITY_ICON: Record<string, string> = {
     }
     .widget-icon { color: var(--text-01); font-size: 16px; }
     .widget-title { font-size: 20px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
-    .widget-empty { padding: 24px; text-align: center; color: var(--text-muted); }
 
     .hu-list { padding: 0 0 8px; }
     .hu-row {

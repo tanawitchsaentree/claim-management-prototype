@@ -117,27 +117,6 @@
   animation: highlight-fade 3s ease-out forwards;
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
-
-.empty-state {
-  padding: 48px 24px;
-  text-align: center;
-  border: 1px dashed var(--ui-04);
-  border-radius: 4px;
-
-  &__message {
-    margin: 0 0 4px;
-    font-size: var(--paragraph-03-font-size);
-    color: var(--text-muted);
-  }
-
-  &__hint {
-    margin: 0;
-    font-size: var(--paragraph-03-font-size);
-    color: var(--text-muted);
-  }
-}
-
 // ─── Pagination ───────────────────────────────────────────────────────────────
 
 .parties-pagination {

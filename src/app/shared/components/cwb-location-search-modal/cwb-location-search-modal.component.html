@@ -74,7 +74,7 @@
         @if (vm.error) {
           <nx-message context="error">CWB unreachable. Try again or enter the address manually below.</nx-message>
         } @else if (vm.results.length === 0) {
-          <p class="cwb-empty">No locations match. Adjust filters or enter an address manually below.</p>
+          <app-empty-state message="No locations found." hint="Adjust filters or enter an address manually below."></app-empty-state>
         } @else {
           <table nxTable class="cwb-table">
             <thead>

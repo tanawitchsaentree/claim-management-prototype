@@ -17,6 +17,7 @@ import { MockBrokerService } from '../../../core/mock/services/mock-broker.servi
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { Broker, BrokerSearchFilters, BrokerPartyType, LookupOption } from '../../../core/models';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface BrokerSearchModalData { initialQuery?: string; }
 export type BrokerSearchModalResult = Broker | null;
@@ -48,6 +49,7 @@ const ID_TYPES = ['IPM', 'NAIC', 'Internal ref'];
     NxMessageModule,
     NxTabsModule,
     StatusChipComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './broker-search-modal.component.html',
   styleUrl: './broker-search-modal.component.scss',

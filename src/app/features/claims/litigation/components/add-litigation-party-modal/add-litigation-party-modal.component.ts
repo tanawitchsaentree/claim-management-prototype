@@ -8,6 +8,7 @@ import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxPaginationModule } from '@allianz/ng-aquila/pagination';
 import { MockPartiesService } from '../../../../../core/mock/services/mock-parties.service';
 import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
 import {
   Party, PartyRole, ClearanceStatus, PARTY_ROLE_LABELS, CLEARANCE_STATUS_LABELS,
 } from '../../../../../core/models/party.model';
@@ -55,6 +56,7 @@ const PAGE_SIZE = 5;
     NxCheckboxModule,
     NxPaginationModule,
     StatusChipComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './add-litigation-party-modal.component.html',
   styleUrl: './add-litigation-party-modal.component.scss',

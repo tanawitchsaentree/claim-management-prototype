@@ -9,7 +9,7 @@
 
 <div class="licm-body">
   @if (data.diffs.length === 0) {
-    <p class="licm-no-changes">No fields were changed.</p>
+    <app-empty-state message="No fields were changed."></app-empty-state>
   } @else {
     <table class="licm-diff-table">
       <thead>
@@ -35,8 +35,8 @@
 </div>
 
 <footer class="licm-footer">
-  <button nxButton="tertiary" type="button" (click)="onCancel()">Back to editing</button>
-  <button nxButton="primary" type="button" (click)="onConfirm()" [disabled]="data.diffs.length === 0">
+  <button nxButton="tertiary small" type="button" (click)="onCancel()">Back to editing</button>
+  <button nxButton="primary small" type="button" (click)="onConfirm()" [disabled]="data.diffs.length === 0">
     Confirm changes
   </button>
 </footer>

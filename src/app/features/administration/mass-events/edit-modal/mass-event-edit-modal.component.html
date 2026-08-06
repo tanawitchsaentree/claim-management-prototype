@@ -137,7 +137,7 @@
     </div>
 
     @if (linkedClaims().length === 0) {
-      <p class="me-linked-empty">No claims are linked to this mass event.</p>
+      <app-empty-state message="No claims linked yet."></app-empty-state>
     } @else {
       <table nxTable class="me-linked-table">
         <thead>

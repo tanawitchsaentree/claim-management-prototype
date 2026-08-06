@@ -98,7 +98,7 @@
       @if (vm.error) {
         <nx-message context="error">Search failed. Try again.</nx-message>
       } @else if (vm.results.length === 0) {
-        <p class="bsm-empty">No brokers match the criteria.</p>
+        <app-empty-state message="No brokers found."></app-empty-state>
       } @else {
         <div class="bsm-table-toolbar">
           <span class="bsm-table-toolbar__count">{{ vm.results.length }} result{{ vm.results.length === 1 ? '' : 's' }}</span>

@@ -45,12 +45,6 @@
 
 .licm-body { @include modal.body; }
 
-.licm-no-changes {
-  font-size: 14px;
-  color: var(--text-muted);
-  padding: 16px 0;
-}
-
 .licm-diff-table {
   width: 100%;
   border-collapse: collapse;

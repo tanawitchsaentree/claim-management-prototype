@@ -95,19 +95,6 @@
   }
 }
 
-.empty-state {
-  padding: 32px 16px;
-  text-align: center;
-  border: 1px dashed var(--ui-04);
-  border-radius: 4px;
-
-  &__message {
-    margin: 0;
-    font-size: var(--paragraph-03-font-size);
-    color: var(--text-muted);
-  }
-}
-
 .items-list {
   display: flex;
   flex-direction: column;

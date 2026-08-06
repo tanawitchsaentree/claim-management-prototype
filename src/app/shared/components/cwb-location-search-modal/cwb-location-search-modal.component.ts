@@ -21,6 +21,7 @@ import {
   CwbModalResult,
   LookupOption,
 } from '../../../core/models';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface CwbLocationSearchModalData {
   policyNumber: string;
@@ -50,6 +51,7 @@ interface SearchState {
     NxCheckboxModule,
     NxSpinnerModule,
     NxMessageModule,
+    EmptyStateComponent,
   ],
   templateUrl: './cwb-location-search-modal.component.html',
   styleUrl: './cwb-location-search-modal.component.scss',

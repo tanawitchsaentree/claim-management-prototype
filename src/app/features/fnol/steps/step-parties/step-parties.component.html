@@ -27,10 +27,7 @@
 
   @if (!vm.loading && !vm.error) {
     @if (vm.claims.length === 0) {
-      <div class="empty-state">
-        <p class="empty-state__message">No parties yet.</p>
-        <p class="empty-state__hint">Use "Add additional parties" to get started.</p>
-      </div>
+      <app-empty-state message="No parties yet." hint="Use &quot;Add additional parties&quot; to get started."></app-empty-state>
     }
 
     @if (vm.claims.length > 0) {

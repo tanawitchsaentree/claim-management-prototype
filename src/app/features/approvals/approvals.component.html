@@ -58,7 +58,9 @@
         <tbody>
           @if (filteredReserves().length === 0) {
             <tr nxTableRow>
-              <td nxTableCell colspan="11" class="empty-cell">No approval requests found.</td>
+              <td nxTableCell colspan="11" class="empty-cell">
+                <app-empty-state message="No approval requests found."></app-empty-state>
+              </td>
             </tr>
           }
           @for (item of filteredReserves(); track item.requestId) {
@@ -117,7 +119,9 @@
         <tbody>
           @if (filteredPayments().length === 0) {
             <tr nxTableRow>
-              <td nxTableCell colspan="11" class="empty-cell">No payment approval requests found.</td>
+              <td nxTableCell colspan="11" class="empty-cell">
+                <app-empty-state message="No payment approval requests found."></app-empty-state>
+              </td>
             </tr>
           }
           @for (item of filteredPayments(); track item.requestId) {

@@ -1,0 +1,68 @@
+// Text-only variant — canonical shape, matches the dominant pre-existing
+// pattern (cl-empty / lel-empty / me-empty / cnp__empty / lit-empty / etc).
+.empty-state--text {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+
+  .empty-state__message {
+    margin: 0;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .empty-state__hint {
+    margin: 4px 0 0;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    font-style: normal;
+  }
+}
+
+// Icon variant — for the minority of sites with a search/investigation-style
+// empty state (icon + title + optional hint + optional action).
+.empty-state--icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 24px;
+
+  .empty-state__icon {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .empty-state__message {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-01);
+    font-style: normal;
+  }
+
+  .empty-state__hint {
+    margin: 0;
+    max-width: 420px;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+
+  ::ng-deep [body] {
+    text-align: left;
+    max-width: 400px;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+
+  ::ng-deep [action] {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

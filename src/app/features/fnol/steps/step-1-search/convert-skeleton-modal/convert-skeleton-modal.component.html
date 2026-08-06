@@ -22,7 +22,7 @@
       <span>Loading policies…</span>
     </div>
   } @else if (rows().length === 0) {
-    <div class="csm-empty">No policies found.</div>
+    <app-empty-state message="No policies found."></app-empty-state>
   } @else {
     <table class="csm-table">
       <thead>

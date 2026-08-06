@@ -151,10 +151,10 @@
             <div class="lit-case-actions">
               <button nxButton="primary small" type="button" (click)="notImplemented('Add case')">Add case</button>
             </div>
-            <div class="lit-case-empty"><p>No cases are available to display.</p></div>
+            <app-empty-state message="No cases found."></app-empty-state>
           </nx-tab>
           <nx-tab label="Hearings">
-            <div class="lit-case-empty"><p>No hearings yet.</p></div>
+            <app-empty-state message="No hearings yet."></app-empty-state>
           </nx-tab>
         </nx-tab-group>
       </nx-expansion-panel>
