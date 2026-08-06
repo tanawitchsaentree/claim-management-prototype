@@ -19,6 +19,8 @@ For any session that proposes changes to:
 
 When done converting a ticket OR fixing a recurring bug, append an entry to `/CONVERSIONS.md`.
 
+If you modify any file in `core/mock/data/`, run `npm run audit:ac-logic` before committing. Ticket JSONs assert against this data and go stale silently — see the CHAMP-CLOSURE-001 `closedSections` incident in `/CONVERSIONS.md` (2026-08-06).
+
 Run `npm run pre-commit` before declaring work done — see `.claude/POST_BUILD.md`.
 
 `PROJECT.md` is committed; `CLAUDE.md` is gitignored — PROJECT.md is the canonical version of this rule.

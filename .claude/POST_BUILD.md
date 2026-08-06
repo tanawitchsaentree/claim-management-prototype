@@ -24,24 +24,31 @@ npm run audit:file-size
 - `audit:ac-logic` — Node-side simulator for AC `expectedOutcome`
 - `audit:all` — colors / radio-size / imports / any / subscribe / hardcoded-data / formfield-error / wizard-footer
 
+> **If you modified any file in `core/mock/data/`:** run `npm run audit:ac-logic` before committing, even outside the full `pre-commit` chain. Ticket JSONs assert against this data and go stale silently — a mock-data edit that removes/renumbers records can leave every AC's `expectedOutcome` counts wrong with zero compile-time or visual signal. This exact failure mode happened with `closedSections` in `closure.json`/`ready-to-close.json` (2026-08-06, see `/CONVERSIONS.md`).
+
 ---
 
 ## All audit scripts
 
 ```bash
 # ── Blocking (in pre-commit) ─────────────────────────────────────────────────
-npm run pre-commit             # audit:all + audit:appearance + audit:ndbx-wrapper
-npm run audit:all              # colors + radio-size + imports + any + subscribe + hardcoded-data + formfield-error + wizard-footer
+npm run pre-commit             # audit:all + audit:ac-logic + audit:ac-route-overrides + audit:stage-pattern + audit:appearance + audit:ndbx-wrapper + audit:wizard-footer
+npm run audit:all              # colors + radio-size + imports + any + subscribe + hardcoded-data + status-colors + date-format
 npm run audit:colors           # no hardcoded hex/rgb in component scss
 npm run audit:radio-size       # every <nx-radio> has labelSize attribute
 npm run audit:imports          # no cross-feature imports
 npm run audit:any              # no TypeScript :any
 npm run audit:subscribe        # no .subscribe() in component ts
 npm run audit:hardcoded-data   # no inline data arrays in features
+npm run audit:status-colors    # no hardcoded status/clearance/recovery color hex outside shared/components/status-chip/
+npm run audit:date-format      # no local formatDate()/toLocaleDateString() — use AppDatePipe
 npm run audit:appearance       # no appearance="outline" on nx-formfield
 npm run audit:ndbx-wrapper     # no bare <input> outside nxInput
 npm run audit:formfield-error  # every <nx-error> in <nx-formfield> has nxFormfieldError
 npm run audit:wizard-footer    # FNOL steps use <app-wizard-footer> not inline buttons
+npm run audit:ac-logic         # Node-side simulator for ticket AC expectedOutcome
+npm run audit:ac-route-overrides # every ticket's declared route is reachable
+npm run audit:stage-pattern    # ScenarioStage.register(this) is the first statement in ngOnInit
 
 # ── Fix-forward (NOT in audit:all or pre-commit — pre-existing violations) ───
 npm run audit:spacing          # no hardcoded px in padding/margin (~80 pre-existing)
