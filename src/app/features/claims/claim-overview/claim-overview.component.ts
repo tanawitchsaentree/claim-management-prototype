@@ -21,6 +21,7 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock/services/mock-user-directory.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
@@ -103,6 +104,7 @@ const TASKS_PAGE_SIZE = 10;
     NxInputModule,
     ReactiveFormsModule,
     StatusChipComponent,
+    AppDatePipe,
     ClaimPreviewDirective,
     ConfirmDialogComponent,
     MassEventSearchModalComponent,
@@ -355,10 +357,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.vm$.next({ ...cur, tasksExpanded: !cur.tasksExpanded });
   }
 
-  riskClass(score: number): string {
-    if (score >= 4) return 'risk-high';
-    if (score >= 3) return 'risk-medium';
-    return 'risk-low';
+  riskSeverity(score: number): 'high' | 'medium' | 'low' {
+    if (score >= 4) return 'high';
+    if (score >= 3) return 'medium';
+    return 'low';
   }
 
   priorityDotClass(priority: string): string {
@@ -486,11 +488,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       claim: { ...cur.claim, massEventId, massEventLinkStatus: linkStatus },
       massEvent,
     });
-  }
-
-  formatDate(iso: string): string {
-    const [y, m, d] = iso.split('-');
-    return `${d}-${m}-${y}`;
   }
 
   // ── File restriction (BMPCC-10994) ─────────────────────────────────

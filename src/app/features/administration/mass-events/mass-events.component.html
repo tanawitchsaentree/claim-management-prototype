@@ -141,8 +141,8 @@
             </td>
             <td nxCell>{{ row.code }}</td>
             <td nxCell>{{ row.name }}</td>
-            <td nxCell>{{ formatDate(row.dateStart) }}</td>
-            <td nxCell>{{ formatDate(row.dateEnd) }}</td>
+            <td nxCell>{{ row.dateStart | appDate }}</td>
+            <td nxCell>{{ row.dateEnd | appDate }}</td>
             <td nxCell>{{ row.country }}</td>
             <td nxCell>{{ row.region }}</td>
             <td nxCell class="me-table__action-col">

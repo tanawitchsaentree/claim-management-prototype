@@ -23,6 +23,7 @@ import { BreadcrumbItem } from '../../../shared/components/page-shell/page-shell
 import { MassEvent, MassEventFilters } from '../../../core/models';
 import { MockMassEventService } from '../../../core/mock/services/mock-mass-event.service';
 import { MassEventEditModalComponent, MassEventModalData, MassEventModalResult } from './edit-modal/mass-event-edit-modal.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 const PAGE_SIZE = 10;
@@ -49,6 +50,7 @@ const TOAST_DURATION_MS = 4000;
     NxBreadcrumbModule,
     NxGridModule,
     NxMessageModule,
+    AppDatePipe,
   ],
   templateUrl: './mass-events.component.html',
   styleUrl: './mass-events.component.scss',
@@ -154,12 +156,6 @@ export class MassEventsComponent {
 
     this.all.update(rows => rows.filter(r => r.id !== event.id));
     this.flashToast(`Mass event "${event.name}" deleted`);
-  }
-
-  formatDate(iso: string): string {
-    if (!iso) return '';
-    const [y, m, d] = iso.split('-');
-    return `${d}-${m}-${y}`;
   }
 
   async openDetail(event: MassEvent): Promise<void> {

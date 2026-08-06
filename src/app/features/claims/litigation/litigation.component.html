@@ -33,7 +33,7 @@
               </td>
               @if (!isSqueezed()) {
                 <td nxCell>{{ row.type || '—' }}</td>
-                <td nxCell>{{ formatDate(row.startDate) }}</td>
+                <td nxCell>{{ (row.startDate | appDate) || '—' }}</td>
               }
               <td nxCell>
                 <app-status-chip [status]="chipStatus(row.status)" domain="claim" [label]="row.status"></app-status-chip>

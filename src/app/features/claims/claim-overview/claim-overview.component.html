@@ -45,7 +45,7 @@
         </div>
         <div class="co-field">
           <span class="co-label">Notification date</span>
-          <span class="co-value">{{ claim.dateReported ? formatDate(claim.dateReported) : '–' }}</span>
+          <span class="co-value">{{ claim.dateReported ? (claim.dateReported | appDate) : '–' }}</span>
         </div>
         <div class="co-field">
           <span class="co-label">Client contact</span>
@@ -136,11 +136,11 @@
             </div>
             <div class="co-field">
               <span class="co-label">Date of Loss</span>
-              <span class="co-value">{{ formatDate(claim.dateOfLoss) }}</span>
+              <span class="co-value">{{ claim.dateOfLoss | appDate }}</span>
             </div>
             <div class="co-field">
               <span class="co-label">Closure date</span>
-              <span class="co-value">{{ claim.closureDate ? formatDate(claim.closureDate) : '–' }}</span>
+              <span class="co-value">{{ claim.closureDate ? (claim.closureDate | appDate) : '–' }}</span>
             </div>
             <!-- 'Closed by' removed — same person as the claim handler (redundant) -->
             <div class="co-field">
@@ -153,14 +153,14 @@
                 @if (claim.retentionType === 'indefinite') {
                   Indefinite
                 } @else {
-                  {{ claim.retentionDate ? formatDate(claim.retentionDate) : '–' }}
+                  {{ claim.retentionDate ? (claim.retentionDate | appDate) : '–' }}
                 }
               </span>
             </div>
             @if (claim.reopenedDate) {
               <div class="co-field">
                 <span class="co-label">Reopened date</span>
-                <span class="co-value">{{ formatDate(claim.reopenedDate) }}</span>
+                <span class="co-value">{{ claim.reopenedDate | appDate }}</span>
               </div>
               <div class="co-field">
                 <span class="co-label">Reopening reason</span>
@@ -184,7 +184,7 @@
           </div>
           <div class="co-field">
             <span class="co-label">Date of Loss</span>
-            <span class="co-value">{{ formatDate(claim.dateOfLoss) }}</span>
+            <span class="co-value">{{ claim.dateOfLoss | appDate }}</span>
           </div>
           <div class="co-field">
             <div class="co-label-row">
@@ -192,14 +192,14 @@
               <nx-icon name="refresh" size="s" class="co-refresh-icon"></nx-icon>
             </div>
             <div class="co-risk-score">
-              <span class="co-risk-badge" [class]="riskClass(claim.riskScore)">{{ claim.riskScore }}/{{ claim.riskScoreMax }}</span>
+              <span class="co-risk-badge" [class]="'risk-' + riskSeverity(claim.riskScore)">{{ claim.riskScore }}/{{ claim.riskScoreMax }}</span>
               <a class="co-link">Start investigation</a>
             </div>
           </div>
           <div class="co-field">
             <span class="co-label">Risk status</span>
             <div class="co-field-value">
-              <span class="co-risk-status-chip" [class]="riskClass(claim.riskScore)">{{ claim.riskStatus }}</span>
+              <span class="co-risk-status-chip" [class]="'risk-' + riskSeverity(claim.riskScore)">{{ claim.riskStatus }}</span>
             </div>
           </div>
         </div>
@@ -238,9 +238,9 @@
       <h2 class="co-card-title">Recovery potential</h2>
       <div class="co-recovery-value">
         @if (claim.recoveryPotential === 'yes') {
-          <span class="co-recovery-chip co-recovery-chip--yes">Yes</span>
+          <app-status-chip [status]="'yes'" domain="recovery" [label]="'Yes'"></app-status-chip>
         } @else if (claim.recoveryPotential === 'no') {
-          <span class="co-recovery-chip co-recovery-chip--no">No</span>
+          <app-status-chip [status]="'no'" domain="recovery" [label]="'No'"></app-status-chip>
         } @else {
           <span class="co-value">–</span>
         }
@@ -402,7 +402,7 @@
                     <nx-icon name="launch" class="pt-launch-icon"></nx-icon>
                   </span>
                 </td>
-                <td nxCell class="pt-col--date">{{ formatDate(task.dueDate) }}</td>
+                <td nxCell class="pt-col--date">{{ task.dueDate | appDate }}</td>
                 <td nxCell><a class="pt-action-link">See details</a></td>
               </tr>
             }
@@ -451,7 +451,7 @@
               @for (act of vm.activities; track act.id) {
                 <tr nxTableRow>
                   <td nxCell class="act-col--nowrap">{{ act.user }}</td>
-                  <td nxCell class="act-col--nowrap">{{ act.timestamp | date:'dd-MM-yyyy HH:mm' }}</td>
+                  <td nxCell class="act-col--nowrap">{{ act.timestamp | appDate:'withTime' }}</td>
                   <td nxCell class="act-col--nowrap">{{ act.objectType }}</td>
                   <td nxCell>{{ act.attribute }}</td>
                   <td nxCell class="act-col--muted">{{ act.valueOld ?? '–' }}</td>

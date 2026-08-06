@@ -12,6 +12,7 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { MockLitigationService } from '../../../core/mock/services/mock-litigation.service';
 import { Litigation, LitigationStatus } from '../../../core/models';
 import { LitigationDetailComponent } from './litigation-detail/litigation-detail.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
   Draft:         'open',
@@ -30,6 +31,7 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
     NxContextMenuModule,
     StatusChipComponent,
     LitigationDetailComponent,
+    AppDatePipe,
   ],
   templateUrl: './litigation.component.html',
   styleUrl: './litigation.component.scss',
@@ -70,12 +72,6 @@ export class LitigationComponent implements OnInit {
     const data = await firstValueFrom(this.svc.search({ claimId: this.claimId }));
     this.rows.set(data);
     this.loading.set(false);
-  }
-
-  formatDate(iso: string): string {
-    if (!iso) return '—';
-    const [y, m, d] = iso.split('-');
-    return `${d}-${m}-${y}`;
   }
 
   chipStatus(s: LitigationStatus): string { return STATUS_CHIP_MAP[s]; }

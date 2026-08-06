@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom, combineLatest, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
@@ -23,6 +23,7 @@ import { EntitiesDamagesData } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
 import { LookupOption } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
+import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 
 export interface ClaimGroup {
   policyNumber: string;
@@ -73,7 +74,6 @@ const CREATOR: AccessListEntry = {
     NxDropdownModule,
     NxFormfieldModule,
     NxInputModule,
-    DatePipe,
     WizardFooterComponent,
   ],
   templateUrl: './step-summary.component.html',
@@ -88,6 +88,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly skeletonSvc  = inject(MockSkeletonClaimService);
   private readonly userDir      = inject(MockUserDirectoryService);
   private readonly router       = inject(Router);
+  private readonly appDate      = new AppDatePipe();
 
   readonly vm$ = new BehaviorSubject<SummaryViewModel | null>(null);
   loadError  = false;
@@ -269,7 +270,7 @@ export class StepSummaryComponent implements OnInit {
       causesOfLoss,
       dateOfOccurrence:   earliest.date,
       timeOfOccurrence:   earliest.time,
-      dateOfNotification: this.formatDate(dateOfLoss.get('dateOfNotification')?.value),
+      dateOfNotification: this.appDate.transform(dateOfLoss.get('dateOfNotification')?.value) || '—',
       affectedPolicies:   [this.policyNumber],
       damageTypes, claimGroups, narrative, narrativeReasonLabel,
       isSkeletonPath: false, skeletonClientName: '—', skeletonReason: '—',
@@ -328,11 +329,5 @@ export class StepSummaryComponent implements OnInit {
   private label(opts: LookupOption[], key: string | undefined): string {
     if (!key) return '—';
     return opts.find(o => o.value === key)?.label ?? key;
-  }
-
-  private formatDate(iso: string | null | undefined): string {
-    if (!iso) return '—';
-    const [y, m, d] = iso.split('-');
-    return `${d}-${m}-${y}`;
   }
 }
