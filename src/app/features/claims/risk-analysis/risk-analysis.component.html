@@ -1,11 +1,11 @@
-<h1 class="page-title">Risk analysis and investigation</h1>
+<app-page-header title="Risk analysis and investigation"></app-page-header>
 
 @if (loading()) {
   <div class="rai-loading">
     <nx-spinner nxSize="medium"></nx-spinner>
   </div>
 } @else if (!model()) {
-  <p class="rai-empty">No risk analysis available for this claim.</p>
+  <app-empty-state message="No risk analysis available for this claim."></app-empty-state>
 } @else {
 
   <!-- General information -->
@@ -98,13 +98,9 @@
 
   <!-- Investigation state -->
   @if (!hasInvestigation()) {
-    <div class="rai-empty-state">
-      <div class="rai-empty-state__illustration" aria-hidden="true">
-        <nx-icon name="find" size="l"></nx-icon>
-      </div>
-      <p class="rai-empty-state__text">Investigation not started</p>
-      <button nxButton="primary" type="button" (click)="startInvestigation()">Start referral process</button>
-    </div>
+    <app-empty-state message="Investigation not started" icon="find">
+      <button action nxButton="primary" type="button" (click)="startInvestigation()">Start referral process</button>
+    </app-empty-state>
   } @else {
     <section class="rai-investigation">
       <h2 class="rai-card__title">Investigation</h2>

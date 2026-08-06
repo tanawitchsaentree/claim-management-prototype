@@ -24,6 +24,7 @@ import { MockLookupService } from '../../../core/mock/services/mock-lookup.servi
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
 import { LocationPickerOutput } from '../../../core/models';
@@ -47,6 +48,7 @@ import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.compone
     NxMessageModule, NxModalModule, NxSpinnerModule,
     NxAccordionModule,
     LocationPickerComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './edit-loss-information.component.html',
   styleUrl: './edit-loss-information.component.scss',

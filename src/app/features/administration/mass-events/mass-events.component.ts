@@ -24,6 +24,8 @@ import { MassEvent, MassEventFilters } from '../../../core/models';
 import { MockMassEventService } from '../../../core/mock/services/mock-mass-event.service';
 import { MassEventEditModalComponent, MassEventModalData, MassEventModalResult } from './edit-modal/mass-event-edit-modal.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 const PAGE_SIZE = 10;
@@ -51,6 +53,8 @@ const TOAST_DURATION_MS = 4000;
     NxGridModule,
     NxMessageModule,
     AppDatePipe,
+    EmptyStateComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './mass-events.component.html',
   styleUrl: './mass-events.component.scss',

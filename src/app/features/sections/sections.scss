@@ -395,16 +395,6 @@ $brand-blue:          var(--info);
   min-width: 0;
 }
 
-// ─── Page header (title + Add Entity in one row) ──────────────────
-.sec-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-
-  .page-title { margin-bottom: 0; } // row owns the bottom gap
-}
-
 // Add Entity button — secondary style with dropdown icon
 .btn-add-entity {
   display: inline-flex;

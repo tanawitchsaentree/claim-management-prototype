@@ -34,35 +34,6 @@
   gap: var(--layout-inset-base);
 }
 
-// ─── Header (eyebrow + title + caption) — blessed step-1-search pattern ─────
-.me-eyebrow {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0 0 4px;
-}
-
-.me-title {
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-01);
-  margin: 0 0 8px;
-  line-height: 1.2;
-}
-
-.me-caption {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0 0 32px;
-}
-
-.me-caption__icon {
-  flex-shrink: 0;
-  color: var(--interactive-text);
-}
-
 // ─── Form — blessed step-1-search (.row1, .form-row--3col) ─────────────────
 .me-form { margin-bottom: 8px; }
 

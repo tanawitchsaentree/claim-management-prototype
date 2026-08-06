@@ -24,6 +24,8 @@ import { MockSectionService } from '../../core/mock/services/mock-section.servic
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import {
   SectionClosureModalComponent,
   SectionClosureModalData,
@@ -81,6 +83,8 @@ import {
     NxTooltipModule,
     NxModalModule,
     StatusChipComponent,
+    EmptyStateComponent,
+    PageHeaderComponent,
     CoverageReviewModalComponent,
     EntityDetailPanelComponent,
     SectionDetailPanelComponent,

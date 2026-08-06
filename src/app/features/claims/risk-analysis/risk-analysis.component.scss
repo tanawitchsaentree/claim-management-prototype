@@ -8,11 +8,6 @@
   padding: 64px 0;
 }
 
-.rai-empty {
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-  font-style: italic;
-}
 
 // ─── General information card ─────────────────────────────────────────────────
 
@@ -181,33 +176,3 @@
   }
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
-
-.rai-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 48px 0 24px;
-}
-
-.rai-empty-state__illustration {
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.5;
-
-  nx-icon {
-    font-size: 72px;
-    color: var(--text-muted);
-  }
-}
-
-.rai-empty-state__text {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-01);
-}

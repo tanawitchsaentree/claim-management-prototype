@@ -17,12 +17,8 @@
   <div nxLayout="grid maxwidth" class="cl-page">
     <div nxRow><div nxCol="12">
 
-      <a class="cl-back" routerLink="/dashboard">
-        <nx-icon name="arrow-left" size="s"></nx-icon>
-        Back to dashboard
-      </a>
-      <h1 class="cl-title">All claims</h1>
-      <p class="cl-caption">Browse and filter all claims across your portfolio.</p>
+      <app-page-header title="All claims" subtitle="Browse and filter all claims across your portfolio."
+        [showBack]="true" backLabel="Back to dashboard" (back)="router.navigate(['/dashboard'])"></app-page-header>
 
       <!-- Filter form -->
       <form [formGroup]="filterForm" class="cl-form" (ngSubmit)="onFilter()">
@@ -64,7 +60,7 @@
       @if (loading()) {
         <p class="cl-empty">Loading claims…</p>
       } @else if (total() === 0) {
-        <p class="cl-empty">No claims match the filters.</p>
+        <app-empty-state message="No claims found."></app-empty-state>
       } @else {
         <table nxTable class="cl-table">
           <thead>

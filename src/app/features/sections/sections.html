@@ -1,15 +1,14 @@
 <!-- ── Page header ── -->
-<div class="sec-page-header">
-  <h1 class="page-title">Sections</h1>
+<app-page-header title="Sections">
   @if (!hasDetailOpen()) {
-    <button class="btn-add-entity" nxButton="secondary small" type="button"
+    <button actions class="btn-add-entity" nxButton="secondary small" type="button"
       [disabled]="claimClosed()"
       [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
       (click)="onAddEntity()">
       Add Entity
     </button>
   }
-</div>
+</app-page-header>
 
 <!-- ── Split layout ── -->
 <div class="sec-split" [class.sec-split--detail-open]="hasDetailOpen()">
@@ -221,6 +220,12 @@
             </tr>
           }
         }
+      } @empty {
+        <tr nxTableRow>
+          <td nxTableCell colspan="5">
+            <app-empty-state message="No sections found."></app-empty-state>
+          </td>
+        </tr>
       }
     </tbody>
     }

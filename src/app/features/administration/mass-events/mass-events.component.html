@@ -38,12 +38,8 @@
     <div nxRow><div nxCol="12">
 
   <!-- Header: eyebrow + h1 + caption -->
-  <p class="me-eyebrow">Administration</p>
-  <h1 class="me-title">Mass events</h1>
-  <p class="me-caption">
-    Manage mass events that link related claims to a single incident.
-    <nx-icon name="info-circle-o" size="s" class="me-caption__icon"></nx-icon>
-  </p>
+  <app-page-header title="Mass events" eyebrow="Administration"
+    subtitle="Manage mass events that link related claims to a single incident."></app-page-header>
 
   <!-- Filter form: row1 = inputs(80%) + Filter/Reset(20%); row2-3 = inputs(80%) -->
   <form [formGroup]="filterForm" class="me-form" (ngSubmit)="onFilter()">
@@ -116,7 +112,7 @@
   @if (loading()) {
     <p class="me-empty">Loading mass events…</p>
   } @else if (total() === 0) {
-    <p class="me-empty">No mass events match the filters.</p>
+    <app-empty-state message="No mass events found."></app-empty-state>
   } @else {
     <table nxTable class="me-table">
       <thead>

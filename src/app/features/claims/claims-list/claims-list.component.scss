@@ -29,34 +29,6 @@
   gap: var(--layout-inset-base);
 }
 
-// ─── Header ────────────────────────────────────────────────────────────────
-.cl-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--interactive-primary);
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 500;
-  text-decoration: none;
-  margin: 0 0 8px;
-
-  &:hover { text-decoration: underline; }
-}
-
-.cl-title {
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-01);
-  margin: 0 0 8px;
-  line-height: 1.2;
-}
-
-.cl-caption {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0 0 32px;
-}
-
 // ─── Filter form ────────────────────────────────────────────────────────────
 .cl-form { margin-bottom: 8px; }
 

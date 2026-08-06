@@ -8,12 +8,7 @@
 <div class="eli-page" [formGroup]="form">
 
   <!-- Page header -->
-  <div class="eli-header">
-    <div class="eli-header-left">
-      <p class="eli-breadcrumb">{{ claimId() }}</p>
-      <h1 class="eli-title">Edit loss information</h1>
-    </div>
-  </div>
+  <app-page-header title="Edit loss information" [eyebrow]="claimId()"></app-page-header>
 
   <!-- Card 1: General information -->
   <section class="eli-card">

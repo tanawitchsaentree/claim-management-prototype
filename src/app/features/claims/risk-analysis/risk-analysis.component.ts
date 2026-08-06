@@ -7,6 +7,8 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { MockRiskService } from '../../../core/mock/services/mock-risk.service';
 import { RiskAnalysis, RiskScore, RiskStatusLabel, InvestigationStatus, InvestigationOutcome } from '../../../core/models';
@@ -53,6 +55,8 @@ const SCORE_CHIP: Record<RiskScore, string> = {
     NxSpinnerModule,
     NxModalModule,
     StatusChipComponent,
+    EmptyStateComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './risk-analysis.component.html',
   styleUrl: './risk-analysis.component.scss',

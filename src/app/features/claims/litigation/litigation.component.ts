@@ -13,6 +13,8 @@ import { MockLitigationService } from '../../../core/mock/services/mock-litigati
 import { Litigation, LitigationStatus } from '../../../core/models';
 import { LitigationDetailComponent } from './litigation-detail/litigation-detail.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
   Draft:         'open',
@@ -32,6 +34,8 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
     StatusChipComponent,
     LitigationDetailComponent,
     AppDatePipe,
+    EmptyStateComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './litigation.component.html',
   styleUrl: './litigation.component.scss',

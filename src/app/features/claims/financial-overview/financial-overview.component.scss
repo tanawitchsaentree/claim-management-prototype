@@ -1,15 +1,5 @@
 // ─── Page header ─────────────────────────────────────────────────────────────
 
-.fo-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--layout-inset-base);
-}
-
-.fo-title {
-  margin: 0; // keep for specificity — .page-title supplies font/size
-}
 
 // ─── Right-side controls ──────────────────────────────────────────────────────
 
@@ -256,12 +246,6 @@
   margin: 0 0 12px;
 }
 
-.fo-empty {
-  color: var(--text-muted);
-  font-size: var(--paragraph-02-font-size);
-  padding: 32px 0;
-  text-align: center;
-}
 
 // ─── Expand / History col ─────────────────────────────────────────────────────
 

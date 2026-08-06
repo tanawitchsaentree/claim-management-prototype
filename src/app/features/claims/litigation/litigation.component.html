@@ -1,17 +1,16 @@
 <div class="lit-page" [class.lit-page--squeezed]="isSqueezed()">
   <!-- Left: list pane -->
   <section class="lit-list" [class.lit-list--compact]="isSqueezed()">
-    <header class="lit-list__header">
-      <h1 class="page-title">Litigation</h1>
-      <button nxButton="primary small" type="button" (click)="create()">
+    <app-page-header title="Litigation">
+      <button actions nxButton="primary small" type="button" (click)="create()">
         Create litigation
       </button>
-    </header>
+    </app-page-header>
 
     @if (loading()) {
       <p class="lit-empty">Loading…</p>
     } @else if (rows().length === 0) {
-      <p class="lit-empty">No litigations yet. Use “Create litigation” to start one.</p>
+      <app-empty-state message="No litigations yet." hint="Use “Create litigation” to start one."></app-empty-state>
     } @else {
       <table nxTable class="lit-table">
         <thead>

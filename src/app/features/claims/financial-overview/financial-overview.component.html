@@ -1,26 +1,16 @@
 <!-- ── Page header ─────────────────────────────────────────────────────── -->
-<div class="fo-header">
-  <h1 class="page-title fo-title">
-    @switch (view()) {
-      @case ('overview')  { Financial Overview }
-      @case ('payments')  { Payments }
-      @case ('reserves')  { Reserves }
-      @case ('recovery')  { Recovery bookings }
-    }
-  </h1>
-  <div class="fo-controls">
-    <div class="fo-level-toggle">
-      <button
-        [nxButton]="level() === 'claim' ? 'primary small' : 'secondary small'"
-        type="button"
-        (click)="setLevel('claim')">Claim level</button>
-      <button
-        [nxButton]="level() === 'section' ? 'primary small' : 'secondary small'"
-        type="button"
-        (click)="setLevel('section')">Section level</button>
-    </div>
+<app-page-header [title]="viewTitle()">
+  <div actions class="fo-level-toggle">
+    <button
+      [nxButton]="level() === 'claim' ? 'primary small' : 'secondary small'"
+      type="button"
+      (click)="setLevel('claim')">Claim level</button>
+    <button
+      [nxButton]="level() === 'section' ? 'primary small' : 'secondary small'"
+      type="button"
+      (click)="setLevel('section')">Section level</button>
   </div>
-</div>
+</app-page-header>
 
 @if (loading()) {
   <div class="fo-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
@@ -168,7 +158,7 @@
     </div>
 
     @if (rows.length === 0) {
-      <p class="fo-empty">No payments found.</p>
+      <app-empty-state message="No payments found."></app-empty-state>
     } @else {
       <table nxTable class="fo-table">
         <thead>
@@ -216,7 +206,7 @@
     </div>
 
     @if (rows.length === 0) {
-      <p class="fo-empty">No reserves found.</p>
+      <app-empty-state message="No reserves found."></app-empty-state>
     } @else {
       <table nxTable class="fo-table">
         <thead>
@@ -296,7 +286,7 @@
     </div>
 
     @if (rows.length === 0) {
-      <p class="fo-empty">No recovery bookings found.</p>
+      <app-empty-state message="No recovery bookings found."></app-empty-state>
     } @else {
       <table nxTable class="fo-table">
         <thead>
@@ -334,5 +324,5 @@
   }
 
 } @else {
-  <p class="fo-empty">No financial data available for this claim.</p>
+  <app-empty-state message="No financial data available for this claim."></app-empty-state>
 }

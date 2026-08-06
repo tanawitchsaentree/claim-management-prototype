@@ -29,28 +29,6 @@
   gap: var(--layout-inset-base);
 }
 
-// ─── Header ──────────────────────────────────────────────────────────────────
-
-.lel-eyebrow {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0 0 4px;
-}
-
-.lel-title {
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-01);
-  margin: 0 0 8px;
-  line-height: 1.2;
-}
-
-.lel-caption {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0 0 32px;
-}
-
 // ─── Filter form ─────────────────────────────────────────────────────────────
 
 .lel-form { margin-bottom: 8px; }

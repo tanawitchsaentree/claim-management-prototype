@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -16,6 +16,8 @@ import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { Navbar } from '../../layout/navbar/navbar';
 import { BreadcrumbItem } from '../../../shared/components/page-shell/page-shell.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/models';
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
@@ -41,6 +43,8 @@ const PAGE_SIZE = 15;
     NxBreadcrumbModule,
     NxGridModule,
     StatusChipComponent,
+    EmptyStateComponent,
+    PageHeaderComponent,
     ClaimPreviewDirective,
   ],
   templateUrl: './claims-list.component.html',
@@ -48,6 +52,7 @@ const PAGE_SIZE = 15;
 })
 export class ClaimsListComponent {
   private readonly svc = inject(MockClaimService);
+  protected readonly router = inject(Router);
 
   readonly all      = signal<Claim[]>([]);
   readonly loading  = signal(true);

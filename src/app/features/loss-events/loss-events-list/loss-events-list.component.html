@@ -16,9 +16,8 @@
   <div nxLayout="grid maxwidth" class="lel-page">
     <div nxRow><div nxCol="12">
 
-      <p class="lel-eyebrow">Loss events</p>
-      <h1 class="lel-title">All loss events</h1>
-      <p class="lel-caption">Browse and filter all loss events across your portfolio.</p>
+      <app-page-header title="All loss events" eyebrow="Loss events"
+        subtitle="Browse and filter all loss events across your portfolio."></app-page-header>
 
       <!-- Filter form -->
       <form [formGroup]="filterForm" class="lel-form" (ngSubmit)="onFilter()">
@@ -60,7 +59,7 @@
       @if (loading()) {
         <p class="lel-empty">Loading loss events…</p>
       } @else if (total() === 0) {
-        <p class="lel-empty">No loss events match the filters.</p>
+        <app-empty-state message="No loss events found."></app-empty-state>
       } @else {
         <table nxTable class="lel-table">
           <thead>

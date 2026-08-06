@@ -11,6 +11,8 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { FinancialOverview, FinancialSection } from '../../../core/models/financial-overview.model';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 export type FinancialView = 'overview' | 'payments' | 'reserves' | 'recovery';
 type LevelToggle = 'claim' | 'section';
@@ -27,6 +29,8 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     NxIconModule,
     NxSpinnerModule,
     NxDropdownModule,
+    EmptyStateComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './financial-overview.component.html',
   styleUrl:    './financial-overview.component.scss',
@@ -51,6 +55,15 @@ export class FinancialOverviewComponent implements OnInit {
   readonly view = computed<FinancialView>(() => {
     const v = this.viewParam();
     return VALID_VIEWS.includes(v as FinancialView) ? (v as FinancialView) : 'overview';
+  });
+
+  readonly viewTitle = computed<string>(() => {
+    switch (this.view()) {
+      case 'payments': return 'Payments';
+      case 'reserves': return 'Reserves';
+      case 'recovery': return 'Recovery bookings';
+      default:         return 'Financial Overview';
+    }
   });
 
   readonly sections = computed<FinancialSection[]>(() => this.fo()?.sections ?? []);

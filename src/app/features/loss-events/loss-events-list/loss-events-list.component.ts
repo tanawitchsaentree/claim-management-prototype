@@ -14,6 +14,8 @@ import { NxBreadcrumbModule } from '@allianz/ng-aquila/breadcrumb';
 import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { Navbar } from '../../layout/navbar/navbar';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { LossEventSummary } from '../../../core/models/dashboard-extended.model';
 import { MockDashboardExtendedService } from '../../../core/mock/services/mock-dashboard-extended.service';
 
@@ -39,6 +41,8 @@ const PAGE_SIZE = 15;
     NxBreadcrumbModule,
     NxGridModule,
     StatusChipComponent,
+    EmptyStateComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './loss-events-list.component.html',
   styleUrl: './loss-events-list.component.scss',
