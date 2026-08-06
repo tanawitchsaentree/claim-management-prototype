@@ -25,6 +25,7 @@ import { MockLookupService } from '../../../../core/mock/services/mock-lookup.se
 import { BrokerSearchModalComponent, BrokerSearchModalResult } from '../../../../shared/components/broker-search-modal/broker-search-modal.component';
 import { Broker, LookupOption } from '../../../../core/models';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
+import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 
 export type NotifierType = 'broker' | 'insured';
@@ -64,6 +65,7 @@ const REASON_OPTIONS: ReasonOption[] = [
     NxDatefieldModule,
     NxTableModule,
     WizardFooterComponent,
+    StatusChipComponent,
   ],
   templateUrl: './step-skeleton-create.component.html',
   styleUrl: './step-skeleton-create.component.scss',
@@ -151,15 +153,6 @@ export class StepSkeletonCreateComponent implements OnInit {
   clearBroker(): void {
     this.notifierBroker.set(null);
     this.form.controls.notifierText.setValue('');
-  }
-
-  statusLabel(s: Broker['status']): string {
-    return s === 'cleared' ? 'Cleared' : s === 'not-cleared' ? 'Not cleared' : 'Pending';
-  }
-  statusClass(s: Broker['status']): string {
-    return s === 'cleared' ? 'broker-row__status--cleared'
-      : s === 'not-cleared' ? 'broker-row__status--not-cleared'
-      : 'broker-row__status--pending';
   }
 
   // ── Local form errors ───────────────────────────────────────

@@ -268,6 +268,20 @@
   --clearance-not-applicable-bg:   #e8e8e8;
   --clearance-not-applicable-color:#767676;
 
+  /* ── Recovery potential chip (Yes/No) ─────────────────────────── */
+  --recovery-yes-bg:    #e6f4ea;
+  --recovery-yes-color: #1e6b2e;
+  --recovery-no-bg:     #fce8e6;
+  --recovery-no-color:  #b3261e;
+
+  /* ── Skeleton claim status (text-only variant — bg unused today) ── */
+  --skeleton-claim-awaiting-bg:     #fdf3d6;
+  --skeleton-claim-awaiting-color:  var(--message-warning-icon-color);
+  --skeleton-claim-matched-bg:      #d4edda;
+  --skeleton-claim-matched-color:   var(--claim-status-bound-color);
+  --skeleton-claim-abandoned-bg:    #e8e8e8;
+  --skeleton-claim-abandoned-color: var(--text-muted);
+
   --section-not-promised-tint:   #fef2f2;
   --section-not-promised-border: #fecaca;
 

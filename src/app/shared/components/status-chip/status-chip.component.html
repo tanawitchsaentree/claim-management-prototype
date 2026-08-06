@@ -1,1 +1,1 @@
-<span class="status-chip" [style.background]="bgVar" [style.color]="clrVar">{{ displayLabel }}</span>
+<span class="status-chip" [class.status-chip--text]="variant === 'text'" [style.background]="variant === 'pill' ? bgVar : null" [style.color]="clrVar">{{ displayLabel }}</span>

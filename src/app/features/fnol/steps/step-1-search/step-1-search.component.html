@@ -287,7 +287,7 @@
                       <td class="text-muted">{{ policy.effectiveDate }}</td>
                       <td class="text-muted">{{ policy.expiryDate }}</td>
                       <td>
-                        <span class="policy-status policy-status--{{ policy.status | lowercase }}">{{ policy.status }}</span>
+                        <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
                       </td>
                       <td class="col-action">
                         <button class="action-menu-btn" type="button" aria-label="more actions">
@@ -344,15 +344,10 @@
                       </td>
                       <td>{{ skeleton.clientName }}</td>
                       <td>
-                        @if (skeleton.status === 'awaiting-policy') {
-                          <span class="skeleton-status skeleton-status--awaiting">Awaiting policy</span>
-                        } @else if (skeleton.status === 'matched') {
-                          <span class="skeleton-status skeleton-status--matched">Matched</span>
-                          @if (skeleton.linkedClaimId) {
-                            <span class="skeleton-linked">→ {{ skeleton.linkedClaimId }}</span>
-                          }
-                        } @else {
-                          <span class="skeleton-status skeleton-status--abandoned">Abandoned</span>
+                        <app-status-chip [status]="skeleton.status" domain="skeleton-claim" variant="text"
+                          [label]="skeleton.status === 'awaiting-policy' ? 'Awaiting policy' : (skeleton.status === 'matched' ? 'Matched' : 'Abandoned')"></app-status-chip>
+                        @if (skeleton.status === 'matched' && skeleton.linkedClaimId) {
+                          <span class="skeleton-linked">→ {{ skeleton.linkedClaimId }}</span>
                         }
                       </td>
                       <td class="skeleton-loss-desc">{{ skeleton.lossDescription }}</td>

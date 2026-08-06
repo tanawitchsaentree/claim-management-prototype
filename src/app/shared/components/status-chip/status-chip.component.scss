@@ -8,4 +8,12 @@
   white-space: nowrap;
   // background and color set via [style] bindings from component — values come
   // from CSS custom properties defined in styles.scss, never hardcoded here.
+
+  // Color-only variant — no pill background/padding, for inline text that
+  // was never a chip (e.g. skeleton-claims table status column).
+  &--text {
+    padding: 0;
+    border-radius: 0;
+    gap: 4px;
+  }
 }

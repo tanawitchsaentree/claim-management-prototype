@@ -133,7 +133,7 @@
                   <td nxCell>{{ b.address }}</td>
                   <td nxCell><code class="bsm-id">{{ b.ipmId }}</code></td>
                   <td nxCell>
-                    <span class="bsm-status" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span>
+                    <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
                   </td>
                 </tr>
               }
@@ -170,7 +170,7 @@
                   <td nxCell>{{ b.address }}</td>
                   <td nxCell><code class="bsm-id">{{ b.ipmId }}</code></td>
                   <td nxCell>
-                    <span class="bsm-status" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span>
+                    <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
                   </td>
                 </tr>
               }

@@ -16,6 +16,7 @@ import { NxTabsModule } from '@allianz/ng-aquila/tabs';
 import { MockBrokerService } from '../../../core/mock/services/mock-broker.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { Broker, BrokerSearchFilters, BrokerPartyType, LookupOption } from '../../../core/models';
+import { StatusChipComponent } from '../status-chip/status-chip.component';
 
 export interface BrokerSearchModalData { initialQuery?: string; }
 export type BrokerSearchModalResult = Broker | null;
@@ -46,6 +47,7 @@ const ID_TYPES = ['IPM', 'NAIC', 'Internal ref'];
     NxSpinnerModule,
     NxMessageModule,
     NxTabsModule,
+    StatusChipComponent,
   ],
   templateUrl: './broker-search-modal.component.html',
   styleUrl: './broker-search-modal.component.scss',
@@ -132,22 +134,6 @@ export class BrokerSearchModalComponent implements OnInit {
 
   isSelected(id: string): boolean {
     return this.selectedId() === id;
-  }
-
-  statusLabel(status: Broker['status']): string {
-    switch (status) {
-      case 'cleared':     return 'Cleared';
-      case 'not-cleared': return 'Not cleared';
-      default:            return 'Pending';
-    }
-  }
-
-  statusClass(status: Broker['status']): string {
-    switch (status) {
-      case 'cleared':     return 'bsm-status--cleared';
-      case 'not-cleared': return 'bsm-status--not-cleared';
-      default:            return 'bsm-status--pending';
-    }
   }
 
   onCancel(): void { this.modalRef.close(null); }

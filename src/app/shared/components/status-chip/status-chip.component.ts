@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 type ClaimStatus = 'open' | 'in-progress' | 'priced' | 'quoted' | 'bound' | 'declined' | 'closed';
 type TaskStatus  = 'open' | 'in-progress' | 'done' | 'pending' | 'not-assigned' | 'completed';
 type EntityStatus = 'promised' | 'conditional' | 'by-extension' | 'not-promised';
-type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance';
+type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'skeleton-claim';
 
 // Maps status + domain to the CSS custom property pair defined in styles.scss.
 // Using a lookup avoids any hardcoded hex values here.
@@ -46,6 +46,26 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     'pending':        'clearance-pending',
     'not-applicable': 'clearance-not-applicable',
   },
+  'risk-severity': {
+    'high':   'claim-status-declined',
+    'medium': 'task-status-in-progress',
+    'low':    'claim-status-bound',
+  },
+  'recovery': {
+    'yes': 'recovery-yes',
+    'no':  'recovery-no',
+  },
+  'policy': {
+    'active':    'claim-status-bound',
+    'expired':   'claim-status-closed',
+    'cancelled': 'claim-status-closed',
+    'pending':   'task-status-open',
+  },
+  'skeleton-claim': {
+    'awaiting-policy': 'skeleton-claim-awaiting',
+    'matched':         'skeleton-claim-matched',
+    'abandoned':       'skeleton-claim-abandoned',
+  },
 };
 
 const FALLBACK_TOKEN = 'claim-status-closed';
@@ -61,6 +81,8 @@ export class StatusChipComponent implements OnChanges {
   @Input({ required: true }) status!: string;
   @Input() domain: Domain = 'claim';
   @Input() label?: string;
+  /** 'pill' = filled background chip (default). 'text' = color-only, no background — for inline table text that was never a chip. */
+  @Input() variant: 'pill' | 'text' = 'pill';
 
   bgVar  = '';
   clrVar = '';

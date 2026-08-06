@@ -267,18 +267,6 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
 }
 
 // ─── Skeleton Claims table internals ─────────────────────────────
-.skeleton-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: var(--paragraph-04-font-size);
-  font-weight: 500;
-
-  &--awaiting { color: var(--message-warning-icon-color); }
-  &--matched  { color: var(--claim-status-bound-color); }
-  &--abandoned{ color: var(--text-muted); font-weight: 400; }
-}
-
 .skeleton-linked {
   display: inline;
   font-size: var(--paragraph-04-font-size);
@@ -435,20 +423,6 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   cursor: pointer;
   text-decoration: none;
   &:hover { text-decoration: underline; }
-}
-
-.policy-status {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: var(--paragraph-04-font-size);
-  font-weight: 500;
-  white-space: nowrap;
-
-  &--active  { background: var(--claim-status-bound-bg);   color: var(--claim-status-bound-color);   }
-  &--expired { background: var(--claim-status-closed-bg);  color: var(--claim-status-closed-color);  }
-  &--pending { background: var(--task-status-open-bg);     color: var(--task-status-open-color);     }
 }
 
 // ─── Footer ───────────────────────────────────────────────────────

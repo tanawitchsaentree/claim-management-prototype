@@ -54,7 +54,7 @@
                 <td nxCell>{{ b.address || '—' }}</td>
                 <td nxCell><code class="broker-row__id">{{ b.ipmId }}</code></td>
                 <td nxCell>
-                  <span class="broker-row__status" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span>
+                  <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
                 </td>
               </tr>
             </tbody>
