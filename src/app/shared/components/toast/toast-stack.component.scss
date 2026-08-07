@@ -23,7 +23,7 @@
 }
 
 .toast__desc {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   color: var(--text-muted);
   font-size: var(--paragraph-04-font-size);
 }

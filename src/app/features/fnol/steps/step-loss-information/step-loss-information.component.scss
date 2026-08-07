@@ -1,5 +1,5 @@
 .step-page {
-  padding: 8px 0 48px;
+  padding: var(--space-sm) 0 var(--space-4xl);
   max-width: 960px;
 }
 
@@ -29,7 +29,7 @@
 .form-errors-list {
   list-style: disc;
   padding-left: 20px;
-  margin: 8px 0 0;
+  margin: var(--space-sm) 0 0;
 
   li {
     font-size: var(--paragraph-03-font-size);
@@ -54,7 +54,7 @@
 
 .duplicate-banner__detail {
   font-size: var(--paragraph-03-font-size);
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   color: inherit;
   opacity: 0.85;
 }
@@ -71,7 +71,7 @@
 .duplicate-preview-list {
   list-style: none;
   padding: 0;
-  margin: 8px 0 12px;
+  margin: var(--space-sm) 0 var(--space-md);
 
   li {
     font-size: var(--paragraph-03-font-size);
@@ -84,7 +84,7 @@
 .dup-modal-intro {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
 }
 
 .dup-modal-table {
@@ -109,7 +109,7 @@
 .li-card {
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 24px;
+  padding: var(--space-xl);
   margin-bottom: 16px;
   background: var(--ui-01);
 }
@@ -204,7 +204,7 @@
 .field-error {
   font-size: var(--paragraph-03-font-size);
   color: var(--message-error-color);
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
 }
 
 .checkbox-row {
@@ -218,7 +218,7 @@
 .li-divider {
   border: none;
   border-top: 1px solid var(--ui-04);
-  margin: 20px 0 20px;
+  margin: var(--space-lg) 0 var(--space-lg);
 }
 
 .li-sub-heading {

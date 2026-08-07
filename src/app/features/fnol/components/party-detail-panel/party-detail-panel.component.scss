@@ -17,7 +17,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    padding: 20px 16px 16px;
+    padding: var(--space-lg) var(--space-base) var(--space-base);
     border-bottom: 1px solid var(--ui-04);
     flex-shrink: 0;
   }
@@ -48,14 +48,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
-    padding: 16px;
+    padding: var(--space-base);
     border-bottom: 1px solid var(--ui-04);
     flex-shrink: 0;
   }
 
   &__body {
     flex: 1;
-    padding: 16px;
+    padding: var(--space-base);
     overflow-y: auto;
   }
 }

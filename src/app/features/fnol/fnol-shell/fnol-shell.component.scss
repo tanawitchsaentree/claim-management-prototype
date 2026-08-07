@@ -34,7 +34,7 @@
 
 .policy-popover {
   min-width: 260px;
-  padding: 4px 0;
+  padding: var(--space-xs) 0;
 }
 
 .policy-popover__label {

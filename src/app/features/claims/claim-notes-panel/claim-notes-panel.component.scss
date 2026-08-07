@@ -10,7 +10,7 @@
 .cnp {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: var(--space-base);
 }
 
 // ─── Header ─────────────────────────────────────────────────────────────────
@@ -33,7 +33,7 @@
   gap: 8px;
   background: none;
   border: none;
-  padding: 4px 0;
+  padding: var(--space-xs) 0;
   cursor: pointer;
   color: var(--text-01);
   font-size: var(--paragraph-02-font-size);
@@ -51,7 +51,7 @@
   gap: 4px;
   background: none;
   border: none;
-  padding: 4px 0;
+  padding: var(--space-xs) 0;
   cursor: pointer;
   color: var(--interactive-primary);
   font-size: var(--paragraph-03-font-size);
@@ -73,7 +73,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 16px 0 8px;
+  padding: var(--space-base) 0 var(--space-sm);
   border-bottom: 1px solid var(--ui-04);
   margin-bottom: 8px;
 }
@@ -133,7 +133,7 @@
   border: 1px solid var(--ui-04);
   border-radius: 4px;
   background: var(--ui-01);
-  padding: 10px 12px;
+  padding: var(--space-md) var(--space-md);
 
   &:focus-within {
     border-color: var(--interactive-primary);
@@ -164,7 +164,7 @@
 // ─── Empty / loading ────────────────────────────────────────────────────────
 .cnp__empty {
   margin: 0;
-  padding: 16px 0;
+  padding: var(--space-base) 0;
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   font-style: italic;

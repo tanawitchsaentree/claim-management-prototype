@@ -56,7 +56,7 @@
 // ─── Header ────────────────────────────────────────────────────────────────
 .me-modal__header {
   flex-shrink: 0;
-  padding: 32px 32px 0;
+  padding: var(--space-2xl) var(--space-2xl) 0;
 }
 
 .me-modal__title {
@@ -71,7 +71,7 @@
 .me-modal__body {
   flex: 1;
   overflow-y: auto;
-  padding: 32px;
+  padding: var(--space-2xl);
   display: flex;
   flex-direction: column;
   gap: 48px;
@@ -134,7 +134,7 @@
 .me-linked-table {
   width: 100%;
 
-  td[nxCell], th[nxHeaderCell] { padding: 18px 16px !important; }
+  td[nxCell], th[nxHeaderCell] { padding: var(--space-lg) var(--space-base) !important; }
 }
 
 .me-linked-table__action-col {
@@ -172,7 +172,7 @@
 .me-modal__footer {
   flex-shrink: 0;
   border-top: 1px solid var(--ui-04);
-  padding: 16px 40px;
+  padding: var(--space-base) var(--space-3xl);
   background: var(--ui-01);
 }
 

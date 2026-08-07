@@ -44,7 +44,7 @@
   background: var(--general-background-color, #ffffff);
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 24px;
+  padding: var(--space-xl);
   margin-bottom: 16px;
 }
 
@@ -634,7 +634,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: var(--space-sm) 0;
   border-bottom: 1px solid var(--ui-03);
 
   &__info {
@@ -714,7 +714,7 @@
   flex-direction: column;
   gap: 1px;
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--space-sm) var(--space-md);
   text-align: left;
   background: none;
   border: none;

@@ -14,7 +14,7 @@
   display: flex;
   align-items: flex-end;
   gap: 16px;
-  padding: 16px 0;
+  padding: var(--space-base) 0;
   flex-wrap: wrap;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .tab-btn {
-  padding: 10px 20px;
+  padding: var(--space-md) var(--space-lg);
   font-size: var(--paragraph-03-font-size);
   font-weight: 400;
   color: var(--text-01);
@@ -95,7 +95,7 @@
 
 // ── Toggle row ────────────────────────────────────────────────────
 .toggle-row {
-  padding: 12px 0;
+  padding: var(--space-md) 0;
   display: flex;
   align-items: center;
 }
@@ -126,14 +126,14 @@
 
   th[nxHeaderCell] {
     font-weight: 600 !important;
-    padding: 8px 10px !important;
+    padding: var(--space-sm) var(--space-md) !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   td[nxTableCell] {
-    padding: 8px 10px !important;
+    padding: var(--space-sm) var(--space-md) !important;
     vertical-align: middle !important;
     overflow: hidden;
     text-overflow: ellipsis;

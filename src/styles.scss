@@ -204,6 +204,20 @@
  * Token names follow the pattern: --claim-<category>-<variant>-<role>
  * ============================================================== */
 :root {
+  /* ── Spacing scale (4px base) — see .claude/SPACING.md ────────── */
+  /* Layout margin/padding/gap only — NOT pill/badge/chip padding    */
+  /* (those pair with border-radius and are exempt, see VIOLATIONS.md) */
+  --space-xs:    4px;
+  --space-sm:    8px;
+  --space-md:    12px;
+  --space-base:  16px;
+  --space-lg:    20px;
+  --space-xl:    24px;
+  --space-2xl:   32px;
+  --space-3xl:   40px;
+  --space-4xl:   48px;
+  --space-5xl:   64px;
+
   /* ── Claim status chip — background ─────────────────────────── */
   /* "Open" claim = same blue family as in-progress; shown as blue chip  */
   --claim-status-open-bg:          #dce9f8;

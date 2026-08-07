@@ -163,7 +163,7 @@ $medium-bp: 1360px;
   background: var(--interactive-text);
   border: none;
   border-radius: 4px;
-  margin: 4px 4px 4px 0;
+  margin: var(--space-xs) var(--space-xs) var(--space-xs) 0;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -212,13 +212,13 @@ $medium-bp: 1360px;
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
+  padding: var(--space-sm) 0;
 }
 
 .nav-mobile-item {
   display: block;
   width: 100%;
-  padding: 12px 20px;
+  padding: var(--space-md) var(--space-lg);
   background: none;
   border: none;
   text-align: left;
@@ -231,14 +231,14 @@ $medium-bp: 1360px;
 .nav-mobile-divider {
   height: 1px;
   background: var(--ui-04);
-  margin: 8px 0;
+  margin: var(--space-sm) 0;
 }
 
 .nav-mobile-user {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 20px;
+  padding: var(--space-md) var(--space-lg);
 }
 
 .nav-mobile-username {

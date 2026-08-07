@@ -33,7 +33,7 @@
 .crm-loading {
   display: flex;
   justify-content: center;
-  padding: 24px 0;
+  padding: var(--space-xl) 0;
 }
 
 .crm-section-list {
@@ -47,7 +47,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 10px 12px;
+  padding: var(--space-md) var(--space-md);
   border: 1px solid var(--ui-04);
   border-radius: 4px;
 
@@ -81,7 +81,7 @@
 }
 
 .crm-selection-hint {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   font-size: var(--paragraph-04-font-size);
   color: var(--message-warning-color, var(--ui-05));
 }

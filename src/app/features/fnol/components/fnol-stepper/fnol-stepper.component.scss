@@ -72,7 +72,7 @@
   min-height: var(--multi-stepper-vertical-line-height);
   flex: 1;
   background: var(--multi-stepper-line-color);
-  margin: 4px 0;
+  margin: var(--space-xs) 0;
 }
 
 .stepper-item--completed + .stepper-item .stepper-line,

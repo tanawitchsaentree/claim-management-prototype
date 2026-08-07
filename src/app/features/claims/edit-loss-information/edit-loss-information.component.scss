@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 48px 32px;
+  padding: var(--space-4xl) var(--space-2xl);
   color: var(--text-muted);
   font-size: var(--paragraph-03-font-size);
 }
@@ -31,7 +31,7 @@
 .eli-card {
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 24px;
+  padding: var(--space-xl);
   margin-bottom: 16px;
   background: var(--ui-01);
 }
@@ -59,7 +59,7 @@
 .eli-divider {
   border: none;
   border-top: 1px solid var(--ui-04);
-  margin: 20px 0;
+  margin: var(--space-lg) 0;
 }
 
 .eli-full-width {
@@ -84,7 +84,7 @@
 
 // Compact regular accordion — tighter header padding
 .eli-card {
-  --accordion-regular-header-padding: 8px 16px;
+  --accordion-regular-header-padding: var(--space-sm) var(--space-base);
 }
 
 // ─── Events ──────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@
 .eli-group-error {
   font-size: var(--paragraph-04-font-size);
   color: var(--danger);
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
 }
 
 .eli-card--error {
@@ -121,6 +121,6 @@
 .eli-field-error {
   font-size: var(--paragraph-04-font-size);
   color: var(--danger);
-  margin: 8px 0 0;
+  margin: var(--space-sm) 0 0;
 }
 

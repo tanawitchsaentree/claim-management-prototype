@@ -35,7 +35,7 @@
 
 .lit-empty {
   margin: 0;
-  padding: 24px 0;
+  padding: var(--space-xl) 0;
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   font-style: italic;

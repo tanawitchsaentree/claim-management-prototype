@@ -1,5 +1,5 @@
 .step-page {
-  padding: 8px 0 48px;
+  padding: var(--space-sm) 0 var(--space-4xl);
   max-width: 960px;
 }
 
@@ -27,7 +27,7 @@
 .li-card {
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 24px;
+  padding: var(--space-xl);
   margin-bottom: 16px;
   background: var(--ui-01);
 }

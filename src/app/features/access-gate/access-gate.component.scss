@@ -14,7 +14,7 @@
 
 .ag-card {
   width: 400px;
-  padding: 40px 36px 36px;
+  padding: var(--space-3xl) var(--space-3xl) var(--space-3xl);
   border: 1px solid var(--ui-04);
   border-radius: 8px;
   background: var(--ui-01);

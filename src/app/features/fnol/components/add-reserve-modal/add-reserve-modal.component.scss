@@ -21,6 +21,6 @@
   nx-formfield { width: 100%; }
 }
 
-.arm-checkbox-row { padding: 4px 0; }
+.arm-checkbox-row { padding: var(--space-xs) 0; }
 
 .arm-footer { @include modal.footer; }

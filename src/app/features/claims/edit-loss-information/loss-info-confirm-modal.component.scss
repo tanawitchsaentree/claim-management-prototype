@@ -12,7 +12,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: var(--space-xs);
   width: 28px;
   height: 28px;
   display: flex;
@@ -56,13 +56,13 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: .04em;
-    padding: 6px 8px;
+    padding: var(--space-sm) var(--space-sm);
     border-bottom: 1px solid var(--ui-04);
     text-align: left;
   }
 
   td {
-    padding: 10px 8px;
+    padding: var(--space-md) var(--space-sm);
     border-bottom: 1px solid var(--ui-03);
     vertical-align: middle;
   }

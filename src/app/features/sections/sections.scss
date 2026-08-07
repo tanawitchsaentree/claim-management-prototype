@@ -115,7 +115,7 @@ $brand-blue:          var(--info);
   border-bottom: 1px solid $border-color;
   flex-shrink: 0;
   z-index: 100;
-  padding: 12px 32px 11px;
+  padding: var(--space-md) var(--space-2xl) var(--space-md);
 }
 
 // First slot: logo + divider + title + nav
@@ -235,7 +235,7 @@ $brand-blue:          var(--info);
   background: var(--interactive-text) !important;
   border: none !important;
   border-radius: 4px !important;
-  margin: 4px 4px 4px 0;
+  margin: var(--space-xs) var(--space-xs) var(--space-xs) 0;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -283,7 +283,7 @@ $brand-blue:          var(--info);
 .side-nav {
   flex: 1;
   overflow-y: auto;
-  padding: 6px 0;
+  padding: var(--space-sm) 0;
   display: flex;
   flex-direction: column;
 }
@@ -292,7 +292,7 @@ $brand-blue:          var(--info);
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 11px 20px;
+  padding: var(--space-md) var(--space-lg);
   font-size: var(--paragraph-03-font-size);
   font-weight: 400;
   color: $text-main;
@@ -352,7 +352,7 @@ $brand-blue:          var(--info);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: var(--space-md) var(--space-base);
   border-top: 1px solid $border-color;
   flex-shrink: 0;
 }
@@ -390,7 +390,7 @@ $brand-blue:          var(--info);
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 32px;
+  padding: var(--space-2xl);
   background: var(--ui-background);
   min-width: 0;
 }
@@ -400,7 +400,7 @@ $brand-blue:          var(--info);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: var(--space-sm) var(--space-base);
   background: transparent;
   color: var(--interactive-text);
   border: 2px solid var(--interactive-text);
@@ -430,7 +430,7 @@ $brand-blue:          var(--info);
 .table-toolbar {
   display: flex;
   justify-content: flex-end;
-  padding: 12px 0;
+  padding: var(--space-md) 0;
 }
 
 // ─── Section header row ───────────────────────────────────────────
@@ -465,13 +465,13 @@ $brand-blue:          var(--info);
   .col-entity   { width: 24%; }
   .col-damage   { width: 26%; }
   .col-coverage  { width: 240px; }
-  .col-comments  { width: 56px; text-align: center !important; padding: 8px 4px !important; }
+  .col-comments  { width: 56px; text-align: center !important; padding: var(--space-sm) var(--space-xs) !important; }
   .col-actions   { width: 56px; text-align: center !important; padding: 0 !important; }
 
   th[nxHeaderCell] {
     font-size: var(--paragraph-03-font-size) !important;
     font-weight: 600 !important;
-    padding: 8px 12px !important;
+    padding: var(--space-sm) var(--space-md) !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -479,7 +479,7 @@ $brand-blue:          var(--info);
 
   td[nxTableCell] {
     font-size: var(--paragraph-03-font-size) !important;
-    padding: 8px 12px !important;
+    padding: var(--space-sm) var(--space-md) !important;
     vertical-align: middle !important;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -536,7 +536,7 @@ $brand-blue:          var(--info);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6px 0;
+  padding: var(--space-sm) 0;
   gap: 2px;
 }
 
@@ -560,7 +560,7 @@ $brand-blue:          var(--info);
   width: 24px;
   height: 1px;
   background: $border-color;
-  margin: 4px 0;
+  margin: var(--space-xs) 0;
 }
 
 // ─── ng-aquila light theme overrides ─────────────────────────────
@@ -598,7 +598,7 @@ button[nxButton="secondary small"] {
 button[nxContextMenuItem] {
   color: var(--text-01) !important;
   font-size: var(--paragraph-03-font-size) !important;
-  padding: 10px 16px !important;
+  padding: var(--space-md) var(--space-base) !important;
   background: transparent !important;
   width: 100% !important;
   text-align: left !important;

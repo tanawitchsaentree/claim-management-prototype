@@ -6,7 +6,7 @@
 }
 
 .x-header {
-  padding: 20px 24px 16px;
+  padding: var(--space-lg) var(--space-xl) var(--space-base);
   border-bottom: 1px solid var(--ui-04);
   flex-shrink: 0;
 }
@@ -27,14 +27,14 @@
 .x-body {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: var(--space-xl);
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 .x-footer {
-  padding: 16px 24px;
+  padding: var(--space-base) var(--space-xl);
   border-top: 1px solid var(--ui-04);
   display: flex;
   justify-content: flex-end;
@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: var(--space-md) var(--space-base);
   border-bottom: 1px solid var(--ui-03);
 
   &:last-child { border-bottom: none; }
@@ -121,7 +121,7 @@
   flex-direction: column;
   gap: 1px;
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--space-sm) var(--space-md);
   text-align: left;
   background: none;
   border: none;

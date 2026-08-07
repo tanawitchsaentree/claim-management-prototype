@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 32px 16px;
+  padding: var(--space-xl) var(--space-2xl) var(--space-base);
   border-bottom: 1px solid var(--ui-04);
 }
 
@@ -22,13 +22,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px 32px 8px;
+  padding: var(--space-lg) var(--space-2xl) var(--space-sm);
 }
 
 .sim-footer {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  padding: 16px 32px 24px;
+  padding: var(--space-base) var(--space-2xl) var(--space-xl);
   border-top: 1px solid var(--ui-04);
 }

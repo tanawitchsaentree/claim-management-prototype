@@ -22,7 +22,7 @@ $sidebar-collapsed-width: 56px;
 
     .nav-item {
       justify-content: center;
-      padding: 11px 0;
+      padding: var(--space-md) 0;
       gap: 0;   // remove gap — label is hidden, icon should be perfectly centered
     }
 
@@ -38,7 +38,7 @@ $sidebar-collapsed-width: 56px;
 
 .sidebar-nav {
   flex: 1;
-  padding: 8px 0;
+  padding: var(--space-sm) 0;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -50,7 +50,7 @@ $sidebar-collapsed-width: 56px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 16px;
+  padding: var(--space-md) var(--space-base);
   color: var(--text-01);
   font-size: var(--paragraph-02-font-size);
   font-weight: 500;
@@ -182,7 +182,7 @@ $sidebar-collapsed-width: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: var(--space-sm) var(--space-md);
   border-top: 1px solid var(--ui-04);
   flex-shrink: 0;
 
@@ -190,7 +190,7 @@ $sidebar-collapsed-width: 56px;
     justify-content: center;
     flex-direction: column;
     gap: 4px;
-    padding: 8px 0;
+    padding: var(--space-sm) 0;
   }
 }
 

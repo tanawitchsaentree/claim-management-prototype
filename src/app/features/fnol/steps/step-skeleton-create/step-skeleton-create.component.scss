@@ -1,5 +1,5 @@
 .step-page {
-  padding: 8px 0 48px;
+  padding: var(--space-sm) 0 var(--space-4xl);
   max-width: 960px;
 }
 
@@ -24,7 +24,7 @@
 .li-card {
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 24px;
+  padding: var(--space-xl);
   margin-bottom: 16px;
   background: var(--ui-01);
 }
@@ -75,7 +75,7 @@
 .li-divider {
   border: none;
   border-top: 1px solid var(--ui-04);
-  margin: 20px 0;
+  margin: var(--space-lg) 0;
 }
 
 // ─── Radio field ───────────────────────────────────────────────────────
@@ -126,7 +126,7 @@
 .field-error {
   font-size: var(--paragraph-03-font-size);
   color: var(--message-error-color);
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
 }
 
 .checkbox-row {
@@ -149,7 +149,7 @@
 // ─── Notifier broker block ─────────────────────────────────────────────
 
 .notifier-hint {
-  margin: 8px 0 16px;
+  margin: var(--space-sm) 0 var(--space-base);
   max-width: 720px;
 }
 
@@ -157,7 +157,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 4px 0 16px;
+  margin: var(--space-xs) 0 var(--space-base);
 }
 
 // No broker selected — search-only, no free text, no frame

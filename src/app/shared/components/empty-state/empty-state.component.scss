@@ -2,7 +2,7 @@
 // pattern (cl-empty / lel-empty / me-empty / cnp__empty / lit-empty / etc).
 .empty-state--text {
   margin: 0;
-  padding: 24px 0;
+  padding: var(--space-xl) 0;
   text-align: center;
 
   .empty-state__message {
@@ -13,7 +13,7 @@
   }
 
   .empty-state__hint {
-    margin: 4px 0 0;
+    margin: var(--space-xs) 0 0;
     font-size: var(--paragraph-04-font-size);
     color: var(--text-muted);
     font-style: normal;
@@ -28,7 +28,7 @@
   align-items: center;
   text-align: center;
   gap: 8px;
-  padding: 48px 24px;
+  padding: var(--space-4xl) var(--space-xl);
 
   .empty-state__icon {
     font-size: var(--heading-01-font-size);

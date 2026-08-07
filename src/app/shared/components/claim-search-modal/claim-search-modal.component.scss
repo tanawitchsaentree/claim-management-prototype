@@ -62,7 +62,7 @@
 .csm-table {
   width: 100%;
 
-  td[nxCell], th[nxHeaderCell] { padding: 18px 16px !important; }
+  td[nxCell], th[nxHeaderCell] { padding: var(--space-lg) var(--space-base) !important; }
 }
 
 .csm-col--check { width: 48px; }

@@ -5,7 +5,7 @@
 .rai-loading {
   display: flex;
   justify-content: center;
-  padding: 64px 0;
+  padding: var(--space-5xl) 0;
 }
 
 
@@ -14,7 +14,7 @@
 .rai-card {
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 20px 24px;
+  padding: var(--space-lg) var(--space-xl);
   margin-bottom: 16px;
   background: var(--ui-02); // grey bg — matches Figma
 }
@@ -22,7 +22,7 @@
 .rai-investigation {
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 20px 24px;
+  padding: var(--space-lg) var(--space-xl);
   margin-bottom: 16px;
   background: var(--ui-01);
 }
@@ -113,7 +113,7 @@
 .rai-ai-card {
   border: 1px solid var(--claim-info-card-border);
   border-radius: 4px;
-  padding: 16px 20px;
+  padding: var(--space-base) var(--space-lg);
   margin-bottom: 16px;
   background: var(--claim-info-card-bg);
 }
@@ -145,7 +145,7 @@
 .rai-risk-card {
   border: 1px solid var(--claim-danger-card-border);
   border-radius: 4px;
-  padding: 16px 20px;
+  padding: var(--space-base) var(--space-lg);
   margin-bottom: 16px;
   background: var(--claim-danger-card-bg);
 }

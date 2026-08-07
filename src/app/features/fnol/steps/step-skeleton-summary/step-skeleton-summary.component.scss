@@ -1,5 +1,5 @@
 .step-page {
-  padding: 8px 0 48px;
+  padding: var(--space-sm) 0 var(--space-4xl);
   max-width: 960px;
 }
 
@@ -39,7 +39,7 @@
 .success-banner { margin-bottom: 24px; }
 
 .success-detail {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 }
@@ -48,7 +48,7 @@
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  padding: 16px 20px;
+  padding: var(--space-base) var(--space-lg);
   margin-bottom: 16px;
 }
 
