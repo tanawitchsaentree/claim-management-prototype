@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, signal, inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -110,21 +111,20 @@ export class LitigationDetailComponent implements OnChanges {
     this.toast.info(`${label} — coming soon`);
   }
 
-  openAddParty(kind: LitigationPartyKind): void {
+  async openAddParty(kind: LitigationPartyKind): Promise<void> {
     const data: AddLitigationPartyModalData = { kind };
     const ref = this.dialogSvc.open(AddLitigationPartyModalComponent, { data, width: '960px', maxWidth: '92vw' });
-    ref.afterClosed().subscribe((selected: Party | null | undefined) => {
-      if (!selected) return;
-      const partyRef = { partyId: selected.partyId, name: selected.legalName };
-      const next: Litigation = { ...this.model };
-      switch (kind) {
-        case 'plaintiff':       next.plaintiff       = partyRef; break;
-        case 'defendant':       next.defendant       = partyRef; break;
-        case 'attorney':        next.attorney        = { attorneyId: selected.partyId, name: selected.legalName }; break;
-        case 'opposing-lawyer': next.opposingLawyer  = { attorneyId: selected.partyId, name: selected.legalName }; break;
-      }
-      this.save.emit(next);
-    });
+    const selected = await firstValueFrom(ref.afterClosed()) as Party | null | undefined;
+    if (!selected) return;
+    const partyRef = { partyId: selected.partyId, name: selected.legalName };
+    const next: Litigation = { ...this.model };
+    switch (kind) {
+      case 'plaintiff':       next.plaintiff       = partyRef; break;
+      case 'defendant':       next.defendant       = partyRef; break;
+      case 'attorney':        next.attorney        = { attorneyId: selected.partyId, name: selected.legalName }; break;
+      case 'opposing-lawyer': next.opposingLawyer  = { attorneyId: selected.partyId, name: selected.legalName }; break;
+    }
+    this.save.emit(next);
   }
 
   onSave(): void {

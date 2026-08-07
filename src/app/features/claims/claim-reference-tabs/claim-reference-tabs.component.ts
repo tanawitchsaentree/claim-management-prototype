@@ -1,10 +1,10 @@
-import { Component, inject, computed, signal, DestroyRef } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { ReferenceViewService, RefTab } from '../claim-reference-panel/reference-view.service';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
@@ -21,7 +21,7 @@ export class ClaimReferenceTabsComponent {
   readonly svc      = inject(ReferenceViewService);
   private readonly router    = inject(Router);
   private readonly claimSvc  = inject(MockClaimService);
-  private readonly destroyRef = inject(DestroyRef);
+  private searchGeneration = 0;
 
   // ── URL tracking ──────────────────────────────────────────────────────────
   private readonly url = toSignal(
@@ -61,26 +61,25 @@ export class ClaimReferenceTabsComponent {
     this.showAddPopover.set(false);
   }
 
-  onSearchInput(query: string): void {
+  async onSearchInput(query: string): Promise<void> {
     this.searchQuery.set(query);
     if (query.trim().length < 2) {
       this.searchResults.set([]);
       return;
     }
     this.searching.set(true);
+    const generation = ++this.searchGeneration;
     const primary        = this.svc.primaryClaimId();
     const existingRefIds = new Set(this.svc.refTabs().map(t => t.claimId));
 
-    this.claimSvc.getAll({ search: query })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(results => {
-        this.searchResults.set(
-          results
-            .filter(c => c.claimId !== primary && !existingRefIds.has(c.claimId))
-            .slice(0, 5)
-        );
-        this.searching.set(false);
-      });
+    const results = await firstValueFrom(this.claimSvc.getAll({ search: query }));
+    if (generation !== this.searchGeneration) return; // stale — a newer search superseded this one
+    this.searchResults.set(
+      results
+        .filter(c => c.claimId !== primary && !existingRefIds.has(c.claimId))
+        .slice(0, 5)
+    );
+    this.searching.set(false);
   }
 
   selectResult(claim: Claim): void {

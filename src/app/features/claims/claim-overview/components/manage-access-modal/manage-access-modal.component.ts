@@ -1,4 +1,5 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -6,7 +7,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { firstValueFrom, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../../../core/mock/services/mock-user-directory.service';
 import { AccessListEntry, FileRestriction } from '../../../../../core/models/claim-overview.model';
 
@@ -32,25 +33,26 @@ export type ManageAccessModalResult = FileRestriction;
   templateUrl: './manage-access-modal.component.html',
   styleUrl:    './manage-access-modal.component.scss',
 })
-export class ManageAccessModalComponent implements OnInit {
+export class ManageAccessModalComponent {
   readonly data     = inject<ManageAccessModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<ManageAccessModalComponent, ManageAccessModalResult>>(NxModalRef);
   private readonly userDir = inject(MockUserDirectoryService);
 
-  readonly accessList    = signal<AccessListEntry[]>([]);
+  readonly accessList    = signal<AccessListEntry[]>([...this.data.restriction.accessList]);
   readonly searchResults = signal<UserDirectoryEntry[]>([]);
   readonly searchControl = new FormControl('');
+  private readonly searchQuery = toSignal(
+    this.searchControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()),
+    { initialValue: this.searchControl.value },
+  );
 
-  ngOnInit(): void {
-    this.accessList.set([...this.data.restriction.accessList]);
-
-    this.searchControl.valueChanges.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap(q => this.userDir.search(q ?? '')),
-    ).subscribe(results => {
-      const addedIds = new Set(this.accessList().map(e => e.userId));
-      this.searchResults.set(results.filter(u => !addedIds.has(u.userId)));
+  constructor() {
+    effect(() => {
+      const q = this.searchQuery();
+      firstValueFrom(this.userDir.search(q ?? '')).then(results => {
+        const addedIds = new Set(this.accessList().map(e => e.userId));
+        this.searchResults.set(results.filter(u => !addedIds.has(u.userId)));
+      });
     });
   }
 

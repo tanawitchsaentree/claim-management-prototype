@@ -1,10 +1,11 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { catchError, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -77,7 +78,7 @@ const BANNER_DISMISSED_KEY = 'dismissed-skeleton-banner';
     ]),
   ],
 })
-export class Step1SearchComponent implements OnInit, OnDestroy {
+export class Step1SearchComponent {
   private fnolState    = inject(FnolStateService);
   private searchSvc    = inject(MockPolicySearchService);
   private clientSvc    = inject(MockClientSearchService);
@@ -112,49 +113,49 @@ export class Step1SearchComponent implements OnInit, OnDestroy {
     '⚠ You must match a policy within 3 business days.';
 
   private readonly trigger$  = new BehaviorSubject<'search' | 'idle'>('idle');
-  private readonly destroy$  = new Subject<void>();
 
-  ngOnInit(): void {
-    this.fnolState.devSearchFill$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ policyNumber, clientName }) => {
-        this.form.get('clientName')?.setValue(clientName);
-        this.form.get('policyNumber')?.setValue(policyNumber);
-        this.validationError = null;
-        this.clientPage = 1;
-        this.policyPage = 1;
-        this.selectedClientId = null;
-        this.selectedClientData = null;
-        this.selectedPolicyNumber = null;
-        this.selectedPolicyData = null;
-        this.hasSearched = true;
-        this.trigger$.next('search');
+  private readonly devSearchFill = toSignal(this.fnolState.devSearchFill$);
+  private pendingAutoSelectPolicyNumber: string | null = null;
 
-        // Auto-select matching policy row after results load
-        this.state$.pipe(
-          takeUntil(this.destroy$),
-          switchMap(state => {
-            if (state.kind !== 'results') return of(null);
-            const match = state.policies.find(
-              p => p.policyNumber.toLowerCase() === policyNumber.toLowerCase(),
-            ) ?? state.policies[0] ?? null;
-            return of(match);
-          }),
-        ).subscribe(policy => {
-          if (policy) {
-            this.selectedPolicyNumber = policy.policyNumber;
-            this.selectedPolicyData   = policy;
-            this.selectedClientId     = null;
-            this.selectedClientData   = null;
-            this.activeTab = 1;
-          }
-        });
-      });
-  }
+  constructor() {
+    // Dev-banner triggered fill: set search fields, run the search, then
+    // auto-select the matching policy once results land (handled by the
+    // state$ effect below — search results resolve asynchronously).
+    effect(() => {
+      const fill = this.devSearchFill();
+      if (!fill) return;
+      const { policyNumber, clientName } = fill;
+      this.form.get('clientName')?.setValue(clientName);
+      this.form.get('policyNumber')?.setValue(policyNumber);
+      this.validationError = null;
+      this.clientPage = 1;
+      this.policyPage = 1;
+      this.selectedClientId = null;
+      this.selectedClientData = null;
+      this.selectedPolicyNumber = null;
+      this.selectedPolicyData = null;
+      this.hasSearched = true;
+      this.pendingAutoSelectPolicyNumber = policyNumber;
+      this.trigger$.next('search');
+    });
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    // Auto-select matching policy row once a dev-triggered search resolves.
+    effect(() => {
+      const state = this.searchState();
+      const policyNumber = this.pendingAutoSelectPolicyNumber;
+      if (!policyNumber || !state || state.kind !== 'results') return;
+      this.pendingAutoSelectPolicyNumber = null;
+      const policy = state.policies.find(
+        p => p.policyNumber.toLowerCase() === policyNumber.toLowerCase(),
+      ) ?? state.policies[0] ?? null;
+      if (policy) {
+        this.selectedPolicyNumber = policy.policyNumber;
+        this.selectedPolicyData   = policy;
+        this.selectedClientId     = null;
+        this.selectedClientData   = null;
+        this.activeTab = 1;
+      }
+    });
   }
 
   readonly state$: Observable<SearchState> = this.trigger$.pipe(
@@ -182,6 +183,8 @@ export class Step1SearchComponent implements OnInit, OnDestroy {
       );
     }),
   );
+
+  private readonly searchState = toSignal(this.state$);
 
   private _applyAutoTabSwitch(
     clients: ClientSearchResult[],

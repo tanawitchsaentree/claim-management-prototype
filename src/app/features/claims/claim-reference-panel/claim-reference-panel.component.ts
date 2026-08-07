@@ -1,9 +1,8 @@
-import { Component, OnInit, effect, inject, signal, DestroyRef } from '@angular/core';
+import { Component, OnInit, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -53,7 +52,7 @@ export class ClaimReferencePanelComponent {
   private readonly sectionSvc  = inject(MockSectionService);
   private readonly stateSvc    = inject(MockStateService);
   private readonly claimSvc    = inject(MockClaimService);
-  private readonly destroyRef  = inject(DestroyRef);
+  private searchGeneration = 0;
 
   readonly maxTabs = MAX_REF_TABS;
   readonly vm = signal<RefVM>(EMPTY_VM);
@@ -118,20 +117,19 @@ export class ClaimReferencePanelComponent {
     this.showSearch.set(false);
   }
 
-  onSearchInput(query: string): void {
+  async onSearchInput(query: string): Promise<void> {
     this.searchQuery.set(query);
     if (query.trim().length < 2) { this.searchResults.set([]); return; }
     this.searching.set(true);
+    const generation = ++this.searchGeneration;
     const primary = this.svc.primaryClaimId();
     const open    = new Set(this.svc.refTabs().map(t => t.claimId));
-    this.claimSvc.getAll({ search: query })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(results => {
-        this.searchResults.set(
-          results.filter(c => c.claimId !== primary && !open.has(c.claimId)).slice(0, 5)
-        );
-        this.searching.set(false);
-      });
+    const results = await firstValueFrom(this.claimSvc.getAll({ search: query }));
+    if (generation !== this.searchGeneration) return; // stale — a newer search superseded this one
+    this.searchResults.set(
+      results.filter(c => c.claimId !== primary && !open.has(c.claimId)).slice(0, 5)
+    );
+    this.searching.set(false);
   }
 
   selectClaim(claim: Claim): void {

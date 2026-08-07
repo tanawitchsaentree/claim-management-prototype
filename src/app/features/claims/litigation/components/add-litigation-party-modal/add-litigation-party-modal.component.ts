@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -85,13 +86,12 @@ export class AddLitigationPartyModalComponent {
     this.load();
   }
 
-  private load(): void {
+  private async load(): Promise<void> {
     const allowedRoles = new Set(KIND_ROLES[this.data.kind]);
-    this.partiesSvc.searchAll({}).subscribe(all => {
-      const filtered = all.filter(p => p.roles.some(r => allowedRoles.has(r)));
-      this.rows.set(filtered);
-      this.page.set(1);
-    });
+    const all = await firstValueFrom(this.partiesSvc.searchAll({}));
+    const filtered = all.filter(p => p.roles.some(r => allowedRoles.has(r)));
+    this.rows.set(filtered);
+    this.page.set(1);
   }
 
   rolesDisplay(party: Party): string {

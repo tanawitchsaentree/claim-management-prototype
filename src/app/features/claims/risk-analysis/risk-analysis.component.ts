@@ -115,16 +115,15 @@ export class RiskAnalysisComponent implements OnInit {
     this.markingNoRisk.set(false);
   }
 
-  startInvestigation(): void {
+  async startInvestigation(): Promise<void> {
     const data: StartInvestigationModalData = { claimId: this.claimId };
     const ref = this.dialogSvc.open(StartInvestigationModalComponent, { data, width: '600px', maxWidth: '92vw' });
-    ref.afterClosed().subscribe(async (result: StartInvestigationResult | null | undefined) => {
-      if (!result) return;
-      const updated = await firstValueFrom(this.svc.startInvestigation(this.claimId, result.assignee, result.deadline));
-      if (updated) {
-        this.model.set(updated);
-        this.toast.success(`Investigation assigned to ${result.assignee}`);
-      }
-    });
+    const result = await firstValueFrom(ref.afterClosed()) as StartInvestigationResult | null | undefined;
+    if (!result) return;
+    const updated = await firstValueFrom(this.svc.startInvestigation(this.claimId, result.assignee, result.deadline));
+    if (updated) {
+      this.model.set(updated);
+      this.toast.success(`Investigation assigned to ${result.assignee}`);
+    }
   }
 }

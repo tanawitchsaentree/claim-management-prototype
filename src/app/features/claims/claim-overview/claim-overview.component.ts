@@ -1,9 +1,9 @@
-import { Component, inject, OnDestroy, OnInit, signal, DestroyRef } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, firstValueFrom, of, switchMap } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -128,7 +128,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly dialogSvc      = inject(NxDialogService);
   private readonly massEventSvc   = inject(MockMassEventService);
   readonly auth                   = inject(AuthService);
-  private readonly destroyRef     = inject(DestroyRef);
   private readonly toast          = inject(ToastService);
   private readonly userDir        = inject(MockUserDirectoryService);
   private readonly sectionSvc    = inject(MockSectionService);
@@ -141,54 +140,72 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
   readonly closedSectionsCount = signal<number>(0);
 
-  private readonly state$ = toObservable(this.stateSvc.state);
+  private readonly paramMap = toSignal(this.route.paramMap);
+  private loadGeneration = 0;
+  private coUserSearchGeneration = 0;
+
+  constructor() {
+    // Reactivity bridge: reload whenever the route param OR the mock-state
+    // signal changes (dev-banner Apply mutates state; this must re-run).
+    effect(() => {
+      const params = this.paramMap();
+      this.stateSvc.state();
+      if (!params) return;
+      void this.loadOverview(params.get('id') ?? 'CL-2025-001');
+    });
+
+    effect(() => {
+      const q = this.coUserSearchQuery();
+      const generation = ++this.coUserSearchGeneration;
+      if (!q || q.length < 2) {
+        this.coUserSearchResults.set([]);
+        return;
+      }
+      firstValueFrom(this.userDir.search(q)).then(results => {
+        if (generation !== this.coUserSearchGeneration) return; // stale — a newer query superseded this one
+        const addedIds = new Set(this.coAccessList().map(e => e.userId));
+        this.coUserSearchResults.set(results.filter(u => !addedIds.has(u.userId)));
+      });
+    });
+  }
 
   ngOnInit(): void {
     this.deregisterStage = this.stageSvc.register(this);
-    this.setupCoUserSearch();
+  }
 
-    combineLatest([
-      this.route.paramMap,
-      this.state$,
-    ]).pipe(
-      switchMap(([params]) => {
-        const claimId = params.get('id') ?? 'CL-2025-001';
-        this.claimId = claimId;
-        this.vm$.next(EMPTY_VM);
-        return combineLatest({
-          overview: this.overviewSvc.getOverviewWithActivities(claimId),
-          tasks:    this.taskSvc.getByClaimId(claimId),
-          closure:  this.closureSvc.validateBlockers(claimId),
-        }).pipe(
-          switchMap(({ overview, tasks, closure }) => {
-            const massEventId = overview.claim?.massEventId;
-            return combineLatest({
-              massEvent: massEventId ? this.massEventSvc.getById(massEventId) : of(null),
-            }).pipe(map(({ massEvent }) => ({ overview, tasks, closure, massEvent })));
-          })
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe({
-      next: ({ overview, tasks, closure, massEvent }) => {
-        this.closureCheck.set(closure);
-        this.vm$.next({
-          loading: false, error: null,
-          claim: overview.claim,
-          activities: overview.activities,
-          activitiesExpanded: false,
-          tasks,
-          tasksExpanded: true,
-          massEvent: massEvent ?? null,
-        });
-        if (overview.claim) {
-          this.initRestrictionForm(overview.claim);
-          this.refreshClosedSectionsCount(overview.claim.claimId);
-        }
-      },
-      error: () =>
-        this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.', massEvent: null }),
-    });
+  private async loadOverview(claimId: string): Promise<void> {
+    const generation = ++this.loadGeneration;
+    this.claimId = claimId;
+    this.vm$.next(EMPTY_VM);
+    try {
+      const [overview, tasks, closure] = await Promise.all([
+        firstValueFrom(this.overviewSvc.getOverviewWithActivities(claimId)),
+        firstValueFrom(this.taskSvc.getByClaimId(claimId)),
+        firstValueFrom(this.closureSvc.validateBlockers(claimId)),
+      ]);
+      const massEventId = overview.claim?.massEventId;
+      const massEvent = massEventId ? await firstValueFrom(this.massEventSvc.getById(massEventId)) : null;
+
+      if (generation !== this.loadGeneration) return; // stale — a newer load superseded this one
+
+      this.closureCheck.set(closure);
+      this.vm$.next({
+        loading: false, error: null,
+        claim: overview.claim,
+        activities: overview.activities,
+        activitiesExpanded: false,
+        tasks,
+        tasksExpanded: true,
+        massEvent: massEvent ?? null,
+      });
+      if (overview.claim) {
+        this.initRestrictionForm(overview.claim);
+        this.refreshClosedSectionsCount(overview.claim.claimId);
+      }
+    } catch {
+      if (generation !== this.loadGeneration) return;
+      this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.', massEvent: null });
+    }
   }
 
   // Wait until vm$ has a non-null claim (async data still in flight when
@@ -510,6 +527,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   readonly coAccessList = signal<AccessListEntry[]>([]);
   readonly coUserSearchControl = new FormControl('');
   readonly coUserSearchResults = signal<UserDirectoryEntry[]>([]);
+  private readonly coUserSearchQuery = toSignal(
+    this.coUserSearchControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()),
+    { initialValue: this.coUserSearchControl.value },
+  );
 
   private initRestrictionForm(claim: ClaimOverview): void {
     const r = claim.restriction;
@@ -558,17 +579,5 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   removeCoUser(userId: string): void {
     this.coAccessList.update(list => list.filter(e => e.userId !== userId));
     this.saveRestrictionToClaim();
-  }
-
-  private setupCoUserSearch(): void {
-    this.coUserSearchControl.valueChanges.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap(q => q && q.length >= 2 ? this.userDir.search(q) : of([])),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(results => {
-      const addedIds = new Set(this.coAccessList().map(e => e.userId));
-      this.coUserSearchResults.set(results.filter(u => !addedIds.has(u.userId)));
-    });
   }
 }

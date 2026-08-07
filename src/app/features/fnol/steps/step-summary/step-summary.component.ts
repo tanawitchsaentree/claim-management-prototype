@@ -1,8 +1,9 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BehaviorSubject, firstValueFrom, combineLatest, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, combineLatest, debounceTime, distinctUntilChanged } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -117,6 +118,20 @@ export class StepSummaryComponent implements OnInit {
   // User search autocomplete
   readonly userSearchControl = new FormControl('');
   readonly userSearchResults = signal<UserDirectoryEntry[]>([]);
+  private readonly userSearchQuery = toSignal(
+    this.userSearchControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()),
+    { initialValue: this.userSearchControl.value },
+  );
+
+  constructor() {
+    effect(() => {
+      const q = this.userSearchQuery();
+      firstValueFrom(this.userDir.search(q ?? '')).then(results => {
+        const addedIds = new Set(this.accessList().map(e => e.userId));
+        this.userSearchResults.set(results.filter(u => !addedIds.has(u.userId)));
+      });
+    });
+  }
 
   get accessRestricted(): FormControl { return this.restrictionForm.get('isRestricted') as FormControl; }
 
@@ -138,16 +153,6 @@ export class StepSummaryComponent implements OnInit {
       this.loadError = true;
     }
 
-    // Wire user search
-    this.userSearchControl.valueChanges.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap(q => this.userDir.search(q ?? '')),
-    ).subscribe(results => {
-      // Filter out already-added users
-      const addedIds = new Set(this.accessList().map(e => e.userId));
-      this.userSearchResults.set(results.filter(u => !addedIds.has(u.userId)));
-    });
   }
 
   onToggleRestriction(checked: boolean): void {

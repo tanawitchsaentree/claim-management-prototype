@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -47,10 +48,10 @@ export class StepSkeletonSummaryComponent implements OnInit {
 
   readonly saving    = signal(false);
   readonly createdId = signal<string | null>(null);
-  readonly parties   = signal<Party[]>([]);
+  readonly parties   = toSignal(this.partiesSvc.getOrphanParties(), { initialValue: [] as Party[] });
 
-  private causeOpts: LookupOption[] = [];
-  private damageOpts: LookupOption[] = [];
+  private readonly causeOptsSignal  = toSignal(this.lookupSvc.getCauseOfLoss(),  { initialValue: [] as LookupOption[] });
+  private readonly damageOptsSignal = toSignal(this.lookupSvc.getTypeOfDamage(), { initialValue: [] as LookupOption[] });
 
   get draft() { return this.fnolState.skeleton; }
 
@@ -63,9 +64,6 @@ export class StepSkeletonSummaryComponent implements OnInit {
       this.router.navigate(['/fnol/skeleton-create']);
       return;
     }
-    this.lookupSvc.getCauseOfLoss().subscribe(o => this.causeOpts = o);
-    this.lookupSvc.getTypeOfDamage().subscribe(o => this.damageOpts = o);
-    this.partiesSvc.getOrphanParties().subscribe(p => this.parties.set(p));
   }
 
   rolesDisplay(party: Party): string {
@@ -78,12 +76,12 @@ export class StepSkeletonSummaryComponent implements OnInit {
 
   causeLabels(): string {
     const keys = (this.lossInfo()['causeOfLoss'] as string[]) ?? [];
-    return keys.map(k => this.causeOpts.find(o => o.value === k)?.label ?? k).join(', ');
+    return keys.map(k => this.causeOptsSignal().find(o => o.value === k)?.label ?? k).join(', ');
   }
 
   damageLabels(): string {
     const keys = (this.lossInfo()['typeOfDamage'] as string[]) ?? [];
-    return keys.map(k => this.damageOpts.find(o => o.value === k)?.label ?? k).join(', ');
+    return keys.map(k => this.damageOptsSignal().find(o => o.value === k)?.label ?? k).join(', ');
   }
 
   dateValue(field: string): string {
