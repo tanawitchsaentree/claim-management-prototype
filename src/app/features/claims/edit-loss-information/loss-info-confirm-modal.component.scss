@@ -48,10 +48,10 @@
 .licm-diff-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 
   th {
-    font-size: 12px;
+    font-size: var(--paragraph-04-font-size);
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;

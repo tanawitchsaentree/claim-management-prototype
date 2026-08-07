@@ -3,13 +3,13 @@
 }
 
 .step-breadcrumb {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0 0 4px;
 }
 
 .step-title {
-  font-size: 28px;
+  font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
   margin: 0 0 8px;
@@ -20,7 +20,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0 0 32px;
 }
@@ -83,9 +83,9 @@
   color: var(--message-error-color);
   border: 1px solid var(--message-error-border-color);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 
-  &__icon { font-size: 18px; flex-shrink: 0; }
+  &__icon { font-size: var(--icon-size-s); flex-shrink: 0; }
 }
 
 // ─── Toggle filters ───────────────────────────────────────────────
@@ -96,7 +96,7 @@
   background: none;
   border: none;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 500;
   color: var(--interactive-text);
   cursor: pointer;
@@ -122,7 +122,7 @@
   gap: 12px;
   padding: 24px 0;
   color: var(--text-01);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 }
 
 .results-error {
@@ -134,7 +134,7 @@
   color: var(--message-error-color);
   border: 1px solid var(--message-error-border-color);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 
   nx-icon { font-size: 18px; flex-shrink: 0; }
 }
@@ -150,7 +150,7 @@
   border-collapse: collapse;
 
   th {
-    font-size: 14px;
+    font-size: var(--paragraph-03-font-size);
     font-weight: 600;
     color: var(--text-01);
     padding: 10px 16px;
@@ -161,7 +161,7 @@
   }
 
   td {
-    font-size: 14px;
+    font-size: var(--paragraph-03-font-size);
     color: var(--text-01);
     padding: 10px 16px;
     border-bottom: 1px solid var(--ui-04);
@@ -306,7 +306,7 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   background: none;
   border: none;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--interactive-text);
   font-weight: 500;
   cursor: pointer;
@@ -318,13 +318,13 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
 // Content projected into <app-empty-state>'s [body] slot (see empty-state.component.scss
 // for the slot's own layout rules — max-width/text-align/color).
 .empty-state__you-can {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0 0 4px;
 }
 
 .empty-state__list {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0;
   padding-left: 20px;
@@ -350,7 +350,7 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
   nx-icon { font-size: 14px; color: var(--text-muted); }
 }
@@ -363,7 +363,7 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   border: none;
   padding: 0;
   color: var(--interactive-text);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;

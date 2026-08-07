@@ -27,13 +27,13 @@
 }
 
 .page-header__eyebrow {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0 0 4px;
 }
 
 .page-header__title {
-  font-size: 28px;
+  font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
   line-height: 1.2;
@@ -41,7 +41,7 @@
 }
 
 .page-header__subtitle {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 8px 0 0;
 }

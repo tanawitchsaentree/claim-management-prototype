@@ -35,7 +35,7 @@
   margin-bottom: -2px;
   background: transparent;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   transition: color 0.15s, border-color 0.15s, background 0.15s;
   white-space: nowrap;
@@ -69,14 +69,14 @@
 
 .rt-tab__badge {
   display: inline-block;
-  font-size: 10px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   background: var(--interactive-primary);
   color: var(--button-primary-text-color);
-  padding: 1px 5px;
-  border-radius: 8px;
+  padding: 2px 7px;
+  border-radius: 10px;
 }
 
 .rt-tab__close {
@@ -162,7 +162,7 @@
   border: none;
   border-bottom: 1px solid var(--ui-04);
   background: transparent;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
   outline: none;
 
@@ -172,7 +172,7 @@
 .rt-popover__empty,
 .rt-popover__hint {
   padding: 12px;
-  font-size: 13px;
+  font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   text-align: center;
 }
@@ -197,12 +197,12 @@
 }
 
 .rt-popover__claim-id {
-  font-size: 13px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 500;
   color: var(--text-01);
 }
 
 .rt-popover__client {
-  font-size: 12px;
+  font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 }

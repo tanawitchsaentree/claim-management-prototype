@@ -101,7 +101,7 @@ $brand-blue:          var(--info);
   height: 100vh;
   overflow: hidden;
   font-family: 'Allianz Neo', 'Public Sans Latin', Arial, sans-serif;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: $text-main;
 }
 
@@ -138,7 +138,7 @@ $brand-blue:          var(--info);
 }
 
 .header-app-title {
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 600;
   color: $text-main;
   white-space: nowrap;
@@ -162,7 +162,7 @@ $brand-blue:          var(--info);
   height: 28px;
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 400;
   color: $text-main;
   cursor: pointer;
@@ -219,7 +219,7 @@ $brand-blue:          var(--info);
   border: none;
   outline: none;
   padding: 0 16px;
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 300;
   color: $text-main;
   flex: 1;
@@ -253,7 +253,7 @@ $brand-blue:          var(--info);
   align-items: center;
   justify-content: center;
   color: var(--text-02);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   cursor: pointer;
   margin-left: 24px;
@@ -293,7 +293,7 @@ $brand-blue:          var(--info);
   align-items: center;
   gap: 14px;
   padding: 11px 20px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 400;
   color: $text-main;
   cursor: pointer;
@@ -315,7 +315,7 @@ $brand-blue:          var(--info);
     color: $text-main;
 
     nx-icon {
-      font-size: 18px;
+      font-size: var(--icon-size-s);
       width: 18px;
       height: 18px;
     }
@@ -368,7 +368,7 @@ $brand-blue:          var(--info);
   width: 32px;
   height: 32px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 
   nx-icon { color: $text-muted; font-size: 18px; }
 
@@ -379,7 +379,7 @@ $brand-blue:          var(--info);
   }
 
   &--collapse {
-    font-size: 16px;
+    font-size: var(--paragraph-01-font-size);
     font-weight: 600;
     letter-spacing: -2px;
     color: $text-muted;
@@ -405,14 +405,14 @@ $brand-blue:          var(--info);
   color: var(--interactive-text);
   border: 2px solid var(--interactive-text);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   letter-spacing: 1px;
   cursor: pointer;
   transition: background 0.12s;
 
   nx-icon {
-    font-size: 16px;
+    font-size: var(--paragraph-01-font-size);
     color: var(--interactive-text);
   }
 
@@ -507,7 +507,7 @@ $brand-blue:          var(--info);
   display: inline-block;
   padding: 3px 10px;
   border-radius: 12px;
-  font-size: 13px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 500;
   white-space: nowrap;
   background: var(--ui-03);
@@ -597,7 +597,7 @@ button[nxButton="secondary small"] {
 
 button[nxContextMenuItem] {
   color: var(--text-01) !important;
-  font-size: 14px !important;
+  font-size: var(--paragraph-03-font-size) !important;
   padding: 10px 16px !important;
   background: transparent !important;
   width: 100% !important;
@@ -635,7 +635,7 @@ button[nxContextMenuItem] {
   cursor: pointer;
   color: var(--interactive-primary);
   border-radius: 4px;
-  font-size: 20px;
+  font-size: var(--heading-06-font-size);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 1px;

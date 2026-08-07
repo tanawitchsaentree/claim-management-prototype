@@ -116,14 +116,14 @@
 
 .co-link-icon {
   color: var(--interactive-primary);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 }
 
 .co-edit-loss-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--interactive-text);
   text-decoration: none;
@@ -132,7 +132,7 @@
 }
 
 .co-edit-icon {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 }
 
 .co-field-value {
@@ -180,7 +180,7 @@
 .me-popover {
   min-width: 260px;
   max-width: 320px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 }
 
 .me-popover__header {
@@ -193,14 +193,14 @@
 }
 
 .me-popover__id {
-  font-size: 12px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 700;
   color: var(--interactive-text);
   letter-spacing: 0.03em;
 }
 
 .me-popover__name {
-  font-size: 15px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 600;
   color: var(--text-01);
   line-height: 1.3;
@@ -218,7 +218,7 @@
   gap: 8px;
   align-items: baseline;
   dt {
-    font-size: 12px;
+    font-size: var(--paragraph-04-font-size);
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -227,7 +227,7 @@
     flex-shrink: 0;
   }
   dd {
-    font-size: 14px;
+    font-size: var(--paragraph-03-font-size);
     color: var(--text-01);
     margin: 0;
   }
@@ -235,7 +235,7 @@
 
 .me-popover__cat-badge {
   display: inline-block;
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 10px;
@@ -246,7 +246,7 @@
 .me-popover__pending-badge {
   display: inline-block;
   margin-top: 10px;
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 10px;
@@ -262,7 +262,7 @@
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid var(--ui-04);
-  font-size: 13px;
+  font-size: var(--paragraph-04-font-size);
 }
 
 .me-popover__unlink a { color: var(--danger, #d2351d) !important; }
@@ -580,7 +580,7 @@
 // ─── File restriction (BMPCC-10994) ──────────────────────────────────────────
 
 .co-btn-icon {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   margin-right: 4px;
 }
 
@@ -691,7 +691,7 @@
 
   &__icon {
     color: var(--text-muted);
-    font-size: 16px;
+    font-size: var(--paragraph-01-font-size);
     flex-shrink: 0;
   }
 }

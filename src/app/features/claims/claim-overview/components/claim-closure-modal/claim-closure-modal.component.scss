@@ -57,7 +57,7 @@
 .ccm-blocker-icon  { color: var(--danger); flex-shrink: 0; }
 .ccm-blocker-label { font-size: var(--paragraph-02-font-size); color: var(--text-01); line-height: 1.4; flex: 1; }
 .ccm-blocker-count {
-  font-size: 11px; font-weight: 600;
+  font-size: var(--paragraph-04-font-size); font-weight: 600;
   background: var(--danger); color: var(--ui-01);
   border-radius: 10px; padding: 1px 7px; flex-shrink: 0;
 }
@@ -90,7 +90,7 @@
 .ccm-item__title { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); }
 
 .ccm-item__status {
-  font-size: 11px; font-weight: 500;
+  font-size: var(--paragraph-04-font-size); font-weight: 500;
   padding: 2px 8px; border-radius: 10px; flex-shrink: 0;
   &--hard    { background: rgba(210, 53, 29, 0.1); color: var(--danger); }
   &--warning { background: rgba(255, 165, 0, 0.12); color: var(--warning); }
@@ -107,7 +107,7 @@
 
 .ccm-item__meta-chip {
   display: inline-flex; align-items: center; gap: 4px;
-  font-size: 11px; color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size); color: var(--text-muted);
   nx-icon { opacity: 0.6; }
 }
 

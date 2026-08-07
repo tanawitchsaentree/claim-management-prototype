@@ -49,7 +49,7 @@
 }
 
 .cddm-ticket-epic {
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   color: var(--text-muted);
   background: var(--ui-03);
@@ -144,7 +144,7 @@
 .cddm-ac-icon {
   flex-shrink: 0;
   margin-top: 2px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--dev-helper-badge-color);
 
   &--done { color: var(--dev-helper-done-color); }
@@ -213,7 +213,7 @@
 }
 
 .cddm-empty-icon {
-  font-size: 24px;
+  font-size: var(--heading-05-font-size);
   color: var(--dev-helper-border);
 }
 

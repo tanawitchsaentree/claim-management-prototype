@@ -92,7 +92,7 @@
 }
 
 .cdb-ticket-epic {
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   color: var(--text-muted);
   background: var(--ui-03);

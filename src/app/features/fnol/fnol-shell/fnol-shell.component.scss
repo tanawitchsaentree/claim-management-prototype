@@ -74,7 +74,7 @@
 .fnol-logo { flex-shrink: 0; }
 
 .fnol-brand-name {
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 700;
   color: var(--text-01);
   letter-spacing: 0.5px;

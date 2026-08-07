@@ -44,7 +44,7 @@ $medium-bp: 1360px;
 }
 
 .app-header__title {
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 600;
   color: var(--text-01);
   white-space: nowrap;
@@ -78,7 +78,7 @@ $medium-bp: 1360px;
   }
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   font-weight: 400;
   color: var(--text-01);
   cursor: pointer;
@@ -139,7 +139,7 @@ $medium-bp: 1360px;
   border: none;
   outline: none;
   padding: 0 12px;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   font-weight: 300;
   color: var(--text-01);
   flex: 1;
@@ -218,7 +218,7 @@ $medium-bp: 1360px;
   background: none;
   border: none;
   text-align: left;
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   color: var(--text-01);
   cursor: pointer;
   &:hover { background: var(--ui-02); }
@@ -238,6 +238,6 @@ $medium-bp: 1360px;
 }
 
 .nav-mobile-username {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
 }

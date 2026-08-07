@@ -31,14 +31,14 @@
   padding: 48px 24px;
 
   .empty-state__icon {
-    font-size: 48px;
+    font-size: var(--heading-01-font-size);
     color: var(--text-muted);
     margin-bottom: 4px;
   }
 
   .empty-state__message {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--paragraph-01-font-size);
     font-weight: 600;
     color: var(--text-01);
     font-style: normal;

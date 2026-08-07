@@ -83,7 +83,7 @@
 // ─── Priority pill ──────────────────────────────────────────────────────────
 .cl-priority {
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   letter-spacing: 0.02em;
   padding: 2px 8px;

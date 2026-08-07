@@ -70,7 +70,7 @@
 }
 
 .scm-blocker-count {
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   background: var(--danger);
   color: var(--ui-01);
@@ -116,7 +116,7 @@
 }
 
 .scm-item__status {
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   font-weight: 500;
   padding: 2px 8px;
   border-radius: 10px;
@@ -144,7 +144,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   nx-icon { opacity: 0.6; }
 }
@@ -153,7 +153,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: var(--paragraph-04-font-size);
   color: var(--interactive-text);
   text-decoration: none;
   font-weight: 500;

@@ -22,13 +22,13 @@
 }
 
 .step-breadcrumb {
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0 0 4px;
 }
 
 .step-title {
-  font-size: 28px;
+  font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
   margin: 0 0 24px;
