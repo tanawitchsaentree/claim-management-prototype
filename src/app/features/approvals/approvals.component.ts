@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -8,6 +9,9 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxGridModule } from '@allianz/ng-aquila/grid';
+import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
+import { NxInputModule } from '@allianz/ng-aquila/input';
+import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { Navbar } from '../layout/navbar/navbar';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
 import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
@@ -23,7 +27,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     NxTableModule,
     NxButtonModule,
@@ -31,6 +35,9 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
     NxContextMenuModule,
     NxSwitcherModule,
     NxGridModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxDatefieldModule,
     Navbar,
     ClaimPreviewDirective,
     EmptyStateComponent,
@@ -47,9 +54,12 @@ export class ApprovalsComponent implements OnInit {
   readonly showMineOnly = signal(false);
 
   // Filter fields
-  filterClaimId    = '';
-  filterRequester  = '';
-  filterDate: Date | null = null;
+  readonly filterForm = new FormGroup({
+    claimId:   new FormControl(''),
+    requester: new FormControl(''),
+    date:      new FormControl<string | null>(null),
+  });
+  private readonly filterValue = toSignal(this.filterForm.valueChanges, { initialValue: this.filterForm.value });
 
   private allReserves  = signal<UrgentApproval[]>([]);
   private allPayments  = signal<PaymentApproval[]>([]);
@@ -59,12 +69,14 @@ export class ApprovalsComponent implements OnInit {
     if (this.showMineOnly()) {
       list = list.filter(r => r.reviewerEmail === this.auth.user()?.email);
     }
-    if (this.filterClaimId.trim()) {
-      const q = this.filterClaimId.trim().toLowerCase();
+    const claimId = (this.filterValue().claimId ?? '').trim();
+    if (claimId) {
+      const q = claimId.toLowerCase();
       list = list.filter(r => r.claimId.toLowerCase().includes(q));
     }
-    if (this.filterRequester.trim()) {
-      const q = this.filterRequester.trim().toLowerCase();
+    const requester = (this.filterValue().requester ?? '').trim();
+    if (requester) {
+      const q = requester.toLowerCase();
       list = list.filter(r => r.requester.toLowerCase().includes(q));
     }
     return list;
@@ -75,12 +87,14 @@ export class ApprovalsComponent implements OnInit {
     if (this.showMineOnly()) {
       list = list.filter(p => p.reviewerEmail === this.auth.user()?.email);
     }
-    if (this.filterClaimId.trim()) {
-      const q = this.filterClaimId.trim().toLowerCase();
+    const claimId = (this.filterValue().claimId ?? '').trim();
+    if (claimId) {
+      const q = claimId.toLowerCase();
       list = list.filter(p => p.claimId.toLowerCase().includes(q));
     }
-    if (this.filterRequester.trim()) {
-      const q = this.filterRequester.trim().toLowerCase();
+    const requester = (this.filterValue().requester ?? '').trim();
+    if (requester) {
+      const q = requester.toLowerCase();
       list = list.filter(p => p.requester.toLowerCase().includes(q));
     }
     return list;
@@ -100,9 +114,7 @@ export class ApprovalsComponent implements OnInit {
   }
 
   resetFilter(): void {
-    this.filterClaimId   = '';
-    this.filterRequester = '';
-    this.filterDate      = null;
+    this.filterForm.reset();
   }
 
   onAction(action: string, id: string): void {

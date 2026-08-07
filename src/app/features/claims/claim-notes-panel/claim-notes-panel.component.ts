@@ -10,6 +10,7 @@ import { NxEyebrowModule } from '@allianz/ng-aquila/eyebrow';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
+import { NxInputModule } from '@allianz/ng-aquila/input';
 import { Note, NoteSection } from '../../../core/models';
 import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -42,6 +43,7 @@ const EN_WEEKDAY: Record<number, string> = {
     NxContextMenuModule,
     NxDropdownModule,
     NxFormfieldModule,
+    NxInputModule,
     EmptyStateComponent,
   ],
   templateUrl: './claim-notes-panel.component.html',

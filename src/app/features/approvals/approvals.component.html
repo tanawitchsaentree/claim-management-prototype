@@ -4,24 +4,23 @@
 <div nxLayout="grid maxwidth" class="approvals-page">
 
   <!-- ── Filter bar ── -->
-  <div class="filter-bar">
-    <div class="filter-field">
-      <label class="filter-label">Claim ID</label>
-      <input class="filter-input" type="text" [(ngModel)]="filterClaimId" placeholder="" />
-    </div>
-    <div class="filter-field">
-      <label class="filter-label">Requester</label>
-      <input class="filter-input" type="text" [(ngModel)]="filterRequester" placeholder="" />
-    </div>
-    <div class="filter-field">
-      <label class="filter-label">Date Requested</label>
-      <input class="filter-input filter-input--date" type="date" />
-    </div>
+  <form class="filter-bar" [formGroup]="filterForm">
+    <nx-formfield label="Claim ID" class="filter-field">
+      <input nxInput type="text" formControlName="claimId" />
+    </nx-formfield>
+    <nx-formfield label="Requester" class="filter-field">
+      <input nxInput type="text" formControlName="requester" />
+    </nx-formfield>
+    <nx-formfield label="Date Requested" class="filter-field">
+      <input nxDatefield nxInput formControlName="date" [datepicker]="requestedDatePicker" />
+      <nx-datepicker-toggle nxFormfieldSuffix [for]="requestedDatePicker"></nx-datepicker-toggle>
+      <nx-datepicker #requestedDatePicker></nx-datepicker>
+    </nx-formfield>
     <div class="filter-actions">
       <button nxButton="secondary small" type="button" (click)="applyFilter()">Filter</button>
       <button nxButton="tertiary small" type="button" (click)="resetFilter()">Reset</button>
     </div>
-  </div>
+  </form>
 
   <!-- ── Tabs ── -->
   <div class="tabs-row">

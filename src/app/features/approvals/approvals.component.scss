@@ -19,35 +19,9 @@
 }
 
 .filter-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
   min-width: 160px;
   flex: 1;
   max-width: 240px;
-}
-
-.filter-label {
-  font-size: var(--paragraph-04-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  white-space: nowrap;
-}
-
-.filter-input {
-  height: 36px;
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  padding: 0 10px;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-01);
-  background: var(--ui-01);
-  outline: none;
-  &:focus { border-color: var(--interactive-primary); }
-
-  &--date {
-    font-size: var(--paragraph-04-font-size);
-  }
 }
 
 .filter-actions {
@@ -55,7 +29,6 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
-  padding-bottom: 1px;
 }
 
 // ── Tabs ──────────────────────────────────────────────────────────

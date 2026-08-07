@@ -97,32 +97,6 @@
   color: var(--text-01);
 }
 
-.cnp-add-form__input-wrap {
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  background: var(--ui-01);
-  padding: 0 12px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-
-  &:focus-within {
-    border-color: var(--interactive-primary);
-    outline: 2px solid var(--interactive-primary);
-    outline-offset: 0;
-  }
-}
-
-.cnp-add-form__input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-01);
-  &::placeholder { color: var(--text-muted); }
-}
-
 // nx-formfield inside the form — strip top spacing reserved for label
 .cnp-add-form__select {
   width: 100%;
