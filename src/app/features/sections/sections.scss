@@ -45,7 +45,7 @@ $brand-blue:          var(--info);
     &--active {
       box-shadow: inset 3px 0 0 var(--interactive-primary);
       td {
-        background: #e8f0fb !important;
+        background: var(--action-selected-background-color) !important;
         color: var(--interactive-primary) !important;
       }
     }
@@ -68,7 +68,7 @@ $brand-blue:          var(--info);
     &--active {
       box-shadow: inset 3px 0 0 var(--interactive-primary);
       td {
-        background: #e8f0fb !important;
+        background: var(--action-selected-background-color) !important;
         color: var(--interactive-primary) !important;
         font-weight: 500 !important;
       }

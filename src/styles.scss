@@ -318,6 +318,12 @@
   --claim-bar-bound:               #ccdd61;
   --claim-bar-declined:            #e4003a;
 
+  /* ── AI reasoning / key-risk info cards (risk-analysis) ───────── */
+  --claim-info-card-border:        #b3d4f0;
+  --claim-info-card-bg:            #eaf4fb;
+  --claim-danger-card-border:      #f5c6cb;
+  --claim-danger-card-bg:          #fdecea;
+
   /* ── Overlay / shadow ────────────────────────────────────────── */
   /* Interactive hover on white — primary blue tint at 6% opacity  */
   --claim-overlay-hover:           rgba(0, 97, 146, 0.06);
@@ -325,6 +331,10 @@
   --claim-overlay-nav-hover:       rgba(0, 0, 0, 0.05);
   /* Dropdown / modal shadow                                        */
   --claim-overlay-shadow:          rgba(0, 0, 0, 0.12);
+  /* Lighter card/panel shadow — inline popovers, floating cards    */
+  --claim-overlay-shadow-light:    rgba(0, 0, 0, 0.08);
+  /* Heavier panel shadow — search popovers, reference panel        */
+  --claim-overlay-shadow-heavy:    rgba(0, 0, 0, 0.14);
   /* Navbar box-shadow scrim                                        */
   --claim-overlay-navbar-shadow:   rgba(0, 0, 0, 0.15);
   /* Navbar search input — white at 20% opacity (on dark header)   */

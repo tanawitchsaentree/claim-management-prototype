@@ -36,6 +36,10 @@ $medium-bp: 1360px;
   flex-shrink: 0;
 }
 
+.app-header__brand-logo {
+  color: var(--info);
+}
+
 .app-header__divider {
   width: 1px;
   height: 40px;
@@ -204,7 +208,7 @@ $medium-bp: 1360px;
   background: var(--ui-01);
   border-left: 1px solid var(--ui-04);
   border-bottom: 1px solid var(--ui-04);
-  box-shadow: -4px 4px 16px rgba(0,0,0,0.12);
+  box-shadow: -4px 4px 16px var(--claim-overlay-shadow);
   z-index: 1000;
   display: flex;
   flex-direction: column;

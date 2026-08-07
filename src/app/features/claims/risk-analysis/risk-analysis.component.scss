@@ -111,11 +111,11 @@
 // ─── AI reasoning card ────────────────────────────────────────────────────────
 
 .rai-ai-card {
-  border: 1px solid #b3d4f0;
+  border: 1px solid var(--claim-info-card-border);
   border-radius: 4px;
   padding: 16px 20px;
   margin-bottom: 16px;
-  background: #eaf4fb;
+  background: var(--claim-info-card-bg);
 }
 
 .rai-ai-card__title {
@@ -143,11 +143,11 @@
 // ─── Key risk factors card ────────────────────────────────────────────────────
 
 .rai-risk-card {
-  border: 1px solid #f5c6cb;
+  border: 1px solid var(--claim-danger-card-border);
   border-radius: 4px;
   padding: 16px 20px;
   margin-bottom: 16px;
-  background: #fdecea;
+  background: var(--claim-danger-card-bg);
 }
 
 .rai-risk-card__title {
