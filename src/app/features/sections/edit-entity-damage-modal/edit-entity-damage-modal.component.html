@@ -16,7 +16,7 @@
       }
     </nx-dropdown>
     @if (form.get('damage')?.invalid && form.get('damage')?.touched) {
-      <nx-error>Please select a damage type</nx-error>
+      <nx-error nxFormfieldError>Please select a damage type</nx-error>
     }
   </nx-formfield>
 
@@ -27,7 +27,7 @@
       }
     </nx-dropdown>
     @if (form.get('instructionStatus')?.invalid && form.get('instructionStatus')?.touched) {
-      <nx-error>Please select an instruction status</nx-error>
+      <nx-error nxFormfieldError>Please select an instruction status</nx-error>
     }
   </nx-formfield>
 
