@@ -60,6 +60,28 @@
       <nx-error nxFormfieldError *ngIf="submitAttempted && form.get('lossDescription')?.errors?.['required']">Loss description is required</nx-error>
     </nx-formfield>
 
+    @if (showFireDetails()) {
+      <hr class="eli-divider" />
+      <h3 class="eli-sub-heading">Fire details</h3>
+
+      <div class="two-col-grid" [formGroup]="fireDetails">
+        <nx-formfield label="Fire origin">
+          <input nxInput formControlName="fireOrigin" placeholder="e.g. Electrical fault, kitchen area" />
+        </nx-formfield>
+        <nx-formfield label="Fire dept. report number">
+          <input nxInput formControlName="fireDepartmentReportNumber" />
+        </nx-formfield>
+      </div>
+
+      <div class="eli-field-group">
+        <p class="eli-field-label">Was the fire department called?</p>
+        <div class="eli-checkbox-row">
+          <nx-radio labelSize="small" [checked]="fireDeptCalled === true" (checkedChange)="setFireDeptCalled(true)">Yes</nx-radio>
+          <nx-radio labelSize="small" [checked]="fireDeptCalled === false" (checkedChange)="setFireDeptCalled(false)">No</nx-radio>
+        </div>
+      </div>
+    }
+
   </section>
 
   <!-- Card 2: Location (CWB Location Picker) -->

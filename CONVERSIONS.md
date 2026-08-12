@@ -278,6 +278,26 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-12 — PI 2026.3 UI/UX Alignment Open Points (items 3, 5.2, 8)
+
+- **Source:** Confluence "Claims Management- PI 2026.3 - UI/UX Alignment Open Points" (verbal review of 14 open points)
+- **Module:** Claim Overview, Edit Loss Information, Sections
+- **Files touched:**
+  - `src/app/features/claims/claim-overview/claim-overview.component.html`
+  - `src/app/features/claims/edit-loss-information/edit-loss-information.component.ts`
+  - `src/app/features/claims/edit-loss-information/edit-loss-information.component.html`
+  - `src/app/shared/components/status-chip/status-chip.component.ts`
+  - `src/app/features/sections/sections.html`
+- **Decisions made (author: Tanawitch, since "Nat" and "Tanawitch" resolve to the same person on this project):**
+  1. **Item 3 — no-data fields on Claim Overview:** doc recorded two options (hide vs. dash) with no final call ("Saentree, Tanawitch will confirm"). Decided: **dash**, for consistency with every other no-data field already on this page (Broker, Client contact, Closure date, etc.). Mass Event for a non-KCM handler now shows "–" instead of vanishing. Also fixed two fields that had NO no-data handling at all and would have rendered blank/raw-pipe-output: `proximateLossCause` and `dateOfLoss` (both instances, normal row + closure block) now fall back to "–".
+  2. **Item 5.2 — Fire detail section on Edit Loss Information:** was not "awaiting design," it was a **live bug** — `showFireDetails` was hardcoded `map(() => false)` while `showWaterDetails`/`showTheftDetails` correctly reacted to `causeOfLoss`. Fixed to react the same way. The section itself (Fire origin, Fire dept. report number, fire-department-called radios) had never been wired into the template at all despite the form model (`causeDetails.fire`) and prefill logic already existing — added it, mirroring the existing `two-col-grid` / `eli-field-group` conventions used elsewhere on the page.
+  3. **Item 8 — Coverage Status colors:** `coverage-chip` in Sections rendered plain gray text for every status. Added a `coverage-review` domain to `StatusChipComponent`'s `TOKEN_MAP` (Standard Review → bound/green, Enhanced review required → in-progress/amber, Additional information required → declined/red) and swapped the raw `<span>` for `<app-status-chip>`.
+- **Bug found during Item 5.2 fix, unrelated to the original ask:** `[formGroup]="causeDetails.get('fire')"` failed Angular's template type-check (`AbstractControl | null` not assignable to `FormGroup`) — this silently broke the **entire** dev-server incremental build for this component (visible only in the `ng serve` log, not in `tsc --noEmit`, which doesn't type-check templates). Fixed by adding a properly-typed `fireDetails` getter, following the same pattern as the existing `dateOfLoss`/`causeDetails` getters.
+- **Items reviewed but NOT touched (need a decision from someone other than me, or from a system I don't control):** items 1, 2 (partially), 7, 9, 11, 12, 14 — all still genuinely "Open," waiting on business/CTR-availability/other-team input, not on a UI/UX call I can make.
+- **Items confirmed already done, no action taken:** item 4 (location table: counter removed, no sort, "Number and Street" merged column), item 6 (Section Overview columns match desired set; "Comments" column is a separate, still-open feature thread, not a leftover), item 10 (pre-closure checklist already reverted into `claim-closure-modal`), item 13 (skeleton parties/location steps fully built), item 2's OE/Event-name removal (Loss Events dashboard tab already has neither column).
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

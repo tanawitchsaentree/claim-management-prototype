@@ -116,7 +116,7 @@
                   <div>
                     <p class="me-popover__overridden-title">Auto-checks disabled</p>
                     <p class="me-popover__overridden-desc">
-                      Overridden by {{ claim.massEventOverriddenBy?.name ?? 'a claim handler' }}@if (claim.massEventOverriddenBy?.at) { on {{ claim.massEventOverriddenBy!.at | appDate }} }.
+                      Overridden by {{ claim.massEventOverriddenBy?.name ?? 'a claim handler' }}@if (claim.massEventOverriddenBy?.at) { on {{ claim.massEventOverriddenBy!.at | appDate }}}.
                       The system will not run further automatic checks linking this claim to this mass event.
                     </p>
                   </div>
@@ -143,6 +143,15 @@
             <span class="co-label">Mass Event</span>
             <nx-link size="small"><a (click)="onChangeMassEvent(claim)">+ Link mass event</a></nx-link>
           </div>
+        } @else {
+          <!-- PI 2026.3 UI/UX Alignment item 3: no-data fields show a dash,
+               consistent with Broker/Client contact/etc. on this same page,
+               rather than disappearing. KCM keeps the "+ Link" action above
+               since they have a real next step; a handler doesn't. -->
+          <div class="co-field">
+            <span class="co-label">Mass Event</span>
+            <span class="co-value">–</span>
+          </div>
         }
       </div>
 
@@ -161,11 +170,11 @@
             </div>
             <div class="co-field">
               <span class="co-label">Proximate loss cause</span>
-              <span class="co-value">{{ claim.proximateLossCause }}</span>
+              <span class="co-value">{{ claim.proximateLossCause || '–' }}</span>
             </div>
             <div class="co-field">
               <span class="co-label">Date of Loss</span>
-              <span class="co-value">{{ claim.dateOfLoss | appDate }}</span>
+              <span class="co-value">{{ claim.dateOfLoss ? (claim.dateOfLoss | appDate) : '–' }}</span>
             </div>
             <div class="co-field">
               <span class="co-label">Closure date</span>

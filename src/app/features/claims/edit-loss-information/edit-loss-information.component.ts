@@ -105,6 +105,7 @@ export class EditLossInformationComponent implements OnInit {
 
   get dateOfLoss()   { return this.form.get('dateOfLoss') as FormGroup; }
   get causeDetails() { return this.form.get('causeDetails') as FormGroup; }
+  get fireDetails()  { return this.causeDetails.get('fire') as FormGroup; }
   get eventsArray()  { return this.form.get('events') as FormArray; }
   get lossLocation() { return this.form.get('lossLocation') as FormControl<LocationPickerOutput>; }
 
@@ -123,7 +124,7 @@ export class EditLossInformationComponent implements OnInit {
   get fireDeptCalled(): boolean | null { return this.causeDetails.get('fire.fireDepartmentCalled')?.value as boolean | null; }
   setFireDeptCalled(val: boolean): void { this.causeDetails.get('fire.fireDepartmentCalled')?.setValue(val); }
 
-  readonly showFireDetails  = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(() => false)), { initialValue: false });
+  readonly showFireDetails  = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('fire'))), { initialValue: false });
   readonly showWaterDetails = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('water-damage'))), { initialValue: false });
   readonly showTheftDetails = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('theft'))),        { initialValue: false });
 

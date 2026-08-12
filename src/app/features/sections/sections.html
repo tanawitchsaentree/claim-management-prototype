@@ -165,9 +165,8 @@
               <td nxTableCell class="col-coverage">
                 <div class="coverage-cell">
                   @if (entity.coverageReview) {
-                    <span class="coverage-chip">
-                      {{ entity.coverageReview }}
-                    </span>
+                    <app-status-chip [status]="entity.coverageReview" domain="coverage-review"
+                      [label]="entity.coverageReview"></app-status-chip>
                     @if (entity.coverageReviewOverridden) {
                       <nx-icon name="pencil" size="s" class="coverage-overridden-icon"
                                [nxTooltip]="entity.coverageReviewNote ?? ''" nxTooltipPosition="top"></nx-icon>
