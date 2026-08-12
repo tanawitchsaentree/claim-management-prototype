@@ -1,1 +1,0 @@
-import{Z as n,va as e}from"./chunk-FCDE5RES.js";var s=class i{claimId=e(null);x=e(0);y=e(0);visible=e(!1);show(a,t,o){this.claimId.set(a),this.x.set(t),this.y.set(o),this.visible.set(!0)}hide(){this.visible.set(!1)}static \u0275fac=function(t){return new(t||i)};static \u0275prov=n({token:i,factory:i.\u0275fac,providedIn:"root"})};export{s as a};
