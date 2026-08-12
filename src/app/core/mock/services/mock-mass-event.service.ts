@@ -48,6 +48,25 @@ export class MockMassEventService extends MockBaseService {
     return this.respond(undefined);
   }
 
+  /**
+   * Claim handler override (BMPCC-10510): the mass event tag stays visible —
+   * unlike unlinkClaim, this does NOT clear massEventId — but the link status
+   * flips to 'overridden' so the UI can show "auto-checks disabled" and the
+   * rules engine (real backend, not this mock) knows to stop re-evaluating
+   * this claim against the mass event.
+   */
+  overrideLink(claimId: string, by: { userId: string; name: string }): Observable<void> {
+    const overriddenBy = { userId: by.userId, name: by.name, at: new Date().toISOString() };
+    this.stateSvc.patchClaims(claims =>
+      claims.map(c => c.claimId === claimId
+        ? { ...c, massEventLinkStatus: 'overridden' as MassEventLinkStatus, massEventOverriddenBy: overriddenBy }
+        : c
+      )
+    );
+    this.stateSvc.patchOverview(claimId, { massEventLinkStatus: 'overridden', massEventOverriddenBy: overriddenBy });
+    return this.respond(undefined);
+  }
+
   unlinkClaim(claimId: string): Observable<void> {
     this.stateSvc.patchClaims(claims =>
       claims.map(c => c.claimId === claimId

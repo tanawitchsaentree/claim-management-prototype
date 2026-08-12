@@ -1,11 +1,10 @@
 @use '../../../shared/styles/modal-layout' as modal;
 
-// Standard centered modal: blessed shell mixin owns header/body/footer spacing
-// (NDBX wrapper already pads 40px) so this matches every other dialog. Was
-// hand-rolled before — CX flagged the inconsistent spacing.
+// Same blessed shell mixin as loss-info-confirm-modal — keeps every confirm
+// dialog in this app on identical header/body/footer spacing.
 :host { @include modal.shell; }
 
-.licm-close {
+.ecm-close {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -23,7 +22,7 @@
   &:hover { color: var(--text-01); }
 }
 
-.licm-close-x {
+.ecm-close-x {
   display: block;
   width: 14px;
   height: 14px;
@@ -39,18 +38,13 @@
   &::after  { transform: rotate(-45deg); }
 }
 
-.licm-header { @include modal.header; }
-.licm-title  { @include modal.title; }
-.licm-subtitle { @include modal.subtitle; }
+.ecm-header { @include modal.header; }
+.ecm-title  { @include modal.title; }
+.ecm-subtitle { @include modal.subtitle; }
 
-.licm-body { @include modal.body; }
+.ecm-body { @include modal.body; }
 
-.licm-damage-warning {
-  display: block;
-  margin-bottom: var(--space-base);
-}
-
-.licm-diff-table {
+.ecm-diff-table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--paragraph-03-font-size);
@@ -73,34 +67,30 @@
   }
 }
 
-.licm-field-label {
+.ecm-field-label {
   font-weight: 600;
   color: var(--text-01);
   width: 140px;
 }
 
-.licm-original {
-  // No line-through: strikethrough is a visual-only signal that screen readers
-  // skip, and it hurts legibility for low-vision users. Semantics come from the
-  // "Original" column header + the arrow → "Updated". Keep it muted so the
-  // updated value still reads as primary, but fully legible.
+.ecm-original {
   color: var(--text-muted);
   max-width: 160px;
   word-break: break-word;
 }
 
-.licm-arrow {
+.ecm-arrow {
   color: var(--text-muted);
   width: 24px;
   text-align: center;
-  nx-icon { font-size: 12px; }
+  nx-icon { font-size: var(--paragraph-04-font-size); }
 }
 
-.licm-updated {
+.ecm-updated {
   color: var(--text-01);
   font-weight: 500;
   max-width: 160px;
   word-break: break-word;
 }
 
-.licm-footer { @include modal.footer; }
+.ecm-footer { @include modal.footer; }

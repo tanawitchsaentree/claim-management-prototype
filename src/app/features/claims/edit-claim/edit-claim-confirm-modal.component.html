@@ -1,0 +1,42 @@
+<button class="ecm-close" type="button" aria-label="Close" (click)="onCancel()">
+  <span class="ecm-close-x" aria-hidden="true"></span>
+</button>
+
+<header class="ecm-header">
+  <h2 class="ecm-title">Confirm claim changes</h2>
+  <p class="ecm-subtitle">The following fields will be updated for claim <strong>{{ data.claimId }}</strong>.</p>
+</header>
+
+<div class="ecm-body">
+  @if (data.diffs.length === 0) {
+    <app-empty-state message="No fields were changed."></app-empty-state>
+  } @else {
+    <table class="ecm-diff-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Original</th>
+          <th></th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (diff of data.diffs; track diff.label) {
+          <tr>
+            <td class="ecm-field-label">{{ diff.label }}</td>
+            <td class="ecm-original">{{ diff.original || '–' }}</td>
+            <td class="ecm-arrow"><nx-icon name="arrow-right"></nx-icon></td>
+            <td class="ecm-updated">{{ diff.updated || '–' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<footer class="ecm-footer">
+  <button nxButton="tertiary small" type="button" (click)="onCancel()">Back to editing</button>
+  <button nxButton="primary small" type="button" (click)="onConfirm()" [disabled]="data.diffs.length === 0">
+    Confirm changes
+  </button>
+</footer>

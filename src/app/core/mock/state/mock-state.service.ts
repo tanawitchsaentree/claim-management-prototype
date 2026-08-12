@@ -88,6 +88,23 @@ export class MockStateService {
     this.persist();
   }
 
+  /**
+   * Inserts an overview record for claimId only if one doesn't exist yet — idempotent.
+   * Needed for claims that aren't in claim-overview.json yet (e.g. a skeleton/orphan
+   * claim opened via Search before it's matched to a policy): patchOverview() above
+   * refuses to write to a nonexistent key, so without this, edits to such a claim
+   * silently no-op.
+   */
+  ensureOverview(claimId: string, overview: ClaimOverview): void {
+    const cur = this._state();
+    if (cur.overviews[claimId]) return;
+    this._state.set({
+      ...cur,
+      overviews: { ...cur.overviews, [claimId]: overview },
+    });
+    this.persist();
+  }
+
   patchSection(sectionId: string, partial: Partial<ClaimSection>): void {
     const cur = this._state();
     this._state.set({

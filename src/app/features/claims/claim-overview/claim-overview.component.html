@@ -12,10 +12,16 @@
       <div class="co-card-title-row">
         <h2 class="co-card-title">General information</h2>
         @if (claim.status !== 'Closed') {
-          <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
-            <nx-icon name="edit" class="co-edit-icon"></nx-icon>
-            Edit loss information
-          </a>
+          <div class="co-card-title-actions">
+            <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'edit']">
+              <nx-icon name="edit" class="co-edit-icon"></nx-icon>
+              Edit claim
+            </a>
+            <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
+              <nx-icon name="edit" class="co-edit-icon"></nx-icon>
+              Edit loss information
+            </a>
+          </div>
         }
       </div>
 
@@ -65,7 +71,14 @@
                 <nx-icon name="info-circle-o" class="co-info-icon"></nx-icon>
               </button>
             </span>
-            <span class="co-value">{{ me.id }}</span>
+            <span class="co-value co-value--with-chip">
+              {{ me.id }}
+              @if (claim.massEventLinkStatus) {
+                <app-status-chip [status]="claim.massEventLinkStatus" domain="mass-event"
+                  [label]="claim.massEventLinkStatus === 'overridden' ? 'Overridden' : (claim.massEventLinkStatus === 'confirmed' ? 'Confirmed' : 'Pending')">
+                </app-status-chip>
+              }
+            </span>
           </div>
 
           <nx-popover #massEventPopover>
@@ -97,6 +110,18 @@
               @if (claim.massEventLinkStatus === 'pending') {
                 <span class="me-popover__pending-badge">Pending confirmation</span>
               }
+              @if (claim.massEventLinkStatus === 'overridden') {
+                <div class="me-popover__overridden-notice">
+                  <nx-icon name="exclamation-triangle-o"></nx-icon>
+                  <div>
+                    <p class="me-popover__overridden-title">Auto-checks disabled</p>
+                    <p class="me-popover__overridden-desc">
+                      Overridden by {{ claim.massEventOverriddenBy?.name ?? 'a claim handler' }}@if (claim.massEventOverriddenBy?.at) { on {{ claim.massEventOverriddenBy!.at | appDate }} }.
+                      The system will not run further automatic checks linking this claim to this mass event.
+                    </p>
+                  </div>
+                </div>
+              }
               <div class="me-popover__footer">
                 <nx-link><a (click)="meTrigger.close(); openMassEventDetail()">View full details →</a></nx-link>
                 @if (auth.isKcm()) {
@@ -105,6 +130,10 @@
                   }
                   <nx-link><a (click)="meTrigger.close(); onChangeMassEvent(claim)">Change mass event</a></nx-link>
                   <nx-link class="me-popover__unlink"><a (click)="meTrigger.close(); onUnlinkMassEvent(claim)">Unlink</a></nx-link>
+                } @else if (claim.massEventLinkStatus !== 'overridden') {
+                  <nx-link class="me-popover__unlink">
+                    <a (click)="meTrigger.close(); onOverrideMassEvent(claim)">Override — not associated with this claim</a>
+                  </nx-link>
                 }
               </div>
             </div>

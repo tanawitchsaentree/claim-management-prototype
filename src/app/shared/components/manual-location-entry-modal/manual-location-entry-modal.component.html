@@ -6,48 +6,83 @@
     </button>
   </div>
   <p class="mle-subtitle">
-    Enter the address details for this loss location.
+    Enter the address details for this loss location, or provide coordinates directly.
   </p>
 </div>
 
 <div class="mle-body">
   <div [formGroup]="form" class="mle-form">
-    <div class="mle-grid">
-      <nx-formfield label="Address line 1 *" class="mle-full">
-        <input nxInput formControlName="addressLine1" />
-        @if (form.get('addressLine1')?.errors?.['required'] && submitted) {
-          <nx-error nxFormfieldError>Required.</nx-error>
-        }
-      </nx-formfield>
-      <nx-formfield label="Address line 2 (optional)" class="mle-full">
-        <input nxInput formControlName="addressLine2" />
-      </nx-formfield>
-      <nx-formfield label="Postal code *">
-        <input nxInput formControlName="postalCode" />
-        @if (form.get('postalCode')?.errors?.['required'] && submitted) {
-          <nx-error nxFormfieldError>Required.</nx-error>
-        }
-      </nx-formfield>
-      <nx-formfield label="City *">
-        <input nxInput formControlName="city" />
-        @if (form.get('city')?.errors?.['required'] && submitted) {
-          <nx-error nxFormfieldError>Required.</nx-error>
-        }
-      </nx-formfield>
-      <nx-formfield label="Country *">
-        <nx-dropdown formControlName="country" placeholder="Select country">
-          @for (c of (countries$ | async) ?? []; track c.value) {
-            <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
-          }
-        </nx-dropdown>
-        @if (form.get('country')?.errors?.['required'] && submitted) {
-          <nx-error nxFormfieldError>Required.</nx-error>
-        }
-      </nx-formfield>
-      <nx-formfield label="Province / State (optional)">
-        <input nxInput formControlName="state" />
-      </nx-formfield>
+    <div class="mle-radio-field">
+      <p class="mle-radio-label">Entry method</p>
+      <nx-radio-group formControlName="mode" class="mle-radio-row">
+        <nx-radio value="address" labelSize="small">Address</nx-radio>
+        <nx-radio value="coordinates" labelSize="small">Coordinates</nx-radio>
+      </nx-radio-group>
     </div>
+
+    @if (isCoordinatesMode) {
+      <div class="mle-grid">
+        <nx-formfield label="Latitude *">
+          <input nxInput type="number" formControlName="latitude" />
+          @if (form.get('latitude')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Longitude *">
+          <input nxInput type="number" formControlName="longitude" />
+          @if (form.get('longitude')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Country *">
+          <nx-dropdown formControlName="country" placeholder="Select country">
+            @for (c of (countries$ | async) ?? []; track c.value) {
+              <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          @if (form.get('country')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+      </div>
+    } @else {
+      <div class="mle-grid">
+        <nx-formfield label="Address line 1 *" class="mle-full">
+          <input nxInput formControlName="addressLine1" />
+          @if (form.get('addressLine1')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Address line 2 (optional)" class="mle-full">
+          <input nxInput formControlName="addressLine2" />
+        </nx-formfield>
+        <nx-formfield label="Postal code *">
+          <input nxInput formControlName="postalCode" />
+          @if (form.get('postalCode')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="City *">
+          <input nxInput formControlName="city" />
+          @if (form.get('city')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Country *">
+          <nx-dropdown formControlName="country" placeholder="Select country">
+            @for (c of (countries$ | async) ?? []; track c.value) {
+              <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          @if (form.get('country')?.errors?.['required'] && submitted) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Province / State (optional)">
+          <input nxInput formControlName="state" />
+        </nx-formfield>
+      </div>
+    }
 
     <details class="mle-optional">
       <summary class="mle-optional-toggle">Optional details</summary>
@@ -56,12 +91,14 @@
           <input nxInput formControlName="propertyId" />
         </nx-formfield>
         <div></div>
-        <nx-formfield label="Latitude (if known)">
-          <input nxInput type="number" formControlName="latitude" />
-        </nx-formfield>
-        <nx-formfield label="Longitude (if known)">
-          <input nxInput type="number" formControlName="longitude" />
-        </nx-formfield>
+        @if (!isCoordinatesMode) {
+          <nx-formfield label="Latitude (if known)">
+            <input nxInput type="number" formControlName="latitude" />
+          </nx-formfield>
+          <nx-formfield label="Longitude (if known)">
+            <input nxInput type="number" formControlName="longitude" />
+          </nx-formfield>
+        }
         <nx-formfield label="Additional location information (optional)" class="mle-full">
           <textarea nxInput formControlName="additionalInfo" rows="3" [maxlength]="300"></textarea>
           <nx-hint nxFormfieldHint>{{ descLength }}/300</nx-hint>

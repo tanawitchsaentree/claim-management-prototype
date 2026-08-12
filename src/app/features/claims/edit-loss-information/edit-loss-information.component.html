@@ -15,19 +15,12 @@
     <h2 class="eli-section-heading">General information</h2>
     <p class="eli-section-desc">Your selections here determine which cause-specific fields appear below.</p>
 
-    <div class="two-col-grid">
-      <nx-formfield label="Cause of loss">
-        <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
-          placeholder="Select cause of loss" formControlName="causeOfLoss"
-          (selectionChange)="onCauseOfLossChange($event)">
-        </nx-multi-select>
-      </nx-formfield>
-      <nx-formfield label="Type of damage">
-        <nx-multi-select [options]="typeOfDamageOptions()" selectValue="value" selectLabel="label"
-          placeholder="Select type of damage" formControlName="typeOfDamage">
-        </nx-multi-select>
-      </nx-formfield>
-    </div>
+    <nx-formfield label="Cause of loss" class="eli-full-width">
+      <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
+        placeholder="Select cause of loss" formControlName="causeOfLoss"
+        (selectionChange)="onCauseOfLossChange($event)">
+      </nx-multi-select>
+    </nx-formfield>
 
     <hr class="eli-divider" />
     <h3 class="eli-sub-heading">When did the loss occur?</h3>

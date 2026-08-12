@@ -11,6 +11,10 @@
 
 .mle-form { display: flex; flex-direction: column; gap: 16px; }
 
+.mle-radio-field { display: flex; flex-direction: column; gap: 6px; }
+.mle-radio-label { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); margin: 0; }
+.mle-radio-row   { display: flex; gap: 16px; }
+
 .mle-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

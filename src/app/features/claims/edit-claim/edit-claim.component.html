@@ -1,0 +1,76 @@
+@if (loading()) {
+  <div class="ec-loading">
+    <nx-spinner size="medium"></nx-spinner>
+    <span>Loading claim…</span>
+  </div>
+} @else {
+
+<div class="ec-page" [formGroup]="form">
+
+  <app-page-header title="Edit claim" [eyebrow]="claimId()"></app-page-header>
+
+  <section class="ec-card">
+    <h2 class="ec-section-heading">General information</h2>
+    <p class="ec-section-desc">Loss information, financials, litigation, risk, sections, recovery potential, mass event, and closure each have their own dedicated screen — this page covers general claim details only.</p>
+
+    <div class="two-col-grid">
+      <nx-formfield label="Client">
+        <input nxInput formControlName="client" />
+        <nx-error nxFormfieldError *ngIf="form.get('client')?.touched && form.get('client')?.errors?.['required']">Client is required</nx-error>
+      </nx-formfield>
+      <nx-formfield label="Client contact">
+        <input nxInput formControlName="clientContact" />
+      </nx-formfield>
+      <nx-formfield label="Broker">
+        <input nxInput formControlName="broker" />
+      </nx-formfield>
+      <nx-formfield label="Assigned Claim handler">
+        <input nxInput formControlName="assignedHandler" />
+        <nx-error nxFormfieldError *ngIf="form.get('assignedHandler')?.touched && form.get('assignedHandler')?.errors?.['required']">Assigned Claim handler is required</nx-error>
+      </nx-formfield>
+      <nx-formfield label="Priority">
+        <nx-dropdown formControlName="priority" placeholder="Select priority">
+          @for (opt of priorityOptions(); track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-error nxFormfieldError *ngIf="form.get('priority')?.touched && form.get('priority')?.errors?.['required']">Priority is required</nx-error>
+      </nx-formfield>
+      <nx-formfield label="Line of business">
+        <nx-dropdown formControlName="lineOfBusiness" placeholder="Select line of business">
+          @for (opt of lineOfBusinessOptions(); track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-error nxFormfieldError *ngIf="form.get('lineOfBusiness')?.touched && form.get('lineOfBusiness')?.errors?.['required']">Line of business is required</nx-error>
+      </nx-formfield>
+    </div>
+
+    <hr class="ec-divider" />
+
+    <nx-formfield label="Claim description" class="ec-full-width">
+      <textarea nxInput formControlName="description" rows="3" [maxlength]="maxDesc"></textarea>
+      <nx-hint nxFormfieldHint>{{ (form.get('description')?.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
+      <nx-error nxFormfieldError *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['required']">Claim description is required</nx-error>
+    </nx-formfield>
+  </section>
+
+  @if (saveSuccess()) {
+    <nx-message context="success" class="ec-save-success">
+      Claim updated successfully.
+    </nx-message>
+  }
+
+  <div class="ec-step-footer">
+    <button nxButton="tertiary small" type="button" (click)="onDiscard()">Discard</button>
+    <button nxButton="primary small" type="button"
+            [disabled]="!isDirty() || saving()"
+            (click)="onSaveChanges()">
+      @if (saving()) { <nx-spinner size="small"></nx-spinner>&nbsp; }
+      Save changes
+    </button>
+  </div>
+
+</div>
+
+}

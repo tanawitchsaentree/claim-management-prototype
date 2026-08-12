@@ -35,6 +35,7 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
 import { MassEvent } from '../../../core/models/mass-event.model';
+import { MassEventLinkStatus } from '../../../core/models/claim.model';
 import { Task } from '../../../core/models/task.model';
 import {
   ClaimClosureModalComponent,
@@ -44,6 +45,11 @@ import {
   ClaimReopenModalComponent,
   ClaimReopenModalResult,
 } from './components/claim-reopen-modal/claim-reopen-modal.component';
+import {
+  RecoveryPotentialModalComponent,
+  RecoveryPotentialModalData,
+  RecoveryPotentialModalResult,
+} from './components/recovery-potential-modal/recovery-potential-modal.component';
 import {
   MassEventEditModalComponent,
   MassEventModalData,
@@ -299,27 +305,34 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
 
   async openRecoveryPotentialModal(claim: ClaimOverview): Promise<void> {
     const current = claim.recoveryPotential ?? null;
-    const next: 'yes' | 'no' = current === 'yes' ? 'no' : 'yes';
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-      data: {
-        title: next === 'yes' ? 'Set recovery potential' : 'Update recovery potential',
-        message: next === 'yes'
-          ? 'Mark this claim as having recovery potential? A task will be created for recovery analysis.'
-          : 'Change recovery potential to No? Please add a note to explain why recovery is no longer expected.',
-        confirmLabel: next === 'yes' ? 'Set to Yes' : 'Set to No',
-      } satisfies ConfirmDialogData,
+    const ref = this.dialogSvc.open(RecoveryPotentialModalComponent, {
+      data: { current } satisfies RecoveryPotentialModalData,
       width: '400px',
       maxWidth: '92vw',
     });
-    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
-    if (!confirmed) return;
+    const result = await firstValueFrom(ref.afterClosed()) as RecoveryPotentialModalResult | null | undefined;
+    if (!result || result.value === current) return;
     const cur = this.vm$.value;
     if (!cur.claim) return;
-    this.vm$.next({ ...cur, claim: { ...cur.claim, recoveryPotential: next } });
-    if (next === 'yes') {
+    const activity: ClaimActivity = {
+      id: `act-${Date.now()}`,
+      claimId: claim.claimId,
+      user: claim.assignedHandler,
+      timestamp: new Date().toISOString(),
+      objectType: 'Claim',
+      attribute: 'Recovery potential',
+      valueOld: current,
+      valueNew: result.value,
+    };
+    this.vm$.next({
+      ...cur,
+      claim: { ...cur.claim, recoveryPotential: result.value },
+      activities: [activity, ...cur.activities],
+    });
+    if (result.value === 'yes') {
       this.toast.success('Recovery potential set to Yes', 'A task has been created for recovery analysis.');
     } else {
-      this.toast.success('Recovery potential updated to No');
+      this.toast.success('Recovery potential set to No');
     }
   }
 
@@ -494,10 +507,40 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.toast.success('Mass event unlinked', massEventId);
   }
 
+  /**
+   * Claim handler override (BMPCC-10510) — available to any handler, not just
+   * KCM. Unlike Unlink, the mass event tag stays on the claim so there's a
+   * visible record of what was auto-allocated and rejected; only the link
+   * status changes, which the UI reads to show "auto-checks disabled" and
+   * to stop offering Confirm/Change actions for this link.
+   */
+  async onOverrideMassEvent(claim: ClaimOverview): Promise<void> {
+    const massEventId = claim.massEventId;
+    if (!massEventId) return;
+
+    const confirmed = await firstValueFrom(
+      this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+        data: {
+          title: 'Override mass event allocation?',
+          message: `This marks ${massEventId} as not associated with this claim. The system will stop running automatic checks against this mass event for this claim. This can be undone by a KCM via "Change mass event."`,
+          confirmLabel: 'Override',
+          confirmDanger: true,
+        },
+        width: '440px',
+      }).afterClosed(),
+    );
+    if (!confirmed) return;
+
+    const user = this.auth.user();
+    await firstValueFrom(this.massEventSvc.overrideLink(claim.claimId, { userId: user.id, name: user.name }));
+    await this.refreshMassEvent(claim.claimId, massEventId, 'overridden');
+    this.toast.success('Mass event allocation overridden', 'Auto-checks are now disabled for this claim.');
+  }
+
   private async refreshMassEvent(
     claimId: string,
     massEventId: string | undefined,
-    linkStatus: 'pending' | 'confirmed' | undefined,
+    linkStatus: MassEventLinkStatus | undefined,
   ): Promise<void> {
     const massEvent = massEventId ? await firstValueFrom(this.massEventSvc.getById(massEventId)) : null;
     const cur = this.vm$.value;

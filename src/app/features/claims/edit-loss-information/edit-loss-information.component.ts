@@ -212,7 +212,6 @@ export class EditLossInformationComponent implements OnInit {
 
     // General
     addIf('Cause of loss',   (orig.causeOfLoss ?? []).join(', '),  (cur.causeOfLoss ?? []).join(', '));
-    addIf('Type of damage',  (orig.typeOfDamage ?? []).join(', '), (cur.typeOfDamage ?? []).join(', '));
     addIf('Loss description', orig.lossDescription, cur.lossDescription);
 
     // Loss location (compare by displayName of first location as proxy)
@@ -285,15 +284,53 @@ export class EditLossInformationComponent implements OnInit {
         this.overviewSvc.appendActivities?.(this.claimId(), activities);
       }
 
+      // Claim Overview shows its own dateOfLoss/proximateLossCause fields —
+      // separate from the LossInformation record this form edits. Without
+      // this, the overview page (and any downstream copy of the claim, e.g.
+      // its financial and reference-panel summaries) keeps showing the
+      // original date/cause after an investigation reveals the real ones.
+      await this.syncOverviewFromLossInfo(formValue, diffs);
+
       this.form.markAsPristine();
       this.saveSuccess.set(true);
-      this.toast.success('Loss information updated', `${activities.length} field(s) changed on ${this.claimId()}`);
-      this.router.navigate(['/claims', this.claimId(), 'overview']);
+
+      // Damage types feed Sections (per entity), but nothing in this app maps a
+      // damage-type string back to the section entities that were built from it —
+      // so we cannot safely auto-update/delete sections. Send the user to Sections
+      // to review manually instead of guessing.
+      const damageChanged = diffs.some(d => d.label.endsWith(' damages'));
+      if (damageChanged) {
+        this.toast.warning(
+          'Damage types changed',
+          'Existing sections may no longer match — review them on the Sections page.',
+        );
+        this.router.navigate(['/claims', this.claimId(), 'sections']);
+      } else {
+        this.toast.success('Loss information updated', `${activities.length} field(s) changed on ${this.claimId()}`);
+        this.router.navigate(['/claims', this.claimId(), 'overview']);
+      }
     } catch {
       this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
       // Form stays dirty — user remains on edit screen to retry.
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
+    const patch: { dateOfLoss?: string; proximateLossCause?: string } = {};
+
+    if (diffs.some(d => d.label === 'Date of occurrence') && formValue.dateOfLoss?.dateOfOccurrence) {
+      patch.dateOfLoss = formValue.dateOfLoss.dateOfOccurrence;
+    }
+    if (diffs.some(d => d.label === 'Cause of loss')) {
+      const firstCauseKey = formValue.causeOfLoss?.[0];
+      const label = this.causeOfLossOptions().find(o => o.value === firstCauseKey)?.label;
+      patch.proximateLossCause = label ?? firstCauseKey ?? '–';
+    }
+
+    if (Object.keys(patch).length) {
+      await firstValueFrom(this.overviewSvc.updateGeneralInfo(this.claimId(), patch));
     }
   }
 
@@ -328,6 +365,7 @@ export class EditLossInformationComponent implements OnInit {
     const ctrl = eventGroup.get('causedBy');
     if (!ctrl) return;
     const cur = (ctrl.value as string[]) ?? [];
+    ctrl.markAsDirty();
     ctrl.setValue(cur.includes(value) ? cur.filter(x => x !== value) : [...cur, value]);
   }
 
@@ -340,8 +378,8 @@ export class EditLossInformationComponent implements OnInit {
     const ctrl = eventGroup.get('damages');
     if (!ctrl) return;
     const cur = (ctrl.value as string[]) ?? [];
-    ctrl.setValue(cur.includes(value) ? cur.filter(x => x !== value) : [...cur, value]);
     ctrl.markAsDirty();
+    ctrl.setValue(cur.includes(value) ? cur.filter(x => x !== value) : [...cur, value]);
   }
 
   getEventGroup(i: number): FormGroup { return this.eventsArray.at(i) as FormGroup; }

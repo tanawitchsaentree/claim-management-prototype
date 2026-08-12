@@ -71,6 +71,12 @@
   .co-card-title { margin-bottom: 0; }
 }
 
+.co-card-title-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
 // ─── Grid ─────────────────────────────────────────────────────────────────────
 
 .co-grid {
@@ -111,6 +117,12 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
+  }
+
+  &--with-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
   }
 }
 
@@ -252,6 +264,37 @@
   border-radius: 10px;
   background: var(--task-status-pending-bg);
   color: var(--task-status-pending-color);
+}
+
+.me-popover__overridden-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding: var(--space-sm);
+  border-radius: 4px;
+  background: var(--task-status-not-assigned-bg);
+
+  nx-icon {
+    color: var(--text-muted);
+    font-size: var(--paragraph-01-font-size);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+}
+
+.me-popover__overridden-title {
+  margin: 0 0 2px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+}
+
+.me-popover__overridden-desc {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .me-popover__footer {

@@ -1,0 +1,27 @@
+<div class="rpm-header">
+  <h2 class="rpm-title">Recovery potential</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="rpm-body">
+  <nx-radio-group formControlName="value" class="rpm-radio-group">
+    <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+    <nx-radio value="no" labelSize="small">No</nx-radio>
+  </nx-radio-group>
+
+  @if (isNo) {
+    <nx-formfield nxLabel="Note">
+      <textarea nxInput formControlName="note" rows="3" placeholder="Explain why recovery is not expected"></textarea>
+      <nx-error nxFormfieldError>A note is required when setting recovery potential to No.</nx-error>
+    </nx-formfield>
+  } @else {
+    <p class="rpm-hint">A task will be created for recovery analysis.</p>
+  }
+</form>
+
+<div class="rpm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="onSubmit()">Save</button>
+</div>

@@ -8,6 +8,11 @@
 </header>
 
 <div class="licm-body">
+  @if (damageChanged()) {
+    <nx-message context="warning" class="licm-damage-warning">
+      Damage type changes are not applied to existing Sections automatically. After saving, review the Sections page and update or add sections to match.
+    </nx-message>
+  }
   @if (data.diffs.length === 0) {
     <app-empty-state message="No fields were changed."></app-empty-state>
   } @else {

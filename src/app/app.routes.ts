@@ -74,6 +74,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'claims/:id/edit',
+        loadComponent: () =>
+          import('./features/claims/edit-claim/edit-claim.component').then(
+            (m) => m.EditClaimComponent
+          ),
+      },
+      {
         path: 'claims/:id/sections',
         loadComponent: () =>
           import('./features/sections/sections').then((m) => m.Sections),

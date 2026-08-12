@@ -34,9 +34,15 @@
           <tbody>
             @for (item of locations; track item.id) {
               <tr nxTableRow>
-                <td nxCell>{{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}}</td>
-                <td nxCell>{{ item.postalCode }}</td>
-                <td nxCell>{{ item.city }}</td>
+                @if (item.source === 'coordinates') {
+                  <td nxCell>{{ item.latitude }}, {{ item.longitude }}</td>
+                  <td nxCell>–</td>
+                  <td nxCell>–</td>
+                } @else {
+                  <td nxCell>{{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}}</td>
+                  <td nxCell>{{ item.postalCode }}</td>
+                  <td nxCell>{{ item.city }}</td>
+                }
                 <td nxCell>{{ item.state ?? '–' }}</td>
                 <td nxCell>{{ item.country }}</td>
                 <td nxCell class="lp-col--action">

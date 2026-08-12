@@ -81,6 +81,7 @@ export interface ClaimOverview {
   massEventId?: string;
   massEventLinkStatus?: MassEventLinkStatus;
   massEventLinkedBy?: { userId: string; name: string; at: string };
+  massEventOverriddenBy?: { userId: string; name: string; at: string };
 
   // File restriction (BMPCC-10994) — informational only, no enforcement
   restriction?: FileRestriction;

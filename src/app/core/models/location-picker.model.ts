@@ -15,7 +15,7 @@ export interface PolicyLocation {
 
 export interface LocationItem {
   id: string;
-  source: 'policy' | 'manual' | 'cwb';
+  source: 'policy' | 'manual' | 'coordinates' | 'cwb';
   displayName: string;
   addressLine1: string;
   addressLine2?: string;
