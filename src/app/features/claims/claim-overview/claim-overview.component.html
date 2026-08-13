@@ -13,13 +13,9 @@
         <h2 class="co-card-title">General information</h2>
         @if (claim.status !== 'Closed') {
           <div class="co-card-title-actions">
-            <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'edit']">
-              <nx-icon name="edit" class="co-edit-icon"></nx-icon>
-              Edit claim
-            </a>
             <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
               <nx-icon name="edit" class="co-edit-icon"></nx-icon>
-              Edit loss information
+              Edit claim details
             </a>
           </div>
         }
