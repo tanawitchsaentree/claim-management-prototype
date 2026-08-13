@@ -37,6 +37,12 @@ import {
 } from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 
+// Claim description lives on ClaimOverview, not on LossInformation — it is
+// edited here (this is the only edit screen) but saved through a different
+// service and logged against a different objectType. The label is the key
+// that routes it, so it is a const rather than a repeated literal.
+const CLAIM_DESC_LABEL = 'Claim description';
+
 @Component({
   selector: 'app-edit-loss-information',
   standalone: true,
@@ -69,11 +75,16 @@ export class EditLossInformationComponent implements OnInit {
   readonly saveSuccess  = signal(false);
   readonly original     = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
+  readonly originalClaimDescription = signal<string>('');
   readonly maxDesc   = 500;
   submitAttempted    = false;
 
   // ── Own FormGroup — isolated from FNOL wizard ────────────────────────
   readonly form = new FormGroup({
+    // Claim-level, not loss-level. Deliberately not required: an existing
+    // claim can arrive with an empty description (skeleton claims synthesize
+    // it from lossDescription), and that must not block a loss-info save.
+    claimDescription: new FormControl('', [Validators.maxLength(500)]),
     dateOfLoss: new FormGroup({
       dateOfOccurrence:   new FormControl<string | null>(null, [Validators.required, FnolStateService.futureDateValidator]),
       timeOfOccurrence:   new FormControl<string | null>(null, [Validators.required]),
@@ -107,6 +118,7 @@ export class EditLossInformationComponent implements OnInit {
   get causeDetails() { return this.form.get('causeDetails') as FormGroup; }
   get fireDetails()  { return this.causeDetails.get('fire') as FormGroup; }
   get eventsArray()  { return this.form.get('events') as FormArray; }
+  get claimDescription() { return this.form.get('claimDescription') as FormControl<string | null>; }
   get lossLocation() { return this.form.get('lossLocation') as FormControl<LocationPickerOutput>; }
 
   // ── Lookups ──────────────────────────────────────────────────────────
@@ -145,6 +157,10 @@ export class EditLossInformationComponent implements OnInit {
 
     firstValueFrom(this.overviewSvc.getOverview(id)).then(claim => {
       this.policyNumber.set(claim?.policyNumber ?? null);
+      const desc = claim?.description ?? '';
+      this.originalClaimDescription.set(desc);
+      this.claimDescription.setValue(desc);
+      this.claimDescription.markAsPristine();
     });
   }
 
@@ -194,9 +210,6 @@ export class EditLossInformationComponent implements OnInit {
 
   // ── Diff computation ─────────────────────────────────────────────────
   private computeDiffs(): LossInfoDiffField[] {
-    const orig = this.original();
-    if (!orig) return [];
-    const cur = this.form.getRawValue() as unknown as LossInformationFormValue;
     const diffs: LossInfoDiffField[] = [];
 
     const addIf = (label: string, o: unknown, n: unknown) => {
@@ -204,6 +217,15 @@ export class EditLossInformationComponent implements OnInit {
       const ns = n == null ? '' : String(n);
       if (os !== ns) diffs.push({ label, original: os, updated: ns });
     };
+
+    // Claim-level field, diffed against the ClaimOverview value it came from.
+    // Computed before the LossInformation guard below — a claim can have no
+    // loss-information record yet, and a description edit must still register.
+    addIf(CLAIM_DESC_LABEL, this.originalClaimDescription(), this.claimDescription.value);
+
+    const orig = this.original();
+    if (!orig) return diffs;
+    const cur = this.form.getRawValue() as unknown as LossInformationFormValue;
 
     // Dates & times
     addIf('Date of occurrence',    orig.dateOfLoss?.dateOfOccurrence,   cur.dateOfLoss?.dateOfOccurrence);
@@ -265,7 +287,10 @@ export class EditLossInformationComponent implements OnInit {
 
     this.saveSuccess.set(false);
     this.saving.set(true);
-    const formValue = this.form.getRawValue() as unknown as LossInformationFormValue;
+    // claimDescription belongs to ClaimOverview — keep it out of the payload
+    // or MockLossInformationService.save spreads it onto the stored record.
+    const { claimDescription: _claimDesc, ...lossInfoRaw } = this.form.getRawValue();
+    const formValue = lossInfoRaw as unknown as LossInformationFormValue;
     try {
       await firstValueFrom(this.lossInfoSvc.save(formValue, this.claimId()));
 
@@ -275,7 +300,7 @@ export class EditLossInformationComponent implements OnInit {
         claimId:    this.claimId(),
         user:       'Current User',
         timestamp:  new Date().toISOString(),
-        objectType: 'Loss Information',
+        objectType: d.label === CLAIM_DESC_LABEL ? 'Claim' : 'Loss Information',
         attribute:  d.label,
         valueOld:   d.original || null,
         valueNew:   d.updated  || null,
@@ -319,7 +344,7 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
-    const patch: { dateOfLoss?: string; proximateLossCause?: string } = {};
+    const patch: { dateOfLoss?: string; proximateLossCause?: string; description?: string } = {};
 
     if (diffs.some(d => d.label === 'Date of occurrence') && formValue.dateOfLoss?.dateOfOccurrence) {
       patch.dateOfLoss = formValue.dateOfLoss.dateOfOccurrence;
@@ -328,6 +353,11 @@ export class EditLossInformationComponent implements OnInit {
       const firstCauseKey = formValue.causeOfLoss?.[0];
       const label = this.causeOfLossOptions().find(o => o.value === firstCauseKey)?.label;
       patch.proximateLossCause = label ?? firstCauseKey ?? '–';
+    }
+    // Claim description has no loss-information home — the overview record is
+    // where it lives, and the overview page reads it straight back.
+    if (diffs.some(d => d.label === CLAIM_DESC_LABEL)) {
+      patch.description = this.claimDescription.value ?? '';
     }
 
     if (Object.keys(patch).length) {
