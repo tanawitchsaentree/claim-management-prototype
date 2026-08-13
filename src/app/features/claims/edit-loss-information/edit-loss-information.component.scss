@@ -79,9 +79,6 @@
 .eli-radio-label { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); margin: 0; }
 .eli-radio-row   { display: flex; gap: 16px; }
 
-// ─── Cause-details expansion panel (inside General information card) ────
-.eli-cause-details-grid { padding-top: 8px; }
-
 // Compact regular accordion — tighter header padding
 .eli-card {
   --accordion-regular-header-padding: var(--space-sm) var(--space-base);

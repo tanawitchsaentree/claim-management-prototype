@@ -19,7 +19,6 @@ export class MockLookupService extends MockBaseService {
   getTaskTypes(): Observable<LookupOption[]>           { return this.respond(this.lookups.taskTypes); }
   getCauseOfLoss(): Observable<LookupOption[]>         { return this.respond(this.lookups.causeOfLoss); }
   getTypeOfDamage(): Observable<LookupOption[]>        { return this.respond(this.lookups.typeOfDamage); }
-  getWaterSources(): Observable<LookupOption[]>        { return this.respond(this.lookups.waterSources); }
   getLocationTypes(): Observable<LocationTypeOption[]> { return this.respond(this.lookups.locationTypes); }
   getEventCausedBy(): Observable<Record<string, LookupOption[]>> { return this.respond(this.lookups.eventCausedBy); }
   getPartyRoles(): Observable<LookupOption[]>        { return this.respond(this.lookups.partyRoles); }

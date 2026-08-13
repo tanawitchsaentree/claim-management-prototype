@@ -47,7 +47,6 @@ export class MockLossInformationService extends MockBaseService {
       ...data,
       id,
       claimId: claimId ?? null,
-      causeDetails: data.causeDetails ?? {},
       createdAt: now,
       updatedAt: now,
     };

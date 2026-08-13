@@ -40,7 +40,6 @@ interface FormError {
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
   typeOfDamage: LookupOption[];
-  waterSources: LookupOption[];
   duplicates: DuplicateClaim[];
   showDuplicateBanner: boolean;
 }
@@ -92,7 +91,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   readonly form            = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
   readonly dateOfLoss      = this.fnolState.getDateOfLossGroup();
   readonly lossLocation    = this.fnolState.getLossLocationControl();
-  readonly causeDetails    = this.fnolState.getCauseDetailsGroup();
   readonly eventsArray     = this.fnolState.getLossEventsArray();
   readonly policyNumber    = this.fnolState.selectedPolicy?.policyNumber ?? null;
 
@@ -157,7 +155,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     this.vm$ = combineLatest({
       causeOfLoss:  this.lookupSvc.getCauseOfLoss(),
       typeOfDamage: this.lookupSvc.getTypeOfDamage(),
-      waterSources: this.lookupSvc.getWaterSources(),
       duplicates:         duplicates$,
       showDuplicateBanner: combineLatest([duplicates$, this.bannerDismissed$]).pipe(
         map(([dups, dismissed]) => dups.length > 0 && !dismissed)
@@ -340,13 +337,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     return (this.form.get('typeOfDamage')?.value as string[]) ?? [];
   }
 
-  get showFireSection(): boolean  { return this.selectedCauses.includes('fire'); }
-  get showWaterSection(): boolean { return this.selectedCauses.includes('water-damage'); }
-  get showTheftSection(): boolean { return this.selectedCauses.includes('theft'); }
-  get showCauseSection(): boolean {
-    return this.showFireSection || this.showWaterSection || this.showTheftSection;
-  }
-
   get descLength(): number {
     return (this.form.get('lossDescription')?.value as string)?.length ?? 0;
   }
@@ -454,16 +444,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     const list = [...((ctrl.value as string[]) ?? [])];
     checked ? (list.includes(val) ? null : list.push(val)) : list.splice(list.indexOf(val), 1);
     ctrl.setValue(list);
-  }
-
-  // ── Fire details helpers ─────────────────────────────────────────────
-
-  get fireDeptCalled(): boolean | null {
-    return this.causeDetails.get('fire.fireDepartmentCalled')?.value as boolean | null;
-  }
-
-  setFireDeptCalled(val: boolean): void {
-    this.causeDetails.get('fire.fireDepartmentCalled')?.setValue(val);
   }
 
   // ── Navigation ───────────────────────────────────────────────────────

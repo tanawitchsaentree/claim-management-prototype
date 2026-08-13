@@ -57,22 +57,6 @@ export class FnolStateService {
       causeOfLoss:     new FormControl<string[]>([], []),
       typeOfDamage:    new FormControl<string[]>([], []),
       lossDescription: new FormControl('', [Validators.maxLength(500)]),
-      causeDetails: new FormGroup({
-        fire: new FormGroup({
-          fireOrigin:                new FormControl(''),
-          fireDepartmentCalled:      new FormControl<boolean | null>(null),
-          fireDepartmentReportNumber: new FormControl(''),
-        }),
-        waterDamage: new FormGroup({
-          waterSource:    new FormControl<string | null>(null),
-          affectedAreaSqm: new FormControl<number | null>(null),
-        }),
-        theft: new FormGroup({
-          policeReportNumber:    new FormControl(''),
-          estimatedValueStolen:  new FormControl<number | null>(null),
-          dateReportedToPolice:  new FormControl<string | null>(null),
-        }),
-      }),
       events: new FormArray([]),
     }),
   });
@@ -146,10 +130,6 @@ export class FnolStateService {
 
   getLossLocationControl(): FormControl<LocationPickerOutput> {
     return this.fnolForm.get('lossInformation.lossLocation') as FormControl<LocationPickerOutput>;
-  }
-
-  getCauseDetailsGroup(): FormGroup {
-    return this.fnolForm.get('lossInformation.causeDetails') as FormGroup;
   }
 
   getLossEventsArray(): FormArray {
@@ -281,10 +261,6 @@ export class FnolStateService {
     this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(li.causeOfLoss ?? []);
     this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(li.typeOfDamage ?? []);
     this.fnolForm.get('lossInformation.lossDescription')?.setValue(li.lossDescription ?? '');
-
-    if (li.causeDetails) {
-      this.getCauseDetailsGroup().patchValue(li.causeDetails as object);
-    }
 
     // Rebuild events FormArray
     const eventsArray = this.getLossEventsArray();

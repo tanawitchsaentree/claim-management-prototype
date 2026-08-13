@@ -95,27 +95,10 @@ export class EditLossInformationComponent implements OnInit {
     causeOfLoss:     new FormControl<string[]>([], []),
     typeOfDamage:    new FormControl<string[]>([], []),
     lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
-    causeDetails: new FormGroup({
-      fire: new FormGroup({
-        fireOrigin:                  new FormControl(''),
-        fireDepartmentCalled:        new FormControl<boolean | null>(null),
-        fireDepartmentReportNumber:  new FormControl(''),
-      }),
-      waterDamage: new FormGroup({
-        waterSource:     new FormControl<string | null>(null),
-        affectedAreaSqm: new FormControl<number | null>(null),
-      }),
-      theft: new FormGroup({
-        policeReportNumber:   new FormControl(''),
-        estimatedValueStolen: new FormControl<number | null>(null),
-        dateReportedToPolice: new FormControl<string | null>(null),
-      }),
-    }),
     events: new FormArray([]),
   });
 
   get dateOfLoss()   { return this.form.get('dateOfLoss') as FormGroup; }
-  get causeDetails() { return this.form.get('causeDetails') as FormGroup; }
   get eventsArray()  { return this.form.get('events') as FormArray; }
   get claimDescription() { return this.form.get('claimDescription') as FormControl<string | null>; }
   get lossLocation() { return this.form.get('lossLocation') as FormControl<LocationPickerOutput>; }
@@ -123,18 +106,13 @@ export class EditLossInformationComponent implements OnInit {
   // ── Lookups ──────────────────────────────────────────────────────────
   readonly causeOfLossOptions$  = this.lookupSvc.getCauseOfLoss();
   readonly typeOfDamageOptions$ = this.lookupSvc.getTypeOfDamage();
-  readonly waterSources$        = this.lookupSvc.getWaterSources();
 
   readonly causeOfLossOptions  = toSignal(this.causeOfLossOptions$,  { initialValue: [] });
   readonly typeOfDamageOptions = toSignal(this.typeOfDamageOptions$, { initialValue: [] });
-  readonly waterSources        = toSignal(this.waterSources$,        { initialValue: [] });
 
   // ── Computed cause/damage selected values ────────────────────────────
   get selectedCauses(): string[]  { return (this.form.get('causeOfLoss')?.value  as string[]) ?? []; }
   get selectedDamages(): string[] { return (this.form.get('typeOfDamage')?.value as string[]) ?? []; }
-  readonly showFireDetails  = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('fire'))), { initialValue: false });
-  readonly showWaterDetails = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('water-damage'))), { initialValue: false });
-  readonly showTheftDetails = toSignal(this.form.get('causeOfLoss')!.valueChanges.pipe(startWith([] as string[]), map(v => (v as string[]).includes('theft'))),        { initialValue: false });
 
   readonly isDirty = toSignal(this.form.valueChanges.pipe(map(() => this.form.dirty)), { initialValue: false });
 
@@ -173,9 +151,6 @@ export class EditLossInformationComponent implements OnInit {
       lossDescription: li.lossDescription ?? '',
       lossLocation:    (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
     });
-    if (li.causeDetails) {
-      this.causeDetails.patchValue(li.causeDetails as object);
-    }
     // Rebuild events
     this.eventsArray.clear();
     (li.events ?? []).forEach(ev => {
@@ -237,22 +212,6 @@ export class EditLossInformationComponent implements OnInit {
     const origLoc = (orig.lossLocation as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
     const curLoc  = (cur.lossLocation  as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
     addIf('Loss location', origLoc, curLoc);
-
-    // Fire cause details
-    const oCd = orig.causeDetails as unknown as LossInformation['causeDetails'];
-    const nCd = cur.causeDetails  as unknown as LossInformation['causeDetails'];
-    addIf('Fire origin',                oCd?.fire?.fireOrigin,                nCd?.fire?.fireOrigin);
-    addIf('Fire department called',     oCd?.fire?.fireDepartmentCalled,      nCd?.fire?.fireDepartmentCalled);
-    addIf('Fire dept. report number',   oCd?.fire?.fireDepartmentReportNumber, nCd?.fire?.fireDepartmentReportNumber);
-
-    // Water damage cause details
-    addIf('Water source',        oCd?.waterDamage?.waterSource,     nCd?.waterDamage?.waterSource);
-    addIf('Affected area (m²)',  oCd?.waterDamage?.affectedAreaSqm, nCd?.waterDamage?.affectedAreaSqm);
-
-    // Theft cause details
-    addIf('Police report number',    oCd?.theft?.policeReportNumber,    nCd?.theft?.policeReportNumber);
-    addIf('Estimated value stolen',  oCd?.theft?.estimatedValueStolen,  nCd?.theft?.estimatedValueStolen);
-    addIf('Date reported to police', oCd?.theft?.dateReportedToPolice,  nCd?.theft?.dateReportedToPolice);
 
     // Events damages (compare per-event damage selection as joined string)
     const origEvents = orig.events ?? [];

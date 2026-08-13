@@ -35,7 +35,6 @@ interface ReasonOption { value: SkeletonReason; label: string; }
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
   typeOfDamage: LookupOption[];
-  waterSources: LookupOption[];
 }
 
 const REASON_OPTIONS: ReasonOption[] = [
@@ -95,7 +94,6 @@ export class StepSkeletonCreateComponent implements OnInit {
   // Shared loss-info FormGroup (same shape as happy path)
   readonly lossForm     = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
   readonly dateOfLoss   = this.fnolState.getDateOfLossGroup();
-  readonly causeDetails = this.fnolState.getCauseDetailsGroup();
   readonly eventsArray  = this.fnolState.getLossEventsArray();
 
   vm$!: Observable<LossInfoVM>;
@@ -104,7 +102,6 @@ export class StepSkeletonCreateComponent implements OnInit {
     this.vm$ = combineLatest({
       causeOfLoss:  this.lookupSvc.getCauseOfLoss(),
       typeOfDamage: this.lookupSvc.getTypeOfDamage(),
-      waterSources: this.lookupSvc.getWaterSources(),
     });
 
     const client = this.fnolState.selectedClient;
@@ -185,10 +182,6 @@ export class StepSkeletonCreateComponent implements OnInit {
 
   get selectedCauses(): string[]  { return (this.lossForm.get('causeOfLoss')?.value as string[]) ?? []; }
   get selectedDamages(): string[] { return (this.lossForm.get('typeOfDamage')?.value as string[]) ?? []; }
-  get showFireSection(): boolean  { return this.selectedCauses.includes('fire'); }
-  get showWaterSection(): boolean { return this.selectedCauses.includes('water-damage'); }
-  get showTheftSection(): boolean { return this.selectedCauses.includes('theft'); }
-  get showCauseSection(): boolean { return this.showFireSection || this.showWaterSection || this.showTheftSection; }
 
   getCauseLabel(key: string): string { return getCauseSchema(key)?.causeLabel ?? key; }
   getCausedByOptions(key: string): LookupOption[] | null {
@@ -255,13 +248,6 @@ export class StepSkeletonCreateComponent implements OnInit {
     checked ? (list.includes(v) ? null : list.push(v)) : list.splice(list.indexOf(v), 1);
     ctrl.setValue(list);
   }
-  get fireDeptCalled(): boolean | null {
-    return this.causeDetails.get('fire.fireDepartmentCalled')?.value as boolean | null;
-  }
-  setFireDeptCalled(v: boolean): void {
-    this.causeDetails.get('fire.fireDepartmentCalled')?.setValue(v);
-  }
-
   // ── Navigation ──────────────────────────────────────────────
   onCancel(): void { this.router.navigate(['/dashboard']); }
   onBack(): void   { this.router.navigate(['/fnol/search']); }

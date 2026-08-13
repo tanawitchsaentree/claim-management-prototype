@@ -19,29 +19,6 @@ export interface LossLocation {
   country: string | null;
 }
 
-export interface FireDetails {
-  fireOrigin: string;
-  fireDepartmentCalled: boolean | null;
-  fireDepartmentReportNumber: string;
-}
-
-export interface WaterDamageDetails {
-  waterSource: string | null;
-  affectedAreaSqm: number | null;
-}
-
-export interface TheftDetails {
-  policeReportNumber: string;
-  estimatedValueStolen: number | null;
-  dateReportedToPolice: string | null;
-}
-
-export interface CauseDetails {
-  fire: FireDetails;
-  waterDamage: WaterDamageDetails;
-  theft: TheftDetails;
-}
-
 export interface LossEvent {
   eventKey: string;
   /** Sub-classification — only present when schema has causedByOptions */
@@ -61,7 +38,6 @@ export interface LossInformationFormValue {
   causeOfLoss: string[];
   typeOfDamage: string[];
   lossDescription: string;
-  causeDetails: CauseDetails;
   events: LossEvent[];
 }
 
@@ -74,7 +50,6 @@ export interface LossInformation {
   causeOfLoss: string[];
   typeOfDamage: string[];
   lossDescription: string;
-  causeDetails: Partial<CauseDetails>;
   events: LossEvent[];
   createdAt: string;
   updatedAt: string;
@@ -91,10 +66,5 @@ export interface LossInformationVM {
   countries: Array<{ value: string; label: string }>;
   causeOfLossOptions: Array<{ value: string; label: string }>;
   typeOfDamageOptions: Array<{ value: string; label: string }>;
-  waterSources: Array<{ value: string; label: string }>;
-  showFireDetails: boolean;
-  showWaterDetails: boolean;
-  showTheftDetails: boolean;
-  showCauseDetailsSection: boolean;
   events: LossEventConfig[];
 }
