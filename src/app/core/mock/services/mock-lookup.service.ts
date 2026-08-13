@@ -14,8 +14,6 @@ export class MockLookupService extends MockBaseService {
 
   getClaimStatuses(): Observable<LookupOption[]>      { return this.respond(this.lookups.claimStatuses); }
   getTaskStatuses(): Observable<LookupOption[]>        { return this.respond(this.lookups.taskStatuses); }
-  getPriorities(): Observable<LookupOption[]>          { return this.respond(this.lookups.priorities); }
-  getLinesOfBusiness(): Observable<LookupOption[]>     { return this.respond(this.lookups.linesOfBusiness); }
   getCurrencies(): Observable<LookupOption[]>          { return this.respond(this.lookups.currencies); }
   getCountries(): Observable<LookupOption[]>           { return this.respond(this.lookups.countries); }
   getTaskTypes(): Observable<LookupOption[]>           { return this.respond(this.lookups.taskTypes); }
