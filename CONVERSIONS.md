@@ -4,6 +4,21 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-13 — Mass Event popover: action labels, role gating, detail level
+
+- **Source:** design review, 3 observations on the Mass Event prototype (no ticket JSON — the mass event work has never had one, and BMPCC-10510's override design lives only in a code comment, which is why the terminology was arguable in the first place)
+- **Module:** Claim Overview — mass event popover
+- **Root cause of observations 1 and 2:** every link action sat behind `auth.isKcm()` (`html:123`). The default persona is Mara Mustermann (`claims-handler`), so a reviewer who does not switch persona sees exactly one action, the override. "Change mass event" and "Unlink" both existed and both worked; they were invisible.
+- **Fix — 1:** `Change mass event` → **`Link mass event`**, open to any handler. One term for one concept, matching the empty-state `+ Link mass event` that was already there. `onChangeMassEvent` keeps its name and its "Replace linked mass event?" confirm step.
+- **Fix — 2:** `Unlink` → **`Unlink mass event`** (link label and confirm button both), open to any handler. The override stays as a distinct operation and is now **`Not associated with this claim`** with a hint line under it ("Keeps `ME-…` on the claim as a record and stops automatic checks. Unlink removes it instead."). Its confirm dialog spells out the same distinction. `Confirm link` stays KCM-only, because signing off an automated allocation is governance rather than a correction.
+- **Fix — 3, reverses a recorded decision:** `View full details` opened `MassEventEditModalComponent` in `mode: 'view'` — the 194-line admin create/edit form, ~15 fields. That was decided on 2026-06-09 and recorded in this file (see the BMPCC-ME-POPOVER entry). The link is now KCM-only. Handlers instead get a `Cause` row added to the popover summary, which is the field they were reaching into the admin form for. All 10 fixtures carry `lossCause`, so it renders on both demo claims.
+- **Also changed:** the empty-state role split is gone. PI 2026.3 item 3 (the field renders rather than vanishing when there is no mass event) still holds, but its dash-for-handlers branch is removed, because the stated reason — "a handler has no real next step here" — stopped being true once handlers could link. Footer reordered most-used first; `View full details` no longer sits on top.
+- **Not touched:** `MockMassEventService` and all link/unlink/override service methods, the search modal, the admin Mass Events page, the popover's Type/Code/Period/Location rows.
+- **Known and left:** `claim-overview.component.{html,ts,scss}` are 511/629/804 lines against the 200/300/250 limits. Pre-existing, and splitting a 500-line overview template is its own piece of work.
+- **Audit result:** build 0 errors, `pre-commit` 16/17 (the 2 documented `VIOLATIONS.md` `audit:ndbx-wrapper` exemptions), `audit:ac-logic` 53 ACs, 49 ✅ / 0 ❌ / 4 skipped.
+
+---
+
 ## 2026-08-13 — Consolidate edit screens (delete Edit Claim, re-home Claim description, remove cause details)
 
 - **Source:** Isabelle's design review, 2026-08-13 — one edit path per claim instead of two, and the cause-specific detail fields go. No ticket JSON; verbal/design brief only.
