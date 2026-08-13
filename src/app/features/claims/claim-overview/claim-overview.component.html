@@ -102,6 +102,12 @@
                   <dt>Location</dt>
                   <dd>{{ me.country }} · {{ me.region }}</dd>
                 </div>
+                @if (me.lossCause) {
+                  <div class="me-popover__row">
+                    <dt>Cause</dt>
+                    <dd>{{ me.lossCause }}</dd>
+                  </div>
+                }
               </dl>
               @if (claim.massEventLinkStatus === 'pending') {
                 <span class="me-popover__pending-badge">Pending confirmation</span>
@@ -118,35 +124,39 @@
                   </div>
                 </div>
               }
+              <!-- Footer actions, most-used first. Link/Unlink are open to any
+                   handler: a wrong mass event allocation is the handler's problem
+                   to fix, and gating both behind KCM left them with only the
+                   override, which read as a mislabelled unlink. Confirm stays
+                   KCM-only — signing off an automated allocation is governance. -->
               <div class="me-popover__footer">
-                <nx-link><a (click)="meTrigger.close(); openMassEventDetail()">View full details →</a></nx-link>
-                @if (auth.isKcm()) {
-                  @if (claim.massEventLinkStatus === 'pending') {
+                <nx-link><a (click)="meTrigger.close(); onChangeMassEvent(claim)">Link mass event</a></nx-link>
+                <nx-link class="me-popover__unlink"><a (click)="meTrigger.close(); onUnlinkMassEvent(claim)">Unlink mass event</a></nx-link>
+                @if (claim.massEventLinkStatus !== 'overridden') {
+                  @if (auth.isKcm() && claim.massEventLinkStatus === 'pending') {
                     <nx-link><a (click)="meTrigger.close(); onConfirmMassEventLink(claim)">Confirm link</a></nx-link>
                   }
-                  <nx-link><a (click)="meTrigger.close(); onChangeMassEvent(claim)">Change mass event</a></nx-link>
-                  <nx-link class="me-popover__unlink"><a (click)="meTrigger.close(); onUnlinkMassEvent(claim)">Unlink</a></nx-link>
-                } @else if (claim.massEventLinkStatus !== 'overridden') {
-                  <nx-link class="me-popover__unlink">
-                    <a (click)="meTrigger.close(); onOverrideMassEvent(claim)">Override — not associated with this claim</a>
-                  </nx-link>
+                  <div class="me-popover__action">
+                    <nx-link><a (click)="meTrigger.close(); onOverrideMassEvent(claim)">Not associated with this claim</a></nx-link>
+                    <p class="me-popover__action-hint">
+                      Keeps {{ me.id }} on the claim as a record and stops automatic checks. Unlink removes it instead.
+                    </p>
+                  </div>
+                }
+                @if (auth.isKcm()) {
+                  <nx-link><a (click)="meTrigger.close(); openMassEventDetail()">View full details →</a></nx-link>
                 }
               </div>
             </div>
           </nx-popover>
-        } @else if (auth.isKcm()) {
+        } @else {
+          <!-- PI 2026.3 UI/UX Alignment item 3 kept: the field always renders
+               rather than disappearing when there is no mass event. The role
+               split it originally had is gone, because linking is no longer
+               KCM-only, so a handler now has the same next step here. -->
           <div class="co-field">
             <span class="co-label">Mass Event</span>
             <nx-link size="small"><a (click)="onChangeMassEvent(claim)">+ Link mass event</a></nx-link>
-          </div>
-        } @else {
-          <!-- PI 2026.3 UI/UX Alignment item 3: no-data fields show a dash,
-               consistent with Broker/Client contact/etc. on this same page,
-               rather than disappearing. KCM keeps the "+ Link" action above
-               since they have a real next step; a handler doesn't. -->
-          <div class="co-field">
-            <span class="co-label">Mass Event</span>
-            <span class="co-value">–</span>
           </div>
         }
       </div>

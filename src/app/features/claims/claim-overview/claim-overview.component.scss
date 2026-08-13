@@ -310,6 +310,21 @@
 
 .me-popover__unlink a { color: var(--danger, #d2351d) !important; }
 
+// Override action + its one-line explanation. The hint exists because "not
+// associated with this claim" and "unlink" were being read as the same action.
+.me-popover__action {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.me-popover__action-hint {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 // ─── Risk score ───────────────────────────────────────────────────────────────
 
 .co-risk-score {

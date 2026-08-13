@@ -426,7 +426,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.dialogSvc.open(MassEventEditModalComponent, { data, panelClass: 'me-edit-modal-panel' });
   }
 
-  // ── Mass Event linking (admin/KCM only — gated in template via auth.isKcm()) ──
+  // ── Mass Event linking ──────────────────────────────────────────────────────
+  // Open to any handler. Only "Confirm link" stays KCM-gated in the template.
+  // Surfaced as "Link mass event" in the UI; it both links and replaces, and
+  // the replace case asks for confirmation below.
 
   async onChangeMassEvent(claim: ClaimOverview): Promise<void> {
     const currentMassEventId = claim.massEventId;
@@ -494,7 +497,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         data: {
           title: 'Unlink mass event?',
           message: `Remove the link to ${massEventId} from this claim?`,
-          confirmLabel: 'Unlink',
+          confirmLabel: 'Unlink mass event',
           confirmDanger: true,
         },
         width: '440px',
@@ -508,11 +511,15 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   }
 
   /**
-   * Claim handler override (BMPCC-10510) — available to any handler, not just
-   * KCM. Unlike Unlink, the mass event tag stays on the claim so there's a
-   * visible record of what was auto-allocated and rejected; only the link
-   * status changes, which the UI reads to show "auto-checks disabled" and
-   * to stop offering Confirm/Change actions for this link.
+   * Claim handler override (BMPCC-10510), surfaced as "Not associated with this
+   * claim". Where Unlink removes the mass event from the claim, this keeps the
+   * tag as a visible record of what was auto-allocated and rejected, and only
+   * moves the link status. The UI reads that status to show "auto-checks
+   * disabled" and to stop offering Confirm for this link.
+   *
+   * The two actions sat side by side without explanation and were read as the
+   * same thing (design review, 2026-08-13), so the popover now carries a hint
+   * line and this dialog spells out the difference.
    */
   async onOverrideMassEvent(claim: ClaimOverview): Promise<void> {
     const massEventId = claim.massEventId;
@@ -522,8 +529,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
         data: {
           title: 'Override mass event allocation?',
-          message: `This marks ${massEventId} as not associated with this claim. The system will stop running automatic checks against this mass event for this claim. This can be undone by a KCM via "Change mass event."`,
-          confirmLabel: 'Override',
+          message: `This marks ${massEventId} as not associated with this claim. The tag stays on the claim as a record of what was allocated, and the system stops running automatic checks against it. To remove the mass event from the claim entirely, use "Unlink mass event" instead. This can be undone via "Link mass event."`,
+          confirmLabel: 'Mark as not associated',
           confirmDanger: true,
         },
         width: '440px',
