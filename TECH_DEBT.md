@@ -11,7 +11,7 @@ Owner = team unless noted. Priority: **P1** (blocks feature correctness) / **P2*
 |----|------|----------|--------|
 | TD-001 | `edit-loss-information` FormGroup is a manual copy of `FnolStateService`'s lossInformation group. If FNOL fields change, edit form must be updated manually. Fix: extract shared `buildLossInfoFormGroup()` factory. | P2 | BMPCC-415-F2 |
 | TD-002 | CanDeactivate guard missing: browser Back button and nav-link clicks bypass the discard modal. Fix: implement Angular `CanDeactivate` route guard. | P2 | BMPCC-415-F2 |
-| TD-003 | `computeDiffs()` does not fully diff cause details sub-fields (water/theft sub-fields). Extend when needed. | P3 | BMPCC-415 |
+| TD-003 | ~~`computeDiffs()` does not fully diff cause details sub-fields (water/theft sub-fields). Extend when needed.~~ **Resolved 2026-08-13** — moot, cause details removed entirely (Isabelle design review). | P3 | BMPCC-415 |
 | TD-004 | `policyNumber` passed as `null` in edit mode for LocationPicker — policy-location lookup won't work. Requires claimId → policyNumber mapping. | P2 | BMPCC-415 |
 | TD-005 | `prefillFromExistingLossInfo()` added to FnolStateService but edit screen uses its own FormGroup (intentional isolation). Available for future wizard-edit hybrid flows. | P3 | BMPCC-415 |
 | TD-006 | `BMPCC-11681 Q open:` Confirm with Product that Reopened claims should allow loss information edit. | P1 | BMPCC-11681 |
