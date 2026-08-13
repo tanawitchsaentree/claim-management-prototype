@@ -24,7 +24,6 @@
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["material-damage"],
     "lossDescription": "This claim relates to a fire at XYZ's warehouse on 12 May 2025. The current incurred value is $4.2M, primarily property damage.",
-    "causeDetails": { "fire": { "fireOrigin": "Warehouse section A", "fireDepartmentCalled": true, "fireDepartmentReportNumber": "FF-FRA-2025-0110" } },
     "events": [{ "eventKey": "fire", "damages": ["material-damage"], "causedBy": [] }],
     "createdAt": "2025-01-11T10:30:00Z",
     "updatedAt": "2025-01-11T10:30:00Z"
@@ -54,7 +53,6 @@
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["material-damage", "financial-loss"],
     "lossDescription": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",
-    "causeDetails": { "fire": { "fireOrigin": "Warehouse section B", "fireDepartmentCalled": true, "fireDepartmentReportNumber": "FF-HH-2024-0114" } },
     "events": [{ "eventKey": "fire", "damages": ["material-damage", "financial-loss"], "causedBy": [] }],
     "createdAt": "2024-01-15T08:05:00Z",
     "updatedAt": "2024-01-15T08:05:00Z"
@@ -77,13 +75,6 @@
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["structural", "contents"],
     "lossDescription": "Fire broke out in the server room at 14:30. Fire department arrived within 10 minutes. Significant structural damage to the east wing.",
-    "causeDetails": {
-      "fire": {
-        "fireOrigin": "Server room electrical fault",
-        "fireDepartmentCalled": true,
-        "fireDepartmentReportNumber": "FR-2025-04421"
-      }
-    },
     "events": [
       { "eventKey": "fire", "damages": ["structural", "contents"], "causedBy": [] }
     ],
@@ -108,12 +99,6 @@
     "causeOfLoss": ["water-damage"],
     "typeOfDamage": ["structural"],
     "lossDescription": "",
-    "causeDetails": {
-      "waterDamage": {
-        "waterSource": "pipe-burst",
-        "affectedAreaSqm": 45
-      }
-    },
     "events": [
       { "eventKey": "water-damage", "damages": ["structural"], "causedBy": [] }
     ],
@@ -138,18 +123,6 @@
     "causeOfLoss": ["theft", "fire"],
     "typeOfDamage": ["contents", "equipment"],
     "lossDescription": "Break-in overnight. Perpetrators caused fire after theft to destroy evidence. Police notified immediately.",
-    "causeDetails": {
-      "fire": {
-        "fireOrigin": "Arson — post-burglary",
-        "fireDepartmentCalled": true,
-        "fireDepartmentReportNumber": "LFB-2025-00892"
-      },
-      "theft": {
-        "policeReportNumber": "MPS-2025-11432",
-        "estimatedValueStolen": 85000,
-        "dateReportedToPolice": "2025-02-14"
-      }
-    },
     "events": [
       { "eventKey": "theft",  "damages": ["contents", "equipment"], "causedBy": [] },
       { "eventKey": "fire",   "damages": ["equipment"],             "causedBy": [] }
@@ -175,7 +148,6 @@
     "causeOfLoss": ["wind-storm"],
     "typeOfDamage": ["structural", "business-interruption"],
     "lossDescription": "Storm damage to roof and facade. Business operations interrupted for 3 weeks. Late notification due to ongoing litigation with contractor.",
-    "causeDetails": {},
     "events": [
       { "eventKey": "wind-storm", "damages": ["structural", "business-interruption"], "causedBy": [] }
     ],
@@ -200,7 +172,6 @@
     "causeOfLoss": ["other"],
     "typeOfDamage": ["vehicle", "structural"],
     "lossDescription": "Vehicle drove through building facade. Driver fled the scene. Security footage available.",
-    "causeDetails": {},
     "events": [
       { "eventKey": "other", "damages": ["vehicle", "structural"], "causedBy": ["event10"] }
     ],

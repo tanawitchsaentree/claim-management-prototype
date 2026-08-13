@@ -582,15 +582,6 @@
         "financial-loss"
       ],
       "lossDescription": "Arson-suspected fire in main storage hall. Extensive structural damage. Sprinkler system activated causing secondary water damage.",
-      "causeDetails": {
-        "fire": {
-          "fireOrigin": "Storage hall B",
-          "fireDepartmentCalled": true,
-          "fireDepartmentReportNumber": "FF-2024-1182"
-        },
-        "waterDamage": null,
-        "theft": null
-      },
       "events": [
         {
           "eventKey": "fire",
@@ -663,15 +654,6 @@
         "loss"
       ],
       "lossDescription": "IT equipment stolen from server room overnight. Estimated 12 servers and networking equipment missing.",
-      "causeDetails": {
-        "fire": null,
-        "waterDamage": null,
-        "theft": {
-          "policeReportNumber": "POL-BE-2024-7042",
-          "estimatedValueStolen": 43000,
-          "dateReportedToPolice": "2024-07-21"
-        }
-      },
       "events": [
         {
           "eventKey": "theft",
@@ -733,14 +715,6 @@
         "financial-loss"
       ],
       "lossDescription": "Storm with wind speeds exceeding 120 km/h damaged turbine array. Lower facility level flooded. Three turbines offline.",
-      "causeDetails": {
-        "fire": null,
-        "waterDamage": {
-          "waterSource": "flooding",
-          "affectedAreaSqm": 450
-        },
-        "theft": null
-      },
       "events": [
         {
           "eventKey": "natural-event",
