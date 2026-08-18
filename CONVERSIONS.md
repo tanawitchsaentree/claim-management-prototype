@@ -4,6 +4,107 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-18 — Edit Claim Phase 2, Item 4: cause-of-loss/location redirect signed off
+
+- **Source:** Isabelle's confirmed Phase 2 decisions ("BUILD — Edit Claim Phase 2").
+- The existing `onSaveChanges()` behavior in `edit-loss-information.component.ts` (cause-of-loss or location change → warning toast + redirect to Sections; otherwise → success toast + redirect to Overview) is now the **confirmed, signed-off** behavior — no logic change. Removed the "conservative placeholder, not signed off, flag before treating as final" language from the code comment (lines around 247-256) since that caveat no longer applies; kept the factual explanation (no structured section↔cause/location link exists, so any change is conservatively treated as sections-impacting).
+- No files besides the comment touched. No new tests needed — behavior unchanged.
+
+---
+
+## 2026-08-18 — Sections comment icon: scoped notes panel for 5+ notes (proposal, not signed off)
+
+- **Source:** Ruby's ask on the Sections review — "share a design on how the side-panel could look if there are 5 or more notes against a section." Built as a pilot to show her, per explicit instruction that anything built today for unclear/unconfirmed points is a proposal, not a finalized decision.
+- **Module:** `note.model.ts`, `mock-notes.service.ts`, `right-strip.service.ts`, `claim-right-strip.component.ts/html`, `claim-notes-panel.component.{ts,html,scss}`, `sections.{ts,html,scss}`.
+
+**Two real bugs found and fixed along the way (not just the design ask):**
+1. **Notes were never actually linked to an entity.** The quick-add form collected an `attachTo` (CLAIM/SECTION/PARTY) value but `submitAddNote()` silently dropped it — `Note` had no field to hold it. `hasNoteFor()` in `sections.ts` was doing a fuzzy substring search (entity name inside `body`/`title`) and `.find()`-ing the *first* match only, so an entity with 5 notes only ever surfaced 1. Added `Note.attachedTo?: string | null`, persisted it for quick-add (where the entity name is known exactly), and switched the Sections lookup to an exact match + real count (`notesCountFor`).
+2. **Comment counts went stale across components.** `sections.ts` loaded notes once into its own snapshot signal; the notes panel mutated a separate copy on add/pin. Adding a note via the panel didn't move the table's badge until a full reload. Rebuilt `MockNotesService`'s per-claim cache as a `WritableSignal<Note[]>` store (`notesSignal(claimId)`), and made `sections.ts`'s `allNotes` a `computed()` off that store instead of a one-time snapshot — verified live in-browser (badge went 5 → 6 immediately after adding a note from the panel, no reload).
+
+**The design itself — reuses the existing right-strip Comments panel, no new UI surface:**
+- Comment icon per entity row now shows a count badge (`sec-comment-count`) instead of just enabled/disabled.
+- Clicking it opens the *same* `ClaimNotesPanelComponent` used everywhere else, but scoped: `RightStripService.openScoped('comments', entityName)` → panel shows a "← All notes" back link, a "Notes for '{entity}' (N)" header, and a flat chronological list using the exact same note-card template (avatar, pin/edit/delete menu, etc.) — no new card design. Existing 5-per-page "Load more" pagination handles the "5+" case without any new logic.
+- "Add note" inside the scoped view pre-attaches to the entity being viewed (reuses the existing quick-add flow).
+- Seeded 3 extra Forklift notes in `notes.json` (now 5) specifically so this could be demoed against Ruby's literal "5 or more" scenario, not just described.
+- **Not addressed (flagged, not fixed):** the full add-note form's "Attach to" dropdown (CLAIM/SECTION/PARTY) still has no picker for *which* section/entity — only quick-add reliably sets `attachedTo`. Notes added via the full form stay claim-level. Separate gap, not touched.
+- **Audit:** `npm run audit:all` 12/12, `tsc --noEmit` clean. Verified in-browser: badge counts correct per entity, scoped panel shows all of Forklift's notes with a working back-link, adding a note from the scoped view updates both the panel and the table badge live.
+
+---
+
+## 2026-08-18 — Edit Loss Information: Loss location joins the Sections redirect; Cause of loss becomes static value + Change
+
+- **Source:** built from the flow-simulation proposals in the previous conversation turn — NOT signed off by Ruby, flagging both explicitly below.
+- **Module:** `edit-loss-information.component.{ts,html,scss}`.
+
+1. **Loss location added to the sections-impact redirect** (⚠ not confirmed — see caveat). Generalized the `causeChanged` check into `impactLabels = ['Cause of loss', 'Loss location']`; the toast message now names whichever changed ("Cause of loss changed" / "Loss location changed" / "Cause of loss and Loss location changed"), still redirects to Sections. **Caveat:** Ruby's own Miro doc marks the location→sections flow as "pending a user-flow" — she hasn't drawn this one herself yet. This reuses the cause-of-loss shape as a placeholder, not her design. Treat as a draft to run past her, not a shipped decision.
+2. **Cause of loss is now a static value + "Change" link** instead of an always-open multi-select (⚠ new interaction pattern, not blessed, not requested by name — my own proposal from the flow-simulation discussion). Default state shows `causeOfLossDisplay` (mapped labels, joined) with an `nx-link` "Change" — copied verbatim from the `.co-field`/`.co-label`/`.co-value` + Reassign-link pattern on `claim-overview.component.html:26-40`. Clicking "Change" reveals the existing multi-select + a "Done" link to collapse back. Starts open only when the claim has no cause of loss on record yet (`causeEditMode.set(!li.causeOfLoss?.length)` in `prefillForm`). No change to the save/diff/redirect flow — same `causeOfLoss` FormControl underneath.
+- **Audit:** `npm run audit:all` 12/12, `tsc --noEmit` clean. Verified in-browser: default load shows "Fire" + Change; clicking Change reveals the multi-select pre-checked; clicking Done with no edit collapses back to the same display cleanly.
+
+---
+
+## 2026-08-18 — Edit Loss Information: cause-of-loss change now redirects to Sections
+
+- **Source:** Ruby's Miro flow ("Edit claim flow" diagram) — cause of loss change → "Triggers changes to existing sections" → user notified + redirected to Sections to review. Discussed as part of the broader "reduce the FNOL feel" push (see entry above).
+- **Module:** `edit-loss-information.component.ts`, `onSaveChanges()`.
+- On save, if `computeDiffs()` contains a `'Cause of loss'` entry, skip the normal success path and instead show a warning toast ("Cause of loss changed — Existing sections may no longer match — review them on the Sections page") and navigate to `/claims/:id/sections` instead of `/overview`. No cause change → unchanged behavior (success toast, navigate to overview).
+- **Known limitation, called out rather than hidden:** `ClaimSection`/`SectionEntity` carry no structured field linking a section back to a cause-of-loss key — `name`/`damage` are both free text. There is no reliable way to compute *which* sections a given cause change affects, so this treats any cause-of-loss diff as sections-impacting and lets the user review manually, the same conservative call the old per-event-damage redirect made (removed above) before events existed. Precise matching would need a data-model change — not attempted.
+- **Explicitly not built (per Ruby's own doc, not an oversight):** the equivalent redirect for **Location** changes — her Miro notes flag location as also sections-impacting but marks that flow "pending a user-flow," i.e. not designed yet.
+- **Audit:** `npm run audit:all` 12/12, `tsc --noEmit` clean. Verified in-browser: adding a second cause of loss → confirm-diff modal shows the diff → save → warning toast + lands on Sections; editing only loss description → save → normal success toast + lands on Overview.
+
+---
+
+## 2026-08-18 — Edit Loss Information: Events details card removed
+
+- **Source:** Ruby's Miro decision doc (Approach 1, chosen) — "Removal of event details" was called out explicitly under "To reduce the flow feeling like FNOL again," alongside a sticky note that the broader "how we capture event details" question still needs alignment. Previously left alone on purpose (see 2026-08-16 entry below: "explicitly out of scope").
+- **Module:** `features/claims/edit-loss-information/*`.
+- Removed Card 4 ("Events details" — per-cause "Caused by"/"Damages" checkboxes) from the template, and everything that only existed to feed it: the `events` FormArray + `eventsArray` getter, `onCauseOfLossChange` (rebuilt the array on cause selection — nothing else used it, so the `(selectionChange)` binding on the Cause of loss multi-select is gone too), the per-event diff block in `computeDiffs()`, the `typeOfDamage` FormControl + `selectedDamages` getter (only fed `onCauseOfLossChange`, no template binding of its own), and the 8 now-orphaned helper methods (`getEventGroup`, `getEventKey`, `getEventCauseOptions`, `getEventDamageOptions`, `isEventCauseSelected`, `toggleEventCause`, `isEventDamageSelected`, `toggleEventDamage`).
+- **Also removed:** the `onSaveChanges()` branch that redirected to Sections with a "Damage types changed" warning toast when a per-event damage diff existed — that diff type no longer exists once events are gone, so the branch was permanently dead, not just unused.
+- **Not touched:** `LossInformation.events`/`.typeOfDamage` on the model, `MockLossInformationService`, or mock fixtures — confirmed no other consumer reads them (grepped for `LossEvent`/`.typeOfDamage` outside FNOL and this component), so the data stays in place; only this screen's editing UI for it is gone. If "how we capture event details" gets resolved later, that's a fresh build against a clean model, not a revert.
+- **Audit:** `npm run audit:all` 12/12, `tsc --noEmit` clean, visually confirmed on a Fire-cause claim (previously showed "Caused by"/"Damages" checkboxes) that the page now goes straight from "Locations of loss" to the footer.
+
+---
+
+## 2026-08-18 — Sections table: Status column, Reopen visibility, coverage-review color revert
+
+- **Source:** Ruby (Isabelle) design feedback on the Sections page, relayed live.
+- **Module:** Sections (`features/sections/sections.html`, `.scss`, `shared/components/status-chip`).
+
+1. **Status column split out.** Section Open/Closed chip was inline with the section name in a merged `colspan="4"` cell; moved to its own "Status" header column, matching the Status-column pattern already used on `claims-list`. Widened `.col-comments` (56px → 80px) to stop the new column truncating the "Comments"/"Action" headers. First pass shrank `.col-coverage` to 180px to make room, which cut it below the ~234px the longest chip ("Additional information required") actually needs (measured, incl. padding) — that chip bled into the Comments icon. Restored `.col-coverage` to 240px and took the space from `.col-entity` (22%→18%) and `.col-damage` (26%→24%) instead, plus trimmed `.col-status` to 90px.
+2. **"Reopen section" now hidden (not disabled) when the section is Open** — only rendered in the context menu when `section.status === 'Closed'`. Previously always rendered, just `[disabled]`. The other menu items (Make payment, Instruct provider, Close section) keep the existing disabled-when-closed pattern; only Reopen changed, per explicit ask.
+3. **Coverage-review chip color mapping reverted to neutral.** The 2026-08-15 entry below (Row 8) flagged that `coverage-review`'s 3-color mapping (green/amber/red) was "an unconfirmed borrow, not a sign-off." Confirmed today: not signed off, revert requested. All 3 statuses (`standard-review`, `enhanced-review-required`, `additional-information-required`) now point to `claim-status-quoted` (the existing `#e8e8e8`/`#404040` neutral token, already used elsewhere for "no dedicated chip color yet") instead of `claim-status-bound`/`task-status-in-progress`/`claim-status-declined`. Only the `StatusChipComponent` TOKEN_MAP changed — no template changes, so `entity-detail-panel.component.html`'s coverage-review chip picks up the same neutral color automatically.
+4. **Also touched, then reverted:** briefly removed `priority`/`lineOfBusiness` from `ClaimOverview` thinking they were unused (per an incomplete investigation that only checked `claim-overview.component.html`) — `ng serve` caught the break immediately (`tsc --noEmit` doesn't type-check templates, so this only surfaces at dev-server build time, same trap as the 2026-08-14 fire-details incident below). `claim-reference-panel.component.html` genuinely renders both fields. Restored; no net model change.
+5. **Stray "…" mark under the toggle chevron, pre-existing.** `td[nxTableCell]`'s global `white-space: nowrap; overflow: hidden; text-overflow: ellipsis` was tripping into a visible truncation mark on `.col-toggle`, even though that cell only ever holds an icon-button — the whitespace text nodes Angular preserves around the button (template indentation) were enough to read as overflowing content. Invisible at normal zoom, only showed up on a high-DPI crop. Not caused by today's column changes — this cell's markup wasn't touched — just never noticed before. Fixed by resetting `overflow/text-overflow/white-space` on `.col-toggle` only (`!important`, matching the existing override convention on `.col-comments`/`.col-actions` in the same block); other columns' ellipsis behavior is untouched.
+- **Audit:** `npm run audit:all` 12/12. Dev server compiles clean.
+
+---
+
+## 2026-08-15 — PI 2026.3 UI/UX Alignment: bullet-level re-audit, 2 bug fixes, 3 new builds
+
+- **Source:** Confluence "Claims Management- PI 2026.3 - UI/UX Alignment Open Points" — a second, bullet-by-bullet pass over all 14 rows (the 2026-08-12 entry below only checked row-level status). No Jira MCP access this session (`jmp.allianz.net` requires SSO login WebFetch can't pass) — ticket numbers referenced are from the Confluence text only, not read directly.
+- **Module:** Claim Overview (Recovery Potential, Reassignment), Dashboard, Sections (Entity Detail Panel), Claims List
+- **Explicit instruction this pass:** leave anything already built/changed alone; build anything not-yet-started; fix bugs found along the way and log them.
+
+### Bug fixes
+1. **Recovery Potential rejection note was validated then discarded.** `recovery-potential-modal` requires a note when the user picks "No," but `claim-overview.component.ts:openRecoveryPotentialModal` only ever read `result.value` — `result.note` had nowhere to go; `ClaimOverview` had no field for it. Added `recoveryPotentialNote?: string` to the model, persisted it, shown as a muted caption under the "No" chip, and folded into the activity-log `valueNew`.
+2. **Dashboard scope filter silently showed the wrong claims.** `displayedClaims` (`dashboard.ts`) fell back to the unfiltered top-5 claims whenever the `mine`/`group` scope produced zero rows — a Claim Handler with nothing assigned would see other people's claims with no indication the filter didn't apply. Removed the fallback; an empty filtered result now renders as empty (see empty-state below).
+
+### New builds
+3. **Row 2 (Dashboard) points 1–3 + 5, still genuinely open:** no default date range ever existed for the Claim Board or count widgets, and the KPI/portfolio table had no way to include Closed claims or show an empty state. Resolution notes never actually specified a literal date value (only a status default), so I didn't invent one — added a status filter instead (`claimsStatusFilter`: `open` (default) / `closed` / `all`, persisted to `localStorage` like `claimsScope` already was) plus `<app-empty-state>` on the claims tab, matching the pattern the loss-events tab already had.
+4. **Row 8 (Coverage Status color), second half.** The 2026-08-12 entry below only fixed Sections; the Confluence ask named the E&D page too. `entity-detail-panel.component.html` (features/sections) still rendered `coverageReview` as a bare `<span>`. Swapped it for `<app-status-chip domain="coverage-review">` — the token map already existed, so this was a one-line template change, no new tokens.
+5. **Row 7 (Manual claim reassignment, single + multiple) — built from zero.** Confluence's own note says this is blocked on "CTR availability"; built anyway per explicit instruction. New shared `ReassignClaimModalComponent` (`shared/components/reassign-claim-modal/`) — picks a new handler from `MockUserDirectoryService.getClaimHandlers()` (new method, filters `user-directory.json` by role), optional reason. Wired in two places: a "Reassign" link next to "Assigned Claim handler" on Claim Overview (single), and a checkbox column + bulk action bar on `claims-list` (`/claims` — select N rows → "Reassign N claims", updates each via `MockClaimService.update`). One checkbox selected = the "single" case; the same flow covers both without a second component.
+
+### Left alone (already built/changed, or a real business decision, not a UI/UX call)
+- **Row 5, Fire details on Edit Loss Information — do not touch.** Built 2026-08-12 (see below), then deliberately deleted again on 2026-08-13 (`68a7492`, "per Isabelle's design review... this is a requirement change, not a cleanup"). Confluence (last updated 2026-08-11) doesn't know about either commit and still shows this row as "Open, ETA 12 Aug, debugging." This needs a product decision, not another code change — see the existing warning at the top of `edit-loss-information.component.ts`.
+- **Row 6, Section Overview Action-menu scope creep.** Section-row menu now has 6 items and entity-row menu has 5, against a 2026-07-09 resolution that asked for exactly 2 (Close Section, Edit). Likely legitimate later tickets landed in the same menu, but nobody has confirmed the expanded set with NAT — flagging, not trimming it.
+- **Row 10, Close Claim checklist wording.** The reverted checklist doesn't literally list "retention date" or "limits" as checklist rows (retention is a separate form step); read as intentional restructuring, not a gap, so left as-is.
+- **Rows 1, 9 (core flow), 11, 12, 13, 14 — confirmed already fully built in code**, even though Confluence's own log still shows several of them as "awaiting design" (row 1 mass-event: shipped and refined twice since; row 9 recovery-potential: full flow already existed before this session, only the note-persistence bug above was new; row 12 file-restriction: code has already picked "direct toggle," Confluence never recorded that decision). Not re-touched — Confluence is the stale side here, not the code.
+- **Row 8 color choices — still an unconfirmed borrow, not a sign-off.** `coverage-review` domain reuses `claim-status-bound`/`task-status-in-progress`/`claim-status-declined` tokens rather than bespoke colors; Confluence's own row 8 has no resolution text at all (just a bare date), so no one has actually signed off on these 3 colors either time they were applied.
+- **BLESSED.md modal SCSS pattern was stale and actively causing bugs** — its documented header/body/footer padding shorthand doubles the horizontal inset `NxModalContainer` already applies (the exact defect `audit-modal-padding.mjs` describes fixing in `recovery-potential-modal`/`add-litigation-party-modal`/`start-investigation-modal` on 2026-08-14). Corrected the doc to the vertical-only pattern those three files now actually use, so the new `reassign-claim-modal` didn't copy the same mistake a fourth time.
+- **Files touched:** `core/models/claim-overview.model.ts`, `features/claims/claim-overview/claim-overview.component.{ts,html,scss}`, `features/dashboard/dashboard.{ts,html}`, `features/sections/entity-detail-panel/entity-detail-panel.component.{ts,html}`, `core/mock/services/mock-user-directory.service.ts`, `features/claims/claims-list/claims-list.component.{ts,html,scss}`, new `shared/components/reassign-claim-modal/reassign-claim-modal.component.{ts,html,scss}`, `.claude/BLESSED.md`.
+- **Audit result:** `npm run build` 0 errors. `npm run pre-commit` 17/18 — the 1 failure (`audit:ndbx-wrapper`, navbar + restriction-search bare inputs) is pre-existing and untouched by this pass (confirmed via `git diff --stat`, zero changes to either file's search-input lines).
+
+---
+
 ## 2026-08-13 — Mass Event popover: action labels, role gating, detail level
 
 - **Source:** design review, 3 observations on the Mass Event prototype (no ticket JSON — the mass event work has never had one, and BMPCC-10510's override design lives only in a code comment, which is why the terminology was arguable in the first place)

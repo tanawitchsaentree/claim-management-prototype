@@ -1,19 +1,19 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxTimefieldModule } from '@allianz/ng-aquila/timefield';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxMultiSelectComponent } from '@allianz/ng-aquila/dropdown';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
+import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -28,7 +28,6 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
 import { LocationPickerOutput } from '../../../core/models';
-import { getCauseSchema, DEFAULT_CAUSE_SCHEMA } from '../../fnol/config/cause-schemas';
 import { FnolStateService } from '../../fnol/services/fnol-state.service';
 import {
   LossInfoConfirmModalComponent,
@@ -49,8 +48,8 @@ const CLAIM_DESC_LABEL = 'Claim description';
   imports: [
     CommonModule, ReactiveFormsModule, RouterLink,
     NxButtonModule, NxIconModule, NxFormfieldModule, NxInputModule,
-    NxCheckboxModule, NxTimefieldModule, NxDatefieldModule,
-    NxDropdownModule, NxMultiSelectComponent, NxRadioModule,
+    NxTimefieldModule, NxDatefieldModule,
+    NxDropdownModule, NxMultiSelectComponent, NxRadioModule, NxLinkModule,
     NxMessageModule, NxModalModule, NxSpinnerModule,
     NxAccordionModule,
     LocationPickerComponent,
@@ -93,26 +92,34 @@ export class EditLossInformationComponent implements OnInit {
     }, { validators: FnolStateService.dateOrderValidator }),
     lossLocation:    new FormControl<LocationPickerOutput>({ locations: [] }),
     causeOfLoss:     new FormControl<string[]>([], []),
-    typeOfDamage:    new FormControl<string[]>([], []),
     lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
-    events: new FormArray([]),
   });
 
   get dateOfLoss()   { return this.form.get('dateOfLoss') as FormGroup; }
-  get eventsArray()  { return this.form.get('events') as FormArray; }
   get claimDescription() { return this.form.get('claimDescription') as FormControl<string | null>; }
   get lossLocation() { return this.form.get('lossLocation') as FormControl<LocationPickerOutput>; }
 
   // ── Lookups ──────────────────────────────────────────────────────────
   readonly causeOfLossOptions$  = this.lookupSvc.getCauseOfLoss();
-  readonly typeOfDamageOptions$ = this.lookupSvc.getTypeOfDamage();
 
   readonly causeOfLossOptions  = toSignal(this.causeOfLossOptions$,  { initialValue: [] });
-  readonly typeOfDamageOptions = toSignal(this.typeOfDamageOptions$, { initialValue: [] });
 
-  // ── Computed cause/damage selected values ────────────────────────────
+  // ── Computed cause selected values ───────────────────────────────────
   get selectedCauses(): string[]  { return (this.form.get('causeOfLoss')?.value  as string[]) ?? []; }
-  get selectedDamages(): string[] { return (this.form.get('typeOfDamage')?.value as string[]) ?? []; }
+
+  get causeOfLossDisplay(): string {
+    const keys = this.selectedCauses;
+    if (!keys.length) return '–';
+    const opts = this.causeOfLossOptions();
+    return keys.map(k => opts.find(o => o.value === k)?.label ?? k).join(', ');
+  }
+
+  // Cause of loss reads as a static value with an explicit "Change" affordance
+  // rather than an always-open multi-select — most edit visits never touch it,
+  // and re-presenting it as a fresh pick every time is the FNOL-intake pattern
+  // this screen is trying to move away from. Starts open only when there is no
+  // cause on record yet.
+  readonly causeEditMode = signal(false);
 
   readonly isDirty = toSignal(this.form.valueChanges.pipe(map(() => this.form.dirty)), { initialValue: false });
 
@@ -147,36 +154,11 @@ export class EditLossInformationComponent implements OnInit {
     });
     this.form.patchValue({
       causeOfLoss:     li.causeOfLoss     ?? [],
-      typeOfDamage:    li.typeOfDamage    ?? [],
       lossDescription: li.lossDescription ?? '',
       lossLocation:    (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
     });
-    // Rebuild events
-    this.eventsArray.clear();
-    (li.events ?? []).forEach(ev => {
-      this.eventsArray.push(new FormGroup({
-        eventKey: new FormControl(ev.eventKey),
-        damages:  new FormControl<string[]>(ev.damages ?? [], [Validators.required]),
-        ...(ev.causedBy ? { causedBy: new FormControl<string[]>(ev.causedBy) } : {}),
-      }));
-    });
+    this.causeEditMode.set(!li.causeOfLoss?.length);
     this.form.markAsPristine();
-  }
-
-  // ── Cause selection → update events array ────────────────────────────
-  onCauseOfLossChange(causes: string[]): void {
-    this.eventsArray.clear();
-    causes.forEach(causeKey => {
-      const schema = getCauseSchema(causeKey) ?? DEFAULT_CAUSE_SCHEMA;
-      const controls: Record<string, FormControl> = {
-        eventKey: new FormControl(causeKey),
-        damages:  new FormControl<string[]>(this.selectedDamages.length ? this.selectedDamages : [], [Validators.required]),
-      };
-      if (schema?.causedByOptions?.length) {
-        controls['causedBy'] = new FormControl<string[]>([]);
-      }
-      this.eventsArray.push(new FormGroup(controls));
-    });
   }
 
   // ── Diff computation ─────────────────────────────────────────────────
@@ -212,19 +194,6 @@ export class EditLossInformationComponent implements OnInit {
     const origLoc = (orig.lossLocation as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
     const curLoc  = (cur.lossLocation  as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
     addIf('Loss location', origLoc, curLoc);
-
-    // Events damages (compare per-event damage selection as joined string)
-    const origEvents = orig.events ?? [];
-    const curEvents  = (cur as unknown as { events: typeof origEvents }).events ?? [];
-    origEvents.forEach((oe, i) => {
-      const ce = curEvents[i];
-      if (!ce) return;
-      addIf(
-        `${oe.eventKey} damages`,
-        (oe.damages ?? []).join(', '),
-        (ce.damages ?? []).join(', ')
-      );
-    });
 
     return diffs;
   }
@@ -275,14 +244,17 @@ export class EditLossInformationComponent implements OnInit {
       this.form.markAsPristine();
       this.saveSuccess.set(true);
 
-      // Damage types feed Sections (per entity), but nothing in this app maps a
-      // damage-type string back to the section entities that were built from it —
-      // so we cannot safely auto-update/delete sections. Send the user to Sections
-      // to review manually instead of guessing.
-      const damageChanged = diffs.some(d => d.label.endsWith(' damages'));
-      if (damageChanged) {
+      // ClaimSection/SectionEntity carry no structured link back to a cause-of-loss
+      // or location key (name/damage are free text) — there is no reliable way to
+      // tell which existing sections a change actually affects. Treat cause-of-loss
+      // OR location changes as sections-impacting and send the user to review
+      // manually, per the Miro flow ("triggers changes to existing sections" →
+      // notify + redirect). Signed off 2026-08-18 — see CONVERSIONS.md.
+      const impactLabels = ['Cause of loss', 'Loss location'];
+      const impacted = diffs.filter(d => impactLabels.includes(d.label)).map(d => d.label);
+      if (impacted.length) {
         this.toast.warning(
-          'Damage types changed',
+          `${impacted.join(' and ')} changed`,
           'Existing sections may no longer match — review them on the Sections page.',
         );
         this.router.navigate(['/claims', this.claimId(), 'sections']);
@@ -332,42 +304,4 @@ export class EditLossInformationComponent implements OnInit {
       this.router.navigate(['/claims', this.claimId(), 'overview']);
     }
   }
-
-  getEventCauseOptions(eventKey: string) {
-    const schema = getCauseSchema(eventKey) ?? DEFAULT_CAUSE_SCHEMA;
-    return schema?.causedByOptions ?? [];
-  }
-
-  getEventDamageOptions(_eventKey: string) {
-    return this.typeOfDamageOptions();
-  }
-
-  isEventCauseSelected(eventGroup: FormGroup, value: string): boolean {
-    const v = eventGroup.get('causedBy')?.value as string[] ?? [];
-    return v.includes(value);
-  }
-
-  toggleEventCause(eventGroup: FormGroup, value: string): void {
-    const ctrl = eventGroup.get('causedBy');
-    if (!ctrl) return;
-    const cur = (ctrl.value as string[]) ?? [];
-    ctrl.markAsDirty();
-    ctrl.setValue(cur.includes(value) ? cur.filter(x => x !== value) : [...cur, value]);
-  }
-
-  isEventDamageSelected(eventGroup: FormGroup, value: string): boolean {
-    const v = eventGroup.get('damages')?.value as string[] ?? [];
-    return v.includes(value);
-  }
-
-  toggleEventDamage(eventGroup: FormGroup, value: string): void {
-    const ctrl = eventGroup.get('damages');
-    if (!ctrl) return;
-    const cur = (ctrl.value as string[]) ?? [];
-    ctrl.markAsDirty();
-    ctrl.setValue(cur.includes(value) ? cur.filter(x => x !== value) : [...cur, value]);
-  }
-
-  getEventGroup(i: number): FormGroup { return this.eventsArray.at(i) as FormGroup; }
-  getEventKey(i: number): string { return this.eventsArray.at(i).get('eventKey')?.value as string ?? ''; }
 }
