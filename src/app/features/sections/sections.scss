@@ -442,14 +442,8 @@ $brand-blue:          var(--info);
   opacity: 0.65;
 }
 
-// ─── Section title cell — inner div only, NOT on <td> ────────────
+// ─── Section title cell ──────────────────────────────────────────
 .section-title-cell {
-  &__inner {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
   &__name {
     font-weight: 600;
     color: $text-main;
@@ -461,11 +455,14 @@ $brand-blue:          var(--info);
   width: 100%;
   table-layout: fixed;
 
-  .col-toggle   { width: 48px;  padding: 0 !important; }
-  .col-entity   { width: 24%; }
-  .col-damage   { width: 26%; }
+  // overflow/ellipsis reset: this column only ever holds an icon-button, never
+  // truncatable text — whitespace text nodes around the button otherwise trip
+  // the inherited text-overflow:ellipsis into showing a stray "…" mark.
+  .col-toggle   { width: 48px;  padding: 0 !important; overflow: visible !important; text-overflow: clip !important; white-space: normal !important; }
+  .col-entity   { width: 18%; }
+  .col-status   { width: 90px; }
+  .col-damage   { width: 24%; }
   .col-coverage  { width: 240px; }
-  .col-comments  { width: 56px; text-align: center !important; padding: var(--space-sm) var(--space-xs) !important; }
   .col-actions   { width: 56px; text-align: center !important; padding: 0 !important; }
 
   th[nxHeaderCell] {
@@ -606,27 +603,6 @@ button[nxContextMenuItem] {
 }
 
 [nxHeadline] { color: var(--text-01) !important; }
-
-.sec-comment-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: none;
-  border-radius: 4px;
-  background: none;
-  color: var(--interactive-primary);
-  cursor: pointer;
-
-  &:hover:not(:disabled) { background: var(--ui-02); }
-
-  &:disabled {
-    color: var(--text-muted);
-    cursor: not-allowed;
-  }
-}
 
 .sec-kebab-btn {
   background: none;

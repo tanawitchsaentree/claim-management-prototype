@@ -14,7 +14,6 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom, catchError, of } from 'rxjs';
 import { ClaimSection, SectionEntity, InstructionStatus } from '../../core/models/section.model';
 import { MockNotesService } from '../../core/mock/services/mock-notes.service';
-import { Note } from '../../core/models/note.model';
 import {
   CoverageReviewModalComponent,
   CoverageReviewModalData,
@@ -110,7 +109,6 @@ export class Sections {
   readonly sections       = signal<ClaimSection[]>([]);
   readonly loading        = signal(true);
   readonly loadError      = signal(false);
-  readonly allNotes       = signal<Note[]>([]);
   readonly selectedEntity  = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
   readonly selectedSection = signal<ClaimSection | null>(null);
   readonly hasDetailOpen   = computed(() => !!this.selectedEntity() || !!this.selectedSection());
@@ -125,13 +123,11 @@ export class Sections {
       this.loading.set(true);
       this.loadError.set(false);
       try {
-        const [sections, notes, claim] = await Promise.all([
+        const [sections, claim] = await Promise.all([
           firstValueFrom(this.sectionSvc.getByClaimId(id)),
-          firstValueFrom(this.notesSvc.getByClaim(id)),
           firstValueFrom(this.overviewSvc.getOverview(id)),
         ]);
         this.sections.set(sections);
-        this.allNotes.set(notes);
         this.claimClosed.set(claim.status === 'Closed');
       } catch {
         this.loadError.set(true);
@@ -165,21 +161,13 @@ export class Sections {
     this.selectedSection.set(null);
   }
 
-  private noteFor(entityName: string): Note | undefined {
-    return this.allNotes().find(n =>
-      n.body.toLowerCase().includes(entityName.toLowerCase()) ||
-      (n.title ?? '').toLowerCase().includes(entityName.toLowerCase())
-    );
-  }
-
-  hasNoteFor(entityName: string): boolean {
-    return !!this.noteFor(entityName);
-  }
-
-  viewEntityComments(entityName: string): void {
-    const note = this.noteFor(entityName);
-    if (!note) return;
-    this.stripSvc.open('comments', note.id);
+  // Opens the Comments panel scoped to this section — matches notes attached
+  // to the section itself OR to any of its entities, since notes are added at
+  // either level (see CONVERSIONS.md Phase 2 item 1: entry point moved from a
+  // per-entity-row icon to this section-level "View notes" action).
+  onViewNotes(section: ClaimSection): void {
+    const names = [section.name, ...section.entities.map(e => e.name)];
+    this.stripSvc.openScoped('comments', section.name, names);
   }
 
   // ── Section kebab actions ──────────────────────────────────────
@@ -336,14 +324,15 @@ export class Sections {
       )
     );
 
-    const updatedNotes = await firstValueFrom(
+    // allNotes is a live computed off the shared notes store — addNote() already
+    // updates that store, so no separate assignment is needed here.
+    await firstValueFrom(
       this.notesSvc.addNote(claimId, {
         title:   `Coverage review override — ${entity.name}`,
         section: 'general',
         body:    `Coverage review changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`,
       })
     );
-    this.allNotes.set(updatedNotes);
 
     this.toast.success(`Coverage review updated for "${entity.name}"`);
   }

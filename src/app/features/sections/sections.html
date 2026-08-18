@@ -63,9 +63,9 @@
       <tr nxTableRow>
         <th nxHeaderCell class="col-toggle"></th>
         <th nxHeaderCell class="col-entity">Entity</th>
+        <th nxHeaderCell class="col-status">Status</th>
         <th nxHeaderCell class="col-damage">Damage</th>
         <th nxHeaderCell class="col-coverage">Coverage review</th>
-        <th nxHeaderCell class="col-comments">Comments</th>
         <th nxHeaderCell class="col-actions">Action</th>
       </tr>
     </thead>
@@ -102,12 +102,13 @@
               <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
             </button>
           </td>
-          <td nxTableCell colspan="4">
-            <div class="section-title-cell__inner">
-              <span class="section-title-cell__name">{{ section.name }}</span>
-              <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
-            </div>
+          <td nxTableCell class="col-entity">
+            <span class="section-title-cell__name">{{ section.name }}</span>
           </td>
+          <td nxTableCell class="col-status">
+            <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
+          </td>
+          <td nxTableCell colspan="2"></td>
           <td nxTableCell class="col-actions">
             <button class="sec-kebab-btn" type="button"
               [nxContextMenuTriggerFor]="sectionMenu"
@@ -134,15 +135,21 @@
                 Add note
               </button>
               <button nxContextMenuItem type="button"
+                (click)="onViewNotes(section)">
+                View notes
+              </button>
+              <button nxContextMenuItem type="button"
                 [disabled]="claimClosed() || section.status === 'Closed'"
                 (click)="onCloseSection(section)">
                 Close section
               </button>
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed() || section.status !== 'Closed'"
-                (click)="onReopenSection(section)">
-                Reopen section
-              </button>
+              @if (section.status === 'Closed') {
+                <button nxContextMenuItem type="button"
+                  [disabled]="claimClosed()"
+                  (click)="onReopenSection(section)">
+                  Reopen section
+                </button>
+              }
             </nx-context-menu>
           </td>
         </tr>
@@ -161,6 +168,7 @@
                 }
               </td>
               <td nxTableCell class="col-entity">{{ entity.name }}</td>
+              <td nxTableCell class="col-status"></td>
               <td nxTableCell class="col-damage">{{ entity.damage }}</td>
               <td nxTableCell class="col-coverage">
                 <div class="coverage-cell">
@@ -175,15 +183,6 @@
                     <span class="coverage-empty">–</span>
                   }
                 </div>
-              </td>
-              <td nxTableCell class="col-comments">
-                <button class="sec-comment-icon-btn" type="button"
-                  [disabled]="!hasNoteFor(entity.name)"
-                  (click)="viewEntityComments(entity.name)"
-                  [nxTooltip]="hasNoteFor(entity.name) ? 'View comments' : 'No comments'"
-                  [attr.aria-label]="hasNoteFor(entity.name) ? 'View comments' : 'No comments'">
-                  <nx-icon name="speech-bubble-o" size="s"></nx-icon>
-                </button>
               </td>
               <td nxTableCell class="col-actions">
                 <button class="sec-kebab-btn" type="button"

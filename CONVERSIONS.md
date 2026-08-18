@@ -23,7 +23,22 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
-## 2026-08-18 — Sections comment icon: scoped notes panel for 5+ notes (proposal, not signed off)
+## 2026-08-18 — Edit Claim Phase 2, Item 1: comment icon removed, panel redesigned, entry point moved to section-level
+
+- **Source:** Isabelle's confirmed Phase 2 decisions. **Supersedes the entry below** ("Sections comment icon: scoped notes panel for 5+ notes") — that entry's per-line icon trigger was never signed off; this entry is the resolution.
+- **Module:** `sections.{ts,html,scss}`, `right-strip.service.ts`, `claim-right-strip.component.{ts,html}`, `claim-notes-panel.component.{ts,html,scss}`.
+
+1. **Removed:** the per-entity-row comment icon + count badge (`sec-comment-icon-btn`, `sec-comment-count`) and its whole "Comments" table column (header + cells + colspan math across loading/error/empty/section-header rows). `notesCountFor`/`hasNoteFor`/`viewEntityComments` and the `allNotes`/`claimIdSig` live-sync signals that only existed to feed them are gone too — dead once the trigger was gone.
+2. **⚠ FLAGGED INTERPRETATION — new entry point.** Isabelle's brief named two options ("Claim Overview action area" or "a Sections-level 'View notes' button") without picking one. Built: a **"View notes" item in the section-level kebab menu**, next to the existing "Add note" item (`sections.html`, section context menu). Chosen over a Claim Overview action because it's the more surgical change (same menu, same interaction pattern as "Add note" which already existed there) and because per-entity notes still needed a way to surface once grouped — see point 3. **If Isabelle wanted the Claim Overview entry point instead, this is a small relocation, not a rebuild** — the panel and scope mechanism are entry-point-agnostic.
+3. **Scope widened from "one entity" to "a section and its entities."** `RightStripService.openScoped(panel, label, names)` now takes a match list, not a single name — `onViewNotes(section)` passes `[section.name, ...section.entities.map(e => e.name)]`. Necessary because existing notes are attached at the entity level (`attachedTo: "Forklift"`), never at the section level — a literal section-name-only match would have shown zero notes for every real fixture. Not explicitly specified in the brief; flagging as the only way the feature could work with real data.
+4. **Panel redesigned per spec — single flat list, minimal card.** Removed the PINNED/ACTIVITY split into one pinned-first-then-newest list (still respects the `pinned` flag, just no separate section header for it). Note card now shows exactly author, timestamp, body text, and one pin-toggle icon button — **removed the avatar, the category chip, and the per-note kebab menu** (edit/delete were unimplemented `/* phase 2 */` stubs already, so removing that menu costs nothing functional; pin/unpin was preserved as a single icon button since the "Pinned" filter needs a way to be populated). **⚠ FLAGGED:** "no per-note visual bloat" was read literally as "exactly these 3 things" — if avatar/chip/edit/delete were meant to stay and only the entry point + grouping needed to change, that's a partial revert, not a rebuild.
+5. **Filter dropdown (All/Pinned/Recovery/Litigation/General) kept** — not mentioned for removal, and narrowing by category is a real aid at 20+ notes, which is the scale this redesign targets. Disabled in scoped view (filtering "this section's notes by category" wasn't asked for and the list is already small by definition).
+6. Existing 5-per-page "Load more" pagination is unchanged and handles the "5+ notes" scale case — no virtual scroll needed at this data size.
+- **Audit:** `npm run build` 0 errors, `npm run pre-commit` 17/18 (unchanged pre-existing `audit:ndbx-wrapper` failure, unrelated), `npm run audit:ac-logic` 49/49. Verified in-browser: Comments column gone, "View notes" opens scoped panel aggregating section + entity notes correctly (6 for Property Damage — Warehouse & Forklift), "All notes" flat list shows pinned-first ordering, minimal card renders with no avatar/chip/menu.
+
+---
+
+## 2026-08-18 — Sections comment icon: scoped notes panel for 5+ notes (proposal, not signed off) — SUPERSEDED, see entry above
 
 - **Source:** Ruby's ask on the Sections review — "share a design on how the side-panel could look if there are 5 or more notes against a section." Built as a pilot to show her, per explicit instruction that anything built today for unclear/unconfirmed points is a proposal, not a finalized decision.
 - **Module:** `note.model.ts`, `mock-notes.service.ts`, `right-strip.service.ts`, `claim-right-strip.component.ts/html`, `claim-notes-panel.component.{ts,html,scss}`, `sections.{ts,html,scss}`.

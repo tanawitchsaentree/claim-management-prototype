@@ -9,7 +9,7 @@ import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { ClaimNotesPanelComponent } from '../../claims/claim-notes-panel/claim-notes-panel.component';
 import { ClaimReferencePanelComponent } from '../../claims/claim-reference-panel/claim-reference-panel.component';
 import { ReferenceViewService } from '../../claims/claim-reference-panel/reference-view.service';
-import { RightStripService } from '../../../core/services/right-strip.service';
+import { RightStripService, NotesScope } from '../../../core/services/right-strip.service';
 
 interface StripItem {
   icon: string;
@@ -47,6 +47,7 @@ export class ClaimRightStripComponent {
   collapsed = false;
   pendingHighlightId: string | null = null;
   pendingQuickAddEntity: string | null = null;
+  pendingScope: NotesScope | null = null;
 
   readonly items: StripItem[] = [
     { icon: 'info-circle-o',   label: 'Claim info',    key: 'info' },
@@ -79,6 +80,7 @@ export class ClaimRightStripComponent {
       const key = this.stripSvc.consume()!;
       this.pendingHighlightId = this.stripSvc.consumeHighlight();
       this.pendingQuickAddEntity = this.stripSvc.consumeQuickAdd();
+      this.pendingScope = this.stripSvc.consumeScope();
       this.activate(key, true);
     });
   }
