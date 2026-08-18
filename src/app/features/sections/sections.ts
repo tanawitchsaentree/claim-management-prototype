@@ -224,24 +224,24 @@ export class Sections {
     });
     const result = await firstValueFrom(ref.afterClosed()) as AddSectionEntityModalResult | undefined;
     if (!result) return;
-    await firstValueFrom(this.sectionSvc.addEntity(result.sectionId, {
-      name:              result.name,
-      damage:            result.damage,
-      instructionStatus: result.instructionStatus,
-    }));
-    this.sections.update(list =>
-      list.map(s => s.id === result.sectionId
-        ? { ...s, entities: [...s.entities, {
-            id: `SE-${Date.now()}`,
-            name: result.name,
-            damage: result.damage,
-            instructionStatus: result.instructionStatus,
-            expandable: false,
-          }] }
-        : s
-      )
-    );
-    this.toast.success(`Entity "${result.name}" added`);
+
+    // Modal submits one selection across possibly-multiple damage-type groups —
+    // add each as its own entity, all sharing the section + instruction status
+    // picked once for the whole submission. MockSectionService.addEntity()
+    // mutates the shared ClaimSection object in place (no cloning) — this.sections()
+    // already holds those same references, so appending again here would
+    // double the entity. Just refresh the outer array reference to re-render.
+    for (const e of result.entities) {
+      await firstValueFrom(this.sectionSvc.addEntity(result.sectionId, {
+        name:              e.name,
+        damage:            e.damage,
+        instructionStatus: result.instructionStatus,
+      }));
+    }
+
+    this.sections.update(list => [...list]);
+    const count = result.entities.length;
+    this.toast.success(`${count} entit${count === 1 ? 'y' : 'ies'} added`);
   }
 
   toggleEntityExpand(section: ClaimSection, entityId: string): void {

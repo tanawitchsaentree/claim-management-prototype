@@ -23,6 +23,21 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-18 — Edit Claim Phase 2, Item 2: Add entity → damage-type multi-select with grouped entity checklists
+
+- **Source:** Isabelle's confirmed Phase 2 decisions, referencing her Miro sketch (grouped lists per damage type).
+- **Module:** `add-section-entity-modal.component.{ts,html,scss}`, `sections.ts` (`onAddEntity`).
+
+1. **Removed the free-text "Entity name" input entirely.** No typed name path remains.
+2. **Damage type is now `nx-multi-select`**, not a single dropdown — matches the exact `[options]/selectValue/selectLabel` pattern already used for FNOL's Cause of loss / Type of damage multi-selects (`step-loss-information.component.html:60-76`), not invented fresh.
+3. **One independent checkbox group per selected damage type**, titled with the damage type name, entities listed as `nx-checkbox` rows. Selections are tracked per damage type (a `Record<string, Set<string>>` signal), not a shared reactive-forms array — simpler for a dynamic number of independent groups.
+4. **Single "Add entity" submits all selections across all groups at once** — one `AddSectionEntityModalResult` with `entities: { name, damage }[]`, plus one shared `sectionId`/`instructionStatus` for the whole batch (Section and Instruction status dropdowns unchanged, as specified).
+5. **⚠ FLAGGED — entity list source invented.** No damage-type → entity mapping existed anywhere in mock data (confirmed by grep, per the brief's own point 7). Added `DAMAGE_TYPE_ENTITIES` inline in the modal component — generic, demo-plausible names per damage type (e.g. Material damage → Warehouse Racking, Loading Dock Doors...), not tied to any real claim's fixtures. **If Isabelle has a real candidate-entity list, this mapping needs to be replaced, not just extended.**
+6. **Bug found and fixed while wiring the multi-entity submit:** `MockSectionService.addEntity()` mutates the shared `ClaimSection` object in place (the service never clones — `list()`/`respond()` pass the same references straight through). `sections.ts`'s `onAddEntity()` was *also* manually appending a client-fabricated entity to the `sections` signal after calling the service — double-adding every entity (visually: the same name/damage appeared twice per submission). This bug pre-dates this session (the original single-entity code had the identical pattern, just less visible with only one entity at a time). Fixed by letting the service's in-place mutation stand and just refreshing the outer array reference (`this.sections.update(list => [...list])`) to trigger re-render, instead of appending a second time.
+- **Audit:** `npm run build` 0 errors, `npm run pre-commit` 17/18 (same pre-existing `audit:ndbx-wrapper` failure), `npm run audit:ac-logic` 49/49. Verified in-browser: selecting 2 damage types renders 2 independent checkbox groups; checking one entity in each and submitting adds exactly 2 entities (confirmed no duplication after the fix) with the correct damage type per entity.
+
+---
+
 ## 2026-08-18 — Edit Claim Phase 2, Item 1: comment icon removed, panel redesigned, entry point moved to section-level
 
 - **Source:** Isabelle's confirmed Phase 2 decisions. **Supersedes the entry below** ("Sections comment icon: scoped notes panel for 5+ notes") — that entry's per-line icon trigger was never signed off; this entry is the resolution.
