@@ -6,7 +6,8 @@
     "providerName": "Allianz Expertise Center",
     "providerType": "adjuster",
     "status": "Completed",
-    "assignedDate": "2024-12-10"
+    "assignedDate": "2024-12-10",
+    "contact": "expertise.center@allianz.com"
   },
   {
     "assignmentId": "PA-002",
@@ -15,6 +16,7 @@
     "providerName": "Munich Legal Counsel GmbH",
     "providerType": "legal",
     "status": "Completed",
-    "assignedDate": "2024-11-05"
+    "assignedDate": "2024-11-05",
+    "contact": "contact@munich-legal.example"
   }
 ]

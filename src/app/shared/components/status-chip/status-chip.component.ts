@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 type ClaimStatus = 'open' | 'in-progress' | 'priced' | 'quoted' | 'bound' | 'declined' | 'closed';
 type TaskStatus  = 'open' | 'in-progress' | 'done' | 'pending' | 'not-assigned' | 'completed';
 type EntityStatus = 'promised' | 'conditional' | 'by-extension' | 'not-promised';
-type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'skeleton-claim' | 'mass-event' | 'coverage-review';
+type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'skeleton-claim' | 'mass-event' | 'coverage-review' | 'provider-assignment';
 
 // Maps status + domain to the CSS custom property pair defined in styles.scss.
 // Using a lookup avoids any hardcoded hex values here.
@@ -71,12 +71,17 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     'confirmed':  'claim-status-bound',
     'overridden': 'task-status-not-assigned',
   },
-  // PI 2026.3 UI/UX Alignment item 8 — coverage-review had no color mapping,
-  // rendered as flat gray text regardless of status.
+  // Reverted per product feedback 2026-08-18 — coverage review status should
+  // read as neutral, not color-coded by outcome.
   'coverage-review': {
-    'standard-review':                  'claim-status-bound',
-    'enhanced-review-required':         'task-status-in-progress',
-    'additional-information-required':  'claim-status-declined',
+    'standard-review':                  'claim-status-quoted',
+    'enhanced-review-required':         'claim-status-quoted',
+    'additional-information-required':  'claim-status-quoted',
+  },
+  'provider-assignment': {
+    'active':    'claim-status-bound',
+    'completed': 'claim-status-closed',
+    'cancelled': 'claim-status-declined',
   },
 };
 

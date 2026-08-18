@@ -1,0 +1,32 @@
+<app-page-header title="Provider management"></app-page-header>
+
+@if (loading()) {
+  <p class="pm-empty">Loading…</p>
+} @else if (rows().length === 0) {
+  <app-empty-state message="No providers assigned to this claim yet."></app-empty-state>
+} @else {
+  <table nxTable class="pm-table">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell>Provider name</th>
+        <th nxHeaderCell>Type</th>
+        <th nxHeaderCell>Status</th>
+        <th nxHeaderCell>Assigned date</th>
+        <th nxHeaderCell>Contact</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.assignmentId) {
+        <tr nxTableRow [class.pm-row--highlighted]="isHighlighted(row)">
+          <td nxCell>{{ row.providerName }}</td>
+          <td nxCell>{{ typeLabel(row.providerType) }}</td>
+          <td nxCell>
+            <app-status-chip [status]="chipStatus(row.status)" domain="provider-assignment" [label]="row.status"></app-status-chip>
+          </td>
+          <td nxCell>{{ row.assignedDate | appDate }}</td>
+          <td nxCell>{{ row.contact ?? '–' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

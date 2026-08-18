@@ -97,7 +97,13 @@ export const routes: Routes = [
       },
       { path: 'claims/:id/limits',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       { path: 'claims/:id/recoveries', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
-      { path: 'claims/:id/providers',  redirectTo: 'claims/:id/overview', pathMatch: 'full' },
+      {
+        path: 'claims/:id/providers',
+        loadComponent: () =>
+          import('./features/claims/provider-management/provider-management.component').then(
+            m => m.ProviderManagementComponent
+          ),
+      },
       {
         path: 'claims/:id/risk',
         loadComponent: () =>

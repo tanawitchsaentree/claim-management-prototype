@@ -9,6 +9,7 @@ export interface ProviderAssignment {
   providerType: ProviderType;
   status: ProviderAssignmentStatus;
   assignedDate: string;
+  contact?: string;
 }
 
 export interface ProviderAssignmentFilters {

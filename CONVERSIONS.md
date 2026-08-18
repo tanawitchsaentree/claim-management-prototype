@@ -15,6 +15,21 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-18 — Edit Claim Phase 2, Item 3: real Provider Management page; Instruct provider/Make payment wired away from modals
+
+- **Source:** Isabelle's confirmed Phase 2 decisions.
+- **Module:** new `features/claims/provider-management/*`, `app.routes.ts`, `sections.ts`, `status-chip.component.ts`, `provider-assignment.model.ts` + fixture.
+
+1. **`MockProviderService`/`ProviderAssignment` already existed** (per the brief's own hint to check first) — backing `hasActiveProvider` closure-blocker logic (`claim-closure.service.ts`), but with no display page anywhere. Built `ProviderManagementComponent` on top of it rather than a new service: `claims/:id/providers` now `loadComponent`s a real page instead of `redirectTo: overview`. Follows the Litigation/Financial page conventions exactly — `route.snapshot.paramMap.get('id')` with `.parent` fallback (matching `financial-overview.component.ts:90-91`, not Litigation's `.parent`-only read, which looked likely-broken on inspection — see flag below), `NxTableModule`/`nxCell` (not Sections' `nxTableCell`), `PageHeaderComponent`, `EmptyStateComponent`, `StatusChipComponent`.
+2. **Columns:** Provider name, Type, Status (chip), Assigned date, Contact. `contact` didn't exist on the model — added as an optional field, backfilled on the 2 existing `CLM-2024-001` fixture records only (no new records, no status changes — `getActiveAssignmentsForClaim` feeds `hasActiveProvider`, and CLM-2024-001's closure ACs depend on that being false today; adding an 'Active' record would have risked the 49/49 `audit:ac-logic` requirement, so deliberately not done).
+3. **New `provider-assignment` StatusChipComponent domain** (Active/Completed/Cancelled), reusing existing color tokens (`claim-status-bound`/`-closed`/`-declined`) rather than inventing new ones — same borrow-don't-invent pattern as the existing `policy` domain.
+4. **`onInstructProvider`/`onMakePayment` in `sections.ts` now navigate instead of opening modals.** Instruct provider → `/claims/:id/providers?sectionId=<id>` (the new page reads this query param and highlights the matching row — built fresh, so no gap here). Make payment → `/claims/:id/financial?view=payments` (Financial Overview's existing `view` query param, confirmed already consumed at `financial-overview.component.ts:48-49`). **Gap noted, not fixed:** Financial's `sectionId` signal (`financial-overview.component.ts:47`) is only ever set internally from loaded data — it does not read a query param — so Make Payment cannot pre-filter to the clicked section today. Fixing that is a change to Financial Overview, out of scope here.
+5. **`MakePaymentModalComponent`/`InstructProviderModalComponent` deleted** — confirmed via grep that `sections.ts` was their only caller before removing the imports and the files.
+- **⚠ FLAGGED — pre-existing possible bug noticed, not touched.** `LitigationComponent` reads claim id via `this.route.parent?.snapshot.paramMap.get('id')` only (no fallback to its own route). Since `claims/:id/litigation` declares `:id` directly on its own route (not a parent), and the Shell wrapper route (`path: ''`) has no `:id`, this read looks like it should return `undefined`/empty. Not fixed — out of scope for Phase 2, flagging for whoever owns that page next.
+- **Audit:** `npm run build` 0 errors, `npm run pre-commit` 17/18 (same pre-existing `audit:ndbx-wrapper` failure), `npm run audit:ac-logic` 49/49 confirmed unaffected. Verified in-browser: Provider management page renders both fixture rows with contact info; "Instruct provider" navigates and highlights the correct row via `sectionId`; "Make payment" lands directly on the real Payments tab.
+
+---
+
 ## 2026-08-18 — Edit Claim Phase 2, Item 4: cause-of-loss/location redirect signed off
 
 - **Source:** Isabelle's confirmed Phase 2 decisions ("BUILD — Edit Claim Phase 2").

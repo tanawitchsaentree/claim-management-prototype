@@ -37,16 +37,6 @@ import {
 } from './edit-entity-damage-modal/edit-entity-damage-modal.component';
 import { EntityDetailPanelComponent } from './entity-detail-panel/entity-detail-panel.component';
 import { SectionDetailPanelComponent } from './section-detail-panel/section-detail-panel.component';
-import {
-  MakePaymentModalComponent,
-  MakePaymentModalData,
-  MakePaymentModalResult,
-} from './make-payment-modal/make-payment-modal.component';
-import {
-  InstructProviderModalComponent,
-  InstructProviderModalData,
-  InstructProviderModalResult,
-} from './instruct-provider-modal/instruct-provider-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
   AddSectionEntityModalComponent,
@@ -87,8 +77,6 @@ import {
     CoverageReviewModalComponent,
     EntityDetailPanelComponent,
     SectionDetailPanelComponent,
-    MakePaymentModalComponent,
-    InstructProviderModalComponent,
     ConfirmDialogComponent,
     AddSectionEntityModalComponent,
   ],
@@ -172,26 +160,18 @@ export class Sections {
 
   // ── Section kebab actions ──────────────────────────────────────
 
-  async onMakePayment(section: ClaimSection): Promise<void> {
-    const ref = this.dialogSvc.open(MakePaymentModalComponent, {
-      data: { section } satisfies MakePaymentModalData,
-      width: '500px',
-      maxWidth: '92vw',
-    });
-    const result = await firstValueFrom(ref.afterClosed()) as MakePaymentModalResult | undefined;
-    if (!result) return;
-    this.toast.success(`Payment of ${result.amount} ${result.currency} submitted for ${section.name}`);
+  // A dedicated Payments-capable page already exists (Financial Overview's
+  // "payments" tab) — send the user there instead of a standalone modal.
+  // No section-level pre-filter: that page's `sectionId` signal is only ever
+  // set internally from loaded data, it doesn't read a query param today.
+  onMakePayment(section: ClaimSection): void {
+    const claimId = this.route.snapshot.params['id'];
+    this.router.navigate(['/claims', claimId, 'financial'], { queryParams: { view: 'payments' } });
   }
 
-  async onInstructProvider(section: ClaimSection): Promise<void> {
-    const ref = this.dialogSvc.open(InstructProviderModalComponent, {
-      data: { section } satisfies InstructProviderModalData,
-      width: '500px',
-      maxWidth: '92vw',
-    });
-    const result = await firstValueFrom(ref.afterClosed()) as InstructProviderModalResult | undefined;
-    if (!result) return;
-    this.toast.success(`Instruction sent to ${result.provider} for ${section.name}`);
+  onInstructProvider(section: ClaimSection): void {
+    const claimId = this.route.snapshot.params['id'];
+    this.router.navigate(['/claims', claimId, 'providers'], { queryParams: { sectionId: section.id } });
   }
 
   async onCloseSection(section: ClaimSection): Promise<void> {
