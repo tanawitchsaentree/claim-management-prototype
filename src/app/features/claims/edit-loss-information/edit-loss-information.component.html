@@ -26,14 +26,21 @@
   <!-- Card 2: Loss information -->
   <section class="eli-card">
     <h2 class="eli-section-heading">Loss information</h2>
-    <p class="eli-section-desc">Cause of loss determines the events listed below.</p>
 
-    <nx-formfield label="Cause of loss" class="eli-full-width">
-      <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
-        placeholder="Select cause of loss" formControlName="causeOfLoss"
-        (selectionChange)="onCauseOfLossChange($event)">
-      </nx-multi-select>
-    </nx-formfield>
+    @if (!causeEditMode()) {
+      <div class="eli-field">
+        <span class="eli-label">Cause of loss</span>
+        <span class="eli-value">{{ causeOfLossDisplay }}</span>
+        <nx-link size="small"><a (click)="causeEditMode.set(true)">Change</a></nx-link>
+      </div>
+    } @else {
+      <nx-formfield label="Cause of loss" class="eli-full-width">
+        <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
+          placeholder="Select cause of loss" formControlName="causeOfLoss">
+        </nx-multi-select>
+      </nx-formfield>
+      <nx-link size="small"><a (click)="causeEditMode.set(false)">Done</a></nx-link>
+    }
 
     <hr class="eli-divider" />
     <h3 class="eli-sub-heading">When did the loss occur?</h3>
@@ -85,45 +92,6 @@
       (locationChange)="lossLocation.setValue($event); form.markAsDirty()">
     </app-location-picker>
   </section>
-
-  <!-- Card 4: Events details -->
-  <section class="eli-card">
-    <h2 class="eli-section-heading">Events details</h2>
-    @if (eventsArray.length === 0) {
-      <p class="eli-empty">Select Cause of loss to see event details.</p>
-    } @else {
-      @for (ctrl of eventsArray.controls; track ctrl; let i = $index) {
-        <div class="eli-event-block" [class.eli-event-block--divider]="i > 0">
-          <h3 class="eli-sub-heading">{{ getEventKey(i) }}</h3>
-          @if (getEventCauseOptions(getEventKey(i)).length > 0) {
-            <div class="eli-field-group">
-              <p class="eli-field-label">Caused by</p>
-              <div class="eli-checkbox-row">
-                @for (opt of getEventCauseOptions(getEventKey(i)); track opt.value) {
-                  <nx-checkbox [checked]="isEventCauseSelected(getEventGroup(i), opt.value)"
-                               (checkedChange)="toggleEventCause(getEventGroup(i), opt.value)">
-                    {{ opt.label }}
-                  </nx-checkbox>
-                }
-              </div>
-            </div>
-          }
-          <div class="eli-field-group">
-            <p class="eli-field-label">Damages</p>
-            <div class="eli-checkbox-row">
-              @for (dmg of typeOfDamageOptions(); track dmg.value) {
-                <nx-checkbox [checked]="isEventDamageSelected(getEventGroup(i), dmg.value)"
-                             (checkedChange)="toggleEventDamage(getEventGroup(i), dmg.value)">
-                  {{ dmg.label }}
-                </nx-checkbox>
-              }
-            </div>
-          </div>
-        </div>
-      }
-    }
-  </section>
-
 
   @if (saveSuccess()) {
     <nx-message context="success" class="eli-save-success">

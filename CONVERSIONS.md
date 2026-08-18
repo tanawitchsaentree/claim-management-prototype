@@ -4,6 +4,17 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-18 — Edit Claim Phase 2, Item 5: Event details removal re-verified, no contradiction
+
+- **Source:** Isabelle's Phase 2 build brief flagged an apparent contradiction between two audits: an earlier one (2026-08-16 entry, line ~137 below: "explicitly out of scope") and a later one reporting Events details "fully absent." Re-verified by grepping `edit-loss-information.component.{ts,html}` for `event`/`FormArray` directly.
+- **Not a contradiction — a timeline.** The 2026-08-16 entry describes state *before* this removal was done: at that point Events details was deliberately left alone (out of scope for that session's causeDetails cleanup). The 2026-08-18 entry earlier in this file ("Edit Loss Information: Events details card removed") is where it was actually removed, *within this same session*, per Ruby's Miro decision. The later "fully absent" audit is correct because the removal already happened; the earlier "untouched" note was also correct for its own point in time. Both audits were right when they were written.
+- **Verification now:** no `events` FormArray, no Events details card markup, no orphaned helper methods in either file — confirmed clean (this was already the state after the same-session removal; nothing new to delete).
+- **One leftover found and fixed:** `eli-section-desc` copy under "Loss information" still read "Cause of loss determines the events listed below" — a stale reference to the removed card. Removed the line (`edit-loss-information.component.html`).
+- **FNOL confirmed untouched:** `step-loss-information.component.ts/html` still has its own, separate `eventsArray` (via `FnolStateService.getLossEventsArray()`) and "Events details" card, fully intact — FNOL still captures events at notification, per the original consolidation decision that this removal is edit-screen-only.
+- **Model fields (`LossInformation.events`, `.typeOfDamage`) intentionally NOT removed** — FNOL still writes them, so they are not orphaned at the model/service level, only unused by the edit screen's UI.
+
+---
+
 ## 2026-08-18 — Edit Claim Phase 2, Item 4: cause-of-loss/location redirect signed off
 
 - **Source:** Isabelle's confirmed Phase 2 decisions ("BUILD — Edit Claim Phase 2").
