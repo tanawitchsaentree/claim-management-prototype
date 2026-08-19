@@ -4,6 +4,17 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-19 — Notes panel collapse toggle: chevron direction reversed (mirrored copy-paste bug)
+
+- **Source:** User screenshot + report — expanding the notes panel left the collapse-arrow pointing the wrong way ("note มัน expand แล้วทำไมลูกศรไม่ชี้กลับไปวะ").
+- **Module:** `features/layout/claim-right-strip/claim-right-strip.component.html` (`.crs-toggle` icon binding only — no `.ts`/`.scss` change).
+- **Root cause:** the ternary `[name]="collapsed ? 'chevron-right' : 'chevron-left'"` was copy-pasted from `sidebar.html`'s footer toggle, which is correct there because the main nav sidebar is anchored on the LEFT edge (expanded → point left/collapse-toward-edge, collapsed → point right/expand-into-view). `claim-right-strip` is anchored on the RIGHT edge, so the same literal ternary pointed both chevrons backwards relative to their actual collapse/expand direction.
+- **Fix:** reversed to `collapsed ? 'chevron-left' : 'chevron-right'` — collapsed now points left (expand-into-view direction), expanded now points right (collapse-toward-own-edge direction), with a code comment explaining the mirroring so it isn't re-copied verbatim again.
+- **Checked for other direction-dependent code in the same component:** `.scss` has `right: 4px` (badge position, unrelated) and `border-left: 1px solid var(--ui-04)` (correct as-is — right-anchored panel needs a left border to separate from content). No other fixes needed.
+- **Audit:** `npx tsc --noEmit` clean, dev-server log clean, Playwright screenshots confirmed both states visually (`>` when expanded, `<` when collapsed).
+
+---
+
 ## 2026-08-18 — Edit Claim Phase 2, Item 5: Event details removal re-verified, no contradiction
 
 - **Source:** Isabelle's Phase 2 build brief flagged an apparent contradiction between two audits: an earlier one (2026-08-16 entry, line ~137 below: "explicitly out of scope") and a later one reporting Events details "fully absent." Re-verified by grepping `edit-loss-information.component.{ts,html}` for `event`/`FormArray` directly.
