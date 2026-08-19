@@ -1,3 +1,5 @@
+@use '../../../../shared/styles/form-section' as fs;
+
 .step-page {
   padding: var(--space-sm) 0 var(--space-4xl);
   max-width: 960px;
@@ -106,21 +108,9 @@
 
 // ─── Section card ──────────────────────────────────────────────────────
 
-.li-card {
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  padding: var(--space-xl);
-  margin-bottom: 16px;
-  background: var(--ui-01);
-}
+.li-card { @include fs.card; }
 
-.section-heading {
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  margin: 0 0 16px;
-  line-height: var(--paragraph-01-line-height);
-}
+.section-heading { @include fs.section-heading; }
 
 .section-desc {
   font-size: var(--paragraph-03-font-size);
@@ -128,28 +118,11 @@
   margin: -8px 0 24px; // $sp-xl — between-group gap must be ≥2× within-group (24 > 12)
 }
 
-.sub-heading {
-  font-size: var(--paragraph-02-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  margin: 0 0 16px; // $sp-base — heading-to-first-field gap
-  line-height: var(--paragraph-02-line-height);
-}
+.sub-heading { @include fs.sub-heading; }
 
 // ─── Grids ─────────────────────────────────────────────────────────────
 
-.two-col-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 24px;
-  align-items: start;
-
-  // px required — CSS custom properties cannot be used in @media conditions
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-}
+.two-col-grid { @include fs.two-col-grid; }
 
 .full-width {
   width: 100%;
@@ -215,11 +188,7 @@
 
 // ─── In-card divider ────────────────────────────────────────────────────
 
-.li-divider {
-  border: none;
-  border-top: 1px solid var(--ui-04);
-  margin: var(--space-lg) 0 var(--space-lg);
-}
+.li-divider { @include fs.divider; }
 
 .li-sub-heading {
   margin-top: 0;

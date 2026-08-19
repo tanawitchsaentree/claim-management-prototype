@@ -1,0 +1,58 @@
+// ─── Form-section layout — shared card/heading/divider/grid ────────────────
+// Single source for the "card of form fields" shape used by both FNOL step
+// pages (e.g. step-loss-information) and full-screen edit pages (e.g.
+// edit-loss-information). Extracted verbatim from what both files had
+// hand-copied independently — same values, now one declaration.
+//
+// Usage:
+//   @use '<relative path to>/shared/styles/form-section' as fs;
+//   .my-card           { @include fs.card; }
+//   .my-section-heading { @include fs.section-heading; }
+//   .my-sub-heading      { @include fs.sub-heading; }
+//   .my-divider          { @include fs.divider; }
+//   .my-two-col-grid     { @include fs.two-col-grid; }
+//
+// DO NOT redeclare these properties directly in a component's own scss —
+// @include the mixin instead, so the two screens stay in sync on purpose.
+
+@mixin card {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-xl);
+  margin-bottom: 16px;
+  background: var(--ui-01);
+}
+
+@mixin section-heading {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 16px;
+  line-height: var(--paragraph-01-line-height);
+}
+
+@mixin sub-heading {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 16px;
+}
+
+@mixin divider {
+  border: none;
+  border-top: 1px solid var(--ui-04);
+  margin: var(--space-lg) 0;
+}
+
+@mixin two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+  align-items: start;
+
+  // px required — CSS custom properties cannot be used in @media conditions
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

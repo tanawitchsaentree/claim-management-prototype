@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { editLossInformationCanDeactivate } from './features/claims/edit-loss-information/edit-loss-information.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -72,6 +73,7 @@ export const routes: Routes = [
           import('./features/claims/edit-loss-information/edit-loss-information.component').then(
             (m) => m.EditLossInformationComponent
           ),
+        canDeactivate: [editLossInformationCanDeactivate],
       },
       {
         path: 'claims/:id/sections',

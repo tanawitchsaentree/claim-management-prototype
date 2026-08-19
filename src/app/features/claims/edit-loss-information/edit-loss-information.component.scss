@@ -1,3 +1,5 @@
+@use '../../../shared/styles/form-section' as fs;
+
 :host { display: block; }
 
 .eli-loading {
@@ -10,16 +12,89 @@
 }
 
 // ─── Page layout ──────────────────────────────────────────────────────
+// 720px, centered — DESIGN_PRINCIPLES.md's own Form-page pattern for
+// /claims/:id/edit routes. Was 960px (FNOL wizard step width) — the single
+// biggest piece of "looks like FNOL" evidence; this brings it into
+// compliance with the app's documented spec rather than further from it.
 .eli-page {
-  max-width: 960px;
+  max-width: 720px;
+  margin: 0 auto;
   padding: 0 0 48px;
 }
 
-// ─── Page header ──────────────────────────────────────────────────────
-// ─── Footer — wizard step-footer pattern ─────────────────────────
+// ─── Page header actions — status chip + change counter ───────────────
+.eli-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eli-change-counter {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--interactive-primary);
+
+  &--none {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+}
+
+// ─── Change ledger — promoted diff, visible continuously not just at save ──
+.eli-ledger {
+  border: 1px solid var(--interactive-primary);
+  border-radius: 4px;
+  padding: var(--space-md) var(--space-xl);
+  margin-bottom: 16px;
+  background: var(--ui-02);
+}
+
+.eli-ledger__title {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 8px;
+}
+
+.eli-ledger__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.eli-ledger__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--ui-04);
+
+  &:first-child { border-top: none; }
+}
+
+.eli-ledger__field {
+  flex: 0 0 160px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.eli-ledger__delta {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.eli-ledger__was { text-decoration: line-through; }
+.eli-ledger__now { color: var(--text-01); font-weight: 600; }
+
+// ─── Footer — deliberately NOT the wizard step-footer shape. Primary action
+// (Save) sits at the LEFT edge, not the bottom-right "Next" coordinates a
+// user's FNOL muscle memory is trained on; Discard sits at the right.
 .eli-step-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   margin-top: 48px;
@@ -27,28 +102,21 @@
   border-top: 1px solid var(--ui-04);
 }
 
-// ─── Cards — matches li-card from step-loss-information ───────────────
-.eli-card {
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  padding: var(--space-xl);
-  margin-bottom: 16px;
-  background: var(--ui-01);
+// Same size as every other footer button in this app (audit:button-size
+// enforces no mixed sizes among siblings) — the icon + dynamic label are the
+// remaining differentiators beyond position, which is the axis that actually
+// matters for the trained-muscle-memory concern (Rental Car pattern).
+.eli-save-btn {
+  display: inline-flex;
+  align-items: center;
 }
 
-.eli-section-heading {
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  margin: 0 0 16px;
-}
+// ─── Cards — shared with FNOL's step-loss-information via _form-section ───
+.eli-card { @include fs.card; }
 
-.eli-sub-heading {
-  font-size: var(--paragraph-02-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  margin: 0 0 12px;
-}
+.eli-section-heading { @include fs.section-heading; }
+
+.eli-sub-heading { @include fs.sub-heading; }
 
 .eli-section-desc {
   font-size: var(--paragraph-03-font-size);
@@ -56,23 +124,56 @@
   margin: 0 0 16px;
 }
 
-.eli-divider {
-  border: none;
-  border-top: 1px solid var(--ui-04);
-  margin: var(--space-lg) 0;
-}
+.eli-divider { @include fs.divider; }
 
 .eli-full-width {
   width: 100%;
 }
 
-// ─── Two-col grid — matches step-loss-information ────────────────────
-.two-col-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 24px;
-  align-items: start;
+// Static value + "Change"/"Done" nx-link — matches .co-field/.co-label/.co-value
+// pattern from claim-overview.component.html (Assigned Claim handler + Reassign).
+.eli-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding-left: 10px;
+  border-left: 3px solid transparent;
+
+  // Non-colour-dependent change marker — a left rule + icon, not colour alone.
+  &--changed {
+    border-left-color: var(--interactive-primary);
+
+    .eli-value::before {
+      content: '●';
+      display: inline-block;
+      margin-right: 6px;
+      font-size: 8px;
+      vertical-align: middle;
+      color: var(--interactive-primary);
+    }
+  }
 }
+
+.eli-label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.eli-value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.eli-was {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+// ─── Two-col grid — shared with FNOL's step-loss-information ─────────
+.two-col-grid { @include fs.two-col-grid; }
 
 // ─── Radio field ─────────────────────────────────────────────────────
 .eli-radio-field { display: flex; flex-direction: column; gap: 6px; }
@@ -82,22 +183,6 @@
 // Compact regular accordion — tighter header padding
 .eli-card {
   --accordion-regular-header-padding: var(--space-sm) var(--space-base);
-}
-
-// ─── Events ──────────────────────────────────────────────────────────
-.eli-event-block {
-  padding: 0;
-  &--divider { border-top: 1px solid var(--ui-03); margin-top: 20px; padding-top: 20px; }
-}
-
-.eli-field-group { margin-bottom: 16px; }
-.eli-field-label { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); margin: 0 0 8px; }
-.eli-checkbox-row { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-
-.eli-empty {
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-muted);
-  margin: 0;
 }
 
 .eli-group-error {

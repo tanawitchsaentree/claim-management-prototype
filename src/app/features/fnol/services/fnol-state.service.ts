@@ -13,6 +13,7 @@ import { SkeletonClaim } from '../../../core/models/skeleton-claim.model';
 import { LossInformation } from '../../../core/models/loss-information.model';
 import { CAUSE_SCHEMAS } from '../config/cause-schemas';
 import { FileRestriction, AccessListEntry } from '../../../core/models/claim-overview.model';
+import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
 
 const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information'  },
@@ -101,21 +102,17 @@ export class FnolStateService {
   // ── Validators ────────────────────────────────────────────────────
 
   // Values from NxDatefieldModule+NxIsoDateModule come in as ISO strings ("YYYY-MM-DD")
+  // Moved to shared/validators/date.validators.ts — kept as static methods (not
+  // field assignments — a field initializer referencing another static field
+  // declared later in this same class breaks on evaluation order; a method
+  // doesn't have that problem) so existing FnolStateService.futureDateValidator/
+  // dateOrderValidator call sites don't need to change.
   static futureDateValidator(control: AbstractControl): ValidationErrors | null {
-    const val = control.value as string | null;
-    if (val && val > new Date().toISOString().split('T')[0]) {
-      return { futureDate: true };
-    }
-    return null;
+    return futureDateValidator(control);
   }
 
   static dateOrderValidator(group: AbstractControl): ValidationErrors | null {
-    const occurrence   = group.get('dateOfOccurrence')?.value as string | null;
-    const notification = group.get('dateOfNotification')?.value as string | null;
-    if (occurrence && notification && occurrence > notification) {
-      return { dateOrder: true };
-    }
-    return null;
+    return dateOrderValidator(group);
   }
 
   // ── Form accessors ─────────────────────────────────────────────────
