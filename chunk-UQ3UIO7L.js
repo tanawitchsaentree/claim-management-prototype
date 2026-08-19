@@ -1,0 +1,1 @@
+function a(r){let t=r.value;return t&&t>new Date().toISOString().split("T")[0]?{futureDate:!0}:null}function e(r){let t=r.get("dateOfOccurrence")?.value,n=r.get("dateOfNotification")?.value;return t&&n&&t>n?{dateOrder:!0}:null}export{a,e as b};
