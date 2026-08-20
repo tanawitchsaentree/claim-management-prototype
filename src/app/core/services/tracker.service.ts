@@ -59,6 +59,7 @@ function toTicketState(row: Record<string, unknown>): TicketState {
     updatedBy: (row['updated_by'] as string) ?? null,
     updatedAt: row['updated_at'] as string,
     prototypeRoute: (row['prototype_route'] as string) ?? null,
+    prototypeTicketId: (row['prototype_ticket_id'] as string) ?? null,
   };
 }
 

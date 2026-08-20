@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, Output, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, EventEmitter, Input, OnChanges, Output, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -13,6 +13,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { SupabaseService } from '../../../core/services/supabase.service';
 import { TrackerService, daysSince } from '../../../core/services/tracker.service';
+import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
 import type { BlockedReason, TrackerStageStatus } from '../../../core/models/tracker.model';
 import { AddNoteModalComponent, AddNoteModalData } from '../add-note-modal/add-note-modal.component';
 
@@ -36,7 +37,6 @@ const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterLink,
     NxDropdownModule,
     NxFormfieldModule,
     NxInputModule,
@@ -71,7 +71,10 @@ export class TicketDetailPanelComponent implements OnChanges {
 
   private readonly supabase = inject(SupabaseService).client;
   private readonly dialog = inject(NxDialogService);
+  private readonly router = inject(Router);
+  private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
   readonly trackerService = inject(TrackerService);
+  readonly opening = signal(false);
 
   readonly stageOptions = STAGE_OPTIONS;
   readonly blockedOptions = BLOCKED_OPTIONS;
@@ -94,7 +97,35 @@ export class TicketDetailPanelComponent implements OnChanges {
   ngOnChanges(): void {
     if (this.jiraKey) {
       this.load();
+      // Idempotent — PrototypeScenarioService only fetches once, cached
+      // for every consumer (dev banner included).
+      this.prototypeScenarioSvc.loadTickets();
     }
+  }
+
+  // Stage 3 click-through chain: apply the linked prototype ticket's
+  // stateOverrides through the same pipeline the dev banner uses, THEN
+  // navigate, THEN run its postLand/tour — in that order, since navigating
+  // first would land on a screen before its state exists. Falls back to a
+  // bare navigation when there's no linked prototype ticket (or it has no
+  // 'done' AC to apply).
+  async openInPrototype(): Promise<void> {
+    const ticket = this.trackerService.ticket();
+    const route = ticket?.state.prototypeRoute;
+    if (!ticket || !route) return;
+
+    this.opening.set(true);
+    const ticketId = ticket.state.prototypeTicketId;
+    const appliedRoute = ticketId ? await this.prototypeScenarioSvc.applyTicket(ticketId) : null;
+    const targetRoute = appliedRoute ?? route;
+
+    await this.router.navigateByUrl(targetRoute);
+
+    if (ticketId && appliedRoute) {
+      const claimMatch = targetRoute.match(/^\/claims\/([^/]+)\//);
+      await this.prototypeScenarioSvc.runPostLandForTicket(ticketId, claimMatch?.[1]);
+    }
+    this.opening.set(false);
   }
 
   private async load(): Promise<void> {

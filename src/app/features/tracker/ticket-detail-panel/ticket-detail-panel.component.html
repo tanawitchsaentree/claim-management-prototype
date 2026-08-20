@@ -24,9 +24,16 @@
           <input nxInput [formControl]="prototypeRouteControl" (blur)="onPrototypeRouteBlur()" placeholder="/claims/CLM-2024-001/sections" />
         </nx-formfield>
         @if (ticket.state.prototypeRoute) {
-          <a nxButton="secondary small" [routerLink]="ticket.state.prototypeRoute" class="tdp-prototype__open">
-            <nx-icon name="launch" size="s"></nx-icon> Open in prototype
-          </a>
+          <button nxButton="secondary small" type="button" [disabled]="opening()" (click)="openInPrototype()" class="tdp-prototype__open">
+            @if (opening()) { <nx-spinner size="small"></nx-spinner> }
+            @else { <nx-icon name="launch" size="s"></nx-icon> }
+            Open in prototype
+          </button>
+          @if (ticket.state.prototypeTicketId) {
+            <p class="tdp-prototype__hint">Applies this ticket's state and starts its tour on arrival.</p>
+          } @else {
+            <p class="tdp-prototype__hint tdp-prototype__hint--plain">No linked scenario — opens the bare route, no state or tour.</p>
+          }
         }
       </div>
 

@@ -77,6 +77,16 @@
   gap: var(--space-xs);
 }
 
+.tdp-prototype__hint {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+
+  &--plain {
+    font-style: italic;
+  }
+}
+
 .tdp-stage-row {
   display: flex;
   gap: var(--space-base);

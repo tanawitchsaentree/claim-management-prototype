@@ -60,6 +60,11 @@ export interface TicketState {
   // In-app route this ticket maps to (e.g. "/claims/CLM-2024-001/sections") —
   // added 2026-08-20 for the "Open in prototype" button.
   prototypeRoute: string | null;
+  // Bridge to public/tickets/*.json's own id space (DevTicket.ticketId) —
+  // added 2026-08-20. When set, "Open in prototype" applies this ticket's
+  // stateOverrides + runs its postLand/tour via PrototypeScenarioService
+  // instead of a bare route navigation.
+  prototypeTicketId: string | null;
 }
 
 export interface Note {

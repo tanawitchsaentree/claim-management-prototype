@@ -58,10 +58,24 @@
   width: 100%;
 }
 
-.col-title { min-width: 220px; }
-.col-epic  { min-width: 160px; }
-.col-stage { min-width: 120px; }
-.col-days  { text-align: right; }
+.col-title       { min-width: 220px; }
+.col-epic        { min-width: 160px; }
+.col-jira-status { min-width: 110px; }
+.col-stage       { min-width: 120px; }
+.col-days        { text-align: right; }
+.col-indicator   { text-align: center; width: 32px; }
+
+// Visual separator between Jira's status and our own tracking columns —
+// "grouped separately" per the tracker-usability audit (2026-08-20), on
+// top of the 'jira' vs 'tracker' StatusChip domains already being a
+// different colour family and chip shape (text vs pill).
+.col-stage--ours-start {
+  border-left: 1px solid var(--ui-04);
+}
+
+.tt-indicator-on {
+  color: var(--interactive-primary);
+}
 
 // Group header row — same colspan-divider pattern as step-parties.component.html
 // .claim-row / .claim-row__label (level-1 grouping row above child rows).

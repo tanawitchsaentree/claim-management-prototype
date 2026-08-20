@@ -89,11 +89,14 @@
           <th nxHeaderCell class="col-key">Ticket key</th>
           <th nxHeaderCell class="col-title">Title</th>
           <th nxHeaderCell class="col-epic">Epic</th>
-          <th nxHeaderCell class="col-stage">Design</th>
+          <th nxHeaderCell class="col-jira-status">Jira status</th>
+          <th nxHeaderCell class="col-stage col-stage--ours-start">Design</th>
           <th nxHeaderCell class="col-stage">Build</th>
           <th nxHeaderCell class="col-stage">Handoff</th>
           <th nxHeaderCell class="col-blocked">Blocked</th>
           <th nxHeaderCell class="col-days">Days blocked</th>
+          <th nxHeaderCell class="col-indicator" aria-label="Prototype route"><nx-icon name="launch" size="s"></nx-icon></th>
+          <th nxHeaderCell class="col-indicator" aria-label="Tour"><nx-icon name="product-guide-navigation" size="s"></nx-icon></th>
           <th nxHeaderCell class="col-links">Links</th>
         </tr>
       </thead>
@@ -101,7 +104,7 @@
         @for (group of groupsToRender(); track group.epicId) {
           @if (groupByEpic()) {
             <tr nxTableRow class="tt-epic-row">
-              <td nxCell colspan="9" class="tt-epic-row__label"><strong>{{ group.epicTitle }}</strong></td>
+              <td nxCell colspan="12" class="tt-epic-row__label"><strong>{{ group.epicTitle }}</strong></td>
             </tr>
           }
           @for (ticket of group.tickets; track ticket.id) {
@@ -112,7 +115,14 @@
                 @if (ticket.archived) { <span class="tt-archived-badge">Archived</span> }
               </td>
               <td nxCell class="col-epic">{{ ticket.epic?.title ?? '—' }}</td>
-              <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.designStatus" domain="tracker"></app-status-chip></td>
+              <td nxCell class="col-jira-status">
+                @if (ticket.jiraStatus) {
+                  <app-status-chip [status]="ticket.jiraStatus" domain="jira" variant="text"></app-status-chip>
+                } @else {
+                  <span class="tt-muted">—</span>
+                }
+              </td>
+              <td nxCell class="col-stage col-stage--ours-start"><app-status-chip [status]="ticket.state.designStatus" domain="tracker"></app-status-chip></td>
               <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.buildStatus" domain="tracker"></app-status-chip></td>
               <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.handoffStatus" domain="tracker"></app-status-chip></td>
               <td nxCell class="col-blocked">
@@ -123,6 +133,20 @@
                 }
               </td>
               <td nxCell class="col-days">{{ ticket.state.blockedSince ? daysBlocked(ticket) : '—' }}</td>
+              <td nxCell class="col-indicator">
+                @if (ticket.state.prototypeRoute) {
+                  <nx-icon name="launch" size="s" class="tt-indicator-on" aria-label="Has prototype route"></nx-icon>
+                } @else {
+                  <span class="tt-muted" aria-label="No prototype route">—</span>
+                }
+              </td>
+              <td nxCell class="col-indicator">
+                @if (hasTour(ticket)) {
+                  <nx-icon name="product-guide-navigation" size="s" class="tt-indicator-on" aria-label="Has a tour"></nx-icon>
+                } @else {
+                  <span class="tt-muted" aria-label="No tour">—</span>
+                }
+              </td>
               <td nxCell class="col-links">
                 @if (ticket.jiraUrl) {
                   <a [href]="ticket.jiraUrl" target="_blank" rel="noopener" aria-label="Open in Jira" (click)="$event.stopPropagation()">

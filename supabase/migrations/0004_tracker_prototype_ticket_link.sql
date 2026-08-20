@@ -1,0 +1,15 @@
+-- Bridges a tracker ticket (Jira-synced, BMPCC-*) to the prototype's own
+-- ticket JSON (public/tickets/*.json, its own id space — closure.json,
+-- CHAMP-READY-CLOSE, etc.). 2026-08-20, tracker usability goal, stage 2.
+--
+-- Convention: prototype_ticket_id stores the exact DevTicket.ticketId
+-- value from the linked public/tickets/<file>.json (NOT the filename).
+-- Where a tracker ticket's own Jira key already matches an existing
+-- DevTicket.ticketId 1:1, that's the mapping — no ambiguity. Where a new
+-- prototype ticket JSON is authored specifically to host a tracker
+-- ticket's tour, name that new ticket's id after the tracker ticket's own
+-- Jira key (e.g. ticketId: "BMPCC-16104" in a new bmpcc-16104.json) so
+-- future tickets follow the same 1:1-by-default rule.
+--
+-- Nullable — most tracker tickets have no matching prototype ticket yet.
+alter table ticket_state add column prototype_ticket_id text;

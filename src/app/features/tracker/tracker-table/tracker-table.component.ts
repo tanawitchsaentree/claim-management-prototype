@@ -17,6 +17,7 @@ import { StatusChipComponent } from '../../../shared/components/status-chip/stat
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { TrackerService, daysSince } from '../../../core/services/tracker.service';
 import { TrackerSyncService } from '../../../core/services/tracker-sync.service';
+import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
 import type { BlockedReason, TicketFilters, TicketWithDetails } from '../../../core/models/tracker.model';
 import { TicketDetailPanelComponent } from '../ticket-detail-panel/ticket-detail-panel.component';
 
@@ -69,6 +70,7 @@ export class TrackerTableComponent {
   private readonly router = inject(Router);
   readonly trackerService = inject(TrackerService);
   readonly syncService = inject(TrackerSyncService);
+  private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
 
   readonly blockedByOptions = BLOCKED_BY_OPTIONS;
   readonly hasRouteOptions = HAS_ROUTE_OPTIONS;
@@ -158,9 +160,18 @@ export class TrackerTableComponent {
     return daysSince(ticket.state.blockedSince);
   }
 
+  // Stage 4 tour indicator — "has a tour" means the linked prototype
+  // ticket JSON's walkthroughSteps contains at least one structured
+  // TourStep, not just that a prototype_ticket_id is set.
+  hasTour(ticket: TicketWithDetails): boolean {
+    const id = ticket.state.prototypeTicketId;
+    return !!id && this.prototypeScenarioSvc.hasTour(id);
+  }
+
   constructor() {
     this.trackerService.getPis();
     this.trackerService.getSyncLog();
+    this.prototypeScenarioSvc.loadTickets();
 
     effect(() => {
       const filters: TicketFilters = {
