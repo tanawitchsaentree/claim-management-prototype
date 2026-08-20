@@ -33,7 +33,7 @@ export class MockNotesService extends MockBaseService {
     return this.respond(structuredClone(this.store(claimId)()));
   }
 
-  addNote(claimId: string, payload: { title: string; section: Note['section']; body: string; attachedTo?: string | null }): Observable<Note[]> {
+  addNote(claimId: string, payload: { title: string; section: Note['section']; body: string; attachedTo?: string | null; attachments?: Note['attachments'] }): Observable<Note[]> {
     const note: Note = {
       id:         `note-${Date.now()}`,
       claimId,
@@ -44,6 +44,7 @@ export class MockNotesService extends MockBaseService {
       section:    payload.section,
       pinned:     false,
       attachedTo: payload.attachedTo ?? null,
+      attachments: payload.attachments?.length ? payload.attachments : undefined,
     };
     const store = this.store(claimId);
     const next = [note, ...store()];

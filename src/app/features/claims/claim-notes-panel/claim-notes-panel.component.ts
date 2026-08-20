@@ -10,10 +10,13 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
-import { Note, NoteSection } from '../../../core/models';
+import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
+import { Note, NoteSection, NoteAttachment } from '../../../core/models';
 import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
 import { NotesScope } from '../../../core/services/right-strip.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { NoteAttachmentListComponent } from '../../../shared/components/note-attachment-list/note-attachment-list.component';
+import { AttachDocumentModalComponent } from '../../../shared/components/attach-document-modal/attach-document-modal.component';
 
 type FilterValue = 'all' | 'pinned' | 'recovery' | 'litigation' | 'general';
 
@@ -36,7 +39,9 @@ const EN_WEEKDAY: Record<number, string> = {
     NxDropdownModule,
     NxFormfieldModule,
     NxInputModule,
+    NxModalModule,
     EmptyStateComponent,
+    NoteAttachmentListComponent,
   ],
   templateUrl: './claim-notes-panel.component.html',
   styleUrl: './claim-notes-panel.component.scss',
@@ -50,6 +55,9 @@ export class ClaimNotesPanelComponent implements OnChanges {
   private readonly notesSvc = inject(MockNotesService);
   private readonly router   = inject(Router);
   private readonly elRef    = inject(ElementRef);
+  private readonly dialogSvc = inject(NxDialogService);
+
+  readonly pendingAttachments = signal<NoteAttachment[]>([]);
 
   readonly notes           = signal<Note[]>([]);
   readonly loading         = signal(false);
@@ -251,6 +259,22 @@ export class ClaimNotesPanelComponent implements OnChanges {
     this.showAddForm.set(false);
     this.quickAddMode.set(false);
     this.addForm.reset({ attachTo: 'CLAIM', title: '', category: null, body: '' });
+    this.pendingAttachments.set([]);
+  }
+
+  async openAttachModal(): Promise<void> {
+    const ref = this.dialogSvc.open(AttachDocumentModalComponent, {
+      data: { claimId: this.claimId },
+      width: '480px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as NoteAttachment[] | undefined;
+    if (!result?.length) return;
+    this.pendingAttachments.update(list => [...list, ...result]);
+  }
+
+  removePendingAttachment(attachment: NoteAttachment): void {
+    this.pendingAttachments.update(list => list.filter(a => a !== attachment));
   }
 
   async submitAddNote(): Promise<void> {
@@ -266,6 +290,7 @@ export class ClaimNotesPanelComponent implements OnChanges {
         section: category ?? null,
         body:    body.trim(),
         attachedTo,
+        attachments: this.pendingAttachments(),
       }),
     );
     this.notes.set(next);

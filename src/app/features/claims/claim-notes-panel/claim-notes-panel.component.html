@@ -91,6 +91,15 @@
         </div>
       </div>
 
+      <div class="cnp-add-form__field">
+        <button nxButton="tertiary small" type="button" (click)="openAttachModal()">
+          <nx-icon name="attachment" size="s"></nx-icon>
+          Attach document
+        </button>
+        <app-note-attachment-list [attachments]="pendingAttachments()" [removable]="true"
+          (remove)="removePendingAttachment($event)"></app-note-attachment-list>
+      </div>
+
       <div class="cnp-add-form__actions">
         <button nxButton="secondary small" type="button" (click)="cancelAddNote()">Cancel</button>
         <button nxButton="primary small" type="button"
@@ -122,6 +131,7 @@
             </button>
           </div>
           <p class="cnp-note__body">{{ note.body }}</p>
+          <app-note-attachment-list [attachments]="note.attachments ?? []"></app-note-attachment-list>
         </article>
       }
 

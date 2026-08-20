@@ -1,0 +1,16 @@
+@if (attachments.length) {
+  <div class="nal-list">
+    @for (a of attachments; track a.fileName) {
+      <span class="nal-chip">
+        <nx-icon name="product-file-invoice" size="s"></nx-icon>
+        <span class="nal-chip__name">{{ a.fileName }}</span>
+        <span class="nal-chip__size">{{ formatSize(a.fileSize) }}</span>
+        @if (removable) {
+          <button nxIconButton="tertiary small" type="button" (click)="remove.emit(a)" aria-label="Remove attachment">
+            <nx-icon name="close" size="s"></nx-icon>
+          </button>
+        }
+      </span>
+    }
+  </div>
+}

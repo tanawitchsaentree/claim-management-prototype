@@ -1,0 +1,59 @@
+<div class="adm-header">
+  <h2 class="adm-title">Attach document</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="cancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="adm-tabs">
+  <button type="button" class="adm-tab" [class.adm-tab--active]="tab() === 'existing'" (click)="tab.set('existing')">
+    Attach existing document
+  </button>
+  <button type="button" class="adm-tab" [class.adm-tab--active]="tab() === 'upload'" (click)="tab.set('upload')">
+    Upload new document
+  </button>
+</div>
+
+<div class="adm-body">
+  @if (tab() === 'existing') {
+    @if (loading()) {
+      <nx-spinner size="medium"></nx-spinner>
+    } @else if (documents().length === 0) {
+      <app-empty-state message="No documents found for this claim."></app-empty-state>
+    } @else {
+      @for (doc of documents(); track doc.documentId) {
+        <label class="adm-doc-row">
+          <nx-checkbox [checked]="selectedExisting().has(doc.documentId)" (checkedChange)="toggleExisting(doc.documentId)"></nx-checkbox>
+          <nx-icon name="product-file-invoice" size="s"></nx-icon>
+          <span class="adm-doc-name">{{ doc.fileName }}</span>
+        </label>
+      }
+    }
+  }
+
+  @if (tab() === 'upload') {
+    <label class="adm-upload-btn" nxButton="secondary small">
+      <nx-icon name="upload"></nx-icon>
+      Choose file(s)
+      <input type="file" multiple hidden (change)="onFilesSelected($event)" />
+    </label>
+    @if (uploadedFiles().length === 0) {
+      <app-empty-state message="No files selected yet." hint="Choose one or more files to attach."></app-empty-state>
+    } @else {
+      @for (file of uploadedFiles(); track file.name) {
+        <div class="adm-doc-row">
+          <nx-icon name="product-file-invoice" size="s"></nx-icon>
+          <span class="adm-doc-name">{{ file.name }}</span>
+          <button nxIconButton="tertiary small" type="button" (click)="removeUploaded(file)" aria-label="Remove">
+            <nx-icon name="close" size="s"></nx-icon>
+          </button>
+        </div>
+      }
+    }
+  }
+</div>
+
+<div class="adm-footer">
+  <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="confirm()">Attach</button>
+</div>

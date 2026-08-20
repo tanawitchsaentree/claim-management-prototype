@@ -1,0 +1,30 @@
+.nal-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.nal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+  max-width: 260px;
+}
+
+.nal-chip__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nal-chip__size {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
