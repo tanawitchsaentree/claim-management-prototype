@@ -1,0 +1,38 @@
+@if (tourSvc.currentStep(); as step) {
+  <div
+    class="tour-highlight"
+    [style.top.px]="rect()?.top"
+    [style.left.px]="rect()?.left"
+    [style.width.px]="rect()?.width"
+    [style.height.px]="rect()?.height">
+  </div>
+
+  <span
+    class="tour-anchor"
+    [style.top.px]="anchorTop"
+    [style.left.px]="anchorLeft"
+    #anchorTrigger="nxPopoverTrigger"
+    [nxPopoverTriggerFor]="tourPopover"
+    nxPopoverTrigger="manual"
+    [nxPopoverModal]="false"
+    [nxPopoverCloseable]="false"
+    [nxPopoverDirection]="step.direction ?? 'bottom'">
+  </span>
+
+  <nx-popover #tourPopover class="tour-popover">
+    <ng-container *nxPopoverTitle>{{ step.title }}</ng-container>
+    <div *nxPopoverMainContent class="tour-popover__body">
+      <p class="tour-popover__text">{{ step.body }}</p>
+      @if (step.expectedAfterClick) {
+        <p class="tour-popover__expect">{{ step.expectedAfterClick }}</p>
+      }
+      <p class="tour-popover__progress">Step {{ tourSvc.stepNumber() }} of {{ tourSvc.totalSteps() }}</p>
+    </div>
+    <div *nxPopoverActions alignment="right">
+      <button nxButton="tertiary small" type="button" (click)="tourSvc.skip()">Skip tour</button>
+      <button nxButton="primary small" type="button" (click)="tourSvc.next()">
+        {{ tourSvc.isLastStep() ? 'Done' : 'Next' }}
+      </button>
+    </div>
+  </nx-popover>
+}

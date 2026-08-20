@@ -363,6 +363,15 @@
   /* L1→L3: past two chevrons (two levels deep)                   */
   --tree-grandchild-indent: 64px;
 
+  /* ── Tour overlay z-index ─────────────────────────────────────── */
+  /* Dedicated token, not reused from any existing value — the z-index    */
+  /* audit (tour-system, 2026-08-20) found navbar/dashboard-widget/tracker */
+  /* detail-panel already double-booking both 1000 and 100. Sits above    */
+  /* the exploration banner (2000) so a tour is never hidden behind it,   */
+  /* well below the access-gate lock screen (9999) since a tour only ever */
+  /* runs after the gate is passed. */
+  --tour-overlay-z: 5000;
+
   /* ── Page chrome → content gap ────────────────────────────────── */
   /* Single canonical value for the gap between top chrome (navbar +  */
   /* optional toolbar/breadcrumb) and page content (eyebrow/h1/etc.). */

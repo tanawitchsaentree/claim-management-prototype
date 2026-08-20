@@ -8,6 +8,7 @@ import { ClaimDevHelperService } from './features/claims/dev-banner/claim-dev-he
 import { DevHelperBannerComponent } from './features/fnol/components/dev-helper-banner/dev-helper-banner.component';
 import { AccessGateComponent } from './features/access-gate/access-gate.component';
 import { ToastStackComponent } from './shared/components/toast/toast-stack.component';
+import { TourStepRendererComponent } from './shared/components/tour/tour-step-renderer.component';
 import { PersonaSwitcherComponent } from './features/dashboard/widgets/persona-switcher';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { environment } from '../environments/environment';
@@ -15,7 +16,7 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ClaimDevBannerComponent, DevHelperBannerComponent, AccessGateComponent, ToastStackComponent, PersonaSwitcherComponent, NxMessageModule],
+  imports: [RouterOutlet, ClaimDevBannerComponent, DevHelperBannerComponent, AccessGateComponent, ToastStackComponent, TourStepRendererComponent, PersonaSwitcherComponent, NxMessageModule],
   styleUrl: './app.scss',
   template: `
     @if (isExploration) {
@@ -35,6 +36,7 @@ import { environment } from '../environments/environment';
       </div>
       <router-outlet />
       <app-toast-stack />
+      <app-tour-step-renderer />
     } @else {
       <app-access-gate (unlocked)="onUnlocked()" />
     }

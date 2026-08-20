@@ -7,6 +7,7 @@ import {
   OverviewStage,
   FnolLossInfoStage,
 } from './scenario-stage.model';
+import { TourService } from '../services/tour.service';
 
 const STAGE_READY_TIMEOUT_MS = 4000;
 
@@ -23,6 +24,7 @@ function stageKey(stage: Stage): StageKey {
 @Injectable({ providedIn: 'root' })
 export class ScenarioStageService {
   private readonly appRef = inject(ApplicationRef);
+  private readonly tourSvc = inject(TourService);
   private readonly stages = new Map<StageKey, Stage>();
   private readonly readyEvents$ = new Subject<StageKey>();
 
@@ -77,6 +79,12 @@ export class ScenarioStageService {
 
   private async execute(hook: PostLandHook, claimId?: string): Promise<void> {
     switch (hook.kind) {
+      case 'tour.start': {
+        // No Stage lookup needed — TourService is a root singleton, always
+        // available, and the step data travels with the hook itself.
+        await this.tourSvc.start(hook.steps);
+        return;
+      }
       case 'overview.openClosureModal': {
         const s = await this.waitForStage<OverviewStage>('overview', claimId);
         if (s) await s.openClosureModalAuto();

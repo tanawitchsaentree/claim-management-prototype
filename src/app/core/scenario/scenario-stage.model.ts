@@ -1,8 +1,11 @@
+import { TourStep } from '../services/tour.service';
+
 export type StagePage = 'overview' | 'sections' | 'fnol-loss-info';
 
 export type ClosureReason = 'Claim Finalised' | 'Claim Not Pursued' | 'Claim Rejected';
 
 export type PostLandHook =
+  | { kind: 'tour.start'; steps: TourStep[] }
   | { kind: 'overview.openClosureModal' }
   | { kind: 'overview.confirmClosure'; reason: ClosureReason }
   | { kind: 'fnol-loss-info.prefillDuplicate'; date: string; causes: string[] }

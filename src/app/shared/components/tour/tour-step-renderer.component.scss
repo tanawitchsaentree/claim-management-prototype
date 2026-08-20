@@ -1,0 +1,53 @@
+// :host is a full-viewport, click-through wrapper — the highlight ring and
+// the zero-size anchor are the only fixed-positioned children, so nothing
+// here ever blocks interaction with the page underneath.
+:host {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--tour-overlay-z);
+}
+
+.tour-highlight {
+  position: fixed;
+  pointer-events: none;
+  outline: 3px solid var(--interactive-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+  transition: top 150ms ease, left 150ms ease, width 150ms ease, height 150ms ease;
+}
+
+// Zero-size positioning point the popover trigger anchors to — see
+// tour-step-renderer.component.ts header comment for why this exists
+// instead of wiring the trigger directly onto the real target element.
+.tour-anchor {
+  position: fixed;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.tour-popover__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.tour-popover__text {
+  margin: 0;
+  color: var(--text-01);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.tour-popover__expect {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+  font-style: italic;
+}
+
+.tour-popover__progress {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+}
