@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 type ClaimStatus = 'open' | 'in-progress' | 'priced' | 'quoted' | 'bound' | 'declined' | 'closed';
 type TaskStatus  = 'open' | 'in-progress' | 'done' | 'pending' | 'not-assigned' | 'completed';
 type EntityStatus = 'promised' | 'conditional' | 'by-extension' | 'not-promised';
-type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'skeleton-claim' | 'mass-event' | 'coverage-review' | 'provider-assignment';
+type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'skeleton-claim' | 'mass-event' | 'coverage-review' | 'provider-assignment' | 'tracker' | 'jira';
 
 // Maps status + domain to the CSS custom property pair defined in styles.scss.
 // Using a lookup avoids any hardcoded hex values here.
@@ -83,6 +83,43 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     'completed': 'claim-status-closed',
     'cancelled': 'claim-status-declined',
   },
+  // Tracker (Design/Build/Handoff stage + blocked reason) — pure reuse of
+  // existing task/claim tokens, no new colours needed. All 5 blocked_by
+  // reasons render the same red "declined" token; the label text (via
+  // formatLabel) is what distinguishes them.
+  'tracker': {
+    'not-started':         'task-status-not-assigned',
+    'in-progress':         'task-status-in-progress',
+    'done':                'task-status-done',
+    'waiting-product':     'claim-status-declined',
+    'waiting-ba':          'claim-status-declined',
+    'waiting-dev':         'claim-status-declined',
+    'waiting-other-epic':  'claim-status-declined',
+    'scope-unclear':       'claim-status-declined',
+  },
+  // Raw jira_status display (2026-08-20) — deliberately NOT reusing any
+  // token the 'tracker' domain above uses, so a Jira "In Progress" chip
+  // can never render identically to our own in_progress design/build/
+  // handoff chip. Verified against actual hex values in styles.scss, not
+  // just distinct token names: tracker's in_progress is amber
+  // (task-status-in-progress, #fdf3d6/#7a5200); jira's is blue
+  // (claim-status-in-progress, #dce9f8/#006192). tracker's done is green
+  // (task-status-done, #d4edda/#155724); jira's is grey (claim-status-
+  // closed, #e8e8e8/#767676). tracker's blocked reasons are
+  // claim-status-declined (#f8d7da/#721c24); jira's Blocked uses
+  // clearance-not-cleared instead (#fde2e4/#b91c1c) — same family,
+  // different exact shade, on top of also always rendering as the
+  // `variant="text"` (no pill) form (see status-chip usage) for a second,
+  // structural distinction beyond colour alone.
+  'jira': {
+    'to-do':          'claim-status-open',
+    'in-progress':    'claim-status-in-progress',
+    'in-testing':     'claim-status-in-progress',
+    'in-acceptance':  'claim-status-in-progress',
+    'done':           'claim-status-closed',
+    'blocked':        'clearance-not-cleared',
+    'descoped':       'claim-status-priced',
+  },
 };
 
 const FALLBACK_TOKEN = 'claim-status-closed';
@@ -106,7 +143,10 @@ export class StatusChipComponent implements OnChanges {
   displayLabel = '';
 
   ngOnChanges(): void {
-    const key   = this.status?.toLowerCase().replace(/\s+/g, '-') ?? '';
+    // Underscore-collapsing added for tracker's snake_case DB values
+    // (not_started, waiting_product, ...) — pre-existing domains only ever
+    // used hyphens/spaces, so this is backward-compatible.
+    const key   = this.status?.toLowerCase().replace(/[\s_]+/g, '-') ?? '';
     const token = TOKEN_MAP[this.domain]?.[key];
 
     if (!token) {
@@ -122,7 +162,7 @@ export class StatusChipComponent implements OnChanges {
   private formatLabel(status: string): string {
     if (!status) return '';
     return status
-      .replace(/-/g, ' ')
+      .replace(/[-_]/g, ' ')
       .replace(/\b\w/g, c => c.toUpperCase());
   }
 }

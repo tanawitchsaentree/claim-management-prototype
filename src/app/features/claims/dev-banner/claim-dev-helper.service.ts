@@ -1,90 +1,29 @@
 import { Injectable, inject, isDevMode, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
-import { firstValueFrom, of } from 'rxjs';
-import { filter, map, startWith, catchError } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockStateService, ScenarioOverrides } from '../../../core/mock/state/mock-state.service';
 import { DevToolStorageService } from '../../../core/storage/dev-tool-storage.service';
-import { FnolStateService } from '../../fnol/services/fnol-state.service';
 import { ScenarioStageService } from '../../../core/scenario/scenario-stage.service';
 import { PostLandHook } from '../../../core/scenario/scenario-stage.model';
-import { MockSkeletonClaimService } from '../../../core/mock/services/mock-skeleton-claim.service';
-import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
-import { LocationItem } from '../../../core/models';
+import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
 import { TourStep } from '../../../core/services/tour.service';
+import {
+  BuildStatus,
+  DevTicket,
+  PreconditionPage,
+  PreconditionItem,
+  TicketAC,
+  TicketIndex,
+} from '../../../core/models/dev-ticket.model';
 
-export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-entities-damages' | 'fnol-skeleton' | 'fnol-skeleton-parties' | 'fnol-skeleton-location' | 'fnol-summary' | 'any';
-
-export interface PreconditionItem {
-  text:  string;
-  page:  PreconditionPage;
-  role:  'tested-visible' | 'setup' | 'metadata';
-  hint?: string;
-}
-
-export type BuildStatus = 'done' | 'partial' | 'todo';
+export type { PreconditionPage, PreconditionItem, BuildStatus, TicketAC, DevTicket };
 
 export interface ACVerification {
   acId:       string;
   verifiedBy: string;
   verifiedAt: string;
-}
-
-export interface TicketAC {
-  id:             string;
-  statement:      string;
-  plainStatement?: string;
-  page:           PreconditionPage;
-  buildStatus:    BuildStatus;
-  setup: {
-    description:    string;
-    preconditions:  Array<string | PreconditionItem>;
-    stateOverrides: ScenarioOverrides;
-    postLand?:      PostLandHook[];
-  };
-  expectedUI: {
-    description: string;
-    visualCues:  string[];
-  };
-  howToTest: {
-    route:          string;
-    trigger:        string;
-    expectedResult: string;
-  };
-  expectedOutcome?: {
-    pendingTasks?:    number;
-    doneTasks?:       number;
-    openSections?:    number;
-    closedSections?:  number;
-    overviewStatus?:  string;
-    canClose?:        boolean;
-    buttonVisible?:   boolean;
-    buttonEnabled?:   boolean;
-    tooltipContains?: string;
-    closedByName?:    string;
-    closureReason?:   string;
-    taskStatuses?:    Record<string, string>;
-    sectionStatuses?: Record<string, string>;
-  };
-}
-
-export interface DevTicket {
-  ticketId:            string;
-  /** Parent Jira epic ID, when a confirmed mapping exists — do not guess, leave unset otherwise. */
-  epicId?:             string;
-  module:              string;
-  title:               string;
-  targetClaim:         string;
-  pages:               PreconditionPage[];
-  // Extended (2026-08-20, tour-system audit) to optionally carry structured
-  // TourStep objects alongside the original plain-text narrative — nothing
-  // ever rendered this field before, so old plain-string tickets are
-  // untouched and new tickets can mix both freely. A TourStep entry (has
-  // `targetId`) becomes a tour step; a string entry stays prose-only.
-  walkthroughSteps:    Array<string | TourStep>;
-  acceptanceCriteria:  TicketAC[];
 }
 
 /** @deprecated use DevTicket */
@@ -99,25 +38,11 @@ export interface TicketCard {
   ticket:        DevTicket;
 }
 
-interface TicketIndexEntry {
-  id:     string;
-  file:   string;
-  module: string;
-  title:  string;
-}
-
-interface TicketIndex {
-  tickets: TicketIndexEntry[];
-}
-
 @Injectable({ providedIn: 'root' })
 export class ClaimDevHelperService {
   private readonly stateSvc    = inject(MockStateService);
-  private readonly fnolStateSvc = inject(FnolStateService);
-  private readonly skeletonSvc = inject(MockSkeletonClaimService);
-  private readonly policyLocationSvc = inject(MockPolicyLocationService);
+  private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
   private readonly stageSvc    = inject(ScenarioStageService);
-  private readonly http        = inject(HttpClient);
   private readonly dialogSvc   = inject(NxDialogService);
   private readonly router      = inject(Router);
   private readonly storage     = inject(DevToolStorageService);
@@ -145,21 +70,22 @@ export class ClaimDevHelperService {
   readonly shouldShowFnolHelper = computed(() => this.isFnolRoute());
   readonly isOverviewRoute = computed(() => /^\/claims\/[^/]+\/overview/.test(this.url()));
 
-  private readonly _tickets = signal<DevTicket[]>([]);
-  readonly tickets = this._tickets.asReadonly();
+  // Ticket registry itself lives in PrototypeScenarioService now (core/),
+  // shared with the tracker bridge — this stays a thin readonly alias.
+  readonly tickets = this.prototypeScenarioSvc.tickets;
 
   private readonly _selectedTicketId = signal<string | null>(null);
 
   readonly selectedTicket = computed<DevTicket | null>(() => {
     const id = this._selectedTicketId();
-    return this._tickets().find(t => t.ticketId === id) ?? null;
+    return this.tickets().find(t => t.ticketId === id) ?? null;
   });
 
   selectTicket(id: string | null): void { this._selectedTicketId.set(id); }
 
   /** Backward-compat: TicketCard array derived from loaded tickets. */
   readonly availableCards = computed<TicketCard[]>(() =>
-    this._tickets().map(ticket => {
+    this.tickets().map(ticket => {
       const doneCount = ticket.acceptanceCriteria.filter(a => a.buildStatus === 'done').length;
       return {
         id:            ticket.ticketId,
@@ -226,26 +152,7 @@ export class ClaimDevHelperService {
 
   loadTickets(): void {
     if (!this.enabled) return;
-    this.loadAllTickets().catch(() => {/* silent: dev tool only */});
-  }
-
-  private async loadAllTickets(): Promise<void> {
-    const base = document.baseURI;
-    const bust = `?t=${Date.now()}`;
-    const index = await firstValueFrom(
-      this.http.get<TicketIndex>(`${base}tickets/index.json${bust}`).pipe(catchError(() => of(null))),
-    );
-    if (!index) return;
-
-    const loaded = await Promise.all(
-      index.tickets.map(entry =>
-        firstValueFrom(
-          this.http.get<DevTicket>(`${base}tickets/${entry.file}${bust}`).pipe(catchError(() => of(null))),
-        ),
-      ),
-    );
-
-    this._tickets.set(loaded.filter((t): t is DevTicket => t !== null));
+    this.prototypeScenarioSvc.loadTickets().catch(() => {/* silent: dev tool only */});
   }
 
   openDetailsFor(card: TicketCard, preselectedAcId?: string | null): void {
@@ -265,15 +172,12 @@ export class ClaimDevHelperService {
     // tickets if no ticket is selected.
     const selected = this.selectedTicket();
     const orderedTickets: DevTicket[] = selected
-      ? [selected, ...this._tickets().filter(t => t.ticketId !== selected.ticketId)]
-      : this._tickets();
+      ? [selected, ...this.tickets().filter(t => t.ticketId !== selected.ticketId)]
+      : this.tickets();
     for (const ticket of orderedTickets) {
       const ac = ticket.acceptanceCriteria.find(a => a.id === acId);
       if (ac) {
-        await this.stateSvc.resetAsync();
-        this.stateSvc.loadStatePreset(ac.setup.stateOverrides);
-        await this.applyFnolStateOverride(ac.setup.stateOverrides);
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await this.prototypeScenarioSvc.applyOverrides(ac.setup.stateOverrides);
         this.activeAcId.set(acId);
         return;
       }
@@ -284,8 +188,8 @@ export class ClaimDevHelperService {
     if (!this.enabled) return;
     const selected = this.selectedTicket();
     const orderedTickets: DevTicket[] = selected
-      ? [selected, ...this._tickets().filter(t => t.ticketId !== selected.ticketId)]
-      : this._tickets();
+      ? [selected, ...this.tickets().filter(t => t.ticketId !== selected.ticketId)]
+      : this.tickets();
     for (const ticket of orderedTickets) {
       const ac = ticket.acceptanceCriteria.find(a => a.id === acId);
       if (ac) {
@@ -304,59 +208,6 @@ export class ClaimDevHelperService {
   private tourHooksFor(ticket: DevTicket): TicketAC['setup']['postLand'] {
     const steps = ticket.walkthroughSteps.filter((s): s is TourStep => typeof s !== 'string');
     return steps.length > 0 ? [{ kind: 'tour.start', steps }] : [];
-  }
-
-  private async applyFnolStateOverride(overrides: ScenarioOverrides): Promise<void> {
-    const seed = overrides.fnolStateOverride;
-    if (!seed) return;
-    this.fnolStateSvc.reset();
-    if (seed.selectedClient) this.fnolStateSvc.setSelectedClient(seed.selectedClient);
-    if (seed.selectedPolicy) this.fnolStateSvc.setSelectedPolicy(seed.selectedPolicy);
-    if (seed.path !== undefined) this.fnolStateSvc.path = seed.path;
-    if (seed.convertFromSkeletonId) {
-      const skeleton = await firstValueFrom(
-        this.skeletonSvc.getById(seed.convertFromSkeletonId).pipe(catchError(() => of(null))),
-      );
-      if (skeleton) {
-        const policyNumber = seed.convertSuggestedPolicyNumber;
-        // Resolve the real policy location so loss-info gets a backed
-        // PolicyLocation (no hardcoded Munich address). Only the first
-        // active location is used; user can edit/replace in the UI.
-        let location: LocationItem | undefined;
-        if (policyNumber) {
-          const locs = await firstValueFrom(
-            this.policyLocationSvc.getByPolicyNumber(policyNumber).pipe(catchError(() => of([]))),
-          );
-          const active = locs.find(l => l.active) ?? locs[0];
-          if (active) {
-            location = {
-              id:                active.id,
-              source:            'policy',
-              displayName:       active.name,
-              addressLine1:      active.addressLine1,
-              postalCode:        active.postalCode,
-              city:              active.city,
-              country:           active.country,
-              propertyId:        active.propertyId,
-              policyLocationRef: active.id,
-            };
-          }
-        }
-        this.fnolStateSvc.prefillFullFromSkeleton(skeleton, { policyNumber, location });
-        // Fire the dev-fill bridge that auto-runs Search and pre-selects the
-        // matching policy row. Delayed 250ms because Step1SearchComponent
-        // subscribes inside its ngOnInit — the Subject has to fire AFTER the
-        // router has placed the component in the tree.
-        if (policyNumber) {
-          setTimeout(() => {
-            this.fnolStateSvc.devSearchFill$.next({
-              policyNumber,
-              clientName: skeleton.clientName ?? '',
-            });
-          }, 250);
-        }
-      }
-    }
   }
 
   clearActiveAc(): void { this.activeAcId.set(null); }
