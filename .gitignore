@@ -53,3 +53,6 @@ supabase/.temp/
 # Claude Code local-only state (per-developer, not shared knowledge)
 .claude/settings.local.json
 .claude/projects/
+
+# Raw Jira scrape material — research input, not source (2026-08-20 audit)
+.agents/jira-clone/
