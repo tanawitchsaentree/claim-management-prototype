@@ -530,6 +530,25 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-20 — Tour system + prototype version separation (stages 1–6)
+
+- **Source:** Tour-system audit (this session, same day) → `/goal` autonomous execution of the audit's sequencing plan
+- **Module:** Deploy config, dev banner, tour engine, `claim-overview`, ticket schema
+- **Stage 1 — Fix `deploy:exploration`:** `angular.json`'s `exploration` config and `build:exploration`'s `--base-href` both changed from sharing prod's base-href to `/claim-management-prototype/exploration/`. Added `deploy:exploration` (never executed) pushing to a `exploration` subfolder of the same `gh-pages` branch via `--dest`. Verified by inspecting the emitted `<base href>` in each build's `dist/`, not by deploying.
+- **Stage 2 — `devBannerMode` flag:** Added `'full' | 'reviewer' | 'off'` to `Environment`. All three environments start at `'full'` — no behavior change.
+- **Stage 3 — Split the banner:** `claim-dev-banner.component.{ts,html}` and `claim-dev-details-modal.component.{ts,html}` gate their dev-only widgets (Reset, reference-view picker, state inspector) behind `devBannerMode === 'full'`. `app.ts` gates the whole banner behind `!== 'off'` and the FNOL quick-fill banner behind `=== 'full'` only (no reviewer subset — it's pure dev convenience). `applyAC()`/`onGoTo()` untouched — presentation only, verified byte-identical via build + `pre-commit` + `audit:ac-logic`.
+- **Stage 4 — Tour engine:** New `core/services/tour.service.ts` (signals, `providedIn: 'root'`, `RightStripService`-shaped) and `shared/components/tour/tour-step-renderer.component.ts` (renders once at app root; locates targets via `document.querySelector('[data-tour-id]')` + `getBoundingClientRect()` since `NxPopoverTriggerDirective` is compile-time bound to its host and can't be wired onto components this task isn't allowed to modify beyond adding `data-tour-id`). New `--tour-overlay-z: 5000` token in `styles.scss`. Hooked into `ScenarioStageService` via a new `'tour.start'` `PostLandHook` kind. **Decision:** FNOL tours are scoped to a single screen (not detection/restart) because `FnolStateService` overrides don't survive a refresh, unlike the sessionStorage-backed general `ScenarioOverrides`.
+- **Stage 5 — `data-tour-id` hooks:** Two attributes added to `claim-overview.component.html` (`co-tasks-widget`, `co-close-claim-button`) — no other change to that file. Recorded the `data-tour-id` exception in `PROJECT.md` next to the pre-existing `data-testid` rule it could be confused with (different consumer: highlight positioning, never click-simulation).
+- **Stage 6 — First tour + parity check:** `DevTicket.walkthroughSteps` extended from `string[]` to `Array<string | TourStep>` (never rendered anywhere before, so nothing to migrate). `ClaimDevHelperService.runPostLandFor()` synthesizes a `tour.start` hook from a ticket's structured `walkthroughSteps` **only when the matching AC has no `postLand` of its own** — avoids fighting `ready-to-close.json`'s AC-02, which already auto-opens the closure modal. Authored the first tour on `ready-to-close.json` (CHAMP-READY-CLOSE): 2 steps (Tasks widget, Close Claim button). Full parity check written to `/TOUR_PARITY.md` — **zero blockers**: every ticket's `done` ACs remain reachable via the reviewer launcher because the apply/mutation pipeline was never touched, only dev-only widget visibility.
+- **Schema changes:** `DevTicket.walkthroughSteps` type widened (backward-compatible — old plain-string tickets need no change). No `ScenarioOverrides` change.
+- **Files touched:** ~14 across `angular.json`, `package.json`, `src/environments/`, `src/app/app.ts`, `src/app/core/services/tour.service.ts`, `src/app/core/scenario/`, `src/app/shared/components/tour/`, `src/app/features/claims/dev-banner/`, `src/app/features/claims/claim-overview/claim-overview.component.html`, `PROJECT.md`, `public/tickets/ready-to-close.json`, `TOUR_PARITY.md`.
+- **Not done in stages 1–6, flagged for stage 7:** `environment.prod.ts` still has `devBannerMode: 'full'` — flips to `'reviewer'` only after this entry, gated on `TOUR_PARITY.md` showing no blockers (confirmed above).
+- **Notes:**
+  - Only 1 of 13 tickets has an authored tour (CHAMP-READY-CLOSE) — the other 12 are a backlog item, not a regression, since Apply still works for all of them unchanged. See `TOUR_PARITY.md`'s Backlog section.
+  - Could not visually verify the tour's on-screen appearance (highlight ring, popover stacking) — no browser tool available in this session. Verified via build/audit/direct DB-equivalent checks only, same limitation flagged in earlier tracker work this session.
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

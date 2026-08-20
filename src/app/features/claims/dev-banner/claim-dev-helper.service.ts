@@ -13,6 +13,7 @@ import { PostLandHook } from '../../../core/scenario/scenario-stage.model';
 import { MockSkeletonClaimService } from '../../../core/mock/services/mock-skeleton-claim.service';
 import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
 import { LocationItem } from '../../../core/models';
+import { TourStep } from '../../../core/services/tour.service';
 
 export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-entities-damages' | 'fnol-skeleton' | 'fnol-skeleton-parties' | 'fnol-skeleton-location' | 'fnol-summary' | 'any';
 
@@ -77,7 +78,12 @@ export interface DevTicket {
   title:               string;
   targetClaim:         string;
   pages:               PreconditionPage[];
-  walkthroughSteps:    string[];
+  // Extended (2026-08-20, tour-system audit) to optionally carry structured
+  // TourStep objects alongside the original plain-text narrative — nothing
+  // ever rendered this field before, so old plain-string tickets are
+  // untouched and new tickets can mix both freely. A TourStep entry (has
+  // `targetId`) becomes a tour step; a string entry stays prose-only.
+  walkthroughSteps:    Array<string | TourStep>;
   acceptanceCriteria:  TicketAC[];
 }
 
@@ -283,10 +289,21 @@ export class ClaimDevHelperService {
     for (const ticket of orderedTickets) {
       const ac = ticket.acceptanceCriteria.find(a => a.id === acId);
       if (ac) {
-        await this.stageSvc.run(ac.setup.postLand, this.currentClaimId() ?? undefined);
+        const declaredHooks = ac.setup.postLand ?? [];
+        // Only fall back to the ticket's tour when this AC has no postLand
+        // of its own — e.g. CHAMP-READY-CLOSE's AC-02 already auto-opens
+        // the closure modal via 'overview.openClosureModal'; bolting a tour
+        // onto that too would fight the modal for the same screen space.
+        const hooks = declaredHooks.length > 0 ? declaredHooks : this.tourHooksFor(ticket);
+        await this.stageSvc.run(hooks, this.currentClaimId() ?? undefined);
         return;
       }
     }
+  }
+
+  private tourHooksFor(ticket: DevTicket): TicketAC['setup']['postLand'] {
+    const steps = ticket.walkthroughSteps.filter((s): s is TourStep => typeof s !== 'string');
+    return steps.length > 0 ? [{ kind: 'tour.start', steps }] : [];
   }
 
   private async applyFnolStateOverride(overrides: ScenarioOverrides): Promise<void> {
