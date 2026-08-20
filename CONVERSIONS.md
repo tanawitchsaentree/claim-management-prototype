@@ -4,6 +4,40 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-20 — Working tree cleanup from the uncommitted-work audit: wiring gap fixed, legitimate backlog committed, speculative work shelved
+
+- **Source:** `/goal` autonomous execution — clean up the working tree per the same-day audit findings (67 uncommitted files across 4 buckets: an approved-but-never-committed backlog, a routing wire-up gap, speculative work built from unstarted tickets, and scratch debris).
+- **Module:** `app.routes.ts`/`app.scss`, modal SCSS pattern, Claim Overview/Dashboard/Claims List/Notes (PI 2026.3 alignment + notes redesign), tooling, `CLAUDE.md`, `.gitignore`.
+
+**Stage 1 — wiring gap:** `app.routes.ts` had never been committed with the `/tracker` route or the real `claims/:id/limits` route, despite the entire tracker feature and `LimitsDeductiblesComponent` being committed in earlier sessions — both were unreachable on a fresh clone, only "working" because the dev server always ran against the uncommitted working tree. Committed `app.routes.ts` + `app.scss` (`.exploration-banner`, referenced by already-committed `app.ts` with nothing backing it). **Verified via an actual `git clone` into a temp directory** (not just a local diff read) — both routes present and resolving at the resulting HEAD, both before and again after every subsequent commit in this session.
+
+**Stage 2 — legitimate backlog, one commit per cluster:**
+- a) Modal padding fix (5 modals + `BLESSED.md`) — vertical-only padding pattern, backed by the 2026-08-14/2026-08-15 `CONVERSIONS.md` entries.
+- b) PI 2026.3 UI/UX alignment — Recovery Potential note persistence, manual reassignment (new `ReassignClaimModalComponent`), dashboard scope-filter fix, coverage-review chip — backed by the 2026-08-15 entry (BMPCC-15121).
+- c) Notes signal-store rewrite + `attachedTo` scoping data — backed by the 2026-08-18 "Edit Claim Phase 2, Item 1" entry.
+- d) Tooling — `audit-modal-padding.mjs` (was referenced by already-committed `package.json` scripts but the script file itself was never committed — `pre-commit` would have failed "module not found" on a fresh clone), human-tone skill install, `package-lock.json` catch-up, `CLAUDE.md` RULE -2.
+- **Split-hunk handling:** 4 files (`claim-overview.component.ts`, `claim-overview.model.ts`, `entity-detail-panel.component.{ts,html}`) each mixed an approved change with an unrelated speculative one in the same working-tree diff — e.g. `claim-overview.component.ts`'s recovery-potential-note fix sat in the same method body as an unrequested closure-blocker flag tied to unstarted BMPCC-17779. Built target versions of each file with only the approved lines (verified via `diff -u` against both the unmodified-target and the full working-tree version, not by hand-editing hunk headers — a first attempt at hand-crafted hunk headers produced a corrupt patch), then `git apply --cached` the resulting patch so only that portion staged, leaving the rest in the working tree for Stage 3. Two files turned out, on inspection, to have **zero** approved content left once the already-committed redesign was accounted for (`claim-notes-panel.component.{ts,html}` — the notes-panel redesign itself was already on `main` from an earlier session; every remaining line in these two files was the unrequested attachments feature) — committed nothing from them in Stage 2, all of it went to Stage 3 instead.
+
+**Stage 3 — shelved to `speculative/unstarted-tickets` (branched off `main` after Stage 1/2, not deleted):** 6 commits, one per cluster, plus a `SPECULATIVE.md` README. Verified every ticket's status live against the tracker DB (not trusted from the `.agents/jira-clone/` scrape files alone):
+  - Sections "Circumstance" field — BMPCC-18159/18160/18157, all To Do/Unassigned.
+  - Approvals notes-on-journey — BMPCC-14908, To Do/Unassigned.
+  - Recovery Potential closure-blocker AC3 — BMPCC-17779, To Do (assigned to Ruby Isabelle Costigan, but assigned ≠ started).
+  - AOMS/TMR stub tabs on claim right-strip — BMPCC-14352/14419, both To Do; both tickets literally ask "where should this go" as an unresolved design question that the code had already answered on its own.
+  - Notes attachments — BMPCC-14967, To Do (generic "UI/UX design" title, assigned to Ann Jeenwechasat but not started).
+  - Financial Overview Make Payment modal + Recovery Bookings — no ticket at all, and it **contradicts commit `bc6be9d`**, which deliberately deleted `MakePaymentModalComponent` in favor of page navigation. Flagged explicitly in that commit's message on the speculative branch.
+  - One nuance recorded on the branch and worth repeating here: `public/tickets/bmpcc-17779.json` (an already-committed prototype tour on `main`, from an earlier task) also references BMPCC-17779, but only documents the already-shipped Yes/No+note flow per an explicit tracker-bridging instruction — it added no new logic, unlike the shelved closure-blocker commit.
+  - Returned `main`'s working tree to clean for every one of these files by committing them on the branch, then `git checkout main` (tracked-file diffs revert to `main`'s version; untracked new files disappear from the working tree entirely, since they only exist as commits on the other branch now).
+
+**Stage 4 — debris:** deleted 3 scratch Playwright screenshot scripts (`shotv10/11/12.mjs`, superseded by their feature's real commit). Added `.agents/jira-clone/` to `.gitignore` (raw scrape material, not source — `.agents/skills/` untouched, that's a real skill install already committed). `src/main.ts`'s uncommitted `sessionStorage.clear()`-on-bootstrap tweak was **reverted, not committed** — well-commented and clearly intentional, but tracing `MockStateService`'s read order showed it would run before every `sessionStorage.getItem(STORAGE_KEY)` call on init, silently wiping the exact "closed state survives page reload" persistence that `audit:ac-logic`'s AC-07 already covers. Intentional-looking but not harmless, so it didn't qualify for the commit path.
+
+**Stage 5:** Corrected `CLAUDE.md` RULE -1's stale "`CLAUDE.md` is gitignored" claim — it's tracked, confirmed via `git ls-files`, and had already been committed repeatedly this session before the claim was ever re-checked.
+
+- **Schema changes:** none.
+- **Files touched:** ~50 across 6 commits on `main` (`57740e3`, `8341ef5`, `5eb693c`, `d343f3d`, `e815d67`, `f68a23f`, `e06ad96`) + 7 commits on `speculative/unstarted-tickets` (`6de7141`, `6973e28`, `5856d8d`, `294ef23`, `f8fa57c`, `bc8adf0`, `ce4a23f`).
+- **Audit result:** `npm run build` 0 errors. `npm run pre-commit` 17/18 (the 1 failure, `audit:ndbx-wrapper` on `navbar.html`/`claim-overview.component.html`, predates this task — confirmed via `git diff`, neither file was touched here). `npm run audit:ac-logic` 49/49, unchanged. Fresh-clone verification (`git clone` into a temp dir, not just a working-tree read) confirmed both `/tracker` and `claims/:id/limits` resolve at final HEAD.
+
+---
+
 ## 2026-08-20 — Tracker end-to-end usability: jira_status column, ticket-to-prototype bridge, 9 new tours
 
 - **Source:** `/goal` autonomous execution — make the tracker usable end to end (real Jira status, route/tour indicators, working click-through bridge, reviewer-mode banner split provable)
