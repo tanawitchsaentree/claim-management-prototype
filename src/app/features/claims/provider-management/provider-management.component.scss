@@ -16,3 +16,9 @@
 .pm-row--highlighted {
   background: var(--ui-02);
 }
+
+.pm-actions {
+  display: flex;
+  gap: var(--space-sm);
+  white-space: nowrap;
+}

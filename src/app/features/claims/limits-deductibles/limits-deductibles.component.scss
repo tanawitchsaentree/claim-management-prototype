@@ -1,0 +1,25 @@
+.ld-level-toggle {
+  display: flex;
+  gap: 0;
+
+  button:first-child { border-radius: 4px 0 0 4px; }
+  button:last-child  { border-radius: 0 4px 4px 0; }
+}
+
+.ld-loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-md) 0;
+}
+
+.ld-section-heading {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: var(--space-md) 0 var(--space-sm);
+}
+
+.ld-table {
+  width: 100%;
+  margin-bottom: var(--space-md);
+}

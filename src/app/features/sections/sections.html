@@ -112,6 +112,7 @@
           <td nxTableCell class="col-actions">
             <button class="sec-kebab-btn" type="button"
               [nxContextMenuTriggerFor]="sectionMenu"
+              [attr.data-tour-id]="section.id === 'SEC-001' ? 'sections-sec001-kebab' : null"
               aria-label="Section actions">⋮</button>
             <nx-context-menu #sectionMenu="nxContextMenu">
               <button nxContextMenuItem type="button"

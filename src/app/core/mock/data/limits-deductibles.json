@@ -1,0 +1,15 @@
+[
+  {
+    "claimId": "CLM-2024-001",
+    "limits": [
+      { "limitId": "LIM-001", "level": "claim", "type": "Overall policy limit", "amount": 5000000, "currency": "EUR" },
+      { "limitId": "LIM-002", "level": "section", "type": "Property damage limit", "amount": 2000000, "currency": "EUR", "sectionId": "SEC-001", "sectionName": "Property Damage — Warehouse & Forklift" },
+      { "limitId": "LIM-003", "level": "section", "type": "Business interruption limit", "amount": 800000, "currency": "EUR", "sectionId": "SEC-002", "sectionName": "Business Interruption" }
+    ],
+    "deductibles": [
+      { "deductibleId": "DED-001", "level": "claim", "type": "Standard deductible", "amount": 10000, "currency": "EUR", "applicationMethod": "Fixed amount" },
+      { "deductibleId": "DED-002", "level": "section", "type": "Property damage deductible", "amount": 25000, "currency": "EUR", "applicationMethod": "Fixed amount", "sectionId": "SEC-001", "sectionName": "Property Damage — Warehouse & Forklift" },
+      { "deductibleId": "DED-003", "level": "section", "type": "Business interruption waiting period deductible", "amount": 2, "currency": "EUR", "applicationMethod": "Percentage", "sectionId": "SEC-002", "sectionName": "Business Interruption" }
+    ]
+  }
+]

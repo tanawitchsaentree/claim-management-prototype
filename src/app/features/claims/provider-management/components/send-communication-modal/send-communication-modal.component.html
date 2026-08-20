@@ -1,0 +1,30 @@
+<div class="scm-header">
+  <h2 nxModalTitle>Send communication — {{ data.assignment.providerName }}</h2>
+  <span class="scm-recipient-badge" [class.scm-recipient-badge--external]="data.isExternal">
+    {{ data.isExternal ? 'External provider' : 'Internal provider' }}
+  </span>
+</div>
+
+<div class="scm-body" tabindex="0">
+  <form [formGroup]="form" class="scm-form">
+    <nx-formfield label="Subject">
+      <input nxInput formControlName="subject" />
+    </nx-formfield>
+
+    <nx-formfield label="Email body">
+      <textarea nxInput formControlName="body" rows="6"></textarea>
+    </nx-formfield>
+
+    <nx-formfield label="Additional instructions (optional)">
+      <textarea nxInput formControlName="additionalInstructions" rows="2"></textarea>
+    </nx-formfield>
+
+    <h3 class="scm-subheading">Attachments</h3>
+    <app-attachment-picker [claimId]="data.claimId" (selectionChange)="onAttachmentSelectionChange($event)"></app-attachment-picker>
+  </form>
+
+  <div class="scm-footer">
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onSend()">Send communication</button>
+  </div>
+</div>

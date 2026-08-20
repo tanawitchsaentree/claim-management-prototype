@@ -6,6 +6,13 @@
   "pages": ["sections"],
   "walkthroughSteps": [
     "Navigate to /claims/CLM-2024-001/sections",
+    {
+      "targetId": "sections-sec001-kebab",
+      "title": "Close Section",
+      "body": "Every section has a Close Section action in this menu. What happens next depends on whether the section has open blockers.",
+      "expectedAfterClick": "With blockers present, the modal opens straight to a blocker list (Cancel-only footer). With none, it skips to a pre-closure checklist, then a closure reason — Close Section stays disabled until a reason is picked.",
+      "direction": "right"
+    },
     "Apply AC-01 — SEC-001 has 2 hard blockers (deductible + salvage); click ⋮ → Close Section",
     "Observe: modal opens on step 1 (Blockers) listing 2 red blocker rows, only Cancel in footer",
     "Apply AC-02 — SEC-001 has 4 blockers (litigation + reserves + payments + provider); close modal and reopen",

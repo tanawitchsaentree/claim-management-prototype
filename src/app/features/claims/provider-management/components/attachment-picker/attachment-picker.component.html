@@ -1,0 +1,46 @@
+<div class="ap-section">
+  <p class="ap-label">From claim documents</p>
+  @if (documents().length) {
+    <ul class="ap-doc-list">
+      @for (doc of documents(); track doc.documentId) {
+        <li class="ap-doc-row">
+          <nx-checkbox
+            [checked]="isSelected(doc.documentId)"
+            (checkedChange)="toggleDoc(doc.documentId)"
+            [attr.aria-label]="'Select ' + doc.fileName">
+          </nx-checkbox>
+          <span class="ap-doc-name">{{ doc.fileName }}</span>
+          <span class="ap-doc-size">{{ formatSize(doc.fileSize) }}</span>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="ap-empty">No documents found on this claim.</p>
+  }
+</div>
+
+<div class="ap-section">
+  <p class="ap-label">Upload from device</p>
+  <label nxButton="secondary small" class="ap-upload-btn">
+    <nx-icon name="upload" size="s"></nx-icon>
+    Choose files
+    <input type="file" multiple [accept]="acceptedTypes" (change)="onFileInputChange($event)" class="ap-file-input" />
+  </label>
+  <p class="ap-hint">PDF, DOC, DOCX, JPG, PNG — up to 10 MB per file.</p>
+  @if (fileError()) {
+    <p class="ap-error">{{ fileError() }}</p>
+  }
+  @if (uploadedFiles().length) {
+    <ul class="ap-doc-list">
+      @for (file of uploadedFiles(); track file.name) {
+        <li class="ap-doc-row">
+          <span class="ap-doc-name">{{ file.name }}</span>
+          <span class="ap-doc-size">{{ formatSize(file.size) }}</span>
+          <button nxIconButton="tertiary small" type="button" (click)="removeUploadedFile(file)" aria-label="Remove file">
+            <nx-icon name="close" size="s"></nx-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

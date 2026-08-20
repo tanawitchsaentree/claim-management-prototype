@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-14452",
+  "module": "Claims",
+  "title": "[UI/UX] support is required to design the Loss Adjuster Rating survey experience within the Provider Management module.",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["any"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/providers",
+    {
+      "targetId": "pm-rate-adjuster",
+      "title": "Rate this adjuster",
+      "body": "Once a loss adjuster's assignment is eligible for review, a rating action appears alongside their row.",
+      "expectedAfterClick": "Opens the loss adjuster rating survey modal.",
+      "direction": "top"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Eligible provider assignments show a Rate this adjuster action",
+      "plainStatement": "When a provider assignment is eligible for review, **Rate this adjuster** appears next to Send communication on that row.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
+        "preconditions": [
+          { "text": "At least one provider row shows Rate this adjuster", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Rating survey modal opens for an eligible assignment",
+        "visualCues": ["Rate this adjuster button visible on eligible rows", "Clicking opens the survey modal"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/providers",
+        "trigger": "Click Rate this adjuster on an eligible provider row",
+        "expectedResult": "Loss adjuster rating survey modal opens"
+      }
+    }
+  ]
+}

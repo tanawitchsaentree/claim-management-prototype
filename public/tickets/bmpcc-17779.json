@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-17779",
+  "module": "Claims",
+  "title": "[UI/UX] Recovery Potential Flag — Dependency",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/overview — claim is open, so the recovery potential edit link is visible",
+    {
+      "targetId": "co-recovery-potential-edit",
+      "title": "Recovery potential",
+      "body": "Set/Update next to the Recovery potential card lets a handler flag whether recovery is possible on this claim.",
+      "expectedAfterClick": "Opens the recovery potential modal — choosing Yes/No (with an optional note for No) updates the chip shown on the card.",
+      "direction": "right"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Recovery potential can be set or updated from the overview",
+      "plainStatement": "The **Recovery potential** card's Set/Update link opens a modal to flag recovery potential Yes/No, with an optional note.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "CLM-2024-001 is open by default — no override needed",
+        "preconditions": [
+          { "text": "Recovery potential card shows Set or Update", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Recovery potential modal opens with Yes/No selection",
+        "visualCues": ["Modal offers Yes/No recovery potential", "Selecting No reveals an optional note field", "Card chip updates after confirming"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Set/Update on the Recovery potential card",
+        "expectedResult": "Modal opens; confirming updates the card's chip"
+      }
+    }
+  ]
+}

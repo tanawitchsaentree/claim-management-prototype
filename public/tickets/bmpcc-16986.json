@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-16986",
+  "module": "Claims",
+  "title": "Figma Design - Claims Commercial - Baseline - Mass Event Linkage Navigation & Manual Edit",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/overview — the claim is already linked to a mass event by default",
+    {
+      "targetId": "co-mass-event-info",
+      "title": "Mass Event linkage",
+      "body": "The info icon next to Mass Event opens a popover with the event's details and manual linkage actions.",
+      "expectedAfterClick": "A popover appears showing the mass event's type, code, period and location, plus Link/Unlink/Confirm actions depending on the claim's current link status.",
+      "direction": "bottom"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Mass event linkage details and manual edit actions are reachable from the overview",
+      "plainStatement": "Clicking the info icon next to **Mass Event** opens a popover with the linked event's details and manual link/unlink actions.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "CLM-2024-001 already has a mass event linked by default — no override needed",
+        "preconditions": [
+          { "text": "Mass Event field is visible with a linked event id", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Mass event popover shows event details and manual actions",
+        "visualCues": ["Popover header shows event id and name", "Type/Code/Period/Location fields populated", "Link mass event / Unlink mass event / Confirm link actions present"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click the info icon next to Mass Event",
+        "expectedResult": "Popover opens with the event's details and manual link actions"
+      }
+    }
+  ]
+}

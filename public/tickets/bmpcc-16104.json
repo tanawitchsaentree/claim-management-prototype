@@ -1,0 +1,53 @@
+{
+  "ticketId": "BMPCC-16104",
+  "module": "Claims",
+  "title": "Figma Design - Claims Commercial - Claim Re-Open",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["overview"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/overview — claim is seeded Closed so Reopen Claim is visible",
+    {
+      "targetId": "co-reopen-claim-button",
+      "title": "Reopen Claim",
+      "body": "A closed claim shows Reopen Claim in place of Close Claim.",
+      "expectedAfterClick": "Opens the reopen confirmation — confirming sets the claim back to an active status.",
+      "direction": "top"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "A closed claim shows a Reopen Claim button on the overview",
+      "plainStatement": "When a claim is **Closed**, its overview shows **Reopen Claim** in place of Close Claim.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed CLM-2024-001 as Closed so the Reopen affordance is visible",
+        "preconditions": [
+          { "text": "Claim status is Closed", "page": "overview", "role": "setup" },
+          { "text": "Reopen Claim button is visible in the card actions", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": { "userId": "u1", "name": "Leonie Fischer" }
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Reopen Claim button visible, Close Claim button absent",
+        "visualCues": ["Status chip reads Closed", "Reopen Claim button present", "Close Claim button not shown"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Load the overview with the claim closed",
+        "expectedResult": "Reopen Claim button is visible"
+      }
+    }
+  ]
+}

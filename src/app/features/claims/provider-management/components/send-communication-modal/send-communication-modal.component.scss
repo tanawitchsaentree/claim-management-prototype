@@ -1,0 +1,61 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.scm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-base);
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.scm-recipient-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  background: var(--claim-status-bound-bg, var(--ui-03));
+  color: var(--claim-status-bound-color, var(--text-01));
+  white-space: nowrap;
+
+  &--external {
+    background: var(--claim-status-in-progress-bg);
+    color: var(--claim-status-in-progress-color);
+  }
+}
+
+.scm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: var(--space-lg);
+}
+
+.scm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  nx-formfield { width: 100%; }
+}
+
+.scm-subheading {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: var(--space-md) 0 var(--space-sm);
+}
+
+.scm-footer {
+  padding-top: var(--space-base);
+  margin-top: var(--space-sm);
+  border-top: 1px solid var(--ui-04);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}

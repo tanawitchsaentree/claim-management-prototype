@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-17678",
+  "module": "Claims",
+  "title": "[FE] UI/UX QA Fixes — Approvals Widget & Approvals Journey",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["any"],
+  "walkthroughSteps": [
+    "Navigate to /approvals",
+    {
+      "targetId": "ap-row-actions",
+      "title": "Approvals journey",
+      "body": "Each pending request has an actions menu with Approve, Reject, and View details.",
+      "expectedAfterClick": "Opens the row's action menu — Approve/Reject drive the request's status, View details opens the full request.",
+      "direction": "left"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Each approval request row has Approve, Reject, and View details actions",
+      "plainStatement": "Every row in the Approvals list has a row-actions menu with **Approve**, **Reject**, and **View details**.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses the Approvals page's existing seeded requests — no override needed",
+        "preconditions": [
+          { "text": "At least one approval row with an actions menu is visible", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Row actions menu with Approve/Reject/View details",
+        "visualCues": ["Kebab action button per row", "Menu offers Approve, Reject, View details"]
+      },
+      "howToTest": {
+        "route": "/approvals",
+        "trigger": "Click the row actions kebab on an approval request",
+        "expectedResult": "Approve/Reject/View details menu opens"
+      }
+    }
+  ]
+}

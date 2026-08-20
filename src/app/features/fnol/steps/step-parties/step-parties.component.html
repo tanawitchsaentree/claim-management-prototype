@@ -91,7 +91,7 @@
                     <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
                   </td>
                   <td nxCell class="col-action">
-                    <button nxIconButton="tertiary small" type="button"
+                    <button nxIconButton="tertiary small" type="button" data-tour-id="fnol-party-actions"
                             [nxContextMenuTriggerFor]="directPartyMenu"
                             [attr.aria-label]="'Actions for ' + party.legalName">
                       <nx-icon name="ellipsis-v"></nx-icon>

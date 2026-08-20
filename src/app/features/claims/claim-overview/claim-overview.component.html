@@ -60,6 +60,7 @@
               <button type="button"
                       class="co-info-btn"
                       aria-label="Mass event details"
+                      data-tour-id="co-mass-event-info"
                       #meTrigger="nxPopoverTrigger"
                       [nxPopoverTriggerFor]="massEventPopover"
                       nxPopoverTrigger="click"
@@ -271,7 +272,7 @@
       }
       @if (claim.status === 'Closed') {
         <div class="co-card-actions">
-          <button nxButton="secondary small" type="button" (click)="openReopenModal(claim)">
+          <button nxButton="secondary small" type="button" data-tour-id="co-reopen-claim-button" (click)="openReopenModal(claim)">
             Reopen Claim
           </button>
         </div>
@@ -291,7 +292,7 @@
         }
         @if (claim.status !== 'Closed') {
           <nx-link class="co-recovery-edit-btn">
-            <a (click)="openRecoveryPotentialModal(claim)">
+            <a data-tour-id="co-recovery-potential-edit" (click)="openRecoveryPotentialModal(claim)">
               {{ claim.recoveryPotential ? 'Update' : 'Set' }}
             </a>
           </nx-link>

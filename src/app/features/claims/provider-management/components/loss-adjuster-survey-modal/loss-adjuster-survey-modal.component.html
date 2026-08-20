@@ -1,0 +1,27 @@
+<div class="las-header">
+  <h2 nxModalTitle>Rate this adjuster — {{ data.assignment.providerName }}</h2>
+</div>
+
+<div class="las-body" tabindex="0">
+  <form [formGroup]="form" class="las-form">
+    <div class="las-rating-row">
+      <nx-rating
+        formControlName="rating"
+        size="m"
+        startLabel="Poor"
+        endLabel="Excellent"
+        ariaRatingGroupLabel="Rate this loss adjuster from 1 to 5"
+        [ariaRatingLabels]="['1 - Poor', '2 - Fair', '3 - Good', '4 - Very good', '5 - Excellent']">
+      </nx-rating>
+    </div>
+
+    <nx-formfield label="Comments">
+      <textarea nxInput formControlName="comments" rows="4" placeholder="Optional feedback on this adjuster's performance"></textarea>
+    </nx-formfield>
+  </form>
+
+  <div class="las-footer">
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onSubmit()">Submit rating</button>
+  </div>
+</div>

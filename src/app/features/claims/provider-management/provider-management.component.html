@@ -13,6 +13,7 @@
         <th nxHeaderCell>Status</th>
         <th nxHeaderCell>Assigned date</th>
         <th nxHeaderCell>Contact</th>
+        <th nxHeaderCell>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -25,6 +26,12 @@
           </td>
           <td nxCell>{{ row.assignedDate | appDate }}</td>
           <td nxCell>{{ row.contact ?? '–' }}</td>
+          <td nxCell class="pm-actions">
+            <button nxButton="secondary small" type="button" data-tour-id="pm-send-communication" (click)="openSendCommunicationModal(row)">Send communication</button>
+            @if (isSurveyEligible(row)) {
+              <button nxButton="tertiary small" type="button" data-tour-id="pm-rate-adjuster" (click)="openSurveyModal(row)">Rate this adjuster</button>
+            }
+          </td>
         </tr>
       }
     </tbody>
