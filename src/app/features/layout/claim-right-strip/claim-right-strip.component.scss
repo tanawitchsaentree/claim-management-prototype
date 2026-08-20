@@ -15,12 +15,43 @@
   height: 100%;
   overflow: hidden;
   flex-shrink: 0;
+  min-width: 320px;
 
   app-claim-notes-panel { display: block; height: 100%; }
 
   &--ref {
     app-claim-reference-panel { display: block; height: 100%; }
   }
+}
+
+// AOMS / TMR placeholder panels — same "external system" convention as
+// cwb-location-search-modal, signalling these are federated-in later, not built here.
+.crs-stub {
+  padding: var(--space-md);
+}
+
+.crs-stub__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--claim-status-in-progress-bg);
+  color: var(--claim-status-in-progress-color);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.crs-stub__title {
+  margin: var(--space-sm) 0 var(--space-xs);
+  font-weight: 700;
+  color: var(--text-01);
+}
+
+.crs-stub__text {
+  margin: 0;
+  color: var(--text-muted);
 }
 
 // Reference icon badge

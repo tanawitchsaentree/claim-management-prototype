@@ -55,6 +55,8 @@ export class ClaimRightStripComponent {
     { icon: 'speech-bubble-o', label: 'Comments',      key: 'comments' },
     { icon: 'clock-o',         label: 'History',       key: 'history' },
     { icon: 'paperclip',       label: 'Attachments',   key: 'attachments' },
+    { icon: 'grid',            label: 'AOMS',          key: 'aoms' },
+    { icon: 'globe',           label: 'TMR',           key: 'tmr' },
   ];
 
   private readonly url$ = this.router.events.pipe(

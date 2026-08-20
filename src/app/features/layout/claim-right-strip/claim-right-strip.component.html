@@ -48,6 +48,26 @@
       @if (activeKey === 'references') {
         <app-claim-reference-panel></app-claim-reference-panel>
       }
+      @if (activeKey === 'aoms') {
+        <div class="crs-stub">
+          <span class="crs-stub__badge" aria-label="External system">
+            <nx-icon name="link" size="s"></nx-icon>
+            External system
+          </span>
+          <p class="crs-stub__title">AOMS</p>
+          <p class="crs-stub__text">Allianz One Management System integration — coming soon.</p>
+        </div>
+      }
+      @if (activeKey === 'tmr') {
+        <div class="crs-stub">
+          <span class="crs-stub__badge" aria-label="External system">
+            <nx-icon name="link" size="s"></nx-icon>
+            External system
+          </span>
+          <p class="crs-stub__title">TMR</p>
+          <p class="crs-stub__text">TMR integration — coming soon.</p>
+        </div>
+      }
     </div>
   }
 </div>
