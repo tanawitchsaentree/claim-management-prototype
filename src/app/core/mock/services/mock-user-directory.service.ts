@@ -26,4 +26,8 @@ export class MockUserDirectoryService {
   getAll(): Observable<UserDirectoryEntry[]> {
     return of(USERS);
   }
+
+  getClaimHandlers(): Observable<UserDirectoryEntry[]> {
+    return of(USERS.filter(u => u.role === 'Claims Handler'));
+  }
 }

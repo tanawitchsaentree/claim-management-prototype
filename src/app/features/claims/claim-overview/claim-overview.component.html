@@ -34,6 +34,9 @@
         <div class="co-field">
           <span class="co-label">Assigned Claim handler</span>
           <span class="co-value">{{ claim.assignedHandler }}</span>
+          @if (claim.status !== 'Closed') {
+            <nx-link size="small"><a (click)="openReassignModal(claim)">Reassign</a></nx-link>
+          }
         </div>
         @if (claim.lossEventId) {
           <div class="co-field">
@@ -298,6 +301,9 @@
           </nx-link>
         }
       </div>
+      @if (claim.recoveryPotential === 'no' && claim.recoveryPotentialNote) {
+        <p class="co-recovery-note">{{ claim.recoveryPotentialNote }}</p>
+      }
     </section>
 
     <!-- File Restriction Card (BMPCC-10994) — always visible -->

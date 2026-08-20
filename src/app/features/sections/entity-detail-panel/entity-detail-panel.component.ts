@@ -11,6 +11,7 @@ import { SectionEntity, ClaimSection } from '../../../core/models/section.model'
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import {
   AddDamagedItemModalComponent,
   AddDamagedItemModalData,
@@ -50,6 +51,7 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     NxContextMenuModule,
     NxModalModule,
     EmptyStateComponent,
+    StatusChipComponent,
   ],
   templateUrl: './entity-detail-panel.component.html',
   styleUrl: './entity-detail-panel.component.scss',

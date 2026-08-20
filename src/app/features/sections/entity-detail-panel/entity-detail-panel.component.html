@@ -24,7 +24,11 @@
     <div class="edp-fields">
       <div class="edp-field">
         <span class="edp-field__label">Coverage review</span>
-        <span class="edp-field__value">{{ entity.coverageReview ?? '–' }}</span>
+        @if (entity.coverageReview) {
+          <app-status-chip [status]="entity.coverageReview" domain="coverage-review" [label]="entity.coverageReview"></app-status-chip>
+        } @else {
+          <span class="edp-field__value">–</span>
+        }
       </div>
       <div class="edp-field">
         <span class="edp-field__label">Provider</span>

@@ -110,26 +110,41 @@
               <span class="widget-title">Claims portfolio</span>
             </div>
             @if (portfolioTab === 'claims') {
-              <a routerLink="/claims" class="widget-link">View all claims</a>
+              <a routerLink="/claims" [queryParams]="viewAllClaimsParams()" class="widget-link">View all claims</a>
             } @else {
               <a routerLink="/loss-events" class="widget-link">View all loss events</a>
             }
           </div>
 
-          <!-- KCM scope selector -->
-          @if (auth.isKcm()) {
-            <div class="scope-tabs">
-              <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'mine'"  (click)="setClaimsScope('mine')">My claims</button>
+          <!-- Claims scope selector — every role gets "My claims"; Group is KCM-only (they're the ones who own a group) -->
+          <div class="scope-tabs">
+            <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'mine'"  (click)="setClaimsScope('mine')">My claims</button>
+            @if (auth.isKcm()) {
               <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'group'" (click)="setClaimsScope('group')">Group claims</button>
-              <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'all'"   (click)="setClaimsScope('all')">All</button>
-            </div>
-          }
+            }
+            <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'all'"   (click)="setClaimsScope('all')">All</button>
+          </div>
+
+          <!-- Default date range — PLACEHOLDER default (Last 30 days); confirm with business per PI 2026.3 UI/UX alignment open point -->
+          <div class="scope-tabs scope-tabs--secondary">
+            <button class="scope-tab" [class.scope-tab--active]="claimsDateRange() === '30'"  (click)="setClaimsDateRange('30')">Last 30 days</button>
+            <button class="scope-tab" [class.scope-tab--active]="claimsDateRange() === '90'"  (click)="setClaimsDateRange('90')">Last 90 days</button>
+            <button class="scope-tab" [class.scope-tab--active]="claimsDateRange() === 'all'" (click)="setClaimsDateRange('all')">All time</button>
+          </div>
 
           <div class="portfolio-tabs">
             <button class="portfolio-tab" [class.portfolio-tab--active]="portfolioTab === 'claims'"      (click)="setPortfolioTab('claims')">Claims</button>
             <button class="portfolio-tab" [class.portfolio-tab--active]="portfolioTab === 'loss-events'" (click)="setPortfolioTab('loss-events')">Loss events</button>
           </div>
           <div class="portfolio-tabs-spacer"></div>
+
+          @if (portfolioTab === 'claims') {
+            <div class="scope-tabs">
+              <button class="scope-tab" [class.scope-tab--active]="claimsStatusFilter() === 'open'"   (click)="setClaimsStatusFilter('open')">Open claims</button>
+              <button class="scope-tab" [class.scope-tab--active]="claimsStatusFilter() === 'closed'" (click)="setClaimsStatusFilter('closed')">Closed claims</button>
+              <button class="scope-tab" [class.scope-tab--active]="claimsStatusFilter() === 'all'"    (click)="setClaimsStatusFilter('all')">All</button>
+            </div>
+          }
 
           @if (portfolioTab === 'loss-events') {
             @if (lossEvents().length === 0) {
@@ -165,6 +180,9 @@
               </div>
             }
           } @else {
+            @if (displayedClaims().length === 0) {
+              <app-empty-state message="No claims found for this view."></app-empty-state>
+            } @else {
             <div class="data-table-wrap">
             <table nxTable sticky="last" class="dash-table">
               <thead>
@@ -200,6 +218,7 @@
               </tbody>
             </table>
             </div>
+            }
           }
         </div>
 
@@ -352,24 +371,24 @@
         </button>
       </div>
 
-      <!-- Claims stats card -->
+      <!-- Claims stats card — shares the same default date range as the portfolio widget above -->
       <div class="panel-card">
-        <div class="panel-card-header"><span class="panel-card-title">Claims · All time</span></div>
+        <div class="panel-card-header"><span class="panel-card-title">Claims · {{ claimsDateRangeLabel() }}</span></div>
         <div class="stats-total">
-          <span class="stats-number">{{ vm.stats.total }}</span>
+          <span class="stats-number">{{ dateRangedStats().total }}</span>
           <span class="stats-label">Claims</span>
         </div>
         @if (!vm.loading) {
           <div class="stats-bars">
             <div class="stats-bar-row">
               <span class="stats-bar-label">Opened</span>
-              <div class="stats-bar-track"><div class="stats-bar-fill stats-bar-fill--opened" [style.width.%]="barWidth(vm.stats.opened, vm.stats.total)"></div></div>
-              <span class="stats-bar-value">{{ vm.stats.opened }}</span>
+              <div class="stats-bar-track"><div class="stats-bar-fill stats-bar-fill--opened" [style.width.%]="barWidth(dateRangedStats().opened, dateRangedStats().total)"></div></div>
+              <span class="stats-bar-value">{{ dateRangedStats().opened }}</span>
             </div>
             <div class="stats-bar-row">
               <span class="stats-bar-label">Closed</span>
-              <div class="stats-bar-track"><div class="stats-bar-fill stats-bar-fill--closed" [style.width.%]="barWidth(vm.stats.closed, vm.stats.total)"></div></div>
-              <span class="stats-bar-value">{{ vm.stats.closed }}</span>
+              <div class="stats-bar-track"><div class="stats-bar-fill stats-bar-fill--closed" [style.width.%]="barWidth(dateRangedStats().closed, dateRangedStats().total)"></div></div>
+              <span class="stats-bar-value">{{ dateRangedStats().closed }}</span>
             </div>
           </div>
         }

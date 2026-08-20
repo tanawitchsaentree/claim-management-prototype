@@ -20,6 +20,14 @@
       <app-page-header title="All claims" subtitle="Browse and filter all claims across your portfolio."
         [showBack]="true" backLabel="Back to dashboard" (back)="router.navigate(['/dashboard'])"></app-page-header>
 
+      @if (quickFilterMine()) {
+        <div class="cl-quick-filter">
+          <nx-icon name="filter" size="s"></nx-icon>
+          Showing only claims assigned to you
+          <button nxPlainButton type="button" (click)="clearQuickFilter()">Show all claims</button>
+        </div>
+      }
+
       <!-- Filter form -->
       <form [formGroup]="filterForm" class="cl-form" (ngSubmit)="onFilter()">
         <div class="row1">
@@ -49,11 +57,28 @@
         </div>
       </form>
 
-      <!-- Results count -->
+      <!-- Results count / bulk actions -->
       @if (!loading()) {
-        <p class="cl-count">
-          {{ total() }} {{ total() === 1 ? 'claim' : 'claims' }} found
-        </p>
+        @if (selectedCount() > 0) {
+          <div class="cl-bulk-bar">
+            <span class="cl-bulk-bar__count">{{ selectedCount() }} selected</span>
+            @if (isAllPageSelected() && selectedCount() < total()) {
+              <button nxPlainButton type="button" class="cl-bulk-bar__select-all" (click)="selectAllMatching()">
+                Select all {{ total() }} claims matching this filter
+              </button>
+            }
+            <div class="cl-bulk-bar__actions">
+              <button nxButton="tertiary small" type="button" (click)="clearSelection()">Clear selection</button>
+              <button nxButton="secondary small" type="button" (click)="openBulkReassign()">
+                Reassign {{ selectedCount() }} {{ selectedCount() === 1 ? 'claim' : 'claims' }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <p class="cl-count">
+            {{ total() }} {{ total() === 1 ? 'claim' : 'claims' }} found
+          </p>
+        }
       }
 
       <!-- Table -->
@@ -65,6 +90,9 @@
         <table nxTable class="cl-table">
           <thead>
             <tr nxTableRow>
+              <th nxHeaderCell class="cl-col--check">
+                <nx-checkbox [checked]="isAllPageSelected()" (checkedChange)="toggleSelectAllOnPage()" aria-label="Select all claims on this page"></nx-checkbox>
+              </th>
               <th nxHeaderCell class="cl-col--nowrap">Claim ID</th>
               <th nxHeaderCell>Client name</th>
               <th nxHeaderCell>Status</th>
@@ -78,6 +106,9 @@
           <tbody>
             @for (claim of pagedRows(); track claim.claimId) {
               <tr nxTableRow>
+                <td nxCell class="cl-col--check">
+                  <nx-checkbox [checked]="isSelected(claim.claimId)" (checkedChange)="toggleSelect(claim.claimId)" [attr.aria-label]="'Select claim ' + claim.claimId"></nx-checkbox>
+                </td>
                 <td nxCell class="cl-col--nowrap">
                   <a class="text-link" [routerLink]="['/claims', claim.claimId, 'overview']"
                      [claimPreview]="claim.claimId">

@@ -848,6 +848,11 @@ $header-bp: 1024px;
   display: flex;
   gap: $sp-xs;   // 4px between pills
   padding: 0 $sp-xl $sp-md;   // 0 24 12 — aligns with card inset
+
+  &--secondary {
+    padding-top: 0;
+    .scope-tab { font-size: var(--paragraph-05-font-size); padding: 2px $sp-md; }
+  }
 }
 
 .scope-tab {

@@ -18,6 +18,20 @@
   --breadcrumb-height: 20px;
 }
 
+.cl-quick-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 0 0 12px;
+  border-radius: 4px;
+  background: var(--ui-02);
+  color: var(--text-01);
+  font-size: var(--paragraph-04-font-size);
+
+  button { margin-left: auto; }
+}
+
 .cl-page-wrap {
   padding-top: var(--page-content-top);
   padding-bottom: var(--layout-inset-base);
@@ -61,6 +75,39 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   margin: 0 0 12px;
+}
+
+// ─── Bulk selection bar ─────────────────────────────────────────────────────
+.cl-bulk-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--ui-02);
+}
+
+.cl-bulk-bar__count {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cl-bulk-bar__select-all {
+  margin-left: 12px;
+  font-size: var(--paragraph-04-font-size);
+}
+
+.cl-bulk-bar__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cl-col--check {
+  width: 40px;
 }
 
 // ─── Table ──────────────────────────────────────────────────────────────────

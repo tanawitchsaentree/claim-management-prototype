@@ -88,6 +88,7 @@ export interface ClaimOverview {
 
   // Recovery Potential flag — captured during FNOL, editable post-creation
   recoveryPotential?: 'yes' | 'no' | null;
+  recoveryPotentialNote?: string; // required rationale when recoveryPotential is 'no'
 
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
   hasOpenPayments?:   boolean;

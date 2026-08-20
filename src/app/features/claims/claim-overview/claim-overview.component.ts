@@ -64,6 +64,11 @@ import {
   MassEventSearchModalData,
   MassEventSearchModalResult,
 } from '../../../shared/components/mass-event-search-modal/mass-event-search-modal.component';
+import {
+  ReassignClaimModalComponent,
+  ReassignClaimModalData,
+  ReassignClaimModalResult,
+} from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
 
 interface OverviewVM {
   loading: boolean;
@@ -314,6 +319,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     if (!result || result.value === current) return;
     const cur = this.vm$.value;
     if (!cur.claim) return;
+    const note = result.value === 'no' ? result.note : undefined;
     const activity: ClaimActivity = {
       id: `act-${Date.now()}`,
       claimId: claim.claimId,
@@ -322,11 +328,15 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       objectType: 'Claim',
       attribute: 'Recovery potential',
       valueOld: current,
-      valueNew: result.value,
+      valueNew: note ? `${result.value} — ${note}` : result.value,
     };
     this.vm$.next({
       ...cur,
-      claim: { ...cur.claim, recoveryPotential: result.value },
+      claim: {
+        ...cur.claim,
+        recoveryPotential: result.value,
+        recoveryPotentialNote: note,
+      },
       activities: [activity, ...cur.activities],
     });
     if (result.value === 'yes') {
@@ -334,6 +344,38 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     } else {
       this.toast.success('Recovery potential set to No');
     }
+  }
+
+  async openReassignModal(claim: ClaimOverview): Promise<void> {
+    const ref = this.dialogSvc.open(ReassignClaimModalComponent, {
+      data: {
+        claimIds: [claim.claimId],
+        currentHandler: claim.assignedHandler,
+        claims: [{ claimId: claim.claimId, clientName: claim.client, currentHandler: claim.assignedHandler }],
+      } satisfies ReassignClaimModalData,
+      width: '480px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as ReassignClaimModalResult | null | undefined;
+    if (!result) return;
+    const cur = this.vm$.value;
+    if (!cur.claim) return;
+    const activity: ClaimActivity = {
+      id: `act-${Date.now()}`,
+      claimId: claim.claimId,
+      user: claim.assignedHandler,
+      timestamp: new Date().toISOString(),
+      objectType: 'Claim',
+      attribute: 'Assigned Claim handler',
+      valueOld: claim.assignedHandler,
+      valueNew: result.reason ? `${result.handlerName} — ${result.reason}` : result.handlerName,
+    };
+    this.vm$.next({
+      ...cur,
+      claim: { ...cur.claim, assignedHandler: result.handlerName },
+      activities: [activity, ...cur.activities],
+    });
+    this.toast.success('Claim reassigned', `${claim.claimId} is now assigned to ${result.handlerName}`);
   }
 
   async openReopenModal(claim: ClaimOverview): Promise<void> {

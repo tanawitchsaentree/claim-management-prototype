@@ -1,0 +1,72 @@
+<div class="rcm-header">
+  <h2 nxModalTitle>
+    {{ data.claimIds.length > 1 ? 'Reassign ' + data.claimIds.length + ' claims' : 'Reassign claim' }}
+  </h2>
+</div>
+
+<div class="rcm-body" tabindex="0">
+  @if (data.claimIds.length === 1 && !data.claims?.length) {
+    <p class="rcm-current">
+      {{ data.claimIds[0] }}
+      @if (data.currentHandler) {
+        <span class="rcm-current__muted">— currently assigned to {{ data.currentHandler }}</span>
+      }
+    </p>
+  } @else if (data.claims?.length) {
+    <p class="rcm-current">{{ data.claims!.length }} claim{{ data.claims!.length > 1 ? 's' : '' }} selected</p>
+    <div class="rcm-preview">
+      <!-- audit-exempt: guarded by @else if (data.claims?.length) above — never rendered with zero rows -->
+      <table class="rcm-preview__table">
+        <thead>
+          <tr><th>Claim</th><th>Client</th><th>Current handler</th></tr>
+        </thead>
+        <tbody>
+          @for (row of data.claims; track row.claimId) {
+            <tr>
+              <td>{{ row.claimId }}</td>
+              <td>{{ row.clientName }}</td>
+              <td>{{ row.currentHandler ?? '–' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p class="rcm-current">{{ data.claimIds.length }} claims selected</p>
+  }
+
+  <form [formGroup]="form" class="rcm-form">
+    <nx-formfield label="New claim handler">
+      <input nxInput type="text" placeholder="Search handlers by name or email…"
+        [value]="handlerQuery()" (input)="handlerQuery.set($any($event.target).value)" />
+    </nx-formfield>
+
+    <div class="rcm-handler-list">
+      @for (h of visibleHandlers(); track h.userId) {
+        <button type="button" class="rcm-handler-option"
+          [class.rcm-handler-option--active]="form.value.handlerName === h.name"
+          (click)="selectHandler(h.name)">
+          <span class="rcm-handler-option__name">{{ h.name }}</span>
+          <span class="rcm-handler-option__email">{{ h.email }}</span>
+        </button>
+      } @empty {
+        <p class="rcm-handler-empty">No handlers match "{{ handlerQuery() }}"</p>
+      }
+    </div>
+    @if (form.value.handlerName) {
+      <p class="rcm-selected-handler">
+        <nx-icon name="check-circle" size="s"></nx-icon>
+        Reassigning to <strong>{{ form.value.handlerName }}</strong>
+      </p>
+    }
+
+    <nx-formfield label="Reason (optional)">
+      <textarea nxInput formControlName="reason" rows="2" placeholder="Add context for this reassignment"></textarea>
+    </nx-formfield>
+  </form>
+
+  <div class="rcm-footer">
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onSubmit()">Reassign</button>
+  </div>
+</div>
