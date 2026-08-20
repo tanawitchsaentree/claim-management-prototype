@@ -70,22 +70,24 @@
       </nx-tag>
     }
 
-    <button nxButton="tertiary small" (click)="onReset()">
-      Reset
-    </button>
+    @if (isFullMode) {
+      <button nxButton="tertiary small" (click)="onReset()">
+        Reset
+      </button>
 
-    @if (helper.isOverviewRoute()) {
-      <div class="cdb-spacer"></div>
-      <span class="cdb-ref-label">Reference view</span>
-      <nx-formfield class="cdb-ref-picker">
-        <nx-dropdown
-          [formControl]="variantCtrl"
-          (selectionChange)="onVariantChange($event)">
-          @for (opt of variantOptions; track opt.value) {
-            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-          }
-        </nx-dropdown>
-      </nx-formfield>
+      @if (helper.isOverviewRoute()) {
+        <div class="cdb-spacer"></div>
+        <span class="cdb-ref-label">Reference view</span>
+        <nx-formfield class="cdb-ref-picker">
+          <nx-dropdown
+            [formControl]="variantCtrl"
+            (selectionChange)="onVariantChange($event)">
+            @for (opt of variantOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      }
     }
   </div>
 }

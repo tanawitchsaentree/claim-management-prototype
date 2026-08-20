@@ -11,6 +11,7 @@ import { MockStateService } from '../../../../core/mock/state/mock-state.service
 import { ClaimDevHelperService, TicketCard, TicketAC, PreconditionItem, ACVerification } from '../claim-dev-helper.service';
 import { InlineMarkdownPipe } from '../../../../shared/pipes/inline-markdown.pipe';
 import { VerifierNameModalComponent } from '../verifier-name-modal/verifier-name-modal.component';
+import { environment } from '../../../../../environments/environment';
 
 export interface ClaimDevDetailsModalData {
   card:             TicketCard;
@@ -33,6 +34,10 @@ export class ClaimDevDetailsModalComponent implements OnInit {
   private readonly dialog   = inject(NxDialogService);
 
   readonly selectedAcId = signal<string | null>(null);
+
+  // Reviewer split (tour-system audit, 2026-08-20) — the raw state inspector
+  // is a dev-only debugging aid, not needed to understand a demo scenario.
+  readonly isFullMode = environment.devBannerMode === 'full';
 
   get card()   { return this.data.card; }
   get ticket() { return this.card.ticket; }

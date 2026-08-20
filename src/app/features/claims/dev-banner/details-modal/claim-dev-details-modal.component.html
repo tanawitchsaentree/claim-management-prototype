@@ -14,19 +14,21 @@
       <nx-icon name="minus-circle"></nx-icon>
     </button>
   </div>
-  <div class="cddm-inspector">
-    <span>Status: <strong>{{ stateInspector().status }}</strong></span>
-    <span class="cddm-sep">·</span>
-    <span>Tasks: <strong>{{ stateInspector().tasks }}</strong></span>
-    <span class="cddm-sep">·</span>
-    <span>Sections: <strong>{{ stateInspector().sections }}</strong></span>
-    <span class="cddm-sep">·</span>
-    <span>Can close:
-      <strong [class.cddm-yes]="stateInspector().canClose" [class.cddm-no]="!stateInspector().canClose">
-        {{ stateInspector().canClose ? 'YES' : 'NO' }}
-      </strong>
-    </span>
-  </div>
+  @if (isFullMode) {
+    <div class="cddm-inspector">
+      <span>Status: <strong>{{ stateInspector().status }}</strong></span>
+      <span class="cddm-sep">·</span>
+      <span>Tasks: <strong>{{ stateInspector().tasks }}</strong></span>
+      <span class="cddm-sep">·</span>
+      <span>Sections: <strong>{{ stateInspector().sections }}</strong></span>
+      <span class="cddm-sep">·</span>
+      <span>Can close:
+        <strong [class.cddm-yes]="stateInspector().canClose" [class.cddm-no]="!stateInspector().canClose">
+          {{ stateInspector().canClose ? 'YES' : 'NO' }}
+        </strong>
+      </span>
+    </div>
+  }
 </div>
 
 <div class="cddm-columns">

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,20 +9,27 @@ import { DevHelperBannerComponent } from './features/fnol/components/dev-helper-
 import { AccessGateComponent } from './features/access-gate/access-gate.component';
 import { ToastStackComponent } from './shared/components/toast/toast-stack.component';
 import { PersonaSwitcherComponent } from './features/dashboard/widgets/persona-switcher';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ClaimDevBannerComponent, DevHelperBannerComponent, AccessGateComponent, ToastStackComponent, PersonaSwitcherComponent],
+  imports: [RouterOutlet, ClaimDevBannerComponent, DevHelperBannerComponent, AccessGateComponent, ToastStackComponent, PersonaSwitcherComponent, NxMessageModule],
   styleUrl: './app.scss',
   template: `
+    @if (isExploration) {
+      <nx-message context="warning" class="exploration-banner">EXPLORATION BUILD — work in progress, not final</nx-message>
+    }
     @if (unlocked()) {
       <div class="dev-banner-row">
-        <app-claim-dev-banner />
+        @if (devBannerMode !== 'off') {
+          <app-claim-dev-banner />
+        }
         @if (isDashboard()) {
           <app-persona-switcher />
         }
-        @if (helper.shouldShowFnolHelper()) {
+        @if (helper.shouldShowFnolHelper() && devBannerMode === 'full') {
           <app-dev-helper-banner />
         }
       </div>
@@ -37,6 +44,8 @@ export class App implements OnInit {
   readonly helper   = inject(ClaimDevHelperService);
   private readonly router = inject(Router);
   readonly unlocked = signal(false);
+  readonly isExploration = environment.buildTag === 'exploration';
+  readonly devBannerMode = environment.devBannerMode;
 
   readonly isDashboard = toSignal(
     this.router.events.pipe(
@@ -54,15 +63,5 @@ export class App implements OnInit {
 
   onUnlocked(): void {
     this.unlocked.set(true);
-  }
-
-  @HostListener('window:keydown', ['$event'])
-  onKeydown(e: KeyboardEvent): void {
-    // Cmd+Shift+R (Mac) or Ctrl+Shift+R (Win) → clear sessionStorage then reload
-    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'R') {
-      e.preventDefault();
-      sessionStorage.clear();
-      window.location.reload();
-    }
   }
 }

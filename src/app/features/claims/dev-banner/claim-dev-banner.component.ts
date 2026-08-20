@@ -7,6 +7,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxTaglistModule } from '@allianz/ng-aquila/taglist';
 import { ClaimDevHelperService, DevTicket, BuildStatus } from './claim-dev-helper.service';
 import { ReferenceViewService, ReferenceVariant } from '../claim-reference-panel/reference-view.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-claim-dev-banner',
@@ -20,6 +21,11 @@ export class ClaimDevBannerComponent implements OnInit {
   readonly refSvc  = inject(ReferenceViewService);
 
   readonly visible = true;
+
+  // Reviewer split (tour-system audit, 2026-08-20): dev-only widgets
+  // (Reset, reference-view variant picker) hide when devBannerMode is
+  // 'reviewer'. 'full' keeps everything exactly as before.
+  readonly isFullMode = environment.devBannerMode === 'full';
 
   readonly ticketCtrl   = new FormControl<string | null>(null);
   readonly variantCtrl  = new FormControl<ReferenceVariant>('none');
