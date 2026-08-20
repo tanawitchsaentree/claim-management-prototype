@@ -35,7 +35,7 @@ If you modify any file in `core/mock/data/`, run `npm run audit:ac-logic` before
 
 Run `npm run pre-commit` before declaring work done — see `.claude/POST_BUILD.md`.
 
-`PROJECT.md` is committed; `CLAUDE.md` is gitignored — PROJECT.md is the canonical version of this rule.
+`PROJECT.md` and `CLAUDE.md` are both tracked and committed — PROJECT.md is still the canonical version of this rule (single source of truth for the ticket schema itself), since it's the file other tools/sessions reading only the committed tree should find first.
 
 ---
 
