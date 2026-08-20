@@ -1,14 +1,17 @@
 :host {
   display: flex;
   flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden;
 }
 
 .sim-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-xl) var(--space-2xl) var(--space-base);
+  padding-bottom: var(--space-base);
   border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
 }
 
 .sim-title {
@@ -19,16 +22,19 @@
 }
 
 .sim-body {
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: var(--space-lg) var(--space-2xl) var(--space-sm);
+  padding-top: var(--space-lg);
 }
 
 .sim-footer {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  padding: var(--space-base) var(--space-2xl) var(--space-xl);
+  padding-top: var(--space-base);
+  margin-top: var(--space-sm);
   border-top: 1px solid var(--ui-04);
 }

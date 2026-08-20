@@ -103,19 +103,27 @@ From step-1-search:
 
 ### Mandatory modal SCSS pattern — copy exactly for every new modal
 
+`NxModalContainer` applies `--modal-padding` (40px) on **all four sides** of
+every dialog automatically. Header/body/footer sections must therefore only
+ever declare `padding-top` / `padding-bottom` — any horizontal value in a
+`padding:` shorthand doubles the left/right inset the container already
+provides. This bit `recovery-potential-modal`, `add-litigation-party-modal`,
+and `start-investigation-modal` on 2026-08-14 (all three copied the old,
+wrong version of this pattern from each other) — `scripts/audit-modal-padding.mjs`
+now catches it in `pre-commit`.
+
 ```scss
 // ─── :host ───────────────────────────────────────────────────────────────────
 :host {
   display: flex;
   flex-direction: column;
-  max-width: 100vw;
   max-height: 80vh;    // ← REQUIRED — prevents overflow on small screens
   overflow: hidden;    // ← REQUIRED — scroll containment
 }
 
 // ─── Header ──────────────────────────────────────────────────────────────────
 .xxx-header {
-  padding: 20px 24px 16px;
+  padding-bottom: var(--space-base);   // ← vertical only — no horizontal value
   border-bottom: 1px solid var(--ui-04);
   flex-shrink: 0;      // ← REQUIRED — header never shrinks
 }
@@ -124,13 +132,13 @@ From step-1-search:
 .xxx-body {
   flex: 1;             // ← REQUIRED — body grows between header and footer
   overflow-y: auto;    // ← REQUIRED — body scrolls when content overflows
-  padding: 24px;
+  padding-top: var(--space-lg);        // ← vertical only — no horizontal value
 }
 
 // ─── Footer (lives INSIDE .xxx-body, after the last content block) ───────────
 .xxx-footer {
-  padding-top: 16px;   // ← NOT padding: 16px 24px — no extra horizontal padding
-  margin-top: 8px;
+  padding-top: var(--space-base);   // ← NOT padding: 16px 24px — no horizontal padding
+  margin-top: var(--space-sm);
   border-top: 1px solid var(--ui-04);
 }
 ```
@@ -144,7 +152,7 @@ const ref = this.dialogSvc.open(XxxComponent, { data, width: '480px' });
 
 - Missing `max-height + overflow: hidden` on `:host` → dialog grows taller than viewport
 - Missing `flex: 1` on body → footer jams against last content item (no breathing room)
-- `padding: 16px 24px` on footer → doubles horizontal spacing because dialog wrapper already has padding
+- Any nonzero horizontal value in header/body/footer `padding:` shorthand → doubles the left/right inset `NxModalContainer` already applies
 - `width` on `:host` instead of `open()` → NDBX overlay container may be wider than component, creating right-side whitespace
 - Footer as `:host`-level sibling (not inside body) + no `flex: 1` on body → footer floats immediately below last item regardless of modal height
 
@@ -152,10 +160,11 @@ const ref = this.dialogSvc.open(XxxComponent, { data, width: '480px' });
 
 - [ ] `:host` has `max-height: 80vh` and `overflow: hidden`
 - [ ] body div has `flex: 1` and `overflow-y: auto`
-- [ ] footer padding is `padding-top: 16px; margin-top: 8px` (no horizontal padding)
+- [ ] header/body/footer padding is vertical-only (`padding-top` / `padding-bottom`) — no `padding:` shorthand with a nonzero horizontal value
 - [ ] `width` passed to `dialogSvc.open()`, NOT set on `:host`
+- [ ] `npm run audit:modal-padding` passes
 
-**Verified working:** 2026-05-12
+**Verified working:** 2026-05-12; padding rule corrected 2026-08-14 after `audit:modal-padding` caught 3 modals doing it wrong
 
 ---
 

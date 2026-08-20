@@ -6,7 +6,7 @@
 }
 
 .x-header {
-  padding: var(--space-lg) var(--space-xl) var(--space-base);
+  padding-bottom: var(--space-base);
   border-bottom: 1px solid var(--ui-04);
   flex-shrink: 0;
 }
@@ -27,14 +27,15 @@
 .x-body {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-xl);
+  padding-top: var(--space-xl);
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 .x-footer {
-  padding: var(--space-base) var(--space-xl);
+  padding-top: var(--space-base);
+  margin-top: var(--space-xl);
   border-top: 1px solid var(--ui-04);
   display: flex;
   justify-content: flex-end;
