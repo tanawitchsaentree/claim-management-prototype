@@ -11,4 +11,5 @@ export interface UrgentApproval {
   amount: number;
   requester: string;
   reviewerEmail?: string;
+  note?: string;  // BMPCC-14908 — note added against this reserve, visible on the approval journey
 }

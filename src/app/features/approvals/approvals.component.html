@@ -64,7 +64,15 @@
           }
           @for (item of filteredReserves(); track item.requestId) {
             <tr nxTableRow>
-              <td nxTableCell class="col-expand"></td>
+              <td nxTableCell class="col-expand">
+                @if (item.note) {
+                  <button nxIconButton="tertiary small" type="button"
+                    (click)="toggleExpand(item.requestId)"
+                    [attr.aria-label]="expandedRequestId() === item.requestId ? 'Hide note' : 'Show note'">
+                    <nx-icon [name]="expandedRequestId() === item.requestId ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+                  </button>
+                }
+              </td>
               <td nxTableCell class="col-req-id">
                 <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{ item.requestId }}</a>
               </td>
@@ -90,6 +98,13 @@
                 </nx-context-menu>
               </td>
             </tr>
+            @if (expandedRequestId() === item.requestId && item.note) {
+              <tr nxTableRow class="note-row">
+                <td nxTableCell colspan="11" class="note-cell">
+                  <span class="note-cell__label">Note on this reserve:</span> {{ item.note }}
+                </td>
+              </tr>
+            }
           }
         </tbody>
       </table>

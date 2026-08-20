@@ -142,3 +142,16 @@ button[nxButton="tertiary small"] {
   color: var(--text-muted) !important;
   border: none !important;
 }
+
+// BMPCC-14908 — inline expandable note under a reserve row
+.note-row td.note-cell {
+  background: var(--ui-01);
+  padding: var(--space-sm) var(--space-md) !important;
+  white-space: normal !important;
+  color: var(--text-01);
+}
+
+.note-cell__label {
+  font-weight: 600;
+  margin-right: 4px;
+}

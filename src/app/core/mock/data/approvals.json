@@ -8,7 +8,8 @@
     "currency": "EUR",
     "amount": 9900,
     "requester": "c.wolff@allianz.com",
-    "reviewerEmail": "n.feld@allianz.com"
+    "reviewerEmail": "n.feld@allianz.com",
+    "note": "Reserve increased following updated repair estimate from loss adjuster \u2014 see attached quote."
   },
   {
     "requestId": "REQ270243",
@@ -30,7 +31,8 @@
     "currency": "EUR",
     "amount": 2000,
     "requester": "extern.d.kiel@allianz.com",
-    "reviewerEmail": "n.feld@allianz.com"
+    "reviewerEmail": "n.feld@allianz.com",
+    "note": "Approved amount reflects revised policy limit confirmation from underwriting."
   },
   {
     "requestId": "REQ562237",

@@ -52,6 +52,11 @@ export class ApprovalsComponent implements OnInit {
 
   readonly activeTab    = signal<'reserves' | 'payments'>('reserves');
   readonly showMineOnly = signal(false);
+  readonly expandedRequestId = signal<string | null>(null);
+
+  toggleExpand(requestId: string): void {
+    this.expandedRequestId.update(current => current === requestId ? null : requestId);
+  }
 
   // Filter fields
   readonly filterForm = new FormGroup({
