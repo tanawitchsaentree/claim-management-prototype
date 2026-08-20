@@ -1,0 +1,43 @@
+<div class="mpm-header">
+  <h2 nxModalTitle>Make payment — {{ data.sectionName }}</h2>
+</div>
+
+<div class="mpm-body" tabindex="0">
+  <form [formGroup]="form" class="mpm-form">
+    <nx-formfield label="Payment amount">
+      <input nxInput type="number" formControlName="amount" min="0" step="0.01" />
+    </nx-formfield>
+
+    <h3 class="mpm-subheading">Applicable deductibles</h3>
+    @if (deductibles().length) {
+      <nx-radio-group formControlName="deductibleId" class="mpm-deductible-list">
+        @for (d of deductibles(); track d.deductibleId) {
+          <label class="mpm-deductible-row">
+            <nx-radio [value]="d.deductibleId" labelSize="small">
+              <span class="mpm-deductible-type">{{ d.type }}</span>
+            </nx-radio>
+            <span class="mpm-deductible-badge" [class.mpm-deductible-badge--section]="d.level === 'section'">
+              {{ d.level === 'section' ? d.sectionName : 'Claim level' }}
+            </span>
+            <span class="mpm-deductible-amount">
+              {{ d.applicationMethod === 'Percentage' ? d.amount + '%' : (d.amount | currency:d.currency:'symbol':'1.0-0') }}
+              · {{ d.applicationMethod }}
+            </span>
+          </label>
+        }
+      </nx-radio-group>
+    } @else {
+      <app-empty-state message="No applicable deductibles for this section."></app-empty-state>
+    }
+
+    <div class="mpm-net">
+      <span class="mpm-net__label">Net payment amount</span>
+      <span class="mpm-net__value">{{ netAmount() | currency:data.currency:'symbol':'1.0-2' }}</span>
+    </div>
+  </form>
+
+  <div class="mpm-footer">
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onSubmit()">Confirm payment</button>
+  </div>
+</div>

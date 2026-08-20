@@ -1,0 +1,95 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.mpm-header {
+  padding-bottom: var(--space-base);
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.mpm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: var(--space-lg);
+}
+
+.mpm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  nx-formfield { width: 100%; }
+}
+
+.mpm-subheading {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: var(--space-md) 0 var(--space-sm);
+}
+
+.mpm-deductible-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.mpm-deductible-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+}
+
+.mpm-deductible-type {
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.mpm-deductible-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  background: var(--claim-status-bound-bg, var(--ui-03));
+  color: var(--claim-status-bound-color, var(--text-01));
+
+  &--section {
+    background: var(--claim-status-in-progress-bg);
+    color: var(--claim-status-in-progress-color);
+  }
+}
+
+.mpm-deductible-amount {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+  white-space: nowrap;
+}
+
+.mpm-net {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--ui-04);
+
+  &__label { color: var(--text-muted); }
+  &__value { font-size: var(--paragraph-01-font-size); font-weight: 700; color: var(--text-01); }
+}
+
+.mpm-footer {
+  padding-top: var(--space-base);
+  margin-top: var(--space-sm);
+  border-top: 1px solid var(--ui-04);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}

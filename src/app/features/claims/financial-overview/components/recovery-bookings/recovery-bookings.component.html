@@ -1,0 +1,76 @@
+<div class="rb-toolbar">
+  <p class="rb-count">{{ rows.length }} items</p>
+  <button nxButton="secondary small" type="button" (click)="toggleGroupByParty()">
+    {{ groupByParty() ? 'Ungroup' : 'Group by party' }}
+  </button>
+</div>
+
+@if (rows.length === 0) {
+  <app-empty-state message="No recovery bookings found."></app-empty-state>
+} @else if (groupByParty()) {
+  @for (group of groups; track group.party) {
+    <h3 class="rb-group-heading">
+      {{ group.party }}
+      <span class="rb-group-heading__total">{{ group.total | currency:currency:'symbol':'1.0-0' }}</span>
+    </h3>
+    <table nxTable class="rb-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell>Recovery ID</th>
+          <th nxHeaderCell>Booking ID</th>
+          <th nxHeaderCell>Recovery type</th>
+          <th nxHeaderCell>Section</th>
+          <th nxHeaderCell class="rb-cell--right">Amount</th>
+          <th nxHeaderCell>Currency</th>
+          <th nxHeaderCell>Status</th>
+          <th nxHeaderCell>Booking date</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of group.rows; track r.recoveryId) {
+          <tr nxTableRow>
+            <td nxCell>{{ r.recoveryId || '—' }}</td>
+            <td nxCell><span class="rb-link">{{ r.bookingId }}</span></td>
+            <td nxCell>{{ r.recoveryType }}</td>
+            <td nxCell>{{ r.section }}</td>
+            <td nxCell class="rb-cell--right">{{ r.amount | currency:currency:'symbol':'1.0-0' }}</td>
+            <td nxCell>{{ r.currency }}</td>
+            <td nxCell><span class="rb-badge rb-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
+            <td nxCell class="rb-cell--nowrap">{{ r.bookingDate }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+} @else {
+  <table nxTable class="rb-table">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell>Recovery ID</th>
+        <th nxHeaderCell>Booking ID</th>
+        <th nxHeaderCell>Recovery type</th>
+        <th nxHeaderCell>Section</th>
+        <th nxHeaderCell class="rb-cell--right">Amount</th>
+        <th nxHeaderCell>Currency</th>
+        <th nxHeaderCell>Status</th>
+        <th nxHeaderCell>Party</th>
+        <th nxHeaderCell>Booking date</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of rows; track r.recoveryId) {
+        <tr nxTableRow>
+          <td nxCell>{{ r.recoveryId || '—' }}</td>
+          <td nxCell><span class="rb-link">{{ r.bookingId }}</span></td>
+          <td nxCell>{{ r.recoveryType }}</td>
+          <td nxCell>{{ r.section }}</td>
+          <td nxCell class="rb-cell--right">{{ r.amount | currency:currency:'symbol':'1.0-0' }}</td>
+          <td nxCell>{{ r.currency }}</td>
+          <td nxCell><span class="rb-badge rb-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
+          <td nxCell>{{ r.party || '—' }}</td>
+          <td nxCell class="rb-cell--nowrap">{{ r.bookingDate }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

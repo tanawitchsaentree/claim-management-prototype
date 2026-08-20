@@ -9,10 +9,18 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
+import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { FinancialOverview, FinancialSection } from '../../../core/models/financial-overview.model';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { ToastService } from '../../../shared/components/toast/toast.service';
+import {
+  MakePaymentModalComponent,
+  MakePaymentModalData,
+  MakePaymentModalResult,
+} from './components/make-payment-modal/make-payment-modal.component';
+import { RecoveryBookingsComponent } from './components/recovery-bookings/recovery-bookings.component';
 
 export type FinancialView = 'overview' | 'payments' | 'reserves' | 'recovery';
 type LevelToggle = 'claim' | 'section';
@@ -31,14 +39,17 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     NxDropdownModule,
     EmptyStateComponent,
     PageHeaderComponent,
+    RecoveryBookingsComponent,
   ],
   templateUrl: './financial-overview.component.html',
   styleUrl:    './financial-overview.component.scss',
 })
 export class FinancialOverviewComponent implements OnInit {
-  private readonly route  = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly svc    = inject(MockFinancialOverviewService);
+  private readonly route     = inject(ActivatedRoute);
+  private readonly router    = inject(Router);
+  private readonly svc       = inject(MockFinancialOverviewService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly toast     = inject(ToastService);
 
   readonly loading   = signal(true);
   readonly fo        = signal<FinancialOverview | null>(null);
@@ -114,5 +125,23 @@ export class FinancialOverviewComponent implements OnInit {
 
   isReserveExpanded(id: string): boolean {
     return this.expandedReserveIds().has(id);
+  }
+
+  async openMakePaymentModal(): Promise<void> {
+    const section = this.activeSection();
+    const claimId = this.fo()?.claimId ?? '';
+    const ref = this.dialogSvc.open(MakePaymentModalComponent, {
+      data: {
+        claimId,
+        sectionId: section?.sectionId ?? '',
+        sectionName: section?.sectionName ?? 'Claim level',
+        currency: this.currency(),
+      } satisfies MakePaymentModalData,
+      width: '520px',
+      maxWidth: '92vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed()) as MakePaymentModalResult | null | undefined;
+    if (!result) return;
+    this.toast.success('Payment recorded', `Net amount ${result.netAmount.toFixed(2)} ${this.currency()}`);
   }
 }

@@ -154,7 +154,7 @@
 
     <div class="fo-toolbar">
       <p class="fo-count">{{ rows.length }} items</p>
-      <button nxButton="primary small" class="fo-toolbar__action">Make Payment</button>
+      <button nxButton="primary small" class="fo-toolbar__action" (click)="openMakePaymentModal()">Make Payment</button>
     </div>
 
     @if (rows.length === 0) {
@@ -280,47 +280,7 @@
   @else if (view() === 'recovery') {
 
     @let rows = level() === 'claim' ? fo.recoveries : (activeSection()?.recoveries ?? []);
-
-    <div class="fo-toolbar">
-      <p class="fo-count">{{ rows.length }} items</p>
-    </div>
-
-    @if (rows.length === 0) {
-      <app-empty-state message="No recovery bookings found."></app-empty-state>
-    } @else {
-      <table nxTable class="fo-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Recovery ID</th>
-            <th nxHeaderCell>Booking ID</th>
-            <th nxHeaderCell>Recovery type</th>
-            <th nxHeaderCell>Section</th>
-            <th nxHeaderCell class="fo-cell--right">Amount</th>
-            <th nxHeaderCell>Currency</th>
-            <th nxHeaderCell>Status</th>
-            <th nxHeaderCell>Party</th>
-            <th nxHeaderCell>Booking date</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of rows; track r.recoveryId) {
-            <tr nxTableRow>
-              <td nxCell>{{ r.recoveryId || '—' }}</td>
-              <td nxCell>
-                <span class="fo-link">{{ r.bookingId }}</span>
-              </td>
-              <td nxCell>{{ r.recoveryType }}</td>
-              <td nxCell>{{ r.section }}</td>
-              <td nxCell class="fo-cell--right">{{ r.amount | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell>{{ r.currency }}</td>
-              <td nxCell><span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
-              <td nxCell>{{ r.party || '—' }}</td>
-              <td nxCell class="fo-cell--nowrap">{{ r.bookingDate }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    }
+    <app-recovery-bookings [rows]="rows" [currency]="currency()"></app-recovery-bookings>
   }
 
 } @else {
