@@ -89,6 +89,10 @@ export interface ClaimOverview {
   // Recovery Potential flag — captured during FNOL, editable post-creation
   recoveryPotential?: 'yes' | 'no' | null;
   recoveryPotentialNote?: string; // required rationale when recoveryPotential is 'no'
+  // BMPCC-17779 — set to false whenever recoveryPotential flips to 'yes'; claim
+  // closure is blocked until a recovery case exists. Mock-only flag (no real
+  // "recovery case" entity in this prototype), mirrors hasActiveRecovery below.
+  recoveryCaseCreated?: boolean;
 
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
   hasOpenPayments?:   boolean;

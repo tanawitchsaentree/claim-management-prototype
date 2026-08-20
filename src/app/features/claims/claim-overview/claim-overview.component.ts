@@ -336,11 +336,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         ...cur.claim,
         recoveryPotential: result.value,
         recoveryPotentialNote: note,
+        recoveryCaseCreated: result.value === 'yes' ? false : cur.claim.recoveryCaseCreated,
       },
       activities: [activity, ...cur.activities],
     });
     if (result.value === 'yes') {
-      this.toast.success('Recovery potential set to Yes', 'A task has been created for recovery analysis.');
+      this.toast.success('Recovery potential set to Yes', 'A recovery case must be created before this claim can be closed.');
     } else {
       this.toast.success('Recovery potential set to No');
     }

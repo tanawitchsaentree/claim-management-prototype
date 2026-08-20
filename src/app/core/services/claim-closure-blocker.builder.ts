@@ -90,6 +90,18 @@ export function buildBlockerResult(
   if (claim.hasActiveRecovery) {
     blockers.push({ type: 'recovery',   label: 'Active recovery actions must be resolved' });
   }
+  // BMPCC-17779 AC3 — 'yes' needs a recovery case before the claim can close.
+  // 'no' (AC2) requires nothing further. AC1 ("blank flag blocks after X+ days")
+  // is intentionally NOT enforced as a hard blocker here: every claim in this
+  // mock dataset has recoveryPotential unset today, and every other flag in
+  // this builder is opt-in (blocks only when explicitly true) — making "unset"
+  // block-by-default would regress every existing closure ticket/demo claim.
+  // [accepted-deviation] Flagged for product: AC1's X-day grace period needs a
+  // real elapsed-time source (e.g. days since FNOL) before it can be modeled;
+  // treating it as a hard immediate blocker was rejected as unsafe for this repo.
+  if (claim.recoveryPotential === 'yes' && !claim.recoveryCaseCreated) {
+    blockers.push({ type: 'recovery', label: 'A recovery case must be created before this claim can be closed' });
+  }
   if (claim.hasOpenDeductible) {
     blockers.push({ type: 'deductible', label: 'Deductible collections must be confirmed' });
   }
