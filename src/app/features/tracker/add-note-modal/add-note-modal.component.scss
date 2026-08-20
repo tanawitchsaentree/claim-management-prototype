@@ -1,0 +1,15 @@
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.anm-header { @include modal.header; }
+.anm-header__row { @include modal.header-row; }
+.anm-title { @include modal.title; }
+
+.anm-body {
+  @include modal.body;
+
+  nx-formfield { width: 100%; }
+}
+
+.anm-footer { @include modal.footer; }

@@ -1,0 +1,156 @@
+// Fixed right-edge drawer. Same width/opacity slide technique as
+// ClaimRightStripComponent's panelSlide (claim-right-strip.component.ts:27-39),
+// applied to an overlay instead of an inline flex child.
+:host {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+}
+
+.tdp-slot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 420px;
+  overflow: hidden;
+  background: var(--ui-01);
+  border-left: 1px solid var(--ui-04);
+  box-shadow: -4px 0 12px var(--claim-overlay-shadow);
+}
+
+.tdp-header {
+  flex-shrink: 0;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.tdp-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.tdp-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.tdp-ticket-title {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.tdp-context {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.tdp-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.tdp-prototype {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  nx-formfield { width: 100%; }
+}
+
+.tdp-prototype__open {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.tdp-stage-row {
+  display: flex;
+  gap: var(--space-base);
+
+  nx-formfield { flex: 1; width: auto; }
+}
+
+.tdp-blocked {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  nx-formfield { width: 100%; }
+}
+
+.tdp-blocked-days {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.tdp-links {
+  display: flex;
+  gap: var(--space-lg);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--interactive-text);
+    font-size: var(--paragraph-03-font-size);
+    text-decoration: none;
+  }
+}
+
+.tdp-notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: var(--space-base);
+  border-top: 1px solid var(--ui-03);
+}
+
+.tdp-notes__heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tdp-notes__heading {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.tdp-notes__empty {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.tdp-note {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--ui-03);
+}
+
+.tdp-note__body {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.tdp-note__meta {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}

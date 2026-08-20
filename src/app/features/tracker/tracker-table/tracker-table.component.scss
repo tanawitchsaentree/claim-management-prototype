@@ -1,0 +1,112 @@
+// Tracker is a standalone internal tool, not part of the claim-management
+// app's page hierarchy — deliberately NOT using PageShellComponent (which
+// always renders the main app navbar). This is its own minimal container.
+.tracker-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--page-content-top) var(--layout-inset-base);
+}
+
+// Filter row: BLESSED.md "Card Body — Form Sections" .xxx-reason-row pattern
+// (claim-overview.component.scss .co-restrict-reason-row / .co-restrict-field).
+.tt-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-base);
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+}
+
+.tt-filter-field {
+  flex: 1;
+  min-width: 160px;
+  max-width: 280px;
+  width: auto;
+}
+
+.tt-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-base);
+}
+
+.tt-last-sync {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+// Split toolbar — BLESSED.md ".toolbar / .toolbar__left / .toolbar__right".
+.toolbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: var(--space-base);
+}
+
+.toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-base);
+}
+
+.tt-toggle--active {
+  color: var(--interactive-primary);
+  font-weight: 600;
+}
+
+.tt-table {
+  width: 100%;
+}
+
+.col-title { min-width: 220px; }
+.col-epic  { min-width: 160px; }
+.col-stage { min-width: 120px; }
+.col-days  { text-align: right; }
+
+// Group header row — same colspan-divider pattern as step-parties.component.html
+// .claim-row / .claim-row__label (level-1 grouping row above child rows).
+.tt-epic-row {
+  background: var(--ui-02);
+}
+
+.tt-epic-row__label {
+  color: var(--text-01);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.tt-ticket-row {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--claim-overlay-hover);
+  }
+}
+
+.tt-muted {
+  color: var(--text-muted);
+}
+
+.col-links {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.tt-archived-toggle {
+  margin-bottom: var(--space-base);
+}
+
+.tt-ticket-row--archived {
+  opacity: 0.6;
+}
+
+.tt-archived-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--space-sm);
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--claim-status-closed-bg);
+  color: var(--claim-status-closed-color);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 500;
+}

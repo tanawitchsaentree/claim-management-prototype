@@ -1,0 +1,148 @@
+<div class="tracker-page">
+  <app-page-header title="Tracker" eyebrow="PI / ticket tracker">
+    <div actions class="tt-header-actions">
+      @if (lastSyncedAt()) {
+        <span class="tt-last-sync">Last synced {{ lastSyncedAt() | appDate:'withTime' }}</span>
+      }
+      <button nxButton="secondary small" type="button" [disabled]="syncService.syncing()" (click)="sync()">
+        @if (syncService.syncing()) { <nx-spinner size="small"></nx-spinner> }
+        @else { Sync now }
+      </button>
+    </div>
+  </app-page-header>
+
+  @if (syncService.error()) {
+    <nx-message context="error">{{ syncService.error() }}</nx-message>
+  }
+
+  <div class="tt-filter-row">
+    <nx-formfield label="PI" class="tt-filter-field">
+      <nx-dropdown [formControl]="piControl" placeholder="All PIs">
+        <nx-dropdown-item [value]="null">All PIs</nx-dropdown-item>
+        @for (pi of trackerService.pis(); track pi.id) {
+          <nx-dropdown-item [value]="pi.id">{{ pi.name }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <nx-formfield label="Jira status" class="tt-filter-field">
+      <nx-multi-select [options]="jiraStatusSelectOptions()" selectValue="value" selectLabel="label"
+        placeholder="All statuses" [formControl]="statusControl">
+      </nx-multi-select>
+    </nx-formfield>
+
+    <nx-formfield label="Epic" class="tt-filter-field">
+      <nx-dropdown [formControl]="epicControl" placeholder="All epics">
+        <nx-dropdown-item [value]="null">All epics</nx-dropdown-item>
+        @for (epic of epicOptions(); track epic.id) {
+          <nx-dropdown-item [value]="epic.id">{{ epic.title }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <nx-formfield label="Blocked by" class="tt-filter-field">
+      <nx-dropdown [formControl]="blockedControl" placeholder="Any">
+        <nx-dropdown-item [value]="null">Any</nx-dropdown-item>
+        @for (opt of blockedByOptions; track opt.value) {
+          <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <nx-formfield label="Assignee" class="tt-filter-field">
+      <nx-dropdown [formControl]="assigneeControl" placeholder="All assignees">
+        <nx-dropdown-item [value]="null">All assignees</nx-dropdown-item>
+        @for (name of assigneeOptions(); track name) {
+          <nx-dropdown-item [value]="name">{{ name }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <nx-formfield label="Prototype route" class="tt-filter-field">
+      <nx-dropdown [formControl]="hasRouteControl" placeholder="Any">
+        @for (opt of hasRouteOptions; track opt.label) {
+          <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+  </div>
+
+  <div class="tt-archived-toggle">
+    <nx-checkbox [formControl]="showArchivedControl">Show archived</nx-checkbox>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar__left">
+      <button nxPlainButton type="button" [class.tt-toggle--active]="groupByEpic()" (click)="groupByEpic.set(true)">Group by epic</button>
+      <button nxPlainButton type="button" [class.tt-toggle--active]="!groupByEpic()" (click)="groupByEpic.set(false)">Flat list</button>
+    </div>
+  </div>
+
+  @if (trackerService.loading()) {
+    <nx-spinner size="medium" aria-label="Loading tickets"></nx-spinner>
+  } @else if (sortedTickets().length === 0) {
+    <app-empty-state message="No tickets match these filters."></app-empty-state>
+  } @else {
+    <table nxTable class="tt-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell class="col-key">Ticket key</th>
+          <th nxHeaderCell class="col-title">Title</th>
+          <th nxHeaderCell class="col-epic">Epic</th>
+          <th nxHeaderCell class="col-stage">Design</th>
+          <th nxHeaderCell class="col-stage">Build</th>
+          <th nxHeaderCell class="col-stage">Handoff</th>
+          <th nxHeaderCell class="col-blocked">Blocked</th>
+          <th nxHeaderCell class="col-days">Days blocked</th>
+          <th nxHeaderCell class="col-links">Links</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (group of groupsToRender(); track group.epicId) {
+          @if (groupByEpic()) {
+            <tr nxTableRow class="tt-epic-row">
+              <td nxCell colspan="9" class="tt-epic-row__label"><strong>{{ group.epicTitle }}</strong></td>
+            </tr>
+          }
+          @for (ticket of group.tickets; track ticket.id) {
+            <tr nxTableRow class="tt-ticket-row" [class.tt-ticket-row--archived]="ticket.archived" (click)="openTicket(ticket)">
+              <td nxCell class="col-key">{{ ticket.jiraKey }}</td>
+              <td nxCell class="col-title">
+                {{ ticket.title }}
+                @if (ticket.archived) { <span class="tt-archived-badge">Archived</span> }
+              </td>
+              <td nxCell class="col-epic">{{ ticket.epic?.title ?? '—' }}</td>
+              <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.designStatus" domain="tracker"></app-status-chip></td>
+              <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.buildStatus" domain="tracker"></app-status-chip></td>
+              <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.handoffStatus" domain="tracker"></app-status-chip></td>
+              <td nxCell class="col-blocked">
+                @if (ticket.state.blockedBy !== 'none') {
+                  <app-status-chip [status]="ticket.state.blockedBy" domain="tracker"></app-status-chip>
+                } @else {
+                  <span class="tt-muted">—</span>
+                }
+              </td>
+              <td nxCell class="col-days">{{ ticket.state.blockedSince ? daysBlocked(ticket) : '—' }}</td>
+              <td nxCell class="col-links">
+                @if (ticket.jiraUrl) {
+                  <a [href]="ticket.jiraUrl" target="_blank" rel="noopener" aria-label="Open in Jira" (click)="$event.stopPropagation()">
+                    <nx-icon name="launch" size="s"></nx-icon>
+                  </a>
+                }
+                @if (ticket.confluenceUrl) {
+                  <a [href]="ticket.confluenceUrl" target="_blank" rel="noopener" aria-label="Open in Confluence" (click)="$event.stopPropagation()">
+                    <nx-icon name="speech-bubble-o" size="s"></nx-icon>
+                  </a>
+                }
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (selectedKey()) {
+    <app-ticket-detail-panel [jiraKey]="selectedKey()!" (closed)="closeDetail()"></app-ticket-detail-panel>
+  }
+</div>

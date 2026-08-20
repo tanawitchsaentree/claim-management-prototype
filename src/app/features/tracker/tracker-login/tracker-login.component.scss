@@ -1,0 +1,23 @@
+// Tracker is a standalone internal tool, not part of the claim-management
+// app's page hierarchy — deliberately NOT using PageShellComponent (which
+// always renders the main app navbar). This is its own minimal container.
+.tracker-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--page-content-top) var(--layout-inset-base);
+}
+
+// Header pattern copied from BLESSED.md — step-1-search.component.scss
+// (.step-breadcrumb / .step-title / .step-subtitle).
+.step-breadcrumb { font-size: var(--paragraph-03-font-size); color: var(--text-muted); margin: 0 0 4px; }
+.step-title      { font-size: 28px; font-weight: 400; color: var(--text-01); margin: 0 0 8px; line-height: 1.2; }
+.step-subtitle   { font-size: var(--paragraph-03-font-size); color: var(--text-muted); margin: 0 0 32px; }
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+  max-width: 360px;
+
+  nx-formfield { width: 100%; }
+}

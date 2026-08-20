@@ -47,6 +47,9 @@ Thumbs.db
 .npmrc
 ${local_app_data}\
 
+# Supabase CLI local cache (per-machine, not project state)
+supabase/.temp/
+
 # Claude Code local-only state (per-developer, not shared knowledge)
 .claude/settings.local.json
 .claude/projects/

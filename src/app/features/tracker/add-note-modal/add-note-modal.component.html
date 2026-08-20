@@ -1,0 +1,22 @@
+<div class="anm-header">
+  <div class="anm-header__row">
+    <h2 class="anm-title">Add note</h2>
+  </div>
+</div>
+
+<div class="anm-body">
+  <nx-formfield label="Note">
+    <textarea nxInput rows="4" [formControl]="body" placeholder="Add a note for this ticket…"></textarea>
+    @if (body.invalid && body.touched) {
+      <nx-error nxFormfieldError>Note can't be empty.</nx-error>
+    }
+  </nx-formfield>
+
+  <div class="anm-footer">
+    <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="saving()" (click)="save()">
+      @if (saving()) { <nx-spinner size="small"></nx-spinner> }
+      @else { Save note }
+    </button>
+  </div>
+</div>

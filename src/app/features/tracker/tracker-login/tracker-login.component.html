@@ -1,0 +1,29 @@
+<div class="tracker-page">
+  <p class="step-breadcrumb">Tracker</p>
+  <h1 class="step-title">Sign in</h1>
+  <p class="step-subtitle">We'll email you a link — no password needed.</p>
+
+  @switch (state()) {
+    @case ('sent') {
+      <nx-message context="success">Check your email for a sign-in link.</nx-message>
+    }
+    @default {
+      <form class="login-form" (ngSubmit)="sendMagicLink()">
+        <nx-formfield label="Email">
+          <input nxInput type="email" autocomplete="email" [formControl]="email" placeholder="you@company.com" />
+          @if (email.invalid && email.touched) {
+            <nx-error nxFormfieldError>Enter a valid email address.</nx-error>
+          }
+        </nx-formfield>
+
+        @if (state() === 'error') {
+          <nx-message context="error">{{ errorMessage() }}</nx-message>
+        }
+
+        <button nxButton="primary" type="submit" [disabled]="state() === 'sending'">
+          {{ state() === 'sending' ? 'Sending…' : 'Send magic link' }}
+        </button>
+      </form>
+    }
+  }
+</div>

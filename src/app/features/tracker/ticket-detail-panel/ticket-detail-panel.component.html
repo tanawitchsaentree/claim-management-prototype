@@ -1,0 +1,101 @@
+@if (trackerService.loading()) {
+  <div class="tdp-slot" @panelSlide>
+    <nx-spinner size="medium" aria-label="Loading ticket"></nx-spinner>
+  </div>
+} @else if (trackerService.ticket(); as ticket) {
+  <div class="tdp-slot" @panelSlide>
+    <div class="tdp-header">
+      <div class="tdp-header__row">
+        <h2 class="tdp-title">{{ ticket.jiraKey }}</h2>
+        <button nxIconButton="tertiary small" type="button" aria-label="Close panel" (click)="close()">
+          <nx-icon name="close"></nx-icon>
+        </button>
+      </div>
+      <p class="tdp-ticket-title">{{ ticket.title }}</p>
+      <p class="tdp-context">
+        {{ ticket.epic?.title ?? 'No epic' }}
+        @if (pi(); as piVal) { · {{ piVal.name }} }
+      </p>
+    </div>
+
+    <div class="tdp-body" tabindex="0">
+      <div class="tdp-prototype">
+        <nx-formfield label="Prototype route">
+          <input nxInput [formControl]="prototypeRouteControl" (blur)="onPrototypeRouteBlur()" placeholder="/claims/CLM-2024-001/sections" />
+        </nx-formfield>
+        @if (ticket.state.prototypeRoute) {
+          <a nxButton="secondary small" [routerLink]="ticket.state.prototypeRoute" class="tdp-prototype__open">
+            <nx-icon name="launch" size="s"></nx-icon> Open in prototype
+          </a>
+        }
+      </div>
+
+      <div class="tdp-stage-row">
+        <nx-formfield label="Design">
+          <nx-dropdown [formControl]="designControl" (selectionChange)="onDesignChange($event.value)">
+            @for (opt of stageOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+        <nx-formfield label="Build">
+          <nx-dropdown [formControl]="buildControl" (selectionChange)="onBuildChange($event.value)">
+            @for (opt of stageOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+        <nx-formfield label="Handoff">
+          <nx-dropdown [formControl]="handoffControl" (selectionChange)="onHandoffChange($event.value)">
+            @for (opt of stageOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      </div>
+
+      <div class="tdp-blocked">
+        <nx-formfield label="Blocked by">
+          <nx-dropdown [formControl]="blockedByControl" (selectionChange)="onBlockedByChange($event.value)">
+            @for (opt of blockedOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+
+        @if (blockedByControl.value !== 'none') {
+          <nx-formfield label="Blocked note">
+            <textarea nxInput rows="2" [formControl]="blockedNoteControl" (blur)="onBlockedNoteBlur()"></textarea>
+          </nx-formfield>
+          <p class="tdp-blocked-days">Blocked for {{ daysBlocked() }} day{{ daysBlocked() === 1 ? '' : 's' }}</p>
+        }
+      </div>
+
+      <div class="tdp-links">
+        @if (ticket.jiraUrl) {
+          <a [href]="ticket.jiraUrl" target="_blank" rel="noopener"><nx-icon name="launch" size="s"></nx-icon> Jira</a>
+        }
+        @if (ticket.confluenceUrl) {
+          <a [href]="ticket.confluenceUrl" target="_blank" rel="noopener"><nx-icon name="launch" size="s"></nx-icon> Confluence</a>
+        }
+      </div>
+
+      <div class="tdp-notes">
+        <div class="tdp-notes__heading-row">
+          <p class="tdp-notes__heading">Notes</p>
+          <button nxButton="tertiary small" type="button" (click)="openAddNoteModal()">Add note</button>
+        </div>
+
+        @if (trackerService.notes().length === 0) {
+          <p class="tdp-notes__empty">No notes yet.</p>
+        }
+        @for (note of trackerService.notes(); track note.id) {
+          <div class="tdp-note">
+            <p class="tdp-note__body">{{ note.body }}</p>
+            <p class="tdp-note__meta">{{ note.createdBy }} · {{ note.createdAt | appDate:'withTime' }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
