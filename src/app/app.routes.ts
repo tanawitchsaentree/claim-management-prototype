@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { editLossInformationCanDeactivate } from './features/claims/edit-loss-information/edit-loss-information.guard';
+import { trackerGuard } from './core/guards/tracker.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -97,7 +98,13 @@ export const routes: Routes = [
             m => m.ClaimNotesFullComponent
           ),
       },
-      { path: 'claims/:id/limits',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
+      {
+        path: 'claims/:id/limits',
+        loadComponent: () =>
+          import('./features/claims/limits-deductibles/limits-deductibles.component').then(
+            m => m.LimitsDeductiblesComponent
+          ),
+      },
       { path: 'claims/:id/recoveries', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       {
         path: 'claims/:id/providers',
@@ -117,6 +124,11 @@ export const routes: Routes = [
           import('./features/claims/litigation/litigation.component').then((m) => m.LitigationComponent),
       },
     ],
+  },
+  {
+    path: 'tracker',
+    canActivate: [trackerGuard],
+    loadChildren: () => import('./features/tracker/tracker.routes').then((m) => m.TRACKER_ROUTES),
   },
   { path: '**', redirectTo: 'dashboard' },
 ];

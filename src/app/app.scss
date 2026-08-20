@@ -33,3 +33,11 @@
   flex: 0 0 auto;
   border-left: 1px solid var(--dev-banner-border);
 }
+
+.exploration-banner {
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+  border-radius: 0;
+  text-align: center;
+}
