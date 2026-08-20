@@ -259,6 +259,7 @@
       @if (claim.status !== 'Closed') {
         <div class="co-card-actions">
           <button nxButton="primary small" type="button" (click)="openClosureModal(claim)"
+            data-tour-id="co-close-claim-button"
             [disabled]="closureCheck() === null">
             @if (closureCheck() === null) {
               <nx-spinner size="small"></nx-spinner>&nbsp;Checking…
@@ -379,7 +380,7 @@
     </section>
 
     <!-- Pending Tasks Card -->
-    <section class="co-card">
+    <section class="co-card" data-tour-id="co-tasks-widget">
       <div class="pt-header">
         <h2 class="co-card-title co-card-title--inline">
           @if (pendingTasks(vm.tasks).length === 0) {

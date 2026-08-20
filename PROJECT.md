@@ -294,6 +294,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 - Don't gate dev banner with `isDevMode()` — production build inlines it to `false`. Use `enabled = true` and rely on the access-gate for security
 - Don't write `mutations` in DOM-runner v3 shape (`{entity, where, set, count}`) — that schema was deferred. Stick with v2.1 hardcoded entity keys
 - Don't introduce data-testid for runner purposes — the DOM runner is deferred
+  - **`data-tour-id` is a different, approved exception (2026-08-20, tour-system audit).** It is NOT a reversal of the rule above — `data-testid` was scoped to a deferred click-simulation DOM runner; `data-tour-id` has a different consumer entirely (`TourStepRendererComponent`, `shared/components/tour/`) that locates elements at runtime purely to position a non-blocking highlight/popover, never to simulate clicks. Add it only to elements a tour actually targets — no codebase-wide sweep. See `src/app/core/services/tour.service.ts` and `claim-overview.component.html`'s `co-tasks-widget` / `co-close-claim-button` for the first real usage.
 - Don't change `claims.json` / `tasks.json` / `sections.json` to make a ticket pass — use mutations instead
 - Don't author a ticket where every AC is `todo` — adds clutter without testing value
 - Don't bypass `MockStateService` — use `loadStatePreset` so `audit-ac-logic.mjs` can simulate the same logic
