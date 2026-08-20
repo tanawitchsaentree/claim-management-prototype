@@ -86,6 +86,17 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "reviewer": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.reviewer.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -98,6 +109,9 @@
             },
             "development": {
               "buildTarget": "claim-management:build:development"
+            },
+            "reviewer": {
+              "buildTarget": "claim-management:build:reviewer"
             }
           },
           "defaultConfiguration": "development"

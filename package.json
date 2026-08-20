@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:reviewer": "ng serve --configuration reviewer",
     "build": "ng build",
     "build:prod": "ng build --configuration production --base-href /claim-management-prototype/",
     "build:exploration": "ng build --configuration exploration --base-href /claim-management-prototype/exploration/",
