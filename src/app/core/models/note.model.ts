@@ -8,12 +8,15 @@ export interface NoteAuthor {
 }
 
 export interface Note {
-  id:        string;
-  claimId:   string;
-  author:    NoteAuthor;
-  timestamp: string;        // ISO
-  title?:    string;
-  body:      string;
-  section:   NoteSection;
-  pinned:    boolean;
+  id:          string;
+  claimId:     string;
+  author:      NoteAuthor;
+  timestamp:   string;        // ISO
+  title?:      string;
+  body:        string;
+  section:     NoteSection;
+  pinned:      boolean;
+  // Entity/section name this note is scoped to (e.g. "Forklift") — null/undefined
+  // for claim-level notes. Only reliably set via the Sections quick-add path today.
+  attachedTo?: string | null;
 }

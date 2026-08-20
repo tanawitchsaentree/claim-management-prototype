@@ -9,10 +9,11 @@
         "accent": "blue"
       },
       "timestamp": "2026-07-10T09:30:00Z",
-      "title": "Kaufmann's Warehouse \u2014 damage assessment",
+      "title": "Kaufmann's Warehouse — damage assessment",
       "body": "Kaufmann's Warehouse inspection completed. Structural damage confirmed on east wing. Contractor report submitted.",
       "section": "general",
-      "pinned": false
+      "pinned": false,
+      "attachedTo": "Kaufmann's Warehouse"
     },
     {
       "id": "note-sec-002",
@@ -23,10 +24,11 @@
         "accent": "teal"
       },
       "timestamp": "2026-07-11T14:15:00Z",
-      "title": "Forklift \u2014 additional documentation",
+      "title": "Forklift — additional documentation",
       "body": "Forklift depreciation schedule requested from client. Awaiting response. Coverage review set to Additional information required.",
       "section": "general",
-      "pinned": false
+      "pinned": false,
+      "attachedTo": "Forklift"
     },
     {
       "id": "note-sec-003",
@@ -37,10 +39,11 @@
         "accent": "blue"
       },
       "timestamp": "2026-07-12T10:00:00Z",
-      "title": "Forklift \u2014 follow-up",
+      "title": "Forklift — follow-up",
       "body": "Second request sent to client regarding Forklift documentation. Escalated to senior handler.",
       "section": "general",
-      "pinned": false
+      "pinned": false,
+      "attachedTo": "Forklift"
     },
     {
       "id": "note-sec-004",
@@ -51,10 +54,56 @@
         "accent": "orange"
       },
       "timestamp": "2026-07-13T16:00:00Z",
-      "title": "Sales of Machinery \u2014 BI calculation",
+      "title": "Sales of Machinery — BI calculation",
       "body": "Sales of Machinery and Equipment BI calculation under enhanced review. Senior underwriter sign-off required before settlement.",
       "section": "general",
-      "pinned": false
+      "pinned": false,
+      "attachedTo": "Sales of Machinery and Equipment"
+    },
+    {
+      "id": "note-sec-005",
+      "claimId": "CLM-2024-001",
+      "author": {
+        "name": "Nina Feld",
+        "initials": "NF",
+        "accent": "teal"
+      },
+      "timestamp": "2026-07-14T09:20:00Z",
+      "title": "Forklift — depreciation schedule received",
+      "body": "Client sent the depreciation schedule. Passed to underwriter for the additional-information review.",
+      "section": "general",
+      "pinned": false,
+      "attachedTo": "Forklift"
+    },
+    {
+      "id": "note-sec-006",
+      "claimId": "CLM-2024-001",
+      "author": {
+        "name": "Dirk Haas",
+        "initials": "DH",
+        "accent": "orange"
+      },
+      "timestamp": "2026-07-15T11:05:00Z",
+      "title": "Forklift — underwriter query",
+      "body": "Underwriter flagged a gap between the purchase date on the schedule and the policy inception date. Following up with client.",
+      "section": "general",
+      "pinned": false,
+      "attachedTo": "Forklift"
+    },
+    {
+      "id": "note-sec-007",
+      "claimId": "CLM-2024-001",
+      "author": {
+        "name": "Mara Mustermann",
+        "initials": "MM",
+        "accent": "blue"
+      },
+      "timestamp": "2026-07-16T13:40:00Z",
+      "title": "Forklift — gap resolved",
+      "body": "Client confirmed the forklift was added to the fleet policy via endorsement two weeks after purchase — gap explained, no coverage issue.",
+      "section": "general",
+      "pinned": false,
+      "attachedTo": "Forklift"
     },
     {
       "id": "note-001",
@@ -78,7 +127,7 @@
         "accent": "blue"
       },
       "timestamp": "2026-05-20T15:42:00Z",
-      "body": "Confirmed no third-party injuries \u2014 police report attached. Closing out subrogation track.",
+      "body": "Confirmed no third-party injuries — police report attached. Closing out subrogation track.",
       "section": "litigation",
       "pinned": true
     },
@@ -91,7 +140,7 @@
         "accent": "purple"
       },
       "timestamp": "2026-05-20T10:05:00Z",
-      "body": "Reserve adjusted from \u20ac45k to \u20ac52k after the structural engineer's revised estimate. Allianz share 50%.",
+      "body": "Reserve adjusted from €45k to €52k after the structural engineer's revised estimate. Allianz share 50%.",
       "section": "recovery",
       "pinned": false
     },
@@ -117,7 +166,7 @@
         "accent": "blue"
       },
       "timestamp": "2026-05-18T09:33:00Z",
-      "body": "Spoke with broker (Marsh DE) \u2014 they will coordinate the inventory list with the insured. ETA Monday.",
+      "body": "Spoke with broker (Marsh DE) — they will coordinate the inventory list with the insured. ETA Monday.",
       "section": "general",
       "pinned": false
     },
@@ -130,7 +179,7 @@
         "accent": "purple"
       },
       "timestamp": "2026-05-15T11:48:00Z",
-      "body": "Litigation hold flagged by legal \u2014 preserve all email correspondence with the policyholder until further notice.",
+      "body": "Litigation hold flagged by legal — preserve all email correspondence with the policyholder until further notice.",
       "section": "litigation",
       "pinned": false
     },

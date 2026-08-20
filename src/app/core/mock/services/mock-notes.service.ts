@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Note } from '../../models';
 import { MockBaseService } from './mock-base.service';
@@ -9,47 +9,61 @@ type RawDataMap = Record<string, Note[]>;
 @Injectable({ providedIn: 'root' })
 export class MockNotesService extends MockBaseService {
   private readonly raw   = rawData as unknown as RawDataMap;
-  private readonly cache = new Map<string, Note[]>();
+  // Signal-backed, not a plain Map — Sections' comment-count badges and the
+  // right-strip notes panel each held their own snapshot before this, so a
+  // note added in one place didn't show up in the other's counts.
+  private readonly cache = new Map<string, WritableSignal<Note[]>>();
 
-  getByClaim(claimId: string): Observable<Note[]> {
-    const cached = this.cache.get(claimId);
-    if (cached) return this.respond(structuredClone(cached));
-    const source = this.raw[claimId] ?? [];
-    const fresh  = structuredClone(source);
-    this.cache.set(claimId, fresh);
-    return this.respond(structuredClone(fresh));
+  private store(claimId: string): WritableSignal<Note[]> {
+    let s = this.cache.get(claimId);
+    if (!s) {
+      s = signal<Note[]>(structuredClone(this.raw[claimId] ?? []));
+      this.cache.set(claimId, s);
+    }
+    return s;
   }
 
-  addNote(claimId: string, payload: { title: string; section: Note['section']; body: string }): Observable<Note[]> {
-    const list = this.cache.get(claimId) ?? structuredClone(this.raw[claimId] ?? []);
+  /** Live signal of a claim's notes — use this over getByClaim() wherever the
+   *  caller needs to stay in sync with notes added/pinned elsewhere. */
+  notesSignal(claimId: string): Signal<Note[]> {
+    return this.store(claimId);
+  }
+
+  getByClaim(claimId: string): Observable<Note[]> {
+    return this.respond(structuredClone(this.store(claimId)()));
+  }
+
+  addNote(claimId: string, payload: { title: string; section: Note['section']; body: string; attachedTo?: string | null }): Observable<Note[]> {
     const note: Note = {
-      id:        `note-${Date.now()}`,
+      id:         `note-${Date.now()}`,
       claimId,
-      author:    { name: 'Current User', initials: 'CU', accent: 'blue' },
-      timestamp: new Date().toISOString(),
-      title:     payload.title || undefined,
-      body:      payload.body,
-      section:   payload.section,
-      pinned:    false,
+      author:     { name: 'Current User', initials: 'CU', accent: 'blue' },
+      timestamp:  new Date().toISOString(),
+      title:      payload.title || undefined,
+      body:       payload.body,
+      section:    payload.section,
+      pinned:     false,
+      attachedTo: payload.attachedTo ?? null,
     };
-    const next = [note, ...list];
-    this.cache.set(claimId, next);
+    const store = this.store(claimId);
+    const next = [note, ...store()];
+    store.set(next);
     return this.respond(structuredClone(next));
   }
 
   togglePin(claimId: string, noteId: string): Observable<Note[]> {
-    const list = this.cache.get(claimId) ?? [];
-    const next = list.map(n => n.id === noteId ? { ...n, pinned: !n.pinned } : n);
-    this.cache.set(claimId, next);
+    const store = this.store(claimId);
+    const next = store().map(n => n.id === noteId ? { ...n, pinned: !n.pinned } : n);
+    store.set(next);
     return this.respond(structuredClone(next));
   }
 
   /** Used by ScenarioOverrides.notesAppend so AC tickets can seed notes. */
   appendNotes(claimId: string, notes: Note[]): void {
-    const existing = this.cache.get(claimId) ?? structuredClone(this.raw[claimId] ?? []);
-    const ids = new Set(existing.map(n => n.id));
+    const store = this.store(claimId);
+    const ids = new Set(store().map(n => n.id));
     const fresh = notes.filter(n => !ids.has(n.id));
-    this.cache.set(claimId, [...existing, ...fresh]);
+    store.set([...store(), ...fresh]);
   }
 
   resetState(claimId?: string): void {
