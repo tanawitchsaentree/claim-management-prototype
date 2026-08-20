@@ -461,8 +461,9 @@ $brand-blue:          var(--info);
   .col-toggle   { width: 48px;  padding: 0 !important; overflow: visible !important; text-overflow: clip !important; white-space: normal !important; }
   .col-entity   { width: 18%; }
   .col-status   { width: 90px; }
-  .col-damage   { width: 24%; }
-  .col-coverage  { width: 240px; }
+  .col-damage   { width: 16%; }
+  .col-coverage  { width: 200px; }
+  .col-circumstance { width: 160px; }
   .col-actions   { width: 56px; text-align: center !important; padding: 0 !important; }
 
   th[nxHeaderCell] {

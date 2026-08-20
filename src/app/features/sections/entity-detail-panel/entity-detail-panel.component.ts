@@ -12,6 +12,7 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.pipe';
 import {
   AddDamagedItemModalComponent,
   AddDamagedItemModalData,
@@ -52,6 +53,7 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     NxModalModule,
     EmptyStateComponent,
     StatusChipComponent,
+    CircumstanceLabelPipe,
   ],
   templateUrl: './entity-detail-panel.component.html',
   styleUrl: './entity-detail-panel.component.scss',

@@ -26,4 +26,12 @@ export class MockLookupService extends MockBaseService {
   getIdTypes(): Observable<LookupOption[]>            { return this.respond(this.lookups.idTypes); }
   getReserveTypes(): Observable<LookupOption[]>       { return this.respond(this.lookups.reserveTypes); }
   getNarrativeOptions(): Observable<LookupOption[]>   { return this.respond(this.lookups.narrativeOptions); }
+
+  // BMPCC-18160: single-select circumstance field, dynamically filtered by the
+  // section's CONFIRMED peril. No confirmed peril (or an "other"/unnamed one)
+  // falls back to the full list plus an explicit "Unknown" entry.
+  getCircumstances(confirmedPeril?: string): Observable<LookupOption[]> {
+    const byPeril = this.lookups.circumstances.byPeril[confirmedPeril ?? ''];
+    return this.respond(byPeril ?? this.lookups.circumstances.fallback);
+  }
 }

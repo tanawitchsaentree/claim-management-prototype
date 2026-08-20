@@ -66,6 +66,7 @@
         <th nxHeaderCell class="col-status">Status</th>
         <th nxHeaderCell class="col-damage">Damage</th>
         <th nxHeaderCell class="col-coverage">Coverage review</th>
+        <th nxHeaderCell class="col-circumstance">Circumstance</th>
         <th nxHeaderCell class="col-actions">Action</th>
       </tr>
     </thead>
@@ -73,7 +74,7 @@
     @if (loading()) {
       <tbody>
         <tr nxTableRow>
-          <td nxTableCell colspan="5" style="text-align:center;padding:32px">
+          <td nxTableCell colspan="6" style="text-align:center;padding:32px">
             <nx-spinner size="medium"></nx-spinner>
           </td>
         </tr>
@@ -83,7 +84,7 @@
     @if (loadError()) {
       <tbody>
         <tr nxTableRow>
-          <td nxTableCell colspan="5" style="text-align:center;padding:32px;color:var(--message-error-color)">
+          <td nxTableCell colspan="6" style="text-align:center;padding:32px;color:var(--message-error-color)">
             Failed to load sections. Please refresh.
           </td>
         </tr>
@@ -108,7 +109,7 @@
           <td nxTableCell class="col-status">
             <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
           </td>
-          <td nxTableCell colspan="2"></td>
+          <td nxTableCell colspan="3"></td>
           <td nxTableCell class="col-actions">
             <button class="sec-kebab-btn" type="button"
               [nxContextMenuTriggerFor]="sectionMenu"
@@ -185,6 +186,7 @@
                   }
                 </div>
               </td>
+              <td nxTableCell class="col-circumstance">{{ entity.circumstance | circumstanceLabel }}</td>
               <td nxTableCell class="col-actions">
                 <button class="sec-kebab-btn" type="button"
                   [nxContextMenuTriggerFor]="entityMenu"
@@ -221,7 +223,7 @@
         }
       } @empty {
         <tr nxTableRow>
-          <td nxTableCell colspan="5">
+          <td nxTableCell colspan="6">
             <app-empty-state message="No sections found."></app-empty-state>
           </td>
         </tr>

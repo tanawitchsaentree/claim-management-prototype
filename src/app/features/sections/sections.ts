@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockClaimOverviewService } from '../../core/mock/services/mock-claim-overview.service';
+import { CircumstanceLabelPipe } from '../../shared/pipes/circumstance-label.pipe';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
@@ -79,6 +80,7 @@ import {
     SectionDetailPanelComponent,
     ConfirmDialogComponent,
     AddSectionEntityModalComponent,
+    CircumstanceLabelPipe,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -245,7 +247,7 @@ export class Sections {
 
   async onEditEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
-      data: { entity } satisfies EditEntityDamageModalData,
+      data: { entity, confirmedPeril: section.confirmedPeril } satisfies EditEntityDamageModalData,
       width: '480px',
       maxWidth: '92vw',
     });

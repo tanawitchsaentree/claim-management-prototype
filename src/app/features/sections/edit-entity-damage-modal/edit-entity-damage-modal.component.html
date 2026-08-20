@@ -31,6 +31,14 @@
     }
   </nx-formfield>
 
+  <nx-formfield label="Circumstance">
+    <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+      @for (opt of circumstanceOptions(); track opt.value) {
+        <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+
 </div>
 
 <!-- Footer -->

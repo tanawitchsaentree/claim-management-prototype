@@ -14,6 +14,7 @@ export interface SectionEntity {
   coverageReview?:          CoverageReview;
   coverageReviewNote?:      string;
   coverageReviewOverridden?: boolean;
+  circumstance?:            string;  // BMPCC-18160 — single-select, filtered by section.confirmedPeril
 }
 
 export interface SectionBlockers {
@@ -33,6 +34,7 @@ export interface ClaimSection extends SectionBlockers {
   status:         SectionStatus;
   expanded:       boolean;
   entities:       SectionEntity[];
+  confirmedPeril?: string;  // BMPCC-18160 — drives which circumstance options apply
   closureDate?:    string;
   closedBy?:       { userId: string; name: string };
   closureReason?:  SectionClosureReason;

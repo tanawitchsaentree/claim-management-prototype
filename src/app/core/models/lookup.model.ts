@@ -9,6 +9,11 @@ export interface LocationTypeOption {
   description: string;
 }
 
+export interface CircumstanceLookups {
+  byPeril: Record<string, LookupOption[]>;
+  fallback: LookupOption[];
+}
+
 export interface Lookups {
   claimStatuses: LookupOption[];
   taskStatuses: LookupOption[];
@@ -27,4 +32,5 @@ export interface Lookups {
   idTypes: LookupOption[];
   reserveTypes: LookupOption[];
   narrativeOptions: LookupOption[];
+  circumstances: CircumstanceLookups;
 }

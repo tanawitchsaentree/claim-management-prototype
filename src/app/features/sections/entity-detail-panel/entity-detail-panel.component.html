@@ -31,6 +31,10 @@
         }
       </div>
       <div class="edp-field">
+        <span class="edp-field__label">Circumstance</span>
+        <span class="edp-field__value">{{ entity.circumstance | circumstanceLabel }}</span>
+      </div>
+      <div class="edp-field">
         <span class="edp-field__label">Provider</span>
         <span class="edp-field__value">{{ entity.assignedProvider ?? '–' }}</span>
       </div>
