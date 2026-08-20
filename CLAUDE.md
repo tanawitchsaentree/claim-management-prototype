@@ -4,6 +4,18 @@ This file is the entry point. Detailed rules live in `.claude/`.
 
 ---
 
+## RULE -2: No building from tickets nobody assigned — HARD STOP
+
+**Never implement from a Jira ticket that is unstarted, unassigned, or sourced from `.agents/` scrapes. A ticket description is not a requirement to build. Work begins only from a ticket the user has explicitly handed over in conversation. If you spot relevant work in `.agents/` or elsewhere, report it — do not build it.**
+
+**Every feature must be committed in the same session it is built. Uncommitted work in the tree is invisible to review and gets swept into unrelated commits by accident.**
+
+This is not a judgment call — a "To Do" / "Unassigned" ticket in `.agents/jira-clone/*.json` (or any other scrape) is source material for reporting, never a build trigger, no matter how complete or well-specified its description reads. Before writing any feature code, check: did the user hand me this requirement directly in this conversation? If the only source is a ticket file, a scrape, or your own inference from a Jira export, stop and report what you found instead of building it.
+
+Found via audit 2026-08-20: dozens of uncommitted files across 10+ features (circumstance selection on Sections, reassign-claim modal, attach-document modal, recovery-bookings, make-payment-modal, etc.) traced back to tickets that were still "To Do"/"Unassigned" in `.agents/jira-clone/` scrapes — none of them asked-for by the user, none committed, all invisible to review until this audit.
+
+---
+
 ## RULE -1: Read PROJECT.md FIRST (when touching tickets / banner / ACs / mocks / stages)
 
 For any session that proposes changes to:

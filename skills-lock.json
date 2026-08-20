@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "human-tone": {
+      "source": "tanawitchsaentree/Human-tone",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/human-tone/SKILL.md",
+      "computedHash": "24ba4043b59c0d7caafd672fe52626947584bffa9d044a3cfd5582bdeffeec53"
+    }
+  }
+}
