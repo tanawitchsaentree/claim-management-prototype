@@ -1,15 +1,8 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  overflow: hidden;
-}
+@use '../../../../../shared/styles/modal-layout' as modal;
 
-.x-header {
-  padding-bottom: var(--space-base);
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
-}
+:host { @include modal.shell; }
+
+.x-header { @include modal.header; }
 
 .x-title {
   font-size: var(--heading-06-font-size);
@@ -24,23 +17,9 @@
   margin: 0;
 }
 
-.x-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: var(--space-xl);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+.x-body { @include modal.body; }
 
-.x-footer {
-  padding-top: var(--space-base);
-  margin-top: var(--space-xl);
-  border-top: 1px solid var(--ui-04);
-  display: flex;
-  justify-content: flex-end;
-  flex-shrink: 0;
-}
+.x-footer { @include modal.footer; }
 
 // ── Access list ───────────────────────────────────────────────────────────────
 

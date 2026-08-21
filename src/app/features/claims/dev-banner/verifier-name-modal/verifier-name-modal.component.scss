@@ -1,17 +1,15 @@
+@use '../../../../shared/styles/modal-layout' as modal;
+
 :host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
+  @include modal.shell;
   font-size: var(--paragraph-04-font-size);
 }
 
 .vnm-header {
+  @include modal.header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
 }
 
 .vnm-title {
@@ -22,9 +20,7 @@
 }
 
 .vnm-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 20px;
+  @include modal.body;
 
   nx-formfield { width: 100%; }
 }
@@ -36,12 +32,4 @@
   line-height: 1.5;
 }
 
-.vnm-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 16px;
-  margin-top: 8px;
-  border-top: 1px solid var(--ui-04);
-}
+.vnm-footer { @include modal.footer; }

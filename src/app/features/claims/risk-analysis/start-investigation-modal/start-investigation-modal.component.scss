@@ -1,17 +1,12 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  overflow: hidden;
-}
+@use '../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
 
 .sim-header {
+  @include modal.header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: var(--space-base);
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
 }
 
 .sim-title {
@@ -21,20 +16,6 @@
   color: var(--text-01);
 }
 
-.sim-body {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: var(--space-lg);
-}
+.sim-body { @include modal.body; }
 
-.sim-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: var(--space-base);
-  margin-top: var(--space-sm);
-  border-top: 1px solid var(--ui-04);
-}
+.sim-footer { @include modal.footer; }

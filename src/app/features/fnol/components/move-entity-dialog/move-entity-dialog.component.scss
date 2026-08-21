@@ -1,16 +1,12 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-}
+@use '../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
 
 .med-header {
+  @include modal.header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
 }
 
 .med-title {
@@ -25,20 +21,8 @@
 }
 
 .med-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 16px;
-  display: flex;
-  flex-direction: column;
+  @include modal.body;
   gap: 0;
 }
 
-.med-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 16px;
-  margin-top: 8px;
-  border-top: 1px solid var(--ui-04);
-}
+.med-footer { @include modal.footer; }

@@ -1,18 +1,12 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  overflow: hidden;
-}
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
 
 .scm-header {
+  @include modal.header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-sm);
-  padding-bottom: var(--space-base);
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
 }
 
 .scm-recipient-badge {
@@ -30,11 +24,7 @@
   }
 }
 
-.scm-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: var(--space-lg);
-}
+.scm-body { @include modal.body; }
 
 .scm-form {
   display: flex;
@@ -51,11 +41,4 @@
   margin: var(--space-md) 0 var(--space-sm);
 }
 
-.scm-footer {
-  padding-top: var(--space-base);
-  margin-top: var(--space-sm);
-  border-top: 1px solid var(--ui-04);
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-}
+.scm-footer { @include modal.footer; }

@@ -1,18 +1,14 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-}
+@use '../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 
 .esm-header {
+  @include modal.header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
 }
 
 .esm-title {
@@ -25,11 +21,10 @@
 // ─── Body ────────────────────────────────────────────────────────────────────
 
 .esm-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 16px;
-  display: flex;
-  flex-direction: column;
+  @include modal.body;
+  // Filter form / results / table already have their own tuned internal
+  // spacing (padding-bottom on each block) — the mixin's 20px content gap
+  // would double up on top of that, not replace it.
   gap: 0;
 }
 
@@ -122,13 +117,7 @@
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
 .esm-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 16px;
-  margin-top: 8px;
-  border-top: 1px solid var(--ui-04);
+  @include modal.footer;
 
   &--no-results {
     border-top: none;

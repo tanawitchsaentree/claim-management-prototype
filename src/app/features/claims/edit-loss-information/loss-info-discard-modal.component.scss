@@ -1,0 +1,20 @@
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.ldm-header { @include modal.header; }
+
+.ldm-title {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  margin: 0;
+}
+
+.ldm-body {
+  @include modal.body;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.ldm-footer { @include modal.footer; }

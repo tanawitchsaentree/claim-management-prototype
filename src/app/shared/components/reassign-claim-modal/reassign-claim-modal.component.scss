@@ -1,21 +1,10 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  overflow: hidden;
-}
+@use '../../styles/modal-layout' as modal;
 
-.rcm-header {
-  padding-bottom: var(--space-base);
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
-}
+:host { @include modal.shell; }
 
-.rcm-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: var(--space-lg);
-}
+.rcm-header { @include modal.header; }
+
+.rcm-body { @include modal.body; }
 
 .rcm-current {
   font-size: var(--paragraph-02-font-size);
@@ -35,14 +24,7 @@
   nx-formfield { width: 100%; }
 }
 
-.rcm-footer {
-  padding-top: var(--space-base);
-  margin-top: var(--space-sm);
-  border-top: 1px solid var(--ui-04);
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-}
+.rcm-footer { @include modal.footer; }
 
 .rcm-preview {
   max-height: 160px;

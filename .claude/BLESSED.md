@@ -101,46 +101,20 @@ From step-1-search:
 **Use for:** Any `NxDialogService.open()` dialog that contains a form and results table
 **Pattern:** `NX_MODAL_DATA` injection, `NxModalRef.close(result)`, `firstValueFrom(ref.afterClosed())`
 
-### Mandatory modal SCSS pattern — copy exactly for every new modal
+### Mandatory modal SCSS pattern — the shared mixin, not hand-copied CSS
 
-`NxModalContainer` applies `--modal-padding` (40px) on **all four sides** of
-every dialog automatically. Header/body/footer sections must therefore only
-ever declare `padding-top` / `padding-bottom` — any horizontal value in a
-`padding:` shorthand doubles the left/right inset the container already
-provides. This bit `recovery-potential-modal`, `add-litigation-party-modal`,
-and `start-investigation-modal` on 2026-08-14 (all three copied the old,
-wrong version of this pattern from each other) — `scripts/audit-modal-padding.mjs`
-now catches it in `pre-commit`.
+**Single source: `src/app/shared/styles/_modal-layout.scss`.** Every modal
+uses it — do not hand-roll `:host`/header/body/footer rules, even
+vertical-only ones. This is a change from the pattern previously
+documented here (see "2026-08-21 decision" below for why).
 
 ```scss
-// ─── :host ───────────────────────────────────────────────────────────────────
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;    // ← REQUIRED — prevents overflow on small screens
-  overflow: hidden;    // ← REQUIRED — scroll containment
-}
+@use '../../shared/styles/modal-layout' as modal;
 
-// ─── Header ──────────────────────────────────────────────────────────────────
-.xxx-header {
-  padding-bottom: var(--space-base);   // ← vertical only — no horizontal value
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;      // ← REQUIRED — header never shrinks
-}
-
-// ─── Body ────────────────────────────────────────────────────────────────────
-.xxx-body {
-  flex: 1;             // ← REQUIRED — body grows between header and footer
-  overflow-y: auto;    // ← REQUIRED — body scrolls when content overflows
-  padding-top: var(--space-lg);        // ← vertical only — no horizontal value
-}
-
-// ─── Footer (lives INSIDE .xxx-body, after the last content block) ───────────
-.xxx-footer {
-  padding-top: var(--space-base);   // ← NOT padding: 16px 24px — no horizontal padding
-  margin-top: var(--space-sm);
-  border-top: 1px solid var(--ui-04);
-}
+:host       { @include modal.shell;  }
+.xxx-header { @include modal.header; }
+.xxx-body   { @include modal.body;   }
+.xxx-footer { @include modal.footer; }
 ```
 
 ```ts
@@ -148,23 +122,49 @@ now catches it in `pre-commit`.
 const ref = this.dialogSvc.open(XxxComponent, { data, width: '480px' });
 ```
 
+That's the whole pattern. The mixin owns every value — header 20px
+bottom padding, body 24px top+bottom padding with a 20px gap between
+blocks, footer 20px top padding, `:host` max-height + `overflow: hidden`,
+full-bleed borders (header/footer margin-compensate `NxModalContainer`'s
+40px so their divider lines run edge-to-edge, not inset). Never override
+these locally — if a modal genuinely needs different spacing, that's a
+sign the mixin needs a variant parameter, not a local exception (the
+2026-08-21 audit found 3 separate hand-rolled variants that all silently
+drifted from each other and from the mixin; a per-modal override is how
+that starts every time).
+
+#### 2026-08-21 decision — mixin wins over the old hand-copied pattern
+
+Two descriptions of "correct" existed and disagreed: this doc's own
+hand-copied CSS (16px header padding, asymmetric body padding, inset
+borders) vs. the shared mixin (20px header, symmetric 24/24 body,
+full-bleed borders). 20 of 28 real modals already used the mixin; only
+8 used the doc's copy-pasted version — and of those 8, the values still
+didn't agree with each other modal-to-modal, because copy-pasted CSS
+drifts, a shared mixin can't. Mixin wins: it's the majority pattern, it's
+centrally correctable, and its 20/24 body spacing has an actual documented
+rationale (`_modal-layout.scss`'s own header comment) that the 16px
+version never had. This doc's job now is to point at the mixin, not to
+re-describe its output — if the two ever disagree again, the mixin is
+wrong or this doc is stale, not both equally valid.
+
 ### Why these rules exist
 
-- Missing `max-height + overflow: hidden` on `:host` → dialog grows taller than viewport
-- Missing `flex: 1` on body → footer jams against last content item (no breathing room)
-- Any nonzero horizontal value in header/body/footer `padding:` shorthand → doubles the left/right inset `NxModalContainer` already applies
+- Missing `max-height` + `overflow: hidden` on `:host` → dialog grows taller than viewport, or briefly flashes a host-level scrollbar
+- Missing `flex: 1` + `overflow-y: auto` on body → footer jams against last content item, or body doesn't scroll independently of header/footer
+- Any nonzero horizontal padding on header/body/footer → doubles the left/right inset `NxModalContainer` already applies at 40px
 - `width` on `:host` instead of `open()` → NDBX overlay container may be wider than component, creating right-side whitespace
-- Footer as `:host`-level sibling (not inside body) + no `flex: 1` on body → footer floats immediately below last item regardless of modal height
+- Hand-rolling instead of using the mixin → the exact drift this decision exists to stop; every hand-rolled modal found in the 2026-08-21 audit disagreed with every other hand-rolled modal on at least one value
 
 ### Modal pre-ship checklist
 
-- [ ] `:host` has `max-height: 80vh` and `overflow: hidden`
-- [ ] body div has `flex: 1` and `overflow-y: auto`
-- [ ] header/body/footer padding is vertical-only (`padding-top` / `padding-bottom`) — no `padding:` shorthand with a nonzero horizontal value
+- [ ] `:host { @include modal.shell; }` — not a hand-rolled max-height/overflow
+- [ ] header/body/footer each `@include modal.header` / `.body` / `.footer` — no local padding override
 - [ ] `width` passed to `dialogSvc.open()`, NOT set on `:host`
+- [ ] Has a real `.component.scss` file (not an inline `styles: [...]` array — the audit can't see those)
 - [ ] `npm run audit:modal-padding` passes
 
-**Verified working:** 2026-05-12; padding rule corrected 2026-08-14 after `audit:modal-padding` caught 3 modals doing it wrong
+**Verified working:** 2026-05-12; padding rule corrected 2026-08-14 after `audit:modal-padding` caught 3 modals doing it wrong; mixin made canonical 2026-08-21 after a full-app audit found the doc's own pattern and the mixin disagreeing, plus 6 modals invisible to the audit entirely (BEM naming, no stylesheet) — see `CONVERSIONS.md`.
 
 ---
 

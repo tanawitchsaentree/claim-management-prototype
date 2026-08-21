@@ -1,21 +1,10 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  overflow: hidden;
-}
+@use '../../../../../shared/styles/modal-layout' as modal;
 
-.las-header {
-  padding-bottom: var(--space-base);
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
-}
+:host { @include modal.shell; }
 
-.las-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: var(--space-lg);
-}
+.las-header { @include modal.header; }
+
+.las-body { @include modal.body; }
 
 .las-form {
   display: flex;
@@ -29,11 +18,4 @@
   display: flex;
 }
 
-.las-footer {
-  padding-top: var(--space-base);
-  margin-top: var(--space-sm);
-  border-top: 1px solid var(--ui-04);
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-}
+.las-footer { @include modal.footer; }

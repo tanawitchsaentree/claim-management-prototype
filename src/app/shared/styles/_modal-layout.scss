@@ -39,6 +39,11 @@ $action-gap: 8px;
   flex-direction: column;
   min-width: 0;
   max-height: calc(100vh - 112px);
+  // REQUIRED pairing with max-height (BLESSED.md pre-ship checklist) — without
+  // this, a host that briefly exceeds max-height (e.g. before the body's own
+  // overflow-y:auto kicks in on first paint) can flash a scrollbar on :host
+  // itself instead of staying contained to the body.
+  overflow: hidden;
 }
 
 @mixin header {

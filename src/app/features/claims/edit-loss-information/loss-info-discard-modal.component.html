@@ -1,0 +1,10 @@
+<header class="ldm-header">
+  <h2 class="ldm-title">Discard changes?</h2>
+</header>
+<div class="ldm-body">
+  <p>Your edits to the loss information will be lost. This cannot be undone.</p>
+</div>
+<footer class="ldm-footer">
+  <button nxButton="tertiary small" type="button" (click)="ref.close(null)">Keep editing</button>
+  <button nxButton="primary small" type="button" (click)="ref.close('discard')">Discard</button>
+</footer>

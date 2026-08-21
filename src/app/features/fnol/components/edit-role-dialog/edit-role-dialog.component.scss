@@ -1,19 +1,17 @@
+@use '../../../../shared/styles/modal-layout' as modal;
+
 :host {
-  display: flex;
-  flex-direction: column;
+  @include modal.shell;
   max-width: 100vw;
-  max-height: 80vh;
 }
 
 // ─── Header ──────────────────────────────────────────────────────────────────
 
 .erd-header {
+  @include modal.header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--ui-04);
-  flex-shrink: 0;
 }
 
 .erd-title {
@@ -25,11 +23,7 @@
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
-.erd-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 16px;
-}
+.erd-body { @include modal.body; }
 
 .erd-subtitle {
   margin: 0 0 4px;
@@ -56,12 +50,4 @@
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-.erd-footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  padding-top: 16px;
-  margin-top: 8px;
-  border-top: 1px solid var(--ui-04);
-}
+.erd-footer { @include modal.footer; }
