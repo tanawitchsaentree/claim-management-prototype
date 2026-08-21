@@ -19,8 +19,9 @@ import { MockReservesService } from '../../../../core/mock/services/mock-reserve
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { MockSkeletonClaimService } from '../../../../core/mock/services/mock-skeleton-claim.service';
+import { MockSectionService } from '../../../../core/mock/services/mock-section.service';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../../core/mock/services/mock-user-directory.service';
-import { EntitiesDamagesData } from '../../../../core/models';
+import { EntitiesDamagesData, EntityRow } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
 import { LookupOption } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
@@ -89,6 +90,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly partiesSvc   = inject(MockPartiesService);
   private readonly lookupSvc    = inject(MockLookupService);
   private readonly skeletonSvc  = inject(MockSkeletonClaimService);
+  private readonly sectionSvc   = inject(MockSectionService);
   private readonly userDir      = inject(MockUserDirectoryService);
   private readonly router       = inject(Router);
   private readonly appDate      = new AppDatePipe();
@@ -199,10 +201,10 @@ export class StepSummaryComponent implements OnInit {
     };
     this.fnolState.recoveryPotential = this.recoveryPotential.value ?? null;
 
-    const skeletonId = this.fnolState.skeletonClaimId;
+    const newClaimId   = this.mockClaimIds[0];
+    const skeletonId   = this.fnolState.skeletonClaimId;
     const policyNumber = this.fnolState.selectedPolicy?.policyNumber;
     if (skeletonId && this.fnolState.path === 'standard' && policyNumber) {
-      const newClaimId = this.mockClaimIds[0];
       try {
         await firstValueFrom(
           this.skeletonSvc.matchToPolicy(skeletonId, policyNumber, 'Current User', newClaimId),
@@ -210,6 +212,14 @@ export class StepSummaryComponent implements OnInit {
       } catch (err) {
         console.error('[Summary] matchToPolicy failed:', err);
       }
+    }
+
+    // Stage 4 (FNOL/claim-file model fix): step 2's entities, grouped by
+    // damage type, become the claim's real sections — previously this data
+    // died at submit. Not run on the orphan/skeleton path — that path never
+    // has a policy or an EntitiesDamagesData to read from.
+    if (this.fnolState.path !== 'orphan') {
+      await this.createSectionsFromEntitiesDamages(newClaimId);
     }
 
     this.fnolState.markStepComplete('summary');
@@ -336,5 +346,42 @@ export class StepSummaryComponent implements OnInit {
   private label(opts: LookupOption[], key: string | undefined): string {
     if (!key) return '—';
     return opts.find(o => o.value === key)?.label ?? key;
+  }
+
+  // Stage 4 (FNOL/claim-file model fix): one section per distinct damage type
+  // present in step 2's data, holding every entity tagged with that type —
+  // "Entity x Damage Type = Section" applied literally, not per-entity.
+  // Entities missing a damageTypeKey (shouldn't happen via the FNOL UI, which
+  // always assigns one on add — see MockEntitiesDamagesService.addEntityFromSearch
+  // — but the seed data's own fixtures are hand-authored and not guaranteed)
+  // fall back to material-damage rather than being silently dropped.
+  private async createSectionsFromEntitiesDamages(claimId: string): Promise<void> {
+    const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
+    // Group by damageGroup, not by each entity's own damageTypeKey — hand-
+    // authored seed entities don't reliably carry that field themselves
+    // (only entities added at runtime via addEntityFromSearch do); the group
+    // they're nested under is the one place a damage type is always present.
+    // The same entity name can legitimately appear in two different groups
+    // (e.g. seed data has "Kaufmann's Company Employees" under both
+    // bodily-injury and liability) — that's exactly the "one fire, two
+    // sections" case, not a duplicate to be merged away.
+    const groups = data.sections.flatMap(s => s.damageGroups).filter(g => g.entities.length);
+    if (!groups.length) return;
+
+    const byDamageType = new Map<string, EntityRow[]>();
+    for (const group of groups) {
+      byDamageType.set(group.damageTypeKey, [...(byDamageType.get(group.damageTypeKey) ?? []), ...group.entities]);
+    }
+
+    for (const [damageType, entities] of byDamageType) {
+      await firstValueFrom(
+        this.sectionSvc.createSection(
+          claimId,
+          damageType,
+          entities.map(e => ({ name: e.name, instructionStatus: 'Not assigned' })),
+          { userId: CREATOR.userId, name: CREATOR.name },
+        ),
+      );
+    }
   }
 }
