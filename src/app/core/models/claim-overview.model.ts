@@ -46,7 +46,14 @@ export interface ClaimOverview {
   assignedHandler: string;
   lossEventId?: string;
   status: string;
+  // Single "headline" cause for compact summaries (Overview grid, preview
+  // popover) — legitimately singular, matches insurance usage of "proximate
+  // cause." Full multi-cause detail lives in causeOfLoss below; this is a
+  // deliberate summary field, not a truncation of it.
   proximateLossCause: string;
+  // Every cause captured at FNOL (LossInformation.causeOfLoss is an array).
+  // Optional — older/hand-seeded overviews only have proximateLossCause.
+  causeOfLoss?: string[];
   riskScore: number;
   riskScoreMax: number;
   riskStatus: string;

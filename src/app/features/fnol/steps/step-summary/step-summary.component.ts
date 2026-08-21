@@ -20,6 +20,10 @@ import { MockPartiesService } from '../../../../core/mock/services/mock-parties.
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { MockSkeletonClaimService } from '../../../../core/mock/services/mock-skeleton-claim.service';
 import { MockSectionService } from '../../../../core/mock/services/mock-section.service';
+import { MockStateService } from '../../../../core/mock/state/mock-state.service';
+import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
+import { LossInformation, LossInformationFormValue } from '../../../../core/models/loss-information.model';
+import { Claim } from '../../../../core/models/claim.model';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../../core/mock/services/mock-user-directory.service';
 import { EntitiesDamagesData, EntityRow } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
@@ -91,6 +95,8 @@ export class StepSummaryComponent implements OnInit {
   private readonly lookupSvc    = inject(MockLookupService);
   private readonly skeletonSvc  = inject(MockSkeletonClaimService);
   private readonly sectionSvc   = inject(MockSectionService);
+  private readonly stateSvc     = inject(MockStateService);
+  private readonly overviewSvc  = inject(MockClaimOverviewService);
   private readonly userDir      = inject(MockUserDirectoryService);
   private readonly router       = inject(Router);
   private readonly appDate      = new AppDatePipe();
@@ -187,7 +193,11 @@ export class StepSummaryComponent implements OnInit {
   onBack(): void   { this.router.navigate(['/fnol/reserves']); }
 
   async onSubmit(): Promise<void> {
-    // Persist restriction state to fnolState so it carries to Claim Overview
+    // Written onto fnolState.restriction/recoveryPotential AND onto the
+    // created claim's ClaimOverview record below (see writeLossInformationToClaim) —
+    // this comment used to claim the fnolState assignment alone "carries to
+    // Claim Overview," which was never true (nothing read it). Now it is:
+    // the overview patch a few lines down is what actually makes it true.
     const reason = this.isOtherReason
       ? (this.restrictionForm.get('otherReason')?.value ?? '')
       : this.selectedReason;
@@ -220,6 +230,10 @@ export class StepSummaryComponent implements OnInit {
     // has a policy or an EntitiesDamagesData to read from.
     if (this.fnolState.path !== 'orphan') {
       await this.createSectionsFromEntitiesDamages(newClaimId);
+      // Stage 5: step 1's loss information — previously discarded entirely,
+      // regardless of path — now lands on the same claim the sections above
+      // just landed on.
+      await this.writeLossInformationToClaim(newClaimId);
     }
 
     this.fnolState.markStepComplete('summary');
@@ -346,6 +360,94 @@ export class StepSummaryComponent implements OnInit {
   private label(opts: LookupOption[], key: string | undefined): string {
     if (!key) return '—';
     return opts.find(o => o.value === key)?.label ?? key;
+  }
+
+  // Stage 5 (FNOL/claim-file model fix): loss information captured at step 1
+  // previously never left FnolStateService — onSubmit touched restriction/
+  // recoveryPotential/skeleton matching, never LossInformation itself, and
+  // the "claim" it landed on (mockClaimIds[0], a hardcoded literal) had no
+  // ClaimOverview built from wizard data at all. Building a brand-new claim
+  // record from scratch (its own numbering, tasks, financial summary, etc.)
+  // is a bigger change than this stage — writing the wizard's real data onto
+  // the claim it already lands on, so nothing is silently discarded.
+  private async writeLossInformationToClaim(claimId: string): Promise<void> {
+    // Cast through `unknown` — the live form's lossLocation control actually
+    // holds LocationPickerOutput, not the LossInformationFormValue's declared
+    // LossLocation shape (a pre-existing mismatch, not introduced here; see
+    // mapLossLocation() below for the work-around).
+    const formValue = this.fnolState.fnolForm.get('lossInformation')!.value as unknown as LossInformationFormValue;
+    const now = new Date().toISOString();
+
+    const lossInfo: LossInformation = {
+      id:        `LI-${claimId}`,
+      claimId,
+      dateOfLoss:      formValue.dateOfLoss,
+      // LossInformationFormValue.lossLocation is typed as the address-shaped
+      // LossLocation domain model, but the live form control actually holds
+      // LocationPickerOutput ({ locations: LocationItem[] }) — a pre-existing
+      // shape mismatch this stage doesn't resolve (flagged, not silently
+      // patched over). Best-effort map from the first picked location so
+      // something real lands here rather than nothing.
+      lossLocation:    this.mapLossLocation(formValue.lossLocation),
+      causeOfLoss:     formValue.causeOfLoss ?? [],
+      typeOfDamage:    formValue.typeOfDamage ?? [],
+      lossDescription: formValue.lossDescription ?? '',
+      events:          formValue.events ?? [],
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.stateSvc.patchLossInformation(items => [...items.filter(li => li.claimId !== claimId), lossInfo]);
+
+    const causeLookups = await firstValueFrom(this.lookupSvc.getCauseOfLoss());
+    const causeLabels = (formValue.causeOfLoss ?? []).map(k => this.label(causeLookups, k));
+
+    this.overviewSvc.updateGeneralInfo(claimId, {
+      client:              this.fnolState.selectedPolicyFull?.clientName,
+      policyNumber:        this.policyNumber || undefined,
+      dateOfLoss:          formValue.dateOfLoss?.dateOfOccurrence ?? undefined,
+      proximateLossCause:  causeLabels[0] ?? undefined,
+      causeOfLoss:         causeLabels.length ? causeLabels : undefined,
+      description:         formValue.lossDescription || undefined,
+      restriction:         this.fnolState.restriction,
+      recoveryPotential:   this.fnolState.recoveryPotential ?? undefined,
+    });
+
+    const claim: Claim = {
+      claimId,
+      policyNumber: this.policyNumber || '',
+      clientName:   this.fnolState.selectedPolicyFull?.clientName ?? '—',
+      broker:       null,
+      assignee:     null,
+      createdBy:    CREATOR.name,
+      dateCreated:  now.split('T')[0],
+      dateUpdated:  now.split('T')[0],
+      lossDate:     formValue.dateOfLoss?.dateOfOccurrence ?? now.split('T')[0],
+      lossAmount:   0,
+      currency:     'EUR',
+      description:  formValue.lossDescription ?? '',
+      status:       'Open',
+      priority:     'medium',
+      lineOfBusiness: (this.fnolState.selectedPolicyFull?.lineOfBusiness as Claim['lineOfBusiness']) ?? 'Property',
+      location:     null,
+      lossEventId:  null,
+      causeOfLoss:  formValue.causeOfLoss ?? [],
+    };
+    this.stateSvc.patchClaims(claims => [...claims.filter(c => c.claimId !== claimId), claim]);
+  }
+
+  private mapLossLocation(loc: unknown): LossInformation['lossLocation'] {
+    const picked = (loc as { locations?: Array<{ displayName?: string; addressLine1?: string; city?: string; postalCode?: string; country?: string }> })?.locations?.[0];
+    return {
+      locationRequired: !!picked,
+      locationType:     picked ? 'other' : null,
+      incidentAddress:  picked?.displayName ?? '',
+      incidentAtDifferentLocation: false,
+      street:      picked?.addressLine1 ?? '',
+      streetNumber: '',
+      city:        picked?.city ?? '',
+      postalCode:  picked?.postalCode ?? '',
+      country:     picked?.country ?? null,
+    };
   }
 
   // Stage 4 (FNOL/claim-file model fix): one section per distinct damage type
