@@ -229,6 +229,52 @@ export class MockSectionService extends MockBaseService {
     return this.respond({} as SectionEntity);
   }
 
+  // Stage 7 (FNOL/claim-file model fix): entity delete used to be a bare
+  // confirm dialog + client-side signal filter — no service call, no checks
+  // at all, unlike section close's 7 blocker flags. Not duplicating
+  // ClaimClosureService.validateSectionBlockers() here — that service
+  // already injects MockSectionService, so the reverse import would be
+  // circular; the same 7 flags live directly on ClaimSection and are cheap
+  // to check inline.
+  deleteEntityBlockers(section: ClaimSection): string[] {
+    const reasons: string[] = [];
+    if (section.hasOpenDeductible)   reasons.push('an open deductible collection');
+    if (section.hasActiveLitigation) reasons.push('active litigation');
+    if (section.hasSubrogation)      reasons.push('pending subrogation activity');
+    if (section.hasActiveSalvage)    reasons.push('pending salvage activity');
+    if (section.hasOpenReserves)     reasons.push('open reserves');
+    if (section.hasOpenPayments)     reasons.push('open payments');
+    if (section.hasActiveProvider)   reasons.push('an active provider assignment');
+    return reasons;
+  }
+
+  deleteEntity(sectionId: string, entityId: string, deletedBy: { userId: string; name: string }): Observable<{ ok: boolean; blockers: string[] }> {
+    for (const [, sections] of this.cache) {
+      const section = sections.find(s => s.id === sectionId);
+      if (!section) continue;
+      const blockers = this.deleteEntityBlockers(section);
+      if (blockers.length) return this.respond({ ok: false, blockers });
+
+      const entity = section.entities.find(e => e.id === entityId);
+      section.entities = section.entities.filter(e => e.id !== entityId);
+      this.stateSvc.patchSection(sectionId, { entities: [...section.entities] });
+
+      const activity: ClaimActivity = {
+        id:         `act-entity-delete-${Date.now()}`,
+        claimId:    section.claimId,
+        user:       deletedBy.name,
+        timestamp:  new Date().toISOString(),
+        objectType: 'Section Entity',
+        attribute:  'Entity',
+        valueOld:   entity ? `${entity.name} on ${section.name}` : section.name,
+        valueNew:   null,
+      };
+      this.stateSvc.patchActivities(items => [activity, ...items]);
+      return this.respond({ ok: true, blockers: [] });
+    }
+    return this.respond({ ok: false, blockers: ['Section not found'] });
+  }
+
   getOpenSectionsCount(claimId: string): Observable<number> {
     const count = this.forClaim(claimId).filter(s => s.status === 'Open').length;
     return this.respond(count);

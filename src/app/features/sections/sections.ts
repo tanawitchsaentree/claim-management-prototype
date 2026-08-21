@@ -263,6 +263,18 @@ export class Sections {
   }
 
   async onDeleteEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
+    // Stage 7: same blocker set section close checks, applied at the entity's
+    // owning section — checked before the confirm dialog even opens, so a
+    // blocked delete never looks like a normal delete that just needs a click.
+    const blockers = this.sectionSvc.deleteEntityBlockers(section);
+    if (blockers.length) {
+      this.toast.error(
+        `Can't remove "${entity.name}"`,
+        `${section.name} has ${blockers.join(', ')} — resolve that first.`,
+      );
+      return;
+    }
+
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete entity',
@@ -275,6 +287,14 @@ export class Sections {
     });
     const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
     if (!confirmed) return;
+
+    const result = await firstValueFrom(
+      this.sectionSvc.deleteEntity(section.id, entity.id, { userId: 'usr-lf', name: 'Leonie Fischer' }),
+    );
+    if (!result.ok) {
+      this.toast.error(`Can't remove "${entity.name}"`, result.blockers.join(', '));
+      return;
+    }
 
     this.sections.update(list =>
       list.map(s => s.id === section.id
