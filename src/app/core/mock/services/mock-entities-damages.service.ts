@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, Observable, of, take } from 'rxjs';
 import {
   DamageItem, EntitiesDamagesData, EntityRow, EntitySearchResult,
   EntityType, PromiseStatus,
 } from '../../models';
 import { MockBaseService } from './mock-base.service';
-import { ENTITY_TYPE_TO_DAMAGE_GROUP, DAMAGE_GROUP_OPTIONS } from '../../../features/fnol/config/entity-damage-mapping';
+import { ENTITY_TYPE_TO_DAMAGE_GROUP } from '../../../features/fnol/config/entity-damage-mapping';
+import { MockLookupService } from './mock-lookup.service';
 import rawData from '../data/entities-damages.json';
 
 type RawDataMap = Record<string, EntitiesDamagesData>;
@@ -14,6 +15,7 @@ type RawDataMap = Record<string, EntitiesDamagesData>;
 export class MockEntitiesDamagesService extends MockBaseService {
   private readonly raw       = rawData as unknown as RawDataMap;
   private readonly cache     = new Map<string, EntitiesDamagesData>();
+  private readonly lookupSvc = inject(MockLookupService);
 
   // ── Read ────────────────────────────────────────────────────────────────────
 
@@ -90,7 +92,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
         if (!found) return false;
         found.promiseStatus = targetSection;
         found.damageTypeKey = targetGroupKey;
-        const groupLabel = DAMAGE_GROUP_OPTIONS.find(o => o.key === targetGroupKey)?.label ?? targetGroupKey;
+        const groupLabel = this.lookupSvc.getTypeOfDamageSync().find(o => o.value === targetGroupKey)?.label ?? targetGroupKey;
         this.insertIntoData(data, found, targetSection, targetGroupKey, groupLabel);
         return true;
       }),

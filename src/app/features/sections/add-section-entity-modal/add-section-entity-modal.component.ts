@@ -6,7 +6,8 @@ import { NxDropdownModule, NxMultiSelectComponent } from '@allianz/ng-aquila/dro
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { ClaimSection, InstructionStatus } from '../../../core/models/section.model';
-import { DAMAGE_OPTIONS, INSTRUCTION_STATUS_OPTIONS } from '../edit-entity-damage-modal/edit-entity-damage-modal.component';
+import { damageOptionLabels, INSTRUCTION_STATUS_OPTIONS } from '../edit-entity-damage-modal/edit-entity-damage-modal.component';
+import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 
 export interface AddSectionEntityModalData {
   sections: ClaimSection[];
@@ -44,8 +45,9 @@ export class AddSectionEntityModalComponent {
   readonly data     = inject<AddSectionEntityModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<AddSectionEntityModalComponent, AddSectionEntityModalResult>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
+  private readonly lookupSvc = inject(MockLookupService);
 
-  readonly damageTypeOptions       = DAMAGE_OPTIONS.map(d => ({ value: d, label: d }));
+  readonly damageTypeOptions       = damageOptionLabels(this.lookupSvc).map(d => ({ value: d, label: d }));
   readonly instructionStatusOptions = INSTRUCTION_STATUS_OPTIONS;
   readonly openSections             = this.data.sections.filter(s => s.status === 'Open');
   readonly damageTypeEntities       = DAMAGE_TYPE_ENTITIES;

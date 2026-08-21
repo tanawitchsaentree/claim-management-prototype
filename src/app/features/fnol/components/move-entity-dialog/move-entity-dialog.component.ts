@@ -7,10 +7,8 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { EntityRow, PromiseStatus } from '../../../../core/models/entity-damage.model';
-import {
-  DAMAGE_GROUP_OPTIONS,
-  PROMISE_SECTION_OPTIONS,
-} from '../../config/entity-damage-mapping';
+import { PROMISE_SECTION_OPTIONS } from '../../config/entity-damage-mapping';
+import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 
 export interface MoveEntityDialogData {
   entity: EntityRow;
@@ -41,9 +39,10 @@ export interface MoveEntityResult {
 export class MoveEntityDialogComponent implements OnInit {
   readonly data     = inject<MoveEntityDialogData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<MoveEntityDialogComponent, MoveEntityResult | null>>(NxModalRef);
+  private readonly lookupSvc = inject(MockLookupService);
 
-  readonly sectionOptions    = PROMISE_SECTION_OPTIONS;
-  readonly groupOptions      = DAMAGE_GROUP_OPTIONS;
+  readonly sectionOptions = PROMISE_SECTION_OPTIONS;
+  readonly groupOptions   = this.lookupSvc.getTypeOfDamageSync();
 
   readonly form = new FormGroup({
     section:       new FormControl<PromiseStatus>('possibly-promised', { nonNullable: true, validators: Validators.required }),

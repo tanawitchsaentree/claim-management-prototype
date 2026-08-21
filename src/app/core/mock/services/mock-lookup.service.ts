@@ -19,6 +19,11 @@ export class MockLookupService extends MockBaseService {
   getTaskTypes(): Observable<LookupOption[]>           { return this.respond(this.lookups.taskTypes); }
   getCauseOfLoss(): Observable<LookupOption[]>         { return this.respond(this.lookups.causeOfLoss); }
   getTypeOfDamage(): Observable<LookupOption[]>        { return this.respond(this.lookups.typeOfDamage); }
+  // Synchronous variant — for callers that build data synchronously inside a
+  // map()/insert helper (e.g. MockEntitiesDamagesService) and would otherwise
+  // need to duplicate the vocabulary just to avoid subscribing. Single source
+  // stays lookups.json either way.
+  getTypeOfDamageSync(): LookupOption[]                { return this.lookups.typeOfDamage; }
   getLocationTypes(): Observable<LocationTypeOption[]> { return this.respond(this.lookups.locationTypes); }
   getEventCausedBy(): Observable<Record<string, LookupOption[]>> { return this.respond(this.lookups.eventCausedBy); }
   getPartyRoles(): Observable<LookupOption[]>        { return this.respond(this.lookups.partyRoles); }

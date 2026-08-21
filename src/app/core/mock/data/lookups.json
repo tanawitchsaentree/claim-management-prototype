@@ -75,13 +75,13 @@
     { "value": "other-event",             "label": "Other Event"                                                       }
   ],
   "typeOfDamage": [
-    { "value": "material-damage",      "label": "Material damage"      },
-    { "value": "bodily-injury",        "label": "Bodily injury"        },
-    { "value": "loss",                 "label": "Loss"                 },
-    { "value": "financial-loss",       "label": "Financial loss"       },
-    { "value": "liability",            "label": "Liability"            },
-    { "value": "product-recall-costs", "label": "Product recall costs" },
-    { "value": "other-damage",         "label": "Other Damage"         }
+    { "value": "material-damage",       "label": "Material damage"       },
+    { "value": "business-interruption", "label": "Business interruption" },
+    { "value": "machinery-breakdown",   "label": "Machinery breakdown"   },
+    { "value": "bodily-injury",         "label": "Bodily injury"         },
+    { "value": "financial-loss",        "label": "Financial loss"       },
+    { "value": "liability",             "label": "Liability"            },
+    { "value": "product-recall-costs",  "label": "Product recall costs" }
   ],
   "waterSources": [
     { "value": "pipe-burst", "label": "Pipe burst"    },

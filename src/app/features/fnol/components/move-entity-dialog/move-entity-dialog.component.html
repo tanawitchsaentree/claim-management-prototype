@@ -16,8 +16,8 @@
 
   <nx-formfield label="Damage group">
     <nx-dropdown formControlName="damageGroupKey">
-      @for (g of groupOptions; track g.key) {
-        <nx-dropdown-item [value]="g.key">{{ g.label }}</nx-dropdown-item>
+      @for (g of groupOptions; track g.value) {
+        <nx-dropdown-item [value]="g.value">{{ g.label }}</nx-dropdown-item>
       }
     </nx-dropdown>
   </nx-formfield>

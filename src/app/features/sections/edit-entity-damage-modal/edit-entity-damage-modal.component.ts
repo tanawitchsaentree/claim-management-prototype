@@ -6,6 +6,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { SectionEntity, InstructionStatus } from '../../../core/models/section.model';
+import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 
 export interface EditEntityDamageModalData {
   entity: SectionEntity;
@@ -13,14 +14,15 @@ export interface EditEntityDamageModalData {
 
 export type EditEntityDamageModalResult = Pick<SectionEntity, 'damage' | 'instructionStatus'>;
 
-export const DAMAGE_OPTIONS: string[] = [
-  'Material damage',
-  'Business interruption',
-  'Machinery breakdown',
-  'Financial loss',
-  'Bodily injury',
-  'Liability',
-];
+// Stage 1 of the FNOL/claim-file damage-type consolidation: sourced from
+// lookups.json (MockLookupService) instead of a hardcoded literal — same
+// vocabulary FNOL step 1/2 now use. Stage 2 removes damage editing from this
+// modal entirely (damage type moves to the section), so this export is
+// transitional and consumed one more time by add-section-entity-modal until
+// that stage lands.
+export function damageOptionLabels(lookupSvc: MockLookupService): string[] {
+  return lookupSvc.getTypeOfDamageSync().map(o => o.label);
+}
 
 export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
   'Pending',
@@ -47,8 +49,9 @@ export class EditEntityDamageModalComponent {
   readonly data      = inject<EditEntityDamageModalData>(NX_MODAL_DATA);
   readonly modalRef  = inject<NxModalRef<EditEntityDamageModalComponent, EditEntityDamageModalResult>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
+  private readonly lookupSvc = inject(MockLookupService);
 
-  readonly damageOptions          = DAMAGE_OPTIONS;
+  readonly damageOptions          = damageOptionLabels(this.lookupSvc);
   readonly instructionStatusOptions = INSTRUCTION_STATUS_OPTIONS;
 
   readonly form = this.fb.group({

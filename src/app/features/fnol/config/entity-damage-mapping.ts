@@ -5,6 +5,11 @@ export interface DamageGroupRoute {
   damageTypeKey: string;
 }
 
+// Routes an entity type to the damage type it falls under by default — a
+// distinct concern from the damage-type vocabulary itself (single source:
+// lookups.json's typeOfDamage, via MockLookupService). This map only decides
+// which of those canonical types a given entityType routes to; it does not
+// define its own competing list of types.
 export const ENTITY_TYPE_TO_DAMAGE_GROUP: Record<EntityType, DamageGroupRoute> = {
   building:  { damageType: 'Material damage', damageTypeKey: 'material-damage' },
   vehicle:   { damageType: 'Material damage', damageTypeKey: 'material-damage' },
@@ -13,13 +18,6 @@ export const ENTITY_TYPE_TO_DAMAGE_GROUP: Record<EntityType, DamageGroupRoute> =
   financial: { damageType: 'Financial loss',  damageTypeKey: 'financial-loss'  },
   other:     { damageType: 'Material damage', damageTypeKey: 'material-damage' },
 };
-
-export const DAMAGE_GROUP_OPTIONS: { key: string; label: string }[] = [
-  { key: 'material-damage', label: 'Material damage' },
-  { key: 'financial-loss',  label: 'Financial loss'  },
-  { key: 'bodily-injury',   label: 'Bodily injury'   },
-  { key: 'liability',       label: 'Liability'       },
-];
 
 export const PROMISE_SECTION_OPTIONS: { key: PromiseStatus; label: string }[] = [
   { key: 'possibly-promised', label: 'Possibly promised entities' },
