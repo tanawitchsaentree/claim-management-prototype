@@ -23,6 +23,7 @@ import {
   EditDamagedItemModalResult,
   DamagedItem,
 } from '../edit-damaged-item-modal/edit-damaged-item-modal.component';
+import { DamageTypeLabelPipe } from '../../../shared/pipes/damage-type-label.pipe';
 
 const MOCK_ITEMS: Record<string, DamagedItem[]> = {
   'SE-001': [
@@ -52,6 +53,7 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     NxModalModule,
     EmptyStateComponent,
     StatusChipComponent,
+    DamageTypeLabelPipe,
   ],
   templateUrl: './entity-detail-panel.component.html',
   styleUrl: './entity-detail-panel.component.scss',

@@ -134,9 +134,9 @@ export class MockSectionService extends MockBaseService {
         user:       'Leonie Fischer',
         timestamp:  new Date().toISOString(),
         objectType: 'Section Entity',
-        attribute:  'Damage type',
-        valueOld:   section.entities[idx]?.damage ?? '',
-        valueNew:   patch.damage ?? updated.damage,
+        attribute:  'Instruction status',
+        valueOld:   section.entities[idx]?.instructionStatus ?? '',
+        valueNew:   patch.instructionStatus ?? updated.instructionStatus,
       };
       this.stateSvc.patchActivities(items => [activity, ...items]);
       return this.respond({ ...updated });
@@ -146,7 +146,7 @@ export class MockSectionService extends MockBaseService {
 
   addEntity(
     sectionId: string,
-    entity: { name: string; damage: string; instructionStatus: InstructionStatus },
+    entity: { name: string; instructionStatus: InstructionStatus },
   ): Observable<SectionEntity> {
     for (const [, sections] of this.cache) {
       const section = sections.find(s => s.id === sectionId);
@@ -154,11 +154,21 @@ export class MockSectionService extends MockBaseService {
       const newEntity: SectionEntity = {
         id:               `SE-${Date.now()}`,
         name:             entity.name,
-        damage:           entity.damage,
         instructionStatus: entity.instructionStatus,
         expandable:       false,
       };
       section.entities = [...section.entities, newEntity];
+      const activity: ClaimActivity = {
+        id:         `act-entity-add-${Date.now()}`,
+        claimId:    section.claimId,
+        user:       'Leonie Fischer',
+        timestamp:  new Date().toISOString(),
+        objectType: 'Section Entity',
+        attribute:  'Entity',
+        valueOld:   null,
+        valueNew:   `${entity.name} added to ${section.name}`,
+      };
+      this.stateSvc.patchActivities(items => [activity, ...items]);
       return this.respond({ ...newEntity });
     }
     return this.respond({} as SectionEntity);

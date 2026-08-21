@@ -9,17 +9,6 @@
 <!-- Body -->
 <div class="eed-body" [formGroup]="form">
 
-  <nx-formfield label="Damage type">
-    <nx-dropdown formControlName="damage" placeholder="Select damage type">
-      @for (opt of damageOptions; track opt) {
-        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
-      }
-    </nx-dropdown>
-    @if (form.get('damage')?.invalid && form.get('damage')?.touched) {
-      <nx-error nxFormfieldError>Please select a damage type</nx-error>
-    }
-  </nx-formfield>
-
   <nx-formfield label="Instruction status">
     <nx-dropdown formControlName="instructionStatus" placeholder="Select status">
       @for (opt of instructionStatusOptions; track opt) {

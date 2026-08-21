@@ -7,7 +7,6 @@ export type CoverageReview       = 'Standard Review' | 'Additional information r
 export interface SectionEntity {
   id:                       string;
   name:                     string;
-  damage:                   string;
   instructionStatus:        InstructionStatus;
   expandable:               boolean;
   assignedProvider?:        string | null;
@@ -30,6 +29,13 @@ export interface ClaimSection extends SectionBlockers {
   id:             string;
   claimId:        string;
   name:           string;
+  // The coverage type this section represents — one canonical value from
+  // lookups.json's typeOfDamage (MockLookupService.getTypeOfDamageSync()),
+  // e.g. "material-damage". A section IS an entity x damage-type pairing;
+  // this is the damage-type half, shared by every entity underneath it.
+  // SectionEntity used to carry its own free-text `damage` — removed as
+  // redundant once the section itself owns the type (see CONVERSIONS.md).
+  damageType:     string;
   status:         SectionStatus;
   expanded:       boolean;
   entities:       SectionEntity[];

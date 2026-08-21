@@ -13,30 +13,19 @@
     <nx-error nxFormfieldError>Required.</nx-error>
   </nx-formfield>
 
-  <nx-formfield label="Damage type">
-    <nx-multi-select [options]="damageTypeOptions" selectValue="value" selectLabel="label"
-      placeholder="Select damage type" formControlName="damageTypes">
-    </nx-multi-select>
-    @if (submitAttempted && selectedDamageTypes.length === 0) {
-      <nx-error nxFormfieldError>Select at least one damage type.</nx-error>
-    }
-  </nx-formfield>
-
-  @if (selectedDamageTypes.length > 0) {
+  @if (selectedSection()) {
     <div class="ase-entity-groups">
-      @for (damageType of selectedDamageTypes; track damageType) {
-        <div class="ase-entity-group">
-          <p class="ase-entity-group__title">{{ damageType }}</p>
-          <div class="ase-entity-group__checkboxes">
-            @for (entity of entitiesFor(damageType); track entity) {
-              <nx-checkbox [checked]="isEntitySelected(damageType, entity)"
-                           (checkedChange)="toggleEntity(damageType, entity)">
-                {{ entity }}
-              </nx-checkbox>
-            }
-          </div>
+      <div class="ase-entity-group">
+        <p class="ase-entity-group__title">{{ damageTypeLabel() }}</p>
+        <div class="ase-entity-group__checkboxes">
+          @for (entity of candidateEntities(); track entity) {
+            <nx-checkbox [checked]="isEntitySelected(entity)"
+                         (checkedChange)="toggleEntity(entity)">
+              {{ entity }}
+            </nx-checkbox>
+          }
         </div>
-      }
+      </div>
     </div>
     @if (submitAttempted && !hasAnySelection()) {
       <p class="ase-entity-groups__error">Select at least one entity.</p>

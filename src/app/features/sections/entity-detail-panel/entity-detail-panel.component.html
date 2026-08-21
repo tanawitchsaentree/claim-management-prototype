@@ -1,7 +1,7 @@
 <div class="edp-header">
   <div class="edp-header__left">
     <h2 class="edp-title">{{ entity.name }}</h2>
-    <span class="edp-damage">{{ entity.damage }}</span>
+    <span class="edp-damage">{{ section.damageType | damageTypeLabel }}</span>
   </div>
   <button nxIconButton="tertiary small" type="button" (click)="closed.emit()" aria-label="Close">
     <nx-icon name="close"></nx-icon>

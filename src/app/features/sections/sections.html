@@ -108,7 +108,8 @@
           <td nxTableCell class="col-status">
             <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
           </td>
-          <td nxTableCell colspan="2"></td>
+          <td nxTableCell class="col-damage">{{ section.damageType | damageTypeLabel }}</td>
+          <td nxTableCell class="col-coverage"></td>
           <td nxTableCell class="col-actions">
             <button class="sec-kebab-btn" type="button"
               [nxContextMenuTriggerFor]="sectionMenu"
@@ -170,7 +171,8 @@
               </td>
               <td nxTableCell class="col-entity">{{ entity.name }}</td>
               <td nxTableCell class="col-status"></td>
-              <td nxTableCell class="col-damage">{{ entity.damage }}</td>
+              <!-- Damage type is now section-level (shown once on the section header row above) -->
+              <td nxTableCell class="col-damage"></td>
               <td nxTableCell class="col-coverage">
                 <div class="coverage-cell">
                   @if (entity.coverageReview) {

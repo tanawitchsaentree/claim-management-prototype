@@ -48,6 +48,7 @@ import {
   SectionReopenModalData,
   SectionReopenModalResult,
 } from './section-reopen-modal/section-reopen-modal.component';
+import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
 
 @Component({
   selector: 'app-sections',
@@ -79,6 +80,7 @@ import {
     SectionDetailPanelComponent,
     ConfirmDialogComponent,
     AddSectionEntityModalComponent,
+    DamageTypeLabelPipe,
   ],
   templateUrl: './sections.html',
   styleUrl: './sections.scss',
@@ -205,22 +207,20 @@ export class Sections {
     const result = await firstValueFrom(ref.afterClosed()) as AddSectionEntityModalResult | undefined;
     if (!result) return;
 
-    // Modal submits one selection across possibly-multiple damage-type groups —
-    // add each as its own entity, all sharing the section + instruction status
-    // picked once for the whole submission. MockSectionService.addEntity()
-    // mutates the shared ClaimSection object in place (no cloning) — this.sections()
-    // already holds those same references, so appending again here would
-    // double the entity. Just refresh the outer array reference to re-render.
-    for (const e of result.entities) {
+    // Damage type is no longer picked per entity — the target section already
+    // owns one. MockSectionService.addEntity() mutates the shared ClaimSection
+    // object in place (no cloning) — this.sections() already holds those same
+    // references, so appending again here would double the entity. Just
+    // refresh the outer array reference to re-render.
+    for (const name of result.entityNames) {
       await firstValueFrom(this.sectionSvc.addEntity(result.sectionId, {
-        name:              e.name,
-        damage:            e.damage,
+        name,
         instructionStatus: result.instructionStatus,
       }));
     }
 
     this.sections.update(list => [...list]);
-    const count = result.entities.length;
+    const count = result.entityNames.length;
     this.toast.success(`${count} entit${count === 1 ? 'y' : 'ies'} added`);
   }
 
