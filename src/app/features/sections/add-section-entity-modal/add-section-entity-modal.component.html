@@ -5,24 +5,33 @@
 <div class="ase-body" [formGroup]="form">
 
   <nx-formfield label="Section">
-    <nx-dropdown formControlName="sectionId" placeholder="Select section">
-      @for (s of openSections; track s.id) {
-        <nx-dropdown-item [value]="s.id">{{ s.name }}</nx-dropdown-item>
+    <nx-dropdown formControlName="target" placeholder="Select section">
+      @for (opt of targetOptions; track opt.value) {
+        <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
       }
     </nx-dropdown>
     <nx-error nxFormfieldError>Required.</nx-error>
   </nx-formfield>
 
-  @if (selectedSection()) {
+  @if (damageTypeKey()) {
     <div class="ase-entity-groups">
       <div class="ase-entity-group">
-        <p class="ase-entity-group__title">{{ damageTypeLabel() }}</p>
+        <p class="ase-entity-group__title">
+          {{ damageTypeLabel() }}
+          @if (isNewSection()) { <span class="ase-new-badge">new section</span> }
+        </p>
         <div class="ase-entity-group__checkboxes">
-          @for (entity of candidateEntities(); track entity) {
-            <nx-checkbox [checked]="isEntitySelected(entity)"
-                         (checkedChange)="toggleEntity(entity)">
-              {{ entity }}
-            </nx-checkbox>
+          @if (loadingCandidates()) {
+            <p class="ase-entity-group__loading">Loading candidate entities…</p>
+          } @else if (!candidateEntities().length) {
+            <p class="ase-entity-group__loading">No candidate entities found for this policy/damage type.</p>
+          } @else {
+            @for (entity of candidateEntities(); track entity) {
+              <nx-checkbox [checked]="isEntitySelected(entity)"
+                           (checkedChange)="toggleEntity(entity)">
+                {{ entity }}
+              </nx-checkbox>
+            }
           }
         </div>
       </div>

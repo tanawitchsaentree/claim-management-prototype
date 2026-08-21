@@ -1,5 +1,6 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -7,33 +8,37 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { ClaimSection, InstructionStatus } from '../../../core/models/section.model';
+import { EntityType } from '../../../core/models/entity-damage.model';
 import { INSTRUCTION_STATUS_OPTIONS } from '../edit-entity-damage-modal/edit-entity-damage-modal.component';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
+import { MockEntitySearchService } from '../../../core/mock/services/mock-entity-search.service';
+import { ENTITY_TYPE_TO_DAMAGE_GROUP } from '../../../features/fnol/config/entity-damage-mapping';
 
 export interface AddSectionEntityModalData {
   sections: ClaimSection[];
+  claimId: string;
+  policyNumber: string;
+  // Stage 8: opened from the "Add damage type" action — default the
+  // dropdown to a "create new section" option instead of an existing one.
+  // Same modal, same interaction as "Add Entity"; only the default differs.
+  preferNew?: boolean;
 }
 
-export interface AddSectionEntityModalResult {
-  sectionId: string;
-  instructionStatus: InstructionStatus;
-  entityNames: string[];
-}
+export type AddSectionEntityModalResult =
+  | { mode: 'existing'; sectionId: string; instructionStatus: InstructionStatus; entityNames: string[] }
+  | { mode: 'new'; damageType: string; instructionStatus: InstructionStatus; entityNames: string[] };
 
-// Candidate entities per damage type — no such mapping existed in mock data
-// (per Phase 2 item 2, point 7); invented for the demo, generic enough for
-// any commercial-property claim. Not tied to any specific claim's fixtures.
-// Replaced in Stage 8 of the FNOL/claim-file model fix with entities sourced
-// from MockEntitySearchService (the same place FNOL sources them) — kept here
-// only as the label-keyed candidate list this Stage-2 pass still reads.
-const DAMAGE_TYPE_ENTITIES: Record<string, string[]> = {
-  'Material damage':        ['Warehouse Racking', 'Loading Dock Doors', 'Roller Shutter Doors', 'Perimeter Fencing'],
-  'Business interruption':  ['Production Line Downtime', 'Retail Storefront Closure', 'Distribution Center Closure'],
-  'Machinery breakdown':    ['Conveyor System', 'HVAC Compressor Unit', 'Packaging Machine'],
-  'Financial loss':         ['Lost Rental Income', 'Increased Cost of Working'],
-  'Bodily injury':          ['Warehouse Staff Injury', 'Visitor Injury Claim'],
-  'Liability':              ['Third-Party Property Damage', 'Public Liability Claim'],
-};
+const NEW_PREFIX = 'NEW:';
+
+// Reverses ENTITY_TYPE_TO_DAMAGE_GROUP so a chosen damage type resolves back
+// to the entity types MockEntitySearchService can look up — the same
+// sourcing FNOL step 2 uses for "add entity" (EntitySearchModalComponent),
+// replacing the DAMAGE_TYPE_ENTITIES demo map this modal used to invent.
+function entityTypesForDamageType(damageType: string): EntityType[] {
+  return (Object.entries(ENTITY_TYPE_TO_DAMAGE_GROUP) as [EntityType, { damageTypeKey: string }][])
+    .filter(([, route]) => route.damageTypeKey === damageType)
+    .map(([entityType]) => entityType);
+}
 
 @Component({
   selector: 'app-add-section-entity-modal',
@@ -49,39 +54,80 @@ export class AddSectionEntityModalComponent {
   readonly data     = inject<AddSectionEntityModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<AddSectionEntityModalComponent, AddSectionEntityModalResult>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
-  private readonly lookupSvc = inject(MockLookupService);
+  private readonly lookupSvc      = inject(MockLookupService);
+  private readonly entitySearchSvc = inject(MockEntitySearchService);
 
   readonly instructionStatusOptions = INSTRUCTION_STATUS_OPTIONS;
-  readonly openSections             = this.data.sections.filter(s => s.status === 'Open');
-  readonly damageTypeEntities       = DAMAGE_TYPE_ENTITIES;
+  readonly openSections = this.data.sections.filter(s => s.status === 'Open');
+
+  // Damage types with no section on this claim yet — the only ones a new
+  // section can be created for (Section = Entity x DamageType; a type that
+  // already has a section gets entities added to it instead, not a
+  // duplicate section of the same type).
+  private readonly usedDamageTypes = new Set(this.data.sections.map(s => s.damageType));
+  readonly availableNewDamageTypes = this.lookupSvc.getTypeOfDamageSync()
+    .filter(o => !this.usedDamageTypes.has(o.value));
+
+  readonly targetOptions = [
+    ...this.openSections.map(s => ({ value: s.id, label: s.name })),
+    ...this.availableNewDamageTypes.map(o => ({ value: `${NEW_PREFIX}${o.value}`, label: `+ New section — ${o.label}` })),
+  ];
+
+  private readonly defaultTargetValue = (): string => {
+    if (this.data.preferNew && this.availableNewDamageTypes.length) {
+      return `${NEW_PREFIX}${this.availableNewDamageTypes[0].value}`;
+    }
+    return this.openSections[0]?.id ?? this.targetOptions[0]?.value ?? '';
+  };
 
   submitAttempted = false;
 
   readonly form = this.fb.group({
-    sectionId:         [this.openSections[0]?.id ?? '', Validators.required],
+    target:            [this.defaultTargetValue(), Validators.required],
     instructionStatus: ['Not assigned' as InstructionStatus, Validators.required],
   });
 
-  // A section owns one damage type — adding entities to it means adding under
-  // that same type, not choosing a new one (choosing a type is what creating
-  // a new section is for, see Stage 8's "Add damage type" action instead).
-  private readonly sectionIdSig = toSignal(this.form.get('sectionId')!.valueChanges, {
-    initialValue: this.form.value.sectionId ?? '',
+  private readonly targetSigRaw = toSignal(this.form.get('target')!.valueChanges, {
+    initialValue: this.form.value.target ?? '',
+  });
+  readonly targetSig = computed(() => this.targetSigRaw() ?? '');
+
+  readonly isNewSection = computed(() => this.targetSig().startsWith(NEW_PREFIX));
+
+  readonly damageTypeKey = computed(() => {
+    const value = this.targetSig();
+    if (value.startsWith(NEW_PREFIX)) return value.slice(NEW_PREFIX.length);
+    return this.openSections.find(s => s.id === value)?.damageType ?? '';
   });
 
-  readonly selectedSection = computed(() =>
-    this.openSections.find(s => s.id === this.sectionIdSig()) ?? null,
-  );
-
   readonly damageTypeLabel = computed(() => {
-    const key = this.selectedSection()?.damageType;
+    const key = this.damageTypeKey();
     if (!key) return '';
     return this.lookupSvc.getTypeOfDamageSync().find(o => o.value === key)?.label ?? key;
   });
 
-  readonly candidateEntities = computed(() => this.damageTypeEntities[this.damageTypeLabel()] ?? []);
+  readonly candidateEntities = signal<string[]>([]);
+  readonly loadingCandidates = signal(false);
 
-  // Selected entity names for the section's single damage type.
+  constructor() {
+    effect(() => {
+      const key = this.damageTypeKey();
+      if (!key) { this.candidateEntities.set([]); return; }
+      this.loadCandidatesFor(key);
+    });
+  }
+
+  private async loadCandidatesFor(damageType: string): Promise<void> {
+    this.loadingCandidates.set(true);
+    const entityTypes = entityTypesForDamageType(damageType);
+    const results = await Promise.all(
+      entityTypes.map(t => firstValueFrom(this.entitySearchSvc.search(this.data.policyNumber, t, {}))),
+    );
+    const names = [...new Set(results.flat().map(r => r.locationName))];
+    this.candidateEntities.set(names);
+    this.loadingCandidates.set(false);
+  }
+
   readonly selected = signal<Set<string>>(new Set());
 
   isEntitySelected(entity: string): boolean {
@@ -98,15 +144,18 @@ export class AddSectionEntityModalComponent {
 
   confirm(): void {
     this.submitAttempted = true;
-    if (this.form.get('sectionId')!.invalid || !this.hasAnySelection()) {
+    if (this.form.get('target')!.invalid || !this.hasAnySelection()) {
       this.form.markAllAsTouched();
       return;
     }
-    this.modalRef.close({
-      sectionId:         this.form.value.sectionId!,
-      instructionStatus: this.form.value.instructionStatus as InstructionStatus,
-      entityNames:       [...this.selected()],
-    });
+    const instructionStatus = this.form.value.instructionStatus as InstructionStatus;
+    const entityNames = [...this.selected()];
+
+    if (this.isNewSection()) {
+      this.modalRef.close({ mode: 'new', damageType: this.damageTypeKey(), instructionStatus, entityNames });
+      return;
+    }
+    this.modalRef.close({ mode: 'existing', sectionId: this.targetSig(), instructionStatus, entityNames });
   }
 
   cancel(): void { this.modalRef.close(); }

@@ -34,6 +34,24 @@
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-01);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.ase-new-badge {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 400;
+  color: var(--text-muted);
+  background: var(--ui-03);
+  border-radius: 4px;
+  padding: 2px var(--space-xs);
+}
+
+.ase-entity-group__loading {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
 }
 
 .ase-entity-group__checkboxes {

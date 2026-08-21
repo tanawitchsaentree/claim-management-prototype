@@ -103,6 +103,7 @@ export class Sections {
   readonly selectedSection = signal<ClaimSection | null>(null);
   readonly hasDetailOpen   = computed(() => !!this.selectedEntity() || !!this.selectedSection());
   readonly claimClosed    = signal(false);
+  readonly policyNumber   = signal('');
 
   readonly devMode = true;
 
@@ -119,6 +120,7 @@ export class Sections {
         ]);
         this.sections.set(sections);
         this.claimClosed.set(claim.status === 'Closed');
+        this.policyNumber.set(claim.policyNumber ?? '');
       } catch {
         this.loadError.set(true);
       } finally {
@@ -199,17 +201,48 @@ export class Sections {
   }
 
   async onAddEntity(): Promise<void> {
+    await this.openAddSectionEntityModal({ preferNew: false });
+  }
+
+  // Stage 8: same modal, same interaction as "Add Entity" — defaults to a
+  // "create new section" target instead of an existing open section, so the
+  // damage type IS the primary choice as soon as the modal opens.
+  async onAddDamageType(): Promise<void> {
+    await this.openAddSectionEntityModal({ preferNew: true });
+  }
+
+  private async openAddSectionEntityModal(opts: { preferNew: boolean }): Promise<void> {
+    const claimId = this.route.snapshot.params['id'];
     const ref = this.dialogSvc.open(AddSectionEntityModalComponent, {
-      data: { sections: this.sections() } satisfies AddSectionEntityModalData,
+      data: {
+        sections:     this.sections(),
+        claimId,
+        policyNumber: this.policyNumber(),
+        preferNew:    opts.preferNew,
+      } satisfies AddSectionEntityModalData,
       width: '480px',
       maxWidth: '92vw',
     });
     const result = await firstValueFrom(ref.afterClosed()) as AddSectionEntityModalResult | undefined;
     if (!result) return;
 
-    // Damage type is no longer picked per entity — the target section already
-    // owns one. MockSectionService.addEntity() mutates the shared ClaimSection
-    // object in place (no cloning) — this.sections() already holds those same
+    const count = result.entityNames.length;
+
+    if (result.mode === 'new') {
+      const created = await firstValueFrom(
+        this.sectionSvc.createSection(
+          claimId,
+          result.damageType,
+          result.entityNames.map(name => ({ name, instructionStatus: result.instructionStatus })),
+        ),
+      );
+      this.sections.update(list => [...list, created]);
+      this.toast.success(`Section "${created.name}" created`, `${count} entit${count === 1 ? 'y' : 'ies'} added`);
+      return;
+    }
+
+    // MockSectionService.addEntity() mutates the shared ClaimSection object in
+    // place (no cloning) — this.sections() already holds those same
     // references, so appending again here would double the entity. Just
     // refresh the outer array reference to re-render.
     for (const name of result.entityNames) {
@@ -218,9 +251,7 @@ export class Sections {
         instructionStatus: result.instructionStatus,
       }));
     }
-
     this.sections.update(list => [...list]);
-    const count = result.entityNames.length;
     this.toast.success(`${count} entit${count === 1 ? 'y' : 'ies'} added`);
   }
 
