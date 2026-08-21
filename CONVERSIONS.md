@@ -4,6 +4,32 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-21 — Part B: one canonical modal spacing shape, rewritten audit-modal-padding.mjs
+
+- **Source:** `/goal` autonomous execution, following the same-day audit that found 3 disagreeing modal-spacing groups, an audit blind to 57% of modals (mixin-based), and one modal invisible to tooling entirely.
+- **Decision:** `_modal-layout.scss`'s mixin is canonical, not `.claude/BLESSED.md`'s own previously hand-copied CSS — 20 of 28 modals already used it, and unlike hand-copied CSS it can't drift modal-to-modal. Recorded in BLESSED.md with reasoning, not just the new pattern.
+- **Migrated to the mixin (15 files):** 8 hand-rolled "BLESSED pattern" modals + 5 hand-rolled modals missing `:host`'s max-height/overflow pairing. `manage-access-modal`'s outliers (32px body/footer values against the 16-24px norm) resolved as a consequence of the migration, not a separate patch.
+- **`loss-info-discard-modal`:** had an inline `styles: [...]` array with 24px horizontal padding — the exact 2026-08-14 bug, never caught because it had no `.scss` for the old audit to open. Given a real `templateUrl`/`styleUrl` on the mixin; buttons gained `small` sizing since `audit:button-size`'s glob couldn't see this file's buttons before either.
+- **`mass-event-edit-modal`:** ruled a sanctioned bottom-sheet variant, not fixed — genuine `panelClass` docking, `height:100%` instead of a centered dialog's shell, and pre-existing deliberate spacing comments elsewhere in the same file. Documented in `DESIGN_PRINCIPLES.md`'s Modal contract and in the audit's explicit `EXEMPT` list.
+- **Audit rewrite (v2):** pass condition is now "uses the mixin" (no SCSS-expansion needed — the mixin IS the source), matches BEM `__` as well as `-`, checks discrete `padding-left`/`padding-right` not just the shorthand, requires the `:host` max-height+overflow pairing explicitly, flags (not skips) files with no stylesheet, and reads inline `styles:` arrays.
+- **One false positive found and fixed during this pass, not weakened around:** widened BEM matching initially flagged `claim-closure-modal`/`section-closure-modal`'s nested `.xxx-blocker-card__header` sub-widgets (legitimate internal card padding, unrelated to the modal's own inset). Added a nested-widget-name exclusion rather than loosening the real check. Verified detection still works against a synthetic broken modal (no mixin, no host pairing, bad padding — all 3 caught) before confirming the real codebase passes clean.
+- **Result:** `node scripts/audit-modal-padding.mjs` → 0 violations. Real, not weakened: the `EXEMPT` list has exactly one documented entry, the nested-widget exclusion fixes a genuine false positive.
+- **Files touched:** `.claude/BLESSED.md`, `DESIGN_PRINCIPLES.md`, `scripts/audit-modal-padding.mjs`, `_modal-layout.scss` (added `:host` `overflow: hidden`), 15 modal `.component.scss` files, `loss-info-discard-modal.component.{ts,html,scss}` (new).
+- **Audit result:** `npm run build` 0 errors, `npm run audit:ac-logic` 49/49, `npm run pre-commit` 17/18 (the 1 failure, `audit:ndbx-wrapper`, predates this task).
+
+---
+
+## 2026-08-21 — Part A: redirect context handoff, Edit Loss Information → Sections
+
+- **Source:** `/goal` autonomous execution, following the same-day audit that found the redirect to Sections carried nothing — `navigate()` called with a single argument, Sections reading only the claim id, landing byte-identical to a nav-bar visit.
+- **Mechanism:** query params (`changedFields`/`changedOld`/`changedNew`, parallel arrays), not a new mechanism — the same pattern `sections.ts` already uses to hand `?sectionId=` to Provider Management for its highlight signal.
+- **Banner:** dismissible `nx-message` (`context="warning"`, `[closable]="true"`) at the top of Sections, built only when those params are present. Shows what changed with old/new values (same labels the change ledger used), why (coverage depends on cause of loss and loss location), and "review the sections below" — deliberately does not name or highlight specific sections, because `ClaimSection` has no structured link back to a cause-of-loss or location key even after the Stage 2 `damageType` work (verified, not assumed — see the redirect-context audit). Params are stripped from the URL immediately after being read (`replaceUrl: true`) so a refresh or later nav-bar visit shows nothing.
+- **Toast:** removed entirely on this path (not reduced to a plain confirmation) — the banner carries strictly more information than the toast ever did, and a bare "saved" toast next to a banner that already explains what and why would be redundant.
+- **Files touched:** `edit-loss-information.component.ts`, `sections.ts`/`.html`/`.scss`.
+- **Audit result:** `npm run build` 0 errors, `npm run audit:ac-logic` 49/49, `npm run pre-commit` 17/18 (the 1 failure predates this task).
+
+---
+
 ## 2026-08-21 — FNOL-to-claim model fix: one damage vocabulary, real sections, loss info survives submit (Stages 1–8)
 
 - **Source:** `/goal` autonomous execution, following the same-day audit that found: FNOL discarded everything it captured at submit, nothing in the app could create a `ClaimSection`, and damage type had three vocabularies that never spoke to each other.
