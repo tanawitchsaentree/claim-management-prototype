@@ -16,6 +16,20 @@
   }
 </app-page-header>
 
+@if (reviewBanner(); as changes) {
+  <nx-message context="warning" [closable]="true" (close)="dismissReviewBanner()" class="sec-review-banner">
+    <p class="sec-review-banner__title">Review sections — loss information changed</p>
+    <ul class="sec-review-banner__changes">
+      @for (c of changes; track c.label) {
+        <li>{{ c.label }}: <strong>{{ c.oldValue }}</strong> → <strong>{{ c.newValue }}</strong></li>
+      }
+    </ul>
+    <p class="sec-review-banner__reason">
+      Coverage depends on cause of loss and loss location, so the sections below may no longer reflect what's covered. Review the sections below.
+    </p>
+  </nx-message>
+}
+
 <!-- ── Split layout ── -->
 <div class="sec-split" [class.sec-split--detail-open]="hasDetailOpen()">
 

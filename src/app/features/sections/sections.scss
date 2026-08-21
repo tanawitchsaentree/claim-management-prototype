@@ -618,3 +618,22 @@ button[nxContextMenuItem] {
   font-family: inherit;
   &:hover { background: var(--ui-02); }
 }
+
+.sec-review-banner {
+  margin-bottom: var(--space-lg);
+}
+
+.sec-review-banner__title {
+  margin: 0 0 var(--space-xs);
+  font-weight: 600;
+}
+
+.sec-review-banner__changes {
+  margin: 0 0 var(--space-sm);
+  padding-left: var(--space-md);
+}
+
+.sec-review-banner__reason {
+  margin: 0;
+  color: var(--text-muted);
+}

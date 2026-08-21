@@ -361,19 +361,30 @@ export class EditLossInformationComponent implements OnInit {
       this.form.markAsPristine();
       this.saveSuccess.set(true);
 
-      // ClaimSection/SectionEntity carry no structured link back to a cause-of-loss
-      // or location key (name/damage are free text) — there is no reliable way to
-      // tell which existing sections a change actually affects. Treat cause-of-loss
-      // OR location changes as sections-impacting and send the user to review
+      // ClaimSection/SectionEntity still carry no structured link back to a
+      // cause-of-loss or location key — there is no reliable way to tell
+      // which existing sections a change actually affects, even after the
+      // FNOL/claim-file model work (ClaimSection.damageType has no
+      // relationship to causeOfLoss anywhere). Treat cause-of-loss OR
+      // location changes as sections-impacting and send the user to review
       // manually, per the Miro flow ("triggers changes to existing sections" →
       // notify + redirect). Signed off 2026-08-18 — see CONVERSIONS.md.
-      const impacted = diffs.filter(d => IMPACT_LABELS.includes(d.label)).map(d => d.label);
-      if (impacted.length) {
-        this.toast.warning(
-          `${impacted.join(' and ')} changed`,
-          'Existing sections may no longer match — review them on the Sections page.',
-        );
-        this.router.navigate(['/claims', this.claimId(), 'sections']);
+      //
+      // The redirect used to carry nothing — Sections looked identical to a
+      // plain nav-bar visit, and a toast said the same thing the review
+      // banner below now says, less usefully and with a 4s expiry. Passing
+      // what changed (old/new values) as query params — the same mechanism
+      // sections.ts already uses to hand a highlight to Provider Management
+      // via ?sectionId= — replaces the toast on this path entirely.
+      const impactedDiffs = diffs.filter(d => IMPACT_LABELS.includes(d.label));
+      if (impactedDiffs.length) {
+        this.router.navigate(['/claims', this.claimId(), 'sections'], {
+          queryParams: {
+            changedFields: impactedDiffs.map(d => d.label),
+            changedOld:    impactedDiffs.map(d => d.original),
+            changedNew:    impactedDiffs.map(d => d.updated),
+          },
+        });
       } else {
         this.toast.success('Loss information updated', `${activities.length} field(s) changed on ${this.claimId()}`);
         this.router.navigate(['/claims', this.claimId(), 'overview']);
