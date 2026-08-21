@@ -126,7 +126,7 @@
         <dd>{{ claim.lineOfBusiness }}</dd>
 
         <dt>Cause of loss</dt>
-        <dd>{{ claim.proximateLossCause || '–' }}</dd>
+        <dd>{{ (claim.causeOfLoss?.length ? claim.causeOfLoss!.join(' · ') : claim.proximateLossCause) || '–' }}</dd>
 
         <dt>Loss date</dt>
         <dd>{{ claim.dateOfLoss }}</dd>

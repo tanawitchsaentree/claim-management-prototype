@@ -387,15 +387,20 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
-    const patch: { dateOfLoss?: string; proximateLossCause?: string; description?: string } = {};
+    const patch: { dateOfLoss?: string; proximateLossCause?: string; causeOfLoss?: string[]; description?: string } = {};
 
     if (diffs.some(d => d.label === 'Date of occurrence') && formValue.dateOfLoss?.dateOfOccurrence) {
       patch.dateOfLoss = formValue.dateOfLoss.dateOfOccurrence;
     }
     if (diffs.some(d => d.label === 'Cause of loss')) {
-      const firstCauseKey = formValue.causeOfLoss?.[0];
-      const label = this.causeOfLossOptions().find(o => o.value === firstCauseKey)?.label;
-      patch.proximateLossCause = label ?? firstCauseKey ?? '–';
+      // proximateLossCause stays a single "headline" value (the first cause)
+      // for compact summaries — causeOfLoss carries every cause so the
+      // Reference Panel and any other detail view can show the full list
+      // instead of silently only ever showing the first one.
+      const causeKeys = formValue.causeOfLoss ?? [];
+      const causeLabels = causeKeys.map(k => this.causeOfLossOptions().find(o => o.value === k)?.label ?? k);
+      patch.proximateLossCause = causeLabels[0] ?? '–';
+      patch.causeOfLoss = causeLabels;
     }
     // Claim description has no loss-information home — the overview record is
     // where it lives, and the overview page reads it straight back.
