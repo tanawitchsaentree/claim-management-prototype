@@ -114,6 +114,15 @@ export class MockStateService {
     this.persist();
   }
 
+  // Section creation primitive (Stage 3, FNOL/claim-file model fix) — writes
+  // through the same signal + sessionStorage pipeline as every other mutation
+  // here, so a created section survives reload the same way closure does.
+  appendSections(sections: ClaimSection[]): void {
+    const cur = this._state();
+    this._state.set({ ...cur, sections: [...cur.sections, ...sections] });
+    this.persist();
+  }
+
   patchClaims(updater: (claims: Claim[]) => Claim[]): void {
     const cur = this._state();
     this._state.set({ ...cur, claims: updater(cur.claims) });

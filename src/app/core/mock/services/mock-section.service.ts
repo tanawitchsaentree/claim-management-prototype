@@ -4,12 +4,14 @@ import { ClaimSection, InstructionStatus, SectionClosureReason, SectionReopenRea
 import { ClaimActivity } from '../../models/claim-overview.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
+import { MockLookupService } from './mock-lookup.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class MockSectionService extends MockBaseService {
-  private readonly stateSvc = inject(MockStateService);
-  private readonly toast    = inject(ToastService);
+  private readonly stateSvc  = inject(MockStateService);
+  private readonly lookupSvc = inject(MockLookupService);
+  private readonly toast     = inject(ToastService);
 
   // In-memory mutable state — seeded from MockStateService on first access per claimId
   private readonly cache = new Map<string, ClaimSection[]>();
@@ -30,6 +32,59 @@ export class MockSectionService extends MockBaseService {
 
   getByClaimId(claimId: string): Observable<ClaimSection[]> {
     return this.list(this.forClaim(claimId));
+  }
+
+  // Section creation primitive (Stage 3, FNOL/claim-file model fix). A
+  // section IS an entity x damage-type pairing — this is the one place that
+  // pairing gets made. Used by both FNOL step 2's submit conversion (Stage 4)
+  // and the claim file's "Add damage type" action (Stage 8), so the two
+  // surfaces can't drift into creating sections shaped differently.
+  createSection(
+    claimId: string,
+    damageType: string,
+    entities: Array<{ name: string; instructionStatus?: InstructionStatus }>,
+    createdBy: { userId: string; name: string } = { userId: 'usr-lf', name: 'Leonie Fischer' },
+  ): Observable<ClaimSection> {
+    const sections = this.forClaim(claimId);
+    const label = this.lookupSvc.getTypeOfDamageSync().find(o => o.value === damageType)?.label ?? damageType;
+    const now = Date.now();
+    const newSection: ClaimSection = {
+      id:      `SEC-${now}`,
+      claimId,
+      name:    entities[0]?.name ? `${label} — ${entities[0].name}` : label,
+      damageType,
+      status:  'Open',
+      expanded: true,
+      hasOpenDeductible:   false,
+      hasActiveLitigation: false,
+      hasSubrogation:      false,
+      hasActiveSalvage:    false,
+      hasOpenReserves:     false,
+      hasOpenPayments:     false,
+      hasActiveProvider:   false,
+      entities: entities.map((e, i) => ({
+        id:                `SE-${now}-${i}`,
+        name:              e.name,
+        instructionStatus: e.instructionStatus ?? 'Not assigned',
+        expandable:        false,
+      })),
+    };
+    sections.push(newSection);
+    this.stateSvc.appendSections([newSection]);
+
+    const activity: ClaimActivity = {
+      id:         `act-sec-create-${now}`,
+      claimId,
+      user:       createdBy.name,
+      timestamp:  new Date().toISOString(),
+      objectType: 'Section',
+      attribute:  'Created',
+      valueOld:   null,
+      valueNew:   `${newSection.name} (${label})`,
+    };
+    this.stateSvc.patchActivities(items => [activity, ...items]);
+
+    return this.respond({ ...newSection });
   }
 
   closeSection(
