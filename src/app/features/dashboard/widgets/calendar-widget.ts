@@ -29,7 +29,7 @@ function formatDateLabel(dateStr: string): string {
       @if (grouped().length === 0) {
         <app-empty-state message="No upcoming events."></app-empty-state>
       } @else {
-        <div class="cal-list">
+        <div class="cal-list" tabindex="0">
           @for (group of grouped(); track group.date) {
             <div class="cal-day-group">
               <div class="cal-day-label">{{ group.label }}</div>
@@ -72,7 +72,7 @@ function formatDateLabel(dateStr: string): string {
     .cal-list { max-height: 320px; overflow-y: auto; padding-right: 4px; }
     .cal-day-group { margin-bottom: 16px; &:last-child { margin-bottom: 0; } }
     .cal-day-label {
-      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      font-size: var(--paragraph-04-font-size); font-weight: 700; text-transform: uppercase;
       letter-spacing: .06em; color: var(--text-muted); margin-bottom: 8px;
       padding-bottom: 4px; border-bottom: 1px solid var(--ui-03);
     }

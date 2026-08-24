@@ -54,7 +54,7 @@ import { KpiData } from '../../../core/models';
       line-height: 1;
     }
     .kpi-label {
-      font-size: 13px;
+      font-size: var(--paragraph-04-font-size);
       color: var(--text-muted);
     }
     .kpi-icon {

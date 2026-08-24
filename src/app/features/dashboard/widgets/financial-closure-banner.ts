@@ -9,14 +9,16 @@ import { FinancialClosurePeriod } from '../../../core/models';
   imports: [CommonModule, NxMessageModule],
   template: `
     @if (period.active && !dismissed()) {
-      <nx-message
-        context="warning"
-        [closable]="true"
-        closeButtonLabel="Dismiss"
-        class="closure-banner"
-        (close)="dismissed.set(true)">
-        {{ period.message }}
-      </nx-message>
+      <div role="status" aria-live="polite">
+        <nx-message
+          context="warning"
+          [closable]="true"
+          closeButtonLabel="Dismiss"
+          class="closure-banner"
+          (close)="dismissed.set(true)">
+          {{ period.message }}
+        </nx-message>
+      </div>
     }
   `,
   styles: [`

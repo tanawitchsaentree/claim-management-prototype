@@ -26,11 +26,11 @@ const TYPE_ICON: Record<string, string> = {
         <div class="news-list">
           @for (item of items; track item.id) {
             <div class="news-item" [class]="'news-item--' + item.type">
-              <div class="news-header" (click)="toggle(item.id)">
+              <button type="button" class="news-header" [attr.aria-expanded]="expanded().has(item.id)" (click)="toggle(item.id)">
                 <nx-icon [name]="typeIcon(item.type)" class="news-type-icon news-type-icon--{{ item.type }}"></nx-icon>
                 <span class="news-title">{{ item.title }}</span>
                 <nx-icon [name]="expanded().has(item.id) ? 'chevron-up-small' : 'chevron-down-small'" class="news-chevron"></nx-icon>
-              </div>
+              </button>
               @if (expanded().has(item.id)) {
                 <div class="news-body">
                   <p class="news-body-text">{{ item.body }}</p>
@@ -70,19 +70,20 @@ const TYPE_ICON: Record<string, string> = {
     }
     .news-header {
       display: flex; align-items: center; gap: 6px;
-      padding: 7px 6px 7px 8px; cursor: pointer;
+      width: 100%; padding: 7px 6px 7px 8px; cursor: pointer;
+      background: none; border: none; font: inherit; text-align: left; color: inherit;
       &:hover { background: var(--ui-02); }
     }
     .news-type-icon { font-size: 14px; flex-shrink: 0; }
     .news-type-icon--warning { color: var(--warning, #f9b233); }
     .news-type-icon--urgent  { color: var(--danger, #c0392b); }
     .news-type-icon--info    { color: var(--interactive-primary); }
-    .news-title { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-01); line-height: 1.3; }
+    .news-title { flex: 1; font-size: var(--paragraph-04-font-size); font-weight: 500; color: var(--text-01); line-height: 1.3; }
     .news-chevron { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
-    .news-date-line { font-size: 11px; color: var(--text-muted); padding: 0 8px 6px 28px; }
+    .news-date-line { font-size: var(--paragraph-04-font-size); color: var(--text-muted); padding: 0 8px 6px 28px; }
     .news-body { padding: 4px 8px 10px 28px; }
-    .news-body-text { font-size: 13px; color: var(--text-01); line-height: 1.5; margin: 0 0 4px; }
-    .news-date { font-size: 11px; color: var(--text-muted); }
+    .news-body-text { font-size: var(--paragraph-04-font-size); color: var(--text-01); line-height: 1.5; margin: 0 0 4px; }
+    .news-date { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
   `],
 })
 export class NewsPanelComponent {

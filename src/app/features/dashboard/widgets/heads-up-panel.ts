@@ -99,17 +99,17 @@ const SEVERITY_ICON: Record<string, string> = {
     .hu-icon--info     { color: var(--interactive-primary); }
     .hu-body { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
     .hu-claim-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-    .hu-claim-id { font-weight: 600; font-size: 13px; color: var(--interactive-text); }
+    .hu-claim-id { font-weight: 600; font-size: var(--paragraph-04-font-size); color: var(--interactive-text); }
     .hu-client { font-size: 14px; color: var(--text-01); font-weight: 500; }
-    .hu-reason { font-size: 13px; color: var(--text-01); line-height: 1.4; }
-    .hu-meta { font-size: 12px; color: var(--text-muted); }
+    .hu-reason { font-size: var(--paragraph-04-font-size); color: var(--text-01); line-height: 1.4; }
+    .hu-meta { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
     .hu-right {
       display: flex; flex-direction: column; align-items: flex-end;
       gap: 4px; flex-shrink: 0; min-width: 160px; text-align: right;
     }
-    .hu-status-text { font-size: 12px; color: var(--text-muted); }
+    .hu-status-text { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
     .hu-review-link {
-      font-size: 13px; font-weight: 600; color: var(--interactive-text);
+      font-size: var(--paragraph-04-font-size); font-weight: 600; color: var(--interactive-text);
       text-decoration: none;
       &:hover { text-decoration: underline; }
     }

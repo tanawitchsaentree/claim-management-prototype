@@ -513,6 +513,13 @@ $header-bp: 1024px;
   display: inline-flex;
   align-items: center;
   gap: $sp-xs;   // 4px
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   nx-icon { font-size: 14px; color: var(--text-muted); }   // smaller than th text
 }
 
@@ -851,7 +858,7 @@ $header-bp: 1024px;
 
   &--secondary {
     padding-top: 0;
-    .scope-tab { font-size: var(--paragraph-05-font-size); padding: 2px $sp-md; }
+    .scope-tab { font-size: var(--paragraph-04-font-size); padding: 2px $sp-md; }
   }
 }
 

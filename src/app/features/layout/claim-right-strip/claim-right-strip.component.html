@@ -5,9 +5,11 @@
       @for (item of items; track item.key) {
         <button
           class="crs-btn"
+          type="button"
           [class.crs-btn--active]="activeKey === item.key"
           (click)="activate(item.key)"
-          [title]="item.label">
+          [title]="item.label"
+          [attr.aria-label]="item.label">
           <nx-icon [name]="item.icon" size="s"></nx-icon>
         </button>
       }
@@ -18,6 +20,7 @@
         [class.crs-btn--active]="activeKey === 'references'"
         type="button"
         title="Reference claims"
+        [attr.aria-label]="refTabCount() > 0 ? 'Reference claims (' + refTabCount() + ')' : 'Reference claims'"
         (click)="toggleRefPanel()">
         <nx-icon name="link" size="s"></nx-icon>
         @if (refTabCount() > 0) {
@@ -29,7 +32,8 @@
     <div class="crs-footer">
       <button class="crs-toggle" type="button"
               (click)="toggleCollapse()"
-              [title]="collapsed ? 'Expand' : 'Collapse'">
+              [title]="collapsed ? 'Expand' : 'Collapse'"
+              [attr.aria-label]="collapsed ? 'Expand' : 'Collapse'">
         <!-- Mirrored vs. sidebar.html's identical-looking ternary: this strip
              is anchored on the RIGHT edge, not the left, so the collapse
              direction is reversed — expanded points right (collapses toward

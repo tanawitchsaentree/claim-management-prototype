@@ -8,7 +8,7 @@
   <div class="body-layout">
 
     <!-- ══ MAIN CONTENT ══════════════════════════════════════════════════ -->
-    <main class="main-content">
+    <main class="main-content" tabindex="0">
 
       <!-- Financial closure banner (all users) -->
       <app-financial-closure-banner [period]="closurePeriod()"></app-financial-closure-banner>
@@ -50,14 +50,14 @@
           @if (displayedTasks().length === 0) {
             <app-empty-state [message]="showMyTasksOnly() ? 'No tasks assigned to you yet.' : 'No tasks assigned yet.'"></app-empty-state>
           } @else {
-            <div class="data-table-wrap">
+            <div class="data-table-wrap" tabindex="0">
             <table nxTable sticky="last" class="dash-table">
               <thead>
                 <tr nxTableRow>
-                  <th nxHeaderCell><span class="th-sort">Task type <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                  <th nxHeaderCell><button type="button" class="th-sort" aria-label="Sort by Task type">Task type <nx-icon name="chevron-down-small"></nx-icon></button></th>
                   <th nxHeaderCell class="dash-col--desc">Description</th>
-                  <th nxHeaderCell><span class="th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                  <th nxHeaderCell class="dash-col--nowrap"><span class="th-sort">Due date <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                  <th nxHeaderCell><button type="button" class="th-sort" aria-label="Sort by Status">Status <nx-icon name="chevron-down-small"></nx-icon></button></th>
+                  <th nxHeaderCell class="dash-col--nowrap"><button type="button" class="th-sort" aria-label="Sort by Due date">Due date <nx-icon name="chevron-down-small"></nx-icon></button></th>
                   <th nxHeaderCell class="dash-col--nowrap">Task key</th>
                   @if (!showMyTasksOnly()) {
                     <th nxHeaderCell class="dash-col--nowrap">Assignee</th>
@@ -150,7 +150,7 @@
             @if (lossEvents().length === 0) {
               <app-empty-state message="No loss events found."></app-empty-state>
             } @else {
-              <div class="data-table-wrap">
+              <div class="data-table-wrap" tabindex="0">
               <table nxTable sticky="last" class="dash-table">
                 <thead>
                   <tr nxTableRow>
@@ -183,7 +183,7 @@
             @if (displayedClaims().length === 0) {
               <app-empty-state message="No claims found for this view."></app-empty-state>
             } @else {
-            <div class="data-table-wrap">
+            <div class="data-table-wrap" tabindex="0">
             <table nxTable sticky="last" class="dash-table">
               <thead>
                 <tr nxTableRow>
@@ -249,7 +249,7 @@
             @if (displayedApprovals().length === 0) {
               <app-empty-state [message]="showMyApprovalsOnly() ? 'No reserve approvals submitted by you.' : 'No reserve approval requests found.'"></app-empty-state>
             } @else {
-              <div class="data-table-wrap">
+              <div class="data-table-wrap" tabindex="0">
               <table nxTable sticky="last" class="dash-table">
                 <thead>
                   <tr nxTableRow>
@@ -296,7 +296,7 @@
             @if (displayedPayments().length === 0) {
               <app-empty-state [message]="showMyApprovalsOnly() ? 'No payment approvals submitted by you.' : 'No payment approval requests found.'"></app-empty-state>
             } @else {
-              <div class="data-table-wrap">
+              <div class="data-table-wrap" tabindex="0">
               <table nxTable sticky="last" class="dash-table">
                 <thead>
                   <tr nxTableRow>
@@ -349,7 +349,7 @@
     </main>
 
     <!-- ══ RIGHT PANEL ════════════════════════════════════════════════════ -->
-    <aside class="right-panel">
+    <aside class="right-panel" tabindex="0">
 
       <div class="action-card">
         <div class="action-card-top">

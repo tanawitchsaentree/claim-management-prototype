@@ -1,7 +1,7 @@
 <aside class="app-sidebar" [class.app-sidebar--collapsed]="collapsed">
 
   @if (isClaimRoute()) {
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" tabindex="0">
       @for (entry of claimNavItems(); track isGroup(entry) ? entry.groupKey : entry.path) {
 
         @if (isGroup(entry)) {
@@ -55,7 +55,7 @@
       }
     </nav>
   } @else {
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" tabindex="0">
       @for (item of globalNav; track item.path) {
         <a
           class="nav-item"
@@ -71,10 +71,10 @@
   }
 
   <div class="sidebar-footer">
-    <button class="sidebar-footer__btn" title="Settings">
+    <button class="sidebar-footer__btn" title="Settings" aria-label="Settings">
       <nx-icon name="setting" size="s"></nx-icon>
     </button>
-    <button class="sidebar-footer__btn sidebar-footer__collapse" (click)="toggleCollapse()" [title]="collapsed ? 'Expand' : 'Collapse'">
+    <button class="sidebar-footer__btn sidebar-footer__collapse" (click)="toggleCollapse()" [title]="collapsed ? 'Expand' : 'Collapse'" [attr.aria-label]="collapsed ? 'Expand' : 'Collapse'" [attr.aria-expanded]="!collapsed">
       <nx-icon [name]="collapsed ? 'chevron-right' : 'chevron-left'" size="s"></nx-icon>
     </button>
   </div>

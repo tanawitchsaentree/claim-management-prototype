@@ -48,13 +48,13 @@ import { ProviderExpense } from '../../../core/models';
     .panel-card-title { font-size: 16px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
 
     .exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-    .exp-period { font-size: 12px; color: var(--text-muted); }
+    .exp-period { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
     .exp-list { display: flex; flex-direction: column; gap: 10px; }
     .exp-row { display: flex; align-items: center; gap: 8px; }
-    .exp-label { width: 110px; font-size: 13px; color: var(--text-01); flex-shrink: 0; }
+    .exp-label { width: 110px; font-size: var(--paragraph-04-font-size); color: var(--text-01); flex-shrink: 0; }
     .exp-bar { flex: 1; }
-    .exp-amount { font-size: 12px; color: var(--text-muted); width: 100px; text-align: right; flex-shrink: 0; }
-    .exp-total { margin-top: 12px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--ui-03); padding-top: 8px; }
+    .exp-amount { font-size: var(--paragraph-04-font-size); color: var(--text-muted); width: 100px; text-align: right; flex-shrink: 0; }
+    .exp-total { margin-top: 12px; font-size: var(--paragraph-04-font-size); color: var(--text-muted); border-top: 1px solid var(--ui-03); padding-top: 8px; }
   `],
 })
 export class ExpenseBreakdownComponent {

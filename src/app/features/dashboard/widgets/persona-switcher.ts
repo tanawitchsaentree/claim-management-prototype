@@ -33,9 +33,9 @@ const ROLE_LABEL: Record<string, string> = {
       padding: 0 8px 0 12px;
       border-left: 1px solid var(--ui-04);
     }
-    .ps-label { font-size: 12px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+    .ps-label { font-size: var(--paragraph-04-font-size); color: var(--text-muted); font-weight: 600; white-space: nowrap; }
     .ps-btn {
-      font-size: 12px; padding: 3px 10px; border-radius: 12px;
+      font-size: var(--paragraph-04-font-size); padding: 3px 10px; border-radius: 12px;
       border: 1px solid var(--ui-04); background: var(--ui-01);
       color: var(--text-01); cursor: pointer; white-space: nowrap;
       transition: background .12s, border-color .12s;
@@ -43,7 +43,7 @@ const ROLE_LABEL: Record<string, string> = {
       &--active { background: var(--interactive-primary); color: #fff; border-color: var(--interactive-primary); }
     }
     .ps-role-tag {
-      font-size: 10px; opacity: .75; margin-left: 3px;
+      font-size: var(--paragraph-04-font-size); opacity: .75; margin-left: 3px;
     }
   `],
 })
