@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@a
 import { CommonModule } from '@angular/common';
 import { AbstractControl, ReactiveFormsModule, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -83,6 +84,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   private router            = inject(Router);
   private modalService      = inject(NxDialogService);
   private stageSvc          = inject(ScenarioStageService);
+  private readonly live     = inject(LiveAnnouncer);
   private deregisterStage: (() => void) | null = null;
 
   @ViewChild('duplicatesModalTpl') duplicatesModalTpl!: TemplateRef<void>;
@@ -157,7 +159,16 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       typeOfDamage: this.lookupSvc.getTypeOfDamage(),
       duplicates:         duplicates$,
       showDuplicateBanner: combineLatest([duplicates$, this.bannerDismissed$]).pipe(
-        map(([dups, dismissed]) => dups.length > 0 && !dismissed)
+        map(([dups, dismissed]) => ({ show: dups.length > 0 && !dismissed, count: dups.length })),
+        tap(({ show, count }) => {
+          if (show) {
+            this.live.announce(
+              `${count} existing claim${count === 1 ? ' was' : 's were'} found with the same policy, date, and cause of loss`,
+              'polite',
+            );
+          }
+        }),
+        map(({ show }) => show),
       ),
     });
   }

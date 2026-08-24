@@ -100,7 +100,9 @@
                           <td nxCell class="col-name">
                             <div class="entity-cell">
                               @if (entity.subItems && entity.subItems.length > 0) {
-                                <button nxIconButton="tertiary small" type="button" (click)="entity.expanded = !entity.expanded">
+                                <button nxIconButton="tertiary small" type="button" (click)="entity.expanded = !entity.expanded"
+                                        [attr.aria-label]="entity.expanded ? 'Collapse' : 'Expand'"
+                                        [attr.aria-expanded]="entity.expanded">
                                   <nx-icon [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
                                 </button>
                               }

@@ -89,7 +89,7 @@
     <!-- Two-pane layout: list (left) + detail panel (right) -->
     @if (reserves.length > 0) {
       <div class="reserves-layout">
-        <div class="reserves-list" [class.reserves-list--compact]="isSqueezed()">
+        <div class="reserves-list" tabindex="0" [class.reserves-list--compact]="isSqueezed()">
 
           <!-- View-mode segmented toggle (squeezed only) -->
           @if (isSqueezed()) {
@@ -456,7 +456,7 @@
   <!-- Legacy side panel (kept for ReserveDetailPanelStub flow if other callers need it) -->
   @if (panelOpen) {
     <div class="side-sheet-backdrop" (click)="onClosePanel()"></div>
-    <aside class="side-sheet" [class.side-sheet--open]="panelOpen">
+    <aside class="side-sheet" tabindex="0" [class.side-sheet--open]="panelOpen">
       @if (selectedReserve) {
         <app-reserve-detail-panel-stub
           [reserve]="selectedReserve"

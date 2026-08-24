@@ -1,9 +1,10 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -85,6 +86,7 @@ export class Step1SearchComponent {
   private skeletonSvc  = inject(MockSkeletonSearchService);
   private router       = inject(Router);
   private dialogSvc    = inject(NxDialogService);
+  private readonly live = inject(LiveAnnouncer);
 
   readonly years             = UNDERWRITING_YEARS;
   readonly linesOfBusiness   = lookupsData.linesOfBusiness;
@@ -117,6 +119,12 @@ export class Step1SearchComponent {
   private readonly devSearchFill = toSignal(this.fnolState.devSearchFill$);
   private pendingAutoSelectPolicyNumber: string | null = null;
 
+  /** Set when a skeleton-conversion fill fires — drives the "Converting
+   *  from…" banner. Not just devSearchFill() itself, since that's a Subject
+   *  emission (fires once, doesn't stay true) and the banner needs to stay
+   *  visible for the rest of the page's lifetime until cancelled. */
+  readonly convertingFromSkeletonId = signal<string | null>(null);
+
   constructor() {
     // Dev-banner triggered fill: set search fields, run the search, then
     // auto-select the matching policy once results land (handled by the
@@ -136,6 +144,10 @@ export class Step1SearchComponent {
       this.selectedPolicyData = null;
       this.hasSearched = true;
       this.pendingAutoSelectPolicyNumber = policyNumber;
+      this.convertingFromSkeletonId.set(this.fnolState.skeletonClaimId);
+      if (this.fnolState.skeletonClaimId) {
+        this.live.announce(`Converting from ${this.fnolState.skeletonClaimId}`, 'polite');
+      }
       this.trigger$.next('search');
     });
 
@@ -392,6 +404,12 @@ export class Step1SearchComponent {
 
   onCancel(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  onCancelConversion(): void {
+    this.fnolState.reset();
+    this.convertingFromSkeletonId.set(null);
+    this.onReset();
   }
 
   onSelectClient(partyId: string, client: ClientSearchResult): void {

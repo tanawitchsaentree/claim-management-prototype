@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<form [formGroup]="form" class="med-body">
+<form [formGroup]="form" class="med-body" tabindex="0">
   <nx-formfield label="Section">
     <nx-dropdown formControlName="section">
       @for (s of sectionOptions; track s.key) {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -12,6 +12,8 @@ import { Reserve, RESERVE_TYPE_LABELS } from '../../../../core/models/reserve.mo
   styleUrl: './reserve-detail-panel-stub.component.scss',
 })
 export class ReserveDetailPanelStubComponent {
+  @HostBinding('attr.tabindex') tabindex = '0';
+
   @Input({ required: true }) reserve!: Reserve;
   @Output() closePanel = new EventEmitter<void>();
 

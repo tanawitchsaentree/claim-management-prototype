@@ -1,5 +1,6 @@
 import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -100,6 +101,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly userDir      = inject(MockUserDirectoryService);
   private readonly router       = inject(Router);
   private readonly appDate      = new AppDatePipe();
+  private readonly live         = inject(LiveAnnouncer);
 
   readonly vm$ = new BehaviorSubject<SummaryViewModel | null>(null);
   loadError  = false;
@@ -159,6 +161,7 @@ export class StepSummaryComponent implements OnInit {
     } catch (err) {
       console.error('[StepSummary] buildViewModel failed:', err);
       this.loadError = true;
+      this.live.announce('Failed to load summary data. Please go back and try again.', 'assertive');
     }
 
   }
@@ -238,6 +241,11 @@ export class StepSummaryComponent implements OnInit {
 
     this.fnolState.markStepComplete('summary');
     this.submitted = true;
+    const count = this.mockClaimIds.length;
+    this.live.announce(
+      `${count} claim${count === 1 ? '' : 's'} opened: ${this.mockClaimIds.join(', ')}`,
+      'polite',
+    );
   }
 
   get claimGroupCount(): number { return this.vm$.value?.claimGroups.length ?? 0; }

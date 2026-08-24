@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -23,6 +24,7 @@ const DEFAULT_LOSS_SCENARIO = 'fire';
 })
 export class DevHelperBannerComponent {
   private readonly helper = inject(FnolDevHelperService);
+  private readonly live   = inject(LiveAnnouncer);
 
   readonly isVisible$   = of(true);
   readonly currentPage$ = this.helper.currentPage$;
@@ -58,6 +60,13 @@ export class DevHelperBannerComponent {
     } finally {
       this.filling = false;
       this.showResult = true;
+      if (this.lastResult) {
+        const warnCount = this.lastResult.warnings?.length ?? 0;
+        const msg = warnCount
+          ? `${this.lastResult.message} — ${warnCount} warning(s)`
+          : this.lastResult.message;
+        this.live.announce(msg, 'polite');
+      }
       setTimeout(() => { this.showResult = false; }, 4000);
     }
   }

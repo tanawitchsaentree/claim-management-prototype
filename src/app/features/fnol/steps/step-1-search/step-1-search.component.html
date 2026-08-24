@@ -8,6 +8,15 @@
     <nx-icon name="info-circle-o" size="s" class="subtitle-icon"></nx-icon>
   </p>
 
+  <!-- Skeleton-conversion banner (BMPCC-11006) — set when a dev-triggered
+       skeleton-to-claim conversion prefilled this search. -->
+  @if (convertingFromSkeletonId(); as skelId) {
+    <nx-message context="info" data-tour-id="fs-converting-banner">
+      Converting from <strong>{{ skelId }}</strong>
+      <button nxPlainButton type="button" (click)="onCancelConversion()">Cancel conversion</button>
+    </nx-message>
+  }
+
   <!-- Form-level validation banner -->
   @if (validationError) {
     <div class="form-validation-banner" role="alert">
@@ -185,7 +194,7 @@
             @if (state.clients.length === 0) {
               <app-empty-state message="No clients found."></app-empty-state>
             } @else {
-              <div class="results-table-wrap"><table class="results-table">
+              <div class="results-table-wrap" tabindex="0"><table class="results-table">
                 <thead>
                   <tr>
                     <th class="col-radio"></th>
@@ -257,7 +266,7 @@
             @if (state.policies.length === 0) {
               <app-empty-state message="No policies found."></app-empty-state>
             } @else {
-              <div class="results-table-wrap"><table class="results-table">
+              <div class="results-table-wrap" tabindex="0"><table class="results-table">
                 <thead>
                   <tr>
                     <th class="col-radio"></th>
@@ -315,7 +324,7 @@
                 hint="Skeleton claims are created when a policy cannot be identified during registration. This is normal for most searches.">
               </app-empty-state>
             } @else {
-              <div class="results-table-wrap"><table class="results-table">
+              <div class="results-table-wrap" tabindex="0"><table class="results-table">
                 <thead>
                   <tr>
                     <th><span class="th-sort">Claim ID <nx-icon name="chevron-down-small"></nx-icon></span></th>
@@ -350,6 +359,7 @@
                       <td>{{ skeleton.assignee ?? '—' }}</td>
                       <td class="col-action">
                         <button class="action-menu-btn" type="button" aria-label="more actions"
+                                data-tour-id="fnol-skeleton-kebab"
                                 [nxContextMenuTriggerFor]="skeletonMenu"
                                 [nxContextMenuTriggerData]="{ skeleton: skeleton }">
                           <nx-icon name="ellipsis-v"></nx-icon>

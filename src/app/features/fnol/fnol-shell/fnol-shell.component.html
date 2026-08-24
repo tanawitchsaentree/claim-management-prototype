@@ -44,12 +44,13 @@
     [class.fnol-body--wizard]="showStepper$ | async"
     [class.fnol-body--standalone]="!(showStepper$ | async)"
   >
-    <aside class="fnol-sidebar" *ngIf="showStepper$ | async">
+    <aside class="fnol-sidebar" tabindex="0" *ngIf="showStepper$ | async">
       <app-fnol-stepper [steps]="(steps$ | async) ?? []"></app-fnol-stepper>
     </aside>
 
     <main
       class="fnol-content"
+      tabindex="0"
       [class.fnol-content--standalone]="!(showStepper$ | async)"
     >
       <router-outlet></router-outlet>
