@@ -674,6 +674,24 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-08-24 — WCAG 2 AA static audit + fix sweep (whole app)
+
+- **Source:** verbal request — "check the whole system for accessibility"
+- **Module:** app-wide (`shared`, `fnol`, `sections`, `tracker`, `administration`, `claims`, `layout`, `dashboard`, `access-gate`)
+- **Files touched:** 68 across 5 commits (`a298fef`, `20def0e`, `578f4cd`, `fb9196d`, `ba89ec8`)
+- **What the audit found (static/grep-able only, not a substitute for the manual keyboard/screen-reader/high-contrast passes in `POST_BUILD.md`):**
+  1. **Font-size floor** — 19 new violations, all in `dashboard/widgets/*.ts` inline `styles:` blocks (invisible to the `.scss`-scoped grep in `CONTEXT.md`'s known-violations table). The old table's entries (`status-chip`, `dashboard.scss`, `step-1-search.scss`, `claim-detail.scss`) were already fixed in a prior session — that table is now stale and should be refreshed.
+  2. **Icon-only controls** — several relying on `title` only (hover-only, not an accessible name) or with no name at all; one plain clickable `<div>` with no button semantics (`news-panel.ts`); a hardcoded `aria-label` that never updated with state (`sections.html`).
+  3. **Silent banners** — the biggest category. Many components render `nx-message`/custom banners directly instead of going through `ToastService` (whose `toast-stack` container has a live region) — so saves, errors, and confirmations were happening with zero screen-reader feedback. Worst offenders: `tracker-login` (only feedback in the whole login flow) and `access-gate` (password error).
+  4. **Scroll containers missing `tabindex="0"`** — systemic. The shared `_modal-layout.scss` `@mixin body` is reused by ~20+ modals; only a handful had ever had `tabindex` added, so most modal bodies (and several table/list viewports) were keyboard-unreachable.
+  5. **High-contrast SVG** — clean app-wide; the codebase barely uses raw `<svg>`, and what exists already uses `currentColor` + `aria-hidden`.
+- **Fix approach:** 5 parallel general-purpose agents, one per audited bucket, applying the `LiveAnnouncer` pattern from `mass-events.component.ts` and the `tabindex="0"` pattern from `reassign-claim-modal.component.html` as the blessed references.
+- **Git-hygiene incident during the fix:** several files being fixed already had unrelated, pre-existing **uncommitted** feature work sitting in them (e.g. a custom-retention-date feature in `claim-closure-modal`, a reserve-type/amount feature in `claim-reopen-modal`, BMPCC-11006 skeleton-conversion work in `step-1-search`, a `data-tour-id`/"Simulate final payment" feature in `sections.*`). Committing those files whole would have swept unrelated WIP into an accessibility commit. Resolved by having each fix agent re-check its own `git diff` and, where pre-existing hunks were present, hand-build a patch (`git apply --cached`) staging only its own accessibility lines, leaving the rest unstaged. One agent also went ahead and ran `git commit` on its own initiative without being asked — harmless in this case (the resulting commit `a298fef` was verified clean) but flagged so it isn't repeated: **fix agents should stage only; the orchestrating session does the actual commit** once all buckets are staged, since concurrent `git add`/`commit` in one shared working tree can stomp on each other (one agent's commit swept in another's staged files before it was caught and undone with `git reset --soft HEAD^`).
+- **Not committed (intentionally left as-is, unrelated to this task):** `location-source-modal.component.html` — a brand-new, never-committed file with a11y fixes needed inside it but no prior committed baseline to diff against, so there's no way to isolate just the accessibility attributes from the rest of the file's (also uncommitted) content. Needs a human call on whether to commit the whole component first, then layer a11y on top.
+- **Known remaining gap:** `claim-reference-panel`/`claim-reference-tabs` search listboxes got a full `aria-activedescendant` roving-highlight keyboard implementation rather than the minimal fix — slightly more scope than asked, but self-contained and doesn't touch AC/Stage/closure logic.
+
+---
+
 <!--
 Template — copy below the most recent entry:
 
