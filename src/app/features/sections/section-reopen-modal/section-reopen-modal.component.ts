@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -43,6 +44,7 @@ export class SectionReopenModalComponent {
   readonly modalRef = inject<NxModalRef<SectionReopenModalComponent, SectionReopenModalResult>>(NxModalRef);
   private readonly fb         = inject(FormBuilder);
   private readonly sectionSvc = inject(MockSectionService);
+  private readonly live       = inject(LiveAnnouncer);
 
   readonly reopenReasons: SectionReopenReason[] = [
     'New information received',
@@ -75,6 +77,7 @@ export class SectionReopenModalComponent {
       this.modalRef.close({ reopenedSection: reopened });
     } catch {
       this.saveError = 'Failed to reopen section. Please try again.';
+      this.live.announce(this.saveError, 'assertive');
       this.saving = false;
     }
   }

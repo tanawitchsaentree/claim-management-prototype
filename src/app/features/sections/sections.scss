@@ -282,7 +282,6 @@ $brand-blue:          var(--info);
 // Nav list
 .side-nav {
   flex: 1;
-  overflow-y: auto;
   padding: var(--space-sm) 0;
   display: flex;
   flex-direction: column;
@@ -389,7 +388,6 @@ $brand-blue:          var(--info);
 // ─── Main content ─────────────────────────────────────────────────
 .main-content {
   flex: 1;
-  overflow-y: auto;
   padding: var(--space-2xl);
   background: var(--ui-background);
   min-width: 0;

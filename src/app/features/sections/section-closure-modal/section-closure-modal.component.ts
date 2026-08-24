@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -62,6 +63,7 @@ export class SectionClosureModalComponent {
   readonly modalRef  = inject<NxModalRef<SectionClosureModalComponent, SectionClosureModalResult>>(NxModalRef);
   private readonly sectionSvc = inject(MockSectionService);
   private readonly fb         = inject(FormBuilder);
+  private readonly live       = inject(LiveAnnouncer);
 
   readonly step      = signal<Step>(this.data.canClose ? 2 : 1);
   readonly saving    = signal(false);
@@ -137,6 +139,7 @@ export class SectionClosureModalComponent {
       this.modalRef.close(closed);
     } catch {
       this.saveError.set('Failed to close section. Please try again.');
+      this.live.announce('Failed to close section. Please try again.', 'assertive');
       this.saving.set(false);
     }
   }

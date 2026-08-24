@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -17,6 +18,7 @@ type LoginState = 'form' | 'sending' | 'sent' | 'error';
 })
 export class TrackerLoginComponent {
   private readonly supabase = inject(SupabaseService).client;
+  private readonly live = inject(LiveAnnouncer);
 
   readonly email = new FormControl('', [Validators.required, Validators.email]);
   readonly state = signal<LoginState>('form');
@@ -37,10 +39,12 @@ export class TrackerLoginComponent {
     if (error) {
       this.errorMessage.set(error.message);
       this.state.set('error');
+      this.live.announce(error.message, 'assertive');
       return;
     }
 
     this.state.set('sent');
+    this.live.announce('Check your email for a sign-in link.', 'polite');
   }
 
   tryAgain(): void {

@@ -50,7 +50,8 @@
             [class.sec-tree__section-row--active]="selectedSection()?.id === section.id"
             (click)="openSectionDetail(section)">
             <td nxTableCell class="sec-tree__col-toggle">
-              <button nxIconButton="tertiary" type="button" (click)="toggleSection(section.id); $event.stopPropagation()">
+              <button nxIconButton="tertiary" type="button" (click)="toggleSection(section.id); $event.stopPropagation()"
+                [attr.aria-label]="section.expanded ? 'collapse' : 'expand'">
                 <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
               </button>
             </td>
@@ -133,7 +134,7 @@
           <td nxTableCell class="col-actions">
             <button class="sec-kebab-btn" type="button"
               [nxContextMenuTriggerFor]="sectionMenu"
-              [attr.data-tour-id]="section.id === 'SEC-001' ? 'sections-sec001-kebab' : null"
+              [attr.data-tour-id]="section.id === 'SEC-001' ? 'sections-sec001-kebab' : section.id === 'SEC-002' ? 'sections-sec002-kebab' : section.id === 'SEC-003' ? 'sections-sec003-kebab' : section.id === 'SEC-008' ? 'sections-sec008-kebab' : null"
               aria-label="Section actions">⋮</button>
             <nx-context-menu #sectionMenu="nxContextMenu">
               <button nxContextMenuItem type="button"
@@ -162,6 +163,11 @@
               </button>
               <button nxContextMenuItem type="button"
                 [disabled]="claimClosed() || section.status === 'Closed'"
+                (click)="onSimulateFinalPayment(section)">
+                Simulate final payment
+              </button>
+              <button nxContextMenuItem type="button"
+                [disabled]="claimClosed() || section.status === 'Closed'"
                 (click)="onCloseSection(section)">
                 Close section
               </button>
@@ -184,7 +190,8 @@
                 @if (entity.expandable) {
                   <button nxIconButton="tertiary" type="button"
                     (click)="toggleEntityExpand(section, entity.id)"
-                    aria-label="expand entity">
+                    [attr.aria-label]="isEntityExpanded(entity) ? 'collapse entity' : 'expand entity'"
+                    [attr.aria-expanded]="isEntityExpanded(entity)">
                     <nx-icon [name]="isEntityExpanded(entity) ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
                   </button>
                 }

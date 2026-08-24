@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockClaimOverviewService } from '../../core/mock/services/mock-claim-overview.service';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -97,6 +98,7 @@ export class Sections {
   private readonly notesSvc   = inject(MockNotesService);
   private readonly stripSvc   = inject(RightStripService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
+  private readonly live       = inject(LiveAnnouncer);
 
   readonly sections       = signal<ClaimSection[]>([]);
   readonly loading        = signal(true);
@@ -127,6 +129,7 @@ export class Sections {
         oldValue: changedOld[i] ?? '–',
         newValue: changedNew[i] ?? '–',
       })));
+      this.live.announce('Review sections — loss information changed', 'polite');
       // Strip the params from the URL so a refresh (or navigating back here
       // later) doesn't resurrect a banner for a change that's already been
       // reviewed or dismissed — it's a one-time redirect artifact.
@@ -388,9 +391,8 @@ export class Sections {
     // updates that store, so no separate assignment is needed here.
     await firstValueFrom(
       this.notesSvc.addNote(claimId, {
-        title:   `Coverage review override — ${entity.name}`,
-        section: 'general',
-        body:    `Coverage review changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`,
+        category: 'general',
+        body:     `Coverage review override — ${entity.name}. Changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`,
       })
     );
 

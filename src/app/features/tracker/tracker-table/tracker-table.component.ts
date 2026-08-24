@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -71,6 +72,7 @@ export class TrackerTableComponent {
   readonly trackerService = inject(TrackerService);
   readonly syncService = inject(TrackerSyncService);
   private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
+  private readonly live = inject(LiveAnnouncer);
 
   readonly blockedByOptions = BLOCKED_BY_OPTIONS;
   readonly hasRouteOptions = HAS_ROUTE_OPTIONS;
@@ -185,6 +187,14 @@ export class TrackerTableComponent {
       };
       this.trackerService.setFilters(filters);
       this.trackerService.getTickets(filters);
+    });
+
+    // Sync errors surface via syncService.error() at tracker-table.component.html:15
+    // (nx-message context="error") — announce here in the component rather than
+    // the service, since services shouldn't own DOM announcement concerns.
+    effect(() => {
+      const message = this.syncService.error();
+      if (message) this.live.announce(message, 'assertive');
     });
   }
 
