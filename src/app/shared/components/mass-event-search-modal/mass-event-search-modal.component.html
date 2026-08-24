@@ -8,7 +8,7 @@
   <p class="mesm-subtitle">Search and select the mass event to link to this claim.</p>
 </div>
 
-<div class="mesm-body">
+<div class="mesm-body" tabindex="0">
 
   <form [formGroup]="searchForm" class="mesm-form" (ngSubmit)="onSearch()">
     <div class="mesm-search-row__inputs">
@@ -39,7 +39,7 @@
     @if (results().length === 0) {
       <app-empty-state message="No mass events found."></app-empty-state>
     } @else {
-      <div class="mesm-table-wrap">
+      <div class="mesm-table-wrap" tabindex="0">
         <table nxTable class="mesm-table">
           <thead>
             <tr nxTableRow>

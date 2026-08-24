@@ -19,7 +19,7 @@
     </div>
   } @else {
     <div class="lp-selected">
-      <div class="lp-table-wrap">
+      <div class="lp-table-wrap" tabindex="0">
         <table nxTable class="lp-table">
           <thead>
             <tr nxTableRow>
@@ -39,7 +39,17 @@
                   <td nxCell>–</td>
                   <td nxCell>–</td>
                 } @else {
-                  <td nxCell>{{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}}</td>
+                  <td nxCell>
+                    {{ item.addressLine1 }}@if (item.addressLine2) {, {{ item.addressLine2 }}}
+                    @if (item.source === 'cwb') {
+                      <span class="lp-source-tag">
+                        @if (item.cwbReference) {
+                          {{ item.cwbReference }} &bull;
+                        }
+                        From CWB
+                      </span>
+                    }
+                  </td>
                   <td nxCell>{{ item.postalCode }}</td>
                   <td nxCell>{{ item.city }}</td>
                 }

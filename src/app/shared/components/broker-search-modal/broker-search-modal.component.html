@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div class="bsm-body">
+<div class="bsm-body" tabindex="0">
   <!-- Party-type tabs -->
   <nx-tab-group class="bsm-tabs"
                 [selectedIndex]="partyType() === 'company' ? 0 : 1"
@@ -105,7 +105,7 @@
         </div>
 
         @if (partyType() === 'company') {
-          <div class="bsm-table-wrap"><table nxTable class="bsm-table">
+          <div class="bsm-table-wrap" tabindex="0"><table nxTable class="bsm-table">
             <thead>
               <tr nxTableRow>
                 <th nxHeaderCell class="bsm-col-pick"></th>
@@ -124,6 +124,7 @@
                       <nx-radio labelSize="small"
                                 [value]="b.brokerId"
                                 [checked]="isSelected(b.brokerId)"
+                                [attr.aria-label]="'Select ' + b.legalName"
                                 (valueChange)="selectRow(b.brokerId)">
                       </nx-radio>
                     </nx-radio-group>
@@ -140,7 +141,7 @@
             </tbody>
           </table></div>
         } @else {
-          <div class="bsm-table-wrap"><table nxTable class="bsm-table">
+          <div class="bsm-table-wrap" tabindex="0"><table nxTable class="bsm-table">
             <thead>
               <tr nxTableRow>
                 <th nxHeaderCell class="bsm-col-pick"></th>
@@ -160,6 +161,7 @@
                       <nx-radio labelSize="small"
                                 [value]="b.brokerId"
                                 [checked]="isSelected(b.brokerId)"
+                                [attr.aria-label]="'Select ' + (b.firstName || '') + ' ' + (b.lastName || '')"
                                 (valueChange)="selectRow(b.brokerId)">
                       </nx-radio>
                     </nx-radio-group>

@@ -12,7 +12,7 @@
   <p class="cwb-subtitle">Retrieve property records from CWB. Select one or more, or enter an address manually.</p>
 </div>
 
-<div class="cwb-body">
+<div class="cwb-body" tabindex="0">
 
   <!-- ─── Search section ──────────────────────────────────────────────── -->
   <form [formGroup]="form" class="cwb-form">
@@ -94,6 +94,7 @@
                   <td nxCell class="cwb-col-pick">
                     <nx-checkbox
                       [checked]="isSelected(r.cwbReference)"
+                      [attr.aria-label]="'Select ' + r.locationName"
                       (checkedChange)="toggleRow(r.cwbReference, $event)"
                       (click)="$event.stopPropagation()">
                     </nx-checkbox>

@@ -8,7 +8,7 @@
   <p class="csm-subtitle">Search by claim ID, client name, or description.</p>
 </div>
 
-<div class="csm-body">
+<div class="csm-body" tabindex="0">
 
   <form [formGroup]="searchForm" class="csm-form" (ngSubmit)="onSearch()">
     <nx-formfield label="Search">
@@ -31,7 +31,7 @@
     @if (results().length === 0) {
       <app-empty-state message="No claims found."></app-empty-state>
     } @else {
-      <div class="csm-table-wrap">
+      <div class="csm-table-wrap" tabindex="0">
         <table nxTable class="csm-table">
           <thead>
             <tr nxTableRow>

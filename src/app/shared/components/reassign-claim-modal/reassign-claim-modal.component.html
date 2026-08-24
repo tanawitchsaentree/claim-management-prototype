@@ -14,7 +14,7 @@
     </p>
   } @else if (data.claims?.length) {
     <p class="rcm-current">{{ data.claims!.length }} claim{{ data.claims!.length > 1 ? 's' : '' }} selected</p>
-    <div class="rcm-preview">
+    <div class="rcm-preview" tabindex="0">
       <!-- audit-exempt: guarded by @else if (data.claims?.length) above — never rendered with zero rows -->
       <table class="rcm-preview__table">
         <thead>

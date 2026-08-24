@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxBreadcrumbModule } from '@allianz/ng-aquila/breadcrumb';
 import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -34,7 +35,9 @@ export interface BreadcrumbItem {
   templateUrl: './page-shell.component.html',
   styleUrl: './page-shell.component.scss',
 })
-export class PageShellComponent {
+export class PageShellComponent implements OnChanges {
+  private readonly live = inject(LiveAnnouncer);
+
   @Input() breadcrumb: BreadcrumbItem[] = [];
   @Input() toast: string | null = null;
 
@@ -47,4 +50,10 @@ export class PageShellComponent {
   @Input() align: 'grid' | 'navbar' = 'grid';
 
   @Output() toastClose = new EventEmitter<void>();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['toast'] && this.toast) {
+      this.live.announce(this.toast, 'polite');
+    }
+  }
 }

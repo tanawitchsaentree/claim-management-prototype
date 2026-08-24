@@ -10,7 +10,7 @@
   </p>
 </div>
 
-<div class="plm-body">
+<div class="plm-body" tabindex="0">
 
   <form [formGroup]="searchForm" class="plm-form" (ngSubmit)="onSearch()">
     <div class="plm-search-row__inputs">
@@ -41,7 +41,7 @@
     @if (filtered().length === 0) {
       <app-empty-state message="No locations found."></app-empty-state>
     } @else {
-      <div class="plm-table-wrap">
+      <div class="plm-table-wrap" tabindex="0">
         <table nxTable class="plm-table">
           <thead>
             <tr nxTableRow>
