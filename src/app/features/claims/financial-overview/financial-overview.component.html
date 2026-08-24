@@ -226,7 +226,7 @@
           @for (r of rows; track r.reserveId) {
             <tr nxTableRow>
               <td nxCell class="fo-col--history">
-                <button class="fo-history-btn" (click)="toggleReserveHistory(r.reserveId)" [title]="'History'">
+                <button class="fo-history-btn" type="button" (click)="toggleReserveHistory(r.reserveId)" title="History" aria-label="History">
                   <nx-icon name="clock" size="s"></nx-icon>
                 </button>
               </td>

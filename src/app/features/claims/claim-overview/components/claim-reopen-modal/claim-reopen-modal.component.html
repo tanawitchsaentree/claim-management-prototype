@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div class="crm-body">
+<div class="crm-body" tabindex="0">
 
   <!-- Step 1 — Reason -->
   @if (step() === 1) {
@@ -14,7 +14,7 @@
     </p>
 
     <form [formGroup]="form" class="crm-form">
-      <nx-formfield label="Reopening reason">
+      <nx-formfield label="Reopening reason" data-tour-id="crm-reason-dropdown">
         <nx-dropdown formControlName="reason" placeholder="Select reason">
           @for (r of reopenReasons; track r) {
             <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
@@ -27,6 +27,21 @@
         <textarea nxInput formControlName="note" rows="3"
                   placeholder="Add context for the audit trail…"></textarea>
         <nx-hint nxFormfieldHint>Visible in the claim's activity log.</nx-hint>
+      </nx-formfield>
+
+      <p class="crm-section-label">Reopening a claim requires a reserve to be raised</p>
+      <nx-formfield label="Reserve type" data-tour-id="crm-reserve-type">
+        <nx-dropdown formControlName="reserveType" placeholder="Select reserve type">
+          @for (opt of reserveTypes$ | async; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-error nxFormfieldError>Reserve type is required.</nx-error>
+      </nx-formfield>
+
+      <nx-formfield label="Reserve amount (EUR)" data-tour-id="crm-reserve-amount">
+        <input nxInput type="number" min="1" formControlName="reserveAmount" placeholder="0" />
+        <nx-error nxFormfieldError>Reserve amount must be greater than 0.</nx-error>
       </nx-formfield>
     </form>
   }

@@ -14,13 +14,16 @@
   <!-- Scrollable reference tabs -->
   <div class="rt-tabs-scroll">
     @for (tab of svc.refTabs(); track tab.id) {
-      <button
+      <div
         class="rt-tab"
-        [class.rt-tab--active]="activeTabId() === tab.id"
-        type="button"
-        (click)="goToRef(tab)">
-        <span class="rt-tab__badge">Ref</span>
-        <span class="rt-tab__label">{{ tab.claimId }}</span>
+        [class.rt-tab--active]="activeTabId() === tab.id">
+        <button
+          class="rt-tab__select"
+          type="button"
+          (click)="goToRef(tab)">
+          <span class="rt-tab__badge">Ref</span>
+          <span class="rt-tab__label">{{ tab.claimId }}</span>
+        </button>
         <button
           class="rt-tab__close"
           type="button"
@@ -28,7 +31,7 @@
           [attr.aria-label]="'Close ' + tab.claimId">
           <nx-icon name="close" size="s"></nx-icon>
         </button>
-      </button>
+      </div>
     }
   </div>
 
@@ -65,11 +68,16 @@
           } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
             <div class="rt-popover__empty">No claims found</div>
           } @else if (searchResults().length > 0) {
-            <ul class="rt-popover__list" role="listbox">
-              @for (claim of searchResults(); track claim.claimId) {
+            <ul class="rt-popover__list" role="listbox" tabindex="0"
+                [attr.aria-activedescendant]="'rt-search-opt-' + highlightedIndex()"
+                (keydown)="onSearchListKeydown($event)">
+              @for (claim of searchResults(); track claim.claimId; let i = $index) {
                 <li
                   class="rt-popover__item"
+                  [id]="'rt-search-opt-' + i"
                   role="option"
+                  [attr.aria-selected]="i === highlightedIndex()"
+                  [class.rt-popover__item--highlighted]="i === highlightedIndex()"
                   (click)="selectResult(claim)">
                   <span class="rt-popover__claim-id">{{ claim.claimId }}</span>
                   <span class="rt-popover__client">{{ claim.clientName }}</span>

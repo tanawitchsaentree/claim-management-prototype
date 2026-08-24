@@ -24,11 +24,12 @@
   <label nxButton="secondary small" class="ap-upload-btn">
     <nx-icon name="upload" size="s"></nx-icon>
     Choose files
-    <input type="file" multiple [accept]="acceptedTypes" (change)="onFileInputChange($event)" class="ap-file-input" />
+    <input type="file" multiple [accept]="acceptedTypes" (change)="onFileInputChange($event)"
+           class="ap-file-input" [attr.aria-describedby]="fileError() ? fileErrorId : null" />
   </label>
   <p class="ap-hint">PDF, DOC, DOCX, JPG, PNG — up to 10 MB per file.</p>
   @if (fileError()) {
-    <p class="ap-error">{{ fileError() }}</p>
+    <p class="ap-error" [id]="fileErrorId" role="alert">{{ fileError() }}</p>
   }
   @if (uploadedFiles().length) {
     <ul class="ap-doc-list">

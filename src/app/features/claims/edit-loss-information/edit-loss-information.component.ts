@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, inject, signal, computed } from '@angu
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { firstValueFrom } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -82,6 +83,7 @@ export class EditLossInformationComponent implements OnInit {
   private readonly overviewSvc  = inject(MockClaimOverviewService);
   private readonly dialogSvc    = inject(NxDialogService);
   private readonly toast        = inject(ToastService);
+  private readonly live         = inject(LiveAnnouncer);
 
   readonly claimId      = signal<string>('');
   readonly clientName   = signal<string>('');
@@ -360,6 +362,7 @@ export class EditLossInformationComponent implements OnInit {
 
       this.form.markAsPristine();
       this.saveSuccess.set(true);
+      this.live.announce('Loss information updated successfully.', 'polite');
 
       // ClaimSection/SectionEntity still carry no structured link back to a
       // cause-of-loss or location key — there is no reliable way to tell

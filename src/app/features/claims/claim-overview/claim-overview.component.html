@@ -397,10 +397,13 @@
           }
         </h2>
         <div class="pt-header__actions">
-          <button class="co-icon-btn" title="More options">
+          <button class="co-icon-btn" type="button" title="More options" aria-label="More options">
             <nx-icon name="ellipsis-v" size="s"></nx-icon>
           </button>
-          <button class="co-icon-btn" (click)="toggleTasks()" [title]="vm.tasksExpanded ? 'Collapse' : 'Expand'">
+          <button class="co-icon-btn" type="button" (click)="toggleTasks()"
+                  [title]="vm.tasksExpanded ? 'Collapse' : 'Expand'"
+                  [attr.aria-label]="vm.tasksExpanded ? 'Collapse' : 'Expand'"
+                  [attr.aria-expanded]="vm.tasksExpanded">
             <nx-icon [name]="vm.tasksExpanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
           </button>
         </div>
@@ -426,7 +429,7 @@
         }
 
         <!-- Table -->
-        <div class="pt-table-wrap">
+        <div class="pt-table-wrap" tabindex="0">
         <table nxTable sticky="last" class="pt-table">
           <thead>
             <tr nxTableRow>
@@ -487,7 +490,7 @@
       </button>
 
       <div class="pt-collapse" [class.pt-collapse--open]="vm.activitiesExpanded"><div class="pt-collapse__inner">
-        <div class="act-table-wrap">
+        <div class="act-table-wrap" tabindex="0">
           <table nxTable class="act-table">
             <thead>
               <tr nxTableRow>

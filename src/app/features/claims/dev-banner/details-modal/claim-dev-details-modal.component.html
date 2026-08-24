@@ -78,7 +78,7 @@
   </div>
 
   <!-- RIGHT: Detail panel -->
-  <div class="cddm-right">
+  <div class="cddm-right" tabindex="0">
     @if (selectedAc(); as ac) {
       <div class="cddm-detail">
         <p class="cddm-detail-id" [innerHTML]="ac.id + ' — ' + ac.statement | inlineMarkdown"></p>

@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="sim-body">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="sim-body" tabindex="0">
   <nx-formfield nxLabel="Assignee">
     <nx-dropdown formControlName="assignee" placeholder="Select claim handler">
       @for (h of handlers; track h.userId) {

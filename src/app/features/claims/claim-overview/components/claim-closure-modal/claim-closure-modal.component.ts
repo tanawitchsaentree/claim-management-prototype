@@ -3,10 +3,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
+import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -62,6 +64,7 @@ const CONFIRMATION_STATEMENTS: string[] = [
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
+    NxDatefieldModule,
   ],
   templateUrl: './claim-closure-modal.component.html',
   styleUrl: './claim-closure-modal.component.scss',
@@ -72,6 +75,7 @@ export class ClaimClosureModalComponent {
   private readonly fb         = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly router     = inject(Router);
+  private readonly live       = inject(LiveAnnouncer);
 
   readonly step    = signal<Step>(this.data.blockers.canClose ? 2 : 1);
   readonly saving  = signal(false);
@@ -97,6 +101,28 @@ export class ClaimClosureModalComponent {
   readonly form: FormGroup = this.fb.group({
     reason:        [null, Validators.required],
     retentionType: ['default', Validators.required],
+    retentionDate: [''],
+  });
+
+  private readonly retentionTypeSig = toSignal(this.form.get('retentionType')!.valueChanges, { initialValue: 'default' });
+  private readonly retentionDateSig = toSignal(this.form.get('retentionDate')!.valueChanges, { initialValue: '' });
+
+  private readonly defaultRetentionDateValue = computed(() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 10);
+    return d;
+  });
+
+  readonly retentionDateTooEarly = computed(() => {
+    if (this.retentionTypeSig() !== 'custom') return false;
+    const v = this.retentionDateSig();
+    if (!v) return false;
+    return new Date(v) <= this.defaultRetentionDateValue();
+  });
+
+  readonly retentionInvalid = computed(() => {
+    if (this.retentionTypeSig() !== 'custom') return false;
+    return !this.retentionDateSig() || this.retentionDateTooEarly();
   });
 
   readonly stepTitle = computed(() => {
@@ -116,8 +142,7 @@ export class ClaimClosureModalComponent {
   readonly reasonInvalid = computed(() => this.reasonStatus() !== 'VALID');
 
   readonly defaultRetentionDate = computed(() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() + 10);
+    const d = this.defaultRetentionDateValue();
     const dd = String(d.getDate()).padStart(2, '0');
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     return `${dd}-${mm}-${d.getFullYear()}`;
@@ -148,6 +173,11 @@ export class ClaimClosureModalComponent {
 
   onCancel(): void { this.modalRef.close(undefined); }
 
+  goToBlocker(link: string): void {
+    this.modalRef.close(undefined);
+    this.router.navigateByUrl(link);
+  }
+
   onBack(): void {
     if (this.step() === 3) this.step.set(2);
     if (this.step() === 4) this.step.set(3);
@@ -158,7 +188,7 @@ export class ClaimClosureModalComponent {
   }
 
   onContinueToConfirmation(): void {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.retentionInvalid()) {
       this.form.markAllAsTouched();
       return;
     }
@@ -174,12 +204,13 @@ export class ClaimClosureModalComponent {
     if (this.form.invalid || this.saving()) return;
     this.saving.set(true);
     this.saveError.set(null);
-    const { reason, retentionType } = this.form.value;
+    const { reason, retentionType, retentionDate } = this.form.value;
     try {
       const closedClaim = await firstValueFrom(
         this.closureSvc.closeClaim(this.claim.claimId, {
           reason,
           retentionType,
+          retentionDate: retentionType === 'custom' ? retentionDate : undefined,
           confirmedBy: { userId: 'usr-current', name: this.claim.assignedHandler },
         })
       );
@@ -197,12 +228,14 @@ export class ClaimClosureModalComponent {
       this.modalRef.close({ closedClaim, activity });
     } catch {
       this.saveError.set('Failed to close claim. Please try again.');
+      this.live.announce('Failed to close claim. Please try again.', 'assertive');
       this.saving.set(false);
     }
   }
 
   retentionTypeLabel(type: string): string {
     if (type === 'default') return `Default (10 years — until ${this.defaultRetentionDate()})`;
+    if (type === 'custom') return 'Custom date';
     return 'Indefinite';
   }
 }

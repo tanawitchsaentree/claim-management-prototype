@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -10,10 +11,12 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { MockSectionService } from '../../../../../core/mock/services/mock-section.service';
+import { MockLookupService } from '../../../../../core/mock/services/mock-lookup.service';
 import { ClaimOverview } from '../../../../../core/models/claim-overview.model';
+import { LookupOption } from '../../../../../core/models/lookup.model';
 import { ClaimSection } from '../../../../../core/models/section.model';
 import { ReopenPayload } from '../../../../../core/models/claim-closure.model';
 import { SectionReopenReason } from '../../../../../core/models/section.model';
@@ -54,6 +57,10 @@ export class ClaimReopenModalComponent {
   private readonly fb         = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly sectionSvc = inject(MockSectionService);
+  private readonly lookupSvc  = inject(MockLookupService);
+  private readonly live       = inject(LiveAnnouncer);
+
+  readonly reserveTypes$: Observable<LookupOption[]> = this.lookupSvc.getReserveTypes();
 
   readonly reopenReasons: string[] = [
     'New evidence received',
@@ -73,8 +80,10 @@ export class ClaimReopenModalComponent {
   ];
 
   readonly form = this.fb.group({
-    reason: [null as string | null, Validators.required],
-    note:   [''],
+    reason:        [null as string | null, Validators.required],
+    note:          [''],
+    reserveType:   [null as string | null, Validators.required],
+    reserveAmount: [null as number | null, [Validators.required, Validators.min(1)]],
   });
 
   readonly step          = signal<Step>(1);
@@ -157,8 +166,8 @@ export class ClaimReopenModalComponent {
 
     const payload: ReopenPayload = {
       reason,
-      reserveAmount: 0,
-      reserveType:   'Initial reserve',
+      reserveAmount: v.reserveAmount!,
+      reserveType:   v.reserveType!,
       reopenedBy,
     };
 
@@ -174,6 +183,7 @@ export class ClaimReopenModalComponent {
       this.modalRef.close({ reopenedClaim: reopened, reopenedSectionIds: ids });
     } catch {
       this.saveError.set('Failed to reopen claim. Please try again.');
+      this.live.announce('Failed to reopen claim. Please try again.', 'assertive');
       this.saving.set(false);
     }
   }

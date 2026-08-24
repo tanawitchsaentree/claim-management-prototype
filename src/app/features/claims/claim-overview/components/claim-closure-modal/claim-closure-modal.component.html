@@ -7,12 +7,12 @@
 </div>
 
 <!-- ─── Body ──────────────────────────────────────────────────────────────── -->
-<div class="ccm-body">
+<div class="ccm-body" tabindex="0">
 
   <!-- STEP 1 — Expandable blocker cards -->
   @if (step() === 1) {
     <p class="ccm-intro">The following issues must be resolved before this claim can be closed:</p>
-    <div class="ccm-blocker-list">
+    <div class="ccm-blocker-list" data-tour-id="ccm-blocker-list">
       @for (b of blockers; track b.type + b.label; let i = $index) {
         @let blockerId = b.type + '-' + i;
         @let hasItems = b.items && b.items.length > 0;
@@ -30,6 +30,13 @@
               </nx-icon>
             }
           </div>
+          @if (b.link) {
+            <button nxPlainButton type="button" class="ccm-blocker-link"
+              [attr.data-tour-id]="b.type === 'litigation' ? 'ccm-go-to-litigation' : null"
+              (click)="goToBlocker(b.link)">
+              {{ b.linkLabel ?? 'Go to details' }}
+            </button>
+          }
           @if (hasItems && isExpanded(blockerId)) {
             <div class="ccm-blocker-items">
               @for (item of b.items; track item.id) {
@@ -63,7 +70,7 @@
   <!-- STEP 2 — Pre-closure checklist -->
   @if (step() === 2) {
     <p class="ccm-intro">System validation — all checks must pass before the claim can be closed:</p>
-    <ul class="ccm-checklist">
+    <ul class="ccm-checklist" data-tour-id="ccm-checklist">
       @for (item of checklistItems; track item.label) {
         <li class="ccm-check-item" [class.ccm-check-item--fail]="!item.passed">
           <nx-icon
@@ -98,7 +105,7 @@
     }
 
     <form [formGroup]="form" class="ccm-form">
-      <nx-formfield label="Closure reason">
+      <nx-formfield label="Closure reason" data-tour-id="ccm-reason-dropdown">
         <nx-dropdown formControlName="reason" placeholder="Select reason">
           @for (r of closureReasons; track r) {
             <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
@@ -110,14 +117,29 @@
 
     <p class="ccm-section-label">Document retention period</p>
     <form [formGroup]="form">
-      <nx-radio-group formControlName="retentionType">
+      <nx-radio-group formControlName="retentionType" data-tour-id="ccm-retention-group">
         <nx-radio labelSize="small" value="default">
           {{ retentionTypeLabel('default') }}
+        </nx-radio>
+        <nx-radio labelSize="small" value="custom">
+          Custom date
         </nx-radio>
         <nx-radio labelSize="small" value="indefinite">
           Indefinite
         </nx-radio>
       </nx-radio-group>
+
+      @if (form.value.retentionType === 'custom') {
+        <nx-formfield label="Retention date" data-tour-id="ccm-retention-custom-date">
+          <input nxDatefield nxInput formControlName="retentionDate" [datepicker]="retentionPicker" />
+          <nx-datepicker-toggle nxFormfieldSuffix [for]="retentionPicker"></nx-datepicker-toggle>
+          <nx-datepicker #retentionPicker></nx-datepicker>
+          <nx-hint nxFormfieldHint>Must extend beyond the default 10-year period ({{ defaultRetentionDate() }}).</nx-hint>
+          @if (retentionDateTooEarly()) {
+            <nx-error nxFormfieldError>Custom date must be after {{ defaultRetentionDate() }}.</nx-error>
+          }
+        </nx-formfield>
+      }
     </form>
 
   }
@@ -125,7 +147,7 @@
   <!-- STEP 4 — Post-checklist confirmation warning -->
   @if (step() === 4) {
     <p class="ccm-intro">Please confirm before closing:</p>
-    <ul class="ccm-confirm-list">
+    <ul class="ccm-confirm-list" data-tour-id="ccm-confirm-list">
       @for (statement of confirmationStatements; track statement) {
         <li class="ccm-confirm-item">{{ statement }}</li>
       }
@@ -157,14 +179,14 @@
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
     <button nxButton="primary small" type="button"
-      [disabled]="form.invalid" (click)="onContinueToConfirmation()">
+      [disabled]="form.invalid || retentionInvalid()" (click)="onContinueToConfirmation()">
       Continue
     </button>
   }
 
   @if (step() === 4) {
-    <button nxButton="secondary small" type="button" [disabled]="saving()" (click)="onDeclineConfirmation()">No</button>
-    <button nxButton="primary small" type="button"
+    <button nxButton="secondary small" type="button" data-tour-id="ccm-confirm-no" [disabled]="saving()" (click)="onDeclineConfirmation()">No</button>
+    <button nxButton="primary small" type="button" data-tour-id="ccm-confirm-yes"
       [disabled]="saving()" (click)="onCloseClaim()">
       @if (saving()) { <nx-spinner size="small"></nx-spinner> }
       @else { Yes — Close Claim }

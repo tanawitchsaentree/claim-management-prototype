@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -27,11 +28,13 @@ export class AttachmentPickerComponent implements OnInit {
   @Output() selectionChange = new EventEmitter<AttachmentSelection>();
 
   private readonly docsSvc = inject(MockClaimDocumentsService);
+  private readonly live    = inject(LiveAnnouncer);
 
   readonly documents = signal<ClaimDocument[]>([]);
   readonly selectedDocIds = signal<Set<string>>(new Set());
   readonly uploadedFiles = signal<File[]>([]);
   readonly fileError = signal<string | null>(null);
+  readonly fileErrorId = 'ap-error-' + Math.random().toString(36).slice(2, 9);
 
   async ngOnInit(): Promise<void> {
     const docs = await firstValueFrom(this.docsSvc.getByClaimId(this.claimId));
@@ -54,7 +57,9 @@ export class AttachmentPickerComponent implements OnInit {
     const files = Array.from(input.files ?? []);
     const tooBig = files.filter(f => f.size > MAX_FILE_SIZE);
     if (tooBig.length) {
-      this.fileError.set(`${tooBig.map(f => f.name).join(', ')} exceeds the 10 MB limit.`);
+      const msg = `${tooBig.map(f => f.name).join(', ')} exceeds the 10 MB limit.`;
+      this.fileError.set(msg);
+      this.live.announce(msg, 'assertive');
     } else {
       this.fileError.set(null);
     }

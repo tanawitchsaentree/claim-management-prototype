@@ -62,6 +62,9 @@ export class ClaimReferencePanelComponent {
   readonly searchQuery   = signal('');
   readonly searchResults = signal<Claim[]>([]);
   readonly searching     = signal(false);
+  // Keyboard highlight for the results listbox (aria-activedescendant pattern) —
+  // the container stays the single tab stop, arrow keys move this index.
+  readonly highlightedIndex = signal(0);
 
   constructor() {
     // Reload content whenever the active ref tab changes
@@ -110,6 +113,7 @@ export class ClaimReferencePanelComponent {
     if (next) {
       this.searchQuery.set('');
       this.searchResults.set([]);
+      this.highlightedIndex.set(0);
     }
   }
 
@@ -129,12 +133,31 @@ export class ClaimReferencePanelComponent {
     this.searchResults.set(
       results.filter(c => c.claimId !== primary && !open.has(c.claimId)).slice(0, 5)
     );
+    this.highlightedIndex.set(0);
     this.searching.set(false);
   }
 
   selectClaim(claim: Claim): void {
     this.svc.openRefTab(claim.claimId);
     this.closeSearch();
+  }
+
+  // Minimal keyboard support for the results listbox: arrows move the
+  // highlighted option, Enter/Space activates the same selectClaim() the
+  // click handler already uses.
+  onSearchListKeydown(event: KeyboardEvent): void {
+    const results = this.searchResults();
+    if (!results.length) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.highlightedIndex.set((this.highlightedIndex() + 1) % results.length);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.highlightedIndex.set((this.highlightedIndex() - 1 + results.length) % results.length);
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectClaim(results[this.highlightedIndex()]);
+    }
   }
 
   sectionsSummary(sections: ClaimSection[]): string {

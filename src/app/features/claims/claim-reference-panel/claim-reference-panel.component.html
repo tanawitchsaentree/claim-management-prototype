@@ -4,12 +4,15 @@
   <div class="ref-tabs">
     <div class="ref-tabs__scroll">
       @for (tab of svc.refTabs(); track tab.id) {
-        <button
+        <div
           class="ref-tab"
-          [class.ref-tab--active]="svc.activeRefTabId() === tab.id"
-          type="button"
-          (click)="selectTab(tab)">
-          <span class="ref-tab__label">{{ tab.claimId }}</span>
+          [class.ref-tab--active]="svc.activeRefTabId() === tab.id">
+          <button
+            class="ref-tab__select"
+            type="button"
+            (click)="selectTab(tab)">
+            <span class="ref-tab__label">{{ tab.claimId }}</span>
+          </button>
           <button
             class="ref-tab__close"
             type="button"
@@ -17,7 +20,7 @@
             (click)="closeTab(tab, $event)">
             <nx-icon name="close" size="s"></nx-icon>
           </button>
-        </button>
+        </div>
       }
     </div>
 
@@ -36,6 +39,7 @@
         <button
           class="ref-add-btn ref-add-btn--disabled"
           type="button"
+          aria-label="Add reference"
           [nxTooltip]="'Maximum ' + maxTabs + ' reference claims open'"
           nxTooltipPosition="left"
           disabled>
@@ -61,9 +65,16 @@
           } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
             <div class="ref-search-hint">No claims found</div>
           } @else if (searchResults().length > 0) {
-            <ul class="ref-search-list" role="listbox">
-              @for (c of searchResults(); track c.claimId) {
-                <li class="ref-search-item" role="option" (click)="selectClaim(c)">
+            <ul class="ref-search-list" role="listbox" tabindex="0"
+                [attr.aria-activedescendant]="'ref-search-opt-' + highlightedIndex()"
+                (keydown)="onSearchListKeydown($event)">
+              @for (c of searchResults(); track c.claimId; let i = $index) {
+                <li class="ref-search-item"
+                    [id]="'ref-search-opt-' + i"
+                    role="option"
+                    [attr.aria-selected]="i === highlightedIndex()"
+                    [class.ref-search-item--highlighted]="i === highlightedIndex()"
+                    (click)="selectClaim(c)">
                   <span class="ref-search-item__id">{{ c.claimId }}</span>
                   <span class="ref-search-item__client">{{ c.clientName }}</span>
                 </li>
@@ -108,7 +119,7 @@
       </a>
     </div>
 
-    <div class="ref-body">
+    <div class="ref-body" tabindex="0">
       <dl class="ref-fields">
         <dt>Status</dt>
         <dd><app-status-chip [status]="claim.status" domain="claim" /></dd>

@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="rpm-body">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="rpm-body" tabindex="0">
   <nx-radio-group formControlName="value" class="rpm-radio-group">
     <nx-radio value="yes" labelSize="small">Yes</nx-radio>
     <nx-radio value="no" labelSize="small">No</nx-radio>
