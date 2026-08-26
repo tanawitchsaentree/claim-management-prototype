@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, inject, computed } from '@angular/core';
+import { Component, OnInit, effect, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -21,6 +21,24 @@ export class ClaimDevBannerComponent implements OnInit {
   readonly refSvc  = inject(ReferenceViewService);
 
   readonly visible = true;
+
+  // User-collapsible, not a build/env gate — the banner still mounts and
+  // loads tickets exactly as before; this only hides its markup, and
+  // remembers the choice per-browser so it doesn't need re-hiding every
+  // reload. Deliberately separate from `enabled`/`isDevMode()` gating,
+  // which PROJECT.md rules out for security/parity reasons.
+  private static readonly COLLAPSE_KEY = 'dev-banner:collapsed';
+  readonly collapsed = signal(localStorage.getItem(ClaimDevBannerComponent.COLLAPSE_KEY) === '1');
+
+  hide(): void {
+    this.collapsed.set(true);
+    localStorage.setItem(ClaimDevBannerComponent.COLLAPSE_KEY, '1');
+  }
+
+  show(): void {
+    this.collapsed.set(false);
+    localStorage.removeItem(ClaimDevBannerComponent.COLLAPSE_KEY);
+  }
 
   // Reviewer split (tour-system audit, 2026-08-20): dev-only widgets
   // (Reset, reference-view variant picker) hide when devBannerMode is

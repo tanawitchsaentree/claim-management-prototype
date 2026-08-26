@@ -1,4 +1,9 @@
 @if (helper.shouldShowBanner()) {
+  @if (collapsed()) {
+    <button class="cdb-restore-btn" type="button" (click)="show()" aria-label="Show dev banner">
+      DEV
+    </button>
+  } @else {
   <div class="cdb-bar">
     <span class="cdb-badge">DEV</span>
 
@@ -89,5 +94,10 @@
         </nx-formfield>
       }
     }
+
+    <button class="cdb-hide-btn" type="button" (click)="hide()" aria-label="Hide dev banner">
+      ✕
+    </button>
   </div>
+  }
 }
