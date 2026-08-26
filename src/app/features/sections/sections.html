@@ -2,11 +2,11 @@
 <app-page-header title="Sections">
   @if (!hasDetailOpen()) {
     <ng-container actions>
-      <button class="btn-add-entity" nxButton="secondary small" type="button"
+      <button class="btn-add-section" nxButton="secondary small" type="button"
         [disabled]="claimClosed()"
         [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
-        (click)="onAddEntity()">
-        Add Entity
+        (click)="onAddSection()">
+        Add Section
       </button>
     </ng-container>
   }
@@ -21,7 +21,7 @@
       }
     </ul>
     <p class="sec-review-banner__reason">
-      Coverage depends on cause of loss and loss location, so the sections below may no longer reflect what's covered. Close any section that no longer applies using its Close action, then use Add Entity to create a new one for the updated cause.
+      Coverage depends on cause of loss and loss location, so the sections below may no longer reflect what's covered. Close any section that no longer applies using its Close action, then use Add Section to create a new one for the updated cause.
     </p>
   </nx-message>
 }

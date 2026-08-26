@@ -232,7 +232,7 @@ export class Sections {
     }
   }
 
-  async onAddEntity(): Promise<void> {
+  async onAddSection(): Promise<void> {
     const claimId = this.route.snapshot.params['id'];
     const ref = this.dialogSvc.open(AddSectionEntityModalComponent, {
       data: {
