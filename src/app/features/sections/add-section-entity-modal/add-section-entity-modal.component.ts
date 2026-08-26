@@ -1,37 +1,34 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
-import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxInputModule } from '@allianz/ng-aquila/input';
+import { NxDropdownModule, NxMultiSelectComponent } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { ClaimSection, InstructionStatus } from '../../../core/models/section.model';
+import { EntitySearchResult } from '../../../core/models/entity-damage.model';
 import { INSTRUCTION_STATUS_OPTIONS } from '../edit-entity-damage-modal/edit-entity-damage-modal.component';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
+import { MockEntitySearchService } from '../../../core/mock/services/mock-entity-search.service';
+import { DAMAGE_TYPE_TO_ENTITY_TYPES } from '../../fnol/config/entity-damage-mapping';
 
 export interface AddSectionEntityModalData {
   sections: ClaimSection[];
   claimId: string;
   policyNumber: string;
-  // Stage 8: opened from the "Add damage type" action — default the
-  // dropdown to a "create new section" option instead of an existing one.
-  // Same modal, same interaction as "Add Entity"; only the default differs.
-  preferNew?: boolean;
 }
 
 export type AddSectionEntityModalResult =
   | { mode: 'existing'; sectionId: string; instructionStatus: InstructionStatus; entityNames: string[] }
   | { mode: 'new'; damageType: string; instructionStatus: InstructionStatus; entityNames: string[] };
 
-const NEW_PREFIX = 'NEW:';
-
 @Component({
   selector: 'app-add-section-entity-modal',
   standalone: true,
   imports: [
     ReactiveFormsModule, NxModalModule, NxFormfieldModule,
-    NxDropdownModule, NxInputModule, NxButtonModule,
+    NxDropdownModule, NxMultiSelectComponent, NxButtonModule,
   ],
   templateUrl: './add-section-entity-modal.component.html',
   styleUrl: './add-section-entity-modal.component.scss',
@@ -39,70 +36,93 @@ const NEW_PREFIX = 'NEW:';
 export class AddSectionEntityModalComponent {
   readonly data     = inject<AddSectionEntityModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<AddSectionEntityModalComponent, AddSectionEntityModalResult>>(NxModalRef);
-  private readonly fb = inject(FormBuilder);
-  private readonly lookupSvc      = inject(MockLookupService);
+  private readonly fb        = inject(FormBuilder);
+  private readonly lookupSvc = inject(MockLookupService);
+  private readonly entitySvc = inject(MockEntitySearchService);
 
   readonly instructionStatusOptions = INSTRUCTION_STATUS_OPTIONS;
-  readonly openSections = this.data.sections.filter(s => s.status === 'Open');
+  readonly damageTypeOptions = this.lookupSvc.getTypeOfDamageSync();
 
-  // Damage types with no section on this claim yet — the only ones a new
-  // section can be created for (Section = Entity x DamageType; a type that
-  // already has a section gets entities added to it instead, not a
-  // duplicate section of the same type).
-  private readonly usedDamageTypes = new Set(this.data.sections.map(s => s.damageType));
-  readonly availableNewDamageTypes = this.lookupSvc.getTypeOfDamageSync()
-    .filter(o => !this.usedDamageTypes.has(o.value));
+  submitAttempted = false;
 
-  readonly targetOptions = [
-    ...this.openSections.map(s => ({ value: s.id, label: s.name })),
-    ...this.availableNewDamageTypes.map(o => ({ value: `${NEW_PREFIX}${o.value}`, label: `+ New section — ${o.label}` })),
-  ];
-
-  private readonly defaultTargetValue = (): string => {
-    if (this.data.preferNew && this.availableNewDamageTypes.length) {
-      return `${NEW_PREFIX}${this.availableNewDamageTypes[0].value}`;
-    }
-    return this.openSections[0]?.id ?? this.targetOptions[0]?.value ?? '';
-  };
+  readonly candidateEntities = signal<EntitySearchResult[]>([]);
+  readonly loadingCandidates = signal(false);
 
   readonly form = this.fb.group({
-    target:            [this.defaultTargetValue(), Validators.required],
-    entityName:        ['', Validators.required],
+    damageType:        ['', Validators.required],
+    entityIds:         [[] as string[]],
     instructionStatus: ['Not assigned' as InstructionStatus, Validators.required],
   });
 
-  private readonly targetSigRaw = toSignal(this.form.get('target')!.valueChanges, {
-    initialValue: this.form.value.target ?? '',
+  private readonly damageTypeSigRaw = toSignal(this.form.get('damageType')!.valueChanges, {
+    initialValue: this.form.value.damageType ?? '',
   });
-  readonly targetSig = computed(() => this.targetSigRaw() ?? '');
+  readonly damageTypeSig = computed(() => this.damageTypeSigRaw() ?? '');
 
-  readonly isNewSection = computed(() => this.targetSig().startsWith(NEW_PREFIX));
-
-  readonly damageTypeKey = computed(() => {
-    const value = this.targetSig();
-    if (value.startsWith(NEW_PREFIX)) return value.slice(NEW_PREFIX.length);
-    return this.openSections.find(s => s.id === value)?.damageType ?? '';
+  private readonly entityIdsSigRaw = toSignal(this.form.get('entityIds')!.valueChanges, {
+    initialValue: this.form.value.entityIds ?? [],
   });
+  readonly entityIdsSig = computed(() => this.entityIdsSigRaw() ?? []);
+  readonly hasAnySelection = computed(() => this.entityIdsSig().length > 0);
 
-  readonly damageTypeLabel = computed(() => {
-    const key = this.damageTypeKey();
-    if (!key) return '';
-    return this.lookupSvc.getTypeOfDamageSync().find(o => o.value === key)?.label ?? key;
-  });
+  readonly damageTypeLabel = computed(() =>
+    this.damageTypeOptions.find(o => o.value === this.damageTypeSig())?.label ?? '');
+
+  // A damage type routes to its existing OPEN section if one exists —
+  // otherwise (never had one, or only a closed one) it creates a new
+  // section. Closed sections are never reused as add-targets.
+  readonly isNewSection = computed(() =>
+    !this.data.sections.some(s => s.damageType === this.damageTypeSig() && s.status === 'Open'));
+
+  readonly entityOptions = computed(() =>
+    this.candidateEntities().map(e => ({ value: e.propertyId, label: e.locationName })));
+
+  constructor() {
+    effect(() => {
+      const key = this.damageTypeSig();
+      this.form.get('entityIds')!.setValue([], { emitEvent: false });
+      if (!key) {
+        this.candidateEntities.set([]);
+        return;
+      }
+      this.loadCandidatesFor(key);
+    });
+  }
+
+  private async loadCandidatesFor(damageTypeKey: string): Promise<void> {
+    this.loadingCandidates.set(true);
+    const entityTypes = DAMAGE_TYPE_TO_ENTITY_TYPES[damageTypeKey] ?? [];
+    try {
+      const results = await Promise.all(
+        entityTypes.map(type =>
+          firstValueFrom(this.entitySvc.search(this.data.policyNumber, type, {}))),
+      );
+      this.candidateEntities.set(results.flat());
+    } finally {
+      this.loadingCandidates.set(false);
+    }
+  }
 
   confirm(): void {
-    if (this.form.invalid) {
+    if (this.form.get('damageType')!.invalid || !this.hasAnySelection()) {
+      this.submitAttempted = true;
       this.form.markAllAsTouched();
       return;
     }
     const instructionStatus = this.form.value.instructionStatus as InstructionStatus;
-    const entityNames = [this.form.value.entityName!.trim()];
+    const selectedIds = new Set(this.entityIdsSig());
+    const entityNames = this.candidateEntities()
+      .filter(e => selectedIds.has(e.propertyId))
+      .map(e => e.locationName);
 
-    if (this.isNewSection()) {
-      this.modalRef.close({ mode: 'new', damageType: this.damageTypeKey(), instructionStatus, entityNames });
+    const damageType = this.damageTypeSig();
+    const existing = this.data.sections.find(s => s.damageType === damageType && s.status === 'Open');
+
+    if (existing) {
+      this.modalRef.close({ mode: 'existing', sectionId: existing.id, instructionStatus, entityNames });
       return;
     }
-    this.modalRef.close({ mode: 'existing', sectionId: this.targetSig(), instructionStatus, entityNames });
+    this.modalRef.close({ mode: 'new', damageType, instructionStatus, entityNames });
   }
 
   cancel(): void { this.modalRef.close(); }

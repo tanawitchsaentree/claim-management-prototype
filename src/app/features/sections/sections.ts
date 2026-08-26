@@ -233,24 +233,12 @@ export class Sections {
   }
 
   async onAddEntity(): Promise<void> {
-    await this.openAddSectionEntityModal({ preferNew: false });
-  }
-
-  // Stage 8: same modal, same interaction as "Add Entity" — defaults to a
-  // "create new section" target instead of an existing open section, so the
-  // damage type IS the primary choice as soon as the modal opens.
-  async onAddDamageType(): Promise<void> {
-    await this.openAddSectionEntityModal({ preferNew: true });
-  }
-
-  private async openAddSectionEntityModal(opts: { preferNew: boolean }): Promise<void> {
     const claimId = this.route.snapshot.params['id'];
     const ref = this.dialogSvc.open(AddSectionEntityModalComponent, {
       data: {
         sections:     this.sections(),
         claimId,
         policyNumber: this.policyNumber(),
-        preferNew:    opts.preferNew,
       } satisfies AddSectionEntityModalData,
       width: '480px',
       maxWidth: '92vw',

@@ -31,3 +31,9 @@
   border-radius: 4px;
   padding: 2px var(--space-xs);
 }
+
+.ase-entity-groups__error {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--paragraph-04-font-size);
+  color: var(--message-error-color);
+}
