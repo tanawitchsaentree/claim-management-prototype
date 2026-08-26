@@ -46,144 +46,17 @@
     <!-- Two-pane layout: list (left) + detail panel (right) -->
     @if (reserves.length > 0) {
       <div class="reserves-layout">
-        <div class="reserves-list" tabindex="0" [class.reserves-list--compact]="isSqueezed()">
-
-          <!-- View-mode segmented toggle (squeezed only) -->
-          @if (isSqueezed()) {
-            <div class="view-mode-toggle" role="tablist" aria-label="Section list scope">
-              <button class="vmt-btn"
-                      type="button"
-                      role="tab"
-                      [attr.aria-selected]="viewMode() === 'one'"
-                      [class.vmt-btn--active]="viewMode() === 'one'"
-                      (click)="setViewMode('one')">This policy</button>
-              <button class="vmt-btn"
-                      type="button"
-                      role="tab"
-                      [attr.aria-selected]="viewMode() === 'all-flat'"
-                      [class.vmt-btn--active]="viewMode() === 'all-flat'"
-                      (click)="setViewMode('all-flat')">All policies</button>
-              <button class="vmt-btn"
-                      type="button"
-                      role="tab"
-                      [attr.aria-selected]="viewMode() === 'all-grouped'"
-                      [class.vmt-btn--active]="viewMode() === 'all-grouped'"
-                      (click)="setViewMode('all-grouped')">By policy</button>
-            </div>
-          }
-
-          @if (isSqueezed() && viewMode() === 'all-grouped') {
-            @for (group of groupedRows(); track group.policyNumber) {
-              <div class="policy-group">
-                <header class="policy-group__header">{{ group.label }}</header>
-                <table nxTable class="reserves-table">
-                  <thead>
-                    <tr nxTableRow>
-                      <th nxHeaderCell class="col-section">Section no.</th>
-                      <th nxHeaderCell class="col-party">Party</th>
-                      <th nxHeaderCell class="col-damage">Damages</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (reserve of group.rows; track trackByReserve($index, reserve)) {
-                      <tr nxTableRow
-                          class="reserve-row"
-                          [class.reserve-row--selected]="isSelectedSection(reserve)"
-                          [class.reserve-row--cross-policy]="group.policyNumber !== policyNumber"
-                          (click)="selectSection(reserve)">
-                        <td nxCell class="col-section">{{ reserve.sectionNo }}</td>
-                        <td nxCell class="col-party">{{ reserve.partyName }}</td>
-                        <td nxCell class="col-damage">
-                          <span class="col-damage__inner">
-                            <span class="col-damage__text">{{ reserve.damageType }}</span>
-                            <nx-icon name="info-circle-o" size="s" class="col-damage__info"></nx-icon>
-                          </span>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
-            }
-          } @else {
-          <table nxTable class="reserves-table">
-            <thead>
-              <tr nxTableRow>
-                <th nxHeaderCell class="col-toggle"></th>
-                <th nxHeaderCell class="col-section">Section no.</th>
-                <th nxHeaderCell class="col-party">Party</th>
-                <th nxHeaderCell class="col-damage">Damages</th>
-                <th nxHeaderCell class="col-type col-hide-when-compact">Reserves type</th>
-                <th nxHeaderCell class="col-currency col-hide-when-compact">Currency</th>
-                <th nxHeaderCell class="col-amount col-hide-when-compact">Amount</th>
-                <th nxHeaderCell class="col-action col-hide-when-compact"></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (reserve of visibleRows(); track trackByReserve($index, reserve)) {
-                <tr nxTableRow
-                    class="reserve-row"
-                    [class.reserve-row--recently-added]="reserve.recentlyAdded"
-                    [class.reserve-row--selected]="isSelectedSection(reserve)"
-                    (click)="isSqueezed() ? selectSection(reserve) : null">
-                  <td nxCell class="col-toggle">
-                    @if (!isSqueezed()) {
-                      <button class="row-toggle"
-                              type="button"
-                              [attr.aria-label]="isExpanded(reserve.reserveId) ? 'Collapse' : 'Expand'"
-                              (click)="$event.stopPropagation(); toggleExpand(reserve.reserveId)">
-                        <nx-icon [name]="isExpanded(reserve.reserveId) ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
-                      </button>
-                    }
-                  </td>
-                  <td nxCell class="col-section">{{ reserve.sectionNo }}</td>
-                  <td nxCell class="col-party">{{ reserve.partyName }}</td>
-                  <td nxCell class="col-damage">
-                    <span class="col-damage__inner">
-                      <span class="col-damage__text">{{ reserve.damageType }}</span>
-                      <nx-icon name="info-circle-o" size="s" class="col-damage__info"></nx-icon>
-                    </span>
-                  </td>
-                  <td nxCell class="col-type col-hide-when-compact">{{ reserveTypeLabel(reserve.reserveType) }}</td>
-                  <td nxCell class="col-currency col-hide-when-compact">{{ reserve.currency }}</td>
-                  <td nxCell class="col-amount col-hide-when-compact">{{ reserve.amount | number:'1.2-2' }}</td>
-                  <td nxCell class="col-action col-hide-when-compact" (click)="$event.stopPropagation()">
-                    <button nxIconButton="tertiary small" type="button"
-                            [nxContextMenuTriggerFor]="rowMenu"
-                            [attr.aria-label]="'Actions for row ' + reserve.sectionNo">
-                      <nx-icon name="ellipsis-v"></nx-icon>
-                    </button>
-                    <nx-context-menu #rowMenu="nxContextMenu">
-                      <button nxContextMenuItem type="button" (click)="selectSection(reserve)">View details</button>
-                      <button nxContextMenuItem type="button" (click)="onEditReserve(reserve)">Edit</button>
-                      <button nxContextMenuItem type="button" (click)="onRemoveReserve(reserve)">Remove</button>
-                    </nx-context-menu>
-                  </td>
-                </tr>
-
-                @if (isExpanded(reserve.reserveId) && !isSqueezed()) {
-                  @for (sub of subTypes; track sub) {
-                    <tr nxTableRow class="reserve-subrow">
-                      <td nxCell class="col-toggle"></td>
-                      <td nxCell class="col-section"></td>
-                      <td nxCell class="col-party"></td>
-                      <td nxCell class="col-damage"></td>
-                      <td nxCell class="col-type">{{ typeLabels[sub] }}</td>
-                      <td nxCell class="col-currency">{{ reserve.currency }}</td>
-                      <td nxCell class="col-amount">{{ sectionSub(reserve, sub) | number:'1.0-0' }}</td>
-                      <td nxCell class="col-action" (click)="$event.stopPropagation()">
-                        <button nxIconButton="tertiary small" type="button" aria-label="Sub-row actions">
-                          <nx-icon name="ellipsis-v"></nx-icon>
-                        </button>
-                      </td>
-                    </tr>
-                  }
-                }
-              }
-            </tbody>
-          </table>
-          }
-        </div>
+        <app-reserve-list
+          [rows]="reserves"
+          [policyNumber]="policyNumber"
+          [allPolicies]="allPolicies()"
+          [isSqueezed]="isSqueezed()"
+          [selectedReserveId]="selectedSection()?.reserveId ?? null"
+          (selected)="selectSection($event)"
+          (editRequested)="onEditReserve($event)"
+          (removeRequested)="onRemoveReserve($event)"
+          (viewModeChanged)="onViewModeChanged($event)">
+        </app-reserve-list>
 
         @if (selectedSection(); as sel) {
           <aside class="reserves-detail"

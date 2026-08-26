@@ -23,6 +23,7 @@ import { WizardFooterComponent } from '../../../../shared/components/wizard-foot
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ReserveNarrativePanelComponent } from './components/reserve-narrative-panel/reserve-narrative-panel.component';
+import { ReserveListComponent, ReserveListViewMode } from './components/reserve-list/reserve-list.component';
 
 @Component({
   selector: 'app-step-reserves',
@@ -44,6 +45,7 @@ import { ReserveNarrativePanelComponent } from './components/reserve-narrative-p
     WizardFooterComponent,
     EmptyStateComponent,
     ReserveNarrativePanelComponent,
+    ReserveListComponent,
   ],
   templateUrl: './step-reserves.component.html',
   styleUrl: './step-reserves.component.scss',
@@ -92,10 +94,9 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   readonly data$      = new BehaviorSubject<ReservesPolicyData | null>(null);
   readonly typeLabels = RESERVE_TYPE_LABELS;
 
-  // Master/detail squeeze mode + expandable rows
+  // Master/detail squeeze mode
   readonly selectedSection = signal<Reserve | null>(null);
   readonly isSqueezed = computed(() => !!this.selectedSection());
-  readonly expandedRows = signal<Set<string>>(new Set());
 
   // Edit state — drives the "Save & back" vs "Back to list" label and the
   // "Saved Xs ago" indicator on the right-panel header.
@@ -118,10 +119,11 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
   private savedAgoTimer: ReturnType<typeof setInterval> | null = null;
 
-  // List view mode (only meaningful while squeezed)
-  readonly viewMode = signal<'one' | 'all-flat' | 'all-grouped'>('one');
-  async setViewMode(m: 'one' | 'all-flat' | 'all-grouped'): Promise<void> {
-    this.viewMode.set(m);
+  // Reacts to the reserve-list's view-mode toggle: lazily fetch all-policy
+  // data the first time the user leaves "This policy" — allPolicies is
+  // owned here (not by the list) because isCrossPolicy/policyForReserve
+  // below need it too.
+  async onViewModeChanged(m: ReserveListViewMode): Promise<void> {
     if (m !== 'one' && this.allPolicies().length === 0) {
       const all = await firstValueFrom(this.reservesSvc.getReservesForAllPolicies());
       this.allPolicies.set(all);
@@ -154,24 +156,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     const seed = this.reservesSvc.policySeeds().find(s => s.policyNumber === policyNumber);
     return seed?.policyLabel ?? policyNumber;
   }
-
-  // Rows visible in the left list (depends on viewMode + squeeze state).
-  readonly visibleRows = computed<Reserve[]>(() => {
-    if (!this.isSqueezed() || this.viewMode() === 'one') {
-      return this.data$.value?.reserves ?? [];
-    }
-    return this.allPolicies().flatMap(p => p.reserves);
-  });
-
-  // Grouped rows for the all-grouped mode.
-  readonly groupedRows = computed<Array<{ policyNumber: string; label: string; rows: Reserve[] }>>(() => {
-    if (!(this.isSqueezed() && this.viewMode() === 'all-grouped')) return [];
-    return this.allPolicies().map(p => ({
-      policyNumber: p.policyNumber,
-      label: this.policyLabel(p.policyNumber),
-      rows: p.reserves,
-    }));
-  });
 
   readonly subTypes: ReserveType[] = ['indemnity', 'expenses', 'recoveries'];
 
@@ -277,19 +261,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   readonly coInsuranceOptions: CoInsuranceFlag[] = ['RI', 'CO', 'NONE'];
   readonly subTypeOptions = ['Lorem ipsum', 'Direct loss', 'Consequential', 'Salvage'];
 
-  toggleExpand(reserveId: string): void {
-    this.expandedRows.update(set => {
-      const next = new Set(set);
-      if (next.has(reserveId)) next.delete(reserveId);
-      else next.add(reserveId);
-      return next;
-    });
-  }
-
-  isExpanded(reserveId: string): boolean {
-    return this.expandedRows().has(reserveId);
-  }
-
   async selectSection(reserve: Reserve): Promise<void> {
     // Persist any in-flight edits to the previously selected section before
     // switching away (prevents data loss when clicking a different row).
@@ -298,7 +269,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     }
     // Deep-clone so panel edits don't mutate the cached row until persisted.
     this.selectedSection.set(structuredClone(reserve));
-    this.expandedRows.set(new Set());            // collapse all in squeezed mode
     this.isDirty.set(false);
     this.lastSavedAt.set(null);
     this.startSavedAgoTicker();
@@ -351,10 +321,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     this.isDirty.set(false);
   }
 
-  isSelectedSection(reserve: Reserve): boolean {
-    return this.selectedSection()?.reserveId === reserve.reserveId;
-  }
-
   // Section summary helpers (right panel)
   sectionTotal(reserve: Reserve | null): number {
     if (!reserve) return 0;
@@ -389,12 +355,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     this.unlockBodyScroll();
     this.stopSavedAgoTicker();
   }
-
-  reserveTypeLabel(type?: ReserveType): string {
-    return type ? RESERVE_TYPE_LABELS[type] : '—';
-  }
-
-  trackByReserve(_: number, r: Reserve): string { return r.reserveId; }
 
   // ── Add reserve ─────────────────────────────────────────────────────────────
 

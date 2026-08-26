@@ -1,0 +1,165 @@
+.reserves-list {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+// Compact list = fixed width that fits all 3 columns + ⓘ comfortably.
+// 80px (No.) + 160px (Party) + 200px (Damages incl. ⓘ) + cell padding = ~480px.
+.reserves-list--compact {
+  flex: 0 0 480px;
+  width: 480px;
+  overflow-x: hidden;
+
+  @media (max-width: 1024px) {
+    flex: 0 0 320px;
+    width: 320px;
+  }
+
+  @media (max-width: 720px) {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
+
+// Table
+.reserves-table {
+  width: 100%;
+
+  .col-toggle   { width: 40px; }
+  .col-section  { width: 100px; }
+  .col-party    { min-width: 160px; }
+  .col-damage   { width: 200px; min-width: 200px; }
+  .col-type     { min-width: 120px; }
+  .col-currency { width: 90px; }
+  .col-amount   { width: 110px; text-align: right; }
+  .col-action   { width: 52px; text-align: right; }
+}
+
+// Compact mode: hide non-essential columns
+.reserves-list--compact .col-hide-when-compact { display: none; }
+
+// In compact mode, give the visible columns enough room.
+.reserves-list--compact {
+  .col-toggle  { display: none; }
+  .col-section { width: 80px;  min-width: 80px; }
+  .col-party   { width: 160px; min-width: 160px; }
+  .col-damage  { width: 200px; min-width: 200px; }
+}
+
+// At narrow breakpoint reduce column widths to fit 320px list
+@media (max-width: 1024px) {
+  .reserves-list--compact {
+    .col-section { width: 60px;  min-width: 60px; }
+    .col-party   { width: 120px; min-width: 120px; }
+    .col-damage  { width: 140px; min-width: 140px; }
+  }
+}
+
+// At stacked breakpoint reset all columns to natural widths
+@media (max-width: 720px) {
+  .reserves-list--compact {
+    .col-section { width: auto; min-width: 60px; }
+    .col-party   { width: auto; min-width: 100px; }
+    .col-damage  { width: auto; min-width: 120px; }
+  }
+}
+
+// Damage cell: text fills cell width, icon pinned to right edge so icons
+// align vertically across rows. Flex on an inner block (not on <td>) so
+// NDBX's table-cell display stays intact.
+.col-damage__inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.col-damage__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.col-damage__info {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--interactive-primary);
+}
+
+.row-toggle {
+  background: none;
+  border: none;
+  padding: var(--space-xs);
+  cursor: pointer;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover { color: var(--text-01); }
+}
+
+.reserve-row {
+  cursor: pointer;
+
+  &:hover td { background: var(--claim-overlay-hover); }
+
+  &--recently-added td { background: var(--task-status-open-bg); }
+
+  &--selected td { background: var(--claim-overlay-hover); }
+}
+
+.reserve-subrow td {
+  background: var(--ui-02);
+  font-size: var(--paragraph-04-font-size);
+}
+
+// ─── View-mode segmented toggle (squeezed) ───────────────────────────────
+.view-mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.vmt-btn {
+  background: var(--ui-01);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  cursor: pointer;
+  border-right: 1px solid var(--ui-04);
+
+  &:last-child { border-right: none; }
+  &:hover { background: var(--claim-overlay-hover); color: var(--text-01); }
+
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--negative);
+  }
+}
+
+// ─── Policy group (all-grouped mode) ─────────────────────────────────────
+.policy-group + .policy-group { margin-top: 16px; }
+
+.policy-group__header {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+// Subdued style for sections from other policies
+.reserve-row--cross-policy {
+  td { color: var(--text-muted); }
+  &:hover td { background: var(--ui-02); }
+}
