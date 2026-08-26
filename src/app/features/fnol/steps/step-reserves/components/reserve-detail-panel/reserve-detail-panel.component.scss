@@ -1,0 +1,265 @@
+// Detail panel (right pane on squeezed). Min-width keeps content readable
+// even when viewport is narrow — list can scroll horizontally if needed.
+.reserves-detail {
+  flex: 1 1 0;
+  min-width: 320px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-lg) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: 720px) {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.reserves-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.reserves-detail__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.reserves-detail__save-state {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.reserves-detail__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+  margin-top: 16px;
+}
+
+.reserves-detail__summary {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-base) var(--space-lg);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px 24px;
+}
+
+.summary-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.summary-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.reserves-detail__placeholder {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────
+.detail-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.detail-tab {
+  background: none;
+  border: none;
+  padding: var(--space-sm) 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 400;
+  color: var(--text-01);
+  cursor: pointer;
+  position: relative;
+
+  &:hover { color: var(--interactive-primary); }
+
+  &--active {
+    color: var(--interactive-primary);
+    font-weight: 600;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 3px;
+      background: var(--interactive-primary);
+    }
+  }
+}
+
+.detail-toggle-row {
+  display: flex;
+  align-items: center;
+}
+
+// ─── Damaged-item cards ───────────────────────────────────────────────────
+.damaged-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.damaged-item {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-base) var(--space-lg);
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+
+  &--expanded {
+    box-shadow: 0 1px 4px var(--claim-overlay-shadow);
+  }
+}
+
+.damaged-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.damaged-item__title {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.damaged-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.damaged-item__toggle {
+  background: none;
+  border: none;
+  padding: var(--space-xs);
+  cursor: pointer;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease;
+
+  &:hover { color: var(--text-01); }
+}
+
+.damaged-item__amount {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.damaged-item__amount-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.damaged-item__amount-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.damaged-item__body {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.damaged-item__add-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ─── Sub-table inside expanded damaged-item ───────────────────────────────
+.sub-table {
+  width: 100%;
+
+  th, td { padding-top: 8px; padding-bottom: 8px; }
+
+  .sub-col-type     { min-width: 160px; }
+  .sub-col-currency { width: 100px; }
+  .sub-col-amount   { width: 140px; text-align: right; }
+  .sub-col-coins    { width: 130px; }
+  .sub-col-action   { width: 56px; text-align: right; }
+}
+
+.sub-row td { vertical-align: middle; }
+
+// ─── Read-only detail (cross-policy) ─────────────────────────────────────
+.reserves-detail--readonly {
+  background: var(--ui-02);
+  border-color: var(--ui-04);
+}
+
+.reserves-detail__lock {
+  color: var(--text-muted);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.reserves-detail__readonly-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--space-md) var(--space-base);
+  background: var(--claim-status-in-progress-bg);
+  color: var(--claim-status-in-progress-color);
+  border-radius: 4px;
+  font-size: var(--paragraph-04-font-size);
+
+  strong { font-weight: 600; }
+}
+
+// Disable interactive controls when read-only
+.reserves-detail--readonly {
+  .sub-field ::ng-deep .nx-formfield__wrapper { pointer-events: none; opacity: 0.6; }
+  .damaged-item__toggle,
+  .damaged-item__actions { pointer-events: none; opacity: 0.5; }
+}
+
+.sub-field {
+  margin-bottom: 0 !important;
+
+  ::ng-deep .nx-formfield__wrapper {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  ::ng-deep .nx-formfield__label { display: none !important; }
+  ::ng-deep .nx-formfield-hint__wrapper { display: none !important; }
+}

@@ -1,22 +1,14 @@
 import { Component, inject, OnDestroy, OnInit, computed, signal } from '@angular/core';
-import { animate, style, transition, trigger, query, stagger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
-import { NxInputModule } from '@allianz/ng-aquila/input';
-import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
-import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
-import { NxTabsModule } from '@allianz/ng-aquila/tabs';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
-import { Reserve, ReserveNarrative, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, DamagedItem, SubReserve, CoInsuranceFlag } from '../../../../core/models/reserve.model';
+import { Reserve, ReserveNarrative, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, SubReserve } from '../../../../core/models/reserve.model';
 import { AddReserveModalComponent, AddReserveResult } from '../../components/add-reserve-modal/add-reserve-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
@@ -24,6 +16,7 @@ import { ToastService } from '../../../../shared/components/toast/toast.service'
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ReserveNarrativePanelComponent } from './components/reserve-narrative-panel/reserve-narrative-panel.component';
 import { ReserveListComponent, ReserveListViewMode } from './components/reserve-list/reserve-list.component';
+import { ReserveDetailPanelComponent, SectionMutation } from './components/reserve-detail-panel/reserve-detail-panel.component';
 
 @Component({
   selector: 'app-step-reserves',
@@ -32,57 +25,17 @@ import { ReserveListComponent, ReserveListViewMode } from './components/reserve-
     CommonModule,
     NxButtonModule,
     NxIconModule,
-    NxTableModule,
     NxMessageModule,
-    NxFormfieldModule,
-    NxInputModule,
-    NxDropdownModule,
-    NxContextMenuModule,
     NxModalModule,
-    NxSwitcherModule,
-    NxTabsModule,
     ConfirmDialogComponent,
     WizardFooterComponent,
     EmptyStateComponent,
     ReserveNarrativePanelComponent,
     ReserveListComponent,
+    ReserveDetailPanelComponent,
   ],
   templateUrl: './step-reserves.component.html',
   styleUrl: './step-reserves.component.scss',
-  animations: [
-    trigger('detailSlide', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateX(24px)' }),
-        animate('220ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, transform: 'translateX(0)' })),
-      ]),
-      transition(':leave', [
-        animate('180ms ease-in',
-          style({ opacity: 0, transform: 'translateX(24px)' })),
-      ]),
-    ]),
-    trigger('itemExpand', [
-      transition(':enter', [
-        style({ opacity: 0, height: 0, overflow: 'hidden' }),
-        animate('200ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, height: '*' })),
-      ]),
-      transition(':leave', [
-        style({ overflow: 'hidden' }),
-        animate('160ms ease-in',
-          style({ opacity: 0, height: 0 })),
-      ]),
-    ]),
-    trigger('rowFade', [
-      transition('* => *', [
-        query(':enter', [
-          style({ opacity: 0, transform: 'translateY(-4px)' }),
-          stagger('40ms', animate('180ms ease-out',
-            style({ opacity: 1, transform: 'translateY(0)' }))),
-        ], { optional: true }),
-      ]),
-    ]),
-  ],
 })
 export class StepReservesComponent implements OnInit, OnDestroy {
   private readonly reservesSvc  = inject(MockReservesService);
@@ -152,114 +105,15 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  policyLabel(policyNumber: string): string {
-    const seed = this.reservesSvc.policySeeds().find(s => s.policyNumber === policyNumber);
-    return seed?.policyLabel ?? policyNumber;
+  // Set right before selectSection() when a newly-added reserve should open
+  // with a specific tab active (see onAddReserve below); the detail panel
+  // owns activeTab itself and only seeds from this on a real change.
+  pendingActiveTab: ReserveType | null = null;
+
+  onSectionMutated({ reserve, markDirty }: SectionMutation): void {
+    this.selectedSection.set(reserve);
+    if (markDirty) this.isDirty.set(true);
   }
-
-  readonly subTypes: ReserveType[] = ['indemnity', 'expenses', 'recoveries'];
-
-  // Right-panel state (tabs + per-item-level toggle)
-  readonly activeTab = signal<ReserveType>('indemnity');
-  setActiveTab(t: ReserveType): void { this.activeTab.set(t); }
-
-  readonly damagedItemLevel = signal<boolean>(true);
-  toggleDamagedItemLevel(): void { this.damagedItemLevel.update(v => !v); }
-
-  expandItem(itemId: string, value: boolean): void {
-    const sel = this.selectedSection();
-    if (!sel?.damagedItems) return;
-    sel.damagedItems = sel.damagedItems.map(it =>
-      it.damagedItemId === itemId ? { ...it, expanded: value } : it,
-    );
-    this.selectedSection.set({ ...sel });
-  }
-
-  toggleItem(itemId: string): void {
-    const sel = this.selectedSection();
-    const cur = sel?.damagedItems?.find(it => it.damagedItemId === itemId);
-    this.expandItem(itemId, !cur?.expanded);
-  }
-
-  trackByItem(_: number, item: DamagedItem): string { return item.damagedItemId; }
-  trackBySub(_: number, sub: SubReserve): string { return sub.subReserveId; }
-
-  itemAmount(item: DamagedItem, type: ReserveType): number {
-    return (item.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0);
-  }
-
-  // ── Sub-reserve add/edit/remove (in right panel) ────────────────────────────
-
-  onAddSubReserve(item: DamagedItem): void {
-    if (this.isCrossPolicy()) return;
-    const sel = this.selectedSection();
-    if (!sel?.damagedItems) return;
-    const tab = this.activeTab();
-    const list = item.subReserves[tab] ?? [];
-    const next: SubReserve = {
-      subReserveId: `${item.damagedItemId}-${tab}-${list.length + 1}-${Date.now()}`,
-      subType: 'Lorem ipsum',
-      currency: sel.currency,
-      amount: 0,
-      coInsurance: 'RI',
-    };
-    item.subReserves = { ...item.subReserves, [tab]: [...list, next] };
-    sel.damagedItems = sel.damagedItems.map(it =>
-      it.damagedItemId === item.damagedItemId ? { ...item } : it,
-    );
-    this.recomputeSectionTotals(sel);
-    this.selectedSection.set({ ...sel });
-    this.isDirty.set(true);
-  }
-
-  onUpdateSub(item: DamagedItem, sub: SubReserve, patch: Partial<SubReserve>): void {
-    if (this.isCrossPolicy()) return;
-    const sel = this.selectedSection();
-    if (!sel?.damagedItems) return;
-    const tab = this.activeTab();
-    const list = (item.subReserves[tab] ?? []).map(s =>
-      s.subReserveId === sub.subReserveId ? { ...s, ...patch } : s,
-    );
-    item.subReserves = { ...item.subReserves, [tab]: list };
-    sel.damagedItems = sel.damagedItems.map(it =>
-      it.damagedItemId === item.damagedItemId ? { ...item } : it,
-    );
-    this.recomputeSectionTotals(sel);
-    this.selectedSection.set({ ...sel });
-    this.isDirty.set(true);
-  }
-
-  onRemoveSub(item: DamagedItem, sub: SubReserve): void {
-    if (this.isCrossPolicy()) return;
-    const sel = this.selectedSection();
-    if (!sel?.damagedItems) return;
-    const tab = this.activeTab();
-    const list = (item.subReserves[tab] ?? []).filter(s => s.subReserveId !== sub.subReserveId);
-    item.subReserves = { ...item.subReserves, [tab]: list };
-    sel.damagedItems = sel.damagedItems.map(it =>
-      it.damagedItemId === item.damagedItemId ? { ...item } : it,
-    );
-    this.recomputeSectionTotals(sel);
-    this.selectedSection.set({ ...sel });
-    this.isDirty.set(true);
-  }
-
-  private recomputeSectionTotals(sel: Reserve): void {
-    const total = (type: ReserveType): number =>
-      (sel.damagedItems ?? []).reduce(
-        (sum, it) => sum + (it.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0),
-        0,
-      );
-    sel.subAmounts = {
-      indemnity:  total('indemnity'),
-      expenses:   total('expenses'),
-      recoveries: total('recoveries'),
-    };
-    sel.amount = (sel.subAmounts.indemnity ?? 0) + (sel.subAmounts.expenses ?? 0) + (sel.subAmounts.recoveries ?? 0);
-  }
-
-  readonly coInsuranceOptions: CoInsuranceFlag[] = ['RI', 'CO', 'NONE'];
-  readonly subTypeOptions = ['Lorem ipsum', 'Direct loss', 'Consequential', 'Salvage'];
 
   async selectSection(reserve: Reserve): Promise<void> {
     // Persist any in-flight edits to the previously selected section before
@@ -319,17 +173,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     await this.loadReserves();
     this.lastSavedAt.set(new Date());
     this.isDirty.set(false);
-  }
-
-  // Section summary helpers (right panel)
-  sectionTotal(reserve: Reserve | null): number {
-    if (!reserve) return 0;
-    const s = reserve.subAmounts ?? {};
-    return (s.indemnity ?? 0) + (s.expenses ?? 0) + (s.recoveries ?? 0);
-  }
-
-  sectionSub(reserve: Reserve | null, type: ReserveType): number {
-    return reserve?.subAmounts?.[type] ?? 0;
   }
 
   get policyNumber(): string { return this.fnolState.selectedPolicy?.policyNumber ?? ''; }
@@ -417,11 +260,25 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     // Open squeezed mode + auto-select the just-added section + switch tab
     const refreshed = this.reserves.find(r => r.reserveId === sectionClone.reserveId);
     if (refreshed) {
-      this.activeTab.set(tab);
+      this.pendingActiveTab = tab;
       await this.selectSection(refreshed);
     }
 
     this.toast.success('Reserve added', `Added to ${this.typeLabels[tab].toLowerCase()} reserves.`);
+  }
+
+  private recomputeSectionTotals(sel: Reserve): void {
+    const total = (type: ReserveType): number =>
+      (sel.damagedItems ?? []).reduce(
+        (sum, it) => sum + (it.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0),
+        0,
+      );
+    sel.subAmounts = {
+      indemnity:  total('indemnity'),
+      expenses:   total('expenses'),
+      recoveries: total('recoveries'),
+    };
+    sel.amount = (sel.subAmounts.indemnity ?? 0) + (sel.subAmounts.expenses ?? 0) + (sel.subAmounts.recoveries ?? 0);
   }
 
   // ── Kebab actions ────────────────────────────────────────────────────────────
