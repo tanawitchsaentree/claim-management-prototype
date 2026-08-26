@@ -1,5 +1,4 @@
 // ─── Variables ───────────────────────────────────────────────────
-$header-height:  64px;
 $right-panel-w:  360px;
 // SCSS vars below are aliases for NDBX/project tokens — kept for
 // legacy scss var references within this file. Cleanup tracked in VIOLATIONS.md.
@@ -31,249 +30,10 @@ $sp-2xl:  32px;
 
 }
 
-// ─── Top header ──────────────────────────────────────────────────
-.top-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: $header-height;
-  background: var(--ui-01);
-  border-bottom: 1px solid $border-color;
-  flex-shrink: 0;
-  z-index: 100;
-  padding: var(--space-md) var(--space-2xl) var(--space-md);
-}
-
-.header-first-slot {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  height: 40px;
-}
-
-.header-logo { flex-shrink: 0; }
-
-.header-brand-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.header-title-divider {
-  width: 1px;
-  height: 40px;
-  background: $border-color;
-  flex-shrink: 0;
-}
-
-.header-app-title {
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
-  color: $text-main;
-  white-space: nowrap;
-  padding-right: 32px;
-}
-
-.top-nav {
-  display: flex;
-  align-items: flex-end;
-  height: 40px;
-  gap: 32px;
-}
-
-.nav-tab {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding: 0;
-  height: 28px;
-  background: none;
-  border: none;
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 400;
-  color: $text-main;
-  cursor: pointer;
-  white-space: nowrap;
-  position: relative;
-  transition: color 0.12s;
-  text-decoration: none;
-
-  &:hover { color: $blue-active; }
-
-  &--active {
-    color: $blue-active;
-    font-weight: 700;
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 4px;
-      background: $blue-active;
-    }
-  }
-
-  &--disabled {
-    color: $text-muted;
-    cursor: not-allowed;
-    &:hover { color: $text-muted; }
-  }
-}
-
-.header-last-slot {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  flex-shrink: 0;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  padding-left: 24px;
-  gap: 8px;
-}
-
-.search-wrapper {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--ui-05);
-  border-radius: 4px;
-  overflow: hidden;
-  height: 40px;
-  width: 352px;
-}
-
-.search-input {
-  border: none;
-  outline: none;
-  padding: 0 16px;
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 300;
-  color: $text-main;
-  flex: 1;
-  background: var(--ui-01);
-  height: 100%;
-  &::placeholder { color: var(--ui-05); }
-}
-
-.search-btn {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  background: $blue-active !important;
-  border: none !important;
-  border-radius: 4px !important;
-  margin: var(--space-xs) var(--space-xs) var(--space-xs) 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  nx-icon { color: var(--negative) !important; font-size: 16px !important; }
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  background: var(--avatar-bg);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--negative);
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 24px;
-  letter-spacing: 0.2px;
-}
-
 // ─── Responsive (≤1024px = iPad portrait, smaller tablets, phones) ──
 $header-bp: 1024px;
 
-.mobile-only { display: none; }
-.desktop-only { display: flex; }
-
-.header-icon-btn { margin-left: 4px; }
-
-.mobile-search-row {
-  padding: var(--space-sm) var(--space-2xl) var(--space-md);
-  background: var(--ui-01);
-  border-bottom: 1px solid $border-color;
-  flex-shrink: 0;
-
-  .search-wrapper { width: 100%; }
-}
-
-.mobile-menu {
-  position: absolute;
-  top: $header-height;
-  right: 0;
-  width: 280px;
-  max-width: 100vw;
-  background: var(--ui-01);
-  border-left: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
-  box-shadow: -4px 4px 16px var(--claim-overlay-shadow);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-sm) 0;
-}
-
-.mobile-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: var(--space-md) var(--space-lg);
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: var(--paragraph-02-font-size);
-  color: var(--text-01);
-  cursor: pointer;
-
-  &:hover { background: var(--claim-overlay-hover); }
-}
-
-.mobile-menu-icon {
-  font-size: var(--icon-size-s);
-  color: var(--text-muted);
-}
-
-.mobile-menu-divider {
-  height: 1px;
-  background: $border-color;
-  margin: var(--space-sm) 0;
-}
-
-.mobile-menu-user {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: var(--space-md) var(--space-lg);
-
-  .user-avatar { margin-left: 0; }
-}
-
-.mobile-menu-username {
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-01);
-}
-
 @media (max-width: $header-bp) {
-  .top-header { padding: var(--space-md) var(--space-lg) var(--space-md); }
-  .top-nav { display: none; }
-  .header-title-divider { display: none; }
-  .header-app-title { padding-right: 16px; }
-  .desktop-only { display: none !important; }
-  .mobile-only { display: flex; }
-
   // ── Page shell: allow full-page scroll on mobile ────────────────
   .page-shell {
     height: auto;
@@ -853,12 +613,21 @@ $header-bp: 1024px;
 // ─── KCM scope selector ───────────────────────────────────────────
 .scope-tabs {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: $sp-xs;   // 4px between pills
   padding: 0 $sp-xl $sp-md;   // 0 24 12 — aligns with card inset
 
-  &--secondary {
-    padding-top: 0;
-    .scope-tab { font-size: var(--paragraph-04-font-size); padding: 2px $sp-md; }
+  // Set-once-per-session filters (scope, date range) — text-weight, no pill fill, so they
+  // read as secondary context and don't visually compete with the status pills below.
+  &--meta {
+    padding-bottom: $sp-sm;
+    gap: 2px;
+  }
+
+  &__sep {
+    color: $border-color;
+    padding: 0 2px;
   }
 }
 
@@ -870,9 +639,24 @@ $header-bp: 1024px;
   background: var(--ui-01);
   color: $text-muted;
   cursor: pointer;
-  transition: background .12s, border-color .12s;
+  transition: background .12s, border-color .12s, color .12s;
   &:hover { background: var(--ui-02); }
   &--active { background: var(--interactive-primary); color: #fff; border-color: var(--interactive-primary); }
+
+  &--meta {
+    padding: 2px 6px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    &:hover { background: var(--ui-02); }
+
+    &.scope-tab--active {
+      background: none;
+      border-color: transparent;
+      color: var(--interactive-primary);
+      font-weight: 600;
+    }
+  }
 }
 
 // ─── Dormant / "You" nx-badge sizing ─────────────────────────────

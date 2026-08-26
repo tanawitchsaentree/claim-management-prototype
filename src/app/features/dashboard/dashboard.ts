@@ -66,10 +66,6 @@ export class Dashboard {
   readonly auth       = inject(AuthService);
   private router      = inject(Router);
 
-  // ── Header state ─────────────────────────────────────────────────────
-  readonly mobileMenuOpen   = signal(false);
-  readonly mobileSearchOpen = signal(false);
-
   // ── Toggle state ─────────────────────────────────────────────────────
   readonly showMyTasksOnly     = signal(false);
   readonly showMyApprovalsOnly = signal(false);
@@ -239,11 +235,6 @@ export class Dashboard {
   daysSinceUpdate(dateUpdated: string): number {
     return Math.floor((Date.now() - new Date(dateUpdated).getTime()) / 86400000);
   }
-
-  // ── Mobile header ─────────────────────────────────────────────────────
-  toggleMobileMenu():  void { this.mobileMenuOpen.update(v => !v); if (this.mobileMenuOpen()) this.mobileSearchOpen.set(false); }
-  toggleMobileSearch():void { this.mobileSearchOpen.update(v => !v); if (this.mobileSearchOpen()) this.mobileMenuOpen.set(false); }
-  closeMobileMenu():   void { this.mobileMenuOpen.set(false); }
 
   setPortfolioTab(tab: 'claims' | 'loss-events'): void { this.portfolioTab = tab; }
   setApprovalsTab(tab: 'reserves' | 'payments'): void { this.approvalsTab.set(tab); }
