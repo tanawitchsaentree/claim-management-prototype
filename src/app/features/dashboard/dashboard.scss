@@ -394,15 +394,6 @@ $header-bp: 1024px;
   font-weight: 400;
 }
 
-// ─── Approvals widget — action column divider ────────────────────
-.widget-card--approvals .dash-table {
-  ::ng-deep .nx-header-cell:last-child,
-  ::ng-deep .nx-table-cell:last-child {
-    border-left: 1px solid $border-color;
-    text-align: center;
-  }
-}
-
 // ─── Approval action btn ──────────────────────────────────────────
 .approval-action-btn {
   background: none;

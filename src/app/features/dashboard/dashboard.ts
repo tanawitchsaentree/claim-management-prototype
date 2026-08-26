@@ -8,18 +8,15 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
-import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { NxTableModule } from '@allianz/ng-aquila/table';
-import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
-import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.directive';
 import { MockTaskService } from '../../core/mock/services/mock-task.service';
 import { MockClaimService } from '../../core/mock/services/mock-claim.service';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
 import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
 import { AuthService } from '../../core/services/auth';
-import { Claim, ClaimStats, DashboardVM, QuickLink, Task, UrgentApproval, ReserveMovement, LossEventSummary, PaymentApproval } from '../../core/models';
+import { Claim, ClaimStats, DashboardVM, QuickLink, Task, ReserveMovement, LossEventSummary, PaymentApproval } from '../../core/models';
 
 import { Navbar } from '../layout/navbar/navbar';
 
@@ -31,6 +28,7 @@ import { CalendarWidgetComponent } from './widgets/calendar-widget';
 import { NewsPanelComponent } from './widgets/news-panel';
 import { ExpenseBreakdownComponent } from './widgets/expense-breakdown';
 import { ClaimsPortfolioWidgetComponent, ClaimsDateRange } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
+import { RecentApprovalsWidgetComponent } from './widgets/recent-approvals-widget/recent-approvals-widget.component';
 
 const QUICK_LINKS: QuickLink[] = [
   { label: 'AGCS Corporate Rules Book', url: 'https://www.allianz.com/en/about-us/strategy-values/business-model.html' },
@@ -49,11 +47,11 @@ const EMPTY_VM: DashboardVM = {
   standalone: true,
   imports: [
     CommonModule, RouterLink, RouterLinkActive,
-    NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxBadgeModule, NxTableModule, NxContextMenuModule,
-    StatusChipComponent, EmptyStateComponent, Navbar, ClaimPreviewDirective,
+    NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxTableModule,
+    StatusChipComponent, EmptyStateComponent, Navbar,
     FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
     CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,
-    ClaimsPortfolioWidgetComponent,
+    ClaimsPortfolioWidgetComponent, RecentApprovalsWidgetComponent,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -68,7 +66,6 @@ export class Dashboard {
 
   // ── Toggle state ─────────────────────────────────────────────────────
   readonly showMyTasksOnly     = signal(false);
-  readonly showMyApprovalsOnly = signal(false);
   // ⚑ PLACEHOLDER default (Last 30 days) — the alignment doc raised "what is the default date
   // range on landing" as an open question with no business answer yet; confirm before launch.
   readonly claimsDateRange     = signal<ClaimsDateRange>(
@@ -131,23 +128,6 @@ export class Dashboard {
     return filtered.slice(0, 7);
   });
 
-  readonly displayedApprovals = computed<UrgentApproval[]>(() => {
-    const approvals = this.vm().urgentApprovals;
-    if (!this.showMyApprovalsOnly()) return approvals;
-    const name = this.auth.user()?.name ?? '';
-    return approvals.filter(a => a.requester === name);
-  });
-
-  // Recent approval requests — tab between reserve approvals and payment approvals.
-  readonly approvalsTab = signal<'reserves' | 'payments'>('reserves');
-
-  readonly displayedPayments = computed<PaymentApproval[]>(() => {
-    const payments = this.paymentApprovals();
-    if (!this.showMyApprovalsOnly()) return payments;
-    const name = this.auth.user()?.name ?? '';
-    return payments.filter(p => p.requester === name);
-  });
-
   // Claims created within the selected date range — feeds both the portfolio widget and the stats card,
   // per the alignment doc's ask for a single shared default date range across both.
   readonly dateRangedClaims = computed<Claim[]>(() => {
@@ -198,8 +178,6 @@ export class Dashboard {
   daysSinceUpdate(dateUpdated: string): number {
     return Math.floor((Date.now() - new Date(dateUpdated).getTime()) / 86400000);
   }
-
-  setApprovalsTab(tab: 'reserves' | 'payments'): void { this.approvalsTab.set(tab); }
 
   setClaimsDateRange(range: ClaimsDateRange): void {
     this.claimsDateRange.set(range);

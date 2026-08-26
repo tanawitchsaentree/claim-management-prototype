@@ -1,0 +1,115 @@
+<div class="widget-card widget-card--approvals">
+  <div class="widget-header">
+    <div class="widget-header-left">
+      <div class="widget-icon-wrap"><nx-icon name="product-check-paper" class="widget-icon"></nx-icon></div>
+      <span class="widget-title">Recent approval requests</span>
+    </div>
+    <a routerLink="/approvals" class="widget-link">View all approvals</a>
+  </div>
+  <div class="widget-toggle-row">
+    <nx-switcher [checked]="showMyApprovalsOnly()" (checkedChange)="showMyApprovalsOnly.set($event)">Show submitted by me only</nx-switcher>
+  </div>
+  <div class="portfolio-tabs">
+    <button class="portfolio-tab" [class.portfolio-tab--active]="approvalsTab() === 'reserves'" (click)="setApprovalsTab('reserves')">Reserves</button>
+    <button class="portfolio-tab" [class.portfolio-tab--active]="approvalsTab() === 'payments'" (click)="setApprovalsTab('payments')">Payments</button>
+  </div>
+  <div class="portfolio-tabs-spacer"></div>
+
+  @if (approvalsTab() === 'reserves') {
+    @if (displayedApprovals().length === 0) {
+      <app-empty-state [message]="showMyApprovalsOnly() ? 'No reserve approvals submitted by you.' : 'No reserve approval requests found.'"></app-empty-state>
+    } @else {
+      <div class="data-table-wrap" tabindex="0">
+      <table nxTable sticky="last" class="dash-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="dash-col--nowrap">Request ID</th>
+            <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
+            <th nxHeaderCell>OE</th>
+            <th nxHeaderCell>Line of Business</th>
+            <th nxHeaderCell>Reserve type</th>
+            <th nxHeaderCell>Currency</th>
+            <th nxHeaderCell class="dash-col--nowrap">Amount</th>
+            <th nxHeaderCell>Requester</th>
+            <th nxHeaderCell>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (approval of displayedApprovals(); track approval.requestId) {
+            <tr nxTableRow>
+              <td nxCell class="text-link dash-col--nowrap">{{ approval.requestId }}</td>
+              <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', approval.claimId, 'overview']" [claimPreview]="approval.claimId">{{ approval.claimId }}</a></td>
+              <td nxCell>{{ approval.oe }}</td>
+              <td nxCell>{{ approval.lineOfBusiness }}</td>
+              <td nxCell>{{ approval.reserveType }}</td>
+              <td nxCell>{{ approval.currency }}</td>
+              <td nxCell class="dash-col--nowrap">{{ approval.amount | number }}</td>
+              <td nxCell>{{ approval.requester }}@if (approval.reviewerEmail === auth.user()?.email) { <nx-badge type="active" class="by-me-nx-badge">You</nx-badge> }</td>
+              <td nxCell>
+                <button class="dash-kebab-btn" type="button"
+                        [nxContextMenuTriggerFor]="approvalMenu"
+                        aria-label="more actions">⋮</button>
+                <nx-context-menu #approvalMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button">View details</button>
+                  <button nxContextMenuItem type="button">Approve</button>
+                  <button nxContextMenuItem type="button">Reject</button>
+                  <button nxContextMenuItem type="button">Withdraw</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      </div>
+    }
+  } @else {
+    @if (displayedPayments().length === 0) {
+      <app-empty-state [message]="showMyApprovalsOnly() ? 'No payment approvals submitted by you.' : 'No payment approval requests found.'"></app-empty-state>
+    } @else {
+      <div class="data-table-wrap" tabindex="0">
+      <table nxTable sticky="last" class="dash-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="dash-col--nowrap">Payment ID</th>
+            <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
+            <th nxHeaderCell>OE</th>
+            <th nxHeaderCell>Line of Business</th>
+            <th nxHeaderCell>Payment type</th>
+            <th nxHeaderCell>Payee</th>
+            <th nxHeaderCell>Currency</th>
+            <th nxHeaderCell class="dash-col--nowrap">Amount</th>
+            <th nxHeaderCell>Requester</th>
+            <th nxHeaderCell>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (payment of displayedPayments(); track payment.requestId) {
+            <tr nxTableRow>
+              <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']">{{ payment.paymentId }}</a></td>
+              <td nxCell class="dash-col--nowrap"><a class="text-link" [routerLink]="['/claims', payment.claimId, 'overview']" [claimPreview]="payment.claimId">{{ payment.claimId }}</a></td>
+              <td nxCell>{{ payment.oe }}</td>
+              <td nxCell>{{ payment.lineOfBusiness }}</td>
+              <td nxCell>{{ payment.paymentType }}</td>
+              <td nxCell>{{ payment.payee }}</td>
+              <td nxCell>{{ payment.currency }}</td>
+              <td nxCell class="dash-col--nowrap">{{ payment.amount | number }}</td>
+              <td nxCell>{{ payment.requester }}@if (payment.reviewerEmail === auth.user()?.email) { <nx-badge type="active" class="by-me-nx-badge">You</nx-badge> }</td>
+              <td nxCell>
+                <button class="dash-kebab-btn" type="button"
+                        [nxContextMenuTriggerFor]="paymentMenu"
+                        aria-label="more actions">⋮</button>
+                <nx-context-menu #paymentMenu="nxContextMenu">
+                  <button nxContextMenuItem type="button">View details</button>
+                  <button nxContextMenuItem type="button">Approve</button>
+                  <button nxContextMenuItem type="button">Reject</button>
+                  <button nxContextMenuItem type="button">Withdraw</button>
+                </nx-context-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      </div>
+    }
+  }
+</div>
