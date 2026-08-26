@@ -1,3 +1,5 @@
+@use './widget-shell' as widget;
+
 // ─── Variables ───────────────────────────────────────────────────
 $right-panel-w:  360px;
 // SCSS vars below are aliases for NDBX/project tokens — kept for
@@ -149,65 +151,13 @@ $header-bp: 1024px;
 }
 
 // ─── Widget card ─────────────────────────────────────────────────
-.widget-card {
-  background: var(--ui-01);
-  border: 1px solid $border-color;
-  border-radius: 8px;
-  margin-bottom: $sp-xl;
-  overflow: hidden;
-  box-shadow: 0 1px 4px var(--claim-overlay-shadow);
-}
-
-.widget-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: $sp-lg $sp-xl $sp-md;   // 20 24 14 — top / sides / bottom
-}
-
-.widget-header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.widget-icon-wrap {
-  width: 32px;
-  height: 32px;
-  border: 1px solid $border-color;   // ui-04, not text-01
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.widget-icon {
-  color: $text-main;
-  font-size: var(--paragraph-01-font-size);   // 50% of 32px container
-}
-
-.widget-title {
-  font-size: var(--heading-06-font-size);
-  font-weight: 600;
-  color: $text-main;
-  line-height: 1.4;
-}
-
-.widget-link {
-  font-size: var(--paragraph-03-font-size);
-  color: $blue-active;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-  &:hover { text-decoration: underline; }
-  &--disabled {
-    color: $text-muted;
-    cursor: not-allowed;
-    &:hover { text-decoration: none; }
-  }
-}
+.widget-card       { @include widget.card; }
+.widget-header     { @include widget.header; }
+.widget-header-left{ @include widget.header-left; }
+.widget-icon-wrap  { @include widget.icon-wrap; }
+.widget-icon       { @include widget.icon; }
+.widget-title      { @include widget.title; }
+.widget-link       { @include widget.link; }
 
 .widget-footer {
   padding: $sp-md $sp-xl;   // 12 24
@@ -232,41 +182,9 @@ $header-bp: 1024px;
 }
 
 // ─── Portfolio tabs ───────────────────────────────────────────────
-.portfolio-tabs {
-  display: flex;
-  gap: 0;
-  padding: 0 $sp-xl;
-  border-bottom: 1px solid $border-color;
-}
-
-.portfolio-tabs-spacer {
-  height: $sp-sm;   // 8px — visual break only, not dead space
-}
-
-.portfolio-tab {
-  background: none;
-  border: none;
-  padding: $sp-sm $sp-base;
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 500;
-  color: $text-muted;
-  cursor: pointer;
-  position: relative;
-
-  &--active {
-    color: $blue-active;
-    font-weight: 700;
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 3px;
-      background: $blue-active;
-    }
-  }
-
-  &:hover:not(&--active) { color: $text-main; }
-}
+.portfolio-tabs        { @include widget.portfolio-tabs; }
+.portfolio-tabs-spacer { @include widget.portfolio-tabs-spacer; }
+.portfolio-tab         { @include widget.portfolio-tab; }
 
 // ─── Table sort header ────────────────────────────────────────────
 .th-sort {
@@ -284,46 +202,9 @@ $header-bp: 1024px;
 }
 
 // ─── Data table ──────────────────────────────────────────────────
-.data-table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-// NDBX nxTable override — align with dashboard design tokens
-.dash-table {
-  width: 100%;
-
-  // Override NDBX header cell padding to match dashboard $sp-xl inset
-  ::ng-deep .nx-header-cell {
-    padding: var(--space-md) $sp-xl !important;
-    font-size: var(--paragraph-04-font-size) !important;
-    color: $text-muted !important;
-    background: var(--ui-01) !important;
-  }
-
-  // Override NDBX table cell padding
-  ::ng-deep .nx-table-cell {
-    padding: var(--space-md) $sp-xl !important;
-    font-size: var(--paragraph-03-font-size) !important;
-    color: $text-main !important;
-    vertical-align: middle !important;
-  }
-
-  // First/last cell horizontal edge padding
-  ::ng-deep .nx-header-cell:first-child,
-  ::ng-deep .nx-table-cell:first-child { padding-left: $sp-xl !important; }
-  ::ng-deep .nx-header-cell:last-child,
-  ::ng-deep .nx-table-cell:last-child  { padding-right: $sp-xl !important; }
-}
-
-// Specific columns that must not wrap (dates, IDs, amounts)
-.dash-col--nowrap {
-  white-space: nowrap;
-
-  ::ng-deep .nx-header-cell,
-  &.nx-header-cell,
-  &.nx-table-cell { white-space: nowrap; }
-}
+.data-table-wrap  { @include widget.data-table-wrap; }
+.dash-table        { @include widget.dash-table; }
+.dash-col--nowrap  { @include widget.dash-col-nowrap; }
 
 // Description / client name — truncate long text
 .dash-col--desc {
@@ -343,8 +224,8 @@ $header-bp: 1024px;
   }
 }
 
-.text-muted    { color: $text-muted; }
-.text-link     { color: $blue-active; font-weight: 500; }
+.text-muted    { @include widget.text-muted; }
+.text-link     { @include widget.text-link; }
 .text-due-today { color: var(--danger); font-weight: 600; }
 .text-overdue { color: var(--danger); font-weight: 600; }
 
@@ -533,20 +414,7 @@ $header-bp: 1024px;
   &:hover { background: $gray-bg; color: $text-main; }
 }
 
-.dash-kebab-btn {
-  background: none;
-  border: none;
-  padding: 4px 8px;
-  cursor: pointer;
-  color: var(--interactive-primary);
-  border-radius: 4px;
-  font-size: var(--heading-06-font-size);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 1px;
-  font-family: inherit;
-  &:hover { background: $gray-bg; }
-}
+.dash-kebab-btn { @include widget.dash-kebab-btn; }
 
 // ─── Quick links ─────────────────────────────────────────────────
 .quick-links-list {
@@ -611,67 +479,14 @@ $header-bp: 1024px;
 }
 
 // ─── KCM scope selector ───────────────────────────────────────────
-.scope-tabs {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: $sp-xs;   // 4px between pills
-  padding: 0 $sp-xl $sp-md;   // 0 24 12 — aligns with card inset
-
-  // Set-once-per-session filters (scope, date range) — text-weight, no pill fill, so they
-  // read as secondary context and don't visually compete with the status pills below.
-  &--meta {
-    padding-bottom: $sp-sm;
-    gap: 2px;
-  }
-
-  &__sep {
-    color: $border-color;
-    padding: 0 2px;
-  }
-}
-
-.scope-tab {
-  font-size: var(--paragraph-04-font-size);
-  padding: $sp-xs $sp-md;   // 4 12
-  border-radius: 12px;
-  border: 1px solid $border-color;
-  background: var(--ui-01);
-  color: $text-muted;
-  cursor: pointer;
-  transition: background .12s, border-color .12s, color .12s;
-  &:hover { background: var(--ui-02); }
-  &--active { background: var(--interactive-primary); color: #fff; border-color: var(--interactive-primary); }
-
-  &--meta {
-    padding: 2px 6px;
-    border: none;
-    background: none;
-    border-radius: 8px;
-    &:hover { background: var(--ui-02); }
-
-    &.scope-tab--active {
-      background: none;
-      border-color: transparent;
-      color: var(--interactive-primary);
-      font-weight: 600;
-    }
-  }
-}
+.scope-tabs { @include widget.scope-tabs; }
+.scope-tab  { @include widget.scope-tab; }
 
 // ─── Dormant / "You" nx-badge sizing ─────────────────────────────
 // No row tint — the Dormant badge already signals the state. Tints removed per rule.
 
-.dash-status-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
-}
+.dash-status-cell { @include widget.dash-status-cell; }
 
-.dormant-nx-badge, .by-me-nx-badge {
-  font-size: var(--paragraph-04-font-size);
-  flex-shrink: 0;
-}
+.dormant-nx-badge, .by-me-nx-badge { @include widget.dash-badge-small; }
 
 

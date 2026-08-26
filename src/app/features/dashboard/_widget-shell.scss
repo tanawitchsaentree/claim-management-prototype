@@ -1,0 +1,219 @@
+// Shared dashboard widget-card shell — dashboard.ts's inline widgets and the
+// extracted claims-portfolio-widget/recent-approvals-widget components all
+// render a `.widget-card` with the same header/table/tabs primitives, but
+// Angular component styles don't cross component boundaries, so every one of
+// them (parent included) @use's this partial instead of redeclaring it.
+// Same pattern as claim-overview's _card-shell.scss.
+
+@mixin card {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px var(--claim-overlay-shadow);
+}
+
+@mixin header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 12px;
+}
+
+@mixin header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@mixin icon-wrap {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--ui-04);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@mixin icon {
+  color: var(--text-01);
+  font-size: var(--paragraph-01-font-size);
+}
+
+@mixin title {
+  font-size: var(--heading-06-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  line-height: 1.4;
+}
+
+@mixin link {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--interactive-text);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  &:hover { text-decoration: underline; }
+  &--disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    &:hover { text-decoration: none; }
+  }
+}
+
+@mixin toggle-row {
+  padding: 0 24px 12px;
+}
+
+@mixin portfolio-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+@mixin portfolio-tabs-spacer {
+  height: 8px;
+}
+
+@mixin portfolio-tab {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+
+  &--active {
+    color: var(--interactive-text);
+    font-weight: 700;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--interactive-text);
+    }
+  }
+
+  &:hover:not(&--active) { color: var(--text-01); }
+}
+
+@mixin data-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+// NDBX nxTable override — align with dashboard design tokens
+@mixin dash-table {
+  width: 100%;
+
+  ::ng-deep .nx-header-cell {
+    padding: var(--space-md) 24px !important;
+    font-size: var(--paragraph-04-font-size) !important;
+    color: var(--text-muted) !important;
+    background: var(--ui-01) !important;
+  }
+
+  ::ng-deep .nx-table-cell {
+    padding: var(--space-md) 24px !important;
+    font-size: var(--paragraph-03-font-size) !important;
+    color: var(--text-01) !important;
+    vertical-align: middle !important;
+  }
+
+  ::ng-deep .nx-header-cell:first-child,
+  ::ng-deep .nx-table-cell:first-child { padding-left: 24px !important; }
+  ::ng-deep .nx-header-cell:last-child,
+  ::ng-deep .nx-table-cell:last-child  { padding-right: 24px !important; }
+}
+
+@mixin dash-col-nowrap {
+  white-space: nowrap;
+
+  ::ng-deep .nx-header-cell,
+  &.nx-header-cell,
+  &.nx-table-cell { white-space: nowrap; }
+}
+
+@mixin text-muted { color: var(--text-muted); }
+@mixin text-link  { color: var(--interactive-text); font-weight: 500; }
+
+@mixin scope-tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 24px 12px;
+
+  &--meta {
+    padding-bottom: 8px;
+    gap: 2px;
+  }
+
+  &__sep {
+    color: var(--ui-04);
+    padding: 0 2px;
+  }
+}
+
+@mixin scope-tab {
+  font-size: var(--paragraph-04-font-size);
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--ui-04);
+  background: var(--ui-01);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+  &:hover { background: var(--ui-02); }
+  &--active { background: var(--interactive-primary); color: #fff; border-color: var(--interactive-primary); }
+
+  &--meta {
+    padding: 2px 6px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    &:hover { background: var(--ui-02); }
+
+    &.scope-tab--active {
+      background: none;
+      border-color: transparent;
+      color: var(--interactive-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+@mixin dash-status-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+@mixin dash-badge-small {
+  font-size: var(--paragraph-04-font-size);
+  flex-shrink: 0;
+}
+
+@mixin dash-kebab-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  border-radius: 4px;
+  font-size: var(--heading-06-font-size);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 1px;
+  font-family: inherit;
+  &:hover { background: var(--ui-02); }
+}

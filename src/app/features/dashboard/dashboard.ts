@@ -30,6 +30,7 @@ import { HeadsUpPanelComponent } from './widgets/heads-up-panel';
 import { CalendarWidgetComponent } from './widgets/calendar-widget';
 import { NewsPanelComponent } from './widgets/news-panel';
 import { ExpenseBreakdownComponent } from './widgets/expense-breakdown';
+import { ClaimsPortfolioWidgetComponent, ClaimsDateRange } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
 
 const QUICK_LINKS: QuickLink[] = [
   { label: 'AGCS Corporate Rules Book', url: 'https://www.allianz.com/en/about-us/strategy-values/business-model.html' },
@@ -43,8 +44,6 @@ const EMPTY_VM: DashboardVM = {
   quickLinks: QUICK_LINKS, portfolioTab: 'claims', urgentApprovals: [],
 };
 
-const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -54,6 +53,7 @@ const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
     StatusChipComponent, EmptyStateComponent, Navbar, ClaimPreviewDirective,
     FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
     CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,
+    ClaimsPortfolioWidgetComponent,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -69,21 +69,10 @@ export class Dashboard {
   // ── Toggle state ─────────────────────────────────────────────────────
   readonly showMyTasksOnly     = signal(false);
   readonly showMyApprovalsOnly = signal(false);
-  // Default scope is "My claims" for a Claims Handler (the ticket's core ask — a unified view of
-  // claims assigned to them) and "All" for a KCM, who oversees more than their own portfolio.
-  readonly claimsScope         = signal<'mine' | 'group' | 'all'>(
-    (localStorage.getItem('dashboard:claims-scope') as 'mine' | 'group' | 'all')
-    ?? (this.auth.isKcm() ? 'all' : 'mine')
-  );
-  // Default view is "Open Claims" per PI 2026.3 UI/UX alignment (BMPCC-15121) — Open/In progress only,
-  // with a filter to widen to Closed/Declined or everything.
-  readonly claimsStatusFilter  = signal<'open' | 'closed' | 'all'>(
-    (localStorage.getItem('dashboard:claims-status-filter') as 'open' | 'closed' | 'all') ?? 'open'
-  );
   // ⚑ PLACEHOLDER default (Last 30 days) — the alignment doc raised "what is the default date
   // range on landing" as an open question with no business answer yet; confirm before launch.
-  readonly claimsDateRange     = signal<'30' | '90' | 'all'>(
-    (localStorage.getItem('dashboard:claims-date-range') as '30' | '90' | 'all') ?? '30'
+  readonly claimsDateRange     = signal<ClaimsDateRange>(
+    (localStorage.getItem('dashboard:claims-date-range') as ClaimsDateRange) ?? '30'
   );
 
   // ── Core vm$ ─────────────────────────────────────────────────────────
@@ -159,26 +148,9 @@ export class Dashboard {
     return payments.filter(p => p.requester === name);
   });
 
-  readonly displayedClaims = computed<Claim[]>(() => {
-    const claims = this.dateRangedClaims();
-    const scope  = this.claimsScope();
-    const status = this.claimsStatusFilter();
-    const user   = this.auth.user();
-    let filtered = claims;
-    if (user) {
-      if (scope === 'mine')       filtered = filtered.filter(c => c.assignee === user.name);
-      else if (scope === 'group') filtered = filtered.filter(c => c.group === user.group);
-    }
-    if (status === 'open')        filtered = filtered.filter(c => c.status === 'Open' || c.status === 'In progress');
-    else if (status === 'closed') filtered = filtered.filter(c => c.status === 'Closed' || c.status === 'Declined');
-    // No fallback to unfiltered claims when a scope/status combination yields zero rows —
-    // an empty result is real and must render the empty state, not someone else's claims.
-    return filtered.slice(0, 5);
-  });
-
   // Claims created within the selected date range — feeds both the portfolio widget and the stats card,
   // per the alignment doc's ask for a single shared default date range across both.
-  private readonly dateRangedClaims = computed<Claim[]>(() => {
+  readonly dateRangedClaims = computed<Claim[]>(() => {
     const claims = this.vm().recentClaims;
     const range = this.claimsDateRange();
     if (range === 'all') return claims;
@@ -217,52 +189,22 @@ export class Dashboard {
     };
   });
 
-  // ── Portfolio tab ────────────────────────────────────────────────────
-  portfolioTab: 'claims' | 'loss-events' = 'claims';
-
-  // ── Overdue / dormant helpers ─────────────────────────────────────────
+  // ── Overdue helper (tasks widget) ──────────────────────────────────────
   isOverdue(dueDate: string): boolean {
     if (!dueDate) return false;
     return new Date(dueDate) < new Date(new Date().toDateString());
-  }
-
-  isDormant(dateUpdated: string): boolean {
-    if (!dateUpdated) return false;
-    const diff = (Date.now() - new Date(dateUpdated).getTime()) / 86400000;
-    return diff > DORMANT_DAYS;
   }
 
   daysSinceUpdate(dateUpdated: string): number {
     return Math.floor((Date.now() - new Date(dateUpdated).getTime()) / 86400000);
   }
 
-  setPortfolioTab(tab: 'claims' | 'loss-events'): void { this.portfolioTab = tab; }
   setApprovalsTab(tab: 'reserves' | 'payments'): void { this.approvalsTab.set(tab); }
 
-  setClaimsScope(scope: 'mine' | 'group' | 'all'): void {
-    this.claimsScope.set(scope);
-    localStorage.setItem('dashboard:claims-scope', scope);
-  }
-
-  setClaimsStatusFilter(status: 'open' | 'closed' | 'all'): void {
-    this.claimsStatusFilter.set(status);
-    localStorage.setItem('dashboard:claims-status-filter', status);
-  }
-
-  setClaimsDateRange(range: '30' | '90' | 'all'): void {
+  setClaimsDateRange(range: ClaimsDateRange): void {
     this.claimsDateRange.set(range);
     localStorage.setItem('dashboard:claims-date-range', range);
   }
-
-  // "View all claims" carries the widget's current scope onto the claims list, so a handler
-  // viewing "My claims" lands on their own filtered list instead of the generic unfiltered one.
-  // (Status isn't carried over: the widget's Open/Closed/All is a status *group*, while the
-  // claims list filters by one exact ClaimStatus — the two aren't a clean 1:1 mapping.)
-  readonly viewAllClaimsParams = computed<Record<string, string>>(() => {
-    const params: Record<string, string> = {};
-    if (this.claimsScope() === 'mine') params['assignee'] = 'me';
-    return params;
-  });
 
   navigateToFnol(): void { this.router.navigate(['/fnol/search']); }
   navigateToSearch(): void { this.router.navigate(['/fnol/search']); }

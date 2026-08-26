@@ -1,0 +1,26 @@
+@use '../../widget-shell' as widget;
+
+.widget-card        { @include widget.card; }
+.widget-header      { @include widget.header; }
+.widget-header-left { @include widget.header-left; }
+.widget-icon-wrap    { @include widget.icon-wrap; }
+.widget-icon         { @include widget.icon; }
+.widget-title        { @include widget.title; }
+.widget-link         { @include widget.link; }
+
+.scope-tabs { @include widget.scope-tabs; }
+.scope-tab  { @include widget.scope-tab; }
+
+.portfolio-tabs        { @include widget.portfolio-tabs; }
+.portfolio-tabs-spacer { @include widget.portfolio-tabs-spacer; }
+.portfolio-tab         { @include widget.portfolio-tab; }
+
+.data-table-wrap  { @include widget.data-table-wrap; }
+.dash-table       { @include widget.dash-table; }
+.dash-col--nowrap { @include widget.dash-col-nowrap; }
+
+.text-muted { @include widget.text-muted; }
+.text-link  { @include widget.text-link; }
+
+.dash-status-cell { @include widget.dash-status-cell; }
+.dormant-nx-badge { @include widget.dash-badge-small; }
