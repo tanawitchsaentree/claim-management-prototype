@@ -1,18 +1,20 @@
 <!-- ── Page header ── -->
 <app-page-header title="Sections">
   @if (!hasDetailOpen()) {
-    <button actions class="btn-add-damage-type" nxButton="tertiary small" type="button"
-      [disabled]="claimClosed()"
-      [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
-      (click)="onAddDamageType()">
-      Add damage type
-    </button>
-    <button actions class="btn-add-entity" nxButton="secondary small" type="button"
-      [disabled]="claimClosed()"
-      [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
-      (click)="onAddEntity()">
-      Add Entity
-    </button>
+    <ng-container actions>
+      <button class="btn-add-damage-type" nxButton="tertiary small" type="button"
+        [disabled]="claimClosed()"
+        [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
+        (click)="onAddDamageType()">
+        Add damage type
+      </button>
+      <button class="btn-add-entity" nxButton="secondary small" type="button"
+        [disabled]="claimClosed()"
+        [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
+        (click)="onAddEntity()">
+        Add Entity
+      </button>
+    </ng-container>
   }
 </app-page-header>
 

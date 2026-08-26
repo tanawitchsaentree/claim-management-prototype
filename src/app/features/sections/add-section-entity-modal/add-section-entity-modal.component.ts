@@ -1,18 +1,14 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { firstValueFrom } from 'rxjs';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { ClaimSection, InstructionStatus } from '../../../core/models/section.model';
-import { EntityType } from '../../../core/models/entity-damage.model';
 import { INSTRUCTION_STATUS_OPTIONS } from '../edit-entity-damage-modal/edit-entity-damage-modal.component';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
-import { MockEntitySearchService } from '../../../core/mock/services/mock-entity-search.service';
-import { ENTITY_TYPE_TO_DAMAGE_GROUP } from '../../../features/fnol/config/entity-damage-mapping';
 
 export interface AddSectionEntityModalData {
   sections: ClaimSection[];
@@ -30,22 +26,12 @@ export type AddSectionEntityModalResult =
 
 const NEW_PREFIX = 'NEW:';
 
-// Reverses ENTITY_TYPE_TO_DAMAGE_GROUP so a chosen damage type resolves back
-// to the entity types MockEntitySearchService can look up — the same
-// sourcing FNOL step 2 uses for "add entity" (EntitySearchModalComponent),
-// replacing the DAMAGE_TYPE_ENTITIES demo map this modal used to invent.
-function entityTypesForDamageType(damageType: string): EntityType[] {
-  return (Object.entries(ENTITY_TYPE_TO_DAMAGE_GROUP) as [EntityType, { damageTypeKey: string }][])
-    .filter(([, route]) => route.damageTypeKey === damageType)
-    .map(([entityType]) => entityType);
-}
-
 @Component({
   selector: 'app-add-section-entity-modal',
   standalone: true,
   imports: [
     ReactiveFormsModule, NxModalModule, NxFormfieldModule,
-    NxDropdownModule, NxCheckboxModule, NxButtonModule,
+    NxDropdownModule, NxInputModule, NxButtonModule,
   ],
   templateUrl: './add-section-entity-modal.component.html',
   styleUrl: './add-section-entity-modal.component.scss',
@@ -55,7 +41,6 @@ export class AddSectionEntityModalComponent {
   readonly modalRef = inject<NxModalRef<AddSectionEntityModalComponent, AddSectionEntityModalResult>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
   private readonly lookupSvc      = inject(MockLookupService);
-  private readonly entitySearchSvc = inject(MockEntitySearchService);
 
   readonly instructionStatusOptions = INSTRUCTION_STATUS_OPTIONS;
   readonly openSections = this.data.sections.filter(s => s.status === 'Open');
@@ -80,10 +65,9 @@ export class AddSectionEntityModalComponent {
     return this.openSections[0]?.id ?? this.targetOptions[0]?.value ?? '';
   };
 
-  submitAttempted = false;
-
   readonly form = this.fb.group({
     target:            [this.defaultTargetValue(), Validators.required],
+    entityName:        ['', Validators.required],
     instructionStatus: ['Not assigned' as InstructionStatus, Validators.required],
   });
 
@@ -106,50 +90,13 @@ export class AddSectionEntityModalComponent {
     return this.lookupSvc.getTypeOfDamageSync().find(o => o.value === key)?.label ?? key;
   });
 
-  readonly candidateEntities = signal<string[]>([]);
-  readonly loadingCandidates = signal(false);
-
-  constructor() {
-    effect(() => {
-      const key = this.damageTypeKey();
-      if (!key) { this.candidateEntities.set([]); return; }
-      this.loadCandidatesFor(key);
-    });
-  }
-
-  private async loadCandidatesFor(damageType: string): Promise<void> {
-    this.loadingCandidates.set(true);
-    const entityTypes = entityTypesForDamageType(damageType);
-    const results = await Promise.all(
-      entityTypes.map(t => firstValueFrom(this.entitySearchSvc.search(this.data.policyNumber, t, {}))),
-    );
-    const names = [...new Set(results.flat().map(r => r.locationName))];
-    this.candidateEntities.set(names);
-    this.loadingCandidates.set(false);
-  }
-
-  readonly selected = signal<Set<string>>(new Set());
-
-  isEntitySelected(entity: string): boolean {
-    return this.selected().has(entity);
-  }
-
-  toggleEntity(entity: string): void {
-    const set = new Set(this.selected());
-    if (set.has(entity)) set.delete(entity); else set.add(entity);
-    this.selected.set(set);
-  }
-
-  readonly hasAnySelection = computed(() => this.selected().size > 0);
-
   confirm(): void {
-    this.submitAttempted = true;
-    if (this.form.get('target')!.invalid || !this.hasAnySelection()) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const instructionStatus = this.form.value.instructionStatus as InstructionStatus;
-    const entityNames = [...this.selected()];
+    const entityNames = [this.form.value.entityName!.trim()];
 
     if (this.isNewSection()) {
       this.modalRef.close({ mode: 'new', damageType: this.damageTypeKey(), instructionStatus, entityNames });

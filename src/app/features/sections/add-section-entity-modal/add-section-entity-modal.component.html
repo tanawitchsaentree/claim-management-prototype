@@ -14,32 +14,16 @@
   </nx-formfield>
 
   @if (damageTypeKey()) {
-    <div class="ase-entity-groups">
-      <div class="ase-entity-group">
-        <p class="ase-entity-group__title">
-          {{ damageTypeLabel() }}
-          @if (isNewSection()) { <span class="ase-new-badge">new section</span> }
-        </p>
-        <div class="ase-entity-group__checkboxes">
-          @if (loadingCandidates()) {
-            <p class="ase-entity-group__loading">Loading candidate entities…</p>
-          } @else if (!candidateEntities().length) {
-            <p class="ase-entity-group__loading">No candidate entities found for this policy/damage type.</p>
-          } @else {
-            @for (entity of candidateEntities(); track entity) {
-              <nx-checkbox [checked]="isEntitySelected(entity)"
-                           (checkedChange)="toggleEntity(entity)">
-                {{ entity }}
-              </nx-checkbox>
-            }
-          }
-        </div>
-      </div>
-    </div>
-    @if (submitAttempted && !hasAnySelection()) {
-      <p class="ase-entity-groups__error">Select at least one entity.</p>
-    }
+    <p class="ase-entity-group__title">
+      {{ damageTypeLabel() }}
+      @if (isNewSection()) { <span class="ase-new-badge">new section</span> }
+    </p>
   }
+
+  <nx-formfield label="Entity name">
+    <input nxInput formControlName="entityName" autocomplete="off" placeholder="e.g. Kaufmann's Warehouse" />
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
 
   <nx-formfield label="Instruction status">
     <nx-dropdown formControlName="instructionStatus">

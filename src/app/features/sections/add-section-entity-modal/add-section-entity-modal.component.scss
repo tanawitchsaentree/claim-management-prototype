@@ -13,24 +13,8 @@
 
 .ase-footer { @include modal.footer; }
 
-.ase-entity-groups {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  margin: var(--space-sm) 0 var(--space-md);
-}
-
-.ase-entity-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-md);
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-}
-
 .ase-entity-group__title {
-  margin: 0;
+  margin: var(--space-sm) 0 var(--space-xs);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-01);
@@ -46,22 +30,4 @@
   background: var(--ui-03);
   border-radius: 4px;
   padding: 2px var(--space-xs);
-}
-
-.ase-entity-group__loading {
-  margin: 0;
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-}
-
-.ase-entity-group__checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.ase-entity-groups__error {
-  margin: 0 0 var(--space-sm);
-  font-size: var(--paragraph-04-font-size);
-  color: var(--danger);
 }
