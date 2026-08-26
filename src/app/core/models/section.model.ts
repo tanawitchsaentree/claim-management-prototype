@@ -13,6 +13,11 @@ export interface SectionEntity {
   coverageReview?:          CoverageReview;
   coverageReviewNote?:      string;
   coverageReviewOverridden?: boolean;
+  // Business interruption's indemnity period — only meaningful when the
+  // owning section's damageType is 'business-interruption'; every other
+  // damage type leaves these unset.
+  interruptionStartDate?:  string;
+  interruptionEndDate?:    string;
 }
 
 export interface SectionBlockers {

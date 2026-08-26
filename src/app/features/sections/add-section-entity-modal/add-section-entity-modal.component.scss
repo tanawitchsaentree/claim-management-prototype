@@ -1,4 +1,5 @@
 @use '../../../shared/styles/modal-layout' as modal;
+@use '../../../shared/styles/form-section' as fs;
 
 :host { @include modal.shell; }
 
@@ -37,3 +38,5 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--message-error-color);
 }
+
+.ase-bi-grid { @include fs.two-col-grid; }

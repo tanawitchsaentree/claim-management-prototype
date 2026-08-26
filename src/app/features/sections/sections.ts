@@ -253,7 +253,12 @@ export class Sections {
         this.sectionSvc.createSection(
           claimId,
           result.damageType,
-          result.entityNames.map(name => ({ name, instructionStatus: result.instructionStatus })),
+          result.entityNames.map(name => ({
+            name,
+            instructionStatus: result.instructionStatus,
+            interruptionStartDate: result.interruptionStartDate,
+            interruptionEndDate:   result.interruptionEndDate,
+          })),
         ),
       );
       this.sections.update(list => [...list, created]);
@@ -269,6 +274,8 @@ export class Sections {
       await firstValueFrom(this.sectionSvc.addEntity(result.sectionId, {
         name,
         instructionStatus: result.instructionStatus,
+        interruptionStartDate: result.interruptionStartDate,
+        interruptionEndDate:   result.interruptionEndDate,
       }));
     }
     this.sections.update(list => [...list]);

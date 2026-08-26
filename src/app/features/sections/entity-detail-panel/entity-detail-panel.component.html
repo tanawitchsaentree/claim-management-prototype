@@ -38,6 +38,14 @@
         <span class="edp-field__label">Section</span>
         <span class="edp-field__value">{{ section.name }}</span>
       </div>
+      @if (entity.interruptionStartDate || entity.interruptionEndDate) {
+        <div class="edp-field">
+          <span class="edp-field__label">Interruption period</span>
+          <span class="edp-field__value">
+            {{ entity.interruptionStartDate ?? '–' }} → {{ entity.interruptionEndDate ?? 'ongoing' }}
+          </span>
+        </div>
+      }
     </div>
   </div>
 

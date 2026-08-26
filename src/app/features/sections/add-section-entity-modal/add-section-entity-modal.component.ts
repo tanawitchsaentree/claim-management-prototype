@@ -5,6 +5,8 @@ import { firstValueFrom } from 'rxjs';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule, NxMultiSelectComponent } from '@allianz/ng-aquila/dropdown';
+import { NxInputModule } from '@allianz/ng-aquila/input';
+import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { ClaimSection, InstructionStatus } from '../../../core/models/section.model';
 import { EntitySearchResult } from '../../../core/models/entity-damage.model';
@@ -19,16 +21,21 @@ export interface AddSectionEntityModalData {
   policyNumber: string;
 }
 
+interface InterruptionDates {
+  interruptionStartDate?: string;
+  interruptionEndDate?:   string;
+}
+
 export type AddSectionEntityModalResult =
-  | { mode: 'existing'; sectionId: string; instructionStatus: InstructionStatus; entityNames: string[] }
-  | { mode: 'new'; damageType: string; instructionStatus: InstructionStatus; entityNames: string[] };
+  | ({ mode: 'existing'; sectionId: string; instructionStatus: InstructionStatus; entityNames: string[] } & InterruptionDates)
+  | ({ mode: 'new'; damageType: string; instructionStatus: InstructionStatus; entityNames: string[] } & InterruptionDates);
 
 @Component({
   selector: 'app-add-section-entity-modal',
   standalone: true,
   imports: [
     ReactiveFormsModule, NxModalModule, NxFormfieldModule,
-    NxDropdownModule, NxMultiSelectComponent, NxButtonModule,
+    NxDropdownModule, NxMultiSelectComponent, NxInputModule, NxDatefieldModule, NxButtonModule,
   ],
   templateUrl: './add-section-entity-modal.component.html',
   styleUrl: './add-section-entity-modal.component.scss',
@@ -49,9 +56,18 @@ export class AddSectionEntityModalComponent {
   readonly loadingCandidates = signal(false);
 
   readonly form = this.fb.group({
-    damageType:        ['', Validators.required],
-    entityIds:         [[] as string[]],
-    instructionStatus: ['Not assigned' as InstructionStatus, Validators.required],
+    damageType:            ['', Validators.required],
+    entityIds:             [[] as string[]],
+    instructionStatus:     ['Not assigned' as InstructionStatus, Validators.required],
+    // No cross-field-conditional Validators.required here — this control is
+    // only ever rendered when isBusinessInterruption() is true, so an
+    // always-required validator can't wrongly block other damage types
+    // (confirm() never checks form.invalid as a whole, only specific
+    // controls). Required-ness is enforced by hand in confirm() instead;
+    // this validator exists solely so nx-formfield's own invalid/touched
+    // styling activates once markAllAsTouched() runs on a failed submit.
+    interruptionStartDate: [null as string | null, Validators.required],
+    interruptionEndDate:   [null as string | null],
   });
 
   private readonly damageTypeSigRaw = toSignal(this.form.get('damageType')!.valueChanges, {
@@ -76,6 +92,8 @@ export class AddSectionEntityModalComponent {
 
   readonly entityOptions = computed(() =>
     this.candidateEntities().map(e => ({ value: e.propertyId, label: e.locationName })));
+
+  readonly isBusinessInterruption = computed(() => this.damageTypeSig() === 'business-interruption');
 
   constructor() {
     effect(() => {
@@ -104,7 +122,8 @@ export class AddSectionEntityModalComponent {
   }
 
   confirm(): void {
-    if (this.form.get('damageType')!.invalid || !this.hasAnySelection()) {
+    const missingStartDate = this.isBusinessInterruption() && !this.form.value.interruptionStartDate;
+    if (this.form.get('damageType')!.invalid || !this.hasAnySelection() || missingStartDate) {
       this.submitAttempted = true;
       this.form.markAllAsTouched();
       return;
@@ -115,14 +134,21 @@ export class AddSectionEntityModalComponent {
       .filter(e => selectedIds.has(e.propertyId))
       .map(e => e.locationName);
 
+    const interruptionDates: InterruptionDates = this.isBusinessInterruption()
+      ? {
+          interruptionStartDate: this.form.value.interruptionStartDate ?? undefined,
+          interruptionEndDate:   this.form.value.interruptionEndDate ?? undefined,
+        }
+      : {};
+
     const damageType = this.damageTypeSig();
     const existing = this.data.sections.find(s => s.damageType === damageType && s.status === 'Open');
 
     if (existing) {
-      this.modalRef.close({ mode: 'existing', sectionId: existing.id, instructionStatus, entityNames });
+      this.modalRef.close({ mode: 'existing', sectionId: existing.id, instructionStatus, entityNames, ...interruptionDates });
       return;
     }
-    this.modalRef.close({ mode: 'new', damageType, instructionStatus, entityNames });
+    this.modalRef.close({ mode: 'new', damageType, instructionStatus, entityNames, ...interruptionDates });
   }
 
   cancel(): void { this.modalRef.close(); }

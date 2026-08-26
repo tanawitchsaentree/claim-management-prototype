@@ -42,7 +42,12 @@ export class MockSectionService extends MockBaseService {
   createSection(
     claimId: string,
     damageType: string,
-    entities: Array<{ name: string; instructionStatus?: InstructionStatus }>,
+    entities: Array<{
+      name: string;
+      instructionStatus?: InstructionStatus;
+      interruptionStartDate?: string;
+      interruptionEndDate?: string;
+    }>,
     createdBy: { userId: string; name: string } = { userId: 'usr-lf', name: 'Leonie Fischer' },
   ): Observable<ClaimSection> {
     const sections = this.forClaim(claimId);
@@ -67,6 +72,8 @@ export class MockSectionService extends MockBaseService {
         name:              e.name,
         instructionStatus: e.instructionStatus ?? 'Not assigned',
         expandable:        false,
+        interruptionStartDate: e.interruptionStartDate,
+        interruptionEndDate:   e.interruptionEndDate,
       })),
     };
     sections.push(newSection);
@@ -201,7 +208,12 @@ export class MockSectionService extends MockBaseService {
 
   addEntity(
     sectionId: string,
-    entity: { name: string; instructionStatus: InstructionStatus },
+    entity: {
+      name: string;
+      instructionStatus: InstructionStatus;
+      interruptionStartDate?: string;
+      interruptionEndDate?: string;
+    },
   ): Observable<SectionEntity> {
     for (const [, sections] of this.cache) {
       const section = sections.find(s => s.id === sectionId);
@@ -211,6 +223,8 @@ export class MockSectionService extends MockBaseService {
         name:             entity.name,
         instructionStatus: entity.instructionStatus,
         expandable:       false,
+        interruptionStartDate: entity.interruptionStartDate,
+        interruptionEndDate:   entity.interruptionEndDate,
       };
       section.entities = [...section.entities, newEntity];
       const activity: ClaimActivity = {

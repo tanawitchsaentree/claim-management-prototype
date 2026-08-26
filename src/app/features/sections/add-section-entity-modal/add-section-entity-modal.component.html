@@ -29,6 +29,24 @@
     } @else if (submitAttempted && !hasAnySelection()) {
       <p class="ase-entity-groups__error">Select at least one entity.</p>
     }
+
+    @if (isBusinessInterruption()) {
+      <div class="ase-bi-grid">
+        <nx-formfield label="Interruption start date">
+          <input nxDatefield nxInput formControlName="interruptionStartDate" [datepicker]="biStartPicker" />
+          <nx-datepicker-toggle nxFormfieldSuffix [for]="biStartPicker"></nx-datepicker-toggle>
+          <nx-datepicker #biStartPicker></nx-datepicker>
+          @if (submitAttempted && form.get('interruptionStartDate')!.invalid) {
+            <nx-error nxFormfieldError>Required.</nx-error>
+          }
+        </nx-formfield>
+        <nx-formfield label="Interruption end date (if known)">
+          <input nxDatefield nxInput formControlName="interruptionEndDate" [datepicker]="biEndPicker" />
+          <nx-datepicker-toggle nxFormfieldSuffix [for]="biEndPicker"></nx-datepicker-toggle>
+          <nx-datepicker #biEndPicker></nx-datepicker>
+        </nx-formfield>
+      </div>
+    }
   }
 
   <nx-formfield label="Instruction status">
