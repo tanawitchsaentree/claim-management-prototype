@@ -175,7 +175,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     this.isDirty.set(false);
   }
 
-  get policyNumber(): string { return this.fnolState.selectedPolicy?.policyNumber ?? ''; }
+  get policyNumber(): string { return this.fnolState.policyNumber; }
   get reserves(): Reserve[]  { return this.data$.value?.reserves ?? []; }
   get totalReserve(): number { return this.data$.value?.totalReserve ?? 0; }
   get allianzShare(): number { return this.data$.value?.allianzShare ?? 50; }

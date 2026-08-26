@@ -12,6 +12,7 @@ import { MockLookupService } from '../../../../../../core/mock/services/mock-loo
 import { ReserveNarrative } from '../../../../../../core/models/reserve.model';
 import { LookupOption } from '../../../../../../core/models/lookup.model';
 import { ToastService } from '../../../../../../shared/components/toast/toast.service';
+import { isNarrativeActive, narrativeReasonLabel } from '../../../../../../shared/utils/reserve-narrative.util';
 
 @Component({
   selector: 'app-reserve-narrative-panel',
@@ -44,20 +45,16 @@ export class ReserveNarrativePanelComponent implements OnInit {
 
   // State 1: totalReserve=0, no saved narrative (or archived)
   get showNarrativeCta(): boolean {
-    const n = this.narrative;
-    return this.totalReserve === 0 && (!n || !!n.archivedAt);
+    return this.totalReserve === 0 && !isNarrativeActive(this.narrative);
   }
 
   // State 3: totalReserve=0, narrative saved and not archived
   get showNarrativeSaved(): boolean {
-    const n = this.narrative;
-    return this.totalReserve === 0 && !!n && !n.archivedAt;
+    return this.totalReserve === 0 && isNarrativeActive(this.narrative);
   }
 
   get narrativeReasonLabel(): string {
-    const n = this.narrative;
-    if (!n) return '';
-    return this.narrativeOptions.find(o => o.value === n.reasonKey)?.label ?? n.reasonKey;
+    return narrativeReasonLabel(this.narrative, this.narrativeOptions);
   }
 
   openNarrative(): void {

@@ -70,6 +70,9 @@ export class FnolStateService {
   selectedClient: FnolSelectedClient | null = null;
   selectedPolicy: FnolSelectedPolicy | null = null;
 
+  // Shared by step-reserves and step-summary (both fall back to '', not null).
+  get policyNumber(): string { return this.selectedPolicy?.policyNumber ?? ''; }
+
   // File restriction state (BMPCC-10994) — set from summary step
   restriction: FileRestriction = { isRestricted: false, accessList: [] };
 

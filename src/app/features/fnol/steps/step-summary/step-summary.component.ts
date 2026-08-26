@@ -32,6 +32,8 @@ import { LookupOption } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { lookupLabel } from '../../../../shared/utils/lookup.util';
+import { isNarrativeActive, narrativeReasonLabel } from '../../../../shared/utils/reserve-narrative.util';
 
 export interface ClaimGroup {
   policyNumber: string;
@@ -147,7 +149,7 @@ export class StepSummaryComponent implements OnInit {
 
   readonly recoveryPotential = new FormControl<'yes' | 'no' | null>(null);
 
-  get policyNumber(): string { return this.fnolState.selectedPolicy?.policyNumber ?? ''; }
+  get policyNumber(): string { return this.fnolState.policyNumber; }
 
   async ngOnInit(): Promise<void> {
     const isOrphan = this.fnolState.path === 'orphan';
@@ -301,9 +303,8 @@ export class StepSummaryComponent implements OnInit {
     const lossDateIso = dateOfLoss.get('dateOfOccurrence')?.value as string | null;
     const earliest = this.deriveEarliestSectionDate(lossDateIso, allEntities.length || 3);
     const claimGroups = this.buildClaimGroups(entitiesData, reservesData, parties.length, damageLookups, earliest);
-    const narrative = reservesData.narrative && !reservesData.narrative.archivedAt ? reservesData.narrative : null;
-    const narrativeReasonLabel = narrative
-      ? (narrativeOpts.find(o => o.value === narrative.reasonKey)?.label ?? narrative.reasonKey) : '';
+    const narrative = isNarrativeActive(reservesData.narrative) ? reservesData.narrative! : null;
+    const narrativeLabel = narrativeReasonLabel(narrative, narrativeOpts);
 
     return {
       causesOfLoss,
@@ -311,7 +312,7 @@ export class StepSummaryComponent implements OnInit {
       timeOfOccurrence:   earliest.time,
       dateOfNotification: this.appDate.transform(dateOfLoss.get('dateOfNotification')?.value) || '—',
       affectedPolicies:   [this.policyNumber],
-      damageTypes, claimGroups, narrative, narrativeReasonLabel,
+      damageTypes, claimGroups, narrative, narrativeReasonLabel: narrativeLabel,
       isSkeletonPath: false, skeletonClientName: '—', skeletonReason: '—',
     };
   }
@@ -367,7 +368,7 @@ export class StepSummaryComponent implements OnInit {
 
   private label(opts: LookupOption[], key: string | undefined): string {
     if (!key) return '—';
-    return opts.find(o => o.value === key)?.label ?? key;
+    return lookupLabel(opts, key);
   }
 
   // Stage 5 (FNOL/claim-file model fix): loss information captured at step 1
