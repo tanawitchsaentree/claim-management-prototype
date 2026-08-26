@@ -25,52 +25,9 @@
           </div>
         </div>
 
-        @if (showNarrativeCta && !narrativeOpen) {
-          <div class="narrative-cta">
-            <nx-icon name="info-circle-o" class="narrative-cta__icon"></nx-icon>
-            <span class="narrative-cta__text">No reserves yet —</span>
-            <button nxPlainButton type="button" (click)="openNarrative()">Add explanation</button>
-          </div>
-        }
-
-        @if (narrativeOpen) {
-          <form class="narrative-form" [formGroup]="narrativeForm">
-            <p class="narrative-form__question">Why are reserves not yet estimated?</p>
-            <nx-radio-group formControlName="reasonKey" class="narrative-form__radios">
-              @for (opt of narrativeOptions; track opt.value) {
-                <nx-radio [value]="opt.value" labelSize="small">{{ opt.label }}</nx-radio>
-              }
-            </nx-radio-group>
-            <nx-formfield label="Additional notes (optional)" class="narrative-form__notes">
-              <textarea nxInput formControlName="notes" rows="2"
-                        placeholder="Any additional context..."></textarea>
-            </nx-formfield>
-            <div class="narrative-form__actions">
-              <button nxButton="secondary small" type="button" (click)="onCancelNarrative()">Cancel</button>
-              <button nxButton="primary small" type="button"
-                      [disabled]="narrativeForm.invalid"
-                      (click)="onSaveNarrative()">Save</button>
-            </div>
-          </form>
-        }
-
-        @if (showNarrativeSaved && !narrativeOpen) {
-          <div class="narrative-saved">
-            <div class="narrative-saved__row">
-              <nx-icon name="info-circle-o" class="narrative-saved__icon"></nx-icon>
-              <span class="narrative-saved__reason">{{ narrativeReasonLabel }}</span>
-              <button nxPlainButton type="button" (click)="openNarrative()">Edit</button>
-            </div>
-            @if (narrative?.notes) {
-              <p class="narrative-saved__notes">{{ narrative!.notes }}</p>
-            }
-            @if (narrative?.savedAt) {
-              <p class="narrative-saved__timestamp">
-                Saved {{ narrative!.savedAt | date:'dd-MM-yyyy HH:mm' }}
-              </p>
-            }
-          </div>
-        }
+        <app-reserve-narrative-panel
+          [narrative]="narrative" [policyNumber]="policyNumber" [totalReserve]="totalReserve"
+          (narrativeSaved)="onNarrativeSaved()"></app-reserve-narrative-panel>
       </div>
 
       <div class="reserves-toolbar">

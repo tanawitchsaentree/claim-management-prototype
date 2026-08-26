@@ -1,7 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { animate, style, transition, trigger, query, stagger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -11,28 +10,25 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxTabsModule } from '@allianz/ng-aquila/tabs';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
-import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { Reserve, ReserveNarrative, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, DamagedItem, SubReserve, CoInsuranceFlag } from '../../../../core/models/reserve.model';
-import { LookupOption } from '../../../../core/models/lookup.model';
 import { AddReserveModalComponent, AddReserveResult } from '../../components/add-reserve-modal/add-reserve-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { ReserveNarrativePanelComponent } from './components/reserve-narrative-panel/reserve-narrative-panel.component';
 
 @Component({
   selector: 'app-step-reserves',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     NxButtonModule,
     NxIconModule,
     NxTableModule,
@@ -40,7 +36,6 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     NxFormfieldModule,
     NxInputModule,
     NxDropdownModule,
-    NxRadioModule,
     NxContextMenuModule,
     NxModalModule,
     NxSwitcherModule,
@@ -48,6 +43,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     ConfirmDialogComponent,
     WizardFooterComponent,
     EmptyStateComponent,
+    ReserveNarrativePanelComponent,
   ],
   templateUrl: './step-reserves.component.html',
   styleUrl: './step-reserves.component.scss',
@@ -87,23 +83,14 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
   ],
 })
 export class StepReservesComponent implements OnInit, OnDestroy {
-  private readonly fb           = inject(FormBuilder);
   private readonly reservesSvc  = inject(MockReservesService);
   private readonly fnolState    = inject(FnolStateService);
-  private readonly lookupSvc    = inject(MockLookupService);
   private readonly dialogSvc    = inject(NxDialogService);
   private readonly router       = inject(Router);
   private readonly toast        = inject(ToastService);
 
   readonly data$      = new BehaviorSubject<ReservesPolicyData | null>(null);
   readonly typeLabels = RESERVE_TYPE_LABELS;
-
-  narrativeOptions: LookupOption[] = [];
-  narrativeOpen = false;
-  narrativeForm = this.fb.group({
-    reasonKey: ['', Validators.required],
-    notes:     [''],
-  });
 
   // Master/detail squeeze mode + expandable rows
   readonly selectedSection = signal<Reserve | null>(null);
@@ -386,30 +373,15 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
   get narrative(): ReserveNarrative | undefined { return this.data$.value?.narrative; }
 
-  // State 1: totalReserve=0, no saved narrative (or archived)
-  get showNarrativeCta(): boolean {
-    const n = this.narrative;
-    return this.totalReserve === 0 && (!n || !!n.archivedAt);
-  }
-
-  // State 3: totalReserve=0, narrative saved and not archived
-  get showNarrativeSaved(): boolean {
-    const n = this.narrative;
-    return this.totalReserve === 0 && !!n && !n.archivedAt;
-  }
-
-  get narrativeReasonLabel(): string {
-    const n = this.narrative;
-    if (!n) return '';
-    return this.narrativeOptions.find(o => o.value === n.reasonKey)?.label ?? n.reasonKey;
-  }
-
   async ngOnInit(): Promise<void> {
     if (!this.fnolState.selectedPolicy && !this.fnolState.selectedClient && !this.fnolState.path) {
       this.router.navigate(['/fnol/search']);
       return;
     }
-    this.narrativeOptions = await firstValueFrom(this.lookupSvc.getNarrativeOptions());
+    this.loadReserves();
+  }
+
+  onNarrativeSaved(): void {
     this.loadReserves();
   }
 
@@ -423,34 +395,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   }
 
   trackByReserve(_: number, r: Reserve): string { return r.reserveId; }
-
-  // ── Null-reserve explanation ─────────────────────────────────────────────────
-
-  openNarrative(): void {
-    this.narrativeOpen = true;
-    const n = this.narrative;
-    if (n) this.narrativeForm.patchValue({ reasonKey: n.reasonKey, notes: n.notes ?? '' });
-    else   this.narrativeForm.reset();
-  }
-
-  onCancelNarrative(): void {
-    this.narrativeOpen = false;
-    this.narrativeForm.reset();
-  }
-
-  async onSaveNarrative(): Promise<void> {
-    if (this.narrativeForm.invalid) { this.narrativeForm.markAllAsTouched(); return; }
-    const { reasonKey, notes } = this.narrativeForm.value;
-    const narrative: ReserveNarrative = {
-      reasonKey: reasonKey!,
-      notes:     notes || undefined,
-      savedAt:   new Date().toISOString(),
-    };
-    await firstValueFrom(this.reservesSvc.setNarrative(this.policyNumber, narrative));
-    this.narrativeOpen = false;
-    this.loadReserves();
-    this.toast.success('Explanation saved');
-  }
 
   // ── Add reserve ─────────────────────────────────────────────────────────────
 
