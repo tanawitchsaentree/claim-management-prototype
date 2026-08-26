@@ -116,20 +116,20 @@
             }
           </div>
 
-          <!-- Claims scope selector — every role gets "My claims"; Group is KCM-only (they're the ones who own a group) -->
-          <div class="scope-tabs">
-            <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'mine'"  (click)="setClaimsScope('mine')">My claims</button>
+          <!-- Scope + date range — shared context for both tabs below, set once per session rather
+               than toggled per visit. De-emphasized (text-weight, no pill fill) so they don't compete
+               visually with the Open/Closed/All status filter, which is the control actually used often.
+               Date range default is still a PLACEHOLDER; confirm with business per PI 2026.3 UI/UX alignment. -->
+          <div class="scope-tabs scope-tabs--meta">
+            <button class="scope-tab scope-tab--meta" [class.scope-tab--active]="claimsScope() === 'mine'"  (click)="setClaimsScope('mine')">My claims</button>
             @if (auth.isKcm()) {
-              <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'group'" (click)="setClaimsScope('group')">Group claims</button>
+              <button class="scope-tab scope-tab--meta" [class.scope-tab--active]="claimsScope() === 'group'" (click)="setClaimsScope('group')">Group claims</button>
             }
-            <button class="scope-tab" [class.scope-tab--active]="claimsScope() === 'all'"   (click)="setClaimsScope('all')">All</button>
-          </div>
-
-          <!-- Default date range — PLACEHOLDER default (Last 30 days); confirm with business per PI 2026.3 UI/UX alignment open point -->
-          <div class="scope-tabs scope-tabs--secondary">
-            <button class="scope-tab" [class.scope-tab--active]="claimsDateRange() === '30'"  (click)="setClaimsDateRange('30')">Last 30 days</button>
-            <button class="scope-tab" [class.scope-tab--active]="claimsDateRange() === '90'"  (click)="setClaimsDateRange('90')">Last 90 days</button>
-            <button class="scope-tab" [class.scope-tab--active]="claimsDateRange() === 'all'" (click)="setClaimsDateRange('all')">All time</button>
+            <button class="scope-tab scope-tab--meta" [class.scope-tab--active]="claimsScope() === 'all'"   (click)="setClaimsScope('all')">All</button>
+            <span class="scope-tabs__sep" aria-hidden="true">·</span>
+            <button class="scope-tab scope-tab--meta" [class.scope-tab--active]="claimsDateRange() === '30'"  (click)="setClaimsDateRange('30')">Last 30 days</button>
+            <button class="scope-tab scope-tab--meta" [class.scope-tab--active]="claimsDateRange() === '90'"  (click)="setClaimsDateRange('90')">Last 90 days</button>
+            <button class="scope-tab scope-tab--meta" [class.scope-tab--active]="claimsDateRange() === 'all'" (click)="setClaimsDateRange('all')">All time</button>
           </div>
 
           <div class="portfolio-tabs">
