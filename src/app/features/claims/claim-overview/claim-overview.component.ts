@@ -6,8 +6,6 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
-import { NxTableModule } from '@allianz/ng-aquila/table';
-import { NxPaginationModule } from '@allianz/ng-aquila/pagination';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -15,7 +13,6 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
@@ -41,6 +38,8 @@ import { FileRestriction } from '../../../core/models/claim-overview.model';
 import { RecoveryPotentialCardComponent, RecoveryPotentialUpdated } from './components/recovery-potential-card/recovery-potential-card.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import { MassEventCardComponent, MassEventChanged } from './components/mass-event-card/mass-event-card.component';
+import { PendingTasksWidgetComponent } from './components/pending-tasks-widget/pending-tasks-widget.component';
+import { RecentActivitiesCardComponent } from './components/recent-activities-card/recent-activities-card.component';
 import {
   ReassignClaimModalComponent,
   ReassignClaimModalData,
@@ -69,8 +68,6 @@ const EMPTY_VM: OverviewVM = {
   massEvent: null,
 };
 
-const TASKS_PAGE_SIZE = 10;
-
 @Component({
   selector: 'app-claim-overview',
   standalone: true,
@@ -80,19 +77,18 @@ const TASKS_PAGE_SIZE = 10;
     NxIconModule,
     NxButtonModule,
     NxSpinnerModule,
-    NxTableModule,
-    NxPaginationModule,
     NxTooltipModule,
     NxLinkModule,
     NxMessageModule,
     NxModalModule,
     StatusChipComponent,
     AppDatePipe,
-    EmptyStateComponent,
     ClaimPreviewDirective,
     RecoveryPotentialCardComponent,
     FileRestrictionCardComponent,
     MassEventCardComponent,
+    PendingTasksWidgetComponent,
+    RecentActivitiesCardComponent,
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss',
@@ -115,8 +111,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
-  readonly tasksPageSize = TASKS_PAGE_SIZE;
-  tasksPage = 1;
 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
   readonly closedSectionsCount = signal<number>(0);
@@ -367,19 +361,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     if (score >= 4) return 'high';
     if (score >= 3) return 'medium';
     return 'low';
-  }
-
-  pendingTasks(tasks: Task[]): Task[] {
-    return tasks.filter(t => t.status !== 'done');
-  }
-
-  taskCountByPriority(tasks: Task[], priority: string): number {
-    return this.pendingTasks(tasks).filter(t => t.priority === priority).length;
-  }
-
-  pagedTasks(tasks: Task[]): Task[] {
-    const start = (this.tasksPage - 1) * TASKS_PAGE_SIZE;
-    return tasks.slice(start, start + TASKS_PAGE_SIZE);
   }
 
   onMassEventChanged(event: MassEventChanged): void {

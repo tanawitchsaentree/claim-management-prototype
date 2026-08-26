@@ -1,0 +1,115 @@
+@use '../../card-shell' as shell;
+
+.co-card { @include shell.card; }
+.co-card-title { @include shell.card-title; }
+.co-card-title--inline { margin-bottom: 0; }
+
+.pt-collapse { @include shell.collapse; }
+.pt-collapse__inner { overflow: hidden; }
+
+.co-icon-btn { @include shell.icon-btn; }
+
+.pt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.pt-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.pt-legend__dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--high   { background: var(--claim-priority-high); }
+  &--medium { background: var(--claim-priority-medium); }
+  &--low    { background: var(--claim-priority-low); }
+}
+
+.pt-legend__text {
+  margin-right: 8px;
+}
+
+.pt-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.pt-table {
+  width: 100%;
+}
+
+.pt-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  nx-icon { font-size: 14px; color: var(--text-muted); }
+}
+
+.pt-row:hover td { background: var(--claim-overlay-hover); }
+
+.pt-col--type   { white-space: nowrap; }
+.pt-col--action { width: 90px; white-space: nowrap; }
+.pt-col--date   { white-space: nowrap; }
+.pt-col--desc   { max-width: 320px; }
+.pt-col--key    { white-space: nowrap; }
+
+.pt-cell-truncate {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.pt-task-key-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pt-task-key {
+  color: var(--interactive-primary);
+  font-weight: 500;
+}
+
+.pt-launch-icon {
+  color: var(--interactive-primary);
+  font-size: 14px;   // match td text — no size="s" (24px) on the nx-icon
+  flex-shrink: 0;
+}
+
+.pt-pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.pt-action-link {
+  color: var(--interactive-primary);
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover { text-decoration: underline; }
+}

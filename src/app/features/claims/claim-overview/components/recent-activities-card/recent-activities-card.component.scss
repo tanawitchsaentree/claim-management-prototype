@@ -1,0 +1,53 @@
+@use '../../card-shell' as shell;
+
+.co-card { @include shell.card; }
+.co-card-title { @include shell.card-title; }
+
+.pt-collapse { @include shell.collapse; }
+.pt-collapse__inner { overflow: hidden; }
+
+.pt-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  nx-icon { font-size: 14px; color: var(--text-muted); }
+}
+
+.co-activities-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0;
+
+  .co-card-title { margin: 0; }
+}
+
+.act-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.act-table { width: 100%; }
+
+.act-col--nowrap { white-space: nowrap; }
+
+.act-col--muted { color: var(--text-muted); }
+
+.act-log-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--interactive-primary);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}

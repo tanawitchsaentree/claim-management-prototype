@@ -1,0 +1,100 @@
+<section class="co-card">
+  <div class="pt-header">
+    <h2 class="co-card-title co-card-title--inline">
+      @if (pendingTasks().length === 0) {
+        All tasks done
+      } @else {
+        {{ pendingTasks().length }} Pending task{{ pendingTasks().length === 1 ? '' : 's' }}
+      }
+    </h2>
+    <div class="pt-header__actions">
+      <button class="co-icon-btn" type="button" title="More options" aria-label="More options">
+        <nx-icon name="ellipsis-v" size="s"></nx-icon>
+      </button>
+      <button class="co-icon-btn" type="button" (click)="toggled.emit()"
+              [title]="expanded ? 'Collapse' : 'Expand'"
+              [attr.aria-label]="expanded ? 'Collapse' : 'Expand'"
+              [attr.aria-expanded]="expanded">
+        <nx-icon [name]="expanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-collapse" [class.pt-collapse--open]="expanded"><div class="pt-collapse__inner">
+    <!-- Priority legend — only shown when there are pending tasks -->
+    @if (pendingTasks().length > 0) {
+      <div class="pt-legend">
+        @if (taskCountByPriority('high') > 0) {
+          <span class="pt-legend__dot pt-legend__dot--high"></span>
+          <span class="pt-legend__text"><strong>{{ taskCountByPriority('high') }}</strong> high priority</span>
+        }
+        @if (taskCountByPriority('medium') > 0) {
+          <span class="pt-legend__dot pt-legend__dot--medium"></span>
+          <span class="pt-legend__text"><strong>{{ taskCountByPriority('medium') }}</strong> medium priority</span>
+        }
+        @if (taskCountByPriority('low') > 0) {
+          <span class="pt-legend__dot pt-legend__dot--low"></span>
+          <span class="pt-legend__text"><strong>{{ taskCountByPriority('low') }}</strong> low priority</span>
+        }
+      </div>
+    }
+
+    <!-- Table -->
+    <div class="pt-table-wrap" tabindex="0">
+    <table nxTable sticky="last" class="pt-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell class="pt-col--type"><span class="pt-th-sort">Task type <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th nxHeaderCell class="pt-col--desc">Description</th>
+          <th nxHeaderCell><span class="pt-th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th nxHeaderCell><span class="pt-th-sort">Priority <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th nxHeaderCell class="pt-col--key">Task key</th>
+          <th nxHeaderCell class="pt-col--date"><span class="pt-th-sort">Last edited <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th nxHeaderCell class="pt-col--action">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (task of pagedTasks(); track task.taskId) {
+          <tr nxTableRow class="pt-row">
+            <td nxCell class="pt-col--type">{{ task.taskType }}</td>
+            <td nxCell class="pt-col--desc">
+              <span class="pt-cell-truncate">{{ task.description }}</span>
+            </td>
+            <td nxCell><app-status-chip [status]="task.status" domain="task"></app-status-chip></td>
+            <td nxCell>{{ task.priority | titlecase }}</td>
+            <td nxCell class="pt-col--key">
+              <span class="pt-task-key-cell">
+                <span class="pt-task-key">{{ task.taskKey }}</span>
+                <nx-icon name="launch" class="pt-launch-icon"></nx-icon>
+              </span>
+            </td>
+            <td nxCell class="pt-col--date">{{ task.dueDate | appDate }}</td>
+            <td nxCell><a class="pt-action-link">See details</a></td>
+          </tr>
+        }
+        @empty {
+          <tr nxTableRow>
+            <td nxCell colspan="7">
+              <app-empty-state message="No tasks found."></app-empty-state>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    </div>
+
+    @if (tasks.length > tasksPageSize) {
+      <div class="pt-pagination">
+        <nx-pagination
+          [count]="tasks.length"
+          [page]="tasksPage()"
+          [perPage]="tasksPageSize"
+          type="advanced"
+          (goPrev)="setPage(tasksPage() - 1)"
+          (goNext)="setPage(tasksPage() + 1)"
+          (goPage)="setPage($event)">
+        </nx-pagination>
+      </div>
+    }
+  </div></div>
+</section>

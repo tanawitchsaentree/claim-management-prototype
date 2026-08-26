@@ -1,0 +1,43 @@
+<section class="co-card">
+  <button class="co-activities-toggle" (click)="toggled.emit()">
+    <span class="co-card-title">Recent activities</span>
+    <nx-icon [name]="expanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+  </button>
+
+  <div class="pt-collapse" [class.pt-collapse--open]="expanded"><div class="pt-collapse__inner">
+    <div class="act-table-wrap" tabindex="0">
+      <table nxTable class="act-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell><span class="pt-th-sort">User <nx-icon name="chevron-down-small"></nx-icon></span></th>
+            <th nxHeaderCell><span class="pt-th-sort">Timestamp <nx-icon name="chevron-down-small"></nx-icon></span></th>
+            <th nxHeaderCell><span class="pt-th-sort">Object type <nx-icon name="chevron-down-small"></nx-icon></span></th>
+            <th nxHeaderCell><span class="pt-th-sort">Attribute <nx-icon name="chevron-down-small"></nx-icon></span></th>
+            <th nxHeaderCell>Value old</th>
+            <th nxHeaderCell>Value new</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (act of activities; track act.id) {
+            <tr nxTableRow>
+              <td nxCell class="act-col--nowrap">{{ act.user }}</td>
+              <td nxCell class="act-col--nowrap">{{ act.timestamp | appDate:'withTime' }}</td>
+              <td nxCell class="act-col--nowrap">{{ act.objectType }}</td>
+              <td nxCell>{{ act.attribute }}</td>
+              <td nxCell class="act-col--muted">{{ act.valueOld ?? '–' }}</td>
+              <td nxCell>{{ act.valueNew ?? '–' }}</td>
+            </tr>
+          }
+          @empty {
+            <tr nxTableRow>
+              <td nxCell colspan="6" class="act-empty">
+                <app-empty-state message="No recent activities found."></app-empty-state>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <a class="act-log-link">Go to Activities log</a>
+  </div></div>
+</section>
