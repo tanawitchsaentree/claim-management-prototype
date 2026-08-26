@@ -90,15 +90,22 @@ $action-gap: 8px;
 }
 
 @mixin footer {
-  // Pull footer out to the wrapper edges (NDBX pattern). Cancels the
-  // NxModalContainer's 40px bottom + horizontal padding so the footer's
-  // border-top sits flush against the dialog's bottom-left/right corners.
+  // Pull footer out to the wrapper's LEFT/RIGHT edges only (NDBX pattern) —
+  // cancels NxModalContainer's horizontal padding so the border-top sits
+  // flush against the dialog's side edges. Deliberately NOT pulled out on
+  // the bottom too: shell's :host has overflow:hidden (required — see
+  // shell's own comment), and a negative bottom margin here would push the
+  // footer's rendered box below :host's own auto-computed height, which
+  // clip's the buttons silently regardless of viewport size (found via
+  // screenshot audit 2026-08-26 — every modal using this mixin had its
+  // footer buttons cropped to a sliver). Padding-bottom + the wrapper's own
+  // 40px bottom padding is enough breathing room without that trick.
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: $action-gap;
   padding: $footer-pt var(--modal-padding) $footer-pt;
-  margin: 0 calc(-1 * var(--modal-padding)) calc(-1 * var(--modal-padding));
+  margin: 0 calc(-1 * var(--modal-padding));
   border-top: 1px solid var(--ui-04);
   flex-shrink: 0;
 }
