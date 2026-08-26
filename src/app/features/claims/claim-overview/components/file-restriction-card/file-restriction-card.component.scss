@@ -1,0 +1,154 @@
+@use '../../card-shell' as shell;
+
+.co-card { @include shell.card; }
+.co-card-title { @include shell.card-title; }
+
+.co-restrict-toggle-row {
+  display: flex;
+  align-items: center;
+}
+
+.co-restrict-body {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-03);
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // section-to-section gap
+}
+
+.co-restrict-reason-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.co-restrict-field {
+  flex: 1;
+  min-width: 160px;
+  max-width: 280px;
+}
+
+.co-restrict-access {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  &__heading {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+    margin: 0 0 4px; // heading → first item (close — same group)
+  }
+
+  &__empty {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+    margin: 0 0 12px;
+  }
+}
+
+.co-restrict-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--ui-03);
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+}
+
+.co-restrict-search {
+  margin-top: 0;
+  margin-bottom: 12px; // search → "Users with access" heading (far = different group)
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+
+  &__input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--ui-04);
+    border-radius: 4px;
+    padding: 0 12px;
+    height: 40px;
+    background: var(--ui-01);
+
+    &:focus-within {
+      border-color: var(--interactive-primary);
+      outline: 2px solid var(--interactive-primary);
+      outline-offset: 0;
+    }
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+
+    &::placeholder { color: var(--text-muted); }
+  }
+
+  &__icon {
+    color: var(--text-muted);
+    font-size: var(--paragraph-01-font-size);
+    flex-shrink: 0;
+  }
+}
+
+.co-restrict-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px var(--claim-overlay-shadow-light);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.co-restrict-result {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover { background: var(--hover-secondary); }
+
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+}

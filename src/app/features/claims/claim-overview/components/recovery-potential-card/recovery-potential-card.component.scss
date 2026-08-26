@@ -1,0 +1,25 @@
+@use '../../card-shell' as shell;
+
+.co-card { @include shell.card; }
+.co-card-title { @include shell.card-title; }
+
+.co-value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.co-recovery-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.co-recovery-edit-btn {
+  font-size: var(--paragraph-03-font-size);
+}
+
+.co-recovery-note {
+  margin: 6px 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}

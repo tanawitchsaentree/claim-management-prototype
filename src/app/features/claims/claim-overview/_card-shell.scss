@@ -1,0 +1,79 @@
+// Shared "co-card" shell — claim-overview.component.ts was split into several
+// child card/widget components (recovery, file-restriction, mass-event,
+// pending-tasks, recent-activities); each one still renders a `.co-card`
+// section, but Angular component styles don't cross component boundaries, so
+// every one of them (parent included) @use's this partial instead of
+// redeclaring the shell. Same pattern as shared/styles/_form-section.scss.
+
+@mixin card {
+  background: var(--general-background-color, #ffffff);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-xl);
+  margin-bottom: 16px;
+}
+
+@mixin card-title {
+  display: block;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  margin: 0 0 28px;
+
+  &:is(h2) {
+    font-size: var(--paragraph-01-font-size);
+    font-weight: 700;
+  }
+}
+
+@mixin card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+@mixin card-title-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+@mixin card-actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+// Expand/collapse grid-rows animation — used by the pending-tasks and
+// recent-activities cards.
+@mixin collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+
+  &--open {
+    grid-template-rows: 1fr;
+  }
+}
+
+@mixin icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-muted);
+
+  &:hover {
+    background: var(--claim-overlay-nav-hover);
+    color: var(--text-01);
+  }
+}

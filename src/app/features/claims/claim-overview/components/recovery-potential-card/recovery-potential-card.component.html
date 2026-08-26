@@ -1,0 +1,22 @@
+<section class="co-card">
+  <h2 class="co-card-title">Recovery potential</h2>
+  <div class="co-recovery-value">
+    @if (claim.recoveryPotential === 'yes') {
+      <app-status-chip [status]="'yes'" domain="recovery" [label]="'Yes'"></app-status-chip>
+    } @else if (claim.recoveryPotential === 'no') {
+      <app-status-chip [status]="'no'" domain="recovery" [label]="'No'"></app-status-chip>
+    } @else {
+      <span class="co-value">–</span>
+    }
+    @if (claim.status !== 'Closed') {
+      <nx-link class="co-recovery-edit-btn">
+        <a data-tour-id="co-recovery-potential-edit" (click)="openRecoveryPotentialModal()">
+          {{ claim.recoveryPotential ? 'Update' : 'Set' }}
+        </a>
+      </nx-link>
+    }
+  </div>
+  @if (claim.recoveryPotential === 'no' && claim.recoveryPotentialNote) {
+    <p class="co-recovery-note">{{ claim.recoveryPotentialNote }}</p>
+  }
+</section>

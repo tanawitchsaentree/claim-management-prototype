@@ -2,7 +2,6 @@ import { Component, inject, OnDestroy, OnInit, signal, effect } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -14,11 +13,6 @@ import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
-import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
-import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
-import { NxInputModule } from '@allianz/ng-aquila/input';
-import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock/services/mock-user-directory.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
@@ -46,19 +40,15 @@ import {
   ClaimReopenModalResult,
 } from './components/claim-reopen-modal/claim-reopen-modal.component';
 import {
-  RecoveryPotentialModalComponent,
-  RecoveryPotentialModalData,
-  RecoveryPotentialModalResult,
-} from './components/recovery-potential-modal/recovery-potential-modal.component';
-import {
   MassEventEditModalComponent,
   MassEventModalData,
   MassEventModalResult,
 } from '../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
-import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
-import { FileRestriction, RESTRICTION_REASONS, AccessListEntry } from '../../../core/models/claim-overview.model';
+import { FileRestriction } from '../../../core/models/claim-overview.model';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { AuthService } from '../../../core/services/auth';
+import { RecoveryPotentialCardComponent, RecoveryPotentialUpdated } from './components/recovery-potential-card/recovery-potential-card.component';
+import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import {
   MassEventSearchModalComponent,
   MassEventSearchModalData,
@@ -110,17 +100,14 @@ const TASKS_PAGE_SIZE = 10;
     NxLinkModule,
     NxMessageModule,
     NxModalModule,
-    NxSwitcherModule,
-    NxDropdownModule,
-    NxFormfieldModule,
-    NxInputModule,
-    ReactiveFormsModule,
     StatusChipComponent,
     AppDatePipe,
     EmptyStateComponent,
     ClaimPreviewDirective,
     ConfirmDialogComponent,
     MassEventSearchModalComponent,
+    RecoveryPotentialCardComponent,
+    FileRestrictionCardComponent,
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss',
@@ -140,7 +127,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly massEventSvc   = inject(MockMassEventService);
   readonly auth                   = inject(AuthService);
   private readonly toast          = inject(ToastService);
-  private readonly userDir        = inject(MockUserDirectoryService);
   private readonly sectionSvc    = inject(MockSectionService);
   private deregisterStage: (() => void) | null = null;
 
@@ -153,7 +139,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
 
   private readonly paramMap = toSignal(this.route.paramMap);
   private loadGeneration = 0;
-  private coUserSearchGeneration = 0;
 
   constructor() {
     // Reactivity bridge: reload whenever the route param OR the mock-state
@@ -163,20 +148,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       this.stateSvc.state();
       if (!params) return;
       void this.loadOverview(params.get('id') ?? 'CL-2025-001');
-    });
-
-    effect(() => {
-      const q = this.coUserSearchQuery();
-      const generation = ++this.coUserSearchGeneration;
-      if (!q || q.length < 2) {
-        this.coUserSearchResults.set([]);
-        return;
-      }
-      firstValueFrom(this.userDir.search(q)).then(results => {
-        if (generation !== this.coUserSearchGeneration) return; // stale — a newer query superseded this one
-        const addedIds = new Set(this.coAccessList().map(e => e.userId));
-        this.coUserSearchResults.set(results.filter(u => !addedIds.has(u.userId)));
-      });
     });
   }
 
@@ -210,7 +181,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         massEvent: massEvent ?? null,
       });
       if (overview.claim) {
-        this.initRestrictionForm(overview.claim);
         this.refreshClosedSectionsCount(overview.claim.claimId);
       }
     } catch {
@@ -308,42 +278,20 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.toast.success('Claim closed', `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`);
   }
 
-  async openRecoveryPotentialModal(claim: ClaimOverview): Promise<void> {
-    const current = claim.recoveryPotential ?? null;
-    const ref = this.dialogSvc.open(RecoveryPotentialModalComponent, {
-      data: { current } satisfies RecoveryPotentialModalData,
-      width: '400px',
-      maxWidth: '92vw',
-    });
-    const result = await firstValueFrom(ref.afterClosed()) as RecoveryPotentialModalResult | null | undefined;
-    if (!result || result.value === current) return;
+  onRecoveryUpdated({ claim, activity }: RecoveryPotentialUpdated): void {
     const cur = this.vm$.value;
     if (!cur.claim) return;
-    const note = result.value === 'no' ? result.note : undefined;
-    const activity: ClaimActivity = {
-      id: `act-${Date.now()}`,
-      claimId: claim.claimId,
-      user: claim.assignedHandler,
-      timestamp: new Date().toISOString(),
-      objectType: 'Claim',
-      attribute: 'Recovery potential',
-      valueOld: current,
-      valueNew: note ? `${result.value} — ${note}` : result.value,
-    };
     this.vm$.next({
       ...cur,
-      claim: {
-        ...cur.claim,
-        recoveryPotential: result.value,
-        recoveryPotentialNote: note,
-      },
+      claim: { ...cur.claim, recoveryPotential: claim.recoveryPotential, recoveryPotentialNote: claim.recoveryPotentialNote },
       activities: [activity, ...cur.activities],
     });
-    if (result.value === 'yes') {
-      this.toast.success('Recovery potential set to Yes', 'A task has been created for recovery analysis.');
-    } else {
-      this.toast.success('Recovery potential set to No');
-    }
+  }
+
+  onRestrictionChanged(restriction: FileRestriction): void {
+    const cur = this.vm$.value;
+    if (!cur.claim) return;
+    this.vm$.next({ ...cur, claim: { ...cur.claim, restriction } });
   }
 
   async openReassignModal(claim: ClaimOverview): Promise<void> {
@@ -437,20 +385,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     return 'low';
   }
 
-  priorityDotClass(priority: string): string {
-    return `dot--${priority}`;
-  }
-
   pendingTasks(tasks: Task[]): Task[] {
     return tasks.filter(t => t.status !== 'done');
   }
 
   taskCountByPriority(tasks: Task[], priority: string): number {
     return this.pendingTasks(tasks).filter(t => t.priority === priority).length;
-  }
-
-  formatAmount(amount: number, currency: string): string {
-    return new Intl.NumberFormat('de-DE', { style: 'currency', currency }).format(amount);
   }
 
   pagedTasks(tasks: Task[]): Task[] {
@@ -464,8 +404,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const data: MassEventModalData = { mode: 'view', event: me };
     // Use the same bottom-sheet panel as the admin Mass Events page so the
     // modal has a proper height constraint + scroll (the component's SCSS
-    // assumes the .me-edit-modal-panel wrapper).
-    this.dialogSvc.open(MassEventEditModalComponent, { data, panelClass: 'me-edit-modal-panel' });
+    // assumes the .bottom-sheet-modal-panel wrapper).
+    this.dialogSvc.open(MassEventEditModalComponent, { data, panelClass: 'bottom-sheet-modal-panel' });
   }
 
   // ── Mass Event linking ──────────────────────────────────────────────────────
@@ -477,7 +417,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const currentMassEventId = claim.massEventId;
     const ref = this.dialogSvc.open<MassEventSearchModalComponent, MassEventSearchModalData, MassEventSearchModalResult>(
       MassEventSearchModalComponent,
-      { data: { currentMassEventId }, panelClass: 'me-edit-modal-panel' },
+      { data: { currentMassEventId }, panelClass: 'bottom-sheet-modal-panel' },
     );
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
@@ -516,7 +456,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const data: MassEventModalData = { mode: 'create', existingIds: this.massEventSvc.allIds() };
     const ref = this.dialogSvc.open<MassEventEditModalComponent, MassEventModalData, MassEventModalResult | null>(
       MassEventEditModalComponent,
-      { data, panelClass: 'me-edit-modal-panel' },
+      { data, panelClass: 'bottom-sheet-modal-panel' },
     );
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return null;
@@ -601,75 +541,4 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
   }
 
-  // ── File restriction (BMPCC-10994) ─────────────────────────────────
-
-  readonly restrictionReasons = [...RESTRICTION_REASONS];
-
-  readonly restrictionForm = new FormGroup({
-    isRestricted: new FormControl(false),
-    reason:       new FormControl<string>(''),
-    otherReason:  new FormControl(''),
-  });
-
-  get isRestricted(): boolean { return !!this.restrictionForm.get('isRestricted')?.value; }
-  get selectedReason(): string { return this.restrictionForm.get('reason')?.value ?? ''; }
-  get isOtherReason(): boolean { return this.selectedReason === 'Other'; }
-  get restrictionToggle(): FormControl { return this.restrictionForm.get('isRestricted') as FormControl; }
-
-  readonly coAccessList = signal<AccessListEntry[]>([]);
-  readonly coUserSearchControl = new FormControl('');
-  readonly coUserSearchResults = signal<UserDirectoryEntry[]>([]);
-  private readonly coUserSearchQuery = toSignal(
-    this.coUserSearchControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()),
-    { initialValue: this.coUserSearchControl.value },
-  );
-
-  private initRestrictionForm(claim: ClaimOverview): void {
-    const r = claim.restriction;
-    this.restrictionForm.patchValue({
-      isRestricted: r?.isRestricted ?? false,
-      reason: r?.reason ?? '',
-    });
-    this.coAccessList.set(r?.accessList ?? []);
-  }
-
-  onToggleRestriction(checked: boolean): void {
-    this.restrictionForm.get('isRestricted')!.setValue(checked);
-    if (!checked) {
-      this.restrictionForm.get('reason')!.setValue('');
-      this.coAccessList.set([]);
-    }
-    this.saveRestrictionToClaim();
-  }
-
-  saveRestrictionToClaim(): void {
-    const cur = this.vm$.value;
-    if (!cur.claim) return;
-    const isRestricted = this.isRestricted;
-    const restriction: FileRestriction = {
-      isRestricted,
-      reason: isRestricted ? (this.isOtherReason ? (this.restrictionForm.get('otherReason')?.value ?? '') : this.selectedReason) : undefined,
-      accessList: isRestricted ? this.coAccessList() : [],
-    };
-    this.vm$.next({ ...cur, claim: { ...cur.claim, restriction } });
-  }
-
-  addCoUser(user: UserDirectoryEntry): void {
-    const entry: AccessListEntry = {
-      userId:  user.userId,
-      name:    user.name,
-      role:    user.role,
-      email:   user.email,
-      addedAt: new Date().toISOString().split('T')[0],
-    };
-    this.coAccessList.update(list => [...list, entry]);
-    this.coUserSearchControl.setValue('');
-    this.coUserSearchResults.set([]);
-    this.saveRestrictionToClaim();
-  }
-
-  removeCoUser(userId: string): void {
-    this.coAccessList.update(list => list.filter(e => e.userId !== userId));
-    this.saveRestrictionToClaim();
-  }
 }
