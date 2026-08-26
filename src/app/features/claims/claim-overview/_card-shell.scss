@@ -60,6 +60,36 @@
   }
 }
 
+// Grid-field primitives — needed by any card whose template renders a
+// `.co-field` inside the General Information card's `.co-grid` (e.g.
+// mass-event-card, which is a grid item nested one level down from the
+// parent's grid; its host needs `display: contents` to not break the grid).
+@mixin field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@mixin field-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+@mixin field-value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+
+  &--with-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+}
+
 @mixin icon-btn {
   display: flex;
   align-items: center;
