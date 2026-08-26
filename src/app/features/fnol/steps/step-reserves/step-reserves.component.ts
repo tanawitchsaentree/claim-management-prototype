@@ -21,7 +21,6 @@ import { MockReservesService } from '../../../../core/mock/services/mock-reserve
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { Reserve, ReserveNarrative, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, DamagedItem, SubReserve, CoInsuranceFlag } from '../../../../core/models/reserve.model';
 import { LookupOption } from '../../../../core/models/lookup.model';
-import { ReserveDetailPanelStubComponent } from '../../components/reserve-detail-panel-stub/reserve-detail-panel-stub.component';
 import { AddReserveModalComponent, AddReserveResult } from '../../components/add-reserve-modal/add-reserve-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
@@ -46,7 +45,6 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     NxModalModule,
     NxSwitcherModule,
     NxTabsModule,
-    ReserveDetailPanelStubComponent,
     ConfirmDialogComponent,
     WizardFooterComponent,
     EmptyStateComponent,
@@ -106,9 +104,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     reasonKey: ['', Validators.required],
     notes:     [''],
   });
-
-  selectedReserve: Reserve | null = null;
-  panelOpen = false;
 
   // Master/detail squeeze mode + expandable rows
   readonly selectedSection = signal<Reserve | null>(null);
@@ -527,12 +522,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
   // ── Kebab actions ────────────────────────────────────────────────────────────
 
-  onViewDetails(reserve: Reserve): void {
-    this.selectedReserve = reserve;
-    this.panelOpen = true;
-    this.lockBodyScroll();
-  }
-
   async onEditReserve(reserve: Reserve): Promise<void> {
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
       data: { policyNumber: this.policyNumber, prefill: reserve },
@@ -558,14 +547,6 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     await this.autoArchiveNarrativeIfNeeded();
     this.loadReserves();
     this.toast.info('Reserve removed', `${reserve.partyName} — ${reserve.damageType}`);
-  }
-
-  // ── Panel ────────────────────────────────────────────────────────────────────
-
-  onClosePanel(): void {
-    this.panelOpen = false;
-    this.unlockBodyScroll();
-    setTimeout(() => { if (!this.panelOpen) this.selectedReserve = null; }, 300);
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────
