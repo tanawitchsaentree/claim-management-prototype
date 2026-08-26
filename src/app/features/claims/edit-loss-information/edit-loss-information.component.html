@@ -63,7 +63,6 @@
         <span class="eli-value">{{ claimDescription.value || 'Not provided' }}</span>
         @if (fieldChanged('claimDescription')) {
           <span class="eli-was">was: {{ originalClaimDescription() || 'Not provided' }}</span>
-          <nx-link size="small"><a (click)="revertField('claimDescription')">Revert</a></nx-link>
         }
         <nx-link size="small"><a (click)="startEdit('claimDescription')">{{ claimDescription.value ? 'Change' : 'Add' }}</a></nx-link>
       </div>
@@ -72,7 +71,6 @@
         <textarea nxInput formControlName="claimDescription" rows="3" [maxlength]="maxDesc"></textarea>
         <nx-hint nxFormfieldHint>General claim summary — shown on the claim overview. {{ (claimDescription.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
       </nx-formfield>
-      <nx-link size="small"><a (click)="closeEdit()">Done</a></nx-link>
     }
   </section>
 
@@ -86,7 +84,6 @@
         <span class="eli-value">{{ causeOfLossDisplay || 'Not provided' }}</span>
         @if (fieldChanged('causeOfLoss')) {
           <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
-          <nx-link size="small"><a (click)="revertField('causeOfLoss')">Revert</a></nx-link>
         }
         <nx-link size="small"><a (click)="startEdit('causeOfLoss')">{{ causeOfLossDisplay ? 'Change' : 'Add' }}</a></nx-link>
       </div>
@@ -96,7 +93,6 @@
           placeholder="Select cause of loss" formControlName="causeOfLoss">
         </nx-multi-select>
       </nx-formfield>
-      <nx-link size="small"><a (click)="closeEdit()">Done</a></nx-link>
     }
 
     <hr class="eli-divider" />
@@ -107,7 +103,6 @@
         <span class="eli-value">{{ dateGroupDisplay }}</span>
         @if (fieldChanged('dateGroup')) {
           <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
-          <nx-link size="small"><a (click)="revertField('dateGroup')">Revert</a></nx-link>
         }
         <nx-link size="small"><a (click)="startEdit('dateGroup')">Change</a></nx-link>
       </div>
@@ -139,7 +134,6 @@
       @if (dateOfLoss.errors?.['dateOrder']) {
         <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
       }
-      <nx-link size="small"><a (click)="closeEdit()">Done</a></nx-link>
     }
 
     <hr class="eli-divider" />
@@ -150,7 +144,6 @@
         <span class="eli-value">{{ form.get('lossDescription')?.value || 'Not provided' }}</span>
         @if (fieldChanged('lossDescription')) {
           <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
-          <nx-link size="small"><a (click)="revertField('lossDescription')">Revert</a></nx-link>
         }
         <nx-link size="small"><a (click)="startEdit('lossDescription')">{{ form.get('lossDescription')?.value ? 'Change' : 'Add' }}</a></nx-link>
       </div>
@@ -160,7 +153,6 @@
         <nx-hint nxFormfieldHint>What happened during the loss event. {{ (form.get('lossDescription')?.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
         <nx-error nxFormfieldError *ngIf="submitAttempted && form.get('lossDescription')?.errors?.['required']">Loss description is required</nx-error>
       </nx-formfield>
-      <nx-link size="small"><a (click)="closeEdit()">Done</a></nx-link>
     }
 
   </section>
@@ -173,7 +165,7 @@
     <h2 class="eli-section-heading">Locations of loss</h2>
     <p class="eli-section-desc">Update the location of loss below.</p>
     @if (fieldChanged('lossLocation')) {
-      <p class="eli-was">was: {{ originalLossLocationDisplay }} · <nx-link size="small"><a (click)="revertField('lossLocation')">Revert</a></nx-link></p>
+      <p class="eli-was">was: {{ originalLossLocationDisplay }}</p>
     }
     <app-location-picker
       [policyNumber]="policyNumber()"
