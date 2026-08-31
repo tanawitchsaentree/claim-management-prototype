@@ -30,7 +30,10 @@
 
   <!-- Change ledger — the diff modal's content, promoted to where it can
        prevent a mistake instead of only reporting one at the last second.
-       Present only when there's something to show. -->
+       Present only when there's something to show. No per-field Revert —
+       Discard (whole-form) and the Confirm/Cancel step on save are the only
+       undo paths now (Marlene feedback, 2026-08-31): a per-row Revert was a
+       second, redundant way to back out of a change. -->
   @if (pendingChanges().length > 0) {
     <section class="eli-ledger">
       <h2 class="eli-ledger__title">Pending changes</h2>
@@ -43,38 +46,15 @@
               →
               <span class="eli-ledger__now">{{ d.updated || 'Not provided' }}</span>
             </span>
-            <nx-link size="small"><a (click)="revertByLabel(d.label)">Revert</a></nx-link>
           </li>
         }
       </ul>
     </section>
   }
 
-  <!-- Card 1: Claim details — claim-level fields, saved to ClaimOverview.
-       Kept in its own card so "Claim description" cannot be mistaken for the
-       "Loss description" in the loss-information card below. -->
-  <section class="eli-card">
-    <h2 class="eli-section-heading">Claim details</h2>
-    <p class="eli-section-desc">Applies to the claim as a whole, not to a single loss event.</p>
-
-    @if (!isEditing('claimDescription')) {
-      <div class="eli-field" [class.eli-field--changed]="fieldChanged('claimDescription')">
-        <span class="eli-label">Claim description</span>
-        <span class="eli-value">{{ claimDescription.value || 'Not provided' }}</span>
-        @if (fieldChanged('claimDescription')) {
-          <span class="eli-was">was: {{ originalClaimDescription() || 'Not provided' }}</span>
-        }
-        <nx-link size="small"><a (click)="startEdit('claimDescription')">{{ claimDescription.value ? 'Change' : 'Add' }}</a></nx-link>
-      </div>
-    } @else {
-      <nx-formfield label="Claim description" class="eli-full-width">
-        <textarea nxInput formControlName="claimDescription" rows="3" [maxlength]="maxDesc"></textarea>
-        <nx-hint nxFormfieldHint>General claim summary — shown on the claim overview. {{ (claimDescription.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
-      </nx-formfield>
-    }
-  </section>
-
-  <!-- Card 2: Loss information -->
+  <!-- Card: Loss information — Claim description card removed entirely
+       (Marlene feedback, 2026-08-31): users update Loss description instead,
+       so a separate Claim-level description field was redundant. -->
   <section class="eli-card">
     <h2 class="eli-section-heading">Loss information</h2>
 
@@ -85,13 +65,43 @@
         @if (fieldChanged('causeOfLoss')) {
           <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
         }
-        <nx-link size="small"><a (click)="startEdit('causeOfLoss')">{{ causeOfLossDisplay ? 'Change' : 'Add' }}</a></nx-link>
+        <nx-link size="small"><a (click)="startEdit('causeOfLoss')">{{ causeOfLossDisplay ? 'Update' : 'Add' }}</a></nx-link>
       </div>
     } @else {
       <nx-formfield label="Cause of loss" class="eli-full-width">
         <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
-          placeholder="Select cause of loss" formControlName="causeOfLoss">
+          placeholder="Select cause of loss" formControlName="causeOfLoss"
+          (selectionChange)="onCauseOfLossChange($event)">
         </nx-multi-select>
+      </nx-formfield>
+      @if (showSpecifyOtherCause) {
+        <nx-formfield label="Specify other cause of loss" class="eli-full-width">
+          <input nxInput formControlName="specifyOtherCauseOfLoss" maxlength="100"
+            data-testid="specify-other-cause-of-loss-input" />
+          <nx-error nxFormfieldError *ngIf="submitAttempted && form.get('specifyOtherCauseOfLoss')?.invalid">
+            Describe the cause of loss
+          </nx-error>
+        </nx-formfield>
+      }
+    }
+
+    <hr class="eli-divider" />
+
+    @if (!isEditing('typeOfDamage')) {
+      <div class="eli-field" [class.eli-field--changed]="fieldChanged('typeOfDamage')">
+        <span class="eli-label">Type of damage</span>
+        <span class="eli-value">{{ typeOfDamageDisplay || 'Not provided' }}</span>
+        @if (fieldChanged('typeOfDamage')) {
+          <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
+        }
+        <nx-link size="small"><a (click)="startEdit('typeOfDamage')">{{ typeOfDamageDisplay ? 'Update' : 'Add' }}</a></nx-link>
+      </div>
+    } @else {
+      <nx-formfield label="Type of damage" class="eli-full-width">
+        <nx-multi-select [options]="typeOfDamageOptions()" selectValue="value" selectLabel="label"
+          placeholder="Select type of damage" formControlName="typeOfDamage">
+        </nx-multi-select>
+        <nx-hint nxFormfieldHint>Changing this may affect existing Sections — you'll be asked to confirm before saving.</nx-hint>
       </nx-formfield>
     }
 
@@ -104,7 +114,7 @@
         @if (fieldChanged('dateGroup')) {
           <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
         }
-        <nx-link size="small"><a (click)="startEdit('dateGroup')">Change</a></nx-link>
+        <nx-link size="small"><a (click)="startEdit('dateGroup')">Update</a></nx-link>
       </div>
     } @else {
       <h3 class="eli-sub-heading">When did the loss occur?</h3>
@@ -145,7 +155,7 @@
         @if (fieldChanged('lossDescription')) {
           <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
         }
-        <nx-link size="small"><a (click)="startEdit('lossDescription')">{{ form.get('lossDescription')?.value ? 'Change' : 'Add' }}</a></nx-link>
+        <nx-link size="small"><a (click)="startEdit('lossDescription')">{{ form.get('lossDescription')?.value ? 'Update' : 'Add' }}</a></nx-link>
       </div>
     } @else {
       <nx-formfield label="Loss description" class="eli-full-width">
@@ -157,7 +167,7 @@
 
   </section>
 
-  <!-- Card 3: Location (CWB Location Picker) — already read-first by its own
+  <!-- Card: Location (CWB Location Picker) — already read-first by its own
        nature (a table of current locations with an Edit action per row, not
        an always-open input), so it isn't converted to the eli-field pattern
        above; it's still part of the change ledger via computeDiffs(). -->

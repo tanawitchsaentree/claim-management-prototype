@@ -27,7 +27,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
-import { LocationPickerOutput } from '../../../core/models';
+import { LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../core/models';
 import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
 import {
   LossInfoConfirmModalComponent,
@@ -36,21 +36,26 @@ import {
 } from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 
-// Claim description lives on ClaimOverview, not on LossInformation — it is
-// edited here (this is the only edit screen) but saved through a different
-// service and logged against a different objectType. The label is the key
-// that routes it, so it is a const rather than a repeated literal.
-const CLAIM_DESC_LABEL = 'Claim description';
-
 // Fields whose change is treated as sections-impacting (see onSaveChanges) —
 // exported so the Gate Proof test can assert against the real list, not a
-// re-typed copy of it.
-export const IMPACT_LABELS = ['Cause of loss', 'Loss location'];
+// re-typed copy of it. 'Type of damages' added 2026-08-31 (Marlene feedback)
+// — ClaimSection.damageType maps directly to this field, unlike Cause of loss/
+// Loss location below, which are still just a proxy heuristic (see the long
+// comment on onSaveChanges for why those two stay in as best-effort signals).
+export const IMPACT_LABELS = ['Cause of loss', 'Type of damages', 'Loss location'];
 
-// Diff label -> which read/edit field group reverting it belongs to.
+// Diff label -> which read/edit field group a change belongs to. Used by
+// fieldChanged() to highlight the right field group; no longer used for
+// per-field revert (removed 2026-08-31, Marlene feedback — Discard/Confirm-
+// Cancel are the only undo paths now).
+type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
+
 const LABEL_TO_FIELD_KEY: Record<string, string> = {
-  [CLAIM_DESC_LABEL]:          'claimDescription',
   'Cause of loss':             'causeOfLoss',
+  'Type of damages':           'typeOfDamage',
+  // The qualifier points at the group whose edit block contains it, so the
+  // changed-field highlight lands where the user can actually see the input.
+  'Specify other cause of loss': 'causeOfLoss',
   'Date of occurrence':        'dateGroup',
   'Time of occurrence':        'dateGroup',
   'Date of notification':      'dateGroup',
@@ -93,16 +98,11 @@ export class EditLossInformationComponent implements OnInit {
   readonly saveSuccess  = signal(false);
   readonly original     = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
-  readonly originalClaimDescription = signal<string>('');
   readonly maxDesc   = 500;
   submitAttempted    = false;
 
   // ── Own FormGroup — isolated from FNOL wizard ────────────────────────
   readonly form = new FormGroup({
-    // Claim-level, not loss-level. Deliberately not required: an existing
-    // claim can arrive with an empty description (skeleton claims synthesize
-    // it from lossDescription), and that must not block a loss-info save.
-    claimDescription: new FormControl('', [Validators.maxLength(500)]),
     dateOfLoss: new FormGroup({
       dateOfOccurrence:   new FormControl<string | null>(null, [Validators.required, futureDateValidator]),
       timeOfOccurrence:   new FormControl<string | null>(null, [Validators.required]),
@@ -111,26 +111,84 @@ export class EditLossInformationComponent implements OnInit {
     }, { validators: dateOrderValidator }),
     lossLocation:    new FormControl<LocationPickerOutput>({ locations: [] }),
     causeOfLoss:     new FormControl<string[]>([], []),
+    // Added 2026-08-31 (Marlene feedback) — was FNOL-only until now; the
+    // LossInformation model/service already carried typeOfDamage end to end,
+    // this form just never exposed it. This is the field IMPACT_LABELS'
+    // 'Type of damages' entry and the confirm-modal's damage warning banner
+    // were built for (see loss-info-confirm-modal.component.ts's
+    // damageChanged()) but had no way to ever actually fire until now.
+    typeOfDamage:    new FormControl<string[]>([], []),
+    // Free-text qualifier for the "Other Event" cause. The validator is
+    // attached at runtime by syncSpecifyOther() because "required" depends on
+    // whether causeOfLoss currently includes that value. typeOfDamage has no
+    // counterpart by design — see OTHER_CAUSE_KEY in core/models/lookup.model.ts.
+    specifyOtherCauseOfLoss: new FormControl<string>(''),
     lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
   });
 
   get dateOfLoss()   { return this.form.get('dateOfLoss') as FormGroup; }
-  get claimDescription() { return this.form.get('claimDescription') as FormControl<string | null>; }
   get lossLocation() { return this.form.get('lossLocation') as FormControl<LocationPickerOutput>; }
 
   // ── Lookups ──────────────────────────────────────────────────────────
   readonly causeOfLossOptions$  = this.lookupSvc.getCauseOfLoss();
   readonly causeOfLossOptions   = toSignal(this.causeOfLossOptions$, { initialValue: [] });
+  readonly typeOfDamageOptions$ = this.lookupSvc.getTypeOfDamage();
+  readonly typeOfDamageOptions  = toSignal(this.typeOfDamageOptions$, { initialValue: [] });
 
   get selectedCauses(): string[]  { return (this.form.get('causeOfLoss')?.value  as string[]) ?? []; }
+  get selectedDamages(): string[] { return (this.form.get('typeOfDamage')?.value as string[]) ?? []; }
 
-  private causeLabelsFor(keys: string[]): string {
+  // `specify` folds the typed qualifier into the "Other" entry — reading back
+  // "Other" alone would hide the only part of that selection that says anything.
+  private causeLabelsFor(keys: string[], specify = ''): string {
     if (!keys.length) return '';
     const opts = this.causeOfLossOptions();
+    return keys
+      .map(k => this.qualify(opts.find(o => o.value === k)?.label ?? k, k === OTHER_CAUSE_KEY, specify))
+      .join(', ');
+  }
+
+  private damageLabelsFor(keys: string[]): string {
+    if (!keys.length) return '';
+    const opts = this.typeOfDamageOptions();
     return keys.map(k => opts.find(o => o.value === k)?.label ?? k).join(', ');
   }
 
-  get causeOfLossDisplay(): string { return this.causeLabelsFor(this.selectedCauses); }
+  private qualify(label: string, isOther: boolean, specify: string): string {
+    const typed = specify.trim();
+    return isOther && typed ? `${label} — ${typed}` : label;
+  }
+
+  private specifyValue(key: SpecifyOtherKey): string {
+    return (this.form.get(key)?.value as string) ?? '';
+  }
+
+  get causeOfLossDisplay(): string {
+    return this.causeLabelsFor(this.selectedCauses, this.specifyValue('specifyOtherCauseOfLoss'));
+  }
+
+  get typeOfDamageDisplay(): string { return this.damageLabelsFor(this.selectedDamages); }
+
+  get showSpecifyOtherCause(): boolean { return this.selectedCauses.includes(OTHER_CAUSE_KEY); }
+
+  onCauseOfLossChange(selected: string[]): void {
+    this.syncSpecifyOther('specifyOtherCauseOfLoss', selected.includes(OTHER_CAUSE_KEY));
+  }
+
+  // Clearing the value on hide matters here as much as on FNOL: a hidden
+  // control holding stale text would keep the Save button gated with nothing
+  // on screen to fix, and would show up as a phantom pending change.
+  private syncSpecifyOther(key: SpecifyOtherKey, needed: boolean): void {
+    const ctrl = this.form.get(key);
+    if (!ctrl) return;
+    if (needed) {
+      ctrl.setValidators([Validators.required, Validators.maxLength(100)]);
+    } else {
+      ctrl.clearValidators();
+      if (ctrl.value) ctrl.setValue('');
+    }
+    ctrl.updateValueAndValidity();
+  }
 
   // ── Read/edit field state ─────────────────────────────────────────────
   // Single field open at a time by default — no confirmed research on whether
@@ -151,7 +209,7 @@ export class EditLossInformationComponent implements OnInit {
     { initialValue: null },
   );
   readonly pendingChanges = computed<LossInfoDiffField[]>(() => {
-    this.formSnapshot(); // form.valueChanges fires for every control in this.form, including claimDescription
+    this.formSnapshot(); // form.valueChanges fires for every control in this.form
     return this.computeDiffs();
   });
 
@@ -176,10 +234,6 @@ export class EditLossInformationComponent implements OnInit {
       this.policyNumber.set(claim?.policyNumber ?? null);
       this.clientName.set(claim?.client ?? '');
       this.claimStatus.set(claim?.status ?? '');
-      const desc = claim?.description ?? '';
-      this.originalClaimDescription.set(desc);
-      this.claimDescription.setValue(desc);
-      this.claimDescription.markAsPristine();
     });
   }
 
@@ -192,16 +246,27 @@ export class EditLossInformationComponent implements OnInit {
     });
     this.form.patchValue({
       causeOfLoss:     li.causeOfLoss     ?? [],
+      typeOfDamage:    li.typeOfDamage    ?? [],
+      specifyOtherCauseOfLoss: li.specifyOtherCauseOfLoss ?? '',
       lossDescription: li.lossDescription ?? '',
       lossLocation:    (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
     });
+    // Reconcile the runtime validator against what was just loaded — no
+    // selectionChange fires on a patchValue, so this is the only chance.
+    this.syncSpecifyOther('specifyOtherCauseOfLoss', this.showSpecifyOtherCause);
     this.editingField.set(!li.causeOfLoss?.length ? 'causeOfLoss' : null);
     this.form.markAsPristine();
   }
 
-  // ── "was" display + revert, per field group ──────────────────────────
+  // ── "was" display, per field group ────────────────────────────────────
   get originalCauseOfLossDisplay(): string {
-    return this.causeLabelsFor(this.original()?.causeOfLoss ?? []) || 'Not provided';
+    const o = this.original();
+    return this.causeLabelsFor(o?.causeOfLoss ?? [], o?.specifyOtherCauseOfLoss ?? '') || 'Not provided';
+  }
+
+  get originalTypeOfDamageDisplay(): string {
+    const o = this.original();
+    return this.damageLabelsFor(o?.typeOfDamage ?? []) || 'Not provided';
   }
 
   private formatDateTime(date?: string | null, time?: string | null): string {
@@ -232,38 +297,6 @@ export class EditLossInformationComponent implements OnInit {
     return this.pendingChanges().some(d => LABEL_TO_FIELD_KEY[d.label] === key);
   }
 
-  revertField(key: string): void {
-    const orig = this.original();
-    switch (key) {
-      case 'claimDescription':
-        this.claimDescription.setValue(this.originalClaimDescription());
-        break;
-      case 'causeOfLoss':
-        this.form.get('causeOfLoss')!.setValue(orig?.causeOfLoss ?? []);
-        break;
-      case 'dateGroup':
-        this.dateOfLoss.patchValue({
-          dateOfOccurrence:   orig?.dateOfLoss?.dateOfOccurrence   ?? null,
-          timeOfOccurrence:   orig?.dateOfLoss?.timeOfOccurrence   ?? null,
-          dateOfNotification: orig?.dateOfLoss?.dateOfNotification ?? null,
-          timeOfNotification: orig?.dateOfLoss?.timeOfNotification ?? null,
-        });
-        break;
-      case 'lossDescription':
-        this.form.get('lossDescription')!.setValue(orig?.lossDescription ?? '');
-        break;
-      case 'lossLocation':
-        this.lossLocation.setValue((orig?.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] });
-        break;
-    }
-    this.closeEdit();
-  }
-
-  revertByLabel(label: string): void {
-    const key = LABEL_TO_FIELD_KEY[label];
-    if (key) this.revertField(key);
-  }
-
   // ── Diff computation ─────────────────────────────────────────────────
   private computeDiffs(): LossInfoDiffField[] {
     const diffs: LossInfoDiffField[] = [];
@@ -273,11 +306,6 @@ export class EditLossInformationComponent implements OnInit {
       const ns = n == null ? '' : String(n);
       if (os !== ns) diffs.push({ label, original: os, updated: ns });
     };
-
-    // Claim-level field, diffed against the ClaimOverview value it came from.
-    // Computed before the LossInformation guard below — a claim can have no
-    // loss-information record yet, and a description edit must still register.
-    addIf(CLAIM_DESC_LABEL, this.originalClaimDescription(), this.claimDescription.value);
 
     const orig = this.original();
     if (!orig) return diffs;
@@ -291,6 +319,12 @@ export class EditLossInformationComponent implements OnInit {
 
     // General
     addIf('Cause of loss',   (orig.causeOfLoss ?? []).join(', '),  (cur.causeOfLoss ?? []).join(', '));
+    // Label deliberately ends with " damages" — loss-info-confirm-modal's
+    // damageChanged() keys off that exact suffix to show its Sections warning.
+    addIf('Type of damages', (orig.typeOfDamage ?? []).join(', '), (cur.typeOfDamage ?? []).join(', '));
+    // Deliberately NOT in IMPACT_LABELS — retyping the qualifier describes the
+    // same cause more precisely, it doesn't re-point ClaimSection.damageType.
+    addIf('Specify other cause of loss', orig.specifyOtherCauseOfLoss, cur.specifyOtherCauseOfLoss);
     addIf('Loss description', orig.lossDescription, cur.lossDescription);
 
     // Loss location (compare by displayName of first location as proxy)
@@ -322,10 +356,7 @@ export class EditLossInformationComponent implements OnInit {
 
     this.saveSuccess.set(false);
     this.saving.set(true);
-    // claimDescription belongs to ClaimOverview — keep it out of the payload
-    // or MockLossInformationService.save spreads it onto the stored record.
-    const { claimDescription: _claimDesc, ...lossInfoRaw } = this.form.getRawValue();
-    const formValue = lossInfoRaw as unknown as LossInformationFormValue;
+    const formValue = this.form.getRawValue() as unknown as LossInformationFormValue;
     try {
       await firstValueFrom(this.lossInfoSvc.save(formValue, this.claimId()));
 
@@ -335,7 +366,7 @@ export class EditLossInformationComponent implements OnInit {
         claimId:    this.claimId(),
         user:       'Current User',
         timestamp:  new Date().toISOString(),
-        objectType: d.label === CLAIM_DESC_LABEL ? 'Claim' : 'Loss Information',
+        objectType: 'Loss Information',
         attribute:  d.label,
         valueOld:   d.original || null,
         valueNew:   d.updated  || null,
@@ -358,7 +389,6 @@ export class EditLossInformationComponent implements OnInit {
       // values as "pending", firing the leave-confirmation on the very
       // navigate() call below.
       this.original.set({ ...(this.original() as LossInformation), ...formValue } as LossInformation);
-      this.originalClaimDescription.set(this.claimDescription.value ?? '');
 
       this.form.markAsPristine();
       this.saveSuccess.set(true);
@@ -401,7 +431,7 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
-    const patch: { dateOfLoss?: string; proximateLossCause?: string; causeOfLoss?: string[]; description?: string } = {};
+    const patch: { dateOfLoss?: string; proximateLossCause?: string; causeOfLoss?: string[] } = {};
 
     if (diffs.some(d => d.label === 'Date of occurrence') && formValue.dateOfLoss?.dateOfOccurrence) {
       patch.dateOfLoss = formValue.dateOfLoss.dateOfOccurrence;
@@ -415,11 +445,6 @@ export class EditLossInformationComponent implements OnInit {
       const causeLabels = causeKeys.map(k => this.causeOfLossOptions().find(o => o.value === k)?.label ?? k);
       patch.proximateLossCause = causeLabels[0] ?? '–';
       patch.causeOfLoss = causeLabels;
-    }
-    // Claim description has no loss-information home — the overview record is
-    // where it lives, and the overview page reads it straight back.
-    if (diffs.some(d => d.label === CLAIM_DESC_LABEL)) {
-      patch.description = this.claimDescription.value ?? '';
     }
 
     if (Object.keys(patch).length) {
