@@ -36,6 +36,7 @@ import {
 } from './components/claim-reopen-modal/claim-reopen-modal.component';
 import { FileRestriction } from '../../../core/models/claim-overview.model';
 import { RecoveryPotentialCardComponent, RecoveryPotentialUpdated } from './components/recovery-potential-card/recovery-potential-card.component';
+import { RiskScoreFieldComponent } from './components/risk-score-field/risk-score-field.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import { MassEventCardComponent, MassEventChanged } from './components/mass-event-card/mass-event-card.component';
 import { PendingTasksWidgetComponent } from './components/pending-tasks-widget/pending-tasks-widget.component';
@@ -89,6 +90,7 @@ const EMPTY_VM: OverviewVM = {
     MassEventCardComponent,
     PendingTasksWidgetComponent,
     RecentActivitiesCardComponent,
+    RiskScoreFieldComponent,
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss',
@@ -355,12 +357,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   toggleTasks(): void {
     const cur = this.vm$.value;
     this.vm$.next({ ...cur, tasksExpanded: !cur.tasksExpanded });
-  }
-
-  riskSeverity(score: number): 'high' | 'medium' | 'low' {
-    if (score >= 4) return 'high';
-    if (score >= 3) return 'medium';
-    return 'low';
   }
 
   onMassEventChanged(event: MassEventChanged): void {

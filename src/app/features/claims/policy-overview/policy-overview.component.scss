@@ -1,0 +1,116 @@
+@use '../claim-overview/card-shell' as shell;
+
+.po-loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-md) 0;
+}
+
+// Policy details block — same card shell + grid-field primitives the
+// General Information card uses, so the two pages read as one product.
+.po-details { @include shell.card; }
+
+.po-fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-xl) var(--space-lg);
+}
+
+.po-field { @include shell.field; }
+.po-label { @include shell.field-label; }
+
+.po-value {
+  @include shell.field-value;
+
+  &--strong { font-weight: 600; }
+}
+
+.po-muted {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+// Policy status pill — mirrors the status-chip token approach (no hex).
+.po-status {
+  align-self: flex-start;
+  padding: 2px var(--space-sm);
+  border-radius: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  background: var(--ui-02);
+  color: var(--text-01);
+  border: 1px solid var(--ui-04);
+
+  &--active    { border-color: var(--message-success-border-color); }
+  &--expired   { border-color: var(--ui-05); color: var(--text-muted); }
+  &--cancelled { border-color: var(--message-error-border-color); }
+  &--pending   { border-color: var(--message-warning-border-color); }
+}
+
+// Accordion sizing — copied from litigation-detail.component.scss, the only
+// verified nx-expansion-panel in this app. Do not retune these locally.
+.po-accordion {
+  nx-expansion-panel {
+    --accordion-regular-font-size: var(--paragraph-02-font-size);
+    --accordion-regular-line-height: 1.5rem;
+    --accordion-regular-font-weight: 600;
+    --accordion-regular-header-active-font-weight: 600;
+    --accordion-regular-header-padding: var(--space-lg) var(--space-xl);
+    --accordion-regular-body-padding: var(--space-lg) var(--space-xl);
+    --accordion-regular-header-top-margin: var(--space-md);
+  }
+}
+
+.po-message { margin-bottom: var(--space-lg); }
+
+.po-table-wrap {
+  overflow-x: auto;
+
+  &:focus-visible {
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 2px;
+  }
+}
+
+.po-table {
+  width: 100%;
+}
+
+.po-col--num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.po-cell--desc {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.po-row--current { background: var(--ui-02); }
+
+.po-current-tag {
+  margin-left: var(--space-sm);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.po-claim-link {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--interactive-primary);
+
+  &:hover { text-decoration: underline; }
+
+  &:focus-visible {
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}

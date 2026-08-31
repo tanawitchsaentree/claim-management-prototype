@@ -23,7 +23,7 @@ import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
-import { LookupOption, LocationPickerOutput } from '../../../../core/models';
+import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
 import { DuplicateCheckService, DuplicateClaim } from '../../../../core/services/duplicate-check.service';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
@@ -37,6 +37,8 @@ interface FormError {
   fieldId: string;
   message: string;
 }
+
+type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
 
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
@@ -115,6 +117,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     'dateOfLoss':         'Date of loss (group)',
     'causeOfLoss':        'Cause of loss',
     'typeOfDamage':       'Type of damage',
+    'specifyOtherCauseOfLoss':  'Specify other cause of loss',
   };
 
   ngOnInit(): void {
@@ -125,6 +128,11 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       this.router.navigate(['/fnol/search']);
       return;
     }
+
+    // The form is root-provided and may arrive prefilled (skeleton convert,
+    // edit-loss-information) — in that case no selectionChange ever fired, so
+    // the specify-other validators have to be reconciled once on entry.
+    this.syncSpecifyOther('specifyOtherCauseOfLoss', this.showSpecifyOtherCause);
 
     const policyNumber = this.fnolState.selectedPolicy?.policyNumber;
 
@@ -290,6 +298,17 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       errors.push({ fieldId: 'typeOfDamage', message: 'Type of damage: select at least one option' });
     }
 
+    // Only reachable while the field is on screen — syncSpecifyOther() strips
+    // the validator the moment "Other" is deselected.
+    const specifyCtrl = this.form.get('specifyOtherCauseOfLoss');
+    if (specifyCtrl?.errors) {
+      const msg = getErrorMessage(specifyCtrl.errors);
+      if (msg) errors.push({
+        fieldId: 'specifyOtherCauseOfLoss',
+        message: `${this.fieldLabels['specifyOtherCauseOfLoss']}: ${msg}`,
+      });
+    }
+
     for (let i = 0; i < this.eventsArray.length; i++) {
       const grp = this.eventGroup(i);
       if ((grp.get('damages')?.value as string[])?.length === 0) {
@@ -375,6 +394,27 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   onCauseOfLossChange(selected: string[]): void {
     this._syncEventsArray(selected);
+    this.syncSpecifyOther('specifyOtherCauseOfLoss', selected.includes(OTHER_CAUSE_KEY));
+  }
+
+  // "Required" here depends on a sibling control's value, so the validator is
+  // attached at runtime rather than declared in FnolStateService. Clearing the
+  // value on hide matters: a hidden control holding a stale value would keep
+  // failing validation with nothing on screen to fix.
+  private syncSpecifyOther(key: SpecifyOtherKey, needed: boolean): void {
+    const ctrl = this.form.get(key);
+    if (!ctrl) return;
+    if (needed) {
+      ctrl.setValidators([Validators.required, Validators.maxLength(100)]);
+    } else {
+      ctrl.clearValidators();
+      ctrl.setValue('');
+    }
+    ctrl.updateValueAndValidity();
+  }
+
+  get showSpecifyOtherCause(): boolean {
+    return this.selectedCauses.includes(OTHER_CAUSE_KEY);
   }
 
   onTypeOfDamageChange(_selected: string[]): void {

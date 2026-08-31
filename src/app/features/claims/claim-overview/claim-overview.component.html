@@ -56,6 +56,15 @@
           <span class="co-label">Client contact</span>
           <span class="co-value">{{ claim.clientContact ?? '–' }}</span>
         </div>
+        <div class="co-field">
+          <span class="co-label">Policy</span>
+          <!-- Now a real link: /claims/:id/policy used to redirect back to this
+               page, so this was deliberately plain text. BMPCC-16192 built the
+               Policy overview page, so there is a destination. -->
+          <a class="co-value co-value--link" [routerLink]="['/claims', claim.claimId, 'policy']">
+            {{ claim.policyNumber }}
+          </a>
+        </div>
         <app-mass-event-card [claim]="claim" [massEvent]="vm.massEvent"
           (massEventChanged)="onMassEventChanged($event)"></app-mass-event-card>
       </div>
@@ -129,22 +138,12 @@
             <span class="co-label">Date of Loss</span>
             <span class="co-value">{{ claim.dateOfLoss | appDate }}</span>
           </div>
-          <div class="co-field">
-            <div class="co-label-row">
-              <span class="co-label">Risk score</span>
-              <nx-icon name="refresh" size="s" class="co-refresh-icon"></nx-icon>
-            </div>
-            <div class="co-risk-score">
-              <span class="co-risk-badge" [class]="'risk-' + riskSeverity(claim.riskScore)">{{ claim.riskScore }}/{{ claim.riskScoreMax }}</span>
-              <a class="co-link">Start investigation</a>
-            </div>
-          </div>
-          <div class="co-field">
-            <span class="co-label">Risk status</span>
-            <div class="co-field-value">
-              <span class="co-risk-status-chip" [class]="'risk-' + riskSeverity(claim.riskScore)">{{ claim.riskStatus }}</span>
-            </div>
-          </div>
+          <app-risk-score-field
+            [claimId]="claim.claimId"
+            [riskScore]="claim.riskScore"
+            [riskScoreMax]="claim.riskScoreMax"
+            [riskStatus]="claim.riskStatus">
+          </app-risk-score-field>
         </div>
       }
 

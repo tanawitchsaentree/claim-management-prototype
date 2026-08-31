@@ -1,0 +1,32 @@
+<div class="co-field">
+  <div class="co-label-row">
+    <span class="co-label" id="risk-score-label">Risk score</span>
+    <!-- Was a bare <nx-icon name="refresh"> with `cursor: pointer` and no
+         handler — it looked clickable, did nothing, and was unreachable by
+         keyboard. Real production makes this a labelled control that swaps to
+         a spinner while loading (general-information.component.html:239-255). -->
+    <button
+      type="button"
+      class="co-refresh-btn"
+      [disabled]="refreshing()"
+      (click)="onRefresh()"
+      aria-label="Refresh risk score">
+      @if (refreshing()) {
+        <nx-spinner nxSize="small"></nx-spinner>
+      } @else {
+        <nx-icon name="refresh" size="s" aria-hidden="true"></nx-icon>
+      }
+    </button>
+  </div>
+  <div class="co-risk-score">
+    <span class="co-risk-badge" [class]="'risk-' + severity()">{{ score() }}/{{ scoreMax() }}</span>
+    <button type="button" class="co-link" (click)="openInvestigation()">Start investigation</button>
+  </div>
+</div>
+
+<div class="co-field">
+  <span class="co-label">Risk status</span>
+  <div class="co-field-value">
+    <span class="co-risk-status-chip" [class]="'risk-' + severity()">{{ status() }}</span>
+  </div>
+</div>

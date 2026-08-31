@@ -28,7 +28,7 @@ import { Claim } from '../../../../core/models/claim.model';
 import { MockUserDirectoryService, UserDirectoryEntry } from '../../../../core/mock/services/mock-user-directory.service';
 import { EntitiesDamagesData, EntityRow } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
-import { LookupOption } from '../../../../core/models/lookup.model';
+import { LookupOption, OTHER_CAUSE_KEY } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -296,7 +296,9 @@ export class StepSummaryComponent implements OnInit {
         this.partiesSvc.getPartiesForPolicy(this.policyNumber),
       ]));
 
-    const causesOfLoss = causeKeys.map(k => this.label(causeLookups, k));
+    const specifyCause = (lossGroup.get('specifyOtherCauseOfLoss')?.value as string) ?? '';
+
+    const causesOfLoss = causeKeys.map(k => this.qualifyOther(causeLookups, k, OTHER_CAUSE_KEY, specifyCause));
     const allEntities = entitiesData.sections.flatMap(s => s.damageGroups).flatMap(g => g.entities);
     const damageTypeKeys = [...new Set(allEntities.map(e => e.damageTypeKey).filter(Boolean))];
     const damageTypes = damageTypeKeys.map(k => this.label(damageLookups, k));
@@ -371,6 +373,15 @@ export class StepSummaryComponent implements OnInit {
     return lookupLabel(opts, key);
   }
 
+  // "Other" on its own tells the reader nothing. When the handler typed a
+  // qualifier on the loss-information step, show it here — otherwise the
+  // summary silently drops the only informative part of the selection.
+  private qualifyOther(opts: LookupOption[], key: string | undefined, otherKey: string, text: string): string {
+    const label = this.label(opts, key);
+    const typed = text.trim();
+    return key === otherKey && typed ? `${label} — ${typed}` : label;
+  }
+
   // Stage 5 (FNOL/claim-file model fix): loss information captured at step 1
   // previously never left FnolStateService — onSubmit touched restriction/
   // recoveryPotential/skeleton matching, never LossInformation itself, and
@@ -400,6 +411,7 @@ export class StepSummaryComponent implements OnInit {
       lossLocation:    this.mapLossLocation(formValue.lossLocation),
       causeOfLoss:     formValue.causeOfLoss ?? [],
       typeOfDamage:    formValue.typeOfDamage ?? [],
+      specifyOtherCauseOfLoss: formValue.specifyOtherCauseOfLoss || undefined,
       lossDescription: formValue.lossDescription ?? '',
       events:          formValue.events ?? [],
       createdAt: now,

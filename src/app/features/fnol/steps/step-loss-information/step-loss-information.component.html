@@ -78,6 +78,22 @@
           </nx-error>
         </nx-formfield>
       </div>
+      <!-- Free-text qualifier, shown only while Cause of loss includes "Other
+           Event". Sits in the same grid so it lands directly under the select
+           it qualifies instead of in a separate row below. There is no damage
+           equivalent — typeOfDamage has no "Other" option by design, see
+           OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
+      @if (showSpecifyOtherCause) {
+        <div data-field="specifyOtherCauseOfLoss">
+          <nx-formfield label="Specify other cause of loss">
+            <input nxInput formControlName="specifyOtherCauseOfLoss" maxlength="100"
+              data-testid="specify-other-cause-of-loss-input" />
+            <nx-error nxFormfieldError *ngIf="showError(form.get('specifyOtherCauseOfLoss')!)">
+              Describe the cause of loss
+            </nx-error>
+          </nx-formfield>
+        </div>
+      }
     </div>
 
     <hr class="li-divider" />

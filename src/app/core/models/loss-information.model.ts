@@ -37,6 +37,8 @@ export interface LossInformationFormValue {
   lossLocation: LossLocation;
   causeOfLoss: string[];
   typeOfDamage: string[];
+  /** Free text, captured only while causeOfLoss includes its "Other" option. */
+  specifyOtherCauseOfLoss?: string;
   lossDescription: string;
   events: LossEvent[];
 }
@@ -49,6 +51,7 @@ export interface LossInformation {
   lossLocation: LossLocation;
   causeOfLoss: string[];
   typeOfDamage: string[];
+  specifyOtherCauseOfLoss?: string;
   lossDescription: string;
   events: LossEvent[];
   createdAt: string;

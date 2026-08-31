@@ -1,0 +1,180 @@
+<app-page-header title="Policy overview"></app-page-header>
+
+@if (loading()) {
+  <div class="po-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
+} @else if (loadError()) {
+  <app-empty-state
+    message="Policy overview could not be loaded."
+    hint="Try again, or check the claim's policy linkage.">
+  </app-empty-state>
+} @else if (policy(); as p) {
+
+  <!-- Policy details — the header block the real page shows above the
+       three expandable detail sections. -->
+  <section class="po-details">
+    <div class="po-fields">
+      <div class="po-field">
+        <span class="po-label">Policy number</span>
+        <span class="po-value po-value--strong">{{ p.policyNumber }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Client</span>
+        <span class="po-value">{{ p.clientName }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Line of business</span>
+        <span class="po-value">{{ p.lineOfBusiness }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Policy status</span>
+        <span class="po-status" [class]="'po-status--' + p.status.toLowerCase()">{{ p.status }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Policy period</span>
+        <span class="po-value">{{ p.effectiveDate | appDate }} – {{ p.expiryDate | appDate }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Premium</span>
+        <span class="po-value">{{ p.premium | currency:p.currency:'symbol':'1.0-0' }}</span>
+      </div>
+      @if (p.allianzShare != null) {
+        <div class="po-field">
+          <span class="po-label">Allianz share</span>
+          <span class="po-value">{{ p.allianzShare | number:'1.0-2' }}%</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <nx-accordion [multi]="true" class="po-accordion">
+
+    <nx-expansion-panel expanded>
+      <nx-expansion-panel-header>
+        <nx-expansion-panel-title>Coverage details</nx-expansion-panel-title>
+      </nx-expansion-panel-header>
+
+      @if (p.coverages.length) {
+        <table nxTable class="po-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Policy section</th>
+              <th nxHeaderCell>Coverage</th>
+              <th nxHeaderCell class="po-col--num">Sum insured</th>
+              <th nxHeaderCell class="po-col--num">Deductible</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of p.coverages; track c.coverageId) {
+              <tr nxTableRow>
+                <td nxTableCell>{{ c.policySection }}</td>
+                <td nxTableCell>{{ c.coverage }}</td>
+                <td nxTableCell class="po-col--num">{{ c.sumInsured | currency:c.currency:'symbol':'1.0-0' }}</td>
+                <td nxTableCell class="po-col--num">
+                  @if (c.deductible > 0) {
+                    {{ c.deductible | currency:c.currency:'symbol':'1.0-0' }}
+                  } @else {
+                    <span class="po-muted">None</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <app-empty-state message="No coverages recorded on this policy."></app-empty-state>
+      }
+    </nx-expansion-panel>
+
+    <nx-expansion-panel>
+      <nx-expansion-panel-header>
+        <nx-expansion-panel-title>Coinsurance details</nx-expansion-panel-title>
+      </nx-expansion-panel-header>
+
+      @if (p.coinsurance.length) {
+        @if (coinsuranceMismatch()) {
+          <nx-message context="warning" class="po-message">
+            Participant shares total {{ coinsuranceTotal() }}%, not 100% — check the policy record before settling.
+          </nx-message>
+        }
+        <table nxTable class="po-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Participant</th>
+              <th nxHeaderCell>Participant code</th>
+              <th nxHeaderCell>Role</th>
+              <th nxHeaderCell class="po-col--num">Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cp of p.coinsurance; track cp.participantCode) {
+              <tr nxTableRow>
+                <td nxTableCell>{{ cp.participant }}</td>
+                <td nxTableCell>{{ cp.participantCode }}</td>
+                <td nxTableCell>{{ cp.role }}</td>
+                <td nxTableCell class="po-col--num">{{ cp.sharePercent | number:'1.0-2' }}%</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <app-empty-state
+          message="This policy is not coinsured."
+          hint="Allianz carries 100% of the risk.">
+        </app-empty-state>
+      }
+    </nx-expansion-panel>
+
+    <nx-expansion-panel>
+      <nx-expansion-panel-header>
+        <nx-expansion-panel-title>Linked claims details</nx-expansion-panel-title>
+      </nx-expansion-panel-header>
+
+      @if (p.linkedClaims.length) {
+        <div class="po-table-wrap" tabindex="0">
+          <table nxTable class="po-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Claim ID</th>
+                <th nxHeaderCell>Loss description</th>
+                <th nxHeaderCell>Client</th>
+                <th nxHeaderCell>Created date</th>
+                <th nxHeaderCell>Date of loss</th>
+                <th nxHeaderCell>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (lc of p.linkedClaims; track lc.claimId) {
+                <tr nxTableRow [class.po-row--current]="lc.claimId === claimId()">
+                  <td nxTableCell>
+                    @if (lc.claimId === claimId()) {
+                      <span class="po-value--strong">{{ lc.claimId }}</span>
+                      <span class="po-current-tag">This claim</span>
+                    } @else {
+                      <button class="po-claim-link" type="button" (click)="openClaim(lc.claimId)">
+                        {{ lc.claimId }}
+                      </button>
+                    }
+                  </td>
+                  <td nxTableCell class="po-cell--desc">{{ lc.lossDescription }}</td>
+                  <td nxTableCell>{{ lc.clientName }}</td>
+                  <td nxTableCell>{{ lc.createdDate | appDate }}</td>
+                  <td nxTableCell>{{ lc.dateOfLoss | appDate }}</td>
+                  <td nxTableCell>{{ lc.status }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <app-empty-state message="No other claims are linked to this policy."></app-empty-state>
+      }
+    </nx-expansion-panel>
+
+  </nx-accordion>
+
+} @else {
+  <app-empty-state
+    message="No policy is linked to this claim."
+    hint="Link a policy from the claim overview to see coverage and coinsurance details.">
+  </app-empty-state>
+}

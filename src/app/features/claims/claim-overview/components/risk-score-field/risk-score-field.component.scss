@@ -1,0 +1,129 @@
+@use '../../card-shell' as shell;
+
+// Two grid items inside the parent's `.co-grid` — without `display: contents`
+// the host would become a single extra grid item and break the 5-col layout.
+// Same reason as mass-event-card.component.scss.
+:host {
+  display: contents;
+}
+
+.co-field { @include shell.field; }
+.co-label { @include shell.field-label; }
+
+.co-field-value {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.co-label-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+// Replaces the old `.co-refresh-icon` span. Sized to match the 20px label
+// line box so adding a real button doesn't shift the field's baseline.
+.co-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--claim-overlay-nav-hover);
+    color: var(--text-01);
+  }
+
+  &:disabled { cursor: default; }
+
+  &:focus-visible {
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 1px;
+  }
+}
+
+// ─── Risk score ───────────────────────────────────────────────────────────────
+
+.co-risk-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.co-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+
+  &.risk-high {
+    background: var(--claim-status-declined-bg);
+    color: var(--claim-status-declined-color);
+  }
+  &.risk-medium {
+    background: var(--task-status-in-progress-bg);
+    color: var(--task-status-in-progress-color);
+  }
+  &.risk-low {
+    background: var(--claim-status-bound-bg);
+    color: var(--claim-status-bound-color);
+  }
+}
+
+// Was an <a> with no href — not focusable, not activatable by keyboard. It
+// navigates rather than links to an external target, so a button is correct.
+.co-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--interactive-primary);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+
+  &:focus-visible {
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// ─── Risk status chip ─────────────────────────────────────────────────────────
+
+.co-risk-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 500;
+
+  &.risk-high {
+    background: var(--claim-status-declined-bg);
+    color: var(--claim-status-declined-color);
+  }
+  &.risk-medium {
+    background: var(--task-status-in-progress-bg);
+    color: var(--task-status-in-progress-color);
+  }
+  &.risk-low {
+    background: var(--claim-status-bound-bg);
+    color: var(--claim-status-bound-color);
+  }
+}

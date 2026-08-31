@@ -1,0 +1,129 @@
+{
+  "POL-2024-001": {
+    "coverages": [
+      { "coverageId": "CVG-001-1", "policySection": "Section 1 — Buildings",        "coverage": "Fire and allied perils",     "sumInsured": 4500000, "deductible": 25000,  "currency": "EUR" },
+      { "coverageId": "CVG-001-2", "policySection": "Section 2 — Contents",         "coverage": "Stock and equipment",        "sumInsured": 1200000, "deductible": 10000,  "currency": "EUR" },
+      { "coverageId": "CVG-001-3", "policySection": "Section 3 — Business interruption", "coverage": "Gross profit (12 months)", "sumInsured": 800000, "deductible": 0, "currency": "EUR" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-002": {
+    "coverages": [
+      { "coverageId": "CVG-002-1", "policySection": "Section 1 — Cyber first party", "coverage": "Data restoration costs",    "sumInsured": 1000000, "deductible": 50000,  "currency": "EUR" },
+      { "coverageId": "CVG-002-2", "policySection": "Section 1 — Cyber first party", "coverage": "Business interruption",     "sumInsured": 750000,  "deductible": 50000,  "currency": "EUR" },
+      { "coverageId": "CVG-002-3", "policySection": "Section 2 — Cyber third party", "coverage": "Privacy liability",         "sumInsured": 2000000, "deductible": 100000, "currency": "EUR" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-003": {
+    "coverages": [
+      { "coverageId": "CVG-003-1", "policySection": "Section 1 — Cargo",   "coverage": "Institute Cargo Clauses (A)", "sumInsured": 8000000, "deductible": 50000,  "currency": "USD" },
+      { "coverageId": "CVG-003-2", "policySection": "Section 2 — Hull",    "coverage": "Hull and machinery",          "sumInsured": 12000000, "deductible": 250000, "currency": "USD" },
+      { "coverageId": "CVG-003-3", "policySection": "Section 3 — Transit", "coverage": "Inland transit extension",    "sumInsured": 1500000, "deductible": 25000,  "currency": "USD" }
+    ],
+    "coinsurance": [
+      { "participantCode": "AZ-DE-01", "participant": "Allianz Global Corporate & Specialty SE", "sharePercent": 55, "role": "Leader" },
+      { "participantCode": "MR-DE-04", "participant": "Munich Re Syndicate",                     "sharePercent": 30, "role": "Follower" },
+      { "participantCode": "SW-CH-02", "participant": "Swiss Re Corporate Solutions",            "sharePercent": 15, "role": "Follower" }
+    ]
+  },
+  "POL-2024-004": {
+    "coverages": [
+      { "coverageId": "CVG-004-1", "policySection": "Section 1 — Public liability",  "coverage": "Third-party bodily injury",     "sumInsured": 5000000, "deductible": 10000, "currency": "EUR" },
+      { "coverageId": "CVG-004-2", "policySection": "Section 1 — Public liability",  "coverage": "Third-party property damage",   "sumInsured": 5000000, "deductible": 10000, "currency": "EUR" },
+      { "coverageId": "CVG-004-3", "policySection": "Section 2 — Products liability", "coverage": "Product recall costs",         "sumInsured": 1000000, "deductible": 25000, "currency": "EUR" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-005": {
+    "coverages": [
+      { "coverageId": "CVG-005-1", "policySection": "Section 1 — Machinery",         "coverage": "Machinery breakdown",        "sumInsured": 15000000, "deductible": 100000, "currency": "EUR" },
+      { "coverageId": "CVG-005-2", "policySection": "Section 2 — Production loss",   "coverage": "Loss of profit (6 months)",  "sumInsured": 6000000,  "deductible": 250000, "currency": "EUR" },
+      { "coverageId": "CVG-005-3", "policySection": "Section 3 — Spare parts",       "coverage": "Expediting expenses",        "sumInsured": 500000,   "deductible": 0,      "currency": "EUR" }
+    ],
+    "coinsurance": [
+      { "participantCode": "AZ-DE-01", "participant": "Allianz Global Corporate & Specialty SE", "sharePercent": 70, "role": "Leader" },
+      { "participantCode": "HD-DE-11", "participant": "HDI Global SE",                           "sharePercent": 30, "role": "Follower" }
+    ]
+  },
+  "POL-2023-010": {
+    "coverages": [
+      { "coverageId": "CVG-010-1", "policySection": "Section 1 — Buildings",              "coverage": "Fire and allied perils",     "sumInsured": 3200000, "deductible": 20000, "currency": "EUR" },
+      { "coverageId": "CVG-010-2", "policySection": "Section 2 — Contents",               "coverage": "Stock in storage",           "sumInsured": 950000,  "deductible": 15000, "currency": "EUR" },
+      { "coverageId": "CVG-010-3", "policySection": "Section 3 — Business interruption",  "coverage": "Gross profit (8 weeks)",     "sumInsured": 600000,  "deductible": 0,     "currency": "EUR" },
+      { "coverageId": "CVG-010-4", "policySection": "Section 4 — Machinery",              "coverage": "Racking and forklifts",      "sumInsured": 280000,  "deductible": 5000,  "currency": "EUR" }
+    ],
+    "coinsurance": [
+      { "participantCode": "AZ-DE-01", "participant": "Allianz Global Corporate & Specialty SE", "sharePercent": 60, "role": "Leader" },
+      { "participantCode": "ZU-CH-07", "participant": "Zurich Insurance Group",                  "sharePercent": 40, "role": "Follower" }
+    ]
+  },
+  "POL-2024-006": {
+    "coverages": [
+      { "coverageId": "CVG-006-1", "policySection": "Section 1 — Buildings", "coverage": "All risks of physical loss", "sumInsured": 7500000, "deductible": 50000, "currency": "CHF" },
+      { "coverageId": "CVG-006-2", "policySection": "Section 2 — Contents",  "coverage": "Theft and burglary",         "sumInsured": 1800000, "deductible": 25000, "currency": "CHF" },
+      { "coverageId": "CVG-006-3", "policySection": "Section 3 — Natural perils", "coverage": "Flood, landslide, storm", "sumInsured": 4000000, "deductible": 100000, "currency": "CHF" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-007": {
+    "coverages": [
+      { "coverageId": "CVG-007-1", "policySection": "Section 1 — Hull",       "coverage": "Hull and machinery",        "sumInsured": 45000000, "deductible": 500000, "currency": "USD" },
+      { "coverageId": "CVG-007-2", "policySection": "Section 2 — P&I",        "coverage": "Protection and indemnity",  "sumInsured": 20000000, "deductible": 100000, "currency": "USD" },
+      { "coverageId": "CVG-007-3", "policySection": "Section 3 — Loss of hire", "coverage": "Daily indemnity (90 days)", "sumInsured": 2700000, "deductible": 0,     "currency": "USD" }
+    ],
+    "coinsurance": [
+      { "participantCode": "AZ-DE-01", "participant": "Allianz Global Corporate & Specialty SE", "sharePercent": 40, "role": "Leader" },
+      { "participantCode": "GA-FR-03", "participant": "Gard AS",                                 "sharePercent": 35, "role": "Follower" },
+      { "participantCode": "LL-GB-19", "participant": "Lloyd's Syndicate 2003",                   "sharePercent": 25, "role": "Follower" }
+    ]
+  },
+  "POL-2024-008": {
+    "coverages": [
+      { "coverageId": "CVG-008-1", "policySection": "Section 1 — Cyber first party", "coverage": "Incident response costs", "sumInsured": 800000,  "deductible": 20000, "currency": "SGD" },
+      { "coverageId": "CVG-008-2", "policySection": "Section 2 — Cyber third party", "coverage": "Network security liability", "sumInsured": 1500000, "deductible": 50000, "currency": "SGD" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-009": {
+    "coverages": [
+      { "coverageId": "CVG-009-1", "policySection": "Section 1 — Works",              "coverage": "Contract works all risks", "sumInsured": 28000000, "deductible": 150000, "currency": "EUR" },
+      { "coverageId": "CVG-009-2", "policySection": "Section 2 — Plant and equipment", "coverage": "Construction plant",      "sumInsured": 4500000,  "deductible": 50000,  "currency": "EUR" },
+      { "coverageId": "CVG-009-3", "policySection": "Section 3 — Third-party liability", "coverage": "Liability during works", "sumInsured": 10000000, "deductible": 25000, "currency": "EUR" },
+      { "coverageId": "CVG-009-4", "policySection": "Section 4 — Delay in start-up",  "coverage": "Advance loss of profit",  "sumInsured": 3000000,  "deductible": 0,      "currency": "EUR" }
+    ],
+    "coinsurance": [
+      { "participantCode": "AZ-DE-01", "participant": "Allianz Global Corporate & Specialty SE", "sharePercent": 50, "role": "Leader" },
+      { "participantCode": "AX-FR-08", "participant": "AXA XL",                                  "sharePercent": 30, "role": "Follower" },
+      { "participantCode": "TA-JP-05", "participant": "Tokio Marine HCC",                         "sharePercent": 20, "role": "Follower" }
+    ]
+  },
+  "POL-2024-010": {
+    "coverages": [
+      { "coverageId": "CVG-011-1", "policySection": "Section 1 — General liability", "coverage": "Bodily injury and property damage", "sumInsured": 6000000, "deductible": 15000, "currency": "GBP" },
+      { "coverageId": "CVG-011-2", "policySection": "Section 2 — Employers liability", "coverage": "Employee bodily injury",          "sumInsured": 10000000, "deductible": 0,    "currency": "GBP" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-021": {
+    "coverages": [
+      { "coverageId": "CVG-021-1", "policySection": "Section 1 — Buildings", "coverage": "Fire and allied perils", "sumInsured": 2400000, "deductible": 10000, "currency": "EUR" },
+      { "coverageId": "CVG-021-2", "policySection": "Section 2 — Contents",  "coverage": "Household contents",     "sumInsured": 350000,  "deductible": 2500,  "currency": "EUR" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-022": {
+    "coverages": [
+      { "coverageId": "CVG-022-1", "policySection": "Section 1 — Private liability", "coverage": "Third-party bodily injury",   "sumInsured": 3000000, "deductible": 500, "currency": "EUR" },
+      { "coverageId": "CVG-022-2", "policySection": "Section 1 — Private liability", "coverage": "Third-party property damage", "sumInsured": 3000000, "deductible": 500, "currency": "EUR" }
+    ],
+    "coinsurance": []
+  },
+  "POL-2024-023": {
+    "coverages": [
+      { "coverageId": "CVG-023-1", "policySection": "Section 1 — Machinery",       "coverage": "Machinery breakdown",       "sumInsured": 1900000, "deductible": 25000, "currency": "EUR" },
+      { "coverageId": "CVG-023-2", "policySection": "Section 2 — Production loss", "coverage": "Loss of profit (3 months)", "sumInsured": 620000,  "deductible": 50000, "currency": "EUR" }
+    ],
+    "coinsurance": []
+  }
+}

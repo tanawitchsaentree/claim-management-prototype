@@ -81,8 +81,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/sections/sections').then((m) => m.Sections),
       },
-      // Stub routes — redirect to overview until dedicated pages are built
-      { path: 'claims/:id/policy',     redirectTo: 'claims/:id/overview', pathMatch: 'full' },
+      {
+        path: 'claims/:id/policy',
+        loadComponent: () =>
+          import('./features/claims/policy-overview/policy-overview.component').then(
+            m => m.PolicyOverviewComponent
+          ),
+      },
+      // Stub routes — redirect to overview until dedicated pages are built.
+      // Parties is another team's MFE in production (wc-cc-party-embedded),
+      // so there is no claims-management surface to model it against.
       { path: 'claims/:id/parties',    redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       {
         path: 'claims/:id/financial',

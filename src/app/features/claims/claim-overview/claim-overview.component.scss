@@ -102,82 +102,9 @@
   min-height: 24px;
 }
 
-.co-label-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.co-refresh-icon {
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-// ─── Risk score ───────────────────────────────────────────────────────────────
-
-.co-risk-score {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.co-risk-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 36px;
-  height: 24px;
-  padding: 0 8px;
-  border-radius: 12px;
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-
-  &.risk-high {
-    background: var(--claim-status-declined-bg);
-    color: var(--claim-status-declined-color);
-  }
-  &.risk-medium {
-    background: var(--task-status-in-progress-bg);
-    color: var(--task-status-in-progress-color);
-  }
-  &.risk-low {
-    background: var(--claim-status-bound-bg);
-    color: var(--claim-status-bound-color);
-  }
-}
-
-.co-link {
-  font-size: var(--paragraph-02-font-size);
-  color: var(--interactive-primary);
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover { text-decoration: underline; }
-}
-
-// ─── Risk status chip ─────────────────────────────────────────────────────────
-
-.co-risk-status-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 500;
-
-  &.risk-high {
-    background: var(--claim-status-declined-bg);
-    color: var(--claim-status-declined-color);
-  }
-  &.risk-medium {
-    background: var(--task-status-in-progress-bg);
-    color: var(--task-status-in-progress-color);
-  }
-  &.risk-low {
-    background: var(--claim-status-bound-bg);
-    color: var(--claim-status-bound-color);
-  }
-}
+// Risk score / risk status field styles moved to
+// components/risk-score-field/risk-score-field.component.scss along with the
+// markup — every one of those classes was used exactly once, in that block.
 
 // ─── Description ─────────────────────────────────────────────────────────────
 

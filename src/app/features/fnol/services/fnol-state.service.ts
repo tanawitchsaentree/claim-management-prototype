@@ -57,6 +57,11 @@ export class FnolStateService {
       lossLocation: new FormControl<LocationPickerOutput>({ locations: [] }),
       causeOfLoss:     new FormControl<string[]>([], []),
       typeOfDamage:    new FormControl<string[]>([], []),
+      // Free-text qualifier, shown and required only while causeOfLoss includes
+      // its "Other" option. The validator is added and cleared by the step
+      // component, not declared here, because "required" depends on a sibling
+      // control's value (see step-loss-information's syncSpecifyOther()).
+      specifyOtherCauseOfLoss: new FormControl<string>(''),
       lossDescription: new FormControl('', [Validators.maxLength(500)]),
       events: new FormArray([]),
     }),
@@ -260,6 +265,7 @@ export class FnolStateService {
     });
     this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(li.causeOfLoss ?? []);
     this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(li.typeOfDamage ?? []);
+    this.fnolForm.get('lossInformation.specifyOtherCauseOfLoss')?.setValue(li.specifyOtherCauseOfLoss ?? '');
     this.fnolForm.get('lossInformation.lossDescription')?.setValue(li.lossDescription ?? '');
 
     // Rebuild events FormArray
