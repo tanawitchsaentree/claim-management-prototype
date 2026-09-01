@@ -87,6 +87,8 @@
     "riskScoreMax": 5,
     "riskStatus": "Low risk",
     "policyNumber": "POL-2023-010",
+    "policyVersion": 2,
+    "basedOnPolicyNumber": "POL-2023-009",
     "policyHolder": "Kaufmann's Warehouse GmbH",
     "broker": "Greta Böck",
     "handler": "Nina Feld",

@@ -38,12 +38,19 @@ export function buildBlockerResult(
   // Falls back to boolean flag only if no policyNumber/claimId lookup was possible.
   if (activeLit.length > 0) {
     blockers.push({
-      type:  'litigation',
-      label: `${activeLit.length} active litigation case(s) must be resolved`,
-      count: activeLit.length,
+      type:      'litigation',
+      label:     `${activeLit.length} active litigation case(s) must be resolved`,
+      count:     activeLit.length,
+      link:      `/claims/${claim.claimId}/litigation`,
+      linkLabel: 'Go to Litigation',
     });
   } else if (claim.hasActiveLitigation) {
-    blockers.push({ type: 'litigation', label: 'Open litigation must be resolved' });
+    blockers.push({
+      type: 'litigation',
+      label: 'Open litigation must be resolved',
+      link: `/claims/${claim.claimId}/litigation`,
+      linkLabel: 'Go to Litigation',
+    });
   }
 
   // BMPCC-14435 — Reserves: deep check via MockReservesService.
@@ -53,7 +60,7 @@ export function buildBlockerResult(
     const total = openReserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
     blockers.push({
       type:   'reserves',
-      label:  `${openReserves.length} open reserve line(s) must be released`,
+      label:  `${openReserves.length} open reserve line(s) must be released — €${total.toLocaleString()}`,
       count:  openReserves.length,
       amount: total,
     });
@@ -79,12 +86,19 @@ export function buildBlockerResult(
   // Falls back to boolean flag when service returns empty.
   if (activeProviders.length > 0) {
     blockers.push({
-      type:  'provider',
-      label: `${activeProviders.length} active provider assignment(s) must be finalised`,
-      count: activeProviders.length,
+      type:      'provider',
+      label:     `${activeProviders.length} active provider assignment(s) must be finalised`,
+      count:     activeProviders.length,
+      link:      `/claims/${claim.claimId}/providers`,
+      linkLabel: 'Go to Provider Management',
     });
   } else if (claim.hasActiveProvider) {
-    blockers.push({ type: 'provider', label: 'Provider instructions must be finalised' });
+    blockers.push({
+      type: 'provider',
+      label: 'Provider instructions must be finalised',
+      link: `/claims/${claim.claimId}/providers`,
+      linkLabel: 'Go to Provider Management',
+    });
   }
 
   if (claim.hasActiveRecovery) {

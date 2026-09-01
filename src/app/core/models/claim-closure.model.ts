@@ -64,6 +64,9 @@ export interface Blocker {
   count?: number;
   amount?: number;
   items?: BlockerItem[];
+  /** Route to deep-link into via a "Go to X" action — omitted when there's no dedicated page to send the handler to. */
+  link?: string;
+  linkLabel?: string;
 }
 
 export interface BlockerCheckResult {
