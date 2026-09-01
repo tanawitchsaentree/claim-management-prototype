@@ -73,7 +73,9 @@ export class ClaimDevDetailsModalComponent implements OnInit {
 
   readonly stateInspector = computed(() => {
     const state   = this.stateSvc.state();
-    const claimId = this.ticket.targetClaim;
+    // The selected AC wins over the ticket's target: an AC that names its own
+    // claim would otherwise be read against another claim's state.
+    const claimId = this.selectedAc()?.targetClaim ?? this.ticket.targetClaim;
     const overview = state.overviews[claimId];
     const tasks    = state.tasks.filter(t => t.claimId === claimId);
     const sections = state.sections.filter(s => s.claimId === claimId);

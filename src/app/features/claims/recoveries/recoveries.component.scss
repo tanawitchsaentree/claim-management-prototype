@@ -1,0 +1,119 @@
+// Layout: single-column list page. Pattern source: litigation.component.scss
+// (list pane without the squeeze/detail split — a recovery case has no
+// sub-entities to inspect, so a detail pane would be an empty frame).
+
+:host {
+  display: block;
+}
+
+.rec-page {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.rec-guidance {
+  margin-bottom: var(--space-l);
+
+  &__link {
+    margin-left: var(--space-s);
+    vertical-align: middle;
+  }
+
+  &__icon {
+    margin-left: 4px;
+    font-size: 14px;
+  }
+}
+
+.rec-loading {
+  margin: 0;
+  padding: var(--space-xl) 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// Summary strip — three read-only figures, same rhythm as the financial
+// overview's KPI row: label above value, muted label, plain value.
+.rec-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  padding: var(--space-m) var(--space-l);
+  margin-bottom: var(--space-l);
+  background: var(--ui-02);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+
+  &__value {
+    font-size: var(--paragraph-02-font-size);
+    color: var(--text-01);
+  }
+}
+
+.rec-table {
+  width: 100%;
+}
+
+.rec-col-amount  { text-align: right; white-space: nowrap; }
+.rec-col-action  { width: 96px; text-align: right; }
+
+.rec-id,
+.rec-counterparty {
+  display: block;
+  color: var(--text-01);
+}
+
+.rec-opened,
+.rec-section {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.rec-resolved {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+// Outcome sits on its own full-width row rather than in a column: it is a
+// sentence, and a sentence in a table cell either wraps to four lines or
+// forces every other column narrow.
+.rec-outcome-row {
+  background: var(--ui-02);
+}
+
+.rec-outcome {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+// Kebab — same CSS-drawn dots used in litigation and mass-events.
+.rec-kebab__dots {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}

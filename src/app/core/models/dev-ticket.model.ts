@@ -25,6 +25,16 @@ export interface TicketAC {
   plainStatement?: string;
   page:           PreconditionPage;
   buildStatus:    BuildStatus;
+  /**
+   * Claim this AC is asserted against, when it differs from the ticket's
+   * `targetClaim` (2026-09-01, BMPCC-17779 phase B). A ticket about a
+   * claim-level state machine has to describe several states at once, and one
+   * seeded claim cannot be in all of them — the recovery ACs run across
+   * CLM-2024-001 (No), CLM-2024-024 (Yes, no case) and CLM-2024-003 (Yes,
+   * case running). Read by audit-ac-logic.mjs and by the dev banner's state
+   * inspector; unset means "use the ticket's targetClaim".
+   */
+  targetClaim?:   string;
   setup: {
     description:    string;
     preconditions:  Array<string | PreconditionItem>;
@@ -54,6 +64,12 @@ export interface TicketAC {
     closureReason?:   string;
     taskStatuses?:    Record<string, string>;
     sectionStatuses?: Record<string, string>;
+    // BMPCC-17779 — the recovery-potential decision and the state derived from
+    // it, plus how many recovery cases the recovery domain holds for the claim.
+    recoveryPotential?:       'yes' | 'no' | null;
+    recoveryPotentialState?:  'unanswered' | 'yes-pending' | 'yes-active' | 'yes-settled' | 'no';
+    recoveryCasesCount?:      number;
+    openRecoveryCasesCount?:  number;
   };
 }
 

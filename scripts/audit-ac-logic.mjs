@@ -27,6 +27,7 @@ const allOverviews = JSON.parse(readFileSync(resolve(dataDir, 'claim-overview.js
 const allClaims    = JSON.parse(readFileSync(resolve(dataDir, 'claims.json'),        'utf8'));
 const allCwbLocs   = JSON.parse(readFileSync(resolve(dataDir, 'cwb-locations.json'), 'utf8'));
 const allPayments  = JSON.parse(readFileSync(resolve(dataDir, 'payments.json'),      'utf8'));
+const allRecovery  = JSON.parse(readFileSync(resolve(dataDir, 'recovery-cases.json'), 'utf8'));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -118,13 +119,45 @@ function simulateState(claimId, stateOverrides) {
   const recoveryPotentialUnset = overview.recoveryPotential !== 'yes'
     && overview.recoveryPotential !== 'no';
 
+  // Phase B — recovery cases live in their own file, so the two claim-level
+  // flags are derived here rather than read off the overview. An overviewPatch
+  // that sets them by hand still wins: an AC is allowed to describe a claim
+  // state the seeded case list does not contain.
+  const recoveryCases     = allRecovery.filter(c => c.claimId === claimId);
+  const openRecoveryCases = recoveryCases.filter(c => c.status !== 'Recovered' && c.status !== 'Written off');
+  const patchedRecovery   = so.overviewPatch?.claimId === claimId ? (so.overviewPatch.patch ?? {}) : {};
+  const hasRecoveryCase   = 'hasRecoveryCase'   in patchedRecovery ? patchedRecovery.hasRecoveryCase
+                                                                   : (overview.hasRecoveryCase ?? recoveryCases.length > 0);
+  const hasActiveRecovery = 'hasActiveRecovery' in patchedRecovery ? patchedRecovery.hasActiveRecovery
+                                                                   : (overview.hasActiveRecovery ?? openRecoveryCases.length > 0);
+  const recoveryState = recoveryPotentialState(overview.recoveryPotential ?? null, hasRecoveryCase, hasActiveRecovery);
+
+  // Phase B — 'recovery-not-set-up' became a hard blocker once
+  // /claims/:id/recoveries stopped being a redirect stub.
   const canClose = pendingTasks === 0
     && openSections === 0
     && extraBlockers === 0
     && !recoveryPotentialUnset
+    && recoveryState !== 'yes-pending'
     && overviewStatus !== 'Closed';
 
-  return { pendingTasks, doneTasks, openSections, closedSections, overviewStatus, canClose, tasks, sections, overview, claims, cwbLocs, payments, pendingPaymentsCount };
+  return {
+    pendingTasks, doneTasks, openSections, closedSections, overviewStatus, canClose,
+    tasks, sections, overview, claims, cwbLocs, payments, pendingPaymentsCount,
+    recoveryState, recoveryCasesCount: recoveryCases.length, openRecoveryCasesCount: openRecoveryCases.length,
+  };
+}
+
+/**
+ * Mirrors recoveryPotentialState() in core/models/recovery-potential.model.ts.
+ * Kept as one function so the four surfaces the model warns about cannot drift
+ * from the auditor that checks them.
+ */
+function recoveryPotentialState(recoveryPotential, hasRecoveryCase, hasActiveRecovery) {
+  if (recoveryPotential === 'no')  return 'no';
+  if (recoveryPotential !== 'yes') return 'unanswered';
+  if (!hasRecoveryCase && !hasActiveRecovery) return 'yes-pending';
+  return hasActiveRecovery ? 'yes-active' : 'yes-settled';
 }
 
 /**
@@ -145,6 +178,9 @@ function simulateState(claimId, stateOverrides) {
  *   sectionBlockers   — object: { sectionId: { blockerField: boolean } } spot-checks blocker flags
  *   closedByName      — string: overview.closedBy.name
  *   closureReason     — string: overview.closureReason
+ *   recoveryPotentialState  — 'unanswered' | 'yes-pending' | 'yes-active' | 'yes-settled' | 'no'
+ *   recoveryCasesCount      — exact count of recovery-cases.json rows for the claim
+ *   openRecoveryCasesCount  — same, restricted to Draft/In progress
  */
 function assertOutcome(acId, actual, expectedOutcome) {
   const failures = [];
@@ -284,15 +320,25 @@ function assertOutcome(acId, actual, expectedOutcome) {
       }
 
       // BMPCC-17779 — derived state shared by the overview card, the closure
-      // checklist and the dashboard prompt. Mirrors recoveryPotentialState()
-      // in core/models/recovery-potential.model.ts.
+      // checklist, the dashboard prompt and the Recoveries page. Computed in
+      // simulateState via the mirror of recoveryPotentialState().
       case 'recoveryPotentialState': {
-        const rp = actual.overview.recoveryPotential ?? null;
-        const state = rp === 'no'  ? 'no'
-                    : rp === 'yes' ? (actual.overview.hasActiveRecovery ? 'yes-active' : 'yes-pending')
-                    : 'unanswered';
-        if (state !== expected)
-          failures.push(`recoveryPotentialState: expected "${expected}", got "${state}"`);
+        if (actual.recoveryState !== expected)
+          failures.push(`recoveryPotentialState: expected "${expected}", got "${actual.recoveryState}"`);
+        break;
+      }
+
+      // BMPCC-17779 phase B — how many recovery cases the recovery domain holds
+      // for this claim, and how many of them are still running.
+      case 'recoveryCasesCount': {
+        if (actual.recoveryCasesCount !== expected)
+          failures.push(`recoveryCasesCount: expected ${expected}, got ${actual.recoveryCasesCount}`);
+        break;
+      }
+
+      case 'openRecoveryCasesCount': {
+        if (actual.openRecoveryCasesCount !== expected)
+          failures.push(`openRecoveryCasesCount: expected ${expected}, got ${actual.openRecoveryCasesCount}`);
         break;
       }
 
@@ -365,11 +411,10 @@ let totalSkipped = 0;
 
 for (const file of ticketFiles.sort()) {
   const ticket   = JSON.parse(readFileSync(resolve(tickDir, file), 'utf8'));
-  const claimId  = ticket.targetClaim;
   const acs      = ticket.acceptanceCriteria ?? [];
 
   console.log(`\n📋  ${ticket.ticketId} — ${ticket.title}  (${file})`);
-  console.log(`    target: ${claimId}  |  ACs: ${acs.length}`);
+  console.log(`    target: ${ticket.targetClaim}  |  ACs: ${acs.length}`);
 
   for (const ac of acs) {
     totalACs++;
@@ -380,11 +425,15 @@ for (const file of ticketFiles.sort()) {
       continue;
     }
 
+    // An AC may name its own claim when the ticket's target cannot hold the
+    // state it describes — see TicketAC.targetClaim in dev-ticket.model.ts.
+    const claimId  = ac.targetClaim ?? ticket.targetClaim;
     const actual   = simulateState(claimId, ac.setup?.stateOverrides);
     const failures = assertOutcome(ac.id, actual, ac.expectedOutcome);
 
     if (failures.length === 0) {
-      console.log(`  ✅  ${ac.id}  ${ac.plainStatement ?? ac.statement}`);
+      const on = ac.targetClaim ? ` [${ac.targetClaim}]` : '';
+      console.log(`  ✅  ${ac.id}${on}  ${ac.plainStatement ?? ac.statement}`);
     } else {
       totalFailed++;
       console.log(`  ❌  ${ac.id}  ${ac.plainStatement ?? ac.statement}`);

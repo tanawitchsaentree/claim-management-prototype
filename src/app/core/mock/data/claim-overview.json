@@ -171,7 +171,46 @@
     "reopenedBy": { "userId": "usr-002", "name": "Nina Feld" },
     "recoveryPotential": "yes",
     "recoveryPotentialNote": "",
+    "hasRecoveryCase": false,
     "hasActiveRecovery": false,
     "reopeningReason": "New evidence received"
+  },
+  "CLM-2024-003": {
+    "claimId": "CLM-2024-003",
+    "client": "GBF Logistics GmbH",
+    "assignedHandler": "Elke Dorn",
+    "status": "Open",
+    "proximateLossCause": "Cargo damage",
+    "riskScore": 2,
+    "riskScoreMax": 5,
+    "riskStatus": "Low risk",
+    "policyNumber": "POL-2024-003",
+    "policyHolder": "GBF Logistics GmbH",
+    "broker": "Ralf Kern",
+    "clientContact": "Bernd Gessler",
+    "handler": "Elke Dorn",
+    "supervisor": "Werner Baum",
+    "priority": "medium",
+    "lineOfBusiness": "Marine",
+    "dateOfLoss": "2024-02-18",
+    "dateReported": "2024-02-20",
+    "dateCreated": "2024-02-20",
+    "description": "Sea-water ingress damaged palletised goods in transit. The carrier signed for the shipment in undamaged condition, so the loss is being pursued back against them under subrogation.",
+    "location": {
+      "street": "Am Sandtorkai 48",
+      "city": "Hamburg",
+      "country": "Germany"
+    },
+    "financialSummary": {
+      "currency": "USD",
+      "totalReserve": 312000,
+      "totalPayments": 0,
+      "totalRecoveries": 16400,
+      "outstanding": 312000
+    },
+    "recoveryPotential": "yes",
+    "recoveryPotentialNote": "",
+    "hasRecoveryCase": true,
+    "hasActiveRecovery": true
   }
 }

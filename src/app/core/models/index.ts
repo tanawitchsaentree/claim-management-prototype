@@ -24,3 +24,4 @@ export * from './dashboard-extended.model';
 export * from './financial-overview.model';
 export * from './payment.model';
 export * from './provider-assignment.model';
+export * from './recovery.model';

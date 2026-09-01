@@ -56,7 +56,12 @@ const STORAGE_VERSION_KEY  = 'champ-mock-version';
 // Bumped for BMPCC-17779 — claim-overview.json gained recoveryPotential on
 // four records. Without a bump, anyone with cached state keeps the old
 // overviews and every seeded claim reads as unanswered.
-const STATE_VERSION        = 'recovery-potential-v5';
+//
+// Bumped again for phase B: CLM-2024-003 gained an overview record (the
+// recovery-domain demo claim) and every record gained `hasRecoveryCase`.
+// Cached state without the new field reads a claim with a running recovery
+// case as "no case set up", which is a closure blocker that cannot be cleared.
+const STATE_VERSION        = 'recovery-cases-v6';
 
 function defaultState(): MockState {
   return {

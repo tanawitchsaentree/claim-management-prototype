@@ -764,6 +764,33 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-01 — BMPCC-17779 (Recovery Potential Flag — Dependency), Phase B — the Recoveries page
+
+- **Source:** verbal brief — "ไป map หน่อย ใน main จริงมีอะไรแล้วเราไม่มีอะไร ไปสร้างตามซะ" then "run dev ช่องว่างๆ" → clarified as *"หมายถึงหน้าที่ยังว่าง ยังไม่ได้ทำ"* (build the pages that are still blank). Phase A's own accepted-deviation named this page as the thing that had to exist before its blocker could be promoted.
+- **Module:** Claims (new Recoveries page, closure modal, Claim Overview, routes)
+- **File:** `public/tickets/bmpcc-17779.json` — 6 ACs → 10
+- **ACs authored:** 4 new (AC-07…AC-10, all `done`); AC-05 flipped `partial` → `done` and lost its deviation note
+- **Deviations:** none remaining on this ticket — Phase A's only deviation was this page's absence
+- **Schema changes:**
+  - `TicketAC.targetClaim?: string` — an AC may name its own claim. Needed because this ticket describes a claim-level state machine with four states and no single seeded claim can be in all of them. Honoured by `audit-ac-logic.mjs` and by the dev banner's state inspector (which otherwise reads the wrong claim's tasks/sections while a recovery AC is selected).
+  - Two more `expectedOutcome` keys: `recoveryCasesCount`, `openRecoveryCasesCount`
+  - `ClaimOverview.hasRecoveryCase?: boolean`; `RecoveryPotentialState` gained `'yes-settled'`
+  - `STATE_VERSION` → `'recovery-cases-v6'`
+- **Files touched:** 19 — new `core/models/recovery.model.ts`, `core/mock/data/recovery-cases.json`, `core/mock/services/mock-recovery.service.ts`, `features/claims/recoveries/recoveries.component.{ts,html,scss}` + `components/create-recovery-modal/*` + `components/resolve-recovery-modal/*`; modified `recovery-potential.model.ts`, `claim-overview.model.ts`, `dev-ticket.model.ts`, `models/index.ts`, `claim-closure-blocker.builder.ts`, `claim-closure-modal.component.ts`, `claim-overview.component.ts`, `claim-dev-details-modal.component.ts`, `app.routes.ts`, `claim-overview.json`, `mock-state.service.ts`, `scripts/audit-ac-logic.mjs`
+- **Notes:**
+  - **Two flags, not one — the loop was otherwise unclosable.** With only `hasActiveRecovery`, resolving the last recovery case flips it back to false, which reads as `yes-pending`: a closure blocker saying *"no recovery case has been set up"* about work that had just been finished, with no action available to clear it. Caught before shipping by walking the state machine backwards from the terminal state. Fixed with `hasRecoveryCase` + a fourth state, `yes-settled`. `blocksClosure` still covers only `unanswered | yes-pending`.
+  - **A real bug in the committed Phase A** (`b03d2b7`): `onRecoveryUpdated` repainted the card but never called `patchOverview`, so the answer was lost on navigation — clicking **Set up recovery case** would land on a page that still believed the question was unanswered. Fixed here, along with appending the activity.
+  - **`patchOverview` no-ops on a claim with no overview record** (`mock-state.service.ts:91`), so the page loads the overview *before* syncing the derived flags. A create that silently failed to persist was the first bug this design would have produced.
+  - **The audit script hand-mirrors the derivation.** `recoveryPotentialState()` exists twice — in the model and in `audit-ac-logic.mjs` — so both were changed in the same commit. An `overviewPatch` that sets the flags by hand still wins over the derived value: an AC is allowed to describe a state the seeded case list doesn't contain.
+  - **CLM-2024-003 was chosen as the recovery-domain claim** because `heads-up.json` hu-004 already narrates *"Subrogation opportunity identified — potential recovery of USD 120k from carrier"* on it. CLM-2024-001 was left alone: AC-01/AC-04 assert `recoveryPotential: 'no'` on it with no override, and every `canClose` assertion across all tickets targets CLM-2024-001 or CL-2025-001 (both `'no'`), so promoting `yes-pending` to a hard blocker breaks nothing.
+  - **A recovery case is not a recovery booking.** `financial-overview.json` already has `recoveries` rows — those are ledger entries. A `RecoveryCase` is the pursuit (who, on what basis, how much is expected, is it still running). Kept in a separate file for that reason.
+  - **New cases open as `In progress`, not `Draft`.** A Draft the handler must remember to promote is the same dead end the call complained about.
+  - **FormBuilder trap:** `fb.group({ x: ['', { nonNullable: true, validators: [...] }] })` does not work — the array shorthand reads slot 2 as validators, so the object becomes the validator and the control's type widens. Use plain `['', [Validators.required]]` and `?? ''` at read time.
+  - **`nx-message [context]` needs a declared union.** A `computed` returning an object literal widens `context` to `string` and fails the template's input type. Declare the interface (`RecoveryGuidance`) and type the computed with it.
+  - **Pre-existing audit failure, not from this work:** `audit:ndbx-wrapper` fails on 3 raw `<input>`s — `navbar.html:21` and `file-restriction-card.component.html:18` are already like that in `HEAD`, and `add-section-entity-modal.component.html:99` belongs to another task's uncommitted work.
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

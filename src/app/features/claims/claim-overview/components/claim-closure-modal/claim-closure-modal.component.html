@@ -91,15 +91,10 @@
 
   <!-- STEP 3 — Reason + retention -->
   @if (step() === 3) {
-    @if (showRecoveryWarning || showOtherWarning) {
+    @if (showOtherWarning) {
       <nx-message context="warning" class="ccm-warning">
         <ul class="ccm-warning-list">
-          @if (showRecoveryWarning) {
-            <li>Recovery potential is <strong>Yes</strong> but no recovery case has been created.</li>
-          }
-          @if (showOtherWarning) {
-            <li>Proximate loss cause is set to "Other" — verify this is correct.</li>
-          }
+          <li>Proximate loss cause is set to "Other" — verify this is correct.</li>
         </ul>
       </nx-message>
     }

@@ -1,0 +1,15 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+:host        { @include modal.shell; }
+.crc-header  { @include modal.header; }
+.crc-header-row { @include modal.header-row; }
+.crc-title   { @include modal.title; }
+.crc-subtitle { @include modal.subtitle; }
+.crc-body    { @include modal.body; }
+.crc-footer  { @include modal.footer; }
+
+.crc-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}

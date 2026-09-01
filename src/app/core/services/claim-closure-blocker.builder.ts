@@ -106,12 +106,28 @@ export function buildBlockerResult(
   // they make any selection minimum, yes or no". Before this, a claim could be
   // closed with the question never answered, and recoverable money went with
   // it. Answering "No" clears the blocker; the pressure is meant to come off.
-  if (recoveryPotentialState(claim) === 'unanswered') {
+  const recoveryState = recoveryPotentialState(claim);
+  if (recoveryState === 'unanswered') {
     blockers.push({
       type:      'recovery-potential-unset',
       label:     'Recovery potential has not been answered (Yes/No)',
       link:      `/claims/${claim.claimId}/overview`,
       linkLabel: 'Answer on Claim Overview',
+    });
+  }
+
+  // "If they select Yes, it becomes crucial that the system somehow guides them
+  // towards setting up an actual recovery in recovery domain." Phase A left this
+  // a soft warning on the card only, because /claims/:id/recoveries was still a
+  // redirect stub and a hard blocker whose fix-it link dead-ends is
+  // unresolvable. The Recoveries page ships in phase B, so it becomes a real
+  // blocker with somewhere to send the handler.
+  if (recoveryState === 'yes-pending') {
+    blockers.push({
+      type:      'recovery-not-set-up',
+      label:     'Recovery potential is Yes but no recovery case has been set up',
+      link:      `/claims/${claim.claimId}/recoveries`,
+      linkLabel: 'Go to Recoveries',
     });
   }
 

@@ -1,0 +1,72 @@
+<div class="crc-header">
+  <div class="crc-header-row">
+    <h2 class="crc-title">Create recovery case</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="crc-subtitle">On claim {{ data.claimId }} — amounts in {{ data.currency }}</p>
+</div>
+
+<div class="crc-body" tabindex="0">
+  @if (contradictsClaim()) {
+    <nx-message context="warning">
+      This claim is on record as having no recovery potential. Creating a case here
+      does not change that answer — update the Recovery potential card on Claim
+      Overview if the position has changed.
+    </nx-message>
+  }
+
+  <form [formGroup]="form" class="crc-form">
+    <nx-formfield label="Recovery route">
+      <nx-dropdown formControlName="route" placeholder="Select route">
+        @for (r of routes; track r) {
+          <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      <nx-hint nxFormfieldHint>The basis for the pursuit — what gives us the right to claim it back.</nx-hint>
+      <nx-error nxFormfieldError>A recovery route is required.</nx-error>
+    </nx-formfield>
+
+    <nx-formfield label="Counterparty">
+      <input nxInput formControlName="counterparty" placeholder="e.g. Rheinbogen Carriers GmbH" />
+      <nx-hint nxFormfieldHint>Who the money is being pursued from.</nx-hint>
+      <nx-error nxFormfieldError>A counterparty is required.</nx-error>
+    </nx-formfield>
+
+    @if (data.sections.length > 0) {
+      <nx-formfield label="Section (optional)">
+        <nx-dropdown formControlName="sectionRef" placeholder="Select section">
+          @for (s of data.sections; track s.id) {
+            <nx-dropdown-item [value]="s.name">{{ s.name }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-hint nxFormfieldHint>Which part of the loss this recovery relates to.</nx-hint>
+      </nx-formfield>
+    }
+
+    <nx-formfield [label]="'Expected recovery (' + data.currency + ')'">
+      <input nxInput type="number" min="1" formControlName="estimatedAmount" placeholder="0" />
+      <nx-error nxFormfieldError>An expected amount greater than 0 is required.</nx-error>
+    </nx-formfield>
+
+    <nx-formfield label="Expected resolution date (optional)">
+      <input nxDatefield nxInput formControlName="expectedDate" [datepicker]="expectedPicker" />
+      <nx-datepicker-toggle nxFormfieldSuffix [for]="expectedPicker"></nx-datepicker-toggle>
+      <nx-datepicker #expectedPicker></nx-datepicker>
+    </nx-formfield>
+
+    <nx-formfield label="Basis / note (optional)">
+      <textarea nxInput formControlName="note" rows="3"
+                placeholder="e.g. carrier accepted the shipment undamaged per the signed bill of lading"></textarea>
+      <nx-hint nxFormfieldHint>Kept with the case so the next handler knows why it was opened.</nx-hint>
+    </nx-formfield>
+  </form>
+</div>
+
+<div class="crc-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onCreate()">
+    Create case
+  </button>
+</div>

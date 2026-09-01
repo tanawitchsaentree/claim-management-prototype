@@ -1,0 +1,130 @@
+<div class="rec-page">
+  <app-page-header
+    title="Recoveries"
+    subtitle="Money being pursued back from a third party on this claim.">
+    <button
+      actions
+      nxButton="primary small"
+      type="button"
+      [disabled]="isClosedClaim()"
+      (click)="create()"
+      data-tour-id="rec-create">
+      Create recovery case
+    </button>
+  </app-page-header>
+
+  <!-- The guidance the Recoveries call asked for: this page has to say why the
+       handler was sent here, not just show an empty table. -->
+  @if (guidance(); as g) {
+    <div role="status">
+      <nx-message [context]="g.context" class="rec-guidance" data-tour-id="rec-guidance">
+        <span>{{ g.message }}</span>
+        @if (g.showOverviewLink) {
+          <a
+            nxButton="tertiary small"
+            class="rec-guidance__link"
+            [routerLink]="['/claims', claimId, 'overview']">
+            Answer on Claim Overview
+            <nx-icon name="chevron-right" class="rec-guidance__icon"></nx-icon>
+          </a>
+        }
+      </nx-message>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="rec-loading">Loading…</p>
+  } @else {
+    @if (rows().length > 0) {
+      <div class="rec-summary">
+        <div class="rec-summary__item">
+          <span class="rec-summary__label">Open cases</span>
+          <span class="rec-summary__value">{{ openCount() }}</span>
+        </div>
+        <div class="rec-summary__item">
+          <span class="rec-summary__label">Expected from open cases</span>
+          <span class="rec-summary__value">{{ currency() }} {{ expectedTotal() | number:'1.0-0' }}</span>
+        </div>
+        <div class="rec-summary__item">
+          <span class="rec-summary__label">Recovered to date</span>
+          <span class="rec-summary__value">{{ currency() }} {{ recoveredTotal() | number:'1.0-0' }}</span>
+        </div>
+      </div>
+    }
+
+    @if (rows().length === 0) {
+      <app-empty-state
+        message="No recovery case has been set up on this claim."
+        hint="Use “Create recovery case” to record who is being pursued, on what basis, and for how much."
+        icon="file-arrow">
+      </app-empty-state>
+    } @else {
+      <table nxTable class="rec-table" data-tour-id="rec-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell>Case</th>
+            <th nxHeaderCell>Route</th>
+            <th nxHeaderCell>Counterparty</th>
+            <th nxHeaderCell class="rec-col-amount">Expected</th>
+            <th nxHeaderCell class="rec-col-amount">Recovered</th>
+            <th nxHeaderCell>Expected by</th>
+            <th nxHeaderCell>Status</th>
+            <th nxHeaderCell class="rec-col-action">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.id) {
+            <tr nxTableRow>
+              <td nxCell>
+                <span class="rec-id">{{ row.id }}</span>
+                <span class="rec-opened">Opened {{ row.openedDate | appDate }}</span>
+              </td>
+              <td nxCell>{{ row.route }}</td>
+              <td nxCell>
+                <span class="rec-counterparty">{{ row.counterparty }}</span>
+                @if (row.sectionRef) {
+                  <span class="rec-section">{{ row.sectionRef }}</span>
+                }
+              </td>
+              <td nxCell class="rec-col-amount">{{ row.currency }} {{ row.estimatedAmount | number:'1.0-0' }}</td>
+              <td nxCell class="rec-col-amount">
+                @if (row.recoveredAmount > 0) {
+                  {{ row.currency }} {{ row.recoveredAmount | number:'1.0-0' }}
+                } @else {
+                  —
+                }
+              </td>
+              <td nxCell>{{ (row.expectedDate | appDate) || '—' }}</td>
+              <td nxCell>
+                <app-status-chip [status]="chipStatus(row.status)" domain="claim" [label]="row.status"></app-status-chip>
+              </td>
+              <td nxCell class="rec-col-action">
+                @if (isOpen(row) && !isClosedClaim()) {
+                  <button nxIconButton="tertiary small" type="button"
+                          [nxContextMenuTriggerFor]="rowMenu"
+                          aria-label="Recovery case actions">
+                    <span class="rec-kebab__dots" aria-hidden="true">
+                      <span></span><span></span><span></span>
+                    </span>
+                  </button>
+                  <nx-context-menu #rowMenu="nxContextMenu">
+                    <button nxContextMenuItem type="button" (click)="resolve(row)">Resolve case</button>
+                  </nx-context-menu>
+                } @else {
+                  <span class="rec-resolved">
+                    {{ row.resolvedDate ? (row.resolvedDate | appDate) : '—' }}
+                  </span>
+                }
+              </td>
+            </tr>
+            @if (row.outcomeNote) {
+              <tr nxTableRow class="rec-outcome-row">
+                <td nxCell colspan="8" class="rec-outcome">{{ row.outcomeNote }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  }
+</div>

@@ -1,0 +1,46 @@
+<div class="rrc-header">
+  <div class="rrc-header-row">
+    <h2 class="rrc-title">Resolve {{ recovery.id }}</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="rrc-subtitle">
+    {{ recovery.route }} against {{ recovery.counterparty }} — expected
+    {{ recovery.currency }} {{ recovery.estimatedAmount | number:'1.0-0' }}
+  </p>
+</div>
+
+<div class="rrc-body" tabindex="0">
+  <form [formGroup]="form" class="rrc-form">
+    <p class="rrc-question" id="rrc-question">How did this recovery end?</p>
+    <nx-radio-group formControlName="outcome" class="rrc-radio-group" aria-labelledby="rrc-question">
+      <nx-radio value="Recovered" labelSize="small">Recovered — money came back</nx-radio>
+      <nx-radio value="Written off" labelSize="small">Written off — no money will be recovered</nx-radio>
+    </nx-radio-group>
+
+    @if (isRecovered()) {
+      <nx-formfield [label]="'Amount recovered (' + recovery.currency + ')'">
+        <input nxInput type="number" min="1" formControlName="recoveredAmount" placeholder="0" />
+        <nx-hint nxFormfieldHint>
+          Expected was {{ recovery.currency }} {{ recovery.estimatedAmount | number:'1.0-0' }} — record what
+          actually came back, net of costs.
+        </nx-hint>
+        <nx-error nxFormfieldError>An amount greater than 0 is required.</nx-error>
+      </nx-formfield>
+    }
+
+    <nx-formfield [label]="noteLabel()">
+      <textarea nxInput formControlName="outcomeNote" rows="3" maxlength="300"
+                placeholder="Kept with the case as the audit record."></textarea>
+      <nx-error nxFormfieldError>A short explanation is required.</nx-error>
+    </nx-formfield>
+  </form>
+</div>
+
+<div class="rrc-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="!canConfirm()" (click)="onConfirm()">
+    Resolve case
+  </button>
+</div>

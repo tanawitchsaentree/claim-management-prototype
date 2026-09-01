@@ -1,0 +1,27 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+:host           { @include modal.shell; }
+.rrc-header     { @include modal.header; }
+.rrc-header-row { @include modal.header-row; }
+.rrc-title      { @include modal.title; }
+.rrc-subtitle   { @include modal.subtitle; }
+.rrc-body       { @include modal.body; }
+.rrc-footer     { @include modal.footer; }
+
+.rrc-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.rrc-question {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.rrc-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}

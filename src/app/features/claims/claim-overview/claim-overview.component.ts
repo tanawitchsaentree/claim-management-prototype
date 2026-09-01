@@ -261,6 +261,15 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   onRecoveryUpdated({ claim, activity }: RecoveryPotentialUpdated): void {
     const cur = this.vm$.value;
     if (!cur.claim) return;
+    // Persist, not just repaint. The answer gates claim closure and the
+    // Recoveries page reads it back off the overview record, so a view-model
+    // -only update meant clicking "Set up recovery case" landed on a page that
+    // still believed the question was unanswered.
+    this.stateSvc.patchOverview(claim.claimId, {
+      recoveryPotential:     claim.recoveryPotential,
+      recoveryPotentialNote: claim.recoveryPotentialNote,
+    });
+    this.overviewSvc.appendActivities(claim.claimId, [activity]);
     this.vm$.next({
       ...cur,
       claim: { ...cur.claim, recoveryPotential: claim.recoveryPotential, recoveryPotentialNote: claim.recoveryPotentialNote },

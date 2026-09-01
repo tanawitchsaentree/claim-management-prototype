@@ -100,6 +100,9 @@ export interface ClaimOverview {
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
   hasOpenPayments?:   boolean;
   hasOpenReserves?:   boolean;
+  /** A recovery case exists in the recovery domain, resolved or not (BMPCC-17779 phase B). */
+  hasRecoveryCase?:   boolean;
+  /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;
   hasActiveLitigation?: boolean;
