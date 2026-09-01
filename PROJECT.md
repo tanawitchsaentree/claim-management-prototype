@@ -49,7 +49,7 @@ The codebase has two intertwined concerns:
 1. **Application code** — Angular 21 + `@allianz/ng-aquila` (NDBX), real components for FNOL wizard and Claim Overview/Sections.
 2. **Dev banner & ticket runner** — a tooling layer that lets viewers pick a Jira-style ticket from a dropdown, apply pre-canned mock state, and walk through Acceptance Criteria. Files live under `src/app/features/claims/dev-banner/` and `public/tickets/`.
 
-The two layers ship together. The dev banner is **always visible** (gated by `access-gate`, not `isDevMode()` — see "Why isDevMode() is not used" below) so prod and local behave identically.
+The two layers ship together, but the banner's *visibility* is per-build via `environment.devBannerMode` (`'full' | 'reviewer' | 'off'`): `'full'` in dev and exploration, **`'off'` in the stable/prod build since 2026-09-01** — the deployed link is what stakeholders open, and the harness is not part of the product being shown. It is never gated by `isDevMode()` (see "Why isDevMode() is not used" below); at `'off'` `AppComponent` simply doesn't render it, so the app itself behaves identically in every build.
 
 **Mock-only data layer.** Every service the app talks to is in `src/app/core/mock/services/`. `claims.json`, `tasks.json`, `sections.json`, etc. are the source of truth at runtime, hydrated through `MockStateService`. There is no real backend.
 
@@ -411,7 +411,9 @@ canonical lookup order.
 
 Production build (`optimization: true`) tree-shakes `isDevMode()` to `false`. Any banner / service that gates with `if (!this.enabled) return` becomes inert — `loadTickets()` skips, `applyAC()` no-ops, dropdown stays empty. **Live deploy was broken once for this reason.**
 
-Fix: hardcoded `enabled = true` (and its kin in `dev-helper-banner.component.ts`, `fnol-dev-helper.service.ts`, `claim-dev-banner.component.ts`). The prototype intentionally exposes the dev banner in prod for stakeholder demos. Access-gate (`features/access-gate/`) handles the security side.
+Fix: hardcoded `enabled = true` (and its kin in `dev-helper-banner.component.ts`, `fnol-dev-helper.service.ts`, `claim-dev-banner.component.ts`). Access-gate (`features/access-gate/`) handles the security side.
+
+Whether the banner *appears* is a separate, explicit build flag — `environment.devBannerMode`, read by `AppComponent` — not a dev-mode check. Since 2026-09-01 the stable/prod build sets it to `'off'`, so the deployed link shows the app alone; `'full'` stays on in dev and exploration. Keep it that way: re-gating with `isDevMode()` is what broke the live deploy the first time.
 
 ---
 
