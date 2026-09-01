@@ -7,12 +7,25 @@
     "fnol-loss-info"
   ],
   "walkthroughSteps": [
-    "Apply an AC — banner injects matching claims and seeds FNOL policy state",
-    "Land on /fnol/loss-information already past the search step",
-    "Enter Date of occurrence DD-MM-YYYY (01-06-2024) and pick Cause of loss 'Fire'",
-    "Wait ~1s (debounce) — duplicate-check warning banner appears",
-    "Open a duplicate link in a new tab to confirm deep-link",
-    "If 4+ duplicates exist, click 'Show all' to confirm the modal lists them all"
+    "Apply an AC — injects matching claims and lands on /fnol/loss-information already past the search step",
+    {
+      "targetId": "li-cause-of-loss",
+      "title": "Cause of loss",
+      "body": "Together with Date of occurrence, this drives the duplicate check below — matching happens on policy + date + cause.",
+      "direction": "bottom"
+    },
+    {
+      "targetId": "li-date-of-occurrence",
+      "title": "Date of occurrence",
+      "body": "Changing this (or the cause above) re-fires the duplicate check on a ~1s debounce — a brief 'Checking for duplicate claims…' spinner shows first.",
+      "direction": "bottom"
+    },
+    {
+      "targetId": "li-duplicate-banner",
+      "title": "Duplicate warning",
+      "body": "Lists up to 3 matches — each claim ID is a real deep link (opens /claims/:id in a new tab, FNOL state stays intact on return). Past 3 matches, a 'Show all N duplicates' button opens a sortable table with every match. The banner is dismissible and never blocks the wizard's Next button.",
+      "direction": "bottom"
+    }
   ],
   "acceptanceCriteria": [
     {

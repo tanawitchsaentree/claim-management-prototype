@@ -6,10 +6,21 @@
   "pages": ["overview"],
   "walkthroughSteps": [
     "Land on CLM-2024-001 overview — status chip reads 'In progress'",
-    "Observe Tasks widget: all 5 tasks show as Done",
-    "Observe Sections widget: all 4 sections are Closed",
-    "Click 'Close Claim' — button is enabled, no tooltip blocker",
-    "In the modal, skip straight to Step 2 (no blockers) — select Closure Reason and confirm",
+    {
+      "targetId": "co-tasks-widget",
+      "title": "All tasks done",
+      "body": "Every task on this claim is marked Done — the Tasks widget shows 0 pending.",
+      "direction": "top"
+    },
+    "Sections are all resolved too — no open deductibles, salvage, litigation, reserves, payments, or provider blockers remain",
+    {
+      "targetId": "co-close-claim-button",
+      "title": "Close Claim",
+      "body": "With every task done and no section blockers left, Close Claim is enabled.",
+      "expectedAfterClick": "Opens the closure modal directly at Step 2 (reason selection) — the blocker checklist step is skipped because there's nothing blocking.",
+      "direction": "top"
+    },
+    "In the modal, select a Closure Reason and confirm",
     "Status chip updates to 'Closed'; closure panel appears with date, reason, and handler"
   ],
   "acceptanceCriteria": [

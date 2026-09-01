@@ -7,15 +7,40 @@
   "pages": ["overview"],
   "walkthroughSteps": [
     "Apply AC-01 — CLM-2024-001 has open tasks + open sections (blockers present)",
-    "Land on /claims/CLM-2024-001/overview",
-    "Observe: 'Close Claim' button is visible and clickable (primary style, not disabled/tooltipped)",
-    "Click 'Close Claim' — modal opens at Pre-closure Checklist",
-    "Observe: 7 condition rows, blocked items show red exclamation icon + 'Blocked' badge",
-    "Observe: 'Continue' button is disabled because not all conditions are clear",
-    "Apply AC-02 — all tasks done, all sections closed, no other blockers",
-    "Click 'Close Claim' — modal checklist shows all 7 rows with green check + 'Clear' badge",
-    "Observe: 'Continue' button is now enabled",
-    "Click Continue → Reason step → select reason → Continue → Confirmation → Close Claim"
+    {
+      "targetId": "co-close-claim-button",
+      "title": "Close Claim",
+      "body": "Always clickable, primary style — never disabled or tooltipped because of blockers. With active blockers it opens on step 1 (Blockers); with none, it skips straight to the checklist.",
+      "direction": "top"
+    },
+    "With blockers present, step 1 shows the deep blocker cards (litigation / reserves / provider) — Cancel is the only footer action here",
+    {
+      "targetId": "ccm-checklist",
+      "title": "Pre-closure Checklist",
+      "body": "7 system-validated conditions (sections, payments, bills, recoveries & deductibles, reserves, litigation, reports). Failing rows show a red exclamation icon plus a hint of what's outstanding; passing rows show a green check.",
+      "expectedAfterClick": "Continue stays disabled until every row passes.",
+      "direction": "top"
+    },
+    "Apply AC-02 — all tasks done, all sections closed, no other blockers — the modal now opens directly on the checklist with all 7 rows green and Continue enabled",
+    "Continue → Reason & Retention (pick a reason, retention default/indefinite) → Continue",
+    {
+      "targetId": "ccm-confirm-list",
+      "title": "Confirmation",
+      "body": "One combined, handler-attested list (not system-validated) — pending bills, recoveries & deductibles, final reports, Provider Management survey.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-confirm-no",
+      "title": "No",
+      "body": "Declining here returns to the Pre-closure Checklist step (step 2) — not back to Reason & Retention.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-confirm-yes",
+      "title": "Yes — Close Claim",
+      "body": "Confirms closure — status chip updates to Closed and the closure panel appears.",
+      "direction": "top"
+    }
   ],
   "acceptanceCriteria": [
     {

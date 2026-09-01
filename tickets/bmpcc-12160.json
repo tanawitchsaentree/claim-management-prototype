@@ -1,0 +1,46 @@
+{
+  "ticketId": "BMPCC-12160",
+  "module": "FNOL",
+  "title": "FIGMA - Party role (Assign a new party role)",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["any"],
+  "walkthroughSteps": [
+    "Navigate to /fnol/parties — a policy is pre-selected so the step doesn't redirect to search",
+    {
+      "targetId": "fnol-party-actions",
+      "title": "Party role",
+      "body": "Every party row has an actions menu with View details, Edit role, and Remove.",
+      "expectedAfterClick": "Opens the row's action menu — Edit role is where a party's role assignment changes.",
+      "direction": "left"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Every party row has an Edit role action",
+      "plainStatement": "Each party on the FNOL Parties step has an actions menu including **Edit role**, for assigning or changing that party's role.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed a selected policy so /fnol/parties doesn't redirect to /fnol/search",
+        "preconditions": [
+          { "text": "At least one party row with an Edit role action is visible", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Party row actions menu with Edit role",
+        "visualCues": ["Kebab action button per party row", "Menu includes View details, Edit role, Remove"]
+      },
+      "howToTest": {
+        "route": "/fnol/parties",
+        "trigger": "Click a party row's actions kebab",
+        "expectedResult": "Menu opens with Edit role available"
+      }
+    }
+  ]
+}

@@ -7,13 +7,45 @@
     "overview"
   ],
   "walkthroughSteps": [
-    "Apply an AC \u2014 banner seeds blockers / retention state on the target claim",
-    "Land on /claims/CLM-2024-001/overview",
-    "Hover Close Claim to see blocker breakdown (when applicable)",
-    "Open closure modal \u2192 step 3 retention options (Default 10y / Custom / Indefinite)",
-    "Custom date picker \u2014 only dates beyond default 10-year period are selectable",
-    "After closure \u2192 status chip 'Closed' + closure panel shows retention info",
-    "Reopen flow requires a non-zero reserve to be raised"
+    "Apply an AC \u2014 seeds blockers / retention state on CLM-2024-001",
+    {
+      "targetId": "co-close-claim-button",
+      "title": "Close Claim",
+      "body": "Always clickable \u2014 it's only disabled during the brief loading check, never because of blockers. Payments, litigation, bills, or open sections show up as blocker cards inside the modal instead of a disabled-button tooltip.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-reason-dropdown",
+      "title": "Closure reason",
+      "body": "Required before the claim can close \u2014 three reasons available (Claim Finalised / Claim Not Pursued / Claim Rejected). If the proximate loss cause is 'Other', a warning appears above this step, but it doesn't block submission.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-retention-group",
+      "title": "Document retention",
+      "body": "Three options: Default (computed 10-year date), Custom, or Indefinite (stores no date).",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-retention-custom-date",
+      "title": "Custom retention date",
+      "body": "Only shown when Custom is selected \u2014 must be strictly after the default 10-year date, enforced live (not just on submit).",
+      "direction": "top"
+    },
+    "Confirm \u2192 status chip updates to 'Closed'; closure panel shows date, reason, closed-by, and retention until (or 'Indefinite')",
+    {
+      "targetId": "co-reopen-claim-button",
+      "title": "Reopen Claim",
+      "body": "Visible once the claim is Closed.",
+      "expectedAfterClick": "Opens a modal for a reopening reason, an optional note, and a reserve to raise (type + amount, amount must be > 0 \u2014 reopening always requires a reserve). Confirming flips status to 'Reopened' and adds a reopened-date row to the closure panel.",
+      "direction": "top"
+    },
+    {
+      "targetId": "crm-reserve-amount",
+      "title": "Reserve amount",
+      "body": "Required, must be greater than 0 \u2014 this is the actual reserve gate AC-07 calls for; the reopen modal previously had no reserve field at all.",
+      "direction": "top"
+    }
   ],
   "acceptanceCriteria": [
     {

@@ -5,14 +5,24 @@
   "targetClaim": "CL-2025-001",
   "pages": ["fnol-skeleton"],
   "walkthroughSteps": [
-    "Apply an AC — banner pushes FNOL state into orphan path",
-    "Land on /fnol/skeleton-create — left nav shows 4 steps (Loss / Parties / Location / Summary)",
-    "Fill Client + Reason on Loss page",
-    "Optional: pick Broker or Insured as notifier — Internal is not offered (internal staff register the claim, they never are the notifier)",
-    "Click 'Next' — navigate to /fnol/skeleton-parties (starts empty; broker carried over if one was selected)",
-    "Optionally add another party (e.g. a different insurer), then click 'Next' — navigate to /fnol/skeleton-location",
-    "Enter a location manually (no linked policy, so no 'select from contract' option), then click 'Next' — navigate to /fnol/skeleton-summary",
-    "Review Loss + Parties + Notifier blocks, click 'Create' to register the skeleton claim"
+    "Apply an AC — pushes FNOL state into the orphan path. Land on /fnol/skeleton-create — left nav shows 4 steps (Loss / Parties / Location / Summary)",
+    "Fill Client + Reason on the Loss page",
+    {
+      "targetId": "skc-notifier-type",
+      "title": "Notifier type",
+      "body": "Only Broker or Insured — Internal is deliberately not offered, since internal staff register the claim but are never the notifier themselves. Picking Broker opens the Search broker modal; Insured shows a single free-text input.",
+      "direction": "bottom"
+    },
+    "Click 'Next' (this page never submits — creation happens on Summary) → /fnol/skeleton-parties, starting empty except for the broker carried over from the notifier screen if one was picked",
+    "Optionally 'Add party' (e.g. a different insurer) — parties are never mandatory, Next always works",
+    "Location step: 'Add location' opens the manual-entry modal directly — location-picker.component.ts's addLocation() skips the policy-search branch entirely when there's no linked policy, so there's no 'select from contract location' option here",
+    {
+      "targetId": "sks-create-button",
+      "title": "Create",
+      "body": "Summary reviews Loss, Locations, Parties, and Notifier as read-only cards.",
+      "expectedAfterClick": "Registers the skeleton claim and shows a success banner with the new claim ID.",
+      "direction": "top"
+    }
   ],
   "acceptanceCriteria": [
     {

@@ -6,13 +6,30 @@
   "pages": ["sections"],
   "walkthroughSteps": [
     "Navigate to /claims/CLM-2024-001/sections",
+    {
+      "targetId": "sections-sec001-kebab",
+      "title": "Close Section",
+      "body": "Every section has a Close Section action in this menu. What happens next depends on whether the section has open blockers.",
+      "expectedAfterClick": "With blockers present, the modal opens straight to a blocker list (Cancel-only footer). With none, it skips to a pre-closure checklist, then a closure reason — Close Section stays disabled until a reason is picked.",
+      "direction": "right"
+    },
     "Apply AC-01 — SEC-001 has 2 hard blockers (deductible + salvage); click ⋮ → Close Section",
     "Observe: modal opens on step 1 (Blockers) listing 2 red blocker rows, only Cancel in footer",
     "Apply AC-02 — SEC-001 has 4 blockers (litigation + reserves + payments + provider); close modal and reopen",
     "Observe: 4 blocker rows; expand each to see linked items/details",
     "Apply AC-03 — SEC-001 has all blockers cleared; click ⋮ → Close Section",
-    "Observe: modal skips to step 2 (Pre-closure Checklist); Continue disabled until all 5 items checked",
-    "Check all 5 items → Continue → step 3 (Reason) → select 'Section Finalised' → Close Section",
+    {
+      "targetId": "scm-checklist",
+      "title": "Pre-closure Checklist",
+      "body": "With no blockers, the modal skips straight here — 6 system-validated conditions. Continue stays disabled until every one shows green.",
+      "direction": "top"
+    },
+    {
+      "targetId": "scm-reason-dropdown",
+      "title": "Closure reason",
+      "body": "Select 'Section Finalised' — Close Section stays disabled until a reason is picked.",
+      "direction": "top"
+    },
     "Observe: SEC-001 row status chip updates to Closed; toast confirms closure",
     "Apply AC-04 — confirm closureDate and closureReason persisted on the section row after closure"
   ],

@@ -8,15 +8,39 @@
     "sections"
   ],
   "walkthroughSteps": [
-    "Apply AC-01 \u2014 SEC-001 has open deductible + salvage blockers",
-    "Navigate to /claims/CLM-2024-001/sections",
-    "Click \u22ee \u2192 Close Section on 'Property Damage \u2014 Warehouse & Forklift' (SEC-001) \u2192 modal shows 2 blockers",
+    "Apply AC-01 \u2014 SEC-001 has open deductible + salvage blockers. Land on /claims/CLM-2024-001/sections",
+    {
+      "targetId": "sections-sec001-kebab",
+      "title": "Close Section \u2014 SEC-001",
+      "body": "'Property Damage \u2014 Warehouse & Forklift' has 2 open blockers.",
+      "expectedAfterClick": "Modal opens on the Blockers step \u2014 deductible + salvage cards, each expandable to the underlying item. Only Cancel in the footer.",
+      "direction": "right"
+    },
     "Apply AC-02 \u2014 SEC-002 has litigation + reserves + payments blockers",
-    "Click \u22ee \u2192 Close Section on 'Business Interruption \u2014 Machinery Sales' (SEC-002) \u2192 modal shows 3 blockers",
-    "Apply AC-03 \u2014 SEC-003 has provider blocker only",
-    "Click \u22ee \u2192 Close Section on 'Contents & Fixtures Damage' (SEC-003) \u2192 modal shows 1 blocker",
-    "Apply AC-04 \u2014 all sections clear, close SEC-001 \u2192 checklist \u2192 reason \u2192 closed",
-    "Apply AC-05 \u2014 all sections clear \u2192 close all 3 \u2192 go to overview \u2192 Close Claim available"
+    {
+      "targetId": "sections-sec002-kebab",
+      "title": "Close Section \u2014 SEC-002",
+      "body": "'Business Interruption \u2014 Machinery Sales' has 3 open blockers.",
+      "expectedAfterClick": "Modal shows 3 distinct blocker cards (litigation, reserves, payments).",
+      "direction": "right"
+    },
+    "Apply AC-03 \u2014 SEC-003 has a provider blocker only",
+    {
+      "targetId": "sections-sec003-kebab",
+      "title": "Close Section \u2014 SEC-003",
+      "body": "'Contents & Fixtures Damage' has 1 open blocker (active provider).",
+      "expectedAfterClick": "Modal shows a single blocker card.",
+      "direction": "right"
+    },
+    "Apply AC-04 \u2014 all blockers cleared on SEC-001",
+    {
+      "targetId": "scm-checklist",
+      "title": "Pre-closure Checklist",
+      "body": "With no blockers, the modal skips straight here \u2014 6 system-validated conditions (deductible, litigation, subrogation/salvage, reserves, payments, provider). All must show green before Continue enables.",
+      "direction": "top"
+    },
+    "Pick a closure reason \u2192 Close Section \u2192 the row updates to a Closed chip",
+    "Apply AC-05 \u2014 all 3 sections closed, all tasks done \u2192 on Overview, Close Claim is now active and the claim closure modal's Blockers step no longer shows a sections blocker"
   ],
   "acceptanceCriteria": [
     {

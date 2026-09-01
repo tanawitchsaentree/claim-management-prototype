@@ -1,0 +1,1 @@
+var o=["Subrogation","Salvage","Third-party liability","Reinsurance","Deductible collection"],t=["Recovered","Written off"];function r(e){return!t.includes(e.status)}function n(e){return{hasRecoveryCase:e.length>0,hasActiveRecovery:e.some(r)}}export{o as a,r as b,n as c};

@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-14831",
+  "module": "Claims",
+  "title": "UI/UX - Design for Restructured Financial Overview Layout and Pagination for Transaction Summary and Payments Tables",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["any"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/financial",
+    {
+      "targetId": "fo-transaction-summary",
+      "title": "Transaction summary",
+      "body": "This is the Transaction Summary section this ticket's layout redesign covers.",
+      "expectedAfterClick": "No interaction here — this step is pointing at the section itself. Note: this build shows a plain item count, not the paginated view the design calls for; pagination isn't implemented yet.",
+      "direction": "bottom"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Financial Overview shows a Transaction Summary section with an item count",
+      "plainStatement": "Financial Overview's **Transaction Summary** section lists transactions with a running item count. **NOTE [accepted-deviation]:** the ticket calls for pagination on this table; the current build shows a plain count instead, no page controls. Treated as `done` for the layout — pending product sign-off on whether pagination ships.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses CLM-2024-001's existing financial data — no override needed",
+        "preconditions": [
+          { "text": "Transaction Summary section visible with item count", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Transaction Summary table with item count, no pagination controls",
+        "visualCues": ["Transaction Summary heading", "Item count below heading", "No pagination controls present"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial",
+        "trigger": "Scroll to Transaction Summary",
+        "expectedResult": "Section visible with item count; no pagination"
+      }
+    }
+  ]
+}

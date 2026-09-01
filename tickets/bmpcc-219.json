@@ -7,14 +7,22 @@
     "fnol-loss-info"
   ],
   "walkthroughSteps": [
-    "Apply an AC — banner seeds the FNOL policy state and CWB seed data",
     "Land on /fnol/loss-information; the wizard must already be past the search step",
-    "Open the 'Locations of loss' card → click 'Add location' to enter the adding state",
-    "Pick the 'Retrieve from CWB' radio → 'Search in CWB' button appears",
-    "Click 'Search in CWB' → external-system modal opens with 7 search fields",
-    "Verify Policy Number and Location Rule Number are pre-filled and read-only",
-    "Pick Country (mandatory) → Search enables → fill optional filters → results table populates",
-    "Pick a row (radio) → 'Confirm selection' → modal closes; selected card shows source 'From CWB'"
+    "Open the 'Locations of loss' card → 'Add location' — a chooser now opens with Find in policy / Retrieve from CWB / Enter manually (LocationSourceModalComponent, added so the already-built CWB modal is actually reachable)",
+    {
+      "targetId": "lsm-cwb-option",
+      "title": "Retrieve from CWB",
+      "body": "Selecting this changes the footer button to 'Search in CWB'.",
+      "direction": "right"
+    },
+    {
+      "targetId": "lsm-continue",
+      "title": "Search in CWB",
+      "body": "Policy Number and Location Rule Number are pre-filled/read-only inside the CWB modal; Country is the only mandatory field gating Search.",
+      "expectedAfterClick": "Opens the CWB search modal (7 fields, multi-select results, plus a manual-entry fallback section).",
+      "direction": "top"
+    },
+    "Pick a country → Search → select a result → Confirm — the location picker's table now shows the address with a 'From CWB' tag under it"
   ],
   "acceptanceCriteria": [
     {

@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-7133",
+  "module": "Claims",
+  "title": "UI/UX - Design for Displaying Policy Limits and Deductibles at Claim Level and Section Level",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["any"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/limits",
+    {
+      "targetId": "ld-policy-limits",
+      "title": "Policy limits",
+      "body": "Policy limits are shown per type and amount here, with Deductibles listed separately below.",
+      "expectedAfterClick": "No interaction here — this step is pointing at the section itself. A claim/section level toggle above switches which level's limits and deductibles are shown.",
+      "direction": "bottom"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Policy limits and deductibles are shown at both claim and section level",
+      "plainStatement": "The Limits & Deductibles page shows **Policy limits** and **Deductibles** as separate sections, with a level toggle to switch between claim-level and section-level values.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses CLM-2024-001's existing limits/deductibles data — no override needed",
+        "preconditions": [
+          { "text": "Policy limits section visible with a level toggle", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Policy limits table and Deductibles table, level toggle above",
+        "visualCues": ["Level toggle (claim/section)", "Policy limits table with type + amount", "Deductibles table below"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/limits",
+        "trigger": "Load the Limits & Deductibles page",
+        "expectedResult": "Policy limits and Deductibles sections both visible"
+      }
+    }
+  ]
+}

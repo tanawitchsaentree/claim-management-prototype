@@ -1,0 +1,1 @@
+var e={building:"Add building(s)",vehicle:"Add vehicle(s)",marine:"Add marine vessel(s)",employee:"Add employee group(s)",financial:"Add financial asset(s)",other:"Add other entity"},t=[{value:"Germany",label:"Germany"},{value:"France",label:"France"},{value:"United Kingdom",label:"United Kingdom"},{value:"Netherlands",label:"Netherlands"}];export{e as a,t as b};

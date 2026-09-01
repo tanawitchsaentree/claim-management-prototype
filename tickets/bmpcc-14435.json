@@ -7,14 +7,28 @@
     "overview"
   ],
   "walkthroughSteps": [
-    "Apply AC-01 \u2014 seeds 2 active litigation cases on CLM-2024-001",
-    "Land on /claims/CLM-2024-001/overview",
-    "Click Close Claim \u2192 modal step 1 shows litigation blocker with count + Go to Litigation link",
-    "Click Go to Litigation \u2192 modal closes, routed to /claims/CLM-2024-001/litigation",
-    "Apply AC-02 \u2014 seeds open reserves + provider flag on CLM-2024-001",
-    "Click Close Claim \u2192 modal shows reserves blocker with count + EUR total amount",
-    "Observe reserves 'Go to Reserves' is visually disabled (Feature not available \u2014 no route yet)",
-    "Apply AC-03 \u2014 all blockers present simultaneously: 2 litigation + 1 open reserve line + provider flag"
+    "Apply AC-01 \u2014 seeds 2 active litigation cases on CLM-2024-001, opens the closure modal directly",
+    {
+      "targetId": "co-close-claim-button",
+      "title": "Blockers from three domains, one card style",
+      "body": "Litigation, reserves, and provider all feed the same generic blocker card list below \u2014 each shows a count-derived label; expand a card to see the individual items behind it.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-go-to-litigation",
+      "title": "Go to Litigation",
+      "body": "'2 active litigation case(s) must be resolved' \u2014 click the card to expand and see each case, or use this link.",
+      "expectedAfterClick": "Closes the modal and navigates to /claims/CLM-2024-001/litigation.",
+      "direction": "top"
+    },
+    "Apply AC-02 \u2014 seeds open reserve lines + a provider flag on CLM-2024-001 instead",
+    {
+      "targetId": "ccm-blocker-list",
+      "title": "Reserves & provider blockers",
+      "body": "Reserves shows '<n> open reserve line(s) must be released \u2014 \u20ac<total>' (the amount was already computed but never rendered \u2014 fixed). Provider shows 'Provider instructions must be finalised' with a 'Go to Provider Management' link \u2014 the Provider Management page didn't exist when this ticket was written; now that it does, provider gets a real deep link too, same as litigation.",
+      "direction": "top"
+    },
+    "Apply AC-03 \u2014 all three blockers present at once: litigation + reserves + provider, all in the same card list"
   ],
   "acceptanceCriteria": [
     {

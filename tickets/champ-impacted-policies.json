@@ -1,0 +1,298 @@
+{
+  "ticketId": "CHAMP-IMPACTED-POLICIES",
+  "epicId": "BMPCC-14545",
+  "module": "FNOL",
+  "title": "Entities & Damages — Other impacted policies, and pulling their entities onto the claim",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["fnol-entities-damages"],
+  "walkthroughSteps": [
+    "Apply AC-01 — selects POL-2024-001 in FNOL. Navigate to /fnol/entities-damages",
+    {
+      "targetId": "ipb-banner",
+      "title": "Other policies may be impacted",
+      "body": "The banner explains an absence. Entities & damages only offers entities from the one policy chosen in FNOL, so when the damaged thing is insured under a sibling policy the handler finds nothing in the list below and nothing on screen saying why. Two policies match POL-2024-001 here (POL-2024-006, POL-2024-009) and they hold 9 entities between them. Renders nothing at all when there is nothing to offer — it never becomes furniture.",
+      "direction": "bottom"
+    },
+    {
+      "targetId": "ipb-see-details",
+      "title": "See details",
+      "body": "A <button>, not a link — it opens a dialog rather than navigating. The production version uses an <a href=\"#\"> that swallows its own click, which tells a screen reader this is a link to nowhere.",
+      "direction": "bottom"
+    },
+    "In the modal: each row carries the policy number, the client, why it surfaced, the line of business, the cover period, the status chip and how many entities it would make available. Production shows an accordion whose body holds only 'Line of Business' — one click for one field.",
+    "Tick POL-2024-006 and POL-2024-009, then \"Add to claim\". 9 entities land in the tree with a 3-second recently-added highlight, and the Covered by column carries the source policy (e.g. 'Contents & Equipment · POL-2024-006') so the handler can see the limit comes from elsewhere.",
+    "The banner is now gone — both policies are on the claim, so there is nothing left to offer. A page reload resets the mock state and brings it back."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Given a policy is selected in FNOL and sibling policies hold entities that may belong to this loss, when Entities & Damages loads, then an info banner names those policies and states how many extra entities they would make available.",
+      "plainStatement": "With POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted — 2 policies outside this claim hold entities that may belong to this loss — POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on — real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Select POL-2024-001 so the Entities & Damages step does not redirect to /fnol/search. No other override is needed — the impacted-policy match map is seed data.",
+        "preconditions": [
+          {
+            "text": "Policy POL-2024-001 is selected in FNOL",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "impacted-policies.json lists POL-2024-006 and POL-2024-009 against POL-2024-001",
+            "page": "fnol-entities-damages",
+            "role": "metadata"
+          },
+          {
+            "text": "Info banner \"Other policies may be impacted\" is visible above the entity tree",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Banner names both policy numbers and says 9 more entities would become available",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Info-context nx-message at the top of the Entities & Damages step, above the no-loss-location warning. Title, one sentence of body text naming both policies and the entity count, and a link-styled \"See details\" button. Closable.",
+        "visualCues": [
+          "nx-message context=\"info\" with a close (×) affordance",
+          "Bold title: Other policies may be impacted",
+          "Body names POL-2024-006 and POL-2024-009 and the number 9",
+          "Link-styled \"See details\" button, not an anchor"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Apply AC-01, then navigate to /fnol/entities-damages",
+        "expectedResult": "Info banner appears above the entity tree naming both sibling policies and the 9 entities they hold"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Given the impacted-policies banner is shown, when the handler selects See details, then a modal lists each policy with the reason it surfaced, its cover details and how many entities it would contribute.",
+      "plainStatement": "\"See details\" opens the \"Possibly impacted policies\" modal, subtitled \"2 found alongside POL-2024-001\". One table row per policy: a checkbox, the policy number with the client name and the match reason stacked under it, line of business, cover period (dd-MM-yyyy via the appDate pipe), a status chip, and the entity count. An intro line states the limit of what adding does — it makes entities available for selection, nothing else about the claim changes. \"Add to claim\" is disabled until at least one row is ticked; once something is ticked the footer also reads back \"N selected — M entities become available\".",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01 — the modal is reached from the banner, so no additional state is needed.",
+        "preconditions": [
+          {
+            "text": "Policy POL-2024-001 is selected in FNOL",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "Modal opens on \"See details\" with a row per impacted policy",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Each row shows the match reason as a sub-line under the policy number",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "\"Add to claim\" is disabled with nothing selected",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Modal on the shared _modal-layout mixin (header / body / footer, no horizontal padding of its own). Table with 6 columns; ticking a row tints it with --claim-overlay-hover.",
+        "visualCues": [
+          "Header: \"Possibly impacted policies\" / \"2 found alongside POL-2024-001\"",
+          "Intro line: adding a policy only makes its entities available for selection",
+          "Table columns: checkbox, Policy, Line of business, Cover period, Status, Entities",
+          "Status rendered by app-status-chip domain=\"policy\"",
+          "Selected row is tinted",
+          "Footer: \"N selected — M entities become available\" + Cancel + \"Add to claim\""
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Apply AC-02, navigate to /fnol/entities-damages, select \"See details\" in the banner",
+        "expectedResult": "Modal lists POL-2024-006 and POL-2024-009 with match reason, cover period, status and entity count; \"Add to claim\" is disabled until a row is ticked"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Given policies are ticked in the modal, when the handler confirms, then those policies' entities are added to the tree, each showing which policy its cover comes from, and a toast reports how many entities became available.",
+      "plainStatement": "Confirming merges every entity from each chosen policy into the existing tree, grouped under the same promise status and damage type it had on its own policy. `coveredBy` is rewritten to `\"<original cover> · <source policy>\"` — the handler must be able to see the limit sits on a different policy, and that column already answers \"covered by what?\". Added entities arrive unselected and uncollapsed, with the same 3-second recently-added highlight that Add Entity uses. Toast: \"2 policies added — 9 entities are now available for selection.\"",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01. The merge runs against in-memory mock state, so a page reload undoes it.",
+        "preconditions": [
+          {
+            "text": "Policy POL-2024-001 is selected in FNOL",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "POL-2024-006 holds 5 entities and POL-2024-009 holds 4 in entities-damages.json",
+            "page": "fnol-entities-damages",
+            "role": "metadata"
+          },
+          {
+            "text": "9 new entity rows appear in the tree, briefly highlighted",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Covered by column on a new row reads like \"Contents & Equipment · POL-2024-006\"",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Success toast names the policy count and the entity count",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Modal closes. The entity tree grows by 9 rows spread across the existing damage-type groups; each carries its source policy in Covered by. Highlight clears after 3 seconds.",
+        "visualCues": [
+          "9 additional entity rows, added unselected",
+          "Recently-added highlight for ~3 seconds, then normal styling",
+          "Covered by shows \"<cover> · POL-2024-006\" / \"· POL-2024-009\"",
+          "Toast: 2 policies added / 9 entities are now available for selection"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Apply AC-03, navigate to /fnol/entities-damages, See details, tick both policies, Add",
+        "expectedResult": "9 entities appear in the tree with their source policy in Covered by, and a toast confirms 2 policies / 9 entities"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Given a policy has already been pulled onto the claim, when the banner re-evaluates, then that policy is no longer offered, and the banner disappears entirely once nothing is left to offer.",
+      "plainStatement": "A policy whose entities are already in the tree is dropped from the banner and the modal — offering it again would let the handler add the same entities twice. Once every match has been added the banner renders nothing at all rather than an empty message box. The \"already added\" record is kept in `MockImpactedPoliciesService` and is only marked *after* the entities land: a failed pull that still hid the policy would leave the handler with no route back to it.",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01, then add both policies as in AC-03 — the added-policy record lives in memory for the session.",
+        "preconditions": [
+          {
+            "text": "Policy POL-2024-001 is selected in FNOL",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "Both POL-2024-006 and POL-2024-009 have already been added in this session",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "Banner is no longer rendered — no empty message box in its place",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "A page reload resets the mock state and the banner returns",
+            "page": "fnol-entities-damages",
+            "role": "metadata"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Nothing where the banner was. The entity tree starts straight after the step header (or after the no-loss-location warning when that applies).",
+        "visualCues": [
+          "No info banner",
+          "No empty nx-message shell",
+          "Entity tree still holds the 9 added entities"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Apply AC-04, navigate to /fnol/entities-damages, add both policies, then leave the step and come back",
+        "expectedResult": "The banner is gone and stays gone until a page reload; the added entities remain in the tree"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Given the handler dismisses the banner, when they stay on the step, then it stays closed, and it returns on the next visit because the policies are still unadded.",
+      "plainStatement": "The banner is `[closable]=\"true\"`. Dismissing hides it for the current visit only — the state is deliberately not persisted, because dismissing is \"not now\", not \"these entities don't belong on my claim\". Navigating away and back re-offers the policies.",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01 — dismissal is local component state.",
+        "preconditions": [
+          {
+            "text": "Policy POL-2024-001 is selected in FNOL",
+            "page": "fnol-entities-damages",
+            "role": "setup"
+          },
+          {
+            "text": "Banner hides immediately on ×",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Banner is shown again after navigating away and back",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Banner collapses out of the step on ×; the entity tree moves up to fill the space. Re-entering the step renders it again.",
+        "visualCues": [
+          "Close (×) on the nx-message",
+          "Banner gone after ×, nothing left behind",
+          "Banner present again after a round trip through another FNOL step"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Apply AC-05, navigate to /fnol/entities-damages, select × on the banner, then go Back and Next again",
+        "expectedResult": "Dismissed for the visit, re-offered on return — no persistence"
+      }
+    }
+  ]
+}

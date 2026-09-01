@@ -1,0 +1,42 @@
+{
+  "ticketId": "BMPCC-14453",
+  "module": "Claims",
+  "title": "[UX/UI] Provider Communication — Document Attachment / Send Communication via Email",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["any"],
+  "walkthroughSteps": [
+    "Navigate to /claims/CLM-2024-001/providers",
+    {
+      "targetId": "pm-send-communication",
+      "title": "Send communication",
+      "body": "Every provider assignment has a Send communication action for reaching out with instructions or requests.",
+      "expectedAfterClick": "Opens the send-communication flow — this is where the instruction template and document attachment (BMPCC-14453) and email send (BMPCC-14454) designs apply.",
+      "direction": "top"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Every provider assignment has a Send communication action",
+      "plainStatement": "Every row in Provider Management has a **Send communication** action, independent of assignment status.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
+        "preconditions": [
+          { "text": "Send communication button visible on every provider row", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Send communication opens the outreach flow",
+        "visualCues": ["Send communication button on every row", "Clicking opens the communication modal"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/providers",
+        "trigger": "Click Send communication on any provider row",
+        "expectedResult": "Send-communication flow opens"
+      }
+    }
+  ]
+}

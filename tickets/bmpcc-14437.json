@@ -7,14 +7,16 @@
     "sections"
   ],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/sections",
-    "Locate 'Section 004 \u2014 Payment Demo' (SEC-008) \u2014 Open, single blocker: hasOpenPayments=true",
-    "Open dev context menu (\u22ee) \u2192 'Simulate Final Payment'",
-    "Observe: section auto-closes \u2192 status chip \u2192 Closed; toast 'Section auto-closed \u2014 final payment received'",
-    "All other sections on CLM-2024-001 are also Closed \u2192 claim auto-closes",
-    "Retention date = closureDate + 10 years (defaultRetentionDate formula)",
-    "Navigate to Overview \u2014 verify Claim status = Closed; check activity log for System entry",
-    "To test blocked case: use SEC-002 (hasActiveLitigation=true + hasOpenReserves=true + hasOpenPayments=true) and trigger 'Simulate Final Payment' \u2014 error toast fires, section stays Open"
+    "Navigate to /claims/CLM-2024-001/sections \u2014 'Section 004 \u2014 Payment Demo' (SEC-008) is Open with a single blocker: hasOpenPayments=true",
+    {
+      "targetId": "sections-sec008-kebab",
+      "title": "Simulate final payment",
+      "body": "Added as a menu action so this flow (onSimulateFinalPayment \u2192 triggerFinalPaymentAndClose) is actually reachable \u2014 previously the logic existed but nothing in the UI called it.",
+      "expectedAfterClick": "Auto-closes SEC-008 and fires a toast \u2014 'Section auto-closed \u2014 final payment received'. If it was the last open section, the claim itself auto-closes too, with retention date = closureDate + 10 years.",
+      "direction": "right"
+    },
+    "Overview then shows Claim status = Closed, closedBy.userId = 'system', and an activity-log entry with user='System'",
+    "Blocked case: on a section with non-payment blockers too (e.g. SEC-002 \u2014 litigation + reserves + payments), the same trigger throws instead \u2014 error toast 'Simulate Final Payment failed' with the remaining blocker names, and the section stays Open"
   ],
   "acceptanceCriteria": [
     {

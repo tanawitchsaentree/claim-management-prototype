@@ -5,14 +5,19 @@
   "targetClaim": "CLM-2024-SKEL-001",
   "pages": ["fnol-search"],
   "walkthroughSteps": [
-    "Apply AC-01 — banner sets the active conversion to skeleton CLM-2024-SKEL-001 and prefills every wizard step",
-    "Land on /fnol/search — info banner reads 'Converting from CLM-2024-SKEL-001'; Client name + Policy number + Date of loss already filled",
-    "Click Search → matching policy POL-2024-021 (Jonas Kaufmann) shows in the table",
-    "Select POL-2024-021 → click 'Continue with policy'",
-    "Land on /fnol/loss-information — date / time / cause / damage / description / loss location ALREADY prefilled. Review, click Next.",
-    "Walk Entities & Damages → Parties → Reserves → Summary; nothing else is required",
+    "Apply AC-01 — lands on /fnol/search. The prefill logic (FnolStateService.prefillFullFromSkeleton + devSearchFill$) already existed and ran the search automatically; the only missing piece was the banner telling the handler what happened — added now.",
+    {
+      "targetId": "fs-converting-banner",
+      "title": "Converting from…",
+      "body": "Info banner confirming this search was auto-populated from skeleton CLM-2024-SKEL-001 (Jonas Kaufmann) — Client name, Policy number, and Date of loss are already filled and searched.",
+      "expectedAfterClick": "'Cancel conversion' resets the whole FNOL form and clears the skeleton link, dropping back to a blank /fnol/search.",
+      "direction": "bottom"
+    },
+    "POL-2024-021 (Jonas Kaufmann) is already selected in the results — click 'Register a claim' (this build's real button label; the ticket's original 'Continue with policy' wording didn't match the shipped UI)",
+    "Wizard opens at /fnol/loss-information — date/time/cause/damage/description/loss location already prefilled from the skeleton. Review, click Next.",
+    "Walk Entities & Damages → Parties → Reserves → Summary; nothing else is required — every step inherits the seeded state",
     "Click Confirm on Summary — the skeleton is matched to the new regular claim",
-    "Fallback: 'Cancel conversion' on the search banner clears all prefilled state and drops back to a blank /fnol/search"
+    "Alternate entry point: a skeleton's kebab menu also offers 'Convert to claim' directly (opens a policy-match modal and jumps straight into the wizard, skipping the search page entirely) — both paths are real and end at the same place"
   ],
   "acceptanceCriteria": [
     {

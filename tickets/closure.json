@@ -5,13 +5,27 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["overview", "sections"],
   "walkthroughSteps": [
-    "Navigate to CLM-2024-001 overview tab — status chip should read 'Open'",
-    "Click 'Close claim' button in the right-strip actions area",
-    "In the modal, submit without filling fields — confirm validation errors appear",
-    "Fill Closure Date (today) and Closure Reason (e.g. 'All sections settled') — click Confirm",
-    "Verify the overview status chip updates to 'Closed'",
-    "Verify the closure panel appears below the header showing date and reason",
-    "Reload the page — confirm closed state persists (sessionStorage hydration)"
+    "Land on /claims/CLM-2024-001/overview — status chip reads 'Open'",
+    {
+      "targetId": "co-close-claim-button",
+      "title": "Close Claim",
+      "body": "Always clickable (superseded the older disabled/tooltip behavior — see CHAMP-PRECLOSURE-CHECKLIST). With blockers present it opens on a Blockers step; with none, it skips straight to the checklist.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-checklist",
+      "title": "Pre-closure Checklist",
+      "body": "7 system-validated conditions must all pass — sections, payments, bills, recoveries & deductibles, reserves, litigation, reports.",
+      "direction": "top"
+    },
+    {
+      "targetId": "ccm-reason-dropdown",
+      "title": "Closure reason",
+      "body": "Required. Submitting the modal without picking one surfaces an inline validation error right here.",
+      "direction": "top"
+    },
+    "Continue through Retention → Confirmation → 'Yes — Close Claim': the overview status chip updates to 'Closed', a closure panel appears below the header with date/reason/handler, and the Close Claim button disappears from the right-strip",
+    "Reload the page — closed state persists via sessionStorage hydration, no flash of 'Open' before it settles"
   ],
   "acceptanceCriteria": [
     {

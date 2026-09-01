@@ -6,10 +6,14 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["fnol-entities-damages"],
   "walkthroughSteps": [
-    "Apply AC-01 — seeds a policy with no loss location (lossLocation.locations = [])",
-    "Navigate to /fnol/entities-damages",
-    "Observe: page loads, entity table renders, Limit column shows single-value string (not multi-limit list)",
-    "Open any entity detail panel — Limit field shows single string, no crash"
+    "Apply AC-01 — seeds a policy with no loss location (lossLocation.locations = []). Navigate to /fnol/entities-damages",
+    {
+      "targetId": "ed-limit-column",
+      "title": "Limit column — no location, no breakdown",
+      "body": "entity-row.component.html gates on entity.limits?.length — with a loss location, this renders a per-location multi-limit list (Building / Contents / Business interruption rows). With none selected, it falls back to the plain entity.limit string, no crash, no empty breakdown section.",
+      "direction": "top"
+    },
+    "Open any entity detail panel — the Limit info-field shows the same plain string, consistent with the table"
   ],
   "acceptanceCriteria": [
     {

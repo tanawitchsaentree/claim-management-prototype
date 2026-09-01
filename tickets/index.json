@@ -77,6 +77,72 @@
       "file": "bmpcc-no-loss-location.json",
       "module": "FNOL",
       "title": "Entities & Damages — Handling No Loss Location Selected"
+    },
+    {
+      "id": "BMPCC-16104",
+      "file": "bmpcc-16104.json",
+      "module": "Claims",
+      "title": "Figma Design - Claims Commercial - Claim Re-Open"
+    },
+    {
+      "id": "BMPCC-16986",
+      "file": "bmpcc-16986.json",
+      "module": "Claims",
+      "title": "Figma Design - Claims Commercial - Baseline - Mass Event Linkage Navigation & Manual Edit"
+    },
+    {
+      "id": "BMPCC-17779",
+      "file": "bmpcc-17779.json",
+      "module": "Claims",
+      "title": "[UI/UX] Recovery Potential Flag — Dependency"
+    },
+    {
+      "id": "BMPCC-14452",
+      "file": "bmpcc-14452.json",
+      "module": "Claims",
+      "title": "[UI/UX] Loss Adjuster Rating survey experience"
+    },
+    {
+      "id": "BMPCC-14453",
+      "file": "bmpcc-14453.json",
+      "module": "Claims",
+      "title": "[UX/UI] Provider Communication — Document Attachment / Send Communication via Email"
+    },
+    {
+      "id": "BMPCC-14831",
+      "file": "bmpcc-14831.json",
+      "module": "Claims",
+      "title": "UI/UX - Design for Restructured Financial Overview Layout and Pagination"
+    },
+    {
+      "id": "BMPCC-7133",
+      "file": "bmpcc-7133.json",
+      "module": "Claims",
+      "title": "UI/UX - Design for Displaying Policy Limits and Deductibles"
+    },
+    {
+      "id": "BMPCC-17678",
+      "file": "bmpcc-17678.json",
+      "module": "Claims",
+      "title": "[FE] UI/UX QA Fixes — Approvals Widget & Approvals Journey"
+    },
+    {
+      "id": "BMPCC-12160",
+      "file": "bmpcc-12160.json",
+      "module": "FNOL",
+      "title": "FIGMA - Party role (Assign a new party role)"
+    },
+    {
+      "id": "CHAMP-IMPACTED-POLICIES",
+      "file": "champ-impacted-policies.json",
+      "module": "FNOL",
+      "title": "Entities & Damages — Other impacted policies, and pulling their entities onto the claim"
+    },
+    {
+      "id": "CHAMP-FINANCIAL-LOSS-ITEM",
+      "file": "champ-financial-loss-item.json",
+      "module": "Claims",
+      "title": "Damaged items — capture the peril and the working behind a financial loss"
     }
   ]
 }
