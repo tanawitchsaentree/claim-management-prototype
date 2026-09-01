@@ -1,0 +1,281 @@
+{
+  "ticketId": "CHAMP-FINANCIAL-LOSS-ITEM",
+  "module": "Claims",
+  "title": "Damaged items — capture the peril and the working behind a financial loss",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["sections"],
+  "walkthroughSteps": [
+    "Apply AC-01 — SEC-001 stays Open so the damaged-item actions are live. Navigate to /claims/CLM-2024-001/sections",
+    "Expand SEC-001 (Property Damage — Warehouse & Forklift) and select the entity Kaufmann's Warehouse to open the detail panel",
+    {
+      "targetId": "edp-damaged-items",
+      "title": "Damaged items",
+      "body": "Every other damage type has a physical thing to describe, so Item + Description + Damage type is enough. A financial loss has nothing physical — the peril behind it and the working of how the figure was reached carry the whole record. Add damaged item now reveals two more fields, but only for that one type.",
+      "direction": "left"
+    },
+    "Select Add damaged item, set Damage type = Financial loss, and watch \"Financial loss caused by\" and \"Financial loss details\" appear",
+    "Try Add item with the cause left empty — blocked, with the error on that field. Switch Damage type back to Material damage and the two fields disappear and their values are dropped, not merely hidden",
+    "For the read side: SEC-002 → Sales of Machinery and Equipment already carries a seeded financial-loss item. Its cause shows as a sub-line under the Damage cell (\"Caused by Business Interruption\") and the working as a sub-line under Description — sub-lines rather than two more columns, because only financial-loss items ever carry them and the table has to fit inside the side panel"
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Given the handler is adding a damaged item, when they set Damage type to Financial loss, then a cause-of-loss field and a free-text details field appear; for every other damage type they stay hidden.",
+      "plainStatement": "The Add damaged item modal reveals \"Financial loss caused by\" (a dropdown of the cause-of-loss lookup) and \"Financial loss details\" (textarea) only while Damage type is `Financial loss`. The gate is a `computed()` over the damage control's value; the matched string lives in `features/sections/damaged-item.config.ts` as `FINANCIAL_LOSS_DAMAGE`, shared by the add and edit modals so the two cannot drift.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Keep SEC-001 Open — Add damaged item is disabled on a closed section or a closed claim, so a Closed status would make this AC untestable.",
+        "preconditions": [
+          {
+            "text": "SEC-001 is Open",
+            "page": "sections",
+            "role": "setup"
+          },
+          {
+            "text": "Entity SE-001 (Kaufmann's Warehouse) sits on SEC-001",
+            "page": "sections",
+            "role": "metadata"
+          },
+          {
+            "text": "Add damaged item is enabled in the entity detail panel",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Choosing Financial loss reveals exactly two extra fields",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Choosing any other damage type shows neither",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "sectionStatuses": {
+            "SEC-001": "Open"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Add damaged item modal: Item name, Description, Damage type. Selecting Financial loss grows the body by two fields below Damage type; the modal body scrolls rather than the footer being pushed out of view.",
+        "visualCues": [
+          "\"Financial loss caused by\" dropdown, placeholder \"Select cause\"",
+          "\"Financial loss details\" textarea with a placeholder naming what to write (calculation, period, figures relied on)",
+          "Both absent for Material damage, Business interruption, Machinery breakdown, Bodily injury and Liability",
+          "Cancel and Add item stay visible while the body scrolls"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Apply AC-01, open SEC-001 → Kaufmann's Warehouse → Add damaged item, then switch Damage type between Financial loss and Material damage",
+        "expectedResult": "The two financial-loss fields appear only for Financial loss and vanish for every other type"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Given Damage type is Financial loss, when the handler tries to save without a cause, then the item is not added and the error sits on the cause field.",
+      "plainStatement": "\"Financial loss caused by\" is required, but only while it is on screen. The `required` validator is declared on the control and the required-ness is hand-checked in `confirm()` rather than being always-on — an always-required validator would block saving a material-damage item whose cause field the handler never saw. Details free text stays optional.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01 — SEC-001 Open so the modal is reachable.",
+        "preconditions": [
+          {
+            "text": "SEC-001 is Open",
+            "page": "sections",
+            "role": "setup"
+          },
+          {
+            "text": "Add item does nothing while the cause is empty — the modal stays open",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Error text \"Required for a financial loss.\" appears under the cause dropdown",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "A Material damage item with no cause saves normally",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "sectionStatuses": {
+            "SEC-001": "Open"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Modal stays open with the cause dropdown in its error state. Item name and Description show their own errors if also empty.",
+        "visualCues": [
+          "Cause dropdown outlined in the error colour",
+          "\"Required for a financial loss.\" below it",
+          "Modal not closed, nothing added to the Damaged items table",
+          "Filling the cause then Add item closes the modal and adds the row"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Apply AC-02, open Add damaged item, fill Item name + Description, set Damage type = Financial loss, leave the cause empty and select Add item",
+        "expectedResult": "Nothing is added and the cause field shows its required error; adding a Material damage item with no cause still works"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Given a cause and details were entered for a financial loss, when the handler changes Damage type to something else and saves, then the financial-loss values are not kept on the item.",
+      "plainStatement": "The two values are dropped from the saved item, not merely hidden. A stale peril left on a material-damage item would show up on the item row as a cause that nothing on screen let the handler set or clear. Same rule in both modals — `confirm()` spreads the two keys in only while `isFinancialLoss()` holds.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same as AC-01.",
+        "preconditions": [
+          {
+            "text": "SEC-001 is Open",
+            "page": "sections",
+            "role": "setup"
+          },
+          {
+            "text": "The two fields disappear as soon as Damage type changes away from Financial loss",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "The added row shows no \"Caused by\" sub-line and no details sub-line",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "sectionStatuses": {
+            "SEC-001": "Open"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Damaged items table gains one row showing only Item / Description / Damage — no sub-lines under either cell.",
+        "visualCues": [
+          "New row's Damage cell holds a single line",
+          "New row's Description cell holds a single line",
+          "Re-opening Edit on that row shows the two fields hidden and empty"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Apply AC-03, add an item with Damage type = Financial loss and both fields filled, switch Damage type to Material damage, then Add item",
+        "expectedResult": "The saved row carries no cause and no details; re-opening Edit shows them empty"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Given an item was recorded as a financial loss, when the handler views the entity's damaged items, then the peril and the working are readable on the row without opening the item.",
+      "plainStatement": "On the Damaged items table the cause renders as a muted sub-line under the Damage cell (\"Caused by Business Interruption\") and the working as a muted sub-line under Description. Sub-lines rather than two extra columns: only financial-loss items ever carry them, so columns would be empty on most rows and would widen a table that has to fit inside the side panel. SEC-002 → Sales of Machinery and Equipment (SE-003) carries a seeded example. That section is Closed, so this AC also covers the read-only case — the sub-lines render while Add / Edit / Delete stay disabled.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-002 is Closed in seed data and is left that way on purpose — it proves the readback does not depend on the section being editable.",
+        "preconditions": [
+          {
+            "text": "SEC-002 is Closed",
+            "page": "sections",
+            "role": "setup"
+          },
+          {
+            "text": "SE-003 carries a seeded item \"Lost contract margin\" with damage Financial loss",
+            "page": "sections",
+            "role": "metadata"
+          },
+          {
+            "text": "Damage cell shows \"Financial loss\" with \"Caused by Business Interruption\" beneath it",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Description cell shows the working (contracted margin, order value, documents relied on) as a muted sub-line",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Add damaged item and the row's Edit / Delete are disabled on this closed section",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "sectionStatuses": {
+            "SEC-002": "Closed"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Entity detail panel for SE-003, Damaged items card: two rows, the second one two lines tall in both the Description and the Damage cell.",
+        "visualCues": [
+          "Sub-lines in the smaller paragraph size and --text-muted, not full-strength body text",
+          "\"Caused by Business Interruption\" under Financial loss",
+          "The working reads as a sentence, not a raw figure",
+          "Add damaged item greyed out; ⋮ → Edit and Delete greyed out"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Apply AC-04, expand SEC-002 and select the entity Sales of Machinery and Equipment",
+        "expectedResult": "The financial-loss row shows its cause and its working as muted sub-lines, and every editing action on the closed section is disabled"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Given a financial-loss item is edited, when the modal opens, then the cause and details are already shown and prefilled.",
+      "plainStatement": "The Edit damaged item modal runs the same gate from the same shared config, so an item that was saved as a financial loss opens with both fields visible and populated. `DamagedItem` — the single model both modals return — carries the two fields as optional, so no separate shape had to be invented for the add path.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-001 Open, then add a financial-loss item as in AC-01 — the item list is component state, so it does not survive a reload and has to be created in the same visit.",
+        "preconditions": [
+          {
+            "text": "SEC-001 is Open",
+            "page": "sections",
+            "role": "setup"
+          },
+          {
+            "text": "A financial-loss item has been added to SE-001 in this visit",
+            "page": "sections",
+            "role": "setup"
+          },
+          {
+            "text": "Edit opens with both financial-loss fields already visible",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Both hold the values entered when the item was added",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "sectionStatuses": {
+            "SEC-001": "Open"
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Edit damaged item modal, subtitled with the item name, showing all five fields with the cause dropdown displaying the previously chosen peril.",
+        "visualCues": [
+          "Fields revealed on open, not after touching Damage type",
+          "Cause dropdown shows the saved peril as its selected value",
+          "Details textarea shows the saved text",
+          "Save changes updates the row's sub-lines"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Apply AC-05, add a financial-loss item to Kaufmann's Warehouse, then ⋮ → Edit on that row",
+        "expectedResult": "Both financial-loss fields are visible and prefilled, and editing them updates the sub-lines on the row"
+      }
+    }
+  ]
+}

@@ -31,4 +31,7 @@ export class MockLookupService extends MockBaseService {
   getIdTypes(): Observable<LookupOption[]>            { return this.respond(this.lookups.idTypes); }
   getReserveTypes(): Observable<LookupOption[]>       { return this.respond(this.lookups.reserveTypes); }
   getNarrativeOptions(): Observable<LookupOption[]>   { return this.respond(this.lookups.narrativeOptions); }
+  // Same reason again — read by add/edit-damaged-item-modal to populate
+  // "Financial loss caused by" as a field initialiser.
+  getCauseOfLossSync(): LookupOption[]                { return this.lookups.causeOfLoss; }
 }

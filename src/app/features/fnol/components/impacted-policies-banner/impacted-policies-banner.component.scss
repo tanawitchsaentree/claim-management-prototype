@@ -1,0 +1,35 @@
+:host { display: block; }
+
+.ipb-message {
+  margin-bottom: 16px;
+}
+
+.ipb-title {
+  color: var(--text-01);
+}
+
+.ipb-text {
+  margin: 4px 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  line-height: 1.5;
+}
+
+// A button, not an anchor: it opens a dialog rather than navigating, and an
+// <a href="#"> that swallows its own click (what the production version does)
+// tells a screen reader this is a link to nowhere. Styled to read as a link
+// because that is the affordance the handler expects inside a banner.
+// Same approach as widgets/recovery-potential-panel.ts's .rpp-more.
+.ipb-link {
+  margin-top: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--interactive-text);
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover { text-decoration: none; }
+}

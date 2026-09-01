@@ -28,7 +28,9 @@ import { EntityDetailPanelComponent } from '../../components/entity-detail-panel
 import { EntitySearchModalComponent } from '../../components/entity-search-modal/entity-search-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MoveEntityDialogComponent, MoveEntityDialogData, MoveEntityResult } from '../../components/move-entity-dialog/move-entity-dialog.component';
+import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
+import { ImpactedPoliciesBannerComponent } from '../../components/impacted-policies-banner/impacted-policies-banner.component';
 
 interface EntitiesDamagesVM {
   data: EntitiesDamagesData;
@@ -70,6 +72,7 @@ const LIMIT_CAP = 3;
     StatusChipComponent,
     EntityDetailPanelComponent,
     WizardFooterComponent,
+    ImpactedPoliciesBannerComponent,
   ],
   templateUrl: './step-entities-damages.component.html',
   styleUrl: './step-entities-damages.component.scss',
@@ -79,6 +82,7 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   private readonly entitiesSvc = inject(MockEntitiesDamagesService);
   private readonly router      = inject(Router);
   private readonly dialog      = inject(NxDialogService);
+  private readonly toast       = inject(ToastService);
 
   policyNumber = '';
 
@@ -89,6 +93,14 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   selectedEntity: EntityRow | null = null;
   panelOpen = false;
   private scrollLocked = false;
+  // Handler walkthrough self-QA — the 3 setTimeouts in addEntitiesToList()
+  // (plus the one in onClosePanel()) were never cleared. If the component is
+  // destroyed (Back/Next navigation) before the 300ms one fires, ngOnDestroy's
+  // unlockScroll() runs first, then the stale timer calls onViewDetails() ->
+  // lockScroll() *after* destroy, with nothing left alive to unlock it again —
+  // document.body.style.overflow stays 'hidden' permanently, leaking into
+  // every page the handler navigates to next.
+  private pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
 
   readonly entityTypes: EntityType[] = ['building', 'vehicle', 'marine', 'employee', 'financial', 'other'];
   readonly entityTypeLabels = ENTITY_TYPE_LABELS;
@@ -176,27 +188,33 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   }
 
   private async addEntitiesToList(selected: EntitySearchResult[], entityType: EntityType): Promise<void> {
-    const added = await firstValueFrom(
-      forkJoin(selected.map(r => this.entitiesSvc.addEntityFromSearch(this.policyNumber, r, entityType))),
-    );
+    let added: EntityRow[];
+    try {
+      added = await firstValueFrom(
+        forkJoin(selected.map(r => this.entitiesSvc.addEntityFromSearch(this.policyNumber, r, entityType))),
+      );
+    } catch {
+      this.toast.error('Failed to add entities', 'Please try again.');
+      return;
+    }
     this.refresh$.next();
 
-    setTimeout(() => {
+    this.pendingTimeouts.push(setTimeout(() => {
       const firstId = added[0]?.entityId;
       if (firstId) {
         document.querySelector(`[data-entity-id="${firstId}"]`)
           ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-    }, 60);
+    }, 60));
 
     if (added.length > 0) {
-      setTimeout(() => this.onViewDetails(added[0]), 300);
+      this.pendingTimeouts.push(setTimeout(() => this.onViewDetails(added[0]), 300));
     }
 
-    setTimeout(() => {
+    this.pendingTimeouts.push(setTimeout(() => {
       added.forEach(e => { e.recentlyAdded = false; });
       this.refresh$.next();
-    }, 3000);
+    }, 3000));
   }
 
   // ── Entity row kebab actions ───────────────────────────────────────────────
@@ -210,11 +228,13 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   onClosePanel(): void {
     this.panelOpen = false;
     this.unlockScroll();
-    setTimeout(() => { if (!this.panelOpen) this.selectedEntity = null; }, 300);
+    this.pendingTimeouts.push(setTimeout(() => { if (!this.panelOpen) this.selectedEntity = null; }, 300));
   }
 
   ngOnDestroy(): void {
     this.unlockScroll();
+    this.pendingTimeouts.forEach(id => clearTimeout(id));
+    this.pendingTimeouts = [];
   }
 
   private lockScroll(): void {
@@ -233,6 +253,27 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
     this.refresh$.next();
   }
 
+  /**
+   * Impacted policies were pulled onto the claim — their entities are now in
+   * the tree. The banner already owns the toast and the "don't offer this
+   * policy again" bookkeeping; all this side has to do is re-read the tree, and
+   * clear the recently-added highlight on the same 3s timer as Add Entity does.
+   */
+  onPoliciesAdded(): void {
+    this.refresh$.next();
+    this.pendingTimeouts.push(setTimeout(() => {
+      this.clearRecentlyAdded();
+      this.refresh$.next();
+    }, 3000));
+  }
+
+  private async clearRecentlyAdded(): Promise<void> {
+    const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
+    data.sections
+      .flatMap(s => s.damageGroups.flatMap(g => g.entities))
+      .forEach(e => { e.recentlyAdded = false; });
+  }
+
   async onMoveEntity(entity: EntityRow): Promise<void> {
     const data: MoveEntityDialogData = {
       entity,
@@ -245,10 +286,14 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
     );
     const result = await firstValueFrom(ref.afterClosed());
     if (result) {
-      await firstValueFrom(
-        this.entitiesSvc.moveEntity(this.policyNumber, entity.entityId, result.section, result.damageGroupKey),
-      );
-      this.refresh$.next();
+      try {
+        await firstValueFrom(
+          this.entitiesSvc.moveEntity(this.policyNumber, entity.entityId, result.section, result.damageGroupKey),
+        );
+        this.refresh$.next();
+      } catch {
+        this.toast.error('Failed to move entity', 'Please try again.');
+      }
     }
   }
 
@@ -265,8 +310,12 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
     );
     const confirmed = await firstValueFrom(ref.afterClosed());
     if (confirmed) {
-      await firstValueFrom(this.entitiesSvc.removeEntity(this.policyNumber, entity.entityId));
-      this.refresh$.next();
+      try {
+        await firstValueFrom(this.entitiesSvc.removeEntity(this.policyNumber, entity.entityId));
+        this.refresh$.next();
+      } catch {
+        this.toast.error('Failed to remove entity', 'Please try again.');
+      }
     }
   }
 

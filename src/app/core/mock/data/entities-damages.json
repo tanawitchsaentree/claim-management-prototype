@@ -289,7 +289,7 @@
             "entities": [
               {
                 "entityId": "ENT-201",
-                "name": "Müller AG — Reception Equipment",
+                "name": "Schäfer & Söhne AG — Reception Equipment",
                 "status": "promised",
                 "promiseStatus": "possibly-promised",
                 "limit": "30,000 EUR",
@@ -302,7 +302,7 @@
               },
               {
                 "entityId": "ENT-202",
-                "name": "Müller AG — Server Room Assets",
+                "name": "Schäfer & Söhne AG — Server Room Assets",
                 "status": "conditional",
                 "promiseStatus": "possibly-promised",
                 "limit": "60,000 EUR",
@@ -316,7 +316,7 @@
               },
               {
                 "entityId": "ENT-203",
-                "name": "Müller AG — Ground Floor Safe",
+                "name": "Schäfer & Söhne AG — Ground Floor Safe",
                 "status": "by-extension",
                 "promiseStatus": "possibly-promised",
                 "limit": "10,000 EUR",
@@ -326,7 +326,7 @@
               },
               {
                 "entityId": "ENT-204",
-                "name": "Müller AG — Basement Archive",
+                "name": "Schäfer & Söhne AG — Basement Archive",
                 "status": "promised",
                 "promiseStatus": "possibly-promised",
                 "limit": "25,000 EUR",
@@ -353,7 +353,7 @@
             "entities": [
               {
                 "entityId": "ENT-251",
-                "name": "Müller AG — Parking Equipment",
+                "name": "Schäfer & Söhne AG — Parking Equipment",
                 "status": "not-promised",
                 "promiseStatus": "not-promised",
                 "limit": "—",
@@ -382,7 +382,7 @@
             "entities": [
               {
                 "entityId": "ENT-301",
-                "name": "Becker Industries — Roof Structure",
+                "name": "Rhein Constructions GmbH — Roof Structure",
                 "status": "conditional",
                 "promiseStatus": "possibly-promised",
                 "limit": "150,000 EUR",
@@ -397,7 +397,7 @@
               },
               {
                 "entityId": "ENT-302",
-                "name": "Becker Industries — Outdoor Machinery",
+                "name": "Rhein Constructions GmbH — Outdoor Machinery",
                 "status": "by-extension",
                 "promiseStatus": "possibly-promised",
                 "limit": "40,000 EUR",
@@ -407,7 +407,7 @@
               },
               {
                 "entityId": "ENT-303",
-                "name": "Becker Industries — Production Hall B",
+                "name": "Rhein Constructions GmbH — Production Hall B",
                 "status": "promised",
                 "promiseStatus": "possibly-promised",
                 "limit": "250,000 EUR",
@@ -434,7 +434,7 @@
             "entities": [
               {
                 "entityId": "ENT-351",
-                "name": "Becker Industries — Storage Yard",
+                "name": "Rhein Constructions GmbH — Storage Yard",
                 "status": "not-promised",
                 "promiseStatus": "not-promised",
                 "limit": "—",

@@ -72,6 +72,47 @@ export class MockEntitiesDamagesService extends MockBaseService {
     );
   }
 
+  /**
+   * Pull every entity from a sibling policy into the tree the handler is
+   * currently looking at, so those entities become selectable on this claim.
+   *
+   * Entities keep their own IDs (unique across the source data) and their own
+   * promise-status / damage-group placement — an entity's cover does not change
+   * because a second policy joined the claim. Only `coveredBy` is rewritten, to
+   * append the originating policy number: the handler needs to see that this
+   * limit comes from somewhere other than the policy they picked in FNOL, and
+   * that column is the one already asking "covered by what?".
+   */
+  addEntitiesFromPolicy(basePolicyId: string, sourcePolicyId: string): Observable<number> {
+    return this.getByPolicyId(basePolicyId).pipe(
+      take(1),
+      map(data => {
+        const source = this.raw[sourcePolicyId];
+        if (!source) return 0;
+
+        let added = 0;
+        for (const section of source.sections) {
+          for (const group of section.damageGroups) {
+            for (const entity of group.entities) {
+              const copy: EntityRow = {
+                ...entity,
+                coveredBy:     `${entity.coveredBy} · ${sourcePolicyId}`,
+                selected:      false,
+                expanded:      false,
+                recentlyAdded: true,
+                subItems:      entity.subItems?.map(si => ({ ...si, selected: false })),
+                damageItems:   entity.damageItems?.map(d => ({ ...d, documents: d.documents ? [...d.documents] : [] })),
+              };
+              this.insertIntoData(data, copy, section.promiseStatus, group.damageTypeKey, group.damageType);
+              added++;
+            }
+          }
+        }
+        return added;
+      }),
+    );
+  }
+
   moveEntity(
     policyId: string,
     entityId: string,

@@ -37,6 +37,12 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
   ],
   'SE-003': [
     { name: 'Production line A', description: 'Conveyor belt damaged.',           damage: 'Business interruption' },
+    {
+      name: 'Lost contract margin', description: 'Q3 delivery contract cancelled by the buyer.',
+      damage: 'Financial loss',
+      financialLossCausedBy: 'Business Interruption',
+      financialLossDetails: 'Contracted margin of 18% on EUR 340,000 of undelivered orders, per the signed schedule and the buyer’s cancellation notice.',
+    },
   ],
 };
 

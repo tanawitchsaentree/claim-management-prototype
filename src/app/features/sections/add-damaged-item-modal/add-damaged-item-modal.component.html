@@ -23,6 +23,25 @@
     </nx-dropdown>
     <nx-error nxFormfieldError>Required.</nx-error>
   </nx-formfield>
+
+  <!-- A financial loss has no physical damage to describe, so the peril behind
+       it and the working of how the figure was reached carry the whole record.
+       Only rendered for that damage type — see damaged-item.config.ts. -->
+  @if (isFinancialLoss()) {
+    <nx-formfield label="Financial loss caused by">
+      <nx-dropdown formControlName="financialLossCausedBy" placeholder="Select cause">
+        @for (opt of causedByOptions; track opt.value) {
+          <nx-dropdown-item [value]="opt.label">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      <nx-error nxFormfieldError>Required for a financial loss.</nx-error>
+    </nx-formfield>
+
+    <nx-formfield label="Financial loss details" floatLabel="always">
+      <textarea nxInput formControlName="financialLossDetails" rows="3"
+                placeholder="How the loss was calculated, period covered, figures relied on…"></textarea>
+    </nx-formfield>
+  }
 </div>
 
 <div class="adm-footer">

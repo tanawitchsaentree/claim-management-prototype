@@ -1,0 +1,71 @@
+<div class="apm-header">
+  <div class="apm-header-row">
+    <h2 class="apm-title">Possibly impacted policies</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="apm-subtitle">
+    {{ data.policies.length }} found alongside {{ data.basePolicyNumber }}
+  </p>
+</div>
+
+<div class="apm-body" tabindex="0">
+  <p class="apm-intro">
+    These policies are not on the claim. Adding one makes its entities available
+    for selection on Entities &amp; damages — nothing else about the claim changes.
+  </p>
+
+  <!-- audit-exempt: this table cannot be empty. The banner that opens this modal
+       renders only when it has at least one impacted policy, and it hands that
+       same non-empty list over as NX_MODAL_DATA — there is no path that reaches
+       here with nothing to list. -->
+  <table nxTable class="apm-table">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell class="apm-col-check"></th>
+        <th nxHeaderCell class="apm-col-policy">Policy</th>
+        <th nxHeaderCell class="apm-col-lob">Line of business</th>
+        <th nxHeaderCell class="apm-col-period">Cover period</th>
+        <th nxHeaderCell class="apm-col-status">Status</th>
+        <th nxHeaderCell class="apm-col-count">Entities</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (policy of data.policies; track policy.policyNumber) {
+        <tr nxTableRow [class.apm-row--selected]="isSelected(policy.policyNumber)">
+          <td nxCell class="apm-col-check">
+            <nx-checkbox
+              [checked]="isSelected(policy.policyNumber)"
+              (checkedChange)="toggle(policy.policyNumber)"
+              [attr.aria-label]="'Add ' + policy.policyNumber + ' to the claim'">
+            </nx-checkbox>
+          </td>
+          <td nxCell class="apm-col-policy">
+            <span class="apm-policy-number">{{ policy.policyNumber }}</span>
+            <span class="apm-client">{{ policy.clientName }}</span>
+            <span class="apm-reason">{{ policy.matchReason }}</span>
+          </td>
+          <td nxCell class="apm-col-lob">{{ policy.lineOfBusiness }}</td>
+          <td nxCell class="apm-col-period">{{ policy.effectiveDate | appDate }} – {{ policy.expiryDate | appDate }}</td>
+          <td nxCell class="apm-col-status">
+            <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
+          </td>
+          <td nxCell class="apm-col-count">{{ policy.availableEntityCount }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="apm-footer">
+  @if (selectedCount > 0) {
+    <span class="apm-selected-count">
+      {{ selectedCount }} selected — {{ selectedEntityCount }} entities become available
+    </span>
+  }
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="selectedCount === 0" (click)="onAdd()">
+    Add to claim
+  </button>
+</div>

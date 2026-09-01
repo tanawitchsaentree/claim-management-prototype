@@ -12,6 +12,7 @@ export * from './location-picker.model';
 export * from './cwb-location.model';
 export * from './broker.model';
 export * from './entity-damage.model';
+export * from './impacted-policy.model';
 export * from './party.model';
 export * from './reserve.model';
 export * from './section.model';

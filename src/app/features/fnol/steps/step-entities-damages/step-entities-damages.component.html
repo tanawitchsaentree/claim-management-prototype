@@ -32,6 +32,11 @@
     <nx-message context="error">Failed to load entities. Please go back and try again.</nx-message>
   }
 
+  <app-impacted-policies-banner
+    [policyNumber]="policyNumber"
+    (policiesAdded)="onPoliciesAdded()">
+  </app-impacted-policies-banner>
+
   @if (!hasLossLocation) {
     <nx-message context="info" class="ed-no-location-banner">
       No location of loss was added — limits are shown per policy coverage instead of per location.

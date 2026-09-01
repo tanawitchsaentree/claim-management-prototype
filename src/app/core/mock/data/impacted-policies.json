@@ -1,0 +1,18 @@
+{
+  "POL-2024-001": [
+    {
+      "policyNumber": "POL-2024-006",
+      "matchReason": "Same insured group as the selected policy — Contents & Equipment cover sits on this policy, not on POL-2024-001."
+    },
+    {
+      "policyNumber": "POL-2024-009",
+      "matchReason": "Adjoining site on the same risk address, insured separately under Machinery & Plant."
+    }
+  ],
+  "POL-2024-006": [
+    {
+      "policyNumber": "POL-2024-009",
+      "matchReason": "Adjoining site on the same risk address, insured separately under Machinery & Plant."
+    }
+  ]
+}

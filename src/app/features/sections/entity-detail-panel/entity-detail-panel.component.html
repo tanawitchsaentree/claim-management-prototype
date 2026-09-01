@@ -50,7 +50,7 @@
   </div>
 
   <!-- Damaged items -->
-  <div class="edp-card">
+  <div class="edp-card" data-tour-id="edp-damaged-items">
     <div class="edp-card__titlebar">
       <h3 class="edp-card__title">Damaged items</h3>
       <button nxButton="primary small" type="button"
@@ -76,8 +76,22 @@
           @for (item of items(); track item.name) {
             <tr nxTableRow>
               <td nxTableCell>{{ item.name }}</td>
-              <td nxTableCell>{{ item.description }}</td>
-              <td nxTableCell>{{ item.damage }}</td>
+              <td nxTableCell>
+                {{ item.description }}
+                @if (item.financialLossDetails) {
+                  <span class="edp-item-sub">{{ item.financialLossDetails }}</span>
+                }
+              </td>
+              <td nxTableCell>
+                {{ item.damage }}
+                <!-- Sub-line rather than its own column: only financial-loss
+                     items ever carry a cause, so a column would be empty on
+                     most rows and would widen a table that already has to fit
+                     in the side panel. -->
+                @if (item.financialLossCausedBy) {
+                  <span class="edp-item-sub">Caused by {{ item.financialLossCausedBy }}</span>
+                }
+              </td>
               <td nxTableCell class="edp-col-action">
                 <button class="sec-kebab-btn" type="button"
                   [nxContextMenuTriggerFor]="itemMenu" aria-label="Item actions">⋮</button>

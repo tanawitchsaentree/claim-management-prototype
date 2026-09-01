@@ -1,0 +1,72 @@
+@use '../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+// ─── Header ─────────────────────────────────────────────────────────────────
+
+.apm-header    { @include modal.header;    }
+.apm-header-row { @include modal.header-row; }
+.apm-title     { @include modal.title;     }
+.apm-subtitle  { @include modal.subtitle;  }
+
+// ─── Body ────────────────────────────────────────────────────────────────────
+
+.apm-body { @include modal.body; }
+
+.apm-intro {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  line-height: 1.5;
+}
+
+// ─── Table ───────────────────────────────────────────────────────────────────
+
+.apm-table {
+  width: 100%;
+}
+
+.apm-col-check  { width: 48px; padding-left: 16px !important; }
+.apm-col-policy { min-width: 260px; }
+.apm-col-lob    { width: 140px; }
+.apm-col-period { width: 180px; }
+.apm-col-status { width: 110px; }
+.apm-col-count  { width: 80px; text-align: right; }
+
+// Three stacked lines in one cell: the ID the handler matches on, who it
+// belongs to, and why it surfaced. The reason is the deciding information, so
+// it is on the row itself rather than behind a disclosure — one less click on
+// the only question this table asks.
+.apm-policy-number {
+  display: block;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.apm-client {
+  display: block;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.apm-reason {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.apm-row--selected {
+  background: var(--claim-overlay-hover);
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+.apm-footer { @include modal.footer; }
+
+.apm-selected-count {
+  margin-right: auto;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}

@@ -80,6 +80,16 @@
 
 .edp-col-action { width: 40px; text-align: center !important; padding: 0 !important; }
 
+// Secondary line inside a table cell — used for the financial-loss cause and
+// working, which only some items carry.
+.edp-item-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 .sec-kebab-btn {
   background: none;
   border: none;
