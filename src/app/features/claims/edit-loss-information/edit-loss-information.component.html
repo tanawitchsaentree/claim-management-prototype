@@ -184,6 +184,12 @@
     </app-location-picker>
   </section>
 
+  <!-- Save refused because a required field is incomplete. The fields live
+       inside collapsed groups, so without this the button just did nothing. -->
+  @if (saveBlocked()) {
+    <nx-message context="error" class="eli-save-error">{{ saveBlocked() }}</nx-message>
+  }
+
   @if (saveSuccess()) {
     <nx-message context="success" class="eli-save-success">
       Loss information updated successfully.

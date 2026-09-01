@@ -19,7 +19,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
   let component: EditLossInformationComponent;
   let fakeDialogOpen: ReturnType<typeof vi.fn>;
 
-  beforeEach(async () => {
+  const mount = async (claimId: string): Promise<void> => {
     TestBed.resetTestingModule();
     fakeDialogOpen = vi.fn();
     TestBed.configureTestingModule({
@@ -31,7 +31,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
         provideRouter([{ path: '**', children: [] }]),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: convertToParamMap({ id: 'CLM-2024-001' }) } },
+          useValue: { snapshot: { paramMap: convertToParamMap({ id: claimId }) } },
         },
         { provide: NxDialogService, useValue: { open: fakeDialogOpen } },
       ],
@@ -50,7 +50,10 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     // the real load time to resolve rather than mocking it away.
     await new Promise(r => setTimeout(r, 400));
     fixture.detectChanges();
-  });
+  };
+
+  // CLM-2024-001 is one of the 5 claims loss-information.json hand-authors.
+  beforeEach(async () => { await mount('CLM-2024-001'); });
 
   describe('Gate 1 — Save is unreachable while the ledger is empty', () => {
     it('has zero pending changes right after load', () => {
@@ -110,6 +113,40 @@ describe('EditLossInformationComponent — Gate Proof', () => {
       fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
       await component.onSaveChanges();
       expect(fakeDialogOpen).toHaveBeenCalled();
+    });
+  });
+
+  // 22 of the 27 claims in claims.json have no hand-authored loss-information
+  // record. Before MockLossInformationService synthesized one, the screen loaded
+  // with `original` null, every field read "Not provided", computeDiffs()
+  // returned [] no matter what was typed, and Save stayed disabled forever.
+  describe('Gate 4 — a claim with no hand-authored record is still editable', () => {
+    beforeEach(async () => { await mount('CLM-2024-003'); });
+
+    it('loads a record synthesized from the Claim, not an empty form', () => {
+      expect(component.original()).not.toBeNull();
+      expect(component.form.get('lossDescription')!.value).toContain('Rotterdam');
+      expect(component.dateOfLoss.get('dateOfOccurrence')!.value).toBe('2024-02-18');
+      expect(component.lossLocation.value.locations.length).toBe(1);
+    });
+
+    it('is valid on load, so Save is not blocked by a hidden required field', () => {
+      expect(component.form.valid).toBe(true);
+    });
+
+    it('registers a pending change and reaches the save path', async () => {
+      component.form.get('lossDescription')!.setValue('Revised after survey report.');
+      expect(component.pendingChanges().length).toBe(1);
+      await component.onSaveChanges();
+      expect(component.saveBlocked()).toBeNull();
+      expect(component.saveSuccess()).toBe(true);
+    });
+
+    it('names the missing field and reopens its group when a required value is cleared', async () => {
+      component.form.get('lossDescription')!.setValue('');
+      await component.onSaveChanges();
+      expect(component.saveBlocked()).toContain('Loss description');
+      expect(component.isEditing('lossDescription')).toBe(true);
     });
   });
 });

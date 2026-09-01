@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Dashboard } from './dashboard';
+import { ClaimsPortfolioWidgetComponent } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
 
 // Tests the REAL Dashboard methods (not a copy) so a regression in the
 // component is actually caught. Covers the bar-fill maths and the
@@ -27,21 +28,30 @@ describe('Dashboard', () => {
     });
   });
 
+  // The dormant rule moved to the portfolio widget when the dashboard was split
+  // into widgets; this suite kept calling Dashboard.isDormant, which no longer
+  // exists — a TS2339 that failed the whole `ng test` run, not just this file.
   describe('isDormant / daysSinceUpdate (30-day threshold)', () => {
+    let widget: ClaimsPortfolioWidgetComponent;
+
     const iso = (daysAgo: number) =>
       new Date(Date.now() - daysAgo * 86400000).toISOString();
 
+    beforeEach(() => {
+      widget = TestBed.createComponent(ClaimsPortfolioWidgetComponent).componentInstance;
+    });
+
     it('is not dormant when recently updated', () => {
-      expect(component.isDormant(iso(10))).toBe(false);
+      expect(widget.isDormant(iso(10))).toBe(false);
     });
     it('is dormant after 30+ days of no activity', () => {
-      expect(component.isDormant(iso(45))).toBe(true);
+      expect(widget.isDormant(iso(45))).toBe(true);
     });
     it('treats an empty date as not dormant', () => {
-      expect(component.isDormant('')).toBe(false);
+      expect(widget.isDormant('')).toBe(false);
     });
     it('reports elapsed whole days', () => {
-      expect(component.daysSinceUpdate(iso(12))).toBe(12);
+      expect(widget.daysSinceUpdate(iso(12))).toBe(12);
     });
   });
 

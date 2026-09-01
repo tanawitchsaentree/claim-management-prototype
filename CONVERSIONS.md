@@ -791,6 +791,23 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-01 — Bug fix: "Edit claim details" was dead on 22 of 27 claims
+
+- **Source:** verbal report — *"ทำไม edit claim ทำงานไม่ function เลย … เข้าไปก็ว่างเปล่า … save ห่าอะไรก็ไม่ได้"*. The user's reasoning is the requirement: a claim file only exists because it came through FNOL, so Edit must work on any claim in the list.
+- **Module:** Claims — Edit claim details (`/claims/:id/loss-information/edit`)
+- **Files touched:** 5 — `core/mock/services/mock-loss-information.service.ts`, `features/claims/edit-loss-information/edit-loss-information.component.{ts,html,spec.ts}`, `features/dashboard/dashboard.spec.ts`
+- **Notes:**
+  - **One root cause, three symptoms.** `loss-information.json` hand-authors records for 5 claimIds (`CL-2025-001`, `CLM-2024-001`, `CLM-123456`, `CLM-345678`, `CLM-910111`) against 27 claims in `claims.json`. `getByClaimId` returned `null` for the rest → `original()` stayed null → `computeDiffs()` short-circuited on `if (!orig) return diffs;` → `pendingChanges()` was permanently `[]` → the header read "No changes", the ledger never rendered, and Save's `[disabled]="pendingChanges().length === 0"` could never clear. The blank page and the dead Save button were the same line of code.
+  - **Fixed at the data seam, not by hand-seeding 22 JSONs.** `getByClaimId` now synthesizes a record from the `Claim` and persists it, exactly mirroring `MockClaimOverviewService.fromClaimOrFallback()` / `synthesizeOverviewFromClaim()` — same rationale, already-blessed pattern. Persisting matters: `save()` looks the record up by `claimId`, so without `ensureRecord` every save would append a second record for the same claim.
+  - **Synthesized times are placeholders (`09:00` / `10:00`).** `Claim` carries no time of day anywhere, but FNOL marks both times required, so a claim file cannot exist without them. Leaving them `null` kept the form invalid with the error hidden inside a collapsed "Update" group — a Save button that refuses with nothing on screen to fix. The two constants are the same ones `FnolStateService.prefillFullFromSkeleton` already uses. `dateOfNotification` falls back to `claim.dateCreated` (the claim was created off the notification); `typeOfDamage` is left empty rather than guessed, so `prefillForm`'s `editingField` logic opens the screen on the field the handler actually has to fill.
+  - **`lossLocation` follows the data, not the model.** Seeded records store the location-picker shape (`{ locations: [...] }`); the `LossLocation` interface in `loss-information.model.ts` (street/city/postalCode/locationType…) is stale and matches nothing that reads it. Synthesis builds a `LocationPickerOutput` and casts once, as `edit-loss-information.component.ts` already does. **The interface still needs fixing** — left out of a bug fix because it reaches into FNOL.
+  - **A refused Save now says why.** Every field group is collapsed behind an Update/Add link, so a failing required control took its `nx-error` down with it. `onSaveChanges` calls `revealFirstInvalid()`, which names the incomplete fields, reopens the group holding the first one, and announces it. This bug was independent of the data gap and would have survived the fix above.
+  - **`computeDiffs` diffs against a blank baseline** when `original()` is null (an unknown claimId, since a real claim now gets a synthesized record), so a first-time capture is saveable at all instead of Save staying disabled on a screen the user just filled in.
+  - **`ng test` was broken in `HEAD` before this work, for every spec file.** `dashboard.spec.ts` still called `Dashboard.isDormant`, which moved to `ClaimsPortfolioWidgetComponent` when the dashboard was split into widgets — a `TS2339` that fails the whole run, not just that file. Repaired (pointed at the widget, same assertions) because it blocked verifying this fix. 30/30 pass now, including 4 new Gate 4 tests that mount the screen on `CLM-2024-003` and assert the synthesized load, form validity, a reachable save, and the blocked-save message.
+  - **Pre-existing file-size violations, made slightly worse:** `edit-loss-information.component.ts` was already 480 lines (limit 300) and its template 212 (limit 200) before this change; now 532/218. A proper split is its own task — not folded into a bug fix, where it would bury the fix in a refactor.
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

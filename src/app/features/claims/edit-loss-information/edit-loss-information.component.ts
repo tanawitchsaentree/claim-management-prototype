@@ -64,6 +64,35 @@ const LABEL_TO_FIELD_KEY: Record<string, string> = {
   'Loss location':             'lossLocation',
 };
 
+// Every field group sits collapsed behind an Update/Add link, so a required
+// control that fails validation takes its error message down with it — Save
+// simply refused with nothing on screen to fix. onSaveChanges() walks this list
+// to name what is missing and to reopen the group that holds it.
+const VALIDATED_FIELDS: Array<{ path: string; field: string; label: string }> = [
+  { path: 'dateOfLoss.dateOfOccurrence',   field: 'dateGroup',       label: 'Date of occurrence' },
+  { path: 'dateOfLoss.timeOfOccurrence',   field: 'dateGroup',       label: 'Time of occurrence' },
+  { path: 'dateOfLoss.dateOfNotification', field: 'dateGroup',       label: 'Date of notification' },
+  { path: 'dateOfLoss.timeOfNotification', field: 'dateGroup',       label: 'Time of notification' },
+  { path: 'causeOfLoss',                   field: 'causeOfLoss',     label: 'Cause of loss' },
+  { path: 'specifyOtherCauseOfLoss',       field: 'causeOfLoss',     label: 'Specify other cause of loss' },
+  { path: 'typeOfDamage',                  field: 'typeOfDamage',    label: 'Type of damage' },
+  { path: 'lossDescription',               field: 'lossDescription', label: 'Loss description' },
+];
+
+// Diff baseline for a claim with no LossInformation record at all — an unknown
+// claimId, since a real claim gets one synthesized (see
+// MockLossInformationService.getByClaimId). Without it computeDiffs() returned
+// [] unconditionally, which disabled Save forever on a screen the user had just
+// filled in.
+const BLANK_ORIGINAL = {
+  dateOfLoss: {
+    dateOfOccurrence: null, timeOfOccurrence: null,
+    dateOfNotification: null, timeOfNotification: null,
+  },
+  lossLocation: { locations: [] },
+  causeOfLoss: [], typeOfDamage: [], specifyOtherCauseOfLoss: '', lossDescription: '',
+} as unknown as LossInformation;
+
 @Component({
   selector: 'app-edit-loss-information',
   standalone: true,
@@ -96,6 +125,8 @@ export class EditLossInformationComponent implements OnInit {
   readonly loading      = signal(true);
   readonly saving       = signal(false);
   readonly saveSuccess  = signal(false);
+  /** Why the last Save attempt refused — see revealFirstInvalid(). */
+  readonly saveBlocked  = signal<string | null>(null);
   readonly original     = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
   readonly maxDesc   = 500;
@@ -307,8 +338,7 @@ export class EditLossInformationComponent implements OnInit {
       if (os !== ns) diffs.push({ label, original: os, updated: ns });
     };
 
-    const orig = this.original();
-    if (!orig) return diffs;
+    const orig = this.original() ?? BLANK_ORIGINAL;
     const cur = this.form.getRawValue() as unknown as LossInformationFormValue;
 
     // Dates & times
@@ -338,7 +368,11 @@ export class EditLossInformationComponent implements OnInit {
   // ── Save flow ─────────────────────────────────────────────────────────
   async onSaveChanges(): Promise<void> {
     this.submitAttempted = true;
-    if (this.form.invalid) return;
+    this.saveBlocked.set(null);
+    if (this.form.invalid) {
+      this.revealFirstInvalid();
+      return;
+    }
 
     const diffs = this.pendingChanges();
     if (!diffs.length) return;
@@ -428,6 +462,24 @@ export class EditLossInformationComponent implements OnInit {
     } finally {
       this.saving.set(false);
     }
+  }
+
+  // Names the incomplete fields and reopens the first group that holds one, so
+  // a refused Save is explainable on screen instead of a dead button.
+  private revealFirstInvalid(): void {
+    const incomplete = VALIDATED_FIELDS.filter(t => this.form.get(t.path)?.invalid);
+    const labels = incomplete.map(t => t.label);
+    if (this.dateOfLoss.errors?.['dateOrder']) {
+      labels.push('Notification date must be on or after date of occurrence');
+    }
+    this.saveBlocked.set(
+      labels.length
+        ? `Can't save yet — check ${labels.join(', ')}.`
+        : "Can't save yet — some details are still incomplete.",
+    );
+    this.editingField.set(incomplete[0]?.field ?? 'dateGroup');
+    this.form.markAllAsTouched();
+    this.live.announce(this.saveBlocked()!, 'assertive');
   }
 
   private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
