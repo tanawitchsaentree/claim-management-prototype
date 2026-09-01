@@ -112,9 +112,16 @@ function simulateState(claimId, stateOverrides) {
 
   const pendingPaymentsCount = payments.filter(p => p.status === 'Pending').length;
 
+  // BMPCC-17779 (Recoveries call, 2026-09-01) — mirrors the
+  // 'recovery-potential-unset' blocker in claim-closure-blocker.builder.ts.
+  // An unanswered Yes/No holds closure; answering either way clears it.
+  const recoveryPotentialUnset = overview.recoveryPotential !== 'yes'
+    && overview.recoveryPotential !== 'no';
+
   const canClose = pendingTasks === 0
     && openSections === 0
     && extraBlockers === 0
+    && !recoveryPotentialUnset
     && overviewStatus !== 'Closed';
 
   return { pendingTasks, doneTasks, openSections, closedSections, overviewStatus, canClose, tasks, sections, overview, claims, cwbLocs, payments, pendingPaymentsCount };
@@ -263,6 +270,29 @@ function assertOutcome(acId, actual, expectedOutcome) {
       case 'closureReason': {
         if (actual.overview.closureReason !== expected)
           failures.push(`closureReason: expected "${expected}", got "${actual.overview.closureReason}"`);
+        break;
+      }
+
+      // BMPCC-17779 — the recovery-potential decision on record. `null` asserts
+      // the unanswered state, which is the whole point of the flag; use it to
+      // pin down ACs that blank the seeded value via overviewPatch.
+      case 'recoveryPotential': {
+        const rp = actual.overview.recoveryPotential ?? null;
+        if (rp !== expected)
+          failures.push(`recoveryPotential: expected ${JSON.stringify(expected)}, got ${JSON.stringify(rp)}`);
+        break;
+      }
+
+      // BMPCC-17779 — derived state shared by the overview card, the closure
+      // checklist and the dashboard prompt. Mirrors recoveryPotentialState()
+      // in core/models/recovery-potential.model.ts.
+      case 'recoveryPotentialState': {
+        const rp = actual.overview.recoveryPotential ?? null;
+        const state = rp === 'no'  ? 'no'
+                    : rp === 'yes' ? (actual.overview.hasActiveRecovery ? 'yes-active' : 'yes-pending')
+                    : 'unanswered';
+        if (state !== expected)
+          failures.push(`recoveryPotentialState: expected "${expected}", got "${state}"`);
         break;
       }
 

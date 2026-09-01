@@ -17,6 +17,7 @@ import { firstValueFrom } from 'rxjs';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import { BlockerCheckResult, ClosureReason } from '../../../../../core/models/claim-closure.model';
+import { recoveryPotentialState } from '../../../../../core/models/recovery-potential.model';
 
 export interface ClaimClosureModalData {
   claim: ClaimOverview;
@@ -88,6 +89,11 @@ export class ClaimClosureModalComponent {
     { label: 'All sections closed',              passed: !this.data.blockers.blockers.some(b => b.type === 'sections'),              failHint: 'All sections must be closed before closing the claim.' },
     { label: 'All payments processed',           passed: !this.data.blockers.blockers.some(b => b.type === 'payments'),              failHint: 'Pending payments must be settled.' },
     { label: 'All bills received',               passed: !this.data.blockers.blockers.some(b => b.type === 'bills'),                 failHint: 'Outstanding bills must be received.' },
+    // BMPCC-17779 — its own row, above the generic recovery line. The
+    // Recoveries call asked for the Yes/No specifically to be part of this
+    // checklist, and folding it into "Recoveries & deductibles cleared" would
+    // tell a handler to go resolve activity that does not exist.
+    { label: 'Recovery potential answered',      passed: !this.data.blockers.blockers.some(b => b.type === 'recovery-potential-unset'), failHint: 'Answer Yes or No on the Recovery potential card on Claim Overview.' },
     { label: 'Recoveries & deductibles cleared', passed: !this.data.blockers.blockers.some(b => ['recovery','deductible'].includes(b.type)), failHint: 'Open recovery or deductible tasks must be resolved.' },
     { label: 'Reserves released',                passed: !this.data.blockers.blockers.some(b => b.type === 'reserves'),              failHint: 'All reserves must be released.' },
     { label: 'Litigation completed',             passed: !this.data.blockers.blockers.some(b => b.type === 'litigation'),            failHint: 'Active litigation must be resolved.' },
@@ -155,8 +161,13 @@ export class ClaimClosureModalComponent {
     return this.claim.proximateLossCause?.toLowerCase() === 'other';
   }
 
+  /**
+   * Yes on record but no recovery case set up. Still a soft warning here —
+   * BMPCC-17779 wants this to actively route the handler into the recovery
+   * domain, which needs a recovery surface to route them to.
+   */
   get showRecoveryWarning() {
-    return this.claim.recoveryPotential === 'yes' && !this.claim.hasActiveRecovery;
+    return recoveryPotentialState(this.claim) === 'yes-pending';
   }
 
   toggleBlocker(key: string): void {

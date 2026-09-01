@@ -8,18 +8,65 @@
   color: var(--text-01);
 }
 
-.co-recovery-value {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+// Left accent so an unanswered claim is findable while scanning the column of
+// otherwise identical cards. Accent only — no card-wide tint, per the same
+// rule the dashboard rows follow (state goes on an edge or a badge, never a
+// background wash that fights the text on top of it).
+.co-card--attention {
+  border-left: 3px solid var(--warning);
+  padding-left: calc(var(--space-xl) - 2px);
 }
 
-.co-recovery-edit-btn {
+// BLESSED: card-shell.card-title-row — title + trailing chip on one baseline.
+.rp-header {
+  @include shell.card-title-row;
+
+  .co-card-title { margin-bottom: 0; }
+}
+
+.rp-prompt {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.rp-question {
   font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 8px;
 }
 
-.co-recovery-note {
-  margin: 6px 0 0;
+.rp-radio-group {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.rp-note-field {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.rp-note {
+  margin: 8px 0 0;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
+}
+
+.rp-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.rp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.rp-cta__icon {
+  font-size: var(--paragraph-03-font-size);
 }

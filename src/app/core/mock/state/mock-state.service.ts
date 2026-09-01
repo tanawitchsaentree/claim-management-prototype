@@ -53,7 +53,10 @@ export interface MockState {
 const STORAGE_KEY          = 'champ-mock-state';
 const STORAGE_SCENARIO_KEY = 'champ-mock-scenario';
 const STORAGE_VERSION_KEY  = 'champ-mock-version';
-const STATE_VERSION        = 'ready-to-close-default-v4';
+// Bumped for BMPCC-17779 — claim-overview.json gained recoveryPotential on
+// four records. Without a bump, anyone with cached state keeps the old
+// overviews and every seeded claim reads as unanswered.
+const STATE_VERSION        = 'recovery-potential-v5';
 
 function defaultState(): MockState {
   return {

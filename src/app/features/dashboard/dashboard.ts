@@ -15,8 +15,10 @@ import { MockTaskService } from '../../core/mock/services/mock-task.service';
 import { MockClaimService } from '../../core/mock/services/mock-claim.service';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
 import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
+import { MockRecoveryAttentionService } from '../../core/mock/services/mock-recovery-attention.service';
 import { AuthService } from '../../core/services/auth';
 import { Claim, ClaimStats, DashboardVM, QuickLink, Task, ReserveMovement, LossEventSummary, PaymentApproval } from '../../core/models';
+import { RecoveryAttentionItem } from '../../core/models/recovery-potential.model';
 
 import { Navbar } from '../layout/navbar/navbar';
 
@@ -29,6 +31,7 @@ import { NewsPanelComponent } from './widgets/news-panel';
 import { ExpenseBreakdownComponent } from './widgets/expense-breakdown';
 import { ClaimsPortfolioWidgetComponent, ClaimsDateRange } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
 import { RecentApprovalsWidgetComponent } from './widgets/recent-approvals-widget/recent-approvals-widget.component';
+import { RecoveryPotentialPanelComponent } from './widgets/recovery-potential-panel';
 
 const QUICK_LINKS: QuickLink[] = [
   { label: 'AGCS Corporate Rules Book', url: 'https://www.allianz.com/en/about-us/strategy-values/business-model.html' },
@@ -52,6 +55,7 @@ const EMPTY_VM: DashboardVM = {
     FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
     CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,
     ClaimsPortfolioWidgetComponent, RecentApprovalsWidgetComponent,
+    RecoveryPotentialPanelComponent,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -61,6 +65,7 @@ export class Dashboard {
   private claimSvc    = inject(MockClaimService);
   private approvalSvc = inject(MockApprovalService);
   private extSvc      = inject(MockDashboardExtendedService);
+  private recoverySvc = inject(MockRecoveryAttentionService);
   readonly auth       = inject(AuthService);
   private router      = inject(Router);
 
@@ -106,6 +111,7 @@ export class Dashboard {
   readonly reserveMovements$ = this.extSvc.getReserveMovements();
   readonly lossEvents$       = this.extSvc.getLossEvents();
   readonly paymentApprovals$ = this.extSvc.getPaymentApprovals();
+  readonly recoveryAttention$ = this.recoverySvc.getAttentionItems();
 
   readonly headsUp          = toSignal(this.headsUp$,          { initialValue: [] });
   readonly news             = toSignal(this.news$,             { initialValue: [] });
@@ -117,6 +123,7 @@ export class Dashboard {
   readonly reserveMovements = toSignal(this.reserveMovements$, { initialValue: [] as ReserveMovement[] });
   readonly lossEvents       = toSignal(this.lossEvents$,       { initialValue: [] as LossEventSummary[] });
   readonly paymentApprovals = toSignal(this.paymentApprovals$, { initialValue: [] as PaymentApproval[] });
+  readonly recoveryAttention = toSignal(this.recoveryAttention$, { initialValue: [] as RecoveryAttentionItem[] });
 
   // ── Filtered display lists ────────────────────────────────────────────
   readonly displayedTasks = computed<Task[]>(() => {

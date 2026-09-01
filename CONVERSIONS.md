@@ -710,6 +710,29 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-01 — BMPCC-17779 (Recovery Potential Flag — Dependency), Phase A
+
+- **Source:** verbal brief — Recoveries call feedback pasted into the session (radio buttons on screen, notification/flag, dashboard channel, part of the closure checklist, "make any selection minimum — yes or no", and Yes must guide them into the recovery domain)
+- **Module:** Claims (Claim Overview, closure modal, Dashboard)
+- **File:** `public/tickets/bmpcc-17779.json` — rewritten from 1 AC to 6
+- **ACs authored:** 6 (done: 5, partial: 1, todo: 0)
+- **Deviations:** AC-05 `[accepted-deviation]` — `yes-pending` (Yes on record, no recovery case) stays a **soft warning**, not a hard closure blocker, because `/claims/:id/recoveries` is still a redirect stub (`app.routes.ts:116`). A hard blocker whose fix-it link dead-ends is unresolvable, so promoting it ships with the real recoveries surface (Phase B).
+- **Schema changes:**
+  - `BlockerType` gained `'recovery-potential-unset'` (emitted) and `'recovery-not-set-up'` (declared, Phase B)
+  - Two new `expectedOutcome` assertion keys in `audit-ac-logic.mjs`: `recoveryPotential` and `recoveryPotentialState`
+  - `STATE_VERSION` → `'recovery-potential-v5'`
+- **Files touched:** 14 — new `core/models/recovery-potential.model.ts`, new `core/mock/services/mock-recovery-attention.service.ts`, new `features/dashboard/widgets/recovery-potential-panel.ts`; rewritten `recovery-potential-card.component.{ts,html,scss}`; **deleted** `recovery-potential-modal/` (3 files); modified `claim-closure.model.ts`, `claim-closure-blocker.builder.ts`, `claim-closure-modal.component.ts`, `dashboard.{ts,html}`, `claim-overview.json`, `mock-state.service.ts`, `scripts/audit-ac-logic.mjs`
+- **Notes:**
+  - **The modal was the bug.** The old card put the Yes/No behind a "Set" link into a modal, so it read as optional and went unanswered — which is the exact complaint the call raised. Deleted the modal outright rather than adding a nag on top of it.
+  - **One derivation, three surfaces.** `recoveryPotentialState()` returns `unanswered | yes-pending | yes-active | no`, and the card, the closure checklist and the dashboard prompt all read it. The alternative — three hand-rolled `=== 'yes' && !hasActiveRecovery` checks — is exactly how the three surfaces would have drifted apart.
+  - **NDBX cannot auto-commit a radio.** `NxRadioGroupComponent` exposes no value-change output and `NxRadioComponent` no outputs at all (verified in `allianz-ng-aquila-radio-button.d.ts`), so reactivity goes through the FormControl's `valueChanges` via `toSignal`. Save became an explicit second click as a result — which is the better design anyway, since this field now gates claim closure and a misclick should be undoable.
+  - **Nearly broke 8 ticket JSONs.** A hard "unanswered" blocker would have flipped `CLM-2024-001` and `CL-2025-001` to un-closable, breaking every AC in `closure.json`, `champ-preclosure-checklist.json`, `close-section.json`, `ready-to-close.json`, `bmpcc-11360.json` and `bmpcc-14434/35/37.json`. Caught by grepping which tickets assert `canClose` **before** writing the blocker; fixed by seeding decided answers into `claim-overview.json` (4 records) and mirroring the blocker into the audit's independent `canClose` formula.
+  - **AC-03 vs AC-04 share identical overrides except the answer**, so `canClose` flipping false→true isolates this blocker instead of passing trivially on unrelated blockers.
+  - **Tracker status is wrong.** BMPCC-17779 reads d/b/h = done, which this feedback contradicts — needs reopening.
+  - **FNOL now contradicts the claim side.** `step-summary.component.html` labels its recovery-potential radio "Optional — can be updated after claim creation", which is no longer true once the claim cannot close without it. Left alone (FNOL is a separate flow with its own ACs) but flagged.
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

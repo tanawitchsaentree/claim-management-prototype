@@ -110,6 +110,11 @@
           (dateRangeChanged)="setClaimsDateRange($event)">
         </app-claims-portfolio-widget>
 
+        <!-- Recovery potential prompt (BMPCC-17779) — the dashboard channel the
+             Recoveries call asked for, so the Yes/No does not wait until the
+             handler happens to reopen the claim. -->
+        <app-recovery-potential-panel [items]="recoveryAttention()"></app-recovery-potential-panel>
+
         <!-- Heads-up panel (KCM only) -->
         @if (auth.isKcm()) {
           <app-heads-up-panel [items]="headsUp()"></app-heads-up-panel>

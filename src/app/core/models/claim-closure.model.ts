@@ -37,6 +37,12 @@ export type BlockerType =
   | 'payments'
   | 'reserves'
   | 'recovery'
+  // BMPCC-17779 (Recoveries call, 2026-09-01). Kept separate from 'recovery'
+  // above, which is about recovery activity already running and needing to be
+  // wound up. These two are the opposite problem — a decision that was never
+  // made, and a decision that was made but never acted on.
+  | 'recovery-potential-unset'
+  | 'recovery-not-set-up'
   | 'subrogation'
   | 'deductible'
   | 'litigation'

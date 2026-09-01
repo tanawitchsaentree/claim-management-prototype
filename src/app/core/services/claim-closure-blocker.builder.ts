@@ -5,6 +5,7 @@ import { ReservesPolicyData } from '../models/reserve.model';
 import { ClaimPayment } from '../models/payment.model';
 import { ProviderAssignment } from '../models/provider-assignment.model';
 import { BlockerCheckResult, Blocker } from '../models/claim-closure.model';
+import { recoveryPotentialState } from '../models/recovery-potential.model';
 
 export function buildBlockerResult(
   claim: ClaimOverview,
@@ -98,6 +99,19 @@ export function buildBlockerResult(
       label: 'Provider instructions must be finalised',
       link: `/claims/${claim.claimId}/providers`,
       linkLabel: 'Go to Provider Management',
+    });
+  }
+
+  // BMPCC-17779 (Recoveries call, 2026-09-01) — "what is most crucial: that
+  // they make any selection minimum, yes or no". Before this, a claim could be
+  // closed with the question never answered, and recoverable money went with
+  // it. Answering "No" clears the blocker; the pressure is meant to come off.
+  if (recoveryPotentialState(claim) === 'unanswered') {
+    blockers.push({
+      type:      'recovery-potential-unset',
+      label:     'Recovery potential has not been answered (Yes/No)',
+      link:      `/claims/${claim.claimId}/overview`,
+      linkLabel: 'Answer on Claim Overview',
     });
   }
 

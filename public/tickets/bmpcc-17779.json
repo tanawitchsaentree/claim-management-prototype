@@ -3,39 +3,253 @@
   "module": "Claims",
   "title": "[UI/UX] Recovery Potential Flag — Dependency",
   "targetClaim": "CLM-2024-001",
-  "pages": ["overview"],
+  "pages": ["overview", "any"],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/overview — claim is open, so the recovery potential edit link is visible",
+    "Navigate to /claims/CLM-2024-001/overview — the Recovery potential card now asks the Yes/No question directly on the card, no modal",
     {
-      "targetId": "co-recovery-potential-edit",
+      "targetId": "co-recovery-potential-choice",
       "title": "Recovery potential",
-      "body": "Set/Update next to the Recovery potential card lets a handler flag whether recovery is possible on this claim.",
-      "expectedAfterClick": "Opens the recovery potential modal — choosing Yes/No (with an optional note for No) updates the chip shown on the card.",
+      "body": "Yes/No radios sit on the card itself. Before the Recoveries call this was a modal behind a link labelled \"Set\", and handlers read it as optional — so it went unanswered and recoverable money left with the closed claim.",
+      "expectedAfterClick": "Picking No reveals a required reason field; picking Yes enables Save and, once saved, surfaces a Set up recovery case link.",
       "direction": "right"
+    },
+    {
+      "targetId": "co-recovery-potential-save",
+      "title": "Save is a deliberate second click",
+      "body": "The radios do not commit on selection. This field gates claim closure, so a misclick should be recoverable before it is written to the activity log.",
+      "expectedAfterClick": "The chip in the card header updates and the activity log records the old and new value.",
+      "direction": "top"
     }
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Recovery potential can be set or updated from the overview",
-      "plainStatement": "The **Recovery potential** card's Set/Update link opens a modal to flag recovery potential Yes/No, with an optional note.",
+      "statement": "Yes/No radios are on the Claim Overview card, not behind a modal",
+      "plainStatement": "The **Recovery potential** card renders **Yes/No radios directly on screen** with a **Save** action. The old Set/Update modal is gone.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "CLM-2024-001 is open by default — no override needed",
+        "description": "CLM-2024-001 carries a decided No by default — no override needed",
         "preconditions": [
-          { "text": "Recovery potential card shows Set or Update", "page": "overview", "role": "tested-visible" }
+          { "text": "Recovery potential card shows Yes/No radios inline", "page": "overview", "role": "tested-visible" },
+          { "text": "No Set/Update link and no modal", "page": "overview", "role": "tested-visible" }
         ],
         "stateOverrides": {}
       },
       "expectedUI": {
-        "description": "Recovery potential modal opens with Yes/No selection",
-        "visualCues": ["Modal offers Yes/No recovery potential", "Selecting No reveals an optional note field", "Card chip updates after confirming"]
+        "description": "Radios and a Save button render on the card body",
+        "visualCues": [
+          "Question \"Is recovery possible on this claim?\" above the radios",
+          "Yes / No radios side by side",
+          "Save is disabled until the selection differs from what is on record",
+          "Chip in the card header reflects the saved answer"
+        ]
+      },
+      "expectedOutcome": {
+        "recoveryPotential": "no",
+        "recoveryPotentialState": "no"
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click Set/Update on the Recovery potential card",
-        "expectedResult": "Modal opens; confirming updates the card's chip"
+        "trigger": "Scroll to the Recovery potential card",
+        "expectedResult": "Yes/No radios are visible without clicking anything"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "An unanswered claim says so on the card",
+      "plainStatement": "With no answer on record the card shows a **warning message** and a **left accent border** — not the silent `–` it used to render.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Blank the seeded answer on CLM-2024-001 to reach the unanswered state",
+        "preconditions": [
+          { "text": "Recovery potential is unanswered", "page": "overview", "role": "setup" },
+          { "text": "Warning message on the Recovery potential card", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": { "recoveryPotential": null, "recoveryPotentialNote": "" }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Warning banner plus an attention accent on the card",
+        "visualCues": [
+          "\"A Yes/No recovery decision is required before this claim can be closed.\"",
+          "Left accent border in the warning colour",
+          "No chip in the card header",
+          "Radios render unselected"
+        ]
+      },
+      "expectedOutcome": {
+        "recoveryPotential": null,
+        "recoveryPotentialState": "unanswered",
+        "canClose": false
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Open the claim with no recovery answer on record",
+        "expectedResult": "Card carries a warning message and an accent border"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "An unanswered claim cannot be closed",
+      "plainStatement": "The pre-closure checklist has a **Recovery potential answered** row that fails while the question is unanswered, so **Continue stays disabled**.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same unanswered state as AC-02, on a claim whose other blockers are all clear",
+        "preconditions": [
+          { "text": "Recovery potential is unanswered", "page": "overview", "role": "setup" },
+          { "text": "Close Claim opens the modal at Step 1 with a recovery-potential blocker", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed", "SEC-008": "Closed" },
+          "sectionBlockers": {
+            "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
+            "SEC-002": { "hasActiveLitigation": false, "hasOpenReserves": false, "hasOpenPayments": false },
+            "SEC-003": { "hasActiveProvider": false },
+            "SEC-008": { "hasOpenPayments": false }
+          },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": { "recoveryPotential": null, "recoveryPotentialNote": "" }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Blocker row and a failing checklist item",
+        "visualCues": [
+          "Blocker \"Recovery potential has not been answered (Yes/No)\"",
+          "\"Answer on Claim Overview\" deep-link on the blocker row",
+          "Checklist row \"Recovery potential answered\" is not ticked",
+          "Continue is disabled"
+        ]
+      },
+      "expectedOutcome": {
+        "pendingTasks": 0,
+        "openSections": 0,
+        "canClose": false,
+        "recoveryPotentialState": "unanswered"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Close Claim",
+        "expectedResult": "Modal opens at Step 1 listing the recovery-potential blocker; Continue is disabled"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Answering No requires a reason, and then closure is no longer held up",
+      "plainStatement": "Selecting **No** reveals a **required** reason field. Once saved, the closure blocker clears — *\"if they select no, the pressure is off\"*.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Identical to AC-03 except the seeded No is left on record — the only difference between the two is the answer, so canClose flipping to true isolates this blocker",
+        "preconditions": [
+          { "text": "Reason field is required when No is selected", "page": "overview", "role": "tested-visible" },
+          { "text": "Saved reason renders under the radios", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed", "SEC-008": "Closed" },
+          "sectionBlockers": {
+            "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
+            "SEC-002": { "hasActiveLitigation": false, "hasOpenReserves": false, "hasOpenPayments": false },
+            "SEC-003": { "hasActiveProvider": false },
+            "SEC-008": { "hasOpenPayments": false }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Reason textarea with a validation error when empty",
+        "visualCues": [
+          "\"Why is no recovery expected?\" textarea appears on selecting No",
+          "\"A reason is required when recovery potential is No.\" on an empty save",
+          "No chip in the card header once saved",
+          "Checklist row \"Recovery potential answered\" is ticked"
+        ]
+      },
+      "expectedOutcome": {
+        "recoveryPotential": "no",
+        "recoveryPotentialState": "no",
+        "canClose": true
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Select No, clear the reason, click Save",
+        "expectedResult": "Validation error blocks the save; filling the reason saves and clears the closure blocker"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Yes with no recovery case routes the handler to the recovery domain",
+      "plainStatement": "**Yes** on its own is not enough — the card surfaces a **Set up recovery case** link, and the closure modal warns that no recovery case exists. **NOTE [accepted-deviation]:** the link and the warning are built, but `/claims/:id/recoveries` is still a redirect stub (`app.routes.ts`) — the handler is *pointed at* the recovery domain rather than landed in it. This state is also deliberately a soft warning, not a hard closure blocker: a hard blocker whose fix-it link dead-ends would be unresolvable. Promoting it ships with the real recoveries surface — kept `partial` until then.",
+      "page": "overview",
+      "buildStatus": "partial",
+      "setup": {
+        "description": "Yes on record with no recovery case. CLM-2024-024 is seeded this way for the dashboard prompt; here the state is patched onto the target claim so the assertion runs against it",
+        "preconditions": [
+          { "text": "Recovery potential is Yes with no recovery case", "page": "overview", "role": "setup" },
+          { "text": "Set up recovery case link on the card", "page": "overview", "role": "tested-visible" }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": { "recoveryPotential": "yes", "recoveryPotentialNote": "", "hasActiveRecovery": false }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Info message plus a link out to the recovery domain",
+        "visualCues": [
+          "\"Recovery is expected but no recovery case has been set up yet.\"",
+          "Set up recovery case link pointing at /claims/CLM-2024-001/recoveries",
+          "Closure modal step 3 warns that no recovery case has been created"
+        ]
+      },
+      "expectedOutcome": {
+        "recoveryPotential": "yes",
+        "recoveryPotentialState": "yes-pending"
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Open the Recovery potential card with Yes on record and no recovery case",
+        "expectedResult": "Info message and a Set up recovery case link are shown"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "The dashboard chases the decision without task management",
+      "plainStatement": "A **Recovery potential: decision needed** panel on the dashboard lists open claims with no answer, plus claims answered Yes that have no recovery case — *\"maybe we do it from dashboard even\"*.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Default state — most claims in claims.json have never been answered",
+        "preconditions": [
+          { "text": "Recovery potential panel on the dashboard", "page": "any", "role": "tested-visible" },
+          { "text": "Rows deep-link to each claim's overview", "page": "any", "role": "tested-visible" }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Widget listing up to five claims with a count and a Show more",
+        "visualCues": [
+          "Count of outstanding decisions in the widget header",
+          "Warning icon for unanswered, info icon for answered-Yes-with-no-case",
+          "Answer / Set up link per row",
+          "\"Show N more\" when more than five are outstanding",
+          "Empty state once every open claim has a decision on record"
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Load the dashboard",
+        "expectedResult": "Recovery potential panel lists claims still needing a decision"
       }
     }
   ]
