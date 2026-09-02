@@ -94,6 +94,37 @@
 
     <hr class="eli-divider" />
 
+    <!-- BMPCC-18160 — sits directly under Cause of loss, the field it is
+         filtered by. Editable here and on FNOL only; every other surface shows
+         it read-only. -->
+    @if (!isEditing('circumstance')) {
+      <div class="eli-field" [class.eli-field--changed]="fieldChanged('circumstance')">
+        <span class="eli-label">Incident circumstance</span>
+        <span class="eli-value">{{ circumstanceDisplay || 'Not provided' }}</span>
+        @if (fieldChanged('circumstance')) {
+          <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
+        }
+        <nx-link size="small"><a (click)="startEdit('circumstance')">{{ circumstanceDisplay ? 'Update' : 'Add' }}</a></nx-link>
+      </div>
+    } @else {
+      <nx-formfield label="Incident circumstance" class="eli-full-width">
+        <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+          @for (option of circumstanceOptions; track option.value) {
+            <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <nx-hint nxFormfieldHint>
+          @if (selectedCauses.length) {
+            Narrowed to the cause of loss on this claim.
+          } @else {
+            Select a cause of loss to narrow this list.
+          }
+        </nx-hint>
+      </nx-formfield>
+    }
+
+    <hr class="eli-divider" />
+
     @if (!isEditing('typeOfDamage')) {
       <div class="eli-field" [class.eli-field--changed]="fieldChanged('typeOfDamage')">
         <span class="eli-label">Type of damage</span>

@@ -29,7 +29,8 @@ import { StatusChipComponent } from '../../../shared/components/status-chip/stat
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
 import { ClaimSection } from '../../../core/models/section.model';
-import { LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../core/models';
+import { LocationPickerOutput, LookupOption, OTHER_CAUSE_KEY } from '../../../core/models';
+import { circumstanceLabel, circumstanceOptionsFor, isCircumstanceValidFor } from '../../fnol/config/circumstances';
 import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
 import { LossInfoConfirmModalComponent, LossInfoConfirmModalData } from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
@@ -108,6 +109,10 @@ export class EditLossInformationComponent implements OnInit {
     // whether causeOfLoss currently includes that value. typeOfDamage has no
     // counterpart by design — see OTHER_CAUSE_KEY in core/models/lookup.model.ts.
     specifyOtherCauseOfLoss: new FormControl<string>(''),
+    // BMPCC-18160 — single incident circumstance, options narrowed by
+    // causeOfLoss. Not required: the peril is often confirmed long before
+    // anyone can say what actually happened.
+    circumstance:    new FormControl<string | null>(null),
     lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
   });
 
@@ -158,7 +163,17 @@ export class EditLossInformationComponent implements OnInit {
 
   onCauseOfLossChange(selected: string[]): void {
     this.syncSpecifyOther('specifyOtherCauseOfLoss', selected.includes(OTHER_CAUSE_KEY));
+    // BMPCC-18160 — re-pointing the peril can leave a circumstance the new
+    // peril doesn't offer. Clearing it here is what makes the change show up in
+    // the ledger, so the user sees what their edit knocked out.
+    const circ = this.form.get('circumstance');
+    if (circ && !isCircumstanceValidFor(circ.value as string | null, selected)) circ.setValue(null);
   }
+
+  // ── Incident circumstance (BMPCC-18160) ───────────────────────────────
+  get circumstanceOptions(): LookupOption[] { return circumstanceOptionsFor(this.selectedCauses); }
+  get circumstanceDisplay(): string { return circumstanceLabel(this.form.get('circumstance')?.value as string | null); }
+  get originalCircumstanceDisplay(): string { return circumstanceLabel(this.original()?.circumstance) || 'Not provided'; }
 
   // Clearing the value on hide matters here as much as on FNOL: a hidden
   // control holding stale text would keep the Save button gated with nothing
@@ -253,6 +268,7 @@ export class EditLossInformationComponent implements OnInit {
       causeOfLoss:     li.causeOfLoss     ?? [],
       typeOfDamage:    li.typeOfDamage    ?? [],
       specifyOtherCauseOfLoss: li.specifyOtherCauseOfLoss ?? '',
+      circumstance:    li.circumstance    ?? null,
       lossDescription: li.lossDescription ?? '',
       lossLocation:    (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
     });
@@ -434,7 +450,10 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
-    const patch: { dateOfLoss?: string; proximateLossCause?: string; causeOfLoss?: string[] } = {};
+    const patch: {
+      dateOfLoss?: string; proximateLossCause?: string; causeOfLoss?: string[];
+      incidentCircumstance?: string;
+    } = {};
 
     if (diffs.some(d => d.label === 'Date of occurrence') && formValue.dateOfLoss?.dateOfOccurrence) {
       patch.dateOfLoss = formValue.dateOfLoss.dateOfOccurrence;
@@ -448,6 +467,13 @@ export class EditLossInformationComponent implements OnInit {
       const causeLabels = causeKeys.map(k => this.causeOfLossOptions().find(o => o.value === k)?.label ?? k);
       patch.proximateLossCause = causeLabels[0] ?? '–';
       patch.causeOfLoss = causeLabels;
+    }
+    // BMPCC-18160 — Claim Overview and the Section detail panel read
+    // incidentCircumstance off the claim, so a change here has to land there
+    // too or the overview keeps showing the pre-investigation circumstance.
+    // The key is stored, not the label — see ASSUMPTION [CIRC-4].
+    if (diffs.some(d => d.label === 'Incident circumstance')) {
+      patch.incidentCircumstance = formValue.circumstance ?? undefined;
     }
 
     if (Object.keys(patch).length) {

@@ -40,6 +40,15 @@
         <span class="sdp-field__label">Entities</span>
         <span class="sdp-field__value">{{ section.entities.length }}</span>
       </div>
+      <!-- BMPCC-18160 — read-only, all roles. DEVIATION: the ticket asks for it
+           on "Section Overview"; it goes here rather than as a 7th column on the
+           sections table, which already carries 6 columns after Comments and
+           Coverage Review were added. Same value for every section (it is the
+           claim's), so a per-row column would repeat itself down the table. -->
+      <div class="sdp-field">
+        <span class="sdp-field__label">Incident circumstance</span>
+        <span class="sdp-field__value">{{ incidentCircumstance | circumstanceLabel }}</span>
+      </div>
       @if (section.closureDate) {
         <div class="sdp-field">
           <span class="sdp-field__label">Closure date</span>

@@ -78,6 +78,28 @@
           </nx-error>
         </nx-formfield>
       </div>
+      <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance
+           per claim. Sits in the same grid so it lands directly under the
+           Cause of loss it is filtered by. Options come from
+           circumstanceOptionsFor() and narrow as soon as a peril is confirmed;
+           with no cause yet, or "Other event", the full catalogue plus
+           "Unknown" is offered. -->
+      <div data-field="circumstance">
+        <nx-formfield label="Incident circumstance">
+          <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+            @for (option of circumstanceOptions; track option.value) {
+              <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          <nx-hint nxFormfieldHint>
+            @if (selectedCauses.length) {
+              Narrowed to the cause of loss selected.
+            } @else {
+              Select a cause of loss to narrow this list.
+            }
+          </nx-hint>
+        </nx-formfield>
+      </div>
       <!-- Free-text qualifier, shown only while Cause of loss includes "Other
            Event". Sits in the same grid so it lands directly under the select
            it qualifies instead of in a separate row below. There is no damage

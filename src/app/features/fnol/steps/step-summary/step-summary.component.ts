@@ -411,6 +411,7 @@ export class StepSummaryComponent implements OnInit {
       lossLocation:    this.mapLossLocation(formValue.lossLocation),
       causeOfLoss:     formValue.causeOfLoss ?? [],
       typeOfDamage:    formValue.typeOfDamage ?? [],
+      circumstance:    formValue.circumstance ?? null,
       specifyOtherCauseOfLoss: formValue.specifyOtherCauseOfLoss || undefined,
       lossDescription: formValue.lossDescription ?? '',
       events:          formValue.events ?? [],
@@ -428,6 +429,9 @@ export class StepSummaryComponent implements OnInit {
       dateOfLoss:          formValue.dateOfLoss?.dateOfOccurrence ?? undefined,
       proximateLossCause:  causeLabels[0] ?? undefined,
       causeOfLoss:         causeLabels.length ? causeLabels : undefined,
+      // BMPCC-18160 — stored as the key, resolved to a label at render time by
+      // circumstanceLabel() so a later RDA rename shows through everywhere.
+      incidentCircumstance: formValue.circumstance ?? undefined,
       description:         formValue.lossDescription || undefined,
       restriction:         this.fnolState.restriction,
       recoveryPotential:   this.fnolState.recoveryPotential ?? undefined,

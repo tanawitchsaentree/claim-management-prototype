@@ -57,6 +57,10 @@ export class FnolStateService {
       lossLocation: new FormControl<LocationPickerOutput>({ locations: [] }),
       causeOfLoss:     new FormControl<string[]>([], []),
       typeOfDamage:    new FormControl<string[]>([], []),
+      // BMPCC-18160 — single incident circumstance, options filtered by the
+      // confirmed cause of loss. Not required: the peril is often confirmed
+      // before anyone can say what actually happened.
+      circumstance:    new FormControl<string | null>(null),
       // Free-text qualifier, shown and required only while causeOfLoss includes
       // its "Other" option. The validator is added and cleared by the step
       // component, not declared here, because "required" depends on a sibling
@@ -265,6 +269,7 @@ export class FnolStateService {
     });
     this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(li.causeOfLoss ?? []);
     this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(li.typeOfDamage ?? []);
+    this.fnolForm.get('lossInformation.circumstance')?.setValue(li.circumstance ?? null);
     this.fnolForm.get('lossInformation.specifyOtherCauseOfLoss')?.setValue(li.specifyOtherCauseOfLoss ?? '');
     this.fnolForm.get('lossInformation.lossDescription')?.setValue(li.lossDescription ?? '');
 

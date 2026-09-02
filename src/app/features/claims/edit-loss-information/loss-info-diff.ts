@@ -1,4 +1,5 @@
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
+import { circumstanceLabel } from '../../fnol/config/circumstances';
 
 // Diff/impact vocabulary for the Edit claim details screen. Extracted from
 // edit-loss-information.component.ts (2026-09-02) — the component was 532
@@ -29,6 +30,10 @@ export const LABEL_TO_FIELD_KEY: Record<string, string> = {
   // The qualifier points at the group whose edit block contains it, so the
   // changed-field highlight lands where the user can actually see the input.
   'Specify other cause of loss': 'causeOfLoss',
+  // BMPCC-18160 — its own field group. Options are filtered by cause of loss,
+  // but it gets its own Update link like every other field on this screen, and
+  // its highlight has to land on its own row rather than on the cause's.
+  'Incident circumstance':     'circumstance',
   'Date of occurrence':        'dateGroup',
   'Time of occurrence':        'dateGroup',
   'Date of notification':      'dateGroup',
@@ -94,6 +99,10 @@ export function computeLossInfoDiffs(
   // Deliberately NOT in IMPACT_LABELS — retyping the qualifier describes the
   // same cause more precisely, it doesn't re-point ClaimSection.damageType.
   addIf('Specify other cause of loss', orig.specifyOtherCauseOfLoss, cur.specifyOtherCauseOfLoss);
+  // BMPCC-18160 — compared as labels, not keys: this diff is read by a human in
+  // the confirm modal, and 'hot-work' tells them nothing. Deliberately NOT in
+  // IMPACT_LABELS — a more precise circumstance doesn't re-point any section.
+  addIf('Incident circumstance', circumstanceLabel(orig.circumstance), circumstanceLabel(cur.circumstance));
   addIf('Loss description', orig.lossDescription, cur.lossDescription);
 
   // Loss location (compare by displayName of first location as proxy)

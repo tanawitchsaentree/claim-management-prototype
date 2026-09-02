@@ -13,6 +13,7 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.pipe';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockTaskService } from '../../../core/mock/services/mock-task.service';
@@ -84,6 +85,7 @@ const EMPTY_VM: OverviewVM = {
     NxModalModule,
     StatusChipComponent,
     AppDatePipe,
+    CircumstanceLabelPipe,
     ClaimPreviewDirective,
     RecoveryPotentialCardComponent,
     FileRestrictionCardComponent,

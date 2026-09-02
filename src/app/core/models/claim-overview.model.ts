@@ -54,6 +54,16 @@ export interface ClaimOverview {
   // Every cause captured at FNOL (LossInformation.causeOfLoss is an array).
   // Optional — older/hand-seeded overviews only have proximateLossCause.
   causeOfLoss?: string[];
+  // BMPCC-18160 — the incident circumstance key (not the label), one per claim,
+  // filtered by the confirmed peril at FNOL. Read-only everywhere outside the
+  // FNOL field and the Edit claim screen; resolve with circumstanceLabel().
+  //
+  // ASSUMPTION [CIRC-4]: claim-level, not section-level. KR1.2 says "select
+  // ONE" and FNOL asks once, but BMPCC-18157 publishes circumstance on
+  // claimSectionCreated/Updated, which hints the real model may hang it off the
+  // section. Sections display the claim's value rather than storing their own,
+  // so moving to per-section later is an additive change, not a migration.
+  incidentCircumstance?: string;
   riskScore: number;
   riskScoreMax: number;
   riskStatus: string;

@@ -86,6 +86,12 @@
               <span class="co-label">Proximate loss cause</span>
               <span class="co-value">{{ claim.proximateLossCause || '–' }}</span>
             </div>
+            <!-- BMPCC-18160 — read-only, sits next to the cause it was filtered by,
+                 visible to every role. -->
+            <div class="co-field">
+              <span class="co-label">Incident circumstance</span>
+              <span class="co-value">{{ claim.incidentCircumstance | circumstanceLabel }}</span>
+            </div>
             <div class="co-field">
               <span class="co-label">Date of Loss</span>
               <span class="co-value">{{ claim.dateOfLoss ? (claim.dateOfLoss | appDate) : '–' }}</span>
@@ -133,6 +139,11 @@
           <div class="co-field">
             <span class="co-label">Proximate loss cause</span>
             <span class="co-value">{{ claim.proximateLossCause }}</span>
+          </div>
+          <!-- BMPCC-18160 — read-only, next to the cause it was filtered by. -->
+          <div class="co-field">
+            <span class="co-label">Incident circumstance</span>
+            <span class="co-value">{{ claim.incidentCircumstance | circumstanceLabel }}</span>
           </div>
           <div class="co-field">
             <span class="co-label">Date of Loss</span>

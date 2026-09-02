@@ -26,6 +26,7 @@ import { MockLookupService } from '../../../../core/mock/services/mock-lookup.se
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
 import { DuplicateCheckService, DuplicateClaim } from '../../../../core/services/duplicate-check.service';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
+import { circumstanceOptionsFor, isCircumstanceValidFor } from '../../config/circumstances';
 import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
 import { ScenarioStageService } from '../../../../core/scenario/scenario-stage.service';
 import { FnolLossInfoStage } from '../../../../core/scenario/scenario-stage.model';
@@ -395,6 +396,27 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   onCauseOfLossChange(selected: string[]): void {
     this._syncEventsArray(selected);
     this.syncSpecifyOther('specifyOtherCauseOfLoss', selected.includes(OTHER_CAUSE_KEY));
+    this.syncCircumstance(selected);
+  }
+
+  // ── Incident circumstance (BMPCC-18160) ─────────────────────────────
+  // Options are derived, not stored, so the list can never drift from the
+  // cause selection. A pick the new cause no longer offers is cleared rather
+  // than left in place invisibly — see circumstances.ts for the peril mapping
+  // and its three recorded assumptions.
+
+  get circumstanceOptions(): LookupOption[] {
+    return circumstanceOptionsFor(this.selectedCauses);
+  }
+
+  get selectedCircumstance(): string | null {
+    return (this.form.get('circumstance')?.value as string | null) ?? null;
+  }
+
+  private syncCircumstance(selected: string[]): void {
+    const ctrl = this.form.get('circumstance');
+    if (!ctrl) return;
+    if (!isCircumstanceValidFor(ctrl.value as string | null, selected)) ctrl.setValue(null);
   }
 
   // "Required" here depends on a sibling control's value, so the validator is

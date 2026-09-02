@@ -37,6 +37,12 @@ export interface LossInformationFormValue {
   lossLocation: LossLocation;
   causeOfLoss: string[];
   typeOfDamage: string[];
+  /**
+   * BMPCC-18160 — one incident circumstance for the whole claim, filtered by
+   * the confirmed cause of loss. Single value by design: the AC drifts plural
+   * in places, KR1.2 is "select ONE".
+   */
+  circumstance: string | null;
   /** Free text, captured only while causeOfLoss includes its "Other" option. */
   specifyOtherCauseOfLoss?: string;
   lossDescription: string;
@@ -51,6 +57,8 @@ export interface LossInformation {
   lossLocation: LossLocation;
   causeOfLoss: string[];
   typeOfDamage: string[];
+  /** BMPCC-18160. Optional — records seeded before this field existed have none. */
+  circumstance?: string | null;
   specifyOtherCauseOfLoss?: string;
   lossDescription: string;
   events: LossEvent[];

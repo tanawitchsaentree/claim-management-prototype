@@ -23,6 +23,7 @@
     },
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["material-damage"],
+    "circumstance": "electrical-fault",
     "lossDescription": "This claim relates to a fire at XYZ's warehouse on 12 May 2025. The current incurred value is $4.2M, primarily property damage.",
     "events": [{ "eventKey": "fire", "damages": ["material-damage"], "causedBy": [] }],
     "createdAt": "2025-01-11T10:30:00Z",
@@ -52,6 +53,7 @@
     },
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["material-damage", "financial-loss"],
+    "circumstance": "hot-work",
     "lossDescription": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",
     "events": [{ "eventKey": "fire", "damages": ["material-damage", "financial-loss"], "causedBy": [] }],
     "createdAt": "2024-01-15T08:05:00Z",
@@ -74,6 +76,7 @@
     },
     "causeOfLoss": ["fire"],
     "typeOfDamage": ["structural", "contents"],
+    "circumstance": "electrical-fault",
     "lossDescription": "Fire broke out in the server room at 14:30. Fire department arrived within 10 minutes. Significant structural damage to the east wing.",
     "events": [
       { "eventKey": "fire", "damages": ["structural", "contents"], "causedBy": [] }
@@ -122,6 +125,7 @@
     },
     "causeOfLoss": ["theft", "fire"],
     "typeOfDamage": ["contents", "equipment"],
+    "circumstance": "theft-no-entry",
     "lossDescription": "Break-in overnight. Perpetrators caused fire after theft to destroy evidence. Police notified immediately.",
     "events": [
       { "eventKey": "theft",  "damages": ["contents", "equipment"], "causedBy": [] },
@@ -147,6 +151,7 @@
     },
     "causeOfLoss": ["wind-storm"],
     "typeOfDamage": ["structural", "business-interruption"],
+    "circumstance": "windstorm",
     "lossDescription": "Storm damage to roof and facade. Business operations interrupted for 3 weeks. Late notification due to ongoing litigation with contractor.",
     "events": [
       { "eventKey": "wind-storm", "damages": ["structural", "business-interruption"], "causedBy": [] }
@@ -171,6 +176,7 @@
     },
     "causeOfLoss": ["other"],
     "typeOfDamage": ["vehicle", "structural"],
+    "circumstance": "unknown",
     "lossDescription": "Vehicle drove through building facade. Driver fled the scene. Security footage available.",
     "events": [
       { "eventKey": "other", "damages": ["vehicle", "structural"], "causedBy": ["event10"] }
