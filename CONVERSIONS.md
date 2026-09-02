@@ -911,6 +911,21 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-02 — No save commits without a confirm modal
+
+- **Source:** verbal brief — "เวลาจะ save change ให้ modal ด้วย อย่า save แล้วจบ"
+- **Module:** Edit claim details, Claim overview (recovery potential), Sections, Litigation, shared confirm dialog
+- **Files touched:** 6 — `shared/components/confirm-dialog/confirm-dialog.component.{ts,html,scss}`, `claims/edit-loss-information/edit-loss-information.component.ts` (+ `.spec.ts`), `claims/claim-overview/components/recovery-potential-card/recovery-potential-card.component.ts`, `sections/section-detail-panel/section-detail-panel.component.ts`, `claims/litigation/litigation-detail/litigation-detail.component.ts`
+- **Notes:**
+  - **A documented decision was overridden, not a bug fixed.** `onSaveChanges()` opened its confirm modal only `if (this.hasHighImpactChange())` — where high-impact meant `IMPACT_LABELS = ['Cause of loss', 'Type of damages', 'Loss location']`. Its own comment argued the case: the header's change ledger had already shown a description-only edit, so a modal would be "a barrier nobody reads". The user's call is that no save commits silently, and which fields count as high-impact was our judgement, not theirs. `hasHighImpactChange` is deleted — it had no remaining caller once the gate went.
+  - **The rule is "show the change", not "ask are-you-sure".** A bare confirm IS the barrier nobody reads, which is why the original calibration existed at all. So `ConfirmDialogData` gained `changes?: ConfirmDialogChange[]` and the shared dialog renders the same Field / Current → New table as `loss-info-confirm-modal.component.html:21`, copied rather than re-derived so a save-confirm looks identical wherever you saved from. Callers that pass no diff still get the message alone.
+  - **Four save flows now confirm:** Edit claim details (gate removed — the existing modal already handled the low-impact case, rendering the diff table with no impacted-sections warning), recovery potential (gates claim closure, and the radio sits on the card surface where it can be grazed), section rename (the name is referenced by reserves, the entity tree and the closure checklist), litigation Save.
+  - **Deliberately NOT gated:** FNOL wizard steps (`reserve-narrative-panel`, `reserve-detail-panel`, `entity-detail-panel`) — nothing there is a record until the wizard submits; and `litigation-detail.openAddParty()` / `removeAttorney()`, which already run a party-picker modal and a ConfirmDialog respectively. A modal confirming a modal is worse than no modal.
+  - **Gate 3 in `edit-loss-information.component.spec.ts` was INVERTED, not deleted.** It used to assert the silent path; it now asserts every pending-change save opens the dialog, that Cancel leaves the form dirty with `saveSuccess()` false, and that an empty change set opens nothing. Gate 4 needed the dialog stubbed as confirmed — it had been relying on the silent path to reach the save.
+  - **Verification:** CDP against `localhost:4290`, 0 console errors on every screen. Description-only edit on `CLM-2024-001` → ledger "1 update" → "Confirm loss information updates" with the row `Loss description: Fire damage to warehouse section B… → Silent-save regression probe.`; "Back to editing" left the path on `/edit` with the ledger still "1 update" (nothing written); "Confirm updates" → `/claims/CLM-2024-001/overview` + "1 field(s) updated". Recovery potential → "Save recovery potential" with `Recovery potential: No → Yes` and a `Reason` row; Back closed it. Section rename → "Rename section" with `Section name: Property Damage — Warehouse & Forklift → Warehouse renamed probe`; "Keep editing" aborted. Litigation → "Save litigation changes" with `Title: Coverage dispute over BI claim → Coverage dispute — probe`; Back aborted, confirm gave "Litigation 123456.1-LIT-1 saved". `ng build` clean, `ng test` 70/70, `pre-commit` 18/19 — the one failure is `audit:ndbx-wrapper`'s 3 pre-existing lines, none touched here.
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

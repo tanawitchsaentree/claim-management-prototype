@@ -213,10 +213,6 @@ export class EditLossInformationComponent implements OnInit {
     return this.computeDiffs();
   });
 
-  readonly hasHighImpactChange = computed(() =>
-    this.pendingChanges().some(d => IMPACT_LABELS.includes(d.label)),
-  );
-
   /** Open sections of this claim — the input to impactedSections(). */
   readonly sections = signal<ClaimSection[]>([]);
 
@@ -340,20 +336,23 @@ export class EditLossInformationComponent implements OnInit {
     const diffs = this.pendingChanges();
     if (!diffs.length) return;
 
-    // Modal calibration: fire only when a high-impact field changed. A
-    // low-impact-only change set (e.g. just the description) saves straight
-    // through — the header's change ledger already showed the user what was
-    // about to happen, so a modal here would be a barrier nobody reads.
-    if (this.hasHighImpactChange()) {
-      const data: LossInfoConfirmModalData = {
-        claimId: this.claimId(),
-        diffs,
-        impacts: this.impactedSections(),
-      };
-      const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px', maxWidth: '92vw' });
-      const result = await firstValueFrom(ref.afterClosed());
-      if (result !== 'confirmed') return;
-    }
+    // EVERY save confirms — no impact-based calibration. This used to fire only
+    // when a high-impact field changed (Cause of loss / Type of damages / Loss
+    // location), on the argument that the header's change ledger already showed
+    // a description-only edit and a modal would be a barrier nobody reads. User
+    // overrode that on 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save
+    // แล้วจบ". A save that commits silently gives the reviewer no last look and
+    // no way to back out, and which fields count as high-impact was our
+    // judgement, not theirs. The modal already handles the low-impact case —
+    // it just renders the diff table with no impacted-sections warning.
+    const data: LossInfoConfirmModalData = {
+      claimId: this.claimId(),
+      diffs,
+      impacts: this.impactedSections(),
+    };
+    const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px', maxWidth: '92vw' });
+    const result = await firstValueFrom(ref.afterClosed());
+    if (result !== 'confirmed') return;
 
     this.saveSuccess.set(false);
     this.saving.set(true);

@@ -15,6 +15,61 @@
   line-height: 1.5;
 }
 
+// Copied wholesale from loss-info-confirm-modal.component.scss:53 (.licm-diff-table
+// and friends) rather than re-derived — a save-confirm table that looks different
+// depending on which screen you saved from is the same dialog wearing two faces.
+.cd-diff-table {
+  width: 100%;
+  margin-top: var(--space-base);
+  border-collapse: collapse;
+  font-size: var(--paragraph-03-font-size);
+
+  th {
+    font-size: var(--paragraph-04-font-size);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: var(--space-sm) var(--space-sm);
+    border-bottom: 1px solid var(--ui-04);
+    text-align: left;
+  }
+
+  td {
+    padding: var(--space-md) var(--space-sm);
+    border-bottom: 1px solid var(--ui-03);
+    vertical-align: middle;
+  }
+}
+
+.cd-field-label {
+  font-weight: 600;
+  color: var(--text-01);
+  width: 140px;
+}
+
+// Muted, not struck through — strikethrough is a visual-only signal screen
+// readers skip. Same reasoning as .licm-original.
+.cd-original {
+  color: var(--text-muted);
+  max-width: 160px;
+  word-break: break-word;
+}
+
+.cd-arrow {
+  color: var(--text-muted);
+  width: 24px;
+  text-align: center;
+  nx-icon { font-size: 12px; }
+}
+
+.cd-updated {
+  color: var(--text-01);
+  font-weight: 500;
+  max-width: 160px;
+  word-break: break-word;
+}
+
 .cd-footer { @include modal.footer; }
 
 .cd-btn--danger {

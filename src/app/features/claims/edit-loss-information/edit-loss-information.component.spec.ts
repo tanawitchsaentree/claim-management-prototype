@@ -7,7 +7,7 @@ import { EditLossInformationComponent } from './edit-loss-information.component'
 import { editLossInformationCanDeactivate } from './edit-loss-information.guard';
 
 // Gate Proof tests for the safety-review acceptance criteria — these exercise
-// the REAL component methods/signals (pendingChanges, hasHighImpactChange,
+// the REAL component methods/signals (pendingChanges, impactedSections,
 // confirmLeaveIfDirty, onSaveChanges) and the REAL exported guard function,
 // not re-typed copies, so a regression in the component is what actually
 // fails these.
@@ -95,24 +95,37 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     });
   });
 
-  describe('Gate 3 — confirm modal does not fire for a low-impact-only change set', () => {
-    it('hasHighImpactChange is false for a Loss description-only edit', () => {
+  // INVERTED on 2026-09-02. This gate used to assert the opposite — that a
+  // low-impact-only change set (description only) saved with no modal at all,
+  // because the header ledger had already shown it. User overrode that: no save
+  // commits without a confirm step. Kept as a gate rather than deleted, since
+  // "this particular save is silent" is precisely the regression to catch.
+  describe('Gate 3 — every save with pending changes opens the confirm modal', () => {
+    it('opens for a Loss description-only edit (was the silent case)', async () => {
       component.form.get('lossDescription')!.setValue('changed value');
-      expect(component.hasHighImpactChange()).toBe(false);
-    });
-
-    it('onSaveChanges does not open the confirm modal for a low-impact-only change', async () => {
-      component.form.get('lossDescription')!.setValue('changed value');
-      await component.onSaveChanges();
-      expect(fakeDialogOpen).not.toHaveBeenCalled();
-    });
-
-    it('onSaveChanges DOES open the confirm modal when Cause of loss (high-impact) changed', async () => {
-      component.form.get('causeOfLoss')!.setValue(['fire', 'lightning']);
-      expect(component.hasHighImpactChange()).toBe(true);
       fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
       await component.onSaveChanges();
       expect(fakeDialogOpen).toHaveBeenCalled();
+    });
+
+    it('opens when Cause of loss changed', async () => {
+      component.form.get('causeOfLoss')!.setValue(['fire', 'lightning']);
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
+      await component.onSaveChanges();
+      expect(fakeDialogOpen).toHaveBeenCalled();
+    });
+
+    it('cancelling the modal aborts the save — the form stays dirty', async () => {
+      component.form.get('lossDescription')!.setValue('changed value');
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
+      await component.onSaveChanges();
+      expect(component.pendingChanges().length).toBeGreaterThan(0);
+      expect(component.saveSuccess()).toBe(false);
+    });
+
+    it('does not open when nothing is pending', async () => {
+      await component.onSaveChanges();
+      expect(fakeDialogOpen).not.toHaveBeenCalled();
     });
   });
 
@@ -175,6 +188,9 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     it('registers a pending change and reaches the save path', async () => {
       component.form.get('lossDescription')!.setValue('Revised after survey report.');
       expect(component.pendingChanges().length).toBe(1);
+      // Every save routes through the confirm modal now (Gate 3) — stub it as
+      // confirmed so this gate still tests the save itself, not the dialog.
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('confirmed') });
       await component.onSaveChanges();
       expect(component.saveBlocked()).toBeNull();
       expect(component.saveSuccess()).toBe(true);

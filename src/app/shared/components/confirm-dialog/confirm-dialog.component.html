@@ -4,6 +4,31 @@
 
 <div class="cd-body" tabindex="0">
   <p class="cd-message">{{ data.message }}</p>
+
+  @if (data.changes?.length) {
+    <!-- audit-exempt: the @if above is the zero-rows path — callers that pass no
+         diff get the message alone, so this table can never render empty. -->
+    <table class="cd-diff-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Current</th>
+          <th></th>
+          <th>New</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (change of data.changes; track change.label) {
+          <tr>
+            <td class="cd-field-label">{{ change.label }}</td>
+            <td class="cd-original">{{ change.original || '–' }}</td>
+            <td class="cd-arrow"><nx-icon name="arrow-right"></nx-icon></td>
+            <td class="cd-updated">{{ change.updated || '–' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 </div>
 
 <div class="cd-footer">

@@ -8,7 +8,14 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
+import { firstValueFrom } from 'rxjs';
 import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogChange,
+  ConfirmDialogData,
+} from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import {
@@ -44,7 +51,7 @@ const MAX_NOTE = 300;
   imports: [
     ReactiveFormsModule, RouterLink,
     NxRadioModule, NxMessageModule, NxButtonModule,
-    NxFormfieldModule, NxInputModule, NxIconModule,
+    NxFormfieldModule, NxInputModule, NxIconModule, NxModalModule,
     StatusChipComponent,
   ],
   templateUrl: './recovery-potential-card.component.html',
@@ -55,6 +62,7 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   @Output() updated = new EventEmitter<RecoveryPotentialUpdated>();
 
   private readonly toast = inject(ToastService);
+  private readonly dialogSvc = inject(NxDialogService);
 
   readonly maxNote = MAX_NOTE;
 
@@ -111,14 +119,56 @@ export class RecoveryPotentialCardComponent implements OnChanges {
     this.noteTouched.set(false);
   }
 
-  onSave(): void {
+  /**
+   * Confirms before committing (2026-09-02, user: no save lands without a
+   * modal). This one has more reason to than most — the answer gates claim
+   * closure, "Yes" obliges someone to set up a recovery case, and the radio is
+   * on the card surface where it can be grazed. The dialog names the old and
+   * new value rather than asking a bare "are you sure?".
+   */
+  async onSave(): Promise<void> {
     const choice = this.choiceSig();
     if (!choice || this.isClosed()) return;
     if (choice === 'no' && this.note.invalid) {
       this.noteTouched.set(true);
       return;
     }
-    this.commit(choice, choice === 'no' ? this.note.value.trim() : undefined);
+    const note = choice === 'no' ? this.note.value.trim() : undefined;
+
+    const data: ConfirmDialogData = {
+      title: 'Save recovery potential',
+      message: choice === 'yes'
+        ? `Recovery potential will be recorded as Yes on ${this.claim.claimId}. A recovery case has to be set up before this claim can be closed.`
+        : `Recovery potential will be recorded as No on ${this.claim.claimId}, with the reason below. Closure will no longer be held up by recovery.`,
+      changes: this.confirmChanges(choice, note),
+      confirmLabel: 'Save answer',
+      cancelLabel: 'Back',
+    };
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '520px', maxWidth: '92vw' });
+    if (await firstValueFrom(ref.afterClosed()) !== true) return;
+
+    this.commit(choice, note);
+  }
+
+  /** Only the rows that actually differ — a "changed from X to X" row is noise. */
+  private confirmChanges(choice: 'yes' | 'no', note: string | undefined): ConfirmDialogChange[] {
+    const rows: ConfirmDialogChange[] = [];
+    const savedChoice = this.savedChoice();
+    if (choice !== savedChoice) {
+      rows.push({
+        label: 'Recovery potential',
+        original: savedChoice ? this.answerLabel(savedChoice) : 'Not answered',
+        updated: this.answerLabel(choice),
+      });
+    }
+    if ((note ?? '') !== this.savedNote()) {
+      rows.push({ label: 'Reason', original: this.savedNote(), updated: note ?? '' });
+    }
+    return rows;
+  }
+
+  private answerLabel(value: 'yes' | 'no'): string {
+    return value === 'yes' ? 'Yes' : 'No';
   }
 
   /** Discard an in-progress change and go back to what is on record. */
