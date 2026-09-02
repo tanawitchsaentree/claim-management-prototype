@@ -869,6 +869,26 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-02 — Bug fix: tracker table column widths, and no feedback on a wrong manager password
+
+- **Source:** screenshot of the tracker table's right-hand columns — *"อันนี้คืออะไรชุ่ยมากๆๆ ทำงานแบบขอไปที"*. The second bug was found by the browser test written to verify the first.
+- **Module:** Tracker (internal tool)
+- **Files touched:** 4 — `features/tracker/tracker-table/tracker-table.component.{html,scss}` (`a3462f0`), `features/tracker/tracker-owner-unlock/tracker-owner-unlock.component.{ts,html}` (`3baa994`).
+- **Deviations:** page `max-width` is 1400px here, not the 1200px every claim page uses. 1200 minus two `--layout-inset-base` gutters is 1136, and these 12 columns of dense tabular data need 1325 before something clips. Reading-width limits are for prose.
+- **Schema changes:** none.
+- **Notes:**
+  - **Root cause of the mess was one arithmetic omission repeated 12 times: every column width had been picked from its content alone.** NDBX table cells carry 16px of horizontal padding *per side* — 32px per cell, `--table-cell-horizontal-padding` in `ndbx-expert.css:2267` — so every declared width was short by exactly that. `.col-indicator` at 32px left 0px for a 24px icon (`nx-icon size="s"` renders 24px, not 16px); `.col-links` at 70px left 38px for 56px of icons; `.col-days` at 90px left 58px for a 95px "Days blocked" header.
+  - **Nothing truncated, so nothing revealed it.** Status chips are `white-space: nowrap` (`status-chip.component.scss`) and header text doesn't wrap, so all of the overflow spilled into the neighbouring column instead of clipping. The widths also summed 128px past the available 1136, which is why the horizontal scrollbar was the table's normal state rather than a narrow-window fallback.
+  - **Fix was to re-derive every width as content + padding, with content measured off the longest value actually in `tracker-data/`** — `"Waiting Other Epic"` (18 chars, widest cell in the table), `"In Acceptance"`, `"BMPCC-14833"` — not estimated. `condensed` on the table halves both paddings via the `--table-condense-*` tokens, which suits a dense internal tool. The widths sum to exactly the table's `min-width`, so `table-layout: fixed` + `width: 100%` scales them up on a wider window and stops at the sum, and `overflow-x` only engages below ~1390px. **Changing one number without rebalancing the others reintroduces the overflow** — noted in the SCSS.
+  - **Chrome does not redistribute surplus in a fixed-layout table whose declared widths under-sum its box.** Hiding `.col-epic` when grouped by epic (it restates the group heading on every row under it) left 159px of measured dead space after the last column, not wider columns. Its 150px is handed explicitly to `.col-title` inside the `.tt-table--grouped` block.
+  - **`display: flex` on a `<td>` drops it out of the row's shared baseline** — why the two link icons sat higher than the chips beside them. The flex row is now an inner `<span>`.
+  - **`<nx-error nxFormfieldError>` renders nothing on a control with no validator.** The unlock's `failed()` signal gated the element into the DOM, but NDBX only *shows* it when the formfield's control reports `errorState`, which `NxInput` derives from `ErrorStateMatcher` (`invalid && touched`). So a wrong password produced: correct row count, no message, nothing. Fixed with an explicit `setErrors({ incorrect: true })` + `markAsTouched()`, cleared on the next keystroke. **The `@if` was never the mechanism — check the control's state, not just the template guard.**
+  - Blanking the field on failure was removed too: it made a typo cost the whole password, and it was the only thing that changed on screen, i.e. the failure signal was "your input vanished".
+  - **No Playwright or Puppeteer in this repo, so verification went through headless Chrome directly:** `--headless=new --remote-debugging-port=9222`, driven from Node 24's built-in global `WebSocket` over the CDP endpoint at `http://127.0.0.1:9222/json/list`. Seed `app:access-granted='1'` and `dashboard:persona='handler'` into `localStorage` on the origin first or every screenshot is the "Access Required" gate. This is the repeatable way to actually look at a page here instead of asserting it looks fine.
+  - **Verification:** layout — wrap client 1334 = scroll 1334, `scrolls: false`, zero overflowing cells, in both grouped and flat mode; page height 4616px → 3396px. Unlock — 51 rows locked; wrong password renders "Incorrect password.", marks the field invalid, announces assertively, keeps the value; retyping clears it; `isabelle` → 57 rows + "Viewing as Isabelle", persists across reload; Lock → 51 rows and the `tracker:viewer` key removed; the Assignee dropdown while locked lists 15 options, none matching her. `ng build` clean, `pre-commit` 17/18 (same 3 pre-existing `audit:ndbx-wrapper` hits, none in a file touched here).
+
+---
+
 <!--
 Template — copy below the most recent entry:
 
