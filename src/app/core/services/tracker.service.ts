@@ -1,12 +1,19 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
+import { TrackerViewerService } from './tracker-viewer.service';
+import { HIDE_OWNER_FILTER } from './tracker-visibility';
+import {
+  toNote,
+  toPi,
+  toRelation,
+  toSyncLog,
+  toTicketWithDetails,
+} from './tracker.mappers';
 import type {
-  Epic,
   Note,
   Pi,
   Relation,
   SyncLog,
-  Ticket,
   TicketFilters,
   TicketState,
   TicketWithDetails,
@@ -22,107 +29,10 @@ export function daysSince(iso: string | null): number {
   return Math.max(0, Math.floor(ms / (1000 * 60 * 60 * 24)));
 }
 
-function toPi(row: Record<string, unknown>): Pi {
-  return {
-    id: row['id'] as string,
-    name: row['name'] as string,
-    startDate: (row['start_date'] as string) ?? null,
-    endDate: (row['end_date'] as string) ?? null,
-    archived: row['archived'] as boolean,
-    createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
-  };
-}
-
-function toEpic(row: Record<string, unknown>): Epic {
-  return {
-    id: row['id'] as string,
-    jiraKey: row['jira_key'] as string,
-    title: row['title'] as string,
-    piId: (row['pi_id'] as string) ?? null,
-    jiraStatus: (row['jira_status'] as string) ?? null,
-    archived: row['archived'] as boolean,
-    createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
-  };
-}
-
-function toTicketState(row: Record<string, unknown>): TicketState {
-  return {
-    ticketId: row['ticket_id'] as string,
-    designStatus: row['design_status'] as TicketState['designStatus'],
-    buildStatus: row['build_status'] as TicketState['buildStatus'],
-    handoffStatus: row['handoff_status'] as TicketState['handoffStatus'],
-    blockedBy: row['blocked_by'] as TicketState['blockedBy'],
-    blockedNote: (row['blocked_note'] as string) ?? null,
-    blockedSince: (row['blocked_since'] as string) ?? null,
-    updatedBy: (row['updated_by'] as string) ?? null,
-    updatedAt: row['updated_at'] as string,
-    prototypeRoute: (row['prototype_route'] as string) ?? null,
-    prototypeTicketId: (row['prototype_ticket_id'] as string) ?? null,
-  };
-}
-
-function toTicketWithDetails(row: Record<string, unknown>): TicketWithDetails {
-  const epicRow = row['epic'] as Record<string, unknown> | null;
-  const stateRow = row['state'] as Record<string, unknown>;
-  return {
-    id: row['id'] as string,
-    jiraKey: row['jira_key'] as string,
-    title: row['title'] as string,
-    epicId: (row['epic_id'] as string) ?? null,
-    piId: (row['pi_id'] as string) ?? null,
-    jiraStatus: (row['jira_status'] as string) ?? null,
-    assignee: (row['assignee'] as string) ?? null,
-    jiraUrl: (row['jira_url'] as string) ?? null,
-    confluenceUrl: (row['confluence_url'] as string) ?? null,
-    archived: row['archived'] as boolean,
-    createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
-    epic: epicRow ? toEpic(epicRow) : null,
-    state: toTicketState(stateRow),
-  };
-}
-
-function toNote(row: Record<string, unknown>): Note {
-  return {
-    id: row['id'] as string,
-    ticketId: row['ticket_id'] as string,
-    body: row['body'] as string,
-    createdBy: row['created_by'] as string,
-    createdAt: row['created_at'] as string,
-    archived: row['archived'] as boolean,
-  };
-}
-
-function toRelation(row: Record<string, unknown>): Relation {
-  return {
-    id: row['id'] as string,
-    ticketId: row['ticket_id'] as string,
-    relatedTicketId: (row['related_ticket_id'] as string) ?? null,
-    relatedJiraKey: (row['related_jira_key'] as string) ?? null,
-    relationType: row['relation_type'] as string,
-    archived: row['archived'] as boolean,
-    createdAt: row['created_at'] as string,
-  };
-}
-
-function toSyncLog(row: Record<string, unknown>): SyncLog {
-  return {
-    id: row['id'] as string,
-    startedAt: row['started_at'] as string,
-    finishedAt: (row['finished_at'] as string) ?? null,
-    ticketCount: (row['ticket_count'] as number) ?? null,
-    epicCount: (row['epic_count'] as number) ?? null,
-    status: row['status'] as SyncLog['status'],
-    error: (row['error'] as string) ?? null,
-    createdAt: row['created_at'] as string,
-  };
-}
-
 @Injectable({ providedIn: 'root' })
 export class TrackerService {
   private readonly supabase = inject(SupabaseService).client;
+  private readonly viewer = inject(TrackerViewerService);
 
   readonly tickets = signal<TicketWithDetails[]>([]);
   readonly ticket = signal<TicketWithDetails | null>(null);
@@ -178,6 +88,9 @@ export class TrackerService {
     this.error.set(null);
 
     let query = this.supabase.from('ticket').select(TICKET_SELECT);
+    // Owner's rows are excluded server-side, not filtered out of the response —
+    // see tracker-visibility.ts. Applies to every ticket read below too.
+    if (!this.viewer.isOwner()) query = query.or(HIDE_OWNER_FILTER);
     if (!filters.showArchived) query = query.eq('archived', false);
     if (filters.piId) query = query.eq('pi_id', filters.piId);
     if (filters.jiraStatus?.length) query = query.in('jira_status', filters.jiraStatus);
@@ -217,11 +130,18 @@ export class TrackerService {
     if (!opts.silent) this.ticketLoading.set(true);
     this.error.set(null);
 
-    const { data, error } = await this.supabase
-      .from('ticket')
-      .select(TICKET_SELECT)
-      .eq('jira_key', jiraKey)
-      .single();
+    let query = this.supabase.from('ticket').select(TICKET_SELECT).eq('jira_key', jiraKey);
+    // Closes the `?key=BMPCC-14833` hole: the panel fetches by key independently
+    // of the list, so hiding rows from the table alone left every hidden ticket
+    // one shared URL away from being fully readable.
+    if (!this.viewer.isOwner()) query = query.or(HIDE_OWNER_FILTER);
+
+    // maybeSingle(), not single() — a hidden or genuinely missing key now yields
+    // (null, null) instead of PGRST116, so the panel's fallback branch shows
+    // "This ticket could not be found." rather than a raw PostgREST error. It
+    // reads identically whether the row is absent or withheld, which is the
+    // point: the message must not reveal that a hidden row exists.
+    const { data, error } = await query.maybeSingle();
 
     if (seq !== this.ticketRequestSeq) return; // superseded by a newer getTicket() call — drop this stale response
 
@@ -229,7 +149,7 @@ export class TrackerService {
       this.error.set(error.message);
       this.ticket.set(null);
     } else {
-      this.ticket.set(toTicketWithDetails(data as Record<string, unknown>));
+      this.ticket.set(data ? toTicketWithDetails(data as Record<string, unknown>) : null);
     }
     if (!opts.silent) this.ticketLoading.set(false);
   }

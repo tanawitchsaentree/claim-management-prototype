@@ -1,0 +1,39 @@
+@if (isOwner()) {
+  <div class="tou-active">
+    <span class="tou-chip">
+      <nx-icon name="lock-unlock" size="s"></nx-icon>
+      Viewing as {{ ownerLabel }}
+    </span>
+    <button nxPlainButton type="button" (click)="lock()">Lock</button>
+  </div>
+} @else if (expanded()) {
+  <div class="tou-form">
+    <nx-formfield label="Manager password" class="tou-field">
+      <input
+        nxInput
+        type="password"
+        autocomplete="current-password"
+        [formControl]="passwordControl"
+        (keyup.enter)="submit()"
+      />
+      @if (failed()) {
+        <nx-error nxFormfieldError>Incorrect password.</nx-error>
+      }
+    </nx-formfield>
+
+    <button
+      nxButton="secondary small"
+      type="button"
+      [disabled]="checking() || !passwordControl.value.trim()"
+      (click)="submit()"
+    >
+      {{ checking() ? 'Checking…' : 'Unlock' }}
+    </button>
+    <button nxPlainButton type="button" (click)="collapse()">Cancel</button>
+  </div>
+} @else {
+  <button nxPlainButton type="button" class="tou-trigger" (click)="expand()">
+    <nx-icon name="lock" size="s"></nx-icon>
+    Manager access
+  </button>
+}

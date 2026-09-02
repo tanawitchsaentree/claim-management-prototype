@@ -49,6 +49,15 @@
   gap: var(--space-base);
 }
 
+// margin-left: auto rather than justify-content: space-between on .toolbar —
+// the toolbar has only these two children today, but space-between would
+// re-spread everything the moment a third is added.
+.toolbar__right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
 .tt-toggle--active {
   color: var(--interactive-primary);
   font-weight: 600;

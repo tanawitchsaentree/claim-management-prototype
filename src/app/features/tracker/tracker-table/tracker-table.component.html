@@ -76,6 +76,9 @@
       <button nxPlainButton type="button" [class.tt-toggle--active]="groupByEpic()" (click)="groupByEpic.set(true)">Group by epic</button>
       <button nxPlainButton type="button" [class.tt-toggle--active]="!groupByEpic()" (click)="groupByEpic.set(false)">Flat list</button>
     </div>
+    <div class="toolbar__right">
+      <app-tracker-owner-unlock></app-tracker-owner-unlock>
+    </div>
   </div>
 
   @if (trackerService.loading() && sortedTickets().length === 0) {

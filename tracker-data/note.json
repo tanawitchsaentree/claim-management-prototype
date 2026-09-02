@@ -832,14 +832,6 @@
   "archived": false
  },
  {
-  "id": "07a22620-8b15-4e2c-83a4-d579613d08bd",
-  "ticket_id": "f433841d-3b6a-4f33-9d4b-7054556c09f5",
-  "body": "Genuine gap worth prioritizing: the exact pattern this needs already exists elsewhere (entity-detail-panel.component.ts's claimClosed input disables fields), but Financial Overview, Reserve Overview, and Reserve Detail never received the same treatment. Should be quick to extend rather than designed from scratch.",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T03:47:07.764595+00:00",
-  "archived": false
- },
- {
   "id": "4f311355-d5b3-4769-91cf-d2b04d67875c",
   "ticket_id": "1b63689c-aef6-4faf-a6a9-cde0ba067a5e",
   "body": "Real-product DB write failure (finalpaymentclosure table). No real database in this prototype — mock services only — nothing to model or reproduce.",
@@ -1003,30 +995,6 @@
   "id": "8f8ce1d6-caa8-4a37-b05a-ed5d312c79ff",
   "ticket_id": "7e75aeba-b07c-4745-a61a-39266d31280f",
   "body": "Found one stray comment referencing the Expertise Center concept, but nothing resembling a multi-select control for adjuster expertise areas. Not crediting a stray comment as real coverage.",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T03:47:07.764595+00:00",
-  "archived": false
- },
- {
-  "id": "1c8429bb-504d-4f40-b79e-b5bd0af4c09e",
-  "ticket_id": "a1e2fa1b-0e0f-4309-88ce-8a7bf4cf7bc9",
-  "body": "The Save button part already exists in the FNOL reserve step, but only there. The ticket is actually about a post-FNOL reserve editing screen, which doesn't exist anywhere in this prototype yet.",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T03:47:07.764595+00:00",
-  "archived": false
- },
- {
-  "id": "84d36223-5e8c-46c3-a582-95022ca58a5e",
-  "ticket_id": "b18f761d-604b-4b92-937f-6ab72a178514",
-  "body": "Already fully converted in this prototype's ticket registry. The Transaction Summary section is built and visible, with one accepted deviation already signed off: plain item count instead of real pagination controls.",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T03:47:07.764595+00:00",
-  "archived": false
- },
- {
-  "id": "6a7fa8bb-379a-47d1-8deb-6442501b6158",
-  "ticket_id": "ee28395d-8d59-4a85-888a-938187591c74",
-  "body": "No monetary-deductibles selection UI exists anywhere in this prototype's payment/financial screens. The real ticket itself is blocked on upstream data — nothing to model here yet.",
   "created_by": "Claude",
   "created_at": "2026-08-28T03:47:07.764595+00:00",
   "archived": false
@@ -1296,14 +1264,6 @@
   "archived": false
  },
  {
-  "id": "649f33c7-f3cb-47d8-a951-3782a8f471d4",
-  "ticket_id": "ec43674a-440a-4773-b799-8fd919c961a5",
-  "body": "Matched in the prototype ticket registry (AC marked done). The Recovery potential card on Claim Overview already has a working Set/Update modal (Yes/No + optional note).",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T03:47:07.900587+00:00",
-  "archived": false
- },
- {
   "id": "aa87c40d-a7b6-4239-8de6-d8b4257eea70",
   "ticket_id": "abebf255-f8c6-4862-b9aa-5b1b410a4e32",
   "body": "Data-configuration ticket, not a screen. The payoff shows up later in BMPCC-18159's dropdown, not here.",
@@ -1376,14 +1336,6 @@
   "archived": false
  },
  {
-  "id": "eee3b8c8-ad20-4e21-b996-680db2920e7c",
-  "ticket_id": "5345cdc5-2e02-41d4-8dc6-efd38bd67e32",
-  "body": "Matched in the prototype ticket registry (AC marked done). The Limits & Deductibles page shows both Policy limits and Deductibles with a claim/section level toggle.",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T03:47:07.900587+00:00",
-  "archived": false
- },
- {
   "id": "cd81fd5b-6c90-4e2c-9d71-7ce368aaa544",
   "ticket_id": "acbd1769-05de-47c2-9cdb-9c723113750a",
   "body": "Self-QA walkthrough of the CBI pilot in Add Entity modal (Business Interruption -> contingent BI), simulated step-by-step in code since no browser automation tool was available this session. Found 4 issues, ranked by severity:\n\n1. RACE CONDITION (real, not theoretical): mock-config.ts's default scenario has delayMs:300. The third-party search box (onThirdPartyQueryChange) fires a new async MockThirdPartyService.search() call on every keystroke with no debounce and no request-sequencing guard. Typing a normal query overlaps multiple 300ms-delayed calls; an older response can resolve after a newer one and overwrite thirdPartyResults with stale data. This exact bug class already has an established fix pattern in this codebase (TrackerService's ticketsRequestSeq/ticketRequestSeq counters) that wasn't applied here.\n2. NO ERROR HANDLING: mock-config.ts's 'flaky' scenario (errorRate 0.3) makes MockThirdPartyService.search() throw. onThirdPartyQueryChange does a bare await firstValueFrom(...) with no try/catch -> unhandled rejection, zero user-facing feedback, results just never update.\n3. NO LOADING INDICATOR: with a 300ms delay per keystroke, there's no spinner or \"Searching...\" state, unlike every other search UI in this app (e.g. broker-search-modal's state$ + spinner pattern).\n4. STICKY STATE (lower severity): switching Damage type away from Business Interruption and back leaves the contingent-BI checkbox, cbiCaseType, and selectedThirdParty signal exactly as they were -- none of it resets. This matches the app's existing behavior for the plain BI interruption dates (also never reset on damage-type change), so it's an extension of a pre-existing pattern rather than a new inconsistency, but third-party identity is higher-stakes data than a date and may be worth reconsidering.\n\nNot fixed yet -- reporting per instruction to track findings before changing anything further.",
@@ -1413,14 +1365,6 @@
   "body": "Built (partial root-cause match): the missing confirmation dialog on Summary's Cancel is fixed via the same WizardFooterComponent change as BMPCC-17676 -- the dialog now appears immediately, before any navigation. The REAL production bug's root cause (router.initialNavigation() racing a separate MFE shell's guard, per BMPCC-17499's investigation) can't exist in this prototype at all -- this is a single Angular app, not a multi-MFE shell, so there's no cross-MFE navigation race to reproduce or fix. The user-visible symptom (no confirmation before leaving) is resolved either way.",
   "created_by": "Claude",
   "created_at": "2026-08-28T07:18:02.848449+00:00",
-  "archived": false
- },
- {
-  "id": "21fe1948-fa18-48df-80cf-b490de3ab2b4",
-  "ticket_id": "f433841d-3b6a-4f33-9d4b-7054556c09f5",
-  "body": "Built: Make Payment and Update Reserves buttons on Financial Overview now disable (with a tooltip explaining why) when the claim is closed, or when the currently-selected section is closed (section-level view). Added an info banner at the top of the page in either case. Reused the exact claimClosed-gating pattern already established in sections.ts/sections.html (MockClaimOverviewService.getOverview().status === 'Closed') rather than inventing a new one; also pulled real ClaimSection status via MockSectionService since FinancialSection (the financial-overview-specific model) never carried a status field of its own.\n\nScope note: this only gates the two buttons per the ticket's ask. Those buttons were already non-functional stubs before this change (no click handler at all) -- wiring them up to actually create a payment/reserve is a separate, out-of-scope piece of work, not touched here.\n\nVerified: tsc --noEmit clean, ng build clean, pre-commit 17/18 (same pre-existing ndbx-wrapper gap, unrelated).",
-  "created_by": "Claude",
-  "created_at": "2026-08-28T08:08:19.003312+00:00",
   "archived": false
  },
  {
@@ -1509,14 +1453,6 @@
   "body": "Real repo verified (claims-management-main, docs + testing/src/pages/PolicyOverviewPage.ts). Real Policy overview page = policy details block (policy number + client via .nx-data-display__value) plus three expandable detail buttons: \"Coverage details\", \"Coinsurance details\", \"Linked claims details\". Linked claims table columns include claim ID, loss description, client.\n\nPROTOTYPE GAP: our /claims/:id/policy route is a stub that redirects to Overview — Policy overview does not exist in the prototype at all. No ticket has asked for it, but it IS a real, E2E-tested nav destination in production.\n\nNote on ownership: Policy overview is NOT one of the 10 MFEs in the claims-management repo (no source, only an E2E page object) — it is built by another team in another repo.",
   "created_by": "claude (real-repo doc audit 2026-08-31)",
   "created_at": "2026-08-31T08:39:22.552725+00:00",
-  "archived": false
- },
- {
-  "id": "30ff3336-5ea6-43c3-89d9-a38ef262d85f",
-  "ticket_id": "b18f761d-604b-4b92-937f-6ab72a178514",
-  "body": "Real Financial overview structure verified from testing/src/pages/FinancialSummaryPage.ts (E2E page object against the live app). Real page: h1 \"Financial overview\", then exactly 4 h2 sections — \"Financial Summary\", \"Additional Financial details\", \"Payments\", \"Reserves\". Actions: \"Update reserves\" button, \"Make Payment\" button. Reserve rows are Indemnity / Expense / Recovery, each with an \"Approved\" status chip and a kebab (aria-label \"Open menu\") containing \"Edit Details\". Payments table has a \"Payment amount\" column; Reserves table has a \"Reserve amount\" column.\n\nOur prototype's financial-overview matches the 4-section idea but our tab/section naming and kebab labels differ — align labels to the above if this screen gets handed over.",
-  "created_by": "claude (real-repo doc audit 2026-08-31)",
-  "created_at": "2026-08-31T08:39:22.866717+00:00",
   "archived": false
  },
  {

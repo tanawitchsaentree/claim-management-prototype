@@ -1,0 +1,29 @@
+.tou-active,
+.tou-form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+// nx-formfield reserves ~20px under the input for the error slot, which would
+// push the toolbar row taller and float the buttons above the field's baseline.
+// align-items: center above keeps them on the input's centre line and lets the
+// reserved strip hang below — see .claude/RUNTIME_OVERRIDES.md § formfield
+// space reserve.
+.tou-field {
+  width: 200px;
+  margin-bottom: 0;
+}
+
+.tou-trigger,
+.tou-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.tou-chip {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}

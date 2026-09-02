@@ -3,42 +3,49 @@
   "table": "pi",
   "rows": 2,
   "reported_total": 2,
+  "withheld_owner_rows": 0,
   "complete": true
  },
  {
   "table": "epic",
   "rows": 12,
   "reported_total": 12,
+  "withheld_owner_rows": 0,
   "complete": true
  },
  {
   "table": "ticket",
-  "rows": 173,
+  "rows": 167,
   "reported_total": 173,
+  "withheld_owner_rows": 6,
   "complete": true
  },
  {
   "table": "ticket_state",
-  "rows": 173,
+  "rows": 167,
   "reported_total": 173,
+  "withheld_owner_rows": 6,
   "complete": true
  },
  {
   "table": "note",
-  "rows": 196,
+  "rows": 188,
   "reported_total": 196,
+  "withheld_owner_rows": 8,
   "complete": true
  },
  {
   "table": "relation",
   "rows": 0,
   "reported_total": 0,
+  "withheld_owner_rows": 0,
   "complete": true
  },
  {
   "table": "sync_log",
   "rows": 7,
   "reported_total": 7,
+  "withheld_owner_rows": 0,
   "complete": true
  }
 ]

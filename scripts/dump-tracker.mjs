@@ -8,8 +8,15 @@
 // below is the schema in supabase/migrations/0001_tracker.sql — if a migration
 // adds a table, add it here too.
 //
+// The manager's own rows are left out by default. The app hides them from
+// everyone but her (src/app/core/services/tracker-visibility.ts), and a dump
+// committed to the repo with her 6 tickets and their notes in it would make
+// that hiding pointless — anyone can read the file. INCLUDE_OWNER=1 puts them
+// back for a local-only dump; do not commit the result.
+//
 // Usage: node scripts/dump-tracker.mjs
 //        SUPABASE_KEY=<other key> node scripts/dump-tracker.mjs
+//        INCLUDE_OWNER=1 node scripts/dump-tracker.mjs
 
 import { writeFileSync, mkdirSync } from 'node:fs';
 
@@ -31,6 +38,12 @@ const TABLES = {
 
 const OUT = 'tracker-data';
 
+// Kept in step with OWNER_ASSIGNEE_MATCH in
+// src/app/core/services/tracker-visibility.ts — same substring, matched against
+// the same free-text `assignee` field.
+const OWNER_MATCH = 'isabelle';
+const INCLUDE_OWNER = process.env.INCLUDE_OWNER === '1';
+
 /** Paged fetch — PostgREST caps a plain select, so never trust one response. */
 async function fetchAll(table, order) {
   const rows = [];
@@ -50,18 +63,56 @@ async function fetchAll(table, order) {
 
 mkdirSync(OUT, { recursive: true });
 
+// Fetch everything first, withhold second, write third. Withholding needs the
+// full `ticket` table to know which ticket_ids belong to the owner, and doing it
+// inside the fetch loop would silently depend on `ticket` being iterated before
+// its dependent tables.
 const data = {};
-const summary = [];
+const counts = {};
 for (const [table, order] of Object.entries(TABLES)) {
   const { rows, total } = await fetchAll(table, order);
   data[table] = rows;
-  // Row count is asserted against PostgREST's own exact count, so a silent
-  // truncation shows up as a mismatch instead of a short file nobody notices.
-  summary.push({ table, rows: rows.length, reported_total: total, complete: rows.length === total });
+  counts[table] = total;
+}
+
+// `complete` compares against PostgREST's own exact count, so a silent
+// truncation shows up as a mismatch instead of a short file nobody notices.
+// `withheld` is counted separately — a deliberately dropped row must never
+// look like a failed fetch.
+const withheld = {};
+if (!INCLUDE_OWNER) {
+  const ownerTicketIds = new Set(
+    data.ticket.filter((t) => (t.assignee ?? '').toLowerCase().includes(OWNER_MATCH)).map((t) => t.id),
+  );
+  const drop = (table, keyOf) => {
+    const before = data[table].length;
+    data[table] = data[table].filter((row) => !ownerTicketIds.has(keyOf(row)));
+    withheld[table] = before - data[table].length;
+  };
+  drop('ticket', (r) => r.id);
+  drop('ticket_state', (r) => r.ticket_id);
+  drop('note', (r) => r.ticket_id);
+  drop('relation', (r) => r.ticket_id);
+}
+
+const summary = [];
+for (const table of Object.keys(TABLES)) {
+  const rows = data[table];
+  const total = counts[table];
+  const held = withheld[table] ?? 0;
+  summary.push({
+    table,
+    rows: rows.length,
+    reported_total: total,
+    withheld_owner_rows: held,
+    complete: rows.length + held === total,
+  });
   writeFileSync(`${OUT}/${table}.json`, JSON.stringify(rows, null, 1) + '\n');
-  console.log(`${table.padEnd(13)} ${String(rows.length).padStart(4)} rows${rows.length === total ? '' : `  ⚠️ expected ${total}`}`);
+  const flag = rows.length + held === total ? '' : `  ⚠️ expected ${total}`;
+  console.log(`${table.padEnd(13)} ${String(rows.length).padStart(4)} rows${held ? ` (${held} withheld)` : ''}${flag}`);
 }
 writeFileSync(`${OUT}/_dump-summary.json`, JSON.stringify(summary, null, 1) + '\n');
+if (INCLUDE_OWNER) console.log('\n⚠️  INCLUDE_OWNER=1 — this dump contains the manager\'s rows. Do not commit it.');
 
 // ── NOTES.md — the note table is the only place a lot of this project's
 // reasoning is written down, and it is unreadable as raw JSON. ──────────────
@@ -85,6 +136,13 @@ const md = [
   'That matters when a note reads like a decision: check `created_by` before treating one as a statement from anyone else.',
   '',
 ];
+
+if (!INCLUDE_OWNER && withheld.note) {
+  md.push(
+    `${withheld.note} note(s) on ${withheld.ticket} withheld ticket(s) are not in this file — see the manager-access rule in \`tracker-data/README.md\`.`,
+    '',
+  );
+}
 
 const groups = new Map();
 for (const t of data.ticket) {

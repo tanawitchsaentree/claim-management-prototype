@@ -52,19 +52,6 @@
   "prototype_ticket_id": null
  },
  {
-  "ticket_id": "f433841d-3b6a-4f33-9d4b-7054556c09f5",
-  "design_status": "done",
-  "build_status": "done",
-  "handoff_status": "not_started",
-  "blocked_by": "none",
-  "blocked_note": null,
-  "blocked_since": null,
-  "updated_by": "Claude",
-  "updated_at": "2026-09-02T03:30:39.475592+00:00",
-  "prototype_route": "/claims/:id/financial",
-  "prototype_ticket_id": null
- },
- {
   "ticket_id": "b5d1cb50-b783-44c9-a5a5-ef27d3610017",
   "design_status": "not_started",
   "build_status": "not_started",
@@ -260,19 +247,6 @@
   "prototype_ticket_id": null
  },
  {
-  "ticket_id": "5345cdc5-2e02-41d4-8dc6-efd38bd67e32",
-  "design_status": "done",
-  "build_status": "done",
-  "handoff_status": "done",
-  "blocked_by": "none",
-  "blocked_note": null,
-  "blocked_since": null,
-  "updated_by": "Claude",
-  "updated_at": "2026-08-28T03:47:07.133491+00:00",
-  "prototype_route": "/claims/:id/limits",
-  "prototype_ticket_id": "BMPCC-7133"
- },
- {
   "ticket_id": "9243dc14-46f0-4e5e-9e5d-75c0c4f736de",
   "design_status": "done",
   "build_status": "done",
@@ -349,19 +323,6 @@
   "updated_at": "2026-08-28T03:47:06.073829+00:00",
   "prototype_route": null,
   "prototype_ticket_id": null
- },
- {
-  "ticket_id": "ec43674a-440a-4773-b799-8fd919c961a5",
-  "design_status": "done",
-  "build_status": "done",
-  "handoff_status": "done",
-  "blocked_by": "none",
-  "blocked_note": null,
-  "blocked_since": null,
-  "updated_by": "Claude",
-  "updated_at": "2026-08-28T03:47:05.941339+00:00",
-  "prototype_route": "/claims/:id/overview",
-  "prototype_ticket_id": "BMPCC-17779"
  },
  {
   "ticket_id": "45681a83-5bb7-473a-8f55-fee1499f5973",
@@ -698,45 +659,6 @@
   "blocked_since": null,
   "updated_by": "Claude",
   "updated_at": "2026-08-28T03:47:01.47195+00:00",
-  "prototype_route": null,
-  "prototype_ticket_id": null
- },
- {
-  "ticket_id": "ee28395d-8d59-4a85-888a-938187591c74",
-  "design_status": "not_started",
-  "build_status": "not_started",
-  "handoff_status": "not_started",
-  "blocked_by": "waiting_dev",
-  "blocked_note": "Real ticket's own comment says it's waiting on Limit/Deductible data becoming available to Finance domain via UWB — an external data dependency, not a design ambiguity.",
-  "blocked_since": "2026-08-28T03:47:01.335771+00:00",
-  "updated_by": "Claude",
-  "updated_at": "2026-08-28T03:47:01.335771+00:00",
-  "prototype_route": null,
-  "prototype_ticket_id": null
- },
- {
-  "ticket_id": "b18f761d-604b-4b92-937f-6ab72a178514",
-  "design_status": "done",
-  "build_status": "done",
-  "handoff_status": "done",
-  "blocked_by": "none",
-  "blocked_note": null,
-  "blocked_since": null,
-  "updated_by": "Claude",
-  "updated_at": "2026-08-28T03:47:01.182631+00:00",
-  "prototype_route": "/claims/:id/financial",
-  "prototype_ticket_id": "BMPCC-14831"
- },
- {
-  "ticket_id": "a1e2fa1b-0e0f-4309-88ce-8a7bf4cf7bc9",
-  "design_status": "in_progress",
-  "build_status": "in_progress",
-  "handoff_status": "not_started",
-  "blocked_by": "scope_unclear",
-  "blocked_note": "reserve-detail-panel already has an isDirty-gated 'Save changes' footer, but that only exists inside the FNOL wizard step-reserves flow. This ticket describes a post-FNOL reserve edit flow, and no such standalone route exists — nothing outside FNOL to attach the unsaved-changes popup or the Cancel/Back/Next removal to.",
-  "blocked_since": "2026-08-28T03:47:01.042404+00:00",
-  "updated_by": "Claude",
-  "updated_at": "2026-08-28T03:47:01.042404+00:00",
   "prototype_route": null,
   "prototype_ticket_id": null
  },

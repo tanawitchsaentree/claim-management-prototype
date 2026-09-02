@@ -18,9 +18,11 @@ import { StatusChipComponent } from '../../../shared/components/status-chip/stat
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { TrackerService, daysSince } from '../../../core/services/tracker.service';
 import { TrackerSyncService } from '../../../core/services/tracker-sync.service';
+import { TrackerViewerService } from '../../../core/services/tracker-viewer.service';
 import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
 import type { BlockedReason, TicketFilters, TicketWithDetails } from '../../../core/models/tracker.model';
 import { TicketDetailPanelComponent } from '../ticket-detail-panel/ticket-detail-panel.component';
+import { TrackerOwnerUnlockComponent } from '../tracker-owner-unlock/tracker-owner-unlock.component';
 
 const BLOCKED_BY_OPTIONS: { value: BlockedReason; label: string }[] = [
   { value: 'waiting_product', label: 'Waiting: Product' },
@@ -62,6 +64,7 @@ interface EpicGroup {
     StatusChipComponent,
     AppDatePipe,
     TicketDetailPanelComponent,
+    TrackerOwnerUnlockComponent,
   ],
   templateUrl: './tracker-table.component.html',
   styleUrl: './tracker-table.component.scss',
@@ -71,6 +74,7 @@ export class TrackerTableComponent {
   private readonly router = inject(Router);
   readonly trackerService = inject(TrackerService);
   readonly syncService = inject(TrackerSyncService);
+  private readonly viewerService = inject(TrackerViewerService);
   private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
   private readonly live = inject(LiveAnnouncer);
 
@@ -185,6 +189,12 @@ export class TrackerTableComponent {
     this.prototypeScenarioSvc.loadTickets();
 
     effect(() => {
+      // Read so unlocking/locking manager access refetches — which rows the
+      // server returns depends on the viewer (TrackerService.getTickets()),
+      // and the Assignee dropdown is derived from whatever loaded, so the
+      // owner's name appears and disappears from it for free.
+      this.viewerService.viewer();
+
       const filters: TicketFilters = {
         piId: this.piSignal() ?? undefined,
         jiraStatus: this.statusSignal(),
@@ -196,6 +206,20 @@ export class TrackerTableComponent {
       };
       this.trackerService.setFilters(filters);
       this.trackerService.getTickets(filters);
+    });
+
+    // Locking closes an open detail panel. The panel only refetches when its
+    // jiraKey input changes (ticket-detail-panel.component.ts ngOnChanges), so
+    // locking while one of the owner's tickets was open would leave the
+    // already-fetched row on screen — visible right through the lock. Guarded
+    // on a previous value rather than firing on first run, or a deep link would
+    // be cleared on page load.
+    let previousViewer = this.viewerService.viewer();
+    effect(() => {
+      const viewer = this.viewerService.viewer();
+      if (viewer === previousViewer) return;
+      previousViewer = viewer;
+      if (this.selectedKey()) this.closeDetail();
     });
 
     // Sync errors surface via syncService.error() at tracker-table.component.html:15
