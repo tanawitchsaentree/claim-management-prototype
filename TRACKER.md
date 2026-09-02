@@ -1,0 +1,307 @@
+# Tracker — every ticket
+
+**173 tickets** (57 active, 116 archived) across 12 epics and 2 PIs. Pulled from the Supabase tracker right after the live Jira sync on 2026-09-02, which refreshed 51 tickets.
+
+D = design · B = build · H = handoff. ✅ done · 🔄 in progress · ⬜ not started · ⛔ blocker flag. The ticket key links to Jira; the Prototype column links to the built screen on gh-pages (`:id` resolved to `CLM-2024-001`).
+
+## Read this before trusting the columns
+
+- `jira_status` is live only for the 51 tickets inside the edge function's fixed JQL scope. Everything else shows `–`, which means *no data*, not *no status*. The JQL is a server-side Supabase secret and cannot be overridden per request.
+- `pi_id` is tagged by hand. The sync never reads `fixVersion`, so PI 2026.4 holds only 4 rows here while Jira itself carries more under `fixVersion = PI 2026.4 CM`.
+- 5 tracker rows point at routes that do not exist in `src/app/app.routes.ts` (marked ⚠️ below). The app's `**` wildcard silently redirects them to `/dashboard`, so they look like they work: `/claims/:id/risk-analysis` (BMPCC-13725, 17777, 18472), `/claims/:id/financial-overview` (BMPCC-14826), `/claims/:id/provider-management` (BMPCC-18325).
+
+## PI 2026.4 · (no epic)
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-18352](https://jmp.allianz.net/browse/BMPCC-18352) | Claim Rejection | – | – | 🔄 | 🔄 | ⬜ ⛔waiting_product | [/claims/CLM-2024-001/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+
+## PI 2026.4 · BMPCC-145 — Orphan Claim Conversion
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-146](https://jmp.allianz.net/browse/BMPCC-146) | Orphan Claim Conversion | – | Nat | ✅ | ✅ | ⬜ | [/fnol/search](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/search) |
+
+## PI 2026.4 · BMPCC-17628 — Property cause of loss/ incident circumstances
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-18160](https://jmp.allianz.net/browse/BMPCC-18160) | [FIGMA] FNOL - circumstance selection field + Claim / Section Overview | To Do | Nat | ⬜ | ⬜ | ⬜ | – |
+
+## PI 2026.4 · BMPCC-17927 — CBI Extension
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-18353](https://jmp.allianz.net/browse/BMPCC-18353) | CBI Extension | – | Nat | 🔄 | ✅ | ⬜ ⛔waiting_product | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+
+## PI 2026.3 · (no epic)
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-7132](https://jmp.allianz.net/browse/BMPCC-7132) | Design UI/UX for Litigation Management System in Figma | Descoped | Unnikrishnan Nair, Anurag | ✅ | ✅ | ✅ | [/claims/:id/litigation](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/litigation) |
+| [BMPCC-7133](https://jmp.allianz.net/browse/BMPCC-7133) | UI/UX - Design for Displaying Policy Limits and Deductibles at Claim Level and Section Level | To Do | Costigan, Ruby Isabelle | ✅ | ✅ | ✅ | [/claims/:id/limits](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/limits) |
+| [BMPCC-12160](https://jmp.allianz.net/browse/BMPCC-12160) | FIGMA - Party role (Assign a new party role) | Done | Unnikrishnan Nair, Anurag | ✅ | ✅ | ✅ | [/fnol/parties](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/parties) |
+| [BMPCC-12837](https://jmp.allianz.net/browse/BMPCC-12837) | Dependency [AI][UX] AVA Commercial Claims — Figma Design Draft | Done | Mukund Saraf, Akanksha | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-13148](https://jmp.allianz.net/browse/BMPCC-13148) | UX/UI Claims Commercial - Claims AI Search - Figma | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-13725](https://jmp.allianz.net/browse/BMPCC-13725) | Fraud Authorization - UX/UI design creation | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/risk-analysis` dead |
+| [BMPCC-14213](https://jmp.allianz.net/browse/BMPCC-14213) | [AOMS][UX/UI] Figma Design for AOMS Placement | Done | Parameswaran, Janaki | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14371](https://jmp.allianz.net/browse/BMPCC-14371) | [AI][UX] AVA Figma Design — follow up | Done | Parameswaran, Janaki | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14421](https://jmp.allianz.net/browse/BMPCC-14421) | [TMR][UX/UI] Figma Design for TMR Placement | Descoped | – | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14422](https://jmp.allianz.net/browse/BMPCC-14422) | [TMR][UX/UI] Figma Design for TMR Placement | Done | Parameswaran, Janaki | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14452](https://jmp.allianz.net/browse/BMPCC-14452) | [UI/UX] support is required to design the Loss Adjuster Rating survey experience within the Provider Management module. | Done | Unnikrishnan Nair, Anurag | ✅ | 🔄 | 🔄 ⛔waiting_dev | [/claims/:id/providers](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/providers) |
+| [BMPCC-14453](https://jmp.allianz.net/browse/BMPCC-14453) | [UX/UI] Provider Communication - Document Attachment Design for Instruction Template | To Do | – | ✅ | ✅ | ✅ | [/claims/:id/providers](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/providers) |
+| [BMPCC-14454](https://jmp.allianz.net/browse/BMPCC-14454) | [UX/UI] Provider Communication via Email - Design for Send Communication Flow & Instruction Template | Done | Unnikrishnan Nair, Anurag | ✅ | 🔄 | 🔄 ⛔waiting_dev | [/claims/:id/providers](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/providers) |
+| [BMPCC-14710](https://jmp.allianz.net/browse/BMPCC-14710) | [UX] Validation Pattern and PA Enhancement | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14715](https://jmp.allianz.net/browse/BMPCC-14715) | [UX] Expertise Multi-Select Design | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14826](https://jmp.allianz.net/browse/BMPCC-14826) | UI/UX - Design for Closed Claim and Closed Section States across Financial Overview, Reserve Overview and Reserve Detail Screens | Done | Costigan, Ruby Isabelle | ✅ | ✅ | ⬜ | ⚠️ `/claims/:id/financial-overview` dead |
+| [BMPCC-14830](https://jmp.allianz.net/browse/BMPCC-14830) | UI/UX - Design for Post-FNOL Reserve Flow: Save Button, Unsaved Changes Popup and Reserve Overview Navigation Button Removal | Done | Costigan, Ruby Isabelle | 🔄 | 🔄 | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14831](https://jmp.allianz.net/browse/BMPCC-14831) | UI/UX - Design for Restructured Financial Overview Layout and Pagination for Transaction Summary and Payments Tables | Done | Costigan, Ruby Isabelle | ✅ | ✅ | ✅ | [/claims/:id/financial](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/financial) |
+| [BMPCC-14833](https://jmp.allianz.net/browse/BMPCC-14833) | UI/UX - Design for Monetary Deductibles in Payment Journey: Display, Selection, Real-Time Calculation and Dynamic Section-Based Filtering | Blocked | Costigan, Ruby Isabelle | ⬜ | ⬜ | ⬜ ⛔waiting_dev | – |
+| [BMPCC-14869](https://jmp.allianz.net/browse/BMPCC-14869) | UX/UI - Role-based Authorization UI Design for Claim Handler, SID and Head of Fraud | Descoped | Maheshwari, Nilesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14908](https://jmp.allianz.net/browse/BMPCC-14908) | [UI/UX] [Figma]: "Notes" added against the reserve should be visible on Approval Journey | Done | – | ⬜ | ⬜ | ⬜ ⛔waiting_dev | – |
+| [BMPCC-14916](https://jmp.allianz.net/browse/BMPCC-14916) | UI/UX - Dependency: Define Colour Coding for Recovery Booking Status Display | Descoped | – | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14967](https://jmp.allianz.net/browse/BMPCC-14967) | UI/UX design | To Do | Jeenwechasat, Tatchapan | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-15238](https://jmp.allianz.net/browse/BMPCC-15238) | [FE] Provider Maintenance — UX/UI alignment issues | Done | Pothong, Supichai | ✅ | 🔄 | 🔄 ⛔scope_unclear | – |
+| [BMPCC-15828](https://jmp.allianz.net/browse/BMPCC-15828) | Show Policy Version – Linked to Based Policy - UI/UX | In Progress | Unnikrishnan Nair, Anurag | ✅ | ✅ | ⬜ | [/claims/CLM-2024-001/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-15905](https://jmp.allianz.net/browse/BMPCC-15905) | Figma Design - Manual Reassignment via CTR MFE | Descoped | Saentree, Tanawitch | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-16104](https://jmp.allianz.net/browse/BMPCC-16104) | Figma Design - Claims Commercial - Claim Re-Open | Done | Saentree, Tanawitch | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-16179](https://jmp.allianz.net/browse/BMPCC-16179) | [UI/UX] Move Actual Expenses from Recovery Summary page to Recovery Overview | To Do | Jeenwechasat, Tatchapan | ⬜ | ⬜ | ⬜ ⛔waiting_dev | – |
+| [BMPCC-16180](https://jmp.allianz.net/browse/BMPCC-16180) | [UI/UX] Reduce multiple clicks required to save Recovery case on Close of Recovery | To Do | Jeenwechasat, Tatchapan | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-16312](https://jmp.allianz.net/browse/BMPCC-16312) | QA: Investigation Status in Risk investigation section is not as per flow and FIGMA | Done | Shivapriya, A | ✅ | ✅ | ✅ | [/claims/:id/risk](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/risk) |
+| [BMPCC-16743](https://jmp.allianz.net/browse/BMPCC-16743) | [UX/UI] Provide Delete Confirmation Dialog Design for Attorney/Lawyer Management on Litigation Screen | Descoped | Unnikrishnan Nair, Anurag | ✅ | ✅ | ✅ | [/claims/:id/litigation](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/litigation) |
+| [BMPCC-16744](https://jmp.allianz.net/browse/BMPCC-16744) | [UX/UI] Provide Delete Confirmation Dialog Design for Attorney/Lawyer Management on Litigation Screen | Descoped | Unnikrishnan Nair, Anurag | ✅ | ✅ | ✅ | [/claims/:id/litigation](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/litigation) |
+| [BMPCC-16746](https://jmp.allianz.net/browse/BMPCC-16746) | [UX/UI] Provide Delete Confirmation Dialog Design for Attorney/Lawyer Management on Litigation Screen | Descoped | Unnikrishnan Nair, Anurag | ✅ | ✅ | ✅ | [/claims/:id/litigation](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/litigation) |
+| [BMPCC-16755](https://jmp.allianz.net/browse/BMPCC-16755) | [UX/UI] Provide Delete Confirmation Dialog Design for Attorney/Lawyer Management on Litigation Screen | Done | Unnikrishnan Nair, Anurag | ✅ | ✅ | ⬜ | [/claims/:id/litigation](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/litigation) |
+| [BMPCC-16986](https://jmp.allianz.net/browse/BMPCC-16986) | Figma Design - Claims Commercial - Baseline - Mass Event Linkage Navigation & Manual Edit | Done | Saentree, Tanawitch | ✅ | ✅ | ✅ | [/administration/mass-events](https://tanawitchsaentree.github.io/claim-management-prototype/administration/mass-events) |
+| [BMPCC-17153](https://jmp.allianz.net/browse/BMPCC-17153) | QA: Fraud: Investigation outcome status color is not as per Figma | Done | Shivapriya, A | ✅ | ✅ | ✅ | [/claims/:id/risk](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/risk) |
+| [BMPCC-17155](https://jmp.allianz.net/browse/BMPCC-17155) | QA: Fraud: Step tracker symbol in Risk investigation section is not as per Figma | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17337](https://jmp.allianz.net/browse/BMPCC-17337) | [UI/UX] Recovery UI changes | Done | – | 🔄 | 🔄 | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17343](https://jmp.allianz.net/browse/BMPCC-17343) | QA: Party: Success message is not as per Figma in Parties page (Master screen) | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17347](https://jmp.allianz.net/browse/BMPCC-17347) | [FE] [Test Env] - Alignment issue  in Approval popup in Appshell and Figma | Done | Kharya, Harshit | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/approvals](https://tanawitchsaentree.github.io/claim-management-prototype/approvals) |
+| [BMPCC-17659](https://jmp.allianz.net/browse/BMPCC-17659) | Batch 1 - QA check by UX/UI team | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17678](https://jmp.allianz.net/browse/BMPCC-17678) | [FE] UI/UX QA Fixes – Approvals Widget & Approvals Journey | Done | Jini, Ayush | ✅ | ✅ | ✅ | [/approvals](https://tanawitchsaentree.github.io/claim-management-prototype/approvals) |
+| [BMPCC-17777](https://jmp.allianz.net/browse/BMPCC-17777) | QA: Dropdown options in Referral type is not as per Figma | Done | Kasemdetudomsuk, Nuttawut | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/risk-analysis` dead |
+| [BMPCC-17779](https://jmp.allianz.net/browse/BMPCC-17779) | [UI/UX] Recovery Potential Flag — Dependency | To Do | Costigan, Ruby Isabelle | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-18325](https://jmp.allianz.net/browse/BMPCC-18325) | [FE] UI enhancement — Provider Details - Align detail page styling with Figma (labels, spacing, buttons, back-link) | Done | Pothong, Supichai | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/provider-management` dead |
+| [BMPCC-18472](https://jmp.allianz.net/browse/BMPCC-18472) | QA: Change SID's decision field name to SIDs decision as per Figma | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/risk-analysis` dead |
+
+<details><summary>archived — 17 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-3217](https://jmp.allianz.net/browse/BMPCC-3217) | Epic Sanity | Descoped | – | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-8778](https://jmp.allianz.net/browse/BMPCC-8778) | [BE] Claims Commercial - Baseline - Integrating Damage Attributes within the FNOL Journey - Entity ID | Descoped | Bhimashankar Bangonde, Shrikant | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-11343](https://jmp.allianz.net/browse/BMPCC-11343) | [BE] Claims Commercial - Baseline - overwrite the entities status from 'Promised' to 'not promised' | Descoped | Nair, Sreyas | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-12657](https://jmp.allianz.net/browse/BMPCC-12657) | [BE]Claims Commercial - Claim Overview API | Descoped | – | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-15718](https://jmp.allianz.net/browse/BMPCC-15718) | QA: Damage type is not displayed as per the user selection in Parties page | Done | Maheshwari, Nilesh | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-15886](https://jmp.allianz.net/browse/BMPCC-15886) | [FE] Loss Event Page: Map EntityId to PostLossEvent API payload | Done | Pravin Tawale, Gauri | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15887](https://jmp.allianz.net/browse/BMPCC-15887) | [FE] Entities and Damage Page: Retrieve EntityId via GetLossEventDetails and map to PostClaimSection payload | Done | Pravin Tawale, Gauri | ✅ | ✅ | ✅ | – |
+| [BMPCC-15888](https://jmp.allianz.net/browse/BMPCC-15888) | [FE] Unit tests for EntityId mapping on Loss Event and Entities and Damage pages | Done | – | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-16192](https://jmp.allianz.net/browse/BMPCC-16192) | QA - Created date and date of loss fields are not seen in linked claims details in Policy overview page | Done | Shivapriya, A | ⬜ | ✅ | ⬜ | [/claims/CLM-2024-001/policy](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/policy) |
+| [BMPCC-16654](https://jmp.allianz.net/browse/BMPCC-16654) | QA: Getting "Failed to submit conclusion input" error in Entities and damages page | Done | Omar, Shreenath | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17328](https://jmp.allianz.net/browse/BMPCC-17328) | [Test][FE] Location Details Cannot Be Added During New Claim Creation | Done | Shingate, Bharat | ✅ | ✅ | ✅ | [/fnol](https://tanawitchsaentree.github.io/claim-management-prototype/fnol) |
+| [BMPCC-17484](https://jmp.allianz.net/browse/BMPCC-17484) | [Test] - claimSection POST API payload shows entity as "Promised" even when no location is selected while creating a claim | Done | Shingate, Bharat | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-17499](https://jmp.allianz.net/browse/BMPCC-17499) | [FE][MFE] claims-management MFEs strip FNOL URL params via premature initialNavigation() | Blocked | Kale, Swati | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18146](https://jmp.allianz.net/browse/BMPCC-18146) | [BE] RDA configuration + Circumstance ref-data + peril mapping | To Do | – | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18157](https://jmp.allianz.net/browse/BMPCC-18157) | [BE] Publish circumstance in kafka claimSectionCreated/Updated | To Do | – | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18159](https://jmp.allianz.net/browse/BMPCC-18159) | [FE] FNOL - circumstance selection field + Claim / Section Overview | To Do | – | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-18161](https://jmp.allianz.net/browse/BMPCC-18161) | [BE] Configure Number generation | To Do | – | ⬜ | ⬜ | ⬜ | – |
+
+</details>
+
+## PI 2026.3 · BMPCC-11581 — Claims Commercial - Baseline - Claim Edit functionality
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-18370](https://jmp.allianz.net/browse/BMPCC-18370) | [FE] Edit Claim - new figma immplementation | In Progress | Singh, Richa | 🔄 | ⬜ | ⬜ ⛔waiting_ba | [/claims/:id/loss-information/edit](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/loss-information/edit) |
+
+<details><summary>archived — 12 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14642](https://jmp.allianz.net/browse/BMPCC-14642) | [BE] Edit claim - Force Section/claim Update | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14645](https://jmp.allianz.net/browse/BMPCC-14645) | [FE] Build new FE for Claim Edit Functionality | Done | Sarwankar, Mitesh | ✅ | ✅ | ✅ | [/claims/:id/loss-information/edit](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/loss-information/edit) |
+| [BMPCC-14960](https://jmp.allianz.net/browse/BMPCC-14960) | [BE] Build POST and GET API for ClaimOverride | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14961](https://jmp.allianz.net/browse/BMPCC-14961) | [BE/FE] Section Overview – Coverage Review Enhancement | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-14962](https://jmp.allianz.net/browse/BMPCC-14962) | [FE] Edit Claim – Full AIP Orchestration Flow | Done | Singh, Richa | ✅ | 🔄 | 🔄 | [/claims/:id/loss-information/edit](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/loss-information/edit) |
+| [BMPCC-15648](https://jmp.allianz.net/browse/BMPCC-15648) | [BE] Implementation for Claim/Section creation during Edit | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15649](https://jmp.allianz.net/browse/BMPCC-15649) | [SOL]Analysis — Handling Existing Claims/Sections on Edit | Done | Udayabhanu, Drishya | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15708](https://jmp.allianz.net/browse/BMPCC-15708) | [QA] Sanity testing - Claim Edit functionality - BMPCC-11581 | To Do | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-16290](https://jmp.allianz.net/browse/BMPCC-16290) | [Spike] Edit Claim >> Adding/Removing new Damage Type | In Progress | Nair, Sreyas | 🔄 | 🔄 | ⬜ ⛔scope_unclear | [/claims/:id/loss-information/edit](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/loss-information/edit) |
+| [BMPCC-16720](https://jmp.allianz.net/browse/BMPCC-16720) | [QA] Edit Claim – Full AIP Orchestration Flow | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-17346](https://jmp.allianz.net/browse/BMPCC-17346) | [FE] Edit claim - Force update | In Testing | Omar, Shreenath | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-18357](https://jmp.allianz.net/browse/BMPCC-18357) | Additional entry getting populated for Section when changed promised location non promised location | In Progress | Nair, Sreyas | ⬜ | ⬜ | ⬜ | – |
+
+</details>
+
+## PI 2026.3 · BMPCC-11587 — [UI UX] Alignment and Enhancements for Cross-Cutting Features
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14352](https://jmp.allianz.net/browse/BMPCC-14352) | [UI/UX Proposal] Define AOMS MFE Integration Placement in CC App Shell | To Do | Mukund Saraf, Akanksha | ⬜ | ⬜ | ⬜ ⛔waiting_other_epic | – |
+| [BMPCC-14419](https://jmp.allianz.net/browse/BMPCC-14419) | [UI/UX Proposal] Define TMR MFE Integration Placement in CC App Shell | To Do | – | ⬜ | ⬜ | ⬜ ⛔waiting_other_epic | – |
+
+## PI 2026.3 · BMPCC-14434 — Claim Status Management - Section & Claims Hierarchy Validations
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14629](https://jmp.allianz.net/browse/BMPCC-14629) | UI/UX : Section closing reason & screen flow | Done | Saentree, Tanawitch | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+
+<details><summary>archived — 6 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14616](https://jmp.allianz.net/browse/BMPCC-14616) | [BE] Claims Commercial - Claim Section PreClosueCheck Skeleton API | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14617](https://jmp.allianz.net/browse/BMPCC-14617) | [BE] Claims Commercial - Claim Section Closure PUT API | Done | Sarwankar, Mitesh | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-14618](https://jmp.allianz.net/browse/BMPCC-14618) | [FE] Claims Commercial - UI changes for Section closure | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-14619](https://jmp.allianz.net/browse/BMPCC-14619) | [BE] Claims Commercial - Preclosure validation framework developement | Done | Udayabhanu, Drishya | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-15716](https://jmp.allianz.net/browse/BMPCC-15716) | [QA] Sanity testing - Section & Claims Hierarchy Validation - BMPCC-14434 | In Testing | Omar, Shreenath | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-16284](https://jmp.allianz.net/browse/BMPCC-16284) | [FE] Claims Commercial - Close claim button - validation pop-up | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+
+</details>
+
+## PI 2026.3 · BMPCC-14435 — Claim Status Management - Validations Across Domains
+
+_No active tickets._
+
+<details><summary>archived — 8 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14620](https://jmp.allianz.net/browse/BMPCC-14620) | [SOL] Claims Commercial - Interface API Definition for downstream (to get uniform response) | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14621](https://jmp.allianz.net/browse/BMPCC-14621) | [BE] Claims Commercial - Retrofit ClaimClosurePreCheck API to call Sync API and handle the response for open litigations | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-14622](https://jmp.allianz.net/browse/BMPCC-14622) | [BE] Claims Commercial - Claim Closure SyncAPI Validation -Integrate with finance/ payment/ reserve | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-14623](https://jmp.allianz.net/browse/BMPCC-14623) | [BE] Claims Commercial - Claim Closure SyncAPI Validation -Integrate with Subrogation/Salvage | To Do | Pravin Tawale, Gauri | ✅ | ✅ | 🔄 | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-14628](https://jmp.allianz.net/browse/BMPCC-14628) | [BE] Interim Workaround: Disable sync API authorization | In Progress | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15715](https://jmp.allianz.net/browse/BMPCC-15715) | [QA] Sanity testing - Validations Across Domains - BMPCC-14435 | To Do | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-17780](https://jmp.allianz.net/browse/BMPCC-17780) | [BE] Claims Commercial - Retrofit ClaimClosurePreCheck API to call Sync API and handle the response for Fraud + Provider Management | In Acceptance | Majumdar, Bhaskar | 🔄 | 🔄 | ⬜ ⛔scope_unclear | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-18253](https://jmp.allianz.net/browse/BMPCC-18253) | [FE] Display Blocker Count & Expandable Details on Pre-Closure Validation (Section & Claim) | In Progress | Singh, Richa | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+
+</details>
+
+## PI 2026.3 · BMPCC-14437 — Claim Status Management - Closure of Claims - Last Payment
+
+_No active tickets._
+
+<details><summary>archived — 6 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-11340](https://jmp.allianz.net/browse/BMPCC-11340) | [FE] Section Closure- Dynamic Blockers & Section Status | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-14627](https://jmp.allianz.net/browse/BMPCC-14627) | [SOL] Claims Commercial - Switch for GLobal vs OE | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14630](https://jmp.allianz.net/browse/BMPCC-14630) | [BE] Claims Commercial - Kafka consumer for Last Payment at Section level | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15714](https://jmp.allianz.net/browse/BMPCC-15714) | [QA] Sanity testing - Closure of Claims - Last Payment - BMPCC-14437 | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-17700](https://jmp.allianz.net/browse/BMPCC-17700) | Section status not getting updated after final payment done and last status taking when creating new FNOL | Done | Omar, Shreenath | ✅ | ✅ | ✅ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-17768](https://jmp.allianz.net/browse/BMPCC-17768) | finalpayment status is getting failed in finalpaymentclosure DB | Done | Omar, Shreenath | ⬜ | ⬜ | ⬜ | – |
+
+</details>
+
+## PI 2026.3 · BMPCC-14494 — Claims Lifecycle: FNOL Feature Enhancements
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14626](https://jmp.allianz.net/browse/BMPCC-14626) | [FE] Skeleton (Orphan) Claim Creation - UI/UX Enhancements (Notifier, Parties, Location) | To Do | Majumdar, Bhaskar | ✅ | ✅ | ✅ | [/fnol/skeleton-create](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/skeleton-create) |
+| [BMPCC-17157](https://jmp.allianz.net/browse/BMPCC-17157) | UI/UX : Orphan Claim - Party & Location | To Do | Saentree, Tanawitch | ✅ | ✅ | ✅ | [/fnol/skeleton-parties](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/skeleton-parties) |
+
+<details><summary>archived — 44 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-8809](https://jmp.allianz.net/browse/BMPCC-8809) | Claims Commercial - Baseline - Aggregate | Descoped | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-9499](https://jmp.allianz.net/browse/BMPCC-9499) | [FE] FNOL Summary Back Navigation & Status Colour Coding (E&D / Section Overview) | In Testing | Omar, Shreenath | ✅ | 🔄 | 🔄 | [/fnol/summary](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/summary) |
+| [BMPCC-11338](https://jmp.allianz.net/browse/BMPCC-11338) | [BE] Claims Commercial - Baseline - DamageID with Damage details in Kafka Event | Descoped | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-11339](https://jmp.allianz.net/browse/BMPCC-11339) | [FE] GIS/Manual Address from Location Manager - Latitude/Longitude | To Do | Majumdar, Bhaskar | ✅ | ✅ | ✅ | [/fnol/loss-information](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/loss-information) |
+| [BMPCC-12015](https://jmp.allianz.net/browse/BMPCC-12015) | [BE] Upgrade java to 25 | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-12645](https://jmp.allianz.net/browse/BMPCC-12645) | [BE] Claims Commercial - Baseline - Activity Log | Done | Pravin Tawale, Gauri | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-13169](https://jmp.allianz.net/browse/BMPCC-13169) | [FE] Route to dashboard from Summary page on 'cancel' action | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/fnol/summary](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/summary) |
+| [BMPCC-13237](https://jmp.allianz.net/browse/BMPCC-13237) | [BE+FE] Misc UI Enhancements | Done | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-14625](https://jmp.allianz.net/browse/BMPCC-14625) | [BE] API to close LossEvent/Claim/Sections- Statemanagement/ Rollbacks | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14637](https://jmp.allianz.net/browse/BMPCC-14637) | Retrofit the Claimsection event when Address Source available from Location Manager | To Do | Pravin Tawale, Gauri | 🔄 | 🔄 | ⬜ | [/fnol/loss-information](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/loss-information) |
+| [BMPCC-14638](https://jmp.allianz.net/browse/BMPCC-14638) | [FE] Navigate back from Parties to Entities&Damages page | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/fnol/parties](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/parties) |
+| [BMPCC-14641](https://jmp.allianz.net/browse/BMPCC-14641) | [BE] KAFKA Migration | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14643](https://jmp.allianz.net/browse/BMPCC-14643) | [BE] Post claim section retrofitting for Limit & Deductible changes in Promise | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14883](https://jmp.allianz.net/browse/BMPCC-14883) | [FE] Loss Description enhancement | Done | Sarwankar, Mitesh | ✅ | ✅ | ✅ | [/fnol/loss-information](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/loss-information) |
+| [BMPCC-15184](https://jmp.allianz.net/browse/BMPCC-15184) | [FE] Cancel button on location manager MFE | Done | Majumdar, Bhaskar | ✅ | ✅ | ✅ | [/fnol/loss-information](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/loss-information) |
+| [BMPCC-15230](https://jmp.allianz.net/browse/BMPCC-15230) | [FE] Enhancement - LossEvent Overview and E&D page | Done | Sarwankar, Mitesh | ✅ | ✅ | ✅ | [/loss-events/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/loss-events/CLM-2024-001/overview) |
+| [BMPCC-15234](https://jmp.allianz.net/browse/BMPCC-15234) | Code retrofitting - mapping to additionally path | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15235](https://jmp.allianz.net/browse/BMPCC-15235) | [BE] CloseClaim / CloseClaimSection APIs — Pre-Closure Eligibility Validation before Closure | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | – |
+| [BMPCC-15241](https://jmp.allianz.net/browse/BMPCC-15241) | Incorrect date format getting displayed on the process of claim creation | Done | Omar, Shreenath | ✅ | ✅ | ✅ | – |
+| [BMPCC-15272](https://jmp.allianz.net/browse/BMPCC-15272) | [BE] upgrade spring boot to 4.7 | In Acceptance | Udayabhanu, Drishya | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15647](https://jmp.allianz.net/browse/BMPCC-15647) | [FE] State management (Reset, Completed, Restore, Search Handshake) [part 1 of 2] | Done | Agarwal, Vasudha | ✅ | 🔄 | 🔄 | – |
+| [BMPCC-15660](https://jmp.allianz.net/browse/BMPCC-15660) | Summary page not loading properly | Done | Agarwal, Mayank | ✅ | ✅ | ✅ | – |
+| [BMPCC-15680](https://jmp.allianz.net/browse/BMPCC-15680) | PD & BI Coverage selected, however only PD coverage getting passed in PostClaimSection API request | Done | Omar, Shreenath | ✅ | ✅ | ✅ | – |
+| [BMPCC-15713](https://jmp.allianz.net/browse/BMPCC-15713) | [QA] Sanity testing - FNOL Feature Enhancements - BMPCC-14494 | To Do | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15838](https://jmp.allianz.net/browse/BMPCC-15838) | [Dependency : Ninja > Pearl ] Cancel button behavior on location manager | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | – |
+| [BMPCC-15922](https://jmp.allianz.net/browse/BMPCC-15922) | Getting two section entries of PD under party's page , event Submission don't have any extensions | Done | Omar, Shreenath | ✅ | ✅ | ✅ | – |
+| [BMPCC-15994](https://jmp.allianz.net/browse/BMPCC-15994) | Loss Overview Page: Data for Proximate and Damages Cause are not appearing | Done | Omar, Shreenath | ✅ | ✅ | ✅ | – |
+| [BMPCC-16107](https://jmp.allianz.net/browse/BMPCC-16107) | Date and time ofproximate loss & Date received byAllianz not displaying correctly on summary page | Done | Omar, Shreenath | ✅ | ✅ | ✅ | – |
+| [BMPCC-16274](https://jmp.allianz.net/browse/BMPCC-16274) | [BE] Claude review integration in repo | Done | Udayabhanu, Drishya | ⬜ | ✅ | ✅ | – |
+| [BMPCC-16380](https://jmp.allianz.net/browse/BMPCC-16380) | [BE] Verify Date Fields | Done | Majumdar, Bhaskar | ✅ | ✅ | ✅ | – |
+| [BMPCC-16580](https://jmp.allianz.net/browse/BMPCC-16580) | [FE] Conclude 'other' in AIP if Date of Occurrence is outside policy period | Done | Agarwal, Vasudha | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17072](https://jmp.allianz.net/browse/BMPCC-17072) | [Test] "No location selected" displayed on the E&D page when "Cause of Loss" & "Type of Damage" is selected as "Other". | Done | Shingate, Bharat | ✅ | ✅ | ✅ | – |
+| [BMPCC-17146](https://jmp.allianz.net/browse/BMPCC-17146) | [BE] Update LossEventSummary API for reporter info | Done | Nair, Sreyas | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-17676](https://jmp.allianz.net/browse/BMPCC-17676) | [FNOL] - User can exit claim creation flow without confirmation dialog on loss information page. | Done | Shingate, Bharat | ✅ | ✅ | ✅ | [/fnol/loss-information](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/loss-information) |
+| [BMPCC-17733](https://jmp.allianz.net/browse/BMPCC-17733) | Warning pop up coming on dashboard page after clicking on cancel button on summary page | In Progress | Omar, Shreenath | ✅ | ✅ | ✅ | [/fnol/summary](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/summary) |
+| [BMPCC-17781](https://jmp.allianz.net/browse/BMPCC-17781) | [Test][FE]-Intermittent Issue: Claim Overview page data and side panel details missing after page reload | Done | Shingate, Bharat | ✅ | ✅ | ⬜ ⛔scope_unclear | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-17808](https://jmp.allianz.net/browse/BMPCC-17808) | [SOL] Orphan claim - Summary + side panel (progress tracker) | In Progress | Kale, Swati | ✅ | ✅ | ✅ | [/fnol/skeleton-summary](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/skeleton-summary) |
+| [BMPCC-17998](https://jmp.allianz.net/browse/BMPCC-17998) | [QA] State management (Reset, Completed, Restore, Search Handshake) [part 2 of 2] | Blocked | Omar, Shreenath | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-18001](https://jmp.allianz.net/browse/BMPCC-18001) | [FE] upgrade Angular | In Acceptance | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18002](https://jmp.allianz.net/browse/BMPCC-18002) | [BE] Orphan claim - Retrofit new GIS URL | To Do | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18030](https://jmp.allianz.net/browse/BMPCC-18030) | [BE] Claim Section Kafka event - Add "type" Limit and Deductible values | In Progress | Shimpi, Nikita | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18031](https://jmp.allianz.net/browse/BMPCC-18031) | [QA] Navigate back from Parties to Entities&Damages page | In Testing | Omar, Shreenath | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+| [BMPCC-18069](https://jmp.allianz.net/browse/BMPCC-18069) | [BE] BI Claim Sections in Kafka event - populate "compensatedByBenefit" (Limit & Deductible) | In Testing | Omar, Shreenath | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18308](https://jmp.allianz.net/browse/BMPCC-18308) | [FE] State Management — Residual Data Check by Client/Policy Combination & IncidentRecordKey-Scoped Storage | To Do | – | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
+
+</details>
+
+## PI 2026.3 · BMPCC-14543 — Claims Lifecycle: Domain Specific Authorization
+
+_No active tickets._
+
+<details><summary>archived — 2 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14640](https://jmp.allianz.net/browse/BMPCC-14640) | [SOL] Domain Authorization | To Do | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15712](https://jmp.allianz.net/browse/BMPCC-15712) | [QA] Sanity testing - Domain Specific Authorization - BMPCC-14543 | To Do | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+
+</details>
+
+## PI 2026.3 · BMPCC-14545 — Claims Lifecycle: Loss Location coverage check in FNOL (conclude AIP, refine E&D page)
+
+_No active tickets._
+
+<details><summary>archived — 21 tickets</summary>
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-7645](https://jmp.allianz.net/browse/BMPCC-7645) | [BE] Claims Commercial - Baseline - Update claims hierarchy event with Entityid (via AIP) | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14631](https://jmp.allianz.net/browse/BMPCC-14631) | [SOL] Analyse impact of multiple Location groups are received from Location Manager | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14632](https://jmp.allianz.net/browse/BMPCC-14632) | [SOL] Analyse unhandled scenarios in Claim/Section creation | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14633](https://jmp.allianz.net/browse/BMPCC-14633) | [BE] Modify BE API (PostLossEvent, Get LossEventDetails, Post ClaimSection) to accept Entity Id | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14634](https://jmp.allianz.net/browse/BMPCC-14634) | [FE] Modify UI to pass EntityId to Post LossEvent and Post ClaimSection | Done | Sarwankar, Mitesh | ⬜ | ✅ | ✅ | [/fnol/entities-damages](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/entities-damages) |
+| [BMPCC-14635](https://jmp.allianz.net/browse/BMPCC-14635) | [BE] New  GetAllEntities API to pass all Entities (Promised and Non Promised) | Done | Sarwankar, Mitesh | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14636](https://jmp.allianz.net/browse/BMPCC-14636) | [FE] If Location Group is received from Location Manager, conclude in the Conclusion Engine: match → Promised, else → Not Promised. | Done | Sarwankar, Mitesh | ✅ | ✅ | ✅ | [/fnol/entities-damages](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/entities-damages) |
+| [BMPCC-14884](https://jmp.allianz.net/browse/BMPCC-14884) | [FE] GIS Address from Location Manager | Done | Agarwal, Vasudha | ✅ | ✅ | ✅ | [/fnol/loss-information](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/loss-information) |
+| [BMPCC-14959](https://jmp.allianz.net/browse/BMPCC-14959) | [BE] POC - Exclude Location Entity from Kafka Event When No Location Is Captured | Done | Pravin Tawale, Gauri | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-14965](https://jmp.allianz.net/browse/BMPCC-14965) | [FE] Display entity status Manual flow | Descoped | Kale, Swati | 🔄 | 🔄 | ⬜ | [/fnol/entities-damages](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/entities-damages) |
+| [BMPCC-15043](https://jmp.allianz.net/browse/BMPCC-15043) | Test - For Impacted Policies multiple claims are not getting generated | Done | Majumdar, Bhaskar | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15118](https://jmp.allianz.net/browse/BMPCC-15118) | Getting error on E&D page for State Management changes | Done | Agarwal, Mayank | ✅ | ✅ | ⬜ | [/fnol/entities-damages](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/entities-damages) |
+| [BMPCC-15123](https://jmp.allianz.net/browse/BMPCC-15123) | Date of Loss is blank for Skeleton Claims on Claims Overview page | Done | Agarwal, Mayank | 🔄 | 🔄 | ⬜ ⛔scope_unclear | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-15711](https://jmp.allianz.net/browse/BMPCC-15711) | [QA] Sanity testing - Loss Location coverage check in FNOL (conclude AIP, refine E&D page) - BMPCC-14545 | In Testing | Omar, Shreenath | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-15885](https://jmp.allianz.net/browse/BMPCC-15885) | [FE] Add entityId to CommercialClaimsContext and read from Location Manager MFE context | Descoped | – | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-16270](https://jmp.allianz.net/browse/BMPCC-16270) | [FE] Entities & Damages — Display Multiple Limits for Selected Location + Warning pop-up in close claim + disable edit claim for closed claim | Done | Agarwal, Vasudha | ✅ | ✅ | ⬜ | [/claims/:id/limits](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/limits) |
+| [BMPCC-16636](https://jmp.allianz.net/browse/BMPCC-16636) | Filter not in synch for entity & coverage review on the Entities and Damages screen | Done | Omar, Shreenath | ✅ | ✅ | ⬜ | [/fnol/entities-damages](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/entities-damages) |
+| [BMPCC-16817](https://jmp.allianz.net/browse/BMPCC-16817) | Proximate loss cause & Proximate loss cause not getting displaying for not promised status on loss/claim overview page | Done | Omar, Shreenath | 🔄 | 🔄 | ⬜ ⛔scope_unclear | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-17178](https://jmp.allianz.net/browse/BMPCC-17178) | Filter not in working for coverage review on the Entities and Damages screen | Done | Agarwal, Mayank | ✅ | ✅ | ⬜ | [/fnol/entities-damages](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/entities-damages) |
+| [BMPCC-17381](https://jmp.allianz.net/browse/BMPCC-17381) | [FE][Test]-Claim Overview Page: "Closure Date," "Closure Reason," and "Retention Until" Details Not Displayed After Claim Closure | Done | Shingate, Bharat | ✅ | ✅ | ⬜ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-17939](https://jmp.allianz.net/browse/BMPCC-17939) | Getting comma seperated values for limit amounts | Done | Omar, Shreenath | ✅ | ✅ | ⬜ | [/claims/:id/limits](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/limits) |
+
+</details>
+
+## PI 2026.3 · BMPCC-424 — Activity Log: UI/UX enhancements for grouping of changes per transaction
+
+| Ticket | Title | Jira | Assignee | D | B | H | Prototype |
+|---|---|---|---|---|---|---|---|
+| [BMPCC-14840](https://jmp.allianz.net/browse/BMPCC-14840) | UI/UX - Dependency: Design & Wireframes for Activity Log Transaction Grouping | Done | Jeenwechasat, Tatchapan | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+
