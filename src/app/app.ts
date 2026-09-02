@@ -10,6 +10,7 @@ import { AccessGateComponent } from './features/access-gate/access-gate.componen
 import { ToastStackComponent } from './shared/components/toast/toast-stack.component';
 import { TourStepRendererComponent } from './shared/components/tour/tour-step-renderer.component';
 import { PersonaSwitcherComponent } from './features/dashboard/widgets/persona-switcher';
+import { PrototypeEntryService } from './core/services/prototype-entry.service';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { environment } from '../environments/environment';
 
@@ -45,6 +46,7 @@ import { environment } from '../environments/environment';
 export class App implements OnInit {
   readonly helper   = inject(ClaimDevHelperService);
   private readonly router = inject(Router);
+  private readonly prototypeEntry = inject(PrototypeEntryService);
   readonly unlocked = signal(false);
   readonly isExploration = environment.buildTag === 'exploration';
   readonly devBannerMode = environment.devBannerMode;
@@ -60,10 +62,16 @@ export class App implements OnInit {
   ngOnInit(): void {
     if (localStorage.getItem('app:access-granted') === '1') {
       this.unlocked.set(true);
+      void this.prototypeEntry.runEntryTour();
     }
   }
 
   onUnlocked(): void {
     this.unlocked.set(true);
+    // Second half of the ?pt= entry, deliberately here and not in the app
+    // initializer: the tour it starts renders through <app-tour-step-renderer />,
+    // which only exists inside the @if (unlocked()) block above. Runs once —
+    // PrototypeEntryService guards against a repeat.
+    void this.prototypeEntry.runEntryTour();
   }
 }

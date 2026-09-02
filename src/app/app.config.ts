@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, importProvidersFrom, LOCALE_ID } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideAppInitializer, importProvidersFrom, inject, LOCALE_ID } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withRouterConfig, withViewTransitions } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -10,6 +10,7 @@ import { provideAllianzIcons } from '@allianz/ngx-brand-kit/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
+import { PrototypeEntryService } from './core/services/prototype-entry.service';
 
 // Manual SVG fallbacks ONLY for icons NOT in the Allianz icon font.
 // Everything that exists in @allianz/ngx-brand-kit (info-circle-o, speech-bubble-o,
@@ -56,5 +57,11 @@ export const appConfig: ApplicationConfig = {
       deps: [DomSanitizer],
       multi: true,
     },
+    // `?pt=<ticketId>` on the landing URL means "a tracker link opened this tab" —
+    // seed that ticket's scenario state here, BEFORE provideRouter runs its initial
+    // navigation, so the target page's first render already sees the right data.
+    // Bootstrap waits on the returned promise; it resolves immediately when the
+    // param is absent, which is every normal page load.
+    provideAppInitializer(() => inject(PrototypeEntryService).applyFromUrl()),
   ],
 };

@@ -144,13 +144,9 @@
               <td nxCell class="col-days">{{ ticket.state.blockedSince ? daysBlocked(ticket) : '—' }}</td>
               <td nxCell class="col-indicator">
                 @if (hasPrototypeRoute(ticket)) {
-                  <button type="button" class="tt-proto-open" [disabled]="openingRouteKey() === ticket.jiraKey"
-                    (click)="openPrototypeRoute(ticket, $event)" title="Open in prototype" aria-label="Open in prototype">
-                    @if (openingRouteKey() === ticket.jiraKey) {
-                      <nx-spinner size="small"></nx-spinner>
-                    } @else {
-                      <nx-icon name="launch" size="s"></nx-icon>
-                    }
+                  <button type="button" class="tt-proto-open"
+                    (click)="openPrototypeRoute(ticket, $event)" title="Open in prototype (new tab)" aria-label="Open in prototype, opens in a new tab">
+                    <nx-icon name="launch" size="s"></nx-icon>
                   </button>
                 } @else {
                   <span class="tt-muted" aria-label="No prototype route">—</span>

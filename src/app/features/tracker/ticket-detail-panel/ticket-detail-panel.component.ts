@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, computed, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, computed, inject } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -72,7 +72,6 @@ export class TicketDetailPanelComponent implements OnChanges {
   private readonly dialog = inject(NxDialogService);
   private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
   readonly trackerService = inject(TrackerService);
-  readonly opening = signal(false);
 
   readonly stageOptions = STAGE_OPTIONS;
   readonly blockedOptions = BLOCKED_OPTIONS;
@@ -124,15 +123,15 @@ export class TicketDetailPanelComponent implements OnChanges {
     }
   }
 
-  // Apply→navigate→postLand sequence lives in PrototypeScenarioService.openRoute() —
-  // shared with the tracker table's row-level "open in prototype" action.
-  async openInPrototype(): Promise<void> {
+  // New tab, same as the table's row-level launch — the panel you clicked from
+  // stays open behind it. The apply→navigate→postLand sequence now happens in the
+  // receiving tab (PrototypeEntryService), driven by the ?pt= param that
+  // buildPrototypeUrl() puts in the URL.
+  openInPrototype(): void {
     const route = this.effectivePrototypeRoute();
     if (!route) return;
 
-    this.opening.set(true);
-    await this.prototypeScenarioSvc.openRoute(route, this.effectivePrototypeTicketId());
-    this.opening.set(false);
+    window.open(this.prototypeScenarioSvc.buildPrototypeUrl(route, this.effectivePrototypeTicketId()), '_blank', 'noopener');
   }
 
   private async load(): Promise<void> {

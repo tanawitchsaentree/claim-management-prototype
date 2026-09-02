@@ -36,6 +36,14 @@ const VALID = new Set([
 ]);
 const norm = (r) => r.replace(/\/claims\/CLM-[0-9-]+\//, '/claims/:id/');
 
+// Same substitution as substituteClaimId()/DEMO_CLAIM_ID in
+// src/app/core/services/prototype-scenario.service.ts — that file is the source of
+// truth for what a tracker route resolves to; this is a node script and can't
+// import it, so keep the two in step by hand. Anchored on a path segment so a
+// route like "/claims/:idle" would not be mangled.
+const DEMO_CLAIM_ID = 'CLM-2024-001';
+const substituteClaimId = (r) => r.replace(/\/:id(?=\/|$)/g, `/${DEMO_CLAIM_ID}`);
+
 const piName = (id) => pis.find((p) => p.id === id)?.name ?? '(no PI)';
 const epicOf = (id) => epics.find((e) => e.id === id) ?? null;
 const stateOf = new Map(states.map((s) => [s.ticket_id, s]));
@@ -47,7 +55,7 @@ const proto = (t) => {
   const r = stateOf.get(t.id)?.prototype_route;
   if (!r) return '–';
   if (!VALID.has(norm(r))) return '⚠️ `' + r + '` dead';
-  return `[${r}](${BASE}${r.replace(/:id/g, 'CLM-2024-001')})`;
+  return `[${r}](${BASE}${substituteClaimId(r)})`;
 };
 const blk = (t) => {
   const b = stateOf.get(t.id)?.blocked_by;

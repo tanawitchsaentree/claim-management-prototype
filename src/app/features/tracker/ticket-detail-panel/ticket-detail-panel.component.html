@@ -33,15 +33,14 @@
           </nx-formfield>
         }
         @if (effectivePrototypeRoute()) {
-          <button nxButton="secondary small" type="button" [disabled]="opening()" (click)="openInPrototype()" class="tdp-prototype__open">
-            @if (opening()) { <nx-spinner size="small"></nx-spinner> }
-            @else { <nx-icon name="launch" size="s"></nx-icon> }
+          <button nxButton="secondary small" type="button" (click)="openInPrototype()" class="tdp-prototype__open">
+            <nx-icon name="launch" size="s"></nx-icon>
             Open in prototype
           </button>
           @if (effectivePrototypeTicketId()) {
-            <p class="tdp-prototype__hint">Applies this ticket's state and starts its tour on arrival.</p>
+            <p class="tdp-prototype__hint">Opens in a new tab, applies this ticket's state and starts its tour on arrival.</p>
           } @else {
-            <p class="tdp-prototype__hint tdp-prototype__hint--plain">No linked scenario — opens the bare route, no state or tour.</p>
+            <p class="tdp-prototype__hint tdp-prototype__hint--plain">Opens in a new tab. No linked scenario — the bare route, no state or tour.</p>
           }
         }
       </div>

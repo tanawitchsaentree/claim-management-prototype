@@ -81,9 +81,6 @@ export class TrackerTableComponent {
   readonly blockedByOptions = BLOCKED_BY_OPTIONS;
   readonly hasRouteOptions = HAS_ROUTE_OPTIONS;
   readonly groupByEpic = signal(true);
-  // Which row's prototype link is mid-navigation — scoped by jiraKey since
-  // any row in the table can trigger this independently of the detail panel.
-  readonly openingRouteKey = signal<string | null>(null);
 
   // Filters are seeded from TrackerService.filters() rather than reset per-instance —
   // harmless now that opening/closing a ticket no longer recreates this component
@@ -232,16 +229,20 @@ export class TrackerTableComponent {
   }
 
   // Direct row-level launch — no need to open the detail panel first just to
-  // find "Open in prototype" buried inside it. Same shared sequence the panel
-  // uses (PrototypeScenarioService.openRoute()), so behavior stays identical.
-  async openPrototypeRoute(ticket: TicketWithDetails, event: Event): Promise<void> {
+  // find "Open in prototype" buried inside it.
+  //
+  // NEW TAB, not in-place navigation: the tracker is the reviewer's worklist. The
+  // old behaviour replaced it with the prototype and left no way back except the
+  // browser's back button, which also unwound the scenario state that had just
+  // been applied. The scenario travels in the URL (?pt=) and PrototypeEntryService
+  // rebuilds it on the other side, so the new tab is self-contained.
+  openPrototypeRoute(ticket: TicketWithDetails, event: Event): void {
     event.stopPropagation();
     const route = this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
     if (!route) return;
 
-    this.openingRouteKey.set(ticket.jiraKey);
-    await this.prototypeScenarioSvc.openRoute(route, this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId));
-    this.openingRouteKey.set(null);
+    const ticketId = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+    window.open(this.prototypeScenarioSvc.buildPrototypeUrl(route, ticketId), '_blank', 'noopener');
   }
 
   openTicket(ticket: TicketWithDetails): void {

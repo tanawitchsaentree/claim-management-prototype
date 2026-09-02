@@ -8,7 +8,24 @@ import { MockPolicyLocationService } from '../mock/services/mock-policy-location
 import { LocationItem } from '../models';
 import { ScenarioStageService } from '../scenario/scenario-stage.service';
 import { DevTicket, TicketIndex } from '../models/dev-ticket.model';
-import { TourStep } from './tour.service';
+import { toTourStep } from './tour.service';
+
+// Tracker rows carry hand-typed routes copied straight out of app.routes.ts,
+// param name and all — "/claims/:id/sections". Navigating to that literally
+// MATCHES the route with the id ":id", so the page renders against a claim that
+// does not exist: verified live, /claims/:id/loss-information/edit shows the
+// "Edit claim details" page with ":id" printed where the claim number goes and
+// every field reading "Not provided". It looks like data loss and it is not.
+// 17 of the 30 clickable tracker rows were doing this.
+//
+// One substitution point, used by every caller, so the app and
+// scripts/gen-tracker-md.mjs (which has done this for its links all along)
+// can't drift apart on what a tracker route resolves to.
+export const DEMO_CLAIM_ID = 'CLM-2024-001';
+
+export function substituteClaimId(route: string, claimId: string): string {
+  return route.replace(/\/:id(?=\/|$)/g, `/${claimId}`);
+}
 
 // Single mechanism for applying a ticket's ScenarioOverrides — extracted
 // from ClaimDevHelperService (2026-08-20) so the tracker's "Open in
@@ -57,9 +74,56 @@ export class PrototypeScenarioService {
     return this._tickets().find((t) => t.ticketId === id) ?? null;
   }
 
+  // ticket_state.prototype_ticket_id has never had any UI to set it — a tracker ticket's link
+  // to its prototype ticket file had to be typed in by hand (a free-text prototype_route field,
+  // with no linked state/tour) even though `DevTicket.ticketId` already uses the exact same
+  // "BMPCC-NNNN" format as the tracker's own jira_key. Auto-match by that format instead:
+  // the explicit DB value always wins if someone did set it, otherwise infer the link from a
+  // same-key ticket file. Shared by the tracker table and the detail panel so both agree on
+  // what "linked" means.
+  resolveTicketId(jiraKey: string, manualTicketId: string | null): string | null {
+    if (manualTicketId) return manualTicketId;
+    return this.getTicketById(jiraKey) ? jiraKey : null;
+  }
+
+  // Pure lookup, no side effects — for display/gating. applyTicket() does the side-effecting
+  // version of this same "first done AC's route" lookup when the route is actually opened.
+  // Always returns a navigable route: AC routes in public/tickets/*.json are concrete already
+  // (checked — 0 of them carry a param), the tracker's hand-typed ones get :id substituted for
+  // the linked ticket's own targetClaim, or the demo claim when no ticket file is linked.
+  resolveRoute(jiraKey: string, manualTicketId: string | null, manualRoute: string | null): string | null {
+    const ticketId = this.resolveTicketId(jiraKey, manualTicketId);
+    const ticket = ticketId ? this.getTicketById(ticketId) : null;
+    const ac = ticket?.acceptanceCriteria.find((a) => a.buildStatus === 'done');
+    if (ac) return ac.howToTest.route;
+    if (!manualRoute) return null;
+    return substituteClaimId(manualRoute, ticket?.targetClaim ?? DEMO_CLAIM_ID);
+  }
+
+  // Absolute URL for opening a scenario in a NEW TAB. `pt` is the entry contract
+  // PrototypeEntryService reads back on boot over there: sessionStorage is not
+  // shared with a new tab, so the state applied in THIS tab cannot travel — the
+  // new tab has to rebuild the scenario from the URL itself. Side effect worth
+  // having: the link is now shareable, paste it anywhere and it opens with the
+  // scenario applied. Relative to document.baseURI so it works under the
+  // gh-pages base href as well as on localhost.
+  buildPrototypeUrl(route: string, ticketId: string | null): string {
+    const url = new URL(route.replace(/^\//, ''), document.baseURI);
+    if (ticketId) url.searchParams.set('pt', ticketId);
+    return url.toString();
+  }
+
+  // Mirrors runPostLandForTicket()'s own precedence: the first 'done' AC's
+  // declared postLand (if any) always wins over the ticket-level tour — a
+  // tour bolted onto an already-auto-opened modal would fight it for screen
+  // space (see claim-dev-helper.service.ts's tourHooksFor comment). Without
+  // this check the tracker's "has tour" badge would promise a tour that
+  // clicking through never actually shows.
   hasTour(id: string): boolean {
     const ticket = this.getTicketById(id);
-    return !!ticket?.walkthroughSteps.some((s) => typeof s !== 'string');
+    if (!ticket?.walkthroughSteps.length) return false;
+    const ac = ticket.acceptanceCriteria.find((a) => a.buildStatus === 'done');
+    return !ac?.setup.postLand?.length;
   }
 
   // The tracker links to a whole prototype ticket, not one specific AC —
@@ -75,12 +139,17 @@ export class PrototypeScenarioService {
     return ac.howToTest.route;
   }
 
+  // The apply→navigate→postLand chain used to live here as openRoute(), navigating
+  // the tracker's own tab. It's gone: launching in a new tab means the sequence has
+  // to run in the tab that RECEIVES the link, so PrototypeEntryService owns it now
+  // (applyFromUrl before the router, runEntryTour after the access gate) and calls
+  // applyTicket() + runPostLandForTicket() here for the two halves it needs.
   async runPostLandForTicket(ticketId: string, claimId?: string): Promise<void> {
     const ticket = this.getTicketById(ticketId);
     const ac = ticket?.acceptanceCriteria.find((a) => a.buildStatus === 'done');
     if (!ticket || !ac) return;
     const declaredHooks = ac.setup.postLand ?? [];
-    const tourSteps = ticket.walkthroughSteps.filter((s): s is TourStep => typeof s !== 'string');
+    const tourSteps = ticket.walkthroughSteps.map(toTourStep);
     const hooks = declaredHooks.length > 0 ? declaredHooks : tourSteps.length > 0 ? [{ kind: 'tour.start' as const, steps: tourSteps }] : [];
     await this.stageSvc.run(hooks, claimId);
   }
