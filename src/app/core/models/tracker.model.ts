@@ -49,7 +49,14 @@ export interface Ticket {
 // OUR data — the Jira sync must never write to this shape.
 export interface TicketState {
   ticketId: string;
-  designStatus: TrackerStageStatus;
+  // No designStatus. The ticket_state.design_status column still exists in
+  // Supabase (0001_tracker.sql) and is left alone — dropping a column needs a
+  // migration and buys nothing — but nothing in the app reads or writes it as of
+  // 2026-09-02. It duplicated buildStatus in practice: 15 of 15 handoff-done rows
+  // were also build-done, only 7 distinct combinations existed across 51 rows,
+  // and 49 of the 51 were stamped `updated_by: Claude`, i.e. self-assessed by an
+  // agent session rather than by a designer. A column nobody sets honestly is
+  // worse than no column.
   buildStatus: TrackerStageStatus;
   handoffStatus: TrackerStageStatus;
   blockedBy: BlockedReason;

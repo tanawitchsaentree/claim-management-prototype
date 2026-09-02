@@ -46,13 +46,6 @@
       </div>
 
       <div class="tdp-stage-row">
-        <nx-formfield label="Design">
-          <nx-dropdown [formControl]="designControl" (selectionChange)="onDesignChange($event.value)">
-            @for (opt of stageOptions; track opt.value) {
-              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-        </nx-formfield>
         <nx-formfield label="Build">
           <nx-dropdown [formControl]="buildControl" (selectionChange)="onBuildChange($event.value)">
             @for (opt of stageOptions; track opt.value) {

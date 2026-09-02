@@ -41,7 +41,6 @@ export function toEpic(row: Record<string, unknown>): Epic {
 export function toTicketState(row: Record<string, unknown>): TicketState {
   return {
     ticketId: row['ticket_id'] as string,
-    designStatus: row['design_status'] as TicketState['designStatus'],
     buildStatus: row['build_status'] as TicketState['buildStatus'],
     handoffStatus: row['handoff_status'] as TicketState['handoffStatus'],
     blockedBy: row['blocked_by'] as TicketState['blockedBy'],

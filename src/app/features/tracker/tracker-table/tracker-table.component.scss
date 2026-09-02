@@ -109,17 +109,17 @@
 //
 // min-width is the sum of the declared widths. table-layout: fixed + width: 100%
 // scales the columns up proportionally when the window is wider and stops at the
-// sum when it isn't, so the wrapper's overflow-x only ever engages below 1325px
+// sum when it isn't, so the wrapper's overflow-x only ever engages below 1205px
 // rather than on every load.
 .tt-table {
   --table-condense-horizontal-padding: var(--space-sm);
 
   width: 100%;
-  min-width: 1325px;
+  min-width: 1205px;
   table-layout: fixed;
 }
 
-// Sum = 1325, and each width is sized off the LONGEST VALUE ACTUALLY IN THE DATA
+// Sum = 1205, and each width is sized off the LONGEST VALUE ACTUALLY IN THE DATA
 // (measured from tracker-data/), not a guess — chips can't wrap, so a column
 // short by one character overflows into its neighbour:
 //   .col-key       "BMPCC-14833"        — 11 chars at the 16px cell font
@@ -129,8 +129,13 @@
 //   .col-links     two 24px icons + 8px gap — nx-icon size="s" renders 24px, not 16px
 // Only .col-title and .col-epic wrap, so those two absorb the leftover width.
 // Changing one number without rebalancing the others reintroduces the overflow.
+//
+// Was 1325 across 3 stage columns. Design was dropped (2026-09-02, user's call:
+// it duplicated Build — 15 of 15 handoff-done rows were also build-done, and 49
+// of 51 stage values were self-assessed by agent sessions rather than by a
+// designer), so its 120px went to .col-title, the column that actually needed it.
 .col-key         { width: 118px; white-space: nowrap; }
-.col-title       { width: 200px; }
+.col-title       { width: 320px; }
 .col-epic        { width: 150px; }
 .col-jira-status { width: 116px; }
 .col-stage       { width: 120px; }
@@ -142,13 +147,13 @@
 // Grouped by epic, the Epic column repeats the group heading verbatim on every
 // row under it — 150px spent restating what the row above already says. Hidden
 // in that mode only; flat list still needs it. Its 150px is handed explicitly to
-// .col-title (200 + 150 = 350) rather than left for the browser to redistribute:
+// .col-title (320 + 150 = 470) rather than left for the browser to redistribute:
 // Chrome does NOT spread the surplus when a fixed-layout table's declared widths
 // under-sum its box, it just leaves dead space after the last column — measured,
 // 159px of empty grid inside the wrapper border.
 .tt-table--grouped {
   .col-epic { display: none; }
-  .col-title { width: 350px; }
+  .col-title { width: 470px; }
 }
 
 // Visual separator between Jira's status and our own tracking columns —

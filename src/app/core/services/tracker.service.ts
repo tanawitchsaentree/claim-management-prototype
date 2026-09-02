@@ -156,11 +156,10 @@ export class TrackerService {
 
   async updateTicketState(
     ticketId: string,
-    partial: Partial<Pick<TicketState, 'designStatus' | 'buildStatus' | 'handoffStatus' | 'blockedBy' | 'blockedNote' | 'prototypeRoute'>>,
+    partial: Partial<Pick<TicketState, 'buildStatus' | 'handoffStatus' | 'blockedBy' | 'blockedNote' | 'prototypeRoute'>>,
     updatedBy: string,
   ): Promise<void> {
     const patch: Record<string, unknown> = { updated_by: updatedBy };
-    if (partial.designStatus !== undefined) patch['design_status'] = partial.designStatus;
     if (partial.buildStatus !== undefined) patch['build_status'] = partial.buildStatus;
     if (partial.handoffStatus !== undefined) patch['handoff_status'] = partial.handoffStatus;
     if (partial.blockedBy !== undefined) patch['blocked_by'] = partial.blockedBy;

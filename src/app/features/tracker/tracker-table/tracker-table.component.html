@@ -99,8 +99,7 @@
           <th nxHeaderCell class="col-title">Title</th>
           <th nxHeaderCell class="col-epic">Epic</th>
           <th nxHeaderCell class="col-jira-status">Jira status</th>
-          <th nxHeaderCell class="col-stage col-stage--ours-start">Design</th>
-          <th nxHeaderCell class="col-stage">Build</th>
+          <th nxHeaderCell class="col-stage col-stage--ours-start">Build</th>
           <th nxHeaderCell class="col-stage">Handoff</th>
           <th nxHeaderCell class="col-blocked">Blocked</th>
           <th nxHeaderCell class="col-days">Days</th>
@@ -113,7 +112,7 @@
         @for (group of groupsToRender(); track group.epicId) {
           @if (groupByEpic()) {
             <tr nxTableRow class="tt-epic-row">
-              <td nxCell colspan="12" class="tt-epic-row__label"><strong>{{ group.epicTitle }}</strong></td>
+              <td nxCell colspan="11" class="tt-epic-row__label"><strong>{{ group.epicTitle }}</strong></td>
             </tr>
           }
           @for (ticket of group.tickets; track ticket.id) {
@@ -131,8 +130,7 @@
                   <span class="tt-muted">—</span>
                 }
               </td>
-              <td nxCell class="col-stage col-stage--ours-start"><app-status-chip [status]="ticket.state.designStatus" domain="tracker"></app-status-chip></td>
-              <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.buildStatus" domain="tracker"></app-status-chip></td>
+              <td nxCell class="col-stage col-stage--ours-start"><app-status-chip [status]="ticket.state.buildStatus" domain="tracker"></app-status-chip></td>
               <td nxCell class="col-stage"><app-status-chip [status]="ticket.state.handoffStatus" domain="tracker"></app-status-chip></td>
               <td nxCell class="col-blocked">
                 @if (ticket.state.blockedBy !== 'none') {

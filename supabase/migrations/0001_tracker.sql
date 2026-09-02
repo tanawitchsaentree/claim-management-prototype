@@ -52,6 +52,10 @@ create table ticket (
 -- OUR data. The Jira sync (Edge Function) must never write to this table.
 create table ticket_state (
   ticket_id       uuid primary key references ticket(id),
+  -- LEGACY as of 2026-09-02: no longer read or written by the app. The Design
+  -- column was removed from the tracker table and the detail panel (see
+  -- src/app/core/models/tracker.model.ts for why). Left in place — this file is
+  -- the applied migration, not a live schema, and the column is harmless.
   design_status   text not null default 'not_started'
                     check (design_status in ('not_started', 'in_progress', 'done')),
   build_status    text not null default 'not_started'

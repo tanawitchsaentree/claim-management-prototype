@@ -157,7 +157,7 @@ for (const pi of [...groups.keys()].sort().reverse()) {
   for (const t of groups.get(pi)) {
     const st = stateById.get(t.id) ?? {};
     const flags = [
-      `D ${st.design_status ?? '?'}`, `B ${st.build_status ?? '?'}`, `H ${st.handoff_status ?? '?'}`,
+      `B ${st.build_status ?? '?'}`, `H ${st.handoff_status ?? '?'}`,
       st.blocked_by && st.blocked_by !== 'none' ? `⛔ ${st.blocked_by}` : null,
     ].filter(Boolean).join(' · ');
     md.push(`### ${t.jira_key} — ${t.title.trim()}`, '', `${flags}${t.assignee ? ` · assignee: ${t.assignee}` : ''}`, '');

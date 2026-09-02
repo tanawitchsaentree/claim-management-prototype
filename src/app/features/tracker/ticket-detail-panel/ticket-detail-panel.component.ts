@@ -76,7 +76,6 @@ export class TicketDetailPanelComponent implements OnChanges {
   readonly stageOptions = STAGE_OPTIONS;
   readonly blockedOptions = BLOCKED_OPTIONS;
 
-  readonly designControl = new FormControl<TrackerStageStatus>('not_started', { nonNullable: true });
   readonly buildControl = new FormControl<TrackerStageStatus>('not_started', { nonNullable: true });
   readonly handoffControl = new FormControl<TrackerStageStatus>('not_started', { nonNullable: true });
   readonly blockedByControl = new FormControl<BlockedReason>('none', { nonNullable: true });
@@ -139,7 +138,6 @@ export class TicketDetailPanelComponent implements OnChanges {
     const ticket = this.trackerService.ticket();
     if (!ticket) return;
 
-    this.designControl.setValue(ticket.state.designStatus, { emitEvent: false });
     this.buildControl.setValue(ticket.state.buildStatus, { emitEvent: false });
     this.handoffControl.setValue(ticket.state.handoffStatus, { emitEvent: false });
     this.blockedByControl.setValue(ticket.state.blockedBy, { emitEvent: false });
@@ -152,10 +150,6 @@ export class TicketDetailPanelComponent implements OnChanges {
   private async currentUserEmail(): Promise<string> {
     const { data } = await this.supabase.auth.getUser();
     return data.user?.email ?? 'unknown';
-  }
-
-  async onDesignChange(value: TrackerStageStatus): Promise<void> {
-    await this.saveState({ designStatus: value });
   }
 
   async onBuildChange(value: TrackerStageStatus): Promise<void> {
@@ -181,7 +175,6 @@ export class TicketDetailPanelComponent implements OnChanges {
 
   private async saveState(
     partial: Partial<{
-      designStatus: TrackerStageStatus;
       buildStatus: TrackerStageStatus;
       handoffStatus: TrackerStageStatus;
       blockedBy: BlockedReason;
