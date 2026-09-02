@@ -1,8 +1,13 @@
 // Tracker is a standalone internal tool, not part of the claim-management
 // app's page hierarchy — deliberately NOT using PageShellComponent (which
 // always renders the main app navbar). This is its own minimal container.
+// 1400px, not the 1200px the claim pages use: 12 columns of dense tabular data
+// need 1325px before anything starts clipping (see .tt-table below), and 1200
+// minus two --layout-inset-base gutters leaves 1136 — which is why every narrow
+// column was overflowing its cell and the table sat permanently inside a
+// horizontal scrollbar. Reading-width limits are for prose, not for this.
 .tracker-page {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: var(--page-content-top) var(--layout-inset-base);
 }
@@ -71,11 +76,9 @@
 // unconstrained columns based on content width per row, which is why
 // header text and data cells drifted out of visual alignment with each
 // other as soon as row content varied (a status chip vs. a bare "—").
-// Column widths below sum to ~1264px, wider than .tracker-page's 1200px
-// max-width once padding is subtracted — table-layout: fixed honors those
-// declared widths over the container, so without this wrapper the overflow
-// had nowhere to go but off the page (no border, no scrollbar, columns past
-// "Days blocked" just clipped). Scoped scroll + visible boundary instead.
+// The scroll here is now the narrow-window fallback, not the normal state:
+// the declared widths sum to exactly .tt-table's min-width, which fits inside
+// .tracker-page at its max-width. It engages below ~1390px of viewport.
 .tt-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--ui-04);
@@ -90,20 +93,63 @@
   }
 }
 
+// Every width below is CONTENT width + 16px of cell padding. NDBX cells carry
+// 16px of horizontal padding per side — 32px per cell, from
+// --table-cell-horizontal-padding (ndbx-expert.css:2267) — and the previous
+// widths were picked as if that padding were zero, so every one of them was
+// short by 32px: .col-indicator at 32px left 0px for a 24px icon, .col-links at
+// 70px left 38px for 56px of icons, .col-days at 90px left 58px for a 95px
+// "Days blocked" header. None of it truncated, either — status chips are
+// `white-space: nowrap` (status-chip.component.scss) and header text doesn't
+// wrap, so all of it silently overflowed into the next column instead.
+//
+// `condensed` on the table (tracker-table.component.html) switches the padding
+// token to --table-condense-horizontal-padding, halved here to 8px/side, and
+// halves vertical padding too — this is a dense internal tool, not a claim page.
+//
+// min-width is the sum of the declared widths. table-layout: fixed + width: 100%
+// scales the columns up proportionally when the window is wider and stops at the
+// sum when it isn't, so the wrapper's overflow-x only ever engages below 1325px
+// rather than on every load.
 .tt-table {
+  --table-condense-horizontal-padding: var(--space-sm);
+
   width: 100%;
+  min-width: 1325px;
   table-layout: fixed;
 }
 
-.col-key         { width: 90px; }
-.col-title       { width: 260px; }
-.col-epic        { width: 180px; }
-.col-jira-status { width: 100px; }
-.col-stage       { width: 100px; }
-.col-blocked     { width: 110px; }
-.col-days        { width: 90px; text-align: right; }
-.col-indicator   { text-align: center; width: 32px; }
-.col-links       { width: 70px; }
+// Sum = 1325, and each width is sized off the LONGEST VALUE ACTUALLY IN THE DATA
+// (measured from tracker-data/), not a guess — chips can't wrap, so a column
+// short by one character overflows into its neighbour:
+//   .col-key       "BMPCC-14833"        — 11 chars at the 16px cell font
+//   .col-jira-status "In Acceptance"    — longest of 7 distinct jira_status values
+//   .col-stage     "Not Started"        — 11 chars + 20px chip padding
+//   .col-blocked   "Waiting Other Epic" — 18 chars, the widest cell in the table
+//   .col-links     two 24px icons + 8px gap — nx-icon size="s" renders 24px, not 16px
+// Only .col-title and .col-epic wrap, so those two absorb the leftover width.
+// Changing one number without rebalancing the others reintroduces the overflow.
+.col-key         { width: 118px; white-space: nowrap; }
+.col-title       { width: 200px; }
+.col-epic        { width: 150px; }
+.col-jira-status { width: 116px; }
+.col-stage       { width: 120px; }
+.col-blocked     { width: 173px; }
+.col-days        { width: 56px; text-align: right; }
+.col-indicator   { text-align: center; width: 40px; }
+.col-links       { width: 72px; }
+
+// Grouped by epic, the Epic column repeats the group heading verbatim on every
+// row under it — 150px spent restating what the row above already says. Hidden
+// in that mode only; flat list still needs it. Its 150px is handed explicitly to
+// .col-title (200 + 150 = 350) rather than left for the browser to redistribute:
+// Chrome does NOT spread the surplus when a fixed-layout table's declared widths
+// under-sum its box, it just leaves dead space after the last column — measured,
+// 159px of empty grid inside the wrapper border.
+.tt-table--grouped {
+  .col-epic { display: none; }
+  .col-title { width: 350px; }
+}
 
 // Visual separator between Jira's status and our own tracking columns —
 // "grouped separately" per the tracker-usability audit (2026-08-20), on
@@ -143,9 +189,12 @@
   background: var(--ui-02);
 }
 
+// Horizontal padding matches --table-cell-horizontal-padding-edge (8px, applied
+// to every first-child cell) so the epic name lines up with the ticket keys under
+// it instead of sitting 4px to their right.
 .tt-epic-row__label {
   color: var(--text-01);
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm);
 }
 
 .tt-ticket-row {
@@ -160,11 +209,12 @@
   color: var(--text-muted);
 }
 
-// Scoped to the body cell only (td.col-links) — the header cell (th.col-links,
-// "Links" text) should stay a normal cell, not flex, so its text aligns the
-// same way every other header does.
-td.col-links {
-  display: flex;
+// The flex row is an inner span, not the <td> itself. `display: flex` on a table
+// cell drops it out of the row's shared baseline, which is why the two link icons
+// sat at a different height from the "—" and the chips in the same row.
+.tt-links {
+  display: inline-flex;
+  align-items: center;
   gap: var(--space-sm);
 }
 

@@ -92,10 +92,10 @@
     <app-empty-state message="No tickets match these filters."></app-empty-state>
   } @else {
     <div class="tt-table-wrap" [class.tt-table-wrap--updating]="trackerService.loading()" [attr.aria-busy]="trackerService.loading()" tabindex="0">
-    <table nxTable class="tt-table">
+    <table nxTable condensed class="tt-table" [class.tt-table--grouped]="groupByEpic()">
       <thead>
         <tr nxTableRow>
-          <th nxHeaderCell class="col-key">Ticket key</th>
+          <th nxHeaderCell class="col-key">Ticket</th>
           <th nxHeaderCell class="col-title">Title</th>
           <th nxHeaderCell class="col-epic">Epic</th>
           <th nxHeaderCell class="col-jira-status">Jira status</th>
@@ -103,9 +103,9 @@
           <th nxHeaderCell class="col-stage">Build</th>
           <th nxHeaderCell class="col-stage">Handoff</th>
           <th nxHeaderCell class="col-blocked">Blocked</th>
-          <th nxHeaderCell class="col-days">Days blocked</th>
-          <th nxHeaderCell class="col-indicator" aria-label="Prototype route"><nx-icon name="launch" size="s"></nx-icon></th>
-          <th nxHeaderCell class="col-indicator" aria-label="Tour"><nx-icon name="product-guide-navigation" size="s"></nx-icon></th>
+          <th nxHeaderCell class="col-days">Days</th>
+          <th nxHeaderCell class="col-indicator" title="Prototype route" aria-label="Prototype route"><nx-icon name="launch" size="s"></nx-icon></th>
+          <th nxHeaderCell class="col-indicator" title="Tour" aria-label="Tour"><nx-icon name="product-guide-navigation" size="s"></nx-icon></th>
           <th nxHeaderCell class="col-links">Links</th>
         </tr>
       </thead>
@@ -164,16 +164,18 @@
                 }
               </td>
               <td nxCell class="col-links">
-                @if (ticket.jiraUrl) {
-                  <a [href]="ticket.jiraUrl" target="_blank" rel="noopener" aria-label="Open in Jira" (click)="$event.stopPropagation()">
-                    <nx-icon name="launch" size="s"></nx-icon>
-                  </a>
-                }
-                @if (ticket.confluenceUrl) {
-                  <a [href]="ticket.confluenceUrl" target="_blank" rel="noopener" aria-label="Open in Confluence" (click)="$event.stopPropagation()">
-                    <nx-icon name="speech-bubble-o" size="s"></nx-icon>
-                  </a>
-                }
+                <span class="tt-links">
+                  @if (ticket.jiraUrl) {
+                    <a [href]="ticket.jiraUrl" target="_blank" rel="noopener" aria-label="Open in Jira" (click)="$event.stopPropagation()">
+                      <nx-icon name="launch" size="s"></nx-icon>
+                    </a>
+                  }
+                  @if (ticket.confluenceUrl) {
+                    <a [href]="ticket.confluenceUrl" target="_blank" rel="noopener" aria-label="Open in Confluence" (click)="$event.stopPropagation()">
+                      <nx-icon name="speech-bubble-o" size="s"></nx-icon>
+                    </a>
+                  }
+                </span>
               </td>
             </tr>
           }
