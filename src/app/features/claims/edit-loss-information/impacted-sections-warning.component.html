@@ -1,0 +1,41 @@
+<nx-message context="warning" class="isw">
+  <p class="isw__headline">{{ headline() }}</p>
+
+  @if (removed().length) {
+    <p class="isw__group">These sections carry a damage type you're removing from the claim:</p>
+    <ul class="isw__list">
+      @for (i of removed(); track i.sectionName) {
+        <li>
+          <strong>{{ i.sectionName }}</strong>
+          <span class="isw__meta">{{ i.damageLabel }} · {{ entityText(i.entityCount) }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (added().length) {
+    <p class="isw__group">New damage types — no section covers these yet:</p>
+    <ul class="isw__list">
+      @for (i of added(); track i.damageLabel) {
+        <li><strong>{{ i.damageLabel }}</strong></li>
+      }
+    </ul>
+  }
+
+  @if (review().length) {
+    <p class="isw__group">Coverage on these sections may no longer match the updated cause of loss or location:</p>
+    <ul class="isw__list">
+      @for (i of review(); track i.sectionName) {
+        <li>
+          <strong>{{ i.sectionName }}</strong>
+          <span class="isw__meta">{{ i.damageLabel }} · {{ entityText(i.entityCount) }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  <p class="isw__note">
+    Nothing is applied to sections automatically. Saving takes you to the Sections page to close,
+    update or add sections to match.
+  </p>
+</nx-message>

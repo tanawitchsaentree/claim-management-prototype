@@ -14,7 +14,7 @@
 
 @if (reviewBanner(); as changes) {
   <nx-message context="warning" [closable]="true" (close)="dismissReviewBanner()" class="sec-review-banner">
-    <p class="sec-review-banner__title">Review sections — loss information changed</p>
+    <p class="sec-review-banner__title">Review sections — loss information updated</p>
     <ul class="sec-review-banner__changes">
       @for (c of changes; track c.label) {
         <li>{{ c.label }}: <strong>{{ c.oldValue }}</strong> → <strong>{{ c.newValue }}</strong></li>

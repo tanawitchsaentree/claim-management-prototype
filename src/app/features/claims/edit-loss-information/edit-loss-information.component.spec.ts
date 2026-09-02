@@ -116,6 +116,44 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     });
   });
 
+  // Marlene, 2026-09-01: the user should see which sections are about to be
+  // impacted BEFORE hitting confirm. CLM-2024-001 has one open section
+  // (Property Damage — Warehouse & Forklift, material-damage, 2 entities) and
+  // three closed ones, and its typeOfDamage is ['material-damage', 'financial-loss'].
+  describe('Gate 5 — impacted sections are named before confirm', () => {
+    it('is empty while nothing is pending', () => {
+      expect(component.impactedSections()).toEqual([]);
+    });
+
+    it('stays empty for a description-only update', () => {
+      component.form.get('lossDescription')!.setValue('changed value');
+      expect(component.impactedSections()).toEqual([]);
+    });
+
+    it('names the open section orphaned by removing its damage type', () => {
+      component.form.get('typeOfDamage')!.setValue(['financial-loss']);
+      const impacts = component.impactedSections();
+      expect(impacts.length).toBe(1);
+      expect(impacts[0].kind).toBe('damage-removed');
+      expect(impacts[0].sectionName).toContain('Warehouse');
+      expect(impacts[0].entityCount).toBe(2);
+    });
+
+    it('flags the open section for coverage re-check when cause of loss changes', () => {
+      component.form.get('causeOfLoss')!.setValue(['fire', 'lightning']);
+      expect(component.impactedSections().map(i => i.kind)).toEqual(['coverage-review']);
+    });
+
+    it('hands the impact list to the confirm modal', async () => {
+      component.form.get('typeOfDamage')!.setValue(['financial-loss']);
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
+      await component.onSaveChanges();
+      const data = fakeDialogOpen.mock.calls[0][1].data;
+      expect(data.impacts.length).toBe(1);
+      expect(data.impacts[0].sectionName).toContain('Warehouse');
+    });
+  });
+
   // 22 of the 27 claims in claims.json have no hand-authored loss-information
   // record. Before MockLossInformationService synthesized one, the screen loaded
   // with `original` null, every field read "Not provided", computeDiffs()

@@ -21,77 +21,29 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MockLossInformationService } from '../../../core/mock/services/mock-loss-information.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
+import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
+import { ClaimSection } from '../../../core/models/section.model';
 import { LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../core/models';
 import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
-import {
-  LossInfoConfirmModalComponent,
-  LossInfoConfirmModalData,
-  LossInfoDiffField,
-} from './loss-info-confirm-modal.component';
+import { LossInfoConfirmModalComponent, LossInfoConfirmModalData } from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
+import { ImpactedSectionsWarningComponent } from './impacted-sections-warning.component';
+import { SectionImpact, computeSectionImpacts } from './impacted-sections';
+import {
+  IMPACT_LABELS,
+  LABEL_TO_FIELD_KEY,
+  VALIDATED_FIELDS,
+  LossInfoDiffField,
+  computeLossInfoDiffs,
+} from './loss-info-diff';
 
-// Fields whose change is treated as sections-impacting (see onSaveChanges) —
-// exported so the Gate Proof test can assert against the real list, not a
-// re-typed copy of it. 'Type of damages' added 2026-08-31 (Marlene feedback)
-// — ClaimSection.damageType maps directly to this field, unlike Cause of loss/
-// Loss location below, which are still just a proxy heuristic (see the long
-// comment on onSaveChanges for why those two stay in as best-effort signals).
-export const IMPACT_LABELS = ['Cause of loss', 'Type of damages', 'Loss location'];
-
-// Diff label -> which read/edit field group a change belongs to. Used by
-// fieldChanged() to highlight the right field group; no longer used for
-// per-field revert (removed 2026-08-31, Marlene feedback — Discard/Confirm-
-// Cancel are the only undo paths now).
 type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
-
-const LABEL_TO_FIELD_KEY: Record<string, string> = {
-  'Cause of loss':             'causeOfLoss',
-  'Type of damages':           'typeOfDamage',
-  // The qualifier points at the group whose edit block contains it, so the
-  // changed-field highlight lands where the user can actually see the input.
-  'Specify other cause of loss': 'causeOfLoss',
-  'Date of occurrence':        'dateGroup',
-  'Time of occurrence':        'dateGroup',
-  'Date of notification':      'dateGroup',
-  'Time of notification':      'dateGroup',
-  'Loss description':          'lossDescription',
-  'Loss location':             'lossLocation',
-};
-
-// Every field group sits collapsed behind an Update/Add link, so a required
-// control that fails validation takes its error message down with it — Save
-// simply refused with nothing on screen to fix. onSaveChanges() walks this list
-// to name what is missing and to reopen the group that holds it.
-const VALIDATED_FIELDS: Array<{ path: string; field: string; label: string }> = [
-  { path: 'dateOfLoss.dateOfOccurrence',   field: 'dateGroup',       label: 'Date of occurrence' },
-  { path: 'dateOfLoss.timeOfOccurrence',   field: 'dateGroup',       label: 'Time of occurrence' },
-  { path: 'dateOfLoss.dateOfNotification', field: 'dateGroup',       label: 'Date of notification' },
-  { path: 'dateOfLoss.timeOfNotification', field: 'dateGroup',       label: 'Time of notification' },
-  { path: 'causeOfLoss',                   field: 'causeOfLoss',     label: 'Cause of loss' },
-  { path: 'specifyOtherCauseOfLoss',       field: 'causeOfLoss',     label: 'Specify other cause of loss' },
-  { path: 'typeOfDamage',                  field: 'typeOfDamage',    label: 'Type of damage' },
-  { path: 'lossDescription',               field: 'lossDescription', label: 'Loss description' },
-];
-
-// Diff baseline for a claim with no LossInformation record at all — an unknown
-// claimId, since a real claim gets one synthesized (see
-// MockLossInformationService.getByClaimId). Without it computeDiffs() returned
-// [] unconditionally, which disabled Save forever on a screen the user had just
-// filled in.
-const BLANK_ORIGINAL = {
-  dateOfLoss: {
-    dateOfOccurrence: null, timeOfOccurrence: null,
-    dateOfNotification: null, timeOfNotification: null,
-  },
-  lossLocation: { locations: [] },
-  causeOfLoss: [], typeOfDamage: [], specifyOtherCauseOfLoss: '', lossDescription: '',
-} as unknown as LossInformation;
 
 @Component({
   selector: 'app-edit-loss-information',
@@ -105,6 +57,7 @@ const BLANK_ORIGINAL = {
     LocationPickerComponent,
     PageHeaderComponent,
     StatusChipComponent,
+    ImpactedSectionsWarningComponent,
   ],
   templateUrl: './edit-loss-information.component.html',
   styleUrl: './edit-loss-information.component.scss',
@@ -115,6 +68,7 @@ export class EditLossInformationComponent implements OnInit {
   private readonly lossInfoSvc  = inject(MockLossInformationService);
   private readonly lookupSvc    = inject(MockLookupService);
   private readonly overviewSvc  = inject(MockClaimOverviewService);
+  private readonly sectionSvc   = inject(MockSectionService);
   private readonly dialogSvc    = inject(NxDialogService);
   private readonly toast        = inject(ToastService);
   private readonly live         = inject(LiveAnnouncer);
@@ -248,6 +202,24 @@ export class EditLossInformationComponent implements OnInit {
     this.pendingChanges().some(d => IMPACT_LABELS.includes(d.label)),
   );
 
+  /** Open sections of this claim — the input to impactedSections(). */
+  readonly sections = signal<ClaimSection[]>([]);
+
+  // Which sections these pending updates hit, named, before Confirm (Marlene
+  // feedback, 2026-09-01). Recomputes with pendingChanges(), so the warning
+  // appears and disappears as the user edits rather than only on save.
+  readonly impactedSections = computed<SectionImpact[]>(() => {
+    const diffs = this.pendingChanges();
+    if (!diffs.length) return [];
+    return computeSectionImpacts({
+      sections: this.sections(),
+      originalDamageKeys: this.original()?.typeOfDamage ?? [],
+      updatedDamageKeys: this.selectedDamages,
+      damageLabel: k => this.typeOfDamageOptions().find(o => o.value === k)?.label ?? k,
+      changedLabels: diffs.map(d => d.label),
+    });
+  });
+
   // ── Lifecycle ────────────────────────────────────────────────────────
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
@@ -260,6 +232,8 @@ export class EditLossInformationComponent implements OnInit {
         this.prefillForm(li);
       }
     });
+
+    firstValueFrom(this.sectionSvc.getByClaimId(id)).then(sections => this.sections.set(sections));
 
     firstValueFrom(this.overviewSvc.getOverview(id)).then(claim => {
       this.policyNumber.set(claim?.policyNumber ?? null);
@@ -329,40 +303,13 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   // ── Diff computation ─────────────────────────────────────────────────
+  // Lives in loss-info-diff.ts — pure, so it is unit-testable without a
+  // TestBed and the component stops growing.
   private computeDiffs(): LossInfoDiffField[] {
-    const diffs: LossInfoDiffField[] = [];
-
-    const addIf = (label: string, o: unknown, n: unknown) => {
-      const os = o == null ? '' : String(o);
-      const ns = n == null ? '' : String(n);
-      if (os !== ns) diffs.push({ label, original: os, updated: ns });
-    };
-
-    const orig = this.original() ?? BLANK_ORIGINAL;
-    const cur = this.form.getRawValue() as unknown as LossInformationFormValue;
-
-    // Dates & times
-    addIf('Date of occurrence',    orig.dateOfLoss?.dateOfOccurrence,   cur.dateOfLoss?.dateOfOccurrence);
-    addIf('Time of occurrence',    orig.dateOfLoss?.timeOfOccurrence,   cur.dateOfLoss?.timeOfOccurrence);
-    addIf('Date of notification',  orig.dateOfLoss?.dateOfNotification, cur.dateOfLoss?.dateOfNotification);
-    addIf('Time of notification',  orig.dateOfLoss?.timeOfNotification, cur.dateOfLoss?.timeOfNotification);
-
-    // General
-    addIf('Cause of loss',   (orig.causeOfLoss ?? []).join(', '),  (cur.causeOfLoss ?? []).join(', '));
-    // Label deliberately ends with " damages" — loss-info-confirm-modal's
-    // damageChanged() keys off that exact suffix to show its Sections warning.
-    addIf('Type of damages', (orig.typeOfDamage ?? []).join(', '), (cur.typeOfDamage ?? []).join(', '));
-    // Deliberately NOT in IMPACT_LABELS — retyping the qualifier describes the
-    // same cause more precisely, it doesn't re-point ClaimSection.damageType.
-    addIf('Specify other cause of loss', orig.specifyOtherCauseOfLoss, cur.specifyOtherCauseOfLoss);
-    addIf('Loss description', orig.lossDescription, cur.lossDescription);
-
-    // Loss location (compare by displayName of first location as proxy)
-    const origLoc = (orig.lossLocation as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
-    const curLoc  = (cur.lossLocation  as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName ?? '';
-    addIf('Loss location', origLoc, curLoc);
-
-    return diffs;
+    return computeLossInfoDiffs(
+      this.original(),
+      this.form.getRawValue() as unknown as LossInformationFormValue,
+    );
   }
 
   // ── Save flow ─────────────────────────────────────────────────────────
@@ -382,7 +329,11 @@ export class EditLossInformationComponent implements OnInit {
     // through — the header's change ledger already showed the user what was
     // about to happen, so a modal here would be a barrier nobody reads.
     if (this.hasHighImpactChange()) {
-      const data: LossInfoConfirmModalData = { claimId: this.claimId(), diffs };
+      const data: LossInfoConfirmModalData = {
+        claimId: this.claimId(),
+        diffs,
+        impacts: this.impactedSections(),
+      };
       const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px', maxWidth: '92vw' });
       const result = await firstValueFrom(ref.afterClosed());
       if (result !== 'confirmed') return;
@@ -453,11 +404,11 @@ export class EditLossInformationComponent implements OnInit {
           },
         });
       } else {
-        this.toast.success('Loss information updated', `${activities.length} field(s) changed on ${this.claimId()}`);
+        this.toast.success('Loss information updated', `${activities.length} field(s) updated on ${this.claimId()}`);
         this.router.navigate(['/claims', this.claimId(), 'overview']);
       }
     } catch {
-      this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
+      this.toast.error('Failed to save', 'Please try again. Your updates have been kept.');
       // Form stays dirty — user remains on edit screen to retry.
     } finally {
       this.saving.set(false);

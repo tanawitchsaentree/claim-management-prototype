@@ -21,22 +21,22 @@
         <app-status-chip [status]="claimStatus().toLowerCase()" domain="claim"></app-status-chip>
       }
       @if (pendingChanges().length > 0) {
-        <span class="eli-change-counter">{{ pendingChanges().length }} unsaved change{{ pendingChanges().length === 1 ? '' : 's' }}</span>
+        <span class="eli-change-counter">{{ pendingChanges().length }} unsaved update{{ pendingChanges().length === 1 ? '' : 's' }}</span>
       } @else {
-        <span class="eli-change-counter eli-change-counter--none">No changes</span>
+        <span class="eli-change-counter eli-change-counter--none">No updates</span>
       }
     </div>
   </app-page-header>
 
-  <!-- Change ledger — the diff modal's content, promoted to where it can
+  <!-- Update ledger — the diff modal's content, promoted to where it can
        prevent a mistake instead of only reporting one at the last second.
        Present only when there's something to show. No per-field Revert —
        Discard (whole-form) and the Confirm/Cancel step on save are the only
        undo paths now (Marlene feedback, 2026-08-31): a per-row Revert was a
-       second, redundant way to back out of a change. -->
+       second, redundant way to back out of an update. -->
   @if (pendingChanges().length > 0) {
     <section class="eli-ledger">
-      <h2 class="eli-ledger__title">Pending changes</h2>
+      <h2 class="eli-ledger__title">Pending updates</h2>
       <ul class="eli-ledger__list">
         @for (d of pendingChanges(); track d.label) {
           <li class="eli-ledger__item">
@@ -50,6 +50,13 @@
         }
       </ul>
     </section>
+  }
+
+  <!-- Which sections these updates hit, named, while the user is still editing
+       — not after the save (Marlene feedback, 2026-09-01). Same component as
+       the one inside the confirm modal. -->
+  @if (impactedSections().length > 0) {
+    <app-impacted-sections-warning [impacts]="impactedSections()"></app-impacted-sections-warning>
   }
 
   <!-- Card: Loss information — Claim description card removed entirely
@@ -101,7 +108,7 @@
         <nx-multi-select [options]="typeOfDamageOptions()" selectValue="value" selectLabel="label"
           placeholder="Select type of damage" formControlName="typeOfDamage">
         </nx-multi-select>
-        <nx-hint nxFormfieldHint>Changing this may affect existing Sections — you'll be asked to confirm before saving.</nx-hint>
+        <nx-hint nxFormfieldHint>Updating this affects existing Sections — any that are impacted are listed at the top of the page before you save.</nx-hint>
       </nx-formfield>
     }
 
@@ -206,10 +213,10 @@
             (click)="onSaveChanges()">
       @if (saving()) { <nx-spinner size="small"></nx-spinner>&nbsp; }
       <nx-icon name="check" size="s" nxIconPositionStart></nx-icon>
-      Save {{ pendingChanges().length > 0 ? (pendingChanges().length + ' change' + (pendingChanges().length === 1 ? '' : 's')) : 'changes' }}
+      Save {{ pendingChanges().length > 0 ? (pendingChanges().length + ' update' + (pendingChanges().length === 1 ? '' : 's')) : 'updates' }}
     </button>
     <button nxButton="tertiary small" type="button" (click)="onDiscard()">
-      {{ pendingChanges().length > 0 ? ('Discard ' + pendingChanges().length + ' change' + (pendingChanges().length === 1 ? '' : 's')) : 'Discard' }}
+      {{ pendingChanges().length > 0 ? ('Discard ' + pendingChanges().length + ' update' + (pendingChanges().length === 1 ? '' : 's')) : 'Discard' }}
     </button>
   </div>
 

@@ -808,6 +808,24 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-02 — Marlene feedback: impacted-sections warning before Confirm + "update" terminology
+
+- **Source:** meeting feedback pasted in conversation — *"On the 'edit claim' screen, consider a warning for the user about the sections getting impacted, so the user can see what's about to change before they hit confirm. (coverage changes on sections mostly)"* and *"'Update' instead of 'change' terminology"*.
+- **Module:** Claims — Edit claim details (`/claims/:id/loss-information/edit`) + its confirm/discard modals + the Sections review banner
+- **Files touched:** 11 — new `edit-loss-information/impacted-sections.ts`, `impacted-sections.spec.ts`, `impacted-sections-warning.component.{ts,html,scss}`, `loss-info-diff.ts`; modified `edit-loss-information.component.{ts,html,spec.ts}`, `loss-info-confirm-modal.component.{ts,html}`, `loss-info-discard-modal.component.html`, `sections/sections.html`
+- **Notes:**
+  - **What existed before:** one generic sentence in the confirm modal (*"Damage type changes are not applied to existing Sections automatically…"*) and a review banner on the Sections page that only appeared **after** the save, via `changedFields/changedOld/changedNew` query params. Neither named a single section, and the second one arrives too late to change the user's mind — which is what the feedback asked for.
+  - **Two grades of truth, labelled differently on purpose.** `ClaimSection.damageType` holds one canonical `typeOfDamage` key, so removing a damage type **provably** orphans every open section carrying it (`kind: 'damage-removed'`, listed with entity count) and adding one **provably** leaves a damage type with no section (`'damage-added'`). Cause of loss / Loss location have no structured link to a section anywhere in the model, so they can only ever be reported as "re-check these" (`'coverage-review'`), never as "these are wrong". The wording in `impacted-sections-warning.component.html` keeps that distinction visible instead of flattening it into one confident-sounding warning.
+  - **Closed sections are out of scope.** Their coverage question was settled on closure and re-opening one is its own explicit action. An orphaned section is also reported once, not twice, when damage type *and* cause both change.
+  - **One component, rendered twice** — inline on the edit screen (so the consequence is visible while editing) and inside the confirm modal (so it is also the last thing read before Confirm). Same component both places so they cannot drift.
+  - **The generic damage warning stays as a fallback** for the case where a damage-type update names no section at all: a claim with no open sections, or a selection that was only reordered (`computeLossInfoDiffs` compares joined keys, so a reorder counts as a diff while the set is unchanged).
+  - **Terminology sweep:** header counter, ledger title, Save/Discard buttons, confirm-modal title + primary button, discard modal, the damage-type hint, the save/error toasts, and the Sections review banner title now say "update(s)". CSS class names (`eli-change-counter`, `eli-field--changed`) were left alone — renaming them is churn with no user-visible effect.
+  - **Net file-size improvement on a file that is still over the limit.** `computeDiffs` plus `IMPACT_LABELS`, `LABEL_TO_FIELD_KEY`, `VALIDATED_FIELDS`, `BLANK_ORIGINAL` moved into `loss-info-diff.ts` (pure, no TestBed needed), so `edit-loss-information.component.ts` went 532 → 483 lines **while** gaining the impact feature. Still over the 300-line limit; the remaining split is its own task. Template is 225 (limit 200) — the warning added 6 lines to it.
+  - **Tests:** 42/42 pass (was 30). 7 new pure unit tests on `computeSectionImpacts` and 5 new Gate 5 tests that mount the real screen on `CLM-2024-001` (one open `material-damage` section with 2 entities, three closed) and assert the empty case, the description-only case, the orphaned-section case, the coverage-review case, and that the list reaches the modal's `data.impacts`.
+  - **Also in this feedback batch, already built earlier and only verified here:** "remove revert" and "remove claim description" (2026-08-31), damage types in claim overview edit (2026-08-31), and all four Recoveries-call points (radio on screen, dashboard notification, closure-checklist rows, guidance towards setting up an actual recovery). `audit:ndbx-wrapper` still fails 3 lines — all pre-existing/foreign (`navbar.html:21`, `file-restriction-card.component.html:18`, and the uncommitted CBI search box in `add-section-entity-modal.component.html:99`).
+
+---
+
 <!--
 Template — copy below the most recent entry:
 

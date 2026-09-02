@@ -1,0 +1,35 @@
+// Mirrors .sec-review-banner in sections.scss:620 — the same warning, shown
+// before the save instead of after it, so the two should read as one thing.
+:host { display: block; }
+
+.isw { margin-bottom: var(--space-lg); }
+
+.isw__headline {
+  margin: 0 0 var(--space-xs);
+  font-weight: 600;
+}
+
+.isw__group {
+  margin: 0 0 var(--space-xs);
+  color: var(--text-01);
+}
+
+.isw__list {
+  margin: 0 0 var(--space-sm);
+  padding-left: var(--space-md);
+
+  li {
+    margin-bottom: var(--space-xs);
+    &:last-child { margin-bottom: 0; }
+  }
+}
+
+.isw__meta {
+  margin-left: var(--space-xs);
+  color: var(--text-muted);
+}
+
+.isw__note {
+  margin: 0;
+  color: var(--text-muted);
+}
