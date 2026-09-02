@@ -8,13 +8,13 @@ D = design · B = build · H = handoff. ✅ done · 🔄 in progress · ⬜ not 
 
 - `jira_status` is live only for the 51 tickets inside the edge function's fixed JQL scope. Everything else shows `–`, which means *no data*, not *no status*. The JQL is a server-side Supabase secret and cannot be overridden per request.
 - `pi_id` is tagged by hand. The sync never reads `fixVersion`, so PI 2026.4 holds only 4 rows here while Jira itself carries more under `fixVersion = PI 2026.4 CM`.
-- 5 tracker rows point at routes that do not exist in `src/app/app.routes.ts` (marked ⚠️ below). The app's `**` wildcard silently redirects them to `/dashboard`, so they look like they work: `/claims/:id/risk-analysis` (BMPCC-13725, 17777, 18472), `/claims/:id/financial-overview` (BMPCC-14826), `/claims/:id/provider-management` (BMPCC-18325).
+- The 5 rows that pointed at non-existent routes were repaired in the tracker on 2026-09-02 (`risk-analysis` → `risk`, `financial-overview` → `financial`, `provider-management` → `providers`). They had looked like they worked because the app's `**` wildcard silently redirects an unknown path to `/dashboard`. Any row still marked ⚠️ below is a fresh one.
 
 ## PI 2026.4 · (no epic)
 
 | Ticket | Title | Jira | Assignee | D | B | H | Prototype |
 |---|---|---|---|---|---|---|---|
-| [BMPCC-18352](https://jmp.allianz.net/browse/BMPCC-18352) | Claim Rejection | – | – | 🔄 | 🔄 | ⬜ ⛔waiting_product | [/claims/CLM-2024-001/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
+| [BMPCC-18352](https://jmp.allianz.net/browse/BMPCC-18352) | Claim Rejection | – | Nat | 🔄 | 🔄 | ⬜ | [/claims/CLM-2024-001/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
 
 ## PI 2026.4 · BMPCC-145 — Orphan Claim Conversion
 
@@ -26,13 +26,13 @@ D = design · B = build · H = handoff. ✅ done · 🔄 in progress · ⬜ not 
 
 | Ticket | Title | Jira | Assignee | D | B | H | Prototype |
 |---|---|---|---|---|---|---|---|
-| [BMPCC-18160](https://jmp.allianz.net/browse/BMPCC-18160) | [FIGMA] FNOL - circumstance selection field + Claim / Section Overview | To Do | Nat | ⬜ | ⬜ | ⬜ | – |
+| [BMPCC-18160](https://jmp.allianz.net/browse/BMPCC-18160) | [FIGMA] FNOL - circumstance selection field + Claim / Section Overview | To Do | Nat | ✅ | ✅ | ⬜ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
 
 ## PI 2026.4 · BMPCC-17927 — CBI Extension
 
 | Ticket | Title | Jira | Assignee | D | B | H | Prototype |
 |---|---|---|---|---|---|---|---|
-| [BMPCC-18353](https://jmp.allianz.net/browse/BMPCC-18353) | CBI Extension | – | Nat | 🔄 | ✅ | ⬜ ⛔waiting_product | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
+| [BMPCC-18353](https://jmp.allianz.net/browse/BMPCC-18353) | CBI Extension | – | Nat | 🔄 | ✅ | ⬜ | [/claims/:id/sections](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/sections) |
 
 ## PI 2026.3 · (no epic)
 
@@ -43,7 +43,7 @@ D = design · B = build · H = handoff. ✅ done · 🔄 in progress · ⬜ not 
 | [BMPCC-12160](https://jmp.allianz.net/browse/BMPCC-12160) | FIGMA - Party role (Assign a new party role) | Done | Unnikrishnan Nair, Anurag | ✅ | ✅ | ✅ | [/fnol/parties](https://tanawitchsaentree.github.io/claim-management-prototype/fnol/parties) |
 | [BMPCC-12837](https://jmp.allianz.net/browse/BMPCC-12837) | Dependency [AI][UX] AVA Commercial Claims — Figma Design Draft | Done | Mukund Saraf, Akanksha | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
 | [BMPCC-13148](https://jmp.allianz.net/browse/BMPCC-13148) | UX/UI Claims Commercial - Claims AI Search - Figma | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
-| [BMPCC-13725](https://jmp.allianz.net/browse/BMPCC-13725) | Fraud Authorization - UX/UI design creation | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/risk-analysis` dead |
+| [BMPCC-13725](https://jmp.allianz.net/browse/BMPCC-13725) | Fraud Authorization - UX/UI design creation | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/claims/:id/risk](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/risk) |
 | [BMPCC-14213](https://jmp.allianz.net/browse/BMPCC-14213) | [AOMS][UX/UI] Figma Design for AOMS Placement | Done | Parameswaran, Janaki | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
 | [BMPCC-14371](https://jmp.allianz.net/browse/BMPCC-14371) | [AI][UX] AVA Figma Design — follow up | Done | Parameswaran, Janaki | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
 | [BMPCC-14421](https://jmp.allianz.net/browse/BMPCC-14421) | [TMR][UX/UI] Figma Design for TMR Placement | Descoped | – | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
@@ -53,7 +53,7 @@ D = design · B = build · H = handoff. ✅ done · 🔄 in progress · ⬜ not 
 | [BMPCC-14454](https://jmp.allianz.net/browse/BMPCC-14454) | [UX/UI] Provider Communication via Email - Design for Send Communication Flow & Instruction Template | Done | Unnikrishnan Nair, Anurag | ✅ | 🔄 | 🔄 ⛔waiting_dev | [/claims/:id/providers](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/providers) |
 | [BMPCC-14710](https://jmp.allianz.net/browse/BMPCC-14710) | [UX] Validation Pattern and PA Enhancement | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
 | [BMPCC-14715](https://jmp.allianz.net/browse/BMPCC-14715) | [UX] Expertise Multi-Select Design | Done | Unnikrishnan Nair, Anurag | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
-| [BMPCC-14826](https://jmp.allianz.net/browse/BMPCC-14826) | UI/UX - Design for Closed Claim and Closed Section States across Financial Overview, Reserve Overview and Reserve Detail Screens | Done | Costigan, Ruby Isabelle | ✅ | ✅ | ⬜ | ⚠️ `/claims/:id/financial-overview` dead |
+| [BMPCC-14826](https://jmp.allianz.net/browse/BMPCC-14826) | UI/UX - Design for Closed Claim and Closed Section States across Financial Overview, Reserve Overview and Reserve Detail Screens | Done | Costigan, Ruby Isabelle | ✅ | ✅ | ⬜ | [/claims/:id/financial](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/financial) |
 | [BMPCC-14830](https://jmp.allianz.net/browse/BMPCC-14830) | UI/UX - Design for Post-FNOL Reserve Flow: Save Button, Unsaved Changes Popup and Reserve Overview Navigation Button Removal | Done | Costigan, Ruby Isabelle | 🔄 | 🔄 | ⬜ ⛔scope_unclear | – |
 | [BMPCC-14831](https://jmp.allianz.net/browse/BMPCC-14831) | UI/UX - Design for Restructured Financial Overview Layout and Pagination for Transaction Summary and Payments Tables | Done | Costigan, Ruby Isabelle | ✅ | ✅ | ✅ | [/claims/:id/financial](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/financial) |
 | [BMPCC-14833](https://jmp.allianz.net/browse/BMPCC-14833) | UI/UX - Design for Monetary Deductibles in Payment Journey: Display, Selection, Real-Time Calculation and Dynamic Section-Based Filtering | Blocked | Costigan, Ruby Isabelle | ⬜ | ⬜ | ⬜ ⛔waiting_dev | – |
@@ -80,10 +80,10 @@ D = design · B = build · H = handoff. ✅ done · 🔄 in progress · ⬜ not 
 | [BMPCC-17347](https://jmp.allianz.net/browse/BMPCC-17347) | [FE] [Test Env] - Alignment issue  in Approval popup in Appshell and Figma | Done | Kharya, Harshit | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/approvals](https://tanawitchsaentree.github.io/claim-management-prototype/approvals) |
 | [BMPCC-17659](https://jmp.allianz.net/browse/BMPCC-17659) | Batch 1 - QA check by UX/UI team | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | – |
 | [BMPCC-17678](https://jmp.allianz.net/browse/BMPCC-17678) | [FE] UI/UX QA Fixes – Approvals Widget & Approvals Journey | Done | Jini, Ayush | ✅ | ✅ | ✅ | [/approvals](https://tanawitchsaentree.github.io/claim-management-prototype/approvals) |
-| [BMPCC-17777](https://jmp.allianz.net/browse/BMPCC-17777) | QA: Dropdown options in Referral type is not as per Figma | Done | Kasemdetudomsuk, Nuttawut | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/risk-analysis` dead |
+| [BMPCC-17777](https://jmp.allianz.net/browse/BMPCC-17777) | QA: Dropdown options in Referral type is not as per Figma | Done | Kasemdetudomsuk, Nuttawut | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/claims/:id/risk](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/risk) |
 | [BMPCC-17779](https://jmp.allianz.net/browse/BMPCC-17779) | [UI/UX] Recovery Potential Flag — Dependency | To Do | Costigan, Ruby Isabelle | ✅ | ✅ | ✅ | [/claims/:id/overview](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/overview) |
-| [BMPCC-18325](https://jmp.allianz.net/browse/BMPCC-18325) | [FE] UI enhancement — Provider Details - Align detail page styling with Figma (labels, spacing, buttons, back-link) | Done | Pothong, Supichai | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/provider-management` dead |
-| [BMPCC-18472](https://jmp.allianz.net/browse/BMPCC-18472) | QA: Change SID's decision field name to SIDs decision as per Figma | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | ⚠️ `/claims/:id/risk-analysis` dead |
+| [BMPCC-18325](https://jmp.allianz.net/browse/BMPCC-18325) | [FE] UI enhancement — Provider Details - Align detail page styling with Figma (labels, spacing, buttons, back-link) | Done | Pothong, Supichai | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/claims/:id/providers](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/providers) |
+| [BMPCC-18472](https://jmp.allianz.net/browse/BMPCC-18472) | QA: Change SID's decision field name to SIDs decision as per Figma | Done | Shivapriya, A | ⬜ | ⬜ | ⬜ ⛔scope_unclear | [/claims/:id/risk](https://tanawitchsaentree.github.io/claim-management-prototype/claims/CLM-2024-001/risk) |
 
 <details><summary>archived — 17 tickets</summary>
 
