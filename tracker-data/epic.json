@@ -1,0 +1,122 @@
+[
+ {
+  "id": "885dd2ac-e867-4d16-ad57-bd0fa3de2d2d",
+  "jira_key": "BMPCC-11581",
+  "title": "Claims Commercial - Baseline - Claim Edit functionality",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Progress",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "f25dc527-f16a-4bca-a8ec-6332e94ef72c",
+  "jira_key": "BMPCC-11587",
+  "title": "[UI UX] Alignment and Enhancements for Cross-Cutting Features",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "To Do",
+  "archived": false,
+  "created_at": "2026-08-20T08:01:21.978685+00:00",
+  "updated_at": "2026-09-02T03:00:42.685739+00:00"
+ },
+ {
+  "id": "d3107657-caf2-4d59-984c-41f110c1328d",
+  "jira_key": "BMPCC-14434",
+  "title": "Claim Status Management - Section & Claims Hierarchy Validations",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Progress",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "5537bd5d-3eca-45e1-a43b-0a4bd26fa937",
+  "jira_key": "BMPCC-14435",
+  "title": "Claim Status Management - Validations Across Domains",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Progress",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "effe6460-a5e3-4476-a613-1a0047104c01",
+  "jira_key": "BMPCC-14437",
+  "title": "Claim Status Management - Closure of Claims - Last Payment",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Acceptance",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "40c10257-5e56-4e7d-9ac5-9d5ee5eff8c3",
+  "jira_key": "BMPCC-14494",
+  "title": "Claims Lifecycle: FNOL Feature Enhancements",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Progress",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "998b393e-c0af-4ae7-b43d-91d41703ce9e",
+  "jira_key": "BMPCC-145",
+  "title": "Orphan Claim Conversion",
+  "pi_id": "5a1b81a3-a1e3-49b4-a85f-292d6df16de8",
+  "jira_status": null,
+  "archived": false,
+  "created_at": "2026-08-27T07:49:42.388035+00:00",
+  "updated_at": "2026-08-27T07:50:00.452132+00:00"
+ },
+ {
+  "id": "a99ad427-89dd-4eaf-8176-52edd99247ff",
+  "jira_key": "BMPCC-14543",
+  "title": " Claims Lifecycle: Domain Specific Authorization",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "To Do",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "03cf5763-3fa4-4851-9ec4-5451f953ae53",
+  "jira_key": "BMPCC-14545",
+  "title": "Claims Lifecycle: Loss Location coverage check in FNOL (conclude AIP, refine E&D page)",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Progress",
+  "archived": false,
+  "created_at": "2026-08-20T04:24:16.99312+00:00",
+  "updated_at": "2026-08-27T07:50:02.682284+00:00"
+ },
+ {
+  "id": "071ba4e4-3d6f-4799-bb5c-c7b787a4ea27",
+  "jira_key": "BMPCC-17628",
+  "title": "Property cause of loss/ incident circumstances",
+  "pi_id": "5a1b81a3-a1e3-49b4-a85f-292d6df16de8",
+  "jira_status": null,
+  "archived": false,
+  "created_at": "2026-08-27T07:49:41.935484+00:00",
+  "updated_at": "2026-08-27T07:50:00.015205+00:00"
+ },
+ {
+  "id": "2d4184ee-5f04-41f3-95f5-c6a0fe53128f",
+  "jira_key": "BMPCC-17927",
+  "title": "CBI Extension",
+  "pi_id": "5a1b81a3-a1e3-49b4-a85f-292d6df16de8",
+  "jira_status": null,
+  "archived": false,
+  "created_at": "2026-08-27T07:49:42.086694+00:00",
+  "updated_at": "2026-08-27T07:50:00.301868+00:00"
+ },
+ {
+  "id": "c4bd1df3-36b5-4e94-a71b-174e8a3a77f7",
+  "jira_key": "BMPCC-424",
+  "title": "Activity Log: UI/UX enhancements for grouping of changes per transaction",
+  "pi_id": "3fcad01a-a866-4628-869b-723d61223764",
+  "jira_status": "In Progress",
+  "archived": false,
+  "created_at": "2026-08-20T08:01:21.978685+00:00",
+  "updated_at": "2026-09-02T03:00:42.685739+00:00"
+ }
+]

@@ -1,0 +1,72 @@
+[
+ {
+  "id": "f1a2ea5a-a74e-4802-9071-0237e9e2a35d",
+  "started_at": "2026-09-02T03:00:41.506937+00:00",
+  "finished_at": "2026-09-02T03:00:43.356+00:00",
+  "ticket_count": 51,
+  "epic_count": 2,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-09-02T03:00:41.506937+00:00"
+ },
+ {
+  "id": "03840060-3e94-4e12-94a3-16eb26484cd8",
+  "started_at": "2026-08-31T09:44:58.627357+00:00",
+  "finished_at": "2026-08-31T09:45:00.021+00:00",
+  "ticket_count": 52,
+  "epic_count": 2,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-08-31T09:44:58.627357+00:00"
+ },
+ {
+  "id": "4f97058d-77f1-4864-a662-afc94a525caf",
+  "started_at": "2026-08-27T07:48:02.074861+00:00",
+  "finished_at": "2026-08-27T07:48:07.322+00:00",
+  "ticket_count": 52,
+  "epic_count": 2,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-08-27T07:48:02.074861+00:00"
+ },
+ {
+  "id": "1112211c-c4ae-4ac5-bf79-4a908e074be6",
+  "started_at": "2026-08-25T08:38:38.581117+00:00",
+  "finished_at": "2026-08-25T08:38:40.194+00:00",
+  "ticket_count": 53,
+  "epic_count": 2,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-08-25T08:38:38.581117+00:00"
+ },
+ {
+  "id": "c547a054-1e28-4dd7-8e57-b6367f862b64",
+  "started_at": "2026-08-20T08:01:20.99007+00:00",
+  "finished_at": "2026-08-20T08:01:22.641+00:00",
+  "ticket_count": 52,
+  "epic_count": 2,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-08-20T08:01:20.99007+00:00"
+ },
+ {
+  "id": "c5ac12be-ea22-4ea5-b38d-b13cab437643",
+  "started_at": "2026-08-20T07:24:33.369014+00:00",
+  "finished_at": "2026-08-20T07:24:35.251+00:00",
+  "ticket_count": 123,
+  "epic_count": 7,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-08-20T07:24:33.369014+00:00"
+ },
+ {
+  "id": "3d452e07-be10-4589-bb37-f3edb52ccc69",
+  "started_at": "2026-08-20T04:24:15.632786+00:00",
+  "finished_at": "2026-08-20T04:24:17.61+00:00",
+  "ticket_count": 122,
+  "epic_count": 7,
+  "status": "success",
+  "error": null,
+  "created_at": "2026-08-20T04:24:15.632786+00:00"
+ }
+]

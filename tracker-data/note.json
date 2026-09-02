@@ -1,0 +1,1570 @@
+[
+ {
+  "id": "63a6703a-9482-4202-a4d4-a6ab81f93b19",
+  "ticket_id": "4ed94266-73a3-403f-b500-b44af5bfc83e",
+  "body": "verification note",
+  "created_by": "verify-script@test",
+  "created_at": "2026-08-20T04:28:30.32497+00:00",
+  "archived": true
+ },
+ {
+  "id": "c108f100-1d04-4795-95c7-c7a5c8e56cef",
+  "ticket_id": "acbd1769-05de-47c2-9cdb-9c723113750a",
+  "body": "Added from Confluence \"Claims Management- PI 2026.4 - UI/UX Alignment Open Points\" (pageId 3157631012, fetched 2026-08-27). Real Jira status/priority/description NOT available (no working jmp.allianz.net API access this session) — jira_status left null intentionally, do not assume \"Open\" here means Jira workflow status; it reflects the Confluence open-point status only.",
+  "created_by": "Claude",
+  "created_at": "2026-08-27T07:50:01.882717+00:00",
+  "archived": false
+ },
+ {
+  "id": "30103c85-d2db-4e93-bb75-61d25f085051",
+  "ticket_id": "de17a205-fa86-49f6-9847-f6950340cc46",
+  "body": "Added from Confluence \"Claims Management- PI 2026.4 - UI/UX Alignment Open Points\" (pageId 3157631012, fetched 2026-08-27). Real Jira status/priority/description NOT available (no working jmp.allianz.net API access this session) — jira_status left null intentionally, do not assume \"Open\" here means Jira workflow status; it reflects the Confluence open-point status only.",
+  "created_by": "Claude",
+  "created_at": "2026-08-27T07:50:02.228958+00:00",
+  "archived": false
+ },
+ {
+  "id": "b4a406ed-6a36-4fdb-9214-f223d5603d7e",
+  "ticket_id": "48d42be6-9686-4b18-a2a2-365a77f8a644",
+  "body": "Added from Confluence \"Claims Management- PI 2026.4 - UI/UX Alignment Open Points\" (pageId 3157631012, fetched 2026-08-27). Real Jira status/priority/description NOT available (no working jmp.allianz.net API access this session) — jira_status left null intentionally, do not assume \"Open\" here means Jira workflow status; it reflects the Confluence open-point status only.",
+  "created_by": "Claude",
+  "created_at": "2026-08-27T07:50:02.532289+00:00",
+  "archived": false
+ },
+ {
+  "id": "fbabe44a-307c-4386-a95a-a0a7814d1b59",
+  "ticket_id": "8dc9368e-c81d-4c43-8000-4f9a0ed751b1",
+  "body": "Real Jira ticket is the backend event plumbing, but the user-facing Activity Log surface it feeds is built: recent-activities-card.component.html on the claim overview page renders ClaimActivity entries. The prototype's UI need is satisfied even though this specific ticket is backend.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "be413e47-e83c-4dd5-bfdf-8d8465e23b61",
+  "ticket_id": "418b8265-6e6f-4f77-bec2-7b253bc58c3a",
+  "body": "step-summary.component.ts:197 — onCancel() navigates to '/dashboard'. Exactly what the ticket asks for is already wired up.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "c4d1c455-d594-4e52-935f-056ec24eb3d8",
+  "ticket_id": "b7f70314-a27c-4d4b-a9ca-93e4a1497064",
+  "body": "Too vague to assess — \"Misc UI Enhancements\" doesn't name a screen or behavior, so there's nothing concrete to grep for or confirm against this repo. Needs the real ticket's description/AC before this can be judged, not a guess.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "e4787acf-1e7f-49eb-91ba-f527a5ba2c55",
+  "ticket_id": "cce2b73f-24dc-4836-8345-0e7ff4f66482",
+  "body": "Backend rollback/state-close API with no dedicated screen — the handler never sees this directly, it's invoked behind the scenes on cancel/abandon flows. No UI surface to prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "507271eb-ccec-4a7c-af25-b8aa62674211",
+  "ticket_id": "b76749fa-958b-4ca9-b4c2-20d78f370bd1",
+  "body": "Full skeleton/orphan claim flow exists: step-skeleton-create, step-skeleton-parties, step-skeleton-location, step-skeleton-summary all have working components covering Notifier, Parties, and Location exactly as the ticket names them.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "8c106513-a109-47a2-aef6-2fdb87b200e6",
+  "ticket_id": "4a87cbc4-849c-4405-9b54-d8b7e8ce4620",
+  "body": "This session just built a pilot for exactly this: location-source-modal.component.ts (Policy/CWB/Manual source picker) wired into location-picker.component.ts. It's brand-new and uncommitted, not yet validated by the team, so marked in_progress rather than done — the UI direction exists but hasn't been signed off.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "38dcfdd5-7426-4637-aeeb-e73bd3918c0c",
+  "ticket_id": "7fff75fb-70ce-42aa-a284-5a77021d02ba",
+  "body": "step-parties.component.ts:280 — onBack() routes to '/fnol/entities-damages'. The back-navigation this ticket asks for is already implemented. (Related QA ticket BMPCC-18031 checks this doesn't create duplicate sections — cross-reference.)",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "a4918695-fc04-4f20-8be6-91c9838221ec",
+  "ticket_id": "e93e71b1-38e3-49d8-9af4-33972025b9ec",
+  "body": "Backend messaging infra migration, no UI surface. Not applicable to this prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "85390448-8278-4214-a7f6-b614ef9147aa",
+  "ticket_id": "9b5a8331-e01f-45e7-b3ac-5579fd22f948",
+  "body": "Backend data retrofit for Limit/Deductible values inside a Kafka payload — no new screen or handler-facing change. Not applicable to this prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "0e5bc057-c550-4926-b617-88dc9f0d78d3",
+  "ticket_id": "e6ff4b85-bb20-41f4-b710-4df97c578fc3",
+  "body": "step-loss-information.component.html:134-137 has the Loss description textarea with a maxlength counter hint. Matches the ticket's \"enhancement\" ask directly.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "763d4d2f-56bc-42a8-9a22-8293f5e161c5",
+  "ticket_id": "f8393b78-b6df-467a-9462-6538263758f8",
+  "body": "cwb-location-search-modal.component.html has a working Cancel button (icon-button close and a secondary Cancel action). The location manager MFE's cancel behavior is modeled.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "cb9335d0-6eaa-428b-b792-53a4245833c2",
+  "ticket_id": "9fe5fa48-a9f8-49e8-b324-49bb7fb66121",
+  "body": "Both surfaces this ticket names exist and are routed: loss-event-overview.component and step-entities-damages. Title is a generic \"enhancement\" with no specific AC to verify further, but the underlying pages are real and functional.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "c02d221f-2706-4979-9767-25906a3f6426",
+  "ticket_id": "13fe5720-10e2-41ba-a9a2-ce9f16f1ef55",
+  "body": "Pure backend field-mapping retrofit (AIP path change), invisible to the handler. No UI surface — not applicable to this prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "9f9b85d2-ec88-4ae1-83d4-ef75b15587d7",
+  "ticket_id": "637760fd-3a86-448a-98db-5d2b86b56f31",
+  "body": "Backend API (pre-closure eligibility check), no screen of its own — but the UX outcome is already fully modeled: claim-closure-blocker.builder.ts computes the same blocker flags and claim-closure-modal surfaces them before letting a claim/section close.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "a1cc7bd0-5022-4707-ac7c-51e3164e1997",
+  "ticket_id": "64a85eb1-0efc-431d-bbe8-055bae54b200",
+  "body": "Defect ticket from the real product (wrong date format during claim creation). This prototype has a dedicated lint (npm run audit:date-format) that currently passes app-wide, enforcing one consistent date format everywhere. The bug doesn't reproduce here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "9e1d7064-ff98-4479-a28d-180f268a15bb",
+  "ticket_id": "0f29e7e6-2dca-40e7-a222-03ced9d7788b",
+  "body": "Pure backend Java framework version bump (Spring Boot 4.7). No screen, no interaction changes. Not applicable to this Angular prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "46c2f119-62b0-4fb3-b386-22269a6acb25",
+  "ticket_id": "15097bc5-3b8f-456b-bac6-e42ed4ec5381",
+  "body": "State management for the FNOL journey (reset/complete/restore). Every FNOL step component plus fnol-shell.component.ts reference localStorage-based persistence — restore-on-refresh is real and working. Marked in_progress since the specific 'search handshake' sub-scenario wasn't separately verified.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "c9210a0c-43f0-445b-a655-4dc92ae9ec46",
+  "ticket_id": "c082c171-3863-4f90-991d-ddb4e6710e2f",
+  "body": "Defect against production (\"Summary page not loading\"). This prototype's step-summary is a fully built screen that loads on the happy path — reproducing the production bug is out of scope for a prototype anyway.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "f1de665e-b94b-462e-a37e-3118ba53f3be",
+  "ticket_id": "9ac0dd86-3089-4d16-972e-35cf29ce7798",
+  "body": "FE plumbing (thread entityId through API calls), not a visible UI element. Build marked done because step-entities-damages.component.ts already uses entity.entityId when calling moveEntity()/removeEntity() on the mock service.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "33ac650a-db2e-4aa2-bbd1-ad180ad9a931",
+  "ticket_id": "f2d4fe97-819b-4759-877c-3142e1b8047c",
+  "body": "Backend defect: PD+BI both selected but only PD reached the API. This prototype's data model already treats PD and BI as two independent ClaimSection records (split apart specifically because they need different limits/deductibles/closure rules) — the correct behavior this bug asks for is exactly how the prototype already models it.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "6932bee0-d8f2-4baf-92e4-85905478f6fa",
+  "ticket_id": "9b44cb4f-8df6-42e5-8285-1bdbf0afd732",
+  "body": "QA sanity-test execution pass over the whole BMPCC-14494 epic in the real product — not a feature with its own screen, nothing for a prototype to build.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "94149bf3-6d40-4415-befb-ab22260058a2",
+  "ticket_id": "1ce68fc9-3ce9-41ae-a2dc-c8fd3a5e72bb",
+  "body": "Cross-team dependency ticket about the Cancel button on the Location Manager MFE. This prototype's location-search modals (cwb-location-search-modal, policy-location-search-modal, manual-location-entry-modal) each already have a working Cancel action.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "f9f8c64e-8a42-4012-8563-75004cfac30b",
+  "ticket_id": "8130cd83-22dd-410d-9219-83234ec357f6",
+  "body": "Defect: duplicate PD section entries under a party. mock-section.service.ts's createSection() already looks for an existing OPEN section of the same damage type before creating a new one, specifically to prevent this. Doesn't reproduce against this prototype's logic.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "158a3251-fc7b-4dd4-9aef-b10fbe4b5069",
+  "ticket_id": "3beb0b30-803f-47e9-9477-ade1c5564446",
+  "body": "Defect: Proximate/Damages Cause data missing on Loss Overview. Proximate cause data is wired into claim-overview.component.html, step-summary.component.html, and mock-claim-overview.service.ts — modeled and displayed.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "02d9e8fc-f65e-42a2-b980-e7976feb428e",
+  "ticket_id": "1ae392a8-0215-48e8-bcee-c2d31373da8e",
+  "body": "Defect: proximate-loss date/time display on summary page. Same evidence as BMPCC-15994 — fields present and rendered; date formatting additionally enforced app-wide by audit:date-format. Doesn't reproduce here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "89c131d5-551e-4386-9273-fa0dbb0f79d7",
+  "ticket_id": "6f380889-c247-4ee3-8e93-270e9bc9c028",
+  "body": "Meta/tooling ticket about integrating Claude-based code review into the repo — not a product feature. Build marked done because this repo visibly already has extensive Claude tooling wired in (CLAUDE.md, a dozen+ pre-commit audit scripts, skill files).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "b359a234-9bcd-48ea-850c-45a2461657ac",
+  "ticket_id": "f1737fe1-e5d6-4362-b945-705b5430c046",
+  "body": "Backend date-field verification; the equivalent handler-facing validation is built: step-loss-information has 'required' and 'can't be in the future' errors plus a cross-field date-order validator.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "384c9a5a-0721-4bc4-b8ee-e332871ccdec",
+  "ticket_id": "16657b6d-4531-4caf-8329-5d5bfd40996b",
+  "body": "Honest gap: nothing ties this specific AIP conclusion rule to a UI state in this prototype. Needs product/BA input (warning? auto-selected 'Other' cause? nothing visible?) before it can be designed.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "24fcd2a0-2c34-41c3-bdb1-f31c75b889a3",
+  "ticket_id": "7118e0fc-dc38-4392-9e1c-b9f6d31e8644",
+  "body": "Direct match: public/tickets/bmpcc-no-loss-location.json (CHAMP-NO-LOSS-LOC) covers exactly this scenario, AC marked done. Strongest-evidence match in this batch.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "3911be0c-465e-410d-b861-5d18e893b5b2",
+  "ticket_id": "1c51355c-13e0-4bfb-ab3a-ba35f523b651",
+  "body": "Backend API change to add reporter info to LossEventSummary. No evidence this data is displayed anywhere yet in this prototype — honest gap, needs a placement decision first.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "ae895889-09a1-4283-991c-d680fd06f5ef",
+  "ticket_id": "f24f33e0-3549-4675-bae7-ad281ad9d0e3",
+  "body": "Fully built: /fnol/skeleton-parties and /fnol/skeleton-location are real, routed screens with the shared location-picker and wizard-footer. This ticket's design is already the shipped screen.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "871b3005-a930-4778-8619-485509fe2444",
+  "ticket_id": "34c11c5d-5ea8-419a-94fd-49a09f9bfaf3",
+  "body": "step-loss-information.component.ts:468 — onCancel() just navigates to '/dashboard' with zero confirmation dialog. Real Jira marks this fixed in production, but this prototype has never modeled an exit-confirmation dialog anywhere in FNOL.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "1244307b-8128-4a1e-a8ad-e7a6eb683ed0",
+  "ticket_id": "4dab64f6-b8c9-4cf6-84c3-5ef16f0aafa4",
+  "body": "Same root cause as BMPCC-17676: step-summary.component.ts:197's onCancel() is a bare router.navigate, no dialog. Can't even be reproduced here since the baseline confirm-dialog feature doesn't exist in FNOL yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "b992eb6e-c0ab-4b7e-a21a-47d71b82c92b",
+  "ticket_id": "1aa7d9c5-6108-44fc-84f5-17498f33ef76",
+  "body": "Claim Overview + side panel are fully built (~375 lines). The specific bug (data intermittently missing after real page reload) is a network-timing issue a static mock-data prototype can't reproduce.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "f75c89ee-7984-4f7b-a1cf-a7ccb489499c",
+  "ticket_id": "a3c98f98-cd1f-4a88-b4e8-f56b176c25bc",
+  "body": "The real Jira ticket's own Figma links point directly at this prototype's /fnol/skeleton-create and /fnol/skeleton-summary routes — this prototype IS the design reference. Fully built and routed.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "1eb40b29-0f81-46cb-b2fc-8c058b82e756",
+  "ticket_id": "8c2418ca-aa03-49b1-953a-f8a6c0b7105c",
+  "body": "No matching residual-state mechanism in core/services. Verifying real state-restore behavior requires a real backend and browser storage lifecycle this prototype doesn't simulate.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "6c041f2f-1436-4fae-81ba-a69815a63ea3",
+  "ticket_id": "e4c461a9-70ae-4f40-a99b-be48596851c5",
+  "body": "Backend/infra ticket (Angular framework version upgrade) — no UI surface. Not applicable to this prototype's design/build tracking.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "6d6884f6-7e48-41d3-b0a2-689032fc92b8",
+  "ticket_id": "ecf5c145-54d3-49e0-af10-caecbaf4333a",
+  "body": "Backend GIS URL retrofit — the real ticket's own description says explicitly this needs no action on the Ninja team. No UI surface for this prototype to model.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "8cdc3878-7a4a-48fc-bd35-a781ca18af51",
+  "ticket_id": "9b0b7da3-fc4c-4cbc-83a7-187847308509",
+  "body": "Backend Kafka event payload change (adding a 'type' field to Limit/Deductible) — no UI surface, a claims handler never sees this field directly.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "2104650d-50ce-435c-8f97-f515c240aa67",
+  "ticket_id": "38805605-02a8-4041-a9d9-1ddf40250fa0",
+  "body": "QA ticket verifying a backend side-effect with no visual difference for a handler to see — nothing for this design/build tracker to capture.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "1d5624ad-b542-4a36-a5a0-e4a7dc13f678",
+  "ticket_id": "194bda77-1886-44c2-bd5f-6478dafb2e51",
+  "body": "Backend Kafka event field population (compensatedByBenefit for BI claim sections) — no UI surface. Unrelated to this session's new BI interruption-period UI work on Section Entities.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "31db3c2f-687d-4d72-98b2-8c55989f81da",
+  "ticket_id": "1daef39d-8360-48e1-919d-b783c484777c",
+  "body": "No matching mechanism anywhere in this prototype's services. A handler wouldn't see this directly — nothing to design or build here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "166006fc-796f-451a-8b55-34e4a56b7c1c",
+  "ticket_id": "4204dfad-bb32-4d58-a7bc-a16e6827f361",
+  "body": "Descoped upstream and the title ('Baseline - Aggregate') is too vague to identify any concrete feature or screen. Nothing to build.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "c9df3b83-144e-4a8e-a1b7-2eaa23b12149",
+  "ticket_id": "a73c2de0-6d9c-4dd7-87fd-c1b2ec150793",
+  "body": "Status colour-coding exists and is built: app-status-chip is used for entity.status on Entities & Damages and section.status/coverageReview on Sections. Marked in_progress because the specific 'Summary back navigation' interaction hasn't been explicitly verified.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "51e2375b-da3d-4d4e-9b2b-cd4b6d2ec6f7",
+  "ticket_id": "27b82002-ec5e-4e34-97a3-bb6211f2fcf9",
+  "body": "[SOL] analysis/spike ticket — produces an analysis document in the real product, not a shippable screen. No UI surface for a handler to see.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "720be9d3-4bf5-4968-baed-9139de4b38cc",
+  "ticket_id": "edbfa0ed-bb08-4a52-9dd8-d20937f7adba",
+  "body": "Another [SOL] analysis ticket (unhandled scenarios in Claim/Section creation) — internal engineering analysis, not a user-facing feature.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "05f20166-3a01-4e4d-9988-370f745e0c1d",
+  "ticket_id": "1f08d229-f703-4f9e-9924-03c66eaef046",
+  "body": "Pure backend API contract change (accept Entity Id) — invisible to the handler. The resulting entityId field already exists on this prototype's entity model (entity-damage.model.ts), so the shape it built toward is already reflected in the mock data layer.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "53b0d282-f7aa-4733-955f-c1e959fbf36c",
+  "ticket_id": "4ed94266-73a3-403f-b500-b44af5bfc83e",
+  "body": "Backend-only: adds DamageID to a Kafka event payload. No UI surface a claims handler ever sees, and it's Descoped upstream anyway. Not applicable to this prototype's design/build tracking.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "3406f15b-6f5b-42c3-a699-ca1685db86fe",
+  "ticket_id": "70485262-0da5-409c-b8c2-ca1d82faed11",
+  "body": "Fully modeled: manual-location-entry-modal.component.html has numeric latitude/longitude inputs (lines 26-33, 96-99), and location-picker.component.ts:168-169 displays captured lat/long in the locations table. This predates the newer location-source-modal pilot and already covers the GIS/manual-address need end to end.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "730e1fe3-174a-40d7-b0a7-5ad6f6384a77",
+  "ticket_id": "47aa0a77-f926-4593-b05e-47df77036eb7",
+  "body": "Java runtime upgrade, pure backend infra. No UI surface — not applicable to this prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.464314+00:00",
+  "archived": false
+ },
+ {
+  "id": "62621a25-b51c-401d-a3f0-d8ad801376ad",
+  "ticket_id": "fe1c0640-6c90-4c86-b6b8-fef9ae7036c0",
+  "body": "Coverage Review enhancement is built as coverage-review-modal.component under features/sections/ — opened from the Sections page. Functionally complete in this prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "b6f0d8e3-252d-4693-8caf-6ca54d5fb167",
+  "ticket_id": "101a5af6-b08f-42d8-893d-9db4cb625d9a",
+  "body": "Backend-only API ticket (new GetAllEntities endpoint) — no UI surface. The result (promised vs not-promised entities) is visibly modeled elsewhere (BMPCC-14636), but this specific ticket is the data-fetching contract.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "7e07784c-ea86-455b-a3a6-a6828ede3e38",
+  "ticket_id": "7015b0ed-8bc8-4393-a7d0-17fac10b3b13",
+  "body": "Exactly what a handler sees on Entities & Damages: sections are visually flagged when 'not promised' via a distinct tint/border class, and EntityStatus/PromiseStatus types directly encode Promised vs Not-Promised. Fully modeled.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "617aec7c-fb1e-4b3b-b7f9-e14d21f6b7ea",
+  "ticket_id": "1e7a2734-c623-4b90-a4f5-c815f88019b1",
+  "body": "Directly covered by already-converted ticket BMPCC-219 ('Loss Location via CWB MFE'), all ACs marked done. The CWB modal explicitly includes a Geo-coordinates field alongside Country/City/ZIP/Street.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "317916ce-87c0-4cea-88e2-d2d2c6f82952",
+  "ticket_id": "c2762855-1174-418f-a5d1-914ad8a42d83",
+  "body": "Backend POC about Kafka event payload when no location is captured — a message-queue concern, not rendered on any screen.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "f0cf1c5f-1a73-492e-a7bd-520968199f22",
+  "ticket_id": "7e1d82de-abf3-4f01-b3be-470ef9d788f1",
+  "body": "Asks for entity status display specifically in the 'Manual flow'. General promised/not-promised status is fully visible on Entities & Damages, but nothing distinguishes 'manual flow' from any other source. Partial match — reasonable given the real ticket was descoped too.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "ad5b9c9b-0362-4476-9080-d4360c586109",
+  "ticket_id": "cdd5d361-6b79-49ed-b8a5-9256ce70eb7f",
+  "body": "Production data-integrity test ticket (multiple claims not generated for impacted policies) — backend/batch-processing concern, not a UI behavior.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "5d3f1eac-1b0d-4330-b4ca-df1201d7fa86",
+  "ticket_id": "12870222-046d-4467-bbd4-409368c92b59",
+  "body": "The Entities & Damages page where this error occurred in production is fully modeled here — the happy-path UI is done. The specific defect is a production runtime bug with no mock equivalent.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "9aa6e740-b861-49c9-9f31-59eb1f8e6a2f",
+  "ticket_id": "7e80afdd-fd22-4f78-bf09-2bbc4510154a",
+  "body": "Claim overview already shows 'Date of Loss' for a normal claim. But this prototype has no skeleton/orphan-claim mock record to reproduce 'blank for skeleton claims' — can't confirm the fix without one.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "bf559ec7-cae9-49a5-b8de-36ef1d2ce3eb",
+  "ticket_id": "28f033d6-7546-4a1d-bb68-418ac4a37925",
+  "body": "QA sanity-testing checkpoint for the whole BMPCC-14545 epic, not a feature of its own. Nothing for this prototype to model — a test-tracking marker, not a UX ticket.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "45211839-c1ec-46e7-abe3-1ce6cbde3d3c",
+  "ticket_id": "fdc1f418-51e0-4c51-92ca-cb4a15cccd34",
+  "body": "Adding entityId to an internal MFE context object is plumbing between services, nothing a user sees. Also already descoped in real Jira.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "dd394843-d279-4ee9-8cdb-3bdf13c20259",
+  "ticket_id": "58d02a42-a630-474e-bcf7-d091fb7b31f2",
+  "body": "Multiple limits per section are shown on the Limits & Deductibles page. Closed-claim edit locking is also modeled: entity-detail-panel.component.ts takes a claimClosed input that disables its actions.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "f1f0a5bc-af55-496a-a835-dc366d863549",
+  "ticket_id": "7d18afcb-3d19-4609-bc83-943bcba6c91b",
+  "body": "The Entities & Damages screen already has a working entity/coverage filter (filteredEntities()). Happy path modeled cleanly; the original live-sync-glitch defect isn't reproducible in a static mock.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "3c914493-5390-4673-9d94-e3413c6ee5fb",
+  "ticket_id": "03510279-09fb-4216-88d7-044a92c52fd5",
+  "body": "Proximate loss cause displays unconditionally on claim overview whenever present. This prototype doesn't distinguish 'promised' vs 'not promised' for that field, so this exact bug state is never modeled as something that could go wrong.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "d251b4d1-8252-4c2d-b9e3-51de7310f52b",
+  "ticket_id": "5b6c688b-f82a-45ec-a890-e4943836f77b",
+  "body": "Same filter mechanism as BMPCC-16636 — the coverage review filter works cleanly in this prototype's static data. Live-sync defect not reproducible here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "d5bc7af7-3a84-41d3-8bfe-baee53311767",
+  "ticket_id": "23f1e8af-4147-454a-a6c5-2a24b103efe8",
+  "body": "Closure Date, Closure Reason, and Retention Until are all displayed on claim overview after closure — the exact set of fields the ticket says were missing in production, all correctly wired here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "55c8cb19-5b90-4af7-953d-ba022d2dc619",
+  "ticket_id": "19919986-ddb2-48af-8b6d-e36e5f7bfc87",
+  "body": "Limit amounts use Angular's currency pipe, which formats with proper thousands separators by default. This prototype never had the comma-formatting bug the production ticket describes.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "f55503c9-d3c7-477d-84fb-e87e9ace97b6",
+  "ticket_id": "d1e64bc4-5180-4a34-ad33-fd6231f47097",
+  "body": "Kafka claims-hierarchy event field update via AIP — pure backend data plumbing with no user-facing screen.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "fa43f35f-74eb-429c-a680-ed6cc8ca79ed",
+  "ticket_id": "f55dd04d-4b09-4a26-a407-d305af6d25dd",
+  "body": "Backend-only ticket (force section/claim update API) — no UI surface for a Figma-to-code prototype to model.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "21d00c01-255c-42c5-84d4-a4b7be0aa1ee",
+  "ticket_id": "c7d63d22-2d63-428b-ba1b-a7063ace06d6",
+  "body": "This is the FE ticket for the whole Edit Claim surface. The original standalone 'Edit Claim' folder was deleted after design review found no real requirement behind its fields — everything was consolidated into edit-loss-information.component, which is fully built (form load, live change ledger, save/discard, location picker) and still actively polished.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "a9c6fede-ccc7-43d2-b488-61909905b9e1",
+  "ticket_id": "79e317b9-60cb-4508-b8a6-317c737460b6",
+  "body": "Backend-only ticket (POST/GET API for ClaimOverride) — no UI surface to prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "f6f81322-ad59-40f7-b2dc-5a866c2469bc",
+  "ticket_id": "032cb7a8-3822-480d-a8e1-f2b0c63a9942",
+  "body": "The user-visible half (edit a field, hit Save) is done via edit-loss-information. But 'Full AIP Orchestration Flow' implies real backend sequencing/error handling this mock-data prototype doesn't simulate — save just resolves successfully.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "bad2a942-d1a7-4496-b528-6aeebc5951d7",
+  "ticket_id": "4b74559f-5662-43c1-945d-7b3f9b78650f",
+  "body": "Backend-only ticket (claim/section creation implementation during Edit) — no UI surface.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "7a5ff328-3c9c-4a44-bef5-f7f8af7218f5",
+  "ticket_id": "d496731e-844f-4ca9-8ab2-463586622e4c",
+  "body": "[SOL] Analysis ticket — a solutioning writeup, not a UI deliverable. Would inform how edit-loss-information should behave when causes/sections change, but not separately tracked here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "e6044a11-c9fd-4872-81ff-e0bed6857ad6",
+  "ticket_id": "40b36d9b-5836-464c-8d15-69bdb6340570",
+  "body": "[QA] Sanity testing ticket for the real product — not a UI/design deliverable, no prototype equivalent.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "36171823-fcc5-4d21-9e85-4d9a9644c020",
+  "ticket_id": "ec6ae2b3-206e-4455-9f85-a6c280705dc2",
+  "body": "Partial: the triggering field is editable, but the consequence (creating/closing a Section on damage-type change) has no visible UI treatment — no warning, no preview, no distinct ledger entry. Exactly the kind of spike question that needs a UX answer before it's built.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "60f3a55f-48bd-443c-ac31-90ab83f3357a",
+  "ticket_id": "0079b88f-07c5-4a0d-9a7d-e4740402b1f2",
+  "body": "[QA] ticket for the AIP orchestration flow — no UI deliverable.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "68ccd0a7-459c-45a2-8ff7-b68e24a2bcc8",
+  "ticket_id": "4d8f9837-1461-41a7-aa87-a58c5ca3111c",
+  "body": "Either this is meant to be invisible (a backend fallback triggered automatically, making it not a UI ticket at all) or it's a genuinely missing affordance — flagging as unclear rather than guessing which.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "5cce731e-dde6-4c65-9950-4a648579ced6",
+  "ticket_id": "d84f86a7-bf45-47dd-ae31-806d7fbf806d",
+  "body": "Bug ticket describing a real backend defect (duplicate section entries on location-promised-status change). This prototype's mock data layer doesn't simulate that backend path — informational only.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "2ea21249-0111-4b48-8075-04470ea9c1b9",
+  "ticket_id": "33bbebe5-b7b0-49ed-86fe-677be9d797d3",
+  "body": "Implies the CURRENT edit-loss-information build (BMPCC-14645, done) is about to be superseded by a new Figma design. Marking design_status in_progress to flag that today's build may be short-lived once the new design lands.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "5648105c-052f-4fbd-bcaf-4a7917001c45",
+  "ticket_id": "51846064-a43c-4554-a487-572d5d41baee",
+  "body": "Backend/infra solution doc defining the Kafka event shape for downstream consumers — no user-facing screen of its own.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "4aa0831f-1277-4765-9f6c-cff7217657e5",
+  "ticket_id": "109ae6b2-949c-4756-b047-eba3e3fb06f7",
+  "body": "Ticket is about the backend API call, but the thing a handler actually sees — a claim can't be closed while litigation is active — is fully built: claim-closure-blocker.builder.ts computes the litigation blocker and it renders as a red 'Blocked' row in the Close Claim checklist. All CHAMP-CLOSURE-001 ACs covering this are done.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "8bef1509-a528-4783-bedf-285c740c6dad",
+  "ticket_id": "b78e1973-8585-471a-bda8-d0093e7826b5",
+  "body": "Same pattern as the litigation ticket: the finance/payment/reserve sync check's visible result (open reserves and pending payments block claim closure) is already modeled and shown as checklist rows.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "23e7e292-71bd-4965-adba-adecf339b938",
+  "ticket_id": "456728d6-73bf-4876-b498-a678c4ea2cbf",
+  "body": "Real Jira still shows this as 'To Do' for the real backend, but this prototype already has both flags (hasSubrogation, hasActiveSalvage) wired into the section closure modal and tested.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "748976bf-cd16-453b-8f7c-0bcceba26d63",
+  "ticket_id": "01299b63-f2f3-4146-80a6-387636d4d395",
+  "body": "Interim backend auth workaround with no UI.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "0d47cd57-fd7c-4879-9cca-175332b0fa4c",
+  "ticket_id": "dacab96a-f2b4-4d01-a6a3-40e0c393ff97",
+  "body": "QA sanity-test-pass ticket for epic BMPCC-14435's own tickets, not a feature with its own screen. Logged for completeness only.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "475e3639-1025-4cf8-9e83-7ca850cd4e13",
+  "ticket_id": "e34a827d-71ed-4d8c-84fa-c1ad706ac59e",
+  "body": "Half-covered: Provider Management blocking a section close is real and tested. Fraud blocking a section close is not modeled at all — would need real fraud-case criteria from product before adding it.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "3ae609b3-8913-4347-8002-4ab3ce4fbbdd",
+  "ticket_id": "c8287b67-a97e-4a9f-b593-f395c0984922",
+  "body": "Exactly what the ticket title asks for is already built at both claim and section level: a numeric blocker-count badge and click-to-expand blocker cards showing the underlying items.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "d0cb2c39-f60e-4187-8f1f-b64dd1887a15",
+  "ticket_id": "84ffe299-ded7-4171-88ae-13de5fe90ac3",
+  "body": "Backend skeleton API for the pre-close check. The workflow it would support is already covered end-to-end via mocks under CHAMP-CLOSE-SECTION, but this specific backend ticket has no UI of its own.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "1859aa83-13b2-46ed-99ef-25b9ba52bc02",
+  "ticket_id": "fd918169-42b4-4330-8ad3-b68d678481fc",
+  "body": "This is the persistence step behind 'closing a section.' The mock equivalent (closureDate gets set and survives) is directly tested in CHAMP-CLOSE-SECTION.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "26704fe4-0550-4a57-b128-ed91ac62022d",
+  "ticket_id": "745130f2-90d3-452a-bbea-ca231bc32bd9",
+  "body": "Literally titled 'UI changes for Section closure' — this is the section-closure-modal component itself (blockers -> checklist -> reason steps), all 5 ACs in CHAMP-CLOSE-SECTION covering that flow are done.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "99f4fc0b-962e-4358-8d45-e889e6148661",
+  "ticket_id": "21f25f57-64db-4143-bfd6-2da75306576a",
+  "body": "'Preclosure validation framework' is claim-closure-blocker.builder.ts — the shared function both closure modals call to compute their blocker lists. Every AC in both closure tickets exercises it.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "47c1546a-609f-4b25-9b48-a9f3a905524e",
+  "ticket_id": "4197476c-1110-4a45-b9ab-720f0e783504",
+  "body": "High-confidence match: this ticket's own title ('Section closing reason & screen flow') describes exactly the section-closure-modal's 3-step sequence and mandatory reason dropdown, assignee is the repo owner — likely the design source the modal was built from.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "99b2de0c-d5a3-44e9-8367-2c2a5510228b",
+  "ticket_id": "2a6c9a19-c2d6-40fb-917b-0a45883e49e8",
+  "body": "QA sanity-test-pass ticket for epic BMPCC-14434, same shape as the 14435 one — not a feature with its own screen.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "c0c24592-eec2-448b-9c65-e044d7e58a33",
+  "ticket_id": "a72d216f-7fd8-4059-a1b0-3b0da2a01672",
+  "body": "'Close claim button - validation pop-up' is CHAMP-PRECLOSURE-CHECKLIST's whole premise (always-clickable Close Claim button opening a validated checklist instead of being greyed out). That ticket file declares epicId BMPCC-14434 directly. All ACs done.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "a722546f-6451-4237-aa58-7d8d697539a1",
+  "ticket_id": "3771bd9d-ecda-4c4d-bbb6-62f48cbca816",
+  "body": "Section auto-close driven by the 7 blocker flags is fully built and demoable via the section kebab menu's 'Simulate Final Payment' action. Confirmed against BMPCC-14437's own ACs (both done).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "6d698e87-51ff-4f7c-95e1-4422435d4fd1",
+  "ticket_id": "c59949a2-16cc-41ca-a2f9-aa8417eda87e",
+  "body": "Backend feature-flag/solution-design ticket (Global vs OE switch) with no user-facing surface.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "a14ff02e-e7e1-4be2-8893-5d923ae35bfa",
+  "ticket_id": "42054f52-afe4-4702-abdf-4ae50a38b1af",
+  "body": "Kafka consumer for last-payment events — pure backend messaging. BMPCC-14437's own dev notes call this out as out of prototype scope; the 'Simulate Final Payment' menu action stands in for it.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "0ccd9e24-1782-4625-a825-37bbf3d7f181",
+  "ticket_id": "27029b5e-0299-46ce-96ec-a11e7ac9e746",
+  "body": "QA sanity ticket for the Last-Payment closure epic. BMPCC-14437 has both ACs marked done in this prototype and is demoable end-to-end.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "322e9273-1961-45f5-be2a-3af0973354a9",
+  "ticket_id": "558bda26-8e3b-4edc-8852-0ac09f8e6edd",
+  "body": "Bug: section status not updating after final payment. Not reproducible here — AC2 of BMPCC-14437 covers 'section stays Open when non-payment blockers remain, closes cleanly when they don't', implemented and working.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.619288+00:00",
+  "archived": false
+ },
+ {
+  "id": "07a22620-8b15-4e2c-83a4-d579613d08bd",
+  "ticket_id": "f433841d-3b6a-4f33-9d4b-7054556c09f5",
+  "body": "Genuine gap worth prioritizing: the exact pattern this needs already exists elsewhere (entity-detail-panel.component.ts's claimClosed input disables fields), but Financial Overview, Reserve Overview, and Reserve Detail never received the same treatment. Should be quick to extend rather than designed from scratch.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "4f311355-d5b3-4769-91cf-d2b04d67875c",
+  "ticket_id": "1b63689c-aef6-4faf-a6a9-cde0ba067a5e",
+  "body": "Real-product DB write failure (finalpaymentclosure table). No real database in this prototype — mock services only — nothing to model or reproduce.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "01a5e8fd-6439-4822-98a5-2df064b1f6dd",
+  "ticket_id": "281085ba-a5ac-4702-866a-dbe1660604cb",
+  "body": "Solution-design ticket for domain-level authorization — no UI surface. Grepped the app for auth/permission/role-gated components, found none.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "9a17dcea-9782-476b-9eb9-3e01f69a13fb",
+  "ticket_id": "8039b5af-20c0-49ca-a13e-f99ce4d83815",
+  "body": "QA sanity ticket for Domain Specific Authorization. No authorization feature exists anywhere in this prototype to sanity-test.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "e851c214-ea5e-4e92-ba1b-fd28a8333663",
+  "ticket_id": "2e180da1-d042-4fe0-ad1b-0a5b51313969",
+  "body": "Proposal for where the AOMS MFE sits inside the shared App Shell, not a claims-domain screen. Genuinely blocked on the App Shell team's decision, not on anything this repo could resolve.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "3d7071f8-ac9c-4ce8-acb8-ba71d3cc96c4",
+  "ticket_id": "77f0b5c8-2a3d-45c2-b1f1-bfb0ce95d382",
+  "body": "Same shape as the AOMS placement ticket, just for TMR. No app-shell/navigation surface exists in this claims-only prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "ce428e29-8b1c-43b4-b7ab-f41ae0b4a1ba",
+  "ticket_id": "690f0d62-5a51-4700-b7dc-d8c926cb8aa9",
+  "body": "The real ask is probably 'stop showing 6 log lines for one save action' — but without the referenced wireframes there's no way to tell what grouping key or collapsed-row design was agreed on. The activity card exists and works, it just doesn't group anything yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "67ac6c95-95a0-4106-bfbd-e2c0b5b34ddb",
+  "ticket_id": "c214e72d-4ca2-4d36-89b6-c4b2b32b9531",
+  "body": "The Promised/Not promised status display itself already exists on Entities & Damages. But this ticket is specifically about a backend rule for overwriting that status, and this prototype has no backend. Real Jira already marked this Descoped, consistent with nothing to build here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "01f8b0ee-62d9-4b84-adec-c4542a251cfa",
+  "ticket_id": "93ceca70-1e0f-4d63-b0e1-3e4f7b96b791",
+  "body": "Fully built and verified — every party row on the FNOL Parties step has an actions menu with an 'Edit role' option, matching the ticket's only AC (marked done).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "822b3ffe-59ae-40f8-9646-94434eaa5127",
+  "ticket_id": "24821118-39ab-49ac-97d5-5be1ce8622e2",
+  "body": "The Claim Overview page itself is one of the most mature pages in this prototype, but that's a different concern from what this ticket asks for (the backend API feeding it). No backend here, only mock services. Real Jira also shows Descoped.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "76514d1f-5346-4cbe-b4ab-fd10e99b4600",
+  "ticket_id": "30effe6f-a6ca-4408-8e7f-f653314031f1",
+  "body": "Searched the whole app for any AVA-related component, panel, or chat entry point — nothing. This looks like a different product initiative never brought into this claims-workflow prototype, not something merely unbuilt yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "911a11bd-c7a6-43b3-8992-3abed2fbf811",
+  "ticket_id": "ede40bf5-b47c-4205-8c41-ea4f39330fed",
+  "body": "There IS a claim-search-modal, but it's a plain manual filter search — nothing resembling natural-language/AI-assisted search. This ticket asks for a different kind of search experience never modeled here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "82a4904a-a8c3-4aa7-b4dd-711e660c6db1",
+  "ticket_id": "512a67c0-7c4c-4e6d-baef-76b21611c0a6",
+  "body": "Found a related but distinct feature (investigation status tracking), not an authorization workflow for who can approve/decline a fraud case. Treating as unbuilt rather than assuming the adjacent feature covers it.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "a9bcd8bb-8d1f-4877-97a8-e6df3e27fd42",
+  "ticket_id": "2a3ad744-a69a-41ee-9df7-360c4abf096f",
+  "body": "App-shell-level integration decision for a different MFE, outside what this claims-workflow prototype models.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "16a67e54-5b1e-4b26-8622-20ab0e208137",
+  "ticket_id": "ed9cc790-4ebf-4f96-9a9e-f30f4e4b0625",
+  "body": "Same finding as BMPCC-12837: no AVA integration anywhere in this app.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "3248fd63-bb5d-4a43-96f1-62efb89c6c4e",
+  "ticket_id": "8569d474-06db-4682-b690-2a68e1a7223f",
+  "body": "No TMR-related component or route exists in this app — app-shell placement work for a different MFE that never needed a home here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "bc96293f-e4ed-483a-9922-8630826faefc",
+  "ticket_id": "34f9b61d-6883-43e1-ba4f-1acac98a34c5",
+  "body": "Identical title to BMPCC-14421. Either way, no TMR placement work exists in this prototype.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "aac6a8ec-bd3d-4cf9-bc8f-8d5d5c58647e",
+  "ticket_id": "caf93d8f-2451-4a1c-9cb6-8197fa40029a",
+  "body": "The Loss Adjuster Rating survey modal is built and visually matches design intent, so design is done. But not clean-done on build: a structural HTML bug (footer inside scrollable body, not after it) means the Submit button can scroll away or clip on longer content — found during this session's cross-modal audit, not yet fixed.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "c2288abe-16ae-4774-bbf4-c2e0110a1965",
+  "ticket_id": "5f636faf-ff46-4d78-9284-52629a800639",
+  "body": "attachment-picker.component.ts implements exactly what this ticket asks for: selecting existing documents vs. uploading new ones, with file-type/size validation, used inside the Provider Management send-communication flow.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "4997f13b-14ce-49f2-8038-6f45f5e680dc",
+  "ticket_id": "a9bb3609-50be-4976-9fe3-0f87396f92b4",
+  "body": "Design-wise done — covers email body rendering, pre-populated instruction details, editable fields. Has the same unresolved footer-nesting bug flagged for BMPCC-14452, so build isn't clean-done yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "7c6cedba-8322-4485-a3a6-42ea501ee89a",
+  "ticket_id": "52e6f891-ae97-4bc5-9956-01d1aa56aa3c",
+  "body": "Couldn't confidently match this to anything in the app. Flagging as unclear rather than guessing at a match that might be wrong.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "8f8ce1d6-caa8-4a37-b05a-ed5d312c79ff",
+  "ticket_id": "7e75aeba-b07c-4745-a61a-39266d31280f",
+  "body": "Found one stray comment referencing the Expertise Center concept, but nothing resembling a multi-select control for adjuster expertise areas. Not crediting a stray comment as real coverage.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "1c8429bb-504d-4f40-b79e-b5bd0af4c09e",
+  "ticket_id": "a1e2fa1b-0e0f-4309-88ce-8a7bf4cf7bc9",
+  "body": "The Save button part already exists in the FNOL reserve step, but only there. The ticket is actually about a post-FNOL reserve editing screen, which doesn't exist anywhere in this prototype yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "84d36223-5e8c-46c3-a582-95022ca58a5e",
+  "ticket_id": "b18f761d-604b-4b92-937f-6ab72a178514",
+  "body": "Already fully converted in this prototype's ticket registry. The Transaction Summary section is built and visible, with one accepted deviation already signed off: plain item count instead of real pagination controls.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "6a7fa8bb-379a-47d1-8deb-6442501b6158",
+  "ticket_id": "ee28395d-8d59-4a85-888a-938187591c74",
+  "body": "No monetary-deductibles selection UI exists anywhere in this prototype's payment/financial screens. The real ticket itself is blocked on upstream data — nothing to model here yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "88372394-5489-4e7d-9a3e-f6401a86b9c4",
+  "ticket_id": "e51434bc-5bdc-4da4-8cce-4e40641654b0",
+  "body": "Real Jira status is Descoped — the business decided not to build this. Nothing in this prototype models role-based authorization UI either, consistent with it being dropped.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "9c7dc2cf-36d3-43a0-a1fb-a38e95030e36",
+  "ticket_id": "6f6701f8-3cca-475e-85ca-e86bb39beb68",
+  "body": "Wants reserve notes to show on an Approval Journey screen, but this prototype has no such screen yet. There's a general claim-notes-panel elsewhere, but nothing tying it to reserve approval specifically.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "9ecf7bbf-03d4-4c47-8448-ff537215cfab",
+  "ticket_id": "a0482e95-d75b-46c0-85f6-52441a4d6daf",
+  "body": "Real Jira status is Descoped. Also moot here specifically because /claims/:id/recoveries is a stub route that redirects to overview 'until dedicated pages are built' — no Recovery page to put a status color scheme on yet.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "f2b74119-c001-424a-a0e6-516677cbdcb2",
+  "ticket_id": "9927bacb-2999-48c2-8c12-0c7c067b766a",
+  "body": "Wants document attach/upload on notes. The notes code that exists right now is unrelated — just a category rename. No document-attachment capability exists anywhere in the notes feature.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "f2f436c2-90da-40da-97b0-35274831b0c2",
+  "ticket_id": "1786b2b3-056f-41a5-b5f9-d9dd04da06cf",
+  "body": "The provider-management page this ticket is about does exist. Whether its specific spacing/alignment issues are fixed can't be confirmed from reading code alone.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "be3565d9-2fca-49bb-a7f6-57952b4b99d8",
+  "ticket_id": "86e112da-85bc-4127-bc07-962acceaf66a",
+  "body": "QA bug about damage type not matching selection on the Parties page. This prototype's Parties step doesn't display damage type at all, so nothing here could exhibit or fix this bug.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "6f857954-33a1-4dee-b933-9832559b6db6",
+  "ticket_id": "5a91050c-a92a-4fd6-aa86-524f25bbaedc",
+  "body": "No UI anywhere in this prototype shows a policy version or a 'based on' policy link. Nothing built yet, no existing screen to extend.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "c54b0c60-0e8e-4b14-b037-91e422b728e2",
+  "ticket_id": "fc6a4b57-8871-41ab-a9fd-29040d408c8f",
+  "body": "Purely a backend API-payload concern — no screen or interaction for a handler to see.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "19b89f4a-5b35-4a27-b9f0-ba1ad0373ca3",
+  "ticket_id": "70cb62eb-a4a6-499e-afda-36b175dd123f",
+  "body": "Unlike its sibling ticket (15886), this one has real evidence: step-entities-damages.component.ts tracks and passes entityId through moveEntity/removeEntity/addEntity. The FE-side plumbing this ticket asks for is already present in the prototype's data layer.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "7dfa27ab-7c79-40d1-b0fa-e16987af8ea6",
+  "ticket_id": "7f89975c-67c3-4fa8-bf8c-f106958713a7",
+  "body": "Pure test-coverage ticket for a real codebase's EntityId mapping logic. Nothing for a UI prototype to model here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "37333469-b72e-4b30-b3a3-d34816f4fd6d",
+  "ticket_id": "7ac6cc58-d138-45d0-8033-f381a36816fa",
+  "body": "Real Jira still shows this as To Do, but this prototype already has a full working reassign-claim-modal, wired from both claim-overview and claims-list. Already checked earlier this session in a full modal-spacing audit and came back clean. The prototype is actually ahead of the real Jira ticket here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "ecc214a8-e89a-4730-b95f-a39c582916c9",
+  "ticket_id": "53924a6a-ad94-4bbb-9d2f-b62c197a224b",
+  "body": "Already fully converted in this prototype's ticket registry. Seed the claim as Closed and the Reopen Claim button replaces Close Claim on the overview, exactly as the AC describes.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "28edb754-4319-4561-99ed-94e72e4e3049",
+  "ticket_id": "112b785e-f911-4bdc-bedd-48577ca0cc4f",
+  "body": "Wants fewer clicks to close a Recovery case. This prototype only has the Recovery Potential Flag card, a different feature (a Yes/No flag, not a case-closure flow). No recovery-case UI exists to reduce clicks on.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "0adfb1ea-277f-41c7-96b6-7452b4f5d992",
+  "ticket_id": "ddd10b69-a9bf-4190-9010-84b1ad41c00d",
+  "body": "QA defect against a Policy overview page showing linked claims. This prototype has no dedicated Policy overview screen, so no surface here to check this defect against.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "744369d4-26ea-4fcf-9957-a80780c735dd",
+  "ticket_id": "4c2dac34-4b83-44bf-941d-556fec40309d",
+  "body": "QA color/flow defect against production's Risk investigation section. In this prototype, investigation status is shown with the standard app-status-chip component, the established status-color pattern used everywhere else in the app.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "d3a1d237-8112-4adb-b018-b2b5ec38cd2e",
+  "ticket_id": "0cfe6882-8909-4827-ace9-44355cdaf4c8",
+  "body": "Ticket is about a specific backend error surfacing on Entities and Damages. No matching error/toast handling found — a production API-error edge case a static/mock prototype wouldn't reproduce.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "cd79926f-6c06-4e8e-879c-f65d5ca41cfc",
+  "ticket_id": "6ff1457c-14e6-4408-8545-bf156ed91f5e",
+  "body": "Same title as 3 sibling tickets — accidental duplicate filing, Descoped in real Jira in favor of one of the others. See BMPCC-16755 for the actual assessment.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "86e26cfe-7de3-4e85-8db2-237a3959c576",
+  "ticket_id": "ee76ee83-b958-4cd1-aba7-e7926a4dc226",
+  "body": "Same title as 3 sibling tickets — duplicate filing, Descoped. See BMPCC-16755 for the actual assessment.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "aaf88dca-3ea7-445d-b88e-0ce9bcdfba92",
+  "ticket_id": "8e22e044-b24a-4773-aff0-5307e505cb92",
+  "body": "Same title as 3 sibling tickets — duplicate filing, Descoped. See BMPCC-16755 for the actual assessment.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "934a5e93-988b-49a0-af75-d760445ef7d7",
+  "ticket_id": "548e5522-e52b-40e9-a6b5-b2fac5b0281a",
+  "body": "This is the ticket that actually shipped in production (unlike its 3 duplicate siblings). But this prototype's litigation-detail only offers Add actions — there's no delete/remove path, so a delete-confirmation dialog was never built here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "cc24f7dc-0869-4190-9633-b7c3c224b3bc",
+  "ticket_id": "95f54ad3-5bcd-458a-9f1e-0e4c61ef7230",
+  "body": "Fully converted in this prototype — AC marked done, and the Mass Events feature is a real, working page with a dev-banner walkthrough behind it.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "e8f5c05e-514c-43fa-af61-f0342afaeae8",
+  "ticket_id": "efff8aa2-13ca-4093-863c-3e7d5d22cff9",
+  "body": "Same situation as BMPCC-16312: QA color defect against production's Fraud investigation outcome status. This prototype already shows status via the standard app-status-chip pattern.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "11ab7639-07ff-4e4e-a55a-e49b99763911",
+  "ticket_id": "36eea60b-7935-439f-bb73-23350083c1e9",
+  "body": "Defect is about a step-tracker symbol in the Risk investigation section. This prototype's Risk Analysis page has no step-tracker at all — no equivalent element to compare against Figma.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "57cfcb43-ded0-4660-8203-0e787a588665",
+  "ticket_id": "54f057b2-a929-4774-ad97-d4b863aab0f7",
+  "body": "Defect: location details couldn't be added during claim creation in production. This prototype's FNOL Loss Information step has a working location-picker — the general UI surface is built; the specific save-failure defect is a backend issue a static prototype wouldn't reproduce.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "1208e843-1ac4-43cc-90e1-30b2a9a5826d",
+  "ticket_id": "6f453b3c-3a13-46d0-b12e-fadaf586d91b",
+  "body": "Assumes a Recovery Summary page and a separate Recovery Overview page both already exist. In this prototype, Recovery is still just a placeholder redirect — base pages need to be built first.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.764595+00:00",
+  "archived": false
+ },
+ {
+  "id": "db2db279-c2ae-4d90-8db1-3caaf38eba0f",
+  "ticket_id": "7bdaadf3-7286-4ee1-a34d-fa00862fe573",
+  "body": "Plumbing so the backend correctly carries an Entity ID through the FNOL journey's damage data. The prototype's FNOL screens already use entity IDs at the UI layer as a separate, already-built concern.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "d7868eaf-0957-4772-a574-17d8d327480a",
+  "ticket_id": "7bba3d84-c332-4d7e-8d90-3bd1e296db85",
+  "body": "QA defect about a success message's wording/style on the Parties page. No such message exists yet to even compare against Figma.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "4b1aa69b-c695-4158-92fe-16ce1f01cfb3",
+  "ticket_id": "d91f4eaf-91bc-4d63-ad3b-76703473c090",
+  "body": "Alignment defect in an Approval popup inside the real production Appshell, a different system. This prototype has a full-page Approvals screen instead, no directly equivalent surface.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "a0a3368a-6984-4b4e-a04f-d34c8d93c270",
+  "ticket_id": "f10b8d11-588b-413e-ad61-0dce75ee991f",
+  "body": "Pure backend API payload defect (claimSection POST incorrectly marking an entity Promised with no location). No UI surface implied — out of scope for this frontend prototype by nature.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "ab42561c-4aa4-4002-9174-07a213f97e2b",
+  "ticket_id": "25cfe72a-4a31-4cbb-a2a3-a8d3ed832988",
+  "body": "Only happens because the real product splits FNOL into several independently-routed micro-frontends. This prototype is a single app — no 'shell vs MFE' race condition to reproduce or fix.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "b1bcf09d-1670-49ed-8cd4-56335a4d2b1b",
+  "ticket_id": "505a4de2-4c17-4231-b0b4-849e1c63dcc8",
+  "body": "A QA team's internal checklist marker for a batch of screens they reviewed, not a feature ticket. Nothing concrete for the prototype to model.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "25ce1575-59ff-4eab-b2d9-0bc357800707",
+  "ticket_id": "45681a83-5bb7-473a-8f55-fee1499f5973",
+  "body": "Matched in the prototype ticket registry (AC marked done). Every row on the Approvals page has a kebab menu with Approve, Reject, and View details, confirmed working.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "be0ead7a-183c-4274-af80-716a9c5d9cd0",
+  "ticket_id": "66127810-3eae-41c4-9462-8082f3e35b54",
+  "body": "Ticket assumes a Referral type dropdown already exists and just has wrong options. In this prototype referral is a single button, not a categorized choice — a feature gap, not a small options fix.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "649f33c7-f3cb-47d8-a951-3782a8f471d4",
+  "ticket_id": "ec43674a-440a-4773-b799-8fd919c961a5",
+  "body": "Matched in the prototype ticket registry (AC marked done). The Recovery potential card on Claim Overview already has a working Set/Update modal (Yes/No + optional note).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "aa87c40d-a7b6-4239-8de6-d8b4257eea70",
+  "ticket_id": "abebf255-f8c6-4862-b9aa-5b1b410a4e32",
+  "body": "Data-configuration ticket, not a screen. The payoff shows up later in BMPCC-18159's dropdown, not here.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "896374c7-8a49-4dd6-ab70-f12aa0108b4b",
+  "ticket_id": "42a5beec-1b6e-4070-8c87-e52d8b442099",
+  "body": "Publishing an extra attribute on a backend event has no visual surface.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "f17e0450-b31d-4b05-93d6-e12bf0f97c94",
+  "ticket_id": "8d585a2c-8bcc-4291-a986-ff551eecb783",
+  "body": "Real screen-facing counterpart to the backend ref-data/Kafka tickets above — a dropdown next to Cause of Loss on Section Overview. The underlying UX is still an open design question elsewhere in this epic, so building now would mean guessing at unsettled requirements.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "0d407492-30ca-4cbb-84b9-687b0aacb91b",
+  "ticket_id": "dd7c86f4-8c56-450d-b10c-9cd5daa0a0e9",
+  "body": "Changes how claim/section reference numbers are generated internally. The prototype already just displays whatever ID string it's given.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "b1aea0c8-bb8b-4f88-a7f5-5876e43980db",
+  "ticket_id": "fe0f39e9-fb4c-45e7-a5c6-3789112808ad",
+  "body": "Asks for spacing/label/back-link polish on a Provider Details drill-in page. This prototype only has a flat Provider Management list — no dedicated detail page to align with Figma yet, a bigger gap than a styling tweak.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "760303f1-e0d3-4762-a1a0-ca5414b677a7",
+  "ticket_id": "cb75593e-7fc2-485a-bfc9-7b80985e96af",
+  "body": "Calls for broader Recovery UI changes pending design mockups. This prototype only has the narrower Recovery Potential Flag card — real, working, but not clearly the full intended scope.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "068c7440-4c92-4f93-af7b-08223b1f7d82",
+  "ticket_id": "b5d1cb50-b783-44c9-a5a5-ef27d3610017",
+  "body": "Field-rename QA fix in the real product. The prototype has a probably-equivalent field but not under the name the ticket asks for — not safely confirmed without checking the actual Figma.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "8fde024b-7cb2-4118-8bcc-b0cebb620aaa",
+  "ticket_id": "0ebeea62-71c1-4a2c-9579-bcda09a0f1e4",
+  "body": "'Epic Sanity' with no description is a housekeeping/test placeholder in Jira, already Descoped there too. Nothing to build or track.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "a7d46c76-1e81-4be0-99ec-c0ab2747884a",
+  "ticket_id": "9243dc14-46f0-4e5e-9e5d-75c0c4f736de",
+  "body": "The Litigation Management System is substantially built here: a list page plus a detail drill-in, routed at claims/:id/litigation. No matching entry in the ticket index, but the feature itself is clearly present and working.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "eee3b8c8-ad20-4e21-b996-680db2920e7c",
+  "ticket_id": "5345cdc5-2e02-41d4-8dc6-efd38bd67e32",
+  "body": "Matched in the prototype ticket registry (AC marked done). The Limits & Deductibles page shows both Policy limits and Deductibles with a claim/section level toggle.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T03:47:07.900587+00:00",
+  "archived": false
+ },
+ {
+  "id": "cd81fd5b-6c90-4e2c-9d71-7ce368aaa544",
+  "ticket_id": "acbd1769-05de-47c2-9cdb-9c723113750a",
+  "body": "Self-QA walkthrough of the CBI pilot in Add Entity modal (Business Interruption -> contingent BI), simulated step-by-step in code since no browser automation tool was available this session. Found 4 issues, ranked by severity:\n\n1. RACE CONDITION (real, not theoretical): mock-config.ts's default scenario has delayMs:300. The third-party search box (onThirdPartyQueryChange) fires a new async MockThirdPartyService.search() call on every keystroke with no debounce and no request-sequencing guard. Typing a normal query overlaps multiple 300ms-delayed calls; an older response can resolve after a newer one and overwrite thirdPartyResults with stale data. This exact bug class already has an established fix pattern in this codebase (TrackerService's ticketsRequestSeq/ticketRequestSeq counters) that wasn't applied here.\n2. NO ERROR HANDLING: mock-config.ts's 'flaky' scenario (errorRate 0.3) makes MockThirdPartyService.search() throw. onThirdPartyQueryChange does a bare await firstValueFrom(...) with no try/catch -> unhandled rejection, zero user-facing feedback, results just never update.\n3. NO LOADING INDICATOR: with a 300ms delay per keystroke, there's no spinner or \"Searching...\" state, unlike every other search UI in this app (e.g. broker-search-modal's state$ + spinner pattern).\n4. STICKY STATE (lower severity): switching Damage type away from Business Interruption and back leaves the contingent-BI checkbox, cbiCaseType, and selectedThirdParty signal exactly as they were -- none of it resets. This matches the app's existing behavior for the plain BI interruption dates (also never reset on damage-type change), so it's an extension of a pre-existing pattern rather than a new inconsistency, but third-party identity is higher-stakes data than a date and may be worth reconsidering.\n\nNot fixed yet -- reporting per instruction to track findings before changing anything further.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T04:32:37.330954+00:00",
+  "archived": false
+ },
+ {
+  "id": "d8570434-9008-4bbd-b3bb-263f62c88995",
+  "ticket_id": "acbd1769-05de-47c2-9cdb-9c723113750a",
+  "body": "Fixed all 4 self-QA findings from the previous note, same session:\n1. Race condition -> replaced the manual async call with a debounceTime(250) + switchMap pipeline fed into toSignal() (mirrors broker-search-modal's searchTrigger$ pattern already in this codebase). switchMap cancels any in-flight search the instant a newer query comes in, so the 300ms default-scenario delay can no longer land out of order.\n2. No error handling -> catchError in the pipeline sets a thirdPartySearchError signal; template shows \"Search failed. Try again.\" instead of silently doing nothing.\n3. No loading indicator -> added an nx-spinner (swaps in for the search icon) while thirdPartySearching() is true, matching the app's other search modals.\n4. Sticky CBI state -> the existing damage-type-change effect() now calls resetCbiState() whenever damageType is not business-interruption, clearing the checkbox, case type, third-party source/name/relationship, and any selected/searched third party.\n\nVerified: tsc --noEmit clean, ng build clean (no new errors/warnings), npm run pre-commit 17/18 (only the pre-existing ndbx-wrapper gap shared with navbar.html and file-restriction-card.component.html remains, unrelated to this fix). Build status raised to done; still design_status/handoff_status in_progress since this is a pilot awaiting real sign-off on the underlying UX (placement, PD-linkage gating, 2-tier case type structure) discussed earlier in this same session.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T04:39:18.345713+00:00",
+  "archived": false
+ },
+ {
+  "id": "8d928c70-328d-4cc6-aa19-ba1104262816",
+  "ticket_id": "34c11c5d-5ea8-419a-94fd-49a09f9bfaf3",
+  "body": "Built: added a confirmation dialog to Cancel, fixed once in WizardFooterComponent (shared by all 8 FNOL steps that use it) rather than duplicated per step. Clicking Cancel now opens ConfirmDialogComponent (\"Leave this claim notification?\" / Leave / Stay) and only navigates to /dashboard on confirm. Verified: tsc --noEmit clean, ng build clean, pre-commit 17/18 (same pre-existing ndbx-wrapper gap as before, unrelated).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T07:18:01.446223+00:00",
+  "archived": false
+ },
+ {
+  "id": "e26ebe7a-f117-45ea-927e-e84ae30caf63",
+  "ticket_id": "4dab64f6-b8c9-4cf6-84c3-5ef16f0aafa4",
+  "body": "Built (partial root-cause match): the missing confirmation dialog on Summary's Cancel is fixed via the same WizardFooterComponent change as BMPCC-17676 -- the dialog now appears immediately, before any navigation. The REAL production bug's root cause (router.initialNavigation() racing a separate MFE shell's guard, per BMPCC-17499's investigation) can't exist in this prototype at all -- this is a single Angular app, not a multi-MFE shell, so there's no cross-MFE navigation race to reproduce or fix. The user-visible symptom (no confirmation before leaving) is resolved either way.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T07:18:02.848449+00:00",
+  "archived": false
+ },
+ {
+  "id": "21fe1948-fa18-48df-80cf-b490de3ab2b4",
+  "ticket_id": "f433841d-3b6a-4f33-9d4b-7054556c09f5",
+  "body": "Built: Make Payment and Update Reserves buttons on Financial Overview now disable (with a tooltip explaining why) when the claim is closed, or when the currently-selected section is closed (section-level view). Added an info banner at the top of the page in either case. Reused the exact claimClosed-gating pattern already established in sections.ts/sections.html (MockClaimOverviewService.getOverview().status === 'Closed') rather than inventing a new one; also pulled real ClaimSection status via MockSectionService since FinancialSection (the financial-overview-specific model) never carried a status field of its own.\n\nScope note: this only gates the two buttons per the ticket's ask. Those buttons were already non-functional stubs before this change (no click handler at all) -- wiring them up to actually create a payment/reserve is a separate, out-of-scope piece of work, not touched here.\n\nVerified: tsc --noEmit clean, ng build clean, pre-commit 17/18 (same pre-existing ndbx-wrapper gap, unrelated).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:08:19.003312+00:00",
+  "archived": false
+ },
+ {
+  "id": "c0d0b30a-145b-4381-bcc3-5571da573f97",
+  "ticket_id": "548e5522-e52b-40e9-a6b5-b2fac5b0281a",
+  "body": "Built: added a Remove (trash icon) action next to Attorney and Opposing lawyer/law firm once either is set, using ConfirmDialogComponent (danger variant) -- \"Remove [name] from this litigation? This cannot be undone.\" Confirming clears the field and emits save(). Previously there was only an Add action with no way to remove either party at all. Verified: tsc --noEmit clean, ng build clean, pre-commit 17/18 (same pre-existing ndbx-wrapper gap, unrelated).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:10:15.69988+00:00",
+  "archived": false
+ },
+ {
+  "id": "5ce234c5-bdc9-47df-b73f-ad4a11e8c79e",
+  "ticket_id": "6ff1457c-14e6-4408-8545-bf156ed91f5e",
+  "body": "Duplicate filing of the same request as BMPCC-16755 (Descoped in real Jira in favor of it) -- built once there, this ticket doesn't need separate work. See BMPCC-16755's note for what was built.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:10:16.066022+00:00",
+  "archived": false
+ },
+ {
+  "id": "1ceaf339-6e4d-4bce-9237-d4822c5e693d",
+  "ticket_id": "ee76ee83-b958-4cd1-aba7-e7926a4dc226",
+  "body": "Duplicate filing of the same request as BMPCC-16755 (Descoped in real Jira in favor of it) -- built once there, this ticket doesn't need separate work. See BMPCC-16755's note for what was built.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:10:16.350772+00:00",
+  "archived": false
+ },
+ {
+  "id": "852bf125-e832-4be9-bda0-9bb9f3e8f314",
+  "ticket_id": "8e22e044-b24a-4773-aff0-5307e505cb92",
+  "body": "Duplicate filing of the same request as BMPCC-16755 (Descoped in real Jira in favor of it) -- built once there, this ticket doesn't need separate work. See BMPCC-16755's note for what was built.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:10:16.628163+00:00",
+  "archived": false
+ },
+ {
+  "id": "2ade67df-776c-42a6-86fd-65482ab41042",
+  "ticket_id": "48d42be6-9686-4b18-a2a2-365a77f8a644",
+  "body": "No build needed -- already fully covered by this prototype's own BMPCC-11006 (\"Orphan Claim — Convert to Regular\"), whose single AC is marked done: /fnol/search shows a \"Converting from [skeleton]\" banner, the search form + every downstream FNOL step (Loss Info/Entities/Parties/Reserves/Summary) is prefilled from the skeleton, and a kebab-menu \"Convert to claim\" shortcut also exists. Match is by title only (BMPCC-146 has zero description/AC anywhere -- real Jira ticket, no content to verify against) -- if the real BMPCC-146 turns out to mean something different from \"convert an orphan/skeleton claim to a regular one,\" this link is wrong and needs revisiting once the real ticket content is available.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:10:47.425737+00:00",
+  "archived": false
+ },
+ {
+  "id": "5a4eab7e-b120-4a0c-b424-79e3a3c5a91a",
+  "ticket_id": "5a91050c-a92a-4fd6-aa86-524f25bbaedc",
+  "body": "Built: added policyVersion + basedOnPolicyNumber to ClaimOverview model, seeded on CLM-2024-001 (v2, based on POL-2023-009) to make it demoable. New \"Policy\" field on Claim Overview shows \"POL-2023-010 (v2)\" plus a \"Based on POL-2023-009\" line when applicable.\n\nDeliberately NOT a clickable link -- there's no policy detail page anywhere in this prototype (/claims/:id/policy just redirects back to overview), so linking to the base policy would be a dead link. Plain muted text instead; revisit as a real link once/if a policy detail screen exists.\n\nVerified: tsc --noEmit clean, ng build clean, pre-commit 17/18 including audit:ac-logic (touched core/mock/data/) -- same pre-existing ndbx-wrapper gap, unrelated.",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:13:57.648895+00:00",
+  "archived": false
+ },
+ {
+  "id": "5a3ba943-a250-466a-8e63-5b0f0ed7d660",
+  "ticket_id": "de17a205-fa86-49f6-9847-f6950340cc46",
+  "body": "Built a pilot, not a finished feature -- key finding first: \"Claim Rejected\" was ALREADY a selectable closure reason in the existing Close Claim flow (claim-closure-modal.component.ts:36) before this session touched anything. So \"can a claim be rejected at all\" was already answered; what was actually missing were the 3 things the real Confluence ticket calls out as unresolved:\n\n1. Liability-related rejections needing a \"waiting for underwriter\" state before finalising -- built: a checkbox on the reason step (\"This rejection involves a liability determination...\") that only appears when reason = Claim Rejected. Checking it routes the claim to a new status, 'Pending Rejection Approval', instead of closing it immediately.\n2. What happens while pending -- built: a warning banner + \"Approve rejection\" / \"Decline rejection\" buttons render directly on Claim Overview when status is Pending Rejection Approval. Approve runs the real closeClaim() flow with reason Claim Rejected (closes for real); Decline reverts status to Open.\n3. Second-level approver notification (in-app queue vs email, who approves) -- NOT built. No auth/role system exists anywhere in this prototype (confirmed during earlier audit of BMPCC-13725/14869), so there's no real user to gate the Approve/Decline buttons behind -- they render for whoever is looking, same as every other role-agnostic action here. This is the honest gap; a real answer needs product/BA input on the actual approval routing before it can be built properly (maybe via the existing /approvals page, but that page's data model -- UrgentApproval -- is reserve/payment-shaped and doesn't fit a claim rejection without its own redesign).\n\nAlso NOT resolved: whether \"Reject Claim\" should be its own dedicated button (as the ticket's title implies) rather than a reason inside the generic Close Claim flow -- left as-is since changing that is a bigger UX call, not something to guess at.\n\nVerified: tsc --noEmit clean, ng build clean, pre-commit 17/18 (same pre-existing ndbx-wrapper gap, unrelated).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:20:09.154322+00:00",
+  "archived": false
+ },
+ {
+  "id": "948e8e97-06f1-4d2e-b8b6-408b0d97f63c",
+  "ticket_id": "de17a205-fa86-49f6-9847-f6950340cc46",
+  "body": "Self-QA: walked every card on Claim Overview as a claims handler would (no browser tool -- code-traced every click path), specifically re-checking my own Pending Rejection Approval work. Found and fixed 4 real issues:\n\n1. Missing space in the Policy field markup (unrelated to rejection, found along the way) -- \"{{ claim.policyNumber }}@if(...)\" rendered with no space before \"(v2)\". Fixed.\n2. approveRejection()/declineRejection() had no error handling and no double-click guard -- a flaky-scenario failure would silently do nothing, and two fast clicks could fire closeClaim() twice. Added a rejectionActionInFlight signal (disables both buttons + spinner on Approve) and a try/catch with a toast.error() on failure.\n3. The new 'Pending Rejection Approval' status fell through to StatusChipComponent's generic fallback (grey, same as Closed) -- a handler glancing at the chip couldn't tell a pending-approval claim from an actually-closed one. Added a real token mapping (reuses task-status-pending, the same amber token other domains already use for \"awaiting action\").\n4. \"Edit claim details\" was still clickable while a rejection is pending underwriter review -- editing loss info mid-review could invalidate the basis of the decision. Now hidden alongside Closed.\n\nDeliberately NOT changed (judgment calls, not bugs): left \"Reassign handler\" and the Recovery Potential card's own set/update action available during Pending Rejection Approval -- neither touches the rejection determination itself, blocking them felt like overreach rather than a clear fix.\n\nAlso surfaced but NOT fixed (pre-existing, unrelated to this session's work, flagging per the walkthrough instruction to check everything): several dead links/buttons found in adjacent cards that were never wired to anything -- \"Start investigation\" and the risk-score refresh icon (General Info row 2), \"Loss event ID\" (styled as a link, no click handler), and on Pending Tasks widget: \"More options\" (ellipsis), per-row \"See details\", and the 3 column sort-header chevrons. None of these are related to claim rejection; listing them here only because the self-QA pass touched those cards directly.\n\nVerified after fixes: tsc --noEmit clean, ng build clean, pre-commit 17/18 (same pre-existing ndbx-wrapper gap, unrelated).",
+  "created_by": "Claude",
+  "created_at": "2026-08-28T08:41:51.725056+00:00",
+  "archived": false
+ },
+ {
+  "id": "2a0762d0-19e8-4d41-917e-4db9d44fc6fb",
+  "ticket_id": "acbd1769-05de-47c2-9cdb-9c723113750a",
+  "body": "Cross-checked against the real production repo (github.developer.allianz.io/commercial-claims/claims-management, downloaded ZIP of main, 2026-08-31). Result: the entire CBI pilot has ZERO trace in real code. Grepped the whole real frontend (frontend/apps + frontend/libs) for \"contingent\", \"CBI\", \"instructionStatus\", \"interruption\" -- no hits except the literal string \"Business Interruption\" used as a plain damage-type label (damage-details-view-type.model.ts). Real entities-damages model (entities.model.ts) has no isContingentBi/cbiCaseType/thirdPartyName/instructionStatus/interruptionStartDate fields at all.\n\nBigger structural finding: real system does NOT split PD and BI into separate ClaimSection-style objects the way this prototype's core model assumes (\"a section IS an entity x damage-type pairing\"). Real treats BI as a view-type variant inside the same generic damage-capture flow (DamageDetailsViewType.FinancialLoss), not a structurally separate coverage object. This means the prototype's foundational assumption for where CBI would even attach may not hold.\n\nThis was always flagged as a pilot with no real Jira/AIP field list to build against -- this confirms it precisely: 100% invented, not a partial-spec gap-fill. Needs product/BA input on whether CBI is even modeled this way in the real target architecture before more work here is worthwhile.",
+  "created_by": "Claude",
+  "created_at": "2026-08-31T08:27:43.540146+00:00",
+  "archived": false
+ },
+ {
+  "id": "57754714-e5ae-43bf-9302-7e67a5d15b98",
+  "ticket_id": "de17a205-fa86-49f6-9847-f6950340cc46",
+  "body": "Cross-checked against the real production repo (same comparison pass, 2026-08-31). Result: the entire Claim Rejection pilot (Pending Rejection Approval status, Approve/Decline buttons, liability-determination checkbox) has ZERO trace in real code. Grepped the real claims-management-overview MFE for \"Rejection\"/\"Reject\"/\"Pending Approval\"/\"approval\" -- nothing beyond the pre-existing 'Claim Rejected' closure reason string (which real ClosureReason enum matches exactly, same 3 values same order as this prototype's -- that part was already correct).\n\nNo approval-pending state, no reviewer/approver flow, no second-level-approval concept exists anywhere in the real overview app. This is a fully invented pilot for an open Jira/Confluence design question (BMPCC-18352, still \"Open\" with zero resolution as of the Confluence page), same category as the CBI pilot above -- needs product/BA input on actual approval routing before this is more than a demo.",
+  "created_by": "Claude",
+  "created_at": "2026-08-31T08:27:44.243485+00:00",
+  "archived": false
+ },
+ {
+  "id": "c25848d9-5e87-47da-a893-718a60dcc288",
+  "ticket_id": "ddd10b69-a9bf-4190-9010-84b1ad41c00d",
+  "body": "Real repo verified (claims-management-main, docs + testing/src/pages/PolicyOverviewPage.ts). Real Policy overview page = policy details block (policy number + client via .nx-data-display__value) plus three expandable detail buttons: \"Coverage details\", \"Coinsurance details\", \"Linked claims details\". Linked claims table columns include claim ID, loss description, client.\n\nPROTOTYPE GAP: our /claims/:id/policy route is a stub that redirects to Overview — Policy overview does not exist in the prototype at all. No ticket has asked for it, but it IS a real, E2E-tested nav destination in production.\n\nNote on ownership: Policy overview is NOT one of the 10 MFEs in the claims-management repo (no source, only an E2E page object) — it is built by another team in another repo.",
+  "created_by": "claude (real-repo doc audit 2026-08-31)",
+  "created_at": "2026-08-31T08:39:22.552725+00:00",
+  "archived": false
+ },
+ {
+  "id": "30ff3336-5ea6-43c3-89d9-a38ef262d85f",
+  "ticket_id": "b18f761d-604b-4b92-937f-6ab72a178514",
+  "body": "Real Financial overview structure verified from testing/src/pages/FinancialSummaryPage.ts (E2E page object against the live app). Real page: h1 \"Financial overview\", then exactly 4 h2 sections — \"Financial Summary\", \"Additional Financial details\", \"Payments\", \"Reserves\". Actions: \"Update reserves\" button, \"Make Payment\" button. Reserve rows are Indemnity / Expense / Recovery, each with an \"Approved\" status chip and a kebab (aria-label \"Open menu\") containing \"Edit Details\". Payments table has a \"Payment amount\" column; Reserves table has a \"Reserve amount\" column.\n\nOur prototype's financial-overview matches the 4-section idea but our tab/section naming and kebab labels differ — align labels to the above if this screen gets handed over.",
+  "created_by": "claude (real-repo doc audit 2026-08-31)",
+  "created_at": "2026-08-31T08:39:22.866717+00:00",
+  "archived": false
+ },
+ {
+  "id": "28821870-23b3-4a3f-9aca-483353f580d9",
+  "ticket_id": "23f1e8af-4147-454a-a6c5-2a24b103efe8",
+  "body": "Confirmed against real source: claims-management-overview/src/app/pages/claims-overview/claims-overview.config.ts defines CLOSURE_DATE_LABEL (\"Closure date\"), CLOSURE_REASON_LABEL (\"Closure reason\") and RETENTION_UNTIL_LABEL (\"Retention until\") — so this fix landed in real code and the fields live on the General Information card of Claim Overview, not on a separate closure screen. Same card also carries REOPENED_DATE_LABEL / REOPENING_REASON_LABEL.\n\nReal Claim Overview page is only 4 stacked cards: General Information, File restriction, Pending Tasks, Recent Activities. It has no tabs and no in-page sub-navigation.",
+  "created_by": "claude (real-repo doc audit 2026-08-31)",
+  "created_at": "2026-08-31T08:39:23.169313+00:00",
+  "archived": false
+ },
+ {
+  "id": "12b1a45f-63da-4ea3-a401-613b2a280338",
+  "ticket_id": "95f54ad3-5bcd-458a-9f1e-0e4c61ef7230",
+  "body": "Real Mass Event linkage is fully implemented in claims-management-overview. Verified components: link-mass-event-modal, mass-event-unlink-confirmation-dialog, mass-event-link.service.ts. Labels from claims-overview.config.ts: \"Link mass event\" / \"+ Link mass event\" CTA, \"Unlink mass event\", \"Unlinking…\" in-flight state, modal title \"Find Mass Event\" with subtitle \"Search and select the mass event to link to this claim.\", search fields Mass Event ID / code / name / country / region, Search + Reset buttons, Results list, \"Link Mass Event\" confirm. Linked state shows Code / Type / Period / Location behind a \"Mass event details\" info icon.\n\nOur prototype's mass-events admin feature is a different surface (admin CRUD) — the claim-side linkage UX above is the one the real app ships.",
+  "created_by": "claude (real-repo doc audit 2026-08-31)",
+  "created_at": "2026-08-31T08:39:23.469072+00:00",
+  "archived": false
+ },
+ {
+  "id": "d18c8b3b-f260-4d91-af1e-27a96ea2c1c5",
+  "ticket_id": "86e112da-85bc-4127-bc07-962acceaf66a",
+  "body": "Real Parties is NOT part of the claims-management repo. It is a separate MFE web component owned by another team, embedded at runtime into claims-management-loss-overview's Overview tab: element <wc-cc-party-embedded> (docs also reference <wc-cc-involved-party-management-frontend>), loaded by injecting a <script type=\"module\"> from environment.involvedPartyBundleUrl on ngOnInit, then rendered inside an nx-accordion / nx-expansion-panel titled \"Parties\" (expanded by default). Channels are passed as DOM attributes ([attr.localcommunicationchannel] etc.) plus [attr.party-info-id]=\"incidentRecordKey\".\n\nConsequence for us: any Parties behaviour we prototype cannot be handed to the claims-management team — it belongs to the involved-party-management repo.",
+  "created_by": "claude (real-repo doc audit 2026-08-31)",
+  "created_at": "2026-08-31T08:39:23.772112+00:00",
+  "archived": false
+ },
+ {
+  "id": "6bad2768-9e7c-4941-b3af-61fd260d96ea",
+  "ticket_id": "a3c98f98-cd1f-4a88-b4e8-f56b176c25bc",
+  "body": "Real Summary MFE exists and is small: claims-management-summary, one page (summary-page.component.html, 151 lines) plus a leave-page-confirmation-dialog. There is no side panel / progress tracker component in the real repo today — so the \"+ side panel (progress tracker)\" half of this ticket is genuinely unbuilt in real code, not just missing from the prototype.\n\nReal side navigation is owned by the CHAMP shell (separate repo bmp-claims/claims-champ-fe), fed by each MFE's src/navigation.json — a progress tracker would have to be built inside the Summary MFE itself, since the shell sidebar only accepts flat {label, route, icon} nodes.",
+  "created_by": "claude (real-repo doc audit 2026-08-31)",
+  "created_at": "2026-08-31T08:39:24.227366+00:00",
+  "archived": false
+ },
+ {
+  "id": "aa1e75a0-9a87-4495-b231-547ad9cd5a0a",
+  "ticket_id": "ddd10b69-a9bf-4190-9010-84b1ad41c00d",
+  "body": "Built in the prototype: Policy overview page at /claims/:id/policy, reached from the claim overview policy number link.\n\nScope came from comparing the production repo against this prototype — the prototype had no policy surface at all, so the QA defect (Created date / Date of loss missing from the Linked claims table) could not even be reproduced here. Built the page with both columns present from the start.\n\nPage shows: policy header (number, product, underwriting year, status), cover/insured details, and a Linked claims table with Claim number, Created date, Date of loss, Claimant, Status. Dates use the dd-MM-yyyy project format via the date pipe, not the production repo's raw strings.\n\nDeviation from production: production splits this across an MFE boundary (wc-cc-policy-*). The prototype renders it as one lazy-loaded standalone component, because there is no MFE shell here to embed into.",
+  "created_by": "claude-code",
+  "created_at": "2026-08-31T09:20:30.785197+00:00",
+  "archived": false
+ },
+ {
+  "id": "7033061f-ddb9-46fe-9151-a5fd5151bf17",
+  "ticket_id": "7118e0fc-dc38-4392-9e1c-b9f6d31e8644",
+  "body": "Adjacent work, built without its own ticket under direct user instruction (2026-08-27 session: \"repo main มีอะไรที่เราไม่มี สร้างให้หมด\").\n\nAdded the free-text qualifier \"Specify other cause of loss\", revealed only while Cause of loss includes \"Other Event\". Present on both surfaces that capture it: FNOL step Loss information and the claims Edit loss information page. The typed text is folded into the readback everywhere the selection is displayed — FNOL summary, edit-page read view, and the \"was:\" original-value display — as \"Other Event — <text>\", so a summary never shows a bare \"Other\" that tells the reader nothing.\n\nDELIBERATE DEVIATION from production: production also has specifyOtherTypeOfDamage. Not built. This prototype removed \"other-damage\" from the typeOfDamage vocabulary on 2026-08-21 (CONVERSIONS.md) because ClaimSection.damageType derives from those values and a catch-all type produces a section whose coverage means nothing. Shipping the damage qualifier without an option that can reveal it would be a dead affordance. Reasoning recorded in core/models/lookup.model.ts next to OTHER_CAUSE_KEY.\n\nValidation: required + maxLength(100), attached at runtime rather than declared in the FormGroup, because \"required\" depends on a sibling control's value. Reconciled on ngOnInit and on prefill, since neither path fires selectionChange.",
+  "created_by": "claude-code",
+  "created_at": "2026-08-31T09:20:30.941341+00:00",
+  "archived": false
+ }
+]

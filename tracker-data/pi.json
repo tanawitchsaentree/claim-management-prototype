@@ -1,0 +1,20 @@
+[
+ {
+  "id": "3fcad01a-a866-4628-869b-723d61223764",
+  "name": "PI 2026.3",
+  "start_date": null,
+  "end_date": null,
+  "archived": false,
+  "created_at": "2026-08-27T07:49:41.214187+00:00",
+  "updated_at": "2026-08-27T07:49:41.214187+00:00"
+ },
+ {
+  "id": "5a1b81a3-a1e3-49b4-a85f-292d6df16de8",
+  "name": "PI 2026.4",
+  "start_date": null,
+  "end_date": null,
+  "archived": false,
+  "created_at": "2026-08-27T07:49:41.744689+00:00",
+  "updated_at": "2026-08-27T07:49:41.744689+00:00"
+ }
+]
