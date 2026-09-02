@@ -82,9 +82,11 @@ export interface DevTicket {
   targetClaim:         string;
   pages:               PreconditionPage[];
   // Extended (2026-08-20, tour-system audit) to optionally carry structured
-  // TourStep objects alongside the original plain-text narrative — a
-  // TourStep entry (has `targetId`) becomes a tour step; a string entry
-  // stays prose-only.
+  // TourStep objects alongside the original plain-text narrative. Both kinds
+  // become real tour steps (2026-08-21 fix — string entries were previously
+  // filtered out before reaching TourService, silently dropping most of the
+  // authored walkthrough): a TourStep entry (has `targetId`) highlights an
+  // element; a plain string becomes an untargeted, centered narrative step.
   walkthroughSteps:    Array<string | TourStep>;
   acceptanceCriteria:  TicketAC[];
 }

@@ -8,7 +8,7 @@ import { DevToolStorageService } from '../../../core/storage/dev-tool-storage.se
 import { ScenarioStageService } from '../../../core/scenario/scenario-stage.service';
 import { PostLandHook } from '../../../core/scenario/scenario-stage.model';
 import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
-import { TourStep } from '../../../core/services/tour.service';
+import { resolveTourSteps } from '../../../core/services/arrival-context.builder';
 import {
   BuildStatus,
   DevTicket,
@@ -206,7 +206,7 @@ export class ClaimDevHelperService {
   }
 
   private tourHooksFor(ticket: DevTicket): TicketAC['setup']['postLand'] {
-    const steps = ticket.walkthroughSteps.filter((s): s is TourStep => typeof s !== 'string');
+    const steps = resolveTourSteps(ticket);
     return steps.length > 0 ? [{ kind: 'tour.start', steps }] : [];
   }
 

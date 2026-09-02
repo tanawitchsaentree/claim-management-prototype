@@ -130,7 +130,11 @@ export class TicketDetailPanelComponent implements OnChanges {
     const route = this.effectivePrototypeRoute();
     if (!route) return;
 
-    window.open(this.prototypeScenarioSvc.buildPrototypeUrl(route, this.effectivePrototypeTicketId()), '_blank', 'noopener');
+    window.open(
+      this.prototypeScenarioSvc.buildPrototypeUrl(route, this.effectivePrototypeTicketId(), this.trackerService.ticket()?.jiraKey ?? null),
+      '_blank',
+      'noopener',
+    );
   }
 
   private async load(): Promise<void> {

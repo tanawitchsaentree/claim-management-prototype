@@ -130,6 +130,25 @@ export class TrackerService {
     if (!opts.silent) this.ticketLoading.set(true);
     this.error.set(null);
 
+    const { row, error } = await this.fetchTicket(jiraKey);
+
+    if (seq !== this.ticketRequestSeq) return; // superseded by a newer getTicket() call — drop this stale response
+
+    if (error) {
+      this.error.set(error);
+      this.ticket.set(null);
+    } else {
+      this.ticket.set(row);
+    }
+    if (!opts.silent) this.ticketLoading.set(false);
+  }
+
+  // Signal-free read, so a caller outside the tracker UI can look a row up
+  // without stomping on `ticket`/`error`/`ticketLoading` — the arrival panel
+  // needs a row's title and stage status in a prototype tab that has no tracker
+  // panel open at all (PrototypeEntryService). getTicket() is the signal-writing
+  // wrapper over this, so both go through the same visibility filter.
+  async fetchTicket(jiraKey: string): Promise<{ row: TicketWithDetails | null; error: string | null }> {
     let query = this.supabase.from('ticket').select(TICKET_SELECT).eq('jira_key', jiraKey);
     // Closes the `?key=BMPCC-14833` hole: the panel fetches by key independently
     // of the list, so hiding rows from the table alone left every hidden ticket
@@ -142,16 +161,8 @@ export class TrackerService {
     // reads identically whether the row is absent or withheld, which is the
     // point: the message must not reveal that a hidden row exists.
     const { data, error } = await query.maybeSingle();
-
-    if (seq !== this.ticketRequestSeq) return; // superseded by a newer getTicket() call — drop this stale response
-
-    if (error) {
-      this.error.set(error.message);
-      this.ticket.set(null);
-    } else {
-      this.ticket.set(data ? toTicketWithDetails(data as Record<string, unknown>) : null);
-    }
-    if (!opts.silent) this.ticketLoading.set(false);
+    if (error) return { row: null, error: error.message };
+    return { row: data ? toTicketWithDetails(data as Record<string, unknown>) : null, error: null };
   }
 
   async updateTicketState(

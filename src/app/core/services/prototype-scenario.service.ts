@@ -8,7 +8,7 @@ import { MockPolicyLocationService } from '../mock/services/mock-policy-location
 import { LocationItem } from '../models';
 import { ScenarioStageService } from '../scenario/scenario-stage.service';
 import { DevTicket, TicketIndex } from '../models/dev-ticket.model';
-import { toTourStep } from './tour.service';
+import { resolveTourSteps } from './arrival-context.builder';
 
 // Tracker rows carry hand-typed routes copied straight out of app.routes.ts,
 // param name and all — "/claims/:id/sections". Navigating to that literally
@@ -100,16 +100,20 @@ export class PrototypeScenarioService {
     return substituteClaimId(manualRoute, ticket?.targetClaim ?? DEMO_CLAIM_ID);
   }
 
-  // Absolute URL for opening a scenario in a NEW TAB. `pt` is the entry contract
-  // PrototypeEntryService reads back on boot over there: sessionStorage is not
-  // shared with a new tab, so the state applied in THIS tab cannot travel — the
-  // new tab has to rebuild the scenario from the URL itself. Side effect worth
-  // having: the link is now shareable, paste it anywhere and it opens with the
-  // scenario applied. Relative to document.baseURI so it works under the
-  // gh-pages base href as well as on localhost.
-  buildPrototypeUrl(route: string, ticketId: string | null): string {
+  // Absolute URL for opening a scenario in a NEW TAB. `pt` and `tk` are the entry
+  // contract PrototypeEntryService reads back on boot over there: sessionStorage
+  // is not shared with a new tab, so the state applied in THIS tab cannot travel
+  // — the new tab has to rebuild the scenario, and its own orientation, from the
+  // URL itself. `tk` is set even when there's no ticket file to apply, because
+  // the Jira key alone is enough for the arrival panel to fetch the row and say
+  // what the reviewer is looking at. Side effect worth having: the link is now
+  // shareable, paste it anywhere and it opens with the scenario applied.
+  // Relative to document.baseURI so it works under the gh-pages base href as
+  // well as on localhost.
+  buildPrototypeUrl(route: string, ticketId: string | null, jiraKey?: string | null): string {
     const url = new URL(route.replace(/^\//, ''), document.baseURI);
     if (ticketId) url.searchParams.set('pt', ticketId);
+    if (jiraKey) url.searchParams.set('tk', jiraKey);
     return url.toString();
   }
 
@@ -121,7 +125,7 @@ export class PrototypeScenarioService {
   // clicking through never actually shows.
   hasTour(id: string): boolean {
     const ticket = this.getTicketById(id);
-    if (!ticket?.walkthroughSteps.length) return false;
+    if (!ticket || !resolveTourSteps(ticket).length) return false;
     const ac = ticket.acceptanceCriteria.find((a) => a.buildStatus === 'done');
     return !ac?.setup.postLand?.length;
   }
@@ -149,7 +153,7 @@ export class PrototypeScenarioService {
     const ac = ticket?.acceptanceCriteria.find((a) => a.buildStatus === 'done');
     if (!ticket || !ac) return;
     const declaredHooks = ac.setup.postLand ?? [];
-    const tourSteps = ticket.walkthroughSteps.map(toTourStep);
+    const tourSteps = resolveTourSteps(ticket);
     const hooks = declaredHooks.length > 0 ? declaredHooks : tourSteps.length > 0 ? [{ kind: 'tour.start' as const, steps: tourSteps }] : [];
     await this.stageSvc.run(hooks, claimId);
   }

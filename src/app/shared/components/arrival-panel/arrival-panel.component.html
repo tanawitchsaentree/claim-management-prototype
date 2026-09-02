@@ -1,0 +1,104 @@
+@if (collapsed()) {
+  <button type="button" class="ap-reopen" (click)="collapsed.set(false)">
+    <nx-icon name="info-circle-o" size="s"></nx-icon>
+    <span class="ap-reopen__label">
+      @if (context.jiraKey) { {{ context.jiraKey }} } @else { Why you're here }
+    </span>
+  </button>
+} @else {
+  <section class="ap-card" role="complementary" aria-label="Why you were sent to this screen">
+    <header class="ap-card__head">
+      <div class="ap-card__heading">
+        <span class="ap-eyebrow">Why you're here</span>
+        <h2 class="ap-title">{{ context.title }}</h2>
+      </div>
+      <button type="button" class="ap-icon-btn" (click)="collapsed.set(true)"
+        title="Collapse" aria-label="Collapse this panel">
+        <nx-icon name="chevron-down" size="s"></nx-icon>
+      </button>
+    </header>
+
+    <div class="ap-meta">
+      @if (context.jiraKey) {
+        @if (context.jiraUrl) {
+          <a [href]="context.jiraUrl" target="_blank" rel="noopener" class="ap-key">{{ context.jiraKey }}</a>
+        } @else {
+          <span class="ap-key">{{ context.jiraKey }}</span>
+        }
+      }
+      @if (context.buildStatus) {
+        <span class="ap-meta__item">Build <app-status-chip [status]="context.buildStatus" domain="tracker"></app-status-chip></span>
+      }
+      @if (context.handoffStatus) {
+        <span class="ap-meta__item">Handoff <app-status-chip [status]="context.handoffStatus" domain="tracker"></app-status-chip></span>
+      }
+    </div>
+
+    @if (context.blockedBy) {
+      <nx-message context="warning" class="ap-blocked">
+        Blocked — {{ context.blockedBy.replace('_', ' ') }}.
+        @if (context.blockedNote) { {{ context.blockedNote }} }
+      </nx-message>
+    }
+
+    @if (builtCriteria().length) {
+      <p class="ap-lede">
+        {{ builtCriteria().length }} acceptance
+        {{ builtCriteria().length === 1 ? 'criterion' : 'criteria' }} to check here.
+        Tap one to see what it expects.
+      </p>
+      <ul class="ap-criteria">
+        @for (c of builtCriteria(); track c.id) {
+          <li class="ap-criterion" [class.ap-criterion--open]="openCriterion() === c.id">
+            <button type="button" class="ap-criterion__toggle" (click)="toggleCriterion(c.id)"
+              [attr.aria-expanded]="openCriterion() === c.id">
+              <nx-icon [name]="openCriterion() === c.id ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+              <span class="ap-criterion__statement">{{ c.statement }}</span>
+              @if (c.buildStatus === 'partial') { <span class="ap-partial">partial</span> }
+            </button>
+            @if (openCriterion() === c.id) {
+              <div class="ap-criterion__body">
+                <p class="ap-criterion__expected">{{ c.expected }}</p>
+                @if (c.visualCues.length) {
+                  <ul class="ap-cues">
+                    @for (cue of c.visualCues; track cue) { <li>{{ cue }}</li> }
+                  </ul>
+                }
+                <dl class="ap-how">
+                  <dt>Do this</dt>
+                  <dd>{{ c.trigger }}</dd>
+                  <dt>Expect</dt>
+                  <dd>{{ c.expectedResult }}</dd>
+                </dl>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    } @else {
+      <!-- The honest empty state. 22 of the 30 clickable tracker rows have no
+           ticket file behind them, so this branch is the COMMON one — it has to
+           say what is and isn't known rather than pretend to orient anybody. -->
+      <nx-message context="info" class="ap-empty">
+        No acceptance criteria are recorded for this ticket in the prototype, so there's
+        nothing specific to point at. You're on <code>{{ shownRoute }}</code>.
+      </nx-message>
+    }
+
+    <footer class="ap-card__foot">
+      @if (context.tourStepCount) {
+        @if (tourActive) {
+          <button nxButton="secondary small" type="button" (click)="endTour.emit()">End tour</button>
+        } @else {
+          <button nxButton="primary small" type="button" (click)="onStartTour()">
+            Start tour · {{ context.tourStepCount }} steps
+          </button>
+        }
+        @if (context.tourIsGenerated) {
+          <span class="ap-generated" title="Written from the acceptance criteria, not hand-authored">generated</span>
+        }
+      }
+      <button nxButton="tertiary small" type="button" (click)="dismissed.emit()">Dismiss</button>
+    </footer>
+  </section>
+}

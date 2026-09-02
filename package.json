@@ -24,6 +24,7 @@
     "audit:formfield-error": "! grep -rn '<nx-error[^>]*>' src/app --include='*.html' | grep -v 'nxFormfieldError\\|class=\"group-error\"'",
     "audit:ac-logic": "node scripts/audit-ac-logic.mjs",
     "audit:ac-route-overrides": "node scripts/audit-ac-route-overrides.mjs",
+    "audit:prototype-links": "node scripts/audit-prototype-links.mjs",
     "audit:stage-pattern": "node scripts/audit-stage-pattern.mjs",
     "audit:status-colors": "node scripts/audit-status-colors.mjs",
     "audit:date-format": "node scripts/audit-date-format.mjs",
@@ -36,7 +37,7 @@
     "audit:appearance": "! grep -rn 'appearance=\"outline\"' src/app --include='*.html'",
     "audit:blessed-comment": "find src/app -name '*.component.scss' | xargs grep -l 'display: flex\\|display: grid' | xargs grep -rL 'BLESSED:\\|blessed\\|@see' 2>/dev/null && echo 'Above files have layout code with no blessed citation' || echo 'pass'",
     "audit:wizard-footer": "! grep -rn 'nxButton.*secondary.*Back\\|nxButton.*primary.*Next\\|nxPlainButton.*Cancel' src/app/features/fnol/steps --include='*.html' | grep -v 'step-1-search\\|step-skeleton'",
-    "pre-commit": "node scripts/run-audits.mjs audit:colors audit:radio-size audit:formfield-error audit:imports audit:any audit:subscribe audit:hardcoded-data audit:status-colors audit:date-format audit:button-size audit:table-empty audit:modal-padding audit:ac-logic audit:ac-route-overrides audit:stage-pattern audit:appearance audit:ndbx-wrapper audit:wizard-footer",
+    "pre-commit": "node scripts/run-audits.mjs audit:colors audit:radio-size audit:formfield-error audit:imports audit:any audit:subscribe audit:hardcoded-data audit:status-colors audit:date-format audit:button-size audit:table-empty audit:modal-padding audit:ac-logic audit:ac-route-overrides audit:prototype-links audit:stage-pattern audit:appearance audit:ndbx-wrapper audit:wizard-footer",
     "precommit": "npm run pre-commit"
   },
   "private": true,

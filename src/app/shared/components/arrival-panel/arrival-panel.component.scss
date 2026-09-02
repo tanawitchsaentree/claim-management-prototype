@@ -1,0 +1,220 @@
+// Bottom-left, above everything except the tour overlay it hands off to.
+// ToastStackComponent sits at z-index 1100 top-right and the tour overlay at
+// --tour-overlay-z (5000); this deliberately sits between them so a running
+// tour's highlight ring and popover are never covered by the panel that
+// launched them.
+:host {
+  position: fixed;
+  bottom: var(--space-xl);
+  left: var(--space-xl);
+  z-index: 1200;
+  display: block;
+  max-width: 380px;
+}
+
+// Collapsed state — one bar, the ticket key, and a way back in. Small enough to
+// leave the screen readable, present enough that the orientation isn't lost the
+// moment the tour starts.
+.ap-reopen {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 20px;
+  // BLESSED: dashboard/_widget-shell.scss:14 — floating surface shadow via token.
+  box-shadow: 0 2px 8px var(--claim-overlay-shadow);
+  color: var(--interactive-primary);
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background: var(--ui-02);
+  }
+}
+
+.ap-reopen__label {
+  font-weight: 600;
+}
+
+.ap-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-base);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  // BLESSED: ticket-detail-panel.component.scss:25 — the heavier variant, since
+  // this card floats over page content rather than sitting in the flow.
+  box-shadow: 0 4px 16px var(--claim-overlay-shadow-heavy);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.ap-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.ap-eyebrow {
+  display: block;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.ap-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--text-01);
+}
+
+.ap-icon-btn {
+  flex: none;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-01);
+  }
+}
+
+.ap-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.ap-meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.ap-key {
+  font-weight: 600;
+  color: var(--interactive-primary);
+}
+
+.ap-lede {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-01);
+}
+
+.ap-criteria {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ap-criterion {
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+
+  &--open {
+    border-color: var(--interactive-primary);
+  }
+}
+
+.ap-criterion__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-sm);
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-01);
+
+  &:hover {
+    background: var(--ui-02);
+  }
+}
+
+.ap-criterion__statement {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.ap-partial {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: var(--ui-02);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.ap-criterion__body {
+  padding: 0 var(--space-sm) var(--space-sm) var(--space-sm);
+  border-top: 1px solid var(--ui-04);
+  font-size: 14px;
+  color: var(--text-01);
+}
+
+.ap-criterion__expected {
+  margin: var(--space-sm) 0 0;
+  line-height: 1.45;
+}
+
+.ap-cues {
+  margin: var(--space-sm) 0 0;
+  padding-left: var(--space-lg);
+  line-height: 1.45;
+}
+
+.ap-how {
+  margin: var(--space-sm) 0 0;
+
+  dt {
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  dd {
+    margin: 0 0 var(--space-sm);
+    line-height: 1.45;
+  }
+}
+
+.ap-blocked,
+.ap-empty {
+  // nx-message brings its own padding; only the code span needs help.
+  code {
+    word-break: break-all;
+  }
+}
+
+.ap-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--ui-04);
+}
+
+.ap-generated {
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: var(--ui-02);
+  color: var(--text-muted);
+  font-size: 14px;
+}

@@ -173,6 +173,25 @@ export class TrackerTableComponent {
     return !!id && this.prototypeScenarioSvc.hasTour(id);
   }
 
+  // A linked ticket file is what makes the destination self-explanatory: its
+  // acceptance criteria become the arrival panel's checklist and its walkthrough
+  // becomes the tour. Without one the link still works, it just lands on a screen
+  // the panel can only name.
+  hasScenario(ticket: TicketWithDetails): boolean {
+    const id = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+    return !!id && !!this.prototypeScenarioSvc.getTicketById(id);
+  }
+
+  // Says what the click will actually give you, before the click. The old fixed
+  // "Open in prototype (new tab)" was true of all 30 rows and useful for none.
+  launchHint(ticket: TicketWithDetails): string {
+    const id = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+    const built = (this.prototypeScenarioSvc.getTicketById(id ?? '')?.acceptanceCriteria ?? [])
+      .filter((ac) => ac.buildStatus !== 'todo').length;
+    if (!built) return 'Opens the screen in a new tab — no acceptance criteria recorded, so there is nothing specific to check';
+    return `Opens in a new tab with the scenario applied — ${built} acceptance ${built === 1 ? 'criterion' : 'criteria'} explained on arrival`;
+  }
+
   // Same auto-match PrototypeScenarioService.resolveTicketId() applies elsewhere — a ticket
   // whose jiraKey matches a public/tickets/*.json ticketId counts as having a route even if
   // nobody ever typed one into prototype_route by hand.
@@ -242,7 +261,7 @@ export class TrackerTableComponent {
     if (!route) return;
 
     const ticketId = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
-    window.open(this.prototypeScenarioSvc.buildPrototypeUrl(route, ticketId), '_blank', 'noopener');
+    window.open(this.prototypeScenarioSvc.buildPrototypeUrl(route, ticketId, ticket.jiraKey), '_blank', 'noopener');
   }
 
   openTicket(ticket: TicketWithDetails): void {

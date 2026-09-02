@@ -143,7 +143,9 @@
               <td nxCell class="col-indicator">
                 @if (hasPrototypeRoute(ticket)) {
                   <button type="button" class="tt-proto-open"
-                    (click)="openPrototypeRoute(ticket, $event)" title="Open in prototype (new tab)" aria-label="Open in prototype, opens in a new tab">
+                    [class.tt-proto-open--bare]="!hasScenario(ticket)"
+                    (click)="openPrototypeRoute(ticket, $event)"
+                    [title]="launchHint(ticket)" [attr.aria-label]="launchHint(ticket)">
                     <nx-icon name="launch" size="s"></nx-icon>
                   </button>
                 } @else {

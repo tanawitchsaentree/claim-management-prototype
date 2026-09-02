@@ -6,15 +6,25 @@ import { Router } from '@angular/router';
 export type TourStepDirection = 'top' | 'bottom' | 'left' | 'right';
 
 export interface TourStep {
-  /** Matches a `data-tour-id` attribute already present in the DOM. */
-  targetId: string;
-  title: string;
+  /** Matches a `data-tour-id` attribute already present in the DOM.
+   *  Omitted for narrative-only steps (no single element to point at) —
+   *  the renderer shows these as a centered card with no highlight ring. */
+  targetId?: string;
+  title?: string;
   body: string;
   /** "What to expect to appear after clicking" — shown under the body. */
   expectedAfterClick?: string;
   /** Navigate here before showing this step, if different from the current route. */
   route?: string;
   direction?: TourStepDirection;
+}
+
+// DevTicket.walkthroughSteps entries are `string | TourStep` — a plain
+// string used to be filtered out before ever reaching TourService,
+// silently dropping most of the authored narrative. This normalizes both
+// shapes into a real TourStep (string → untargeted, centered step).
+export function toTourStep(entry: string | TourStep): TourStep {
+  return typeof entry === 'string' ? { body: entry } : entry;
 }
 
 // Cross-route survival follows RightStripService's pattern: plain signals on
