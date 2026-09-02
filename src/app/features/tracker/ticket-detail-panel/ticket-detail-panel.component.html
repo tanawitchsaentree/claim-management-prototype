@@ -1,9 +1,7 @@
-@if (trackerService.loading()) {
-  <div class="tdp-slot" @panelSlide>
+<div class="tdp-slot" @panelSlide>
+  @if (trackerService.ticketLoading()) {
     <nx-spinner size="medium" aria-label="Loading ticket"></nx-spinner>
-  </div>
-} @else if (trackerService.ticket(); as ticket) {
-  <div class="tdp-slot" @panelSlide>
+  } @else if (trackerService.ticket(); as ticket) {
     <div class="tdp-header">
       <div class="tdp-header__row">
         <h2 class="tdp-title">{{ ticket.jiraKey }}</h2>
@@ -20,16 +18,27 @@
 
     <div class="tdp-body" tabindex="0">
       <div class="tdp-prototype">
-        <nx-formfield label="Prototype route">
-          <input nxInput [formControl]="prototypeRouteControl" (blur)="onPrototypeRouteBlur()" placeholder="/claims/CLM-2024-001/sections" />
-        </nx-formfield>
-        @if (ticket.state.prototypeRoute) {
+        @if (isAutoDetected()) {
+          <!-- ticket.jiraKey matched a public/tickets/*.json ticketId by string equality —
+               no manual entry needed. Falls back to the free-text field below the moment
+               nobody set prototype_ticket_id AND no ticket file matches. -->
+          <span class="tdp-label">Prototype route</span>
+          <p class="tdp-prototype__auto">
+            Auto-detected from <strong>{{ effectivePrototypeTicketId() }}</strong>
+            <code>{{ effectivePrototypeRoute() }}</code>
+          </p>
+        } @else {
+          <nx-formfield label="Prototype route">
+            <input nxInput [formControl]="prototypeRouteControl" (blur)="onPrototypeRouteBlur()" placeholder="/claims/CLM-2024-001/sections" />
+          </nx-formfield>
+        }
+        @if (effectivePrototypeRoute()) {
           <button nxButton="secondary small" type="button" [disabled]="opening()" (click)="openInPrototype()" class="tdp-prototype__open">
             @if (opening()) { <nx-spinner size="small"></nx-spinner> }
             @else { <nx-icon name="launch" size="s"></nx-icon> }
             Open in prototype
           </button>
-          @if (ticket.state.prototypeTicketId) {
+          @if (effectivePrototypeTicketId()) {
             <p class="tdp-prototype__hint">Applies this ticket's state and starts its tour on arrival.</p>
           } @else {
             <p class="tdp-prototype__hint tdp-prototype__hint--plain">No linked scenario — opens the bare route, no state or tour.</p>
@@ -104,5 +113,20 @@
         }
       </div>
     </div>
-  </div>
-}
+  } @else {
+    <!-- getTicket() failed (network error, not found, RLS, etc.) — trackerService.ticket() is
+         null and ticketLoading() is false, so neither branch above matched. Without this the
+         panel rendered as an empty bordered box with no error text and, worse, no close button
+         at all (the close button used to live only inside the ticket branch) — a dead end only
+         escapable by editing the URL. -->
+    <div class="tdp-header">
+      <div class="tdp-header__row">
+        <h2 class="tdp-title">Couldn't load ticket</h2>
+        <button nxIconButton="tertiary small" type="button" aria-label="Close panel" (click)="close()">
+          <nx-icon name="close"></nx-icon>
+        </button>
+      </div>
+      <p class="tdp-ticket-title">{{ trackerService.error() ?? 'This ticket could not be found.' }}</p>
+    </div>
+  }
+</div>

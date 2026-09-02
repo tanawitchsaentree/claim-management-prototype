@@ -19,7 +19,11 @@ export class TrackerSyncService {
       this.error.set(error.message);
     }
 
-    await this.trackerService.getSyncLog();
+    // Refreshing the sync-log timestamp alone left the table showing whatever
+    // it had loaded before the sync ran — "Last synced just now" next to a
+    // list that hadn't actually picked up the new Jira data until the next
+    // unrelated filter change or a manual reload.
+    await Promise.all([this.trackerService.getSyncLog(), this.trackerService.getTickets(this.trackerService.filters())]);
     this.syncing.set(false);
   }
 }

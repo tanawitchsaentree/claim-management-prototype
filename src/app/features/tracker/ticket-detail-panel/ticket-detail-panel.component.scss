@@ -14,7 +14,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-width: 420px;
+  // Was min-width only (no ceiling) — nothing stopped the drawer from
+  // stretching to fill whatever width its content wanted instead of staying
+  // a fixed-width side panel. width + max-width caps it for real.
+  width: 480px;
+  max-width: 90vw;
   overflow: hidden;
   background: var(--ui-01);
   border-left: 1px solid var(--ui-04);
@@ -68,6 +72,25 @@
   gap: var(--space-sm);
 
   nx-formfield { width: 100%; }
+}
+
+.tdp-label {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.tdp-prototype__auto {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+
+  code {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
 }
 
 .tdp-prototype__open {

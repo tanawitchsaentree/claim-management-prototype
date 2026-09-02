@@ -12,6 +12,10 @@
     }
   </nx-formfield>
 
+  @if (trackerService.error()) {
+    <nx-message context="error" role="alert">{{ trackerService.error() }}</nx-message>
+  }
+
   <div class="anm-footer">
     <button nxButton="secondary small" type="button" (click)="cancel()">Cancel</button>
     <button nxButton="primary small" type="button" [disabled]="saving()" (click)="save()">

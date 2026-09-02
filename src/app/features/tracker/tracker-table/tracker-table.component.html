@@ -78,11 +78,17 @@
     </div>
   </div>
 
-  @if (trackerService.loading()) {
+  @if (trackerService.loading() && sortedTickets().length === 0) {
+    <!-- Only the true first-load / "this filter now matches nothing" case blanks the view.
+         Re-filtering when we already have a list to show keeps that list up (dimmed, aria-busy)
+         instead of swapping the whole table out for a spinner and back on every dropdown pick —
+         all 7 filter controls trigger a refetch via the effect() in the constructor, so that used
+         to flash the entire table away and back on every single filter interaction. -->
     <nx-spinner size="medium" aria-label="Loading tickets"></nx-spinner>
   } @else if (sortedTickets().length === 0) {
     <app-empty-state message="No tickets match these filters."></app-empty-state>
   } @else {
+    <div class="tt-table-wrap" [class.tt-table-wrap--updating]="trackerService.loading()" [attr.aria-busy]="trackerService.loading()" tabindex="0">
     <table nxTable class="tt-table">
       <thead>
         <tr nxTableRow>
@@ -134,8 +140,15 @@
               </td>
               <td nxCell class="col-days">{{ ticket.state.blockedSince ? daysBlocked(ticket) : '—' }}</td>
               <td nxCell class="col-indicator">
-                @if (ticket.state.prototypeRoute) {
-                  <nx-icon name="launch" size="s" class="tt-indicator-on" aria-label="Has prototype route"></nx-icon>
+                @if (hasPrototypeRoute(ticket)) {
+                  <button type="button" class="tt-proto-open" [disabled]="openingRouteKey() === ticket.jiraKey"
+                    (click)="openPrototypeRoute(ticket, $event)" title="Open in prototype" aria-label="Open in prototype">
+                    @if (openingRouteKey() === ticket.jiraKey) {
+                      <nx-spinner size="small"></nx-spinner>
+                    } @else {
+                      <nx-icon name="launch" size="s"></nx-icon>
+                    }
+                  </button>
                 } @else {
                   <span class="tt-muted" aria-label="No prototype route">—</span>
                 }
@@ -164,6 +177,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
   @if (selectedKey()) {

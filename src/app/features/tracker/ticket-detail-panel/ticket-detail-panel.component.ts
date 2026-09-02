@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, Output, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -71,7 +70,6 @@ export class TicketDetailPanelComponent implements OnChanges {
 
   private readonly supabase = inject(SupabaseService).client;
   private readonly dialog = inject(NxDialogService);
-  private readonly router = inject(Router);
   private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
   readonly trackerService = inject(TrackerService);
   readonly opening = signal(false);
@@ -94,6 +92,29 @@ export class TicketDetailPanelComponent implements OnChanges {
 
   readonly daysBlocked = computed(() => daysSince(this.trackerService.ticket()?.state.blockedSince ?? null));
 
+  // Auto-matched by jiraKey against the loaded ticket-file registry when nobody's set
+  // prototype_ticket_id by hand — see PrototypeScenarioService.resolveTicketId()'s comment.
+  readonly effectivePrototypeTicketId = computed(() => {
+    const ticket = this.trackerService.ticket();
+    if (!ticket) return null;
+    return this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+  });
+
+  readonly effectivePrototypeRoute = computed(() => {
+    const ticket = this.trackerService.ticket();
+    if (!ticket) return null;
+    return this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
+  });
+
+  // True only when the link came from auto-matching, not from the manual field — controls
+  // whether the panel shows the free-text input (manual fallback) or a read-only auto-detected
+  // summary. A manually-set prototype_ticket_id always takes the manual/editable branch too,
+  // since the user chose to wire it explicitly and might want to change it.
+  readonly isAutoDetected = computed(() => {
+    const ticket = this.trackerService.ticket();
+    return !!ticket && !ticket.state.prototypeTicketId && !!this.prototypeScenarioSvc.getTicketById(ticket.jiraKey);
+  });
+
   ngOnChanges(): void {
     if (this.jiraKey) {
       this.load();
@@ -103,28 +124,14 @@ export class TicketDetailPanelComponent implements OnChanges {
     }
   }
 
-  // Stage 3 click-through chain: apply the linked prototype ticket's
-  // stateOverrides through the same pipeline the dev banner uses, THEN
-  // navigate, THEN run its postLand/tour — in that order, since navigating
-  // first would land on a screen before its state exists. Falls back to a
-  // bare navigation when there's no linked prototype ticket (or it has no
-  // 'done' AC to apply).
+  // Apply→navigate→postLand sequence lives in PrototypeScenarioService.openRoute() —
+  // shared with the tracker table's row-level "open in prototype" action.
   async openInPrototype(): Promise<void> {
-    const ticket = this.trackerService.ticket();
-    const route = ticket?.state.prototypeRoute;
-    if (!ticket || !route) return;
+    const route = this.effectivePrototypeRoute();
+    if (!route) return;
 
     this.opening.set(true);
-    const ticketId = ticket.state.prototypeTicketId;
-    const appliedRoute = ticketId ? await this.prototypeScenarioSvc.applyTicket(ticketId) : null;
-    const targetRoute = appliedRoute ?? route;
-
-    await this.router.navigateByUrl(targetRoute);
-
-    if (ticketId && appliedRoute) {
-      const claimMatch = targetRoute.match(/^\/claims\/([^/]+)\//);
-      await this.prototypeScenarioSvc.runPostLandForTicket(ticketId, claimMatch?.[1]);
-    }
+    await this.prototypeScenarioSvc.openRoute(route, this.effectivePrototypeTicketId());
     this.opening.set(false);
   }
 

@@ -130,8 +130,26 @@ export class TrackerService {
   readonly relations = signal<Relation[]>([]);
   readonly syncLog = signal<SyncLog[]>([]);
   readonly pis = signal<Pi[]>([]);
+  // Two independent flags — getTickets() (the list, read by tracker-table) and
+  // getTicket() (a single ticket, read by the detail panel) used to share one
+  // `loading` signal. Opening any ticket flashed the WHOLE TABLE into its
+  // loading-spinner state, and changing a filter while the panel was open
+  // flashed the panel into ITS loading-spinner state — neither fetch had
+  // actually changed the other's data, just the shared flag toggling.
   readonly loading = signal(false);
+  readonly ticketLoading = signal(false);
   readonly error = signal<string | null>(null);
+
+  // Guards against out-of-order Supabase responses — each of these fires
+  // repeatedly with different arguments (filters changing, ticket rows
+  // clicked through) with no cancellation, so an older call's response can
+  // resolve after a newer one and overwrite it with stale data. One counter
+  // per independent async flow; only the response matching the latest call
+  // for that flow is applied.
+  private ticketsRequestSeq = 0;
+  private ticketRequestSeq = 0;
+  private notesRequestSeq = 0;
+  private relationsRequestSeq = 0;
 
   // Filter state lives here, not on the component — TrackerTableComponent
   // is destroyed/recreated on '' <-> 'ticket/:key' navigation (different
@@ -155,6 +173,7 @@ export class TrackerService {
   }
 
   async getTickets(filters: TicketFilters = {}): Promise<void> {
+    const seq = ++this.ticketsRequestSeq;
     this.loading.set(true);
     this.error.set(null);
 
@@ -166,6 +185,8 @@ export class TrackerService {
     if (filters.assignee) query = query.ilike('assignee', `%${filters.assignee}%`);
 
     const { data, error } = await query;
+    if (seq !== this.ticketsRequestSeq) return; // a newer getTickets() call (e.g. another filter change) superseded this one
+
     if (error) {
       this.error.set(error.message);
       this.loading.set(false);
@@ -186,8 +207,14 @@ export class TrackerService {
     this.loading.set(false);
   }
 
-  async getTicket(jiraKey: string): Promise<void> {
-    this.loading.set(true);
+  // `silent: true` skips the loading flag — used by updateTicketState()'s refresh-after-save,
+  // which is re-fetching a ticket that's ALREADY fully displayed just to pick up server-confirmed
+  // fields (updated_by/updated_at). Toggling ticketLoading there used to blank the entire open
+  // panel (every dropdown, every field) back to a spinner and re-render it on every single field
+  // edit — the panel "flashing" on every click was this, not the open/close animation.
+  async getTicket(jiraKey: string, opts: { silent?: boolean } = {}): Promise<void> {
+    const seq = ++this.ticketRequestSeq;
+    if (!opts.silent) this.ticketLoading.set(true);
     this.error.set(null);
 
     const { data, error } = await this.supabase
@@ -196,13 +223,15 @@ export class TrackerService {
       .eq('jira_key', jiraKey)
       .single();
 
+    if (seq !== this.ticketRequestSeq) return; // superseded by a newer getTicket() call — drop this stale response
+
     if (error) {
       this.error.set(error.message);
       this.ticket.set(null);
     } else {
       this.ticket.set(toTicketWithDetails(data as Record<string, unknown>));
     }
-    this.loading.set(false);
+    if (!opts.silent) this.ticketLoading.set(false);
   }
 
   async updateTicketState(
@@ -226,11 +255,12 @@ export class TrackerService {
 
     const current = this.ticket();
     if (current && current.id === ticketId) {
-      await this.getTicket(current.jiraKey);
+      await this.getTicket(current.jiraKey, { silent: true });
     }
   }
 
   async addNote(ticketId: string, body: string, createdBy: string): Promise<void> {
+    this.error.set(null);
     const { error } = await this.supabase
       .from('note')
       .insert({ ticket_id: ticketId, body, created_by: createdBy });
@@ -242,12 +272,15 @@ export class TrackerService {
   }
 
   async getNotes(ticketId: string): Promise<void> {
+    const seq = ++this.notesRequestSeq;
     const { data, error } = await this.supabase
       .from('note')
       .select('*')
       .eq('ticket_id', ticketId)
       .eq('archived', false)
       .order('created_at', { ascending: false });
+
+    if (seq !== this.notesRequestSeq) return; // superseded by a newer getNotes() call (switched tickets) — drop this stale response
 
     if (error) {
       this.error.set(error.message);
@@ -257,11 +290,14 @@ export class TrackerService {
   }
 
   async getRelations(ticketId: string): Promise<void> {
+    const seq = ++this.relationsRequestSeq;
     const { data, error } = await this.supabase
       .from('relation')
       .select('*')
       .eq('ticket_id', ticketId)
       .eq('archived', false);
+
+    if (seq !== this.relationsRequestSeq) return; // superseded by a newer getRelations() call — drop this stale response
 
     if (error) {
       this.error.set(error.message);

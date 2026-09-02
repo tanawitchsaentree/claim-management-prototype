@@ -77,11 +77,13 @@ export class TrackerTableComponent {
   readonly blockedByOptions = BLOCKED_BY_OPTIONS;
   readonly hasRouteOptions = HAS_ROUTE_OPTIONS;
   readonly groupByEpic = signal(true);
+  // Which row's prototype link is mid-navigation — scoped by jiraKey since
+  // any row in the table can trigger this independently of the detail panel.
+  readonly openingRouteKey = signal<string | null>(null);
 
-  // Filters are seeded from TrackerService.filters() — set there, not here,
-  // so they survive this component being destroyed/recreated when
-  // navigating '' <-> 'ticket/:key' (different route configs, same
-  // component class — Angular does not reuse the instance).
+  // Filters are seeded from TrackerService.filters() rather than reset per-instance —
+  // harmless now that opening/closing a ticket no longer recreates this component
+  // (selected ticket moved to a query param — see tracker.routes.ts), left as-is.
   private readonly initialFilters = this.trackerService.filters();
 
   readonly piControl = new FormControl<string | null>(this.initialFilters.piId ?? null);
@@ -100,8 +102,8 @@ export class TrackerTableComponent {
   private readonly hasRouteSignal = toSignal(this.hasRouteControl.valueChanges, { initialValue: this.hasRouteControl.value });
   private readonly showArchivedSignal = toSignal(this.showArchivedControl.valueChanges, { initialValue: this.showArchivedControl.value });
 
-  private readonly paramMap = toSignal(this.route.paramMap);
-  readonly selectedKey = computed(() => this.paramMap()?.get('key') ?? null);
+  private readonly queryParamMap = toSignal(this.route.queryParamMap);
+  readonly selectedKey = computed(() => this.queryParamMap()?.get('key') ?? null);
 
   readonly jiraStatusOptions = computed(() => {
     const values = new Set(this.trackerService.tickets().map((t) => t.jiraStatus).filter((v): v is string => !!v));
@@ -166,8 +168,15 @@ export class TrackerTableComponent {
   // ticket JSON's walkthroughSteps contains at least one structured
   // TourStep, not just that a prototype_ticket_id is set.
   hasTour(ticket: TicketWithDetails): boolean {
-    const id = ticket.state.prototypeTicketId;
+    const id = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
     return !!id && this.prototypeScenarioSvc.hasTour(id);
+  }
+
+  // Same auto-match PrototypeScenarioService.resolveTicketId() applies elsewhere — a ticket
+  // whose jiraKey matches a public/tickets/*.json ticketId counts as having a route even if
+  // nobody ever typed one into prototype_route by hand.
+  hasPrototypeRoute(ticket: TicketWithDetails): boolean {
+    return !!this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
   }
 
   constructor() {
@@ -198,12 +207,25 @@ export class TrackerTableComponent {
     });
   }
 
+  // Direct row-level launch — no need to open the detail panel first just to
+  // find "Open in prototype" buried inside it. Same shared sequence the panel
+  // uses (PrototypeScenarioService.openRoute()), so behavior stays identical.
+  async openPrototypeRoute(ticket: TicketWithDetails, event: Event): Promise<void> {
+    event.stopPropagation();
+    const route = this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
+    if (!route) return;
+
+    this.openingRouteKey.set(ticket.jiraKey);
+    await this.prototypeScenarioSvc.openRoute(route, this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId));
+    this.openingRouteKey.set(null);
+  }
+
   openTicket(ticket: TicketWithDetails): void {
-    this.router.navigate(['/tracker/ticket', ticket.jiraKey]);
+    this.router.navigate([], { relativeTo: this.route, queryParams: { key: ticket.jiraKey } });
   }
 
   closeDetail(): void {
-    this.router.navigate(['/tracker']);
+    this.router.navigate([], { relativeTo: this.route, queryParams: { key: null }, queryParamsHandling: 'merge' });
   }
 
   sync(): void {

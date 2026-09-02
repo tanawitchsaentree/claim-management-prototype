@@ -54,16 +54,47 @@
   font-weight: 600;
 }
 
-.tt-table {
-  width: 100%;
+// table-layout: fixed + an explicit width on every column — same pattern as
+// approvals.component.scss's .tt-table equivalent. Without this, most
+// columns here only had min-width (a floor, not a fixed value) or nothing
+// at all (.col-key, .col-blocked, .col-links) — table-layout: auto (the
+// default) then redistributes whatever's left over across the
+// unconstrained columns based on content width per row, which is why
+// header text and data cells drifted out of visual alignment with each
+// other as soon as row content varied (a status chip vs. a bare "—").
+// Column widths below sum to ~1264px, wider than .tracker-page's 1200px
+// max-width once padding is subtracted — table-layout: fixed honors those
+// declared widths over the container, so without this wrapper the overflow
+// had nowhere to go but off the page (no border, no scrollbar, columns past
+// "Days blocked" just clipped). Scoped scroll + visible boundary instead.
+.tt-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  transition: opacity .12s;
+
+  // Refetching while a list is already showing — dim in place rather than
+  // unmount the table for a spinner and remount it once the new data lands.
+  &--updating {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
-.col-title       { min-width: 220px; }
-.col-epic        { min-width: 160px; }
-.col-jira-status { min-width: 110px; }
-.col-stage       { min-width: 120px; }
-.col-days        { text-align: right; }
+.tt-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.col-key         { width: 90px; }
+.col-title       { width: 260px; }
+.col-epic        { width: 180px; }
+.col-jira-status { width: 100px; }
+.col-stage       { width: 100px; }
+.col-blocked     { width: 110px; }
+.col-days        { width: 90px; text-align: right; }
 .col-indicator   { text-align: center; width: 32px; }
+.col-links       { width: 70px; }
 
 // Visual separator between Jira's status and our own tracking columns —
 // "grouped separately" per the tracker-usability audit (2026-08-20), on
@@ -75,6 +106,26 @@
 
 .tt-indicator-on {
   color: var(--interactive-primary);
+}
+
+// Direct launch action, no detour through the detail panel — same slot the
+// old decorative icon sat in, now an actual clickable control with hover
+// feedback so it reads as "click me", not just "this ticket has a route".
+.tt-proto-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--interactive-primary);
+  cursor: pointer;
+
+  &:hover { background: var(--ui-02); }
+  &:disabled { cursor: default; opacity: 0.6; }
 }
 
 // Group header row — same colspan-divider pattern as step-parties.component.html
@@ -100,7 +151,10 @@
   color: var(--text-muted);
 }
 
-.col-links {
+// Scoped to the body cell only (td.col-links) — the header cell (th.col-links,
+// "Links" text) should stay a normal cell, not flex, so its text aligns the
+// same way every other header does.
+td.col-links {
   display: flex;
   gap: var(--space-sm);
 }
