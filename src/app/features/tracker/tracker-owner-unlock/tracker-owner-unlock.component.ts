@@ -40,8 +40,14 @@ export class TrackerOwnerUnlockComponent {
 
   collapse(): void {
     this.expanded.set(false);
-    this.failed.set(false);
+    this.clearFailure();
     this.passwordControl.setValue('');
+  }
+
+  // Typing again clears the previous rejection. Without this the red field and
+  // the error text sit there while the user is halfway through a new attempt.
+  onInput(): void {
+    if (this.failed()) this.clearFailure();
   }
 
   async submit(): Promise<void> {
@@ -49,21 +55,38 @@ export class TrackerOwnerUnlockComponent {
     if (!value || this.checking()) return;
 
     this.checking.set(true);
-    this.failed.set(false);
+    this.clearFailure();
     const ok = await this.viewerService.unlock(value);
     this.checking.set(false);
-    this.passwordControl.setValue('');
 
     if (ok) {
       this.expanded.set(false);
+      this.passwordControl.setValue('');
       // The table reloads off viewer.isOwner() via its filter effect, so the row
       // count changes with no other visible confirmation — say so out loud.
       this.live.announce(`Unlocked. Now viewing as ${OWNER_LABEL}.`, 'polite');
       return;
     }
 
+    // The value stays put on a wrong password — blanking it made a typo cost the
+    // whole password again, and blanking it *while* nothing else changed on screen
+    // was the entire failure signal, which is to say there wasn't one.
+    //
+    // failed() alone renders nothing: <nx-error nxFormfieldError> is only shown
+    // when the formfield's control reports errorState, and NxInput derives that
+    // from ErrorStateMatcher — invalid && touched. This control has no validator,
+    // so the error has to be set on it by hand or the message never appears.
     this.failed.set(true);
+    this.passwordControl.setErrors({ incorrect: true });
+    this.passwordControl.markAsTouched();
     this.live.announce('Incorrect password.', 'assertive');
+  }
+
+  private clearFailure(): void {
+    this.failed.set(false);
+    // setErrors(null), not updateValueAndValidity() — there are no validators to
+    // re-run, and updateValueAndValidity would just leave the manual error in place.
+    if (this.passwordControl.errors) this.passwordControl.setErrors(null);
   }
 
   lock(): void {
