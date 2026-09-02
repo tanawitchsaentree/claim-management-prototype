@@ -1,0 +1,1 @@
+import"./chunk-C6Q5SG76.js";var t=[{path:"",loadComponent:()=>import("./chunk-CIXEXRGU.js").then(o=>o.TrackerTableComponent)},{path:"login",loadComponent:()=>import("./chunk-Q3XQOJAW.js").then(o=>o.TrackerLoginComponent)}];export{t as TRACKER_ROUTES};
