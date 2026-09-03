@@ -11,7 +11,7 @@ import { AuthService } from '../../../core/services/auth';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, NxAvatarModule, NxIconModule, NxButtonModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss',
+  styleUrls: ['./navbar.scss', './navbar-mobile.scss'],
 })
 export class Navbar {
   auth = inject(AuthService);

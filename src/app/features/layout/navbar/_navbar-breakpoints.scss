@@ -1,0 +1,6 @@
+// Shared by navbar.scss and navbar-mobile.scss. Kept in one place because the two files
+// gate the same elements against the same widths: below $medium-bp the search collapses to
+// icon-only, below $mobile-bp the whole desktop cluster is replaced by the hamburger. If
+// these ever disagree there is a band where neither the desktop nav nor the hamburger shows.
+$mobile-bp: 1024px;
+$medium-bp: 1360px;

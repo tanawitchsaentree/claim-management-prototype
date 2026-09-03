@@ -1,0 +1,60 @@
+@use './navbar-breakpoints' as *;
+
+// ── Hamburger toggle ──────────────────────────────────────────────
+.nav-hamburger { display: none !important; }
+
+@media (max-width: $mobile-bp) {
+  .nav-desktop  { display: none !important; }
+  // `!important` is required to beat the base `.nav-hamburger` rule above, which needs its
+  // own `!important` to override nxIconButton's display. Without it the base rule won at
+  // every width and the header rendered with nothing on the right below 1024px, so the
+  // whole nav was unreachable on mobile. Found by measuring computed display at 900px.
+  .nav-hamburger { display: flex !important; }
+}
+
+// ── Slide-out panel ───────────────────────────────────────────────
+.nav-mobile-menu {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  width: 240px;
+  background: var(--ui-01);
+  border-left: 1px solid var(--ui-04);
+  border-bottom: 1px solid var(--ui-04);
+  box-shadow: -4px 4px 16px var(--claim-overlay-shadow);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm) 0;
+}
+
+.nav-mobile-item {
+  display: block;
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: var(--paragraph-01-font-size);
+  color: var(--text-01);
+  cursor: pointer;
+  &:hover { background: var(--ui-02); }
+}
+
+.nav-mobile-divider {
+  height: 1px;
+  background: var(--ui-04);
+  margin: var(--space-sm) 0;
+}
+
+.nav-mobile-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.nav-mobile-username {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
