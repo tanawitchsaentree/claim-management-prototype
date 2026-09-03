@@ -31,17 +31,25 @@
     </div>
   }
 
+  <!-- Declared ONCE and stamped into whichever branch renders. A second
+       <ng-content> in the @else branch (which is what this was until 2026-09-03)
+       does not give you a second slot: Angular projects the caller's content into
+       one slot only, and it was the @else one — so `align="grid"` silently
+       rendered an empty grid column with no error anywhere. Found when
+       loss-event-overview became the first align="grid" caller with content. -->
+  <ng-template #shellContent><ng-content></ng-content></ng-template>
+
   @if (align === 'grid') {
     <div nxLayout="grid maxwidth" class="shell-page">
       <div nxRow>
         <div nxCol="12">
-          <ng-content></ng-content>
+          <ng-container [ngTemplateOutlet]="shellContent"></ng-container>
         </div>
       </div>
     </div>
   } @else {
     <div class="shell-page shell-page--navbar-aligned">
-      <ng-content></ng-content>
+      <ng-container [ngTemplateOutlet]="shellContent"></ng-container>
     </div>
   }
 </div>

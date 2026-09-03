@@ -5,10 +5,38 @@
     "eventDate": "2024-07-14",
     "oe": "Germany",
     "lineOfBusiness": "Property",
-    "claimCount": 8,
+    "claimCount": 3,
     "totalReserve": 2450000,
     "currency": "EUR",
-    "status": "Open"
+    "status": "Open",
+    "proximateCause": [
+      "Storm",
+      "Flood"
+    ],
+    "eventOccurrenceTime": "14:20",
+    "eventLocation": "Rhineland-Palatinate, Germany",
+    "causesRelations": [
+      "Heavy rainfall over 48 hours",
+      "River Ahr burst its banks",
+      "Regional power outage"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Material damage",
+        "damages": [
+          "Building",
+          "Contents",
+          "Machinery"
+        ]
+      },
+      {
+        "type": "Business interruption",
+        "damages": [
+          "Loss of production",
+          "Extra expenses"
+        ]
+      }
+    ]
   },
   {
     "lossEventId": "EVT-023",
@@ -19,7 +47,32 @@
     "claimCount": 5,
     "totalReserve": 1820000,
     "currency": "USD",
-    "status": "Open"
+    "status": "Open",
+    "proximateCause": [
+      "Storm"
+    ],
+    "eventOccurrenceTime": "03:45",
+    "eventLocation": "North Sea, off Stavanger, Norway",
+    "causesRelations": [
+      "Gale force 10 winds",
+      "Cargo shift in hold 2",
+      "Hull breach above the waterline"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Material damage",
+        "damages": [
+          "Hull",
+          "Cargo"
+        ]
+      },
+      {
+        "type": "Financial loss",
+        "damages": [
+          "Salvage costs"
+        ]
+      }
+    ]
   },
   {
     "lossEventId": "123456",
@@ -30,7 +83,33 @@
     "claimCount": 3,
     "totalReserve": 940000,
     "currency": "EUR",
-    "status": "Monitoring"
+    "status": "Monitoring",
+    "proximateCause": [
+      "Fire"
+    ],
+    "eventOccurrenceTime": "23:10",
+    "eventLocation": "Ingolstadt, Bavaria, Germany",
+    "causesRelations": [
+      "Electrical fault in the packaging line",
+      "Fire spread to the adjacent unit",
+      "Sprinkler water damage on the lower floor"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Material damage",
+        "damages": [
+          "Building",
+          "Contents",
+          "Machinery"
+        ]
+      },
+      {
+        "type": "Business interruption",
+        "damages": [
+          "Loss of gross profit"
+        ]
+      }
+    ]
   },
   {
     "lossEventId": "345678",
@@ -41,7 +120,32 @@
     "claimCount": 4,
     "totalReserve": 1310000,
     "currency": "EUR",
-    "status": "Open"
+    "status": "Open",
+    "proximateCause": [
+      "Flood"
+    ],
+    "eventOccurrenceTime": "07:30",
+    "eventLocation": "Innsbruck, Tyrol, Austria",
+    "causesRelations": [
+      "Snowmelt combined with heavy rain",
+      "Construction site inundated",
+      "Site access road washed out"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Material damage",
+        "damages": [
+          "Construction works",
+          "Plant and equipment"
+        ]
+      },
+      {
+        "type": "Financial loss",
+        "damages": [
+          "Delay in start-up"
+        ]
+      }
+    ]
   },
   {
     "lossEventId": "910111",
@@ -52,7 +156,32 @@
     "claimCount": 2,
     "totalReserve": 560000,
     "currency": "EUR",
-    "status": "Monitoring"
+    "status": "Monitoring",
+    "proximateCause": [
+      "Cyber attack"
+    ],
+    "eventOccurrenceTime": "02:15",
+    "eventLocation": "Dortmund, North Rhine-Westphalia, Germany",
+    "causesRelations": [
+      "Ransomware on the supplier ERP",
+      "Order processing halted for 6 days",
+      "Customer data exposure under review"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Financial loss",
+        "damages": [
+          "Business interruption",
+          "Incident response costs"
+        ]
+      },
+      {
+        "type": "Liability",
+        "damages": [
+          "Third-party data claims"
+        ]
+      }
+    ]
   },
   {
     "lossEventId": "101112",
@@ -60,9 +189,62 @@
     "eventDate": "2023-11-30",
     "oe": "Germany",
     "lineOfBusiness": "Property",
-    "claimCount": 6,
+    "claimCount": 3,
     "totalReserve": 0,
     "currency": "EUR",
-    "status": "Closed"
+    "status": "Closed",
+    "proximateCause": [
+      "Hail"
+    ],
+    "eventOccurrenceTime": "16:50",
+    "eventLocation": "Hanover, Lower Saxony, Germany",
+    "causesRelations": [
+      "Supercell over Hanover",
+      "Roof panels perforated",
+      "Vehicle fleet parked on an open lot"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Material damage",
+        "damages": [
+          "Roof",
+          "Vehicles"
+        ]
+      }
+    ]
+  },
+  {
+    "lossEventId": "111213",
+    "name": "Machinery Breakdown — BMW Budapest Motors",
+    "eventDate": "2024-03-10",
+    "oe": "Hungary",
+    "lineOfBusiness": "Engineering",
+    "claimCount": 1,
+    "totalReserve": 380000,
+    "currency": "EUR",
+    "status": "Monitoring",
+    "proximateCause": [
+      "Machinery breakdown"
+    ],
+    "eventOccurrenceTime": "11:05",
+    "eventLocation": "Budapest, Hungary",
+    "causesRelations": [
+      "Bearing failure on press line 3",
+      "Unplanned shutdown of 9 days"
+    ],
+    "damagesCaused": [
+      {
+        "type": "Material damage",
+        "damages": [
+          "Machinery"
+        ]
+      },
+      {
+        "type": "Business interruption",
+        "damages": [
+          "Loss of output"
+        ]
+      }
+    ]
   }
 ]

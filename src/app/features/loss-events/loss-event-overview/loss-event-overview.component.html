@@ -1,26 +1,192 @@
 <app-page-shell [breadcrumb]="breadcrumb" align="grid">
-  <p class="leo-id-label">Loss event</p>
-  <h1 class="leo-title">{{ lossEventId() }}</h1>
+  @if (loading()) {
+    <p class="leo-loading">Loading loss event…</p>
+  } @else if (notFound()) {
+    <app-empty-state
+      message="Loss event {{ lossEventId() }} was not found."
+      hint="It may have been merged into another event, or the link is out of date.">
+      <div ngProjectAs="[action]">
+        <button nxButton="secondary small" type="button" [routerLink]="['/loss-events']">Back to loss events</button>
+      </div>
+    </app-empty-state>
+  } @else if (overview(); as ov) {
 
-  <nx-message context="info" class="leo-info">
-    This loss event produced multiple claims. Open any claim below to continue.
-  </nx-message>
+    <p class="leo-id-label">Loss event</p>
+    <div class="leo-title-row">
+      <h1 class="leo-title">{{ ov.summary.lossEventId }} — {{ ov.summary.name }}</h1>
+      <app-status-chip [status]="ov.summary.status" domain="claim" />
+    </div>
+    <p class="leo-subtitle">
+      {{ ov.summary.oe }} · {{ ov.summary.lineOfBusiness }} · {{ ov.summary.eventDate }} ·
+      {{ ov.relatedClaims.length }} {{ ov.relatedClaims.length === 1 ? 'claim' : 'claims' }}
+    </p>
 
-  <section class="leo-card">
-    <h2 class="leo-section-heading">Derived claims</h2>
-    <ul class="leo-claim-list">
-      @for (c of derivedClaims; track c.claimId) {
-        <li class="leo-claim-row">
-          <button class="leo-claim-link" type="button" (click)="openClaim(c.claimId)" [claimPreview]="c.claimId">
-            <span class="leo-claim-id">{{ c.claimId }}</span>
-            <span class="leo-claim-meta">
-              {{ c.damageTypes.join(', ') }} · {{ c.sectionCount }} section{{ c.sectionCount === 1 ? '' : 's' }}
-              · {{ c.currency }} {{ c.totalReserve | number:'1.0-0' }}
-            </span>
-            <nx-icon name="chevron-right" class="leo-claim-chev"></nx-icon>
-          </button>
-        </li>
-      }
-    </ul>
-  </section>
+    <nx-tab-group>
+      <nx-tab label="Overview">
+        <app-loss-event-general-info [info]="ov.generalInfo" [eventDate]="ov.summary.eventDate" />
+
+        <section class="leo-card">
+          <div class="leo-card-head">
+            <h2 class="leo-card-title">Related claims</h2>
+          </div>
+          @if (ov.relatedClaims.length === 0) {
+            <app-empty-state message="No claims are linked to this loss event yet." />
+          } @else {
+            <table nxTable class="leo-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell class="leo-nowrap">Claim ID</th>
+                  <th nxHeaderCell>Claimant</th>
+                  <th nxHeaderCell>Claim handler</th>
+                  <th nxHeaderCell>Claim status</th>
+                  <th nxHeaderCell class="leo-nowrap">Loss amount</th>
+                  <th nxHeaderCell class="leo-col-action"><span class="leo-sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of ov.relatedClaims; track c.claimId) {
+                  <tr nxTableRow>
+                    <td nxCell class="leo-nowrap">
+                      <a class="text-link" [routerLink]="['/claims', c.claimId, 'overview']" [claimPreview]="c.claimId">
+                        {{ c.claimId }}
+                      </a>
+                    </td>
+                    <td nxCell>{{ c.claimant }}</td>
+                    <td nxCell>{{ c.claimHandler }}</td>
+                    <td nxCell><app-status-chip [status]="c.claimStatus" domain="claim" /></td>
+                    <td nxCell class="leo-nowrap">
+                      @if (c.lossAmount > 0) {
+                        {{ c.currency }} {{ c.lossAmount | number }}
+                      } @else {
+                        <span class="leo-muted">—</span>
+                      }
+                    </td>
+                    <td nxCell class="leo-col-action">
+                      <button nxPlainButton type="button" (click)="openClaim(c.claimId)"
+                              [attr.aria-label]="'Open claim ' + c.claimId">
+                        <nx-icon name="arrow-right" size="s"></nx-icon>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </section>
+
+        <section class="leo-card">
+          <div class="leo-card-head">
+            <h2 class="leo-card-title">Parties</h2>
+          </div>
+          @if (ov.parties.length === 0) {
+            <app-empty-state message="No parties are recorded on this loss event's claims." />
+          } @else {
+            <table nxTable class="leo-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell>Party name</th>
+                  <th nxHeaderCell>Role</th>
+                  <th nxHeaderCell>Clearance status</th>
+                  <th nxHeaderCell class="leo-nowrap">Claim</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of ov.parties; track p.partyId + p.role) {
+                  <tr nxTableRow>
+                    <td nxCell>{{ p.partyName }}</td>
+                    <td nxCell class="leo-capitalise">{{ p.role }}</td>
+                    <td nxCell><app-status-chip [status]="p.clearanceStatus" domain="clearance" /></td>
+                    <td nxCell class="leo-nowrap leo-muted">{{ p.claimId }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </section>
+      </nx-tab>
+
+      <nx-tab label="Financial overview">
+        <section class="leo-card">
+          <div class="leo-card-head">
+            <h2 class="leo-card-title">Reserve</h2>
+          </div>
+          <p class="leo-reserve">
+            @if (ov.financials.totalReserve > 0) {
+              {{ ov.financials.reserveCurrency }} {{ ov.financials.totalReserve | number }}
+            } @else {
+              <span class="leo-muted">No reserve outstanding</span>
+            }
+          </p>
+        </section>
+
+        <section class="leo-card">
+          <div class="leo-card-head">
+            <h2 class="leo-card-title">Reported loss by currency</h2>
+          </div>
+          <nx-message context="info" class="leo-info">
+            Claims on one loss event can be booked in different currencies, so totals are
+            reported per currency rather than summed.
+          </nx-message>
+          @if (ov.financials.totals.length === 0) {
+            <app-empty-state message="No amounts reported on this loss event yet." />
+          } @else {
+            <table nxTable class="leo-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell>Currency</th>
+                  <th nxHeaderCell class="leo-nowrap">Claims</th>
+                  <th nxHeaderCell class="leo-nowrap">Reported loss</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (t of ov.financials.totals; track t.currency) {
+                  <tr nxTableRow>
+                    <td nxCell>{{ t.currency }}</td>
+                    <td nxCell class="leo-nowrap">{{ t.claimCount }}</td>
+                    <td nxCell class="leo-nowrap">{{ t.currency }} {{ t.lossAmount | number }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </section>
+      </nx-tab>
+
+      <nx-tab label="Documents">
+        <section class="leo-card">
+          <div class="leo-card-head">
+            <h2 class="leo-card-title">Documents on linked claims</h2>
+          </div>
+          @if (ov.documents.length === 0) {
+            <app-empty-state
+              message="No documents have been uploaded to this loss event's claims."
+              hint="Documents are attached on the claim itself and appear here automatically." />
+          } @else {
+            <table nxTable class="leo-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell>File name</th>
+                  <th nxHeaderCell class="leo-nowrap">Claim</th>
+                  <th nxHeaderCell class="leo-nowrap">Size</th>
+                  <th nxHeaderCell class="leo-nowrap">Uploaded</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (d of ov.documents; track d.documentId) {
+                  <tr nxTableRow>
+                    <td nxCell>{{ d.fileName }}</td>
+                    <td nxCell class="leo-nowrap">
+                      <a class="text-link" [routerLink]="['/claims', d.claimId, 'overview']">{{ d.claimId }}</a>
+                    </td>
+                    <td nxCell class="leo-nowrap leo-muted">{{ fileSize(d.fileSize) }}</td>
+                    <td nxCell class="leo-nowrap leo-muted">{{ d.uploadedAt }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </section>
+      </nx-tab>
+    </nx-tab-group>
+  }
 </app-page-shell>

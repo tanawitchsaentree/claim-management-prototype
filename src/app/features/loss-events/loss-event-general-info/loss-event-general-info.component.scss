@@ -1,0 +1,92 @@
+// Mirrors the claim-overview `.co-card` / `.co-field` shell by value rather than
+// @use-ing features/claims/claim-overview/_card-shell.scss — that partial lives
+// inside another feature, and reaching across features is the same smell in SCSS
+// as it is in TS. Tokens only, no hex.
+.legi-card {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-xl);
+  margin-bottom: 16px;
+}
+
+.legi-title {
+  display: block;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  margin: 0 0 28px;
+}
+
+.legi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-xl) var(--space-lg);
+}
+
+.legi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legi-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.legi-value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.legi-block {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-base);
+  border-top: 1px solid var(--ui-04);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.legi-list {
+  margin: 0;
+  padding-left: var(--space-base);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legi-list-item {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.legi-damages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.legi-damage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.legi-damage-type {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  min-width: 160px;
+}
+
+.legi-damage-items {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+}

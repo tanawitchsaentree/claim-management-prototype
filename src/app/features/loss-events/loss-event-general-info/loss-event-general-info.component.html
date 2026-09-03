@@ -1,0 +1,51 @@
+<section class="legi-card">
+  <h2 class="legi-title">General information</h2>
+
+  <div class="legi-grid">
+    <div class="legi-field">
+      <span class="legi-label">Proximate cause</span>
+      <span class="legi-value">{{ info.proximateCause.length ? info.proximateCause.join(', ') : '—' }}</span>
+    </div>
+    <div class="legi-field">
+      <span class="legi-label">Event occurrence date</span>
+      <span class="legi-value">{{ eventDate || '—' }}</span>
+    </div>
+    <div class="legi-field">
+      <span class="legi-label">Event occurrence time</span>
+      <span class="legi-value">{{ info.eventOccurrenceTime || '—' }}</span>
+    </div>
+    <div class="legi-field">
+      <span class="legi-label">Event location</span>
+      <span class="legi-value">{{ info.eventLocation || '—' }}</span>
+    </div>
+  </div>
+
+  <div class="legi-block">
+    <span class="legi-label">Causes &amp; relations</span>
+    @if (info.causesRelations.length) {
+      <ul class="legi-list">
+        @for (cause of info.causesRelations; track cause) {
+          <li class="legi-list-item">{{ cause }}</li>
+        }
+      </ul>
+    } @else {
+      <span class="legi-value">—</span>
+    }
+  </div>
+
+  <div class="legi-block">
+    <span class="legi-label">Damages caused</span>
+    @if (info.damagesCaused.length) {
+      <div class="legi-damages">
+        @for (d of info.damagesCaused; track d.type) {
+          <div class="legi-damage">
+            <span class="legi-damage-type">{{ d.type }}</span>
+            <span class="legi-damage-items">{{ d.damages.join(', ') || '—' }}</span>
+          </div>
+        }
+      </div>
+    } @else {
+      <span class="legi-value">—</span>
+    }
+  </div>
+</section>
