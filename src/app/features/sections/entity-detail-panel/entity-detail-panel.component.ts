@@ -21,27 +21,40 @@ import {
   EditDamagedItemModalComponent,
   EditDamagedItemModalData,
   EditDamagedItemModalResult,
-  DamagedItem,
 } from '../edit-damaged-item-modal/edit-damaged-item-modal.component';
+import { DamagedItem } from '../damaged-item.config';
 import { DamageTypeLabelPipe } from '../../../shared/pipes/damage-type-label.pipe';
+import { CbiCaseTypeLabelPipe } from '../../../shared/pipes/cbi-case-type-label.pipe';
 
+// `causedBy` is set on every item, not just the financial-loss one — the field
+// stopped being financial-loss-only on 2026-09-03 (see damaged-item.config.ts),
+// and a seeded row with the column blank would read as "this cannot be recorded"
+// rather than "nobody filled it in".
 const MOCK_ITEMS: Record<string, DamagedItem[]> = {
   'SE-001': [
-    { name: 'Loading dock door', description: 'Broken opening/closing mechanism', damage: 'Material damage' },
-    { name: 'Loading ramp',      description: 'Top layer is damaged.',            damage: 'Material damage' },
-    { name: 'Window',            description: 'Broken window.',                   damage: 'Material damage' },
+    { name: 'Loading dock door', description: 'Broken opening/closing mechanism', damage: 'Material damage',      causedBy: 'Fire' },
+    { name: 'Loading ramp',      description: 'Top layer is damaged.',            damage: 'Material damage',      causedBy: 'Fire' },
+    { name: 'Window',            description: 'Broken window.',                   damage: 'Material damage',      causedBy: 'Explosion' },
   ],
   'SE-002': [
-    { name: 'Hydraulic system',  description: 'Hydraulic fluid leak detected.',   damage: 'Machinery breakdown' },
-    { name: 'Mast assembly',     description: 'Bent mast, cannot lift.',          damage: 'Material damage' },
+    { name: 'Hydraulic system',  description: 'Hydraulic fluid leak detected.',   damage: 'Machinery breakdown',  causedBy: 'Machinery breakdown' },
+    { name: 'Mast assembly',     description: 'Bent mast, cannot lift.',          damage: 'Material damage',      causedBy: 'Impact' },
   ],
   'SE-003': [
-    { name: 'Production line A', description: 'Conveyor belt damaged.',           damage: 'Business interruption' },
+    { name: 'Production line A', description: 'Conveyor belt damaged.',           damage: 'Business interruption', causedBy: 'Fire' },
     {
       name: 'Lost contract margin', description: 'Q3 delivery contract cancelled by the buyer.',
       damage: 'Financial loss',
-      financialLossCausedBy: 'Business Interruption',
+      causedBy: 'Business Interruption',
       financialLossDetails: 'Contracted margin of 18% on EUR 340,000 of undelivered orders, per the signed schedule and the buyer’s cancellation notice.',
+    },
+    {
+      name: 'Warehouse operative injury', description: 'Burns to the left forearm while clearing the line.',
+      damage: 'Bodily injury',
+      causedBy: 'Fire',
+      injuredPartyName: 'Jonas Weber',
+      injuredPartyCountry: 'Germany',
+      injuredPartyRole: 'Third party',
     },
   ],
 };
@@ -60,6 +73,7 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     EmptyStateComponent,
     StatusChipComponent,
     DamageTypeLabelPipe,
+    CbiCaseTypeLabelPipe,
   ],
   templateUrl: './entity-detail-panel.component.html',
   styleUrl: './entity-detail-panel.component.scss',

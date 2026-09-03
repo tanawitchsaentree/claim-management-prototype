@@ -24,22 +24,51 @@
     <nx-error nxFormfieldError>Required.</nx-error>
   </nx-formfield>
 
-  <!-- A financial loss has no physical damage to describe, so the peril behind
-       it and the working of how the figure was reached carry the whole record.
-       Only rendered for that damage type — see damaged-item.config.ts. -->
-  @if (isFinancialLoss()) {
-    <nx-formfield label="Financial loss caused by">
-      <nx-dropdown formControlName="financialLossCausedBy" placeholder="Select cause">
-        @for (opt of causedByOptions; track opt.value) {
-          <nx-dropdown-item [value]="opt.label">{{ opt.label }}</nx-dropdown-item>
-        }
-      </nx-dropdown>
-      <nx-error nxFormfieldError>Required for a financial loss.</nx-error>
-    </nx-formfield>
+  <!-- Caused by applies to every damage type (2026-09-03) — see the field note in
+       damaged-item.config.ts. The label reads "Financial loss caused by" on that
+       one type only, matching the production financial-loss-section. -->
+  <nx-formfield [label]="isFinancialLoss() ? 'Financial loss caused by' : 'Caused by'">
+    <nx-dropdown formControlName="causedBy" placeholder="Select cause">
+      @for (opt of causedByOptions; track opt.value) {
+        <nx-dropdown-item [value]="opt.label">{{ opt.label }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+    <nx-error nxFormfieldError>Required.</nx-error>
+  </nx-formfield>
 
+  <!-- A financial loss has no physical damage to describe, so the working of how
+       the figure was reached carries the record the Description cannot. -->
+  @if (isFinancialLoss()) {
     <nx-formfield label="Financial loss details" floatLabel="always">
       <textarea nxInput formControlName="financialLossDetails" rows="3"
                 placeholder="How the loss was calculated, period covered, figures relied on…"></textarea>
+    </nx-formfield>
+  }
+
+  <!-- Injured person. Mirrors the production bodily-injury-new-employee sub-form:
+       one legal/trade name field, country, role. -->
+  @if (isBodilyInjury()) {
+    <p class="adm-branch-heading">Injured person</p>
+
+    <nx-formfield label="Legal name / Trade (DBA) name">
+      <input nxInput formControlName="injuredPartyName" placeholder="e.g. Jonas Weber" />
+      <nx-error nxFormfieldError>Required for a bodily injury.</nx-error>
+    </nx-formfield>
+
+    <nx-formfield label="Country">
+      <nx-dropdown formControlName="injuredPartyCountry" placeholder="Select country">
+        @for (opt of countryOptions; track opt.value) {
+          <nx-dropdown-item [value]="opt.label">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <nx-formfield label="Role">
+      <nx-dropdown formControlName="injuredPartyRole" placeholder="Select role">
+        @for (opt of roleOptions; track opt.value) {
+          <nx-dropdown-item [value]="opt.label">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
     </nx-formfield>
   }
 </div>

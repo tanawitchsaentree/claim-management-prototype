@@ -38,11 +38,28 @@
         <span class="edp-field__label">Section</span>
         <span class="edp-field__value">{{ section.name }}</span>
       </div>
+      <div class="edp-field">
+        <span class="edp-field__label">Date of occurrence</span>
+        <span class="edp-field__value">{{ entity.dateOfOccurrence ?? '–' }}</span>
+      </div>
       @if (entity.interruptionStartDate || entity.interruptionEndDate) {
         <div class="edp-field">
           <span class="edp-field__label">Interruption period</span>
           <span class="edp-field__value">
             {{ entity.interruptionStartDate ?? '–' }} → {{ entity.interruptionEndDate ?? 'ongoing' }}
+          </span>
+        </div>
+      }
+      @if (entity.isContingentBi) {
+        <div class="edp-field">
+          <span class="edp-field__label">CBI case type</span>
+          <span class="edp-field__value">{{ entity.cbiCaseType | cbiCaseTypeLabel }}</span>
+        </div>
+        <div class="edp-field">
+          <span class="edp-field__label">Third party</span>
+          <span class="edp-field__value">
+            {{ entity.thirdPartyName ?? '–' }}
+            @if (entity.thirdPartyRelationship) { ({{ entity.thirdPartyRelationship }}) }
           </span>
         </div>
       }
@@ -67,6 +84,10 @@
         <thead>
           <tr nxTableRow>
             <th nxHeaderCell>Item</th>
+            <!-- Its own column since 2026-09-03: every damage type carries a cause
+                 now, so the old sub-line treatment (justified while only
+                 financial-loss items had one) hid a value present on every row. -->
+            <th nxHeaderCell>Caused by</th>
             <th nxHeaderCell>Description</th>
             <th nxHeaderCell>Damage</th>
             <th nxHeaderCell class="edp-col-action"></th>
@@ -75,23 +96,29 @@
         <tbody>
           @for (item of items(); track item.name) {
             <tr nxTableRow>
-              <td nxTableCell>{{ item.name }}</td>
+              <td nxTableCell>
+                {{ item.name }}
+                <!-- Injured person stays a sub-line on the item: only bodily-injury
+                     rows have one, so three more columns would be empty on every
+                     other row in a table that has to fit inside the side panel. -->
+                @if (item.injuredPartyName) {
+                  <span class="edp-item-sub">
+                    {{ item.injuredPartyName }}
+                    @if (item.injuredPartyRole) { · {{ item.injuredPartyRole }} }
+                    @if (item.injuredPartyCountry) { · {{ item.injuredPartyCountry }} }
+                  </span>
+                }
+              </td>
+              <td nxTableCell>
+                @if (item.causedBy) { {{ item.causedBy }} } @else { <span class="edp-item-sub">–</span> }
+              </td>
               <td nxTableCell>
                 {{ item.description }}
                 @if (item.financialLossDetails) {
                   <span class="edp-item-sub">{{ item.financialLossDetails }}</span>
                 }
               </td>
-              <td nxTableCell>
-                {{ item.damage }}
-                <!-- Sub-line rather than its own column: only financial-loss
-                     items ever carry a cause, so a column would be empty on
-                     most rows and would widen a table that already has to fit
-                     in the side panel. -->
-                @if (item.financialLossCausedBy) {
-                  <span class="edp-item-sub">Caused by {{ item.financialLossCausedBy }}</span>
-                }
-              </td>
+              <td nxTableCell>{{ item.damage }}</td>
               <td nxTableCell class="edp-col-action">
                 <button class="sec-kebab-btn" type="button"
                   [nxContextMenuTriggerFor]="itemMenu" aria-label="Item actions">⋮</button>

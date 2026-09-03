@@ -7,18 +7,14 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
-import { FINANCIAL_LOSS_DAMAGE, DAMAGE_OPTIONS } from '../damaged-item.config';
-
-export interface DamagedItem {
-  name: string;
-  description: string;
-  damage: string;
-  // Only meaningful when damage === 'Financial loss'. A financial loss has no
-  // physical thing to inspect, so the peril that produced it and the working of
-  // how it was arrived at are the whole record — see damaged-item.config.ts.
-  financialLossCausedBy?: string;
-  financialLossDetails?:  string;
-}
+import {
+  BODILY_INJURY_DAMAGE,
+  DAMAGE_OPTIONS,
+  DamagedItem,
+  FINANCIAL_LOSS_DAMAGE,
+  buildDamagedItem,
+  damagedItemMissingConditional,
+} from '../damaged-item.config';
 
 export interface EditDamagedItemModalData {
   item: DamagedItem;
@@ -39,48 +35,42 @@ export class EditDamagedItemModalComponent {
   private readonly fb        = inject(FormBuilder);
   private readonly lookupSvc = inject(MockLookupService);
 
-  readonly damageOptions     = DAMAGE_OPTIONS;
-  readonly causedByOptions   = this.lookupSvc.getCauseOfLossSync();
+  readonly damageOptions   = DAMAGE_OPTIONS;
+  readonly causedByOptions = this.lookupSvc.getCauseOfLossSync();
+  readonly countryOptions  = this.lookupSvc.getCountriesSync();
+  readonly roleOptions     = this.lookupSvc.getPartyRolesSync();
 
   readonly form = this.fb.group({
     name:        [this.data.item.name,        Validators.required],
     description: [this.data.item.description, Validators.required],
     damage:      [this.data.item.damage,      Validators.required],
-    // No conditional validator: these controls only render when the damage type
-    // is Financial loss, so an always-required rule would block every other
-    // type. Required-ness is checked by hand in confirm(); the validator here
-    // only exists so nx-formfield's invalid styling activates after a failed
-    // submit. Same reasoning as add-section-entity-modal's BI controls.
-    financialLossCausedBy: [this.data.item.financialLossCausedBy ?? null, Validators.required],
-    financialLossDetails:  [this.data.item.financialLossDetails  ?? ''],
+    causedBy:    [this.data.item.causedBy ?? null, Validators.required],
+    // No conditional validator on the branch-specific controls below: they only
+    // render for their own damage type, so an always-required rule would block
+    // every other type. Required-ness is checked by
+    // damagedItemMissingConditional(); the validator here only exists so
+    // nx-formfield's invalid styling activates after a failed submit. Same
+    // reasoning as add-section-entity-modal's BI controls.
+    financialLossDetails: [this.data.item.financialLossDetails ?? ''],
+    injuredPartyName:     [this.data.item.injuredPartyName ?? '', Validators.required],
+    injuredPartyCountry:  [this.data.item.injuredPartyCountry ?? null],
+    injuredPartyRole:     [this.data.item.injuredPartyRole ?? null],
   });
 
   private readonly damageSig = toSignal(this.form.get('damage')!.valueChanges, {
     initialValue: this.form.value.damage ?? '',
   });
   readonly isFinancialLoss = computed(() => this.damageSig() === FINANCIAL_LOSS_DAMAGE);
+  readonly isBodilyInjury  = computed(() => this.damageSig() === BODILY_INJURY_DAMAGE);
 
   confirm(): void {
-    const missingCausedBy = this.isFinancialLoss() && !this.form.value.financialLossCausedBy;
     if (this.form.get('name')!.invalid || this.form.get('description')!.invalid
-        || this.form.get('damage')!.invalid || missingCausedBy) {
+        || this.form.get('damage')!.invalid
+        || damagedItemMissingConditional(this.form.value)) {
       this.form.markAllAsTouched();
       return;
     }
-    this.modalRef.close({
-      name:        this.form.value.name!,
-      description: this.form.value.description!,
-      damage:      this.form.value.damage!,
-      // Dropped, not merely hidden, when the type is no longer Financial loss —
-      // leaving a stale peril on a material-damage item would show up on the
-      // item row as a cause that nothing on screen let the handler set.
-      ...(this.isFinancialLoss()
-        ? {
-            financialLossCausedBy: this.form.value.financialLossCausedBy ?? undefined,
-            financialLossDetails:  this.form.value.financialLossDetails  || undefined,
-          }
-        : {}),
-    });
+    this.modalRef.close(buildDamagedItem(this.form.value));
   }
 
   cancel(): void { this.modalRef.close(); }

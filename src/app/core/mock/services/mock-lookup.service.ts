@@ -31,7 +31,14 @@ export class MockLookupService extends MockBaseService {
   getIdTypes(): Observable<LookupOption[]>            { return this.respond(this.lookups.idTypes); }
   getReserveTypes(): Observable<LookupOption[]>       { return this.respond(this.lookups.reserveTypes); }
   getNarrativeOptions(): Observable<LookupOption[]>   { return this.respond(this.lookups.narrativeOptions); }
+  // Synchronous, same reason as getTypeOfDamageSync() above — read inside
+  // add-section-entity-modal's computed()/template without a subscription.
+  getCbiCaseTypesSync(): LookupOption[]               { return this.lookups.cbiCaseTypes; }
   // Same reason again — read by add/edit-damaged-item-modal to populate
-  // "Financial loss caused by" as a field initialiser.
+  // "Caused by" as a field initialiser.
   getCauseOfLossSync(): LookupOption[]                { return this.lookups.causeOfLoss; }
+  // And again, for the same two modals' Bodily injury block (injured person's
+  // country and role).
+  getCountriesSync(): LookupOption[]                  { return this.lookups.countries; }
+  getPartyRolesSync(): LookupOption[]                 { return this.lookups.partyRoles; }
 }

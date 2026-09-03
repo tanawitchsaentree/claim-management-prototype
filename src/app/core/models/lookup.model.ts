@@ -42,4 +42,5 @@ export interface Lookups {
   idTypes: LookupOption[];
   reserveTypes: LookupOption[];
   narrativeOptions: LookupOption[];
+  cbiCaseTypes: LookupOption[];
 }

@@ -12,4 +12,15 @@
   nx-formfield { width: 100%; }
 }
 
+// Separates the injured-person block from the fields every damage type shows,
+// so the three extra controls read as one group rather than as more of the same.
+.adm-branch-heading {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: var(--space-md) 0 var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--ui-04);
+}
+
 .adm-footer { @include modal.footer; }

@@ -12,4 +12,14 @@
   nx-formfield { width: 100%; }
 }
 
+// Same grouping rule as add-damaged-item-modal's .adm-branch-heading.
+.edm-branch-heading {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: var(--space-md) 0 var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--ui-04);
+}
+
 .edm-footer { @include modal.footer; }

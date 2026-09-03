@@ -7,8 +7,14 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
-import { FINANCIAL_LOSS_DAMAGE, DAMAGE_OPTIONS } from '../damaged-item.config';
-import { DamagedItem } from '../edit-damaged-item-modal/edit-damaged-item-modal.component';
+import {
+  BODILY_INJURY_DAMAGE,
+  DAMAGE_OPTIONS,
+  DamagedItem,
+  FINANCIAL_LOSS_DAMAGE,
+  buildDamagedItem,
+  damagedItemMissingConditional,
+} from '../damaged-item.config';
 
 export interface AddDamagedItemModalData {
   entityName: string;
@@ -31,40 +37,37 @@ export class AddDamagedItemModalComponent {
 
   readonly damageOptions   = DAMAGE_OPTIONS;
   readonly causedByOptions = this.lookupSvc.getCauseOfLossSync();
+  readonly countryOptions  = this.lookupSvc.getCountriesSync();
+  readonly roleOptions     = this.lookupSvc.getPartyRolesSync();
 
   readonly form = this.fb.group({
     name:        ['', Validators.required],
     description: ['', Validators.required],
     damage:      ['', Validators.required],
-    // Validator present but not conditional — see the same note in
+    causedBy:    [null as string | null, Validators.required],
+    // Validators on the branch-specific controls below are for nx-formfield's
+    // invalid styling only, not gating — see the same note in
     // edit-damaged-item-modal.component.ts; confirm() does the real check.
-    financialLossCausedBy: [null as string | null, Validators.required],
-    financialLossDetails:  [''],
+    financialLossDetails: [''],
+    injuredPartyName:     ['', Validators.required],
+    injuredPartyCountry:  [null as string | null],
+    injuredPartyRole:     [null as string | null],
   });
 
   private readonly damageSig = toSignal(this.form.get('damage')!.valueChanges, {
     initialValue: this.form.value.damage ?? '',
   });
   readonly isFinancialLoss = computed(() => this.damageSig() === FINANCIAL_LOSS_DAMAGE);
+  readonly isBodilyInjury  = computed(() => this.damageSig() === BODILY_INJURY_DAMAGE);
 
   confirm(): void {
-    const missingCausedBy = this.isFinancialLoss() && !this.form.value.financialLossCausedBy;
     if (this.form.get('name')!.invalid || this.form.get('description')!.invalid
-        || this.form.get('damage')!.invalid || missingCausedBy) {
+        || this.form.get('damage')!.invalid
+        || damagedItemMissingConditional(this.form.value)) {
       this.form.markAllAsTouched();
       return;
     }
-    this.modalRef.close({
-      name:        this.form.value.name!,
-      description: this.form.value.description!,
-      damage:      this.form.value.damage!,
-      ...(this.isFinancialLoss()
-        ? {
-            financialLossCausedBy: this.form.value.financialLossCausedBy ?? undefined,
-            financialLossDetails:  this.form.value.financialLossDetails  || undefined,
-          }
-        : {}),
-    });
+    this.modalRef.close(buildDamagedItem(this.form.value));
   }
 
   cancel(): void { this.modalRef.close(); }

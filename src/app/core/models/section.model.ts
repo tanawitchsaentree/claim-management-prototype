@@ -13,11 +13,25 @@ export interface SectionEntity {
   coverageReview?:          CoverageReview;
   coverageReviewNote?:      string;
   coverageReviewOverridden?: boolean;
+  // When this entity's loss actually occurred — asked on Add Entity (Marlene
+  // feedback, 2026-08-31, replacing instructionStatus there). Entities in the
+  // same section can be added at different times / from different events, so
+  // this is per-entity, not read from the claim-level dateOfLoss.
+  dateOfOccurrence?:       string;
   // Business interruption's indemnity period — only meaningful when the
   // owning section's damageType is 'business-interruption'; every other
   // damage type leaves these unset.
   interruptionStartDate?:  string;
   interruptionEndDate?:    string;
+  // CBI (contingent business interruption) — pilot fields for BMPCC-18353's
+  // open design question. Only meaningful when isContingentBi is true (which
+  // itself only applies when the owning section's damageType is
+  // 'business-interruption'). Captures the third party whose own premises/
+  // service actually suffered the loss, not the insured's.
+  isContingentBi?:         boolean;
+  cbiCaseType?:            string;
+  thirdPartyName?:         string;
+  thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
 }
 
 export interface SectionBlockers {
