@@ -9,7 +9,7 @@ import {
   StepConfig,
 } from '../models/fnol-form.model';
 import { Policy } from '../../../core/models';
-import { SkeletonClaim } from '../../../core/models/skeleton-claim.model';
+import { Claim } from '../../../core/models/claim.model';
 import { LossInformation } from '../../../core/models/loss-information.model';
 import { CAUSE_SCHEMAS } from '../config/cause-schemas';
 import { FileRestriction, AccessListEntry } from '../../../core/models/claim-overview.model';
@@ -91,9 +91,9 @@ export class FnolStateService {
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;
   skeletonClaimId: string | null = null;
-  // Full skeleton being converted — kept so the search page can show rich
+  // Orphan claim being converted — kept so the search page can show rich
   // context (client + loss event) while the user picks a policy.
-  convertingSkeleton: SkeletonClaim | null = null;
+  convertingSkeleton: Claim | null = null;
 
   // ── Step config ────────────────────────────────────────────────────
 
@@ -165,7 +165,7 @@ export class FnolStateService {
 
   // Convert flow (BMPCC-11006): prefill happy-path form from a skeleton claim,
   // remember which skeleton we are converting so summary can link them.
-  prefillFromSkeleton(skeleton: SkeletonClaim): void {
+  prefillFromSkeleton(skeleton: Claim): void {
     this.reset();
     this.path = 'standard';
     this.skeletonClaimId = skeleton.claimId;
@@ -175,8 +175,8 @@ export class FnolStateService {
         dateOfOccurrence: skeleton.lossDate,
       });
     }
-    if (skeleton.lossDescription) {
-      this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.lossDescription);
+    if (skeleton.description) {
+      this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.description);
     }
   }
 
@@ -187,7 +187,7 @@ export class FnolStateService {
   // Schema-driven: cause is inferred from skeleton.lossDescription against
   // CAUSE_SCHEMAS keys; events FormArray is rebuilt to match step-loss-info's
   // own _createEventGroup shape so its required `damages` validator clears.
-  prefillFullFromSkeleton(skeleton: SkeletonClaim, opts?: {
+  prefillFullFromSkeleton(skeleton: Claim, opts?: {
     policyNumber?: string;
     causeOfLoss?: string[];
     typeOfDamage?: string[];
@@ -210,12 +210,12 @@ export class FnolStateService {
       dateOfNotification: opts?.dateOfNotification ?? skeleton.lossDate ?? null,
       timeOfNotification: opts?.timeOfNotification ?? '10:00',
     });
-    this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.lossDescription ?? '');
+    this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.description ?? '');
 
-    // Schema-driven cause inference: scan skeleton.lossDescription for the
+    // Schema-driven cause inference: scan skeleton.description for the
     // first CAUSE_SCHEMAS key. Falls back to 'other-event' if nothing matches
     // — never hardcoded to 'fire'.
-    const inferredCauseKeys = opts?.causeOfLoss ?? this.inferCauseKeys(skeleton.lossDescription);
+    const inferredCauseKeys = opts?.causeOfLoss ?? this.inferCauseKeys(skeleton.description);
     const damageValues      = opts?.typeOfDamage ?? ['material-damage'];
 
     this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(inferredCauseKeys);

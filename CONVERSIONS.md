@@ -950,6 +950,19 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-09-08 — Orphan claim / regular claim data-model merge
+
+- **Source:** verbal brief from the weekly-connect discussion on the Orphan claim conversion Figma design — team decided orphan claims get an `SK-` id prefix, live in the FNOL search page's Claims tab (not a separate tab), and appear in the dashboard's Claim Portfolio widget. User explicitly authorized the full-merge option over a UI-only reskin.
+- **Module:** FNOL search (`step-1-search`), skeleton-claim model/services, claims list, dashboard Claim Portfolio widget, status chips
+- **Schema changes:** `SkeletonClaim` model deleted — its fields folded into `Claim` as optional (`claimType`, `skeletonReason`, `linkedBy`, `linkedDate`, `linkedClaimId`, `slaDeadlineDays`, `abandonReason`). `ClaimStatus` gained `'Awaiting policy' | 'Matched' | 'Abandoned'`. `skeleton-claims.json`'s 3 records merged into `claims.json` with `CLM-2024-SKEL-00N` renamed to `SK-2024-00N`.
+- **Files touched:** `core/models/{claim,policy}.model.ts`, `core/models/index.ts`; deleted `core/models/skeleton-claim.model.ts`, `core/mock/services/{mock-client-search,mock-skeleton-claim,mock-skeleton-search}.service.ts`, `core/mock/data/skeleton-claims.json`; `core/mock/services/{mock-claim,mock-claim-overview}.service.ts`; `core/services/prototype-scenario.service.ts`; `features/fnol/models/fnol-form.model.ts`; `features/fnol/services/fnol-state.service.ts`; `features/fnol/steps/step-1-search/{step-1-search.component.ts,.html,.scss}`; `features/fnol/steps/step-1-search/convert-skeleton-modal/*`; `features/fnol/steps/step-skeleton-summary/step-skeleton-summary.component.ts`; `features/fnol/steps/step-summary/step-summary.component.ts`; `features/claims/claims-list/claims-list.component.ts`; `features/dashboard/widgets/claims-portfolio-widget/claims-portfolio-widget.component.ts`; `shared/components/status-chip/status-chip.component.ts`; `public/tickets/bmpcc-11006.json` (ID rename).
+- **Deviations:** the search page's "Clients" tab (party/policy-count browsing, independent of any specific claim) was dropped entirely rather than folded into "Claims" — the two are different data (party records vs. claim records) and the team's ask was specifically 2 tabs named Claims/Policies. "Register a skeleton claim" now reads the typed `clientName` search field directly instead of a selected Clients-tab row, since that tab no longer exists.
+- **Notes:**
+  - `MockSkeletonClaimService.matchToPolicy()` mutated a service-local in-memory array, never wired into `MockStateService` — so a converted skeleton's "Matched" status never actually persisted or showed up anywhere before this. Replacing it with `MockClaimService.update()` (which does go through the reactive `patchClaims` bridge) is a real fix, not just a rename — this is also what makes "orphan claims show up in the dashboard widget" true rather than aspirational.
+  - `MockClaimOverviewService.getOverview()` had a dedicated skeleton-synthesis branch (`synthesizeOverviewFromSkeleton`) that turned out to be fully redundant with the generic `synthesizeOverviewFromClaim` fallback once skeletons are Claim records — deleted rather than kept as dead code.
+  - `ClientSearchResult`/`MockClientSearchService` had exactly one consumer (the removed Clients tab) — deleted rather than left orphaned.
+  - **Verification:** `npx tsc --noEmit` clean. `npm run pre-commit` 18/19 (the one failure, `audit:ndbx-wrapper`, is 3 pre-existing lines in files not touched here). `ng serve` picked up every edit with no new compiler errors/warnings beyond the pre-existing ones. Not yet checked in a browser — only run through the CLI/audit pipeline.
+
 <!--
 Template — copy below the most recent entry:
 

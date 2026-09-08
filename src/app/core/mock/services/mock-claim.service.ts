@@ -42,14 +42,33 @@ export class MockClaimService extends MockBaseService {
     return this.findById(this.claims as unknown as Record<string, unknown>[], 'claimId', claimId) as unknown as Observable<Claim>;
   }
 
-  create(payload: Omit<Claim, 'claimId' | 'dateCreated'>): Observable<Claim> {
+  create(payload: Omit<Claim, 'claimId' | 'dateCreated'>, idPrefix = 'CLM'): Observable<Claim> {
     const newClaim: Claim = {
       ...payload,
-      claimId:     `CLM-${Date.now()}`,
+      claimId:     `${idPrefix}-${Date.now()}`,
       dateCreated: new Date().toISOString().split('T')[0],
     } as Claim;
     this.stateSvc.patchClaims(claims => [...claims, newClaim]);
     return this.respond(newClaim);
+  }
+
+  // Used by the FNOL search page's Claims tab — same 3-field search the old
+  // skeleton-only search used, now run against every claim (regular +
+  // orphan) so an orphan claim shows up as a claim, not a separate concept.
+  searchClaims(criteria: { clientName?: string; policyNumber?: string }): Observable<Claim[]> {
+    const hasAny = !!(criteria.clientName || criteria.policyNumber);
+    if (!hasAny) return this.respond([]);
+
+    let results = [...this.claims];
+    if (criteria.clientName) {
+      const q = criteria.clientName.toLowerCase();
+      results = results.filter(c => c.clientName.toLowerCase().includes(q));
+    }
+    if (criteria.policyNumber) {
+      const q = criteria.policyNumber.toLowerCase();
+      results = results.filter(c => c.policyNumber.toLowerCase().includes(q));
+    }
+    return this.list(results);
   }
 
   update(claimId: string, payload: Partial<Claim>): Observable<Claim> {

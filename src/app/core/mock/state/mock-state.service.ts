@@ -22,7 +22,8 @@ export interface ScenarioOverrides {
     // BMPCC-11006: prefill the happy-path FNOL form from a skeleton claim
     // so the demo can land on /fnol/search with every step's fields already
     // populated; user navigates through the wizard themselves. The skeleton
-    // ID resolves against `skeleton-claims.json`.
+    // ID resolves against `claims.json` (orphan claims are Claim records
+    // with an SK- id and status 'Awaiting policy'/'Matched'/'Abandoned').
     convertFromSkeletonId?: string;
     // Optional hint for the prefill: the policy number to drop into the
     // search form so the user only needs one click to find the right row.

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 type ClaimStatus = 'open' | 'in-progress' | 'priced' | 'quoted' | 'bound' | 'declined' | 'closed';
 type TaskStatus  = 'open' | 'in-progress' | 'done' | 'pending' | 'not-assigned' | 'completed';
 type EntityStatus = 'promised' | 'conditional' | 'by-extension' | 'not-promised';
-type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'skeleton-claim' | 'mass-event' | 'coverage-review' | 'provider-assignment' | 'tracker' | 'jira';
+type Domain = 'claim' | 'task' | 'entity' | 'damage-item' | 'clearance' | 'risk-severity' | 'recovery' | 'policy' | 'mass-event' | 'coverage-review' | 'provider-assignment' | 'tracker' | 'jira';
 
 // Maps status + domain to the CSS custom property pair defined in styles.scss.
 // Using a lookup avoids any hardcoded hex values here.
@@ -19,6 +19,16 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     'closed':      'claim-status-closed',
     'reopened':    'claim-status-reopened',
     'monitoring':  'claim-status-in-progress',
+    // BMPCC-18352 pilot — without this, the chip fell back to
+    // claim-status-closed (grey), rendering identically to an actually
+    // closed claim. Reuses the same amber "awaiting action" token the
+    // task/mass-event domains already use for their own pending states.
+    'pending-rejection-approval': 'task-status-pending',
+    // Orphan (skeleton) claim lifecycle — same tokens the old dedicated
+    // 'skeleton-claim' domain used, now that those claims are just claims.
+    'awaiting-policy': 'skeleton-claim-awaiting',
+    'matched':         'skeleton-claim-matched',
+    'abandoned':       'skeleton-claim-abandoned',
   },
   task: {
     'open':         'task-status-open',
@@ -60,11 +70,6 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     'expired':   'claim-status-closed',
     'cancelled': 'claim-status-closed',
     'pending':   'task-status-open',
-  },
-  'skeleton-claim': {
-    'awaiting-policy': 'skeleton-claim-awaiting',
-    'matched':         'skeleton-claim-matched',
-    'abandoned':       'skeleton-claim-abandoned',
   },
   'mass-event': {
     'pending':    'task-status-pending',

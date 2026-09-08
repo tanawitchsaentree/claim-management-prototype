@@ -2,33 +2,20 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
-import { SkeletonClaim } from '../../models/skeleton-claim.model';
 import { Claim } from '../../models/claim.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
-import { MockSkeletonClaimService } from './mock-skeleton-claim.service';
 import { MockClaimService } from './mock-claim.service';
 
 @Injectable({ providedIn: 'root' })
 export class MockClaimOverviewService extends MockBaseService {
   private readonly stateSvc = inject(MockStateService);
-  private readonly skeletonSvc = inject(MockSkeletonClaimService);
   private readonly claimSvc = inject(MockClaimService);
 
   getOverview(claimId: string): Observable<ClaimOverview> {
     const existing = this.stateSvc.state().overviews[claimId];
     if (existing) return this.respond(existing);
-
-    // Not a regular claim yet — check whether it's a skeleton (orphan) claim
-    // opened via Search before it's matched to a policy. Without this, any
-    // claimId absent from claim-overview.json silently falls back to the
-    // unrelated default claim below, so viewing/editing a skeleton claim
-    // would show and "save" someone else's data.
-    return this.skeletonSvc.getById(claimId).pipe(
-      map(skeleton => this.synthesizeOverviewFromSkeleton(skeleton)),
-      switchMap(overview => this.persistAndRespond(claimId, overview)),
-      catchError(() => this.fromClaimOrFallback(claimId)),
-    );
+    return this.fromClaimOrFallback(claimId);
   }
 
   // claims.json (the main Claims list) seeds far more claimIds than
@@ -51,31 +38,6 @@ export class MockClaimOverviewService extends MockBaseService {
   private persistAndRespond(claimId: string, overview: ClaimOverview): Observable<ClaimOverview> {
     this.stateSvc.ensureOverview(claimId, overview);
     return this.respond(overview);
-  }
-
-  private synthesizeOverviewFromSkeleton(skeleton: SkeletonClaim): ClaimOverview {
-    const now = new Date().toISOString().split('T')[0];
-    return {
-      claimId: skeleton.claimId,
-      client: skeleton.clientName,
-      assignedHandler: skeleton.assignee ?? 'Unassigned',
-      status: 'Open',
-      proximateLossCause: '–',
-      riskScore: 0,
-      riskScoreMax: 5,
-      riskStatus: 'Not assessed',
-      policyNumber: skeleton.policyId ?? '',
-      policyHolder: skeleton.clientName,
-      handler: skeleton.assignee ?? 'Unassigned',
-      supervisor: '',
-      priority: 'medium',
-      lineOfBusiness: '',
-      dateOfLoss: skeleton.lossDate ?? now,
-      dateCreated: skeleton.createdDate,
-      description: skeleton.lossDescription,
-      location: { street: '', city: '', country: '' },
-      financialSummary: { currency: 'EUR', totalReserve: 0, totalPayments: 0, totalRecoveries: 0, outstanding: 0 },
-    };
   }
 
   private synthesizeOverviewFromClaim(claim: Claim): ClaimOverview {

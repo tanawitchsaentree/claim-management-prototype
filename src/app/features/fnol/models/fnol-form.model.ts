@@ -1,5 +1,4 @@
-import { Policy, ClientSearchResult } from '../../../core/models';
-import { SkeletonReason } from '../../../core/models/skeleton-claim.model';
+import { Policy, SkeletonReason } from '../../../core/models';
 export type { SkeletonReason };
 
 export interface StepConfig {
@@ -7,8 +6,6 @@ export interface StepConfig {
   route: string;
   label: string;
 }
-
-export type { ClientSearchResult };
 
 export interface FnolSearchCriteria {
   clientName: string;

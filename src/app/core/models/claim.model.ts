@@ -1,8 +1,18 @@
-export type ClaimStatus = 'In progress' | 'Priced' | 'Quoted' | 'Bound' | 'Declined' | 'Open' | 'Closed';
+// 'Awaiting policy' / 'Matched' / 'Abandoned' are the orphan-claim (skeleton) lifecycle
+// states — merged into the same Claim record instead of a separate model so a claim
+// found via search, listed, or shown on the dashboard is always the same record.
+export type ClaimStatus = 'In progress' | 'Priced' | 'Quoted' | 'Bound' | 'Declined' | 'Open' | 'Closed'
+  | 'Awaiting policy' | 'Matched' | 'Abandoned';
 export type MassEventLinkStatus = 'pending' | 'confirmed' | 'overridden';
 export type Priority = 'high' | 'medium' | 'low';
 export type LineOfBusiness = 'Property' | 'Liability' | 'Marine' | 'Cyber' | 'Engineering';
 export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'SGD';
+
+export type SkeletonReason =
+  | 'policy_not_issued'
+  | 'policy_not_found'
+  | 'multi_policy_pending'
+  | 'other';
 
 export interface ClaimLocation {
   country: string;
@@ -34,4 +44,13 @@ export interface Claim {
   group?: string;
   causeOfLoss?: string[];
   _scenario?: string;
+  // Orphan (skeleton) claim fields — only set while status is
+  // 'Awaiting policy' / 'Matched' / 'Abandoned'.
+  claimType?: 'skeleton';
+  skeletonReason?: SkeletonReason;
+  linkedBy?: string | null;
+  linkedDate?: string | null;
+  linkedClaimId?: string;
+  slaDeadlineDays?: number;
+  abandonReason?: string;
 }

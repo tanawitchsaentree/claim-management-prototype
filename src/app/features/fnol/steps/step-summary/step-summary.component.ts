@@ -19,7 +19,7 @@ import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
-import { MockSkeletonClaimService } from '../../../../core/mock/services/mock-skeleton-claim.service';
+import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockSectionService } from '../../../../core/mock/services/mock-section.service';
 import { MockStateService } from '../../../../core/mock/state/mock-state.service';
 import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
@@ -96,7 +96,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly reservesSvc  = inject(MockReservesService);
   private readonly partiesSvc   = inject(MockPartiesService);
   private readonly lookupSvc    = inject(MockLookupService);
-  private readonly skeletonSvc  = inject(MockSkeletonClaimService);
+  private readonly claimSvc     = inject(MockClaimService);
   private readonly sectionSvc   = inject(MockSectionService);
   private readonly stateSvc     = inject(MockStateService);
   private readonly overviewSvc  = inject(MockClaimOverviewService);
@@ -108,6 +108,13 @@ export class StepSummaryComponent implements OnInit {
   readonly vm$ = new BehaviorSubject<SummaryViewModel | null>(null);
   loadError  = false;
   submitted  = false;
+  // Handler walkthrough self-QA — onSubmit() had no re-entry guard at all, so
+  // a fast double-click fired createSectionsFromEntitiesDamages() twice
+  // concurrently and produced duplicate sections on the same claim. `submitted`
+  // alone doesn't guard this — it's only set true at the very end, after both
+  // awaited calls below.
+  readonly submitting = signal(false);
+  submitError: string | null = null;
   private readonly allMockClaimIds = ['CL-2025-001', 'CL-2025-002', 'CL-2025-003'];
   get mockClaimIds(): string[] {
     return this.allMockClaimIds.slice(0, Math.max(1, this.claimGroupCount));
@@ -198,6 +205,21 @@ export class StepSummaryComponent implements OnInit {
   onBack(): void   { this.router.navigate(['/fnol/reserves']); }
 
   async onSubmit(): Promise<void> {
+    if (this.submitting()) return;
+    this.submitting.set(true);
+    this.submitError = null;
+    try {
+      await this.doSubmit();
+    } catch (err) {
+      console.error('[Summary] submit failed:', err);
+      this.submitError = 'Failed to submit claim. Please try again.';
+      this.live.announce(this.submitError, 'assertive');
+    } finally {
+      this.submitting.set(false);
+    }
+  }
+
+  private async doSubmit(): Promise<void> {
     // Written onto fnolState.restriction/recoveryPotential AND onto the
     // created claim's ClaimOverview record below (see writeLossInformationToClaim) —
     // this comment used to claim the fnolState assignment alone "carries to
@@ -222,7 +244,12 @@ export class StepSummaryComponent implements OnInit {
     if (skeletonId && this.fnolState.path === 'standard' && policyNumber) {
       try {
         await firstValueFrom(
-          this.skeletonSvc.matchToPolicy(skeletonId, policyNumber, 'Current User', newClaimId),
+          this.claimSvc.update(skeletonId, {
+            status: 'Matched',
+            linkedBy: 'Current User',
+            linkedDate: new Date().toISOString(),
+            linkedClaimId: newClaimId,
+          }),
         );
       } catch (err) {
         console.error('[Summary] matchToPolicy failed:', err);

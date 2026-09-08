@@ -174,12 +174,6 @@
   cursor: pointer;
   &:hover td { background: var(--ui-02); }
   &--selected td { background: var(--action-selected-background-color); }
-
-  &--broker {
-    cursor: default;
-    opacity: 0.55;
-    &:hover td { background: transparent; }
-  }
 }
 
 // ─── Skeleton Claims tab row states ───────────────────────────────
@@ -235,32 +229,7 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   nx-icon { font-size: 14px; color: var(--text-muted); }
 }
 
-.text-mono { font-family: monospace; font-size: var(--paragraph-04-font-size); }
-
-.broker-label {
-  display: block;
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-// ─── Tab badge (red dot for awaiting skeleton) ────────────────────
-.tab-label-skeleton {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.skeleton-badge {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--message-error-color);
-  flex-shrink: 0;
-}
-
-// ─── Skeleton Claims table internals ─────────────────────────────
+// ─── Claims table internals (also covers orphan/skeleton statuses) ──
 .skeleton-linked {
   display: inline;
   font-size: var(--paragraph-04-font-size);
@@ -278,40 +247,6 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
 .sla-urgent {
   color: var(--message-error-color);
   font-weight: 600;
-}
-
-// ─── Banner ───────────────────────────────────────────────────────
-.skeleton-banner {
-  margin-bottom: 16px;
-}
-
-.skeleton-banner__detail {
-  font-size: var(--paragraph-03-font-size);
-  margin: var(--space-xs) 0 0;
-  color: inherit;
-  opacity: 0.85;
-}
-
-.skeleton-banner__more {
-  font-size: var(--paragraph-04-font-size);
-  margin: var(--space-xs) 0 0;
-  opacity: 0.7;
-}
-
-.skeleton-banner__link {
-  margin: var(--space-sm) 0 0;
-}
-
-.policy-count-link {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--interactive-text);
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  &:hover { text-decoration: underline; }
 }
 
 // ─── Empty state ──────────────────────────────────────────────────

@@ -6,7 +6,6 @@ export * from './fnol.model';
 export * from './lookup.model';
 export * from './dashboard.model';
 export * from './approval.model';
-export * from './skeleton-claim.model';
 export * from './loss-information.model';
 export * from './location-picker.model';
 export * from './cwb-location.model';

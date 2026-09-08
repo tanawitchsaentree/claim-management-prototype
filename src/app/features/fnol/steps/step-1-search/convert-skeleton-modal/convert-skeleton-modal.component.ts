@@ -7,11 +7,11 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { firstValueFrom } from 'rxjs';
 import { MockPolicySearchService } from '../../../../../core/mock/services/mock-policy-search.service';
 import { PolicySearchResult } from '../../../models/fnol-form.model';
-import { SkeletonClaim } from '../../../../../core/models/skeleton-claim.model';
+import { Claim } from '../../../../../core/models/claim.model';
 import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
 
 export interface ConvertSkeletonModalData {
-  skeleton: SkeletonClaim;
+  skeleton: Claim;
 }
 
 // Result: the eligible policy the user picked to bind the skeleton to (or null on cancel)
@@ -39,7 +39,7 @@ export class ConvertSkeletonModalComponent implements OnInit {
   readonly rows         = signal<PolicyRow[]>([]);
   readonly selectedNumber = signal<string | null>(null);
 
-  get skeleton(): SkeletonClaim { return this.data.skeleton; }
+  get skeleton(): Claim { return this.data.skeleton; }
 
   readonly canContinue = computed(() => this.selectedNumber() !== null);
 

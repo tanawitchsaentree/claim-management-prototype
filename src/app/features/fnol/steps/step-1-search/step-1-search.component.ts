@@ -27,10 +27,9 @@ import {
   ConvertSkeletonModalResult,
 } from './convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
-import { MockClientSearchService } from '../../../../core/mock/services/mock-client-search.service';
-import { MockSkeletonSearchService } from '../../../../core/mock/services/mock-skeleton-search.service';
-import { PolicySearchResult, ClientSearchResult } from '../../models/fnol-form.model';
-import { SkeletonClaim } from '../../../../core/models/skeleton-claim.model';
+import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
+import { PolicySearchResult } from '../../models/fnol-form.model';
+import { Claim } from '../../../../core/models/claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import lookupsData from '../../../../core/mock/data/lookups.json';
@@ -38,12 +37,11 @@ import lookupsData from '../../../../core/mock/data/lookups.json';
 type SearchState =
   | { kind: 'idle' }
   | { kind: 'loading' }
-  | { kind: 'results'; clients: ClientSearchResult[]; policies: PolicySearchResult[]; skeletons: SkeletonClaim[] }
+  | { kind: 'results'; claims: Claim[]; policies: PolicySearchResult[] }
   | { kind: 'error'; message: string };
 
 const UNDERWRITING_YEARS = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
 const PAGE_SIZE = 10;
-const BANNER_DISMISSED_KEY = 'dismissed-skeleton-banner';
 
 @Component({
   selector: 'app-step-1-search',
@@ -80,12 +78,11 @@ const BANNER_DISMISSED_KEY = 'dismissed-skeleton-banner';
   ],
 })
 export class Step1SearchComponent {
-  private fnolState    = inject(FnolStateService);
-  private searchSvc    = inject(MockPolicySearchService);
-  private clientSvc    = inject(MockClientSearchService);
-  private skeletonSvc  = inject(MockSkeletonSearchService);
-  private router       = inject(Router);
-  private dialogSvc    = inject(NxDialogService);
+  private fnolState = inject(FnolStateService);
+  private searchSvc = inject(MockPolicySearchService);
+  private claimSvc  = inject(MockClaimService);
+  private router     = inject(Router);
+  private dialogSvc  = inject(NxDialogService);
   private readonly live = inject(LiveAnnouncer);
 
   readonly years             = UNDERWRITING_YEARS;
@@ -96,15 +93,12 @@ export class Step1SearchComponent {
 
   showSecondaryFilters = false;
   validationError: string | null = null;
-  activeTab = 0;
-  selectedClientId: string | null = null;
-  selectedClientData: ClientSearchResult | null = null;
+  activeTab = 0; // 0 = Claims, 1 = Policies
   selectedPolicyNumber: string | null = null;
   selectedPolicyData: PolicySearchResult | null = null;
-  clientPage = 1;
+  claimPage = 1;
   policyPage = 1;
   hasSearched = false;
-  bannerDismissed = localStorage.getItem(BANNER_DISMISSED_KEY) === 'true';
 
   readonly skeletonDetailedTooltip =
     'Use skeleton claim when:\n' +
@@ -136,10 +130,8 @@ export class Step1SearchComponent {
       this.form.get('clientName')?.setValue(clientName);
       this.form.get('policyNumber')?.setValue(policyNumber);
       this.validationError = null;
-      this.clientPage = 1;
+      this.claimPage = 1;
       this.policyPage = 1;
-      this.selectedClientId = null;
-      this.selectedClientData = null;
       this.selectedPolicyNumber = null;
       this.selectedPolicyData = null;
       this.hasSearched = true;
@@ -163,8 +155,6 @@ export class Step1SearchComponent {
       if (policy) {
         this.selectedPolicyNumber = policy.policyNumber;
         this.selectedPolicyData   = policy;
-        this.selectedClientId     = null;
-        this.selectedClientData   = null;
         this.activeTab = 1;
       }
     });
@@ -174,18 +164,16 @@ export class Step1SearchComponent {
     switchMap(t => {
       if (t === 'idle') return of<SearchState>({ kind: 'idle' });
       const criteria = this.form.value;
-      const clientQuery = criteria.clientName ?? '';
-      return this.clientSvc.searchClients(clientQuery).pipe(
-        switchMap(clients =>
+      return this.claimSvc.searchClaims({
+        clientName:   criteria.clientName ?? '',
+        policyNumber: criteria.policyNumber ?? '',
+      }).pipe(
+        switchMap(claims =>
           this.searchSvc.searchPolicies(criteria).pipe(
-            switchMap(policies =>
-              this.skeletonSvc.searchSkeletonClaims(criteria).pipe(
-                switchMap(skeletons => {
-                  this._applyAutoTabSwitch(clients, policies, skeletons);
-                  return of<SearchState>({ kind: 'results', clients, policies, skeletons });
-                }),
-              )
-            ),
+            switchMap(policies => {
+              this._applyAutoTabSwitch(claims, policies);
+              return of<SearchState>({ kind: 'results', claims, policies });
+            }),
           )
         ),
         catchError(err => of<SearchState>({
@@ -198,73 +186,35 @@ export class Step1SearchComponent {
 
   private readonly searchState = toSignal(this.state$);
 
-  private _applyAutoTabSwitch(
-    clients: ClientSearchResult[],
-    policies: PolicySearchResult[],
-    skeletons: SkeletonClaim[],
-  ): void {
-    const hasAwaiting = skeletons.some(s => s.status === 'awaiting-policy');
-    const hasClientsOrPolicies = clients.length > 0 || policies.length > 0;
-
-    if (hasAwaiting && !hasClientsOrPolicies) {
-      this.activeTab = 2; // auto-switch to Skeleton Claims
-    } else if (!hasClientsOrPolicies && skeletons.length > 0) {
-      this.activeTab = 2; // only skeletons found (all matched/abandoned)
-    } else if (clients.length === 0 && policies.length > 0) {
-      this.activeTab = 1; // no clients but policies
-    } else {
-      this.activeTab = 0; // default: clients
-    }
+  private _applyAutoTabSwitch(claims: Claim[], policies: PolicySearchResult[]): void {
+    this.activeTab = (claims.length === 0 && policies.length > 0) ? 1 : 0;
   }
 
-  // ── Banner helpers ───────────────────────────────────────────────
+  // ── Claims table helpers (also covers orphan-claim statuses) ────────
 
-  showBanner(state: SearchState): boolean {
-    if (state.kind !== 'results') return false;
-    if (this.bannerDismissed) return false;
-    const hasClientsOrPolicies = state.clients.length > 0 || state.policies.length > 0;
-    return hasClientsOrPolicies && state.skeletons.some(s => s.status === 'awaiting-policy');
+  getSkeletonRowClass(claim: Claim): string {
+    if (claim.status === 'Awaiting policy') return 'skeleton-awaiting';
+    if (claim.status === 'Matched')         return 'skeleton-matched';
+    if (claim.status === 'Abandoned')       return 'skeleton-abandoned';
+    return '';
   }
 
-  bannerAwaitingSkeletons(state: SearchState): SkeletonClaim[] {
-    if (state.kind !== 'results') return [];
-    return state.skeletons.filter(s => s.status === 'awaiting-policy');
+  private daysSince(dateCreated: string): number {
+    return Math.floor((Date.now() - new Date(dateCreated).getTime()) / (1000 * 60 * 60 * 24));
   }
 
-  dismissBanner(): void {
-    this.bannerDismissed = true;
-    localStorage.setItem(BANNER_DISMISSED_KEY, 'true');
-  }
-
-  viewSkeletonTab(): void {
-    this.activeTab = 2;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ── Skeleton table helpers ───────────────────────────────────────
-
-  hasSkeletonBadge(state: SearchState): boolean {
-    return state.kind === 'results' && state.skeletons.some(s => s.status === 'awaiting-policy');
-  }
-
-  getSkeletonRowClass(skeleton: SkeletonClaim): string {
-    if (skeleton.status === 'awaiting-policy') return 'skeleton-awaiting';
-    if (skeleton.status === 'matched')         return 'skeleton-matched';
-    return 'skeleton-abandoned';
-  }
-
-  getDaysSinceLabel(skeleton: SkeletonClaim): string {
-    const days = skeleton.daysSinceCreation;
-    const remaining = skeleton.slaDeadlineDays - days;
-    if (skeleton.status !== 'awaiting-policy') return `${days}d`;
+  getDaysSinceLabel(claim: Claim): string {
+    const days = this.daysSince(claim.dateCreated);
+    if (claim.status !== 'Awaiting policy') return `${days}d`;
+    const remaining = (claim.slaDeadlineDays ?? 0) - days;
     if (remaining < 0) return `${days}d (overdue ${Math.abs(remaining)}d)`;
     if (remaining === 0) return `${days}d (due today)`;
     return `${days}d (${remaining}d left)`;
   }
 
-  isDaySlaUrgent(skeleton: SkeletonClaim): boolean {
-    return skeleton.status === 'awaiting-policy' &&
-           (skeleton.slaDeadlineDays - skeleton.daysSinceCreation) <= 1;
+  isDaySlaUrgent(claim: Claim): boolean {
+    return claim.status === 'Awaiting policy' &&
+           ((claim.slaDeadlineDays ?? 0) - this.daysSince(claim.dateCreated)) <= 1;
   }
 
   onViewClaim(claimId: string): void {
@@ -278,8 +228,8 @@ export class Step1SearchComponent {
   // BMPCC-11006: convert skeleton → regular claim
   // Prefills loss-information from the skeleton record, drops the user back
   // into the standard FNOL flow (search → policy → loss-info → ... → summary).
-  async onConvertSkeleton(skeleton: SkeletonClaim): Promise<void> {
-    if (skeleton.status !== 'awaiting-policy') return;
+  async onConvertSkeleton(skeleton: Claim): Promise<void> {
+    if (skeleton.status !== 'Awaiting policy') return;
 
     const data: ConvertSkeletonModalData = { skeleton };
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
@@ -300,66 +250,37 @@ export class Step1SearchComponent {
     this.router.navigate(['/fnol/loss-information']);
   }
 
-  // ── Client helpers ───────────────────────────────────────────────
-
-  isBroker(client: ClientSearchResult): boolean {
-    return client.role?.toLowerCase() === 'broker';
-  }
-
-  isSelectableClient(client: ClientSearchResult): boolean {
-    return !this.isBroker(client);
-  }
-
   // ── Button visibility/state ──────────────────────────────────────
 
   isEmptyResults(state: SearchState): boolean {
-    return state.kind === 'results' &&
-           state.clients.length === 0 &&
-           state.policies.length === 0 &&
-           state.skeletons.length === 0;
+    return state.kind === 'results' && state.claims.length === 0 && state.policies.length === 0;
   }
 
   showRegisterClaim(state: SearchState): boolean {
-    if (state.kind !== 'results') return false;
-    return state.clients.length > 0 || state.policies.length > 0;
+    return state.kind === 'results' && state.policies.length > 0;
   }
 
-  registerClaimDisabled(_state: SearchState): boolean {
-    return !this.selectedClientId && !this.selectedPolicyNumber;
+  registerClaimDisabled(): boolean {
+    return !this.selectedPolicyNumber;
   }
 
-  registerClaimTooltip(_state: SearchState): string {
-    if (!this.selectedClientId && !this.selectedPolicyNumber) return 'Select a client or policy';
-    if (this.selectedClientId && !this.selectedPolicyNumber) return 'Select a policy or use skeleton claim';
-    return '';
+  registerClaimTooltip(): string {
+    return this.selectedPolicyNumber ? '' : 'Select a policy to continue';
   }
 
   showRegisterSkeleton(state: SearchState): boolean {
     if (state.kind !== 'results') return false;
-    if (this.selectedPolicyNumber) return false;
-    if (state.clients.length === 0 && state.policies.length === 0) return false;
-    return true;
+    return !this.selectedPolicyNumber;
   }
 
-  registerSkeletonDisabled(state: SearchState): boolean {
-    if (state.kind !== 'results') return true;
-    const hasResults = state.clients.length > 0 || state.policies.length > 0;
-    return hasResults && !this.selectedClientId && !this.selectedPolicyNumber;
+  registerSkeletonDisabled(): boolean {
+    return !(this.form.get('clientName')?.value as string)?.trim();
   }
 
-  registerSkeletonTooltip(state: SearchState): string {
-    if (!this.selectedClientId && !this.selectedPolicyNumber) return 'Select a client first';
-    const client = this.selectedClientData;
-    if (!client) return '';
-    if (client.activePolicyCount === 0) return 'This client has no active policies';
-    return this.skeletonDetailedTooltip;
-  }
-
-  getSkeletonButtonLabel(): string {
-    if (this.selectedClientData && this.selectedClientData.activePolicyCount === 0) {
-      return `Create claim for ${this.selectedClientData.legalName}`;
-    }
-    return 'Register a skeleton claim';
+  registerSkeletonTooltip(): string {
+    return this.registerSkeletonDisabled()
+      ? 'Enter a client name to register a skeleton claim'
+      : this.skeletonDetailedTooltip;
   }
 
   // ── Actions ─────────────────────────────────────────────────────
@@ -371,8 +292,6 @@ export class Step1SearchComponent {
   onSelectPolicy(policy: PolicySearchResult): void {
     this.selectedPolicyNumber = policy.policyNumber;
     this.selectedPolicyData = policy;
-    this.selectedClientId = null;
-    this.selectedClientData = null;
   }
 
   onSearch(): void {
@@ -381,10 +300,8 @@ export class Step1SearchComponent {
       this.validationError = 'Please enter at least one search criterion.';
       return;
     }
-    this.clientPage = 1;
+    this.claimPage = 1;
     this.policyPage = 1;
-    this.selectedClientId = null;
-    this.selectedClientData = null;
     this.selectedPolicyNumber = null;
     this.selectedPolicyData = null;
     this.hasSearched = true;
@@ -395,8 +312,6 @@ export class Step1SearchComponent {
     this.form.reset();
     this.validationError = null;
     this.hasSearched = false;
-    this.selectedClientId = null;
-    this.selectedClientData = null;
     this.selectedPolicyNumber = null;
     this.selectedPolicyData = null;
     this.trigger$.next('idle');
@@ -412,13 +327,6 @@ export class Step1SearchComponent {
     this.onReset();
   }
 
-  onSelectClient(partyId: string, client: ClientSearchResult): void {
-    if (!this.isSelectableClient(client)) return;
-    this.selectedClientId = partyId;
-    this.selectedClientData = client;
-    this.selectedPolicyNumber = null;
-  }
-
   onRegisterClaim(): void {
     if (this.selectedPolicyNumber) {
       this.fnolState.setSelectedPolicy(
@@ -426,17 +334,14 @@ export class Step1SearchComponent {
         this.selectedPolicyData ?? undefined,
       );
       this.fnolState.path = 'standard';
-    } else if (this.selectedClientId) {
-      this.fnolState.setSelectedClient({ clientId: this.selectedClientId, clientName: this.selectedClientData?.legalName ?? '' });
-      this.fnolState.path = 'standard';
     }
     this.router.navigate(['/fnol/loss-information']);
   }
 
-  onRegisterSkeleton(state: SearchState): void {
-    if (this.selectedClientId && state.kind === 'results') {
-      const client = state.clients.find(c => c.partyId === this.selectedClientId);
-      this.fnolState.setSelectedClient({ clientId: this.selectedClientId, clientName: client?.legalName ?? '' });
+  onRegisterSkeleton(): void {
+    const clientName = (this.form.get('clientName')?.value as string)?.trim() ?? '';
+    if (clientName) {
+      this.fnolState.setSelectedClient({ clientId: '', clientName });
     }
     this.fnolState.path = 'orphan';
     this.router.navigate(['/fnol/skeleton-create']);
@@ -454,9 +359,9 @@ export class Step1SearchComponent {
     this.activeTab = index;
   }
 
-  pagedClients(clients: ClientSearchResult[]): ClientSearchResult[] {
-    const start = (this.clientPage - 1) * PAGE_SIZE;
-    return clients.slice(start, start + PAGE_SIZE);
+  pagedClaims(claims: Claim[]): Claim[] {
+    const start = (this.claimPage - 1) * PAGE_SIZE;
+    return claims.slice(start, start + PAGE_SIZE);
   }
 
   pagedPolicies(policies: PolicySearchResult[]): PolicySearchResult[] {

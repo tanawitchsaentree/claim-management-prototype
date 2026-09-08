@@ -126,31 +126,9 @@
 
       @if (state.kind === 'results') {
 
-        <!-- Skeleton awaiting banner -->
-        @if (showBanner(state)) {
-          <nx-message context="warning" [closable]="true" (close)="dismissBanner()" class="skeleton-banner">
-            <strong>
-              {{ bannerAwaitingSkeletons(state).length }}
-              {{ bannerAwaitingSkeletons(state).length === 1 ? 'skeleton claim needs' : 'skeleton claims need' }}
-              attention
-            </strong>
-            @for (s of bannerAwaitingSkeletons(state).slice(0, 1); track s.claimId) {
-              <p class="skeleton-banner__detail">
-                {{ s.claimId }} &bull; {{ s.clientName }} &bull; {{ getDaysSinceLabel(s) }}
-              </p>
-            }
-            @if (bannerAwaitingSkeletons(state).length > 1) {
-              <p class="skeleton-banner__more">and {{ bannerAwaitingSkeletons(state).length - 1 }} more…</p>
-            }
-            <p class="skeleton-banner__link">
-              <button nxPlainButton type="button" (click)="viewSkeletonTab()">View in Skeleton Claims tab</button>
-            </p>
-          </nx-message>
-        }
-
-        <!-- Empty state (no clients, policies, OR skeletons) -->
+        <!-- Empty state (no claims AND no policies) -->
         @if (isEmptyResults(state)) {
-          <app-empty-state message="No clients or policies match your search" icon="product-search-document">
+          <app-empty-state message="No claims or policies match your search" icon="product-search-document">
             <div body>
               <p class="empty-state__you-can">You can:</p>
               <ul class="empty-state__list">
@@ -159,7 +137,7 @@
               </ul>
             </div>
             <div action>
-              <button nxButton="primary" type="button" (click)="onRegisterSkeleton(state)">
+              <button nxButton="primary" type="button" (click)="onRegisterSkeleton()">
                 Register a skeleton claim
               </button>
               <button nxButton="tertiary" type="button" (click)="onRefineSearch()">
@@ -172,76 +150,57 @@
           <!-- Tabs -->
           <nx-tab-group class="results-tabs" [(selectedIndex)]="activeTab">
             <nx-tab>
-              <ng-template nxTabLabel>Clients ({{ state.clients.length }})</ng-template>
+              <ng-template nxTabLabel>Claims ({{ state.claims.length }})</ng-template>
             </nx-tab>
             <nx-tab>
               <ng-template nxTabLabel>Policies ({{ state.policies.length }})</ng-template>
             </nx-tab>
-            <nx-tab>
-              <ng-template nxTabLabel>
-                <span class="tab-label-skeleton">
-                  Skeleton Claims ({{ state.skeletons.length }})
-                  @if (hasSkeletonBadge(state)) {
-                    <span class="skeleton-badge" aria-label="has awaiting claims"></span>
-                  }
-                </span>
-              </ng-template>
-            </nx-tab>
           </nx-tab-group>
 
-          <!-- ── Clients tab ─────────────────────────────────────────── -->
+          <!-- ── Claims tab (includes orphan/skeleton claims — distinguished by
+               the SK- id prefix and the Awaiting policy/Matched/Abandoned
+               statuses) ────────────────────────────────────────────────── -->
           @if (activeTab === 0) {
-            @if (state.clients.length === 0) {
-              <app-empty-state message="No clients found."></app-empty-state>
+            @if (state.claims.length === 0) {
+              <app-empty-state message="No claims found."></app-empty-state>
             } @else {
               <div class="results-table-wrap" tabindex="0"><table class="results-table">
                 <thead>
                   <tr>
-                    <th class="col-radio"></th>
-                    <th><span class="th-sort">Legal name <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th><span class="th-sort">Address <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th><span class="th-sort">Country <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th><span class="th-sort">Active policies <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th><span class="th-sort">Party ID <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                    <th><span class="th-sort">Claim ID <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                    <th><span class="th-sort">Client <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th><span class="th-sort">Days since <nx-icon name="chevron-down-small"></nx-icon></span></th>
+                    <th>Assigned</th>
                     <th class="col-action">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @for (client of pagedClients(state.clients); track client.partyId) {
-                    <tr class="results-row"
-                        [class.results-row--selected]="selectedClientId === client.partyId"
-                        [class.results-row--broker]="isBroker(client)"
-                        (click)="onSelectClient(client.partyId, client)">
-                      <td class="col-radio">
-                        <input type="radio" class="row-radio" name="clientSelect"
-                               [checked]="selectedClientId === client.partyId"
-                               [disabled]="isBroker(client)"
-                               [nxTooltip]="isBroker(client) ? 'Brokers cannot be claim owners. Please select a client.' : ''"
-                               (change)="onSelectClient(client.partyId, client)" />
-                      </td>
+                  @for (claim of pagedClaims(state.claims); track claim.claimId) {
+                    <tr class="results-row {{ getSkeletonRowClass(claim) }}">
                       <td>
-                        <span>{{ client.legalName }}</span>
-                        @if (isBroker(client)) {
-                          <span class="broker-label">(Broker)</span>
+                        <button class="table-action-link" type="button" (click)="onViewClaim(claim.claimId)">
+                          {{ claim.claimId }}
+                        </button>
+                      </td>
+                      <td>{{ claim.clientName }}</td>
+                      <td>
+                        <app-status-chip [status]="claim.status" domain="claim" variant="text"></app-status-chip>
+                        @if (claim.status === 'Matched' && claim.linkedClaimId) {
+                          <span class="skeleton-linked">→ {{ claim.linkedClaimId }}</span>
                         }
                       </td>
-                      <td>{{ client.address }}</td>
-                      <td>{{ client.country }}</td>
-                      <td>
-                        @if (isBroker(client)) {
-                          <span class="text-muted">—</span>
-                        } @else if (client.activePolicyCount > 0) {
-                          <button class="policy-count-link" type="button"
-                                  (click)="$event.stopPropagation(); switchToTab(1)">
-                            {{ client.activePolicyCount }} {{ client.activePolicyCount === 1 ? 'policy' : 'policies' }}
-                          </button>
-                        } @else {
-                          <span class="text-muted">No policies</span>
-                        }
+                      <td class="skeleton-loss-desc">{{ claim.description }}</td>
+                      <td [class.sla-urgent]="isDaySlaUrgent(claim)">
+                        {{ getDaysSinceLabel(claim) }}
                       </td>
-                      <td class="text-mono">{{ client.partyId }}</td>
+                      <td>{{ claim.assignee ?? '—' }}</td>
                       <td class="col-action">
-                        <button class="action-menu-btn" type="button" aria-label="more actions">
+                        <button class="action-menu-btn" type="button" aria-label="more actions"
+                                data-tour-id="fnol-skeleton-kebab"
+                                [nxContextMenuTriggerFor]="claimMenu"
+                                [nxContextMenuTriggerData]="{ claim: claim }">
                           <nx-icon name="ellipsis-v"></nx-icon>
                         </button>
                       </td>
@@ -251,13 +210,31 @@
               </table></div>
               <div class="results-footer">
                 <span class="items-per-page">Items per page: <strong>{{ pageSize }}</strong> <nx-icon name="chevron-down-small"></nx-icon></span>
-                <nx-pagination [count]="state.clients.length" [page]="clientPage" [perPage]="pageSize"
+                <nx-pagination [count]="state.claims.length" [page]="claimPage" [perPage]="pageSize"
                   type="advanced"
-                  (goPrev)="clientPage = clientPage - 1"
-                  (goNext)="clientPage = clientPage + 1"
-                  (goPage)="clientPage = $event">
+                  (goPrev)="claimPage = claimPage - 1"
+                  (goNext)="claimPage = claimPage + 1"
+                  (goPage)="claimPage = $event">
                 </nx-pagination>
               </div>
+
+              <!-- Claim row context menu -->
+              <nx-context-menu #claimMenu="nxContextMenu">
+                <ng-template nxContextMenuContent let-claim="claim">
+                  <button nxContextMenuItem type="button" (click)="onViewClaim(claim.claimId)">View claim</button>
+                  @if (claim.status === 'Awaiting policy') {
+                    <button nxContextMenuItem type="button" (click)="onConvertSkeleton(claim)">Convert to claim</button>
+                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Extend SLA</button>
+                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Abandon claim</button>
+                  }
+                  @if (claim.status === 'Matched') {
+                    <button nxContextMenuItem type="button" (click)="onComingSoon()">View linked claim</button>
+                  }
+                  @if (claim.status === 'Abandoned') {
+                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Reopen</button>
+                  }
+                </ng-template>
+              </nx-context-menu>
             }
           }
 
@@ -297,7 +274,13 @@
                         <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
                       </td>
                       <td class="col-action">
-                        <button class="action-menu-btn" type="button" aria-label="more actions">
+                        <!-- Handler walkthrough self-QA — this had no context menu and no
+                             (click) at all, so clicking it bubbled into the row's own
+                             (click)="onSelectPolicy" instead: looked broken, secretly
+                             selected the row. stopPropagation() makes it visibly inert
+                             instead of silently wrong; wire a real menu here if/when this
+                             row needs its own actions distinct from selecting it. -->
+                        <button class="action-menu-btn" type="button" aria-label="more actions" (click)="$event.stopPropagation()">
                           <nx-icon name="ellipsis-v"></nx-icon>
                         </button>
                       </td>
@@ -317,79 +300,6 @@
             }
           }
 
-          <!-- ── Skeleton Claims tab ─────────────────────────────────── -->
-          @if (activeTab === 2) {
-            @if (state.skeletons.length === 0) {
-              <app-empty-state message="No skeleton claims for this search" icon="file-text"
-                hint="Skeleton claims are created when a policy cannot be identified during registration. This is normal for most searches.">
-              </app-empty-state>
-            } @else {
-              <div class="results-table-wrap" tabindex="0"><table class="results-table">
-                <thead>
-                  <tr>
-                    <th><span class="th-sort">Claim ID <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th><span class="th-sort">Client <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th>Status</th>
-                    <th>Loss event</th>
-                    <th><span class="th-sort">Days since <nx-icon name="chevron-down-small"></nx-icon></span></th>
-                    <th>Assigned</th>
-                    <th class="col-action">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (skeleton of state.skeletons; track skeleton.claimId) {
-                    <tr class="results-row {{ getSkeletonRowClass(skeleton) }}">
-                      <td>
-                        <button class="table-action-link" type="button" (click)="onViewClaim(skeleton.claimId)">
-                          {{ skeleton.claimId }}
-                        </button>
-                      </td>
-                      <td>{{ skeleton.clientName }}</td>
-                      <td>
-                        <app-status-chip [status]="skeleton.status" domain="skeleton-claim" variant="text"
-                          [label]="skeleton.status === 'awaiting-policy' ? 'Awaiting policy' : (skeleton.status === 'matched' ? 'Matched' : 'Abandoned')"></app-status-chip>
-                        @if (skeleton.status === 'matched' && skeleton.linkedClaimId) {
-                          <span class="skeleton-linked">→ {{ skeleton.linkedClaimId }}</span>
-                        }
-                      </td>
-                      <td class="skeleton-loss-desc">{{ skeleton.lossDescription }}</td>
-                      <td [class.sla-urgent]="isDaySlaUrgent(skeleton)">
-                        {{ getDaysSinceLabel(skeleton) }}
-                      </td>
-                      <td>{{ skeleton.assignee ?? '—' }}</td>
-                      <td class="col-action">
-                        <button class="action-menu-btn" type="button" aria-label="more actions"
-                                data-tour-id="fnol-skeleton-kebab"
-                                [nxContextMenuTriggerFor]="skeletonMenu"
-                                [nxContextMenuTriggerData]="{ skeleton: skeleton }">
-                          <nx-icon name="ellipsis-v"></nx-icon>
-                        </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table></div>
-
-              <!-- Skeleton row context menu -->
-              <nx-context-menu #skeletonMenu="nxContextMenu">
-                <ng-template nxContextMenuContent let-skeleton="skeleton">
-                  <button nxContextMenuItem type="button" (click)="onViewClaim(skeleton.claimId)">View claim</button>
-                  @if (skeleton.status === 'awaiting-policy') {
-                    <button nxContextMenuItem type="button" (click)="onConvertSkeleton(skeleton)">Convert to claim</button>
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Extend SLA</button>
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Abandon claim</button>
-                  }
-                  @if (skeleton.status === 'matched') {
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">View linked claim</button>
-                  }
-                  @if (skeleton.status === 'abandoned') {
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Reopen</button>
-                  }
-                </ng-template>
-              </nx-context-menu>
-            }
-          }
-
         }
       }
 
@@ -402,18 +312,18 @@
     <div class="step-footer-actions">
       @if (state$ | async; as state) {
         @if (showRegisterSkeleton(state)) {
-          <span class="btn-tooltip-wrap" [nxTooltip]="registerSkeletonTooltip(state)" nxTooltipPosition="top">
+          <span class="btn-tooltip-wrap" [nxTooltip]="registerSkeletonTooltip()" nxTooltipPosition="top">
             <button nxButton="secondary small" type="button"
-                    [disabled]="registerSkeletonDisabled(state)"
-                    (click)="onRegisterSkeleton(state)">
-              {{ getSkeletonButtonLabel() }}
+                    [disabled]="registerSkeletonDisabled()"
+                    (click)="onRegisterSkeleton()">
+              Register a skeleton claim
             </button>
           </span>
         }
         @if (showRegisterClaim(state)) {
-          <span class="btn-tooltip-wrap" [nxTooltip]="registerClaimTooltip(state)" nxTooltipPosition="top">
+          <span class="btn-tooltip-wrap" [nxTooltip]="registerClaimTooltip()" nxTooltipPosition="top">
             <button nxButton="primary small" type="button"
-                    [disabled]="registerClaimDisabled(state)"
+                    [disabled]="registerClaimDisabled()"
                     (click)="onRegisterClaim()">
               Register a claim
             </button>
@@ -424,7 +334,7 @@
              buttons this footer otherwise shows) — full-size by the empty-state
              exemption, not a missed small. -->
         @if (isEmptyResults(state)) {
-          <button nxButton="primary" type="button" (click)="onRegisterSkeleton(state)">
+          <button nxButton="primary" type="button" (click)="onRegisterSkeleton()">
             Register a skeleton claim
           </button>
         }

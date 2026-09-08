@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { MockStateService, ScenarioOverrides } from '../mock/state/mock-state.service';
 import { FnolStateService } from '../../features/fnol/services/fnol-state.service';
-import { MockSkeletonClaimService } from '../mock/services/mock-skeleton-claim.service';
+import { MockClaimService } from '../mock/services/mock-claim.service';
 import { MockPolicyLocationService } from '../mock/services/mock-policy-location.service';
 import { LocationItem } from '../models';
 import { ScenarioStageService } from '../scenario/scenario-stage.service';
@@ -40,7 +40,7 @@ export function substituteClaimId(route: string, claimId: string): string {
 export class PrototypeScenarioService {
   private readonly stateSvc = inject(MockStateService);
   private readonly fnolStateSvc = inject(FnolStateService);
-  private readonly skeletonSvc = inject(MockSkeletonClaimService);
+  private readonly claimSvc = inject(MockClaimService);
   private readonly policyLocationSvc = inject(MockPolicyLocationService);
   private readonly stageSvc = inject(ScenarioStageService);
   private readonly http = inject(HttpClient);
@@ -175,7 +175,7 @@ export class PrototypeScenarioService {
     if (seed.path !== undefined) this.fnolStateSvc.path = seed.path;
     if (seed.convertFromSkeletonId) {
       const skeleton = await firstValueFrom(
-        this.skeletonSvc.getById(seed.convertFromSkeletonId).pipe(catchError(() => of(null))),
+        this.claimSvc.getById(seed.convertFromSkeletonId).pipe(catchError(() => of(null))),
       );
       if (skeleton) {
         const policyNumber = seed.convertSuggestedPolicyNumber;

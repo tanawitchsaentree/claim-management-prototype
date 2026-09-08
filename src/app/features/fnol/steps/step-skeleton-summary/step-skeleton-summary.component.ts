@@ -9,7 +9,7 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { FnolStateService } from '../../services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
-import { MockSkeletonClaimService } from '../../../../core/mock/services/mock-skeleton-claim.service';
+import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
@@ -40,7 +40,7 @@ const REASON_LABELS: Record<SkeletonReason, string> = {
 })
 export class StepSkeletonSummaryComponent implements OnInit {
   private fnolState   = inject(FnolStateService);
-  private skeletonSvc = inject(MockSkeletonClaimService);
+  private claimSvc    = inject(MockClaimService);
   private partiesSvc  = inject(MockPartiesService);
   private lookupSvc   = inject(MockLookupService);
   private router      = inject(Router);
@@ -107,16 +107,28 @@ export class StepSkeletonSummaryComponent implements OnInit {
     if (!draft || this.saving()) return;
     this.saving.set(true);
     try {
+      const now = new Date().toISOString().split('T')[0];
       const skeleton = await firstValueFrom(
-        this.skeletonSvc.create({
-          clientName:       draft.clientName,
-          reason:           draft.reason,
-          notes:            draft.notes,
-          lossDate:         null,
-          createdBy:        'Current User',
-          brokerName:  draft.brokerName,
-          insuredName: draft.insuredName,
-        }),
+        this.claimSvc.create({
+          policyNumber: '',
+          clientName:   draft.clientName,
+          broker:       draft.brokerName ?? null,
+          assignee:     null,
+          createdBy:    'Current User',
+          dateUpdated:  now,
+          lossDate:     '',
+          lossAmount:   0,
+          currency:     'EUR',
+          description:  draft.notes ?? '',
+          status:       'Awaiting policy',
+          priority:     'medium',
+          lineOfBusiness: 'Property',
+          location:     null,
+          lossEventId:  null,
+          claimType:    'skeleton',
+          skeletonReason: draft.reason,
+          slaDeadlineDays: 3,
+        }, 'SK'),
       );
       this.fnolState.setSkeleton(draft, skeleton.claimId);
       this.fnolState.markStepComplete('skeleton-summary');

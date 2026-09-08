@@ -71,7 +71,9 @@ export class ClaimsPortfolioWidgetComponent {
       if (scope === 'mine')       filtered = filtered.filter(c => c.assignee === user.name);
       else if (scope === 'group') filtered = filtered.filter(c => c.group === user.group);
     }
-    if (status === 'open')        filtered = filtered.filter(c => c.status === 'Open' || c.status === 'In progress');
+    // 'Awaiting policy' orphan claims count as open — a handler needs to see
+    // them here too, not just in the dedicated FNOL search.
+    if (status === 'open')        filtered = filtered.filter(c => c.status === 'Open' || c.status === 'In progress' || c.status === 'Awaiting policy');
     else if (status === 'closed') filtered = filtered.filter(c => c.status === 'Closed' || c.status === 'Declined');
     // No fallback to unfiltered claims when a scope/status combination yields zero rows —
     // an empty result is real and must render the empty state, not someone else's claims.
