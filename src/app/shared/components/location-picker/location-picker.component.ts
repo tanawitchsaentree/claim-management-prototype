@@ -10,7 +10,7 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
-import { PolicyLocation, LocationItem, LocationPickerOutput, LookupOption } from '../../../core/models';
+import { PolicyLocation, LocationItem, LocationPickerOutput, LookupOption, CwbModalResult } from '../../../core/models';
 import {
   PolicyLocationSearchModalComponent,
   PolicyLocationSearchModalResult,
@@ -20,6 +20,8 @@ import {
   ManualLocationEntryModalData,
   ManualLocationEntryModalResult,
 } from '../manual-location-entry-modal/manual-location-entry-modal.component';
+import { CwbLocationSearchModalComponent, CwbLocationSearchModalData } from '../cwb-location-search-modal/cwb-location-search-modal.component';
+import { LocationSourceModalComponent, LocationSource } from '../location-source-modal/location-source-modal.component';
 
 interface LocationPickerVM {
   countries: LookupOption[];
@@ -82,12 +84,22 @@ export class LocationPickerComponent implements OnInit {
 
   /**
    * Single entry point. Host picks the right modal based on context:
-   *   - has policy → open PolicyLocationSearch first; if user falls back, chain ManualEntry
-   *   - no policy (skeleton) → open ManualEntry directly
+   *   - has policy → let the user choose Find in policy / Retrieve from CWB / Enter manually
+   *   - no policy (skeleton) → there's no policy or CWB mapping to search, so go straight to ManualEntry
    */
   async addLocation(policyLocations: PolicyLocation[] = []): Promise<void> {
     this.allPolicyLocations = policyLocations;
     if (!this.hasPolicyNumber) { await this.openManualEntry(); return; }
+
+    const sourceRef = this.dialogSvc.open<LocationSourceModalComponent, undefined, LocationSource | null>(
+      LocationSourceModalComponent,
+      { width: '480px', maxWidth: '92vw' },
+    );
+    const source = await firstValueFrom(sourceRef.afterClosed());
+    if (!source) return;
+
+    if (source === 'cwb') { await this.openCwbModal(); return; }
+    if (source === 'manual') { await this.openManualEntry(); return; }
     await this.openPolicySearchOrFallback();
   }
 
@@ -105,7 +117,7 @@ export class LocationPickerComponent implements OnInit {
       PolicyLocationSearchModalResult
     >(PolicyLocationSearchModalComponent, {
       data: { policyNumber: this.policyNumber!, policyLocations: this.allPolicyLocations },
-      panelClass: 'me-edit-modal-panel',
+      panelClass: 'bottom-sheet-modal-panel',
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
@@ -131,6 +143,49 @@ export class LocationPickerComponent implements OnInit {
     this._commitItems(items);
   }
 
+  private async openCwbModal(): Promise<void> {
+    const ref = this.dialogSvc.open<
+      CwbLocationSearchModalComponent,
+      CwbLocationSearchModalData,
+      CwbModalResult | null
+    >(CwbLocationSearchModalComponent, {
+      data: { policyNumber: this.policyNumber! },
+      width: '960px',
+      maxWidth: '95vw',
+    });
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result) return;
+
+    const items: LocationItem[] = [
+      ...result.cwb.map((l): LocationItem => ({
+        id:                 this._newId(),
+        source:             'cwb',
+        displayName:        l.locationName,
+        addressLine1:       l.streetAndNumber,
+        postalCode:         l.postalCode,
+        city:               l.city,
+        country:            l.country,
+        latitude:           l.latitude,
+        longitude:          l.longitude,
+        cwbReference:       l.cwbReference,
+        locationRuleNumber: l.locationRuleNumber,
+      })),
+      ...result.manual.map((m): LocationItem => ({
+        id:            this._newId(),
+        source:        'cwb',
+        displayName:   m.streetAndNumber,
+        addressLine1:  m.streetAndNumber,
+        addressLine2:  m.addressLine2,
+        postalCode:    m.postalCode,
+        city:          m.city,
+        country:       m.country,
+        state:         m.state,
+        additionalInfo: m.notes,
+      })),
+    ];
+    if (items.length) this._commitItems(items);
+  }
+
   private async openManualEntry(seed?: LocationItem, seedQuery?: string): Promise<void> {
     const ref = this.dialogSvc.open<
       ManualLocationEntryModalComponent,
@@ -138,8 +193,8 @@ export class LocationPickerComponent implements OnInit {
       ManualLocationEntryModalResult
     >(ManualLocationEntryModalComponent, {
       data: { seed: seed ?? (seedQuery ? this._seedFromQuery(seedQuery) : undefined) },
-      width: '720px',
-      maxWidth: '95vw',
+      width: '960px',
+      maxWidth: '92vw',
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;

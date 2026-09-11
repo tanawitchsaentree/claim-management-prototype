@@ -203,6 +203,6 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   onCancel(): void { this.router.navigate(['/dashboard']); }
   onNext(): void {
     this.fnolState.markStepComplete('skeleton-parties');
-    this.router.navigate(['/fnol/skeleton-location']);
+    this.router.navigate(['/fnol/skeleton-summary']);
   }
 }

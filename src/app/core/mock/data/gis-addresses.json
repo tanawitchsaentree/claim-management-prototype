@@ -1,0 +1,72 @@
+[
+  {
+    "formattedAddress": "224 W 12th Ave, Mt Pleasant, Vancouver, BC V5Y 1T8, Canada",
+    "addressLine1": "224 W 12th Ave",
+    "city": "Vancouver",
+    "postalCode": "V5Y 1T8",
+    "state": "BC",
+    "country": "CA",
+    "latitude": 49.2611,
+    "longitude": -123.1025
+  },
+  {
+    "formattedAddress": "224 12 Ave SE, Victoria Park, Calgary, AB T2G 1A1, Canada",
+    "addressLine1": "224 12 Ave SE",
+    "city": "Calgary",
+    "postalCode": "T2G 1A1",
+    "state": "AB",
+    "country": "CA",
+    "latitude": 51.0374,
+    "longitude": -114.0518
+  },
+  {
+    "formattedAddress": "224 12 Ave SW, Beltline, Calgary, AB T2R 0E9, Canada",
+    "addressLine1": "224 12 Ave SW",
+    "city": "Calgary",
+    "postalCode": "T2R 0E9",
+    "state": "AB",
+    "country": "CA",
+    "latitude": 51.0392,
+    "longitude": -114.0776
+  },
+  {
+    "formattedAddress": "224 Connaught Place, Delhi 110078, India",
+    "addressLine1": "224 Connaught Place",
+    "city": "Delhi",
+    "postalCode": "110078",
+    "state": "",
+    "country": "IN",
+    "latitude": 28.6315,
+    "longitude": 77.2167
+  },
+  {
+    "formattedAddress": "Industriestraße 12, 80807 Munich, Germany",
+    "addressLine1": "Industriestraße 12",
+    "city": "Munich",
+    "postalCode": "80807",
+    "state": "",
+    "country": "DE",
+    "latitude": 48.1372,
+    "longitude": 11.5755
+  },
+  {
+    "formattedAddress": "Lagerstraße 5, 22045 Hamburg, Germany",
+    "addressLine1": "Lagerstraße 5",
+    "city": "Hamburg",
+    "postalCode": "22045",
+    "state": "",
+    "country": "DE",
+    "latitude": 53.5511,
+    "longitude": 9.9937
+  },
+  {
+    "formattedAddress": "12 Marina Boulevard, Singapore 018982",
+    "addressLine1": "12 Marina Boulevard",
+    "city": "Singapore",
+    "postalCode": "018982",
+    "state": "",
+    "country": "SG",
+    "latitude": 1.2807,
+    "longitude": 103.8600
+  }
+]

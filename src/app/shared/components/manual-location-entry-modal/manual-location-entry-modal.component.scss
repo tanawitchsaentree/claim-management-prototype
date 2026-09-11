@@ -9,6 +9,69 @@
 
 .mle-body { @include modal.body; }
 
+// GIS address search — bare input + icon, not nx-formfield (formfield
+// reserves label/error space this dropdown doesn't need). See BLESSED.md
+// "Card Body — Form Sections" for the source pattern.
+.mle-search {
+  position: relative;
+  margin-bottom: 4px;
+
+  &__input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--ui-04);
+    border-radius: 4px;
+    padding: 0 12px;
+    height: 40px;
+    background: var(--ui-01);
+
+    &:focus-within {
+      border-color: var(--interactive-primary);
+      outline: 2px solid var(--interactive-primary);
+      outline-offset: 0;
+    }
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    &::placeholder { color: var(--text-muted); }
+  }
+
+  &__icon { color: var(--text-muted); font-size: 16px; flex-shrink: 0; margin-right: 8px; }
+}
+
+.mle-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px var(--claim-overlay-shadow-light);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.mle-result {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  &:hover { background: var(--hover-secondary); }
+  &__name { font-size: var(--paragraph-03-font-size); color: var(--text-01); }
+}
+
 .mle-form { display: flex; flex-direction: column; gap: 16px; }
 
 .mle-radio-field { display: flex; flex-direction: column; gap: 6px; }

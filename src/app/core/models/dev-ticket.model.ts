@@ -8,7 +8,7 @@ import { TourStep } from '../services/tour.service';
 // features/claims/dev-banner/claim-dev-helper.service.ts (2026-08-20) so
 // core/services/prototype-scenario.service.ts can load/apply these tickets
 // too, without core depending on a features/ file.
-export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-entities-damages' | 'fnol-skeleton' | 'fnol-skeleton-parties' | 'fnol-skeleton-location' | 'fnol-summary' | 'any';
+export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-entities-damages' | 'fnol-skeleton' | 'fnol-skeleton-parties' | 'fnol-summary' | 'any';
 
 export interface PreconditionItem {
   text:  string;

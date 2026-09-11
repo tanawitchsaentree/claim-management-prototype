@@ -90,6 +90,7 @@ Bind a trigger ref `#myTrigger="nxPopoverTrigger"` on the trigger button, and ke
 | AddLitigationPartyModal | LG | 960 |
 | ConvertSkeletonModal | LG | 960 |
 | duplicatesModal | LG | 960 |
+| ManualLocationEntryModal | LG | 960 |
 | MassEventEditModal | MD | 800 |
 | LossInfoConfirmModal | SM | 600 |
 | StartInvestigationModal | SM | 600 |

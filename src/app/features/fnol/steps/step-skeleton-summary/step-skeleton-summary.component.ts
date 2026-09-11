@@ -99,7 +99,7 @@ export class StepSkeletonSummaryComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/fnol/skeleton-location']);
+    this.router.navigate(['/fnol/skeleton-parties']);
   }
 
   async onCreate(): Promise<void> {

@@ -23,11 +23,12 @@ const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'summary',          route: '/fnol/summary',          label: 'Summary'            },
 ];
 
-// Orphan / skeleton-claim path steps (BMPCC-241)
+// Orphan / skeleton-claim path steps (BMPCC-241). Location capture lives on
+// the Loss information page itself (Vasudha feedback, 2026-09-11) — same
+// placement as the regular happy-path flow — so it is not its own step here.
 const SKELETON_PATH_STEPS: StepConfig[] = [
   { key: 'skeleton-create',   route: '/fnol/skeleton-create',   label: 'Loss information' },
   { key: 'skeleton-parties',  route: '/fnol/skeleton-parties',  label: 'Parties'          },
-  { key: 'skeleton-location', route: '/fnol/skeleton-location', label: 'Location'         },
   { key: 'skeleton-summary',  route: '/fnol/skeleton-summary',  label: 'Summary'          },
 ];
 

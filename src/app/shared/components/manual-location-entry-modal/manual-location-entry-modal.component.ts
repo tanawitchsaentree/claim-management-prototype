@@ -2,7 +2,7 @@ import { Component, OnInit, inject, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable, catchError, of, startWith } from 'rxjs';
+import { Observable, catchError, debounceTime, of, startWith, switchMap } from 'rxjs';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -11,7 +11,8 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
-import { LocationItem, LookupOption } from '../../../core/models';
+import { MockGisLocationService } from '../../../core/mock/services/mock-gis-location.service';
+import { GisAddressSuggestion, LocationItem, LookupOption } from '../../../core/models';
 
 type EntryMode = 'address' | 'coordinates';
 
@@ -42,10 +43,25 @@ export class ManualLocationEntryModalComponent implements OnInit {
   readonly data     = inject<ManualLocationEntryModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<ManualLocationEntryModalComponent, ManualLocationEntryModalResult>>(NxModalRef);
   private lookupSvc = inject(MockLookupService);
+  private gisSvc    = inject(MockGisLocationService);
 
   readonly countries$: Observable<LookupOption[]> = this.lookupSvc.getCountries().pipe(
     catchError(() => of([] as LookupOption[])),
     startWith([] as LookupOption[]),
+  );
+
+  // GIS address search — a plain address lookup, not tied to any policy.
+  // Not part of `form`: it only ever feeds the address fields below, it is
+  // never itself submitted.
+  readonly gisSearch = new FormControl('');
+  readonly gisResults = toSignal(
+    this.gisSearch.valueChanges.pipe(
+      debounceTime(250),
+      switchMap(q => (q && q.trim().length >= 2)
+        ? this.gisSvc.search(q).pipe(catchError(() => of([] as GisAddressSuggestion[])))
+        : of([] as GisAddressSuggestion[])),
+    ),
+    { initialValue: [] as GisAddressSuggestion[] },
   );
 
   readonly form = new FormGroup({
@@ -102,6 +118,20 @@ export class ManualLocationEntryModalComponent implements OnInit {
       longitude:      s.longitude ?? null,
       additionalInfo: s.additionalInfo ?? '',
     });
+  }
+
+  selectSuggestion(s: GisAddressSuggestion): void {
+    this.form.patchValue({
+      mode:         'address',
+      addressLine1: s.addressLine1,
+      postalCode:   s.postalCode,
+      city:         s.city,
+      country:      s.country,
+      state:        s.state ?? '',
+      latitude:     s.latitude,
+      longitude:    s.longitude,
+    });
+    this.gisSearch.setValue('', { emitEvent: false });
   }
 
   onCancel(): void { this.modalRef.close(null); }

@@ -6,11 +6,28 @@
     </button>
   </div>
   <p class="mle-subtitle">
-    Enter the address details for this loss location, or provide coordinates directly.
+    Search for an address, or enter the details manually / provide coordinates directly.
   </p>
 </div>
 
 <div class="mle-body" tabindex="0">
+  <div class="mle-search">
+    <div class="mle-search__input-wrap">
+      <nx-icon name="search" class="mle-search__icon"></nx-icon>
+      <input class="mle-search__input" type="text" [formControl]="gisSearch"
+             placeholder="Search location" autocomplete="off" />
+    </div>
+    @if (gisResults().length > 0) {
+      <div class="mle-results">
+        @for (s of gisResults(); track s.formattedAddress) {
+          <button type="button" class="mle-result" (click)="selectSuggestion(s)">
+            <span class="mle-result__name">{{ s.formattedAddress }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
   <div [formGroup]="form" class="mle-form">
     <div class="mle-radio-field">
       <p class="mle-radio-label">Entry method</p>

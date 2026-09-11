@@ -14,7 +14,7 @@
     <h2 class="section-heading">Notifier</h2>
     <p class="section-desc">Pick who reported this loss.</p>
 
-    <div class="radio-field">
+    <div class="radio-field" data-tour-id="skc-notifier-type">
       <p class="radio-label">Notifier type</p>
       <div class="radio-row">
         <nx-radio labelSize="small" name="notifierType" value="broker"
@@ -210,6 +210,21 @@
       <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
       <nx-hint nxFormfieldHint>{{ descLength }}/{{ maxDesc }}</nx-hint>
     </nx-formfield>
+  </section>
+
+  <!-- Card: Locations of loss — cannot use the standard Location Manager
+       MFE (depends on a linked policy/contract, which doesn't exist yet).
+       LocationPickerComponent already skips the policy-search branch
+       entirely when policyNumber is null, so it goes straight to manual/GIS
+       entry — no code changes needed there, just placement. -->
+  <section class="li-card">
+    <h2 class="section-heading">Locations of loss</h2>
+    <app-location-picker
+      [policyNumber]="null"
+      [value]="lossLocation.value"
+      [showEditLaterHint]="true"
+      (locationChange)="onLocationChange($event)"
+    ></app-location-picker>
   </section>
 
   <!-- Card 6: Events Details (optional in skeleton — fill in detail after policy match) -->

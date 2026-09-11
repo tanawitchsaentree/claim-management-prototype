@@ -221,7 +221,6 @@ export class ClaimDevHelperService {
     if (page === 'fnol-entities-damages')   return '/fnol/entities-damages';
     if (page === 'fnol-skeleton')           return '/fnol/skeleton-create';
     if (page === 'fnol-skeleton-parties')   return '/fnol/skeleton-parties';
-    if (page === 'fnol-skeleton-location')  return '/fnol/skeleton-location';
     if (page === 'fnol-summary')            return '/fnol/summary';
     if (page === 'any') return '';
     return `/claims/${claimId}/${page}`;

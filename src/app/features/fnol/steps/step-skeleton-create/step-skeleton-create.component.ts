@@ -23,7 +23,8 @@ import { FnolStateService } from '../../services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { BrokerSearchModalComponent, BrokerSearchModalResult } from '../../../../shared/components/broker-search-modal/broker-search-modal.component';
-import { Broker, LookupOption } from '../../../../core/models';
+import { Broker, LookupOption, LocationPickerOutput } from '../../../../core/models';
+import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
@@ -65,6 +66,7 @@ const REASON_OPTIONS: ReasonOption[] = [
     NxTableModule,
     WizardFooterComponent,
     StatusChipComponent,
+    LocationPickerComponent,
   ],
   templateUrl: './step-skeleton-create.component.html',
   styleUrl: './step-skeleton-create.component.scss',
@@ -95,6 +97,7 @@ export class StepSkeletonCreateComponent implements OnInit {
   readonly lossForm     = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
   readonly dateOfLoss   = this.fnolState.getDateOfLossGroup();
   readonly eventsArray  = this.fnolState.getLossEventsArray();
+  readonly lossLocation = this.fnolState.getLossLocationControl();
 
   vm$!: Observable<LossInfoVM>;
 
@@ -195,6 +198,7 @@ export class StepSkeletonCreateComponent implements OnInit {
 
   onCauseOfLossChange(selected: string[]): void { this._syncEventsArray(selected); }
   onTypeOfDamageChange(_s: string[]): void { /* formControlName handles sync */ }
+  onLocationChange(o: LocationPickerOutput): void { this.lossLocation.setValue(o); }
 
   private _syncEventsArray(selected: string[]): void {
     for (let i = this.eventsArray.length - 1; i >= 0; i--) {

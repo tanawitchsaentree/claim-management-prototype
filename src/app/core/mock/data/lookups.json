@@ -54,7 +54,10 @@
     { "value": "CZ", "label": "Czech Republic" },
     { "value": "DK", "label": "Denmark"        },
     { "value": "SE", "label": "Sweden"         },
-    { "value": "NO", "label": "Norway"         }
+    { "value": "NO", "label": "Norway"         },
+    { "value": "CA", "label": "Canada"         },
+    { "value": "IN", "label": "India"          },
+    { "value": "SG", "label": "Singapore"      }
   ],
   "causeOfLoss": [
     { "value": "fire",                     "label": "Fire"                                                              },
