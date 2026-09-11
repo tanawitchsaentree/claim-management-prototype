@@ -52,13 +52,6 @@
     </section>
   }
 
-  <!-- Which sections these updates hit, named, while the user is still editing
-       — not after the save (Marlene feedback, 2026-09-01). Same component as
-       the one inside the confirm modal. -->
-  @if (impactedSections().length > 0) {
-    <app-impacted-sections-warning [impacts]="impactedSections()"></app-impacted-sections-warning>
-  }
-
   <!-- Card: Loss information — Claim description card removed entirely
        (Marlene feedback, 2026-08-31): users update Loss description instead,
        so a separate Claim-level description field was redundant. -->

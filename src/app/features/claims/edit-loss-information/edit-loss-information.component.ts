@@ -21,21 +21,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MockLossInformationService } from '../../../core/mock/services/mock-loss-information.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
-import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
-import { ClaimSection } from '../../../core/models/section.model';
 import { LocationPickerOutput, LookupOption, OTHER_CAUSE_KEY } from '../../../core/models';
 import { circumstanceLabel, circumstanceOptionsFor, isCircumstanceValidFor } from '../../fnol/config/circumstances';
 import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
 import { LossInfoConfirmModalComponent, LossInfoConfirmModalData } from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
-import { ImpactedSectionsWarningComponent } from './impacted-sections-warning.component';
-import { SectionImpact, computeSectionImpacts } from './impacted-sections';
 import {
   IMPACT_LABELS,
   LABEL_TO_FIELD_KEY,
@@ -58,7 +54,6 @@ type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
     LocationPickerComponent,
     PageHeaderComponent,
     StatusChipComponent,
-    ImpactedSectionsWarningComponent,
   ],
   templateUrl: './edit-loss-information.component.html',
   styleUrl: './edit-loss-information.component.scss',
@@ -69,7 +64,6 @@ export class EditLossInformationComponent implements OnInit {
   private readonly lossInfoSvc  = inject(MockLossInformationService);
   private readonly lookupSvc    = inject(MockLookupService);
   private readonly overviewSvc  = inject(MockClaimOverviewService);
-  private readonly sectionSvc   = inject(MockSectionService);
   private readonly dialogSvc    = inject(NxDialogService);
   private readonly toast        = inject(ToastService);
   private readonly live         = inject(LiveAnnouncer);
@@ -99,10 +93,7 @@ export class EditLossInformationComponent implements OnInit {
     causeOfLoss:     new FormControl<string[]>([], []),
     // Added 2026-08-31 (Marlene feedback) — was FNOL-only until now; the
     // LossInformation model/service already carried typeOfDamage end to end,
-    // this form just never exposed it. This is the field IMPACT_LABELS'
-    // 'Type of damages' entry and the confirm-modal's damage warning banner
-    // were built for (see loss-info-confirm-modal.component.ts's
-    // damageChanged()) but had no way to ever actually fire until now.
+    // this form just never exposed it.
     typeOfDamage:    new FormControl<string[]>([], []),
     // Free-text qualifier for the "Other Event" cause. The validator is
     // attached at runtime by syncSpecifyOther() because "required" depends on
@@ -213,24 +204,6 @@ export class EditLossInformationComponent implements OnInit {
     return this.computeDiffs();
   });
 
-  /** Open sections of this claim — the input to impactedSections(). */
-  readonly sections = signal<ClaimSection[]>([]);
-
-  // Which sections these pending updates hit, named, before Confirm (Marlene
-  // feedback, 2026-09-01). Recomputes with pendingChanges(), so the warning
-  // appears and disappears as the user edits rather than only on save.
-  readonly impactedSections = computed<SectionImpact[]>(() => {
-    const diffs = this.pendingChanges();
-    if (!diffs.length) return [];
-    return computeSectionImpacts({
-      sections: this.sections(),
-      originalDamageKeys: this.original()?.typeOfDamage ?? [],
-      updatedDamageKeys: this.selectedDamages,
-      damageLabel: k => this.typeOfDamageOptions().find(o => o.value === k)?.label ?? k,
-      changedLabels: diffs.map(d => d.label),
-    });
-  });
-
   // ── Lifecycle ────────────────────────────────────────────────────────
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
@@ -243,8 +216,6 @@ export class EditLossInformationComponent implements OnInit {
         this.prefillForm(li);
       }
     });
-
-    firstValueFrom(this.sectionSvc.getByClaimId(id)).then(sections => this.sections.set(sections));
 
     firstValueFrom(this.overviewSvc.getOverview(id)).then(claim => {
       this.policyNumber.set(claim?.policyNumber ?? null);
@@ -343,12 +314,10 @@ export class EditLossInformationComponent implements OnInit {
     // overrode that on 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save
     // แล้วจบ". A save that commits silently gives the reviewer no last look and
     // no way to back out, and which fields count as high-impact was our
-    // judgement, not theirs. The modal already handles the low-impact case —
-    // it just renders the diff table with no impacted-sections warning.
+    // judgement, not theirs.
     const data: LossInfoConfirmModalData = {
       claimId: this.claimId(),
       diffs,
-      impacts: this.impactedSections(),
     };
     const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px', maxWidth: '92vw' });
     const result = await firstValueFrom(ref.afterClosed());

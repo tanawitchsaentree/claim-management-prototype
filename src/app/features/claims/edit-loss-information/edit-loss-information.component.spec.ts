@@ -7,10 +7,9 @@ import { EditLossInformationComponent } from './edit-loss-information.component'
 import { editLossInformationCanDeactivate } from './edit-loss-information.guard';
 
 // Gate Proof tests for the safety-review acceptance criteria — these exercise
-// the REAL component methods/signals (pendingChanges, impactedSections,
-// confirmLeaveIfDirty, onSaveChanges) and the REAL exported guard function,
-// not re-typed copies, so a regression in the component is what actually
-// fails these.
+// the REAL component methods/signals (pendingChanges, confirmLeaveIfDirty,
+// onSaveChanges) and the REAL exported guard function, not re-typed copies,
+// so a regression in the component is what actually fails these.
 //
 // NxDialogService is overridden at the DI level (not spied on the real
 // singleton) — the real .open() attaches a live NDBX modal/overlay that never
@@ -126,44 +125,6 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     it('does not open when nothing is pending', async () => {
       await component.onSaveChanges();
       expect(fakeDialogOpen).not.toHaveBeenCalled();
-    });
-  });
-
-  // Marlene, 2026-09-01: the user should see which sections are about to be
-  // impacted BEFORE hitting confirm. CLM-2024-001 has one open section
-  // (Property Damage — Warehouse & Forklift, material-damage, 2 entities) and
-  // three closed ones, and its typeOfDamage is ['material-damage', 'financial-loss'].
-  describe('Gate 5 — impacted sections are named before confirm', () => {
-    it('is empty while nothing is pending', () => {
-      expect(component.impactedSections()).toEqual([]);
-    });
-
-    it('stays empty for a description-only update', () => {
-      component.form.get('lossDescription')!.setValue('changed value');
-      expect(component.impactedSections()).toEqual([]);
-    });
-
-    it('names the open section orphaned by removing its damage type', () => {
-      component.form.get('typeOfDamage')!.setValue(['financial-loss']);
-      const impacts = component.impactedSections();
-      expect(impacts.length).toBe(1);
-      expect(impacts[0].kind).toBe('damage-removed');
-      expect(impacts[0].sectionName).toContain('Warehouse');
-      expect(impacts[0].entityCount).toBe(2);
-    });
-
-    it('flags the open section for coverage re-check when cause of loss changes', () => {
-      component.form.get('causeOfLoss')!.setValue(['fire', 'lightning']);
-      expect(component.impactedSections().map(i => i.kind)).toEqual(['coverage-review']);
-    });
-
-    it('hands the impact list to the confirm modal', async () => {
-      component.form.get('typeOfDamage')!.setValue(['financial-loss']);
-      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
-      await component.onSaveChanges();
-      const data = fakeDialogOpen.mock.calls[0][1].data;
-      expect(data.impacts.length).toBe(1);
-      expect(data.impacts[0].sectionName).toContain('Warehouse');
     });
   });
 
