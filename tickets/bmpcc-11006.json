@@ -1,33 +1,35 @@
 {
   "ticketId": "BMPCC-11006",
   "module": "FNOL",
-  "title": "Orphan Claim — Convert to Regular (one-click prefill, full walkthrough)",
+  "title": "Orphan Claim — Convert to Regular (link policy in place, land on Overview)",
   "targetClaim": "SK-2024-001",
   "pages": ["fnol-search"],
   "walkthroughSteps": [
-    "Apply AC-01 — lands on /fnol/search. The prefill logic (FnolStateService.prefillFullFromSkeleton + devSearchFill$) already existed and ran the search automatically; the only missing piece was the banner telling the handler what happened — added now.",
+    "Apply AC-01 — lands on /fnol/search with the search form prefilled (Client name, Policy number) and the search already run. The dev-banner's auto-select logic switches to the Policies tab — click the 'Claims' tab to see SK-2024-001 (this ticket is about the Claims-tab kebab action, not the Policies-tab 'Register a claim' path).",
     {
       "targetId": "fs-converting-banner",
       "title": "Converting from…",
-      "body": "Info banner confirming this search was auto-populated from skeleton SK-2024-001 (Jonas Kaufmann) — Client name, Policy number, and Date of loss are already filled and searched.",
+      "body": "Info banner confirming this search was auto-populated for skeleton SK-2024-001 (Jonas Kaufmann).",
       "expectedAfterClick": "'Cancel conversion' resets the whole FNOL form and clears the skeleton link, dropping back to a blank /fnol/search.",
       "direction": "bottom"
     },
-    "POL-2024-021 (Jonas Kaufmann) is already selected in the results — click 'Register a claim' (this build's real button label; the ticket's original 'Continue with policy' wording didn't match the shipped UI)",
-    "Wizard opens at /fnol/loss-information — date/time/cause/damage/description/loss location already prefilled from the skeleton. Review, click Next.",
-    "Walk Entities & Damages → Parties → Reserves → Summary; nothing else is required — every step inherits the seeded state",
-    "Click Confirm on Summary — the skeleton is matched to the new regular claim",
-    "Alternate entry point: a skeleton's kebab menu also offers 'Convert to claim' directly (opens a policy-match modal and jumps straight into the wizard, skipping the search page entirely) — both paths are real and end at the same place"
+    "On the Claims tab, open SK-2024-001's kebab menu and click 'Convert to claim' — this is the real button, same one available directly on the claim's own Overview page.",
+    "A modal opens showing policies matching Jonas Kaufmann, flagged eligible/ineligible (client match + loss date inside coverage). Select the eligible one (POL-2024-021) and click 'Continue conversion'.",
+    "Lands directly on /claims/SK-2024-001/overview (2026-09-14 change — no FNOL wizard walk anymore). Same claimId, same history: status is now 'Open', policy number is set, line of business updated from the policy.",
+    "A 'This claim needs setup' banner is visible (claimType is still 'skeleton' and it has zero sections) with links to Sections and Financial — this is what tells the handler what's left, since Entities & Damages / Parties / Reserves were never collected through a wizard for this claim.",
+    "Add a section from the Sections page — the banner disappears permanently once one exists.",
+    "Use 'Update reserves' on the Financial Overview page (Reserves view) to set a reserve — this button had no handler at all before 2026-09-14; it's real now.",
+    "Alternate entry point: the same 'Convert to claim' button also lives directly on the claim's Overview page (for a handler who reached it via the Dashboard's Claim Portfolio widget, not Search) — both paths call the same code and end at the same place."
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "One Apply prefills every wizard step; user navigates through Search → Loss → … → Summary themselves",
-      "plainStatement": "Applying this AC stages a complete Convert-to-Regular demo:\n- Active skeleton: **SK-2024-001** (Jonas Kaufmann, Fire at Munich warehouse)\n- `/fnol/search` info banner: **'Converting from SK-2024-001'**\n- Search form prefilled: **Client name = Jonas Kaufmann**, **Policy number = POL-2024-021**, **Date of loss = 11-09-2026** — user just clicks Search\n- `/fnol/loss-information` prefilled: occurrence + notification dates / times, **Cause = Fire**, **Damage = Material damage**, description = 'Fire at Munich warehouse', loss location = 'Munich Warehouse, Industriestraße 12, 80807 Munich, Germany'\n- Downstream steps (Entities & Damages / Parties / Reserves / Summary) inherit the prefilled FNOL state and only need a Next click each\n- The user is never skipped past a step — they walk it themselves with prepared context\n- 'Cancel conversion' on the search banner clears state cleanly",
+      "statement": "Convert to claim links the policy onto the same claim record and lands on its Overview — no FNOL wizard",
+      "plainStatement": "Clicking **Convert to claim** (from the Claims-tab kebab, or the button on the claim's own Overview page) opens a policy-picker modal. Selecting an eligible policy **updates the same claim record in place** — `policyNumber`, `lineOfBusiness`, and `status` ('Awaiting policy' → 'Open') — and lands on `/claims/:id/overview`. No new claim is created; the claim keeps its original ID. The FNOL wizard is never opened for this flow.",
       "page": "fnol-search",
       "buildStatus": "done",
       "setup": {
-        "description": "One-shot Convert demo: prefill every step, no skipping",
+        "description": "Seed the search form so the tester can find SK-2024-001 quickly, then use the real kebab action",
         "preconditions": [
           {
             "text": "Search step shows 'Converting from SK-2024-001' info banner with a 'Cancel conversion' link",
@@ -35,25 +37,15 @@
             "role": "tested-visible"
           },
           {
-            "text": "Search form is prefilled — Client name 'Jonas Kaufmann', Policy number 'POL-2024-021', Date of loss '11-09-2026'",
+            "text": "Claims tab shows SK-2024-001, status 'Awaiting Policy', with a kebab menu offering 'Convert to claim'",
             "page": "fnol-search",
             "role": "tested-visible"
           },
           {
-            "text": "Clicking Search returns POL-2024-021 (Jonas Kaufmann, Property) — selectable to continue",
-            "page": "fnol-search",
-            "role": "tested-visible"
-          },
-          {
-            "text": "After Continue, /fnol/loss-information lands with date/time/cause/damage/description/loss location all prefilled — no validation errors block Next",
+            "text": "Selecting POL-2024-021 in the Convert modal and confirming lands on /claims/SK-2024-001/overview with status 'Open', the policy number set, and the 'needs setup' banner visible",
             "page": "fnol-loss-info",
             "role": "tested-visible",
-            "hint": "Reachable via the wizard footer; navigate to it after Continue"
-          },
-          {
-            "text": "Cancel conversion on the search banner clears prefilled state",
-            "page": "fnol-search",
-            "role": "tested-visible"
+            "hint": "Despite the 'fnol-loss-info' page tag (kept for the dev-banner's page-route mapping), the actual destination is the claim's Overview page, not FNOL"
           }
         ],
         "stateOverrides": {
@@ -64,22 +56,20 @@
         }
       },
       "expectedUI": {
-        "description": "/fnol/search with banner + prefilled form; downstream steps prefilled too",
+        "description": "/fnol/search with banner + prefilled form; Convert to claim lands directly on Overview, already updated",
         "visualCues": [
           "nx-message context='info' banner: 'Converting from SK-2024-001'",
           "Plain-button 'Cancel conversion' inside the banner",
-          "Client name input shows 'Jonas Kaufmann'",
-          "Policy number input shows 'POL-2024-021'",
-          "Date of loss shows 11-09-2026",
-          "On /fnol/loss-information after Continue: every required field already populated",
-          "Wizard 'Next' button enabled on every step without typing"
+          "Claims tab row for SK-2024-001 with a working kebab 'Convert to claim' item",
+          "Convert modal: policy list with eligible/ineligible reasons, 'Continue conversion' button",
+          "After confirming: Claim Overview for the same claimId, status chip 'Open', policy number populated, 'This claim needs setup' info banner with links to Sections and Financial"
         ]
       },
       "expectedOutcome": {},
       "howToTest": {
         "route": "/fnol/search",
-        "trigger": "Apply AC-01 → Search → select POL-2024-021 → Continue → walk wizard with Next",
-        "expectedResult": "Every step lands prefilled; user only navigates, never re-enters data"
+        "trigger": "Apply AC-01 → click the Claims tab → open SK-2024-001's kebab → Convert to claim → select POL-2024-021 → Continue conversion",
+        "expectedResult": "Lands on /claims/SK-2024-001/overview with status 'Open', policy set, and the setup banner visible — no FNOL step ever opened"
       }
     }
   ]
