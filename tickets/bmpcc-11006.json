@@ -23,7 +23,7 @@
     {
       "id": "AC-01",
       "statement": "One Apply prefills every wizard step; user navigates through Search → Loss → … → Summary themselves",
-      "plainStatement": "Applying this AC stages a complete Convert-to-Regular demo:\n- Active skeleton: **SK-2024-001** (Jonas Kaufmann, Fire at Munich warehouse)\n- `/fnol/search` info banner: **'Converting from SK-2024-001'**\n- Search form prefilled: **Client name = Jonas Kaufmann**, **Policy number = POL-2024-021**, **Date of loss = 04-05-2024** — user just clicks Search\n- `/fnol/loss-information` prefilled: occurrence + notification dates / times, **Cause = Fire**, **Damage = Material damage**, description = 'Fire at Munich warehouse', loss location = 'Munich Warehouse, Industriestraße 12, 80807 Munich, Germany'\n- Downstream steps (Entities & Damages / Parties / Reserves / Summary) inherit the prefilled FNOL state and only need a Next click each\n- The user is never skipped past a step — they walk it themselves with prepared context\n- 'Cancel conversion' on the search banner clears state cleanly",
+      "plainStatement": "Applying this AC stages a complete Convert-to-Regular demo:\n- Active skeleton: **SK-2024-001** (Jonas Kaufmann, Fire at Munich warehouse)\n- `/fnol/search` info banner: **'Converting from SK-2024-001'**\n- Search form prefilled: **Client name = Jonas Kaufmann**, **Policy number = POL-2024-021**, **Date of loss = 11-09-2026** — user just clicks Search\n- `/fnol/loss-information` prefilled: occurrence + notification dates / times, **Cause = Fire**, **Damage = Material damage**, description = 'Fire at Munich warehouse', loss location = 'Munich Warehouse, Industriestraße 12, 80807 Munich, Germany'\n- Downstream steps (Entities & Damages / Parties / Reserves / Summary) inherit the prefilled FNOL state and only need a Next click each\n- The user is never skipped past a step — they walk it themselves with prepared context\n- 'Cancel conversion' on the search banner clears state cleanly",
       "page": "fnol-search",
       "buildStatus": "done",
       "setup": {
@@ -35,7 +35,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Search form is prefilled — Client name 'Jonas Kaufmann', Policy number 'POL-2024-021', Date of loss '04-05-2024'",
+            "text": "Search form is prefilled — Client name 'Jonas Kaufmann', Policy number 'POL-2024-021', Date of loss '11-09-2026'",
             "page": "fnol-search",
             "role": "tested-visible"
           },
@@ -70,7 +70,7 @@
           "Plain-button 'Cancel conversion' inside the banner",
           "Client name input shows 'Jonas Kaufmann'",
           "Policy number input shows 'POL-2024-021'",
-          "Date of loss shows 04-05-2024",
+          "Date of loss shows 11-09-2026",
           "On /fnol/loss-information after Continue: every required field already populated",
           "Wizard 'Next' button enabled on every step without typing"
         ]
