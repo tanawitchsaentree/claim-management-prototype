@@ -53,7 +53,6 @@ import {
   ConvertSkeletonModalResult,
 } from '../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
-import { FnolStateService } from '../../../core/services/fnol-state.service';
 
 interface OverviewVM {
   loading: boolean;
@@ -120,7 +119,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly toast          = inject(ToastService);
   private readonly sectionSvc    = inject(MockSectionService);
   private readonly claimSvc      = inject(MockClaimService);
-  private readonly fnolState     = inject(FnolStateService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
@@ -128,6 +126,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
   readonly rejectionActionInFlight = signal(false);
   readonly closedSectionsCount = signal<number>(0);
+  // Drives the "needs setup" banner for a claim just converted from an
+  // orphan claim — see onConvertToClaim() / the template's @if.
+  readonly sectionsCount = signal<number>(0);
 
   private readonly paramMap = toSignal(this.route.paramMap);
   private loadGeneration = 0;
@@ -195,8 +196,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
 
   private refreshClosedSectionsCount(claimId: string): void {
     firstValueFrom(this.sectionSvc.getByClaimId(claimId))
-      .then(secs => this.closedSectionsCount.set(secs.filter(s => s.status === 'Closed').length))
-      .catch(() => this.closedSectionsCount.set(0));
+      .then(secs => {
+        this.closedSectionsCount.set(secs.filter(s => s.status === 'Closed').length);
+        this.sectionsCount.set(secs.length);
+      })
+      .catch(() => {
+        this.closedSectionsCount.set(0);
+        this.sectionsCount.set(0);
+      });
   }
 
   ngOnDestroy(): void {
@@ -400,13 +407,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const policy = await firstValueFrom(ref.afterClosed()) as ConvertSkeletonModalResult;
     if (!policy) return;
 
-    this.fnolState.prefillFromSkeleton(skeleton);
-    this.fnolState.setSelectedPolicy(
-      { policyId: policy.policyNumber, policyNumber: policy.policyNumber },
-      policy,
-    );
-    this.fnolState.path = 'standard';
-    this.router.navigate(['/fnol/loss-information']);
+    await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+    // No navigation needed — the constructor's reactivity bridge (above)
+    // reloads this same Overview automatically once mock state changes.
   }
 
   async openReopenModal(claim: ClaimOverview): Promise<void> {

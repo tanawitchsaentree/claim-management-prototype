@@ -12,6 +12,10 @@
   </div>
 </app-page-header>
 
+@if (actionsDisabled()) {
+  <nx-message context="info" class="fo-closed-banner">{{ actionsDisabledReason() }} — Make Payment and Update Reserves are disabled.</nx-message>
+}
+
 @if (loading()) {
   <div class="fo-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
 } @else if (fo(); as fo) {
@@ -154,7 +158,9 @@
 
     <div class="fo-toolbar">
       <p class="fo-count">{{ rows.length }} items</p>
-      <button nxButton="primary small" class="fo-toolbar__action">Make Payment</button>
+      <button nxButton="primary small" class="fo-toolbar__action"
+              [disabled]="actionsDisabled()"
+              [nxTooltip]="actionsDisabledReason()">Make Payment</button>
     </div>
 
     @if (rows.length === 0) {
@@ -202,7 +208,10 @@
 
     <div class="fo-toolbar">
       <p class="fo-count">{{ rows.length }} items</p>
-      <button nxButton="primary small" class="fo-toolbar__action">Update reserves</button>
+      <button nxButton="primary small" class="fo-toolbar__action"
+              [disabled]="actionsDisabled()"
+              [nxTooltip]="actionsDisabledReason()"
+              (click)="onAddReserve()">Update reserves</button>
     </div>
 
     @if (rows.length === 0) {

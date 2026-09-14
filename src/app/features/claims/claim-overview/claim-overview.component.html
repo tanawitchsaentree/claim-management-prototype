@@ -209,6 +209,24 @@
       }
     </section>
 
+    <!-- Converted-but-not-set-up-yet — disappears for good once a section
+         exists (that's the completion signal, no separate flag needed). -->
+    @if (claim.claimType === 'skeleton' && sectionsCount() === 0) {
+      <nx-message context="info" class="co-setup-banner">
+        <strong>This claim needs setup before it can be worked like a normal claim.</strong>
+        <ol class="co-setup-banner__list">
+          <li>
+            <a [routerLink]="['/claims', claim.claimId, 'sections']">Add sections</a>
+            — required first; reserves attach to a section.
+          </li>
+          <li>
+            <a [routerLink]="['/claims', claim.claimId, 'financial']">Set reserves</a>
+            — once at least one section exists.
+          </li>
+        </ol>
+      </nx-message>
+    }
+
     <app-recovery-potential-card [claim]="claim" (updated)="onRecoveryUpdated($event)"></app-recovery-potential-card>
 
     <app-file-restriction-card [restriction]="claim.restriction"

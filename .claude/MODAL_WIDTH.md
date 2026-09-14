@@ -93,6 +93,7 @@ Bind a trigger ref `#myTrigger="nxPopoverTrigger"` on the trigger button, and ke
 | ManualLocationEntryModal | LG | 960 |
 | MassEventEditModal | MD | 800 |
 | LossInfoConfirmModal | SM | 600 |
+| AddReserveModal | SM | 600 |
 | StartInvestigationModal | SM | 600 |
 | EditRoleDialog | SM | 600 |
 | ConfirmDialog | XS | 440 |

@@ -4,6 +4,14 @@ import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../models';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 
+const VALID_LINES_OF_BUSINESS: LineOfBusiness[] = ['Property', 'Liability', 'Marine', 'Cyber', 'Engineering'];
+
+interface LinkablePolicy {
+  policyNumber: string;
+  lineOfBusiness: string;
+  broker?: string;
+}
+
 export interface ClaimFilter {
   status?: ClaimStatus;
   lineOfBusiness?: LineOfBusiness;
@@ -79,6 +87,22 @@ export class MockClaimService extends MockBaseService {
     const updated = { ...existing, ...payload };
     this.stateSvc.patchClaims(claims => claims.map(c => c.claimId === claimId ? updated : c));
     return this.respond(updated);
+  }
+
+  // "Convert to claim": link a real policy onto an orphan claim in place —
+  // same claimId, same history, just gains a policy and moves off the
+  // awaiting-policy lifecycle. No new claim record is created; a claim
+  // number is assigned once at intake and enriched over time, not reissued.
+  linkPolicy(claimId: string, policy: LinkablePolicy): Observable<Claim> {
+    const lineOfBusiness = VALID_LINES_OF_BUSINESS.includes(policy.lineOfBusiness as LineOfBusiness)
+      ? (policy.lineOfBusiness as LineOfBusiness)
+      : undefined;
+    return this.update(claimId, {
+      policyNumber: policy.policyNumber,
+      ...(lineOfBusiness ? { lineOfBusiness } : {}),
+      ...(policy.broker ? { broker: policy.broker } : {}),
+      status: 'Open',
+    });
   }
 
   delete(claimId: string): Observable<void> {

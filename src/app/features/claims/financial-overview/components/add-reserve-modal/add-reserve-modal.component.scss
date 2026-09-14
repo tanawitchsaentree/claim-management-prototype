@@ -1,0 +1,33 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+:host { @include modal.shell; }
+
+.arm-header {
+  @include modal.header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.arm-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.arm-body { @include modal.body; }
+
+.arm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+
+  > * { min-width: 0; }
+  nx-formfield { width: 100%; }
+}
+
+.arm-full { grid-column: 1 / -1; }
+
+.arm-footer { @include modal.footer; }

@@ -92,9 +92,6 @@ export class FnolStateService {
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;
   skeletonClaimId: string | null = null;
-  // Orphan claim being converted — kept so the search page can show rich
-  // context (client + loss event) while the user picks a policy.
-  convertingSkeleton: Claim | null = null;
 
   // ── Step config ────────────────────────────────────────────────────
 
@@ -164,22 +161,6 @@ export class FnolStateService {
     this.skeletonClaimId = claimId;
   }
 
-  // Convert flow (BMPCC-11006): prefill happy-path form from a skeleton claim,
-  // remember which skeleton we are converting so summary can link them.
-  prefillFromSkeleton(skeleton: Claim): void {
-    this.reset();
-    this.path = 'standard';
-    this.skeletonClaimId = skeleton.claimId;
-    this.convertingSkeleton = skeleton;
-    if (skeleton.lossDate) {
-      this.getDateOfLossGroup().patchValue({
-        dateOfOccurrence: skeleton.lossDate,
-      });
-    }
-    if (skeleton.description) {
-      this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.description);
-    }
-  }
 
   // BMPCC-11006 demo helper: prefill every wizard form from a skeleton claim
   // so the user lands at /fnol/search with everything teed up and can simply
@@ -315,6 +296,5 @@ export class FnolStateService {
     this.path = null;
     this.skeleton = null;
     this.skeletonClaimId = null;
-    this.convertingSkeleton = null;
   }
 }

@@ -68,6 +68,12 @@ export interface ClaimOverview {
   riskScoreMax: number;
   riskStatus: string;
   policyNumber: string;
+  // BMPCC-15828 — which version of the policy this claim is linked to, and
+  // (when the claim's own policy is itself a later version) the original/
+  // base policy it was renewed or endorsed from. Optional — most seed claims
+  // predate this and only carry policyNumber with no version concept.
+  policyVersion?: number;
+  basedOnPolicyNumber?: string;
   policyHolder: string;
   broker?: string;
   clientContact?: string;
@@ -99,6 +105,11 @@ export interface ClaimOverview {
   massEventLinkStatus?: MassEventLinkStatus;
   massEventLinkedBy?: { userId: string; name: string; at: string };
   massEventOverriddenBy?: { userId: string; name: string; at: string };
+
+  // Historical fact that this claim originated as an orphan/skeleton claim —
+  // kept even after it's converted (status moves off 'Awaiting policy') so
+  // Overview can show the "needs setup" banner. Never cleared.
+  claimType?: 'skeleton';
 
   // File restriction (BMPCC-10994) — informational only, no enforcement
   restriction?: FileRestriction;

@@ -1,11 +1,17 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, firstValueFrom } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
 import { Claim } from '../../models/claim.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 import { MockClaimService } from './mock-claim.service';
+
+interface LinkablePolicy {
+  policyNumber: string;
+  lineOfBusiness: string;
+  broker?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class MockClaimOverviewService extends MockBaseService {
@@ -78,7 +84,20 @@ export class MockClaimOverviewService extends MockBaseService {
       massEventLinkStatus: claim.massEventLinkStatus,
       massEventLinkedBy: claim.massEventLinkedBy,
       massEventOverriddenBy: claim.massEventOverriddenBy,
+      claimType: claim.claimType,
     };
+  }
+
+  // "Convert to claim": links the policy onto the Claim, then re-synthesizes
+  // and patches any ALREADY-CACHED overview for it. getOverview() caches on
+  // first read (persistAndRespond -> ensureOverview, which only inserts if
+  // missing) — without this, a claim viewed once before converting would
+  // keep showing its pre-conversion snapshot (no policy, "Awaiting policy")
+  // forever, since ensureOverview never overwrites an existing entry.
+  async convertToRegularClaim(claimId: string, policy: LinkablePolicy): Promise<Claim> {
+    const claim = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
+    this.stateSvc.patchOverview(claimId, this.synthesizeOverviewFromClaim(claim));
+    return claim;
   }
 
   hasOverview(claimId: string): boolean {

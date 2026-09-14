@@ -1,0 +1,74 @@
+<div class="arm-header">
+  <h2 class="arm-title">Add reserve</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="arm-body" tabindex="0" [formGroup]="form">
+  <div class="arm-grid">
+    <nx-formfield label="Reserve type *">
+      <nx-dropdown formControlName="reserveType" placeholder="Select">
+        @for (t of reserveTypes; track t) {
+          <nx-dropdown-item [value]="t">{{ t }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      @if (form.get('reserveType')?.invalid && submitted) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+    <nx-formfield label="Reserve sub-type *">
+      <input nxInput formControlName="reserveSubType" />
+      @if (form.get('reserveSubType')?.invalid && submitted) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Party *">
+      <input nxInput formControlName="party" />
+      @if (form.get('party')?.invalid && submitted) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+    <nx-formfield label="Damaged item (optional)">
+      <input nxInput formControlName="damagedItem" />
+    </nx-formfield>
+
+    @if (data.sections.length > 0) {
+      <nx-formfield label="Section (optional)" class="arm-full">
+        <nx-dropdown formControlName="section" placeholder="Claim level (no section)">
+          @for (s of data.sections; track s.sectionId) {
+            <nx-dropdown-item [value]="s.sectionId">{{ s.sectionName }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+    }
+
+    <nx-formfield label="Reserve amount *">
+      <input nxInput type="number" formControlName="reserveValue" />
+      @if (form.get('reserveValue')?.invalid && submitted) {
+        <nx-error nxFormfieldError>Enter an amount greater than 0.</nx-error>
+      }
+    </nx-formfield>
+    <nx-formfield label="Currency *">
+      <nx-dropdown formControlName="currency" placeholder="Select">
+        @for (c of currencies; track c) {
+          <nx-dropdown-item [value]="c">{{ c }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+
+    <nx-formfield label="Status *">
+      <nx-dropdown formControlName="status" placeholder="Select">
+        @for (s of statuses; track s) {
+          <nx-dropdown-item [value]="s">{{ s }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+  </div>
+</div>
+
+<div class="arm-footer">
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="onSave()">Add reserve</button>
+</div>

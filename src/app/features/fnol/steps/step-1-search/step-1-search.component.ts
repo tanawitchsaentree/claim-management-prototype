@@ -28,6 +28,7 @@ import {
 } from '../../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
+import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
 import { PolicySearchResult } from '../../models/fnol-form.model';
 import { Claim } from '../../../../core/models/claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
@@ -81,6 +82,7 @@ export class Step1SearchComponent {
   private fnolState = inject(FnolStateService);
   private searchSvc = inject(MockPolicySearchService);
   private claimSvc  = inject(MockClaimService);
+  private overviewSvc = inject(MockClaimOverviewService);
   private router     = inject(Router);
   private dialogSvc  = inject(NxDialogService);
   private readonly live = inject(LiveAnnouncer);
@@ -240,14 +242,10 @@ export class Step1SearchComponent {
     const policy = await firstValueFrom(ref.afterClosed()) as ConvertSkeletonModalResult;
     if (!policy) return;   // cancelled
 
-    // Seed convert state + selected policy, then go straight into the wizard.
-    this.fnolState.prefillFromSkeleton(skeleton);
-    this.fnolState.setSelectedPolicy(
-      { policyId: policy.policyNumber, policyNumber: policy.policyNumber },
-      policy,
-    );
-    this.fnolState.path = 'standard';
-    this.router.navigate(['/fnol/loss-information']);
+    // Link the policy onto the same claim record and land on its Overview —
+    // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (Convert to claim).
+    await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+    this.router.navigate(['/claims', skeleton.claimId, 'overview']);
   }
 
   // ── Button visibility/state ──────────────────────────────────────
