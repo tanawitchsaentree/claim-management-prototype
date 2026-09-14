@@ -77,7 +77,11 @@ export class ClaimsPortfolioWidgetComponent {
     else if (status === 'closed') filtered = filtered.filter(c => c.status === 'Closed' || c.status === 'Declined');
     // No fallback to unfiltered claims when a scope/status combination yields zero rows —
     // an empty result is real and must render the empty state, not someone else's claims.
-    return filtered.slice(0, 5);
+    // Most-recently-touched first — without this, claims.json's raw array order decided
+    // what showed, so anything appended to the end of that file (e.g. orphan claims) was
+    // structurally invisible in a "top 5" no matter which scope/date/status was picked.
+    const sorted = [...filtered].sort((a, b) => b.dateUpdated.localeCompare(a.dateUpdated));
+    return sorted.slice(0, 5);
   });
 
   // "View all claims" carries the widget's current scope onto the claims list, so a handler

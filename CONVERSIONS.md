@@ -993,6 +993,21 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
   - Did not touch the dashboard widget itself — it was already correct (2026-09-08 entry added `Awaiting policy` to its "open" scope, and its row already links to `/claims/:id/overview`). The only missing piece was the destination page having the action.
   - **Verification:** `npx tsc --noEmit` clean (app + spec) after the moves. `ng test` 66/66. `pre-commit` 18/19 (same pre-existing `audit:ndbx-wrapper` failure, untouched files). Playwright against `SK-2024-001`'s real overview page: status chip reads "Awaiting Policy" (was "Open"), no "Close Claim" button, no "Edit claim details" link, "Convert to claim" button present — clicked it, modal opened with a real eligible policy row, selected it, "Continue conversion," landed on `/fnol/loss-information`. Full round trip confirmed, not just the button rendering.
 
+---
+
+## 2026-09-14 — Orphan claims were structurally invisible in the Claim Portfolio widget
+
+- **Source:** user screenshot — the widget's "Claims" tab genuinely never showed `SK-2024-001` under any scope/date/status combination tried.
+- **Module:** dashboard Claim Portfolio widget, `claims.json`
+- **Root cause (two, compounding):**
+  1. `ClaimsPortfolioWidgetComponent.displayedClaims()` had no sort — it filtered `claims.json`'s array and took `.slice(0, 5)` in raw file order. The 2026-09-08 merge appended the 3 `SK-` records at the very end of that array, so they were mathematically excluded from any "top 5" regardless of which scope/date-range/status filter was picked — not a filtering bug, a structural one.
+  2. Compounding it: `SK-2024-001`/`002`/`003`'s `dateCreated`/`dateUpdated` were still their original skeleton-claims.json values (`2024-05-01` through `2024-05-05`) — carried over verbatim during the merge. Relative to today, that's ~860 days old, which is why the FNOL search page was already showing `SK-2024-001` as "862d (overdue 859d)" on a claim with a 3-day SLA — a pre-existing, unrelated-looking symptom of the same stale-date issue, visible since the 2026-09-08 merge but not connected to a cause until now.
+- **Fix:** added a `dateUpdated` descending sort to `displayedClaims()` before the slice (most-recently-touched claims surface first — a sensible default for a "recent activity" widget regardless of this bug). Re-dated the 3 `SK-` records to sit within the last ~3 weeks of "today" so they read as active/recent, matching what an "Awaiting policy, 3-day SLA" record is supposed to look like. `bmpcc-11006.json`'s hardcoded demo date references (`04-05-2024`) updated to match `SK-2024-001`'s new `lossDate` (`11-09-2026`) — that ticket's dev-banner demo reads the live record, so the old hardcoded date in its walkthrough text had gone stale the moment the underlying data changed.
+- **Files touched:** `core/mock/data/claims.json` (3 records re-dated), `features/dashboard/widgets/claims-portfolio-widget/claims-portfolio-widget.component.ts` (sort added), `public/tickets/bmpcc-11006.json` (date text updated).
+- **Notes:**
+  - Confirmed the "My claims" default scope hiding `SK-2024-001` (assigned to Lena Zorn, not the logged-in demo persona) is correct, working-as-designed behaviour, not part of this bug — kept it as-is. Only the sort/date issue was the actual defect.
+  - **Verification:** `npx tsc --noEmit` clean. `ng test` 66/66. `pre-commit` 18/19 (same pre-existing failure). Playwright: default scope+range correctly still hides it (not this persona's claim, expected); switching scope to "All" with the *default* "Last 30 days" range (no longer needing "All time") now shows `SK-2024-001` at the top of the list with the correct "Awaiting Policy" chip.
+
 <!--
 Template — copy below the most recent entry:
 
