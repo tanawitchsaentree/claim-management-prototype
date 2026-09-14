@@ -21,7 +21,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
 import { DuplicateCheckService, DuplicateClaim } from '../../../../core/services/duplicate-check.service';

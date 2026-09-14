@@ -14,7 +14,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';

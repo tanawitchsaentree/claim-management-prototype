@@ -11,7 +11,14 @@
     <section class="co-card">
       <div class="co-card-title-row">
         <h2 class="co-card-title">General information</h2>
-        @if (claim.status !== 'Closed') {
+        @if (claim.status === 'Awaiting policy') {
+          <div class="co-card-title-actions">
+            <button nxButton="primary small" type="button" (click)="onConvertToClaim(claim)">
+              Convert to claim
+            </button>
+          </div>
+        } @else if (claim.status !== 'Closed' && claim.status !== 'Pending Rejection Approval'
+                    && claim.status !== 'Matched' && claim.status !== 'Abandoned') {
           <div class="co-card-title-actions">
             <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
               <nx-icon name="edit" class="co-edit-icon"></nx-icon>
@@ -164,8 +171,23 @@
         <p class="co-desc-text">{{ claim.description }}</p>
       </div>
 
+      <!-- Pending rejection approval — BMPCC-18352 pilot -->
+      @if (claim.status === 'Pending Rejection Approval') {
+        <nx-message context="warning" class="co-rejection-banner">
+          This claim's rejection involves a liability determination and is pending underwriter review before it can be finalised.
+        </nx-message>
+        <div class="co-card-actions">
+          <button nxButton="primary small" type="button" [disabled]="rejectionActionInFlight()" (click)="approveRejection(claim)">
+            @if (rejectionActionInFlight()) { <nx-spinner size="small"></nx-spinner>&nbsp; }
+            Approve rejection
+          </button>
+          <button nxButton="secondary small" type="button" [disabled]="rejectionActionInFlight()" (click)="declineRejection(claim)">Decline rejection</button>
+        </div>
+      }
+
       <!-- Card actions — bottom-left -->
-      @if (claim.status !== 'Closed') {
+      @if (claim.status !== 'Closed' && claim.status !== 'Pending Rejection Approval'
+           && claim.status !== 'Awaiting policy' && claim.status !== 'Matched' && claim.status !== 'Abandoned') {
         <div class="co-card-actions">
           <button nxButton="primary small" type="button" (click)="openClosureModal(claim)"
             data-tour-id="co-close-claim-button"

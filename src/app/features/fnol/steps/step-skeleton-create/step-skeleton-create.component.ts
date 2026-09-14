@@ -19,7 +19,7 @@ import { NxTimefieldModule } from '@allianz/ng-aquila/timefield';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxTableModule } from '@allianz/ng-aquila/table';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { BrokerSearchModalComponent, BrokerSearchModalResult } from '../../../../shared/components/broker-search-modal/broker-search-modal.component';

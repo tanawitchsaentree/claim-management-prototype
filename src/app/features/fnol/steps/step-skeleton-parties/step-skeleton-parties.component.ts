@@ -12,7 +12,7 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { Party, PartyRole, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
 import { AddPartyModalComponent, AddPartyModalData } from '../../components/add-party-modal/add-party-modal.component';

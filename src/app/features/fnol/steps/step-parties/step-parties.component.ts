@@ -15,13 +15,14 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { Party, PartyClaim, PartySection, PartyRole, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
 import { AddPartyModalComponent, AddPartyModalData } from '../../components/add-party-modal/add-party-modal.component';
 import { PartyDetailPanelComponent } from '../../components/party-detail-panel/party-detail-panel.component';
 import { EditRoleDialogComponent, EditRoleDialogData } from '../../components/edit-role-dialog/edit-role-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
+import { ToastService } from '../../../../shared/components/toast/toast.service';
 
 interface ClaimsVM {
   claims: PartyClaim[];
@@ -67,6 +68,7 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
   private readonly fnolState  = inject(FnolStateService);
   private readonly router     = inject(Router);
   private readonly dialogSvc  = inject(NxDialogService);
+  private readonly toast      = inject(ToastService);
 
   policyNumber = '';
 
@@ -197,14 +199,27 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
     const selected = await firstValueFrom(ref.afterClosed()) as Party[] | undefined;
     if (!selected || selected.length === 0) return;
 
-    for (const party of selected) {
-      await firstValueFrom(
-        this.partiesSvc.addParty(this.policyNumber, { ...party, recentlyAdded: true }, targetClaimId, targetSectionId),
-      );
+    // try/finally, not try/catch-and-swallow — if party N of the batch fails,
+    // parties 1..N-1 already saved server-side; refresh$.next() must still run
+    // in that case or those successful adds stay invisible until an unrelated
+    // refresh happens later. The error is still surfaced via toast.
+    let addFailed = false;
+    try {
+      for (const party of selected) {
+        await firstValueFrom(
+          this.partiesSvc.addParty(this.policyNumber, { ...party, recentlyAdded: true }, targetClaimId, targetSectionId),
+        );
+      }
+    } catch {
+      addFailed = true;
+    } finally {
+      this.page = 1;
+      this.refresh$.next();
     }
-
-    this.page = 1;
-    this.refresh$.next();
+    if (addFailed) {
+      this.toast.error('Failed to add one or more parties', 'Please check the list and try again.');
+      return;
+    }
 
     setTimeout(() => {
       const firstId = selected[0]?.partyId;
@@ -234,8 +249,12 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
     const ref = this.dialogSvc.open(EditRoleDialogComponent, { data, width: '600px', maxWidth: '92vw' });
     const newRoles = await firstValueFrom(ref.afterClosed()) as PartyRole[] | null | undefined;
     if (!newRoles || newRoles.length === 0) return;
-    await firstValueFrom(this.partiesSvc.updateParty(this.policyNumber, party.partyId, { roles: newRoles }));
-    this.refresh$.next();
+    try {
+      await firstValueFrom(this.partiesSvc.updateParty(this.policyNumber, party.partyId, { roles: newRoles }));
+      this.refresh$.next();
+    } catch {
+      this.toast.error('Failed to update role', 'Please try again.');
+    }
   }
 
   async onRemoveParty(party: Party): Promise<void> {
@@ -249,7 +268,12 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
     const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
     const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
     if (!confirmed) return;
-    await firstValueFrom(this.partiesSvc.removeParty(this.policyNumber, party.partyId));
+    try {
+      await firstValueFrom(this.partiesSvc.removeParty(this.policyNumber, party.partyId));
+    } catch {
+      this.toast.error('Failed to remove party', 'Please try again.');
+      return;
+    }
     if (this.selectedParty?.partyId === party.partyId) this.onClosePanel();
     this.page = 1;
     this.refresh$.next();

@@ -17,7 +17,7 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
 import {
   EntitiesDamagesData, DamageGroup, EntityRow, PromiseSection,

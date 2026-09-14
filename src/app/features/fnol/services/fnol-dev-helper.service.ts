@@ -3,7 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Observable, filter, map, startWith, firstValueFrom } from 'rxjs';
 import { SEARCH_PRESETS, SearchPreset } from '../config/search-presets';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FnolStateService } from './fnol-state.service';
+import { FnolStateService } from '../../../core/services/fnol-state.service';
 import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
 import { MockEntitiesDamagesService } from '../../../core/mock/services/mock-entities-damages.service';
 import { LocationItem } from '../../../core/models';

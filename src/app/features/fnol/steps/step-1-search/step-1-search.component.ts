@@ -20,12 +20,12 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { firstValueFrom } from 'rxjs';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import {
   ConvertSkeletonModalComponent,
   ConvertSkeletonModalData,
   ConvertSkeletonModalResult,
-} from './convert-skeleton-modal/convert-skeleton-modal.component';
+} from '../../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { PolicySearchResult } from '../../models/fnol-form.model';
@@ -270,7 +270,11 @@ export class Step1SearchComponent {
 
   showRegisterSkeleton(state: SearchState): boolean {
     if (state.kind !== 'results') return false;
-    return !this.selectedPolicyNumber;
+    if (this.selectedPolicyNumber) return false;
+    // Mutually exclusive with isEmptyResults() — that state renders its own
+    // "Register a skeleton claim" CTA inside the empty-state body, so this
+    // footer button must not also render or the footer shows it twice.
+    return state.claims.length > 0 || state.policies.length > 0;
   }
 
   registerSkeletonDisabled(): boolean {

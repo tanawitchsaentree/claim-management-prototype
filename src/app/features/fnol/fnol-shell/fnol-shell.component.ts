@@ -8,7 +8,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { FnolStepperComponent, FnolStep } from '../components/fnol-stepper/fnol-stepper.component';
-import { FnolStateService } from '../services/fnol-state.service';
+import { FnolStateService } from '../../../core/services/fnol-state.service';
 import { StepConfig } from '../models/fnol-form.model';
 import { Policy } from '../../../core/models';
 

@@ -47,6 +47,13 @@ import {
   ReassignClaimModalData,
   ReassignClaimModalResult,
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
+import {
+  ConvertSkeletonModalComponent,
+  ConvertSkeletonModalData,
+  ConvertSkeletonModalResult,
+} from '../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
+import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
+import { FnolStateService } from '../../../core/services/fnol-state.service';
 
 interface OverviewVM {
   loading: boolean;
@@ -112,11 +119,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly massEventSvc   = inject(MockMassEventService);
   private readonly toast          = inject(ToastService);
   private readonly sectionSvc    = inject(MockSectionService);
+  private readonly claimSvc      = inject(MockClaimService);
+  private readonly fnolState     = inject(FnolStateService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
+  readonly rejectionActionInFlight = signal(false);
   readonly closedSectionsCount = signal<number>(0);
 
   private readonly paramMap = toSignal(this.route.paramMap);
@@ -256,8 +266,67 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       claim: result.closedClaim,
       activities: [result.activity, ...cur.activities],
     });
+    if (result.pendingApproval) {
+      this.toast.success('Rejection submitted', `${result.closedClaim.claimId} — awaiting underwriter approval`);
+      return;
+    }
     this.closureCheck.set({ canClose: false, blockers: [] });
     this.toast.success('Claim closed', `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`);
+  }
+
+  // BMPCC-18352 pilot — no real second-approver/notification mechanism exists
+  // in this prototype (no auth system to gate who can act here), so both
+  // actions render directly on Claim Overview for whoever opens it.
+  // rejectionActionInFlight guards against a double-click firing this twice
+  // (there's no modal/saving-state UI here to disable the buttons via, unlike
+  // claim-closure-modal's own onCloseClaim()).
+  async approveRejection(claim: ClaimOverview): Promise<void> {
+    if (this.rejectionActionInFlight()) return;
+    this.rejectionActionInFlight.set(true);
+    try {
+      const closedClaim = await firstValueFrom(this.closureSvc.closeClaim(claim.claimId, {
+        reason: 'Claim Rejected',
+        retentionType: 'default',
+        confirmedBy: { userId: 'usr-current', name: claim.assignedHandler },
+      }));
+      const now = new Date().toISOString();
+      const activity: ClaimActivity = {
+        id: `act-${Date.now()}`,
+        claimId: claim.claimId,
+        user: claim.assignedHandler,
+        timestamp: now,
+        objectType: 'Claim',
+        attribute: 'Status',
+        valueOld: claim.status,
+        valueNew: 'Closed',
+      };
+      const cur = this.vm$.value;
+      this.vm$.next({ ...cur, claim: closedClaim, activities: [activity, ...cur.activities] });
+      this.toast.success('Rejection approved', `${closedClaim.claimId} closed as Claim Rejected`);
+    } catch {
+      this.toast.error('Failed to approve rejection', 'Please try again.');
+    } finally {
+      this.rejectionActionInFlight.set(false);
+    }
+  }
+
+  declineRejection(claim: ClaimOverview): void {
+    if (this.rejectionActionInFlight()) return;
+    const now = new Date().toISOString();
+    const revertedClaim: ClaimOverview = { ...claim, status: 'Open' };
+    const activity: ClaimActivity = {
+      id: `act-${Date.now()}`,
+      claimId: claim.claimId,
+      user: claim.assignedHandler,
+      timestamp: now,
+      objectType: 'Claim',
+      attribute: 'Status',
+      valueOld: claim.status,
+      valueNew: 'Open',
+    };
+    const cur = this.vm$.value;
+    this.vm$.next({ ...cur, claim: revertedClaim, activities: [activity, ...cur.activities] });
+    this.toast.info('Rejection declined', `${claim.claimId} reverted to Open`);
   }
 
   onRecoveryUpdated({ claim, activity }: RecoveryPotentialUpdated): void {
@@ -315,6 +384,29 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       activities: [activity, ...cur.activities],
     });
     this.toast.success('Claim reassigned', `${claim.claimId} is now assigned to ${result.handlerName}`);
+  }
+
+  // Same modal + hand-off used by the FNOL search page's kebab menu
+  // ("Convert to claim") — a handler reaching an orphan claim via the
+  // dashboard/claims list needs the identical action available here, not a
+  // second path back to Search.
+  async onConvertToClaim(claim: ClaimOverview): Promise<void> {
+    const skeleton = await firstValueFrom(this.claimSvc.getById(claim.claimId));
+    const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
+      data: { skeleton } satisfies ConvertSkeletonModalData,
+      width: '960px',
+      maxWidth: '92vw',
+    });
+    const policy = await firstValueFrom(ref.afterClosed()) as ConvertSkeletonModalResult;
+    if (!policy) return;
+
+    this.fnolState.prefillFromSkeleton(skeleton);
+    this.fnolState.setSelectedPolicy(
+      { policyId: policy.policyNumber, policyNumber: policy.policyNumber },
+      policy,
+    );
+    this.fnolState.path = 'standard';
+    this.router.navigate(['/fnol/loss-information']);
   }
 
   async openReopenModal(claim: ClaimOverview): Promise<void> {

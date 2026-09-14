@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { MockStateService, ScenarioOverrides } from '../mock/state/mock-state.service';
-import { FnolStateService } from '../../features/fnol/services/fnol-state.service';
+import { FnolStateService } from './fnol-state.service';
 import { MockClaimService } from '../mock/services/mock-claim.service';
 import { MockPolicyLocationService } from '../mock/services/mock-policy-location.service';
 import { LocationItem } from '../models';

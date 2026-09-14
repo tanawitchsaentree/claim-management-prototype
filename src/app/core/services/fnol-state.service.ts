@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { LocationItem, LocationPickerOutput } from '../../../core/models';
+import { LocationItem, LocationPickerOutput } from '../models';
 import {
   FnolSelectedClient,
   FnolSelectedPolicy,
   SkeletonFormValue,
   StepConfig,
-} from '../models/fnol-form.model';
-import { Policy } from '../../../core/models';
-import { Claim } from '../../../core/models/claim.model';
-import { LossInformation } from '../../../core/models/loss-information.model';
-import { CAUSE_SCHEMAS } from '../config/cause-schemas';
-import { FileRestriction, AccessListEntry } from '../../../core/models/claim-overview.model';
-import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
+} from '../../features/fnol/models/fnol-form.model';
+import { Policy } from '../models';
+import { Claim } from '../models/claim.model';
+import { LossInformation } from '../models/loss-information.model';
+import { CAUSE_SCHEMAS } from '../../features/fnol/config/cause-schemas';
+import { FileRestriction, AccessListEntry } from '../models/claim-overview.model';
+import { futureDateValidator, dateOrderValidator } from '../../shared/validators/date.validators';
 
 const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information'  },

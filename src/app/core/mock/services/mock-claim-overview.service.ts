@@ -45,7 +45,13 @@ export class MockClaimOverviewService extends MockBaseService {
       claimId: claim.claimId,
       client: claim.clientName,
       assignedHandler: claim.assignee ?? 'Unassigned',
-      status: claim.status === 'Closed' ? 'Closed' : 'Open',
+      // Orphan-claim statuses pass through as-is — collapsing them to 'Open'
+      // hid that a claim has no linked policy yet (showed a "Close Claim"
+      // button on a claim that was never opened against a policy).
+      status: (claim.status === 'Closed' || claim.status === 'Awaiting policy'
+        || claim.status === 'Matched' || claim.status === 'Abandoned')
+        ? claim.status
+        : 'Open',
       proximateLossCause: claim.causeOfLoss?.[0] ?? '–',
       riskScore: 0,
       riskScoreMax: 5,

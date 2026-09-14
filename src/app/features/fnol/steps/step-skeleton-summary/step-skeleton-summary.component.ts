@@ -7,7 +7,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';

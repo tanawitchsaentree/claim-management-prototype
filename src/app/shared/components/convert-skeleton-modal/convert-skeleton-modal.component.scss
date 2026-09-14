@@ -1,4 +1,4 @@
-@use '../../../../../shared/styles/modal-layout' as modal;
+@use '../../styles/modal-layout' as modal;
 
 // Standard centered modal: shell caps height (calc(100vh - 112px)) and the
 // body scrolls internally so the dialog never overflows a 14" notebook.

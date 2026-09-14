@@ -6,7 +6,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
 import { Reserve, ReserveNarrative, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, SubReserve } from '../../../../core/models/reserve.model';
 import { AddReserveModalComponent, AddReserveResult } from '../../components/add-reserve-modal/add-reserve-modal.component';
@@ -169,7 +169,12 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     if (!sel) return;
     // Don't write back changes for cross-policy view (read-only mode).
     if (this.isCrossPolicy()) return;
-    await firstValueFrom(this.reservesSvc.replaceReserve(this.policyNumber, sel));
+    try {
+      await firstValueFrom(this.reservesSvc.replaceReserve(this.policyNumber, sel));
+    } catch {
+      this.toast.error('Failed to save reserve', 'Please try again.');
+      return;
+    }
     await this.loadReserves();
     this.lastSavedAt.set(new Date());
     this.isDirty.set(false);
@@ -254,7 +259,12 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
     // Recompute totals on the clone, then persist.
     this.recomputeSectionTotals(sectionClone);
-    await firstValueFrom(this.reservesSvc.replaceReserve(this.policyNumber, sectionClone));
+    try {
+      await firstValueFrom(this.reservesSvc.replaceReserve(this.policyNumber, sectionClone));
+    } catch {
+      this.toast.error('Failed to add reserve', 'Please try again.');
+      return;
+    }
     await this.loadReserves();
 
     // Open squeezed mode + auto-select the just-added section + switch tab
@@ -290,7 +300,12 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     });
     const result = await firstValueFrom(ref.afterClosed()) as AddReserveResult | null | undefined;
     if (!result) return;
-    await firstValueFrom(this.reservesSvc.updateReserve(this.policyNumber, reserve.reserveId, result));
+    try {
+      await firstValueFrom(this.reservesSvc.updateReserve(this.policyNumber, reserve.reserveId, result));
+    } catch {
+      this.toast.error('Failed to update reserve', 'Please try again.');
+      return;
+    }
     this.loadReserves();
   }
 
@@ -304,7 +319,12 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
     const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
     if (!confirmed) return;
-    await firstValueFrom(this.reservesSvc.removeReserve(this.policyNumber, reserve.reserveId));
+    try {
+      await firstValueFrom(this.reservesSvc.removeReserve(this.policyNumber, reserve.reserveId));
+    } catch {
+      this.toast.error('Failed to remove reserve', 'Please try again.');
+      return;
+    }
     await this.autoArchiveNarrativeIfNeeded();
     this.loadReserves();
     this.toast.info('Reserve removed', `${reserve.partyName} — ${reserve.damageType}`);
@@ -319,8 +339,12 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   // ── Private ──────────────────────────────────────────────────────────────────
 
   private async loadReserves(): Promise<void> {
-    const data = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
-    this.data$.next(data);
+    try {
+      const data = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+      this.data$.next(data);
+    } catch {
+      this.toast.error('Failed to load reserves', 'Please try again.');
+    }
   }
 
   private async autoArchiveNarrativeIfNeeded(): Promise<void> {

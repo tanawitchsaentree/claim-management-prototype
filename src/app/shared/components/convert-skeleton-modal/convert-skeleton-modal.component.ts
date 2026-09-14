@@ -5,10 +5,10 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { firstValueFrom } from 'rxjs';
-import { MockPolicySearchService } from '../../../../../core/mock/services/mock-policy-search.service';
-import { PolicySearchResult } from '../../../models/fnol-form.model';
-import { Claim } from '../../../../../core/models/claim.model';
-import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { MockPolicySearchService } from '../../../core/mock/services/mock-policy-search.service';
+import { PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
+import { Claim } from '../../../core/models/claim.model';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface ConvertSkeletonModalData {
   skeleton: Claim;

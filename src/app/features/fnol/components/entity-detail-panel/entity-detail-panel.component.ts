@@ -13,7 +13,7 @@ import { EntityRow, DamageItem } from '../../../../core/models/entity-damage.mod
 import { LookupOption } from '../../../../core/models/lookup.model';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
-import { FnolStateService } from '../../services/fnol-state.service';
+import { FnolStateService } from '../../../../core/services/fnol-state.service';
 
 @Component({
   selector: 'app-entity-detail-panel',
