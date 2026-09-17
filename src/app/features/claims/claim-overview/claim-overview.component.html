@@ -6,6 +6,39 @@
   } @else if (vm.error) {
     <div class="co-error">{{ vm.error }}</div>
   } @else if (vm.claim; as claim) {
+    <app-blocker-return-banner></app-blocker-return-banner>
+
+    <!-- Converted-but-not-set-up-yet — shown first, above everything else, so
+         it's the first thing a handler sees on this claim. Each step tracks
+         its OWN completion signal (sectionsCount / hasOpenReserves) — a
+         section existing does not mean a reserve was set on it, so the two
+         can't share one gate. Disappears for good only once both are true. -->
+    @if (
+      claim.claimType === 'skeleton' &&
+      claim.status !== 'Awaiting policy' &&
+      claim.status !== 'Matched' &&
+      claim.status !== 'Abandoned' &&
+      (sectionsCount() === 0 || !hasOpenReserves())
+    ) {
+      <nx-message context="warning" class="co-setup-banner">
+        <strong>Converted from an orphan claim — needs setup before this claim can be closed.</strong>
+        <ol class="co-setup-banner__list">
+          @if (sectionsCount() === 0) {
+            <li>
+              <a [routerLink]="['/claims', claim.claimId, 'sections']">Add sections</a>
+            </li>
+          }
+          @if (!hasOpenReserves()) {
+            <li>
+              <a [routerLink]="['/claims', claim.claimId, 'financial']">Set reserves</a>
+              @if (sectionsCount() === 0) {
+                (after a section exists)
+              }
+            </li>
+          }
+        </ol>
+      </nx-message>
+    }
 
     <!-- General Info Card -->
     <section class="co-card">
@@ -17,10 +50,17 @@
               Convert to claim
             </button>
           </div>
-        } @else if (claim.status !== 'Closed' && claim.status !== 'Pending Rejection Approval'
-                    && claim.status !== 'Matched' && claim.status !== 'Abandoned') {
+        } @else if (
+          claim.status !== 'Closed' &&
+          claim.status !== 'Pending Rejection Approval' &&
+          claim.status !== 'Matched' &&
+          claim.status !== 'Abandoned'
+        ) {
           <div class="co-card-title-actions">
-            <a class="co-edit-loss-btn" [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">
+            <a
+              class="co-edit-loss-btn"
+              [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']"
+            >
               <nx-icon name="edit" class="co-edit-icon"></nx-icon>
               Edit claim details
             </a>
@@ -42,7 +82,14 @@
           <span class="co-label">Assigned Claim handler</span>
           <span class="co-value">{{ claim.assignedHandler }}</span>
           @if (claim.status !== 'Closed') {
-            <nx-link size="small"><a (click)="openReassignModal(claim)">Reassign</a></nx-link>
+            <nx-link size="small"
+              ><a
+                tabindex="0"
+                (click)="openReassignModal(claim)"
+                (keydown.enter)="openReassignModal(claim)"
+                >Reassign</a
+              ></nx-link
+            >
           }
         </div>
         @if (claim.lossEventId) {
@@ -57,7 +104,9 @@
         </div>
         <div class="co-field">
           <span class="co-label">Notification date</span>
-          <span class="co-value">{{ claim.dateReported ? (claim.dateReported | appDate) : '–' }}</span>
+          <span class="co-value">{{
+            claim.dateReported ? (claim.dateReported | appDate) : '–'
+          }}</span>
         </div>
         <div class="co-field">
           <span class="co-label">Client contact</span>
@@ -72,8 +121,11 @@
             {{ claim.policyNumber }}
           </a>
         </div>
-        <app-mass-event-card [claim]="claim" [massEvent]="vm.massEvent"
-          (massEventChanged)="onMassEventChanged($event)"></app-mass-event-card>
+        <app-mass-event-card
+          [claim]="claim"
+          [massEvent]="vm.massEvent"
+          (massEventChanged)="onMassEventChanged($event)"
+        ></app-mass-event-card>
       </div>
 
       <!-- Row 2: status + risk — or closure block when closed -->
@@ -101,11 +153,15 @@
             </div>
             <div class="co-field">
               <span class="co-label">Date of Loss</span>
-              <span class="co-value">{{ claim.dateOfLoss ? (claim.dateOfLoss | appDate) : '–' }}</span>
+              <span class="co-value">{{
+                claim.dateOfLoss ? (claim.dateOfLoss | appDate) : '–'
+              }}</span>
             </div>
             <div class="co-field">
               <span class="co-label">Closure date</span>
-              <span class="co-value">{{ claim.closureDate ? (claim.closureDate | appDate) : '–' }}</span>
+              <span class="co-value">{{
+                claim.closureDate ? (claim.closureDate | appDate) : '–'
+              }}</span>
             </div>
             <!-- 'Closed by' removed — same person as the claim handler (redundant) -->
             <div class="co-field">
@@ -160,7 +216,8 @@
             [claimId]="claim.claimId"
             [riskScore]="claim.riskScore"
             [riskScoreMax]="claim.riskScoreMax"
-            [riskStatus]="claim.riskStatus">
+            [riskStatus]="claim.riskStatus"
+          >
           </app-risk-score-field>
         </div>
       }
@@ -174,24 +231,48 @@
       <!-- Pending rejection approval — BMPCC-18352 pilot -->
       @if (claim.status === 'Pending Rejection Approval') {
         <nx-message context="warning" class="co-rejection-banner">
-          This claim's rejection involves a liability determination and is pending underwriter review before it can be finalised.
+          This claim's rejection involves a liability determination and is pending underwriter
+          review before it can be finalised.
         </nx-message>
         <div class="co-card-actions">
-          <button nxButton="primary small" type="button" [disabled]="rejectionActionInFlight()" (click)="approveRejection(claim)">
-            @if (rejectionActionInFlight()) { <nx-spinner size="small"></nx-spinner>&nbsp; }
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="rejectionActionInFlight()"
+            (click)="approveRejection(claim)"
+          >
+            @if (rejectionActionInFlight()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
             Approve rejection
           </button>
-          <button nxButton="secondary small" type="button" [disabled]="rejectionActionInFlight()" (click)="declineRejection(claim)">Decline rejection</button>
+          <button
+            nxButton="secondary small"
+            type="button"
+            [disabled]="rejectionActionInFlight()"
+            (click)="declineRejection(claim)"
+          >
+            Decline rejection
+          </button>
         </div>
       }
 
       <!-- Card actions — bottom-left -->
-      @if (claim.status !== 'Closed' && claim.status !== 'Pending Rejection Approval'
-           && claim.status !== 'Awaiting policy' && claim.status !== 'Matched' && claim.status !== 'Abandoned') {
+      @if (
+        claim.status !== 'Closed' &&
+        claim.status !== 'Pending Rejection Approval' &&
+        claim.status !== 'Awaiting policy' &&
+        claim.status !== 'Matched' &&
+        claim.status !== 'Abandoned'
+      ) {
         <div class="co-card-actions">
-          <button nxButton="primary small" type="button" (click)="openClosureModal(claim)"
+          <button
+            nxButton="primary small"
+            type="button"
+            (click)="openClosureModal(claim)"
             data-tour-id="co-close-claim-button"
-            [disabled]="closureCheck() === null">
+            [disabled]="closureCheck() === null"
+          >
             @if (closureCheck() === null) {
               <nx-spinner size="small"></nx-spinner>&nbsp;Checking…
             } @else {
@@ -202,41 +283,44 @@
       }
       @if (claim.status === 'Closed') {
         <div class="co-card-actions">
-          <button nxButton="secondary small" type="button" data-tour-id="co-reopen-claim-button" (click)="openReopenModal(claim)">
+          <button
+            nxButton="secondary small"
+            type="button"
+            data-tour-id="co-reopen-claim-button"
+            (click)="openReopenModal(claim)"
+          >
             Reopen Claim
           </button>
         </div>
       }
     </section>
 
-    <!-- Converted-but-not-set-up-yet — disappears for good once a section
-         exists (that's the completion signal, no separate flag needed). -->
-    @if (claim.claimType === 'skeleton' && sectionsCount() === 0) {
-      <nx-message context="info" class="co-setup-banner">
-        <strong>This claim needs setup before it can be worked like a normal claim.</strong>
-        <ol class="co-setup-banner__list">
-          <li>
-            <a [routerLink]="['/claims', claim.claimId, 'sections']">Add sections</a>
-            — required first; reserves attach to a section.
-          </li>
-          <li>
-            <a [routerLink]="['/claims', claim.claimId, 'financial']">Set reserves</a>
-            — once at least one section exists.
-          </li>
-        </ol>
-      </nx-message>
-    }
+    <app-trade-sanctions-card
+      [claim]="claim"
+      (updated)="onTradeSanctionsUpdated($event)"
+    ></app-trade-sanctions-card>
 
-    <app-recovery-potential-card [claim]="claim" (updated)="onRecoveryUpdated($event)"></app-recovery-potential-card>
+    <app-recovery-potential-card
+      [claim]="claim"
+      (updated)="onRecoveryUpdated($event)"
+    ></app-recovery-potential-card>
 
-    <app-file-restriction-card [restriction]="claim.restriction"
-      (restrictionChanged)="onRestrictionChanged($event)"></app-file-restriction-card>
+    <app-file-restriction-card
+      [restriction]="claim.restriction"
+      (restrictionChanged)="onRestrictionChanged($event)"
+    ></app-file-restriction-card>
 
-    <app-pending-tasks-widget data-tour-id="co-tasks-widget"
-      [tasks]="vm.tasks" [expanded]="vm.tasksExpanded" (toggled)="toggleTasks()"></app-pending-tasks-widget>
+    <app-pending-tasks-widget
+      data-tour-id="co-tasks-widget"
+      [tasks]="vm.tasks"
+      [expanded]="vm.tasksExpanded"
+      (toggled)="toggleTasks()"
+    ></app-pending-tasks-widget>
 
     <app-recent-activities-card
-      [activities]="vm.activities" [expanded]="vm.activitiesExpanded" (toggled)="toggleActivities()"></app-recent-activities-card>
-
+      [activities]="vm.activities"
+      [expanded]="vm.activitiesExpanded"
+      (toggled)="toggleActivities()"
+    ></app-recent-activities-card>
   }
 }

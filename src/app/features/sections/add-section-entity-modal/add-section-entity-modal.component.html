@@ -3,6 +3,17 @@
 </div>
 
 <div class="ase-body" [formGroup]="form">
+  @if (data.reportedCause || data.reportedDescription) {
+    <div class="ase-reported-loss">
+      <p class="ase-reported-loss__label">Reported at notice</p>
+      @if (data.reportedCause) {
+        <p class="ase-reported-loss__cause">{{ data.reportedCause }}</p>
+      }
+      @if (data.reportedDescription) {
+        <p class="ase-reported-loss__desc">{{ data.reportedDescription }}</p>
+      }
+    </div>
+  }
 
   <nx-formfield label="Damage type">
     <nx-dropdown formControlName="damageType" placeholder="Select damage type">
@@ -16,12 +27,19 @@
   @if (damageTypeSig()) {
     <p class="ase-entity-group__title">
       {{ damageTypeLabel() }}
-      @if (isNewSection()) { <span class="ase-new-badge">new section</span> }
+      @if (isNewSection()) {
+        <span class="ase-new-badge">new section</span>
+      }
     </p>
 
     <nx-formfield label="Entity">
-      <nx-multi-select [options]="entityOptions()" selectValue="value" selectLabel="label"
-        placeholder="Select entity" formControlName="entityIds"></nx-multi-select>
+      <nx-multi-select
+        [options]="entityOptions()"
+        selectValue="value"
+        selectLabel="label"
+        placeholder="Select entity"
+        formControlName="entityIds"
+      ></nx-multi-select>
     </nx-formfield>
 
     @if (!loadingCandidates() && !entityOptions().length) {
@@ -30,10 +48,30 @@
       <p class="ase-entity-groups__error">Select at least one entity.</p>
     }
 
+    <!-- Replaces "Instruction status" (Marlene feedback, 2026-08-31) —
+         instruction status can still be set later via Edit Entity; asking
+         for it at add-time forced a decision before there was anything to
+         base it on. Date of occurrence is asked instead since entities in
+         the same section can be added at different times / from different
+         events. -->
+    <nx-formfield label="Date of occurrence">
+      <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="occPicker" />
+      <nx-datepicker-toggle nxFormfieldSuffix [for]="occPicker"></nx-datepicker-toggle>
+      <nx-datepicker #occPicker></nx-datepicker>
+      @if (submitAttempted && form.get('dateOfOccurrence')!.invalid) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+
     @if (isBusinessInterruption()) {
       <div class="ase-bi-grid">
         <nx-formfield label="Interruption start date">
-          <input nxDatefield nxInput formControlName="interruptionStartDate" [datepicker]="biStartPicker" />
+          <input
+            nxDatefield
+            nxInput
+            formControlName="interruptionStartDate"
+            [datepicker]="biStartPicker"
+          />
           <nx-datepicker-toggle nxFormfieldSuffix [for]="biStartPicker"></nx-datepicker-toggle>
           <nx-datepicker #biStartPicker></nx-datepicker>
           @if (submitAttempted && form.get('interruptionStartDate')!.invalid) {
@@ -41,22 +79,18 @@
           }
         </nx-formfield>
         <nx-formfield label="Interruption end date (if known)">
-          <input nxDatefield nxInput formControlName="interruptionEndDate" [datepicker]="biEndPicker" />
+          <input
+            nxDatefield
+            nxInput
+            formControlName="interruptionEndDate"
+            [datepicker]="biEndPicker"
+          />
           <nx-datepicker-toggle nxFormfieldSuffix [for]="biEndPicker"></nx-datepicker-toggle>
           <nx-datepicker #biEndPicker></nx-datepicker>
         </nx-formfield>
       </div>
     }
   }
-
-  <nx-formfield label="Instruction status">
-    <nx-dropdown formControlName="instructionStatus">
-      @for (opt of instructionStatusOptions; track opt) {
-        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
-      }
-    </nx-dropdown>
-  </nx-formfield>
-
 </div>
 
 <div class="ase-footer">

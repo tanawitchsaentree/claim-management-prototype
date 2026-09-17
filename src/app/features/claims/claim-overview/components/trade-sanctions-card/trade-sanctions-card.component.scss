@@ -1,0 +1,74 @@
+@use '../../card-shell' as shell;
+
+.co-card {
+  @include shell.card;
+}
+.co-card-title {
+  @include shell.card-title;
+}
+
+.co-value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.ts-header {
+  @include shell.card-title-row;
+
+  .co-card-title {
+    margin-bottom: 0;
+  }
+}
+
+.ts-question,
+.ts-subquestion {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 8px;
+}
+
+.ts-subquestion {
+  margin-top: 20px; // between-group gap — new question, not a sibling of the field above it
+}
+
+.ts-radio-group {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.ts-details {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-03);
+}
+
+.ts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+  margin-top: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ts-hint {
+  margin: -4px 0 8px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.ts-comments {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.ts-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}

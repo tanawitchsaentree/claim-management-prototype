@@ -1,19 +1,19 @@
 import { MassEventLinkStatus } from './claim.model';
 
 export interface AccessListEntry {
-  userId:   string;
-  name:     string;
-  role:     string;
-  email?:   string;
-  addedAt:  string;
+  userId: string;
+  name: string;
+  role: string;
+  email?: string;
+  addedAt: string;
 }
 
 export interface FileRestriction {
-  isRestricted:  boolean;
-  reason?:       string;
+  isRestricted: boolean;
+  reason?: string;
   restrictedBy?: { userId: string; name: string };
   restrictedAt?: string;
-  accessList:    AccessListEntry[];
+  accessList: AccessListEntry[];
 }
 
 export const RESTRICTION_REASONS = [
@@ -21,10 +21,30 @@ export const RESTRICTION_REASONS = [
   'Legal hold',
   'Sensitive data',
   'Regulatory investigation',
-  'Other',
+  'Other'
 ] as const;
 
-export type RestrictionReason = typeof RESTRICTION_REASONS[number];
+export type RestrictionReason = (typeof RESTRICTION_REASONS)[number];
+
+// Trade Sanctions Check — BMPCC-18822/BMPCC-17242. Capture-and-audit only:
+// records that a screening was determined/performed and its outcome:
+// determination itself happens externally via ESRA, this claim never calls
+// it. Claim-level, not per-party (functional design BMPCC-17242).
+export interface TradeSanctionsCheck {
+  exposure: 'yes' | 'no';
+  // Only meaningful when exposure = 'yes'.
+  referralApplicable?: boolean;
+  esraCompletionDate?: string | null;
+  // Open Point #5 (functional design): stays editable even when
+  // referralApplicable = No in the reviewed Figma draft — this build
+  // disables it instead, since an approval on a referral that was never
+  // applicable is a contradiction the form shouldn't allow.
+  referralApproved?: boolean;
+  esraId?: string;
+  comments?: string;
+  updatedBy?: { userId: string; name: string };
+  updatedAt?: string;
+}
 
 export interface ClaimFinancialSummary {
   currency: string;
@@ -114,21 +134,25 @@ export interface ClaimOverview {
   // File restriction (BMPCC-10994) — informational only, no enforcement
   restriction?: FileRestriction;
 
+  // Trade Sanctions Check (BMPCC-18822/BMPCC-17242) — editable post-creation,
+  // same lifecycle shape as recoveryPotential above.
+  tradeSanctions?: TradeSanctionsCheck | null;
+
   // Recovery Potential flag — captured during FNOL, editable post-creation
   recoveryPotential?: 'yes' | 'no' | null;
   recoveryPotentialNote?: string; // required rationale when recoveryPotential is 'no'
 
   // Closure blockers (BMPCC-11360 AC2). Mock flags driven by dev-banner ACs.
-  hasOpenPayments?:   boolean;
-  hasOpenReserves?:   boolean;
+  hasOpenPayments?: boolean;
+  hasOpenReserves?: boolean;
   /** A recovery case exists in the recovery domain, resolved or not (BMPCC-17779 phase B). */
-  hasRecoveryCase?:   boolean;
+  hasRecoveryCase?: boolean;
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;
   hasActiveLitigation?: boolean;
   hasActiveProvider?: boolean;
-  hasUnpaidBills?:    boolean;
+  hasUnpaidBills?: boolean;
   hasIncompleteReports?: boolean;
 }
 

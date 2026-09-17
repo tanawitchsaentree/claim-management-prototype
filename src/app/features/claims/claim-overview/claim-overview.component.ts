@@ -11,7 +11,9 @@ import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
+import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.pipe';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
@@ -21,7 +23,10 @@ import { MockMassEventService } from '../../../core/mock/services/mock-mass-even
 import { ClaimClosureService } from '../../../core/services/claim-closure.service';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { ScenarioStageService } from '../../../core/scenario/scenario-stage.service';
-import { OverviewStage, ClosureReason as StageClosureReason } from '../../../core/scenario/scenario-stage.model';
+import {
+  OverviewStage,
+  ClosureReason as StageClosureReason
+} from '../../../core/scenario/scenario-stage.model';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
@@ -29,28 +34,38 @@ import { MassEvent } from '../../../core/models/mass-event.model';
 import { Task } from '../../../core/models/task.model';
 import {
   ClaimClosureModalComponent,
-  ClaimClosureModalResult,
+  ClaimClosureModalResult
 } from './components/claim-closure-modal/claim-closure-modal.component';
 import {
   ClaimReopenModalComponent,
-  ClaimReopenModalResult,
+  ClaimReopenModalResult
 } from './components/claim-reopen-modal/claim-reopen-modal.component';
 import { FileRestriction } from '../../../core/models/claim-overview.model';
-import { RecoveryPotentialCardComponent, RecoveryPotentialUpdated } from './components/recovery-potential-card/recovery-potential-card.component';
+import {
+  RecoveryPotentialCardComponent,
+  RecoveryPotentialUpdated
+} from './components/recovery-potential-card/recovery-potential-card.component';
+import {
+  TradeSanctionsCardComponent,
+  TradeSanctionsUpdated
+} from './components/trade-sanctions-card/trade-sanctions-card.component';
 import { RiskScoreFieldComponent } from './components/risk-score-field/risk-score-field.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
-import { MassEventCardComponent, MassEventChanged } from './components/mass-event-card/mass-event-card.component';
+import {
+  MassEventCardComponent,
+  MassEventChanged
+} from './components/mass-event-card/mass-event-card.component';
 import { PendingTasksWidgetComponent } from './components/pending-tasks-widget/pending-tasks-widget.component';
 import { RecentActivitiesCardComponent } from './components/recent-activities-card/recent-activities-card.component';
 import {
   ReassignClaimModalComponent,
   ReassignClaimModalData,
-  ReassignClaimModalResult,
+  ReassignClaimModalResult
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
 import {
   ConvertSkeletonModalComponent,
   ConvertSkeletonModalData,
-  ConvertSkeletonModalResult,
+  ConvertSkeletonModalResult
 } from '../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
 
@@ -73,7 +88,7 @@ const EMPTY_VM: OverviewVM = {
   activitiesExpanded: false,
   tasks: [],
   tasksExpanded: true,
-  massEvent: null,
+  massEvent: null
 };
 
 @Component({
@@ -94,31 +109,34 @@ const EMPTY_VM: OverviewVM = {
     CircumstanceLabelPipe,
     ClaimPreviewDirective,
     RecoveryPotentialCardComponent,
+    TradeSanctionsCardComponent,
     FileRestrictionCardComponent,
     MassEventCardComponent,
     PendingTasksWidgetComponent,
     RecentActivitiesCardComponent,
     RiskScoreFieldComponent,
+    BlockerReturnBannerComponent
   ],
   templateUrl: './claim-overview.component.html',
-  styleUrl: './claim-overview.component.scss',
+  styleUrl: './claim-overview.component.scss'
 })
 export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage {
   readonly page = 'overview' as const;
   claimId: string | undefined;
 
-  private readonly route          = inject(ActivatedRoute);
-  private readonly router         = inject(Router);
-  private readonly overviewSvc    = inject(MockClaimOverviewService);
-  private readonly taskSvc        = inject(MockTaskService);
-  private readonly closureSvc     = inject(ClaimClosureService);
-  private readonly stateSvc       = inject(MockStateService);
-  private readonly stageSvc       = inject(ScenarioStageService);
-  private readonly dialogSvc      = inject(NxDialogService);
-  private readonly massEventSvc   = inject(MockMassEventService);
-  private readonly toast          = inject(ToastService);
-  private readonly sectionSvc    = inject(MockSectionService);
-  private readonly claimSvc      = inject(MockClaimService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly overviewSvc = inject(MockClaimOverviewService);
+  private readonly taskSvc = inject(MockTaskService);
+  private readonly closureSvc = inject(ClaimClosureService);
+  private readonly stateSvc = inject(MockStateService);
+  private readonly stageSvc = inject(ScenarioStageService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly massEventSvc = inject(MockMassEventService);
+  private readonly toast = inject(ToastService);
+  private readonly sectionSvc = inject(MockSectionService);
+  private readonly financialSvc = inject(MockFinancialOverviewService);
+  private readonly claimSvc = inject(MockClaimService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
@@ -126,9 +144,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
   readonly rejectionActionInFlight = signal(false);
   readonly closedSectionsCount = signal<number>(0);
-  // Drives the "needs setup" banner for a claim just converted from an
-  // orphan claim — see onConvertToClaim() / the template's @if.
+  // Drive the "needs setup" banner for a claim just converted from an orphan
+  // claim — see onConvertToClaim() / the template's @if. Both signals are
+  // needed and tracked independently: having a section doesn't mean a
+  // reserve was ever added, and a $0/rejected reserve doesn't count as
+  // "set" either — see refreshClosedSectionsCount().
   readonly sectionsCount = signal<number>(0);
+  readonly hasOpenReserves = signal<boolean>(false);
 
   private readonly paramMap = toSignal(this.route.paramMap);
   private loadGeneration = 0;
@@ -139,8 +161,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     effect(() => {
       const params = this.paramMap();
       this.stateSvc.state();
-      if (!params) return;
-      void this.loadOverview(params.get('id') ?? 'CL-2025-001');
+      const id = params?.get('id');
+      if (!id) return;
+      void this.loadOverview(id);
     });
   }
 
@@ -156,29 +179,37 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       const [overview, tasks, closure] = await Promise.all([
         firstValueFrom(this.overviewSvc.getOverviewWithActivities(claimId)),
         firstValueFrom(this.taskSvc.getByClaimId(claimId)),
-        firstValueFrom(this.closureSvc.validateBlockers(claimId)),
+        firstValueFrom(this.closureSvc.validateBlockers(claimId))
       ]);
       const massEventId = overview.claim?.massEventId;
-      const massEvent = massEventId ? await firstValueFrom(this.massEventSvc.getById(massEventId)) : null;
+      const massEvent = massEventId
+        ? await firstValueFrom(this.massEventSvc.getById(massEventId))
+        : null;
 
       if (generation !== this.loadGeneration) return; // stale — a newer load superseded this one
 
       this.closureCheck.set(closure);
       this.vm$.next({
-        loading: false, error: null,
+        loading: false,
+        error: null,
         claim: overview.claim,
         activities: overview.activities,
         activitiesExpanded: false,
         tasks,
         tasksExpanded: true,
-        massEvent: massEvent ?? null,
+        massEvent: massEvent ?? null
       });
       if (overview.claim) {
-        this.refreshClosedSectionsCount(overview.claim.claimId);
+        this.refreshClosedSectionsCount(overview.claim.claimId, generation);
       }
     } catch {
       if (generation !== this.loadGeneration) return;
-      this.vm$.next({ ...EMPTY_VM, loading: false, error: 'Failed to load claim overview.', massEvent: null });
+      this.vm$.next({
+        ...EMPTY_VM,
+        loading: false,
+        error: 'Failed to load claim overview.',
+        massEvent: null
+      });
     }
   }
 
@@ -194,15 +225,40 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     return null;
   }
 
-  private refreshClosedSectionsCount(claimId: string): void {
+  // generation guards against the same race loadOverview() already guards
+  // against: the reactivity bridge's effect() can fire loadOverview() again
+  // (e.g. an unrelated state mutation elsewhere touches the shared state
+  // signal) before this call's promise resolves. Without the check, an
+  // older, slower-resolving call could land after a newer one and stomp the
+  // correct count back to a stale value (observed: adding a section, then
+  // reloading Overview, would sometimes still show the "no sections yet"
+  // banner because a leftover pre-section count won the race).
+  private refreshClosedSectionsCount(claimId: string, generation = this.loadGeneration): void {
     firstValueFrom(this.sectionSvc.getByClaimId(claimId))
       .then(secs => {
+        if (generation !== this.loadGeneration) return;
         this.closedSectionsCount.set(secs.filter(s => s.status === 'Closed').length);
         this.sectionsCount.set(secs.length);
       })
       .catch(() => {
+        if (generation !== this.loadGeneration) return;
         this.closedSectionsCount.set(0);
         this.sectionsCount.set(0);
+      });
+    // Claim-level, not per-section: "Add reserve" lets the handler leave a
+    // reserve unattached to any section ("Claim level (no section)" in the
+    // dropdown) — ClaimSection.hasOpenReserves would never see that reserve
+    // at all, so it can't be the signal here.
+    firstValueFrom(this.financialSvc.getByClaimId(claimId))
+      .then(overview => {
+        if (generation !== this.loadGeneration) return;
+        this.hasOpenReserves.set(
+          overview.reserves.some(r => r.status !== 'Rejected' && r.reserveValue > 0)
+        );
+      })
+      .catch(() => {
+        if (generation !== this.loadGeneration) return;
+        this.hasOpenReserves.set(false);
       });
   }
 
@@ -229,11 +285,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const claim = await this.waitForClaim();
     const check = this.closureCheck();
     if (!claim || !check?.canClose) return;
-    const closedClaim = await firstValueFrom(this.closureSvc.closeClaim(claim.claimId, {
-      reason,
-      retentionType: 'default',
-      confirmedBy: { userId: 'usr-current', name: claim.assignedHandler },
-    }));
+    const closedClaim = await firstValueFrom(
+      this.closureSvc.closeClaim(claim.claimId, {
+        reason,
+        retentionType: 'default',
+        confirmedBy: { userId: 'usr-current', name: claim.assignedHandler }
+      })
+    );
     const now = new Date().toISOString();
     const activity: ClaimActivity = {
       id: `act-${Date.now()}`,
@@ -243,13 +301,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       objectType: 'Claim',
       attribute: 'Status',
       valueOld: claim.status,
-      valueNew: 'Closed',
+      valueNew: 'Closed'
     };
     const cur = this.vm$.value;
     this.vm$.next({
       ...cur,
       claim: closedClaim,
-      activities: [activity, ...cur.activities],
+      activities: [activity, ...cur.activities]
     });
     this.closureCheck.set({ canClose: false, blockers: [] });
   }
@@ -261,24 +319,30 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const ref = this.dialogSvc.open(ClaimClosureModalComponent, {
       data: { claim, blockers: check },
       width: '600px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
 
-    const result = await firstValueFrom(ref.afterClosed()) as ClaimClosureModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as ClaimClosureModalResult | undefined;
     if (!result) return;
 
     const cur = this.vm$.value;
     this.vm$.next({
       ...cur,
       claim: result.closedClaim,
-      activities: [result.activity, ...cur.activities],
+      activities: [result.activity, ...cur.activities]
     });
     if (result.pendingApproval) {
-      this.toast.success('Rejection submitted', `${result.closedClaim.claimId} — awaiting underwriter approval`);
+      this.toast.success(
+        'Rejection submitted',
+        `${result.closedClaim.claimId} — awaiting underwriter approval`
+      );
       return;
     }
     this.closureCheck.set({ canClose: false, blockers: [] });
-    this.toast.success('Claim closed', `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`);
+    this.toast.success(
+      'Claim closed',
+      `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`
+    );
   }
 
   // BMPCC-18352 pilot — no real second-approver/notification mechanism exists
@@ -291,11 +355,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     if (this.rejectionActionInFlight()) return;
     this.rejectionActionInFlight.set(true);
     try {
-      const closedClaim = await firstValueFrom(this.closureSvc.closeClaim(claim.claimId, {
-        reason: 'Claim Rejected',
-        retentionType: 'default',
-        confirmedBy: { userId: 'usr-current', name: claim.assignedHandler },
-      }));
+      const closedClaim = await firstValueFrom(
+        this.closureSvc.closeClaim(claim.claimId, {
+          reason: 'Claim Rejected',
+          retentionType: 'default',
+          confirmedBy: { userId: 'usr-current', name: claim.assignedHandler }
+        })
+      );
       const now = new Date().toISOString();
       const activity: ClaimActivity = {
         id: `act-${Date.now()}`,
@@ -305,7 +371,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         objectType: 'Claim',
         attribute: 'Status',
         valueOld: claim.status,
-        valueNew: 'Closed',
+        valueNew: 'Closed'
       };
       const cur = this.vm$.value;
       this.vm$.next({ ...cur, claim: closedClaim, activities: [activity, ...cur.activities] });
@@ -329,7 +395,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       objectType: 'Claim',
       attribute: 'Status',
       valueOld: claim.status,
-      valueNew: 'Open',
+      valueNew: 'Open'
     };
     const cur = this.vm$.value;
     this.vm$.next({ ...cur, claim: revertedClaim, activities: [activity, ...cur.activities] });
@@ -344,14 +410,31 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // -only update meant clicking "Set up recovery case" landed on a page that
     // still believed the question was unanswered.
     this.stateSvc.patchOverview(claim.claimId, {
-      recoveryPotential:     claim.recoveryPotential,
-      recoveryPotentialNote: claim.recoveryPotentialNote,
+      recoveryPotential: claim.recoveryPotential,
+      recoveryPotentialNote: claim.recoveryPotentialNote
     });
     this.overviewSvc.appendActivities(claim.claimId, [activity]);
     this.vm$.next({
       ...cur,
-      claim: { ...cur.claim, recoveryPotential: claim.recoveryPotential, recoveryPotentialNote: claim.recoveryPotentialNote },
-      activities: [activity, ...cur.activities],
+      claim: {
+        ...cur.claim,
+        recoveryPotential: claim.recoveryPotential,
+        recoveryPotentialNote: claim.recoveryPotentialNote
+      },
+      activities: [activity, ...cur.activities]
+    });
+  }
+
+  onTradeSanctionsUpdated({ claim, activity }: TradeSanctionsUpdated): void {
+    const cur = this.vm$.value;
+    if (!cur.claim) return;
+    // Same reasoning as onRecoveryUpdated above — persist, not just repaint.
+    this.stateSvc.patchOverview(claim.claimId, { tradeSanctions: claim.tradeSanctions });
+    this.overviewSvc.appendActivities(claim.claimId, [activity]);
+    this.vm$.next({
+      ...cur,
+      claim: { ...cur.claim, tradeSanctions: claim.tradeSanctions },
+      activities: [activity, ...cur.activities]
     });
   }
 
@@ -366,12 +449,21 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       data: {
         claimIds: [claim.claimId],
         currentHandler: claim.assignedHandler,
-        claims: [{ claimId: claim.claimId, clientName: claim.client, currentHandler: claim.assignedHandler }],
+        claims: [
+          {
+            claimId: claim.claimId,
+            clientName: claim.client,
+            currentHandler: claim.assignedHandler
+          }
+        ]
       } satisfies ReassignClaimModalData,
       width: '480px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as ReassignClaimModalResult | null | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | ReassignClaimModalResult
+      | null
+      | undefined;
     if (!result) return;
     const cur = this.vm$.value;
     if (!cur.claim) return;
@@ -383,14 +475,17 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       objectType: 'Claim',
       attribute: 'Assigned Claim handler',
       valueOld: claim.assignedHandler,
-      valueNew: result.reason ? `${result.handlerName} — ${result.reason}` : result.handlerName,
+      valueNew: result.reason ? `${result.handlerName} — ${result.reason}` : result.handlerName
     };
     this.vm$.next({
       ...cur,
       claim: { ...cur.claim, assignedHandler: result.handlerName },
-      activities: [activity, ...cur.activities],
+      activities: [activity, ...cur.activities]
     });
-    this.toast.success('Claim reassigned', `${claim.claimId} is now assigned to ${result.handlerName}`);
+    this.toast.success(
+      'Claim reassigned',
+      `${claim.claimId} is now assigned to ${result.handlerName}`
+    );
   }
 
   // Same modal + hand-off used by the FNOL search page's kebab menu
@@ -402,43 +497,54 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
       data: { skeleton } satisfies ConvertSkeletonModalData,
       width: '960px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const policy = await firstValueFrom(ref.afterClosed()) as ConvertSkeletonModalResult;
+    const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return;
 
     await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
     // No navigation needed — the constructor's reactivity bridge (above)
     // reloads this same Overview automatically once mock state changes.
+    // Every other action on this page confirms with a toast — this one
+    // didn't, so the handler had no positive signal the click actually did
+    // anything beyond the status chip quietly changing. Also the only place
+    // that tells them a follow-up task landed in their queue — convertToRegularClaim
+    // creates it silently, with nothing else surfacing that in the moment.
+    this.toast.success(
+      `${skeleton.claimId} converted`,
+      `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
+    );
   }
 
   async openReopenModal(claim: ClaimOverview): Promise<void> {
     const ref = this.dialogSvc.open(ClaimReopenModalComponent, {
       data: { claim },
       width: '600px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as ClaimReopenModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as ClaimReopenModalResult | undefined;
     if (!result) return;
 
     const cur = this.vm$.value;
     const activity: ClaimActivity = {
-      id:         `act-${Date.now()}`,
-      claimId:    claim.claimId,
-      user:       claim.assignedHandler,
-      timestamp:  new Date().toISOString(),
+      id: `act-${Date.now()}`,
+      claimId: claim.claimId,
+      user: claim.assignedHandler,
+      timestamp: new Date().toISOString(),
       objectType: 'Claim',
-      attribute:  'Status',
-      valueOld:   claim.status,
-      valueNew:   'Open',
+      attribute: 'Status',
+      valueOld: claim.status,
+      valueNew: 'Open'
     };
     this.vm$.next({
       ...cur,
       claim: result.reopenedClaim,
-      activities: [activity, ...cur.activities],
+      activities: [activity, ...cur.activities]
     });
 
-    const allSections = await firstValueFrom(this.sectionSvc.getByClaimId(claim.claimId)).catch(() => []);
+    const allSections = await firstValueFrom(this.sectionSvc.getByClaimId(claim.claimId)).catch(
+      () => []
+    );
     const remainingAfter = allSections.filter(s => s.status === 'Closed').length;
     const reopened = result.reopenedSectionIds.length;
 
@@ -448,9 +554,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     } else if (reopened > 0) {
       subtitle = `${reopened} section${reopened > 1 ? 's' : ''} reopened.`;
     }
-    const action = reopened > 0
-      ? { label: 'View sections', onClick: () => this.router.navigate(['/claims', claim.claimId, 'sections']) }
-      : undefined;
+    const action =
+      reopened > 0
+        ? {
+            label: 'View sections',
+            onClick: () => this.router.navigate(['/claims', claim.claimId, 'sections'])
+          }
+        : undefined;
     this.toast.success('Claim reopened', subtitle, action);
     this.refreshClosedSectionsCount(claim.claimId);
   }
@@ -470,8 +580,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     if (cur.claim?.claimId !== event.claimId) return; // stale — a newer load superseded this one
     this.vm$.next({
       ...cur,
-      claim: { ...cur.claim, massEventId: event.massEventId, massEventLinkStatus: event.massEventLinkStatus },
-      massEvent: event.massEvent,
+      claim: {
+        ...cur.claim,
+        massEventId: event.massEventId,
+        massEventLinkStatus: event.massEventLinkStatus
+      },
+      massEvent: event.massEvent
     });
   }
 }

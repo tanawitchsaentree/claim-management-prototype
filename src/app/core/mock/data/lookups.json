@@ -1,97 +1,100 @@
 {
   "claimStatuses": [
-    { "value": "Open",        "label": "Open"        },
+    { "value": "Open", "label": "Open" },
     { "value": "In progress", "label": "In Progress" },
-    { "value": "Priced",      "label": "Priced"      },
-    { "value": "Quoted",      "label": "Quoted"      },
-    { "value": "Bound",       "label": "Bound"       },
-    { "value": "Declined",    "label": "Declined"    },
-    { "value": "Closed",      "label": "Closed"      }
+    { "value": "Priced", "label": "Priced" },
+    { "value": "Quoted", "label": "Quoted" },
+    { "value": "Bound", "label": "Bound" },
+    { "value": "Declined", "label": "Declined" },
+    { "value": "Closed", "label": "Closed" }
   ],
   "taskStatuses": [
-    { "value": "open",        "label": "Open"        },
+    { "value": "open", "label": "Open" },
     { "value": "in-progress", "label": "In Progress" },
-    { "value": "done",        "label": "Done"        }
+    { "value": "done", "label": "Done" }
   ],
   "priorities": [
-    { "value": "high",   "label": "High"   },
+    { "value": "high", "label": "High" },
     { "value": "medium", "label": "Medium" },
-    { "value": "low",    "label": "Low"    }
+    { "value": "low", "label": "Low" }
   ],
   "linesOfBusiness": [
-    { "value": "Property",    "label": "Property"    },
-    { "value": "Liability",   "label": "Liability"   },
-    { "value": "Marine",      "label": "Marine"      },
-    { "value": "Cyber",       "label": "Cyber"       },
+    { "value": "Property", "label": "Property" },
+    { "value": "Liability", "label": "Liability" },
+    { "value": "Marine", "label": "Marine" },
+    { "value": "Cyber", "label": "Cyber" },
     { "value": "Engineering", "label": "Engineering" }
   ],
   "operatingEntities": [
     { "value": "Allianz Commercial Germany", "label": "Allianz Commercial Germany" },
-    { "value": "Allianz Commercial UK",      "label": "Allianz Commercial UK"      },
-    { "value": "Allianz Commercial France",  "label": "Allianz Commercial France"  },
-    { "value": "Allianz Commercial Italy",   "label": "Allianz Commercial Italy"   },
-    { "value": "Allianz Commercial Spain",   "label": "Allianz Commercial Spain"   }
+    { "value": "Allianz Commercial UK", "label": "Allianz Commercial UK" },
+    { "value": "Allianz Commercial France", "label": "Allianz Commercial France" },
+    { "value": "Allianz Commercial Italy", "label": "Allianz Commercial Italy" },
+    { "value": "Allianz Commercial Spain", "label": "Allianz Commercial Spain" }
   ],
   "currencies": [
-    { "value": "EUR", "label": "EUR — Euro"               },
-    { "value": "USD", "label": "USD — US Dollar"          },
-    { "value": "GBP", "label": "GBP — British Pound"      },
-    { "value": "CHF", "label": "CHF — Swiss Franc"        },
-    { "value": "SGD", "label": "SGD — Singapore Dollar"   }
+    { "value": "EUR", "label": "EUR — Euro" },
+    { "value": "USD", "label": "USD — US Dollar" },
+    { "value": "GBP", "label": "GBP — British Pound" },
+    { "value": "CHF", "label": "CHF — Swiss Franc" },
+    { "value": "SGD", "label": "SGD — Singapore Dollar" }
   ],
   "countries": [
-    { "value": "DE", "label": "Germany"        },
-    { "value": "AT", "label": "Austria"        },
-    { "value": "CH", "label": "Switzerland"    },
-    { "value": "FR", "label": "France"         },
-    { "value": "IT", "label": "Italy"          },
-    { "value": "ES", "label": "Spain"          },
-    { "value": "NL", "label": "Netherlands"    },
-    { "value": "BE", "label": "Belgium"        },
+    { "value": "DE", "label": "Germany" },
+    { "value": "AT", "label": "Austria" },
+    { "value": "CH", "label": "Switzerland" },
+    { "value": "FR", "label": "France" },
+    { "value": "IT", "label": "Italy" },
+    { "value": "ES", "label": "Spain" },
+    { "value": "NL", "label": "Netherlands" },
+    { "value": "BE", "label": "Belgium" },
     { "value": "GB", "label": "United Kingdom" },
-    { "value": "US", "label": "United States"  },
-    { "value": "PL", "label": "Poland"         },
+    { "value": "US", "label": "United States" },
+    { "value": "PL", "label": "Poland" },
     { "value": "CZ", "label": "Czech Republic" },
-    { "value": "DK", "label": "Denmark"        },
-    { "value": "SE", "label": "Sweden"         },
-    { "value": "NO", "label": "Norway"         },
-    { "value": "CA", "label": "Canada"         },
-    { "value": "IN", "label": "India"          },
-    { "value": "SG", "label": "Singapore"      }
+    { "value": "DK", "label": "Denmark" },
+    { "value": "SE", "label": "Sweden" },
+    { "value": "NO", "label": "Norway" },
+    { "value": "CA", "label": "Canada" },
+    { "value": "IN", "label": "India" },
+    { "value": "SG", "label": "Singapore" }
   ],
   "causeOfLoss": [
-    { "value": "fire",                     "label": "Fire"                                                              },
-    { "value": "lightning",                "label": "Lightning"                                                         },
-    { "value": "explosion",               "label": "Explosion"                                                         },
-    { "value": "aircraft-impact",         "label": "Aircraft Impact"                                                   },
-    { "value": "arson",                   "label": "Arson"                                                             },
-    { "value": "robbery",                 "label": "Robbery"                                                           },
-    { "value": "burglary",                "label": "Burglary"                                                          },
-    { "value": "theft",                   "label": "Theft"                                                             },
-    { "value": "natural-event",           "label": "Natural Event"                                                     },
-    { "value": "earthquake",              "label": "Earthquake"                                                        },
-    { "value": "business-interruption",   "label": "Business Interruption"                                             },
-    { "value": "act-of-piracy",           "label": "Act of Piracy"                                                     },
-    { "value": "act-of-omission",         "label": "Act of Omission"                                                   },
-    { "value": "event-involving-kaufmann","label": "Event involving Kaufmann's Company or Kaufmann's Business"         },
-    { "value": "product-fault",           "label": "Product Fault"                                                     },
-    { "value": "other-event",             "label": "Other Event"                                                       }
+    { "value": "fire", "label": "Fire" },
+    { "value": "lightning", "label": "Lightning" },
+    { "value": "explosion", "label": "Explosion" },
+    { "value": "aircraft-impact", "label": "Aircraft Impact" },
+    { "value": "arson", "label": "Arson" },
+    { "value": "robbery", "label": "Robbery" },
+    { "value": "burglary", "label": "Burglary" },
+    { "value": "theft", "label": "Theft" },
+    { "value": "natural-event", "label": "Natural Event" },
+    { "value": "earthquake", "label": "Earthquake" },
+    { "value": "business-interruption", "label": "Business Interruption" },
+    { "value": "act-of-piracy", "label": "Act of Piracy" },
+    { "value": "act-of-omission", "label": "Act of Omission" },
+    {
+      "value": "event-involving-kaufmann",
+      "label": "Event involving Kaufmann's Company or Kaufmann's Business"
+    },
+    { "value": "product-fault", "label": "Product Fault" },
+    { "value": "other-event", "label": "Other Event" }
   ],
   "typeOfDamage": [
-    { "value": "material-damage",       "label": "Material damage"       },
+    { "value": "material-damage", "label": "Material damage" },
     { "value": "business-interruption", "label": "Business interruption" },
-    { "value": "machinery-breakdown",   "label": "Machinery breakdown"   },
-    { "value": "bodily-injury",         "label": "Bodily injury"         },
-    { "value": "financial-loss",        "label": "Financial loss"       },
-    { "value": "liability",             "label": "Liability"            },
-    { "value": "product-recall-costs",  "label": "Product recall costs" }
+    { "value": "machinery-breakdown", "label": "Machinery breakdown" },
+    { "value": "bodily-injury", "label": "Bodily injury" },
+    { "value": "financial-loss", "label": "Financial loss" },
+    { "value": "liability", "label": "Liability" },
+    { "value": "product-recall-costs", "label": "Product recall costs" }
   ],
   "waterSources": [
-    { "value": "pipe-burst", "label": "Pipe burst"    },
-    { "value": "flooding",   "label": "Flooding"      },
-    { "value": "rain",       "label": "Rain ingress"  },
-    { "value": "sewage",     "label": "Sewage backup" },
-    { "value": "other",      "label": "Other"         }
+    { "value": "pipe-burst", "label": "Pipe burst" },
+    { "value": "flooding", "label": "Flooding" },
+    { "value": "rain", "label": "Rain ingress" },
+    { "value": "sewage", "label": "Sewage backup" },
+    { "value": "other", "label": "Other" }
   ],
   "locationTypes": [
     {
@@ -108,52 +111,75 @@
   "eventCausedBy": {
     "other": [
       { "value": "event10", "label": "Event 10" },
-      { "value": "other",   "label": "Other"    }
+      { "value": "other", "label": "Other" }
     ]
   },
   "partyRoles": [
-    { "value": "client",      "label": "Client"      },
-    { "value": "broker",      "label": "Broker"      },
-    { "value": "insured",     "label": "Insured"     },
-    { "value": "claimant",    "label": "Claimant"    },
+    { "value": "client", "label": "Client" },
+    { "value": "broker", "label": "Broker" },
+    { "value": "insured", "label": "Insured" },
+    { "value": "claimant", "label": "Claimant" },
     { "value": "third-party", "label": "Third party" },
-    { "value": "witness",     "label": "Witness"     },
-    { "value": "expert",      "label": "Expert"      },
-    { "value": "authority",   "label": "Authority"   }
+    { "value": "witness", "label": "Witness" },
+    { "value": "expert", "label": "Expert" },
+    { "value": "authority", "label": "Authority" }
   ],
   "clearanceStatuses": [
-    { "value": "cleared",        "label": "Cleared"        },
-    { "value": "not-cleared",    "label": "Not cleared"    },
-    { "value": "pending",        "label": "Pending"        },
+    { "value": "cleared", "label": "Cleared" },
+    { "value": "not-cleared", "label": "Not cleared" },
+    { "value": "pending", "label": "Pending" },
     { "value": "not-applicable", "label": "Not applicable" }
   ],
   "idTypes": [
-    { "value": "national-id",          "label": "National ID"          },
-    { "value": "vat",                  "label": "VAT"                  },
-    { "value": "tax-id",               "label": "Tax ID"               },
-    { "value": "passport",             "label": "Passport"             },
+    { "value": "national-id", "label": "National ID" },
+    { "value": "vat", "label": "VAT" },
+    { "value": "tax-id", "label": "Tax ID" },
+    { "value": "passport", "label": "Passport" },
     { "value": "company-registration", "label": "Company registration" }
   ],
   "reserveTypes": [
-    { "value": "indemnity",  "label": "Indemnity"  },
-    { "value": "expenses",   "label": "Expenses"   },
+    { "value": "indemnity", "label": "Indemnity" },
+    { "value": "expenses", "label": "Expenses" },
     { "value": "recoveries", "label": "Recoveries" }
   ],
   "narrativeOptions": [
-    { "value": "pending-assessment", "label": "Pending damage assessment"         },
-    { "value": "awaiting-docs",      "label": "Awaiting third-party documentation" },
-    { "value": "investigation",      "label": "Investigation in progress"          },
-    { "value": "other",              "label": "Other reason"                       }
+    { "value": "pending-assessment", "label": "Pending damage assessment" },
+    { "value": "awaiting-docs", "label": "Awaiting third-party documentation" },
+    { "value": "investigation", "label": "Investigation in progress" },
+    { "value": "other", "label": "Other reason" }
   ],
   "taskTypes": [
-    { "value": "Review",        "label": "Review"        },
-    { "value": "Contact",       "label": "Contact"       },
-    { "value": "Document",      "label": "Document"      },
-    { "value": "Site visit",    "label": "Site Visit"    },
-    { "value": "Finance",       "label": "Finance"       },
-    { "value": "Legal",         "label": "Legal"         },
-    { "value": "Approval",      "label": "Approval"      },
+    { "value": "Review", "label": "Review" },
+    { "value": "Contact", "label": "Contact" },
+    { "value": "Document", "label": "Document" },
+    { "value": "Site visit", "label": "Site Visit" },
+    { "value": "Finance", "label": "Finance" },
+    { "value": "Legal", "label": "Legal" },
+    { "value": "Approval", "label": "Approval" },
     { "value": "Investigation", "label": "Investigation" },
-    { "value": "Notification",  "label": "Notification"  }
+    { "value": "Notification", "label": "Notification" }
+  ],
+  "cbiCaseTypes": [
+    { "value": "supplier-named", "label": "Supplier — Named" },
+    { "value": "supplier-unnamed", "label": "Supplier — Unnamed" },
+    { "value": "customer-named", "label": "Customer — Named" },
+    { "value": "customer-unnamed", "label": "Customer — Unnamed" },
+    { "value": "denial-of-access-with-pd", "label": "Denial of Access — With PD Trigger" },
+    {
+      "value": "denial-of-access-without-pd-emergency",
+      "label": "Denial of Access — Without PD Trigger (Emergency Incident)"
+    },
+    {
+      "value": "denial-of-access-without-pd-disease",
+      "label": "Denial of Access — Without PD Trigger (Disease)"
+    },
+    {
+      "value": "denial-of-access-without-pd-weather",
+      "label": "Denial of Access — Without PD Trigger (Weather Condition)"
+    },
+    { "value": "loss-of-attraction-with-pd", "label": "Loss of Attraction — With PD Trigger" },
+    { "value": "loss-of-attraction-without-pd", "label": "Loss of Attraction — Without PD Trigger" },
+    { "value": "port-blockage", "label": "(Air)Port Blockage" },
+    { "value": "service-interruption", "label": "Service Interruption (Public or Private Utilities)" }
   ]
 }

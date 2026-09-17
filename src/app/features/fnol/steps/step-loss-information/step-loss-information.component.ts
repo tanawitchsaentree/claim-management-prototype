@@ -1,10 +1,26 @@
 import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, ReactiveFormsModule, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  ReactiveFormsModule,
+  FormArray,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  finalize,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -24,7 +40,10 @@ import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
-import { DuplicateCheckService, DuplicateClaim } from '../../../../core/services/duplicate-check.service';
+import {
+  DuplicateCheckService,
+  DuplicateClaim
+} from '../../../../core/services/duplicate-check.service';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 import { circumstanceOptionsFor, isCircumstanceValidFor } from '../../config/circumstances';
 import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
@@ -44,6 +63,7 @@ type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
   typeOfDamage: LookupOption[];
+  countries: LookupOption[];
   duplicates: DuplicateClaim[];
   showDuplicateBanner: boolean;
 }
@@ -73,31 +93,33 @@ interface LossInfoVM {
     StatusChipComponent,
     RouterLink,
     WizardFooterComponent,
-    NxAccordionModule,
+    NxAccordionModule
   ],
   templateUrl: './step-loss-information.component.html',
-  styleUrl: './step-loss-information.component.scss',
+  styleUrl: './step-loss-information.component.scss'
 })
 export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLossInfoStage {
   readonly page = 'fnol-loss-info' as const;
 
-  private fnolState         = inject(FnolStateService);
-  private lookupSvc         = inject(MockLookupService);
+  private fnolState = inject(FnolStateService);
+  private lookupSvc = inject(MockLookupService);
   private duplicateCheckSvc = inject(DuplicateCheckService);
-  private router            = inject(Router);
-  private modalService      = inject(NxDialogService);
-  private stageSvc          = inject(ScenarioStageService);
-  private readonly live     = inject(LiveAnnouncer);
+  private router = inject(Router);
+  private modalService = inject(NxDialogService);
+  private stageSvc = inject(ScenarioStageService);
+  private readonly live = inject(LiveAnnouncer);
   private deregisterStage: (() => void) | null = null;
 
   @ViewChild('duplicatesModalTpl') duplicatesModalTpl!: TemplateRef<void>;
   @ViewChild(LocationPickerComponent) locationPicker?: LocationPickerComponent;
 
-  readonly form            = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
-  readonly dateOfLoss      = this.fnolState.getDateOfLossGroup();
-  readonly lossLocation    = this.fnolState.getLossLocationControl();
-  readonly eventsArray     = this.fnolState.getLossEventsArray();
-  readonly policyNumber    = this.fnolState.selectedPolicy?.policyNumber ?? null;
+  readonly form = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
+  readonly dateOfLoss = this.fnolState.getDateOfLossGroup();
+  readonly lossLocation = this.fnolState.getLossLocationControl();
+  readonly eventsArray = this.fnolState.getLossEventsArray();
+  readonly policyNumber = this.fnolState.selectedPolicy?.policyNumber ?? null;
+  readonly cbiLocation = this.form.get('cbiLocation') as FormGroup;
+  readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesSync();
 
   readonly maxDesc = 500;
   submitAttempted = false;
@@ -111,14 +133,20 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   // ── Field label map for error summary ─────────────────────────────
   private readonly fieldLabels: Record<string, string> = {
-    'dateOfOccurrence':   'Date of occurrence',
-    'timeOfOccurrence':   'Time of occurrence',
+    'dateOfOccurrence': 'Date of occurrence',
+    'timeOfOccurrence': 'Time of occurrence',
     'dateOfNotification': 'Date of notification',
     'timeOfNotification': 'Time of notification',
-    'dateOfLoss':         'Date of loss (group)',
-    'causeOfLoss':        'Cause of loss',
-    'typeOfDamage':       'Type of damage',
-    'specifyOtherCauseOfLoss':  'Specify other cause of loss',
+    'dateOfLoss': 'Date of loss (group)',
+    'causeOfLoss': 'Cause of loss',
+    'typeOfDamage': 'Type of damage',
+    'specifyOtherCauseOfLoss': 'Specify other cause of loss',
+    'cbiApplicable': 'Contingent business interruption',
+    'cbiCaseType': 'CBI case type',
+    'cbiThirdPartyName': 'Third-party name',
+    'cbiLocationCountry': 'Originating loss location: country',
+    'cbiLocationCity': 'Originating loss location: city',
+    'cbiLocationZip': 'Originating loss location: ZIP'
   };
 
   ngOnInit(): void {
@@ -134,6 +162,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     // edit-loss-information) — in that case no selectionChange ever fired, so
     // the specify-other validators have to be reconciled once on entry.
     this.syncSpecifyOther('specifyOtherCauseOfLoss', this.showSpecifyOtherCause);
+    this.syncCbi();
 
     const policyNumber = this.fnolState.selectedPolicy?.policyNumber;
 
@@ -146,39 +175,55 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     // PENDING: Product sign-off on cause+date vs strict AC2 date-only trigger.
     const duplicates$: Observable<DuplicateClaim[]> = policyNumber
       ? combineLatest([
-          this.form.get('causeOfLoss')!.valueChanges.pipe(startWith(this.form.get('causeOfLoss')!.value as string[])),
-          this.dateOfLoss.get('dateOfOccurrence')!.valueChanges.pipe(startWith(this.dateOfLoss.get('dateOfOccurrence')!.value as string | null)),
-        ]).pipe(
-          debounceTime(1000),
-          tap(() => { this.bannerDismissed$.next(false); this.duplicateCheckLoading$.next(true); }),
-          switchMap(([causes, date]) =>
-            date
-              ? this.duplicateCheckSvc.checkDuplicates(policyNumber, date, causes?.length ? causes : undefined).pipe(
-                  map(r => r.duplicates),
-                  catchError(() => of([] as DuplicateClaim[])),
-                  finalize(() => this.duplicateCheckLoading$.next(false))
-                )
-              : of([] as DuplicateClaim[]).pipe(finalize(() => this.duplicateCheckLoading$.next(false)))
+          this.form
+            .get('causeOfLoss')!
+            .valueChanges.pipe(startWith(this.form.get('causeOfLoss')!.value as string[])),
+          this.dateOfLoss
+            .get('dateOfOccurrence')!
+            .valueChanges.pipe(
+              startWith(this.dateOfLoss.get('dateOfOccurrence')!.value as string | null)
+            )
+        ])
+          .pipe(
+            debounceTime(1000),
+            tap(() => {
+              this.bannerDismissed$.next(false);
+              this.duplicateCheckLoading$.next(true);
+            }),
+            switchMap(([causes, date]) =>
+              date
+                ? this.duplicateCheckSvc
+                    .checkDuplicates(policyNumber, date, causes?.length ? causes : undefined)
+                    .pipe(
+                      map(r => r.duplicates),
+                      catchError(() => of([] as DuplicateClaim[])),
+                      finalize(() => this.duplicateCheckLoading$.next(false))
+                    )
+                : of([] as DuplicateClaim[]).pipe(
+                    finalize(() => this.duplicateCheckLoading$.next(false))
+                  )
+            )
           )
-        ).pipe(shareReplay(1))
+          .pipe(shareReplay(1))
       : of([] as DuplicateClaim[]);
 
     this.vm$ = combineLatest({
-      causeOfLoss:  this.lookupSvc.getCauseOfLoss(),
+      causeOfLoss: this.lookupSvc.getCauseOfLoss(),
       typeOfDamage: this.lookupSvc.getTypeOfDamage(),
-      duplicates:         duplicates$,
+      countries: this.lookupSvc.getCountries(),
+      duplicates: duplicates$,
       showDuplicateBanner: combineLatest([duplicates$, this.bannerDismissed$]).pipe(
         map(([dups, dismissed]) => ({ show: dups.length > 0 && !dismissed, count: dups.length })),
         tap(({ show, count }) => {
           if (show) {
             this.live.announce(
               `${count} existing claim${count === 1 ? ' was' : 's were'} found with the same policy, date, and cause of loss`,
-              'polite',
+              'polite'
             );
           }
         }),
-        map(({ show }) => show),
-      ),
+        map(({ show }) => show)
+      )
     });
   }
 
@@ -203,7 +248,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     await new Promise(resolve => setTimeout(resolve, 1500));
     if (!this.policyNumber) return;
     const result = await firstValueFrom(
-      this.duplicateCheckSvc.checkDuplicates(this.policyNumber, date, causes),
+      this.duplicateCheckSvc.checkDuplicates(this.policyNumber, date, causes)
     );
     if (result.duplicates.length > 0) {
       this.openDuplicatesModal(result.duplicates);
@@ -221,7 +266,9 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     }
     if (!lp) return;
     if (lp.locations.length > 0) return;
-    type LpVm = { policyLocations: import('../../../../core/models').PolicyLocation[] };
+    interface LpVm {
+      policyLocations: import('../../../../core/models').PolicyLocation[];
+    }
     const vm$ = (lp as unknown as { vm$?: Observable<LpVm> }).vm$;
     if (!vm$) return;
     const vm = await firstValueFrom(vm$);
@@ -231,18 +278,29 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   // CWB scenario stage hooks — kept as no-ops because the picker no longer
   // exposes a CWB UI mode (CWB modal still lives at shared/ if other flows
   // need it). injectCwbAsLoss below remains the canonical scripted entry.
-  async selectCwbMode(): Promise<void> { /* no-op: CWB radio removed from picker */ }
-  async openCwbModal(): Promise<void>  { /* no-op: CWB radio removed from picker */ }
+  async selectCwbMode(): Promise<void> {
+    /* no-op: CWB radio removed from picker */
+  }
+  async openCwbModal(): Promise<void> {
+    /* no-op: CWB radio removed from picker */
+  }
 
-  async prefillCwbCountry(_country: string): Promise<void> { /* CWB modal owns the form; left as a no-op for v3 */ }
-  async runCwbSearch(): Promise<void> { /* requires modal-side stage; deferred */ }
-  async selectCwbRow(_cwbReference: string): Promise<void> { /* deferred */ }
+  async prefillCwbCountry(_country: string): Promise<void> {
+    /* CWB modal owns the form; left as a no-op for v3 */
+  }
+  async runCwbSearch(): Promise<void> {
+    /* requires modal-side stage; deferred */
+  }
+  async selectCwbRow(_cwbReference: string): Promise<void> {
+    /* deferred */
+  }
 
   async injectCwbAsLoss(cwbReference: string): Promise<void> {
     const lp = this.locationPicker;
     if (!lp) return;
     const dataMod = await import('../../../../core/mock/data/cwb-locations.json');
-    const seedArr = ((dataMod as { default?: unknown }).default ?? dataMod) as import('../../../../core/models').CwbLocation[];
+    const seedArr = ((dataMod as { default?: unknown }).default ??
+      dataMod) as import('../../../../core/models').CwbLocation[];
     const picked = seedArr.find(c => c.cwbReference === cwbReference);
     if (!picked) return;
     const item: import('../../../../core/models').LocationItem = {
@@ -257,7 +315,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       latitude: picked.latitude,
       longitude: picked.longitude,
       cwbReference: picked.cwbReference,
-      locationRuleNumber: picked.locationRuleNumber,
+      locationRuleNumber: picked.locationRuleNumber
     };
     lp.locations = [...lp.locations, item];
     lp.locationChange.emit({ locations: lp.locations });
@@ -270,7 +328,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   }
 
   showGroupError(group: AbstractControl, errorKey: string): boolean {
-    return !!(group.errors?.[errorKey]) && (group.touched || this.submitAttempted);
+    return !!group.errors?.[errorKey] && (group.touched || this.submitAttempted);
   }
 
   // ── Global error summary ───────────────────────────────────────────
@@ -279,7 +337,12 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     const errors: FormError[] = [];
 
     const dateGroup = this.dateOfLoss;
-    const dateFields = ['dateOfOccurrence', 'timeOfOccurrence', 'dateOfNotification', 'timeOfNotification'];
+    const dateFields = [
+      'dateOfOccurrence',
+      'timeOfOccurrence',
+      'dateOfNotification',
+      'timeOfNotification'
+    ];
     dateFields.forEach(key => {
       const ctrl = dateGroup.get(key);
       if (ctrl?.errors) {
@@ -289,14 +352,20 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     });
 
     if (dateGroup.errors?.['dateOrder']) {
-      errors.push({ fieldId: 'dateOfLoss', message: 'Notification date must be on or after occurrence date' });
+      errors.push({
+        fieldId: 'dateOfLoss',
+        message: 'Notification date must be on or after occurrence date'
+      });
     }
 
     if (this.selectedCauses.length === 0) {
       errors.push({ fieldId: 'causeOfLoss', message: 'Cause of loss: select at least one option' });
     }
     if (this.selectedDamages.length === 0) {
-      errors.push({ fieldId: 'typeOfDamage', message: 'Type of damage: select at least one option' });
+      errors.push({
+        fieldId: 'typeOfDamage',
+        message: 'Type of damage: select at least one option'
+      });
     }
 
     // Only reachable while the field is on screen — syncSpecifyOther() strips
@@ -304,10 +373,11 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     const specifyCtrl = this.form.get('specifyOtherCauseOfLoss');
     if (specifyCtrl?.errors) {
       const msg = getErrorMessage(specifyCtrl.errors);
-      if (msg) errors.push({
-        fieldId: 'specifyOtherCauseOfLoss',
-        message: `${this.fieldLabels['specifyOtherCauseOfLoss']}: ${msg}`,
-      });
+      if (msg)
+        errors.push({
+          fieldId: 'specifyOtherCauseOfLoss',
+          message: `${this.fieldLabels['specifyOtherCauseOfLoss']}: ${msg}`
+        });
     }
 
     for (let i = 0; i < this.eventsArray.length; i++) {
@@ -316,6 +386,34 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
         const label = this.getCauseLabel(grp.get('eventKey')!.value as string);
         errors.push({ fieldId: `damages-${i}`, message: `${label}: select at least one damage` });
       }
+    }
+
+    // Only reachable while shown — syncCbi() strips validators the moment
+    // Business Interruption is deselected or the question is answered No.
+    if (this.showCbiQuestion && !this.cbiApplicable) {
+      errors.push({
+        fieldId: 'cbiApplicable',
+        message: `${this.fieldLabels['cbiApplicable']}: answer required`
+      });
+    }
+    if (this.showCbiDetails) {
+      if (!this.selectedCbiCaseType) {
+        errors.push({ fieldId: 'cbiCaseType', message: `${this.fieldLabels['cbiCaseType']}: required` });
+      }
+      if (this.showCbiThirdPartyName && !this.form.get('cbiThirdPartyName')?.value) {
+        errors.push({
+          fieldId: 'cbiThirdPartyName',
+          message: `${this.fieldLabels['cbiThirdPartyName']}: required`
+        });
+      }
+      (['country', 'city', 'zip'] as const).forEach(key => {
+        if (!this.cbiLocation.get(key)?.value) {
+          errors.push({
+            fieldId: `cbiLocation${key.charAt(0).toUpperCase()}${key.slice(1)}`,
+            message: `${this.fieldLabels[`cbiLocation${key.charAt(0).toUpperCase()}${key.slice(1)}`]}: required`
+          });
+        }
+      });
     }
 
     return errors;
@@ -332,7 +430,8 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   private scrollToErrorSummary(): void {
     setTimeout(() => {
-      document.querySelector('.form-errors-summary')
+      document
+        .querySelector('.form-errors-summary')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
   }
@@ -355,7 +454,12 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   openDuplicatesModal(all: DuplicateClaim[]): void {
     this.modalDuplicates = all;
-    this.modalService.open(this.duplicatesModalTpl, { showCloseIcon: true, width: '960px', maxWidth: '92vw', ariaLabelledBy: 'dup-modal-title' });
+    this.modalService.open(this.duplicatesModalTpl, {
+      showCloseIcon: true,
+      width: '960px',
+      maxWidth: '92vw',
+      ariaLabelledBy: 'dup-modal-title'
+    });
   }
 
   // ── Computed flags ──────────────────────────────────────────────────
@@ -440,7 +544,108 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   }
 
   onTypeOfDamageChange(_selected: string[]): void {
-    // formControlName handles value sync; no extra action needed
+    this.syncCbi();
+  }
+
+  // ── CBI: contingent business interruption (BMPCC-18353) ─────────────
+  // Trigger question sits next to Type of damage, not inside a per-cause
+  // event block — CBI is a refinement of the BI damage type itself, not of
+  // any one cause of loss (a fire, a flood, an earthquake can each trigger
+  // BI at a third party). Mirrors syncSpecifyOther()'s shape: validators are
+  // added/cleared here, not declared statically, because "required" depends
+  // on sibling control values (typeOfDamage, cbiApplicable, cbiCaseType).
+
+  get showCbiQuestion(): boolean {
+    // ASSUMPTION [CBI-FNOL-2]: functional design gates this on the
+    // Conclusion Engine finding ≥1 possible CBI case for the policy
+    // (covers/extendedBy). No live AiP/Conclusion Engine exists in this
+    // prototype, so the question is shown whenever Business Interruption is
+    // selected — the full 12-option list is offered rather than a
+    // policy-filtered subset. Recorded, not blocking.
+    return this.selectedDamages.includes('business-interruption');
+  }
+
+  get cbiApplicable(): 'yes' | 'no' | null {
+    return (this.form.get('cbiApplicable')?.value as 'yes' | 'no' | null) ?? null;
+  }
+
+  get showCbiDetails(): boolean {
+    return this.showCbiQuestion && this.cbiApplicable === 'yes';
+  }
+
+  get selectedCbiCaseType(): string | null {
+    return (this.form.get('cbiCaseType')?.value as string | null) ?? null;
+  }
+
+  // 'supplier-*' / 'customer-*' case types are the only ones with an actual
+  // named counterparty — Denial of Access / Loss of Attraction / Port
+  // Blockage / Service Interruption have no third party to name.
+  get showCbiThirdPartyName(): boolean {
+    const key = this.selectedCbiCaseType;
+    return !!key && (key.startsWith('supplier-') || key.startsWith('customer-'));
+  }
+
+  get cbiThirdPartyLabel(): string {
+    return this.selectedCbiCaseType?.startsWith('customer-') ? 'Customer name' : 'Supplier name';
+  }
+
+  onCbiApplicableChange(): void {
+    this.syncCbi();
+  }
+
+  private syncCbi(): void {
+    const applicableCtrl = this.form.get('cbiApplicable');
+    if (applicableCtrl) {
+      if (this.showCbiQuestion) {
+        applicableCtrl.setValidators([Validators.required]);
+      } else {
+        applicableCtrl.clearValidators();
+        applicableCtrl.setValue(null);
+      }
+      applicableCtrl.updateValueAndValidity({ emitEvent: false });
+    }
+
+    const caseTypeCtrl = this.form.get('cbiCaseType');
+    const thirdPartyCtrl = this.form.get('cbiThirdPartyName');
+    const showDetails = this.showCbiQuestion && this.cbiApplicable === 'yes';
+
+    if (caseTypeCtrl) {
+      if (showDetails) {
+        caseTypeCtrl.setValidators([Validators.required]);
+      } else {
+        caseTypeCtrl.clearValidators();
+        caseTypeCtrl.setValue(null);
+      }
+      caseTypeCtrl.updateValueAndValidity({ emitEvent: false });
+    }
+
+    if (thirdPartyCtrl) {
+      if (showDetails && this.showCbiThirdPartyName) {
+        thirdPartyCtrl.setValidators([Validators.required, Validators.maxLength(100)]);
+      } else {
+        thirdPartyCtrl.clearValidators();
+        thirdPartyCtrl.setValue('');
+      }
+      thirdPartyCtrl.updateValueAndValidity({ emitEvent: false });
+    }
+
+    const locationRequired = ['country', 'city', 'zip'];
+    for (const key of locationRequired) {
+      const ctrl = this.cbiLocation.get(key);
+      if (!ctrl) continue;
+      if (showDetails) {
+        ctrl.setValidators([Validators.required]);
+      } else {
+        ctrl.clearValidators();
+        ctrl.setValue(key === 'country' ? null : '');
+      }
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    }
+    if (!showDetails) {
+      ['street', 'houseNumber', 'landRecordNumber', 'state'].forEach(key =>
+        this.cbiLocation.get(key)?.setValue('')
+      );
+    }
   }
 
   // ── Events array ────────────────────────────────────────────────────
@@ -457,9 +662,12 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       );
       if (!exists) this.eventsArray.push(this._createEventGroup(key));
     });
-    const sorted = selected.map(key =>
-      (this.eventsArray.controls as FormGroup[]).find(g => g.get('eventKey')!.value === key)!
-    ).filter(Boolean);
+    const sorted = selected
+      .map(
+        key =>
+          (this.eventsArray.controls as FormGroup[]).find(g => g.get('eventKey')!.value === key)!
+      )
+      .filter(Boolean);
     while (this.eventsArray.length) this.eventsArray.removeAt(0);
     sorted.forEach(g => this.eventsArray.push(g));
   }
@@ -468,12 +676,12 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     const schema: CauseSchema = getCauseSchema(causeKey) ?? {
       causeKey,
       causeLabel: causeKey,
-      ...DEFAULT_CAUSE_SCHEMA,
+      ...DEFAULT_CAUSE_SCHEMA
     };
 
     const controls: Record<string, AbstractControl> = {
       eventKey: new FormControl(causeKey),
-      damages:  new FormControl<string[]>([], [Validators.required]),
+      damages: new FormControl<string[]>([], [Validators.required])
     };
 
     if (schema.causedByOptions && schema.causedByOptions.length > 0) {
@@ -485,7 +693,9 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   // ── Event helpers ───────────────────────────────────────────────────
 
-  eventGroup(i: number): FormGroup { return this.eventsArray.at(i) as FormGroup; }
+  eventGroup(i: number): FormGroup {
+    return this.eventsArray.at(i) as FormGroup;
+  }
 
   // ── Damage checkbox helpers ─────────────────────────────────────────
 
@@ -501,7 +711,11 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   onDamageToggle(eventIdx: number, val: string, checked: boolean): void {
     const ctrl = this.eventGroup(eventIdx).get('damages')!;
     const list = [...((ctrl.value as string[]) ?? [])];
-    checked ? (list.includes(val) ? null : list.push(val)) : list.splice(list.indexOf(val), 1);
+    if (checked) {
+      if (!list.includes(val)) list.push(val);
+    } else {
+      list.splice(list.indexOf(val), 1);
+    }
     ctrl.setValue(list);
   }
 
@@ -515,7 +729,11 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     const ctrl = this.eventGroup(eventIdx).get('causedBy');
     if (!ctrl) return;
     const list = [...((ctrl.value as string[]) ?? [])];
-    checked ? (list.includes(val) ? null : list.push(val)) : list.splice(list.indexOf(val), 1);
+    if (checked) {
+      if (!list.includes(val)) list.push(val);
+    } else {
+      list.splice(list.indexOf(val), 1);
+    }
     ctrl.setValue(list);
   }
 
@@ -527,13 +745,15 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     );
   }
 
-  onCancel(): void { this.router.navigate(['/dashboard']); }
+  onCancel(): void {
+    this.router.navigate(['/dashboard']);
+  }
 
   onNext(): void {
     this.submitAttempted = true;
     this.markAllTouched(this.form);
 
-    const causeValid  = this.selectedCauses.length > 0;
+    const causeValid = this.selectedCauses.length > 0;
     const damageValid = this.selectedDamages.length > 0;
     const eventsValid = this.eventsArray.controls.every(
       c => ((c.get('damages')?.value as string[]) ?? []).length > 0

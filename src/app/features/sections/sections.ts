@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { animate, style, transition, trigger } from '@angular/animations';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,12 +14,12 @@ import { RightStripService } from '../../core/services/right-strip.service';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom, catchError, of } from 'rxjs';
-import { ClaimSection, SectionEntity, InstructionStatus } from '../../core/models/section.model';
+import { ClaimSection, SectionEntity } from '../../core/models/section.model';
 import { MockNotesService } from '../../core/mock/services/mock-notes.service';
 import {
   CoverageReviewModalComponent,
   CoverageReviewModalData,
-  CoverageReviewModalResult,
+  CoverageReviewModalResult
 } from './coverage-review-modal/coverage-review-modal.component';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
@@ -27,28 +27,32 @@ import { ToastService } from '../../shared/components/toast/toast.service';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { BlockerReturnBannerComponent } from '../../shared/components/blocker-return-banner/blocker-return-banner.component';
 import {
   SectionClosureModalComponent,
   SectionClosureModalData,
-  SectionClosureModalResult,
+  SectionClosureModalResult
 } from './section-closure-modal/section-closure-modal.component';
 import {
   EditEntityDamageModalComponent,
   EditEntityDamageModalData,
-  EditEntityDamageModalResult,
+  EditEntityDamageModalResult
 } from './edit-entity-damage-modal/edit-entity-damage-modal.component';
 import { EntityDetailPanelComponent } from './entity-detail-panel/entity-detail-panel.component';
 import { SectionDetailPanelComponent } from './section-detail-panel/section-detail-panel.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
   AddSectionEntityModalComponent,
   AddSectionEntityModalData,
-  AddSectionEntityModalResult,
+  AddSectionEntityModalResult
 } from './add-section-entity-modal/add-section-entity-modal.component';
 import {
   SectionReopenModalComponent,
   SectionReopenModalData,
-  SectionReopenModalResult,
+  SectionReopenModalResult
 } from './section-reopen-modal/section-reopen-modal.component';
 import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
 
@@ -58,15 +62,14 @@ import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
     trigger('rowExpand', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-4px)' }),
-        animate('160ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate('160ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ]),
       transition(':leave', [
-        animate('120ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' })),
-      ]),
-    ]),
+        animate('120ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' }))
+      ])
+    ])
   ],
   imports: [
-    CommonModule,
     NxButtonModule,
     NxIconModule,
     NxContextMenuModule,
@@ -84,34 +87,40 @@ import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
     AddSectionEntityModalComponent,
     DamageTypeLabelPipe,
     NxMessageModule,
+    BlockerReturnBannerComponent
   ],
   templateUrl: './sections.html',
-  styleUrl: './sections.scss',
+  styleUrl: './sections.scss'
 })
 export class Sections {
-  private readonly route      = inject(ActivatedRoute);
-  private readonly router     = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly sectionSvc = inject(MockSectionService);
   private readonly closureSvc = inject(ClaimClosureService);
-  private readonly dialogSvc  = inject(NxDialogService);
-  private readonly toast      = inject(ToastService);
-  private readonly notesSvc   = inject(MockNotesService);
-  private readonly stripSvc   = inject(RightStripService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly notesSvc = inject(MockNotesService);
+  private readonly stripSvc = inject(RightStripService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
-  private readonly live       = inject(LiveAnnouncer);
+  private readonly live = inject(LiveAnnouncer);
 
-  readonly sections       = signal<ClaimSection[]>([]);
-  readonly loading        = signal(true);
-  readonly loadError      = signal(false);
-  readonly selectedEntity  = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
+  readonly sections = signal<ClaimSection[]>([]);
+  readonly loading = signal(true);
+  readonly loadError = signal(false);
+  readonly selectedEntity = signal<{ entity: SectionEntity; section: ClaimSection } | null>(null);
   readonly selectedSection = signal<ClaimSection | null>(null);
-  readonly hasDetailOpen   = computed(() => !!this.selectedEntity() || !!this.selectedSection());
-  readonly claimClosed    = signal(false);
-  readonly policyNumber   = signal('');
+  readonly hasDetailOpen = computed(() => !!this.selectedEntity() || !!this.selectedSection());
+  readonly claimClosed = signal(false);
+  readonly policyNumber = signal('');
   // BMPCC-18160 — read off the claim, not the section (ASSUMPTION [CIRC-4] in
   // core/models/claim-overview.model.ts). Passed down to the section detail
   // panel so it can show the circumstance read-only.
   readonly incidentCircumstance = signal<string | null>(null);
+  // Handed to Add Section so a claim converted from an orphan claim — where
+  // whoever creates the section may not be whoever took the original notice —
+  // has an actual account of what happened to work from, not a blank form.
+  readonly claimDescription = signal<string | null>(null);
+  readonly proximateLossCause = signal<string | null>(null);
 
   readonly devMode = true;
 
@@ -120,7 +129,9 @@ export class Sections {
   // same query-param mechanism sections.ts already uses to hand ?sectionId=
   // to Provider Management). A plain nav-bar visit carries none of these, so
   // this stays null — the banner is tied to the redirect, not to claim state.
-  readonly reviewBanner = signal<{ label: string; oldValue: string; newValue: string }[] | null>(null);
+  readonly reviewBanner = signal<{ label: string; oldValue: string; newValue: string }[] | null>(
+    null
+  );
 
   constructor() {
     const qp = this.route.snapshot.queryParamMap;
@@ -128,11 +139,13 @@ export class Sections {
     if (changedFields.length) {
       const changedOld = qp.getAll('changedOld');
       const changedNew = qp.getAll('changedNew');
-      this.reviewBanner.set(changedFields.map((label, i) => ({
-        label,
-        oldValue: changedOld[i] ?? '–',
-        newValue: changedNew[i] ?? '–',
-      })));
+      this.reviewBanner.set(
+        changedFields.map((label, i) => ({
+          label,
+          oldValue: changedOld[i] ?? '–',
+          newValue: changedNew[i] ?? '–'
+        }))
+      );
       this.live.announce('Review sections — loss information changed', 'polite');
       // Strip the params from the URL so a refresh (or navigating back here
       // later) doesn't resurrect a banner for a change that's already been
@@ -148,12 +161,18 @@ export class Sections {
       try {
         const [sections, claim] = await Promise.all([
           firstValueFrom(this.sectionSvc.getByClaimId(id)),
-          firstValueFrom(this.overviewSvc.getOverview(id)),
+          firstValueFrom(this.overviewSvc.getOverview(id))
         ]);
         this.sections.set(sections);
         this.claimClosed.set(claim.status === 'Closed');
         this.policyNumber.set(claim.policyNumber ?? '');
         this.incidentCircumstance.set(claim.incidentCircumstance ?? null);
+        this.claimDescription.set(claim.description || null);
+        this.proximateLossCause.set(
+          claim.proximateLossCause && claim.proximateLossCause !== '–'
+            ? claim.proximateLossCause
+            : null
+        );
       } catch {
         this.loadError.set(true);
       } finally {
@@ -168,7 +187,7 @@ export class Sections {
 
   toggleSection(id: string): void {
     this.sections.update(list =>
-      list.map(s => s.id === id ? { ...s, expanded: !s.expanded } : s)
+      list.map(s => (s.id === id ? { ...s, expanded: !s.expanded } : s))
     );
   }
 
@@ -205,14 +224,16 @@ export class Sections {
   // "payments" tab) — send the user there instead of a standalone modal.
   // No section-level pre-filter: that page's `sectionId` signal is only ever
   // set internally from loaded data, it doesn't read a query param today.
-  onMakePayment(section: ClaimSection): void {
+  onMakePayment(_section: ClaimSection): void {
     const claimId = this.route.snapshot.params['id'];
     this.router.navigate(['/claims', claimId, 'financial'], { queryParams: { view: 'payments' } });
   }
 
   onInstructProvider(section: ClaimSection): void {
     const claimId = this.route.snapshot.params['id'];
-    this.router.navigate(['/claims', claimId, 'providers'], { queryParams: { sectionId: section.id } });
+    this.router.navigate(['/claims', claimId, 'providers'], {
+      queryParams: { sectionId: section.id }
+    });
   }
 
   async onCloseSection(section: ClaimSection): Promise<void> {
@@ -221,13 +242,15 @@ export class Sections {
     const ref = this.dialogSvc.open(SectionClosureModalComponent, {
       data: { section, blockers, canClose } satisfies SectionClosureModalData,
       width: '600px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
 
-    const result = await firstValueFrom(ref.afterClosed()) as SectionClosureModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | SectionClosureModalResult
+      | undefined;
     if (!result) return;
 
-    const updated = this.sections().map(s => s.id === section.id ? result : s);
+    const updated = this.sections().map(s => (s.id === section.id ? result : s));
     this.sections.set(updated);
 
     const allClosed = updated.every(s => s.status === 'Closed');
@@ -241,14 +264,18 @@ export class Sections {
     const claimId = this.route.snapshot.params['id'];
     const ref = this.dialogSvc.open(AddSectionEntityModalComponent, {
       data: {
-        sections:     this.sections(),
+        sections: this.sections(),
         claimId,
         policyNumber: this.policyNumber(),
+        reportedCause: this.proximateLossCause(),
+        reportedDescription: this.claimDescription()
       } satisfies AddSectionEntityModalData,
       width: '480px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as AddSectionEntityModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | AddSectionEntityModalResult
+      | undefined;
     if (!result) return;
 
     const count = result.entityNames.length;
@@ -261,13 +288,17 @@ export class Sections {
           result.entityNames.map(name => ({
             name,
             instructionStatus: result.instructionStatus,
+            dateOfOccurrence: result.dateOfOccurrence,
             interruptionStartDate: result.interruptionStartDate,
-            interruptionEndDate:   result.interruptionEndDate,
-          })),
-        ),
+            interruptionEndDate: result.interruptionEndDate
+          }))
+        )
       );
       this.sections.update(list => [...list, created]);
-      this.toast.success(`Section "${created.name}" created`, `${count} entit${count === 1 ? 'y' : 'ies'} added`);
+      this.toast.success(
+        `Section "${created.name}" created`,
+        `${count} entit${count === 1 ? 'y' : 'ies'} added`
+      );
       return;
     }
 
@@ -276,12 +307,15 @@ export class Sections {
     // references, so appending again here would double the entity. Just
     // refresh the outer array reference to re-render.
     for (const name of result.entityNames) {
-      await firstValueFrom(this.sectionSvc.addEntity(result.sectionId, {
-        name,
-        instructionStatus: result.instructionStatus,
-        interruptionStartDate: result.interruptionStartDate,
-        interruptionEndDate:   result.interruptionEndDate,
-      }));
+      await firstValueFrom(
+        this.sectionSvc.addEntity(result.sectionId, {
+          name,
+          instructionStatus: result.instructionStatus,
+          dateOfOccurrence: result.dateOfOccurrence,
+          interruptionStartDate: result.interruptionStartDate,
+          interruptionEndDate: result.interruptionEndDate
+        })
+      );
     }
     this.sections.update(list => [...list]);
     this.toast.success(`${count} entit${count === 1 ? 'y' : 'ies'} added`);
@@ -289,9 +323,17 @@ export class Sections {
 
   toggleEntityExpand(section: ClaimSection, entityId: string): void {
     this.sections.update(list =>
-      list.map(s => s.id === section.id
-        ? { ...s, entities: s.entities.map(e => e.id === entityId ? { ...e, expanded: !(e as SectionEntity & { expanded?: boolean }).expanded } : e) }
-        : s
+      list.map(s =>
+        s.id === section.id
+          ? {
+              ...s,
+              entities: s.entities.map(e =>
+                e.id === entityId
+                  ? { ...e, expanded: !(e as SectionEntity & { expanded?: boolean }).expanded }
+                  : e
+              )
+            }
+          : s
       )
     );
   }
@@ -310,16 +352,22 @@ export class Sections {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
       data: { entity } satisfies EditEntityDamageModalData,
       width: '480px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as EditEntityDamageModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | EditEntityDamageModalResult
+      | undefined;
     if (!result) return;
 
     await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
     this.sections.update(list =>
-      list.map(s => s.id === section.id
-        ? { ...s, entities: s.entities.map(e => e.id === entity.id ? { ...e, ...result } : e) }
-        : s
+      list.map(s =>
+        s.id === section.id
+          ? {
+              ...s,
+              entities: s.entities.map(e => (e.id === entity.id ? { ...e, ...result } : e))
+            }
+          : s
       )
     );
     this.toast.success(`Entity "${entity.name}" updated`);
@@ -333,7 +381,7 @@ export class Sections {
     if (blockers.length) {
       this.toast.error(
         `Can't remove "${entity.name}"`,
-        `${section.name} has ${blockers.join(', ')} — resolve that first.`,
+        `${section.name} has ${blockers.join(', ')} — resolve that first.`
       );
       return;
     }
@@ -343,16 +391,19 @@ export class Sections {
         title: 'Delete entity',
         message: `Remove "${entity.name}" from ${section.name}? This cannot be undone.`,
         confirmLabel: 'Delete',
-        confirmDanger: true,
+        confirmDanger: true
       } satisfies ConfirmDialogData,
       width: '400px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+    const confirmed = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
     if (!confirmed) return;
 
     const result = await firstValueFrom(
-      this.sectionSvc.deleteEntity(section.id, entity.id, { userId: 'usr-lf', name: 'Leonie Fischer' }),
+      this.sectionSvc.deleteEntity(section.id, entity.id, {
+        userId: 'usr-lf',
+        name: 'Leonie Fischer'
+      })
     );
     if (!result.ok) {
       this.toast.error(`Can't remove "${entity.name}"`, result.blockers.join(', '));
@@ -360,9 +411,8 @@ export class Sections {
     }
 
     this.sections.update(list =>
-      list.map(s => s.id === section.id
-        ? { ...s, entities: s.entities.filter(e => e.id !== entity.id) }
-        : s
+      list.map(s =>
+        s.id === section.id ? { ...s, entities: s.entities.filter(e => e.id !== entity.id) } : s
       )
     );
     this.toast.success(`Entity "${entity.name}" removed`);
@@ -372,18 +422,24 @@ export class Sections {
     const ref = this.dialogSvc.open(CoverageReviewModalComponent, {
       data: { entity } satisfies CoverageReviewModalData,
       width: '480px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as CoverageReviewModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | CoverageReviewModalResult
+      | undefined;
     if (!result) return;
 
     const claimId = this.route.snapshot.params['id'];
 
     await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
     this.sections.update(list =>
-      list.map(s => s.id === section.id
-        ? { ...s, entities: s.entities.map(e => e.id === entity.id ? { ...e, ...result } : e) }
-        : s
+      list.map(s =>
+        s.id === section.id
+          ? {
+              ...s,
+              entities: s.entities.map(e => (e.id === entity.id ? { ...e, ...result } : e))
+            }
+          : s
       )
     );
 
@@ -392,7 +448,7 @@ export class Sections {
     await firstValueFrom(
       this.notesSvc.addNote(claimId, {
         category: 'general',
-        body:     `Coverage review override — ${entity.name}. Changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`,
+        body: `Coverage review override — ${entity.name}. Changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`
       })
     );
 
@@ -403,16 +459,18 @@ export class Sections {
     const ref = this.dialogSvc.open(SectionReopenModalComponent, {
       data: {
         section,
-        reopenedByName: 'Leonie Fischer',
+        reopenedByName: 'Leonie Fischer'
       } satisfies SectionReopenModalData,
       width: '480px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as SectionReopenModalResult | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | SectionReopenModalResult
+      | undefined;
     if (!result) return;
 
     this.sections.update(list =>
-      list.map(s => s.id === section.id ? { ...s, ...result.reopenedSection } : s)
+      list.map(s => (s.id === section.id ? { ...s, ...result.reopenedSection } : s))
     );
     this.toast.success(`Section "${result.reopenedSection.name}" reopened`);
   }
@@ -423,15 +481,16 @@ export class Sections {
       const closed = await firstValueFrom(
         this.closureSvc.triggerFinalPaymentAndClose(claimId, section.id).pipe(
           catchError(err => {
-            this.toast.error('Simulate Final Payment failed', err?.message ?? 'Check section blockers.');
+            this.toast.error(
+              'Simulate Final Payment failed',
+              err?.message ?? 'Check section blockers.'
+            );
             return of(null);
-          }),
-        ),
+          })
+        )
       );
       if (!closed) return;
-      this.sections.update(list =>
-        list.map(s => s.id === closed.id ? { ...s, ...closed } : s),
-      );
+      this.sections.update(list => list.map(s => (s.id === closed.id ? { ...s, ...closed } : s)));
     } catch (err: unknown) {
       this.toast.error('Simulate Final Payment failed', String(err));
     }

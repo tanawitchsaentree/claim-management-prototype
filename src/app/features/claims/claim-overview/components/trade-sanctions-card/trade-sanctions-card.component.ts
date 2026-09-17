@@ -1,0 +1,251 @@
+import { Component, EventEmitter, Input, OnChanges, Output, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
+import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
+import { NxInputModule } from '@allianz/ng-aquila/input';
+import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
+import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
+import { firstValueFrom } from 'rxjs';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogChange,
+  ConfirmDialogData
+} from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ToastService } from '../../../../../shared/components/toast/toast.service';
+import {
+  ClaimOverview,
+  ClaimActivity,
+  TradeSanctionsCheck
+} from '../../../../../core/models/claim-overview.model';
+
+export interface TradeSanctionsUpdated {
+  claim: ClaimOverview;
+  activity: ClaimActivity;
+}
+
+/**
+ * Trade Sanctions Check — BMPCC-18822/BMPCC-17242. Capture-and-audit only:
+ * a claim handler records that a screening was determined/performed and its
+ * outcome. This never calls ESRA and never blocks claim progression.
+ *
+ * The Yes/No trigger sits directly on the card surface, not behind a
+ * pencil-edit link — Recovery potential (this file's sibling card) tried the
+ * hidden-behind-a-link shape first and the Recoveries call rejected it:
+ * "nobody was answering, because a question hidden one click behind a link
+ * labelled 'Set' reads as optional." Same reasoning applies here.
+ *
+ * Save opens a confirm dialog with a before/after diff, same as every other
+ * save-affecting-record action on this page — never save-and-done, never a
+ * bare "are you sure?".
+ */
+@Component({
+  selector: 'app-trade-sanctions-card',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    NxRadioModule,
+    NxButtonModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxDatefieldModule,
+    NxModalModule
+  ],
+  templateUrl: './trade-sanctions-card.component.html',
+  styleUrl: './trade-sanctions-card.component.scss'
+})
+export class TradeSanctionsCardComponent implements OnChanges {
+  @Input({ required: true }) claim!: ClaimOverview;
+  @Output() updated = new EventEmitter<TradeSanctionsUpdated>();
+
+  private readonly toast = inject(ToastService);
+  private readonly dialogSvc = inject(NxDialogService);
+
+  readonly exposure = new FormControl<'yes' | 'no' | null>(null);
+  readonly referralApplicable = new FormControl<'yes' | 'no' | null>(null);
+  readonly esraCompletionDate = new FormControl<string | null>(null);
+  readonly referralApproved = new FormControl<'yes' | 'no' | null>(null);
+  readonly esraId = new FormControl<string>('');
+  readonly comments = new FormControl<string>('');
+
+  private readonly claimSig = signal<ClaimOverview | null>(null);
+  private readonly exposureSig = toSignal(this.exposure.valueChanges, {
+    initialValue: this.exposure.value
+  });
+  private readonly referralApplicableSig = toSignal(this.referralApplicable.valueChanges, {
+    initialValue: this.referralApplicable.value
+  });
+  private readonly esraCompletionDateSig = toSignal(this.esraCompletionDate.valueChanges, {
+    initialValue: this.esraCompletionDate.value
+  });
+  private readonly referralApprovedSig = toSignal(this.referralApproved.valueChanges, {
+    initialValue: this.referralApproved.value
+  });
+  private readonly esraIdSig = toSignal(this.esraId.valueChanges, {
+    initialValue: this.esraId.value
+  });
+  private readonly commentsSig = toSignal(this.comments.valueChanges, {
+    initialValue: this.comments.value
+  });
+
+  readonly isClosed = computed(() => this.claimSig()?.status === 'Closed');
+  readonly saved = computed<TradeSanctionsCheck | null>(() => this.claimSig()?.tradeSanctions ?? null);
+
+  readonly showExpanded = computed(() => this.exposureSig() === 'yes');
+
+  // Open Point #5 (functional design) — "Sanction referral approved in
+  // ESRA?" stayed editable even when applicable = No in the reviewed Figma
+  // draft, a contradictory combination. Disabling it here instead of
+  // leaving it live is the resolution this build takes.
+  readonly referralApprovedDisabled = computed(() => this.referralApplicableSig() !== 'yes');
+
+  readonly canSave = computed(() => {
+    if (this.isClosed()) return false;
+    const exposure = this.exposureSig();
+    if (!exposure) return false;
+    const saved = this.saved();
+    if (exposure === 'no') {
+      return (saved?.exposure ?? 'no') !== 'no';
+    }
+    // exposure === 'yes'
+    return (
+      saved?.exposure !== 'yes' ||
+      this.boolToYesNo(saved.referralApplicable) !== this.referralApplicableSig() ||
+      (saved.esraCompletionDate ?? null) !== this.esraCompletionDateSig() ||
+      this.boolToYesNo(saved.referralApproved) !== this.referralApprovedSig() ||
+      (saved.esraId ?? '') !== (this.esraIdSig() ?? '') ||
+      (saved.comments ?? '') !== (this.commentsSig() ?? '')
+    );
+  });
+
+  ngOnChanges(): void {
+    this.claimSig.set(this.claim);
+    const ts = this.claim.tradeSanctions ?? null;
+    this.exposure.setValue(ts?.exposure ?? null, { emitEvent: false });
+    this.referralApplicable.setValue(this.boolToYesNo(ts?.referralApplicable), {
+      emitEvent: false
+    });
+    this.esraCompletionDate.setValue(ts?.esraCompletionDate ?? null, { emitEvent: false });
+    this.referralApproved.setValue(this.boolToYesNo(ts?.referralApproved), { emitEvent: false });
+    this.esraId.setValue(ts?.esraId ?? '', { emitEvent: false });
+    this.comments.setValue(ts?.comments ?? '', { emitEvent: false });
+  }
+
+  async onSave(): Promise<void> {
+    const exposure = this.exposureSig();
+    if (!exposure || this.isClosed()) return;
+
+    const next: TradeSanctionsCheck =
+      exposure === 'no'
+        ? { exposure: 'no' }
+        : {
+            exposure: 'yes',
+            referralApplicable: this.referralApplicableSig() === 'yes',
+            esraCompletionDate: this.esraCompletionDateSig() ?? undefined,
+            referralApproved: this.referralApplicableSig() === 'yes'
+              ? this.referralApprovedSig() === 'yes'
+              : undefined,
+            esraId: this.esraIdSig() || undefined,
+            comments: this.commentsSig() || undefined
+          };
+
+    const data: ConfirmDialogData = {
+      title: 'Save trade sanctions check',
+      message: `Trade sanctions exposure will be recorded on ${this.claim.claimId}.`,
+      changes: this.confirmChanges(next),
+      confirmLabel: 'Save answer',
+      cancelLabel: 'Back'
+    };
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '520px',
+      maxWidth: '92vw'
+    });
+    if ((await firstValueFrom(ref.afterClosed())) !== true) return;
+
+    this.commit(next);
+  }
+
+  onReset(): void {
+    this.ngOnChanges();
+  }
+
+  private confirmChanges(next: TradeSanctionsCheck): ConfirmDialogChange[] {
+    const rows: ConfirmDialogChange[] = [];
+    const saved = this.saved();
+    const savedExposure = saved?.exposure ?? 'Not answered';
+    if (next.exposure !== (saved?.exposure ?? null)) {
+      rows.push({
+        label: 'Exposure to trade sanctions',
+        original: this.answerLabel(savedExposure),
+        updated: this.answerLabel(next.exposure)
+      });
+    }
+    if (next.exposure === 'yes') {
+      if (this.boolToYesNo(saved?.referralApplicable) !== this.boolToYesNo(next.referralApplicable)) {
+        rows.push({
+          label: 'Sanction referral applicable',
+          original: this.answerLabel(this.boolToYesNo(saved?.referralApplicable) ?? 'Not answered'),
+          updated: this.answerLabel(this.boolToYesNo(next.referralApplicable) ?? 'Not answered')
+        });
+      }
+      if ((saved?.esraCompletionDate ?? '') !== (next.esraCompletionDate ?? '')) {
+        rows.push({
+          label: 'Date of completion of ESRA',
+          original: saved?.esraCompletionDate ?? '—',
+          updated: next.esraCompletionDate ?? '—'
+        });
+      }
+      if (this.boolToYesNo(saved?.referralApproved) !== this.boolToYesNo(next.referralApproved)) {
+        rows.push({
+          label: 'Sanction referral approved in ESRA',
+          original: this.answerLabel(this.boolToYesNo(saved?.referralApproved) ?? 'Not answered'),
+          updated: this.answerLabel(this.boolToYesNo(next.referralApproved) ?? 'Not answered')
+        });
+      }
+      if ((saved?.esraId ?? '') !== (next.esraId ?? '')) {
+        rows.push({ label: 'ESRA ID', original: saved?.esraId ?? '—', updated: next.esraId ?? '—' });
+      }
+      if ((saved?.comments ?? '') !== (next.comments ?? '')) {
+        rows.push({
+          label: 'Additional comments',
+          original: saved?.comments ?? '—',
+          updated: next.comments ?? '—'
+        });
+      }
+    }
+    return rows;
+  }
+
+  private answerLabel(value: 'yes' | 'no' | string): string {
+    return value === 'yes' ? 'Yes' : value === 'no' ? 'No' : value;
+  }
+
+  private boolToYesNo(value: boolean | undefined): 'yes' | 'no' | null {
+    if (value === undefined) return null;
+    return value ? 'yes' : 'no';
+  }
+
+  private commit(next: TradeSanctionsCheck): void {
+    const claim = this.claim;
+    const previous = this.saved()?.exposure ?? 'Not answered';
+
+    const activity: ClaimActivity = {
+      id: `act-${Date.now()}`,
+      claimId: claim.claimId,
+      user: claim.assignedHandler,
+      timestamp: new Date().toISOString(),
+      objectType: 'Claim',
+      attribute: 'Trade sanctions check',
+      valueOld: previous,
+      valueNew: next.exposure
+    };
+
+    this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });
+    this.toast.success(
+      'Trade sanctions check saved',
+      next.exposure === 'yes' ? 'Recorded with exposure.' : 'Recorded — no exposure.'
+    );
+  }
+}

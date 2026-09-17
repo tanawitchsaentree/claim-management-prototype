@@ -1,244 +1,426 @@
-<ng-container *ngIf="vm$ | async as vm">
-<div class="step-page" [formGroup]="form">
-
-  <p class="step-breadcrumb">Claim notification</p>
-  <h1 class="step-title">Loss information</h1>
-
-  <!-- Global error summary — appears only after Next clicked -->
-  @if (submitAttempted && formErrors.length > 0) {
-    <nx-message context="error" class="form-errors-summary">
-      <strong>{{ formErrors.length }} issue{{ formErrors.length === 1 ? '' : 's' }} need attention before continuing</strong>
-      <ul class="form-errors-list">
-        @for (err of formErrors; track err.fieldId) {
-          <li>
-            <span class="form-errors-link" (click)="scrollToField(err.fieldId)" (keydown.enter)="scrollToField(err.fieldId)" tabindex="0" role="link">
-              {{ err.message }}
-            </span>
-          </li>
+@if (vm$ | async; as vm) {
+  <div class="step-page" [formGroup]="form">
+    <p class="step-breadcrumb">Claim notification</p>
+    <h1 class="step-title">Loss information</h1>
+    <!-- Global error summary — appears only after Next clicked -->
+    @if (submitAttempted && formErrors.length > 0) {
+      <nx-message context="error" class="form-errors-summary">
+        <strong
+          >{{ formErrors.length }} issue{{ formErrors.length === 1 ? '' : 's' }} need attention
+          before continuing</strong
+        >
+        <ul class="form-errors-list">
+          @for (err of formErrors; track err.fieldId) {
+            <li>
+              <span
+                class="form-errors-link"
+                (click)="scrollToField(err.fieldId)"
+                (keydown.enter)="scrollToField(err.fieldId)"
+                tabindex="0"
+                role="link"
+              >
+                {{ err.message }}
+              </span>
+            </li>
+          }
+        </ul>
+      </nx-message>
+    }
+    <!-- Duplicate check loading indicator -->
+    @if (duplicateCheckLoading$ | async) {
+      <div class="duplicate-loading">
+        <nx-spinner size="small"></nx-spinner>
+        <span class="duplicate-loading__label">Checking for duplicate claims…</span>
+      </div>
+    }
+    <!-- Duplicate banner — appears when cause + date match -->
+    @if (vm.showDuplicateBanner) {
+      <nx-message
+        context="warning"
+        [closable]="true"
+        (close)="dismissDuplicateBanner()"
+        class="duplicate-banner"
+        data-tour-id="li-duplicate-banner"
+      >
+        <strong>
+          {{ vm.duplicates.length }}
+          {{ vm.duplicates.length === 1 ? 'existing claim was' : 'existing claims were' }}
+          found with the same policy, date, and cause of loss
+        </strong>
+        <ul class="duplicate-preview-list">
+          @for (d of vm.duplicates.slice(0, 3); track d.claimId) {
+            <li>
+              <a
+                [routerLink]="['/claims', d.claimId]"
+                target="_blank"
+                rel="noopener"
+                class="duplicate-banner__link"
+                >{{ d.claimId }}</a
+              >
+              &bull; {{ d.lossDate | date: 'dd-MM-yyyy' }} &bull; {{ d.clientName }} &bull;
+              {{ d.status }}
+            </li>
+          }
+        </ul>
+        @if (vm.duplicates.length > 3) {
+          <button
+            nxButton="secondary small"
+            type="button"
+            (click)="openDuplicatesModal(vm.duplicates)"
+          >
+            Show all {{ vm.duplicates.length }} duplicates
+          </button>
         }
-      </ul>
-    </nx-message>
-  }
-
-  <!-- Duplicate check loading indicator -->
-  @if (duplicateCheckLoading$ | async) {
-    <div class="duplicate-loading">
-      <nx-spinner size="small"></nx-spinner>
-      <span class="duplicate-loading__label">Checking for duplicate claims…</span>
-    </div>
-  }
-
-  <!-- Duplicate banner — appears when cause + date match -->
-  @if (vm.showDuplicateBanner) {
-    <nx-message context="warning" [closable]="true" (close)="dismissDuplicateBanner()" class="duplicate-banner">
-      <strong>
-        {{ vm.duplicates.length }}
-        {{ vm.duplicates.length === 1 ? 'existing claim was' : 'existing claims were' }}
-        found with the same policy, date, and cause of loss
-      </strong>
-      <ul class="duplicate-preview-list">
-        @for (d of vm.duplicates.slice(0, 3); track d.claimId) {
-          <li>
-            <a [routerLink]="['/claims', d.claimId]" target="_blank" rel="noopener" class="duplicate-banner__link">{{ d.claimId }}</a>
-            &bull; {{ d.lossDate | date:'dd-MM-yyyy' }} &bull; {{ d.clientName }} &bull; {{ d.status }}
-          </li>
+      </nx-message>
+    }
+    <!-- Card 1: General information -->
+    <section class="li-card">
+      <h2 class="section-heading">General information</h2>
+      <p class="section-desc">
+        Your selections here determine which cause-specific fields appear below.
+      </p>
+      <div class="two-col-grid">
+        <div data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
+          <nx-formfield label="Cause of loss">
+            <nx-multi-select
+              [options]="vm.causeOfLoss"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select cause of loss"
+              formControlName="causeOfLoss"
+              (selectionChange)="onCauseOfLossChange($event)"
+            ></nx-multi-select>
+            @if (submitAttempted && selectedCauses.length === 0) {
+              <nx-error nxFormfieldError> Select at least one cause of loss </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div data-field="typeOfDamage">
+          <nx-formfield label="Type of damage">
+            <nx-multi-select
+              [options]="vm.typeOfDamage"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select type of damage"
+              formControlName="typeOfDamage"
+              (selectionChange)="onTypeOfDamageChange($event)"
+            ></nx-multi-select>
+            @if (submitAttempted && selectedDamages.length === 0) {
+              <nx-error nxFormfieldError> Select at least one type of damage </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance
+        per claim. Sits in the same grid so it lands directly under the
+        Cause of loss it is filtered by. Options come from
+        circumstanceOptionsFor() and narrow as soon as a peril is confirmed;
+        with no cause yet, or "Other event", the full catalogue plus
+        "Unknown" is offered. -->
+        <div data-field="circumstance">
+          <nx-formfield label="Incident circumstance">
+            <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+              @for (option of circumstanceOptions; track option.value) {
+                <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+            <nx-hint nxFormfieldHint>
+              @if (selectedCauses.length) {
+                Narrowed to the cause of loss selected.
+              } @else {
+                Select a cause of loss to narrow this list.
+              }
+            </nx-hint>
+          </nx-formfield>
+        </div>
+        <!-- Free-text qualifier, shown only while Cause of loss includes "Other
+        Event". Sits in the same grid so it lands directly under the select
+        it qualifies instead of in a separate row below. There is no damage
+        equivalent — typeOfDamage has no "Other" option by design, see
+        OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
+        @if (showSpecifyOtherCause) {
+          <div data-field="specifyOtherCauseOfLoss">
+            <nx-formfield label="Specify other cause of loss">
+              <input
+                nxInput
+                formControlName="specifyOtherCauseOfLoss"
+                maxlength="100"
+                data-testid="specify-other-cause-of-loss-input"
+              />
+              @if (showError(form.get('specifyOtherCauseOfLoss')!)) {
+                <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
+              }
+            </nx-formfield>
+          </div>
         }
-      </ul>
-      @if (vm.duplicates.length > 3) {
-        <button nxButton="secondary small" type="button" (click)="openDuplicatesModal(vm.duplicates)">
-          Show all {{ vm.duplicates.length }} duplicates
-        </button>
+      </div>
+
+      <!-- CBI (contingent business interruption) trigger — BMPCC-18353. Sits
+      directly below the General information grid (not inside a per-cause
+      event block in Events details): CBI is a refinement of the Business
+      Interruption damage type itself, not of any one cause of loss. -->
+      @if (showCbiQuestion) {
+        <div class="radio-field" data-field="cbiApplicable">
+          <p class="radio-label">
+            Is this Business Interruption due to Contingent Business Interruption (CBI)?
+          </p>
+          <nx-radio-group
+            class="radio-row"
+            formControlName="cbiApplicable"
+            (valueChange)="onCbiApplicableChange()"
+          >
+            <nx-radio labelSize="small" value="yes">Yes</nx-radio>
+            <nx-radio labelSize="small" value="no">No</nx-radio>
+          </nx-radio-group>
+          @if (submitAttempted && !cbiApplicable) {
+            <p class="field-error">Answer required</p>
+          }
+        </div>
       }
-    </nx-message>
-  }
 
-  <!-- Card 1: General information -->
-  <section class="li-card">
-    <h2 class="section-heading">General information</h2>
-    <p class="section-desc">Your selections here determine which cause-specific fields appear below.</p>
+      @if (showCbiDetails) {
+        <hr class="li-divider" />
+        <h3 class="sub-heading li-sub-heading">Contingent business interruption details</h3>
+        <div class="two-col-grid">
+          <div data-field="cbiCaseType">
+            <nx-formfield label="CBI case type">
+              <nx-dropdown formControlName="cbiCaseType" placeholder="Select case type">
+                @for (opt of cbiCaseTypeOptions; track opt.value) {
+                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+              @if (submitAttempted && !selectedCbiCaseType) {
+                <nx-error nxFormfieldError>Select a case type</nx-error>
+              }
+            </nx-formfield>
+          </div>
+          @if (showCbiThirdPartyName) {
+            <div data-field="cbiThirdPartyName">
+              <nx-formfield [label]="cbiThirdPartyLabel">
+                <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
+                @if (submitAttempted && !form.get('cbiThirdPartyName')?.value) {
+                  <nx-error nxFormfieldError>Required</nx-error>
+                }
+              </nx-formfield>
+            </div>
+          }
+        </div>
 
-    <div class="two-col-grid">
-      <div data-field="causeOfLoss">
-        <nx-formfield label="Cause of loss">
-          <nx-multi-select [options]="vm.causeOfLoss" selectValue="value" selectLabel="label"
-            placeholder="Select cause of loss" formControlName="causeOfLoss"
-            (selectionChange)="onCauseOfLossChange($event)"></nx-multi-select>
-          <nx-error nxFormfieldError *ngIf="submitAttempted && selectedCauses.length === 0">
-            Select at least one cause of loss
-          </nx-error>
-        </nx-formfield>
-      </div>
-      <div data-field="typeOfDamage">
-        <nx-formfield label="Type of damage">
-          <nx-multi-select [options]="vm.typeOfDamage" selectValue="value" selectLabel="label"
-            placeholder="Select type of damage" formControlName="typeOfDamage"
-            (selectionChange)="onTypeOfDamageChange($event)"></nx-multi-select>
-          <nx-error nxFormfieldError *ngIf="submitAttempted && selectedDamages.length === 0">
-            Select at least one type of damage
-          </nx-error>
-        </nx-formfield>
-      </div>
-      <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance
-           per claim. Sits in the same grid so it lands directly under the
-           Cause of loss it is filtered by. Options come from
-           circumstanceOptionsFor() and narrow as soon as a peril is confirmed;
-           with no cause yet, or "Other event", the full catalogue plus
-           "Unknown" is offered. -->
-      <div data-field="circumstance">
-        <nx-formfield label="Incident circumstance">
-          <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
-            @for (option of circumstanceOptions; track option.value) {
-              <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-          <nx-hint nxFormfieldHint>
-            @if (selectedCauses.length) {
-              Narrowed to the cause of loss selected.
-            } @else {
-              Select a cause of loss to narrow this list.
-            }
-          </nx-hint>
-        </nx-formfield>
-      </div>
-      <!-- Free-text qualifier, shown only while Cause of loss includes "Other
-           Event". Sits in the same grid so it lands directly under the select
-           it qualifies instead of in a separate row below. There is no damage
-           equivalent — typeOfDamage has no "Other" option by design, see
-           OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
-      @if (showSpecifyOtherCause) {
-        <div data-field="specifyOtherCauseOfLoss">
-          <nx-formfield label="Specify other cause of loss">
-            <input nxInput formControlName="specifyOtherCauseOfLoss" maxlength="100"
-              data-testid="specify-other-cause-of-loss-input" />
-            <nx-error nxFormfieldError *ngIf="showError(form.get('specifyOtherCauseOfLoss')!)">
-              Describe the cause of loss
-            </nx-error>
+        <!-- Originating Loss Location — where the CBI-triggering event
+        happened at the third party's premises, not the insured's own loss
+        location. Manual entry only in baseline (no CWB/GIS lookup). -->
+        <p class="field-label">Originating loss location</p>
+        <div class="two-col-grid" [formGroup]="cbiLocation">
+          <div data-field="cbiLocationCountry">
+            <nx-formfield label="Country">
+              <nx-dropdown formControlName="country" placeholder="Select country">
+                @for (opt of vm.countries; track opt.value) {
+                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+              @if (submitAttempted && !cbiLocation.get('country')?.value) {
+                <nx-error nxFormfieldError>Required</nx-error>
+              }
+            </nx-formfield>
+          </div>
+          <div data-field="cbiLocationCity">
+            <nx-formfield label="City">
+              <input nxInput formControlName="city" />
+              @if (submitAttempted && !cbiLocation.get('city')?.value) {
+                <nx-error nxFormfieldError>Required</nx-error>
+              }
+            </nx-formfield>
+          </div>
+          <div data-field="cbiLocationZip">
+            <nx-formfield label="ZIP">
+              <input nxInput formControlName="zip" />
+              @if (submitAttempted && !cbiLocation.get('zip')?.value) {
+                <nx-error nxFormfieldError>Required</nx-error>
+              }
+            </nx-formfield>
+          </div>
+          <nx-formfield label="Street (optional)">
+            <input nxInput formControlName="street" />
+          </nx-formfield>
+          <nx-formfield label="House number (optional)">
+            <input nxInput formControlName="houseNumber" />
+          </nx-formfield>
+          <nx-formfield label="Land record number (optional)">
+            <input nxInput formControlName="landRecordNumber" />
+          </nx-formfield>
+          <nx-formfield label="State (optional)">
+            <input nxInput formControlName="state" />
           </nx-formfield>
         </div>
       }
-    </div>
-
-    <hr class="li-divider" />
-    <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
-
-    <div class="two-col-grid" [formGroup]="dateOfLoss">
-      <div data-field="dateOfOccurrence">
-        <nx-formfield label="Date of occurrence">
-          <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="occurrencePicker" />
-          <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
-          <nx-datepicker #occurrencePicker></nx-datepicker>
-          <nx-hint nxFormfieldHint>DD-MM-YYYY — used to check for duplicate claims</nx-hint>
-          <nx-error nxFormfieldError *ngIf="showError(dateOfLoss.get('dateOfOccurrence')!) && dateOfLoss.get('dateOfOccurrence')?.errors?.['required']">
-            Date of occurrence is required
-          </nx-error>
-          <nx-error nxFormfieldError *ngIf="dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']">
-            Date can't be in the future
-          </nx-error>
-        </nx-formfield>
-      </div>
-      <div data-field="timeOfOccurrence">
-        <nx-timefield label="Time of occurrence" formControlName="timeOfOccurrence"></nx-timefield>
-        <p class="field-error" *ngIf="showError(dateOfLoss.get('timeOfOccurrence')!) && dateOfLoss.get('timeOfOccurrence')?.errors?.['required']">
-          Time of occurrence is required
-        </p>
-      </div>
-      <div data-field="dateOfNotification">
-        <nx-formfield label="Date of notification">
-          <input nxDatefield nxInput formControlName="dateOfNotification" [datepicker]="notificationPicker" />
-          <nx-datepicker-toggle nxFormfieldSuffix [for]="notificationPicker"></nx-datepicker-toggle>
-          <nx-datepicker #notificationPicker></nx-datepicker>
-          <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
-          <nx-error nxFormfieldError *ngIf="showError(dateOfLoss.get('dateOfNotification')!) && dateOfLoss.get('dateOfNotification')?.errors?.['required']">
-            Date of notification is required
-          </nx-error>
-          <nx-error nxFormfieldError *ngIf="dateOfLoss.get('dateOfNotification')?.errors?.['futureDate']">
-            Date can't be in the future
-          </nx-error>
-        </nx-formfield>
-      </div>
-      <div data-field="timeOfNotification">
-        <nx-timefield label="Time of notification" formControlName="timeOfNotification"></nx-timefield>
-        <p class="field-error" *ngIf="showError(dateOfLoss.get('timeOfNotification')!) && dateOfLoss.get('timeOfNotification')?.errors?.['required']">
-          Time of notification is required
-        </p>
-      </div>
-    </div>
-    <nx-error class="group-error" *ngIf="showGroupError(dateOfLoss, 'dateOrder')">
-      Notification date must be on or after date of occurrence.
-    </nx-error>
-
-    <hr class="li-divider" />
-
-    <nx-formfield label="Loss description (optional)" class="full-width">
-      <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
-      <nx-hint nxFormfieldHint>{{ descLength }}/{{ maxDesc }}</nx-hint>
-    </nx-formfield>
-
-  </section>
-
-  <!-- Card 2: Locations of loss -->
-  <section class="li-card">
-    <h2 class="section-heading">Locations of loss</h2>
-    <app-location-picker
-      [policyNumber]="policyNumber"
-      [value]="lossLocation.value"
-      [showEditLaterHint]="true"
-      (locationChange)="onLocationChange($event)"
-    ></app-location-picker>
-  </section>
-
-  <!-- Card 3: Events Details -->
-  <section class="li-card">
-    <h2 class="section-heading">Events details</h2>
-    <p class="section-desc">The fields below are dynamically shown based on selection in section above.</p>
-    @if (eventsArray.length === 0) {
-      <p class="section-empty">Select Cause of loss to see event details.</p>
-    }
-    @for (ctrl of eventsArray.controls; track trackByEventKey($index, ctrl); let i = $index) {
-      <div class="event-block" [class.event-block--divider]="i > 0" [attr.data-field]="'damages-' + i">
-        <h3 class="sub-heading">{{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}</h3>
-        @if (getCausedByOptions(eventGroup(i).get('eventKey')!.value); as causedByOpts) {
-          <div class="field-group">
-            <p class="field-label">Caused by</p>
-            <div class="checkbox-row">
-              @for (opt of causedByOpts; track opt.value) {
-                <nx-checkbox [checked]="isCausedByChecked(i, opt.value)" (checkedChange)="onCausedByToggle(i, opt.value, $event)">{{ opt.label }}</nx-checkbox>
-              }
-            </div>
-          </div>
-        }
-        <div class="field-group">
-          <p class="field-label">Damages caused by {{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}</p>
-          <div class="checkbox-row">
-            @for (dmg of availableDamages(vm); track dmg.value) {
-              <nx-checkbox [checked]="isDamageChecked(i, dmg.value)" (checkedChange)="onDamageToggle(i, dmg.value, $event)">{{ dmg.label }}</nx-checkbox>
+      <hr class="li-divider" />
+      <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
+      <div class="two-col-grid" [formGroup]="dateOfLoss">
+        <div data-field="dateOfOccurrence" data-tour-id="li-date-of-occurrence">
+          <nx-formfield label="Date of occurrence">
+            <input
+              nxDatefield
+              nxInput
+              formControlName="dateOfOccurrence"
+              [datepicker]="occurrencePicker"
+            />
+            <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
+            <nx-datepicker #occurrencePicker></nx-datepicker>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY — used to check for duplicate claims</nx-hint>
+            @if (
+              showError(dateOfLoss.get('dateOfOccurrence')!) &&
+              dateOfLoss.get('dateOfOccurrence')?.errors?.['required']
+            ) {
+              <nx-error nxFormfieldError> Date of occurrence is required </nx-error>
             }
-          </div>
-          <p class="field-error" *ngIf="submitAttempted && (eventGroup(i).get('damages')!.value ?? []).length === 0">
-            Select at least one damage type for {{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}
-          </p>
+            @if (dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']) {
+              <nx-error nxFormfieldError> Date can't be in the future </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div data-field="timeOfOccurrence">
+          <nx-timefield
+            label="Time of occurrence"
+            formControlName="timeOfOccurrence"
+          ></nx-timefield>
+          @if (
+            showError(dateOfLoss.get('timeOfOccurrence')!) &&
+            dateOfLoss.get('timeOfOccurrence')?.errors?.['required']
+          ) {
+            <p class="field-error">Time of occurrence is required</p>
+          }
+        </div>
+        <div data-field="dateOfNotification">
+          <nx-formfield label="Date of notification">
+            <input
+              nxDatefield
+              nxInput
+              formControlName="dateOfNotification"
+              [datepicker]="notificationPicker"
+            />
+            <nx-datepicker-toggle
+              nxFormfieldSuffix
+              [for]="notificationPicker"
+            ></nx-datepicker-toggle>
+            <nx-datepicker #notificationPicker></nx-datepicker>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+            @if (
+              showError(dateOfLoss.get('dateOfNotification')!) &&
+              dateOfLoss.get('dateOfNotification')?.errors?.['required']
+            ) {
+              <nx-error nxFormfieldError> Date of notification is required </nx-error>
+            }
+            @if (dateOfLoss.get('dateOfNotification')?.errors?.['futureDate']) {
+              <nx-error nxFormfieldError> Date can't be in the future </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div data-field="timeOfNotification">
+          <nx-timefield
+            label="Time of notification"
+            formControlName="timeOfNotification"
+          ></nx-timefield>
+          @if (
+            showError(dateOfLoss.get('timeOfNotification')!) &&
+            dateOfLoss.get('timeOfNotification')?.errors?.['required']
+          ) {
+            <p class="field-error">Time of notification is required</p>
+          }
         </div>
       </div>
-    }
-  </section>
-
-  <!-- Footer -->
-  <app-wizard-footer
-    (cancel)="onCancel()"
-    (back)="onBack()"
-    (next)="onNext()">
-  </app-wizard-footer>
-
-</div>
-</ng-container>
+      @if (showGroupError(dateOfLoss, 'dateOrder')) {
+        <nx-error class="group-error">
+          Notification date must be on or after date of occurrence.
+        </nx-error>
+      }
+      <hr class="li-divider" />
+      <nx-formfield label="Loss description (optional)" class="full-width">
+        <textarea
+          nxInput
+          formControlName="lossDescription"
+          rows="3"
+          [maxlength]="maxDesc"
+        ></textarea>
+        <nx-hint nxFormfieldHint>{{ descLength }}/{{ maxDesc }}</nx-hint>
+      </nx-formfield>
+    </section>
+    <!-- Card 2: Locations of loss -->
+    <section class="li-card">
+      <h2 class="section-heading">Locations of loss</h2>
+      <app-location-picker
+        [policyNumber]="policyNumber"
+        [value]="lossLocation.value"
+        [showEditLaterHint]="true"
+        (locationChange)="onLocationChange($event)"
+      ></app-location-picker>
+    </section>
+    <!-- Card 3: Events Details -->
+    <section class="li-card">
+      <h2 class="section-heading">Events details</h2>
+      <p class="section-desc">
+        The fields below are dynamically shown based on selection in section above.
+      </p>
+      @if (eventsArray.length === 0) {
+        <p class="section-empty">Select Cause of loss to see event details.</p>
+      }
+      @for (ctrl of eventsArray.controls; track trackByEventKey($index, ctrl); let i = $index) {
+        <div
+          class="event-block"
+          [class.event-block--divider]="i > 0"
+          [attr.data-field]="'damages-' + i"
+        >
+          <h3 class="sub-heading">{{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}</h3>
+          @if (getCausedByOptions(eventGroup(i).get('eventKey')!.value); as causedByOpts) {
+            <div class="field-group">
+              <p class="field-label">Caused by</p>
+              <div class="checkbox-row">
+                @for (opt of causedByOpts; track opt.value) {
+                  <nx-checkbox
+                    [checked]="isCausedByChecked(i, opt.value)"
+                    (checkedChange)="onCausedByToggle(i, opt.value, $event)"
+                    >{{ opt.label }}</nx-checkbox
+                  >
+                }
+              </div>
+            </div>
+          }
+          <div class="field-group">
+            <p class="field-label">
+              Damages caused by {{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}
+            </p>
+            <div class="checkbox-row">
+              @for (dmg of availableDamages(vm); track dmg.value) {
+                <nx-checkbox
+                  [checked]="isDamageChecked(i, dmg.value)"
+                  (checkedChange)="onDamageToggle(i, dmg.value, $event)"
+                  >{{ dmg.label }}</nx-checkbox
+                >
+              }
+            </div>
+            @if (submitAttempted && (eventGroup(i).get('damages')!.value ?? []).length === 0) {
+              <p class="field-error">
+                Select at least one damage type for
+                {{ getCauseLabel(eventGroup(i).get('eventKey')!.value) }}
+              </p>
+            }
+          </div>
+        </div>
+      }
+    </section>
+    <!-- Footer -->
+    <app-wizard-footer (cancelClick)="onCancel()" (back)="onBack()" (next)="onNext()">
+    </app-wizard-footer>
+  </div>
+}
 
 <!-- Modal: all duplicate claims -->
 <!-- audit-exempt: this modal only opens via "Show all N duplicates", which is
-     itself only shown when duplicates already exist — the table can never
-     render empty. -->
+itself only shown when duplicates already exist — the table can never
+render empty. -->
 <ng-template #duplicatesModalTpl>
   <h2 class="nx-modal__title" id="dup-modal-title">Existing claims found</h2>
-  <p class="dup-modal-intro">{{ modalDuplicates.length }} claims match this policy and date of loss.</p>
+  <p class="dup-modal-intro">
+    {{ modalDuplicates.length }} claims match this policy and date of loss.
+  </p>
   <div nxModalContent>
     <table nxTable nxSort class="dup-modal-table">
       <thead>
@@ -256,9 +438,13 @@
             <td nxCell>{{ d.claimId }}</td>
             <td nxCell>{{ d.clientName }}</td>
             <td nxCell><app-status-chip [status]="d.status" domain="claim"></app-status-chip></td>
-            <td nxCell>{{ d.lossDate | date:'dd-MM-yyyy' }}</td>
+            <td nxCell>{{ d.lossDate | date: 'dd-MM-yyyy' }}</td>
             <td nxCell>
-              <nx-link><a [routerLink]="['/claims', d.claimId]" target="_blank" rel="noopener">View claim</a></nx-link>
+              <nx-link
+                ><a [routerLink]="['/claims', d.claimId]" target="_blank" rel="noopener"
+                  >View claim</a
+                ></nx-link
+              >
             </td>
           </tr>
         }

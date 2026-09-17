@@ -1,35 +1,40 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { Subject } from 'rxjs';
-import { LocationItem, LocationPickerOutput } from '../models';
+import { LocationPickerOutput } from '../models';
 import {
   FnolSelectedClient,
   FnolSelectedPolicy,
   SkeletonFormValue,
-  StepConfig,
+  StepConfig
 } from '../../features/fnol/models/fnol-form.model';
 import { Policy } from '../models';
-import { Claim } from '../models/claim.model';
 import { LossInformation } from '../models/loss-information.model';
-import { CAUSE_SCHEMAS } from '../../features/fnol/config/cause-schemas';
-import { FileRestriction, AccessListEntry } from '../models/claim-overview.model';
+import { FileRestriction } from '../models/claim-overview.model';
 import { futureDateValidator, dateOrderValidator } from '../../shared/validators/date.validators';
 
 const HAPPY_PATH_STEPS: StepConfig[] = [
-  { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information'  },
+  { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information' },
   { key: 'entities-damages', route: '/fnol/entities-damages', label: 'Entities & Damages' },
-  { key: 'parties',          route: '/fnol/parties',          label: 'Parties'            },
-  { key: 'reserves',         route: '/fnol/reserves',         label: 'Reserves'           },
-  { key: 'summary',          route: '/fnol/summary',          label: 'Summary'            },
+  { key: 'parties', route: '/fnol/parties', label: 'Parties' },
+  { key: 'reserves', route: '/fnol/reserves', label: 'Reserves' },
+  { key: 'summary', route: '/fnol/summary', label: 'Summary' }
 ];
 
 // Orphan / skeleton-claim path steps (BMPCC-241). Location capture lives on
 // the Loss information page itself (Vasudha feedback, 2026-09-11) — same
 // placement as the regular happy-path flow — so it is not its own step here.
 const SKELETON_PATH_STEPS: StepConfig[] = [
-  { key: 'skeleton-create',   route: '/fnol/skeleton-create',   label: 'Loss information' },
-  { key: 'skeleton-parties',  route: '/fnol/skeleton-parties',  label: 'Parties'          },
-  { key: 'skeleton-summary',  route: '/fnol/skeleton-summary',  label: 'Summary'          },
+  { key: 'skeleton-create', route: '/fnol/skeleton-create', label: 'Loss information' },
+  { key: 'skeleton-parties', route: '/fnol/skeleton-parties', label: 'Parties' },
+  { key: 'skeleton-summary', route: '/fnol/skeleton-summary', label: 'Summary' }
 ];
 
 // Provided in root so FormGroup state persists across wizard navigation.
@@ -37,39 +42,65 @@ const SKELETON_PATH_STEPS: StepConfig[] = [
 export class FnolStateService {
   readonly fnolForm = new FormGroup({
     search: new FormGroup({
-      clientName:           new FormControl('', []),
-      policyNumber:         new FormControl('', []),
-      underwritingYear:     new FormControl<string | null>(null, []),
-      externalRef:          new FormControl('', []),
+      clientName: new FormControl('', []),
+      policyNumber: new FormControl('', []),
+      underwritingYear: new FormControl<string | null>(null, []),
+      externalRef: new FormControl('', []),
       claimLossEventNumber: new FormControl('', []),
-      dateOfLoss:           new FormControl('', []),
-      broker:               new FormControl('', []),
-      lineOfBusiness:       new FormControl<string | null>(null, []),
-      location:             new FormControl('', []),
-      operatingEntity:      new FormControl<string | null>(null, []),
+      dateOfLoss: new FormControl('', []),
+      broker: new FormControl('', []),
+      lineOfBusiness: new FormControl<string | null>(null, []),
+      location: new FormControl('', []),
+      operatingEntity: new FormControl<string | null>(null, [])
     }),
     lossInformation: new FormGroup({
-      dateOfLoss: new FormGroup({
-        dateOfOccurrence:   new FormControl<string | null>(null, [Validators.required, FnolStateService.futureDateValidator]),
-        timeOfOccurrence:   new FormControl<string | null>(null, [Validators.required]),
-        dateOfNotification: new FormControl<string | null>(null, [Validators.required, FnolStateService.futureDateValidator]),
-        timeOfNotification: new FormControl<string | null>(null, [Validators.required]),
-      }, { validators: FnolStateService.dateOrderValidator }),
+      dateOfLoss: new FormGroup(
+        {
+          dateOfOccurrence: new FormControl<string | null>(null, [
+            Validators.required,
+            FnolStateService.futureDateValidator
+          ]),
+          timeOfOccurrence: new FormControl<string | null>(null, [Validators.required]),
+          dateOfNotification: new FormControl<string | null>(null, [
+            Validators.required,
+            FnolStateService.futureDateValidator
+          ]),
+          timeOfNotification: new FormControl<string | null>(null, [Validators.required])
+        },
+        { validators: FnolStateService.dateOrderValidator }
+      ),
       lossLocation: new FormControl<LocationPickerOutput>({ locations: [] }),
-      causeOfLoss:     new FormControl<string[]>([], []),
-      typeOfDamage:    new FormControl<string[]>([], []),
+      causeOfLoss: new FormControl<string[]>([], []),
+      typeOfDamage: new FormControl<string[]>([], []),
       // BMPCC-18160 — single incident circumstance, options filtered by the
       // confirmed cause of loss. Not required: the peril is often confirmed
       // before anyone can say what actually happened.
-      circumstance:    new FormControl<string | null>(null),
+      circumstance: new FormControl<string | null>(null),
       // Free-text qualifier, shown and required only while causeOfLoss includes
       // its "Other" option. The validator is added and cleared by the step
       // component, not declared here, because "required" depends on a sibling
       // control's value (see step-loss-information's syncSpecifyOther()).
       specifyOtherCauseOfLoss: new FormControl<string>(''),
+      // CBI (contingent business interruption) — BMPCC-18353. Shown and
+      // required only while typeOfDamage includes 'business-interruption';
+      // required-ness of cbiCaseType/cbiThirdPartyName/cbiLocation is added
+      // and cleared by the step component (see step-loss-information's
+      // syncCbi()), same reasoning as specifyOtherCauseOfLoss above.
+      cbiApplicable: new FormControl<'yes' | 'no' | null>(null),
+      cbiCaseType: new FormControl<string | null>(null),
+      cbiThirdPartyName: new FormControl<string>(''),
+      cbiLocation: new FormGroup({
+        country: new FormControl<string | null>(null),
+        city: new FormControl<string>(''),
+        zip: new FormControl<string>(''),
+        street: new FormControl<string>(''),
+        houseNumber: new FormControl<string>(''),
+        landRecordNumber: new FormControl<string>(''),
+        state: new FormControl<string>('')
+      }),
       lossDescription: new FormControl('', [Validators.maxLength(500)]),
-      events: new FormArray([]),
-    }),
+      events: new FormArray([])
+    })
   });
 
   readonly completedSteps = new Set<string>();
@@ -81,7 +112,9 @@ export class FnolStateService {
   selectedPolicy: FnolSelectedPolicy | null = null;
 
   // Shared by step-reserves and step-summary (both fall back to '', not null).
-  get policyNumber(): string { return this.selectedPolicy?.policyNumber ?? ''; }
+  get policyNumber(): string {
+    return this.selectedPolicy?.policyNumber ?? '';
+  }
 
   // File restriction state (BMPCC-10994) — set from summary step
   restriction: FileRestriction = { isRestricted: false, accessList: [] };
@@ -100,8 +133,10 @@ export class FnolStateService {
   }
 
   isWizardRoute(url: string): boolean {
-    return HAPPY_PATH_STEPS.some(s => url.includes(s.route)) ||
-           SKELETON_PATH_STEPS.some(s => url.includes(s.route));
+    return (
+      HAPPY_PATH_STEPS.some(s => url.includes(s.route)) ||
+      SKELETON_PATH_STEPS.some(s => url.includes(s.route))
+    );
   }
 
   getCurrentStepIndex(url: string, wizardPath: 'happy' | 'skeleton' = 'happy'): number {
@@ -161,125 +196,40 @@ export class FnolStateService {
     this.skeletonClaimId = claimId;
   }
 
-
-  // BMPCC-11006 demo helper: prefill every wizard form from a skeleton claim
-  // so the user lands at /fnol/search with everything teed up and can simply
-  // click through Search → select policy → Continue → Next on every step.
-  // No step is skipped — the demo proves the convert flow end to end.
-  // Schema-driven: cause is inferred from skeleton.lossDescription against
-  // CAUSE_SCHEMAS keys; events FormArray is rebuilt to match step-loss-info's
-  // own _createEventGroup shape so its required `damages` validator clears.
-  prefillFullFromSkeleton(skeleton: Claim, opts?: {
-    policyNumber?: string;
-    causeOfLoss?: string[];
-    typeOfDamage?: string[];
-    timeOfOccurrence?: string;
-    dateOfNotification?: string;
-    timeOfNotification?: string;
-    location?: LocationItem;
-  }): void {
-    this.path = 'standard';
-    this.skeletonClaimId = skeleton.claimId;
-    // Search form — user lands on /fnol/search with name + policy + date set
-    // so they only need to click Search and pick the row.
-    this.fnolForm.get('search.clientName')?.setValue(skeleton.clientName ?? '');
-    this.fnolForm.get('search.policyNumber')?.setValue(opts?.policyNumber ?? '');
-    this.fnolForm.get('search.dateOfLoss')?.setValue(skeleton.lossDate ?? '');
-    // Loss-information form
-    this.getDateOfLossGroup().patchValue({
-      dateOfOccurrence:   skeleton.lossDate ?? null,
-      timeOfOccurrence:   opts?.timeOfOccurrence   ?? '09:00',
-      dateOfNotification: opts?.dateOfNotification ?? skeleton.lossDate ?? null,
-      timeOfNotification: opts?.timeOfNotification ?? '10:00',
-    });
-    this.fnolForm.get('lossInformation.lossDescription')?.setValue(skeleton.description ?? '');
-
-    // Schema-driven cause inference: scan skeleton.description for the
-    // first CAUSE_SCHEMAS key. Falls back to 'other-event' if nothing matches
-    // — never hardcoded to 'fire'.
-    const inferredCauseKeys = opts?.causeOfLoss ?? this.inferCauseKeys(skeleton.description);
-    const damageValues      = opts?.typeOfDamage ?? ['material-damage'];
-
-    this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(inferredCauseKeys);
-    this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(damageValues);
-
-    // Rebuild events FormArray to mirror step-loss-information._createEventGroup
-    // shape — without this the events have no `damages` and Next fails validation.
-    const eventsArray = this.getLossEventsArray();
-    eventsArray.clear();
-    inferredCauseKeys.forEach(causeKey => {
-      const schema = CAUSE_SCHEMAS[causeKey];
-      const controls: Record<string, FormControl> = {
-        eventKey: new FormControl(causeKey),
-        damages:  new FormControl<string[]>(damageValues, [Validators.required]),
-      };
-      if (schema?.causedByOptions?.length) {
-        controls['causedBy'] = new FormControl<string[]>([schema.causedByOptions[0].value]);
-      }
-      eventsArray.push(new FormGroup(controls));
-    });
-
-    // Loss location: caller supplies a real PolicyLocation (resolved via
-    // MockPolicyLocationService); only fall back to a manual stub if absent
-    // so the validator still clears.
-    if (opts?.location) {
-      this.getLossLocationControl().setValue({ locations: [opts.location] });
-    } else {
-      this.getLossLocationControl().setValue({
-        locations: [{
-          id: 'convert-loss-location',
-          source: 'manual',
-          displayName: skeleton.clientName ?? 'Loss location',
-          addressLine1: '',
-          postalCode: '',
-          city: '',
-          country: '',
-        }],
-      });
-    }
-  }
-
   // BMPCC-415: prefill the loss-information FormGroup from an existing LossInformation
   // record (edit flow). Follows prefillFromSkeleton() pattern. Does NOT reset the
   // full form — caller controls context. Only patches lossInformation sub-group.
   prefillFromExistingLossInfo(li: LossInformation): void {
     this.getDateOfLossGroup().patchValue({
-      dateOfOccurrence:   li.dateOfLoss?.dateOfOccurrence   ?? null,
-      timeOfOccurrence:   li.dateOfLoss?.timeOfOccurrence   ?? null,
+      dateOfOccurrence: li.dateOfLoss?.dateOfOccurrence ?? null,
+      timeOfOccurrence: li.dateOfLoss?.timeOfOccurrence ?? null,
       dateOfNotification: li.dateOfLoss?.dateOfNotification ?? null,
-      timeOfNotification: li.dateOfLoss?.timeOfNotification ?? null,
+      timeOfNotification: li.dateOfLoss?.timeOfNotification ?? null
     });
     this.fnolForm.get('lossInformation.causeOfLoss')?.setValue(li.causeOfLoss ?? []);
     this.fnolForm.get('lossInformation.typeOfDamage')?.setValue(li.typeOfDamage ?? []);
     this.fnolForm.get('lossInformation.circumstance')?.setValue(li.circumstance ?? null);
-    this.fnolForm.get('lossInformation.specifyOtherCauseOfLoss')?.setValue(li.specifyOtherCauseOfLoss ?? '');
+    this.fnolForm
+      .get('lossInformation.specifyOtherCauseOfLoss')
+      ?.setValue(li.specifyOtherCauseOfLoss ?? '');
     this.fnolForm.get('lossInformation.lossDescription')?.setValue(li.lossDescription ?? '');
 
     // Rebuild events FormArray
     const eventsArray = this.getLossEventsArray();
     eventsArray.clear();
     (li.events ?? []).forEach(ev => {
-      eventsArray.push(new FormGroup({
-        eventKey: new FormControl(ev.eventKey),
-        damages:  new FormControl<string[]>(ev.damages ?? [], [Validators.required]),
-        ...(ev.causedBy ? { causedBy: new FormControl<string[]>(ev.causedBy) } : {}),
-      }));
+      eventsArray.push(
+        new FormGroup({
+          eventKey: new FormControl(ev.eventKey),
+          damages: new FormControl<string[]>(ev.damages ?? [], [Validators.required]),
+          ...(ev.causedBy ? { causedBy: new FormControl<string[]>(ev.causedBy) } : {})
+        })
+      );
     });
 
     if (li.lossLocation) {
       this.getLossLocationControl().setValue({ locations: [] });
     }
-  }
-
-  /** Match each CAUSE_SCHEMAS key against the skeleton description (case-insensitive). */
-  private inferCauseKeys(description: string | undefined): string[] {
-    if (!description) return ['other-event'];
-    const lower = description.toLowerCase();
-    const matches = Object.keys(CAUSE_SCHEMAS).filter(key => {
-      const label = CAUSE_SCHEMAS[key].causeLabel.toLowerCase();
-      return lower.includes(key) || lower.includes(label);
-    });
-    return matches.length ? matches.slice(0, 1) : ['other-event'];
   }
 
   markStepComplete(step: string): void {

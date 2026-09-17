@@ -1,0 +1,81 @@
+<section class="co-card">
+  <div class="ts-header">
+    <h2 class="co-card-title">Trade Sanctions</h2>
+  </div>
+
+  @if (isClosed()) {
+    <p class="co-value">
+      {{ saved()?.exposure === 'yes' ? 'Yes' : saved()?.exposure === 'no' ? 'No' : 'Not answered' }}
+    </p>
+  } @else {
+    <p class="ts-question" id="ts-question">Exposure to trade sanctions?</p>
+
+    <nx-radio-group [formControl]="exposure" class="ts-radio-group" aria-labelledby="ts-question">
+      <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+      <nx-radio value="no" labelSize="small">No</nx-radio>
+    </nx-radio-group>
+
+    @if (showExpanded()) {
+      <div class="ts-details">
+        <p class="ts-subquestion" id="ts-referral-applicable-q">Sanction referral applicable?</p>
+        <nx-radio-group
+          [formControl]="referralApplicable"
+          class="ts-radio-group"
+          aria-labelledby="ts-referral-applicable-q"
+        >
+          <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+          <nx-radio value="no" labelSize="small">No</nx-radio>
+        </nx-radio-group>
+
+        <div class="ts-grid">
+          <nx-formfield label="Date of completion of ESRA">
+            <input
+              nxDatefield
+              nxInput
+              [formControl]="esraCompletionDate"
+              [datepicker]="esraDatePicker"
+            />
+            <nx-datepicker-toggle nxFormfieldSuffix [for]="esraDatePicker"></nx-datepicker-toggle>
+            <nx-datepicker #esraDatePicker></nx-datepicker>
+          </nx-formfield>
+
+          <nx-formfield label="ESRA ID">
+            <input nxInput [formControl]="esraId" placeholder="Reference / case number" />
+          </nx-formfield>
+        </div>
+
+        <p class="ts-subquestion" id="ts-referral-approved-q">
+          Sanction referral approved in ESRA?
+        </p>
+        <nx-radio-group
+          [formControl]="referralApproved"
+          class="ts-radio-group"
+          aria-labelledby="ts-referral-approved-q"
+        >
+          <nx-radio value="yes" labelSize="small" [disabled]="referralApprovedDisabled()"
+            >Yes</nx-radio
+          >
+          <nx-radio value="no" labelSize="small" [disabled]="referralApprovedDisabled()"
+            >No</nx-radio
+          >
+        </nx-radio-group>
+        @if (referralApprovedDisabled()) {
+          <p class="ts-hint">Only answerable once sanction referral is applicable.</p>
+        }
+
+        <nx-formfield label="Additional comments (optional)" class="ts-comments">
+          <textarea nxInput [formControl]="comments" rows="2" maxlength="500"></textarea>
+        </nx-formfield>
+      </div>
+    }
+
+    <div class="ts-actions">
+      <button nxButton="primary small" type="button" [disabled]="!canSave()" (click)="onSave()">
+        Save
+      </button>
+      @if (canSave()) {
+        <button nxButton="secondary small" type="button" (click)="onReset()">Cancel</button>
+      }
+    </div>
+  }
+</section>
