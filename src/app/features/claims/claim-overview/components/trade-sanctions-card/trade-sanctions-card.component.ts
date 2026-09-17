@@ -122,14 +122,19 @@ export class TradeSanctionsCardComponent implements OnChanges {
   ngOnChanges(): void {
     this.claimSig.set(this.claim);
     const ts = this.claim.tradeSanctions ?? null;
-    this.exposure.setValue(ts?.exposure ?? null, { emitEvent: false });
-    this.referralApplicable.setValue(this.boolToYesNo(ts?.referralApplicable), {
-      emitEvent: false
-    });
-    this.esraCompletionDate.setValue(ts?.esraCompletionDate ?? null, { emitEvent: false });
-    this.referralApproved.setValue(this.boolToYesNo(ts?.referralApproved), { emitEvent: false });
-    this.esraId.setValue(ts?.esraId ?? '', { emitEvent: false });
-    this.comments.setValue(ts?.comments ?? '', { emitEvent: false });
+    // Emit normally (unlike recovery-potential-card's re-sync) — showExpanded/
+    // canSave/referralApprovedDisabled are all computed off these controls'
+    // valueChanges via toSignal(), not off claimSig(). A silent emitEvent:false
+    // re-sync left those signals frozen at their pre-save value, so the detail
+    // section collapsed the instant Save committed even though exposure was
+    // still 'yes' — confirmed in browser: the radio stayed checked (CVA reads
+    // .value directly) but .ts-details vanished from the DOM.
+    this.exposure.setValue(ts?.exposure ?? null);
+    this.referralApplicable.setValue(this.boolToYesNo(ts?.referralApplicable));
+    this.esraCompletionDate.setValue(ts?.esraCompletionDate ?? null);
+    this.referralApproved.setValue(this.boolToYesNo(ts?.referralApproved));
+    this.esraId.setValue(ts?.esraId ?? '');
+    this.comments.setValue(ts?.comments ?? '');
   }
 
   async onSave(): Promise<void> {
@@ -141,11 +146,19 @@ export class TradeSanctionsCardComponent implements OnChanges {
         ? { exposure: 'no' }
         : {
             exposure: 'yes',
-            referralApplicable: this.referralApplicableSig() === 'yes',
+            // Leave unanswered radios as `undefined`, not a coerced `false`
+            // — an untouched "Sanction referral applicable?" must read back
+            // as "Not answered", not silently commit to "No" just because
+            // Exposure was saved.
+            referralApplicable:
+              this.referralApplicableSig() === null
+                ? undefined
+                : this.referralApplicableSig() === 'yes',
             esraCompletionDate: this.esraCompletionDateSig() ?? undefined,
-            referralApproved: this.referralApplicableSig() === 'yes'
-              ? this.referralApprovedSig() === 'yes'
-              : undefined,
+            referralApproved:
+              this.referralApplicableSig() === 'yes' && this.referralApprovedSig() !== null
+                ? this.referralApprovedSig() === 'yes'
+                : undefined,
             esraId: this.esraIdSig() || undefined,
             comments: this.commentsSig() || undefined
           };
