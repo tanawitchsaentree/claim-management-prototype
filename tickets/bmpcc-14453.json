@@ -24,13 +24,20 @@
       "setup": {
         "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
         "preconditions": [
-          { "text": "Send communication button visible on every provider row", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Send communication button visible on every provider row",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
       "expectedUI": {
         "description": "Send communication opens the outreach flow",
-        "visualCues": ["Send communication button on every row", "Clicking opens the communication modal"]
+        "visualCues": [
+          "Send communication button on every row",
+          "Clicking opens the communication modal"
+        ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/providers",

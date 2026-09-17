@@ -84,15 +84,15 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     5,
-        "doneTasks":        0,
-        "openSections":     0,
-        "closedSections":   4,
-        "overviewStatus":   "In progress",
-        "canClose":         false,
-        "buttonVisible":    true,
-        "buttonEnabled":    false,
-        "tooltipContains":  "5 pending task(s)"
+        "pendingTasks": 5,
+        "doneTasks": 0,
+        "openSections": 0,
+        "closedSections": 4,
+        "overviewStatus": "In progress",
+        "canClose": false,
+        "buttonVisible": true,
+        "buttonEnabled": false,
+        "tooltipContains": "5 pending task(s)"
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -158,17 +158,21 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     0,
-        "doneTasks":        5,
-        "openSections":     3,
-        "closedSections":   1,
-        "overviewStatus":   "In progress",
-        "canClose":         false,
-        "buttonVisible":    true,
-        "buttonEnabled":    false,
-        "tooltipContains":  "3 open section(s)",
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 3,
+        "closedSections": 1,
+        "overviewStatus": "In progress",
+        "canClose": false,
+        "buttonVisible": true,
+        "buttonEnabled": false,
+        "tooltipContains": "3 open section(s)",
         "taskStatuses": {
-          "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done"
+          "t1": "done",
+          "t2": "done",
+          "t3": "done",
+          "t4": "done",
+          "t5": "done"
         }
       },
       "howToTest": {
@@ -234,15 +238,15 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     5,
-        "doneTasks":        0,
-        "openSections":     3,
-        "closedSections":   1,
-        "overviewStatus":   "In progress",
-        "canClose":         false,
-        "buttonVisible":    true,
-        "buttonEnabled":    false,
-        "tooltipContains":  "5 pending task(s)"
+        "pendingTasks": 5,
+        "doneTasks": 0,
+        "openSections": 3,
+        "closedSections": 1,
+        "overviewStatus": "In progress",
+        "canClose": false,
+        "buttonVisible": true,
+        "buttonEnabled": false,
+        "tooltipContains": "5 pending task(s)"
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -302,9 +306,7 @@
             "SEC-001": "Closed"
           }
         },
-        "postLand": [
-          { "kind": "overview.openClosureModal" }
-        ]
+        "postLand": [{ "kind": "overview.openClosureModal" }]
       },
       "expectedUI": {
         "description": "Closure modal opens; submitting with empty fields shows validation errors",
@@ -317,16 +319,20 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     0,
-        "doneTasks":        5,
-        "openSections":     0,
-        "closedSections":   4,
-        "overviewStatus":   "In progress",
-        "canClose":         true,
-        "buttonVisible":    true,
-        "buttonEnabled":    true,
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 0,
+        "closedSections": 4,
+        "overviewStatus": "In progress",
+        "canClose": true,
+        "buttonVisible": true,
+        "buttonEnabled": true,
         "taskStatuses": {
-          "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done"
+          "t1": "done",
+          "t2": "done",
+          "t3": "done",
+          "t4": "done",
+          "t5": "done"
         }
       },
       "howToTest": {
@@ -387,9 +393,7 @@
             "SEC-001": "Closed"
           }
         },
-        "postLand": [
-          { "kind": "overview.confirmClosure", "reason": "Claim Finalised" }
-        ]
+        "postLand": [{ "kind": "overview.confirmClosure", "reason": "Claim Finalised" }]
       },
       "expectedUI": {
         "description": "After confirmation: status chip shows Closed, closure panel appears",
@@ -401,14 +405,14 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     0,
-        "doneTasks":        5,
-        "openSections":     0,
-        "closedSections":   4,
-        "overviewStatus":   "In progress",
-        "canClose":         true,
-        "buttonVisible":    true,
-        "buttonEnabled":    true
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 0,
+        "closedSections": 4,
+        "overviewStatus": "In progress",
+        "canClose": true,
+        "buttonVisible": true,
+        "buttonEnabled": true
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -494,16 +498,16 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     0,
-        "doneTasks":        5,
-        "openSections":     0,
-        "closedSections":   4,
-        "overviewStatus":   "Closed",
-        "canClose":         false,
-        "buttonVisible":    false,
-        "buttonEnabled":    false,
-        "closedByName":     "Leonie Fischer",
-        "closureReason":    "Claim Finalised"
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 0,
+        "closedSections": 4,
+        "overviewStatus": "Closed",
+        "canClose": false,
+        "buttonVisible": false,
+        "buttonEnabled": false,
+        "closedByName": "Leonie Fischer",
+        "closureReason": "Claim Finalised"
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -576,16 +580,16 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":     0,
-        "doneTasks":        5,
-        "openSections":     0,
-        "closedSections":   4,
-        "overviewStatus":   "Closed",
-        "canClose":         false,
-        "buttonVisible":    false,
-        "buttonEnabled":    false,
-        "closedByName":     "Leonie Fischer",
-        "closureReason":    "Claim Finalised"
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 0,
+        "closedSections": 4,
+        "overviewStatus": "Closed",
+        "canClose": false,
+        "buttonVisible": false,
+        "buttonEnabled": false,
+        "closedByName": "Leonie Fischer",
+        "closureReason": "Claim Finalised"
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

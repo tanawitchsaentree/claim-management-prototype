@@ -3,9 +3,7 @@
   "module": "Claims",
   "title": "Claim status management & Retention date",
   "targetClaim": "CL-2025-001",
-  "pages": [
-    "overview"
-  ],
+  "pages": ["overview"],
   "walkthroughSteps": [
     "Apply an AC \u2014 seeds blockers / retention state on CLM-2024-001",
     {

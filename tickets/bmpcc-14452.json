@@ -24,13 +24,20 @@
       "setup": {
         "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
         "preconditions": [
-          { "text": "At least one provider row shows Rate this adjuster", "page": "any", "role": "tested-visible" }
+          {
+            "text": "At least one provider row shows Rate this adjuster",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
       "expectedUI": {
         "description": "Rating survey modal opens for an eligible assignment",
-        "visualCues": ["Rate this adjuster button visible on eligible rows", "Clicking opens the survey modal"]
+        "visualCues": [
+          "Rate this adjuster button visible on eligible rows",
+          "Clicking opens the survey modal"
+        ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/providers",

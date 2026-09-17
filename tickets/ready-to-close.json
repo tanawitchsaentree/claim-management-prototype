@@ -95,14 +95,14 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":   0,
-        "doneTasks":      5,
-        "openSections":   0,
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 0,
         "closedSections": 4,
         "overviewStatus": "In progress",
-        "canClose":       true,
-        "buttonVisible":  true,
-        "buttonEnabled":  true
+        "canClose": true,
+        "buttonVisible": true,
+        "buttonEnabled": true
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -148,14 +148,16 @@
           },
           "sectionBlockers": {
             "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
-            "SEC-002": { "hasActiveLitigation": false, "hasOpenReserves": false, "hasOpenPayments": false },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
             "SEC-003": { "hasActiveProvider": false },
             "SEC-008": { "hasOpenPayments": false }
           }
         },
-        "postLand": [
-          { "kind": "overview.openClosureModal" }
-        ]
+        "postLand": [{ "kind": "overview.openClosureModal" }]
       },
       "expectedUI": {
         "description": "Closure modal at Step 2 — reason dropdown, no blocker list",
@@ -167,14 +169,14 @@
         ]
       },
       "expectedOutcome": {
-        "pendingTasks":   0,
-        "doneTasks":      5,
-        "openSections":   0,
+        "pendingTasks": 0,
+        "doneTasks": 5,
+        "openSections": 0,
         "closedSections": 4,
         "overviewStatus": "In progress",
-        "canClose":       true,
-        "buttonVisible":  true,
-        "buttonEnabled":  true
+        "canClose": true,
+        "buttonVisible": true,
+        "buttonEnabled": true
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

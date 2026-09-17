@@ -3,9 +3,7 @@
   "module": "Claims",
   "title": "Cross-domain closure validations \u2014 Litigation & Reserves deep check",
   "targetClaim": "CL-2025-001",
-  "pages": [
-    "overview"
-  ],
+  "pages": ["overview"],
   "walkthroughSteps": [
     "Apply AC-01 \u2014 seeds 2 active litigation cases on CLM-2024-001, opens the closure modal directly",
     {

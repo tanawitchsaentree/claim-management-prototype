@@ -4,9 +4,7 @@
   "module": "Claims",
   "title": "Section & Claims Hierarchy Validations",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "sections"
-  ],
+  "pages": ["sections"],
   "walkthroughSteps": [
     "Apply AC-01 \u2014 SEC-001 has open deductible + salvage blockers. Land on /claims/CLM-2024-001/sections",
     {
@@ -152,9 +150,7 @@
       },
       "expectedUI": {
         "description": "Blocker modal step 1 \u2014 1 blocker item",
-        "visualCues": [
-          "Blocker: 'Active provider assignment must be finalised'"
-        ]
+        "visualCues": ["Blocker: 'Active provider assignment must be finalised'"]
       },
       "expectedOutcome": {
         "canClose": false,

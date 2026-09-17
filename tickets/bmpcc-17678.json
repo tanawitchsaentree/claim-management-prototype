@@ -24,7 +24,11 @@
       "setup": {
         "description": "Uses the Approvals page's existing seeded requests — no override needed",
         "preconditions": [
-          { "text": "At least one approval row with an actions menu is visible", "page": "any", "role": "tested-visible" }
+          {
+            "text": "At least one approval row with an actions menu is visible",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },

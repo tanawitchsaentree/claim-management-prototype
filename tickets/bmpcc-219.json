@@ -3,9 +3,7 @@
   "module": "FNOL",
   "title": "Loss Location via CWB MFE",
   "targetClaim": "CL-2025-001",
-  "pages": [
-    "fnol-loss-info"
-  ],
+  "pages": ["fnol-loss-info"],
   "walkthroughSteps": [
     "Land on /fnol/loss-information; the wizard must already be past the search step",
     "Open the 'Locations of loss' card → 'Add location' — a chooser now opens with Find in policy / Retrieve from CWB / Enter manually (LocationSourceModalComponent, added so the already-built CWB modal is actually reachable)",

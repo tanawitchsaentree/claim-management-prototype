@@ -3,9 +3,7 @@
   "module": "FNOL",
   "title": "Duplicate Claim Check",
   "targetClaim": "CL-2025-001",
-  "pages": [
-    "fnol-loss-info"
-  ],
+  "pages": ["fnol-loss-info"],
   "walkthroughSteps": [
     "Apply an AC — injects matching claims and lands on /fnol/loss-information already past the search step",
     {
@@ -79,9 +77,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -95,9 +91,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -173,9 +167,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -189,9 +181,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -255,9 +245,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -271,9 +259,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -338,9 +324,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -354,9 +338,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -421,9 +403,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -437,9 +417,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -509,9 +487,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             },
             {
               "claimId": "CLM-DUP-002",
@@ -534,9 +510,7 @@
                 "city": "Hamburg"
               },
               "lossEventId": "LE-DUP-002",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             },
             {
               "claimId": "CLM-DUP-003",
@@ -559,9 +533,7 @@
                 "city": "Berlin"
               },
               "lossEventId": "LE-DUP-003",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             },
             {
               "claimId": "CLM-DUP-004",
@@ -584,9 +556,7 @@
                 "city": "Cologne"
               },
               "lossEventId": "LE-DUP-004",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -600,9 +570,7 @@
           {
             "kind": "fnol-loss-info.openShowAllDuplicates",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },

@@ -56,8 +56,16 @@
       "setup": {
         "description": "CLM-2024-001 carries a decided No by default — no override needed",
         "preconditions": [
-          { "text": "Recovery potential card shows Yes/No radios inline", "page": "overview", "role": "tested-visible" },
-          { "text": "No Set/Update link and no modal", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Recovery potential card shows Yes/No radios inline",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "No Set/Update link and no modal",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
@@ -90,7 +98,11 @@
         "description": "Blank the seeded answer on CLM-2024-001 to reach the unanswered state",
         "preconditions": [
           { "text": "Recovery potential is unanswered", "page": "overview", "role": "setup" },
-          { "text": "Warning message on the Recovery potential card", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Warning message on the Recovery potential card",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
           "overviewPatch": {
@@ -129,14 +141,27 @@
         "description": "Same unanswered state as AC-02, on a claim whose other blockers are all clear",
         "preconditions": [
           { "text": "Recovery potential is unanswered", "page": "overview", "role": "setup" },
-          { "text": "Close Claim opens the modal at Step 1 with a recovery-potential blocker", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Close Claim opens the modal at Step 1 with a recovery-potential blocker",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
           "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
-          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed", "SEC-008": "Closed" },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
           "sectionBlockers": {
             "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
-            "SEC-002": { "hasActiveLitigation": false, "hasOpenReserves": false, "hasOpenPayments": false },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
             "SEC-003": { "hasActiveProvider": false },
             "SEC-008": { "hasOpenPayments": false }
           },
@@ -176,15 +201,32 @@
       "setup": {
         "description": "Identical to AC-03 except the seeded No is left on record — the only difference between the two is the answer, so canClose flipping to true isolates this blocker",
         "preconditions": [
-          { "text": "Reason field is required when No is selected", "page": "overview", "role": "tested-visible" },
-          { "text": "Saved reason renders under the radios", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Reason field is required when No is selected",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Saved reason renders under the radios",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
           "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
-          "sectionStatuses": { "SEC-001": "Closed", "SEC-002": "Closed", "SEC-003": "Closed", "SEC-008": "Closed" },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
           "sectionBlockers": {
             "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
-            "SEC-002": { "hasActiveLitigation": false, "hasOpenReserves": false, "hasOpenPayments": false },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
             "SEC-003": { "hasActiveProvider": false },
             "SEC-008": { "hasOpenPayments": false }
           }
@@ -219,13 +261,26 @@
       "setup": {
         "description": "Yes on record with no recovery case. CLM-2024-024 is seeded this way for the dashboard prompt; here the state is patched onto the target claim so the assertion runs against it",
         "preconditions": [
-          { "text": "Recovery potential is Yes with no recovery case", "page": "overview", "role": "setup" },
-          { "text": "Set up recovery case link on the card", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Recovery potential is Yes with no recovery case",
+            "page": "overview",
+            "role": "setup"
+          },
+          {
+            "text": "Set up recovery case link on the card",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
           "overviewPatch": {
             "claimId": "CLM-2024-001",
-            "patch": { "recoveryPotential": "yes", "recoveryPotentialNote": "", "hasRecoveryCase": false, "hasActiveRecovery": false }
+            "patch": {
+              "recoveryPotential": "yes",
+              "recoveryPotentialNote": "",
+              "hasRecoveryCase": false,
+              "hasActiveRecovery": false
+            }
           }
         }
       },
@@ -258,8 +313,16 @@
       "setup": {
         "description": "Default state — most claims in claims.json have never been answered",
         "preconditions": [
-          { "text": "Recovery potential panel on the dashboard", "page": "any", "role": "tested-visible" },
-          { "text": "Rows deep-link to each claim's overview", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Recovery potential panel on the dashboard",
+            "page": "any",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Rows deep-link to each claim's overview",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
@@ -289,8 +352,16 @@
       "setup": {
         "description": "CLM-2024-003 is the seeded recovery-domain claim — a running subrogation case against the carrier plus a settled salvage case, per the heads-up already on record for it",
         "preconditions": [
-          { "text": "Recoveries page renders a table of recovery cases", "page": "any", "role": "tested-visible" },
-          { "text": "Summary strip shows open cases, expected total and recovered to date", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Recoveries page renders a table of recovery cases",
+            "page": "any",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Summary strip shows open cases, expected total and recovered to date",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
@@ -326,9 +397,21 @@
       "setup": {
         "description": "CLM-2024-024 is seeded Yes with no recovery case — the same record the dashboard prompt in AC-06 lists",
         "preconditions": [
-          { "text": "Recovery potential is Yes with no recovery case", "page": "any", "role": "setup" },
-          { "text": "Guidance message on the Recoveries page", "page": "any", "role": "tested-visible" },
-          { "text": "Empty state naming Create recovery case", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Recovery potential is Yes with no recovery case",
+            "page": "any",
+            "role": "setup"
+          },
+          {
+            "text": "Guidance message on the Recoveries page",
+            "page": "any",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Empty state naming Create recovery case",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
@@ -363,7 +446,11 @@
       "setup": {
         "description": "Runtime flow on the Yes-with-no-case claim from AC-08 — the assertion here is the starting state, the transition is verified in the browser",
         "preconditions": [
-          { "text": "Recovery potential is Yes with no recovery case", "page": "any", "role": "setup" },
+          {
+            "text": "Recovery potential is Yes with no recovery case",
+            "page": "any",
+            "role": "setup"
+          },
           { "text": "Create recovery case modal", "page": "any", "role": "tested-visible" }
         ],
         "stateOverrides": {}
