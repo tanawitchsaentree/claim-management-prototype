@@ -559,6 +559,14 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   // added/cleared here, not declared statically, because "required" depends
   // on sibling control values (typeOfDamage, cbiApplicable, cbiCaseType).
 
+  // Held back on purpose (2026-09-17) — the whole CBI capture (trigger
+  // question through case type/location/third-party), same reason as
+  // entity-detail-panel's showCbiLocation: BMPCC-17927 is still "Draft A v2",
+  // Open Points #1 and #4 aren't signed off with Sarah/UW. This gates
+  // showCbiQuestion itself, so showCbiDetails/syncCbi()'s validators all
+  // cascade off — nothing partially shows. Flip to true only when told.
+  readonly cbiFeatureEnabled = false;
+
   get showCbiQuestion(): boolean {
     // ASSUMPTION [CBI-FNOL-2]: functional design gates this on the
     // Conclusion Engine finding ≥1 possible CBI case for the policy
@@ -566,7 +574,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     // prototype, so the question is shown whenever Business Interruption is
     // selected — the full 12-option list is offered rather than a
     // policy-filtered subset. Recorded, not blocking.
-    return this.selectedDamages.includes('business-interruption');
+    return this.cbiFeatureEnabled && this.selectedDamages.includes('business-interruption');
   }
 
   get cbiApplicable(): 'yes' | 'no' | null {
