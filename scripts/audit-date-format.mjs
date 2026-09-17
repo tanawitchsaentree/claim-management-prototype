@@ -23,12 +23,10 @@ import { resolve, dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
-const root  = resolve(__dir, '..');
+const root = resolve(__dir, '..');
 const srcDir = resolve(root, 'src/app');
 
-const EXCEPTIONS = [
-  resolve(srcDir, 'features/dashboard/widgets/calendar-widget.ts'),
-];
+const EXCEPTIONS = [resolve(srcDir, 'features/dashboard/widgets/calendar-widget.ts')];
 
 const FORMAT_DATE_DECL = /\bformatDate\s*\(/;
 const TO_LOCALE_DATE_OR_TIME_STRING = /\btoLocale(Date|Time)String\s*\(/;
@@ -51,11 +49,18 @@ for (const file of files) {
   const lines = readFileSync(file, 'utf8').split('\n');
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    if (FORMAT_DATE_DECL.test(line) && /(private|public|protected)?\s*formatDate\s*\(.*\)\s*:\s*string\s*\{?$/.test(line.trim())) {
-      violations.push(`${relative(root, file)}:${i + 1}: local formatDate() declaration — use AppDatePipe instead\n    ${line.trim()}`);
+    if (
+      FORMAT_DATE_DECL.test(line) &&
+      /(private|public|protected)?\s*formatDate\s*\(.*\)\s*:\s*string\s*\{?$/.test(line.trim())
+    ) {
+      violations.push(
+        `${relative(root, file)}:${i + 1}: local formatDate() declaration — use AppDatePipe instead\n    ${line.trim()}`
+      );
     }
     if (TO_LOCALE_DATE_OR_TIME_STRING.test(line)) {
-      violations.push(`${relative(root, file)}:${i + 1}: toLocaleDateString()/toLocaleTimeString() — use AppDatePipe instead\n    ${line.trim()}`);
+      violations.push(
+        `${relative(root, file)}:${i + 1}: toLocaleDateString()/toLocaleTimeString() — use AppDatePipe instead\n    ${line.trim()}`
+      );
     }
   }
 }
@@ -63,7 +68,9 @@ for (const file of files) {
 if (violations.length > 0) {
   console.log('[audit:date-format] Hand-rolled date formatter found:');
   for (const v of violations) console.log(`  ${v}`);
-  console.log('\nUse `| appDate` (or `| appDate:\'withTime\'`) from shared/pipes/app-date.pipe.ts instead.');
+  console.log(
+    "\nUse `| appDate` (or `| appDate:'withTime'`) from shared/pipes/app-date.pipe.ts instead."
+  );
   process.exit(1);
 }
 

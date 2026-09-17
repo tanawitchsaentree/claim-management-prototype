@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { LossEventGeneralInfo } from '../../../core/models/loss-event-overview.model';
 
 /**
@@ -11,9 +11,9 @@ import { LossEventGeneralInfo } from '../../../core/models/loss-event-overview.m
 @Component({
   selector: 'app-loss-event-general-info',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './loss-event-general-info.component.html',
-  styleUrl: './loss-event-general-info.component.scss',
+  styleUrl: './loss-event-general-info.component.scss'
 })
 export class LossEventGeneralInfoComponent {
   @Input({ required: true }) info!: LossEventGeneralInfo;

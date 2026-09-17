@@ -1,6 +1,6 @@
 <div class="step-footer">
   @if (showCancel) {
-    <button nxPlainButton type="button" (click)="cancel.emit()">Cancel</button>
+    <button nxPlainButton type="button" (click)="onCancelClick()">Cancel</button>
   } @else {
     <span></span>
   }
@@ -12,9 +12,7 @@
         Back
       </button>
     }
-    <button nxButton="primary small" type="button"
-            [disabled]="nextDisabled"
-            (click)="next.emit()">
+    <button nxButton="primary small" type="button" [disabled]="nextDisabled" (click)="next.emit()">
       {{ nextLabel }}
     </button>
   </div>

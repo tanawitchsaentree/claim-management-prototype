@@ -31,7 +31,9 @@
   margin: var(--space-sm) 0 var(--space-lg);
 }
 
-.leo-info { margin-bottom: 16px; }
+.leo-info {
+  margin-bottom: 16px;
+}
 
 // Same shell values as the general-info card (see that component's scss for why
 // the claim-overview partial is not @use'd across features).
@@ -57,13 +59,21 @@
   margin: 0;
 }
 
-.leo-table { width: 100%; }
+.leo-table {
+  width: 100%;
+}
 
-.leo-nowrap { white-space: nowrap; }
+.leo-nowrap {
+  white-space: nowrap;
+}
 
-.leo-muted { color: var(--text-muted); }
+.leo-muted {
+  color: var(--text-muted);
+}
 
-.leo-capitalise { text-transform: capitalize; }
+.leo-capitalise {
+  text-transform: capitalize;
+}
 
 .leo-col-action {
   width: 48px;

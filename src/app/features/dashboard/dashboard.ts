@@ -17,7 +17,16 @@ import { MockApprovalService } from '../../core/mock/services/mock-approval.serv
 import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
 import { MockRecoveryAttentionService } from '../../core/mock/services/mock-recovery-attention.service';
 import { AuthService } from '../../core/services/auth';
-import { Claim, ClaimStats, DashboardVM, QuickLink, Task, ReserveMovement, LossEventSummary, PaymentApproval } from '../../core/models';
+import {
+  Claim,
+  ClaimStats,
+  DashboardVM,
+  QuickLink,
+  Task,
+  ReserveMovement,
+  LossEventSummary,
+  PaymentApproval
+} from '../../core/models';
 import { RecoveryAttentionItem } from '../../core/models/recovery-potential.model';
 
 import { Navbar } from '../layout/navbar/navbar';
@@ -29,51 +38,75 @@ import { HeadsUpPanelComponent } from './widgets/heads-up-panel';
 import { CalendarWidgetComponent } from './widgets/calendar-widget';
 import { NewsPanelComponent } from './widgets/news-panel';
 import { ExpenseBreakdownComponent } from './widgets/expense-breakdown';
-import { ClaimsPortfolioWidgetComponent, ClaimsDateRange } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
+import {
+  ClaimsPortfolioWidgetComponent,
+  ClaimsDateRange
+} from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
 import { RecentApprovalsWidgetComponent } from './widgets/recent-approvals-widget/recent-approvals-widget.component';
 import { RecoveryPotentialPanelComponent } from './widgets/recovery-potential-panel';
 
 const QUICK_LINKS: QuickLink[] = [
-  { label: 'AGCS Corporate Rules Book', url: 'https://www.allianz.com/en/about-us/strategy-values/business-model.html' },
-  { label: 'Claims Handling Guidelines',  url: 'https://www.allianz.com/en/about-us.html' },
-  { label: 'Reserve Policy Handbook',     url: 'https://www.allianz.com/en/about-us.html' },
+  {
+    label: 'AGCS Corporate Rules Book',
+    url: 'https://www.allianz.com/en/about-us/strategy-values/business-model.html'
+  },
+  { label: 'Claims Handling Guidelines', url: 'https://www.allianz.com/en/about-us.html' },
+  { label: 'Reserve Policy Handbook', url: 'https://www.allianz.com/en/about-us.html' }
 ];
 
 const EMPTY_VM: DashboardVM = {
-  loading: true, error: null, tasks: [], recentClaims: [],
+  loading: true,
+  error: null,
+  tasks: [],
+  recentClaims: [],
   stats: { total: 0, opened: 0, closed: 0 },
-  quickLinks: QUICK_LINKS, portfolioTab: 'claims', urgentApprovals: [],
+  quickLinks: QUICK_LINKS,
+  portfolioTab: 'claims',
+  urgentApprovals: []
 };
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    CommonModule, RouterLink, RouterLinkActive,
-    NxButtonModule, NxIconModule, NxSpinnerModule, NxSwitcherModule, NxTableModule,
-    StatusChipComponent, EmptyStateComponent, Navbar,
-    FinancialClosureBannerComponent, KpiRowComponent, HeadsUpPanelComponent,
-    CalendarWidgetComponent, NewsPanelComponent, ExpenseBreakdownComponent,
-    ClaimsPortfolioWidgetComponent, RecentApprovalsWidgetComponent,
-    RecoveryPotentialPanelComponent,
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    NxButtonModule,
+    NxIconModule,
+    NxSpinnerModule,
+    NxSwitcherModule,
+    NxTableModule,
+    StatusChipComponent,
+    EmptyStateComponent,
+    Navbar,
+    FinancialClosureBannerComponent,
+    KpiRowComponent,
+    HeadsUpPanelComponent,
+    CalendarWidgetComponent,
+    NewsPanelComponent,
+    ExpenseBreakdownComponent,
+    ClaimsPortfolioWidgetComponent,
+    RecentApprovalsWidgetComponent,
+    RecoveryPotentialPanelComponent
   ],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss',
+  styleUrl: './dashboard.scss'
 })
 export class Dashboard {
-  private taskSvc     = inject(MockTaskService);
-  private claimSvc    = inject(MockClaimService);
+  private taskSvc = inject(MockTaskService);
+  private claimSvc = inject(MockClaimService);
   private approvalSvc = inject(MockApprovalService);
-  private extSvc      = inject(MockDashboardExtendedService);
+  private extSvc = inject(MockDashboardExtendedService);
   private recoverySvc = inject(MockRecoveryAttentionService);
-  readonly auth       = inject(AuthService);
-  private router      = inject(Router);
+  readonly auth = inject(AuthService);
+  private router = inject(Router);
 
   // ── Toggle state ─────────────────────────────────────────────────────
-  readonly showMyTasksOnly     = signal(false);
+  readonly showMyTasksOnly = signal(false);
   // ⚑ PLACEHOLDER default (Last 30 days) — the alignment doc raised "what is the default date
   // range on landing" as an open question with no business answer yet; confirm before launch.
-  readonly claimsDateRange     = signal<ClaimsDateRange>(
+  readonly claimsDateRange = signal<ClaimsDateRange>(
     (localStorage.getItem('dashboard:claims-date-range') as ClaimsDateRange) ?? '30'
   );
 
@@ -81,58 +114,80 @@ export class Dashboard {
   readonly vm$: Observable<DashboardVM> = combineLatest([
     this.taskSvc.getAll(),
     this.claimSvc.getAll(),
-    this.approvalSvc.getAll(),
+    this.approvalSvc.getAll()
   ]).pipe(
     map(([tasks, claims, urgentApprovals]) => ({
-      loading: false, error: null,
+      loading: false,
+      error: null,
       tasks,
       recentClaims: claims,
       stats: this.buildStats(claims),
       quickLinks: QUICK_LINKS,
       portfolioTab: 'claims' as const,
-      urgentApprovals,
+      urgentApprovals
     })),
     startWith(EMPTY_VM),
-    catchError(err => of({
-      loading: false,
-      error: (err as { message?: string })?.message ?? 'Failed to load dashboard data.',
-      tasks: [], recentClaims: [], stats: { total: 0, opened: 0, closed: 0 },
-      quickLinks: QUICK_LINKS, portfolioTab: 'claims' as const, urgentApprovals: [],
-    }))
+    catchError(err =>
+      of({
+        loading: false,
+        error: (err as { message?: string })?.message ?? 'Failed to load dashboard data.',
+        tasks: [],
+        recentClaims: [],
+        stats: { total: 0, opened: 0, closed: 0 },
+        quickLinks: QUICK_LINKS,
+        portfolioTab: 'claims' as const,
+        urgentApprovals: []
+      })
+    )
   );
   private readonly vm = toSignal(this.vm$, { initialValue: EMPTY_VM });
 
   // ── Extended data ────────────────────────────────────────────────────
-  readonly headsUp$          = this.extSvc.getHeadsUp();
-  readonly news$             = this.extSvc.getNews();
-  readonly calendarEvents$   = this.extSvc.getCalendarEvents();
+  readonly headsUp$ = this.extSvc.getHeadsUp();
+  readonly news$ = this.extSvc.getNews();
+  readonly calendarEvents$ = this.extSvc.getCalendarEvents();
   readonly providerExpenses$ = this.extSvc.getProviderExpenses();
-  readonly closurePeriod$    = this.extSvc.getFinancialClosurePeriod();
+  readonly closurePeriod$ = this.extSvc.getFinancialClosurePeriod();
   readonly reserveMovements$ = this.extSvc.getReserveMovements();
-  readonly lossEvents$       = this.extSvc.getLossEvents();
+  readonly lossEvents$ = this.extSvc.getLossEvents();
   readonly paymentApprovals$ = this.extSvc.getPaymentApprovals();
   readonly recoveryAttention$ = this.recoverySvc.getAttentionItems();
 
-  readonly headsUp          = toSignal(this.headsUp$,          { initialValue: [] });
-  readonly news             = toSignal(this.news$,             { initialValue: [] });
-  readonly calendarEvents   = toSignal(this.calendarEvents$,   { initialValue: [] });
+  readonly headsUp = toSignal(this.headsUp$, { initialValue: [] });
+  readonly news = toSignal(this.news$, { initialValue: [] });
+  readonly calendarEvents = toSignal(this.calendarEvents$, { initialValue: [] });
   readonly providerExpenses = toSignal(this.providerExpenses$, { initialValue: [] });
-  readonly closurePeriod    = toSignal(this.closurePeriod$,    {
+  readonly closurePeriod = toSignal(this.closurePeriod$, {
     initialValue: { active: false, start: '', end: '', message: '' }
   });
-  readonly reserveMovements = toSignal(this.reserveMovements$, { initialValue: [] as ReserveMovement[] });
-  readonly lossEvents       = toSignal(this.lossEvents$,       { initialValue: [] as LossEventSummary[] });
-  readonly paymentApprovals = toSignal(this.paymentApprovals$, { initialValue: [] as PaymentApproval[] });
-  readonly recoveryAttention = toSignal(this.recoveryAttention$, { initialValue: [] as RecoveryAttentionItem[] });
+  readonly reserveMovements = toSignal(this.reserveMovements$, {
+    initialValue: [] as ReserveMovement[]
+  });
+  readonly lossEvents = toSignal(this.lossEvents$, { initialValue: [] as LossEventSummary[] });
+  readonly paymentApprovals = toSignal(this.paymentApprovals$, {
+    initialValue: [] as PaymentApproval[]
+  });
+  readonly recoveryAttention = toSignal(this.recoveryAttention$, {
+    initialValue: [] as RecoveryAttentionItem[]
+  });
 
   // ── Filtered display lists ────────────────────────────────────────────
+  // Was raw array-insertion order + slice(0, 7) — a newly created task (e.g.
+  // from converting an orphan claim) is appended to the end of the array, so
+  // it silently never made the visible top 7 behind older seed tasks. Sort by
+  // what actually needs attention: open/in-progress before done, soonest due
+  // date first within each.
   readonly displayedTasks = computed<Task[]>(() => {
     const tasks = this.vm().tasks;
-    const name  = this.auth.user()?.name ?? '';
-    const filtered = this.showMyTasksOnly()
-      ? tasks.filter(t => t.assignee === name)
-      : tasks;
-    return filtered.slice(0, 7);
+    const name = this.auth.user()?.name ?? '';
+    const filtered = this.showMyTasksOnly() ? tasks.filter(t => t.assignee === name) : tasks;
+    const sorted = [...filtered].sort((a, b) => {
+      const aDone = a.status === 'done' ? 1 : 0;
+      const bDone = b.status === 'done' ? 1 : 0;
+      if (aDone !== bDone) return aDone - bDone;
+      return a.dueDate.localeCompare(b.dueDate);
+    });
+    return sorted.slice(0, 7);
   });
 
   // Claims created within the selected date range — feeds both the portfolio widget and the stats card,
@@ -154,25 +209,23 @@ export class Dashboard {
     return range === 'all' ? 'All time' : `Last ${range} days`;
   }
 
-
   // ── KPI data (KCM) ───────────────────────────────────────────────────
   // ⚑ €50k threshold — confirm with business; 7-day window is also a placeholder
   private readonly BIG_RESERVE_THRESHOLD = 50000;
-  private readonly RESERVE_WINDOW_DAYS   = 7;
+  private readonly RESERVE_WINDOW_DAYS = 7;
 
   readonly kpiData = computed(() => {
-    const allClaims    = this.vm().recentClaims;
+    const allClaims = this.vm().recentClaims;
     const allApprovals = this.vm().urgentApprovals;
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - this.RESERVE_WINDOW_DAYS);
-    const bigMovements = this.reserveMovements().filter(r =>
-      r.delta >= this.BIG_RESERVE_THRESHOLD &&
-      new Date(r.date) >= cutoff
+    const bigMovements = this.reserveMovements().filter(
+      r => r.delta >= this.BIG_RESERVE_THRESHOLD && new Date(r.date) >= cutoff
     ).length;
     return {
-      openClaims:          allClaims.filter(c => c.status === 'Open' || c.status === 'In progress').length,
-      pendingApprovals:    allApprovals.length,
-      bigReserveMovements: bigMovements,
+      openClaims: allClaims.filter(c => c.status === 'Open' || c.status === 'In progress').length,
+      pendingApprovals: allApprovals.length,
+      bigReserveMovements: bigMovements
     };
   });
 
@@ -191,12 +244,21 @@ export class Dashboard {
     localStorage.setItem('dashboard:claims-date-range', range);
   }
 
-  navigateToFnol(): void { this.router.navigate(['/fnol/search']); }
-  navigateToSearch(): void { this.router.navigate(['/fnol/search']); }
+  navigateToFnol(): void {
+    this.router.navigate(['/fnol/search']);
+  }
+  navigateToSearch(): void {
+    this.router.navigate(['/fnol/search']);
+  }
 
   initials(): string {
     const name = this.auth.user()?.name ?? '';
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    return name
+      .split(' ')
+      .map(w => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   }
 
   roleBadgeLabel(): string {

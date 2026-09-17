@@ -1,0 +1,58 @@
+[
+  {
+    "id": "tp-001",
+    "name": "Rheinmetall Components GmbH",
+    "relationship": "supplier",
+    "city": "Cologne",
+    "country": "Germany"
+  },
+  {
+    "id": "tp-002",
+    "name": "Nordic Steel Supply AB",
+    "relationship": "supplier",
+    "city": "Gothenburg",
+    "country": "Sweden"
+  },
+  {
+    "id": "tp-003",
+    "name": "Meridian Logistics Ltd",
+    "relationship": "supplier",
+    "city": "Rotterdam",
+    "country": "Netherlands"
+  },
+  {
+    "id": "tp-004",
+    "name": "Cascade Retail Group",
+    "relationship": "customer",
+    "city": "Lyon",
+    "country": "France"
+  },
+  {
+    "id": "tp-005",
+    "name": "Alpine Distribution SA",
+    "relationship": "customer",
+    "city": "Zurich",
+    "country": "Switzerland"
+  },
+  {
+    "id": "tp-006",
+    "name": "Baltic Foods Corporation",
+    "relationship": "customer",
+    "city": "Gdansk",
+    "country": "Poland"
+  },
+  {
+    "id": "tp-007",
+    "name": "Kaufmann's Business Park",
+    "relationship": "other",
+    "city": "Munich",
+    "country": "Germany"
+  },
+  {
+    "id": "tp-008",
+    "name": "Iberia Components S.L.",
+    "relationship": "supplier",
+    "city": "Valencia",
+    "country": "Spain"
+  }
+]

@@ -3,6 +3,7 @@
 **Read this before writing ANY layout/styling code.** These overrides write CSS at runtime AFTER your stylesheet, so class-level `padding`/`margin`/`color` rules can be silently ignored. Each entry below has burned at least one session.
 
 When debugging "the property I set isn't applying":
+
 1. Open DevTools → Computed → check the actual value vs your source
 2. Cross-reference this file before tweaking values
 
@@ -15,7 +16,7 @@ When debugging "the property I set isn't applying":
 `[nxLayout="grid maxwidth"]` (and `[nxLayout]`, `[nxLayout="grid"]`, `[nxLayout="grid nogutters"]`, `[nxLayout="grid nopadding"]` variants) write **inline** on the host element:
 
 ```css
-padding: 0 var(--layout-inset-base);  /* desktop, ≥704px */
+padding: 0 var(--layout-inset-base); /* desktop, ≥704px */
 padding: 0 var(--layout-inset-mobile); /* mobile */
 ```
 
@@ -25,15 +26,13 @@ padding: 0 var(--layout-inset-mobile); /* mobile */
 
 ```html
 <div class="page-wrap">
-  <div nxLayout="grid maxwidth" class="page">
-    …
-  </div>
+  <div nxLayout="grid maxwidth" class="page">…</div>
 </div>
 ```
 
 ```scss
 .page-wrap {
-  padding-top: var(--page-content-top);    /* project token = 40px */
+  padding-top: var(--page-content-top); /* project token = 40px */
   padding-bottom: var(--layout-inset-base);
 }
 .page {
@@ -58,10 +57,12 @@ padding: 0 var(--layout-inset-mobile); /* mobile */
 **Source:** `app.config.ts` imports `NxExpertModule`. It injects `expert.css` as a `<style>` tag at runtime AFTER `angular.json` styles, so its `:host` / `:root` selectors win on cascade order.
 
 It overrides:
+
 - `--interactive-primary`: `#007ab3` → `#27abd6` (dark theme blue)
 - `--text-02`: `#ffffff` → `#0f2a3d` (near-black — breaks primary button white text)
 
 It also injects DI default options:
+
 - `FORMFIELD_DEFAULT_OPTIONS = { appearance: 'outline', nxFloatLabel: 'always' }`
 
 ### Workaround — re-assert in styles.scss
@@ -94,10 +95,22 @@ Every `nx-formfield` reserves ~20px at the bottom for hint/error lines, even whe
 ```
 
 ```scss
-.filter-bar          { display: flex; align-items: flex-end; gap: 16px; }
-.filter-bar__inputs  { display: flex; align-items: flex-start; gap: 16px; }   /* fields */
-.filter-bar__actions { display: flex; align-items: center; gap: 8px;
-                       padding-bottom: 20px; }                                /* buttons — match formfield bottom reserve */
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+.filter-bar__inputs {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+} /* fields */
+.filter-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 20px;
+} /* buttons — match formfield bottom reserve */
 ```
 
 **Blessed:** `step-entities-damages.component.scss` — `.ed-toolbar__filter-inputs` / `.ed-toolbar__filter-actions`
@@ -107,8 +120,15 @@ Every `nx-formfield` reserves ~20px at the bottom for hint/error lines, even whe
 NDBX `nx-formfield` already reserves ~32px below each field for hint/error text. **Never add `gap: 16px` or `margin-bottom: 16px` between stacked formfields** — it compounds to ~48px and looks broken.
 
 ```scss
-.my-form { display: flex; flex-direction: column; gap: 0; }
-.my-form nx-formfield { width: 100%; margin-bottom: 4px; }   /* 4px, not 16 */
+.my-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.my-form nx-formfield {
+  width: 100%;
+  margin-bottom: 4px;
+} /* 4px, not 16 */
 ```
 
 ### `nx-formfield { width: 100% }` is mandatory
@@ -152,6 +172,7 @@ readonly xInvalid = computed(() => this.xStatus() !== 'VALID');
 ```
 
 For value bridging:
+
 ```ts
 private readonly xValue = toSignal(
   this.form.get('x')!.valueChanges,
@@ -188,10 +209,11 @@ private readonly xValue = toSignal(
 **The trap:** Vertical (stacked) radio list renders illegibly cramped without explicit gap.
 
 ```scss
-nx-radio-group, .radio-stack {
+nx-radio-group,
+.radio-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;   /* default; use 4px for tight contexts */
+  gap: 8px; /* default; use 4px for tight contexts */
 }
 ```
 
@@ -202,6 +224,7 @@ nx-radio-group, .radio-stack {
 ## How to spot a runtime override fast
 
 Symptoms that should immediately make you suspect this file:
+
 1. "The property I set in CSS isn't showing up in DevTools Computed"
 2. Class rule shows in DevTools but is **crossed out** with a more-specific inline rule winning
 3. Token value is correct but visual result is wrong
@@ -209,6 +232,7 @@ Symptoms that should immediately make you suspect this file:
 5. `npm run build` passes, audits pass, but UI is wrong
 
 Diagnostic flow:
+
 ```
 1. DevTools → element → Computed tab → look at actual value
 2. DevTools → element → Styles tab → find what overrode you

@@ -24,13 +24,21 @@
       "setup": {
         "description": "Uses CLM-2024-001's existing limits/deductibles data — no override needed",
         "preconditions": [
-          { "text": "Policy limits section visible with a level toggle", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Policy limits section visible with a level toggle",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
       "expectedUI": {
         "description": "Policy limits table and Deductibles table, level toggle above",
-        "visualCues": ["Level toggle (claim/section)", "Policy limits table with type + amount", "Deductibles table below"]
+        "visualCues": [
+          "Level toggle (claim/section)",
+          "Policy limits table with type + amount",
+          "Deductibles table below"
+        ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/limits",

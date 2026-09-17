@@ -1,10 +1,16 @@
 @use '../../styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
-.rcm-header { @include modal.header; }
+.rcm-header {
+  @include modal.header;
+}
 
-.rcm-body { @include modal.body; }
+.rcm-body {
+  @include modal.body;
+}
 
 .rcm-current {
   font-size: var(--paragraph-02-font-size);
@@ -21,10 +27,14 @@
   flex-direction: column;
   gap: 4px;
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
-.rcm-footer { @include modal.footer; }
+.rcm-footer {
+  @include modal.footer;
+}
 
 .rcm-preview {
   max-height: 160px;
@@ -76,12 +86,24 @@
   border-bottom: 1px solid var(--ui-04);
   cursor: pointer;
 
-  &:last-child { border-bottom: none; }
-  &:hover { background: var(--ui-02); }
-  &--active { background: var(--interactive-primary-selected, var(--ui-02)); }
+  &:last-child {
+    border-bottom: none;
+  }
+  &:hover {
+    background: var(--ui-02);
+  }
+  &--active {
+    background: var(--interactive-primary-selected, var(--ui-02));
+  }
 
-  &__name { font-size: var(--paragraph-02-font-size); color: var(--text-01); }
-  &__email { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  &__name {
+    font-size: var(--paragraph-02-font-size);
+    color: var(--text-01);
+  }
+  &__email {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
 }
 
 .rcm-handler-empty {

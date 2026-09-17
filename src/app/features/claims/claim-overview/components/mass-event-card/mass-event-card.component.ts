@@ -15,13 +15,16 @@ import { MassEventLinkStatus } from '../../../../../core/models/claim.model';
 import {
   MassEventEditModalComponent,
   MassEventModalData,
-  MassEventModalResult,
+  MassEventModalResult
 } from '../../../../administration/mass-events/edit-modal/mass-event-edit-modal.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
   MassEventSearchModalComponent,
   MassEventSearchModalData,
-  MassEventSearchModalResult,
+  MassEventSearchModalResult
 } from '../../../../../shared/components/mass-event-search-modal/mass-event-search-modal.component';
 
 export interface MassEventChanged {
@@ -36,17 +39,17 @@ export interface MassEventChanged {
   standalone: true,
   imports: [NxIconModule, NxPopoverModule, NxLinkModule, StatusChipComponent, AppDatePipe],
   templateUrl: './mass-event-card.component.html',
-  styleUrl: './mass-event-card.component.scss',
+  styleUrl: './mass-event-card.component.scss'
 })
 export class MassEventCardComponent {
   @Input({ required: true }) claim!: ClaimOverview;
   @Input() massEvent: MassEvent | null = null;
   @Output() massEventChanged = new EventEmitter<MassEventChanged>();
 
-  private readonly dialogSvc    = inject(NxDialogService);
+  private readonly dialogSvc = inject(NxDialogService);
   private readonly massEventSvc = inject(MockMassEventService);
-  private readonly toast        = inject(ToastService);
-  readonly auth                 = inject(AuthService);
+  private readonly toast = inject(ToastService);
+  readonly auth = inject(AuthService);
 
   openMassEventDetail(): void {
     const me = this.massEvent;
@@ -55,7 +58,10 @@ export class MassEventCardComponent {
     // Use the same bottom-sheet panel as the admin Mass Events page so the
     // modal has a proper height constraint + scroll (the component's SCSS
     // assumes the .bottom-sheet-modal-panel wrapper).
-    this.dialogSvc.open(MassEventEditModalComponent, { data, panelClass: 'bottom-sheet-modal-panel' });
+    this.dialogSvc.open(MassEventEditModalComponent, {
+      data,
+      panelClass: 'bottom-sheet-modal-panel'
+    });
   }
 
   // ── Mass Event linking ──────────────────────────────────────────────────────
@@ -66,10 +72,14 @@ export class MassEventCardComponent {
   async onChangeMassEvent(): Promise<void> {
     const claim = this.claim;
     const currentMassEventId = claim.massEventId;
-    const ref = this.dialogSvc.open<MassEventSearchModalComponent, MassEventSearchModalData, MassEventSearchModalResult>(
+    const ref = this.dialogSvc.open<
       MassEventSearchModalComponent,
-      { data: { currentMassEventId }, panelClass: 'bottom-sheet-modal-panel' },
-    );
+      MassEventSearchModalData,
+      MassEventSearchModalResult
+    >(MassEventSearchModalComponent, {
+      data: { currentMassEventId },
+      panelClass: 'bottom-sheet-modal-panel'
+    });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
 
@@ -84,20 +94,24 @@ export class MassEventCardComponent {
 
     if (currentMassEventId && currentMassEventId !== event.id) {
       const confirmed = await firstValueFrom(
-        this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
-          data: {
-            title: 'Replace linked mass event?',
-            message: `This claim is already linked to ${currentMassEventId}. Linking ${event.id} will replace that link.`,
-            confirmLabel: 'Replace link',
-          },
-          width: '440px',
-        }).afterClosed(),
+        this.dialogSvc
+          .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+            data: {
+              title: 'Replace linked mass event?',
+              message: `This claim is already linked to ${currentMassEventId}. Linking ${event.id} will replace that link.`,
+              confirmLabel: 'Replace link'
+            },
+            width: '440px'
+          })
+          .afterClosed()
       );
       if (!confirmed) return;
     }
 
     const user = this.auth.user();
-    await firstValueFrom(this.massEventSvc.linkClaim(claim.claimId, event.id, { userId: user.id, name: user.name }));
+    await firstValueFrom(
+      this.massEventSvc.linkClaim(claim.claimId, event.id, { userId: user.id, name: user.name })
+    );
     await this.refreshMassEvent(claim.claimId, event.id, 'pending');
     this.toast.success('Mass event linked', `${event.id} — pending confirmation`);
   }
@@ -105,10 +119,11 @@ export class MassEventCardComponent {
   /** Opens the full create form; the new event is persisted (findable everywhere) but never auto-linked here. */
   private async createMassEventManually(): Promise<MassEvent | null> {
     const data: MassEventModalData = { mode: 'create', existingIds: this.massEventSvc.allIds() };
-    const ref = this.dialogSvc.open<MassEventEditModalComponent, MassEventModalData, MassEventModalResult | null>(
+    const ref = this.dialogSvc.open<
       MassEventEditModalComponent,
-      { data, panelClass: 'bottom-sheet-modal-panel' },
-    );
+      MassEventModalData,
+      MassEventModalResult | null
+    >(MassEventEditModalComponent, { data, panelClass: 'bottom-sheet-modal-panel' });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return null;
     return firstValueFrom(this.massEventSvc.addEvent(result.event));
@@ -128,15 +143,17 @@ export class MassEventCardComponent {
     if (!massEventId) return;
 
     const confirmed = await firstValueFrom(
-      this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
-        data: {
-          title: 'Unlink mass event?',
-          message: `Remove the link to ${massEventId} from this claim?`,
-          confirmLabel: 'Unlink mass event',
-          confirmDanger: true,
-        },
-        width: '440px',
-      }).afterClosed(),
+      this.dialogSvc
+        .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+          data: {
+            title: 'Unlink mass event?',
+            message: `Remove the link to ${massEventId} from this claim?`,
+            confirmLabel: 'Unlink mass event',
+            confirmDanger: true
+          },
+          width: '440px'
+        })
+        .afterClosed()
     );
     if (!confirmed) return;
 
@@ -162,30 +179,44 @@ export class MassEventCardComponent {
     if (!massEventId) return;
 
     const confirmed = await firstValueFrom(
-      this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
-        data: {
-          title: 'Override mass event allocation?',
-          message: `This marks ${massEventId} as not associated with this claim. The tag stays on the claim as a record of what was allocated, and the system stops running automatic checks against it. To remove the mass event from the claim entirely, use "Unlink mass event" instead. This can be undone via "Link mass event."`,
-          confirmLabel: 'Mark as not associated',
-          confirmDanger: true,
-        },
-        width: '440px',
-      }).afterClosed(),
+      this.dialogSvc
+        .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+          data: {
+            title: 'Override mass event allocation?',
+            message: `This marks ${massEventId} as not associated with this claim. The tag stays on the claim as a record of what was allocated, and the system stops running automatic checks against it. To remove the mass event from the claim entirely, use "Unlink mass event" instead. This can be undone via "Link mass event."`,
+            confirmLabel: 'Mark as not associated',
+            confirmDanger: true
+          },
+          width: '440px'
+        })
+        .afterClosed()
     );
     if (!confirmed) return;
 
     const user = this.auth.user();
-    await firstValueFrom(this.massEventSvc.overrideLink(claim.claimId, { userId: user.id, name: user.name }));
+    await firstValueFrom(
+      this.massEventSvc.overrideLink(claim.claimId, { userId: user.id, name: user.name })
+    );
     await this.refreshMassEvent(claim.claimId, massEventId, 'overridden');
-    this.toast.success('Mass event allocation overridden', 'Auto-checks are now disabled for this claim.');
+    this.toast.success(
+      'Mass event allocation overridden',
+      'Auto-checks are now disabled for this claim.'
+    );
   }
 
   private async refreshMassEvent(
     claimId: string,
     massEventId: string | undefined,
-    linkStatus: MassEventLinkStatus | undefined,
+    linkStatus: MassEventLinkStatus | undefined
   ): Promise<void> {
-    const massEvent = massEventId ? await firstValueFrom(this.massEventSvc.getById(massEventId)) : null;
-    this.massEventChanged.emit({ claimId, massEventId, massEventLinkStatus: linkStatus, massEvent });
+    const massEvent = massEventId
+      ? await firstValueFrom(this.massEventSvc.getById(massEventId))
+      : null;
+    this.massEventChanged.emit({
+      claimId,
+      massEventId,
+      massEventLinkStatus: linkStatus,
+      massEvent
+    });
   }
 }

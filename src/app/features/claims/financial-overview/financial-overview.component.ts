@@ -19,7 +19,13 @@ import { FinancialOverview, FinancialSection } from '../../../core/models/financ
 import { ClaimSection } from '../../../core/models/section.model';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { AddReserveModalComponent, AddReserveModalData, AddReserveModalResult } from './components/add-reserve-modal/add-reserve-modal.component';
+import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
+import { ToastService } from '../../../shared/components/toast/toast.service';
+import {
+  AddReserveModalComponent,
+  AddReserveModalData,
+  AddReserveModalResult
+} from './components/add-reserve-modal/add-reserve-modal.component';
 
 export type FinancialView = 'overview' | 'payments' | 'reserves' | 'recovery';
 type LevelToggle = 'claim' | 'section';
@@ -40,24 +46,26 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     NxMessageModule,
     EmptyStateComponent,
     PageHeaderComponent,
+    BlockerReturnBannerComponent
   ],
   templateUrl: './financial-overview.component.html',
-  styleUrl:    './financial-overview.component.scss',
+  styleUrl: './financial-overview.component.scss'
 })
 export class FinancialOverviewComponent implements OnInit {
-  private readonly route       = inject(ActivatedRoute);
-  private readonly router      = inject(Router);
-  private readonly svc         = inject(MockFinancialOverviewService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly svc = inject(MockFinancialOverviewService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
-  private readonly sectionSvc  = inject(MockSectionService);
-  private readonly dialogSvc   = inject(NxDialogService);
+  private readonly sectionSvc = inject(MockSectionService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
 
   private claimId = '';
 
-  readonly loading   = signal(true);
-  readonly fo        = signal<FinancialOverview | null>(null);
-  readonly level     = signal<LevelToggle>('claim');
-  readonly currency  = signal('EUR');
+  readonly loading = signal(true);
+  readonly fo = signal<FinancialOverview | null>(null);
+  readonly level = signal<LevelToggle>('claim');
+  readonly currency = signal('EUR');
   readonly sectionId = signal('');
   readonly expandedReserveIds = signal<Set<string>>(new Set());
 
@@ -66,7 +74,7 @@ export class FinancialOverviewComponent implements OnInit {
   // the real ClaimSection list (financial-overview's own FinancialSection
   // model has no status field) so the active section's closed state can be
   // looked up by sectionId.
-  readonly claimClosed     = signal(false);
+  readonly claimClosed = signal(false);
   readonly sectionStatuses = signal<ClaimSection[]>([]);
 
   readonly activeSectionClosed = computed(() => {
@@ -74,8 +82,9 @@ export class FinancialOverviewComponent implements OnInit {
     return this.sectionStatuses().find(s => s.id === id)?.status === 'Closed';
   });
 
-  readonly actionsDisabled = computed(() =>
-    this.claimClosed() || (this.level() === 'section' && this.activeSectionClosed()));
+  readonly actionsDisabled = computed(
+    () => this.claimClosed() || (this.level() === 'section' && this.activeSectionClosed())
+  );
 
   readonly actionsDisabledReason = computed(() => {
     if (this.claimClosed()) return 'Claim is closed';
@@ -85,7 +94,7 @@ export class FinancialOverviewComponent implements OnInit {
 
   private readonly viewParam = toSignal(
     this.route.queryParamMap.pipe(map(p => p.get('view') ?? 'overview')),
-    { initialValue: this.route.snapshot.queryParamMap.get('view') ?? 'overview' },
+    { initialValue: this.route.snapshot.queryParamMap.get('view') ?? 'overview' }
   );
 
   readonly view = computed<FinancialView>(() => {
@@ -95,10 +104,14 @@ export class FinancialOverviewComponent implements OnInit {
 
   readonly viewTitle = computed<string>(() => {
     switch (this.view()) {
-      case 'payments': return 'Payments';
-      case 'reserves': return 'Reserves';
-      case 'recovery': return 'Recovery bookings';
-      default:         return 'Financial Overview';
+      case 'payments':
+        return 'Payments';
+      case 'reserves':
+        return 'Reserves';
+      case 'recovery':
+        return 'Recovery bookings';
+      default:
+        return 'Financial Overview';
     }
   });
 
@@ -115,22 +128,24 @@ export class FinancialOverviewComponent implements OnInit {
     if (!s) return [];
     return [
       { label: 'Outstanding reserves', value: s.outstandingReserves },
-      { label: 'Completed payments',   value: s.completedPayments },
-      { label: 'Pending payments',     value: s.pendingPayments },
-      { label: 'Recoveries',           value: s.recoveries },
-      { label: 'Incurred',             value: s.incurred },
+      { label: 'Completed payments', value: s.completedPayments },
+      { label: 'Pending payments', value: s.pendingPayments },
+      { label: 'Recoveries', value: s.recoveries },
+      { label: 'Incurred', value: s.incurred }
     ];
   }
 
   async ngOnInit(): Promise<void> {
-    const claimId = this.route.snapshot.paramMap.get('id')
-      ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
+    const claimId =
+      this.route.snapshot.paramMap.get('id') ??
+      this.route.parent?.snapshot.paramMap.get('id') ??
+      '';
     this.claimId = claimId;
     this.loading.set(true);
     const [data, claim, sections] = await Promise.all([
       firstValueFrom(this.svc.getByClaimId(claimId)),
       firstValueFrom(this.overviewSvc.getOverview(claimId)),
-      firstValueFrom(this.sectionSvc.getByClaimId(claimId)),
+      firstValueFrom(this.sectionSvc.getByClaimId(claimId))
     ]);
     this.fo.set(data);
     this.claimClosed.set(claim.status === 'Closed');
@@ -157,17 +172,25 @@ export class FinancialOverviewComponent implements OnInit {
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
       data: { sections: current.sections } satisfies AddReserveModalData,
       width: '600px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const input = await firstValueFrom(ref.afterClosed()) as AddReserveModalResult;
+    const input = (await firstValueFrom(ref.afterClosed())) as AddReserveModalResult;
     if (!input) return;
     await firstValueFrom(this.svc.addReserve(this.claimId, input));
     this.fo.set(await firstValueFrom(this.svc.getByClaimId(this.claimId)));
+    // Adding a section already confirms with a toast — adding a reserve (the
+    // other half of the same "needs setup" checklist, and the one moving
+    // real money) gave zero feedback at all until now.
+    this.toast.success(
+      'Reserve added',
+      `${input.currency} ${input.reserveValue.toLocaleString()} reserve added.`
+    );
   }
 
   toggleReserveHistory(id: string): void {
     const s = new Set(this.expandedReserveIds());
-    s.has(id) ? s.delete(id) : s.add(id);
+    if (s.has(id)) s.delete(id);
+    else s.add(id);
     this.expandedReserveIds.set(s);
   }
 

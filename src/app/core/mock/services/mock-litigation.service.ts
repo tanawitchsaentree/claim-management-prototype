@@ -11,7 +11,7 @@ export class MockLitigationService extends MockBaseService {
   search(filters?: LitigationFilters): Observable<Litigation[]> {
     let list = this.cache;
     if (filters?.claimId) list = list.filter(l => l.claimId === filters.claimId);
-    if (filters?.status)  list = list.filter(l => l.status  === filters.status);
+    if (filters?.status) list = list.filter(l => l.status === filters.status);
     return this.respond(list.map(l => this.clone(l)));
   }
 
@@ -23,14 +23,14 @@ export class MockLitigationService extends MockBaseService {
   create(claimId: string, clientName: string): Litigation {
     const nextNo = this.cache.filter(l => l.claimId === claimId).length + 1;
     const fresh: Litigation = {
-      id:         `${claimId}-LIT-${nextNo}`,
+      id: `${claimId}-LIT-${nextNo}`,
       claimId,
       clientName,
-      type:       '',
-      startDate:  '',
-      status:     'Draft',
-      expenses:   [],
-      cases:      [],
+      type: '',
+      startDate: '',
+      status: 'Draft',
+      expenses: [],
+      cases: []
     };
     this.cache = [fresh, ...this.cache];
     return this.clone(fresh);
@@ -44,5 +44,7 @@ export class MockLitigationService extends MockBaseService {
     this.cache = (rawData as unknown as Litigation[]).map(l => this.clone(l));
   }
 
-  private clone<T>(v: T): T { return JSON.parse(JSON.stringify(v)); }
+  private clone<T>(v: T): T {
+    return JSON.parse(JSON.stringify(v));
+  }
 }

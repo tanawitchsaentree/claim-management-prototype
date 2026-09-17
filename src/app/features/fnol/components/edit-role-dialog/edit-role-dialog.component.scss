@@ -23,7 +23,9 @@
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
-.erd-body { @include modal.body; }
+.erd-body {
+  @include modal.body;
+}
 
 .erd-subtitle {
   margin: 0 0 4px;
@@ -50,4 +52,6 @@
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-.erd-footer { @include modal.footer; }
+.erd-footer {
+  @include modal.footer;
+}

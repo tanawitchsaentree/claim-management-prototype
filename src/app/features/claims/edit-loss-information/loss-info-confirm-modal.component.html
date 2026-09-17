@@ -4,7 +4,10 @@
 
 <header class="licm-header">
   <h2 class="licm-title">Confirm loss information updates</h2>
-  <p class="licm-subtitle">The following fields will be updated for claim <strong>{{ data.claimId }}</strong>.</p>
+  <p class="licm-subtitle">
+    The following fields will be updated for claim <strong>{{ data.claimId }}</strong
+    >.
+  </p>
 </header>
 
 <div class="licm-body" tabindex="0">
@@ -36,7 +39,12 @@
 
 <footer class="licm-footer">
   <button nxButton="tertiary small" type="button" (click)="onCancel()">Back to editing</button>
-  <button nxButton="primary small" type="button" (click)="onConfirm()" [disabled]="data.diffs.length === 0">
+  <button
+    nxButton="primary small"
+    type="button"
+    (click)="onConfirm()"
+    [disabled]="data.diffs.length === 0"
+  >
     Confirm updates
   </button>
 </footer>

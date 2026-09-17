@@ -19,7 +19,7 @@ import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
-const root  = resolve(__dir, '..');
+const root = resolve(__dir, '..');
 const srcDir = resolve(root, 'src/app');
 
 // ── Walk src/app and collect *.component.ts files ────────────────────────────
@@ -36,12 +36,12 @@ function walkTs(dir, files = []) {
 
 const STAGE_INTERFACES = [
   'OverviewStage',
-  'FnolLossInfoStage',
+  'FnolLossInfoStage'
   // Add new stage interfaces here as they're declared in scenario-stage.model.ts
 ];
 
-const REGISTER_RE   = /this\.\w*[Ss]tage\w*\.register\(this\)/;
-const NG_ONINIT_RE  = /\bngOnInit\s*\([^)]*\)\s*:\s*[\w<>\[\]\s|]+\s*\{/;
+const REGISTER_RE = /this\.\w*[Ss]tage\w*\.register\(this\)/;
+const NG_ONINIT_RE = /\bngOnInit\s*\([^)]*\)\s*:\s*[\w<>\[\]\s|]+\s*\{/;
 
 function fileImplementsStage(src) {
   return STAGE_INTERFACES.some(name => new RegExp(`implements\\b[^{]*\\b${name}\\b`).test(src));
@@ -71,9 +71,9 @@ function firstExecutableLine(body) {
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    if (trimmed.startsWith('//')) continue;     // comment
-    if (trimmed.startsWith('/*'))  continue;
-    if (trimmed.startsWith('*'))   continue;    // jsdoc continuation
+    if (trimmed.startsWith('//')) continue; // comment
+    if (trimmed.startsWith('/*')) continue;
+    if (trimmed.startsWith('*')) continue; // jsdoc continuation
     return trimmed;
   }
   return null;
@@ -81,7 +81,7 @@ function firstExecutableLine(body) {
 
 const files = walkTs(srcDir);
 let totalChecked = 0;
-let totalFailed  = 0;
+let totalFailed = 0;
 const failures = [];
 
 for (const file of files) {
@@ -106,7 +106,7 @@ for (const file of files) {
   if (!REGISTER_RE.test(firstLine)) {
     failures.push({
       file,
-      reason: `first line of ngOnInit is "${firstLine}" — expected stageSvc.register(this)`,
+      reason: `first line of ngOnInit is "${firstLine}" — expected stageSvc.register(this)`
     });
     totalFailed++;
   }
@@ -126,5 +126,7 @@ for (const f of failures) {
   console.log(`      → ${f.reason}`);
 }
 console.log('\nFix: move stageSvc.register(this) to the FIRST executable line of ngOnInit().');
-console.log('See PROJECT.md → "Blessed Patterns" → "Pattern: ScenarioStage component registration".\n');
+console.log(
+  'See PROJECT.md → "Blessed Patterns" → "Pattern: ScenarioStage component registration".\n'
+);
 process.exit(1);

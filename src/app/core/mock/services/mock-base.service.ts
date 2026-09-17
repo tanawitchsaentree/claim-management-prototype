@@ -7,7 +7,9 @@ import { MockStateService } from '../state/mock-state.service';
 export abstract class MockBaseService {
   private readonly mockState = inject(MockStateService);
 
-  protected get scenario() { return this.mockState.scenario(); }
+  protected get scenario() {
+    return this.mockState.scenario();
+  }
 
   protected respond<T>(data: T): Observable<T> {
     if (this.shouldError()) {
@@ -26,7 +28,7 @@ export abstract class MockBaseService {
     return this.respond(all);
   }
 
-  protected findById<T extends { [key: string]: unknown }>(
+  protected findById<T extends Record<string, unknown>>(
     all: T[],
     idField: string,
     id: string
@@ -48,15 +50,24 @@ export abstract class MockBaseService {
     let statusText = 'Internal Server Error';
 
     if (!forceStatus) {
-      if (type === '404') { status = 404; statusText = 'Not Found'; }
-      else if (type === '403') { status = 403; statusText = 'Forbidden'; }
-      else if (type === 'network') { status = 0; statusText = 'Network Error'; }
+      if (type === '404') {
+        status = 404;
+        statusText = 'Not Found';
+      } else if (type === '403') {
+        status = 403;
+        statusText = 'Forbidden';
+      } else if (type === 'network') {
+        status = 0;
+        statusText = 'Network Error';
+      }
     } else if (forceStatus === 404) {
       statusText = 'Not Found';
     }
 
     const err = new HttpErrorResponse({ status, statusText, url: '/mock' });
-    console.warn(`[MockService] Simulated ${status} (${statusText}) — scenario: ${this.scenario.name}`);
+    console.warn(
+      `[MockService] Simulated ${status} (${statusText}) — scenario: ${this.scenario.name}`
+    );
     return err;
   }
 }

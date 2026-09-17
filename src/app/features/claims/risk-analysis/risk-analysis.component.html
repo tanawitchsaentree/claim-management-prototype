@@ -7,20 +7,20 @@
 } @else if (!model()) {
   <app-empty-state message="No risk analysis available for this claim."></app-empty-state>
 } @else {
-
   <!-- General information -->
   <section class="rai-card">
     <h2 class="rai-card__title">General information</h2>
     <div class="rai-grid">
-
       <div class="rai-field">
         <div class="rai-field__label-row">
           <span class="rai-field__label">Risk score</span>
-          <button type="button"
-                  (click)="refreshScore()"
-                  [disabled]="refreshing()"
-                  aria-label="Refresh score"
-                  class="rai-refresh-btn">
+          <button
+            type="button"
+            (click)="refreshScore()"
+            [disabled]="refreshing()"
+            aria-label="Refresh score"
+            class="rai-refresh-btn"
+          >
             @if (refreshing()) {
               <nx-spinner nxSize="small"></nx-spinner>
             } @else {
@@ -29,8 +29,14 @@
           </button>
         </div>
         <div class="rai-field__value-row">
-          <app-status-chip [status]="scoreChip()" domain="claim" [label]="model()!.riskScore + '/5'"></app-status-chip>
-          <span class="rai-field__timestamp">{{ model()!.lastScoreUpdated | date:'dd-MM-yyyy, HH:mm' }}</span>
+          <app-status-chip
+            [status]="scoreChip()"
+            domain="claim"
+            [label]="model()!.riskScore + '/5'"
+          ></app-status-chip>
+          <span class="rai-field__timestamp">{{
+            model()!.lastScoreUpdated | date: 'dd-MM-yyyy, HH:mm'
+          }}</span>
         </div>
       </div>
 
@@ -39,7 +45,11 @@
           <span class="rai-field__label">Risk status</span>
         </div>
         <div class="rai-field__value-row">
-          <app-status-chip [status]="riskStatusChip()" domain="claim" [label]="model()!.riskStatus"></app-status-chip>
+          <app-status-chip
+            [status]="riskStatusChip()"
+            domain="claim"
+            [label]="model()!.riskStatus"
+          ></app-status-chip>
         </div>
       </div>
 
@@ -60,14 +70,16 @@
           <span class="rai-field__plain">{{ model()!.investigationOutcome }}</span>
         </div>
       </div>
-
     </div>
 
     @if (!isNoRisk()) {
       <div class="rai-card__actions">
-        <button nxButton="secondary small" type="button"
-                (click)="markNoRisk()"
-                [disabled]="markingNoRisk()">
+        <button
+          nxButton="secondary small"
+          type="button"
+          (click)="markNoRisk()"
+          [disabled]="markingNoRisk()"
+        >
           Mark as "No risk"
         </button>
       </div>
@@ -99,7 +111,9 @@
   <!-- Investigation state -->
   @if (!hasInvestigation()) {
     <app-empty-state message="Investigation not started" icon="find">
-      <button action nxButton="primary" type="button" (click)="startInvestigation()">Start referral process</button>
+      <button action nxButton="primary" type="button" (click)="startInvestigation()">
+        Start referral process
+      </button>
     </app-empty-state>
   } @else {
     <section class="rai-investigation">
@@ -115,7 +129,11 @@
         </div>
         <div class="rai-field">
           <span class="rai-field__label">Status</span>
-          <app-status-chip [status]="investigationChip()" domain="claim" [label]="model()!.investigationStatus"></app-status-chip>
+          <app-status-chip
+            [status]="investigationChip()"
+            domain="claim"
+            [label]="model()!.investigationStatus"
+          ></app-status-chip>
         </div>
       </div>
     </section>

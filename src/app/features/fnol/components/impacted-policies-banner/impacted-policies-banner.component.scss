@@ -1,4 +1,6 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
 .ipb-message {
   margin-bottom: 16px;
@@ -31,5 +33,7 @@
   text-decoration: underline;
   cursor: pointer;
 
-  &:hover { text-decoration: none; }
+  &:hover {
+    text-decoration: none;
+  }
 }

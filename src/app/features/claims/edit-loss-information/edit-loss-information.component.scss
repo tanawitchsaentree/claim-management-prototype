@@ -1,6 +1,8 @@
 @use '../../../shared/styles/form-section' as fs;
 
-:host { display: block; }
+:host {
+  display: block;
+}
 
 .eli-loading {
   display: flex;
@@ -69,7 +71,9 @@
   padding: 6px 0;
   border-top: 1px solid var(--ui-04);
 
-  &:first-child { border-top: none; }
+  &:first-child {
+    border-top: none;
+  }
 }
 
 .eli-ledger__field {
@@ -86,8 +90,13 @@
   color: var(--text-muted);
 }
 
-.eli-ledger__was { text-decoration: line-through; }
-.eli-ledger__now { color: var(--text-01); font-weight: 600; }
+.eli-ledger__was {
+  text-decoration: line-through;
+}
+.eli-ledger__now {
+  color: var(--text-01);
+  font-weight: 600;
+}
 
 // ─── Footer — deliberately NOT the wizard step-footer shape. Primary action
 // (Save) sits at the LEFT edge, not the bottom-right "Next" coordinates a
@@ -112,11 +121,17 @@
 }
 
 // ─── Cards — shared with FNOL's step-loss-information via _form-section ───
-.eli-card { @include fs.card; }
+.eli-card {
+  @include fs.card;
+}
 
-.eli-section-heading { @include fs.section-heading; }
+.eli-section-heading {
+  @include fs.section-heading;
+}
 
-.eli-sub-heading { @include fs.sub-heading; }
+.eli-sub-heading {
+  @include fs.sub-heading;
+}
 
 .eli-section-desc {
   font-size: var(--paragraph-03-font-size);
@@ -124,7 +139,9 @@
   margin: 0 0 16px;
 }
 
-.eli-divider { @include fs.divider; }
+.eli-divider {
+  @include fs.divider;
+}
 
 .eli-full-width {
   width: 100%;
@@ -173,12 +190,26 @@
 }
 
 // ─── Two-col grid — shared with FNOL's step-loss-information ─────────
-.two-col-grid { @include fs.two-col-grid; }
+.two-col-grid {
+  @include fs.two-col-grid;
+}
 
 // ─── Radio field ─────────────────────────────────────────────────────
-.eli-radio-field { display: flex; flex-direction: column; gap: 6px; }
-.eli-radio-label { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); margin: 0; }
-.eli-radio-row   { display: flex; gap: 16px; }
+.eli-radio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.eli-radio-label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0;
+}
+.eli-radio-row {
+  display: flex;
+  gap: 16px;
+}
 
 // Compact regular accordion — tighter header padding
 .eli-card {
@@ -205,4 +236,3 @@
   color: var(--danger);
   margin: var(--space-sm) 0 0;
 }
-

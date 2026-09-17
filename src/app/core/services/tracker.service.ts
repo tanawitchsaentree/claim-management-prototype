@@ -2,13 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { TrackerViewerService } from './tracker-viewer.service';
 import { HIDE_OWNER_FILTER } from './tracker-visibility';
-import {
-  toNote,
-  toPi,
-  toRelation,
-  toSyncLog,
-  toTicketWithDetails,
-} from './tracker.mappers';
+import { toNote, toPi, toRelation, toSyncLog, toTicketWithDetails } from './tracker.mappers';
 import type {
   Note,
   Pi,
@@ -16,7 +10,7 @@ import type {
   SyncLog,
   TicketFilters,
   TicketState,
-  TicketWithDetails,
+  TicketWithDetails
 } from '../models/tracker.model';
 
 const TICKET_SELECT = '*, epic:epic_id(*), state:ticket_state(*)';
@@ -68,18 +62,22 @@ export class TrackerService {
   readonly filters = signal<TicketFilters>({ showArchived: false });
 
   setFilters(patch: Partial<TicketFilters>): void {
-    this.filters.update((f) => ({ ...f, ...patch }));
+    this.filters.update(f => ({ ...f, ...patch }));
   }
 
   // Not in the original service list — added so the PI filter dropdown has
   // names to show (ticket only carries pi_id, not a joined pi name).
   async getPis(): Promise<void> {
-    const { data, error } = await this.supabase.from('pi').select('*').eq('archived', false).order('name');
+    const { data, error } = await this.supabase
+      .from('pi')
+      .select('*')
+      .eq('archived', false)
+      .order('name');
     if (error) {
       this.error.set(error.message);
       return;
     }
-    this.pis.set((data ?? []).map((r) => toPi(r as Record<string, unknown>)));
+    this.pis.set((data ?? []).map(r => toPi(r as Record<string, unknown>)));
   }
 
   async getTickets(filters: TicketFilters = {}): Promise<void> {
@@ -106,15 +104,15 @@ export class TrackerService {
       return;
     }
 
-    let rows = (data ?? []).map((r) => toTicketWithDetails(r as Record<string, unknown>));
+    let rows = (data ?? []).map(r => toTicketWithDetails(r as Record<string, unknown>));
     // blocked_by / prototype_route live on the joined ticket_state row —
     // filtered client-side rather than via a PostgREST !inner embed filter
     // (2 users, small dataset).
     if (filters.blockedBy) {
-      rows = rows.filter((r) => r.state.blockedBy === filters.blockedBy);
+      rows = rows.filter(r => r.state.blockedBy === filters.blockedBy);
     }
     if (filters.hasPrototypeRoute !== undefined) {
-      rows = rows.filter((r) => !!r.state.prototypeRoute === filters.hasPrototypeRoute);
+      rows = rows.filter(r => !!r.state.prototypeRoute === filters.hasPrototypeRoute);
     }
     this.tickets.set(rows);
     this.loading.set(false);
@@ -148,7 +146,9 @@ export class TrackerService {
   // needs a row's title and stage status in a prototype tab that has no tracker
   // panel open at all (PrototypeEntryService). getTicket() is the signal-writing
   // wrapper over this, so both go through the same visibility filter.
-  async fetchTicket(jiraKey: string): Promise<{ row: TicketWithDetails | null; error: string | null }> {
+  async fetchTicket(
+    jiraKey: string
+  ): Promise<{ row: TicketWithDetails | null; error: string | null }> {
     let query = this.supabase.from('ticket').select(TICKET_SELECT).eq('jira_key', jiraKey);
     // Closes the `?key=BMPCC-14833` hole: the panel fetches by key independently
     // of the list, so hiding rows from the table alone left every hidden ticket
@@ -167,8 +167,13 @@ export class TrackerService {
 
   async updateTicketState(
     ticketId: string,
-    partial: Partial<Pick<TicketState, 'buildStatus' | 'handoffStatus' | 'blockedBy' | 'blockedNote' | 'prototypeRoute'>>,
-    updatedBy: string,
+    partial: Partial<
+      Pick<
+        TicketState,
+        'buildStatus' | 'handoffStatus' | 'blockedBy' | 'blockedNote' | 'prototypeRoute'
+      >
+    >,
+    updatedBy: string
   ): Promise<void> {
     const patch: Record<string, unknown> = { updated_by: updatedBy };
     if (partial.buildStatus !== undefined) patch['build_status'] = partial.buildStatus;
@@ -177,7 +182,10 @@ export class TrackerService {
     if (partial.blockedNote !== undefined) patch['blocked_note'] = partial.blockedNote;
     if (partial.prototypeRoute !== undefined) patch['prototype_route'] = partial.prototypeRoute;
 
-    const { error } = await this.supabase.from('ticket_state').update(patch).eq('ticket_id', ticketId);
+    const { error } = await this.supabase
+      .from('ticket_state')
+      .update(patch)
+      .eq('ticket_id', ticketId);
     if (error) {
       this.error.set(error.message);
       return;
@@ -216,7 +224,7 @@ export class TrackerService {
       this.error.set(error.message);
       return;
     }
-    this.notes.set((data ?? []).map((r) => toNote(r as Record<string, unknown>)));
+    this.notes.set((data ?? []).map(r => toNote(r as Record<string, unknown>)));
   }
 
   async getRelations(ticketId: string): Promise<void> {
@@ -233,7 +241,7 @@ export class TrackerService {
       this.error.set(error.message);
       return;
     }
-    this.relations.set((data ?? []).map((r) => toRelation(r as Record<string, unknown>)));
+    this.relations.set((data ?? []).map(r => toRelation(r as Record<string, unknown>)));
   }
 
   async getSyncLog(limit = 5): Promise<void> {
@@ -247,6 +255,6 @@ export class TrackerService {
       this.error.set(error.message);
       return;
     }
-    this.syncLog.set((data ?? []).map((r) => toSyncLog(r as Record<string, unknown>)));
+    this.syncLog.set((data ?? []).map(r => toSyncLog(r as Record<string, unknown>)));
   }
 }

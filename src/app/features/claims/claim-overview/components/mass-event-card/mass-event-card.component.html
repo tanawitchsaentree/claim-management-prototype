@@ -2,22 +2,33 @@
   <div class="co-field">
     <span class="co-label">
       Mass Event
-      <button type="button"
-              class="co-info-btn"
-              aria-label="Mass event details"
-              data-tour-id="co-mass-event-info"
-              #meTrigger="nxPopoverTrigger"
-              [nxPopoverTriggerFor]="massEventPopover"
-              nxPopoverTrigger="click"
-              nxPopoverDirection="bottom">
+      <button
+        type="button"
+        class="co-info-btn"
+        aria-label="Mass event details"
+        data-tour-id="co-mass-event-info"
+        #meTrigger="nxPopoverTrigger"
+        [nxPopoverTriggerFor]="massEventPopover"
+        nxPopoverTrigger="click"
+        nxPopoverDirection="bottom"
+      >
         <nx-icon name="info-circle-o" class="co-info-icon"></nx-icon>
       </button>
     </span>
     <span class="co-value co-value--with-chip">
       {{ me.id }}
       @if (claim.massEventLinkStatus) {
-        <app-status-chip [status]="claim.massEventLinkStatus" domain="mass-event"
-          [label]="claim.massEventLinkStatus === 'overridden' ? 'Overridden' : (claim.massEventLinkStatus === 'confirmed' ? 'Confirmed' : 'Pending')">
+        <app-status-chip
+          [status]="claim.massEventLinkStatus"
+          domain="mass-event"
+          [label]="
+            claim.massEventLinkStatus === 'overridden'
+              ? 'Overridden'
+              : claim.massEventLinkStatus === 'confirmed'
+                ? 'Confirmed'
+                : 'Pending'
+          "
+        >
         </app-status-chip>
       }
     </span>
@@ -33,7 +44,12 @@
         <div class="me-popover__row">
           <dt>Type</dt>
           <dd>
-            <span class="me-popover__cat-badge me-popover__cat-badge--{{ me.catType === 'CAT' ? 'cat' : 'noncat' }}">{{ me.catType }}</span>
+            <span
+              class="me-popover__cat-badge me-popover__cat-badge--{{
+                me.catType === 'CAT' ? 'cat' : 'noncat'
+              }}"
+              >{{ me.catType }}</span
+            >
           </dd>
         </div>
         <div class="me-popover__row">
@@ -64,8 +80,12 @@
           <div>
             <p class="me-popover__overridden-title">Auto-checks disabled</p>
             <p class="me-popover__overridden-desc">
-              Overridden by {{ claim.massEventOverriddenBy?.name ?? 'a claim handler' }}@if (claim.massEventOverriddenBy?.at) { on {{ claim.massEventOverriddenBy!.at | appDate }}}.
-              The system will not run further automatic checks linking this claim to this mass event.
+              Overridden by {{ claim.massEventOverriddenBy?.name ?? 'a claim handler' }}
+              @if (claim.massEventOverriddenBy?.at) {
+                on {{ claim.massEventOverriddenBy!.at | appDate }}
+              }
+              . The system will not run further automatic checks linking this claim to this mass
+              event.
             </p>
           </div>
         </div>
@@ -76,21 +96,57 @@
            override, which read as a mislabelled unlink. Confirm stays
            KCM-only — signing off an automated allocation is governance. -->
       <div class="me-popover__footer">
-        <nx-link><a (click)="meTrigger.close(); onChangeMassEvent()">Link mass event</a></nx-link>
-        <nx-link class="me-popover__unlink"><a (click)="meTrigger.close(); onUnlinkMassEvent()">Unlink mass event</a></nx-link>
+        <nx-link
+          ><a
+            tabindex="0"
+            (click)="meTrigger.close(); onChangeMassEvent()"
+            (keydown.enter)="meTrigger.close(); onChangeMassEvent()"
+            >Link mass event</a
+          ></nx-link
+        >
+        <nx-link class="me-popover__unlink"
+          ><a
+            tabindex="0"
+            (click)="meTrigger.close(); onUnlinkMassEvent()"
+            (keydown.enter)="meTrigger.close(); onUnlinkMassEvent()"
+            >Unlink mass event</a
+          ></nx-link
+        >
         @if (claim.massEventLinkStatus !== 'overridden') {
           @if (auth.isKcm() && claim.massEventLinkStatus === 'pending') {
-            <nx-link><a (click)="meTrigger.close(); onConfirmMassEventLink()">Confirm link</a></nx-link>
+            <nx-link
+              ><a
+                tabindex="0"
+                (click)="meTrigger.close(); onConfirmMassEventLink()"
+                (keydown.enter)="meTrigger.close(); onConfirmMassEventLink()"
+                >Confirm link</a
+              ></nx-link
+            >
           }
           <div class="me-popover__action">
-            <nx-link><a (click)="meTrigger.close(); onOverrideMassEvent()">Not associated with this claim</a></nx-link>
+            <nx-link
+              ><a
+                tabindex="0"
+                (click)="meTrigger.close(); onOverrideMassEvent()"
+                (keydown.enter)="meTrigger.close(); onOverrideMassEvent()"
+                >Not associated with this claim</a
+              ></nx-link
+            >
             <p class="me-popover__action-hint">
-              Keeps {{ me.id }} on the claim as a record and stops automatic checks. Unlink removes it instead.
+              Keeps {{ me.id }} on the claim as a record and stops automatic checks. Unlink removes
+              it instead.
             </p>
           </div>
         }
         @if (auth.isKcm()) {
-          <nx-link><a (click)="meTrigger.close(); openMassEventDetail()">View full details →</a></nx-link>
+          <nx-link
+            ><a
+              tabindex="0"
+              (click)="meTrigger.close(); openMassEventDetail()"
+              (keydown.enter)="meTrigger.close(); openMassEventDetail()"
+              >View full details →</a
+            ></nx-link
+          >
         }
       </div>
     </div>
@@ -102,6 +158,10 @@
        KCM-only, so a handler now has the same next step here. -->
   <div class="co-field">
     <span class="co-label">Mass Event</span>
-    <nx-link size="small"><a (click)="onChangeMassEvent()">+ Link mass event</a></nx-link>
+    <nx-link size="small"
+      ><a tabindex="0" (click)="onChangeMassEvent()" (keydown.enter)="onChangeMassEvent()"
+        >+ Link mass event</a
+      ></nx-link
+    >
   </div>
 }

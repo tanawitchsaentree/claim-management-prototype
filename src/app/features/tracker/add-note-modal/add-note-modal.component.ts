@@ -16,9 +16,17 @@ export interface AddNoteModalData {
 @Component({
   selector: 'app-add-note-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, NxModalModule, NxFormfieldModule, NxInputModule, NxButtonModule, NxSpinnerModule, NxMessageModule],
+  imports: [
+    ReactiveFormsModule,
+    NxModalModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxButtonModule,
+    NxSpinnerModule,
+    NxMessageModule
+  ],
   templateUrl: './add-note-modal.component.html',
-  styleUrl: './add-note-modal.component.scss',
+  styleUrl: './add-note-modal.component.scss'
 })
 export class AddNoteModalComponent {
   readonly data = inject<AddNoteModalData>(NX_MODAL_DATA);

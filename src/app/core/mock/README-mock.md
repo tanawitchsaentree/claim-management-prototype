@@ -31,11 +31,11 @@ Edit `mock-config.ts` — change the key passed to `MOCK_SCENARIOS`:
 
 ```typescript
 // src/app/core/mock/mock-config.ts
-export const ACTIVE_SCENARIO = MOCK_SCENARIOS['slow'];      // 3 s delay
-export const ACTIVE_SCENARIO = MOCK_SCENARIOS['flaky'];     // 30% network errors
-export const ACTIVE_SCENARIO = MOCK_SCENARIOS['serverDown'];// always 500
-export const ACTIVE_SCENARIO = MOCK_SCENARIOS['empty'];     // empty lists
-export const ACTIVE_SCENARIO = MOCK_SCENARIOS['partial'];   // half the data
+export const ACTIVE_SCENARIO = MOCK_SCENARIOS['slow']; // 3 s delay
+export const ACTIVE_SCENARIO = MOCK_SCENARIOS['flaky']; // 30% network errors
+export const ACTIVE_SCENARIO = MOCK_SCENARIOS['serverDown']; // always 500
+export const ACTIVE_SCENARIO = MOCK_SCENARIOS['empty']; // empty lists
+export const ACTIVE_SCENARIO = MOCK_SCENARIOS['partial']; // half the data
 ```
 
 ## Adding a new entity
@@ -67,17 +67,17 @@ The `Injectable({ providedIn: 'root' })` decorator stays the same — Angular DI
 
 Each JSON record with a `_scenario` tag covers a specific UI/UX boundary:
 
-| Tag | File | What it tests |
-|-----|------|---------------|
-| `long-description` | claims.json | Text truncation in table cells |
-| `boundary-max-amount` | claims.json | Large number formatting (999,999,999) |
-| `boundary-zero-amount` | claims.json / fnol.json | Zero amount display |
-| `partial-data-no-broker` | claims.json | Missing optional field graceful render |
-| `partial-data-no-location` | claims.json | Missing location block |
-| `date-edge-5-years-old` | claims.json | Old date display |
-| `date-edge-today` | claims.json / fnol.json | Today's date (2026-05-07) |
-| `special-chars-client-name` | claims.json | UTF-8: Björn Ö'Brien & "Partners" |
-| `empty-no-tasks` | claims.json | Claim with 0 tasks (empty state) |
-| `long-title` | tasks.json | Long description ellipsis |
-| `not-yet-converted` | fnol.json | FNOL without claimId |
-| `no-attachments` | fnol.json | Empty attachments array |
+| Tag                         | File                    | What it tests                          |
+| --------------------------- | ----------------------- | -------------------------------------- |
+| `long-description`          | claims.json             | Text truncation in table cells         |
+| `boundary-max-amount`       | claims.json             | Large number formatting (999,999,999)  |
+| `boundary-zero-amount`      | claims.json / fnol.json | Zero amount display                    |
+| `partial-data-no-broker`    | claims.json             | Missing optional field graceful render |
+| `partial-data-no-location`  | claims.json             | Missing location block                 |
+| `date-edge-5-years-old`     | claims.json             | Old date display                       |
+| `date-edge-today`           | claims.json / fnol.json | Today's date (2026-05-07)              |
+| `special-chars-client-name` | claims.json             | UTF-8: Björn Ö'Brien & "Partners"      |
+| `empty-no-tasks`            | claims.json             | Claim with 0 tasks (empty state)       |
+| `long-title`                | tasks.json              | Long description ellipsis              |
+| `not-yet-converted`         | fnol.json               | FNOL without claimId                   |
+| `no-attachments`            | fnol.json               | Empty attachments array                |

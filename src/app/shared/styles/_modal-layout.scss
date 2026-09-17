@@ -22,8 +22,8 @@
 // content never touches the footer divider.
 
 $header-pb: 20px;
-$body-pt:   24px;
-$body-pb:   24px;
+$body-pt: 24px;
+$body-pb: 24px;
 $content-gap: 20px;
 $footer-pt: 20px;
 $action-gap: 8px;
@@ -81,9 +81,9 @@ $action-gap: 8px;
 @mixin body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;             // body is the scroll container — header/footer stay sticky
+  overflow-y: auto; // body is the scroll container — header/footer stay sticky
   padding-top: $body-pt;
-  padding-bottom: $body-pb;     // symmetric — content never touches footer divider
+  padding-bottom: $body-pb; // symmetric — content never touches footer divider
   display: flex;
   flex-direction: column;
   gap: $content-gap;

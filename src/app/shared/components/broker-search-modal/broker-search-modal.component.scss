@@ -1,6 +1,8 @@
 @use '../../styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .bsm-header {
   @include modal.header;
@@ -9,15 +11,22 @@
   justify-content: space-between;
 }
 
-.bsm-title { @include modal.title; }
+.bsm-title {
+  @include modal.title;
+}
 
-.bsm-body { @include modal.body; }
+.bsm-body {
+  @include modal.body;
+}
 
 .bsm-tabs {
   margin-bottom: 16px;
 }
 
-.bsm-form { display: flex; flex-direction: column; }
+.bsm-form {
+  display: flex;
+  flex-direction: column;
+}
 
 .bsm-table-toolbar {
   display: flex;
@@ -47,7 +56,10 @@
   display: flex;
   gap: 16px;
 
-  > * { flex: 1 1 0; min-width: 0; }
+  > * {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }
 
 .bsm-primary-row__actions {
@@ -55,7 +67,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-top: 22px;            // align with formfield input baseline
+  padding-top: 22px; // align with formfield input baseline
   white-space: nowrap;
 }
 
@@ -72,7 +84,9 @@
   font-weight: 600;
   color: var(--interactive-text);
   cursor: pointer;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // Advanced filters grid — 3 columns, only shown when expanded
@@ -83,7 +97,9 @@
   align-items: start;
   margin-top: 12px;
 
-  > * { min-width: 0; }
+  > * {
+    min-width: 0;
+  }
 }
 
 .bsm-loading {
@@ -95,17 +111,26 @@
   font-size: var(--paragraph-04-font-size);
 }
 
-
 // Table scrolls horizontally inside the modal instead of widening it
 .bsm-table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-.bsm-table { width: 100%; min-width: 640px; }
-.bsm-col-pick { width: 56px; }
-.bsm-row--selected { background: var(--claim-overlay-hover); cursor: pointer; }
-.bsm-row--selected td:first-child { background: transparent; }
+.bsm-table {
+  width: 100%;
+  min-width: 640px;
+}
+.bsm-col-pick {
+  width: 56px;
+}
+.bsm-row--selected {
+  background: var(--claim-overlay-hover);
+  cursor: pointer;
+}
+.bsm-row--selected td:first-child {
+  background: transparent;
+}
 
 .bsm-id {
   font-family: monospace;
@@ -124,4 +149,6 @@
   cursor: pointer;
 }
 
-.bsm-footer { @include modal.footer; }
+.bsm-footer {
+  @include modal.footer;
+}

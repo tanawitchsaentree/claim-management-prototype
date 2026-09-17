@@ -10,7 +10,8 @@
       class="co-refresh-btn"
       [disabled]="refreshing()"
       (click)="onRefresh()"
-      aria-label="Refresh risk score">
+      aria-label="Refresh risk score"
+    >
       @if (refreshing()) {
         <nx-spinner nxSize="small"></nx-spinner>
       } @else {

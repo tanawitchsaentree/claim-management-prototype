@@ -7,24 +7,29 @@
 
 <div class="vnm-body" tabindex="0">
   <p class="vnm-desc">
-    Enter your name to sign off this acceptance criterion.
-    Used for all future verifications in this session.
+    Enter your name to sign off this acceptance criterion. Used for all future verifications in this
+    session.
   </p>
 
   <nx-formfield label="Your name">
-    <input nxInput
-           [formControl]="nameCtrl"
-           (keyup.enter)="onConfirm()"
-           placeholder="e.g. Anna Schmidt"
-           autocomplete="off">
+    <input
+      nxInput
+      [formControl]="nameCtrl"
+      (keyup.enter)="onConfirm()"
+      placeholder="e.g. Anna Schmidt"
+      autocomplete="off"
+    />
   </nx-formfield>
 </div>
 
 <div class="vnm-footer">
   <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="!(nameCtrl.value ?? '').trim()"
-          (click)="onConfirm()">
+  <button
+    nxButton="primary small"
+    type="button"
+    [disabled]="!(nameCtrl.value ?? '').trim()"
+    (click)="onConfirm()"
+  >
     Confirm
   </button>
 </div>

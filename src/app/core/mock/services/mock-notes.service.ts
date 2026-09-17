@@ -8,7 +8,7 @@ type RawDataMap = Record<string, Note[]>;
 
 @Injectable({ providedIn: 'root' })
 export class MockNotesService extends MockBaseService {
-  private readonly raw   = rawData as unknown as RawDataMap;
+  private readonly raw = rawData as unknown as RawDataMap;
   // Signal-backed, not a plain Map — Sections' comment-count badges and the
   // right-strip notes panel each held their own snapshot before this, so a
   // note added in one place didn't show up in the other's counts.
@@ -33,17 +33,19 @@ export class MockNotesService extends MockBaseService {
     return this.respond(structuredClone(this.store(claimId)()));
   }
 
-  addNote(claimId: string, payload: { title: string; section: Note['section']; body: string; attachedTo?: string | null }): Observable<Note[]> {
+  addNote(
+    claimId: string,
+    payload: { category: Note['category']; body: string; attachedTo?: string | null }
+  ): Observable<Note[]> {
     const note: Note = {
-      id:         `note-${Date.now()}`,
+      id: `note-${Date.now()}`,
       claimId,
-      author:     { name: 'Current User', initials: 'CU', accent: 'blue' },
-      timestamp:  new Date().toISOString(),
-      title:      payload.title || undefined,
-      body:       payload.body,
-      section:    payload.section,
-      pinned:     false,
-      attachedTo: payload.attachedTo ?? null,
+      author: { name: 'Current User', initials: 'CU', accent: 'blue' },
+      timestamp: new Date().toISOString(),
+      body: payload.body,
+      category: payload.category,
+      pinned: false,
+      attachedTo: payload.attachedTo ?? null
     };
     const store = this.store(claimId);
     const next = [note, ...store()];
@@ -53,7 +55,7 @@ export class MockNotesService extends MockBaseService {
 
   togglePin(claimId: string, noteId: string): Observable<Note[]> {
     const store = this.store(claimId);
-    const next = store().map(n => n.id === noteId ? { ...n, pinned: !n.pinned } : n);
+    const next = store().map(n => (n.id === noteId ? { ...n, pinned: !n.pinned } : n));
     store.set(next);
     return this.respond(structuredClone(next));
   }
@@ -68,6 +70,6 @@ export class MockNotesService extends MockBaseService {
 
   resetState(claimId?: string): void {
     if (claimId) this.cache.delete(claimId);
-    else         this.cache.clear();
+    else this.cache.clear();
   }
 }

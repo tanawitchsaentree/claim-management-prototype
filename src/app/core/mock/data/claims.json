@@ -25,7 +25,7 @@
   {
     "claimId": "CLM-2024-002",
     "policyNumber": "POL-2024-002",
-    "clientName": "adesso SE",
+    "clientName": "Nordbyte SE",
     "broker": "Marcus Fehr",
     "assignee": "Mara Mustermann",
     "createdBy": "Oskar Veld",
@@ -284,7 +284,7 @@
   {
     "claimId": "CLM-2024-013",
     "policyNumber": "POL-2024-002",
-    "clientName": "adesso SE",
+    "clientName": "Nordbyte SE",
     "broker": "Greta Böck",
     "assignee": "Greta Böck",
     "createdBy": "Greta Böck",
@@ -511,9 +511,7 @@
       "city": "Munich"
     },
     "_scenario": "duplicate-check-test",
-    "causeOfLoss": [
-      "fire"
-    ],
+    "causeOfLoss": ["fire"],
     "lossEventId": "EVT-022",
     "group": "GPG-002"
   },
@@ -538,10 +536,7 @@
       "city": "Munich"
     },
     "_scenario": "duplicate-check-test",
-    "causeOfLoss": [
-      "fire",
-      "water-damage"
-    ],
+    "causeOfLoss": ["fire", "water-damage"],
     "lossEventId": "EVT-023",
     "group": "GPG-002"
   },
@@ -583,24 +578,14 @@
         "postalCode": "60311",
         "country": "DE"
       },
-      "causeOfLoss": [
-        "fire",
-        "business-interruption"
-      ],
-      "typeOfDamage": [
-        "material-damage",
-        "financial-loss"
-      ],
+      "causeOfLoss": ["fire", "business-interruption"],
+      "typeOfDamage": ["material-damage", "financial-loss"],
       "lossDescription": "Arson-suspected fire in main storage hall. Extensive structural damage. Sprinkler system activated causing secondary water damage.",
       "events": [
         {
           "eventKey": "fire",
-          "causedBy": [
-            "arson"
-          ],
-          "damages": [
-            "material-damage"
-          ],
+          "causedBy": ["arson"],
+          "damages": ["material-damage"],
           "dateOfOccurrence": "2024-06-08",
           "timeOfOccurrence": "02:15",
           "dateOfNotification": "2024-06-08",
@@ -608,12 +593,8 @@
         },
         {
           "eventKey": "business-interruption",
-          "causedBy": [
-            "fire"
-          ],
-          "damages": [
-            "financial-loss"
-          ]
+          "causedBy": ["fire"],
+          "damages": ["financial-loss"]
         }
       ]
     },
@@ -658,19 +639,13 @@
         "postalCode": "10117",
         "country": "DE"
       },
-      "causeOfLoss": [
-        "theft"
-      ],
-      "typeOfDamage": [
-        "loss"
-      ],
+      "causeOfLoss": ["theft"],
+      "typeOfDamage": ["loss"],
       "lossDescription": "IT equipment stolen from server room overnight. Estimated 12 servers and networking equipment missing.",
       "events": [
         {
           "eventKey": "theft",
-          "damages": [
-            "loss"
-          ],
+          "damages": ["loss"],
           "dateOfOccurrence": "2024-07-20",
           "timeOfOccurrence": "23:00",
           "dateOfNotification": "2024-07-21",
@@ -719,25 +694,14 @@
         "postalCode": "20457",
         "country": "DE"
       },
-      "causeOfLoss": [
-        "natural-event"
-      ],
-      "typeOfDamage": [
-        "material-damage",
-        "financial-loss"
-      ],
+      "causeOfLoss": ["natural-event"],
+      "typeOfDamage": ["material-damage", "financial-loss"],
       "lossDescription": "Storm with wind speeds exceeding 120 km/h damaged turbine array. Lower facility level flooded. Three turbines offline.",
       "events": [
         {
           "eventKey": "natural-event",
-          "causedBy": [
-            "storm",
-            "flood"
-          ],
-          "damages": [
-            "material-damage",
-            "financial-loss"
-          ],
+          "causedBy": ["storm", "flood"],
+          "damages": ["material-damage", "financial-loss"],
           "dateOfOccurrence": "2024-09-03",
           "timeOfOccurrence": "11:30",
           "dateOfNotification": "2024-09-03",

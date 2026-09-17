@@ -20,10 +20,30 @@ When a feature is confirmed working → add it here.
 ```
 
 ```scss
-.page-eyebrow   { font-size: 14px; color: var(--text-muted); margin: 0 0 4px; }
-.page-title     { font-size: 28px; font-weight: 400; color: var(--text-01); margin: 0 0 8px; line-height: 1.2; }
-.page-subtitle  { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-muted); margin: 0 0 32px; }
-.subtitle-icon  { flex-shrink: 0; color: var(--interactive-text); }
+.page-eyebrow {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+.page-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 32px;
+}
+.subtitle-icon {
+  flex-shrink: 0;
+  color: var(--interactive-text);
+}
 ```
 
 ---
@@ -49,7 +69,7 @@ When a feature is confirmed working → add it here.
   align-items: center;
   gap: 12px;
   white-space: nowrap;
-  padding-bottom: 23px;   /* aligns buttons with formfield baseline */
+  padding-bottom: 23px; /* aligns buttons with formfield baseline */
 }
 ```
 
@@ -65,9 +85,21 @@ When a feature is confirmed working → add it here.
 ```
 
 ```scss
-.toolbar       { display: flex; align-items: center; width: 100%; }
-.toolbar__left { display: flex; align-items: center; gap: 16px; }
-.toolbar__right { margin-left: auto; display: flex; align-items: center; }
+.toolbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.toolbar__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
 ```
 
 **Never use** `justify-content: space-between` on the toolbar — creates dead space in the middle.
@@ -81,8 +113,8 @@ When a feature is confirmed working → add it here.
   display: flex;
   flex-direction: column;
   max-width: 100vw;
-  max-height: 80vh;    /* prevents overflow on small screens */
-  overflow: hidden;    /* scroll containment */
+  max-height: 80vh; /* prevents overflow on small screens */
+  overflow: hidden; /* scroll containment */
 }
 
 .xxx-header {
@@ -92,13 +124,13 @@ When a feature is confirmed working → add it here.
 }
 
 .xxx-body {
-  flex: 1;             /* grows between header and footer */
+  flex: 1; /* grows between header and footer */
   overflow-y: auto;
   padding: 24px;
 }
 
 .xxx-footer {
-  padding-top: 16px;   /* NOT padding: 16px 24px — no extra horizontal padding */
+  padding-top: 16px; /* NOT padding: 16px 24px — no extra horizontal padding */
   margin-top: 8px;
   border-top: 1px solid var(--ui-04);
 }
@@ -110,6 +142,7 @@ const ref = this.dialogSvc.open(XxxComponent, { data, width: '480px' });
 ```
 
 **Modal pre-ship checklist:**
+
 - [ ] `:host` has `max-height: 80vh` and `overflow: hidden`
 - [ ] body div has `flex: 1` and `overflow-y: auto`
 - [ ] footer padding is `padding-top: 16px; margin-top: 8px` (no horizontal)
@@ -123,41 +156,43 @@ Use when: a card body contains a "search to add" input above a list, plus a seco
 
 ```html
 <div class="xxx-body">
-
   <div class="xxx-access">
     <div class="xxx-search">
       <div class="xxx-search__input-wrap">
-        <input class="xxx-search__input" type="text"
-               [formControl]="searchCtrl" placeholder="Search to add item" />
+        <input
+          class="xxx-search__input"
+          type="text"
+          [formControl]="searchCtrl"
+          placeholder="Search to add item"
+        />
         <nx-icon name="search" class="xxx-search__icon"></nx-icon>
       </div>
       @if (searchResults().length > 0) {
-        <div class="xxx-results">
-          @for (item of searchResults(); track item.id) {
-            <button type="button" class="xxx-result" (click)="addItem(item)">
-              <span class="xxx-result__name">{{ item.name }}</span>
-              <span class="xxx-result__meta">{{ item.meta }}</span>
-            </button>
-          }
-        </div>
+      <div class="xxx-results">
+        @for (item of searchResults(); track item.id) {
+        <button type="button" class="xxx-result" (click)="addItem(item)">
+          <span class="xxx-result__name">{{ item.name }}</span>
+          <span class="xxx-result__meta">{{ item.meta }}</span>
+        </button>
+        }
+      </div>
       }
     </div>
 
     <p class="xxx-access__heading">Section heading</p>
 
     @if (list().length === 0) {
-      <p class="xxx-access__empty">No items yet.</p>
-    }
-    @for (entry of list(); track entry.id) {
-      <div class="xxx-entry">
-        <div class="xxx-entry__info">
-          <span class="xxx-entry__name">{{ entry.name }}</span>
-          <span class="xxx-entry__meta">{{ entry.meta }}</span>
-        </div>
-        <button nxIconButton="tertiary small" type="button" (click)="removeItem(entry.id)">
-          <nx-icon name="trash-o"></nx-icon>
-        </button>
+    <p class="xxx-access__empty">No items yet.</p>
+    } @for (entry of list(); track entry.id) {
+    <div class="xxx-entry">
+      <div class="xxx-entry__info">
+        <span class="xxx-entry__name">{{ entry.name }}</span>
+        <span class="xxx-entry__meta">{{ entry.meta }}</span>
       </div>
+      <button nxIconButton="tertiary small" type="button" (click)="removeItem(entry.id)">
+        <nx-icon name="trash-o"></nx-icon>
+      </button>
+    </div>
     }
   </div>
 
@@ -165,12 +200,11 @@ Use when: a card body contains a "search to add" input above a list, plus a seco
     <nx-formfield label="Field label" class="xxx-field">
       <nx-dropdown [formControl]="someCtrl" placeholder="Select...">
         @for (opt of options; track opt) {
-          <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
         }
       </nx-dropdown>
     </nx-formfield>
   </div>
-
 </div>
 ```
 
@@ -189,8 +223,17 @@ Use when: a card body contains a "search to add" input above a list, plus a seco
   flex-direction: column;
   gap: 0;
 
-  &__heading { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); margin: 0 0 4px; }
-  &__empty   { font-size: var(--paragraph-03-font-size); color: var(--text-muted); margin: 0 0 12px; }
+  &__heading {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+    margin: 0 0 4px;
+  }
+  &__empty {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+    margin: 0 0 12px;
+  }
 }
 
 .xxx-search {
@@ -216,46 +259,101 @@ Use when: a card body contains a "search to add" input above a list, plus a seco
   }
 
   &__input {
-    flex: 1; border: none; outline: none; background: transparent;
-    font-size: var(--paragraph-03-font-size); color: var(--text-01);
-    &::placeholder { color: var(--text-muted); }
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    &::placeholder {
+      color: var(--text-muted);
+    }
   }
 
-  &__icon { color: var(--text-muted); font-size: 16px; flex-shrink: 0; }
+  &__icon {
+    color: var(--text-muted);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
 }
 
 .xxx-results {
-  position: absolute; top: 100%; left: 0; right: 0;
-  background: var(--ui-01); border: 1px solid var(--ui-04);
-  border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  z-index: 100; overflow: hidden;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  overflow: hidden;
 }
 
 .xxx-result {
-  display: flex; flex-direction: column; gap: 1px;
-  width: 100%; padding: 8px 12px; text-align: left;
-  background: none; border: none; cursor: pointer;
-  &:hover { background: var(--ui-02); }
-  &__name { font-size: var(--paragraph-03-font-size); color: var(--text-01); font-weight: 500; }
-  &__meta { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background: var(--ui-02);
+  }
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+  &__meta {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
 }
 
 .xxx-entry {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0; border-bottom: 1px solid var(--ui-03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ui-03);
 
-  &__info { display: flex; flex-direction: column; gap: 2px; }
-  &__name { font-size: var(--paragraph-03-font-size); color: var(--text-01); font-weight: 500; }
-  &__meta { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+  &__meta {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
 }
 
-.xxx-reason-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
-.xxx-field      { flex: 1; min-width: 160px; max-width: 280px; }
+.xxx-reason-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+.xxx-field {
+  flex: 1;
+  min-width: 160px;
+  max-width: 280px;
+}
 ```
 
 **Why bare `<input>` here instead of `nx-formfield`:** `nx-formfield` reserves ~20px top + ~20px bottom even with no label and no error. On dense layouts this creates gaps. See `.claude/skills/nx-formfield-spacing-trap/SKILL.md`.
 
 **Spacing rationale:**
+
 - Same group (heading → first list item): ≤ 8px
 - Different groups (search block → heading): ≥ 16px (20px here)
 - Section to section: 24px
@@ -277,25 +375,36 @@ Use when: a card body contains a "search to add" input above a list, plus a seco
   </td>
 </tr>
 
-@if (row.expanded && row.children?.length) {
-  @for (child of row.children; track child.id) {
-    <tr nxTableRow class="child-row">
-      <td nxCell class="col-check"></td>
-      <td nxCell class="col-name">
-        <div class="child-cell">
-          <nx-checkbox [checked]="child.selected" (checkedChange)="onToggle(row, child, $event)"></nx-checkbox>
-          <span class="child-name">{{ child.name }}</span>
-        </div>
-      </td>
-    </tr>
-  }
-}
+@if (row.expanded && row.children?.length) { @for (child of row.children; track child.id) {
+<tr nxTableRow class="child-row">
+  <td nxCell class="col-check"></td>
+  <td nxCell class="col-name">
+    <div class="child-cell">
+      <nx-checkbox
+        [checked]="child.selected"
+        (checkedChange)="onToggle(row, child, $event)"
+      ></nx-checkbox>
+      <span class="child-name">{{ child.name }}</span>
+    </div>
+  </td>
+</tr>
+} }
 ```
 
 ```scss
-.child-row  { background: var(--ui-02); }
-.child-cell { display: flex; align-items: center; gap: 8px; padding-left: 32px; }
-.child-name { font-size: var(--paragraph-03-font-size); color: var(--text-01); }
+.child-row {
+  background: var(--ui-02);
+}
+.child-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 32px;
+}
+.child-name {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
 ```
 
 **Do NOT use `nxExpandableTableRow`** — that expands a single row in-place. It is not for multiple child rows.

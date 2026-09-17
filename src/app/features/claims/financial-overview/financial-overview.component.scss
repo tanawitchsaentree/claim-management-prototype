@@ -1,6 +1,5 @@
 // ─── Page header ─────────────────────────────────────────────────────────────
 
-
 // ─── Right-side controls ──────────────────────────────────────────────────────
 
 .fo-controls {
@@ -41,8 +40,16 @@
   display: flex;
   gap: 0;
 
-  button:first-child { border-radius: 4px 0 0 4px; }
-  button:last-child  { border-radius: 0 4px 4px 0; }
+  button:first-child {
+    border-radius: 4px 0 0 4px;
+  }
+  button:last-child {
+    border-radius: 0 4px 4px 0;
+  }
+}
+
+.fo-closed-banner {
+  margin-bottom: var(--layout-inset-base);
 }
 
 // ─── Loading ─────────────────────────────────────────────────────────────────
@@ -120,6 +127,22 @@
   width: 100%;
 }
 
+// Transaction summary has 10 columns with genuinely long headers (Total
+// recoveries received, Total incurred, ...) — forcing it to width:100% like
+// every other .fo-table silently clipped the last column at the container
+// edge (no scrollbar, no indication more columns existed) and squeezed the
+// Transaction column into a 4-5 line ragged wrap. Same overflow-wrap pattern
+// as the dashboard's .data-table-wrap: let the table take its natural width,
+// scroll the wrapper instead of clipping.
+.fo-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fo-table--transactions {
+  width: auto;
+  min-width: 100%;
+}
 
 .fo-cell--right {
   text-align: right !important;
@@ -163,12 +186,27 @@
   white-space: nowrap;
 
   // payment statuses
-  &--pending  { background: var(--fo-badge-pending-bg);  color: var(--fo-badge-pending-color); }
-  &--credit   { background: var(--fo-badge-credit-bg);   color: var(--fo-badge-credit-color); }
-  &--done     { background: var(--fo-badge-done-bg);     color: var(--fo-badge-done-color); }
-  &--rejected { background: var(--fo-badge-rejected-bg); color: var(--fo-badge-rejected-color); }
+  &--pending {
+    background: var(--fo-badge-pending-bg);
+    color: var(--fo-badge-pending-color);
+  }
+  &--credit {
+    background: var(--fo-badge-credit-bg);
+    color: var(--fo-badge-credit-color);
+  }
+  &--done {
+    background: var(--fo-badge-done-bg);
+    color: var(--fo-badge-done-color);
+  }
+  &--rejected {
+    background: var(--fo-badge-rejected-bg);
+    color: var(--fo-badge-rejected-color);
+  }
   // reserve statuses
-  &--approved { background: var(--fo-badge-approved-bg); color: var(--fo-badge-approved-color); }
+  &--approved {
+    background: var(--fo-badge-approved-bg);
+    color: var(--fo-badge-approved-color);
+  }
 }
 
 // ─── Section level ────────────────────────────────────────────────────────────
@@ -246,7 +284,6 @@
   margin: 0 0 12px;
 }
 
-
 // ─── Expand / History col ─────────────────────────────────────────────────────
 
 .fo-col--expand,
@@ -269,7 +306,10 @@
   display: flex;
   align-items: center;
 
-  &:hover { background: var(--ui-03); color: var(--text-01); }
+  &:hover {
+    background: var(--ui-03);
+    color: var(--text-01);
+  }
 }
 
 // ─── History panel (inline expand) ───────────────────────────────────────────
@@ -297,7 +337,8 @@
   border-collapse: collapse;
   font-size: var(--paragraph-03-font-size);
 
-  th, td {
+  th,
+  td {
     padding: var(--space-xs) var(--space-md) var(--space-xs) 0;
     text-align: left;
     color: var(--text-01);
@@ -321,8 +362,12 @@
 
 // ─── Nowrap ───────────────────────────────────────────────────────────────────
 
-.fo-cell--nowrap { white-space: nowrap; }
+.fo-cell--nowrap {
+  white-space: nowrap;
+}
 
 // ─── Section heading spacing ──────────────────────────────────────────────────
 
-.fo-section-heading--mt { margin-top: var(--layout-inset-base); }
+.fo-section-heading--mt {
+  margin-top: var(--layout-inset-base);
+}

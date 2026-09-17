@@ -15,11 +15,18 @@ import { UrgentApproval, PaymentApproval } from '../../../../core/models';
   selector: 'app-recent-approvals-widget',
   standalone: true,
   imports: [
-    DecimalPipe, RouterLink, NxIconModule, NxSwitcherModule, NxBadgeModule,
-    NxTableModule, NxContextMenuModule, EmptyStateComponent, ClaimPreviewDirective,
+    DecimalPipe,
+    RouterLink,
+    NxIconModule,
+    NxSwitcherModule,
+    NxBadgeModule,
+    NxTableModule,
+    NxContextMenuModule,
+    EmptyStateComponent,
+    ClaimPreviewDirective
   ],
   templateUrl: './recent-approvals-widget.component.html',
-  styleUrl: './recent-approvals-widget.component.scss',
+  styleUrl: './recent-approvals-widget.component.scss'
 })
 export class RecentApprovalsWidgetComponent {
   @Input({ required: true }) approvals: UrgentApproval[] = [];
@@ -29,7 +36,9 @@ export class RecentApprovalsWidgetComponent {
 
   readonly showMyApprovalsOnly = signal(false);
   readonly approvalsTab = signal<'reserves' | 'payments'>('reserves');
-  setApprovalsTab(tab: 'reserves' | 'payments'): void { this.approvalsTab.set(tab); }
+  setApprovalsTab(tab: 'reserves' | 'payments'): void {
+    this.approvalsTab.set(tab);
+  }
 
   readonly displayedApprovals = computed<UrgentApproval[]>(() => {
     if (!this.showMyApprovalsOnly()) return this.approvals;

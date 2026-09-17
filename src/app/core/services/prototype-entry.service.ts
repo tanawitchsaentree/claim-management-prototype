@@ -1,7 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, firstValueFrom, take } from 'rxjs';
-import { PrototypeScenarioService, substituteClaimId, DEMO_CLAIM_ID } from './prototype-scenario.service';
+import {
+  PrototypeScenarioService,
+  substituteClaimId,
+  DEMO_CLAIM_ID
+} from './prototype-scenario.service';
 import { TrackerService } from './tracker.service';
 import { TourService } from './tour.service';
 import { buildArrivalContext, resolveTourSteps } from './arrival-context.builder';
@@ -78,7 +82,12 @@ export class PrototypeEntryService {
     // below is still '/' (AppComponent.ngOnInit runs during bootstrap, before the
     // first navigation resolves) and this would fire a second navigation that
     // cancels the first.
-    await firstValueFrom(this.router.events.pipe(filter((e) => e instanceof NavigationEnd), take(1)));
+    await firstValueFrom(
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+        take(1)
+      )
+    );
 
     // The link already landed on a route. Only navigate when the ticket's own AC
     // route disagrees with it — e.g. the tracker row's prototype_route was typed
@@ -89,12 +98,14 @@ export class PrototypeEntryService {
     }
     const route = this.appliedRoute ?? substituteClaimId(landed, DEMO_CLAIM_ID);
 
-    this._arrival.set(buildArrivalContext({
-      route,
-      ticket: this.entryTicketId ? this.prototypeSvc.getTicketById(this.entryTicketId) : null,
-      row: await this.fetchRow(),
-      jiraKey: this.entryJiraKey,
-    }));
+    this._arrival.set(
+      buildArrivalContext({
+        route,
+        ticket: this.entryTicketId ? this.prototypeSvc.getTicketById(this.entryTicketId) : null,
+        row: await this.fetchRow(),
+        jiraKey: this.entryJiraKey
+      })
+    );
 
     // The panel offers the tour; it is not auto-started. Landing mid-tour with a
     // popover already open over the screen is the same "stand here and figure it
@@ -138,7 +149,7 @@ export class PrototypeEntryService {
     const ticketId = this.entryTicketId;
     if (!ticketId || !this.appliedRoute) return;
     const ticket = this.prototypeSvc.getTicketById(ticketId);
-    const ac = ticket?.acceptanceCriteria.find((a) => a.buildStatus === 'done');
+    const ac = ticket?.acceptanceCriteria.find(a => a.buildStatus === 'done');
     if (!ac?.setup.postLand?.length) return;
     const claimId = route.match(/^\/claims\/([^/]+)\//)?.[1];
     await this.prototypeSvc.runPostLandForTicket(ticketId, claimId);

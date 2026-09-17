@@ -22,7 +22,12 @@
   }
 }
 
-.sdp-title { margin: 0; font-size: var(--heading-06-font-size); font-weight: 600; color: var(--text-01); }
+.sdp-title {
+  margin: 0;
+  font-size: var(--heading-06-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
 
 .sdp-name-field {
   width: 220px;
@@ -49,8 +54,17 @@
   border-radius: 6px;
   padding: var(--space-base);
 
-  &__label { margin: 0 0 8px; font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
-  &__title { margin: 0 0 12px; font-size: var(--paragraph-01-font-size); font-weight: 600; color: var(--text-01); }
+  &__label {
+    margin: 0 0 8px;
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+  &__title {
+    margin: 0 0 12px;
+    font-size: var(--paragraph-01-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
 }
 
 .sdp-fields {
@@ -63,6 +77,13 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  &__label { font-size: var(--paragraph-04-font-size, 12px); color: var(--text-muted); }
-  &__value { font-size: var(--paragraph-03-font-size); color: var(--text-01); font-weight: 500; }
+  &__label {
+    font-size: var(--paragraph-04-font-size, 12px);
+    color: var(--text-muted);
+  }
+  &__value {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
 }

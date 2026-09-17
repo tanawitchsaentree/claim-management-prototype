@@ -8,7 +8,9 @@
 
 // ─── Header ──────────────────────────────────────────────────────────────────
 
-.cddm-header { @include modal.header; }
+.cddm-header {
+  @include modal.header;
+}
 
 .cddm-header-row {
   display: flex;
@@ -62,12 +64,20 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 
-  strong { color: var(--text-01); }
+  strong {
+    color: var(--text-01);
+  }
 }
 
-.cddm-sep { color: var(--dev-helper-border); }
-.cddm-yes { color: var(--dev-helper-done-color); }
-.cddm-no  { color: var(--message-error-color); }
+.cddm-sep {
+  color: var(--dev-helper-border);
+}
+.cddm-yes {
+  color: var(--dev-helper-done-color);
+}
+.cddm-no {
+  color: var(--message-error-color);
+}
 
 // ─── Two-column body ─────────────────────────────────────────────────────────
 
@@ -142,8 +152,12 @@
   font-size: var(--paragraph-03-font-size);
   color: var(--dev-helper-badge-color);
 
-  &--done { color: var(--dev-helper-done-color); }
-  &--todo { color: var(--dev-helper-border); }
+  &--done {
+    color: var(--dev-helper-done-color);
+  }
+  &--todo {
+    color: var(--dev-helper-border);
+  }
 }
 
 .cddm-ac-text {
@@ -164,9 +178,15 @@
   color: var(--text-01);
   line-height: 1.4;
 
-  strong { font-weight: 600; color: var(--text-01); }
-  em     { font-style: italic; color: var(--text-muted); }
-  code   {
+  strong {
+    font-weight: 600;
+    color: var(--text-01);
+  }
+  em {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+  code {
     font-family: monospace;
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
@@ -183,8 +203,16 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
 
-  &--todo    { background: var(--dev-helper-bg); color: var(--dev-helper-badge-color); border: 1px solid var(--dev-helper-border); }
-  &--partial { background: var(--dev-banner-bg); color: var(--text-muted); border: 1px solid var(--dev-banner-border); }
+  &--todo {
+    background: var(--dev-helper-bg);
+    color: var(--dev-helper-badge-color);
+    border: 1px solid var(--dev-helper-border);
+  }
+  &--partial {
+    background: var(--dev-banner-bg);
+    color: var(--text-muted);
+    border: 1px solid var(--dev-banner-border);
+  }
 }
 
 // ─── Right: Detail panel ─────────────────────────────────────────────────────
@@ -219,9 +247,16 @@
   color: var(--text-01);
   line-height: 1.4;
 
-  strong { font-weight: 700; color: var(--text-01); }
-  em     { font-style: italic; font-weight: 400; color: var(--text-muted); }
-  code   {
+  strong {
+    font-weight: 700;
+    color: var(--text-01);
+  }
+  em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+  code {
     font-family: monospace;
     font-weight: 400;
     background: var(--dev-helper-bg);
@@ -238,9 +273,14 @@
   color: var(--text-muted);
   line-height: 1.5;
 
-  strong { font-weight: 600; color: var(--text-01); }
-  em     { font-style: italic; }
-  code   {
+  strong {
+    font-weight: 600;
+    color: var(--text-01);
+  }
+  em {
+    font-style: italic;
+  }
+  code {
     font-family: monospace;
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
@@ -326,7 +366,9 @@ code.cddm-how-val {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 
-  &:hover { color: var(--text-01); }
+  &:hover {
+    color: var(--text-01);
+  }
 }
 
 .cddm-precon-hint {
@@ -348,7 +390,9 @@ code.cddm-how-val {
   cursor: pointer;
   text-decoration: underline;
 
-  &:hover { opacity: 0.8; }
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 // ─── Verification ────────────────────────────────────────────────────────────
@@ -408,4 +452,6 @@ code.cddm-how-val {
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-.cddm-footer { @include modal.footer; }
+.cddm-footer {
+  @include modal.footer;
+}

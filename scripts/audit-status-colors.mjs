@@ -26,7 +26,7 @@ import { resolve, dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
-const root  = resolve(__dir, '..');
+const root = resolve(__dir, '..');
 const srcDir = resolve(root, 'src/app');
 
 const EXEMPT_DIR = resolve(srcDir, 'shared/components/status-chip');
@@ -97,11 +97,17 @@ for (const file of files) {
 }
 
 if (violations.length > 0) {
-  console.log('[audit:status-colors] Hardcoded hex found inside a status/chip/badge/clearance rule:');
+  console.log(
+    '[audit:status-colors] Hardcoded hex found inside a status/chip/badge/clearance rule:'
+  );
   for (const v of violations) console.log(`  ${v}`);
-  console.log('\nAll status-like colors must come from styles.scss custom properties, consumed via <app-status-chip>.');
+  console.log(
+    '\nAll status-like colors must come from styles.scss custom properties, consumed via <app-status-chip>.'
+  );
   process.exit(1);
 }
 
-console.log('[audit:status-colors] passed — no status-color forks found outside shared/components/status-chip/.');
+console.log(
+  '[audit:status-colors] passed — no status-color forks found outside shared/components/status-chip/.'
+);
 process.exit(0);

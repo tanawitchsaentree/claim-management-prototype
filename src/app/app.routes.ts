@@ -7,39 +7,48 @@ export const routes: Routes = [
   // Full-page standalone layouts (own header + sidebar — no Shell wrapper)
   {
     path: 'dashboard',
+    loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
+  },
+  {
+    path: 'tasks',
     loadComponent: () =>
-      import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+      import('./features/tasks/task-manager.component').then(m => m.TaskManagerComponent)
   },
   {
     path: 'administration',
     loadComponent: () =>
-      import('./features/administration/administration.component').then((m) => m.AdministrationComponent),
+      import('./features/administration/administration.component').then(
+        m => m.AdministrationComponent
+      )
   },
   {
     path: 'administration/mass-events',
     loadComponent: () =>
-      import('./features/administration/mass-events/mass-events.component').then((m) => m.MassEventsComponent),
+      import('./features/administration/mass-events/mass-events.component').then(
+        m => m.MassEventsComponent
+      )
   },
   {
     path: 'claims',
     loadComponent: () =>
-      import('./features/claims/claims-list/claims-list.component').then((m) => m.ClaimsListComponent),
+      import('./features/claims/claims-list/claims-list.component').then(m => m.ClaimsListComponent)
   },
   {
     path: 'loss-events',
     loadComponent: () =>
-      import('./features/loss-events/loss-events-list/loss-events-list.component').then((m) => m.LossEventsListComponent),
+      import('./features/loss-events/loss-events-list/loss-events-list.component').then(
+        m => m.LossEventsListComponent
+      )
   },
   {
     path: 'approvals',
     loadComponent: () =>
-      import('./features/approvals/approvals.component').then((m) => m.ApprovalsComponent),
+      import('./features/approvals/approvals.component').then(m => m.ApprovalsComponent)
   },
   // FNOL wizard (own layout shell, no sidebar)
   {
     path: 'fnol',
-    loadChildren: () =>
-      import('./features/fnol/fnol.routes').then(m => m.FNOL_ROUTES),
+    loadChildren: () => import('./features/fnol/fnol.routes').then(m => m.FNOL_ROUTES)
   },
   // BMPCC-FNOL-SUMMARY (2026-05-27): placeholder Loss Event Overview — landing
   // page when an FNOL submission produces multiple derived claims.
@@ -47,102 +56,104 @@ export const routes: Routes = [
     path: 'loss-events/:id/overview',
     loadComponent: () =>
       import('./features/loss-events/loss-event-overview/loss-event-overview.component').then(
-        (m) => m.LossEventOverviewComponent,
-      ),
+        m => m.LossEventOverviewComponent
+      )
   },
   // Shell layout routes
   {
     path: '',
-    loadComponent: () =>
-      import('./features/layout/shell/shell').then((m) => m.Shell),
+    loadComponent: () => import('./features/layout/shell/shell').then(m => m.Shell),
     children: [
       {
         path: 'claims/:id',
         redirectTo: 'claims/:id/overview',
-        pathMatch: 'full',
+        pathMatch: 'full'
       },
       {
         path: 'claims/:id/overview',
         loadComponent: () =>
           import('./features/claims/claim-overview/claim-overview.component').then(
-            (m) => m.ClaimOverviewComponent
-          ),
+            m => m.ClaimOverviewComponent
+          )
       },
       {
         path: 'claims/:id/loss-information/edit',
         loadComponent: () =>
           import('./features/claims/edit-loss-information/edit-loss-information.component').then(
-            (m) => m.EditLossInformationComponent
+            m => m.EditLossInformationComponent
           ),
-        canDeactivate: [editLossInformationCanDeactivate],
+        canDeactivate: [editLossInformationCanDeactivate]
       },
       {
         path: 'claims/:id/sections',
-        loadComponent: () =>
-          import('./features/sections/sections').then((m) => m.Sections),
+        loadComponent: () => import('./features/sections/sections').then(m => m.Sections)
       },
       {
         path: 'claims/:id/policy',
         loadComponent: () =>
           import('./features/claims/policy-overview/policy-overview.component').then(
             m => m.PolicyOverviewComponent
-          ),
+          )
       },
       // Stub route — redirects to overview until a dedicated page is built.
       // Parties is another team's MFE in production (wc-cc-party-embedded),
       // so there is no claims-management surface to model it against.
-      { path: 'claims/:id/parties',    redirectTo: 'claims/:id/overview', pathMatch: 'full' },
+      { path: 'claims/:id/parties', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       {
         path: 'claims/:id/financial',
         loadComponent: () =>
           import('./features/claims/financial-overview/financial-overview.component').then(
             m => m.FinancialOverviewComponent
-          ),
+          )
       },
       {
         path: 'claims/:id/notes',
         loadComponent: () =>
           import('./features/claims/claim-notes-full/claim-notes-full.component').then(
             m => m.ClaimNotesFullComponent
-          ),
+          )
       },
       {
         path: 'claims/:id/limits',
         loadComponent: () =>
           import('./features/claims/limits-deductibles/limits-deductibles.component').then(
             m => m.LimitsDeductiblesComponent
-          ),
+          )
       },
       {
         path: 'claims/:id/recoveries',
         loadComponent: () =>
           import('./features/claims/recoveries/recoveries.component').then(
             m => m.RecoveriesComponent
-          ),
+          )
       },
       {
         path: 'claims/:id/providers',
         loadComponent: () =>
           import('./features/claims/provider-management/provider-management.component').then(
             m => m.ProviderManagementComponent
-          ),
+          )
       },
       {
         path: 'claims/:id/risk',
         loadComponent: () =>
-          import('./features/claims/risk-analysis/risk-analysis.component').then((m) => m.RiskAnalysisComponent),
+          import('./features/claims/risk-analysis/risk-analysis.component').then(
+            m => m.RiskAnalysisComponent
+          )
       },
       {
         path: 'claims/:id/litigation',
         loadComponent: () =>
-          import('./features/claims/litigation/litigation.component').then((m) => m.LitigationComponent),
-      },
-    ],
+          import('./features/claims/litigation/litigation.component').then(
+            m => m.LitigationComponent
+          )
+      }
+    ]
   },
   {
     path: 'tracker',
     canActivate: [trackerGuard],
-    loadChildren: () => import('./features/tracker/tracker.routes').then((m) => m.TRACKER_ROUTES),
+    loadChildren: () => import('./features/tracker/tracker.routes').then(m => m.TRACKER_ROUTES)
   },
-  { path: '**', redirectTo: 'dashboard' },
+  { path: '**', redirectTo: 'dashboard' }
 ];

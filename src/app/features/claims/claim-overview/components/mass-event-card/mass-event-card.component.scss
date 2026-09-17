@@ -7,9 +7,15 @@
   display: contents;
 }
 
-.co-field { @include shell.field; }
-.co-label { @include shell.field-label; }
-.co-value { @include shell.field-value; }
+.co-field {
+  @include shell.field;
+}
+.co-label {
+  @include shell.field-label;
+}
+.co-value {
+  @include shell.field-value;
+}
 
 .co-info-btn {
   background: none;
@@ -32,7 +38,9 @@
   line-height: 1;
   flex: 0 0 auto;
   transition: color 0.12s;
-  .co-info-btn:hover & { color: var(--interactive-text); }
+  .co-info-btn:hover & {
+    color: var(--interactive-text);
+  }
 }
 
 // ─── Mass Event popover content ───────────────────────────────────────────────
@@ -98,8 +106,14 @@
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 10px;
-  &--cat    { background: var(--claim-status-open-bg); color: var(--claim-status-open-color); }
-  &--noncat { background: var(--ui-03); color: var(--text-muted); }
+  &--cat {
+    background: var(--claim-status-open-bg);
+    color: var(--claim-status-open-color);
+  }
+  &--noncat {
+    background: var(--ui-03);
+    color: var(--text-muted);
+  }
 }
 
 .me-popover__pending-badge {
@@ -155,7 +169,9 @@
   font-size: var(--paragraph-04-font-size);
 }
 
-.me-popover__unlink a { color: var(--danger, #d2351d) !important; }
+.me-popover__unlink a {
+  color: var(--danger, #d2351d) !important;
+}
 
 // Override action + its one-line explanation. The hint exists because "not
 // associated with this claim" and "unlink" were being read as the same action.

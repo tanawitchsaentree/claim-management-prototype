@@ -144,20 +144,40 @@
 }
 
 // col-check: let NDBX edge padding (8px) apply naturally — no override
-.col-check   { width: 40px; }
-.col-name    { min-width: 200px; }
-.col-status  { width: 130px; }
-.col-events  { width: 160px; }
-.col-limit   { min-width: 260px; }
-.col-covered { min-width: 160px; }
-.col-action  { width: 52px; }
+.col-check {
+  width: 40px;
+}
+.col-name {
+  min-width: 200px;
+}
+.col-status {
+  width: 130px;
+}
+.col-events {
+  width: 160px;
+}
+.col-limit {
+  min-width: 260px;
+}
+.col-covered {
+  min-width: 160px;
+}
+.col-action {
+  width: 52px;
+}
 
 // ─── Entity row states ───────────────────────────────────────────────────────
 
 @keyframes highlight-fade {
-  0%   { background-color: var(--row-recently-added-bg); }
-  70%  { background-color: var(--row-recently-added-bg); }
-  100% { background-color: transparent; }
+  0% {
+    background-color: var(--row-recently-added-bg);
+  }
+  70% {
+    background-color: var(--row-recently-added-bg);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 .entity-row {
@@ -253,7 +273,9 @@
   cursor: pointer;
   text-decoration: underline;
 
-  &:hover { color: var(--interactive-primary); }
+  &:hover {
+    color: var(--interactive-primary);
+  }
 }
 
 // Footer styles live in WizardFooterComponent

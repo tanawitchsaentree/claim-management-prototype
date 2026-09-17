@@ -1,6 +1,8 @@
 @use '../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 // ─── Header ──────────────────────────────────────────────────────────────────
 
@@ -11,11 +13,15 @@
   justify-content: space-between;
 }
 
-.scm-title { @include modal.title; }
+.scm-title {
+  @include modal.title;
+}
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
-.scm-body { @include modal.body; }
+.scm-body {
+  @include modal.body;
+}
 
 .scm-intro {
   margin: 0;
@@ -53,7 +59,9 @@
   &--clickable {
     cursor: pointer;
     user-select: none;
-    &:hover { background: var(--ui-03); }
+    &:hover {
+      background: var(--ui-03);
+    }
   }
 }
 
@@ -96,10 +104,15 @@
   display: flex;
   padding: var(--space-md) var(--space-base);
   border-bottom: 1px solid var(--ui-04);
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
-.scm-item__main { flex: 1; min-width: 0; }
+.scm-item__main {
+  flex: 1;
+  min-width: 0;
+}
 
 .scm-item__top {
   display: flex;
@@ -122,8 +135,14 @@
   border-radius: 10px;
   flex-shrink: 0;
 
-  &--hard    { background: rgba(var(--negative-rgb, 210, 53, 29), 0.1); color: var(--danger); }
-  &--warning { background: rgba(var(--warning-rgb, 255, 165, 0), 0.12); color: var(--warning); }
+  &--hard {
+    background: rgba(var(--negative-rgb, 210, 53, 29), 0.1);
+    color: var(--danger);
+  }
+  &--warning {
+    background: rgba(var(--warning-rgb, 255, 165, 0), 0.12);
+    color: var(--warning);
+  }
 }
 
 .scm-item__desc {
@@ -146,7 +165,9 @@
   gap: 4px;
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
-  nx-icon { opacity: 0.6; }
+  nx-icon {
+    opacity: 0.6;
+  }
 }
 
 .scm-item__link {
@@ -158,7 +179,9 @@
   text-decoration: none;
   font-weight: 500;
   margin-left: auto;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ─── Checklist ────────────────────────────────────────────────────────────────
@@ -183,8 +206,12 @@
 .scm-check-icon {
   flex-shrink: 0;
   margin-top: 1px;
-  &--pass { color: var(--positive, #27a25e); }
-  &--fail { color: var(--danger, #d2351d); }
+  &--pass {
+    color: var(--positive, #27a25e);
+  }
+  &--fail {
+    color: var(--danger, #d2351d);
+  }
 }
 
 .scm-check-label {
@@ -210,11 +237,17 @@
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
 .scm-form {
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
-.scm-save-error { margin-top: 12px; }
+.scm-save-error {
+  margin-top: 12px;
+}
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-.scm-footer { @include modal.footer; }
+.scm-footer {
+  @include modal.footer;
+}

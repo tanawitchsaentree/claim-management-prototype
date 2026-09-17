@@ -7,7 +7,10 @@ export function isNarrativeActive(narrative: ReserveNarrative | null | undefined
   return !!narrative && !narrative.archivedAt;
 }
 
-export function narrativeReasonLabel(narrative: ReserveNarrative | null | undefined, options: LookupOption[]): string {
+export function narrativeReasonLabel(
+  narrative: ReserveNarrative | null | undefined,
+  options: LookupOption[]
+): string {
   if (!narrative) return '';
   return lookupLabel(options, narrative.reasonKey);
 }

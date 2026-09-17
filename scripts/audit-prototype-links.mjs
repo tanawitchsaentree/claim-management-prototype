@@ -29,7 +29,7 @@ const TICKET_DIR = join(ROOT, 'public', 'tickets');
 const ROUTE_FILES = [
   ['src/app/app.routes.ts', ''],
   ['src/app/features/fnol/fnol.routes.ts', 'fnol'],
-  ['src/app/features/tracker/tracker.routes.ts', 'tracker'],
+  ['src/app/features/tracker/tracker.routes.ts', 'tracker']
 ];
 
 // Paths in app.routes.ts children are written out in full ('claims/:id/sections'),
@@ -68,16 +68,22 @@ for (const file of readdirSync(TICKET_DIR)) {
   for (const ac of acs) {
     const route = ac.howToTest?.route;
     if (!route) {
-      violations.push(`${file} :: ${ac.id} — howToTest.route is missing; the tracker link has nowhere to go`);
+      violations.push(
+        `${file} :: ${ac.id} — howToTest.route is missing; the tracker link has nowhere to go`
+      );
       continue;
     }
     // AC routes are supposed to be concrete. A param here would be navigated
     // literally, which is the bug this whole audit is named after.
     if (/\/:[a-zA-Z]/.test(route)) {
-      violations.push(`${file} :: ${ac.id} — route '${route}' still contains a route param; write the concrete claim id (e.g. ${ticket.targetClaim ?? 'CLM-2024-001'})`);
+      violations.push(
+        `${file} :: ${ac.id} — route '${route}' still contains a route param; write the concrete claim id (e.g. ${ticket.targetClaim ?? 'CLM-2024-001'})`
+      );
     }
     if (!routeExists(route)) {
-      violations.push(`${file} :: ${ac.id} — route '${route}' matches no path in app.routes.ts / fnol.routes.ts / tracker.routes.ts`);
+      violations.push(
+        `${file} :: ${ac.id} — route '${route}' matches no path in app.routes.ts / fnol.routes.ts / tracker.routes.ts`
+      );
     }
   }
 
@@ -85,9 +91,11 @@ for (const file of readdirSync(TICKET_DIR)) {
   // an authored walkthrough wins, otherwise one is generated from the non-todo ACs.
   // A ticket that resolves to neither arrives with no orientation at all.
   const authored = (ticket.walkthroughSteps || []).length;
-  const generatable = acs.filter((ac) => ac.buildStatus !== 'todo').length;
+  const generatable = acs.filter(ac => ac.buildStatus !== 'todo').length;
   if (authored === 0 && generatable === 0) {
-    violations.push(`${file} — no walkthroughSteps and no non-todo acceptance criteria: nothing to show a reviewer who follows a link here`);
+    violations.push(
+      `${file} — no walkthroughSteps and no non-todo acceptance criteria: nothing to show a reviewer who follows a link here`
+    );
   }
   if (authored === 0 && generatable > 0) fallbackTourCount++;
 }
@@ -96,25 +104,35 @@ for (const file of readdirSync(TICKET_DIR)) {
 // links without importing TS. Duplication is fine; silent divergence is not — the
 // whole point of one substitution rule is that the app and the generated TRACKER.md
 // send reviewers to the same place.
-const tsSrc = readFileSync(join(ROOT, 'src/app/core/services/prototype-scenario.service.ts'), 'utf8');
+const tsSrc = readFileSync(
+  join(ROOT, 'src/app/core/services/prototype-scenario.service.ts'),
+  'utf8'
+);
 const mdSrc = readFileSync(join(ROOT, 'scripts/gen-tracker-md.mjs'), 'utf8');
-const grab = (src) => ({
+const grab = src => ({
   id: src.match(/DEMO_CLAIM_ID\s*=\s*'([^']+)'/)?.[1] ?? null,
   // The replacement expression differs legitimately (the TS takes claimId as a
   // parameter, the script closes over the constant) — only the PATTERN has to match.
-  re: src.match(/\.replace\((\/[^,]+?\/g),/)?.[1] ?? null,
+  re: src.match(/\.replace\((\/[^,]+?\/g),/)?.[1] ?? null
 });
 const ts = grab(tsSrc);
 const md = grab(mdSrc);
-if (!ts.id || !ts.re) violations.push('prototype-scenario.service.ts — could not read DEMO_CLAIM_ID / substituteClaimId; this audit can no longer verify link parity');
+if (!ts.id || !ts.re)
+  violations.push(
+    'prototype-scenario.service.ts — could not read DEMO_CLAIM_ID / substituteClaimId; this audit can no longer verify link parity'
+  );
 else if (ts.id !== md.id || ts.re !== md.re) {
-  violations.push(`substituteClaimId has drifted: TS uses (${ts.id}, ${ts.re}) but scripts/gen-tracker-md.mjs uses (${md.id}, ${md.re}) — TRACKER.md links and in-app links will disagree`);
+  violations.push(
+    `substituteClaimId has drifted: TS uses (${ts.id}, ${ts.re}) but scripts/gen-tracker-md.mjs uses (${md.id}, ${md.re}) — TRACKER.md links and in-app links will disagree`
+  );
 }
 
 if (violations.length > 0) {
   console.error('\n✘ audit:prototype-links — violations found:\n');
   for (const v of violations) console.error('  •', v);
-  console.error(`\n${violations.length} broken prototype link(s). A reviewer following one lands on the wrong screen or on no explanation.\n`);
+  console.error(
+    `\n${violations.length} broken prototype link(s). A reviewer following one lands on the wrong screen or on no explanation.\n`
+  );
   process.exit(1);
 }
 

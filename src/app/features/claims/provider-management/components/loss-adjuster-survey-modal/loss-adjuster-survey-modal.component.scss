@@ -1,21 +1,31 @@
 @use '../../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
-.las-header { @include modal.header; }
+.las-header {
+  @include modal.header;
+}
 
-.las-body { @include modal.body; }
+.las-body {
+  @include modal.body;
+}
 
 .las-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
 .las-rating-row {
   display: flex;
 }
 
-.las-footer { @include modal.footer; }
+.las-footer {
+  @include modal.footer;
+}

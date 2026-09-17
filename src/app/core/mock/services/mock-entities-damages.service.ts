@@ -1,8 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, of, take } from 'rxjs';
+import { map, Observable, take } from 'rxjs';
 import {
-  DamageItem, EntitiesDamagesData, EntityRow, EntitySearchResult,
-  EntityType, PromiseStatus,
+  DamageItem,
+  EntitiesDamagesData,
+  EntityRow,
+  EntitySearchResult,
+  EntityType,
+  PromiseStatus
 } from '../../models';
 import { MockBaseService } from './mock-base.service';
 import { ENTITY_TYPE_TO_DAMAGE_GROUP } from '../../../features/fnol/config/entity-damage-mapping';
@@ -13,8 +17,8 @@ type RawDataMap = Record<string, EntitiesDamagesData>;
 
 @Injectable({ providedIn: 'root' })
 export class MockEntitiesDamagesService extends MockBaseService {
-  private readonly raw       = rawData as unknown as RawDataMap;
-  private readonly cache     = new Map<string, EntitiesDamagesData>();
+  private readonly raw = rawData as unknown as RawDataMap;
+  private readonly cache = new Map<string, EntitiesDamagesData>();
   private readonly lookupSvc = inject(MockLookupService);
 
   // ── Read ────────────────────────────────────────────────────────────────────
@@ -23,7 +27,9 @@ export class MockEntitiesDamagesService extends MockBaseService {
     const cached = this.cache.get(policyId);
     if (cached) return this.respond(cached);
 
-    const source = this.raw[policyId] ?? this.raw['POL-2024-001'];
+    // No fallback to another policy's data — that silently showed a
+    // different client's entities under whichever policy was picked in FNOL.
+    const source = this.raw[policyId];
     if (!source) {
       const empty: EntitiesDamagesData = { sections: [] };
       this.cache.set(policyId, empty);
@@ -37,7 +43,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
 
   resetState(policyId?: string): void {
     if (policyId) this.cache.delete(policyId);
-    else          this.cache.clear();
+    else this.cache.clear();
   }
 
   // ── Entity CRUD ─────────────────────────────────────────────────────────────
@@ -45,30 +51,36 @@ export class MockEntitiesDamagesService extends MockBaseService {
   addEntityFromSearch(
     policyId: string,
     result: EntitySearchResult,
-    entityType: EntityType,
+    entityType: EntityType
   ): Observable<EntityRow> {
     return this.getByPolicyId(policyId).pipe(
       take(1),
       map(data => {
         const route = ENTITY_TYPE_TO_DAMAGE_GROUP[entityType];
         const entity: EntityRow = {
-          entityId:      `ENT-NEW-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          name:          result.locationName,
-          status:        'promised',
+          entityId: `ENT-NEW-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name: result.locationName,
+          status: 'promised',
           promiseStatus: 'possibly-promised',
-          limit:         '—',
-          coveredBy:     '—',
+          limit: '—',
+          coveredBy: '—',
           documentsCount: 0,
-          selected:      false,
-          expanded:      false,
+          selected: false,
+          expanded: false,
           recentlyAdded: true,
           damageTypeKey: route.damageTypeKey,
           entityType,
-          propertyId:    result.propertyId,
+          propertyId: result.propertyId
         };
-        this.insertIntoData(data, entity, 'possibly-promised', route.damageTypeKey, route.damageType);
+        this.insertIntoData(
+          data,
+          entity,
+          'possibly-promised',
+          route.damageTypeKey,
+          route.damageType
+        );
         return entity;
-      }),
+      })
     );
   }
 
@@ -96,20 +108,29 @@ export class MockEntitiesDamagesService extends MockBaseService {
             for (const entity of group.entities) {
               const copy: EntityRow = {
                 ...entity,
-                coveredBy:     `${entity.coveredBy} · ${sourcePolicyId}`,
-                selected:      false,
-                expanded:      false,
+                coveredBy: `${entity.coveredBy} · ${sourcePolicyId}`,
+                selected: false,
+                expanded: false,
                 recentlyAdded: true,
-                subItems:      entity.subItems?.map(si => ({ ...si, selected: false })),
-                damageItems:   entity.damageItems?.map(d => ({ ...d, documents: d.documents ? [...d.documents] : [] })),
+                subItems: entity.subItems?.map(si => ({ ...si, selected: false })),
+                damageItems: entity.damageItems?.map(d => ({
+                  ...d,
+                  documents: d.documents ? [...d.documents] : []
+                }))
               };
-              this.insertIntoData(data, copy, section.promiseStatus, group.damageTypeKey, group.damageType);
+              this.insertIntoData(
+                data,
+                copy,
+                section.promiseStatus,
+                group.damageTypeKey,
+                group.damageType
+              );
               added++;
             }
           }
         }
         return added;
-      }),
+      })
     );
   }
 
@@ -117,7 +138,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
     policyId: string,
     entityId: string,
     targetSection: PromiseStatus,
-    targetGroupKey: string,
+    targetGroupKey: string
   ): Observable<boolean> {
     return this.getByPolicyId(policyId).pipe(
       take(1),
@@ -126,17 +147,22 @@ export class MockEntitiesDamagesService extends MockBaseService {
         for (const section of data.sections) {
           for (const group of section.damageGroups) {
             const idx = group.entities.findIndex(e => e.entityId === entityId);
-            if (idx >= 0) { found = group.entities.splice(idx, 1)[0]; break; }
+            if (idx >= 0) {
+              found = group.entities.splice(idx, 1)[0];
+              break;
+            }
           }
           if (found) break;
         }
         if (!found) return false;
         found.promiseStatus = targetSection;
         found.damageTypeKey = targetGroupKey;
-        const groupLabel = this.lookupSvc.getTypeOfDamageSync().find(o => o.value === targetGroupKey)?.label ?? targetGroupKey;
+        const groupLabel =
+          this.lookupSvc.getTypeOfDamageSync().find(o => o.value === targetGroupKey)?.label ??
+          targetGroupKey;
         this.insertIntoData(data, found, targetSection, targetGroupKey, groupLabel);
         return true;
-      }),
+      })
     );
   }
 
@@ -147,11 +173,14 @@ export class MockEntitiesDamagesService extends MockBaseService {
         for (const section of data.sections) {
           for (const group of section.damageGroups) {
             const idx = group.entities.findIndex(e => e.entityId === entityId);
-            if (idx >= 0) { group.entities.splice(idx, 1); return true; }
+            if (idx >= 0) {
+              group.entities.splice(idx, 1);
+              return true;
+            }
           }
         }
         return false;
-      }),
+      })
     );
   }
 
@@ -166,7 +195,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
         entity.damageItems = entity.damageItems ?? [];
         entity.damageItems.push(item);
         return true;
-      }),
+      })
     );
   }
 
@@ -177,9 +206,12 @@ export class MockEntitiesDamagesService extends MockBaseService {
         const entity = this.findEntity(data, entityId);
         if (!entity?.damageItems) return false;
         const idx = entity.damageItems.findIndex(d => d.itemId === itemId);
-        if (idx >= 0) { entity.damageItems.splice(idx, 1); return true; }
+        if (idx >= 0) {
+          entity.damageItems.splice(idx, 1);
+          return true;
+        }
         return false;
-      }),
+      })
     );
   }
 
@@ -187,7 +219,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
     policyId: string,
     entityId: string,
     itemId: string,
-    changes: Partial<DamageItem>,
+    changes: Partial<DamageItem>
   ): Observable<boolean> {
     return this.getByPolicyId(policyId).pipe(
       take(1),
@@ -197,7 +229,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
         if (!item) return false;
         Object.assign(item, changes);
         return true;
-      }),
+      })
     );
   }
 
@@ -208,12 +240,12 @@ export class MockEntitiesDamagesService extends MockBaseService {
     entity: EntityRow,
     sectionKey: PromiseStatus,
     groupKey: string,
-    groupLabel: string,
+    groupLabel: string
   ): void {
     let section = data.sections.find(s => s.promiseStatus === sectionKey);
     if (!section) {
-      const label = sectionKey === 'possibly-promised'
-        ? 'Possibly promised entities' : 'Not promised entities';
+      const label =
+        sectionKey === 'possibly-promised' ? 'Possibly promised entities' : 'Not promised entities';
       section = { promiseStatus: sectionKey, label, expanded: true, damageGroups: [] };
       data.sections.unshift(section);
     }
@@ -244,13 +276,16 @@ export class MockEntitiesDamagesService extends MockBaseService {
           expanded: true,
           entities: g.entities.map(e => ({
             ...e,
-            expanded:    false,
-            selected:    false,
-            subItems:    e.subItems?.map(si => ({ ...si, selected: false })),
-            damageItems: e.damageItems?.map(d => ({ ...d, documents: d.documents ? [...d.documents] : [] })),
-          })),
-        })),
-      })),
+            expanded: false,
+            selected: false,
+            subItems: e.subItems?.map(si => ({ ...si, selected: false })),
+            damageItems: e.damageItems?.map(d => ({
+              ...d,
+              documents: d.documents ? [...d.documents] : []
+            }))
+          }))
+        }))
+      }))
     };
   }
 }

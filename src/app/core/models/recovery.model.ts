@@ -26,47 +26,47 @@ export type RecoveryRoute =
   | 'Deductible collection';
 
 export interface RecoveryCase {
-  id:               string;
-  claimId:          string;
-  route:            RecoveryRoute;
+  id: string;
+  claimId: string;
+  route: RecoveryRoute;
   /** Who the money is being pursued from. */
-  counterparty:     string;
+  counterparty: string;
   /** Free reference to the section/entity the loss sits on, when known. */
-  sectionRef?:      string;
-  currency:         string;
-  estimatedAmount:  number;
+  sectionRef?: string;
+  currency: string;
+  estimatedAmount: number;
   /** 0 until the case is resolved as Recovered. */
-  recoveredAmount:  number;
-  status:           RecoveryCaseStatus;
+  recoveredAmount: number;
+  status: RecoveryCaseStatus;
   /** ISO yyyy-MM-dd — display through AppDatePipe, never raw. */
-  openedDate:       string;
-  expectedDate?:    string;
-  resolvedDate?:    string;
-  owner:            string;
-  note?:            string;
+  openedDate: string;
+  expectedDate?: string;
+  resolvedDate?: string;
+  owner: string;
+  note?: string;
   /** Why it was written off, or how the recovered sum was settled. */
-  outcomeNote?:     string;
+  outcomeNote?: string;
 }
 
 export interface RecoveryCaseFilters {
   claimId?: string;
-  status?:  RecoveryCaseStatus;
+  status?: RecoveryCaseStatus;
 }
 
 /** What the create modal hands back — the service owns id/dates/status. */
 export interface NewRecoveryCase {
-  route:           RecoveryRoute;
-  counterparty:    string;
-  sectionRef?:     string;
+  route: RecoveryRoute;
+  counterparty: string;
+  sectionRef?: string;
   estimatedAmount: number;
-  expectedDate?:   string;
-  note?:           string;
+  expectedDate?: string;
+  note?: string;
 }
 
 export interface RecoveryResolution {
-  status:          Extract<RecoveryCaseStatus, 'Recovered' | 'Written off'>;
+  status: Extract<RecoveryCaseStatus, 'Recovered' | 'Written off'>;
   recoveredAmount: number;
-  outcomeNote:     string;
+  outcomeNote: string;
 }
 
 export const RECOVERY_ROUTES: readonly RecoveryRoute[] = [
@@ -74,7 +74,7 @@ export const RECOVERY_ROUTES: readonly RecoveryRoute[] = [
   'Salvage',
   'Third-party liability',
   'Reinsurance',
-  'Deductible collection',
+  'Deductible collection'
 ] as const;
 
 const TERMINAL: readonly RecoveryCaseStatus[] = ['Recovered', 'Written off'];
@@ -92,13 +92,13 @@ export function isRecoveryOpen(c: RecoveryCase): boolean {
  * hand-maintaining two booleans across create/resolve is how they drift apart.
  */
 export interface RecoveryRollup {
-  hasRecoveryCase:   boolean;
+  hasRecoveryCase: boolean;
   hasActiveRecovery: boolean;
 }
 
 export function rollupRecoveries(cases: readonly RecoveryCase[]): RecoveryRollup {
   return {
-    hasRecoveryCase:   cases.length > 0,
-    hasActiveRecovery: cases.some(isRecoveryOpen),
+    hasRecoveryCase: cases.length > 0,
+    hasActiveRecovery: cases.some(isRecoveryOpen)
   };
 }

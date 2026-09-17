@@ -18,11 +18,17 @@ export type ClaimsDateRange = '30' | '90' | 'all';
   selector: 'app-claims-portfolio-widget',
   standalone: true,
   imports: [
-    DecimalPipe, RouterLink, NxIconModule, NxBadgeModule, NxTableModule,
-    StatusChipComponent, EmptyStateComponent, ClaimPreviewDirective,
+    DecimalPipe,
+    RouterLink,
+    NxIconModule,
+    NxBadgeModule,
+    NxTableModule,
+    StatusChipComponent,
+    EmptyStateComponent,
+    ClaimPreviewDirective
   ],
   templateUrl: './claims-portfolio-widget.component.html',
-  styleUrl: './claims-portfolio-widget.component.scss',
+  styleUrl: './claims-portfolio-widget.component.scss'
 })
 export class ClaimsPortfolioWidgetComponent {
   // Already date-range-filtered by the parent (the stats card needs the same
@@ -35,27 +41,19 @@ export class ClaimsPortfolioWidgetComponent {
   readonly auth = inject(AuthService);
 
   portfolioTab: 'claims' | 'loss-events' = 'claims';
-  setPortfolioTab(tab: 'claims' | 'loss-events'): void { this.portfolioTab = tab; }
+  setPortfolioTab(tab: 'claims' | 'loss-events'): void {
+    this.portfolioTab = tab;
+  }
 
   // Default scope is "My claims" for a Claims Handler (a unified view of claims assigned to
   // them) and "All" for a KCM, who oversees more than their own portfolio.
   readonly claimsScope = signal<'mine' | 'group' | 'all'>(
-    (localStorage.getItem('dashboard:claims-scope') as 'mine' | 'group' | 'all')
-    ?? (this.auth.isKcm() ? 'all' : 'mine')
+    (localStorage.getItem('dashboard:claims-scope') as 'mine' | 'group' | 'all') ??
+      (this.auth.isKcm() ? 'all' : 'mine')
   );
   setClaimsScope(scope: 'mine' | 'group' | 'all'): void {
     this.claimsScope.set(scope);
     localStorage.setItem('dashboard:claims-scope', scope);
-  }
-
-  // Default view is "Open Claims" per PI 2026.3 UI/UX alignment (BMPCC-15121) — Open/In progress
-  // only, with a filter to widen to Closed/Declined or everything.
-  readonly claimsStatusFilter = signal<'open' | 'closed' | 'all'>(
-    (localStorage.getItem('dashboard:claims-status-filter') as 'open' | 'closed' | 'all') ?? 'open'
-  );
-  setClaimsStatusFilter(status: 'open' | 'closed' | 'all'): void {
-    this.claimsStatusFilter.set(status);
-    localStorage.setItem('dashboard:claims-status-filter', status);
   }
 
   setDateRange(range: ClaimsDateRange): void {
@@ -63,23 +61,24 @@ export class ClaimsPortfolioWidgetComponent {
   }
 
   readonly displayedClaims = computed<Claim[]>(() => {
-    const scope  = this.claimsScope();
-    const status = this.claimsStatusFilter();
-    const user   = this.auth.user();
-    let filtered = this.claims;
+    const scope = this.claimsScope();
+    const user = this.auth.user();
+    // 'Matched'/'Abandoned' are terminal skeleton-only bookkeeping states — the
+    // skeleton record that produced them is dead weight once resolved (either
+    // superseded by a real claim, or dropped). They don't belong in a claims
+    // handler's portfolio overview; FNOL Search's Claims tab is where an orphan
+    // claim's full lifecycle (including these terminal states) is meant to be
+    // reviewed. Every other status (including 'Awaiting policy') shows.
+    let filtered = this.claims.filter(c => c.status !== 'Matched' && c.status !== 'Abandoned');
     if (user) {
-      if (scope === 'mine')       filtered = filtered.filter(c => c.assignee === user.name);
+      if (scope === 'mine') filtered = filtered.filter(c => c.assignee === user.name);
       else if (scope === 'group') filtered = filtered.filter(c => c.group === user.group);
     }
-    // 'Awaiting policy' orphan claims count as open — a handler needs to see
-    // them here too, not just in the dedicated FNOL search.
-    if (status === 'open')        filtered = filtered.filter(c => c.status === 'Open' || c.status === 'In progress' || c.status === 'Awaiting policy');
-    else if (status === 'closed') filtered = filtered.filter(c => c.status === 'Closed' || c.status === 'Declined');
-    // No fallback to unfiltered claims when a scope/status combination yields zero rows —
-    // an empty result is real and must render the empty state, not someone else's claims.
+    // No fallback to unfiltered claims when a scope yields zero rows — an empty
+    // result is real and must render the empty state, not someone else's claims.
     // Most-recently-touched first — without this, claims.json's raw array order decided
     // what showed, so anything appended to the end of that file (e.g. orphan claims) was
-    // structurally invisible in a "top 5" no matter which scope/date/status was picked.
+    // structurally invisible in a "top 5" no matter which scope was picked.
     const sorted = [...filtered].sort((a, b) => b.dateUpdated.localeCompare(a.dateUpdated));
     return sorted.slice(0, 5);
   });

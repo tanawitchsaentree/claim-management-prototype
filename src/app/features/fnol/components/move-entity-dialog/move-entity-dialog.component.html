@@ -25,9 +25,12 @@
 
 <div class="med-footer">
   <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="form.invalid || !hasChanged"
-          (click)="onConfirm()">
+  <button
+    nxButton="primary small"
+    type="button"
+    [disabled]="form.invalid || !hasChanged"
+    (click)="onConfirm()"
+  >
     Move
   </button>
 </div>

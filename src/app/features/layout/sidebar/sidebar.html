@@ -1,19 +1,20 @@
 <aside class="app-sidebar" [class.app-sidebar--collapsed]="collapsed">
-
   @if (isClaimRoute()) {
     <nav class="sidebar-nav" tabindex="0">
       @for (entry of claimNavItems(); track isGroup(entry) ? entry.groupKey : entry.path) {
-
         @if (isGroup(entry)) {
           <!-- Collapsible group -->
-          <div class="nav-group"
-               [class.nav-group--active]="isGroupActive(entry)"
-               [class.nav-group--expanded]="isGroupExpanded(entry.groupKey)">
+          <div
+            class="nav-group"
+            [class.nav-group--active]="isGroupActive(entry)"
+            [class.nav-group--expanded]="isGroupExpanded(entry.groupKey)"
+          >
             <button
               class="nav-item nav-group__header"
               [class.nav-item--active]="isGroupActive(entry)"
               [title]="collapsed ? entry.label : ''"
-              (click)="toggleGroup(entry.groupKey)">
+              (click)="toggleGroup(entry.groupKey)"
+            >
               <nx-icon [name]="entry.icon" size="s"></nx-icon>
               <span class="nav-item__label">{{ entry.label }}</span>
               @if (!collapsed) {
@@ -21,16 +22,22 @@
               }
             </button>
             @if (!collapsed) {
-              <div class="nav-group__children"
-                   [class.nav-group__children--closed]="!isGroupExpanded(entry.groupKey)"
-                   [style.visibility]="isGroupExpanded(entry.groupKey) ? 'visible' : 'hidden'">
+              <div
+                class="nav-group__children"
+                [class.nav-group__children--closed]="!isGroupExpanded(entry.groupKey)"
+                [style.visibility]="isGroupExpanded(entry.groupKey) ? 'visible' : 'hidden'"
+              >
                 <div>
-                  @for (child of entry.children; track child.path + (child.queryParams?.['view'] ?? '')) {
+                  @for (
+                    child of entry.children;
+                    track child.path + (child.queryParams?.['view'] ?? '')
+                  ) {
                     <a
                       class="nav-item nav-item--child"
                       [class.nav-item--active]="isChildActive(child)"
                       [routerLink]="child.path"
-                      [queryParams]="child.queryParams ?? {}">
+                      [queryParams]="child.queryParams ?? {}"
+                    >
                       <span class="nav-item__label">{{ child.label }}</span>
                     </a>
                   }
@@ -38,7 +45,6 @@
               </div>
             }
           </div>
-
         } @else {
           <!-- Flat link -->
           <a
@@ -46,12 +52,12 @@
             [routerLink]="entry.path"
             routerLinkActive="nav-item--active"
             [routerLinkActiveOptions]="{ exact: false }"
-            [title]="collapsed ? entry.label : ''">
+            [title]="collapsed ? entry.label : ''"
+          >
             <nx-icon [name]="entry.icon" size="s"></nx-icon>
             <span class="nav-item__label">{{ entry.label }}</span>
           </a>
         }
-
       }
     </nav>
   } @else {
@@ -62,7 +68,8 @@
           [routerLink]="item.path"
           routerLinkActive="nav-item--active"
           [routerLinkActiveOptions]="{ exact: !!item.exact }"
-          [title]="collapsed ? item.label : ''">
+          [title]="collapsed ? item.label : ''"
+        >
           <nx-icon [name]="item.icon" size="s"></nx-icon>
           <span class="nav-item__label">{{ item.label }}</span>
         </a>
@@ -74,9 +81,14 @@
     <button class="sidebar-footer__btn" title="Settings" aria-label="Settings">
       <nx-icon name="setting" size="s"></nx-icon>
     </button>
-    <button class="sidebar-footer__btn sidebar-footer__collapse" (click)="toggleCollapse()" [title]="collapsed ? 'Expand' : 'Collapse'" [attr.aria-label]="collapsed ? 'Expand' : 'Collapse'" [attr.aria-expanded]="!collapsed">
+    <button
+      class="sidebar-footer__btn sidebar-footer__collapse"
+      (click)="toggleCollapse()"
+      [title]="collapsed ? 'Expand' : 'Collapse'"
+      [attr.aria-label]="collapsed ? 'Expand' : 'Collapse'"
+      [attr.aria-expanded]="!collapsed"
+    >
       <nx-icon [name]="collapsed ? 'chevron-right' : 'chevron-left'" size="s"></nx-icon>
     </button>
   </div>
-
 </aside>

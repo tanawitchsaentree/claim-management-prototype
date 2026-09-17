@@ -6,14 +6,28 @@
   height: 100%;
 }
 
-.mesm-header { @include modal.header; }
-.mesm-header-row { @include modal.header-row; }
-.mesm-title { @include modal.title; }
-.mesm-subtitle { @include modal.subtitle; }
+.mesm-header {
+  @include modal.header;
+}
+.mesm-header-row {
+  @include modal.header-row;
+}
+.mesm-title {
+  @include modal.title;
+}
+.mesm-subtitle {
+  @include modal.subtitle;
+}
 
-.mesm-body { @include modal.body; }
+.mesm-body {
+  @include modal.body;
+}
 
-.mesm-form { display: flex; flex-direction: column; gap: 12px; }
+.mesm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
 .mesm-search-row__inputs {
   display: grid;
@@ -21,8 +35,12 @@
   gap: 16px 24px;
   align-items: start;
 
-  > * { min-width: 0; }
-  nx-formfield { width: 100%; }
+  > * {
+    min-width: 0;
+  }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
 .mesm-search-row__actions {
@@ -58,7 +76,6 @@
   color: var(--text-muted);
 }
 
-
 .mesm-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--ui-04);
@@ -68,15 +85,24 @@
 .mesm-table {
   width: 100%;
 
-  td[nxCell], th[nxHeaderCell] { padding: var(--space-lg) var(--space-base) !important; }
+  td[nxCell],
+  th[nxHeaderCell] {
+    padding: var(--space-lg) var(--space-base) !important;
+  }
 }
 
-.mesm-col--check { width: 48px; }
+.mesm-col--check {
+  width: 48px;
+}
 
 .mesm-row {
   cursor: pointer;
-  &--selected td { background: var(--claim-overlay-hover); }
-  &:hover td { background: var(--claim-overlay-hover); }
+  &--selected td {
+    background: var(--claim-overlay-hover);
+  }
+  &:hover td {
+    background: var(--claim-overlay-hover);
+  }
 }
 
 .mesm-footer {

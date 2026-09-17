@@ -1,0 +1,54 @@
+<div class="apm-header">
+  <h2 nxModalTitle>Assign provider</h2>
+</div>
+
+<div class="apm-body" tabindex="0">
+  <form [formGroup]="form" class="apm-form">
+    <nx-formfield label="Provider type">
+      <nx-dropdown formControlName="providerType" placeholder="Select provider type">
+        @for (opt of providerTypeOptions; track opt.value) {
+          <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      @if (submitted && form.get('providerType')?.invalid) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Provider name">
+      <input nxInput formControlName="providerName" placeholder="e.g. Munich Legal Counsel GmbH" />
+      @if (submitted && form.get('providerName')?.invalid) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Section">
+      <nx-dropdown formControlName="sectionId" placeholder="Select section">
+        @for (s of data.sections; track s.id) {
+          <nx-dropdown-item [value]="s.id">{{ s.name }}</nx-dropdown-item>
+        }
+      </nx-dropdown>
+      @if (submitted && form.get('sectionId')?.invalid) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Assigned date">
+      <input nxDatefield nxInput formControlName="assignedDate" [datepicker]="assignedDatePicker" />
+      <nx-datepicker-toggle nxFormfieldSuffix [for]="assignedDatePicker"></nx-datepicker-toggle>
+      <nx-datepicker #assignedDatePicker></nx-datepicker>
+      @if (submitted && form.get('assignedDate')?.invalid) {
+        <nx-error nxFormfieldError>Required.</nx-error>
+      }
+    </nx-formfield>
+
+    <nx-formfield label="Contact (optional)">
+      <input nxInput formControlName="contact" placeholder="Name or email" />
+    </nx-formfield>
+  </form>
+
+  <div class="apm-footer">
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" (click)="onAssign()">Assign provider</button>
+  </div>
+</div>

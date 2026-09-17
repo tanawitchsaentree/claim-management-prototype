@@ -1,12 +1,26 @@
 @use '../../../../../shared/styles/modal-layout' as modal;
 
-:host           { @include modal.shell; }
-.rrc-header     { @include modal.header; }
-.rrc-header-row { @include modal.header-row; }
-.rrc-title      { @include modal.title; }
-.rrc-subtitle   { @include modal.subtitle; }
-.rrc-body       { @include modal.body; }
-.rrc-footer     { @include modal.footer; }
+:host {
+  @include modal.shell;
+}
+.rrc-header {
+  @include modal.header;
+}
+.rrc-header-row {
+  @include modal.header-row;
+}
+.rrc-title {
+  @include modal.title;
+}
+.rrc-subtitle {
+  @include modal.subtitle;
+}
+.rrc-body {
+  @include modal.body;
+}
+.rrc-footer {
+  @include modal.footer;
+}
 
 .rrc-form {
   display: flex;

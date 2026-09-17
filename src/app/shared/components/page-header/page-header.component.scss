@@ -23,7 +23,9 @@
   margin: 0 0 8px;
   cursor: pointer;
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .page-header__eyebrow {

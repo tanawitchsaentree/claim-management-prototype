@@ -1,17 +1,29 @@
 @use '../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 
-.apm-header    { @include modal.header;    }
-.apm-header-row { @include modal.header-row; }
-.apm-title     { @include modal.title;     }
-.apm-subtitle  { @include modal.subtitle;  }
+.apm-header {
+  @include modal.header;
+}
+.apm-header-row {
+  @include modal.header-row;
+}
+.apm-title {
+  @include modal.title;
+}
+.apm-subtitle {
+  @include modal.subtitle;
+}
 
 // ─── Body ────────────────────────────────────────────────────────────────────
 
-.apm-body { @include modal.body; }
+.apm-body {
+  @include modal.body;
+}
 
 .apm-intro {
   margin: 0;
@@ -26,12 +38,26 @@
   width: 100%;
 }
 
-.apm-col-check  { width: 48px; padding-left: 16px !important; }
-.apm-col-policy { min-width: 260px; }
-.apm-col-lob    { width: 140px; }
-.apm-col-period { width: 180px; }
-.apm-col-status { width: 110px; }
-.apm-col-count  { width: 80px; text-align: right; }
+.apm-col-check {
+  width: 48px;
+  padding-left: 16px !important;
+}
+.apm-col-policy {
+  min-width: 260px;
+}
+.apm-col-lob {
+  width: 140px;
+}
+.apm-col-period {
+  width: 180px;
+}
+.apm-col-status {
+  width: 110px;
+}
+.apm-col-count {
+  width: 80px;
+  text-align: right;
+}
 
 // Three stacked lines in one cell: the ID the handler matches on, who it
 // belongs to, and why it surfaced. The reason is the deciding information, so
@@ -63,7 +89,9 @@
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-.apm-footer { @include modal.footer; }
+.apm-footer {
+  @include modal.footer;
+}
 
 .apm-selected-count {
   margin-right: auto;

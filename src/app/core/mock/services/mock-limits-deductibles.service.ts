@@ -18,7 +18,9 @@ export class MockLimitsDeductiblesService extends MockBaseService {
   getApplicableDeductibles(claimId: string, sectionId?: string): Observable<Deductible[]> {
     const found = this.data.find(d => d.claimId === claimId);
     const all = found ? found.deductibles : [];
-    const applicable = all.filter(d => d.level === 'claim' || (d.level === 'section' && d.sectionId === sectionId));
+    const applicable = all.filter(
+      d => d.level === 'claim' || (d.level === 'section' && d.sectionId === sectionId)
+    );
     return this.respond(structuredClone(applicable));
   }
 }

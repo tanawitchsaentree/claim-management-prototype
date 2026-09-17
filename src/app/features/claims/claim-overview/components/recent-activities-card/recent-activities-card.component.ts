@@ -10,7 +10,7 @@ import { ClaimActivity } from '../../../../../core/models/claim-overview.model';
   standalone: true,
   imports: [NxIconModule, NxTableModule, EmptyStateComponent, AppDatePipe],
   templateUrl: './recent-activities-card.component.html',
-  styleUrl: './recent-activities-card.component.scss',
+  styleUrl: './recent-activities-card.component.scss'
 })
 export class RecentActivitiesCardComponent {
   @Input({ required: true }) activities: ClaimActivity[] = [];

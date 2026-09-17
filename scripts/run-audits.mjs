@@ -15,7 +15,10 @@ for (const name of names) {
   let output = '';
   let passed = true;
   try {
-    output = execSync(`npm run --silent ${name}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    output = execSync(`npm run --silent ${name}`, {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
   } catch (err) {
     passed = false;
     output = (err.stdout || '') + (err.stderr || '');
@@ -28,12 +31,14 @@ console.log(' AUDIT SUMMARY');
 console.log('─────────────────────────────────────────────');
 for (const r of results) {
   const violationLines = r.output ? r.output.split('\n').filter(Boolean).length : 0;
-  const status = r.passed ? '✅ PASS' : `❌ FAIL (${violationLines} line${violationLines === 1 ? '' : 's'})`;
+  const status = r.passed
+    ? '✅ PASS'
+    : `❌ FAIL (${violationLines} line${violationLines === 1 ? '' : 's'})`;
   console.log(`${status.padEnd(22)} ${r.name}`);
 }
 console.log('─────────────────────────────────────────────');
 
-const failed = results.filter((r) => !r.passed);
+const failed = results.filter(r => !r.passed);
 for (const r of failed) {
   console.log(`\n── ${r.name} ──`);
   console.log(r.output || '(no output)');

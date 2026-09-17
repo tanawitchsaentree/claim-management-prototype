@@ -9,8 +9,9 @@ export type LossInfoDiscardModalResult = 'discard' | null;
   standalone: true,
   imports: [NxModalModule, NxButtonModule],
   templateUrl: './loss-info-discard-modal.component.html',
-  styleUrl: './loss-info-discard-modal.component.scss',
+  styleUrl: './loss-info-discard-modal.component.scss'
 })
 export class LossInfoDiscardModalComponent {
-  readonly ref = inject<NxModalRef<LossInfoDiscardModalComponent, LossInfoDiscardModalResult>>(NxModalRef);
+  readonly ref =
+    inject<NxModalRef<LossInfoDiscardModalComponent, LossInfoDiscardModalResult>>(NxModalRef);
 }

@@ -19,22 +19,32 @@
       <section class="review-card">
         <h2 class="review-card__title">Loss details</h2>
         <dl class="review-grid">
-          <dt>Client</dt>          <dd>{{ d.clientName || '—' }}</dd>
-          <dt>Reason</dt>          <dd>{{ reasonLabel(d.reason) }}</dd>
-          <dt>Notes</dt>           <dd>{{ d.notes || '—' }}</dd>
+          <dt>Client</dt>
+          <dd>{{ d.clientName || '—' }}</dd>
+          <dt>Reason</dt>
+          <dd>{{ reasonLabel(d.reason) }}</dd>
+          <dt>Notes</dt>
+          <dd>{{ d.notes || '—' }}</dd>
         </dl>
       </section>
 
       <section class="review-card">
         <h2 class="review-card__title">General information</h2>
         <dl class="review-grid">
-          <dt>Cause of loss</dt>        <dd>{{ causeLabels() || '—' }}</dd>
-          <dt>Type of damage</dt>       <dd>{{ damageLabels() || '—' }}</dd>
-          <dt>Date of occurrence</dt>   <dd>{{ dateValue('dateOfOccurrence') || '—' }}</dd>
-          <dt>Time of occurrence</dt>   <dd>{{ dateValue('timeOfOccurrence') || '—' }}</dd>
-          <dt>Date of notification</dt> <dd>{{ dateValue('dateOfNotification') || '—' }}</dd>
-          <dt>Time of notification</dt> <dd>{{ dateValue('timeOfNotification') || '—' }}</dd>
-          <dt>Loss description</dt>     <dd>{{ lossDescription() || '—' }}</dd>
+          <dt>Cause of loss</dt>
+          <dd>{{ causeLabels() || '—' }}</dd>
+          <dt>Type of damage</dt>
+          <dd>{{ damageLabels() || '—' }}</dd>
+          <dt>Date of occurrence</dt>
+          <dd>{{ dateValue('dateOfOccurrence') || '—' }}</dd>
+          <dt>Time of occurrence</dt>
+          <dd>{{ dateValue('timeOfOccurrence') || '—' }}</dd>
+          <dt>Date of notification</dt>
+          <dd>{{ dateValue('dateOfNotification') || '—' }}</dd>
+          <dt>Time of notification</dt>
+          <dd>{{ dateValue('timeOfNotification') || '—' }}</dd>
+          <dt>Loss description</dt>
+          <dd>{{ lossDescription() || '—' }}</dd>
         </dl>
       </section>
 
@@ -45,7 +55,10 @@
         } @else {
           <ul class="review-list">
             @for (loc of locations(); track loc.id) {
-              <li>{{ loc.displayName }}{{ loc.city ? ' · ' + loc.city : '' }}{{ loc.country ? ' · ' + loc.country : '' }}</li>
+              <li>
+                {{ loc.displayName }}{{ loc.city ? ' · ' + loc.city : ''
+                }}{{ loc.country ? ' · ' + loc.country : '' }}
+              </li>
             }
           </ul>
         }
@@ -71,7 +84,9 @@
             <dt>Broker</dt>
             <dd>
               {{ d.brokerName }}
-              @if (d.brokerIpmId) { <small class="review-id">· {{ d.brokerIpmId }}</small> }
+              @if (d.brokerIpmId) {
+                <small class="review-id">· {{ d.brokerIpmId }}</small>
+              }
             </dd>
           } @else if (d.insuredName) {
             <dt>Insured</dt>
@@ -84,8 +99,16 @@
       </section>
 
       <div class="step-footer">
-        <button nxButton="tertiary" type="button" (click)="onBack()" [disabled]="saving()">Back</button>
-        <button nxButton="primary" type="button" (click)="onCreate()" [disabled]="saving()">
+        <button nxButton="tertiary" type="button" (click)="onBack()" [disabled]="saving()">
+          Back
+        </button>
+        <button
+          nxButton="primary"
+          type="button"
+          data-tour-id="sks-create-button"
+          (click)="onCreate()"
+          [disabled]="saving()"
+        >
           @if (saving()) {
             <nx-spinner size="small" negative></nx-spinner>
           } @else {

@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -17,17 +17,20 @@ import { MockMassEventService } from '../../../../core/mock/services/mock-mass-e
 import {
   ClaimSearchModalComponent,
   ClaimSearchModalData,
-  ClaimSearchModalResult,
+  ClaimSearchModalResult
 } from '../../../../shared/components/claim-search-modal/claim-search-modal.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 export type MassEventModalMode = 'edit' | 'create' | 'view';
 
 export interface MassEventModalData {
   mode: MassEventModalMode;
-  event?: MassEvent;             // required when mode === 'edit' | 'view'
-  existingIds?: string[];        // used in create mode to generate next ID
+  event?: MassEvent; // required when mode === 'edit' | 'view'
+  existingIds?: string[]; // used in create mode to generate next ID
 }
 
 export interface MassEventModalResult {
@@ -39,7 +42,6 @@ export interface MassEventModalResult {
   selector: 'app-mass-event-edit-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxIconModule,
     NxButtonModule,
@@ -50,49 +52,90 @@ export interface MassEventModalResult {
     NxTimefieldModule,
     NxTableModule,
     NxContextMenuModule,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './mass-event-edit-modal.component.html',
-  styleUrl: './mass-event-edit-modal.component.scss',
+  styleUrl: './mass-event-edit-modal.component.scss'
 })
 export class MassEventEditModalComponent {
-  private readonly ref  = inject<NxModalRef<MassEventEditModalComponent, MassEventModalResult | null>>(NxModalRef);
+  private readonly ref =
+    inject<NxModalRef<MassEventEditModalComponent, MassEventModalResult | null>>(NxModalRef);
   private readonly data = inject<MassEventModalData>(NX_MODAL_DATA);
   private readonly massEventSvc = inject(MockMassEventService);
-  private readonly dialogSvc    = inject(NxDialogService);
+  private readonly dialogSvc = inject(NxDialogService);
 
-  readonly mode      = signal<MassEventModalMode>(this.data.mode);
-  readonly isEdit    = computed(() => this.mode() === 'edit');
-  readonly isCreate  = computed(() => this.mode() === 'create');
-  readonly isView    = computed(() => this.mode() === 'view');
+  readonly mode = signal<MassEventModalMode>(this.data.mode);
+  readonly isEdit = computed(() => this.mode() === 'edit');
+  readonly isCreate = computed(() => this.mode() === 'create');
+  readonly isView = computed(() => this.mode() === 'view');
 
-  readonly types      = ['Type #1', 'Type #2', 'Type #3'];
-  readonly countries  = ['United States', 'France', 'Australia', 'Poland', 'Czech Republic', 'Canada', 'Colombia', 'Germany', 'United Kingdom'];
-  readonly regions    = ['North Coast', 'South East', 'Normandy', 'Saxony', 'Silesia', 'Pardubice', 'Missouri Plateau', 'Alberta', 'Antioquia'];
+  readonly types = ['Type #1', 'Type #2', 'Type #3'];
+  readonly countries = [
+    'United States',
+    'France',
+    'Australia',
+    'Poland',
+    'Czech Republic',
+    'Canada',
+    'Colombia',
+    'Germany',
+    'United Kingdom'
+  ];
+  readonly regions = [
+    'North Coast',
+    'South East',
+    'Normandy',
+    'Saxony',
+    'Silesia',
+    'Pardubice',
+    'Missouri Plateau',
+    'Alberta',
+    'Antioquia'
+  ];
   readonly lossCauses = ['Earthquake', 'Flood', 'Fire', 'Storm', 'Natural Event', 'Landslide'];
 
   private readonly seed: Partial<MassEvent> = this.data.event ?? {};
 
   readonly form = new FormGroup({
-    code:           new FormControl<string>(this.seed.code          ?? '', { nonNullable: true, validators: [Validators.required] }),
-    name:           new FormControl<string>(this.seed.name          ?? '', { nonNullable: true, validators: [Validators.required] }),
-    type:           new FormControl<string>(this.seed.type          ?? '', { nonNullable: true }),
-    globalCatCode:  new FormControl<string>(this.seed.globalCatCode ?? '', { nonNullable: true }),
-    productCode:    new FormControl<string>(this.seed.productCode   ?? '', { nonNullable: true }),
-    lossCause:      new FormControl<string>(this.seed.lossCause     ?? '', { nonNullable: true }),
-    description:    new FormControl<string>(this.seed.description   ?? '', { nonNullable: true }),
-    dateStart:      new FormControl<string>(this.seed.dateStart     ?? '', { nonNullable: true, validators: [Validators.required] }),
-    dateEnd:        new FormControl<string>(this.seed.dateEnd       ?? '', { nonNullable: true, validators: [Validators.required] }),
-    timeStart:      new FormControl<string>(this.seed.timeStart     ?? '', { nonNullable: true }),
-    timeEnd:        new FormControl<string>(this.seed.timeEnd       ?? '', { nonNullable: true }),
-    country:        new FormControl<string>(this.seed.country       ?? '', { nonNullable: true, validators: [Validators.required] }),
-    region:         new FormControl<string>(this.seed.region        ?? '', { nonNullable: true, validators: [Validators.required] }),
-    postcodes:      new FormControl<string>((this.seed.postcodes ?? []).join(', '), { nonNullable: true }),
+    code: new FormControl<string>(this.seed.code ?? '', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    name: new FormControl<string>(this.seed.name ?? '', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    type: new FormControl<string>(this.seed.type ?? '', { nonNullable: true }),
+    globalCatCode: new FormControl<string>(this.seed.globalCatCode ?? '', { nonNullable: true }),
+    productCode: new FormControl<string>(this.seed.productCode ?? '', { nonNullable: true }),
+    lossCause: new FormControl<string>(this.seed.lossCause ?? '', { nonNullable: true }),
+    description: new FormControl<string>(this.seed.description ?? '', { nonNullable: true }),
+    dateStart: new FormControl<string>(this.seed.dateStart ?? '', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    dateEnd: new FormControl<string>(this.seed.dateEnd ?? '', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    timeStart: new FormControl<string>(this.seed.timeStart ?? '', { nonNullable: true }),
+    timeEnd: new FormControl<string>(this.seed.timeEnd ?? '', { nonNullable: true }),
+    country: new FormControl<string>(this.seed.country ?? '', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    region: new FormControl<string>(this.seed.region ?? '', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    postcodes: new FormControl<string>((this.seed.postcodes ?? []).join(', '), {
+      nonNullable: true
+    })
   });
 
   readonly title = computed(() => {
-    if (this.isView())   return this.data.event?.name || 'Mass Event';
-    if (this.isEdit())   return this.data.event?.name || 'Mass event';
+    if (this.isView()) return this.data.event?.name || 'Mass Event';
+    if (this.isEdit()) return this.data.event?.name || 'Mass event';
     return 'Mass Event creation';
   });
 
@@ -117,15 +160,22 @@ export class MassEventEditModalComponent {
   }
 
   async onLinkClaim(): Promise<void> {
-    const ref = this.dialogSvc.open<ClaimSearchModalComponent, ClaimSearchModalData, ClaimSearchModalResult>(
+    const ref = this.dialogSvc.open<
       ClaimSearchModalComponent,
-      { data: { excludeClaimIds: this.linkedClaims().map(c => c.claimId) }, panelClass: 'me-edit-modal-panel' },
-    );
+      ClaimSearchModalData,
+      ClaimSearchModalResult
+    >(ClaimSearchModalComponent, {
+      data: { excludeClaimIds: this.linkedClaims().map(c => c.claimId) },
+      panelClass: 'bottom-sheet-modal-panel'
+    });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
 
     await firstValueFrom(
-      this.massEventSvc.linkClaim(result.claim.claimId, this.massEventId(), { userId: 'usr-current', name: 'Current User' }),
+      this.massEventSvc.linkClaim(result.claim.claimId, this.massEventId(), {
+        userId: 'usr-current',
+        name: 'Current User'
+      })
     );
     await this.loadLinkedClaims();
   }
@@ -137,15 +187,17 @@ export class MassEventEditModalComponent {
 
   async onUnlinkClaim(claim: Claim): Promise<void> {
     const confirmed = await firstValueFrom(
-      this.dialogSvc.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
-        data: {
-          title: 'Unlink claim?',
-          message: `Remove the link between ${claim.claimId} and this mass event?`,
-          confirmLabel: 'Unlink',
-          confirmDanger: true,
-        },
-        width: '440px',
-      }).afterClosed(),
+      this.dialogSvc
+        .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+          data: {
+            title: 'Unlink claim?',
+            message: `Remove the link between ${claim.claimId} and this mass event?`,
+            confirmLabel: 'Unlink',
+            confirmDanger: true
+          },
+          width: '440px'
+        })
+        .afterClosed()
     );
     if (!confirmed) return;
 
@@ -167,20 +219,25 @@ export class MassEventEditModalComponent {
 
     const next: MassEvent = {
       id,
-      code:           v.code,
-      name:           v.name,
-      type:           v.type || undefined,
-      globalCatCode:  v.globalCatCode || undefined,
-      productCode:    v.productCode   || undefined,
-      description:    v.description   || undefined,
-      dateStart:      v.dateStart,
-      dateEnd:        v.dateEnd,
-      timeStart:      v.timeStart || undefined,
-      timeEnd:        v.timeEnd   || undefined,
-      country:        v.country,
-      region:         v.region,
-      postcodes:      v.postcodes ? v.postcodes.split(',').map(p => p.trim()).filter(Boolean) : [],
-      lossCause:      v.lossCause || undefined,
+      code: v.code,
+      name: v.name,
+      type: v.type || undefined,
+      globalCatCode: v.globalCatCode || undefined,
+      productCode: v.productCode || undefined,
+      description: v.description || undefined,
+      dateStart: v.dateStart,
+      dateEnd: v.dateEnd,
+      timeStart: v.timeStart || undefined,
+      timeEnd: v.timeEnd || undefined,
+      country: v.country,
+      region: v.region,
+      postcodes: v.postcodes
+        ? v.postcodes
+            .split(',')
+            .map(p => p.trim())
+            .filter(Boolean)
+        : [],
+      lossCause: v.lossCause || undefined
     };
 
     this.ref.close({ mode: this.mode(), event: next });

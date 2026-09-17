@@ -1,4 +1,12 @@
-import { Component, inject, signal, computed, effect, ChangeDetectionStrategy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  effect,
+  ChangeDetectionStrategy,
+  ViewEncapsulation
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -27,20 +35,22 @@ interface PreviewVM {
   encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, RouterLink, NxIconModule, NxButtonModule, StatusChipComponent],
   templateUrl: './claim-preview-popover.component.html',
-  styleUrl: './claim-preview-popover.component.scss',
+  styleUrl: './claim-preview-popover.component.scss'
 })
-export class ClaimPreviewPopoverComponent implements OnInit {
-  readonly previewSvc  = inject(ClaimPreviewService);
-  readonly refSvc      = inject(ReferenceViewService);
+export class ClaimPreviewPopoverComponent {
+  readonly previewSvc = inject(ClaimPreviewService);
+  readonly refSvc = inject(ReferenceViewService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
-  private readonly sectionSvc  = inject(MockSectionService);
-  private readonly stateSvc    = inject(MockStateService);
+  private readonly sectionSvc = inject(MockSectionService);
+  private readonly stateSvc = inject(MockStateService);
 
   readonly vm = signal<PreviewVM>({ loading: true, notFound: false, claim: null, sections: [] });
   private loadedFor: string | null = null;
 
-  readonly closedSections = computed(() => this.vm().sections.filter(s => s.status === 'Closed').length);
-  readonly totalSections  = computed(() => this.vm().sections.length);
+  readonly closedSections = computed(
+    () => this.vm().sections.filter(s => s.status === 'Closed').length
+  );
+  readonly totalSections = computed(() => this.vm().sections.length);
 
   constructor() {
     effect(() => {
@@ -48,8 +58,6 @@ export class ClaimPreviewPopoverComponent implements OnInit {
       if (id) this.loadFor(id);
     });
   }
-
-  ngOnInit(): void {}
 
   async loadFor(claimId: string): Promise<void> {
     if (this.loadedFor === claimId) return;
@@ -63,7 +71,7 @@ export class ClaimPreviewPopoverComponent implements OnInit {
     try {
       const [{ claim }, sections] = await Promise.all([
         firstValueFrom(this.overviewSvc.getOverviewWithActivities(claimId)),
-        firstValueFrom(this.sectionSvc.getByClaimId(claimId)),
+        firstValueFrom(this.sectionSvc.getByClaimId(claimId))
       ]);
       this.vm.set({ loading: false, notFound: false, claim, sections });
     } catch {

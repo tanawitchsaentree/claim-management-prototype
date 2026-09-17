@@ -1,6 +1,6 @@
 {
   "CL-2025-001": {
-    "claimId": "123456",
+    "claimId": "CL-2025-001",
     "client": "Tobias Grau",
     "assignedHandler": "Lena Zorn",
     "lossEventId": "LE12345678",
@@ -123,8 +123,20 @@
       "restrictedBy": { "userId": "U001", "name": "Lena Zorn" },
       "restrictedAt": "2024-01-15",
       "accessList": [
-        { "userId": "U001", "name": "Lena Zorn", "role": "Claims Handler", "email": "lena.zorn@allianz.com", "addedAt": "2024-01-15" },
-        { "userId": "U002", "name": "Tobias Grau",    "role": "Claims Manager", "email": "tobias.grau@allianz.com",    "addedAt": "2024-01-15" }
+        {
+          "userId": "U001",
+          "name": "Lena Zorn",
+          "role": "Claims Handler",
+          "email": "lena.zorn@allianz.com",
+          "addedAt": "2024-01-15"
+        },
+        {
+          "userId": "U002",
+          "name": "Tobias Grau",
+          "role": "Claims Manager",
+          "email": "tobias.grau@allianz.com",
+          "addedAt": "2024-01-15"
+        }
       ]
     },
     "recoveryPotential": "no",

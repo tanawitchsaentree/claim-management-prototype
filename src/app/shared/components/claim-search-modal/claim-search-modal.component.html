@@ -9,7 +9,6 @@
 </div>
 
 <div class="csm-body" tabindex="0">
-
   <form [formGroup]="searchForm" class="csm-form" (ngSubmit)="onSearch()">
     <nx-formfield label="Search">
       <input nxInput formControlName="query" autocomplete="off" placeholder="e.g. CLM-2024-001" />
@@ -24,7 +23,9 @@
     <header class="csm-section__header">
       <h3 class="csm-section__title">Results</h3>
       <span class="csm-section__meta">
-        @if (results().length > 1) { {{ results().length }} claims }
+        @if (results().length > 1) {
+          {{ results().length }} claims
+        }
       </span>
     </header>
 
@@ -44,16 +45,20 @@
           </thead>
           <tbody>
             @for (claim of results(); track claim.claimId) {
-              <tr nxTableRow class="csm-row"
-                  [class.csm-row--selected]="isSelected(claim.claimId)"
-                  (click)="selectRow(claim.claimId)">
+              <tr
+                nxTableRow
+                class="csm-row"
+                [class.csm-row--selected]="isSelected(claim.claimId)"
+                (click)="selectRow(claim.claimId)"
+              >
                 <td nxCell class="csm-col--check">
                   <nx-radio
                     name="csm-claim"
                     labelSize="small"
                     [checked]="isSelected(claim.claimId)"
                     (click)="selectRow(claim.claimId); $event.stopPropagation()"
-                    aria-label="Select claim">
+                    aria-label="Select claim"
+                  >
                   </nx-radio>
                 </td>
                 <td nxCell>{{ claim.claimId }}</td>
@@ -71,9 +76,7 @@
 
 <footer class="csm-footer">
   <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="!hasSelection()"
-          (click)="onConfirm()">
+  <button nxButton="primary small" type="button" [disabled]="!hasSelection()" (click)="onConfirm()">
     Select claim
   </button>
 </footer>

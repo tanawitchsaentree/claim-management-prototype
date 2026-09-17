@@ -1,11 +1,17 @@
+<app-blocker-return-banner></app-blocker-return-banner>
+
 <!-- ── Page header ── -->
 <app-page-header title="Sections">
   @if (!hasDetailOpen()) {
     <ng-container actions>
-      <button class="btn-add-section" nxButton="secondary small" type="button"
+      <button
+        class="btn-add-section"
+        nxButton="secondary small"
+        type="button"
         [disabled]="claimClosed()"
         [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
-        (click)="onAddSection()">
+        (click)="onAddSection()"
+      >
         Add Section
       </button>
     </ng-container>
@@ -13,270 +19,385 @@
 </app-page-header>
 
 @if (reviewBanner(); as changes) {
-  <nx-message context="warning" [closable]="true" (close)="dismissReviewBanner()" class="sec-review-banner">
+  <nx-message
+    context="warning"
+    [closable]="true"
+    (close)="dismissReviewBanner()"
+    class="sec-review-banner"
+  >
     <p class="sec-review-banner__title">Review sections — loss information updated</p>
     <ul class="sec-review-banner__changes">
       @for (c of changes; track c.label) {
-        <li>{{ c.label }}: <strong>{{ c.oldValue }}</strong> → <strong>{{ c.newValue }}</strong></li>
+        <li>
+          {{ c.label }}: <strong>{{ c.oldValue }}</strong> → <strong>{{ c.newValue }}</strong>
+        </li>
       }
     </ul>
     <p class="sec-review-banner__reason">
-      Coverage depends on cause of loss and loss location, so the sections below may no longer reflect what's covered. Close any section that no longer applies using its Close action, then use Add Section to create a new one for the updated cause.
+      Coverage depends on cause of loss and loss location, so the sections below may no longer
+      reflect what's covered. Close any section that no longer applies using its Close action, then
+      use Add Section to create a new one for the updated cause.
     </p>
   </nx-message>
 }
 
 <!-- ── Split layout ── -->
 <div class="sec-split" [class.sec-split--detail-open]="hasDetailOpen()">
-
-<!-- ── Left: tree nav (only when detail open) ── -->
-@if (hasDetailOpen()) {
-  <div class="sec-tree">
-    <table nxTable class="sec-tree__table">
-      <thead>
-        <tr nxTableRow>
-          <th nxHeaderCell class="sec-tree__col-toggle"></th>
-          <th nxHeaderCell class="sec-tree__col-name">Entity</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (section of sections(); track section.id) {
-          <!-- section header row -->
-          <tr nxTableRow class="sec-tree__section-row"
-            [class.sec-tree__section-row--active]="selectedSection()?.id === section.id"
-            (click)="openSectionDetail(section)">
-            <td nxTableCell class="sec-tree__col-toggle">
-              <button nxIconButton="tertiary" type="button" (click)="toggleSection(section.id); $event.stopPropagation()"
-                [attr.aria-label]="section.expanded ? 'collapse' : 'expand'">
-                <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
-              </button>
-            </td>
-            <td nxTableCell class="sec-tree__section-name">{{ section.name }}</td>
+  <!-- ── Left: tree nav (only when detail open) ── -->
+  @if (hasDetailOpen()) {
+    <div class="sec-tree">
+      <table nxTable class="sec-tree__table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="sec-tree__col-toggle"></th>
+            <th nxHeaderCell class="sec-tree__col-name">Entity</th>
           </tr>
-          <!-- entity rows -->
-          @if (section.expanded) {
-            @for (entity of section.entities; track entity.id) {
-              <tr nxTableRow class="sec-tree__entity-row"
-                [class.sec-tree__entity-row--active]="selectedEntity()?.entity?.id === entity.id"
-                (click)="openEntityDetail(section, entity)">
-                <td nxTableCell class="sec-tree__col-toggle"></td>
-                <td nxTableCell class="sec-tree__entity-name">{{ entity.name }}</td>
-              </tr>
+        </thead>
+        <tbody>
+          @for (section of sections(); track section.id) {
+            <!-- section header row -->
+            <tr
+              nxTableRow
+              class="sec-tree__section-row"
+              [class.sec-tree__section-row--active]="selectedSection()?.id === section.id"
+              (click)="openSectionDetail(section)"
+            >
+              <td nxTableCell class="sec-tree__col-toggle">
+                <button
+                  nxIconButton="tertiary"
+                  type="button"
+                  (click)="toggleSection(section.id); $event.stopPropagation()"
+                  [attr.aria-label]="section.expanded ? 'collapse' : 'expand'"
+                >
+                  <nx-icon
+                    [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+                  ></nx-icon>
+                </button>
+              </td>
+              <td nxTableCell class="sec-tree__section-name">{{ section.name }}</td>
+            </tr>
+            <!-- entity rows -->
+            @if (section.expanded) {
+              @for (entity of section.entities; track entity.id) {
+                <tr
+                  nxTableRow
+                  class="sec-tree__entity-row"
+                  [class.sec-tree__entity-row--active]="selectedEntity()?.entity?.id === entity.id"
+                  (click)="openEntityDetail(section, entity)"
+                >
+                  <td nxTableCell class="sec-tree__col-toggle"></td>
+                  <td nxTableCell class="sec-tree__entity-name">{{ entity.name }}</td>
+                </tr>
+              }
             }
           }
-        }
-      </tbody>
-    </table>
-  </div>
-}
+        </tbody>
+      </table>
+    </div>
+  }
 
-<!-- ── Center: main table (hidden when detail open) ── -->
-<div class="sec-main" [style.display]="hasDetailOpen() ? 'none' : ''">
+  <!-- ── Center: main table (hidden when detail open) ── -->
+  <div class="sec-main" [style.display]="hasDetailOpen() ? 'none' : ''">
+    <!-- ── Sections Table ── -->
+    <div class="table-card">
+      <table nxTable class="sections-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell class="col-toggle"></th>
+            <th nxHeaderCell class="col-entity">Entity</th>
+            <th nxHeaderCell class="col-status">Status</th>
+            <th nxHeaderCell class="col-damage">Damage</th>
+            <th nxHeaderCell class="col-coverage">Coverage review</th>
+            <th nxHeaderCell class="col-actions">Action</th>
+          </tr>
+        </thead>
 
-<!-- ── Sections Table ── -->
-<div class="table-card">
-  <table nxTable class="sections-table">
-    <thead>
-      <tr nxTableRow>
-        <th nxHeaderCell class="col-toggle"></th>
-        <th nxHeaderCell class="col-entity">Entity</th>
-        <th nxHeaderCell class="col-status">Status</th>
-        <th nxHeaderCell class="col-damage">Damage</th>
-        <th nxHeaderCell class="col-coverage">Coverage review</th>
-        <th nxHeaderCell class="col-actions">Action</th>
-      </tr>
-    </thead>
-
-    @if (loading()) {
-      <tbody>
-        <tr nxTableRow>
-          <td nxTableCell colspan="5" style="text-align:center;padding:32px">
-            <nx-spinner size="medium"></nx-spinner>
-          </td>
-        </tr>
-      </tbody>
-    }
-
-    @if (loadError()) {
-      <tbody>
-        <tr nxTableRow>
-          <td nxTableCell colspan="5" style="text-align:center;padding:32px;color:var(--message-error-color)">
-            Failed to load sections. Please refresh.
-          </td>
-        </tr>
-      </tbody>
-    }
-
-    @if (!loading() && !loadError()) {
-    <tbody>
-      @for (section of sections(); track section.id) {
-        <!-- Section group header row -->
-        <tr nxTableRow class="section-header-row" [class.section-header-row--closed]="section.status === 'Closed'">
-          <td nxTableCell class="col-toggle">
-            <button nxIconButton="tertiary" type="button"
-              (click)="toggleSection(section.id)"
-              [attr.aria-label]="section.expanded ? 'collapse' : 'expand'">
-              <nx-icon [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
-            </button>
-          </td>
-          <td nxTableCell class="col-entity">
-            <span class="section-title-cell__name">{{ section.name }}</span>
-          </td>
-          <td nxTableCell class="col-status">
-            <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
-          </td>
-          <td nxTableCell class="col-damage">{{ section.damageType | damageTypeLabel }}</td>
-          <td nxTableCell class="col-coverage"></td>
-          <td nxTableCell class="col-actions">
-            <button class="sec-kebab-btn" type="button"
-              [nxContextMenuTriggerFor]="sectionMenu"
-              [attr.data-tour-id]="section.id === 'SEC-001' ? 'sections-sec001-kebab' : section.id === 'SEC-002' ? 'sections-sec002-kebab' : section.id === 'SEC-003' ? 'sections-sec003-kebab' : section.id === 'SEC-008' ? 'sections-sec008-kebab' : null"
-              aria-label="Section actions">⋮</button>
-            <nx-context-menu #sectionMenu="nxContextMenu">
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed()"
-                (click)="openSectionDetail(section)">
-                Edit
-              </button>
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed() || section.status === 'Closed'"
-                (click)="onMakePayment(section)">
-                Make payment
-              </button>
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed() || section.status === 'Closed'"
-                (click)="onInstructProvider(section)">
-                Instruct provider
-              </button>
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed()"
-                (click)="onAddComment(section.name)">
-                Add note
-              </button>
-              <button nxContextMenuItem type="button"
-                (click)="onViewNotes(section)">
-                View notes
-              </button>
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed() || section.status === 'Closed'"
-                (click)="onSimulateFinalPayment(section)">
-                Simulate final payment
-              </button>
-              <button nxContextMenuItem type="button"
-                [disabled]="claimClosed() || section.status === 'Closed'"
-                (click)="onCloseSection(section)">
-                Close section
-              </button>
-              @if (section.status === 'Closed') {
-                <button nxContextMenuItem type="button"
-                  [disabled]="claimClosed()"
-                  (click)="onReopenSection(section)">
-                  Reopen section
-                </button>
-              }
-            </nx-context-menu>
-          </td>
-        </tr>
-
-        <!-- Entity rows (only when expanded) -->
-        @if (section.expanded) {
-          @for (entity of section.entities; track entity.id) {
-            <tr nxTableRow class="entity-row" @rowExpand>
-              <td nxTableCell class="col-toggle">
-                @if (entity.expandable) {
-                  <button nxIconButton="tertiary" type="button"
-                    (click)="toggleEntityExpand(section, entity.id)"
-                    [attr.aria-label]="isEntityExpanded(entity) ? 'collapse entity' : 'expand entity'"
-                    [attr.aria-expanded]="isEntityExpanded(entity)">
-                    <nx-icon [name]="isEntityExpanded(entity) ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
-                  </button>
-                }
-              </td>
-              <td nxTableCell class="col-entity">{{ entity.name }}</td>
-              <td nxTableCell class="col-status"></td>
-              <!-- Damage type is now section-level (shown once on the section header row above) -->
-              <td nxTableCell class="col-damage"></td>
-              <td nxTableCell class="col-coverage">
-                <div class="coverage-cell">
-                  @if (entity.coverageReview) {
-                    <app-status-chip [status]="entity.coverageReview" domain="coverage-review"
-                      [label]="entity.coverageReview"></app-status-chip>
-                    @if (entity.coverageReviewOverridden) {
-                      <nx-icon name="pencil" size="s" class="coverage-overridden-icon"
-                               [nxTooltip]="entity.coverageReviewNote ?? ''" nxTooltipPosition="top"></nx-icon>
-                    }
-                  } @else {
-                    <span class="coverage-empty">–</span>
-                  }
-                </div>
-              </td>
-              <td nxTableCell class="col-actions">
-                <button class="sec-kebab-btn" type="button"
-                  [nxContextMenuTriggerFor]="entityMenu"
-                  aria-label="Entity actions">⋮</button>
-                <nx-context-menu #entityMenu="nxContextMenu">
-                  <button nxContextMenuItem type="button"
-                    (click)="openEntityDetail(section, entity)">
-                    View details
-                  </button>
-                  <button nxContextMenuItem type="button"
-                    [disabled]="claimClosed() || section.status === 'Closed'"
-                    (click)="onEditEntity(section, entity)">
-                    Edit
-                  </button>
-                  <button nxContextMenuItem type="button"
-                    [disabled]="claimClosed() || section.status === 'Closed'"
-                    (click)="onOverrideCoverageReview(section, entity)">
-                    {{ entity.coverageReview ? 'Override coverage review' : 'Set coverage review' }}
-                  </button>
-                  <button nxContextMenuItem type="button"
-                    [disabled]="claimClosed()"
-                    (click)="onAddComment(entity.name)">
-                    Add note
-                  </button>
-                  <button nxContextMenuItem type="button"
-                    [disabled]="claimClosed() || section.status === 'Closed'"
-                    (click)="onDeleteEntity(section, entity)">
-                    Delete
-                  </button>
-                </nx-context-menu>
+        @if (loading()) {
+          <tbody>
+            <tr nxTableRow>
+              <td nxTableCell colspan="5" style="text-align: center; padding: 32px">
+                <nx-spinner size="medium"></nx-spinner>
               </td>
             </tr>
-          }
+          </tbody>
         }
-      } @empty {
-        <tr nxTableRow>
-          <td nxTableCell colspan="5">
-            <app-empty-state message="No sections found."></app-empty-state>
-          </td>
-        </tr>
-      }
-    </tbody>
-    }
-  </table>
+
+        @if (loadError()) {
+          <tbody>
+            <tr nxTableRow>
+              <td
+                nxTableCell
+                colspan="5"
+                style="text-align: center; padding: 32px; color: var(--message-error-color)"
+              >
+                Failed to load sections. Please refresh.
+              </td>
+            </tr>
+          </tbody>
+        }
+
+        @if (!loading() && !loadError()) {
+          <tbody>
+            @for (section of sections(); track section.id) {
+              <!-- Section group header row -->
+              <tr
+                nxTableRow
+                class="section-header-row"
+                [class.section-header-row--closed]="section.status === 'Closed'"
+              >
+                <td nxTableCell class="col-toggle">
+                  <button
+                    nxIconButton="tertiary"
+                    type="button"
+                    (click)="toggleSection(section.id)"
+                    [attr.aria-label]="section.expanded ? 'collapse' : 'expand'"
+                  >
+                    <nx-icon
+                      [name]="section.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+                    ></nx-icon>
+                  </button>
+                </td>
+                <td nxTableCell class="col-entity">
+                  <span class="section-title-cell__name">{{ section.name }}</span>
+                </td>
+                <td nxTableCell class="col-status">
+                  <app-status-chip
+                    [status]="section.status.toLowerCase()"
+                    domain="claim"
+                  ></app-status-chip>
+                </td>
+                <td nxTableCell class="col-damage">{{ section.damageType | damageTypeLabel }}</td>
+                <td nxTableCell class="col-coverage"></td>
+                <td nxTableCell class="col-actions">
+                  <button
+                    class="sec-kebab-btn"
+                    type="button"
+                    [nxContextMenuTriggerFor]="sectionMenu"
+                    [attr.data-tour-id]="
+                      section.id === 'SEC-001'
+                        ? 'sections-sec001-kebab'
+                        : section.id === 'SEC-002'
+                          ? 'sections-sec002-kebab'
+                          : section.id === 'SEC-003'
+                            ? 'sections-sec003-kebab'
+                            : section.id === 'SEC-008'
+                              ? 'sections-sec008-kebab'
+                              : null
+                    "
+                    aria-label="Section actions"
+                  >
+                    ⋮
+                  </button>
+                  <nx-context-menu #sectionMenu="nxContextMenu">
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed()"
+                      (click)="openSectionDetail(section)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed() || section.status === 'Closed'"
+                      (click)="onMakePayment(section)"
+                    >
+                      Make payment
+                    </button>
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed() || section.status === 'Closed'"
+                      (click)="onInstructProvider(section)"
+                    >
+                      Instruct provider
+                    </button>
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed()"
+                      (click)="onAddComment(section.name)"
+                    >
+                      Add note
+                    </button>
+                    <button nxContextMenuItem type="button" (click)="onViewNotes(section)">
+                      View notes
+                    </button>
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed() || section.status === 'Closed'"
+                      (click)="onSimulateFinalPayment(section)"
+                    >
+                      Simulate final payment
+                    </button>
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed() || section.status === 'Closed'"
+                      (click)="onCloseSection(section)"
+                    >
+                      Close section
+                    </button>
+                    @if (section.status === 'Closed') {
+                      <button
+                        nxContextMenuItem
+                        type="button"
+                        [disabled]="claimClosed()"
+                        (click)="onReopenSection(section)"
+                      >
+                        Reopen section
+                      </button>
+                    }
+                  </nx-context-menu>
+                </td>
+              </tr>
+
+              <!-- Entity rows (only when expanded) -->
+              @if (section.expanded) {
+                @for (entity of section.entities; track entity.id) {
+                  <tr nxTableRow class="entity-row" @rowExpand>
+                    <td nxTableCell class="col-toggle">
+                      @if (entity.expandable) {
+                        <button
+                          nxIconButton="tertiary"
+                          type="button"
+                          (click)="toggleEntityExpand(section, entity.id)"
+                          [attr.aria-label]="
+                            isEntityExpanded(entity) ? 'collapse entity' : 'expand entity'
+                          "
+                          [attr.aria-expanded]="isEntityExpanded(entity)"
+                        >
+                          <nx-icon
+                            [name]="
+                              isEntityExpanded(entity)
+                                ? 'chevron-down-small'
+                                : 'chevron-right-small'
+                            "
+                          ></nx-icon>
+                        </button>
+                      }
+                    </td>
+                    <td nxTableCell class="col-entity">{{ entity.name }}</td>
+                    <td nxTableCell class="col-status"></td>
+                    <!-- Damage type is now section-level (shown once on the section header row above) -->
+                    <td nxTableCell class="col-damage"></td>
+                    <td nxTableCell class="col-coverage">
+                      <div class="coverage-cell">
+                        @if (entity.coverageReview) {
+                          <app-status-chip
+                            [status]="entity.coverageReview"
+                            domain="coverage-review"
+                            [label]="entity.coverageReview"
+                          ></app-status-chip>
+                          @if (entity.coverageReviewOverridden) {
+                            <nx-icon
+                              name="pencil"
+                              size="s"
+                              class="coverage-overridden-icon"
+                              [nxTooltip]="entity.coverageReviewNote ?? ''"
+                              nxTooltipPosition="top"
+                            ></nx-icon>
+                          }
+                        } @else {
+                          <span class="coverage-empty">–</span>
+                        }
+                      </div>
+                    </td>
+                    <td nxTableCell class="col-actions">
+                      <button
+                        class="sec-kebab-btn"
+                        type="button"
+                        [nxContextMenuTriggerFor]="entityMenu"
+                        aria-label="Entity actions"
+                      >
+                        ⋮
+                      </button>
+                      <nx-context-menu #entityMenu="nxContextMenu">
+                        <button
+                          nxContextMenuItem
+                          type="button"
+                          (click)="openEntityDetail(section, entity)"
+                        >
+                          View details
+                        </button>
+                        <button
+                          nxContextMenuItem
+                          type="button"
+                          [disabled]="claimClosed() || section.status === 'Closed'"
+                          (click)="onEditEntity(section, entity)"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          nxContextMenuItem
+                          type="button"
+                          [disabled]="claimClosed() || section.status === 'Closed'"
+                          (click)="onOverrideCoverageReview(section, entity)"
+                        >
+                          {{
+                            entity.coverageReview
+                              ? 'Override coverage review'
+                              : 'Set coverage review'
+                          }}
+                        </button>
+                        <button
+                          nxContextMenuItem
+                          type="button"
+                          [disabled]="claimClosed()"
+                          (click)="onAddComment(entity.name)"
+                        >
+                          Add note
+                        </button>
+                        <button
+                          nxContextMenuItem
+                          type="button"
+                          [disabled]="claimClosed() || section.status === 'Closed'"
+                          (click)="onDeleteEntity(section, entity)"
+                        >
+                          Delete
+                        </button>
+                      </nx-context-menu>
+                    </td>
+                  </tr>
+                }
+              }
+            } @empty {
+              <tr nxTableRow>
+                <td nxTableCell colspan="5">
+                  <app-empty-state message="No sections found."></app-empty-state>
+                </td>
+              </tr>
+            }
+          </tbody>
+        }
+      </table>
+    </div>
+  </div>
+  <!-- /.sec-main -->
+
+  <!-- ── Right: entity or section detail panel ── -->
+  @if (selectedEntity(); as sel) {
+    <div class="sec-detail">
+      <app-section-entity-detail
+        [entity]="sel.entity"
+        [section]="sel.section"
+        [claimClosed]="claimClosed()"
+        (closed)="closeEntityDetail()"
+      >
+      </app-section-entity-detail>
+    </div>
+  } @else if (selectedSection(); as sec) {
+    <div class="sec-detail">
+      <app-section-detail
+        [section]="sec"
+        [claimClosed]="claimClosed()"
+        [incidentCircumstance]="incidentCircumstance()"
+        (closed)="closeSectionDetail()"
+      >
+      </app-section-detail>
+    </div>
+  }
 </div>
-
-</div><!-- /.sec-main -->
-
-<!-- ── Right: entity or section detail panel ── -->
-@if (selectedEntity(); as sel) {
-  <div class="sec-detail">
-    <app-section-entity-detail
-      [entity]="sel.entity"
-      [section]="sel.section"
-      [claimClosed]="claimClosed()"
-      (closed)="closeEntityDetail()">
-    </app-section-entity-detail>
-  </div>
-} @else if (selectedSection(); as sec) {
-  <div class="sec-detail">
-    <app-section-detail
-      [section]="sec"
-      [claimClosed]="claimClosed()"
-      [incidentCircumstance]="incidentCircumstance()"
-      (closed)="closeSectionDetail()">
-    </app-section-detail>
-  </div>
-}
-
-</div><!-- /.sec-split -->
+<!-- /.sec-split -->

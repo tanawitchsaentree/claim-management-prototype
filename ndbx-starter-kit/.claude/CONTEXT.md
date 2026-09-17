@@ -3,6 +3,7 @@
 Foundation doc — stack, tokens, traps, forbidden patterns, NDBX gotchas. Read before writing any code.
 
 Companion docs:
+
 - `BLESSED.md` — verified reference patterns to copy from
 - `docs/NDBX_RECIPES.md` — verified HTML snippets for every NDBX component
 - `.claude/skills/` — targeted skill files for specific traps
@@ -11,21 +12,23 @@ Companion docs:
 
 ## Stack
 
-| Layer | Package | Version |
-|-------|---------|---------|
-| Framework | `@angular/core` | ^21.x |
-| Component library | `@allianz/ng-aquila` | ^21.x |
-| Design tokens / fonts | `@allianz/ngx-brand-kit` | ^21.x |
-| Reactive extensions | `rxjs` | ~7.8.0 |
-| Language | `typescript` | ~5.x |
+| Layer                 | Package                  | Version |
+| --------------------- | ------------------------ | ------- |
+| Framework             | `@angular/core`          | ^21.x   |
+| Component library     | `@allianz/ng-aquila`     | ^21.x   |
+| Design tokens / fonts | `@allianz/ngx-brand-kit` | ^21.x   |
+| Reactive extensions   | `rxjs`                   | ~7.8.0  |
+| Language              | `typescript`             | ~5.x    |
 
 **CSS loaded in angular.json (order matters):**
+
 1. `node_modules/@allianz/ngx-brand-kit/css/allianz-base.css`
 2. `node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css`
 3. `node_modules/@allianz/ngx-brand-kit/css/ndbx-icons.css`
 4. `src/styles.scss` — project-level overrides only
 
 **`expert.css` is NOT loaded.**
+
 - `appearance="outline"` on `nx-formfield` renders broken — never use it
 - All forms use default underline appearance (no `appearance=` attribute)
 
@@ -35,11 +38,11 @@ Companion docs:
 
 ### `--text-02` is WHITE
 
-| Token | Resolved value | Use |
-|-------|---------------|-----|
-| `--text-01` | `#414141` | Body text, labels, table cells — always safe |
-| `--text-02` | `#ffffff` | ⚠️ WHITE — only on dark/brand backgrounds |
-| `--text-muted` | `#767676` | Secondary/hint text on white backgrounds |
+| Token          | Resolved value | Use                                          |
+| -------------- | -------------- | -------------------------------------------- |
+| `--text-01`    | `#414141`      | Body text, labels, table cells — always safe |
+| `--text-02`    | `#ffffff`      | ⚠️ WHITE — only on dark/brand backgrounds    |
+| `--text-muted` | `#767676`      | Secondary/hint text on white backgrounds     |
 
 **NEVER use `--text-02` on white backgrounds.**
 
@@ -58,6 +61,7 @@ NDBX defaults radio label to `1rem`. Projects override to `14px` in `styles.scss
 FormControl state is RxJS, not a signal. `computed()` evaluates once and never re-runs.
 
 Bridge with `toSignal`:
+
 ```ts
 private readonly xStatus = toSignal(
   this.form.get('x')!.statusChanges,
@@ -73,12 +77,14 @@ readonly xInvalid = computed(() => this.xStatus() !== 'VALID');
 Before writing any UI element:
 
 ### Step 1 — Check NDBX first
+
 ```bash
 ls node_modules/@allianz/ng-aquila/
 find node_modules/@allianz/ng-aquila -type d -name "*<name>*"
 ```
 
 ### Step 2 — Import in standalone component
+
 ```ts
 @Component({
   standalone: true,
@@ -94,29 +100,29 @@ See `docs/NDBX_RECIPES.md` for verified snippets.
 
 ## NDBX Component Reference
 
-| What you need | Module | Selector |
-|---------------|--------|----------|
-| Text input | `NxFormfieldModule` + `NxInputModule` | `<input nxInput>` |
-| Dropdown (single) | `NxDropdownModule` | `<nx-dropdown>` |
-| Multi-select | `NxMultiSelectComponent` (from `dropdown`) | `<nx-multi-select>` |
-| Checkbox | `NxCheckboxModule` | `<nx-checkbox>` |
-| Radio | `NxRadioModule` | `<nx-radio>` |
-| Date picker | `NxDatefieldModule` | `<input nxDatefield nxInput>` + `<nx-datepicker>` |
-| Time picker | `NxTimefieldModule` | `<nx-timefield>` |
-| Toggle | `NxSwitcherModule` | `<nx-switcher>` |
-| Textarea | `NxFormfieldModule` + `NxInputModule` | `<textarea nxInput>` |
-| Button | `NxButtonModule` | `<button nxButton="primary">` |
-| Icon | `NxIconModule` | `<nx-icon name="...">` |
-| Card | `NxCardModule` | `<nx-card>` |
-| Tabs | `NxTabsModule` | `<nx-tab-group>` |
-| Tooltip | `NxTooltipModule` | `[nxTooltip]="text"` |
-| Modal | `NxModalModule` | `NxModalService.open()` |
-| Message/Banner | `NxMessageModule` | `<nx-message>` |
-| Pagination | `NxPaginationModule` | `<nx-pagination>` |
-| Spinner | `NxSpinnerModule` | `<nx-spinner>` |
-| Context menu | `NxContextMenuModule` | `<nx-context-menu>` |
-| Breadcrumb | `NxBreadcrumbModule` | `<ol nxBreadcrumb>` |
-| Grid | `NxGridModule` | `[nxLayout]`, `[nxRow]`, `[nxCol]` |
+| What you need     | Module                                     | Selector                                          |
+| ----------------- | ------------------------------------------ | ------------------------------------------------- |
+| Text input        | `NxFormfieldModule` + `NxInputModule`      | `<input nxInput>`                                 |
+| Dropdown (single) | `NxDropdownModule`                         | `<nx-dropdown>`                                   |
+| Multi-select      | `NxMultiSelectComponent` (from `dropdown`) | `<nx-multi-select>`                               |
+| Checkbox          | `NxCheckboxModule`                         | `<nx-checkbox>`                                   |
+| Radio             | `NxRadioModule`                            | `<nx-radio>`                                      |
+| Date picker       | `NxDatefieldModule`                        | `<input nxDatefield nxInput>` + `<nx-datepicker>` |
+| Time picker       | `NxTimefieldModule`                        | `<nx-timefield>`                                  |
+| Toggle            | `NxSwitcherModule`                         | `<nx-switcher>`                                   |
+| Textarea          | `NxFormfieldModule` + `NxInputModule`      | `<textarea nxInput>`                              |
+| Button            | `NxButtonModule`                           | `<button nxButton="primary">`                     |
+| Icon              | `NxIconModule`                             | `<nx-icon name="...">`                            |
+| Card              | `NxCardModule`                             | `<nx-card>`                                       |
+| Tabs              | `NxTabsModule`                             | `<nx-tab-group>`                                  |
+| Tooltip           | `NxTooltipModule`                          | `[nxTooltip]="text"`                              |
+| Modal             | `NxModalModule`                            | `NxModalService.open()`                           |
+| Message/Banner    | `NxMessageModule`                          | `<nx-message>`                                    |
+| Pagination        | `NxPaginationModule`                       | `<nx-pagination>`                                 |
+| Spinner           | `NxSpinnerModule`                          | `<nx-spinner>`                                    |
+| Context menu      | `NxContextMenuModule`                      | `<nx-context-menu>`                               |
+| Breadcrumb        | `NxBreadcrumbModule`                       | `<ol nxBreadcrumb>`                               |
+| Grid              | `NxGridModule`                             | `[nxLayout]`, `[nxRow]`, `[nxCol]`                |
 
 ---
 
@@ -139,12 +145,14 @@ See `docs/NDBX_RECIPES.md` for verified snippets.
 Define your project's custom tokens in `styles.scss` under `:root`. Never hardcode hex/rgba in component `.scss` files.
 
 Common categories to define:
+
 - Status chip colors (background + text per status)
 - Priority/severity colors
 - Hover overlay rgba values
 - Page chrome gaps
 
 To find available NDBX base tokens:
+
 ```bash
 grep -- '--ui-0' node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css
 grep -- '--interactive' node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css
@@ -162,17 +170,17 @@ grep -- '--interactive' node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css
 
 ## Forbidden Patterns
 
-| Pattern | Why |
-|---------|-----|
-| `subscribe()` in component | Use `async` pipe |
-| `: any` | Define interface in `core/models/` |
-| Inline template > 30 lines | Extract to `.html` |
-| Inline styles | Extract to `.scss` |
-| Cross-feature imports | Features must be independently deployable |
-| Native `<select>`, `<input type="date">` | Use NDBX equivalents |
-| `nx-formfield appearance="outline"` | Renders broken without expert.css |
-| Hardcoded hex/rgb in component scss | Use tokens |
-| `font-size` below 14px on readable text | WCAG 2.1 AA minimum |
+| Pattern                                  | Why                                       |
+| ---------------------------------------- | ----------------------------------------- |
+| `subscribe()` in component               | Use `async` pipe                          |
+| `: any`                                  | Define interface in `core/models/`        |
+| Inline template > 30 lines               | Extract to `.html`                        |
+| Inline styles                            | Extract to `.scss`                        |
+| Cross-feature imports                    | Features must be independently deployable |
+| Native `<select>`, `<input type="date">` | Use NDBX equivalents                      |
+| `nx-formfield appearance="outline"`      | Renders broken without expert.css         |
+| Hardcoded hex/rgb in component scss      | Use tokens                                |
+| `font-size` below 14px on readable text  | WCAG 2.1 AA minimum                       |
 
 ---
 

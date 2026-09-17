@@ -18,10 +18,10 @@ const CORRECT_HASH = 'f2f5d415c6717f712281fc66830f07329720cb06d89f034e8fad57b81a
     NxInputModule,
     NxButtonModule,
     NxIconModule,
-    NxHeadlineModule,
+    NxHeadlineModule
   ],
   templateUrl: './access-gate.component.html',
-  styleUrl: './access-gate.component.scss',
+  styleUrl: './access-gate.component.scss'
 })
 export class AccessGateComponent implements OnInit {
   @Output() unlocked = new EventEmitter<void>();

@@ -18,9 +18,9 @@
                 "promiseStatus": "possibly-promised",
                 "limit": "500,000 EUR",
                 "limits": [
-                  { "label": "Building",               "value": "500,000 EUR" },
-                  { "label": "Contents",               "value": "150,000 EUR" },
-                  { "label": "Business interruption",  "value": "200,000 EUR" }
+                  { "label": "Building", "value": "500,000 EUR" },
+                  { "label": "Contents", "value": "150,000 EUR" },
+                  { "label": "Business interruption", "value": "200,000 EUR" }
                 ],
                 "coveredBy": "FLExA for Building",
                 "documentsCount": 1,
@@ -118,16 +118,16 @@
                 "promiseStatus": "possibly-promised",
                 "limit": "500,000 EUR",
                 "limits": [
-                  { "label": "Building",              "value": "500,000 EUR" },
-                  { "label": "Contents",               "value": "150,000 EUR" },
-                  { "label": "Business interruption",  "value": "200,000 EUR" },
-                  { "label": "Machinery breakdown",    "value": "120,000 EUR" },
-                  { "label": "Stock",                  "value": "90,000 EUR" },
-                  { "label": "Loss of rent",            "value": "60,000 EUR" },
-                  { "label": "Debris removal",          "value": "40,000 EUR" },
-                  { "label": "Fire brigade costs",       "value": "25,000 EUR" },
+                  { "label": "Building", "value": "500,000 EUR" },
+                  { "label": "Contents", "value": "150,000 EUR" },
+                  { "label": "Business interruption", "value": "200,000 EUR" },
+                  { "label": "Machinery breakdown", "value": "120,000 EUR" },
+                  { "label": "Stock", "value": "90,000 EUR" },
+                  { "label": "Loss of rent", "value": "60,000 EUR" },
+                  { "label": "Debris removal", "value": "40,000 EUR" },
+                  { "label": "Fire brigade costs", "value": "25,000 EUR" },
                   { "label": "Alternative accommodation", "value": "15,000 EUR" },
-                  { "label": "Glass breakage",           "value": "10,000 EUR" }
+                  { "label": "Glass breakage", "value": "10,000 EUR" }
                 ],
                 "coveredBy": "FLExA for Building",
                 "documentsCount": 0,
@@ -333,9 +333,7 @@
                 "coveredBy": "Property All Risk",
                 "documentsCount": 1,
                 "selected": false,
-                "subItems": [
-                  { "itemId": "PI-204", "name": "Archive section 1", "selected": false }
-                ]
+                "subItems": [{ "itemId": "PI-204", "name": "Archive section 1", "selected": false }]
               }
             ]
           }
@@ -414,9 +412,7 @@
                 "coveredBy": "Property All Risk",
                 "documentsCount": 2,
                 "selected": false,
-                "subItems": [
-                  { "itemId": "PI-304", "name": "Hall B north wing", "selected": false }
-                ]
+                "subItems": [{ "itemId": "PI-304", "name": "Hall B north wing", "selected": false }]
               }
             ]
           }

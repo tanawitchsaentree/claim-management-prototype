@@ -20,10 +20,10 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
     NxButtonModule,
     NxSpinnerModule,
     EmptyStateComponent,
-    PageHeaderComponent,
+    PageHeaderComponent
   ],
   templateUrl: './limits-deductibles.component.html',
-  styleUrl: './limits-deductibles.component.scss',
+  styleUrl: './limits-deductibles.component.scss'
 })
 export class LimitsDeductiblesComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -35,8 +35,10 @@ export class LimitsDeductiblesComponent implements OnInit {
   readonly currency = signal('EUR');
 
   async ngOnInit(): Promise<void> {
-    const claimId = this.route.snapshot.paramMap.get('id')
-      ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
+    const claimId =
+      this.route.snapshot.paramMap.get('id') ??
+      this.route.parent?.snapshot.paramMap.get('id') ??
+      '';
     this.loading.set(true);
     const data = await firstValueFrom(this.svc.getByClaimId(claimId));
     this.data.set(data);

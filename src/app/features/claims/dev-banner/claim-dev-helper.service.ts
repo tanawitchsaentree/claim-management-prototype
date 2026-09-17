@@ -1,4 +1,4 @@
-import { Injectable, inject, isDevMode, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -6,7 +6,6 @@ import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockStateService, ScenarioOverrides } from '../../../core/mock/state/mock-state.service';
 import { DevToolStorageService } from '../../../core/storage/dev-tool-storage.service';
 import { ScenarioStageService } from '../../../core/scenario/scenario-stage.service';
-import { PostLandHook } from '../../../core/scenario/scenario-stage.model';
 import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
 import { resolveTourSteps } from '../../../core/services/arrival-context.builder';
 import {
@@ -14,14 +13,13 @@ import {
   DevTicket,
   PreconditionPage,
   PreconditionItem,
-  TicketAC,
-  TicketIndex,
+  TicketAC
 } from '../../../core/models/dev-ticket.model';
 
 export type { PreconditionPage, PreconditionItem, BuildStatus, TicketAC, DevTicket };
 
 export interface ACVerification {
-  acId:       string;
+  acId: string;
   verifiedBy: string;
   verifiedAt: string;
 }
@@ -30,22 +28,22 @@ export interface ACVerification {
 export type ClosureTicket = DevTicket;
 
 export interface TicketCard {
-  id:            string;
-  title:         string;
-  acCount:       number;
+  id: string;
+  title: string;
+  acCount: number;
   scenarioCount: number;
-  status:        'done' | 'wip' | 'todo';
-  ticket:        DevTicket;
+  status: 'done' | 'wip' | 'todo';
+  ticket: DevTicket;
 }
 
 @Injectable({ providedIn: 'root' })
 export class ClaimDevHelperService {
-  private readonly stateSvc    = inject(MockStateService);
+  private readonly stateSvc = inject(MockStateService);
   private readonly prototypeScenarioSvc = inject(PrototypeScenarioService);
-  private readonly stageSvc    = inject(ScenarioStageService);
-  private readonly dialogSvc   = inject(NxDialogService);
-  private readonly router      = inject(Router);
-  private readonly storage     = inject(DevToolStorageService);
+  private readonly stageSvc = inject(ScenarioStageService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly router = inject(Router);
+  private readonly storage = inject(DevToolStorageService);
 
   readonly enabled = true;
 
@@ -53,18 +51,14 @@ export class ClaimDevHelperService {
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(e => (e as NavigationEnd).urlAfterRedirects),
-      startWith(this.router.url),
+      startWith(this.router.url)
     ),
-    { initialValue: this.router.url },
+    { initialValue: this.router.url }
   );
 
-  private readonly isFeatureRoute = computed(() =>
-    /^\/(claims\/[^/]+|fnol)\/.+/.test(this.url()),
-  );
+  private readonly isFeatureRoute = computed(() => /^\/(claims\/[^/]+|fnol)\/.+/.test(this.url()));
 
-  private readonly isFnolRoute = computed(() =>
-    /^\/fnol\//.test(this.url()),
-  );
+  private readonly isFnolRoute = computed(() => /^\/fnol\//.test(this.url()));
 
   readonly shouldShowBanner = computed(() => this.isFeatureRoute());
   readonly shouldShowFnolHelper = computed(() => this.isFnolRoute());
@@ -81,31 +75,31 @@ export class ClaimDevHelperService {
     return this.tickets().find(t => t.ticketId === id) ?? null;
   });
 
-  selectTicket(id: string | null): void { this._selectedTicketId.set(id); }
+  selectTicket(id: string | null): void {
+    this._selectedTicketId.set(id);
+  }
 
   /** Backward-compat: TicketCard array derived from loaded tickets. */
   readonly availableCards = computed<TicketCard[]>(() =>
     this.tickets().map(ticket => {
       const doneCount = ticket.acceptanceCriteria.filter(a => a.buildStatus === 'done').length;
       return {
-        id:            ticket.ticketId,
-        title:         ticket.title,
-        acCount:       ticket.acceptanceCriteria.length,
+        id: ticket.ticketId,
+        title: ticket.title,
+        acCount: ticket.acceptanceCriteria.length,
         scenarioCount: doneCount,
-        status:        doneCount === ticket.acceptanceCriteria.length ? 'done' : 'wip',
-        ticket,
+        status: doneCount === ticket.acceptanceCriteria.length ? 'done' : 'wip',
+        ticket
       } satisfies TicketCard;
     })
   );
 
   private readonly _verifications = signal<Map<string, ACVerification>>(
-    this.storage.loadVerifications(),
+    this.storage.loadVerifications()
   );
   readonly verifications = this._verifications.asReadonly();
 
-  private readonly _verifierName = signal<string | null>(
-    this.storage.loadVerifierName(),
-  );
+  private readonly _verifierName = signal<string | null>(this.storage.loadVerifierName());
   readonly verifierName = this._verifierName.asReadonly();
 
   setVerifierName(name: string): void {
@@ -128,7 +122,11 @@ export class ClaimDevHelperService {
 
   unmarkVerified(ticketId: string, acId: string): void {
     const key = this.verificationKey(ticketId, acId);
-    this._verifications.update(m => { const n = new Map(m); n.delete(key); return n; });
+    this._verifications.update(m => {
+      const n = new Map(m);
+      n.delete(key);
+      return n;
+    });
     this.storage.saveVerifications(this._verifications());
   }
 
@@ -152,7 +150,9 @@ export class ClaimDevHelperService {
 
   loadTickets(): void {
     if (!this.enabled) return;
-    this.prototypeScenarioSvc.loadTickets().catch(() => {/* silent: dev tool only */});
+    this.prototypeScenarioSvc.loadTickets().catch(() => {
+      /* silent: dev tool only */
+    });
   }
 
   openDetailsFor(card: TicketCard, preselectedAcId?: string | null): void {
@@ -160,7 +160,7 @@ export class ClaimDevHelperService {
     import('./details-modal/claim-dev-details-modal.component').then(m => {
       this.dialogSvc.open(m.ClaimDevDetailsModalComponent, {
         data: { card, helper: this, preselectedAcId: preselectedAcId ?? null },
-        width: '800px',
+        width: '800px'
       });
     });
   }
@@ -210,18 +210,24 @@ export class ClaimDevHelperService {
     return steps.length > 0 ? [{ kind: 'tour.start', steps }] : [];
   }
 
-  clearActiveAc(): void { this.activeAcId.set(null); }
+  clearActiveAc(): void {
+    this.activeAcId.set(null);
+  }
 
-  setMinimized(acId: string): void { this._minimizedAcId.set(acId); }
-  clearMinimized(): void { this._minimizedAcId.set(null); }
+  setMinimized(acId: string): void {
+    this._minimizedAcId.set(acId);
+  }
+  clearMinimized(): void {
+    this._minimizedAcId.set(null);
+  }
 
   pageRoute(page: PreconditionPage, claimId: string): string {
-    if (page === 'fnol-search')             return '/fnol/search';
-    if (page === 'fnol-loss-info')          return '/fnol/loss-information';
-    if (page === 'fnol-entities-damages')   return '/fnol/entities-damages';
-    if (page === 'fnol-skeleton')           return '/fnol/skeleton-create';
-    if (page === 'fnol-skeleton-parties')   return '/fnol/skeleton-parties';
-    if (page === 'fnol-summary')            return '/fnol/summary';
+    if (page === 'fnol-search') return '/fnol/search';
+    if (page === 'fnol-loss-info') return '/fnol/loss-information';
+    if (page === 'fnol-entities-damages') return '/fnol/entities-damages';
+    if (page === 'fnol-skeleton') return '/fnol/skeleton-create';
+    if (page === 'fnol-skeleton-parties') return '/fnol/skeleton-parties';
+    if (page === 'fnol-summary') return '/fnol/summary';
     if (page === 'any') return '';
     return `/claims/${claimId}/${page}`;
   }

@@ -40,29 +40,31 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
     NxDatefieldModule,
     Navbar,
     ClaimPreviewDirective,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './approvals.component.html',
-  styleUrl: './approvals.component.scss',
+  styleUrl: './approvals.component.scss'
 })
 export class ApprovalsComponent implements OnInit {
   private readonly approvalSvc = inject(MockApprovalService);
-  private readonly extSvc      = inject(MockDashboardExtendedService);
-  readonly auth                 = inject(AuthService);
+  private readonly extSvc = inject(MockDashboardExtendedService);
+  readonly auth = inject(AuthService);
 
-  readonly activeTab    = signal<'reserves' | 'payments'>('reserves');
+  readonly activeTab = signal<'reserves' | 'payments'>('reserves');
   readonly showMineOnly = signal(false);
 
   // Filter fields
   readonly filterForm = new FormGroup({
-    claimId:   new FormControl(''),
+    claimId: new FormControl(''),
     requester: new FormControl(''),
-    date:      new FormControl<string | null>(null),
+    date: new FormControl<string | null>(null)
   });
-  private readonly filterValue = toSignal(this.filterForm.valueChanges, { initialValue: this.filterForm.value });
+  private readonly filterValue = toSignal(this.filterForm.valueChanges, {
+    initialValue: this.filterForm.value
+  });
 
-  private allReserves  = signal<UrgentApproval[]>([]);
-  private allPayments  = signal<PaymentApproval[]>([]);
+  private allReserves = signal<UrgentApproval[]>([]);
+  private allPayments = signal<PaymentApproval[]>([]);
 
   readonly filteredReserves = computed(() => {
     let list = this.allReserves();
@@ -103,7 +105,7 @@ export class ApprovalsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const [reserves, payments] = await Promise.all([
       firstValueFrom(this.approvalSvc.getAll()),
-      firstValueFrom(this.extSvc.getPaymentApprovals()),
+      firstValueFrom(this.extSvc.getPaymentApprovals())
     ]);
     this.allReserves.set(reserves);
     this.allPayments.set(payments);

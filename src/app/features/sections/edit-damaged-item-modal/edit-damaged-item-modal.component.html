@@ -39,8 +39,12 @@
        the figure was reached carries the record the Description cannot. -->
   @if (isFinancialLoss()) {
     <nx-formfield label="Financial loss details" floatLabel="always">
-      <textarea nxInput formControlName="financialLossDetails" rows="3"
-                placeholder="How the loss was calculated, period covered, figures relied on…"></textarea>
+      <textarea
+        nxInput
+        formControlName="financialLossDetails"
+        rows="3"
+        placeholder="How the loss was calculated, period covered, figures relied on…"
+      ></textarea>
     </nx-formfield>
   }
 

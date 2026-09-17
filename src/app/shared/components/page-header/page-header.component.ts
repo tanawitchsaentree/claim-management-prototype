@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 
 // Canonical typography/spacing derived from the shape claims-list, loss-events-list,
@@ -12,9 +12,9 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 @Component({
   selector: 'app-page-header',
   standalone: true,
-  imports: [CommonModule, NxIconModule],
+  imports: [NxIconModule],
   templateUrl: './page-header.component.html',
-  styleUrl: './page-header.component.scss',
+  styleUrl: './page-header.component.scss'
 })
 export class PageHeaderComponent {
   @Input({ required: true }) title!: string;

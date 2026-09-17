@@ -18,8 +18,18 @@
     "Apply AC-02 — SEC-001 has 4 blockers (litigation + reserves + payments + provider); close modal and reopen",
     "Observe: 4 blocker rows; expand each to see linked items/details",
     "Apply AC-03 — SEC-001 has all blockers cleared; click ⋮ → Close Section",
-    "Observe: modal skips to step 2 (Pre-closure Checklist); Continue disabled until all 5 items checked",
-    "Check all 5 items → Continue → step 3 (Reason) → select 'Section Finalised' → Close Section",
+    {
+      "targetId": "scm-checklist",
+      "title": "Pre-closure Checklist",
+      "body": "With no blockers, the modal skips straight here — 6 system-validated conditions. Continue stays disabled until every one shows green.",
+      "direction": "top"
+    },
+    {
+      "targetId": "scm-reason-dropdown",
+      "title": "Closure reason",
+      "body": "Select 'Section Finalised' — Close Section stays disabled until a reason is picked.",
+      "direction": "top"
+    },
     "Observe: SEC-001 row status chip updates to Closed; toast confirms closure",
     "Apply AC-04 — confirm closureDate and closureReason persisted on the section row after closure"
   ],

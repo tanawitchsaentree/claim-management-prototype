@@ -1,6 +1,8 @@
 @use '../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .srm-header {
   @include modal.header;
@@ -9,9 +11,13 @@
   justify-content: space-between;
 }
 
-.srm-title { @include modal.title; }
+.srm-title {
+  @include modal.title;
+}
 
-.srm-body { @include modal.body; }
+.srm-body {
+  @include modal.body;
+}
 
 .srm-intro {
   margin: 0;
@@ -25,7 +31,12 @@
   gap: 4px;
   min-width: 0;
 
-  nx-formfield { width: 100%; min-width: 0; }
+  nx-formfield {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
-.srm-footer { @include modal.footer; }
+.srm-footer {
+  @include modal.footer;
+}

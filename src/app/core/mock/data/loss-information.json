@@ -55,7 +55,9 @@
     "typeOfDamage": ["material-damage", "financial-loss"],
     "circumstance": "hot-work",
     "lossDescription": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",
-    "events": [{ "eventKey": "fire", "damages": ["material-damage", "financial-loss"], "causedBy": [] }],
+    "events": [
+      { "eventKey": "fire", "damages": ["material-damage", "financial-loss"], "causedBy": [] }
+    ],
     "createdAt": "2024-01-15T08:05:00Z",
     "updatedAt": "2024-01-15T08:05:00Z"
   },
@@ -78,9 +80,7 @@
     "typeOfDamage": ["structural", "contents"],
     "circumstance": "electrical-fault",
     "lossDescription": "Fire broke out in the server room at 14:30. Fire department arrived within 10 minutes. Significant structural damage to the east wing.",
-    "events": [
-      { "eventKey": "fire", "damages": ["structural", "contents"], "causedBy": [] }
-    ],
+    "events": [{ "eventKey": "fire", "damages": ["structural", "contents"], "causedBy": [] }],
     "createdAt": "2025-03-10T16:05:00Z",
     "updatedAt": "2025-03-10T16:05:00Z"
   },
@@ -102,9 +102,7 @@
     "causeOfLoss": ["water-damage"],
     "typeOfDamage": ["structural"],
     "lossDescription": "",
-    "events": [
-      { "eventKey": "water-damage", "damages": ["structural"], "causedBy": [] }
-    ],
+    "events": [{ "eventKey": "water-damage", "damages": ["structural"], "causedBy": [] }],
     "createdAt": "2025-04-02T10:05:00Z",
     "updatedAt": "2025-04-02T10:05:00Z"
   },
@@ -128,8 +126,8 @@
     "circumstance": "theft-no-entry",
     "lossDescription": "Break-in overnight. Perpetrators caused fire after theft to destroy evidence. Police notified immediately.",
     "events": [
-      { "eventKey": "theft",  "damages": ["contents", "equipment"], "causedBy": [] },
-      { "eventKey": "fire",   "damages": ["equipment"],             "causedBy": [] }
+      { "eventKey": "theft", "damages": ["contents", "equipment"], "causedBy": [] },
+      { "eventKey": "fire", "damages": ["equipment"], "causedBy": [] }
     ],
     "createdAt": "2025-02-14T09:00:00Z",
     "updatedAt": "2025-02-15T11:20:00Z"
@@ -154,7 +152,11 @@
     "circumstance": "windstorm",
     "lossDescription": "Storm damage to roof and facade. Business operations interrupted for 3 weeks. Late notification due to ongoing litigation with contractor.",
     "events": [
-      { "eventKey": "wind-storm", "damages": ["structural", "business-interruption"], "causedBy": [] }
+      {
+        "eventKey": "wind-storm",
+        "damages": ["structural", "business-interruption"],
+        "causedBy": []
+      }
     ],
     "createdAt": "2025-01-15T14:10:00Z",
     "updatedAt": "2025-01-15T14:10:00Z"

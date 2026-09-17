@@ -1,6 +1,8 @@
 @use '../../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .crm-header {
   @include modal.header;
@@ -9,9 +11,13 @@
   justify-content: space-between;
 }
 
-.crm-title { @include modal.title; }
+.crm-title {
+  @include modal.title;
+}
 
-.crm-body { @include modal.body; }
+.crm-body {
+  @include modal.body;
+}
 
 .crm-intro {
   margin: 0;
@@ -25,10 +31,15 @@
   gap: 4px;
   min-width: 0;
 
-  nx-formfield { width: 100%; min-width: 0; }
+  nx-formfield {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
-.crm-footer { @include modal.footer; }
+.crm-footer {
+  @include modal.footer;
+}
 
 .crm-loading {
   display: flex;

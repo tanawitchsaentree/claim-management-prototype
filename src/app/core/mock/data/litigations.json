@@ -10,7 +10,13 @@
     "description": "Insured contests denial of business interruption coverage following the storm event of 2025-11-04.",
     "jurisdiction": "Munich Regional Court",
     "expenses": [
-      { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 1000.00, "section": "BI" }
+      {
+        "rowId": "EXP-1",
+        "subType": "Litigation",
+        "currency": "EUR",
+        "amount": 1000.0,
+        "section": "BI"
+      }
     ],
     "cases": []
   },
@@ -25,7 +31,13 @@
     "description": "Insured contests application of flood exclusion clause to the November 2025 storm-water ingress event.",
     "jurisdiction": "Munich Regional Court",
     "expenses": [
-      { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 3500.00, "section": "Material damage" }
+      {
+        "rowId": "EXP-1",
+        "subType": "Litigation",
+        "currency": "EUR",
+        "amount": 3500.0,
+        "section": "Material damage"
+      }
     ],
     "cases": []
   },
@@ -40,7 +52,13 @@
     "description": "Neighbouring property owner claims damages caused by water overflow from insured's warehouse during the loss event.",
     "jurisdiction": "Munich Regional Court",
     "expenses": [
-      { "rowId": "EXP-1", "subType": "Litigation", "currency": "EUR", "amount": 1200.00, "section": "Liability" }
+      {
+        "rowId": "EXP-1",
+        "subType": "Litigation",
+        "currency": "EUR",
+        "amount": 1200.0,
+        "section": "Liability"
+      }
     ],
     "cases": []
   }

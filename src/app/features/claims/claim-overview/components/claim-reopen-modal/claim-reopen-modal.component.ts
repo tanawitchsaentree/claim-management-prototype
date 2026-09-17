@@ -46,19 +46,20 @@ type Step = 1 | 2;
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    NxCheckboxModule,
+    NxCheckboxModule
   ],
   templateUrl: './claim-reopen-modal.component.html',
-  styleUrl: './claim-reopen-modal.component.scss',
+  styleUrl: './claim-reopen-modal.component.scss'
 })
 export class ClaimReopenModalComponent {
-  readonly data       = inject<ClaimReopenModalData>(NX_MODAL_DATA);
-  readonly modalRef   = inject<NxModalRef<ClaimReopenModalComponent, ClaimReopenModalResult>>(NxModalRef);
-  private readonly fb         = inject(FormBuilder);
+  readonly data = inject<ClaimReopenModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ClaimReopenModalComponent, ClaimReopenModalResult>>(NxModalRef);
+  private readonly fb = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly sectionSvc = inject(MockSectionService);
-  private readonly lookupSvc  = inject(MockLookupService);
-  private readonly live       = inject(LiveAnnouncer);
+  private readonly lookupSvc = inject(MockLookupService);
+  private readonly live = inject(LiveAnnouncer);
 
   readonly reserveTypes$: Observable<LookupOption[]> = this.lookupSvc.getReserveTypes();
 
@@ -68,7 +69,7 @@ export class ClaimReopenModalComponent {
     'Settlement disputed by claimant',
     'Recovery / subrogation opportunity',
     'Court ruling / litigation outcome',
-    'Other',
+    'Other'
   ];
 
   readonly sectionReopenReasons: SectionReopenReason[] = [
@@ -76,22 +77,22 @@ export class ClaimReopenModalComponent {
     'Additional claim activity',
     'Reassessment required',
     'Error correction',
-    'Other',
+    'Other'
   ];
 
   readonly form = this.fb.group({
-    reason:        [null as string | null, Validators.required],
-    note:          [''],
-    reserveType:   [null as string | null, Validators.required],
-    reserveAmount: [null as number | null, [Validators.required, Validators.min(1)]],
+    reason: [null as string | null, Validators.required],
+    note: [''],
+    reserveType: [null as string | null, Validators.required],
+    reserveAmount: [null as number | null, [Validators.required, Validators.min(1)]]
   });
 
-  readonly step          = signal<Step>(1);
-  readonly saving        = signal(false);
-  readonly saveError     = signal<string | null>(null);
-  readonly loadingSecs   = signal(true);
+  readonly step = signal<Step>(1);
+  readonly saving = signal(false);
+  readonly saveError = signal<string | null>(null);
+  readonly loadingSecs = signal(true);
   readonly closedSections = signal<ClaimSection[]>([]);
-  readonly selectedIds   = signal<Set<string>>(new Set());
+  readonly selectedIds = signal<Set<string>>(new Set());
 
   readonly stepTitle = computed(() =>
     this.step() === 1 ? 'Reopen claim — Reason' : 'Reopen claim — Select sections'
@@ -105,7 +106,9 @@ export class ClaimReopenModalComponent {
     return this.selectedIds().size > 0;
   });
 
-  get claim() { return this.data.claim; }
+  get claim() {
+    return this.data.claim;
+  }
 
   constructor() {
     this.loadClosedSections();
@@ -137,12 +140,15 @@ export class ClaimReopenModalComponent {
   toggleSection(id: string): void {
     this.selectedIds.update(set => {
       const next = new Set(set);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
 
-  onCancel(): void { this.modalRef.close(undefined as unknown as ClaimReopenModalResult); }
+  onCancel(): void {
+    this.modalRef.close(undefined as unknown as ClaimReopenModalResult);
+  }
 
   onBack(): void {
     if (this.step() === 2) this.step.set(1);
@@ -150,7 +156,10 @@ export class ClaimReopenModalComponent {
 
   onContinue(): void {
     if (this.step() === 1) {
-      if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+      if (this.form.invalid) {
+        this.form.markAllAsTouched();
+        return;
+      }
       this.step.set(2);
     }
   }
@@ -167,12 +176,14 @@ export class ClaimReopenModalComponent {
     const payload: ReopenPayload = {
       reason,
       reserveAmount: v.reserveAmount!,
-      reserveType:   v.reserveType!,
-      reopenedBy,
+      reserveType: v.reserveType!,
+      reopenedBy
     };
 
     try {
-      const reopened = await firstValueFrom(this.closureSvc.reopenClaim(this.claim.claimId, payload));
+      const reopened = await firstValueFrom(
+        this.closureSvc.reopenClaim(this.claim.claimId, payload)
+      );
 
       const sectionReason: SectionReopenReason = 'New information received';
       const ids = [...this.selectedIds()];

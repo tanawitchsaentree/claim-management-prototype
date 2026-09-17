@@ -10,8 +10,12 @@
   </nx-formfield>
 
   <nx-formfield label="Description">
-    <textarea nxInput formControlName="description" rows="3"
-              placeholder="Describe the damage…"></textarea>
+    <textarea
+      nxInput
+      formControlName="description"
+      rows="3"
+      placeholder="Describe the damage…"
+    ></textarea>
     <nx-error nxFormfieldError>Required.</nx-error>
   </nx-formfield>
 
@@ -40,8 +44,12 @@
        the figure was reached carries the record the Description cannot. -->
   @if (isFinancialLoss()) {
     <nx-formfield label="Financial loss details" floatLabel="always">
-      <textarea nxInput formControlName="financialLossDetails" rows="3"
-                placeholder="How the loss was calculated, period covered, figures relied on…"></textarea>
+      <textarea
+        nxInput
+        formControlName="financialLossDetails"
+        rows="3"
+        placeholder="How the loss was calculated, period covered, figures relied on…"
+      ></textarea>
     </nx-formfield>
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -26,7 +26,6 @@ export type MassEventSearchModalResult =
   selector: 'app-mass-event-search-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
@@ -35,24 +34,25 @@ export type MassEventSearchModalResult =
     NxIconModule,
     NxRadioModule,
     NxTableModule,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './mass-event-search-modal.component.html',
-  styleUrl: './mass-event-search-modal.component.scss',
+  styleUrl: './mass-event-search-modal.component.scss'
 })
 export class MassEventSearchModalComponent implements OnInit {
-  readonly data     = inject<MassEventSearchModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<MassEventSearchModalComponent, MassEventSearchModalResult>>(NxModalRef);
+  readonly data = inject<MassEventSearchModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<MassEventSearchModalComponent, MassEventSearchModalResult>>(NxModalRef);
   private readonly massEventSvc = inject(MockMassEventService);
 
   readonly searchForm = new FormGroup({
-    id:   new FormControl(''),
+    id: new FormControl(''),
     code: new FormControl(''),
-    name: new FormControl(''),
+    name: new FormControl('')
   });
 
-  readonly results      = signal<MassEvent[]>([]);
-  readonly selectedId   = signal<string | null>(null);
+  readonly results = signal<MassEvent[]>([]);
+  readonly selectedId = signal<string | null>(null);
   readonly hasSelection = computed(() => this.selectedId() !== null);
 
   async ngOnInit(): Promise<void> {
@@ -71,21 +71,27 @@ export class MassEventSearchModalComponent implements OnInit {
 
   private async runSearch(): Promise<void> {
     const { id, code, name } = this.searchForm.value;
-    const found = await firstValueFrom(this.massEventSvc.search({
-      id: id || undefined,
-      code: code || undefined,
-      name: name || undefined,
-    }));
+    const found = await firstValueFrom(
+      this.massEventSvc.search({
+        id: id || undefined,
+        code: code || undefined,
+        name: name || undefined
+      })
+    );
     this.results.set(found);
   }
 
-  isSelected(id: string): boolean { return this.selectedId() === id; }
+  isSelected(id: string): boolean {
+    return this.selectedId() === id;
+  }
 
   selectRow(id: string): void {
     this.selectedId.set(id);
   }
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onCreateManually(): void {
     const seed = this.searchForm.value.name?.trim() || undefined;

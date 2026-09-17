@@ -1,6 +1,8 @@
 @use '../../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .aplp-header {
   @include modal.header;
@@ -22,13 +24,21 @@
   gap: 12px;
 }
 
-.aplp-body { @include modal.body; }
+.aplp-body {
+  @include modal.body;
+}
 
-.aplp-table { width: 100%; }
+.aplp-table {
+  width: 100%;
+}
 
-.aplp-col-check { width: 48px; }
+.aplp-col-check {
+  width: 48px;
+}
 
-.aplp-row--selected { background: var(--ui-02); }
+.aplp-row--selected {
+  background: var(--ui-02);
+}
 
 .aplp-pagination {
   display: flex;
@@ -36,4 +46,6 @@
   margin-top: 12px;
 }
 
-.aplp-footer { @include modal.footer; }
+.aplp-footer {
+  @include modal.footer;
+}

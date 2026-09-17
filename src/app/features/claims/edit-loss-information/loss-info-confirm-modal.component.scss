@@ -3,7 +3,9 @@
 // Standard centered modal: blessed shell mixin owns header/body/footer spacing
 // (NDBX wrapper already pads 40px) so this matches every other dialog. Was
 // hand-rolled before — CX flagged the inconsistent spacing.
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .licm-close {
   position: absolute;
@@ -20,7 +22,9 @@
   justify-content: center;
   color: var(--text-muted);
   z-index: 1;
-  &:hover { color: var(--text-01); }
+  &:hover {
+    color: var(--text-01);
+  }
 }
 
 .licm-close-x {
@@ -28,22 +32,37 @@
   width: 14px;
   height: 14px;
   position: relative;
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
-    top: 50%; left: 0;
-    width: 100%; height: 1.5px;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
     background: currentColor;
   }
-  &::before { transform: rotate(45deg); }
-  &::after  { transform: rotate(-45deg); }
+  &::before {
+    transform: rotate(45deg);
+  }
+  &::after {
+    transform: rotate(-45deg);
+  }
 }
 
-.licm-header { @include modal.header; }
-.licm-title  { @include modal.title; }
-.licm-subtitle { @include modal.subtitle; }
+.licm-header {
+  @include modal.header;
+}
+.licm-title {
+  @include modal.title;
+}
+.licm-subtitle {
+  @include modal.subtitle;
+}
 
-.licm-body { @include modal.body; }
+.licm-body {
+  @include modal.body;
+}
 
 .licm-damage-warning {
   display: block;
@@ -60,7 +79,7 @@
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: 0.04em;
     padding: var(--space-sm) var(--space-sm);
     border-bottom: 1px solid var(--ui-04);
     text-align: left;
@@ -93,7 +112,9 @@
   color: var(--text-muted);
   width: 24px;
   text-align: center;
-  nx-icon { font-size: 12px; }
+  nx-icon {
+    font-size: 12px;
+  }
 }
 
 .licm-updated {
@@ -103,4 +124,6 @@
   word-break: break-word;
 }
 
-.licm-footer { @include modal.footer; }
+.licm-footer {
+  @include modal.footer;
+}

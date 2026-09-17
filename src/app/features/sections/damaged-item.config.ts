@@ -17,7 +17,7 @@ export const DAMAGE_OPTIONS: string[] = [
   'Machinery breakdown',
   'Financial loss',
   'Bodily injury',
-  'Liability',
+  'Liability'
 ];
 
 /**
@@ -93,19 +93,19 @@ export function damagedItemMissingConditional(v: DamagedItemFormValue): boolean 
 export function buildDamagedItem(v: DamagedItemFormValue): DamagedItem {
   const damage = v.damage ?? '';
   return {
-    name:        v.name ?? '',
+    name: v.name ?? '',
     description: v.description ?? '',
     damage,
-    causedBy:    v.causedBy ?? undefined,
+    causedBy: v.causedBy ?? undefined,
     ...(damage === FINANCIAL_LOSS_DAMAGE
       ? { financialLossDetails: v.financialLossDetails || undefined }
       : {}),
     ...(damage === BODILY_INJURY_DAMAGE
       ? {
-          injuredPartyName:    v.injuredPartyName?.trim() || undefined,
+          injuredPartyName: v.injuredPartyName?.trim() || undefined,
           injuredPartyCountry: v.injuredPartyCountry || undefined,
-          injuredPartyRole:    v.injuredPartyRole || undefined,
+          injuredPartyRole: v.injuredPartyRole || undefined
         }
-      : {}),
+      : {})
   };
 }

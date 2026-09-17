@@ -13,19 +13,26 @@ import { ClaimPreviewPopoverComponent } from '../../../shared/components/claim-p
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Sidebar, ClaimRightStripComponent, ClaimReferenceTabsComponent, ClaimPreviewPopoverComponent],
+  imports: [
+    RouterOutlet,
+    Navbar,
+    Sidebar,
+    ClaimRightStripComponent,
+    ClaimReferenceTabsComponent,
+    ClaimPreviewPopoverComponent
+  ],
   templateUrl: './shell.html',
-  styleUrl: './shell.scss',
+  styleUrl: './shell.scss'
 })
 export class Shell {
   private readonly router = inject(Router);
-  readonly refSvc     = inject(ReferenceViewService);
+  readonly refSvc = inject(ReferenceViewService);
   readonly previewSvc = inject(ClaimPreviewService);
 
   private readonly url$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
     map(e => (e as NavigationEnd).urlAfterRedirects),
-    startWith(this.router.url),
+    startWith(this.router.url)
   );
 
   private readonly urlSignal = toSignal(this.url$, { initialValue: this.router.url });

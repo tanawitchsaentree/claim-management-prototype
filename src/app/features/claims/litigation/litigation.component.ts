@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -15,18 +15,18 @@ import { LitigationDetailComponent } from './litigation-detail/litigation-detail
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
 
 const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
-  Draft:         'open',
+  Draft: 'open',
   'In progress': 'in-progress',
-  Closed:        'closed',
+  Closed: 'closed'
 };
 
 @Component({
   selector: 'app-litigation',
   standalone: true,
   imports: [
-    CommonModule,
     NxIconModule,
     NxButtonModule,
     NxTableModule,
@@ -36,6 +36,7 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
     AppDatePipe,
     EmptyStateComponent,
     PageHeaderComponent,
+    BlockerReturnBannerComponent
   ],
   templateUrl: './litigation.component.html',
   styleUrl: './litigation.component.scss',
@@ -43,23 +44,24 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
     trigger('detailSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(24px)' }),
-        animate('220ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, transform: 'translateX(0)' })),
+        animate(
+          '220ms cubic-bezier(0.2, 0, 0, 1)',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        )
       ]),
       transition(':leave', [
-        animate('180ms ease-in',
-          style({ opacity: 0, transform: 'translateX(24px)' })),
-      ]),
-    ]),
-  ],
+        animate('180ms ease-in', style({ opacity: 0, transform: 'translateX(24px)' }))
+      ])
+    ])
+  ]
 })
 export class LitigationComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly svc   = inject(MockLitigationService);
+  private readonly svc = inject(MockLitigationService);
   private readonly toast = inject(ToastService);
 
-  readonly rows     = signal<Litigation[]>([]);
-  readonly loading  = signal(true);
+  readonly rows = signal<Litigation[]>([]);
+  readonly loading = signal(true);
   readonly selected = signal<Litigation | null>(null);
 
   readonly isSqueezed = computed(() => !!this.selected());
@@ -78,7 +80,9 @@ export class LitigationComponent implements OnInit {
     this.loading.set(false);
   }
 
-  chipStatus(s: LitigationStatus): string { return STATUS_CHIP_MAP[s]; }
+  chipStatus(s: LitigationStatus): string {
+    return STATUS_CHIP_MAP[s];
+  }
 
   open(row: Litigation): void {
     this.selected.set(row);

@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -30,38 +30,47 @@ const EMPTY_VM: RefVM = { claim: null, sections: [], notFound: false, loading: t
 @Component({
   selector: 'app-claim-reference-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NxIconModule, NxButtonModule, NxTooltipModule, StatusChipComponent, EmptyStateComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NxIconModule,
+    NxButtonModule,
+    NxTooltipModule,
+    StatusChipComponent,
+    EmptyStateComponent
+  ],
   templateUrl: './claim-reference-panel.component.html',
   styleUrl: './claim-reference-panel.component.scss',
   animations: [
     trigger('refPanelSlide', [
       transition(':enter', [
         style({ width: 0, opacity: 0 }),
-        animate('220ms cubic-bezier(0.2, 0, 0, 1)', style({ width: '360px', opacity: 1 })),
+        animate('220ms cubic-bezier(0.2, 0, 0, 1)', style({ width: '360px', opacity: 1 }))
       ]),
       transition(':leave', [
         style({ width: '360px', opacity: 1, overflow: 'hidden' }),
-        animate('180ms cubic-bezier(0.4, 0, 1, 1)', style({ width: 0, opacity: 0 })),
-      ]),
-    ]),
-  ],
+        animate('180ms cubic-bezier(0.4, 0, 1, 1)', style({ width: 0, opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class ClaimReferencePanelComponent {
   readonly svc = inject(ReferenceViewService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
-  private readonly sectionSvc  = inject(MockSectionService);
-  private readonly stateSvc    = inject(MockStateService);
-  private readonly claimSvc    = inject(MockClaimService);
+  private readonly sectionSvc = inject(MockSectionService);
+  private readonly stateSvc = inject(MockStateService);
+  private readonly claimSvc = inject(MockClaimService);
   private searchGeneration = 0;
 
   readonly maxTabs = MAX_REF_TABS;
   readonly vm = signal<RefVM>(EMPTY_VM);
 
   // ── Search popover ──────────────────────────────────────────────────────────
-  readonly showSearch    = signal(false);
-  readonly searchQuery   = signal('');
+  readonly showSearch = signal(false);
+  readonly searchQuery = signal('');
   readonly searchResults = signal<Claim[]>([]);
-  readonly searching     = signal(false);
+  readonly searching = signal(false);
   // Keyboard highlight for the results listbox (aria-activedescendant pattern) —
   // the container stays the single tab stop, arrow keys move this index.
   readonly highlightedIndex = signal(0);
@@ -88,7 +97,7 @@ export class ClaimReferencePanelComponent {
     try {
       const [{ claim }, sections] = await Promise.all([
         firstValueFrom(this.overviewSvc.getOverviewWithActivities(claimId)),
-        firstValueFrom(this.sectionSvc.getByClaimId(claimId)),
+        firstValueFrom(this.sectionSvc.getByClaimId(claimId))
       ]);
       this.vm.set({ claim, sections, notFound: false, loading: false });
     } catch {
@@ -123,11 +132,14 @@ export class ClaimReferencePanelComponent {
 
   async onSearchInput(query: string): Promise<void> {
     this.searchQuery.set(query);
-    if (query.trim().length < 2) { this.searchResults.set([]); return; }
+    if (query.trim().length < 2) {
+      this.searchResults.set([]);
+      return;
+    }
     this.searching.set(true);
     const generation = ++this.searchGeneration;
     const primary = this.svc.primaryClaimId();
-    const open    = new Set(this.svc.refTabs().map(t => t.claimId));
+    const open = new Set(this.svc.refTabs().map(t => t.claimId));
     const results = await firstValueFrom(this.claimSvc.getAll({ search: query }));
     if (generation !== this.searchGeneration) return; // stale — a newer search superseded this one
     this.searchResults.set(
@@ -161,9 +173,9 @@ export class ClaimReferencePanelComponent {
   }
 
   sectionsSummary(sections: ClaimSection[]): string {
-    const open   = sections.filter(s => s.status !== 'Closed').length;
+    const open = sections.filter(s => s.status !== 'Closed').length;
     const closed = sections.filter(s => s.status === 'Closed').length;
-    const total  = sections.length;
+    const total = sections.length;
     if (total === 0) return 'No sections';
     return `${closed}/${total} closed${open > 0 ? ` · ${open} open` : ''}`;
   }

@@ -1,6 +1,8 @@
 @use '../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .arm-header {
   @include modal.header;
@@ -9,18 +11,28 @@
   justify-content: space-between;
 }
 
-.arm-title { @include modal.title; }
+.arm-title {
+  @include modal.title;
+}
 
-.arm-body { @include modal.body; }
+.arm-body {
+  @include modal.body;
+}
 
 .arm-form {
   display: flex;
   flex-direction: column;
   gap: 4px;
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
-.arm-checkbox-row { padding: var(--space-xs) 0; }
+.arm-checkbox-row {
+  padding: var(--space-xs) 0;
+}
 
-.arm-footer { @include modal.footer; }
+.arm-footer {
+  @include modal.footer;
+}

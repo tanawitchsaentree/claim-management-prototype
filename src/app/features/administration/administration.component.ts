@@ -1,17 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { PageShellComponent } from '../../shared/components/page-shell/page-shell.component';
 
 interface AdminCard {
-  key:         string;
-  title:       string;
+  key: string;
+  title: string;
   description: string;
-  icon:        string;        // Allianz product icon name
-  iconAccent:  'green' | 'red' | 'purple';
-  route?:      string;
+  icon: string; // Allianz product icon name
+  iconAccent: 'green' | 'red' | 'purple';
+  route?: string;
 }
 
 interface AdminGroup {
@@ -25,9 +25,9 @@ const PLACEHOLDER_DESC =
 @Component({
   selector: 'app-administration',
   standalone: true,
-  imports: [CommonModule, NxIconModule, NxLinkModule, PageShellComponent],
+  imports: [NxIconModule, NxLinkModule, PageShellComponent],
   templateUrl: './administration.component.html',
-  styleUrl: './administration.component.scss',
+  styleUrl: './administration.component.scss'
 })
 export class AdministrationComponent {
   private readonly router = inject(Router);
@@ -37,25 +37,26 @@ export class AdministrationComponent {
       title: 'Administration',
       cards: [
         {
-          key:         'profile',
-          title:       'User profile management',
+          key: 'profile',
+          title: 'User profile management',
           description: PLACEHOLDER_DESC,
-          icon:        'manager',
-          iconAccent:  'green',
-        },
-      ],
+          icon: 'manager',
+          iconAccent: 'green'
+        }
+      ]
     },
     {
       title: 'Expert configurations',
       cards: [
         {
-          key:         'mass-events',
-          title:       'Mass events',
-          description: 'Manage events that link related claims to a single incident. Use this space to create new mass events or view and update existing ones.',
-          icon:        'product-world-globe',
-          iconAccent:  'red',
-          route:       '/administration/mass-events',
-        },
+          key: 'mass-events',
+          title: 'Mass events',
+          description:
+            'Manage events that link related claims to a single incident. Use this space to create new mass events or view and update existing ones.',
+          icon: 'product-world-globe',
+          iconAccent: 'red',
+          route: '/administration/mass-events'
+        }
         // Pricing configuration — hidden until backend/spec is ready
         // {
         //   key:         'pricing',
@@ -64,8 +65,8 @@ export class AdministrationComponent {
         //   icon:        'product-coins-money',
         //   iconAccent:  'purple',
         // },
-      ],
-    },
+      ]
+    }
   ];
 
   open(card: AdminCard): void {

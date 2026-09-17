@@ -19,13 +19,15 @@ import { Broker, BrokerSearchFilters, BrokerPartyType, LookupOption } from '../.
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
-export interface BrokerSearchModalData { initialQuery?: string; }
+export interface BrokerSearchModalData {
+  initialQuery?: string;
+}
 export type BrokerSearchModalResult = Broker | null;
 
 interface SearchState {
   results: Broker[];
   loading: boolean;
-  error:   boolean;
+  error: boolean;
   searched: boolean;
 }
 
@@ -49,22 +51,23 @@ const ID_TYPES = ['IPM', 'NAIC', 'Internal ref'];
     NxMessageModule,
     NxTabsModule,
     StatusChipComponent,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './broker-search-modal.component.html',
-  styleUrl: './broker-search-modal.component.scss',
+  styleUrl: './broker-search-modal.component.scss'
 })
 export class BrokerSearchModalComponent implements OnInit {
-  readonly data     = inject<BrokerSearchModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<BrokerSearchModalComponent, BrokerSearchModalResult>>(NxModalRef);
-  private readonly fb        = inject(FormBuilder);
+  readonly data = inject<BrokerSearchModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<BrokerSearchModalComponent, BrokerSearchModalResult>>(NxModalRef);
+  private readonly fb = inject(FormBuilder);
   private readonly brokerSvc = inject(MockBrokerService);
   private readonly lookupSvc = inject(MockLookupService);
 
   readonly idTypes = ID_TYPES;
   readonly countries$: Observable<LookupOption[]> = this.lookupSvc.getCountries().pipe(
     catchError(() => of([] as LookupOption[])),
-    startWith([] as LookupOption[]),
+    startWith([] as LookupOption[])
   );
 
   readonly partyType = signal<BrokerPartyType>('company');
@@ -72,16 +75,16 @@ export class BrokerSearchModalComponent implements OnInit {
   readonly form: FormGroup = this.fb.group({
     legalName: [''],
     firstName: [''],
-    lastName:  [''],
-    country:   [''],
-    role:      ['Broker'],
-    number:    [''],
-    zipCode:   [''],
-    street:    [''],
-    state:     [''],
-    city:      [''],
-    idType:    [''],
-    idValue:   [''],
+    lastName: [''],
+    country: [''],
+    role: ['Broker'],
+    number: [''],
+    zipCode: [''],
+    street: [''],
+    state: [''],
+    city: [''],
+    idType: [''],
+    idValue: ['']
   });
 
   readonly selectedId = signal<string | null>(null);
@@ -96,12 +99,14 @@ export class BrokerSearchModalComponent implements OnInit {
     switchMap(filters =>
       this.brokerSvc.search(filters).pipe(
         map((results): SearchState => ({ results, loading: false, error: false, searched: true })),
-        catchError((): Observable<SearchState> =>
-          of({ results: [], loading: false, error: true, searched: true })),
-        startWith({ results: [], loading: true, error: false, searched: false } as SearchState),
-      ),
+        catchError(
+          (): Observable<SearchState> =>
+            of({ results: [], loading: false, error: true, searched: true })
+        ),
+        startWith({ results: [], loading: true, error: false, searched: false } as SearchState)
+      )
     ),
-    startWith({ results: [], loading: true, error: false, searched: false } as SearchState),
+    startWith({ results: [], loading: true, error: false, searched: false } as SearchState)
   );
 
   ngOnInit(): void {
@@ -138,7 +143,9 @@ export class BrokerSearchModalComponent implements OnInit {
     return this.selectedId() === id;
   }
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onAddSelected(results: Broker[]): void {
     const id = this.selectedId();

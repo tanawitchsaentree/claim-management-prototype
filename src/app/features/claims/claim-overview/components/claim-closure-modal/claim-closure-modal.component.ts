@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -8,6 +8,7 @@ import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/mod
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
+import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -26,15 +27,16 @@ export interface ClaimClosureModalData {
 export interface ClaimClosureModalResult {
   closedClaim: ClaimOverview;
   activity: ClaimActivity;
+  // BMPCC-18352 pilot — true when this result is a liability-related
+  // rejection routed to pending approval instead of an actual closure.
+  // closedClaim.status is 'Pending Rejection Approval' in that case, not
+  // 'Closed' — caller must branch on this before treating the claim as closed.
+  pendingApproval?: boolean;
 }
 
 type Step = 1 | 2 | 3 | 4;
 
-const CLOSURE_REASONS: ClosureReason[] = [
-  'Claim Finalised',
-  'Claim Not Pursued',
-  'Claim Rejected',
-];
+const CLOSURE_REASONS: ClosureReason[] = ['Claim Finalised', 'Claim Not Pursued', 'Claim Rejected'];
 
 interface ChecklistItem {
   label: string;
@@ -47,60 +49,97 @@ const CONFIRMATION_STATEMENTS: string[] = [
   'All bills against this section/claim have been received and processed',
   'All pending subrogation, salvage, or recovery activity has been resolved (or recovery potential confirmed as none)',
   'All final reports are completed',
-  'Provider Management survey is completed, or rejected with a rationale provided',
+  'Provider Management survey is completed, or rejected with a rationale provided'
 ];
 
 @Component({
   selector: 'app-claim-closure-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
     NxDropdownModule,
     NxRadioModule,
+    NxCheckboxModule,
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    NxDatefieldModule,
+    NxDatefieldModule
   ],
   templateUrl: './claim-closure-modal.component.html',
-  styleUrl: './claim-closure-modal.component.scss',
+  styleUrl: './claim-closure-modal.component.scss'
 })
 export class ClaimClosureModalComponent {
-  readonly data     = inject<ClaimClosureModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<ClaimClosureModalComponent, ClaimClosureModalResult>>(NxModalRef);
-  private readonly fb         = inject(FormBuilder);
+  readonly data = inject<ClaimClosureModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ClaimClosureModalComponent, ClaimClosureModalResult>>(NxModalRef);
+  private readonly fb = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
-  private readonly router     = inject(Router);
-  private readonly live       = inject(LiveAnnouncer);
+  private readonly router = inject(Router);
+  private readonly live = inject(LiveAnnouncer);
 
-  readonly step    = signal<Step>(this.data.blockers.canClose ? 2 : 1);
-  readonly saving  = signal(false);
+  readonly step = signal<Step>(this.data.blockers.canClose ? 2 : 1);
+  readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
   readonly expanded = signal<Set<string>>(new Set());
 
   readonly closureReasons = CLOSURE_REASONS;
 
   readonly checklistItems: ChecklistItem[] = [
-    { label: 'All sections closed',              passed: !this.data.blockers.blockers.some(b => b.type === 'sections'),              failHint: 'All sections must be closed before closing the claim.' },
-    { label: 'All payments processed',           passed: !this.data.blockers.blockers.some(b => b.type === 'payments'),              failHint: 'Pending payments must be settled.' },
-    { label: 'All bills received',               passed: !this.data.blockers.blockers.some(b => b.type === 'bills'),                 failHint: 'Outstanding bills must be received.' },
+    {
+      label: 'All sections closed',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'sections'),
+      failHint: 'All sections must be closed before closing the claim.'
+    },
+    {
+      label: 'All payments processed',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'payments'),
+      failHint: 'Pending payments must be settled.'
+    },
+    {
+      label: 'All bills received',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'bills'),
+      failHint: 'Outstanding bills must be received.'
+    },
     // BMPCC-17779 — its own row, above the generic recovery line. The
     // Recoveries call asked for the Yes/No specifically to be part of this
     // checklist, and folding it into "Recoveries & deductibles cleared" would
     // tell a handler to go resolve activity that does not exist.
-    { label: 'Recovery potential answered',      passed: !this.data.blockers.blockers.some(b => b.type === 'recovery-potential-unset'), failHint: 'Answer Yes or No on the Recovery potential card on Claim Overview.' },
+    {
+      label: 'Recovery potential answered',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'recovery-potential-unset'),
+      failHint: 'Answer Yes or No on the Recovery potential card on Claim Overview.'
+    },
     // Phase B — the half of the loop that used to have nowhere to point. Also
     // its own row rather than folded into the line below: "no case exists" and
     // "a case exists and is unresolved" need opposite actions from the handler.
-    { label: 'Recovery case set up',             passed: !this.data.blockers.blockers.some(b => b.type === 'recovery-not-set-up'),      failHint: 'Recovery potential is Yes — create the recovery case on the Recoveries page.' },
-    { label: 'Recoveries & deductibles cleared', passed: !this.data.blockers.blockers.some(b => ['recovery','deductible'].includes(b.type)), failHint: 'Open recovery or deductible tasks must be resolved.' },
-    { label: 'Reserves released',                passed: !this.data.blockers.blockers.some(b => b.type === 'reserves'),              failHint: 'All reserves must be released.' },
-    { label: 'Litigation completed',             passed: !this.data.blockers.blockers.some(b => b.type === 'litigation'),            failHint: 'Active litigation must be resolved.' },
-    { label: 'Final reports completed',          passed: !this.data.blockers.blockers.some(b => b.type === 'reports'),               failHint: 'All required reports must be completed.' },
+    {
+      label: 'Recovery case set up',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'recovery-not-set-up'),
+      failHint: 'Recovery potential is Yes — create the recovery case on the Recoveries page.'
+    },
+    {
+      label: 'Recoveries & deductibles cleared',
+      passed: !this.data.blockers.blockers.some(b => ['recovery', 'deductible'].includes(b.type)),
+      failHint: 'Open recovery or deductible tasks must be resolved.'
+    },
+    {
+      label: 'Reserves released',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'reserves'),
+      failHint: 'All reserves must be released.'
+    },
+    {
+      label: 'Litigation completed',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'litigation'),
+      failHint: 'Active litigation must be resolved.'
+    },
+    {
+      label: 'Final reports completed',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'reports'),
+      failHint: 'All required reports must be completed.'
+    }
   ];
 
   readonly checklistAllDone = computed(() => this.checklistItems.every(i => i.passed));
@@ -108,13 +147,34 @@ export class ClaimClosureModalComponent {
   readonly confirmationStatements = CONFIRMATION_STATEMENTS;
 
   readonly form: FormGroup = this.fb.group({
-    reason:        [null, Validators.required],
+    reason: [null, Validators.required],
     retentionType: ['default', Validators.required],
     retentionDate: [''],
+    // Only rendered (and only meaningful) when reason === 'Claim Rejected' —
+    // see PROJECT.md/tracker note on BMPCC-18352 for the open questions this
+    // pilot doesn't resolve (real approver identity, notification channel).
+    liabilityInvolved: [false]
   });
 
-  private readonly retentionTypeSig = toSignal(this.form.get('retentionType')!.valueChanges, { initialValue: 'default' });
-  private readonly retentionDateSig = toSignal(this.form.get('retentionDate')!.valueChanges, { initialValue: '' });
+  private readonly reasonSig = toSignal(this.form.get('reason')!.valueChanges, {
+    initialValue: this.form.value.reason
+  });
+  readonly isRejection = computed(() => this.reasonSig() === 'Claim Rejected');
+
+  private readonly liabilityInvolvedSig = toSignal(
+    this.form.get('liabilityInvolved')!.valueChanges,
+    {
+      initialValue: this.form.value.liabilityInvolved ?? false
+    }
+  );
+  readonly requiresApproval = computed(() => this.isRejection() && !!this.liabilityInvolvedSig());
+
+  private readonly retentionTypeSig = toSignal(this.form.get('retentionType')!.valueChanges, {
+    initialValue: 'default'
+  });
+  private readonly retentionDateSig = toSignal(this.form.get('retentionDate')!.valueChanges, {
+    initialValue: ''
+  });
 
   private readonly defaultRetentionDateValue = computed(() => {
     const d = new Date();
@@ -136,17 +196,20 @@ export class ClaimClosureModalComponent {
 
   readonly stepTitle = computed(() => {
     switch (this.step()) {
-      case 1: return 'Close Claim — Blockers';
-      case 2: return 'Close Claim — Pre-closure Checklist';
-      case 3: return 'Close Claim — Reason & Retention';
-      case 4: return 'Close Claim — Confirmation';
+      case 1:
+        return 'Close Claim — Blockers';
+      case 2:
+        return 'Close Claim — Pre-closure Checklist';
+      case 3:
+        return 'Close Claim — Reason & Retention';
+      case 4:
+        return 'Close Claim — Confirmation';
     }
   });
 
-  private readonly reasonStatus = toSignal(
-    this.form.get('reason')!.statusChanges,
-    { initialValue: this.form.get('reason')!.status }
-  );
+  private readonly reasonStatus = toSignal(this.form.get('reason')!.statusChanges, {
+    initialValue: this.form.get('reason')!.status
+  });
 
   readonly reasonInvalid = computed(() => this.reasonStatus() !== 'VALID');
 
@@ -157,8 +220,12 @@ export class ClaimClosureModalComponent {
     return `${dd}-${mm}-${d.getFullYear()}`;
   });
 
-  get blockers() { return this.data.blockers.blockers; }
-  get claim()    { return this.data.claim; }
+  get blockers() {
+    return this.data.blockers.blockers;
+  }
+  get claim() {
+    return this.data.claim;
+  }
 
   get showOtherWarning() {
     return this.claim.proximateLossCause?.toLowerCase() === 'other';
@@ -171,7 +238,8 @@ export class ClaimClosureModalComponent {
   toggleBlocker(key: string): void {
     this.expanded.update(set => {
       const next = new Set(set);
-      next.has(key) ? next.delete(key) : next.add(key);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
       return next;
     });
   }
@@ -180,11 +248,22 @@ export class ClaimClosureModalComponent {
     return this.expanded().has(key);
   }
 
-  onCancel(): void { this.modalRef.close(undefined); }
-
-  goToBlocker(link: string): void {
+  onCancel(): void {
     this.modalRef.close(undefined);
-    this.router.navigateByUrl(link);
+  }
+
+  // Carries WHY the handler landed here and HOW to get back — without this,
+  // "Go to X" was a flat teleport: close the modal, navigate, and the
+  // destination page gave zero indication this was step 1 of "go fix this,
+  // then come back and finish closing the claim." See BlockerReturnBannerComponent.
+  goToBlocker(link: string, label: string): void {
+    this.modalRef.close(undefined);
+    this.router.navigate([link], {
+      queryParams: {
+        resolveBlocker: label,
+        returnTo: `/claims/${this.data.claim.claimId}/overview`
+      }
+    });
   }
 
   onBack(): void {
@@ -211,6 +290,29 @@ export class ClaimClosureModalComponent {
 
   async onCloseClaim(): Promise<void> {
     if (this.form.invalid || this.saving()) return;
+
+    if (this.requiresApproval()) {
+      // Liability-related rejection — send to pending approval instead of
+      // actually closing. No real second-approver/notification mechanism
+      // exists in this prototype; approve/decline both render directly on
+      // Claim Overview for whoever is looking, same as every other
+      // role-agnostic action here (no auth system exists to gate this).
+      const now = new Date().toISOString();
+      const pendingClaim: ClaimOverview = { ...this.claim, status: 'Pending Rejection Approval' };
+      const activity: ClaimActivity = {
+        id: `act-${Date.now()}`,
+        claimId: this.claim.claimId,
+        user: this.claim.assignedHandler,
+        timestamp: now,
+        objectType: 'Claim',
+        attribute: 'Status',
+        valueOld: this.claim.status,
+        valueNew: 'Pending Rejection Approval'
+      };
+      this.modalRef.close({ closedClaim: pendingClaim, activity, pendingApproval: true });
+      return;
+    }
+
     this.saving.set(true);
     this.saveError.set(null);
     const { reason, retentionType, retentionDate } = this.form.value;
@@ -220,7 +322,7 @@ export class ClaimClosureModalComponent {
           reason,
           retentionType,
           retentionDate: retentionType === 'custom' ? retentionDate : undefined,
-          confirmedBy: { userId: 'usr-current', name: this.claim.assignedHandler },
+          confirmedBy: { userId: 'usr-current', name: this.claim.assignedHandler }
         })
       );
       const now = new Date().toISOString();
@@ -232,7 +334,7 @@ export class ClaimClosureModalComponent {
         objectType: 'Claim',
         attribute: 'Status',
         valueOld: this.claim.status,
-        valueNew: 'Closed',
+        valueNew: 'Closed'
       };
       this.modalRef.close({ closedClaim, activity });
     } catch {

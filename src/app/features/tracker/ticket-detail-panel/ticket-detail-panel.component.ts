@@ -14,12 +14,15 @@ import { SupabaseService } from '../../../core/services/supabase.service';
 import { TrackerService, daysSince } from '../../../core/services/tracker.service';
 import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
 import type { BlockedReason, TrackerStageStatus } from '../../../core/models/tracker.model';
-import { AddNoteModalComponent, AddNoteModalData } from '../add-note-modal/add-note-modal.component';
+import {
+  AddNoteModalComponent,
+  AddNoteModalData
+} from '../add-note-modal/add-note-modal.component';
 
 const STAGE_OPTIONS: { value: TrackerStageStatus; label: string }[] = [
   { value: 'not_started', label: 'Not started' },
   { value: 'in_progress', label: 'In progress' },
-  { value: 'done', label: 'Done' },
+  { value: 'done', label: 'Done' }
 ];
 
 const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
@@ -28,7 +31,7 @@ const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
   { value: 'waiting_ba', label: 'Waiting: BA' },
   { value: 'waiting_dev', label: 'Waiting: Dev' },
   { value: 'waiting_other_epic', label: 'Waiting: Other epic' },
-  { value: 'scope_unclear', label: 'Scope unclear' },
+  { value: 'scope_unclear', label: 'Scope unclear' }
 ];
 
 @Component({
@@ -43,7 +46,7 @@ const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
     NxIconModule,
     NxModalModule,
     NxSpinnerModule,
-    AppDatePipe,
+    AppDatePipe
   ],
   templateUrl: './ticket-detail-panel.component.html',
   styleUrl: './ticket-detail-panel.component.scss',
@@ -55,14 +58,14 @@ const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
     trigger('panelSlide', [
       transition(':enter', [
         style({ width: 0, opacity: 0, overflow: 'hidden' }),
-        animate('220ms cubic-bezier(0.2, 0, 0, 1)', style({ width: '420px', opacity: 1 })),
+        animate('220ms cubic-bezier(0.2, 0, 0, 1)', style({ width: '420px', opacity: 1 }))
       ]),
       transition(':leave', [
         style({ overflow: 'hidden' }),
-        animate('180ms cubic-bezier(0.4, 0, 1, 1)', style({ width: 0, opacity: 0 })),
-      ]),
-    ]),
-  ],
+        animate('180ms cubic-bezier(0.4, 0, 1, 1)', style({ width: 0, opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class TicketDetailPanelComponent implements OnChanges {
   @Input({ required: true }) jiraKey!: string;
@@ -77,7 +80,9 @@ export class TicketDetailPanelComponent implements OnChanges {
   readonly blockedOptions = BLOCKED_OPTIONS;
 
   readonly buildControl = new FormControl<TrackerStageStatus>('not_started', { nonNullable: true });
-  readonly handoffControl = new FormControl<TrackerStageStatus>('not_started', { nonNullable: true });
+  readonly handoffControl = new FormControl<TrackerStageStatus>('not_started', {
+    nonNullable: true
+  });
   readonly blockedByControl = new FormControl<BlockedReason>('none', { nonNullable: true });
   readonly blockedNoteControl = new FormControl<string>('', { nonNullable: true });
   readonly prototypeRouteControl = new FormControl<string>('', { nonNullable: true });
@@ -85,23 +90,32 @@ export class TicketDetailPanelComponent implements OnChanges {
   readonly pi = computed(() => {
     const ticket = this.trackerService.ticket();
     if (!ticket?.piId) return null;
-    return this.trackerService.pis().find((p) => p.id === ticket.piId) ?? null;
+    return this.trackerService.pis().find(p => p.id === ticket.piId) ?? null;
   });
 
-  readonly daysBlocked = computed(() => daysSince(this.trackerService.ticket()?.state.blockedSince ?? null));
+  readonly daysBlocked = computed(() =>
+    daysSince(this.trackerService.ticket()?.state.blockedSince ?? null)
+  );
 
   // Auto-matched by jiraKey against the loaded ticket-file registry when nobody's set
   // prototype_ticket_id by hand — see PrototypeScenarioService.resolveTicketId()'s comment.
   readonly effectivePrototypeTicketId = computed(() => {
     const ticket = this.trackerService.ticket();
     if (!ticket) return null;
-    return this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+    return this.prototypeScenarioSvc.resolveTicketId(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId
+    );
   });
 
   readonly effectivePrototypeRoute = computed(() => {
     const ticket = this.trackerService.ticket();
     if (!ticket) return null;
-    return this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
+    return this.prototypeScenarioSvc.resolveRoute(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId,
+      ticket.state.prototypeRoute
+    );
   });
 
   // True only when the link came from auto-matching, not from the manual field — controls
@@ -110,7 +124,11 @@ export class TicketDetailPanelComponent implements OnChanges {
   // since the user chose to wire it explicitly and might want to change it.
   readonly isAutoDetected = computed(() => {
     const ticket = this.trackerService.ticket();
-    return !!ticket && !ticket.state.prototypeTicketId && !!this.prototypeScenarioSvc.getTicketById(ticket.jiraKey);
+    return (
+      !!ticket &&
+      !ticket.state.prototypeTicketId &&
+      !!this.prototypeScenarioSvc.getTicketById(ticket.jiraKey)
+    );
   });
 
   ngOnChanges(): void {
@@ -131,9 +149,13 @@ export class TicketDetailPanelComponent implements OnChanges {
     if (!route) return;
 
     window.open(
-      this.prototypeScenarioSvc.buildPrototypeUrl(route, this.effectivePrototypeTicketId(), this.trackerService.ticket()?.jiraKey ?? null),
+      this.prototypeScenarioSvc.buildPrototypeUrl(
+        route,
+        this.effectivePrototypeTicketId(),
+        this.trackerService.ticket()?.jiraKey ?? null
+      ),
       '_blank',
-      'noopener',
+      'noopener'
     );
   }
 
@@ -148,7 +170,10 @@ export class TicketDetailPanelComponent implements OnChanges {
     this.blockedNoteControl.setValue(ticket.state.blockedNote ?? '', { emitEvent: false });
     this.prototypeRouteControl.setValue(ticket.state.prototypeRoute ?? '', { emitEvent: false });
 
-    await Promise.all([this.trackerService.getNotes(ticket.id), this.trackerService.getRelations(ticket.id)]);
+    await Promise.all([
+      this.trackerService.getNotes(ticket.id),
+      this.trackerService.getRelations(ticket.id)
+    ]);
   }
 
   private async currentUserEmail(): Promise<string> {
@@ -184,7 +209,7 @@ export class TicketDetailPanelComponent implements OnChanges {
       blockedBy: BlockedReason;
       blockedNote: string;
       prototypeRoute: string | null;
-    }>,
+    }>
   ): Promise<void> {
     const ticket = this.trackerService.ticket();
     if (!ticket) return;
@@ -197,10 +222,13 @@ export class TicketDetailPanelComponent implements OnChanges {
     if (!ticket) return;
 
     const email = await this.currentUserEmail();
-    const ref = this.dialog.open<AddNoteModalComponent, AddNoteModalData, boolean>(AddNoteModalComponent, {
-      data: { ticketId: ticket.id, createdBy: email },
-      width: '480px',
-    });
+    const ref = this.dialog.open<AddNoteModalComponent, AddNoteModalData, boolean>(
+      AddNoteModalComponent,
+      {
+        data: { ticketId: ticket.id, createdBy: email },
+        width: '480px'
+      }
+    );
     // AddNoteModalComponent's own save() already refreshes trackerService.notes()
     // before closing — nothing further to do with the result here.
     await firstValueFrom(ref.afterClosed());

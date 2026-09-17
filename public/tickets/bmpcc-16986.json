@@ -24,13 +24,21 @@
       "setup": {
         "description": "CLM-2024-001 already has a mass event linked by default — no override needed",
         "preconditions": [
-          { "text": "Mass Event field is visible with a linked event id", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Mass Event field is visible with a linked event id",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
       "expectedUI": {
         "description": "Mass event popover shows event details and manual actions",
-        "visualCues": ["Popover header shows event id and name", "Type/Code/Period/Location fields populated", "Link mass event / Unlink mass event / Confirm link actions present"]
+        "visualCues": [
+          "Popover header shows event id and name",
+          "Type/Code/Period/Location fields populated",
+          "Link mass event / Unlink mass event / Confirm link actions present"
+        ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

@@ -1,13 +1,24 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, Observable, catchError, firstValueFrom, forkJoin, map, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  firstValueFrom,
+  forkJoin,
+  of,
+  switchMap
+} from 'rxjs';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockImpactedPoliciesService } from '../../../../core/mock/services/mock-impacted-policies.service';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
 import { ImpactedPolicy, AddedPolicyEntities } from '../../../../core/models/impacted-policy.model';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
-import { AddPoliciesModalComponent, AddPoliciesModalData } from '../add-policies-modal/add-policies-modal.component';
+import {
+  AddPoliciesModalComponent,
+  AddPoliciesModalData
+} from '../add-policies-modal/add-policies-modal.component';
 
 /**
  * "Other policies may be impacted" — the banner on Entities & damages.
@@ -22,7 +33,7 @@ import { AddPoliciesModalComponent, AddPoliciesModalData } from '../add-policies
   standalone: true,
   imports: [CommonModule, NxMessageModule],
   templateUrl: './impacted-policies-banner.component.html',
-  styleUrl: './impacted-policies-banner.component.scss',
+  styleUrl: './impacted-policies-banner.component.scss'
 })
 export class ImpactedPoliciesBannerComponent implements OnInit {
   @Input({ required: true }) policyNumber!: string;
@@ -32,8 +43,8 @@ export class ImpactedPoliciesBannerComponent implements OnInit {
 
   private readonly impactedSvc = inject(MockImpactedPoliciesService);
   private readonly entitiesSvc = inject(MockEntitiesDamagesService);
-  private readonly dialog      = inject(NxDialogService);
-  private readonly toast       = inject(ToastService);
+  private readonly dialog = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
 
   /** Handler dismissed it for this visit — deliberately not persisted. */
   readonly dismissed = signal(false);
@@ -44,10 +55,10 @@ export class ImpactedPoliciesBannerComponent implements OnInit {
   ngOnInit(): void {
     this.policies$ = this.refresh$.pipe(
       switchMap(() =>
-        this.impactedSvc.getForPolicy(this.policyNumber).pipe(
-          catchError(() => of([] as ImpactedPolicy[])),
-        ),
-      ),
+        this.impactedSvc
+          .getForPolicy(this.policyNumber)
+          .pipe(catchError(() => of([] as ImpactedPolicy[])))
+      )
     );
   }
 
@@ -55,7 +66,7 @@ export class ImpactedPoliciesBannerComponent implements OnInit {
     const data: AddPoliciesModalData = { basePolicyNumber: this.policyNumber, policies };
     const ref = this.dialog.open<AddPoliciesModalComponent, AddPoliciesModalData, string[]>(
       AddPoliciesModalComponent,
-      { data, width: '900px', maxWidth: '95vw' },
+      { data, width: '900px', maxWidth: '95vw' }
     );
     const chosen = await firstValueFrom(ref.afterClosed());
     if (chosen?.length) await this.addPolicies(chosen);
@@ -65,7 +76,9 @@ export class ImpactedPoliciesBannerComponent implements OnInit {
     let counts: number[];
     try {
       counts = await firstValueFrom(
-        forkJoin(policyNumbers.map(p => this.entitiesSvc.addEntitiesFromPolicy(this.policyNumber, p))),
+        forkJoin(
+          policyNumbers.map(p => this.entitiesSvc.addEntitiesFromPolicy(this.policyNumber, p))
+        )
       );
     } catch {
       this.toast.error('Failed to add policies', 'Please try again.');
@@ -82,7 +95,7 @@ export class ImpactedPoliciesBannerComponent implements OnInit {
     const policyLabel = policyNumbers.length === 1 ? 'policy' : 'policies';
     this.toast.success(
       `${policyNumbers.length} ${policyLabel} added`,
-      `${entityCount} entities are now available for selection.`,
+      `${entityCount} entities are now available for selection.`
     );
     this.policiesAdded.emit({ policyNumbers, entityCount });
   }

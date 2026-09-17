@@ -13,7 +13,7 @@ describe('Dashboard', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [Dashboard],
-      providers: [provideRouter([])],
+      providers: [provideRouter([])]
     });
     component = TestBed.createComponent(Dashboard).componentInstance;
   });
@@ -34,8 +34,7 @@ describe('Dashboard', () => {
   describe('isDormant / daysSinceUpdate (30-day threshold)', () => {
     let widget: ClaimsPortfolioWidgetComponent;
 
-    const iso = (daysAgo: number) =>
-      new Date(Date.now() - daysAgo * 86400000).toISOString();
+    const iso = (daysAgo: number) => new Date(Date.now() - daysAgo * 86400000).toISOString();
 
     beforeEach(() => {
       widget = TestBed.createComponent(ClaimsPortfolioWidgetComponent).componentInstance;

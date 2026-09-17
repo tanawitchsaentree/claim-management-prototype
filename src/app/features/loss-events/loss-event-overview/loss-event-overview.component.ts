@@ -8,7 +8,10 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxTabsModule } from '@allianz/ng-aquila/tabs';
-import { PageShellComponent, BreadcrumbItem } from '../../../shared/components/page-shell/page-shell.component';
+import {
+  PageShellComponent,
+  BreadcrumbItem
+} from '../../../shared/components/page-shell/page-shell.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
@@ -45,33 +48,32 @@ import { LossEventGeneralInfoComponent } from '../loss-event-general-info/loss-e
     EmptyStateComponent,
     StatusChipComponent,
     ClaimPreviewDirective,
-    LossEventGeneralInfoComponent,
+    LossEventGeneralInfoComponent
   ],
   templateUrl: './loss-event-overview.component.html',
-  styleUrl: './loss-event-overview.component.scss',
+  styleUrl: './loss-event-overview.component.scss'
 })
 export class LossEventOverviewComponent {
-  private readonly route  = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly lossEventSvc = inject(MockLossEventService);
 
-  readonly lossEventId = toSignal(
-    this.route.paramMap.pipe(map(p => p.get('id') ?? '—')),
-    { initialValue: '—' },
-  );
+  readonly lossEventId = toSignal(this.route.paramMap.pipe(map(p => p.get('id') ?? '—')), {
+    initialValue: '—'
+  });
 
   /** undefined = still loading, null = no such loss event. */
   readonly overview = toSignal(
     this.route.paramMap.pipe(switchMap(p => this.lossEventSvc.getOverview(p.get('id') ?? ''))),
-    { initialValue: undefined },
+    { initialValue: undefined }
   );
 
-  readonly loading  = computed(() => this.overview() === undefined);
+  readonly loading = computed(() => this.overview() === undefined);
   readonly notFound = computed(() => this.overview() === null);
 
   readonly breadcrumb: BreadcrumbItem[] = [
     { label: 'Loss events', route: '/loss-events' },
-    { label: 'Loss event overview' },
+    { label: 'Loss event overview' }
   ];
 
   openClaim(claimId: string): void {

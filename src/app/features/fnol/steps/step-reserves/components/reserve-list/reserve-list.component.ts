@@ -1,11 +1,25 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+  signal
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { MockReservesService } from '../../../../../../core/mock/services/mock-reserves.service';
-import { Reserve, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS } from '../../../../../../core/models/reserve.model';
+import {
+  Reserve,
+  ReservesPolicyData,
+  ReserveType,
+  RESERVE_TYPE_LABELS
+} from '../../../../../../core/models/reserve.model';
 
 export type ReserveListViewMode = 'one' | 'all-flat' | 'all-grouped';
 
@@ -14,7 +28,7 @@ export type ReserveListViewMode = 'one' | 'all-flat' | 'all-grouped';
   standalone: true,
   imports: [DecimalPipe, NxIconModule, NxButtonModule, NxTableModule, NxContextMenuModule],
   templateUrl: './reserve-list.component.html',
-  styleUrl: './reserve-list.component.scss',
+  styleUrl: './reserve-list.component.scss'
 })
 export class ReserveListComponent implements OnChanges {
   @Input({ required: true }) rows: Reserve[] = [];
@@ -33,12 +47,12 @@ export class ReserveListComponent implements OnChanges {
   readonly typeLabels = RESERVE_TYPE_LABELS;
   readonly subTypes: ReserveType[] = ['indemnity', 'expenses', 'recoveries'];
 
-  readonly viewMode     = signal<ReserveListViewMode>('one');
+  readonly viewMode = signal<ReserveListViewMode>('one');
   readonly expandedRows = signal<Set<string>>(new Set());
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedReserveId']) {
-      this.expandedRows.set(new Set());   // collapse all — selection just changed
+      this.expandedRows.set(new Set()); // collapse all — selection just changed
     }
   }
 
@@ -54,12 +68,12 @@ export class ReserveListComponent implements OnChanges {
   }
 
   // Grouped rows for the all-grouped mode.
-  groupedRows(): Array<{ policyNumber: string; label: string; rows: Reserve[] }> {
+  groupedRows(): { policyNumber: string; label: string; rows: Reserve[] }[] {
     if (!(this.isSqueezed && this.viewMode() === 'all-grouped')) return [];
     return this.allPolicies.map(p => ({
       policyNumber: p.policyNumber,
       label: this.policyLabel(p.policyNumber),
-      rows: p.reserves,
+      rows: p.reserves
     }));
   }
 
@@ -85,5 +99,7 @@ export class ReserveListComponent implements OnChanges {
     return type ? RESERVE_TYPE_LABELS[type] : '—';
   }
 
-  trackByReserve(_: number, r: Reserve): string { return r.reserveId; }
+  trackByReserve(_: number, r: Reserve): string {
+    return r.reserveId;
+  }
 }

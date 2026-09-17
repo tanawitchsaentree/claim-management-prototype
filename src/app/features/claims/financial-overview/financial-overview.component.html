@@ -1,25 +1,34 @@
+<app-blocker-return-banner></app-blocker-return-banner>
+
 <!-- ── Page header ─────────────────────────────────────────────────────── -->
 <app-page-header [title]="viewTitle()">
   <div actions class="fo-level-toggle">
     <button
       [nxButton]="level() === 'claim' ? 'primary small' : 'secondary small'"
       type="button"
-      (click)="setLevel('claim')">Claim level</button>
+      (click)="setLevel('claim')"
+    >
+      Claim level
+    </button>
     <button
       [nxButton]="level() === 'section' ? 'primary small' : 'secondary small'"
       type="button"
-      (click)="setLevel('section')">Section level</button>
+      (click)="setLevel('section')"
+    >
+      Section level
+    </button>
   </div>
 </app-page-header>
 
 @if (actionsDisabled()) {
-  <nx-message context="info" class="fo-closed-banner">{{ actionsDisabledReason() }} — Make Payment and Update Reserves are disabled.</nx-message>
+  <nx-message context="info" class="fo-closed-banner"
+    >{{ actionsDisabledReason() }} — Make Payment and Update Reserves are disabled.</nx-message
+  >
 }
 
 @if (loading()) {
   <div class="fo-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
 } @else if (fo(); as fo) {
-
   <!-- Section selector (section level only) -->
   @if (level() === 'section') {
     <div class="fo-section-selector">
@@ -27,7 +36,8 @@
       <nx-dropdown
         class="fo-section-dropdown"
         [value]="sectionId()"
-        (selectionChange)="sectionId.set($event.value)">
+        (selectionChange)="sectionId.set($event.value)"
+      >
         @for (s of sections(); track s.sectionId) {
           <nx-dropdown-item [value]="s.sectionId">{{ s.sectionName }}</nx-dropdown-item>
         }
@@ -37,14 +47,14 @@
 
   <!-- ── FINANCIAL OVERVIEW ─────────────────────────────────────────────── -->
   @if (view() === 'overview') {
-
     @if (level() === 'claim') {
-
       <div class="fo-kpis">
         @for (kpi of kpis; track kpi.label) {
           <div class="fo-kpi-card">
             <span class="fo-kpi-label">{{ kpi.label }}</span>
-            <span class="fo-kpi-value">{{ kpi.value | currency:currency():'symbol':'1.0-0' }}</span>
+            <span class="fo-kpi-value">{{
+              kpi.value | currency: currency() : 'symbol' : '1.0-0'
+            }}</span>
           </div>
         }
       </div>
@@ -63,51 +73,75 @@
           @for (row of fo.details.rows; track row.label) {
             <tr nxTableRow>
               <td nxCell>{{ row.label }}</td>
-              <td nxCell class="fo-cell--right">{{ row.gross    | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ row.grossNet | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ row.net      | currency:currency():'symbol':'1.0-0' }}</td>
+              <td nxCell class="fo-cell--right">
+                {{ row.gross | currency: currency() : 'symbol' : '1.0-0' }}
+              </td>
+              <td nxCell class="fo-cell--right">
+                {{ row.grossNet | currency: currency() : 'symbol' : '1.0-0' }}
+              </td>
+              <td nxCell class="fo-cell--right">
+                {{ row.net | currency: currency() : 'symbol' : '1.0-0' }}
+              </td>
             </tr>
           }
         </tbody>
       </table>
 
-      <h2 class="fo-section-heading fo-section-heading--mt" data-tour-id="fo-transaction-summary">Transaction summary</h2>
+      <h2 class="fo-section-heading fo-section-heading--mt" data-tour-id="fo-transaction-summary">
+        Transaction summary
+      </h2>
       <p class="fo-count">{{ fo.transactions.length }} items</p>
-      <table nxTable class="fo-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Transaction</th>
-            <th nxHeaderCell>Date</th>
-            <th nxHeaderCell class="fo-cell--right">Indemnity payment</th>
-            <th nxHeaderCell class="fo-cell--right">Expense payment</th>
-            <th nxHeaderCell class="fo-cell--right">Total payment</th>
-            <th nxHeaderCell class="fo-cell--right">Ind. reserve</th>
-            <th nxHeaderCell class="fo-cell--right">Exp. reserve</th>
-            <th nxHeaderCell class="fo-cell--right">Total reserve</th>
-            <th nxHeaderCell class="fo-cell--right">Total recoveries received</th>
-            <th nxHeaderCell class="fo-cell--right">Total incurred</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (t of fo.transactions; track t.transactionId) {
+      <div class="fo-table-wrap" tabindex="0">
+        <table nxTable class="fo-table fo-table--transactions">
+          <thead>
             <tr nxTableRow>
-              <td nxCell>{{ t.description }}</td>
-              <td nxCell class="fo-cell--nowrap">{{ t.date }}</td>
-              <td nxCell class="fo-cell--right">{{ t.indemnityPayment | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ t.expensePayment   | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ t.totalPayment     | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ t.indemnityRecovery| currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ t.expenseRecovery  | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ t.totalRecovery    | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right">{{ t.recoveries       | currency:currency():'symbol':'1.0-0' }}</td>
-              <td nxCell class="fo-cell--right fo-cell--incurred">{{ t.totalIncurred | currency:currency():'symbol':'1.0-0' }}</td>
+              <th nxHeaderCell>Transaction</th>
+              <th nxHeaderCell>Date</th>
+              <th nxHeaderCell class="fo-cell--right">Indemnity payment</th>
+              <th nxHeaderCell class="fo-cell--right">Expense payment</th>
+              <th nxHeaderCell class="fo-cell--right">Total payment</th>
+              <th nxHeaderCell class="fo-cell--right">Ind. reserve</th>
+              <th nxHeaderCell class="fo-cell--right">Exp. reserve</th>
+              <th nxHeaderCell class="fo-cell--right">Total reserve</th>
+              <th nxHeaderCell class="fo-cell--right">Total recoveries received</th>
+              <th nxHeaderCell class="fo-cell--right">Total incurred</th>
             </tr>
-          }
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            @for (t of fo.transactions; track t.transactionId) {
+              <tr nxTableRow>
+                <td nxCell class="fo-cell--nowrap">{{ t.description }}</td>
+                <td nxCell class="fo-cell--nowrap">{{ t.date }}</td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.indemnityPayment | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.expensePayment | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.totalPayment | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.indemnityRecovery | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.expenseRecovery | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.totalRecovery | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ t.recoveries | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell class="fo-cell--right fo-cell--incurred">
+                  {{ t.totalIncurred | currency: currency() : 'symbol' : '1.0-0' }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     } @else if (activeSection(); as sec) {
-
       <div class="fo-section-meta">
         <div class="fo-section-meta__item">
           <span class="fo-section-meta__label">Currency</span>
@@ -115,7 +149,7 @@
         </div>
         <div class="fo-section-meta__item">
           <span class="fo-section-meta__label">Exchange rate</span>
-          <span class="fo-section-meta__value">{{ sec.exchangeRate | number:'1.4-4' }}</span>
+          <span class="fo-section-meta__value">{{ sec.exchangeRate | number: '1.4-4' }}</span>
         </div>
         <div class="fo-section-meta__item">
           <span class="fo-section-meta__label">Base currency</span>
@@ -139,11 +173,11 @@
           @for (row of sec.summaryRows; track row.movementType) {
             <tr nxTableRow [class.fo-row--total]="row.movementType === 'Total'">
               <td nxCell>{{ row.movementType }}</td>
-              <td nxCell class="fo-cell--right">{{ row.outstandingReserves | number:'1.2-2' }}</td>
-              <td nxCell class="fo-cell--right">{{ row.completedPayments   | number:'1.2-2' }}</td>
-              <td nxCell class="fo-cell--right">{{ row.pendingPayments     | number:'1.2-2' }}</td>
-              <td nxCell class="fo-cell--right">{{ row.recoveries          | number:'1.2-2' }}</td>
-              <td nxCell class="fo-cell--right">{{ row.incurred            | number:'1.2-2' }}</td>
+              <td nxCell class="fo-cell--right">{{ row.outstandingReserves | number: '1.2-2' }}</td>
+              <td nxCell class="fo-cell--right">{{ row.completedPayments | number: '1.2-2' }}</td>
+              <td nxCell class="fo-cell--right">{{ row.pendingPayments | number: '1.2-2' }}</td>
+              <td nxCell class="fo-cell--right">{{ row.recoveries | number: '1.2-2' }}</td>
+              <td nxCell class="fo-cell--right">{{ row.incurred | number: '1.2-2' }}</td>
             </tr>
           }
         </tbody>
@@ -153,14 +187,18 @@
 
   <!-- ── PAYMENTS ───────────────────────────────────────────────────────── -->
   @else if (view() === 'payments') {
-
     @let rows = level() === 'claim' ? fo.payments : (activeSection()?.payments ?? []);
 
     <div class="fo-toolbar">
       <p class="fo-count">{{ rows.length }} items</p>
-      <button nxButton="primary small" class="fo-toolbar__action"
-              [disabled]="actionsDisabled()"
-              [nxTooltip]="actionsDisabledReason()">Make Payment</button>
+      <button
+        nxButton="primary small"
+        class="fo-toolbar__action"
+        [disabled]="actionsDisabled()"
+        [nxTooltip]="actionsDisabledReason()"
+      >
+        Make Payment
+      </button>
     </div>
 
     @if (rows.length === 0) {
@@ -190,8 +228,12 @@
               <td nxCell>{{ p.payee }}</td>
               <td nxCell>{{ p.handler }}</td>
               <td nxCell>{{ p.sectionType }}</td>
-              <td nxCell><span class="fo-badge fo-badge--{{ p.status.toLowerCase() }}">{{ p.status }}</span></td>
-              <td nxCell class="fo-cell--right">{{ p.amount | currency:currency():'symbol':'1.0-0' }}</td>
+              <td nxCell>
+                <span class="fo-badge fo-badge--{{ p.status.toLowerCase() }}">{{ p.status }}</span>
+              </td>
+              <td nxCell class="fo-cell--right">
+                {{ p.amount | currency: currency() : 'symbol' : '1.0-0' }}
+              </td>
               <td nxCell>{{ p.currency }}</td>
               <td nxCell class="fo-cell--nowrap">{{ p.paymentDate }}</td>
             </tr>
@@ -203,15 +245,19 @@
 
   <!-- ── RESERVES ───────────────────────────────────────────────────────── -->
   @else if (view() === 'reserves') {
-
     @let rows = level() === 'claim' ? fo.reserves : (activeSection()?.reserves ?? []);
 
     <div class="fo-toolbar">
       <p class="fo-count">{{ rows.length }} items</p>
-      <button nxButton="primary small" class="fo-toolbar__action"
-              [disabled]="actionsDisabled()"
-              [nxTooltip]="actionsDisabledReason()"
-              (click)="onAddReserve()">Update reserves</button>
+      <button
+        nxButton="primary small"
+        class="fo-toolbar__action"
+        [disabled]="actionsDisabled()"
+        [nxTooltip]="actionsDisabledReason()"
+        (click)="onAddReserve()"
+      >
+        Update reserves
+      </button>
     </div>
 
     @if (rows.length === 0) {
@@ -235,7 +281,13 @@
           @for (r of rows; track r.reserveId) {
             <tr nxTableRow>
               <td nxCell class="fo-col--history">
-                <button class="fo-history-btn" type="button" (click)="toggleReserveHistory(r.reserveId)" title="History" aria-label="History">
+                <button
+                  class="fo-history-btn"
+                  type="button"
+                  (click)="toggleReserveHistory(r.reserveId)"
+                  title="History"
+                  aria-label="History"
+                >
                   <nx-icon name="clock" size="s"></nx-icon>
                 </button>
               </td>
@@ -246,8 +298,12 @@
               <td nxCell>{{ r.damagedItem || 'NA' }}</td>
               <td nxCell>{{ r.reserveType }}</td>
               <td nxCell>{{ r.reserveSubType }}</td>
-              <td nxCell><span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
-              <td nxCell class="fo-cell--right">{{ r.reserveValue | currency:currency():'symbol':'1.0-0' }}</td>
+              <td nxCell>
+                <span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span>
+              </td>
+              <td nxCell class="fo-cell--right">
+                {{ r.reserveValue | currency: currency() : 'symbol' : '1.0-0' }}
+              </td>
               <td nxCell>{{ r.currency }}</td>
             </tr>
             @if (isReserveExpanded(r.reserveId) && $any(r).history?.length) {
@@ -268,7 +324,9 @@
                         @for (h of $any(r).history; track h.date) {
                           <tr>
                             <td class="fo-cell--nowrap">{{ h.date }}</td>
-                            <td class="fo-cell--right">{{ h.amount | currency:currency():'symbol':'1.0-0' }}</td>
+                            <td class="fo-cell--right">
+                              {{ h.amount | currency: currency() : 'symbol' : '1.0-0' }}
+                            </td>
                             <td>{{ h.reason }}</td>
                             <td>{{ h.user }}</td>
                           </tr>
@@ -287,7 +345,6 @@
 
   <!-- ── RECOVERY BOOKINGS ──────────────────────────────────────────────── -->
   @else if (view() === 'recovery') {
-
     @let rows = level() === 'claim' ? fo.recoveries : (activeSection()?.recoveries ?? []);
 
     <div class="fo-toolbar">
@@ -320,9 +377,13 @@
               </td>
               <td nxCell>{{ r.recoveryType }}</td>
               <td nxCell>{{ r.section }}</td>
-              <td nxCell class="fo-cell--right">{{ r.amount | currency:currency():'symbol':'1.0-0' }}</td>
+              <td nxCell class="fo-cell--right">
+                {{ r.amount | currency: currency() : 'symbol' : '1.0-0' }}
+              </td>
               <td nxCell>{{ r.currency }}</td>
-              <td nxCell><span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
+              <td nxCell>
+                <span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span>
+              </td>
               <td nxCell>{{ r.party || '—' }}</td>
               <td nxCell class="fo-cell--nowrap">{{ r.bookingDate }}</td>
             </tr>
@@ -331,7 +392,6 @@
       </table>
     }
   }
-
 } @else {
   <app-empty-state message="No financial data available for this claim."></app-empty-state>
 }

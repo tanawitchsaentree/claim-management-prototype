@@ -1,6 +1,8 @@
 @use '../../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .arm-header {
   @include modal.header;
@@ -16,7 +18,9 @@
   color: var(--text-01);
 }
 
-.arm-body { @include modal.body; }
+.arm-body {
+  @include modal.body;
+}
 
 .arm-grid {
   display: grid;
@@ -24,10 +28,18 @@
   gap: 16px 24px;
   align-items: start;
 
-  > * { min-width: 0; }
-  nx-formfield { width: 100%; }
+  > * {
+    min-width: 0;
+  }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
-.arm-full { grid-column: 1 / -1; }
+.arm-full {
+  grid-column: 1 / -1;
+}
 
-.arm-footer { @include modal.footer; }
+.arm-footer {
+  @include modal.footer;
+}

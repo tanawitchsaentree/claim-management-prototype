@@ -47,7 +47,7 @@
     </div>
   </form>
 
-  <ng-container *ngIf="state$ | async as vm">
+  @if (state$ | async; as vm) {
     @if (vm.loading) {
       <div class="esm-loading">
         <nx-spinner size="medium"></nx-spinner>
@@ -57,12 +57,17 @@
     @if (!vm.loading && vm.searched) {
       <div class="esm-results">
         <div class="esm-results-meta">
-          <span class="esm-results-count">Number of locations: <strong>{{ vm.results.length }}</strong></span>
+          <span class="esm-results-count"
+            >Number of locations: <strong>{{ vm.results.length }}</strong></span
+          >
         </div>
         @if (vm.error) {
           <nx-message context="error">Search failed. Please try again.</nx-message>
         } @else if (vm.results.length === 0) {
-          <app-empty-state message="No results found." hint="Try different filters."></app-empty-state>
+          <app-empty-state
+            message="No results found."
+            hint="Try different filters."
+          ></app-empty-state>
         } @else {
           <table nxTable class="esm-table">
             <thead>
@@ -82,7 +87,8 @@
                     <nx-checkbox
                       [checked]="isSelected(result.propertyId)"
                       (checkedChange)="toggleRow(result.propertyId)"
-                      [attr.aria-label]="'Select ' + result.locationName">
+                      [attr.aria-label]="'Select ' + result.locationName"
+                    >
                     </nx-checkbox>
                   </td>
                   <td nxCell class="esm-col-id">{{ result.propertyId }}</td>
@@ -100,9 +106,12 @@
             }
             <div class="esm-footer-actions">
               <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-              <button nxButton="primary small" type="button"
-                      [disabled]="selectedCount === 0"
-                      (click)="onAdd(vm.results)">
+              <button
+                nxButton="primary small"
+                type="button"
+                [disabled]="selectedCount === 0"
+                (click)="onAdd(vm.results)"
+              >
                 Add
               </button>
             </div>
@@ -110,14 +119,14 @@
         }
       </div>
     }
-  </ng-container>
+  }
 
-  <ng-container *ngIf="!(state$ | async)">
+  @if ((state$ | async) === null) {
     <div class="esm-footer esm-footer--no-results">
       <div class="esm-footer-actions">
         <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
         <button nxButton="primary small" type="button" disabled>Add</button>
       </div>
     </div>
-  </ng-container>
+  }
 </div>

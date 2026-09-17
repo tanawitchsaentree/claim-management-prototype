@@ -13,9 +13,17 @@ const TASKS_PAGE_SIZE = 10;
 @Component({
   selector: 'app-pending-tasks-widget',
   standalone: true,
-  imports: [TitleCasePipe, NxIconModule, NxTableModule, NxPaginationModule, StatusChipComponent, AppDatePipe, EmptyStateComponent],
+  imports: [
+    TitleCasePipe,
+    NxIconModule,
+    NxTableModule,
+    NxPaginationModule,
+    StatusChipComponent,
+    AppDatePipe,
+    EmptyStateComponent
+  ],
   templateUrl: './pending-tasks-widget.component.html',
-  styleUrl: './pending-tasks-widget.component.scss',
+  styleUrl: './pending-tasks-widget.component.scss'
 })
 export class PendingTasksWidgetComponent {
   @Input({ required: true }) tasks: Task[] = [];

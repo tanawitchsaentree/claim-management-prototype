@@ -16,7 +16,7 @@ import { ToastService } from '../../../../../shared/components/toast/toast.servi
   standalone: true,
   imports: [NxIconModule, NxSpinnerModule],
   templateUrl: './risk-score-field.component.html',
-  styleUrl: './risk-score-field.component.scss',
+  styleUrl: './risk-score-field.component.scss'
 })
 export class RiskScoreFieldComponent implements OnInit {
   @Input({ required: true }) claimId!: string;
@@ -25,17 +25,17 @@ export class RiskScoreFieldComponent implements OnInit {
   @Input({ required: true }) riskStatus!: string;
 
   private readonly riskSvc = inject(MockRiskService);
-  private readonly router  = inject(Router);
-  private readonly toast   = inject(ToastService);
-  private readonly live    = inject(LiveAnnouncer);
+  private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
+  private readonly live = inject(LiveAnnouncer);
 
   // Seeded from the inputs, then owned locally so a refresh can show the new
   // score without the parent re-fetching the whole overview. MockRiskService
   // keeps its own cache, so the drifted score survives navigation within the
   // session but not a full reload — same in-memory limit as every other mock.
-  readonly score      = signal(0);
-  readonly scoreMax   = signal(5);
-  readonly status     = signal('');
+  readonly score = signal(0);
+  readonly scoreMax = signal(5);
+  readonly status = signal('');
   readonly refreshing = signal(false);
 
   readonly severity = computed<'high' | 'medium' | 'low'>(() => {
@@ -62,7 +62,10 @@ export class RiskScoreFieldComponent implements OnInit {
       }
       this.score.set(updated.riskScore);
       this.status.set(updated.riskStatus);
-      this.live.announce(`Risk score refreshed: ${updated.riskScore} of ${this.scoreMax()}, ${updated.riskStatus}`, 'polite');
+      this.live.announce(
+        `Risk score refreshed: ${updated.riskScore} of ${this.scoreMax()}, ${updated.riskStatus}`,
+        'polite'
+      );
     } catch {
       this.toast.error('Could not refresh risk score', 'Try again in a moment.');
     } finally {

@@ -1,88 +1,87 @@
-<ng-container *ngIf="data$ | async as data">
-<div class="step-page" [class.step-page--squeezed]="isSqueezed()">
-
-  <div class="step-content">
-    <p class="step-breadcrumb">Claim notification</p>
-    <h1 class="step-title">Reserves</h1>
-
-    <!-- Header card: hidden in squeezed mode -->
-    @if (!isSqueezed()) {
-      <div class="reserves-header">
-        <div class="reserves-header__summary">
-          <div class="reserves-header__field">
-            <span class="reserves-header__label">Total reserve</span>
-            <span class="reserves-header__value">{{ data.currency }} {{ data.totalReserve | number:'1.2-2' }}</span>
+@if (data$ | async; as data) {
+  <div class="step-page" [class.step-page--squeezed]="isSqueezed()">
+    <div class="step-content">
+      <p class="step-breadcrumb">Claim notification</p>
+      <h1 class="step-title">Reserves</h1>
+      <!-- Header card: hidden in squeezed mode -->
+      @if (!isSqueezed()) {
+        <div class="reserves-header">
+          <div class="reserves-header__summary">
+            <div class="reserves-header__field">
+              <span class="reserves-header__label">Total reserve</span>
+              <span class="reserves-header__value"
+                >{{ data.currency }} {{ data.totalReserve | number: '1.2-2' }}</span
+              >
+            </div>
+            <div class="reserves-header__field">
+              <span class="reserves-header__label">Allianz share</span>
+              <span class="reserves-header__value">{{ data.allianzShare }}%</span>
+            </div>
+            <div class="reserves-header__field">
+              <span class="reserves-header__label">Allianz reserves</span>
+              <span class="reserves-header__value">
+                {{ data.currency }}
+                {{ (data.totalReserve * data.allianzShare) / 100 | number: '1.2-2' }}
+              </span>
+            </div>
           </div>
-          <div class="reserves-header__field">
-            <span class="reserves-header__label">Allianz share</span>
-            <span class="reserves-header__value">{{ data.allianzShare }}%</span>
-          </div>
-          <div class="reserves-header__field">
-            <span class="reserves-header__label">Allianz reserves</span>
-            <span class="reserves-header__value">
-              {{ data.currency }} {{ (data.totalReserve * data.allianzShare / 100) | number:'1.2-2' }}
-            </span>
-          </div>
+          <app-reserve-narrative-panel
+            [narrative]="narrative"
+            [policyNumber]="policyNumber"
+            [totalReserve]="totalReserve"
+            (narrativeSaved)="onNarrativeSaved()"
+          ></app-reserve-narrative-panel>
         </div>
-
-        <app-reserve-narrative-panel
-          [narrative]="narrative" [policyNumber]="policyNumber" [totalReserve]="totalReserve"
-          (narrativeSaved)="onNarrativeSaved()"></app-reserve-narrative-panel>
-      </div>
-
-      <div class="reserves-toolbar">
-        <button nxButton="secondary small" type="button" (click)="onAddReserve()">
-          <nx-icon name="plus" nxIconPositionStart></nx-icon>
-          Add reserve
-        </button>
-      </div>
-    }
-
-    <!-- Empty state -->
-    @if (reserves.length === 0 && !isSqueezed()) {
-      <app-empty-state message="No reserves yet." hint="Reserves are auto-generated from your selected parties and damages."></app-empty-state>
-    }
-
-    <!-- Two-pane layout: list (left) + detail panel (right) -->
-    @if (reserves.length > 0) {
-      <div class="reserves-layout">
-        <app-reserve-list
-          [rows]="reserves"
-          [policyNumber]="policyNumber"
-          [allPolicies]="allPolicies()"
-          [isSqueezed]="isSqueezed()"
-          [selectedReserveId]="selectedSection()?.reserveId ?? null"
-          (selected)="selectSection($event)"
-          (editRequested)="onEditReserve($event)"
-          (removeRequested)="onRemoveReserve($event)"
-          (viewModeChanged)="onViewModeChanged($event)">
-        </app-reserve-list>
-
-        @if (selectedSection(); as sel) {
-          <app-reserve-detail-panel
-            [reserve]="sel"
-            [isCrossPolicy]="isCrossPolicy()"
+        <div class="reserves-toolbar">
+          <button nxButton="secondary small" type="button" (click)="onAddReserve()">
+            <nx-icon name="plus" nxIconPositionStart></nx-icon>
+            Add reserve
+          </button>
+        </div>
+      }
+      <!-- Empty state -->
+      @if (reserves.length === 0 && !isSqueezed()) {
+        <app-empty-state
+          message="No reserves yet."
+          hint="Reserves are auto-generated from your selected parties and damages."
+        ></app-empty-state>
+      }
+      <!-- Two-pane layout: list (left) + detail panel (right) -->
+      @if (reserves.length > 0) {
+        <div class="reserves-layout">
+          <app-reserve-list
+            [rows]="reserves"
+            [policyNumber]="policyNumber"
             [allPolicies]="allPolicies()"
-            [isDirty]="isDirty()"
-            [savedAgoLabel]="savedAgoLabel()"
-            [initialActiveTab]="pendingActiveTab"
-            (closed)="closeSection()"
-            (saveRequested)="onSaveChanges()"
-            (sectionMutated)="onSectionMutated($event)">
-          </app-reserve-detail-panel>
-        }
-      </div>
-    }
-
-    <!-- Footer navigation — only in full mode -->
-    @if (!isSqueezed()) {
-      <app-wizard-footer
-        (cancel)="onCancel()"
-        (back)="onBack()"
-        (next)="onNext()">
-      </app-wizard-footer>
-    }
+            [isSqueezed]="isSqueezed()"
+            [selectedReserveId]="selectedSection()?.reserveId ?? null"
+            (selected)="selectSection($event)"
+            (editRequested)="onEditReserve($event)"
+            (removeRequested)="onRemoveReserve($event)"
+            (viewModeChanged)="onViewModeChanged($event)"
+          >
+          </app-reserve-list>
+          @if (selectedSection(); as sel) {
+            <app-reserve-detail-panel
+              [reserve]="sel"
+              [isCrossPolicy]="isCrossPolicy()"
+              [allPolicies]="allPolicies()"
+              [isDirty]="isDirty()"
+              [savedAgoLabel]="savedAgoLabel()"
+              [initialActiveTab]="pendingActiveTab"
+              (closed)="closeSection()"
+              (saveRequested)="onSaveChanges()"
+              (sectionMutated)="onSectionMutated($event)"
+            >
+            </app-reserve-detail-panel>
+          }
+        </div>
+      }
+      <!-- Footer navigation — only in full mode -->
+      @if (!isSqueezed()) {
+        <app-wizard-footer (cancelClick)="onCancel()" (back)="onBack()" (next)="onNext()">
+        </app-wizard-footer>
+      }
+    </div>
   </div>
-
-</div>
-</ng-container>
+}

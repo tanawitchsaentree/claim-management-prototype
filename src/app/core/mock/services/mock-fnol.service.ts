@@ -20,7 +20,11 @@ export class MockFnolService extends MockBaseService {
   }
 
   getById(fnolId: string): Observable<Fnol> {
-    return this.findById(this.fnols as unknown as Record<string, unknown>[], 'fnolId', fnolId) as unknown as Observable<Fnol>;
+    return this.findById(
+      this.fnols as unknown as Record<string, unknown>[],
+      'fnolId',
+      fnolId
+    ) as unknown as Observable<Fnol>;
   }
 
   getByClaimId(claimId: string): Observable<Fnol | null> {
@@ -28,7 +32,9 @@ export class MockFnolService extends MockBaseService {
     return this.respond(found);
   }
 
-  submit(payload: Omit<Fnol, 'fnolId' | 'submittedDate' | 'claimId' | 'status'>): Observable<FnolSubmitResult> {
+  submit(
+    payload: Omit<Fnol, 'fnolId' | 'submittedDate' | 'claimId' | 'status'>
+  ): Observable<FnolSubmitResult> {
     const errors = validateFnol(payload as Record<string, unknown>);
 
     if (errors.length > 0) {
@@ -40,7 +46,7 @@ export class MockFnolService extends MockBaseService {
       fnolId: `FNOL-${Date.now()}`,
       submittedDate: new Date().toISOString().split('T')[0],
       claimId: null,
-      status: 'Submitted',
+      status: 'Submitted'
     } as unknown as Fnol;
 
     return this.respond({ fnol: newFnol, validationErrors: [] });

@@ -40,8 +40,8 @@ These are absolute. Full pattern catalog with examples per language: read `refer
    - "This isn't about X. It's about Y."
    - "not only X but also Y" / "less about X than Y" / "more than just X"
    - Thai: "ไม่ใช่แค่...แต่", "ไม่เพียง...แต่ยัง", "ไม่ใช่เรื่อง...แต่เป็นเรื่อง"
-   State the positive claim directly.
-   **The strawman test decides edge cases.** Ask: was the negated half ever a real belief or a real prior state? If nobody believed it, the contrast is filler. Cut it. If it names a real state being overturned ("Design was a want, not a need. That changed."), it carries information. Humans write that one. Allowed, sparingly: at most one true contrast per document, and it must be a claim someone could disagree with.
+     State the positive claim directly.
+     **The strawman test decides edge cases.** Ask: was the negated half ever a real belief or a real prior state? If nobody believed it, the contrast is filler. Cut it. If it names a real state being overturned ("Design was a want, not a need. That changed."), it carries information. Humans write that one. Allowed, sparingly: at most one true contrast per document, and it must be a claim someone could disagree with.
 
 3. **No rule-of-three.** Three parallel adjectives, three parallel phrases, three parallel clauses. Two is fine. Four reads as a real list. Three is the AI signature.
 
@@ -62,6 +62,7 @@ These are absolute. Full pattern catalog with examples per language: read `refer
 ## Anti-overcorrection (read this twice)
 
 Trying too hard to sound human is its own AI tell. Do NOT:
+
 - Fake typos or force slang.
 - Overuse "honestly", "look", "here's the thing" as authenticity props.
 - Get chummy when the context is professional.

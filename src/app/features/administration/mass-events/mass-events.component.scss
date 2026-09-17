@@ -21,7 +21,9 @@
   --breadcrumb-height: 20px;
 }
 
-.me-toast { margin-bottom: 16px; }
+.me-toast {
+  margin-bottom: 16px;
+}
 
 .me-page-wrap {
   padding-top: var(--page-content-top);
@@ -35,7 +37,9 @@
 }
 
 // ─── Form — blessed step-1-search (.row1, .form-row--3col) ─────────────────
-.me-form { margin-bottom: 8px; }
+.me-form {
+  margin-bottom: 8px;
+}
 
 .row1 {
   display: flex;
@@ -68,7 +72,9 @@
   align-items: start;
   width: 80%;
 
-  &--3col { grid-template-columns: 1fr 1fr 1fr; }
+  &--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 // ─── Add row ───────────────────────────────────────────────────────────────
@@ -86,7 +92,9 @@
   font-style: italic;
 }
 
-.me-table { width: 100%; }
+.me-table {
+  width: 100%;
+}
 
 .me-table__action-col {
   width: 64px;

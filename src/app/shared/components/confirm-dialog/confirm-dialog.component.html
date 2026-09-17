@@ -35,9 +35,12 @@
   <button nxButton="secondary small" type="button" (click)="onCancel()">
     {{ data.cancelLabel ?? 'Cancel' }}
   </button>
-  <button nxButton="primary small" type="button"
-          [class.cd-btn--danger]="data.confirmDanger"
-          (click)="onConfirm()">
+  <button
+    nxButton="primary small"
+    type="button"
+    [class.cd-btn--danger]="data.confirmDanger"
+    (click)="onConfirm()"
+  >
     {{ data.confirmLabel ?? 'Confirm' }}
   </button>
 </div>

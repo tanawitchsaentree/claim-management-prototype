@@ -15,19 +15,19 @@ import { readFileSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const __dir   = dirname(fileURLToPath(import.meta.url));
-const root    = resolve(__dir, '..');
+const __dir = dirname(fileURLToPath(import.meta.url));
+const root = resolve(__dir, '..');
 const dataDir = resolve(root, 'src/app/core/mock/data');
 const tickDir = resolve(root, 'public/tickets');
 
 // ── Load base mock data ────────────────────────────────────────────────────────
-const allTasks     = JSON.parse(readFileSync(resolve(dataDir, 'tasks.json'),         'utf8'));
-const allSections  = JSON.parse(readFileSync(resolve(dataDir, 'sections.json'),      'utf8'));
-const allOverviews = JSON.parse(readFileSync(resolve(dataDir, 'claim-overview.json'),'utf8'));
-const allClaims    = JSON.parse(readFileSync(resolve(dataDir, 'claims.json'),        'utf8'));
-const allCwbLocs   = JSON.parse(readFileSync(resolve(dataDir, 'cwb-locations.json'), 'utf8'));
-const allPayments  = JSON.parse(readFileSync(resolve(dataDir, 'payments.json'),      'utf8'));
-const allRecovery  = JSON.parse(readFileSync(resolve(dataDir, 'recovery-cases.json'), 'utf8'));
+const allTasks = JSON.parse(readFileSync(resolve(dataDir, 'tasks.json'), 'utf8'));
+const allSections = JSON.parse(readFileSync(resolve(dataDir, 'sections.json'), 'utf8'));
+const allOverviews = JSON.parse(readFileSync(resolve(dataDir, 'claim-overview.json'), 'utf8'));
+const allClaims = JSON.parse(readFileSync(resolve(dataDir, 'claims.json'), 'utf8'));
+const allCwbLocs = JSON.parse(readFileSync(resolve(dataDir, 'cwb-locations.json'), 'utf8'));
+const allPayments = JSON.parse(readFileSync(resolve(dataDir, 'payments.json'), 'utf8'));
+const allRecovery = JSON.parse(readFileSync(resolve(dataDir, 'recovery-cases.json'), 'utf8'));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -35,12 +35,12 @@ const allRecovery  = JSON.parse(readFileSync(resolve(dataDir, 'recovery-cases.js
 function simulateState(claimId, stateOverrides) {
   const so = stateOverrides ?? {};
 
-  const tasks    = allTasks.filter(t => t.claimId === claimId).map(t => ({ ...t }));
+  const tasks = allTasks.filter(t => t.claimId === claimId).map(t => ({ ...t }));
   const sections = allSections.filter(s => s.claimId === claimId).map(s => ({ ...s }));
   const overview = { ...(allOverviews[claimId] ?? {}) };
-  let   claims   = allClaims.map(c => ({ ...c }));
-  let   cwbLocs  = allCwbLocs.map(c => ({ ...c }));
-  let   payments = allPayments.filter(p => p.claimId === claimId).map(p => ({ ...p }));
+  let claims = allClaims.map(c => ({ ...c }));
+  let cwbLocs = allCwbLocs.map(c => ({ ...c }));
+  let payments = allPayments.filter(p => p.claimId === claimId).map(p => ({ ...p }));
 
   if (so.taskStatuses) {
     for (const t of tasks) {
@@ -87,9 +87,9 @@ function simulateState(claimId, stateOverrides) {
   // (selectedPolicy / selectedClient / path / convertFromSkeletonId all act on
   // FnolStateService at runtime and have no Node-side counterpart.)
 
-  const pendingTasks  = tasks.filter(t => t.status !== 'done').length;
-  const doneTasks     = tasks.filter(t => t.status === 'done').length;
-  const openSections  = sections.filter(s => s.status !== 'Closed').length;
+  const pendingTasks = tasks.filter(t => t.status !== 'done').length;
+  const doneTasks = tasks.filter(t => t.status === 'done').length;
+  const openSections = sections.filter(s => s.status !== 'Closed').length;
   const closedSections = sections.filter(s => s.status === 'Closed').length;
   const overviewStatus = overview.status ?? null;
 
@@ -108,7 +108,7 @@ function simulateState(claimId, stateOverrides) {
     overview.hasActiveLitigation,
     overview.hasActiveProvider,
     overview.hasUnpaidBills,
-    overview.hasIncompleteReports,
+    overview.hasIncompleteReports
   ].filter(Boolean).length;
 
   const pendingPaymentsCount = payments.filter(p => p.status === 'Pending').length;
@@ -116,35 +116,60 @@ function simulateState(claimId, stateOverrides) {
   // BMPCC-17779 (Recoveries call, 2026-09-01) — mirrors the
   // 'recovery-potential-unset' blocker in claim-closure-blocker.builder.ts.
   // An unanswered Yes/No holds closure; answering either way clears it.
-  const recoveryPotentialUnset = overview.recoveryPotential !== 'yes'
-    && overview.recoveryPotential !== 'no';
+  const recoveryPotentialUnset =
+    overview.recoveryPotential !== 'yes' && overview.recoveryPotential !== 'no';
 
   // Phase B — recovery cases live in their own file, so the two claim-level
   // flags are derived here rather than read off the overview. An overviewPatch
   // that sets them by hand still wins: an AC is allowed to describe a claim
   // state the seeded case list does not contain.
-  const recoveryCases     = allRecovery.filter(c => c.claimId === claimId);
-  const openRecoveryCases = recoveryCases.filter(c => c.status !== 'Recovered' && c.status !== 'Written off');
-  const patchedRecovery   = so.overviewPatch?.claimId === claimId ? (so.overviewPatch.patch ?? {}) : {};
-  const hasRecoveryCase   = 'hasRecoveryCase'   in patchedRecovery ? patchedRecovery.hasRecoveryCase
-                                                                   : (overview.hasRecoveryCase ?? recoveryCases.length > 0);
-  const hasActiveRecovery = 'hasActiveRecovery' in patchedRecovery ? patchedRecovery.hasActiveRecovery
-                                                                   : (overview.hasActiveRecovery ?? openRecoveryCases.length > 0);
-  const recoveryState = recoveryPotentialState(overview.recoveryPotential ?? null, hasRecoveryCase, hasActiveRecovery);
+  const recoveryCases = allRecovery.filter(c => c.claimId === claimId);
+  const openRecoveryCases = recoveryCases.filter(
+    c => c.status !== 'Recovered' && c.status !== 'Written off'
+  );
+  const patchedRecovery =
+    so.overviewPatch?.claimId === claimId ? (so.overviewPatch.patch ?? {}) : {};
+  const hasRecoveryCase =
+    'hasRecoveryCase' in patchedRecovery
+      ? patchedRecovery.hasRecoveryCase
+      : (overview.hasRecoveryCase ?? recoveryCases.length > 0);
+  const hasActiveRecovery =
+    'hasActiveRecovery' in patchedRecovery
+      ? patchedRecovery.hasActiveRecovery
+      : (overview.hasActiveRecovery ?? openRecoveryCases.length > 0);
+  const recoveryState = recoveryPotentialState(
+    overview.recoveryPotential ?? null,
+    hasRecoveryCase,
+    hasActiveRecovery
+  );
 
   // Phase B — 'recovery-not-set-up' became a hard blocker once
   // /claims/:id/recoveries stopped being a redirect stub.
-  const canClose = pendingTasks === 0
-    && openSections === 0
-    && extraBlockers === 0
-    && !recoveryPotentialUnset
-    && recoveryState !== 'yes-pending'
-    && overviewStatus !== 'Closed';
+  const canClose =
+    pendingTasks === 0 &&
+    openSections === 0 &&
+    extraBlockers === 0 &&
+    !recoveryPotentialUnset &&
+    recoveryState !== 'yes-pending' &&
+    overviewStatus !== 'Closed';
 
   return {
-    pendingTasks, doneTasks, openSections, closedSections, overviewStatus, canClose,
-    tasks, sections, overview, claims, cwbLocs, payments, pendingPaymentsCount,
-    recoveryState, recoveryCasesCount: recoveryCases.length, openRecoveryCasesCount: openRecoveryCases.length,
+    pendingTasks,
+    doneTasks,
+    openSections,
+    closedSections,
+    overviewStatus,
+    canClose,
+    tasks,
+    sections,
+    overview,
+    claims,
+    cwbLocs,
+    payments,
+    pendingPaymentsCount,
+    recoveryState,
+    recoveryCasesCount: recoveryCases.length,
+    openRecoveryCasesCount: openRecoveryCases.length
   };
 }
 
@@ -154,7 +179,7 @@ function simulateState(claimId, stateOverrides) {
  * from the auditor that checks them.
  */
 function recoveryPotentialState(recoveryPotential, hasRecoveryCase, hasActiveRecovery) {
-  if (recoveryPotential === 'no')  return 'no';
+  if (recoveryPotential === 'no') return 'no';
   if (recoveryPotential !== 'yes') return 'unanswered';
   if (!hasRecoveryCase && !hasActiveRecovery) return 'yes-pending';
   return hasActiveRecovery ? 'yes-active' : 'yes-settled';
@@ -187,7 +212,6 @@ function assertOutcome(acId, actual, expectedOutcome) {
 
   for (const [key, expected] of Object.entries(expectedOutcome)) {
     switch (key) {
-
       case 'pendingTasks':
         if (actual.pendingTasks !== expected)
           failures.push(`pendingTasks: expected ${expected}, got ${actual.pendingTasks}`);
@@ -221,7 +245,9 @@ function assertOutcome(acId, actual, expectedOutcome) {
       case 'buttonVisible': {
         const visible = actual.overviewStatus !== 'Closed' && actual.overviewStatus !== 'Reopened';
         if (visible !== expected)
-          failures.push(`buttonVisible: expected ${expected}, got ${visible} (status="${actual.overviewStatus}")`);
+          failures.push(
+            `buttonVisible: expected ${expected}, got ${visible} (status="${actual.overviewStatus}")`
+          );
         break;
       }
 
@@ -244,10 +270,11 @@ function assertOutcome(acId, actual, expectedOutcome) {
       case 'taskStatuses': {
         for (const [taskId, expectedStatus] of Object.entries(expected)) {
           const task = actual.tasks.find(t => t.taskId === taskId);
-          if (!task)
-            failures.push(`taskStatuses[${taskId}]: task not found in claimId scope`);
+          if (!task) failures.push(`taskStatuses[${taskId}]: task not found in claimId scope`);
           else if (task.status !== expectedStatus)
-            failures.push(`taskStatuses[${taskId}]: expected "${expectedStatus}", got "${task.status}"`);
+            failures.push(
+              `taskStatuses[${taskId}]: expected "${expectedStatus}", got "${task.status}"`
+            );
         }
         break;
       }
@@ -255,10 +282,11 @@ function assertOutcome(acId, actual, expectedOutcome) {
       case 'sectionStatuses': {
         for (const [secId, expectedStatus] of Object.entries(expected)) {
           const sec = actual.sections.find(s => s.id === secId);
-          if (!sec)
-            failures.push(`sectionStatuses[${secId}]: section not found in claimId scope`);
+          if (!sec) failures.push(`sectionStatuses[${secId}]: section not found in claimId scope`);
           else if (sec.status !== expectedStatus)
-            failures.push(`sectionStatuses[${secId}]: expected "${expectedStatus}", got "${sec.status}"`);
+            failures.push(
+              `sectionStatuses[${secId}]: expected "${expectedStatus}", got "${sec.status}"`
+            );
         }
         break;
       }
@@ -271,7 +299,9 @@ function assertOutcome(acId, actual, expectedOutcome) {
           } else {
             for (const [field, expectedVal] of Object.entries(expectedBlockers)) {
               if (sec[field] !== expectedVal)
-                failures.push(`sectionBlockers[${secId}].${field}: expected ${expectedVal}, got ${sec[field]}`);
+                failures.push(
+                  `sectionBlockers[${secId}].${field}: expected ${expectedVal}, got ${sec[field]}`
+                );
             }
           }
         }
@@ -281,31 +311,35 @@ function assertOutcome(acId, actual, expectedOutcome) {
       case 'paymentStatuses': {
         for (const [payId, expectedStatus] of Object.entries(expected)) {
           const pay = actual.payments.find(p => p.paymentId === payId);
-          if (!pay)
-            failures.push(`paymentStatuses[${payId}]: payment not found in claimId scope`);
+          if (!pay) failures.push(`paymentStatuses[${payId}]: payment not found in claimId scope`);
           else if (pay.status !== expectedStatus)
-            failures.push(`paymentStatuses[${payId}]: expected "${expectedStatus}", got "${pay.status}"`);
+            failures.push(
+              `paymentStatuses[${payId}]: expected "${expectedStatus}", got "${pay.status}"`
+            );
         }
         break;
       }
 
       case 'pendingPaymentsCount': {
         if (actual.pendingPaymentsCount !== expected)
-          failures.push(`pendingPaymentsCount: expected ${expected}, got ${actual.pendingPaymentsCount}`);
+          failures.push(
+            `pendingPaymentsCount: expected ${expected}, got ${actual.pendingPaymentsCount}`
+          );
         break;
       }
 
       case 'closedByName': {
         const cb = actual.overview.closedBy;
         const name = typeof cb === 'object' ? cb?.name : cb;
-        if (name !== expected)
-          failures.push(`closedByName: expected "${expected}", got "${name}"`);
+        if (name !== expected) failures.push(`closedByName: expected "${expected}", got "${name}"`);
         break;
       }
 
       case 'closureReason': {
         if (actual.overview.closureReason !== expected)
-          failures.push(`closureReason: expected "${expected}", got "${actual.overview.closureReason}"`);
+          failures.push(
+            `closureReason: expected "${expected}", got "${actual.overview.closureReason}"`
+          );
         break;
       }
 
@@ -315,7 +349,9 @@ function assertOutcome(acId, actual, expectedOutcome) {
       case 'recoveryPotential': {
         const rp = actual.overview.recoveryPotential ?? null;
         if (rp !== expected)
-          failures.push(`recoveryPotential: expected ${JSON.stringify(expected)}, got ${JSON.stringify(rp)}`);
+          failures.push(
+            `recoveryPotential: expected ${JSON.stringify(expected)}, got ${JSON.stringify(rp)}`
+          );
         break;
       }
 
@@ -324,7 +360,9 @@ function assertOutcome(acId, actual, expectedOutcome) {
       // simulateState via the mirror of recoveryPotentialState().
       case 'recoveryPotentialState': {
         if (actual.recoveryState !== expected)
-          failures.push(`recoveryPotentialState: expected "${expected}", got "${actual.recoveryState}"`);
+          failures.push(
+            `recoveryPotentialState: expected "${expected}", got "${actual.recoveryState}"`
+          );
         break;
       }
 
@@ -332,13 +370,17 @@ function assertOutcome(acId, actual, expectedOutcome) {
       // for this claim, and how many of them are still running.
       case 'recoveryCasesCount': {
         if (actual.recoveryCasesCount !== expected)
-          failures.push(`recoveryCasesCount: expected ${expected}, got ${actual.recoveryCasesCount}`);
+          failures.push(
+            `recoveryCasesCount: expected ${expected}, got ${actual.recoveryCasesCount}`
+          );
         break;
       }
 
       case 'openRecoveryCasesCount': {
         if (actual.openRecoveryCasesCount !== expected)
-          failures.push(`openRecoveryCasesCount: expected ${expected}, got ${actual.openRecoveryCasesCount}`);
+          failures.push(
+            `openRecoveryCasesCount: expected ${expected}, got ${actual.openRecoveryCasesCount}`
+          );
         break;
       }
 
@@ -357,11 +399,13 @@ function assertOutcome(acId, actual, expectedOutcome) {
         // Count distinct claims matching {policyNumber, lossDate} from any seeded claim that has both fields.
         // Caller form: { duplicateClaimsCount: { policyNumber, lossDate, expected } }
         const { policyNumber, lossDate, expected: count } = expected ?? {};
-        const matches = actual.claims.filter(c =>
-          c.policyNumber === policyNumber && c.lossDate === lossDate
+        const matches = actual.claims.filter(
+          c => c.policyNumber === policyNumber && c.lossDate === lossDate
         );
         if (matches.length !== count)
-          failures.push(`duplicateClaimsCount: expected ${count} for policy=${policyNumber} date=${lossDate}, got ${matches.length}`);
+          failures.push(
+            `duplicateClaimsCount: expected ${count} for policy=${policyNumber} date=${lossDate}, got ${matches.length}`
+          );
         break;
       }
 
@@ -385,7 +429,9 @@ function assertOutcome(acId, actual, expectedOutcome) {
           policyNumber ? c.policyNumber === policyNumber : true
         );
         if (matches.length !== count)
-          failures.push(`cwbLocationsCount: expected ${count} for policy=${policyNumber}, got ${matches.length}`);
+          failures.push(
+            `cwbLocationsCount: expected ${count} for policy=${policyNumber}, got ${matches.length}`
+          );
         break;
       }
 
@@ -405,13 +451,13 @@ if (ticketFiles.length === 0) {
   process.exit(0);
 }
 
-let totalACs     = 0;
-let totalFailed  = 0;
+let totalACs = 0;
+let totalFailed = 0;
 let totalSkipped = 0;
 
 for (const file of ticketFiles.sort()) {
-  const ticket   = JSON.parse(readFileSync(resolve(tickDir, file), 'utf8'));
-  const acs      = ticket.acceptanceCriteria ?? [];
+  const ticket = JSON.parse(readFileSync(resolve(tickDir, file), 'utf8'));
+  const acs = ticket.acceptanceCriteria ?? [];
 
   console.log(`\n📋  ${ticket.ticketId} — ${ticket.title}  (${file})`);
   console.log(`    target: ${ticket.targetClaim}  |  ACs: ${acs.length}`);
@@ -427,8 +473,8 @@ for (const file of ticketFiles.sort()) {
 
     // An AC may name its own claim when the ticket's target cannot hold the
     // state it describes — see TicketAC.targetClaim in dev-ticket.model.ts.
-    const claimId  = ac.targetClaim ?? ticket.targetClaim;
-    const actual   = simulateState(claimId, ac.setup?.stateOverrides);
+    const claimId = ac.targetClaim ?? ticket.targetClaim;
+    const actual = simulateState(claimId, ac.setup?.stateOverrides);
     const failures = assertOutcome(ac.id, actual, ac.expectedOutcome);
 
     if (failures.length === 0) {
@@ -445,7 +491,9 @@ for (const file of ticketFiles.sort()) {
 }
 
 console.log(`\n${'─'.repeat(60)}`);
-console.log(`Total: ${totalACs} ACs | ✅ ${totalACs - totalFailed - totalSkipped} passed | ❌ ${totalFailed} failed | ⚪ ${totalSkipped} skipped`);
+console.log(
+  `Total: ${totalACs} ACs | ✅ ${totalACs - totalFailed - totalSkipped} passed | ❌ ${totalFailed} failed | ⚪ ${totalSkipped} skipped`
+);
 
 if (totalFailed > 0) {
   console.log('\naudit:ac-logic FAILED — fix the AC logic mismatches above.\n');

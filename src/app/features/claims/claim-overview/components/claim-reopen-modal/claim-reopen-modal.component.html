@@ -6,11 +6,11 @@
 </div>
 
 <div class="crm-body" tabindex="0">
-
   <!-- Step 1 — Reason -->
   @if (step() === 1) {
     <p class="crm-intro">
-      Reopen <strong>{{ claim.claimId }}</strong>. Pick a reason and add an optional note for context.
+      Reopen <strong>{{ claim.claimId }}</strong
+      >. Pick a reason and add an optional note for context.
     </p>
 
     <form [formGroup]="form" class="crm-form">
@@ -24,8 +24,12 @@
       </nx-formfield>
 
       <nx-formfield label="Note (optional)">
-        <textarea nxInput formControlName="note" rows="3"
-                  placeholder="Add context for the audit trail…"></textarea>
+        <textarea
+          nxInput
+          formControlName="note"
+          rows="3"
+          placeholder="Add context for the audit trail…"
+        ></textarea>
         <nx-hint nxFormfieldHint>Visible in the claim's activity log.</nx-hint>
       </nx-formfield>
 
@@ -53,11 +57,11 @@
         <nx-spinner size="medium"></nx-spinner>
       </div>
     } @else if (closedSections().length === 0) {
-      <nx-message context="info">No closed sections found. Only the claim will be reopened.</nx-message>
+      <nx-message context="info"
+        >No closed sections found. Only the claim will be reopened.</nx-message
+      >
     } @else if (isSingleSection()) {
-      <p class="crm-intro">
-        The following section will be reopened automatically:
-      </p>
+      <p class="crm-intro">The following section will be reopened automatically:</p>
       <div class="crm-section-list">
         <div class="crm-section-item crm-section-item--auto">
           <div class="crm-section-item__row">
@@ -71,7 +75,8 @@
       </div>
     } @else {
       <p class="crm-intro">
-        Select which closed sections to reopen. Unselected sections remain closed and can be reopened later.
+        Select which closed sections to reopen. Unselected sections remain closed and can be
+        reopened later.
       </p>
       <div class="crm-section-list">
         @for (section of closedSections(); track section.id) {
@@ -79,7 +84,8 @@
             <label class="crm-section-item__row">
               <nx-checkbox
                 [checked]="isSelected(section.id)"
-                (checkedChange)="toggleSection(section.id)">
+                (checkedChange)="toggleSection(section.id)"
+              >
                 {{ section.name }}
               </nx-checkbox>
             </label>
@@ -98,24 +104,27 @@
   @if (saveError()) {
     <nx-message context="error">{{ saveError() }}</nx-message>
   }
-
 </div>
 
 <div class="crm-footer">
   @if (step() === 1) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button"
-            [disabled]="form.invalid"
-            (click)="onContinue()">
+    <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onContinue()">
       Continue
     </button>
   } @else {
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
-    <button nxButton="primary small" type="button"
-            [disabled]="!canContinue() || saving()"
-            (click)="onReopen()">
-      @if (saving()) { <nx-spinner size="small"></nx-spinner> }
-      @else          { Reopen }
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!canContinue() || saving()"
+      (click)="onReopen()"
+    >
+      @if (saving()) {
+        <nx-spinner size="small"></nx-spinner>
+      } @else {
+        Reopen
+      }
     </button>
   }
 </div>

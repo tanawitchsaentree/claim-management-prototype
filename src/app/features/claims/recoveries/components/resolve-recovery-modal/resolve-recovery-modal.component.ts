@@ -24,15 +24,22 @@ type Outcome = 'Recovered' | 'Written off';
   selector: 'app-resolve-recovery-modal',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, NxModalModule,
-    NxFormfieldModule, NxInputModule, NxRadioModule, NxButtonModule, NxIconModule,
+    CommonModule,
+    ReactiveFormsModule,
+    NxModalModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxRadioModule,
+    NxButtonModule,
+    NxIconModule
   ],
   templateUrl: './resolve-recovery-modal.component.html',
-  styleUrl: './resolve-recovery-modal.component.scss',
+  styleUrl: './resolve-recovery-modal.component.scss'
 })
 export class ResolveRecoveryModalComponent {
-  readonly data     = inject<ResolveRecoveryModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<ResolveRecoveryModalComponent, ResolveRecoveryModalResult>>(NxModalRef);
+  readonly data = inject<ResolveRecoveryModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ResolveRecoveryModalComponent, ResolveRecoveryModalResult>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
 
   /**
@@ -42,17 +49,20 @@ export class ResolveRecoveryModalComponent {
    * invalid on the Written off branch, where the field is not even shown.
    */
   readonly form = this.fb.group({
-    outcome:         [null as Outcome | null, Validators.required],
+    outcome: [null as Outcome | null, Validators.required],
     recoveredAmount: [null as number | null, [Validators.required, Validators.min(1)]],
-    outcomeNote:     ['', [Validators.required, Validators.maxLength(300)]],
+    outcomeNote: ['', [Validators.required, Validators.maxLength(300)]]
   });
 
-  private readonly outcomeSig = toSignal(this.form.controls.outcome.valueChanges, { initialValue: null });
+  private readonly outcomeSig = toSignal(this.form.controls.outcome.valueChanges, {
+    initialValue: null
+  });
 
   readonly isRecovered = computed(() => this.outcomeSig() === 'Recovered');
 
   readonly noteLabel = computed(() =>
-    this.isRecovered() ? 'How was it settled?' : 'Why is it being written off?');
+    this.isRecovered() ? 'How was it settled?' : 'Why is it being written off?'
+  );
 
   readonly canConfirm = computed(() => {
     const outcome = this.outcomeSig();
@@ -61,23 +71,28 @@ export class ResolveRecoveryModalComponent {
     return outcome === 'Written off' || this.form.controls.recoveredAmount.valid;
   });
 
-  get recovery(): RecoveryCase { return this.data.recovery; }
+  get recovery(): RecoveryCase {
+    return this.data.recovery;
+  }
 
   onCancel(): void {
     this.modalRef.close(undefined as unknown as ResolveRecoveryModalResult);
   }
 
   onConfirm(): void {
-    if (!this.canConfirm()) { this.form.markAllAsTouched(); return; }
+    if (!this.canConfirm()) {
+      this.form.markAllAsTouched();
+      return;
+    }
     const v = this.form.getRawValue();
     this.modalRef.close({
       resolution: {
-        status:          v.outcome!,
+        status: v.outcome!,
         // Dropped, not just hidden, on the Written off branch — a stale amount
         // typed before switching outcome must not survive into the record.
         recoveredAmount: v.outcome === 'Recovered' ? v.recoveredAmount! : 0,
-        outcomeNote:     (v.outcomeNote ?? '').trim(),
-      },
+        outcomeNote: (v.outcomeNote ?? '').trim()
+      }
     });
   }
 }

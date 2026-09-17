@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -18,27 +18,29 @@ export interface LossAdjusterSurveyModalData {
   selector: 'app-loss-adjuster-survey-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxButtonModule,
     NxFormfieldModule,
     NxInputModule,
-    NxRatingModule,
+    NxRatingModule
   ],
   templateUrl: './loss-adjuster-survey-modal.component.html',
-  styleUrl: './loss-adjuster-survey-modal.component.scss',
+  styleUrl: './loss-adjuster-survey-modal.component.scss'
 })
 export class LossAdjusterSurveyModalComponent {
   readonly data = inject<LossAdjusterSurveyModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<LossAdjusterSurveyModalComponent, LossAdjusterSurvey | null>>(NxModalRef);
+  readonly modalRef =
+    inject<NxModalRef<LossAdjusterSurveyModalComponent, LossAdjusterSurvey | null>>(NxModalRef);
 
   readonly form = new FormGroup({
     rating: new FormControl<number>(0, { nonNullable: true, validators: [Validators.min(1)] }),
-    comments: new FormControl('', { nonNullable: true }),
+    comments: new FormControl('', { nonNullable: true })
   });
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -52,7 +54,7 @@ export class LossAdjusterSurveyModalComponent {
       claimId: this.data.claimId,
       rating: raw.rating,
       comments: raw.comments,
-      status: 'submitted',
+      status: 'submitted'
     });
   }
 }

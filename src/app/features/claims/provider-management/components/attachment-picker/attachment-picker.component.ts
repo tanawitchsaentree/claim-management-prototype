@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { firstValueFrom } from 'rxjs';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
@@ -19,16 +19,16 @@ export interface AttachmentSelection {
 @Component({
   selector: 'app-attachment-picker',
   standalone: true,
-  imports: [CommonModule, NxCheckboxModule, NxButtonModule, NxIconModule],
+  imports: [NxCheckboxModule, NxButtonModule, NxIconModule],
   templateUrl: './attachment-picker.component.html',
-  styleUrl: './attachment-picker.component.scss',
+  styleUrl: './attachment-picker.component.scss'
 })
 export class AttachmentPickerComponent implements OnInit {
   @Input({ required: true }) claimId = '';
   @Output() selectionChange = new EventEmitter<AttachmentSelection>();
 
   private readonly docsSvc = inject(MockClaimDocumentsService);
-  private readonly live    = inject(LiveAnnouncer);
+  private readonly live = inject(LiveAnnouncer);
 
   readonly documents = signal<ClaimDocument[]>([]);
   readonly selectedDocIds = signal<Set<string>>(new Set());
@@ -47,7 +47,8 @@ export class AttachmentPickerComponent implements OnInit {
 
   toggleDoc(id: string): void {
     const s = new Set(this.selectedDocIds());
-    s.has(id) ? s.delete(id) : s.add(id);
+    if (s.has(id)) s.delete(id);
+    else s.add(id);
     this.selectedDocIds.set(s);
     this.emitChange();
   }
@@ -87,7 +88,7 @@ export class AttachmentPickerComponent implements OnInit {
   private emitChange(): void {
     this.selectionChange.emit({
       documentIds: Array.from(this.selectedDocIds()),
-      uploadedFiles: this.uploadedFiles(),
+      uploadedFiles: this.uploadedFiles()
     });
   }
 }

@@ -1,0 +1,99 @@
+.tm-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.tm-toggle {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: 16px;
+  border: 1px solid var(--ui-04);
+  background: var(--ui-01);
+  color: var(--text-01);
+  font-size: var(--paragraph-03-font-size);
+  cursor: pointer;
+
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--text-02);
+    border-color: var(--interactive-primary);
+  }
+}
+
+.tm-status-tabs {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.tm-status-tab {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: 16px;
+  border: 1px solid var(--ui-04);
+  background: var(--ui-01);
+  color: var(--text-01);
+  font-size: var(--paragraph-03-font-size);
+  cursor: pointer;
+
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--text-02);
+    border-color: var(--interactive-primary);
+  }
+}
+
+.tm-loading {
+  color: var(--text-muted);
+}
+
+.tm-table {
+  width: 100%;
+}
+
+.tm-col-desc {
+  max-width: 320px;
+}
+
+.tm-col-action {
+  width: 260px;
+}
+
+.tm-overdue {
+  color: var(--danger);
+}
+
+.tm-overdue-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: var(--space-xs);
+  font-size: var(--paragraph-04-font-size);
+  color: var(--danger);
+}
+
+.tm-status-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.tm-status-btn {
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--ui-04);
+  background: var(--ui-01);
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--ui-02);
+  }
+
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--text-02);
+    border-color: var(--interactive-primary);
+  }
+}

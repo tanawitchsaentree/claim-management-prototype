@@ -26,7 +26,7 @@ export class TrackerViewerService {
   // remembered value has to be there from the first read. Same reason
   // core/services/auth.ts:36 seeds its persona signal inline.
   readonly viewer = signal<TrackerViewer>(
-    localStorage.getItem(VIEWER_KEY) === 'owner' ? 'owner' : 'team',
+    localStorage.getItem(VIEWER_KEY) === 'owner' ? 'owner' : 'team'
   );
 
   readonly isOwner = computed(() => this.viewer() === 'owner');
@@ -50,6 +50,6 @@ export class TrackerViewerService {
 async function sha256(text: string): Promise<string> {
   const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buffer))
-    .map((b) => b.toString(16).padStart(2, '0'))
+    .map(b => b.toString(16).padStart(2, '0'))
     .join('');
 }

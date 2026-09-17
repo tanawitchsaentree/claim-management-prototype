@@ -7,5 +7,5 @@ export const environment: Environment = {
   buildTag: 'exploration',
   supabaseUrl: 'https://ryhnvtzlybdbqlwzcqrw.supabase.co',
   supabaseAnonKey: 'sb_publishable_liEqGoFw_RNdnmpdXQgg-w_UuTrHGP7',
-  devBannerMode: 'full',
+  devBannerMode: 'full'
 };

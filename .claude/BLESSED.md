@@ -21,6 +21,7 @@ When user confirms a new feature works → ask: "Should I add `[file]` to BLESSE
 ### Reusable header pattern (eyebrow + title + caption + form)
 
 From step-1-search:
+
 ```html
 <p class="step-breadcrumb">Claim notification</p>
 <h1 class="step-title">Client and policy search</h1>
@@ -31,10 +32,30 @@ From step-1-search:
 ```
 
 ```scss
-.step-breadcrumb { font-size: 14px; color: var(--text-muted); margin: 0 0 4px; }
-.step-title      { font-size: 28px; font-weight: 400; color: var(--text-01); margin: 0 0 8px; line-height: 1.2; }
-.step-subtitle   { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-muted); margin: 0 0 32px; }
-.subtitle-icon   { flex-shrink: 0; color: var(--interactive-text); }
+.step-breadcrumb {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+.step-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+.step-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 32px;
+}
+.subtitle-icon {
+  flex-shrink: 0;
+  color: var(--interactive-text);
+}
 ```
 
 ### Reusable form pattern (row1 = inputs 80% + actions 20%, form-row--3col below)
@@ -58,14 +79,16 @@ From step-1-search:
   align-items: center;
   gap: 12px;
   white-space: nowrap;
-  padding-bottom: 23px;   /* aligns buttons with formfield baseline */
+  padding-bottom: 23px; /* aligns buttons with formfield baseline */
 }
 .form-row {
   display: grid;
   gap: 24px;
   align-items: start;
   width: 80%;
-  &--3col { grid-template-columns: 1fr 1fr 1fr; }
+  &--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 ```
 
@@ -111,10 +134,18 @@ documented here (see "2026-08-21 decision" below for why).
 ```scss
 @use '../../shared/styles/modal-layout' as modal;
 
-:host       { @include modal.shell;  }
-.xxx-header { @include modal.header; }
-.xxx-body   { @include modal.body;   }
-.xxx-footer { @include modal.footer; }
+:host {
+  @include modal.shell;
+}
+.xxx-header {
+  @include modal.header;
+}
+.xxx-body {
+  @include modal.body;
+}
+.xxx-footer {
+  @include modal.footer;
+}
 ```
 
 ```ts
@@ -220,9 +251,21 @@ wrong or this doc is stale, not both equally valid.
 **Pattern:** `margin-left: auto` on right group pushes it to far right within a flex row.
 
 ```scss
-.toolbar         { display: flex; align-items: center; width: 100%; }
-.toolbar__left   { display: flex; align-items: center; gap: 16px; }
-.toolbar__right  { margin-left: auto; display: flex; align-items: center; }
+.toolbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.toolbar__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
 ```
 
 ```html
@@ -276,30 +319,33 @@ wrong or this doc is stale, not both equally valid.
 </tr>
 
 <!-- sub-item rows: col-check EMPTY, checkbox+text together in col-name -->
-@if (entity.expanded && entity.subItems?.length) {
-  @for (sub of entity.subItems; track sub.itemId) {
-    <tr nxTableRow class="sub-item-row">
-      <td nxCell class="col-check"></td>
-      <td nxCell class="col-name">
-        <div class="sub-item__cell">
-          <nx-checkbox [checked]="sub.selected" (checkedChange)="onSubItemToggle(entity, sub, $event)"></nx-checkbox>
-          <span class="sub-item__name">{{ sub.name }}</span>
-        </div>
-      </td>
-      …
-    </tr>
-  }
-}
+@if (entity.expanded && entity.subItems?.length) { @for (sub of entity.subItems; track sub.itemId) {
+<tr nxTableRow class="sub-item-row">
+  <td nxCell class="col-check"></td>
+  <td nxCell class="col-name">
+    <div class="sub-item__cell">
+      <nx-checkbox
+        [checked]="sub.selected"
+        (checkedChange)="onSubItemToggle(entity, sub, $event)"
+      ></nx-checkbox>
+      <span class="sub-item__name">{{ sub.name }}</span>
+    </div>
+  </td>
+  …
+</tr>
+} }
 ```
 
 ```scss
-.sub-item-row { background: var(--ui-02); }
+.sub-item-row {
+  background: var(--ui-02);
+}
 
 .sub-item__cell {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-left: var(--tree-child-indent);   // = 32px
+  padding-left: var(--tree-child-indent); // = 32px
 }
 
 .sub-item__name {
@@ -324,6 +370,7 @@ Those directives are for a SINGLE row that expands its own content in-place (acc
 **Selector:** `<app-page-shell [breadcrumb]="..." [toast]="..." [align]="..." (toastClose)="..."> ...content... </app-page-shell>`
 
 ### Why this is the default
+
 - Single source of truth for navbar / toolbar / page-wrap / padding-top
 - Breadcrumb auto-aligns with navbar menu (32px), not nested page content (64px)
 - Toast banner pairs with `LiveAnnouncer` (a11y for NVDA/JAWS)
@@ -332,44 +379,40 @@ Those directives are for a SINGLE row that expands its own content in-place (acc
 
 ### Inputs
 
-| Input | Type | Default | Use |
-|---|---|---|---|
-| `breadcrumb` | `BreadcrumbItem[]` | `[]` | Empty = no toolbar; non-empty = toolbar with breadcrumb |
-| `toast` | `string \| null` | `null` | Success banner above content |
-| `align` | `'grid' \| 'navbar'` | `'grid'` | See below |
+| Input        | Type                 | Default  | Use                                                     |
+| ------------ | -------------------- | -------- | ------------------------------------------------------- |
+| `breadcrumb` | `BreadcrumbItem[]`   | `[]`     | Empty = no toolbar; non-empty = toolbar with breadcrumb |
+| `toast`      | `string \| null`     | `null`   | Success banner above content                            |
+| `align`      | `'grid' \| 'navbar'` | `'grid'` | See below                                               |
 
 ### `align` values — pick by content type
 
-| Value | Inner edge | Use for |
-|---|---|---|
-| `'grid'` (default) | ~64px (nxLayout 32 + nxCol gutter 32) | Forms, tables, filter bars, lists with dense data → matches step-1-search blessed |
-| `'navbar'` | 32px (matches `--header-padding`) | **Landing pages, card grids, dashboards** — content that should sit flush with top chrome menu items |
+| Value              | Inner edge                            | Use for                                                                                              |
+| ------------------ | ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `'grid'` (default) | ~64px (nxLayout 32 + nxCol gutter 32) | Forms, tables, filter bars, lists with dense data → matches step-1-search blessed                    |
+| `'navbar'`         | 32px (matches `--header-padding`)     | **Landing pages, card grids, dashboards** — content that should sit flush with top chrome menu items |
 
 **Heuristic:** if the page is "lists of cards/links/widgets that flow horizontally", use `align="navbar"`. If it's a form or data table, use `align="grid"` (default).
 
 ### Patterns — copy these
 
 **Landing / card-grid page (e.g. admin home):**
+
 ```html
 <app-page-shell align="navbar">
   @for (group of groups; track group.title) {
-    <section class="admin-group">
-      <h2 class="admin-group__title">{{ group.title }}</h2>
-      <div class="admin-cards">
-        @for (card of group.cards; track card.key) { … }
-      </div>
-    </section>
+  <section class="admin-group">
+    <h2 class="admin-group__title">{{ group.title }}</h2>
+    <div class="admin-cards">@for (card of group.cards; track card.key) { … }</div>
+  </section>
   }
 </app-page-shell>
 ```
 
 **Form/table page with breadcrumb + toast (e.g. Mass Events):**
-```html
-<app-page-shell
-  [breadcrumb]="breadcrumb"
-  [toast]="toast()"
-  (toastClose)="toast.set(null)">
 
+```html
+<app-page-shell [breadcrumb]="breadcrumb" [toast]="toast()" (toastClose)="toast.set(null)">
   <p class="page-eyebrow">Section</p>
   <h1 class="page-title">Page title</h1>
   <!-- form, table, etc. -->
@@ -392,6 +435,7 @@ readonly breadcrumb: BreadcrumbItem[] = [
 - Anything with a fundamentally different chrome (rare; if you need this, ask)
 
 **Verified in:**
+
 - `administration.component.{ts,html}` — `align="navbar"` landing pattern (2026-05-22)
 - `mass-events.component.{ts,html}` — `align="grid"` form/table pattern (2026-05-22)
 
@@ -410,34 +454,52 @@ readonly breadcrumb: BreadcrumbItem[] = [
 <!-- Grey toolbar with breadcrumb -->
 <div class="me-toolbar">
   <div nxLayout="grid maxwidth" class="me-toolbar__inner">
-    <div nxRow><div nxCol="12">
-      <ol nxBreadcrumb>
-        <li nxBreadcrumbItem><a routerLink="/parent">Parent</a></li>
-        <li nxBreadcrumbItem>Current</li>
-      </ol>
-    </div></div>
+    <div nxRow>
+      <div nxCol="12">
+        <ol nxBreadcrumb>
+          <li nxBreadcrumbItem><a routerLink="/parent">Parent</a></li>
+          <li nxBreadcrumbItem>Current</li>
+        </ol>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Page wrapper owns vertical padding; nxLayout owns horizontal -->
 <div class="me-page-wrap">
   <div nxLayout="grid maxwidth" class="me-page">
-    <div nxRow><div nxCol="12">
-      <p class="me-eyebrow">Parent label</p>
-      <h1 class="me-title">Current page title</h1>
-      <p class="me-caption">Caption text. <nx-icon name="info-circle-o" size="s"></nx-icon></p>
-      <!-- form, table, etc. -->
-    </div></div>
+    <div nxRow>
+      <div nxCol="12">
+        <p class="me-eyebrow">Parent label</p>
+        <h1 class="me-title">Current page title</h1>
+        <p class="me-caption">Caption text. <nx-icon name="info-circle-o" size="s"></nx-icon></p>
+        <!-- form, table, etc. -->
+      </div>
+    </div>
   </div>
 </div>
 ```
 
 ```scss
-.me-toolbar          { background: var(--toolbar-background); border-bottom: 1px solid var(--toolbar-border-bottom-color); }
-.me-toolbar__inner   { display: flex; align-items: center; min-height: var(--toolbar-height); }
+.me-toolbar {
+  background: var(--toolbar-background);
+  border-bottom: 1px solid var(--toolbar-border-bottom-color);
+}
+.me-toolbar__inner {
+  display: flex;
+  align-items: center;
+  min-height: var(--toolbar-height);
+}
 
-.me-page-wrap        { padding-top: var(--page-content-top); padding-bottom: var(--layout-inset-base); }
-.me-page             { display: flex; flex-direction: column; gap: var(--layout-inset-base); }
+.me-page-wrap {
+  padding-top: var(--page-content-top);
+  padding-bottom: var(--layout-inset-base);
+}
+.me-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-inset-base);
+}
 ```
 
 ### Why outer wrap
@@ -457,60 +519,59 @@ readonly breadcrumb: BreadcrumbItem[] = [
 
 ### Spacing scale applied
 
-| Gap | Value | Use |
-|-----|-------|-----|
-| Section-to-section (within card body) | `gap: 24px` on `.co-restrict-body` | Between distinct sub-sections (search+list vs. reason) |
-| Heading → first item (same group) | `margin: 0 0 4px` on `__heading` | Heading belongs to the list below it |
-| Search box → section heading (different groups) | `margin-bottom: 20px` on `.co-restrict-search` | Large gap signals boundary between groups |
-| Entry padding | `padding: 8px 0` on `.co-restrict-entry` | Row breathing room inside list |
-| Empty-state → bottom | `margin: 0 0 12px` on `__empty` | Space before next element when list is empty |
+| Gap                                             | Value                                          | Use                                                    |
+| ----------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------ |
+| Section-to-section (within card body)           | `gap: 24px` on `.co-restrict-body`             | Between distinct sub-sections (search+list vs. reason) |
+| Heading → first item (same group)               | `margin: 0 0 4px` on `__heading`               | Heading belongs to the list below it                   |
+| Search box → section heading (different groups) | `margin-bottom: 20px` on `.co-restrict-search` | Large gap signals boundary between groups              |
+| Entry padding                                   | `padding: 8px 0` on `.co-restrict-entry`       | Row breathing room inside list                         |
+| Empty-state → bottom                            | `margin: 0 0 12px` on `__empty`                | Space before next element when list is empty           |
 
 ### Pattern — copy exactly
 
 ```html
 <!-- Card body: flex column, gap = section-to-section -->
 <div class="co-restrict-body">
-
   <!-- Sub-section 1: search + access list (primary — most frequent) -->
   <div class="co-restrict-access">
-
     <!-- Search ABOVE the list heading (Gestalt: search adds to list → proximity) -->
     <div class="co-restrict-search">
       <div class="co-restrict-search__input-wrap">
-        <input class="co-restrict-search__input" type="text"
-               [formControl]="someSearchControl"
-               placeholder="Search to add item" />
+        <input
+          class="co-restrict-search__input"
+          type="text"
+          [formControl]="someSearchControl"
+          placeholder="Search to add item"
+        />
         <nx-icon name="search" class="co-restrict-search__icon"></nx-icon>
       </div>
       @if (searchResults().length > 0) {
-        <div class="co-restrict-results">
-          @for (item of searchResults(); track item.id) {
-            <button type="button" class="co-restrict-result" (click)="addItem(item)">
-              <span class="co-restrict-result__name">{{ item.name }}</span>
-              <span class="co-restrict-result__role">{{ item.role }}</span>
-            </button>
-          }
-        </div>
+      <div class="co-restrict-results">
+        @for (item of searchResults(); track item.id) {
+        <button type="button" class="co-restrict-result" (click)="addItem(item)">
+          <span class="co-restrict-result__name">{{ item.name }}</span>
+          <span class="co-restrict-result__role">{{ item.role }}</span>
+        </button>
+        }
+      </div>
       }
     </div>
 
     <p class="co-restrict-access__heading">Section heading</p>
 
     @if (list().length === 0) {
-      <p class="co-restrict-access__empty">No items yet.</p>
-    }
-    @for (entry of list(); track entry.id) {
-      <div class="co-restrict-entry">
-        <div class="co-restrict-entry__info">
-          <span class="co-restrict-entry__name">{{ entry.name }}</span>
-          <span class="co-restrict-entry__role">{{ entry.role }}</span>
-        </div>
-        <button nxIconButton="tertiary small" type="button" (click)="removeItem(entry.id)">
-          <nx-icon name="trash-o"></nx-icon>
-        </button>
+    <p class="co-restrict-access__empty">No items yet.</p>
+    } @for (entry of list(); track entry.id) {
+    <div class="co-restrict-entry">
+      <div class="co-restrict-entry__info">
+        <span class="co-restrict-entry__name">{{ entry.name }}</span>
+        <span class="co-restrict-entry__role">{{ entry.role }}</span>
       </div>
+      <button nxIconButton="tertiary small" type="button" (click)="removeItem(entry.id)">
+        <nx-icon name="trash-o"></nx-icon>
+      </button>
+    </div>
     }
-
   </div>
 
   <!-- Sub-section 2: metadata / set-once fields (secondary) -->
@@ -518,12 +579,11 @@ readonly breadcrumb: BreadcrumbItem[] = [
     <nx-formfield label="Field label" class="co-restrict-field">
       <nx-dropdown [formControl]="someControl" placeholder="Select...">
         @for (opt of options; track opt) {
-          <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+        <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
         }
       </nx-dropdown>
     </nx-formfield>
   </div>
-
 </div>
 ```
 
@@ -588,10 +648,16 @@ readonly breadcrumb: BreadcrumbItem[] = [
     background: transparent;
     font-size: var(--paragraph-03-font-size);
     color: var(--text-01);
-    &::placeholder { color: var(--text-muted); }
+    &::placeholder {
+      color: var(--text-muted);
+    }
   }
 
-  &__icon { color: var(--text-muted); font-size: 16px; flex-shrink: 0; }
+  &__icon {
+    color: var(--text-muted);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
 }
 
 // Dropdown results list (position: absolute — parent must be position: relative)
@@ -618,9 +684,18 @@ readonly breadcrumb: BreadcrumbItem[] = [
   background: none;
   border: none;
   cursor: pointer;
-  &:hover { background: var(--hover-secondary); }
-  &__name { font-size: var(--paragraph-03-font-size); color: var(--text-01); font-weight: 500; }
-  &__role { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  &:hover {
+    background: var(--hover-secondary);
+  }
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
 }
 
 .xxx-entry {
@@ -630,9 +705,20 @@ readonly breadcrumb: BreadcrumbItem[] = [
   padding: 8px 0;
   border-bottom: 1px solid var(--ui-03);
 
-  &__info { display: flex; flex-direction: column; gap: 2px; }
-  &__name { font-size: var(--paragraph-03-font-size); color: var(--text-01); font-weight: 500; }
-  &__role { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  &__name {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-01);
+    font-weight: 500;
+  }
+  &__role {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
 }
 
 // Secondary sub-section: metadata fields
@@ -677,6 +763,7 @@ When the task involves any pattern listed above:
 5. Do NOT remove attributes the reference does have
 
 When the pattern is NOT in this list:
+
 1. State which pattern is needed
 2. Confirm no reference exists
 3. Ask user before improvising

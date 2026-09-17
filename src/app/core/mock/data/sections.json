@@ -14,8 +14,24 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "entities": [
-      { "id": "SE-001", "name": "Kaufmann's Warehouse", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" },
-      { "id": "SE-002", "name": "Forklift",             "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Additional information required", "coverageReviewOverridden": true, "coverageReviewNote": "Client requested additional documentation for forklift depreciation." }
+      {
+        "id": "SE-001",
+        "name": "Kaufmann's Warehouse",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Standard Review"
+      },
+      {
+        "id": "SE-002",
+        "name": "Forklift",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Additional information required",
+        "coverageReviewOverridden": true,
+        "coverageReviewNote": "Client requested additional documentation for forklift depreciation."
+      }
     ]
   },
   {
@@ -35,7 +51,16 @@
     "closureDate": "2026-06-22",
     "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
-      { "id": "SE-003", "name": "Sales of Machinery and Equipment", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Enhanced review required", "coverageReviewOverridden": true, "coverageReviewNote": "Complex BI calculation requires senior underwriter sign-off." }
+      {
+        "id": "SE-003",
+        "name": "Sales of Machinery and Equipment",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Enhanced review required",
+        "coverageReviewOverridden": true,
+        "coverageReviewNote": "Complex BI calculation requires senior underwriter sign-off."
+      }
     ]
   },
   {
@@ -73,7 +98,14 @@
     "closureDate": "2024-05-28",
     "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
-      { "id": "SE-007", "name": "Schäfer Main Warehouse", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
+      {
+        "id": "SE-007",
+        "name": "Schäfer Main Warehouse",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Standard Review"
+      }
     ]
   },
   {
@@ -93,7 +125,16 @@
     "closureDate": "2024-05-28",
     "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
-      { "id": "SE-008", "name": "Conveyor System", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Enhanced review required", "coverageReviewOverridden": true, "coverageReviewNote": "Machinery breakdown with disputed maintenance records." }
+      {
+        "id": "SE-008",
+        "name": "Conveyor System",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Enhanced review required",
+        "coverageReviewOverridden": true,
+        "coverageReviewNote": "Machinery breakdown with disputed maintenance records."
+      }
     ]
   },
   {
@@ -113,7 +154,14 @@
     "closureDate": "2024-05-30",
     "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
     "entities": [
-      { "id": "SE-009", "name": "Production Line B", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
+      {
+        "id": "SE-009",
+        "name": "Production Line B",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Standard Review"
+      }
     ]
   },
   {
@@ -133,7 +181,14 @@
     "closureDate": "2026-06-28",
     "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
     "entities": [
-      { "id": "SE-010", "name": "Final Settlement", "instructionStatus": "Completed", "expandable": false, "assignedProvider": "Allianz Expertise Center", "coverageReview": "Standard Review" }
+      {
+        "id": "SE-010",
+        "name": "Final Settlement",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "assignedProvider": "Allianz Expertise Center",
+        "coverageReview": "Standard Review"
+      }
     ]
   },
   {
@@ -154,7 +209,13 @@
     "reopenedBy": { "userId": "usr-002", "name": "Nina Feld" },
     "reopeningReason": "New information received",
     "entities": [
-      { "id": "SE-024-1", "name": "Cargo Container A", "instructionStatus": "In progress", "expandable": false, "coverageReview": "Standard Review" }
+      {
+        "id": "SE-024-1",
+        "name": "Cargo Container A",
+        "instructionStatus": "In progress",
+        "expandable": false,
+        "coverageReview": "Standard Review"
+      }
     ]
   },
   {
@@ -175,7 +236,13 @@
     "closedBy": { "userId": "usr-003", "name": "Werner Baum" },
     "closureReason": "Section Finalised",
     "entities": [
-      { "id": "SE-024-2", "name": "Third-party Liability", "instructionStatus": "Completed", "expandable": false, "coverageReview": "Standard Review" }
+      {
+        "id": "SE-024-2",
+        "name": "Third-party Liability",
+        "instructionStatus": "Completed",
+        "expandable": false,
+        "coverageReview": "Standard Review"
+      }
     ]
   }
 ]

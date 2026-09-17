@@ -1,9 +1,10 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
+import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { firstValueFrom } from 'rxjs';
 import { MockPolicySearchService } from '../../../core/mock/services/mock-policy-search.service';
 import { PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
@@ -20,26 +21,36 @@ export type ConvertSkeletonModalResult = PolicySearchResult | null;
 interface PolicyRow {
   policy: PolicySearchResult;
   eligible: boolean;
-  reason: string | null;   // why ineligible — null when eligible
+  reason: string | null; // why ineligible — null when eligible
 }
 
 @Component({
   selector: 'app-convert-skeleton-modal',
   standalone: true,
-  imports: [CommonModule, NxModalModule, NxButtonModule, NxIconModule, NxSpinnerModule, EmptyStateComponent],
+  imports: [
+    NxModalModule,
+    NxButtonModule,
+    NxIconModule,
+    NxSpinnerModule,
+    NxRadioModule,
+    EmptyStateComponent
+  ],
   templateUrl: './convert-skeleton-modal.component.html',
-  styleUrl: './convert-skeleton-modal.component.scss',
+  styleUrl: './convert-skeleton-modal.component.scss'
 })
 export class ConvertSkeletonModalComponent implements OnInit {
-  readonly data     = inject<ConvertSkeletonModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<ConvertSkeletonModalComponent, ConvertSkeletonModalResult>>(NxModalRef);
+  readonly data = inject<ConvertSkeletonModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ConvertSkeletonModalComponent, ConvertSkeletonModalResult>>(NxModalRef);
   private readonly policySvc = inject(MockPolicySearchService);
 
-  readonly loading      = signal(true);
-  readonly rows         = signal<PolicyRow[]>([]);
+  readonly loading = signal(true);
+  readonly rows = signal<PolicyRow[]>([]);
   readonly selectedNumber = signal<string | null>(null);
 
-  get skeleton(): Claim { return this.data.skeleton; }
+  get skeleton(): Claim {
+    return this.data.skeleton;
+  }
 
   readonly canContinue = computed(() => this.selectedNumber() !== null);
 
@@ -64,18 +75,29 @@ export class ConvertSkeletonModalComponent implements OnInit {
   // skeleton's client (catches exact match + near-matches for demo contrast).
   private isRelevant(policy: PolicySearchResult): boolean {
     const skelTokens = this.tokens(this.skeleton.clientName);
-    const polTokens  = this.tokens(policy.clientName);
+    const polTokens = this.tokens(policy.clientName);
     return polTokens.some(t => t.length > 2 && skelTokens.includes(t));
   }
 
   private tokens(name: string): string[] {
-    return name.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  // Punctuation/whitespace-insensitive: "Kaufmann's Warehouse GmbH" and
+  // "Kaufmann's Warehouse GmbH." must match. A skeleton claim exists precisely
+  // because the handler was unsure which policy applies — an exact string
+  // match on a freehand-typed client name is too brittle for that use case.
+  private normalizeClientName(name: string): string {
+    return name.trim().toLowerCase().replace(/[.,]/g, '').replace(/\s+/g, ' ');
   }
 
   // Eligibility: client match + loss date within coverage period.
   private evaluate(policy: PolicySearchResult): PolicyRow {
-    const clientMatch = policy.clientName.trim().toLowerCase()
-      === this.skeleton.clientName.trim().toLowerCase();
+    const clientMatch = this.normalizeClientName(policy.clientName) === this.normalizeClientName(this.skeleton.clientName);
     const lossDate = this.skeleton.lossDate;
 
     if (!clientMatch) {

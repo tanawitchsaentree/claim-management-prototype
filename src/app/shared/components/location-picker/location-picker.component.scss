@@ -52,3 +52,9 @@
 .lp-add-another {
   align-self: flex-start;
 }
+
+.lp-source-tag {
+  display: block;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}

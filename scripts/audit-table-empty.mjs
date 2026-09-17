@@ -17,7 +17,7 @@ import { resolve, dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
-const root  = resolve(__dir, '..');
+const root = resolve(__dir, '..');
 const srcDir = resolve(root, 'src/app');
 
 const HAS_TABLE = /<table\b|nxTable\b/;
@@ -54,5 +54,7 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log('[audit:table-empty] passed — every table-bearing template has an empty state or an exemption.');
+console.log(
+  '[audit:table-empty] passed — every table-bearing template has an empty state or an exemption.'
+);
 process.exit(0);

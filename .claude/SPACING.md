@@ -7,15 +7,15 @@ Canonical source. If a value isn't here, derive from scale — never invent.
 
 ## Spacing Scale (4px base)
 
-| Token name  | Value | Use for |
-|-------------|-------|---------|
-| `$sp-xs`    | 4px   | Icon-to-text gap within a single inline element |
-| `$sp-sm`    | 8px   | Gap between sibling text/chip elements; tab item padding |
-| `$sp-md`    | 12px  | Row/cell vertical padding; toggle-row bottom; widget footer padding |
-| `$sp-base`  | 16px  | Default element padding; card side content; section gap in panel |
-| `$sp-lg`    | 20px  | Widget card header top padding |
-| `$sp-xl`    | 24px  | Widget card horizontal inset (sides); between widget cards |
-| `$sp-2xl`   | 32px  | Page layout inset (`main-content` padding) — maps to `--layout-inset-base` |
+| Token name | Value | Use for                                                                    |
+| ---------- | ----- | -------------------------------------------------------------------------- |
+| `$sp-xs`   | 4px   | Icon-to-text gap within a single inline element                            |
+| `$sp-sm`   | 8px   | Gap between sibling text/chip elements; tab item padding                   |
+| `$sp-md`   | 12px  | Row/cell vertical padding; toggle-row bottom; widget footer padding        |
+| `$sp-base` | 16px  | Default element padding; card side content; section gap in panel           |
+| `$sp-lg`   | 20px  | Widget card header top padding                                             |
+| `$sp-xl`   | 24px  | Widget card horizontal inset (sides); between widget cards                 |
+| `$sp-2xl`  | 32px  | Page layout inset (`main-content` padding) — maps to `--layout-inset-base` |
 
 Do **not** use values outside this scale in dashboard SCSS. If you think you need 18px, use 16 or 20.
 
@@ -40,6 +40,7 @@ Do **not** use values outside this scale in dashboard SCSS. If you think you nee
 ```
 
 ### Card padding rule
+
 - Top of card → first content: **20px** (not 24 — keeps card compact)
 - Left/right: **24px** everywhere inside a widget card
 - Bottom of header before body content: **14px**
@@ -50,23 +51,28 @@ Do **not** use values outside this scale in dashboard SCSS. If you think you nee
 ## Icon Rules
 
 ### Widget header icon (circular container)
+
 - Container: **32×32px**, `border: 1px solid var(--ui-04)` (light grey, NOT `--text-01`)
 - Icon inside: **`font-size: 16px`**
 - This gives a 50% fill ratio — standard for icons in outlined circles
 
 ### Action card icon (right sidebar CTAs)
+
 - Same: **32×32px**, `border: 1px solid var(--ui-04)`
 - Icon inside: **`font-size: 16px`**
 
 ### Inline status icons (overdue triangle, heads-up severity)
+
 - **`font-size: 12px`** — must not exceed text font-size of host element
 - Use `display: flex; align-items: center; gap: $sp-xs` on the wrapper
 
 ### Sort icons in table headers
+
 - **`font-size: 14px`** — slightly smaller than th text (16px)
 - Color: `var(--text-muted)`
 
 ### Right panel section icons (calendar, news type icons)
+
 - **`font-size: 14px`** — matches the 13px body text around them
 
 ### Icon COLOUR & OPACITY (read every time you place an icon — no exceptions)
@@ -75,7 +81,7 @@ This is the rule you must apply without being told. When you put an icon anywher
 
 - **Colour comes from a token, never a literal.** Use `var(--interactive-primary)`, `var(--text-muted)`, `var(--warning)`, `var(--danger)`, `var(--claim-status-*-color)`, etc. Never a raw hex.
 - **Match the icon to its context's accent.** If a tile/card/row has an accent colour (left border, status, severity), the icon uses the SAME token — not a generic blue. (KPI tiles: open→green, pending→amber, reserves→primary — each icon tinted to match its own accent, not all primary.)
-- **Opacity floor for tinted accent / watermark icons: `0.4`.** The big tinted icon in a KPI tile (and similar accent icons) must stay ≈ 0.4 — verified on-screen. `0.18` was tried and is still too faint, especially for light hues like amber/`--warning` which need more presence than blue. Never go below 0.3 for a coloured accent icon on white. If it must be subtler, lighten the *colour token*, don't crush opacity.
+- **Opacity floor for tinted accent / watermark icons: `0.4`.** The big tinted icon in a KPI tile (and similar accent icons) must stay ≈ 0.4 — verified on-screen. `0.18` was tried and is still too faint, especially for light hues like amber/`--warning` which need more presence than blue. Never go below 0.3 for a coloured accent icon on white. If it must be subtler, lighten the _colour token_, don't crush opacity.
 - **Functional icons are full-opacity.** Any icon that conveys state or is interactive (status, severity, nav, action, sort) = `opacity: 1`. Opacity < 1 is ONLY for `:disabled` states (0.35 is the disabled convention) or explicit decorative watermarks (≥ 0.18).
 - **Contrast:** an icon sitting on a coloured/tinted background must remain distinguishable. If unsure, full opacity + token colour.
 
@@ -85,12 +91,12 @@ This is the rule you must apply without being told. When you put an icon anywher
 
 ## Table Rules
 
-| Element | Padding | Notes |
-|---------|---------|-------|
-| `th`    | `10px 24px` | Slightly more than before — header deserves same weight as data |
-| `td`    | `12px 24px` | Vertical breathing room, consistent density |
-| Row hover | `background: var(--ui-02)` | Already correct |
-| Row divider | `border-bottom: 1px solid var(--ui-03)` | Subtle, already correct |
+| Element     | Padding                                 | Notes                                                           |
+| ----------- | --------------------------------------- | --------------------------------------------------------------- |
+| `th`        | `10px 24px`                             | Slightly more than before — header deserves same weight as data |
+| `td`        | `12px 24px`                             | Vertical breathing room, consistent density                     |
+| Row hover   | `background: var(--ui-02)`              | Already correct                                                 |
+| Row divider | `border-bottom: 1px solid var(--ui-03)` | Subtle, already correct                                         |
 
 Table column padding is always **24px** horizontal — never less, never more, for alignment consistency with card header sides.
 
@@ -150,13 +156,16 @@ Exception: Stats card `.stats-number` stays at 40px (intentional large display n
   <nx-icon name="launch"></nx-icon>
 </span>
 ```
+
 ```scss
 .icon-text {
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
-nx-icon { font-size: 14px; } // or omit size= entirely to inherit
+nx-icon {
+  font-size: 14px;
+} // or omit size= entirely to inherit
 ```
 
 ```html
@@ -169,12 +178,12 @@ Without the wrapper, `nx-icon` sits on the text baseline. `size="s"` = 24px whic
 
 ### nx-icon size values (memorise these)
 
-| Attribute | Resolves to | Use for |
-|---|---|---|
-| `size="s"` | **24px** | Standalone nav/sidebar icons only — never inline with body text |
-| `size="m"` | **48px** | Display icons, illustration-scale |
-| no `size` attribute | **inherits** parent `font-size` | ✅ Inline with text — always use this |
-| `size="auto"` | `font-size: inherit` | Same as no attribute, but explicit |
+| Attribute           | Resolves to                     | Use for                                                         |
+| ------------------- | ------------------------------- | --------------------------------------------------------------- |
+| `size="s"`          | **24px**                        | Standalone nav/sidebar icons only — never inline with body text |
+| `size="m"`          | **48px**                        | Display icons, illustration-scale                               |
+| no `size` attribute | **inherits** parent `font-size` | ✅ Inline with text — always use this                           |
+| `size="auto"`       | `font-size: inherit`            | Same as no attribute, but explicit                              |
 
 **Rule:** If the icon is sitting beside text at reading scale (12–16px), never use `size="s"` or `size="m"`. Either omit size entirely or set `font-size` on the icon via SCSS.
 

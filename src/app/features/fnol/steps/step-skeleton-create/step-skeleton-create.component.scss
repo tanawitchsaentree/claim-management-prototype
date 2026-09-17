@@ -17,7 +17,9 @@
   line-height: 1.2;
 }
 
-.warning-banner { margin-bottom: 16px; }
+.warning-banner {
+  margin-bottom: 16px;
+}
 
 // ─── Section card ──────────────────────────────────────────────────────
 
@@ -51,7 +53,9 @@
   line-height: var(--paragraph-02-line-height);
 }
 
-.li-sub-heading { margin-top: 0; }
+.li-sub-heading {
+  margin-top: 0;
+}
 
 // ─── Grids ─────────────────────────────────────────────────────────────
 
@@ -114,7 +118,9 @@
 
 // ─── Checkbox group ────────────────────────────────────────────────────
 
-.field-group { margin-bottom: 16px; }
+.field-group {
+  margin-bottom: 16px;
+}
 
 .field-label {
   font-size: var(--paragraph-03-font-size);
@@ -167,8 +173,12 @@
   color: var(--text-muted);
 }
 
-.broker-row { margin-top: 4px; }
-.broker-row__table { width: 100%; }
+.broker-row {
+  margin-top: 4px;
+}
+.broker-row__table {
+  width: 100%;
+}
 
 .broker-row__id {
   font-family: monospace;

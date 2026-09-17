@@ -12,8 +12,8 @@ import { LossEventSummary } from './dashboard-extended.model';
  * and duplicating it in the JSON is how the two drift apart.
  */
 export interface LossEventDamagesCaused {
-  type: string;       // e.g. 'Material damage'
-  damages: string[];  // e.g. ['Building', 'Contents']
+  type: string; // e.g. 'Material damage'
+  damages: string[]; // e.g. ['Building', 'Contents']
 }
 
 export interface LossEventGeneralInfo {

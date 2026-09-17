@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
@@ -8,9 +8,9 @@ import { Party, PARTY_ROLE_LABELS, ID_TYPE_LABELS } from '../../../../core/model
 @Component({
   selector: 'app-party-detail-panel',
   standalone: true,
-  imports: [CommonModule, NxButtonModule, NxIconModule, StatusChipComponent],
+  imports: [NxButtonModule, NxIconModule, StatusChipComponent],
   templateUrl: './party-detail-panel.component.html',
-  styleUrl: './party-detail-panel.component.scss',
+  styleUrl: './party-detail-panel.component.scss'
 })
 export class PartyDetailPanelComponent implements OnChanges {
   @Input({ required: true }) party!: Party;
@@ -20,7 +20,9 @@ export class PartyDetailPanelComponent implements OnChanges {
   idTypeLabel = '';
 
   ngOnChanges(): void {
-    this.idTypeLabel = this.party?.idType ? (ID_TYPE_LABELS[this.party.idType] ?? this.party.idType) : '';
+    this.idTypeLabel = this.party?.idType
+      ? (ID_TYPE_LABELS[this.party.idType] ?? this.party.idType)
+      : '';
   }
 
   rolesDisplay(): string {
@@ -32,5 +34,7 @@ export class PartyDetailPanelComponent implements OnChanges {
     if (this.open) this.closePanel.emit();
   }
 
-  onClose(): void { this.closePanel.emit(); }
+  onClose(): void {
+    this.closePanel.emit();
+  }
 }

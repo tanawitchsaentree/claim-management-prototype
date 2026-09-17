@@ -1,5 +1,5 @@
 import { Component, inject, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -13,14 +13,14 @@ import { Claim } from '../../../core/models/claim.model';
 @Component({
   selector: 'app-claim-reference-tabs',
   standalone: true,
-  imports: [CommonModule, FormsModule, NxIconModule],
+  imports: [FormsModule, NxIconModule],
   templateUrl: './claim-reference-tabs.component.html',
-  styleUrl:    './claim-reference-tabs.component.scss',
+  styleUrl: './claim-reference-tabs.component.scss'
 })
 export class ClaimReferenceTabsComponent {
-  readonly svc      = inject(ReferenceViewService);
-  private readonly router    = inject(Router);
-  private readonly claimSvc  = inject(MockClaimService);
+  readonly svc = inject(ReferenceViewService);
+  private readonly router = inject(Router);
+  private readonly claimSvc = inject(MockClaimService);
   private searchGeneration = 0;
 
   // ── URL tracking ──────────────────────────────────────────────────────────
@@ -28,9 +28,9 @@ export class ClaimReferenceTabsComponent {
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(e => (e as NavigationEnd).urlAfterRedirects),
-      startWith(this.router.url),
+      startWith(this.router.url)
     ),
-    { initialValue: this.router.url },
+    { initialValue: this.router.url }
   );
 
   // Active tab: 'primary' or a tab.id — derived purely from current URL
@@ -44,9 +44,9 @@ export class ClaimReferenceTabsComponent {
 
   // ── Add-tab popover ───────────────────────────────────────────────────────
   readonly showAddPopover = signal(false);
-  readonly searchQuery    = signal('');
-  readonly searchResults  = signal<Claim[]>([]);
-  readonly searching      = signal(false);
+  readonly searchQuery = signal('');
+  readonly searchResults = signal<Claim[]>([]);
+  readonly searching = signal(false);
   // Keyboard highlight for the results listbox (aria-activedescendant pattern) —
   // the container stays the single tab stop, arrow keys move this index.
   readonly highlightedIndex = signal(0);
@@ -73,15 +73,13 @@ export class ClaimReferenceTabsComponent {
     }
     this.searching.set(true);
     const generation = ++this.searchGeneration;
-    const primary        = this.svc.primaryClaimId();
+    const primary = this.svc.primaryClaimId();
     const existingRefIds = new Set(this.svc.refTabs().map(t => t.claimId));
 
     const results = await firstValueFrom(this.claimSvc.getAll({ search: query }));
     if (generation !== this.searchGeneration) return; // stale — a newer search superseded this one
     this.searchResults.set(
-      results
-        .filter(c => c.claimId !== primary && !existingRefIds.has(c.claimId))
-        .slice(0, 5)
+      results.filter(c => c.claimId !== primary && !existingRefIds.has(c.claimId)).slice(0, 5)
     );
     this.highlightedIndex.set(0);
     this.searching.set(false);
@@ -127,7 +125,7 @@ export class ClaimReferenceTabsComponent {
     this.svc.closeRefTab(tab.id);
     if (wasOnThisTab) {
       const newActive = this.svc.activeRefTab();
-      const primary   = this.svc.primaryClaimId();
+      const primary = this.svc.primaryClaimId();
       if (newActive) {
         this.router.navigate(['/claims', newActive.claimId, 'overview']);
       } else if (primary) {

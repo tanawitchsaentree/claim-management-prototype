@@ -36,21 +36,21 @@ coverage). The remaining 12 are a backlog item, not a regression.
 
 ## Per-ticket table
 
-| Ticket | done ACs | Reachable via reviewer launcher | Tour authored |
-|---|---|---|---|
-| BMPCC-11006 | 1 | Yes — `fnolStateOverride.convertFromSkeletonId` unchanged | No |
-| BMPCC-11360 | 7 | Yes | No |
-| BMPCC-14434 | 5 | Yes | No |
-| BMPCC-14435 | 3 | Yes | No |
-| BMPCC-14437 | 2 | Yes | No |
-| BMPCC-216 | 6 | Yes — `claimsAppend` unchanged | No |
-| BMPCC-219 | 5 | Yes — `cwbLocationsAppend` unchanged | No |
-| BMPCC-241 | 6 | Yes — `fnolStateOverride.path` unchanged | No |
-| CHAMP-NO-LOSS-LOC | 1 | Yes | No |
-| CHAMP-PRECLOSURE-CHECKLIST | 3 | Yes | No |
-| CHAMP-CLOSE-SECTION | 5 | Yes | No |
-| CHAMP-CLOSURE-001 (`closure.json`) | 7 | Yes | No |
-| **CHAMP-READY-CLOSE** (`ready-to-close.json`) | 2 | Yes | **Yes** — 2 steps: Tasks widget (`co-tasks-widget`), Close Claim button (`co-close-claim-button`) |
+| Ticket                                        | done ACs | Reachable via reviewer launcher                           | Tour authored                                                                                     |
+| --------------------------------------------- | -------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| BMPCC-11006                                   | 1        | Yes — `fnolStateOverride.convertFromSkeletonId` unchanged | No                                                                                                |
+| BMPCC-11360                                   | 7        | Yes                                                       | No                                                                                                |
+| BMPCC-14434                                   | 5        | Yes                                                       | No                                                                                                |
+| BMPCC-14435                                   | 3        | Yes                                                       | No                                                                                                |
+| BMPCC-14437                                   | 2        | Yes                                                       | No                                                                                                |
+| BMPCC-216                                     | 6        | Yes — `claimsAppend` unchanged                            | No                                                                                                |
+| BMPCC-219                                     | 5        | Yes — `cwbLocationsAppend` unchanged                      | No                                                                                                |
+| BMPCC-241                                     | 6        | Yes — `fnolStateOverride.path` unchanged                  | No                                                                                                |
+| CHAMP-NO-LOSS-LOC                             | 1        | Yes                                                       | No                                                                                                |
+| CHAMP-PRECLOSURE-CHECKLIST                    | 3        | Yes                                                       | No                                                                                                |
+| CHAMP-CLOSE-SECTION                           | 5        | Yes                                                       | No                                                                                                |
+| CHAMP-CLOSURE-001 (`closure.json`)            | 7        | Yes                                                       | No                                                                                                |
+| **CHAMP-READY-CLOSE** (`ready-to-close.json`) | 2        | Yes                                                       | **Yes** — 2 steps: Tasks widget (`co-tasks-widget`), Close Claim button (`co-close-claim-button`) |
 
 The four tickets the original audit specifically flagged as
 "unreachable-without-banner" — `ready-to-close.json`, `bmpcc-216.json`,

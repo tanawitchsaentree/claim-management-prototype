@@ -10,7 +10,7 @@ import type {
   Relation,
   SyncLog,
   TicketState,
-  TicketWithDetails,
+  TicketWithDetails
 } from '../models/tracker.model';
 
 export function toPi(row: Record<string, unknown>): Pi {
@@ -21,7 +21,7 @@ export function toPi(row: Record<string, unknown>): Pi {
     endDate: (row['end_date'] as string) ?? null,
     archived: row['archived'] as boolean,
     createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
+    updatedAt: row['updated_at'] as string
   };
 }
 
@@ -34,7 +34,7 @@ export function toEpic(row: Record<string, unknown>): Epic {
     jiraStatus: (row['jira_status'] as string) ?? null,
     archived: row['archived'] as boolean,
     createdAt: row['created_at'] as string,
-    updatedAt: row['updated_at'] as string,
+    updatedAt: row['updated_at'] as string
   };
 }
 
@@ -49,7 +49,7 @@ export function toTicketState(row: Record<string, unknown>): TicketState {
     updatedBy: (row['updated_by'] as string) ?? null,
     updatedAt: row['updated_at'] as string,
     prototypeRoute: (row['prototype_route'] as string) ?? null,
-    prototypeTicketId: (row['prototype_ticket_id'] as string) ?? null,
+    prototypeTicketId: (row['prototype_ticket_id'] as string) ?? null
   };
 }
 
@@ -70,7 +70,7 @@ export function toTicketWithDetails(row: Record<string, unknown>): TicketWithDet
     createdAt: row['created_at'] as string,
     updatedAt: row['updated_at'] as string,
     epic: epicRow ? toEpic(epicRow) : null,
-    state: toTicketState(stateRow),
+    state: toTicketState(stateRow)
   };
 }
 
@@ -81,7 +81,7 @@ export function toNote(row: Record<string, unknown>): Note {
     body: row['body'] as string,
     createdBy: row['created_by'] as string,
     createdAt: row['created_at'] as string,
-    archived: row['archived'] as boolean,
+    archived: row['archived'] as boolean
   };
 }
 
@@ -93,7 +93,7 @@ export function toRelation(row: Record<string, unknown>): Relation {
     relatedJiraKey: (row['related_jira_key'] as string) ?? null,
     relationType: row['relation_type'] as string,
     archived: row['archived'] as boolean,
-    createdAt: row['created_at'] as string,
+    createdAt: row['created_at'] as string
   };
 }
 
@@ -106,6 +106,6 @@ export function toSyncLog(row: Record<string, unknown>): SyncLog {
     epicCount: (row['epic_count'] as number) ?? null,
     status: row['status'] as SyncLog['status'],
     error: (row['error'] as string) ?? null,
-    createdAt: row['created_at'] as string,
+    createdAt: row['created_at'] as string
   };
 }

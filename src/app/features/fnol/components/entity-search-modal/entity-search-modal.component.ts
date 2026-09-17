@@ -18,7 +18,7 @@ import {
   EntitySearchFilters,
   EntityType,
   ENTITY_TYPE_LABELS,
-  COUNTRY_OPTIONS,
+  COUNTRY_OPTIONS
 } from '../../../../core/models/entity-damage.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
@@ -50,14 +50,15 @@ interface SearchState {
     NxCheckboxModule,
     NxSpinnerModule,
     NxMessageModule,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './entity-search-modal.component.html',
-  styleUrl: './entity-search-modal.component.scss',
+  styleUrl: './entity-search-modal.component.scss'
 })
 export class EntitySearchModalComponent implements OnInit {
   readonly data = inject<EntitySearchModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<EntitySearchModalComponent, EntitySearchResult[]>>(NxModalRef);
+  readonly modalRef =
+    inject<NxModalRef<EntitySearchModalComponent, EntitySearchResult[]>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
   private readonly searchService = inject(MockEntitySearchService);
 
@@ -67,11 +68,11 @@ export class EntitySearchModalComponent implements OnInit {
 
   readonly filterForm: FormGroup = this.fb.group({
     locationRuleNumber: [''],
-    country:           [''],
-    city:              [''],
-    zipOrPostalCode:   [''],
-    streetAndNumber:   [''],
-    locationName:      [''],
+    country: [''],
+    city: [''],
+    zipOrPostalCode: [''],
+    streetAndNumber: [''],
+    locationName: ['']
   });
 
   readonly selectedIds = new Set<string>();
@@ -82,11 +83,12 @@ export class EntitySearchModalComponent implements OnInit {
     switchMap(filters =>
       this.searchService.search(this.data.policyNumber, this.data.entityType, filters).pipe(
         map((results): SearchState => ({ results, loading: false, error: false, searched: true })),
-        catchError((): Observable<SearchState> =>
-          of({ results: [], loading: false, error: true, searched: true }),
-        ),
-      ),
-    ),
+        catchError(
+          (): Observable<SearchState> =>
+            of({ results: [], loading: false, error: true, searched: true })
+        )
+      )
+    )
   );
 
   ngOnInit(): void {
@@ -94,8 +96,9 @@ export class EntitySearchModalComponent implements OnInit {
   }
 
   get filledCount(): number {
-    return Object.values(this.filterForm.value as Record<string, string>)
-      .filter(v => v != null && String(v).trim() !== '').length;
+    return Object.values(this.filterForm.value as Record<string, string>).filter(
+      v => v != null && String(v).trim() !== ''
+    ).length;
   }
 
   get canSearch(): boolean {
@@ -111,11 +114,11 @@ export class EntitySearchModalComponent implements OnInit {
   onReset(): void {
     this.filterForm.reset({
       locationRuleNumber: '',
-      country:            '',
-      city:               '',
-      zipOrPostalCode:    '',
-      streetAndNumber:    '',
-      locationName:       '',
+      country: '',
+      city: '',
+      zipOrPostalCode: '',
+      streetAndNumber: '',
+      locationName: ''
     });
     this.selectedIds.clear();
   }

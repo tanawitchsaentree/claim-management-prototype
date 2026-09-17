@@ -1,5 +1,5 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NxAvatarModule } from '@allianz/ng-aquila/avatar';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -9,9 +9,9 @@ import { AuthService } from '../../../core/services/auth';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, NxAvatarModule, NxIconModule, NxButtonModule],
+  imports: [RouterLink, RouterLinkActive, NxAvatarModule, NxIconModule, NxButtonModule],
   templateUrl: './navbar.html',
-  styleUrls: ['./navbar.scss', './navbar-mobile.scss'],
+  styleUrls: ['./navbar.scss', './navbar-mobile.scss']
 })
 export class Navbar {
   auth = inject(AuthService);
@@ -21,7 +21,12 @@ export class Navbar {
 
   get initials(): string {
     const name = this.auth.user()?.name ?? '';
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    return name
+      .split(' ')
+      .map(w => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   }
 
   toggleMobile(): void {

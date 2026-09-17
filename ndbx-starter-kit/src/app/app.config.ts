@@ -21,6 +21,6 @@ export const appConfig: ApplicationConfig = {
 
     // ISO date adapter — makes nx-datepicker return "YYYY-MM-DD" strings.
     // Do NOT import NxIsoDateModule again in individual components.
-    NxIsoDateModule,
-  ],
+    NxIsoDateModule
+  ]
 };

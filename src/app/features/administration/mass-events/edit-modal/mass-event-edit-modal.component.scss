@@ -40,7 +40,8 @@
   width: 16px;
   height: 16px;
 
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -49,8 +50,12 @@
     height: 2px;
     background: currentColor;
   }
-  &::before { transform: rotate(45deg); }
-  &::after  { transform: rotate(-45deg); }
+  &::before {
+    transform: rotate(45deg);
+  }
+  &::after {
+    transform: rotate(-45deg);
+  }
 }
 
 // ─── Header ────────────────────────────────────────────────────────────────
@@ -105,11 +110,19 @@
   // that made every row look far more spread out than the visual design.
   gap: 20px 32px;
 
-  &--4col { grid-template-columns: repeat(4, 1fr); }
-  &--3col { grid-template-columns: repeat(3, 1fr); }
-  &--2col { grid-template-columns: repeat(2, 1fr); }
+  &--4col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  &--3col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  &--2col {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
 // Empty col 4 placeholder so CSS auto-flow keeps the next row aligned to col 1.
@@ -130,11 +143,13 @@
   justify-content: space-between;
 }
 
-
 .me-linked-table {
   width: 100%;
 
-  td[nxCell], th[nxHeaderCell] { padding: var(--space-lg) var(--space-base) !important; }
+  td[nxCell],
+  th[nxHeaderCell] {
+    padding: var(--space-lg) var(--space-base) !important;
+  }
 }
 
 .me-linked-table__action-col {
@@ -149,8 +164,14 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
 
-  &--pending   { background: var(--task-status-pending-bg, #fff8e1); color: var(--task-status-pending-color, #e65100); }
-  &--confirmed { background: var(--claim-status-bound-bg, #e8f5e9);  color: var(--claim-status-bound-color, #2e7d32); }
+  &--pending {
+    background: var(--task-status-pending-bg, #fff8e1);
+    color: var(--task-status-pending-color, #e65100);
+  }
+  &--confirmed {
+    background: var(--claim-status-bound-bg, #e8f5e9);
+    color: var(--claim-status-bound-color, #2e7d32);
+  }
 }
 
 .me-kebab__dots {

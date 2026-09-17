@@ -51,7 +51,9 @@
   padding: var(--space-md) 0;
   border-bottom: 1px solid var(--ui-03);
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .ss-label {
@@ -102,7 +104,9 @@
   border-radius: 4px;
   margin-bottom: 8px;
 
-  &[open] .ss-accordion-summary::after { transform: rotate(180deg); }
+  &[open] .ss-accordion-summary::after {
+    transform: rotate(180deg);
+  }
 }
 
 .ss-accordion-summary {
@@ -116,7 +120,9 @@
   color: var(--text-01);
   user-select: none;
 
-  &::-webkit-details-marker { display: none; }
+  &::-webkit-details-marker {
+    display: none;
+  }
 
   &::after {
     content: '';
@@ -129,14 +135,15 @@
     flex-shrink: 0;
   }
 
-  &:hover { background: var(--hover-secondary); }
+  &:hover {
+    background: var(--hover-secondary);
+  }
 }
 
 .ss-accordion-body {
   padding: 0 16px 12px;
   border-top: 1px solid var(--ui-03);
 }
-
 
 // ── Config row (switcher) ──────────────────────────────────────────────────────
 
@@ -215,7 +222,9 @@
   position: relative;
   width: 320px;
 
-  &__field { width: 100%; }
+  &__field {
+    width: 100%;
+  }
 }
 
 .ss-user-results {
@@ -242,7 +251,9 @@
   border: none;
   cursor: pointer;
 
-  &:hover { background: var(--hover-secondary); }
+  &:hover {
+    background: var(--hover-secondary);
+  }
 
   &__name {
     font-size: var(--paragraph-03-font-size);
@@ -263,8 +274,15 @@
   align-items: center;
   gap: 8px;
 
-  &__icon { color: var(--interactive-primary); flex-shrink: 0; }
-  &__reason { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); }
+  &__icon {
+    color: var(--interactive-primary);
+    flex-shrink: 0;
+  }
+  &__reason {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
   &__notes {
     margin: var(--space-sm) 0 0 var(--space-xl);
     font-size: var(--paragraph-03-font-size);
@@ -274,15 +292,26 @@
 
 // ── Recovery Potential ────────────────────────────────────────────────────────
 
-.ss-config-row--top { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--ui-04); }
+.ss-config-row--top {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-04);
+}
 
 .ss-recovery-label {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-bottom: 8px;
-  &__text  { font-size: var(--paragraph-03-font-size); font-weight: 600; color: var(--text-01); }
-  &__hint  { font-size: var(--paragraph-03-font-size); color: var(--text-muted); }
+  &__text {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
+  &__hint {
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
 }
 
 .ss-recovery-radio-group {
@@ -293,8 +322,17 @@
 
 // ── Misc ──────────────────────────────────────────────────────────────────────
 
-.submit-banner { margin-bottom: 16px; }
-.ss-loading { color: var(--text-muted); font-size: var(--paragraph-03-font-size); }
+.submit-banner {
+  margin-bottom: 16px;
+}
+.ss-loading {
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.step-submit-error {
+  margin-bottom: 16px;
+}
 
 // Footer styles live in WizardFooterComponent
 // .step-footer used only for the post-submit Close button row

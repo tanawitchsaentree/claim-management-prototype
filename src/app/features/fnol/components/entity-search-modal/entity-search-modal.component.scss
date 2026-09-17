@@ -1,6 +1,8 @@
 @use '../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 
@@ -95,7 +97,6 @@
   color: var(--text-01);
 }
 
-
 // ─── Table ───────────────────────────────────────────────────────────────────
 
 .esm-table {
@@ -103,12 +104,25 @@
   border-top: 1px solid var(--ui-04);
 }
 
-.esm-col-check   { width: 48px; padding-left: 16px !important; }
-.esm-col-id      { width: 160px; }
-.esm-col-name    { min-width: 160px; }
-.esm-col-street  { min-width: 160px; }
-.esm-col-city    { width: 120px; }
-.esm-col-country { width: 120px; }
+.esm-col-check {
+  width: 48px;
+  padding-left: 16px !important;
+}
+.esm-col-id {
+  width: 160px;
+}
+.esm-col-name {
+  min-width: 160px;
+}
+.esm-col-street {
+  min-width: 160px;
+}
+.esm-col-city {
+  width: 120px;
+}
+.esm-col-country {
+  width: 120px;
+}
 
 .esm-row--selected {
   background: var(--claim-overlay-hover);

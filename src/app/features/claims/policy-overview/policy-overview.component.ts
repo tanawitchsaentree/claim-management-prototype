@@ -25,27 +25,27 @@ import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
     NxMessageModule,
     EmptyStateComponent,
     PageHeaderComponent,
-    AppDatePipe,
+    AppDatePipe
   ],
   templateUrl: './policy-overview.component.html',
-  styleUrl: './policy-overview.component.scss',
+  styleUrl: './policy-overview.component.scss'
 })
 export class PolicyOverviewComponent implements OnInit {
-  private readonly route  = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly svc    = inject(MockPolicyOverviewService);
+  private readonly svc = inject(MockPolicyOverviewService);
 
-  readonly loading   = signal(true);
+  readonly loading = signal(true);
   readonly loadError = signal(false);
-  readonly policy    = signal<PolicyOverview | null>(null);
+  readonly policy = signal<PolicyOverview | null>(null);
 
   readonly claimId = signal('');
 
   // Coinsurance shares must total 100% — a policy whose participants don't add
   // up is a data problem the handler needs to see, not something to silently
   // render. Real production has no equivalent check; this is why we surface it.
-  readonly coinsuranceTotal = computed(() =>
-    this.policy()?.coinsurance.reduce((sum, p) => sum + p.sharePercent, 0) ?? 0,
+  readonly coinsuranceTotal = computed(
+    () => this.policy()?.coinsurance.reduce((sum, p) => sum + p.sharePercent, 0) ?? 0
   );
 
   readonly coinsuranceMismatch = computed(() => {
@@ -54,8 +54,10 @@ export class PolicyOverviewComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    const id = this.route.snapshot.paramMap.get('id')
-      ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
+    const id =
+      this.route.snapshot.paramMap.get('id') ??
+      this.route.parent?.snapshot.paramMap.get('id') ??
+      '';
     this.claimId.set(id);
     this.loading.set(true);
     this.loadError.set(false);

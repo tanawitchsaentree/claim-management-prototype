@@ -1,6 +1,8 @@
 @use '../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .eed-header {
   @include modal.header;
@@ -9,7 +11,9 @@
   justify-content: space-between;
 }
 
-.eed-title { @include modal.title; }
+.eed-title {
+  @include modal.title;
+}
 
 .eed-body {
   @include modal.body;

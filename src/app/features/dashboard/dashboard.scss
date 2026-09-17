@@ -1,23 +1,23 @@
 @use './widget-shell' as widget;
 
 // ─── Variables ───────────────────────────────────────────────────
-$right-panel-w:  360px;
+$right-panel-w: 360px;
 // SCSS vars below are aliases for NDBX/project tokens — kept for
 // legacy scss var references within this file. Cleanup tracked in VIOLATIONS.md.
-$blue-active:    var(--interactive-text);
-$gray-bg:        var(--ui-02);
-$text-main:      var(--text-01);
-$text-muted:     var(--text-muted);
-$border-color:   var(--ui-04);
+$blue-active: var(--interactive-text);
+$gray-bg: var(--ui-02);
+$text-main: var(--text-01);
+$text-muted: var(--text-muted);
+$border-color: var(--ui-04);
 
 // ─── Spacing scale (see .claude/SPACING.md) ──────────────────────
-$sp-xs:   4px;
-$sp-sm:   8px;
-$sp-md:   12px;
+$sp-xs: 4px;
+$sp-sm: 8px;
+$sp-md: 12px;
 $sp-base: 16px;
-$sp-lg:   20px;
-$sp-xl:   24px;
-$sp-2xl:  32px;
+$sp-lg: 20px;
+$sp-xl: 24px;
+$sp-2xl: 32px;
 
 // ─── Page shell ──────────────────────────────────────────────────
 .page-shell {
@@ -29,7 +29,6 @@ $sp-2xl:  32px;
   font-size: var(--paragraph-03-font-size);
   color: $text-main;
   background: var(--ui-01);
-
 }
 
 // ─── Responsive (≤1024px = iPad portrait, smaller tablets, phones) ──
@@ -127,7 +126,7 @@ $header-bp: 1024px;
   width: 32px;
   height: 32px;
   background: none;
-  border: 1px solid $border-color;   // ui-04 — light, not text-01
+  border: 1px solid $border-color; // ui-04 — light, not text-01
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -135,12 +134,12 @@ $header-bp: 1024px;
   flex-shrink: 0;
   nx-icon {
     color: $text-main;
-    font-size: var(--paragraph-01-font-size);   // 50% of container
+    font-size: var(--paragraph-01-font-size); // 50% of container
   }
 }
 
 .action-card-title {
-  font-size: var(--paragraph-01-font-size);   // matches panel-card-title
+  font-size: var(--paragraph-01-font-size); // matches panel-card-title
   font-weight: 600;
   color: $text-main;
   line-height: 1.4;
@@ -151,46 +150,70 @@ $header-bp: 1024px;
 }
 
 // ─── Widget card ─────────────────────────────────────────────────
-.widget-card       { @include widget.card; }
-.widget-header     { @include widget.header; }
-.widget-header-left{ @include widget.header-left; }
-.widget-icon-wrap  { @include widget.icon-wrap; }
-.widget-icon       { @include widget.icon; }
-.widget-title      { @include widget.title; }
-.widget-link       { @include widget.link; }
+.widget-card {
+  @include widget.card;
+}
+.widget-header {
+  @include widget.header;
+}
+.widget-header-left {
+  @include widget.header-left;
+}
+.widget-icon-wrap {
+  @include widget.icon-wrap;
+}
+.widget-icon {
+  @include widget.icon;
+}
+.widget-title {
+  @include widget.title;
+}
+.widget-link {
+  @include widget.link;
+}
 
 .widget-footer {
-  padding: $sp-md $sp-xl;   // 12 24
+  padding: $sp-md $sp-xl; // 12 24
   border-top: 1px solid $border-color;
 }
 
 .widget-link-secondary {
   display: inline-flex;
   align-items: center;
-  gap: $sp-xs;   // 4px — tighter than before, icon is decorative
+  gap: $sp-xs; // 4px — tighter than before, icon is decorative
   font-size: var(--paragraph-03-font-size);
   color: $blue-active;
   cursor: pointer;
   text-decoration: none;
-  nx-icon { font-size: 14px; }   // match text size
-  &:hover { text-decoration: underline; }
+  nx-icon {
+    font-size: 14px;
+  } // match text size
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ─── Toggle row (Show my tasks only) ─────────────────────────────
 .widget-toggle-row {
-  padding: 0 $sp-xl $sp-md;   // 0 24 12
+  padding: 0 $sp-xl $sp-md; // 0 24 12
 }
 
 // ─── Portfolio tabs ───────────────────────────────────────────────
-.portfolio-tabs        { @include widget.portfolio-tabs; }
-.portfolio-tabs-spacer { @include widget.portfolio-tabs-spacer; }
-.portfolio-tab         { @include widget.portfolio-tab; }
+.portfolio-tabs {
+  @include widget.portfolio-tabs;
+}
+.portfolio-tabs-spacer {
+  @include widget.portfolio-tabs-spacer;
+}
+.portfolio-tab {
+  @include widget.portfolio-tab;
+}
 
 // ─── Table sort header ────────────────────────────────────────────
 .th-sort {
   display: inline-flex;
   align-items: center;
-  gap: $sp-xs;   // 4px
+  gap: $sp-xs; // 4px
   background: none;
   border: none;
   padding: 0;
@@ -198,13 +221,22 @@ $header-bp: 1024px;
   font: inherit;
   color: inherit;
   cursor: pointer;
-  nx-icon { font-size: 14px; color: var(--text-muted); }   // smaller than th text
+  nx-icon {
+    font-size: 14px;
+    color: var(--text-muted);
+  } // smaller than th text
 }
 
 // ─── Data table ──────────────────────────────────────────────────
-.data-table-wrap  { @include widget.data-table-wrap; }
-.dash-table        { @include widget.dash-table; }
-.dash-col--nowrap  { @include widget.dash-col-nowrap; }
+.data-table-wrap {
+  @include widget.data-table-wrap;
+}
+.dash-table {
+  @include widget.dash-table;
+}
+.dash-col--nowrap {
+  @include widget.dash-col-nowrap;
+}
 
 // Description / client name — truncate long text
 .dash-col--desc {
@@ -213,30 +245,47 @@ $header-bp: 1024px;
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  ::ng-deep .nx-table-cell { white-space: nowrap; }
+  ::ng-deep .nx-table-cell {
+    white-space: nowrap;
+  }
 }
 
-// Task list — vertical divider before Task key (2nd-to-last) column
-.widget-card--tasklist .dash-table {
-  ::ng-deep .nx-header-cell:nth-last-child(2),
-  ::ng-deep .nx-table-cell:nth-last-child(2) {
+// Task list — vertical divider before Task key. An explicit class rather
+// than :nth-last-child(2) — that broke whenever Assignee's column visibility
+// toggled (showMyTasksOnly), since it shifted which column was "2nd-to-last"
+// and put the divider (and, combined with the table's sticky last column,
+// an overlapping render) on Assignee instead of Task key.
+.dash-col--divider {
+  ::ng-deep .nx-header-cell,
+  &.nx-header-cell,
+  &.nx-table-cell {
     border-left: 1px solid $border-color;
   }
 }
 
-.text-muted    { @include widget.text-muted; }
-.text-link     { @include widget.text-link; }
-.text-due-today { color: var(--danger); font-weight: 600; }
-.text-overdue { color: var(--danger); font-weight: 600; }
+.text-muted {
+  @include widget.text-muted;
+}
+.text-link {
+  @include widget.text-link;
+}
+.text-due-today {
+  color: var(--danger);
+  font-weight: 600;
+}
+.text-overdue {
+  color: var(--danger);
+  font-weight: 600;
+}
 
 .overdue-cell {
   display: flex;
   align-items: center;
-  gap: $sp-xs;   // 4px
+  gap: $sp-xs; // 4px
 }
 
 .overdue-icon {
-  font-size: var(--paragraph-04-font-size);   // must not exceed td text-size (14px)
+  font-size: var(--paragraph-04-font-size); // must not exceed td text-size (14px)
   color: var(--danger);
   flex-shrink: 0;
 }
@@ -248,7 +297,9 @@ $header-bp: 1024px;
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ─── Right panel ─────────────────────────────────────────────────
@@ -277,7 +328,7 @@ $header-bp: 1024px;
 }
 
 .panel-card-title {
-  font-size: var(--paragraph-01-font-size);   // panel is 360px wide — 20px too heavy
+  font-size: var(--paragraph-01-font-size); // panel is 360px wide — 20px too heavy
   font-weight: 600;
   color: $text-main;
   line-height: 1.4;
@@ -305,11 +356,16 @@ $header-bp: 1024px;
   color: $text-muted;
   display: flex;
   align-items: center;
-  &:hover { color: $text-main; }
-  &--disabled, &:disabled {
+  &:hover {
+    color: $text-main;
+  }
+  &--disabled,
+  &:disabled {
     opacity: 0.35;
     cursor: not-allowed;
-    &:hover { color: $text-muted; }
+    &:hover {
+      color: $text-muted;
+    }
   }
 }
 
@@ -364,8 +420,12 @@ $header-bp: 1024px;
   height: 100%;
   border-radius: 4px;
   transition: width 0.3s ease;
-  &--opened { background: var(--claim-status-open-bg); }
-  &--closed  { background: var(--claim-bar-bound); }
+  &--opened {
+    background: var(--claim-status-open-bg);
+  }
+  &--closed {
+    background: var(--claim-bar-bound);
+  }
 }
 
 .stats-bar-value {
@@ -402,10 +462,15 @@ $header-bp: 1024px;
   cursor: pointer;
   color: $text-muted;
   border-radius: 4px;
-  &:hover { background: $gray-bg; color: $text-main; }
+  &:hover {
+    background: $gray-bg;
+    color: $text-main;
+  }
 }
 
-.dash-kebab-btn { @include widget.dash-kebab-btn; }
+.dash-kebab-btn {
+  @include widget.dash-kebab-btn;
+}
 
 // ─── Quick links ─────────────────────────────────────────────────
 .quick-links-list {
@@ -427,7 +492,10 @@ $header-bp: 1024px;
   border-radius: 2px;
   transition: background 0.1s;
 
-  &:hover { background: var(--claim-overlay-hover); text-decoration: underline; }
+  &:hover {
+    background: var(--claim-overlay-hover);
+    text-decoration: underline;
+  }
 
   .quick-link-icon {
     font-size: var(--paragraph-03-font-size);
@@ -454,7 +522,10 @@ $header-bp: 1024px;
   border-radius: 4px;
   margin: var(--space-base) 0;
 
-  .widget-error-icon { font-size: var(--icon-size-s); flex-shrink: 0; }
+  .widget-error-icon {
+    font-size: var(--icon-size-s);
+    flex-shrink: 0;
+  }
 }
 
 // ─── Role badge ───────────────────────────────────────────────────
@@ -464,20 +535,33 @@ $header-bp: 1024px;
   padding: 2px 8px;
   border-radius: 10px;
   text-transform: uppercase;
-  letter-spacing: .05em;
-  &--claims-handler  { background: var(--ui-03); color: $text-muted; }
-  &--kcm             { background: var(--claim-status-in-progress-bg, #e3f2fd); color: var(--claim-status-in-progress-color, #1565c0); }
+  letter-spacing: 0.05em;
+  &--claims-handler {
+    background: var(--ui-03);
+    color: $text-muted;
+  }
+  &--kcm {
+    background: var(--claim-status-in-progress-bg, #e3f2fd);
+    color: var(--claim-status-in-progress-color, #1565c0);
+  }
 }
 
 // ─── KCM scope selector ───────────────────────────────────────────
-.scope-tabs { @include widget.scope-tabs; }
-.scope-tab  { @include widget.scope-tab; }
+.scope-tabs {
+  @include widget.scope-tabs;
+}
+.scope-tab {
+  @include widget.scope-tab;
+}
 
 // ─── Dormant / "You" nx-badge sizing ─────────────────────────────
 // No row tint — the Dormant badge already signals the state. Tints removed per rule.
 
-.dash-status-cell { @include widget.dash-status-cell; }
+.dash-status-cell {
+  @include widget.dash-status-cell;
+}
 
-.dormant-nx-badge, .by-me-nx-badge { @include widget.dash-badge-small; }
-
-
+.dormant-nx-badge,
+.by-me-nx-badge {
+  @include widget.dash-badge-small;
+}

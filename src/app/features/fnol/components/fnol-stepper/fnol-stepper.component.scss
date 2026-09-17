@@ -36,7 +36,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 
 .stepper-item--active .stepper-dot {

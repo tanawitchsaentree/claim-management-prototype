@@ -1,0 +1,27 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.apm-header {
+  @include modal.header;
+}
+
+.apm-body {
+  @include modal.body;
+}
+
+.apm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  nx-formfield {
+    width: 100%;
+  }
+}
+
+.apm-footer {
+  @include modal.footer;
+}

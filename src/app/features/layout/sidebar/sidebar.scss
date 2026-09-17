@@ -23,7 +23,7 @@ $sidebar-collapsed-width: 56px;
     .nav-item {
       justify-content: center;
       padding: var(--space-md) 0;
-      gap: 0;   // remove gap — label is hidden, icon should be perfectly centered
+      gap: 0; // remove gap — label is hidden, icon should be perfectly centered
     }
 
     .nav-item__label {
@@ -68,7 +68,9 @@ $sidebar-collapsed-width: 56px;
     background: var(--interactive-primary);
     color: var(--button-primary-text-color);
 
-    nx-icon { color: var(--button-primary-text-color); }
+    nx-icon {
+      color: var(--button-primary-text-color);
+    }
   }
 
   &--active {
@@ -76,7 +78,9 @@ $sidebar-collapsed-width: 56px;
     color: var(--button-primary-text-color);
     font-weight: 600;
 
-    nx-icon { color: var(--button-primary-text-color); }
+    nx-icon {
+      color: var(--button-primary-text-color);
+    }
 
     &:hover {
       background: var(--interactive-primary);
@@ -90,7 +94,9 @@ $sidebar-collapsed-width: 56px;
   white-space: nowrap;
   opacity: 1;
   width: auto;
-  transition: opacity 0.15s ease, width 0.25s ease;
+  transition:
+    opacity 0.15s ease,
+    width 0.25s ease;
 }
 
 // ─── Nav group (collapsible) ──────────────────────────────────────────────────
@@ -103,24 +109,32 @@ $sidebar-collapsed-width: 56px;
   cursor: pointer;
   color: var(--text-01);
 
-  nx-icon { color: var(--text-muted); }
+  nx-icon {
+    color: var(--text-muted);
+  }
 
   &:hover {
     background: var(--interactive-primary);
     color: var(--button-primary-text-color);
-    nx-icon { color: var(--button-primary-text-color); }
+    nx-icon {
+      color: var(--button-primary-text-color);
+    }
   }
 
   &.nav-item--active {
     background: var(--ui-03);
     color: var(--text-01);
     font-weight: 600;
-    nx-icon { color: var(--text-01); }
+    nx-icon {
+      color: var(--text-01);
+    }
 
     &:hover {
       background: var(--interactive-primary);
       color: var(--button-primary-text-color);
-      nx-icon { color: var(--button-primary-text-color); }
+      nx-icon {
+        color: var(--button-primary-text-color);
+      }
     }
   }
 }
@@ -131,7 +145,9 @@ $sidebar-collapsed-width: 56px;
   color: var(--text-muted);
   transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 
-  .nav-group--expanded & { transform: rotate(180deg); }
+  .nav-group--expanded & {
+    transform: rotate(180deg);
+  }
 }
 
 .nav-group__children {
@@ -140,7 +156,9 @@ $sidebar-collapsed-width: 56px;
   overflow: hidden;
   animation: nav-group-open 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 
-  > * { min-height: 0; }
+  > * {
+    min-height: 0;
+  }
 }
 
 .nav-group__children--closed {
@@ -149,13 +167,25 @@ $sidebar-collapsed-width: 56px;
 }
 
 @keyframes nav-group-open {
-  from { grid-template-rows: 0fr; opacity: 0.4; }
-  to   { grid-template-rows: 1fr; opacity: 1; }
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0.4;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
 }
 
 @keyframes nav-group-close {
-  from { grid-template-rows: 1fr; opacity: 1; }
-  to   { grid-template-rows: 0fr; opacity: 0; }
+  from {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  to {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
 }
 
 .nav-item--child {
@@ -205,7 +235,9 @@ $sidebar-collapsed-width: 56px;
   border-radius: 4px;
   cursor: pointer;
   color: var(--text-muted);
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 
   &:hover {
     background: var(--claim-overlay-nav-hover);

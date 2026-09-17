@@ -83,7 +83,7 @@
   overflow-x: auto;
   border: 1px solid var(--ui-04);
   border-radius: 4px;
-  transition: opacity .12s;
+  transition: opacity 0.12s;
 
   // Refetching while a list is already showing — dim in place rather than
   // unmount the table for a spinner and remount it once the new data lands.
@@ -134,15 +134,36 @@
 // it duplicated Build — 15 of 15 handoff-done rows were also build-done, and 49
 // of 51 stage values were self-assessed by agent sessions rather than by a
 // designer), so its 120px went to .col-title, the column that actually needed it.
-.col-key         { width: 118px; white-space: nowrap; }
-.col-title       { width: 320px; }
-.col-epic        { width: 150px; }
-.col-jira-status { width: 116px; }
-.col-stage       { width: 120px; }
-.col-blocked     { width: 173px; }
-.col-days        { width: 56px; text-align: right; }
-.col-indicator   { text-align: center; width: 40px; }
-.col-links       { width: 72px; }
+.col-key {
+  width: 118px;
+  white-space: nowrap;
+}
+.col-title {
+  width: 320px;
+}
+.col-epic {
+  width: 150px;
+}
+.col-jira-status {
+  width: 116px;
+}
+.col-stage {
+  width: 120px;
+}
+.col-blocked {
+  width: 173px;
+}
+.col-days {
+  width: 56px;
+  text-align: right;
+}
+.col-indicator {
+  text-align: center;
+  width: 40px;
+}
+.col-links {
+  width: 72px;
+}
 
 // Grouped by epic, the Epic column repeats the group heading verbatim on every
 // row under it — 150px spent restating what the row above already says. Hidden
@@ -152,8 +173,12 @@
 // under-sum its box, it just leaves dead space after the last column — measured,
 // 159px of empty grid inside the wrapper border.
 .tt-table--grouped {
-  .col-epic { display: none; }
-  .col-title { width: 470px; }
+  .col-epic {
+    display: none;
+  }
+  .col-title {
+    width: 470px;
+  }
 }
 
 // Visual separator between Jira's status and our own tracking columns —
@@ -184,13 +209,20 @@
   color: var(--interactive-primary);
   cursor: pointer;
 
-  &:hover { background: var(--ui-02); }
-  &:disabled { cursor: default; opacity: 0.6; }
+  &:hover {
+    background: var(--ui-02);
+  }
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
 
   // 22 of the 30 clickable rows have no ticket file (measured 2026-09-02): the link
   // works but the arrival panel can only name the screen. Muted, same affordance —
   // see launchHint() for the tooltip that says which kind this is.
-  &--bare { color: var(--text-muted); }
+  &--bare {
+    color: var(--text-muted);
+  }
 }
 
 // Group header row — same colspan-divider pattern as step-parties.component.html

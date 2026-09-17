@@ -9,34 +9,34 @@
 
 ## Summary — all 17 blocking checks (`npm run pre-commit`)
 
-| Check | Status | Violations |
-|---|---|---|
-| `audit:colors` | ✅ PASS | 0 |
-| `audit:radio-size` | ✅ PASS | 0 |
-| `audit:formfield-error` | ✅ PASS | 0 |
-| `audit:imports` | ✅ PASS | 0 |
-| `audit:any` | ✅ PASS | 0 |
-| `audit:subscribe` | ✅ PASS | 0 |
-| `audit:hardcoded-data` | ✅ PASS | 0 |
-| `audit:status-colors` | ✅ PASS | 0 |
-| `audit:date-format` | ✅ PASS | 0 |
-| `audit:button-size` | ✅ PASS | 0 |
-| `audit:table-empty` | ✅ PASS | 0 |
-| `audit:ac-logic` | ✅ PASS | 0 (49/53 ACs; 4 skipped — no `expectedOutcome`) |
-| `audit:ac-route-overrides` | ✅ PASS | 0 |
-| `audit:stage-pattern` | ✅ PASS | 0 |
-| `audit:appearance` | ✅ PASS | 0 |
-| `audit:ndbx-wrapper` | ❌ FAIL | 2 lines (documented exemptions, see below) |
-| `audit:wizard-footer` | ✅ PASS | 0 |
+| Check                      | Status  | Violations                                      |
+| -------------------------- | ------- | ----------------------------------------------- |
+| `audit:colors`             | ❌ FAIL | 2 lines — same detector-masking issue, see below |
+| `audit:radio-size`         | ✅ PASS | 0                                               |
+| `audit:formfield-error`    | ✅ PASS | 0                                               |
+| `audit:imports`            | ✅ PASS | 0                                               |
+| `audit:any`                | ✅ PASS | 0                                               |
+| `audit:subscribe`          | ✅ PASS | 0                                               |
+| `audit:hardcoded-data`     | ✅ PASS | 0                                               |
+| `audit:status-colors`      | ✅ PASS | 0                                               |
+| `audit:date-format`        | ✅ PASS | 0                                               |
+| `audit:button-size`        | ✅ PASS | 0                                               |
+| `audit:table-empty`        | ✅ PASS | 0                                               |
+| `audit:ac-logic`           | ✅ PASS | 0 (49/53 ACs; 4 skipped — no `expectedOutcome`) |
+| `audit:ac-route-overrides` | ✅ PASS | 0                                               |
+| `audit:stage-pattern`      | ✅ PASS | 0                                               |
+| `audit:appearance`         | ✅ PASS | 0                                               |
+| `audit:ndbx-wrapper`       | ❌ FAIL | 34 lines — see "2026-09-16 detector fix" below  |
+| `audit:wizard-footer`      | ✅ PASS | 0                                               |
 
-**16/17 pass.** The 2 `audit:ndbx-wrapper` lines are deliberate, documented exemptions (dense-layout search boxes with no label, no validation) — not unaddressed debt. See "Governance-audit exemptions" below for the pattern each one follows.
+**2026-09-16 detector fix — this count is not new debt, it's newly-visible debt.** The check's regex was `<input ` (literal trailing space), which only matches a bare `<input ...>` written on a single line. Angular template formatting (and this repo's own `prettier --write .` run today) routinely wraps a multi-attribute `<input\n  attr=...` across lines, putting no space after `<input` on its own line — so the old regex silently stopped matching those. Fixed to `<input\b` (word-boundary), which catches the tag regardless of line-wrapping. Re-running it found 34 real bare `<input>`s, not the 2 documented exemptions below — most of that gap predates this fix; it was never caught, at any point, once a file's `<input>` happened to wrap across lines. Exempted from a blind mass-fix here per this file's own rule ("existing violations are fixed in dedicated cleanup PRs, not inline with feature work") — needs its own pass to triage which of the 34 get an `nx-formfield` and which get a documented exemption like the 2 below.
 
 ## Fix-forward checks (excluded from `pre-commit`/`audit:all` — run manually)
 
-| Check | Status | Violations |
-|---|---|---|
-| `audit:spacing` | ❌ FAIL | 38 lines (documented exemptions, see below) |
-| `audit:font-size` | ✅ PASS | 0 |
+| Check             | Status  | Violations                                  |
+| ----------------- | ------- | ------------------------------------------- |
+| `audit:spacing`   | ❌ FAIL | 38 lines (documented exemptions, see below) |
+| `audit:font-size` | ✅ PASS | 0                                           |
 
 These are excluded from the blocking gate because they're manual spot-checks, not because violations are expected to remain — `audit:font-size` is now clean, and the 38 remaining `audit:spacing` lines are a documented exemption class (badge/pill/chip padding), not unaddressed debt.
 
@@ -46,10 +46,10 @@ These are excluded from the blocking gate because they're manual spot-checks, no
 
 Bare `<input>` outside `nxInput`/NDBX wrapper (scope: `src/app/features` only — the script does not walk `src/app/shared`).
 
-| File | Line | Reason |
-|---|---|---|
-| `src/app/features/layout/navbar/navbar.html` | 21 | Top-chrome search-as-you-type box, no visible `<label>`, fully inert (no binding). Wrapped in `.app-header__search-input-wrap` matching the `co-restrict-search` exemplar pattern below. |
-| `src/app/features/claims/claim-overview/claim-overview.component.html` | 275 | File-restriction user-search input. No label, dense layout, uses the canonical `.co-restrict-search__input-wrap` pattern — the reference implementation the navbar fix above was matched against. |
+| File                                                                   | Line | Reason                                                                                                                                                                                            |
+| ---------------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/features/layout/navbar/navbar.html`                           | 21   | Top-chrome search-as-you-type box, no visible `<label>`, fully inert (no binding). Wrapped in `.app-header__search-input-wrap` matching the `co-restrict-search` exemplar pattern below.          |
+| `src/app/features/claims/claim-overview/claim-overview.component.html` | 275  | File-restriction user-search input. No label, dense layout, uses the canonical `.co-restrict-search__input-wrap` pattern — the reference implementation the navbar fix above was matched against. |
 
 Both follow the `nx-formfield-spacing-trap` skill's documented exception: no label, no inline validation, dense layout where `nx-formfield`'s reserved label/error zone would create visible gaps. Every OTHER bare `<input>` found in this codebase (approvals filter bar ×3, claim-notes-panel Title field) had a visible `<label>` and was properly wrapped in `nx-formfield` instead — see commit `548edcb`.
 
@@ -58,6 +58,7 @@ Both follow the `nx-formfield-spacing-trap` skill's documented exception: no lab
 `(padding|margin): Npx` hardcoded instead of a spacing token/scale value. All 38 remaining lines share one shape: small vertical padding (1–4px) paired with a `border-radius` on the same rule, sized to fit text inside a pill/badge/chip — not layout spacing. Rounding these to the 4px scale (`--space-xs` = 4px minimum) would visibly enlarge every tag/badge/chip in the app (e.g. `1px 7px` → `4px 8px` roughly doubles a small badge's height). Per user decision during the 2026-08-07 cleanup pass, these are exempted rather than rounded.
 
 Regenerate the full list with:
+
 ```bash
 grep -rE '(padding|margin):\s*[0-9]+px' src/app --include='*.scss' --include='*.css'
 ```
@@ -70,24 +71,25 @@ All genuine layout spacing (card padding, section gaps, row padding — 245 of t
 
 ## Known-violations policy
 
-- **`audit:spacing`:** the 38 pill/badge/chip padding lines above are a permanent, documented exemption class — not legacy debt pending cleanup. New pill/badge/chip components may use literal small padding values paired with `border-radius` following this same pattern; new *layout* spacing (card insets, section gaps, row padding) MUST use the `--space-*` token scale in `src/styles.scss`.
+- **`audit:spacing`:** the 38 pill/badge/chip padding lines above are a permanent, documented exemption class — not legacy debt pending cleanup. New pill/badge/chip components may use literal small padding values paired with `border-radius` following this same pattern; new _layout_ spacing (card insets, section gaps, row padding) MUST use the `--space-*` token scale in `src/styles.scss`.
 - **`audit:font-size`:** clean — 0 violations. Every literal font-size px value maps to a typography or icon-size token (see `9b4c44a`).
-- **`audit:ndbx-wrapper`:** the 2 remaining lines are a documented, narrow exception (dense search box, no label, no validation) per the `nx-formfield-spacing-trap` skill — not silently ignored debt.
-- **All other blocking checks (`audit:colors`, `audit:radio-size`, `audit:formfield-error`, `audit:imports`, `audit:any`, `audit:subscribe`, `audit:hardcoded-data`, `audit:status-colors`, `audit:date-format`, `audit:button-size`, `audit:table-empty`, `audit:ac-logic`, `audit:ac-route-overrides`, `audit:stage-pattern`, `audit:appearance`, `audit:wizard-footer`):** zero violations, zero exemptions. A clean checkout of `main` now passes `pre-commit` at 16/17 with the only "failure" being the two documented `audit:ndbx-wrapper` exemptions above.
+- **`audit:ndbx-wrapper`:** 2 of the 34 currently-flagged lines are the documented, narrow exception (dense search box, no label, no validation) per the `nx-formfield-spacing-trap` skill. The other 32 are real, newly-surfaced (2026-09-16 detector fix) debt awaiting a dedicated cleanup pass — not yet triaged into "needs `nx-formfield`" vs "qualifies for the same exemption."
+- **`audit:colors`:** 2 lines (`rgba(210, 53, 29, 0.1)` / `rgba(255, 165, 0, 0.12)` tint backgrounds in `claim-closure-modal.component.scss`) surfaced by the same detector-masking issue — the old regex's `grep -v 'var(--'` filter silently excluded any line that *also* contained an unrelated `var(--...)` call, which both of these did. Real hardcoded-color debt, not yet tokenized (no existing `--danger`/`--warning` tint token matches these exact alpha values — needs a design decision, not a blind swap).
+- **All other blocking checks (`audit:radio-size`, `audit:formfield-error`, `audit:imports`, `audit:any`, `audit:subscribe`, `audit:hardcoded-data`, `audit:status-colors`, `audit:date-format`, `audit:button-size`, `audit:table-empty`, `audit:ac-logic`, `audit:ac-route-overrides`, `audit:stage-pattern`, `audit:appearance`, `audit:wizard-footer`):** zero violations, zero exemptions.
 
 ## Governance-audit exemptions (`<!-- audit-exempt: reason -->`)
 
 Sites deliberately exempted from `audit:table-empty` / the empty-state consolidation, each with an inline comment explaining why forcing `<app-empty-state>` would be wrong, not because the check is broken:
 
-| File | Reason |
-|---|---|
-| `src/app/features/fnol/fnol-shell/fnol-shell.component.html:34` | Single-value info popover, not a list — the canonical empty-state's padding/italic is too much chrome for a one-line popover message. |
-| `src/app/features/fnol/steps/step-entities-damages/step-entities-damages.component.html:64` | A damage-group only exists when it has entities; the zero-entities case is already handled one level up by an `nx-message` banner. |
-| `src/app/features/fnol/steps/step-skeleton-create/step-skeleton-create.component.html:39` | Renders exactly one confirmed broker's row (gated by an `@if` above) — never zero, not a list. |
-| `src/app/features/fnol/steps/step-loss-information/step-loss-information.component.html:198` | This modal only opens via "Show all N duplicates," itself only shown when duplicates already exist — the table can never render empty. |
-| `src/app/features/fnol/steps/step-1-search/step-1-search.component.html:412` | Same empty-state CTA as `app-empty-state`'s `[action]` slot elsewhere in the file — full-size by the empty-state exemption, not a missed `small`. |
-| `src/app/features/claims/claim-reference-tabs/claim-reference-tabs.component.html:60` | Tiny inline popover hint sharing a class with the "Searching…" state — 24px padding is too much chrome for a compact autocomplete dropdown row. |
-| `src/app/shared/components/location-picker/location-picker.component.html:3` | An inline form prompt ("Where did the loss occur?" + CTA), left-aligned and bold — not a passive "no data" message; forcing the canonical shape would misread as a data-absence state. |
+| File                                                                                         | Reason                                                                                                                                                                                 |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/features/fnol/fnol-shell/fnol-shell.component.html:34`                              | Single-value info popover, not a list — the canonical empty-state's padding/italic is too much chrome for a one-line popover message.                                                  |
+| `src/app/features/fnol/steps/step-entities-damages/step-entities-damages.component.html:64`  | A damage-group only exists when it has entities; the zero-entities case is already handled one level up by an `nx-message` banner.                                                     |
+| `src/app/features/fnol/steps/step-skeleton-create/step-skeleton-create.component.html:39`    | Renders exactly one confirmed broker's row (gated by an `@if` above) — never zero, not a list.                                                                                         |
+| `src/app/features/fnol/steps/step-loss-information/step-loss-information.component.html:198` | This modal only opens via "Show all N duplicates," itself only shown when duplicates already exist — the table can never render empty.                                                 |
+| `src/app/features/fnol/steps/step-1-search/step-1-search.component.html:412`                 | Same empty-state CTA as `app-empty-state`'s `[action]` slot elsewhere in the file — full-size by the empty-state exemption, not a missed `small`.                                      |
+| `src/app/features/claims/claim-reference-tabs/claim-reference-tabs.component.html:60`        | Tiny inline popover hint sharing a class with the "Searching…" state — 24px padding is too much chrome for a compact autocomplete dropdown row.                                        |
+| `src/app/shared/components/location-picker/location-picker.component.html:3`                 | An inline form prompt ("Where did the loss occur?" + CTA), left-aligned and bold — not a passive "no data" message; forcing the canonical shape would misread as a data-absence state. |
 
 No CWB-modal button-size exemption exists in the codebase — `audit:button-size` passes with 0 violations and all 5 buttons in `cwb-location-search-modal.component.html` are already `small`.
 
@@ -97,13 +99,13 @@ No CWB-modal button-size exemption exists in the codebase — `audit:button-size
 
 Full zero-violation cleanup completed across 6 categories, one commit per category, in safest→riskiest order:
 
-| Category | Commit | Count | Result |
-|---|---|---|---|
-| 1. font-size px | `9b4c44a` | 176 | 0 remaining |
-| 2. hardcoded colors | `9adf5f2` | 15 | 0 remaining |
-| 3. spacing px | `79b0afd` | 282 | 38 remaining (documented pill/badge exemption) |
-| 4. bare `<input>` | `548edcb` | 6 | 2 remaining (documented dense-layout exemption) |
-| 5. missing `nxFormfieldError` | `95119b0` | 2 | 0 remaining |
-| 6. `.subscribe()` in components | `39503ff` | 14 | 0 remaining |
+| Category                        | Commit    | Count | Result                                          |
+| ------------------------------- | --------- | ----- | ----------------------------------------------- |
+| 1. font-size px                 | `9b4c44a` | 176   | 0 remaining                                     |
+| 2. hardcoded colors             | `9adf5f2` | 15    | 0 remaining                                     |
+| 3. spacing px                   | `79b0afd` | 282   | 38 remaining (documented pill/badge exemption)  |
+| 4. bare `<input>`               | `548edcb` | 6     | 2 remaining (documented dense-layout exemption) |
+| 5. missing `nxFormfieldError`   | `95119b0` | 2     | 0 remaining                                     |
+| 6. `.subscribe()` in components | `39503ff` | 14    | 0 remaining                                     |
 
 Live counts at cleanup start differed materially from this file's prior version (font-size 176 vs stated 27, spacing 282 vs stated 156) — the prior baseline had gone stale. Always regenerate from live audit output before trusting a violation count.

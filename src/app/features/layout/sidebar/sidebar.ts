@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { CommonModule } from '@angular/common';
+
 import { filter, map, startWith } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -28,49 +28,61 @@ function isGroup(e: NavEntry): e is NavGroup {
 }
 
 const GLOBAL_NAV: NavItem[] = [
-  { label: 'Dashboard', icon: 'home',        path: '/dashboard', exact: true },
-  { label: 'New Claim', icon: 'plus-circle', path: '/fnol',      exact: true },
+  { label: 'Dashboard', icon: 'home', path: '/dashboard', exact: true },
+  { label: 'New Claim', icon: 'plus-circle', path: '/fnol', exact: true }
 ];
 
 const CLAIM_NAV_TEMPLATE: NavEntry[] = [
-  { label: 'Claim overview',  icon: 'file-text',                    path: 'overview' },
-  { label: 'Policy overview', icon: 'card-o',                       path: 'policy' },
-  { label: 'Sections',        icon: 'users-o',                      path: 'sections' },
-  { label: 'Parties',         icon: 'product-share-graph-arrow-up', path: 'parties' },
+  { label: 'Claim overview', icon: 'file-text', path: 'overview' },
+  { label: 'Policy overview', icon: 'card-o', path: 'policy' },
+  { label: 'Sections', icon: 'users-o', path: 'sections' },
+  { label: 'Parties', icon: 'product-share-graph-arrow-up', path: 'parties' },
   {
-    label: 'Financial', icon: 'product-shield-money', groupKey: 'financial',
+    label: 'Financial',
+    icon: 'product-shield-money',
+    groupKey: 'financial',
     children: [
-      { label: 'Financial Overview', icon: '', path: 'financial', queryParams: { view: 'overview'  } },
-      { label: 'Payments',           icon: '', path: 'financial', queryParams: { view: 'payments'  } },
-      { label: 'Reserves',           icon: '', path: 'financial', queryParams: { view: 'reserves'  } },
-      { label: 'Recovery bookings',  icon: '', path: 'financial', queryParams: { view: 'recovery'  } },
-    ],
+      {
+        label: 'Financial Overview',
+        icon: '',
+        path: 'financial',
+        queryParams: { view: 'overview' }
+      },
+      { label: 'Payments', icon: '', path: 'financial', queryParams: { view: 'payments' } },
+      { label: 'Reserves', icon: '', path: 'financial', queryParams: { view: 'reserves' } },
+      {
+        label: 'Recovery bookings',
+        icon: '',
+        path: 'financial',
+        queryParams: { view: 'recovery' }
+      }
+    ]
   },
-  { label: 'Limits and Deductibles',          icon: 'shield-o',                  path: 'limits' },
-  { label: 'Recoveries',                      icon: 'file-arrow',                path: 'recoveries' },
-  { label: 'Provider management',             icon: 'shield-warning',            path: 'providers' },
-  { label: 'Risk analysis and investigation', icon: 'policy-processing-03',      path: 'risk' },
-  { label: 'Litigation',                      icon: 'product-legal-protection',  path: 'litigation' },
+  { label: 'Limits and Deductibles', icon: 'shield-o', path: 'limits' },
+  { label: 'Recoveries', icon: 'file-arrow', path: 'recoveries' },
+  { label: 'Provider management', icon: 'shield-warning', path: 'providers' },
+  { label: 'Risk analysis and investigation', icon: 'policy-processing-03', path: 'risk' },
+  { label: 'Litigation', icon: 'product-legal-protection', path: 'litigation' }
 ];
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, NxIconModule, NxButtonModule],
+  imports: [RouterLink, RouterLinkActive, NxIconModule, NxButtonModule],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.scss',
+  styleUrl: './sidebar.scss'
 })
 export class Sidebar {
   private readonly router = inject(Router);
 
   collapsed = false;
-  readonly expandedGroups  = signal<Set<string>>(new Set());
+  readonly expandedGroups = signal<Set<string>>(new Set());
   readonly collapsedGroups = signal<Set<string>>(new Set());
 
   private readonly fullUrl$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
     map(e => (e as NavigationEnd).urlAfterRedirects),
-    startWith(this.router.url),
+    startWith(this.router.url)
   );
   private readonly fullUrlSignal = toSignal(this.fullUrl$, { initialValue: this.router.url });
 
@@ -97,7 +109,7 @@ export class Sidebar {
       if (isGroup(entry)) {
         return {
           ...entry,
-          children: entry.children.map(c => ({ ...c, path: `/claims/${id}/${c.path}` })),
+          children: entry.children.map(c => ({ ...c, path: `/claims/${id}/${c.path}` }))
         } as NavGroup;
       }
       return { ...entry, path: `/claims/${id}/${(entry as NavItem).path}` } as NavItem;
@@ -111,8 +123,13 @@ export class Sidebar {
     return false;
   }
 
+  // Was hardcoded to '/financial' — harmless today (Financial is the only
+  // NavGroup that exists), but meant every future group would show as
+  // active whenever the path contained '/financial', not its own path.
+  // Lint's unused-param flag on `group` surfaced that groupKey was never
+  // actually read.
   isGroupActive(group: NavGroup): boolean {
-    return this.pathSignal().includes('/financial');
+    return this.pathSignal().includes('/' + group.groupKey);
   }
 
   isChildActive(child: NavItem): boolean {

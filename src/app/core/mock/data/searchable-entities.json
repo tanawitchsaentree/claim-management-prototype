@@ -129,6 +129,60 @@
       }
     ]
   },
+  "POL-2024-004": {
+    "building": [
+      {
+        "propertyId": "MSE-BLD-0001",
+        "locationName": "Marvel SE HQ",
+        "streetAndNumber": "12 Königsallee",
+        "city": "Düsseldorf",
+        "country": "Germany",
+        "zipCode": "40212",
+        "entityType": "building"
+      }
+    ],
+    "vehicle": [],
+    "marine": [],
+    "employee": [
+      {
+        "propertyId": "MSE-EMP-0001",
+        "locationName": "Marvel SE Staff",
+        "streetAndNumber": "12 Königsallee",
+        "city": "Düsseldorf",
+        "country": "Germany",
+        "entityType": "employee"
+      }
+    ],
+    "financial": [
+      {
+        "propertyId": "MSE-FIN-0001",
+        "locationName": "Marvel SE Liability Exposure",
+        "streetAndNumber": "—",
+        "city": "Düsseldorf",
+        "country": "Germany",
+        "entityType": "financial"
+      }
+    ],
+    "other": []
+  },
+  "POL-2024-021": {
+    "building": [
+      {
+        "propertyId": "JK-BLD-0001",
+        "locationName": "Kaufmann Munich Warehouse",
+        "streetAndNumber": "8 Landsberger Strasse",
+        "city": "Munich",
+        "country": "Germany",
+        "zipCode": "80339",
+        "entityType": "building"
+      }
+    ],
+    "vehicle": [],
+    "marine": [],
+    "employee": [],
+    "financial": [],
+    "other": []
+  },
   "POL-2024-006": {
     "building": [
       {

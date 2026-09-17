@@ -30,17 +30,17 @@ describe('EditLossInformationComponent — Gate Proof', () => {
         provideRouter([{ path: '**', children: [] }]),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: convertToParamMap({ id: claimId }) } },
+          useValue: { snapshot: { paramMap: convertToParamMap({ id: claimId }) } }
         },
-        { provide: NxDialogService, useValue: { open: fakeDialogOpen } },
-      ],
+        { provide: NxDialogService, useValue: { open: fakeDialogOpen } }
+      ]
     });
     // NxModalModule (imported directly into this standalone component) appears
     // to re-provide NxDialogService at the component's own injector level,
     // which shadows a TestBed-root override — overriding at the component
     // level directly is what actually wins.
     TestBed.overrideComponent(EditLossInformationComponent, {
-      add: { providers: [{ provide: NxDialogService, useValue: { open: fakeDialogOpen } }] },
+      add: { providers: [{ provide: NxDialogService, useValue: { open: fakeDialogOpen } }] }
     });
     const fixture = TestBed.createComponent(EditLossInformationComponent);
     component = fixture.componentInstance;
@@ -52,14 +52,16 @@ describe('EditLossInformationComponent — Gate Proof', () => {
   };
 
   // CLM-2024-001 is one of the 5 claims loss-information.json hand-authors.
-  beforeEach(async () => { await mount('CLM-2024-001'); });
+  beforeEach(async () => {
+    await mount('CLM-2024-001');
+  });
 
   describe('Gate 1 — Save is unreachable while the ledger is empty', () => {
     it('has zero pending changes right after load', () => {
       expect(component.pendingChanges().length).toBe(0);
     });
 
-    it('the exact condition Save\'s [disabled] binding uses is true when nothing changed', () => {
+    it("the exact condition Save's [disabled] binding uses is true when nothing changed", () => {
       expect(component.pendingChanges().length === 0 || component.saving()).toBe(true);
     });
 
@@ -133,7 +135,9 @@ describe('EditLossInformationComponent — Gate Proof', () => {
   // with `original` null, every field read "Not provided", computeDiffs()
   // returned [] no matter what was typed, and Save stayed disabled forever.
   describe('Gate 4 — a claim with no hand-authored record is still editable', () => {
-    beforeEach(async () => { await mount('CLM-2024-003'); });
+    beforeEach(async () => {
+      await mount('CLM-2024-003');
+    });
 
     it('loads a record synthesized from the Claim, not an empty form', () => {
       expect(component.original()).not.toBeNull();

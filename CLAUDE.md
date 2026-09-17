@@ -19,6 +19,7 @@ Found via audit 2026-08-20: dozens of uncommitted files across 10+ features (cir
 ## RULE -1: Read PROJECT.md FIRST (when touching tickets / banner / ACs / mocks / stages)
 
 For any session that proposes changes to:
+
 - `public/tickets/*.json`
 - `src/app/features/claims/dev-banner/**`
 - `src/app/core/mock/state/mock-state.service.ts` (`ScenarioOverrides`)
@@ -44,18 +45,21 @@ Run `npm run pre-commit` before declaring work done — see `.claude/POST_BUILD.
 For **any** task involving UI, layout, components, or SCSS — answer the pre-build checklist before writing code.
 
 **Triggers:**
+
 - "fix layout" / "ตำแหน่ง" / "align" / screenshot of broken UI
 - "add component" / "เพิ่มปุ่ม" / "สร้าง component"
 - "change SCSS" / "เปลี่ยนสี" / "ระยะห่าง"
 - Task contains: button, toolbar, modal, table, form, panel, header, footer, grid, flex
 
 **Process:**
+
 1. Run pre-build checklist (`.claude/PRE_BUILD.md`)
 2. Output answers — including which blessed file the pattern comes from
 3. Wait for "proceed" / "go" / "ได้เลย"
 4. THEN write code
 
 **User shortcuts (act immediately, no questions):**
+
 - `/pre-build first` → stop and run the checklist
 - `blessed?` → cite exactly which blessed file + line I'm copying from
 - `stop, what pattern?` → pause and identify the pattern source
@@ -66,27 +70,27 @@ Skipping = token waste. User has explicit permission to interrupt.
 
 ## Documentation Layout
 
-| File | Use when |
-|------|----------|
-| `.claude/CONTEXT.md` | Stack, tokens, traps, folder structure, NDBX gotchas, accessibility rules — foundation, read once per session |
-| `.claude/PRE_BUILD.md` | Before writing any UI/SCSS code — checklist Q1–Q5, Figma → NDBX mapping, FNOL step workflow, mock data workflow |
-| `.claude/POST_BUILD.md` | Before declaring done — audits, browser checks, evidence template, `/verify-data` for mock data |
-| `.claude/BLESSED.md` | Reference implementations to copy from — filter bar, modal, FNOL footer, page-with-toolbar, tree rows, etc. |
+| File                           | Use when                                                                                                                            |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/CONTEXT.md`           | Stack, tokens, traps, folder structure, NDBX gotchas, accessibility rules — foundation, read once per session                       |
+| `.claude/PRE_BUILD.md`         | Before writing any UI/SCSS code — checklist Q1–Q5, Figma → NDBX mapping, FNOL step workflow, mock data workflow                     |
+| `.claude/POST_BUILD.md`        | Before declaring done — audits, browser checks, evidence template, `/verify-data` for mock data                                     |
+| `.claude/BLESSED.md`           | Reference implementations to copy from — filter bar, modal, FNOL footer, page-with-toolbar, tree rows, etc.                         |
 | `.claude/RUNTIME_OVERRIDES.md` | When CSS isn't applying / before writing layout — `[nxLayout]` inline padding trap, NxExpertModule cascade, formfield space reserve |
-| `docs/NDBX_RECIPES.md` | Verified HTML snippets for every NDBX component — copy from here for forms, dropdowns, dates, etc. |
+| `docs/NDBX_RECIPES.md`         | Verified HTML snippets for every NDBX component — copy from here for forms, dropdowns, dates, etc.                                  |
 
 ---
 
 ## Task Routing
 
-| Task contains… | Read |
-|----------------|------|
-| "build new FNOL step" / "add step to wizard" | `PRE_BUILD.md` § FNOL Step + `BLESSED.md` § wizard footer |
-| "add component" / "add dropdown" / "add modal" / any UI element | `PRE_BUILD.md` Q1–Q5 + `docs/NDBX_RECIPES.md` |
-| "mock data" / "new service" / "JSON data" | `PRE_BUILD.md` § Mock Data + `BLESSED.md` § mock service |
-| "verify" / "audit" / "check" / "is this done" | `POST_BUILD.md` |
-| "Figma" / "design" / "implement from design" | `PRE_BUILD.md` § Implementing from Figma |
-| "layout broken" / "spacing wrong" / "padding ignored" | `RUNTIME_OVERRIDES.md` first (DevTools Computed before tweaking values) |
+| Task contains…                                                  | Read                                                                    |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| "build new FNOL step" / "add step to wizard"                    | `PRE_BUILD.md` § FNOL Step + `BLESSED.md` § wizard footer               |
+| "add component" / "add dropdown" / "add modal" / any UI element | `PRE_BUILD.md` Q1–Q5 + `docs/NDBX_RECIPES.md`                           |
+| "mock data" / "new service" / "JSON data"                       | `PRE_BUILD.md` § Mock Data + `BLESSED.md` § mock service                |
+| "verify" / "audit" / "check" / "is this done"                   | `POST_BUILD.md`                                                         |
+| "Figma" / "design" / "implement from design"                    | `PRE_BUILD.md` § Implementing from Figma                                |
+| "layout broken" / "spacing wrong" / "padding ignored"           | `RUNTIME_OVERRIDES.md` first (DevTools Computed before tweaking values) |
 
 ---
 
@@ -135,6 +139,7 @@ Skipping = token waste. User has explicit permission to interrupt.
 ## Definition of "Working Reference"
 
 A file qualifies as blessed when ALL true:
+
 - ✅ Renders correctly in browser (confirmed by user)
 - ✅ DevTools console shows zero errors
 - ✅ All interactions work

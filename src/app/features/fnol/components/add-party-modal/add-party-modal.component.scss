@@ -1,6 +1,8 @@
 @use '../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 // ─── Header ──────────────────────────────────────────────────────────────────
 
@@ -101,7 +103,6 @@
   color: var(--text-01);
 }
 
-
 // ─── Table ───────────────────────────────────────────────────────────────────
 
 .apm-table {
@@ -109,11 +110,22 @@
   border-top: 1px solid var(--ui-04);
 }
 
-.apm-col-check    { width: 48px; padding-left: 16px !important; }
-.apm-col-name     { min-width: 180px; }
-.apm-col-roles    { min-width: 140px; }
-.apm-col-ucv      { width: 160px; }
-.apm-col-clearance { width: 140px; }
+.apm-col-check {
+  width: 48px;
+  padding-left: 16px !important;
+}
+.apm-col-name {
+  min-width: 180px;
+}
+.apm-col-roles {
+  min-width: 140px;
+}
+.apm-col-ucv {
+  width: 160px;
+}
+.apm-col-clearance {
+  width: 140px;
+}
 
 .apm-row--selected {
   background: var(--claim-overlay-hover);

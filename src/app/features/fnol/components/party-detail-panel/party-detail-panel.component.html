@@ -1,5 +1,4 @@
 <div class="detail-panel">
-
   <div class="detail-panel__header">
     <div class="detail-panel__title-row">
       <h2 class="detail-panel__title">{{ party.legalName }}</h2>
@@ -7,7 +6,12 @@
         <span class="detail-panel__dba">DBA: {{ party.dbaTradeName }}</span>
       }
     </div>
-    <button nxIconButton="tertiary small" type="button" (click)="onClose()" aria-label="Close panel">
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      (click)="onClose()"
+      aria-label="Close panel"
+    >
       <nx-icon name="close"></nx-icon>
     </button>
   </div>
@@ -28,7 +32,6 @@
   </div>
 
   <div class="detail-panel__body" tabindex="0">
-
     <div class="info-section">
       <h3 class="info-section__title">Contact</h3>
       <div class="info-grid">
@@ -98,7 +101,5 @@
         </div>
       </div>
     </div>
-
   </div>
-
 </div>

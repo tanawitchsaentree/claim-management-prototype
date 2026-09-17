@@ -4,7 +4,7 @@ export type CoInsuranceFlag = 'RI' | 'CO' | 'NONE';
 
 export interface SubReserve {
   subReserveId: string;
-  subType: string;          // e.g. "Lorem ipsum" — placeholder for sub-type lookup
+  subType: string; // e.g. "Lorem ipsum" — placeholder for sub-type lookup
   currency: string;
   amount: number;
   coInsurance: CoInsuranceFlag;
@@ -12,7 +12,7 @@ export interface SubReserve {
 
 export interface DamagedItem {
   damagedItemId: string;
-  itemName: string;          // e.g. "Kaufmann's Warehouse: Gate"
+  itemName: string; // e.g. "Kaufmann's Warehouse: Gate"
   expanded?: boolean;
   // Per-tab sub-reserves
   subReserves: Partial<Record<ReserveType, SubReserve[]>>;
@@ -25,8 +25,8 @@ export interface Reserve {
   sectionNo: number;
   partyId: string;
   partyName: string;
-  damageType: string;     // display label: "Material damage"
-  damageTypeKey: string;  // lookup key: "material-damage"
+  damageType: string; // display label: "Material damage"
+  damageTypeKey: string; // lookup key: "material-damage"
 
   // User-fillable via Add reserve modal
   reserveType?: ReserveType;
@@ -68,7 +68,7 @@ export interface ReservesPolicyData {
 }
 
 export const RESERVE_TYPE_LABELS: Record<ReserveType, string> = {
-  'indemnity':  'Indemnity',
-  'expenses':   'Expenses',
-  'recoveries': 'Recoveries',
+  'indemnity': 'Indemnity',
+  'expenses': 'Expenses',
+  'recoveries': 'Recoveries'
 };

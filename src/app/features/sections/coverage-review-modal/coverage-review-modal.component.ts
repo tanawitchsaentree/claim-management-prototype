@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NxModalModule, NX_MODAL_DATA, NxModalRef } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -21,26 +21,25 @@ export interface CoverageReviewModalResult {
 export const COVERAGE_REVIEW_OPTIONS: CoverageReview[] = [
   'Standard Review',
   'Additional information required',
-  'Enhanced review required',
+  'Enhanced review required'
 ];
 
 @Component({
   selector: 'app-coverage-review-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxButtonModule,
     NxFormfieldModule,
     NxDropdownModule,
-    NxInputModule,
+    NxInputModule
   ],
   templateUrl: './coverage-review-modal.component.html',
-  styleUrl: './coverage-review-modal.component.scss',
+  styleUrl: './coverage-review-modal.component.scss'
 })
 export class CoverageReviewModalComponent {
-  readonly data    = inject<CoverageReviewModalData>(NX_MODAL_DATA);
+  readonly data = inject<CoverageReviewModalData>(NX_MODAL_DATA);
   readonly modalRef = inject(NxModalRef);
 
   readonly options = COVERAGE_REVIEW_OPTIONS;
@@ -50,7 +49,10 @@ export class CoverageReviewModalComponent {
       this.data.entity.coverageReview ?? 'Standard Review',
       { nonNullable: true, validators: [Validators.required] }
     ),
-    note: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(1)] }),
+    note: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(1)]
+    })
   });
 
   readonly isOverride = this.data.entity.coverageReview != null;
@@ -61,9 +63,9 @@ export class CoverageReviewModalComponent {
       return;
     }
     const result: CoverageReviewModalResult = {
-      coverageReview:          this.form.controls.coverageReview.value,
-      coverageReviewNote:      this.form.controls.note.value,
-      coverageReviewOverridden: true,
+      coverageReview: this.form.controls.coverageReview.value,
+      coverageReviewNote: this.form.controls.note.value,
+      coverageReviewOverridden: true
     };
     this.modalRef.close(result);
   }

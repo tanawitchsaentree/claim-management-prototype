@@ -7,9 +7,11 @@
 
 <div class="bsm-body" tabindex="0">
   <!-- Party-type tabs -->
-  <nx-tab-group class="bsm-tabs"
-                [selectedIndex]="partyType() === 'company' ? 0 : 1"
-                (selectedIndexChange)="setPartyType($event === 0 ? 'company' : 'individual')">
+  <nx-tab-group
+    class="bsm-tabs"
+    [selectedIndex]="partyType() === 'company' ? 0 : 1"
+    (selectedIndexChange)="setPartyType($event === 0 ? 'company' : 'individual')"
+  >
     <nx-tab>
       <ng-template nxTabLabel>Company</ng-template>
     </nx-tab>
@@ -19,14 +21,17 @@
   </nx-tab-group>
 
   <form [formGroup]="form" class="bsm-form" (ngSubmit)="onSearch()">
-
     <!-- Primary search — always visible: name field + actions on one row -->
     <div class="bsm-primary-row">
       <div class="bsm-primary-row__inputs">
         @if (partyType() === 'company') {
           <nx-formfield label="Legal Name / Trade (DBA) Name">
-            <input nxInput formControlName="legalName"
-                   placeholder="e.g. Broker name, code, or reference" autocomplete="off" />
+            <input
+              nxInput
+              formControlName="legalName"
+              placeholder="e.g. Broker name, code, or reference"
+              autocomplete="off"
+            />
           </nx-formfield>
         } @else {
           <nx-formfield label="First name">
@@ -88,7 +93,7 @@
     }
   </form>
 
-  <ng-container *ngIf="state$ | async as vm">
+  @if (state$ | async; as vm) {
     @if (vm.loading) {
       <div class="bsm-loading">
         <nx-spinner size="medium"></nx-spinner>
@@ -101,100 +106,127 @@
         <app-empty-state message="No brokers found."></app-empty-state>
       } @else {
         <div class="bsm-table-toolbar">
-          <span class="bsm-table-toolbar__count">{{ vm.results.length }} result{{ vm.results.length === 1 ? '' : 's' }}</span>
+          <span class="bsm-table-toolbar__count"
+            >{{ vm.results.length }} result{{ vm.results.length === 1 ? '' : 's' }}</span
+          >
         </div>
-
         @if (partyType() === 'company') {
-          <div class="bsm-table-wrap" tabindex="0"><table nxTable class="bsm-table">
-            <thead>
-              <tr nxTableRow>
-                <th nxHeaderCell class="bsm-col-pick"></th>
-                <th nxHeaderCell>Legal name</th>
-                <th nxHeaderCell>Trade / DBA name</th>
-                <th nxHeaderCell>Address</th>
-                <th nxHeaderCell>ID</th>
-                <th nxHeaderCell>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (b of vm.results; track b.brokerId) {
-                <tr nxTableRow [class.bsm-row--selected]="isSelected(b.brokerId)" (click)="selectRow(b.brokerId)">
-                  <td nxCell class="bsm-col-pick">
-                    <nx-radio-group>
-                      <nx-radio labelSize="small"
-                                [value]="b.brokerId"
-                                [checked]="isSelected(b.brokerId)"
-                                [attr.aria-label]="'Select ' + b.legalName"
-                                (valueChange)="selectRow(b.brokerId)">
-                      </nx-radio>
-                    </nx-radio-group>
-                  </td>
-                  <td nxCell>{{ b.legalName }}</td>
-                  <td nxCell>{{ b.tradeName || '—' }}</td>
-                  <td nxCell>{{ b.address }}</td>
-                  <td nxCell><code class="bsm-id">{{ b.ipmId }}</code></td>
-                  <td nxCell>
-                    <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
-                  </td>
+          <div class="bsm-table-wrap" tabindex="0">
+            <table nxTable class="bsm-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell class="bsm-col-pick"></th>
+                  <th nxHeaderCell>Legal name</th>
+                  <th nxHeaderCell>Trade / DBA name</th>
+                  <th nxHeaderCell>Address</th>
+                  <th nxHeaderCell>ID</th>
+                  <th nxHeaderCell>Status</th>
                 </tr>
-              }
-            </tbody>
-          </table></div>
+              </thead>
+              <tbody>
+                @for (b of vm.results; track b.brokerId) {
+                  <tr
+                    nxTableRow
+                    [class.bsm-row--selected]="isSelected(b.brokerId)"
+                    (click)="selectRow(b.brokerId)"
+                  >
+                    <td nxCell class="bsm-col-pick">
+                      <nx-radio-group>
+                        <nx-radio
+                          labelSize="small"
+                          [value]="b.brokerId"
+                          [checked]="isSelected(b.brokerId)"
+                          [attr.aria-label]="'Select ' + b.legalName"
+                          (valueChange)="selectRow(b.brokerId)"
+                        >
+                        </nx-radio>
+                      </nx-radio-group>
+                    </td>
+                    <td nxCell>{{ b.legalName }}</td>
+                    <td nxCell>{{ b.tradeName || '—' }}</td>
+                    <td nxCell>{{ b.address }}</td>
+                    <td nxCell>
+                      <code class="bsm-id">{{ b.ipmId }}</code>
+                    </td>
+                    <td nxCell>
+                      <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         } @else {
-          <div class="bsm-table-wrap" tabindex="0"><table nxTable class="bsm-table">
-            <thead>
-              <tr nxTableRow>
-                <th nxHeaderCell class="bsm-col-pick"></th>
-                <th nxHeaderCell>First name</th>
-                <th nxHeaderCell>Last name</th>
-                <th nxHeaderCell>Date of birth</th>
-                <th nxHeaderCell>Address</th>
-                <th nxHeaderCell>ID</th>
-                <th nxHeaderCell>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (b of vm.results; track b.brokerId) {
-                <tr nxTableRow [class.bsm-row--selected]="isSelected(b.brokerId)" (click)="selectRow(b.brokerId)">
-                  <td nxCell class="bsm-col-pick">
-                    <nx-radio-group>
-                      <nx-radio labelSize="small"
-                                [value]="b.brokerId"
-                                [checked]="isSelected(b.brokerId)"
-                                [attr.aria-label]="'Select ' + (b.firstName || '') + ' ' + (b.lastName || '')"
-                                (valueChange)="selectRow(b.brokerId)">
-                      </nx-radio>
-                    </nx-radio-group>
-                  </td>
-                  <td nxCell>{{ b.firstName || '—' }}</td>
-                  <td nxCell>{{ b.lastName || '—' }}</td>
-                  <td nxCell>{{ b.dateOfBirth || '—' }}</td>
-                  <td nxCell>{{ b.address }}</td>
-                  <td nxCell><code class="bsm-id">{{ b.ipmId }}</code></td>
-                  <td nxCell>
-                    <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
-                  </td>
+          <div class="bsm-table-wrap" tabindex="0">
+            <table nxTable class="bsm-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell class="bsm-col-pick"></th>
+                  <th nxHeaderCell>First name</th>
+                  <th nxHeaderCell>Last name</th>
+                  <th nxHeaderCell>Date of birth</th>
+                  <th nxHeaderCell>Address</th>
+                  <th nxHeaderCell>ID</th>
+                  <th nxHeaderCell>Status</th>
                 </tr>
-              }
-            </tbody>
-          </table></div>
+              </thead>
+              <tbody>
+                @for (b of vm.results; track b.brokerId) {
+                  <tr
+                    nxTableRow
+                    [class.bsm-row--selected]="isSelected(b.brokerId)"
+                    (click)="selectRow(b.brokerId)"
+                  >
+                    <td nxCell class="bsm-col-pick">
+                      <nx-radio-group>
+                        <nx-radio
+                          labelSize="small"
+                          [value]="b.brokerId"
+                          [checked]="isSelected(b.brokerId)"
+                          [attr.aria-label]="
+                            'Select ' + (b.firstName || '') + ' ' + (b.lastName || '')
+                          "
+                          (valueChange)="selectRow(b.brokerId)"
+                        >
+                        </nx-radio>
+                      </nx-radio-group>
+                    </td>
+                    <td nxCell>{{ b.firstName || '—' }}</td>
+                    <td nxCell>{{ b.lastName || '—' }}</td>
+                    <td nxCell>{{ b.dateOfBirth || '—' }}</td>
+                    <td nxCell>{{ b.address }}</td>
+                    <td nxCell>
+                      <code class="bsm-id">{{ b.ipmId }}</code>
+                    </td>
+                    <td nxCell>
+                      <app-status-chip [status]="b.status" domain="clearance"></app-status-chip>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         }
-
         <div class="bsm-table-footer">
-          <span class="bsm-page-size">Items per page: <strong>{{ vm.results.length }}</strong></span>
+          <span class="bsm-page-size"
+            >Items per page: <strong>{{ vm.results.length }}</strong></span
+          >
         </div>
       }
     }
-  </ng-container>
+  }
 </div>
 
 <footer class="bsm-footer">
   <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <ng-container *ngIf="state$ | async as vm">
-    <button nxButton="primary small" type="button"
-            [disabled]="!selectedId() || !vm.searched || vm.results.length === 0"
-            (click)="onAddSelected(vm.results)">
+  @if (state$ | async; as vm) {
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!selectedId() || !vm.searched || vm.results.length === 0"
+      (click)="onAddSelected(vm.results)"
+    >
       Add Selected
     </button>
-  </ng-container>
+  }
 </footer>

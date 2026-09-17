@@ -2,13 +2,21 @@
 
 // Standard centered modal: shell caps height (calc(100vh - 112px)) and the
 // body scrolls internally so the dialog never overflows a 14" notebook.
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
-.csm-header { @include modal.header; }
+.csm-header {
+  @include modal.header;
+}
 
-.csm-header-row { @include modal.header-row; }
+.csm-header-row {
+  @include modal.header-row;
+}
 
-.csm-title { @include modal.title; }
+.csm-title {
+  @include modal.title;
+}
 
 .csm-context {
   margin: 0;
@@ -16,7 +24,9 @@
   color: var(--text-muted);
 }
 
-.csm-body { @include modal.body; }
+.csm-body {
+  @include modal.body;
+}
 
 .csm-intro {
   font-size: var(--paragraph-03-font-size);
@@ -33,7 +43,6 @@
   font-size: var(--paragraph-03-font-size);
 }
 
-
 // ─── Policy table ─────────────────────────────────────────────────
 .csm-table {
   width: 100%;
@@ -44,7 +53,7 @@
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: 0.04em;
     text-align: left;
     padding: var(--space-sm) var(--space-md);
     border-bottom: 1px solid var(--ui-04);
@@ -60,20 +69,21 @@
   }
 }
 
-.csm-col-radio { width: 36px; text-align: center; }
-
-.csm-radio {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: var(--interactive-primary);
+.csm-col-radio {
+  width: 36px;
+  text-align: center;
 }
 
-.csm-coverage { white-space: nowrap; color: var(--text-muted); }
+.csm-coverage {
+  white-space: nowrap;
+  color: var(--text-muted);
+}
 
 .csm-row--eligible {
   cursor: pointer;
-  &:hover td { background: var(--ui-02); }
+  &:hover td {
+    background: var(--ui-02);
+  }
 }
 
 .csm-row--selected td {
@@ -83,7 +93,10 @@
 // Ineligible: greyed but still readable
 .csm-row--ineligible {
   cursor: not-allowed;
-  td { color: var(--text-muted); background: var(--ui-02); }
+  td {
+    color: var(--text-muted);
+    background: var(--ui-02);
+  }
 }
 
 .csm-status--ok {
@@ -104,7 +117,12 @@
   color: var(--danger, #c0392b);
 }
 
-.csm-reason-icon { font-size: var(--paragraph-03-font-size); flex-shrink: 0; }
+.csm-reason-icon {
+  font-size: var(--paragraph-03-font-size);
+  flex-shrink: 0;
+}
 
 // ─── Footer ───────────────────────────────────────────────────────
-.csm-footer { @include modal.footer; }
+.csm-footer {
+  @include modal.footer;
+}

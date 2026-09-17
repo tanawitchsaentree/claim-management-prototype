@@ -19,11 +19,23 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ClaimDevBannerComponent, DevHelperBannerComponent, AccessGateComponent, ToastStackComponent, TourStepRendererComponent, ArrivalPanelComponent, PersonaSwitcherComponent, NxMessageModule],
+  imports: [
+    RouterOutlet,
+    ClaimDevBannerComponent,
+    DevHelperBannerComponent,
+    AccessGateComponent,
+    ToastStackComponent,
+    TourStepRendererComponent,
+    ArrivalPanelComponent,
+    PersonaSwitcherComponent,
+    NxMessageModule
+  ],
   styleUrl: './app.scss',
   template: `
     @if (isExploration) {
-      <nx-message context="warning" class="exploration-banner">EXPLORATION BUILD — work in progress, not final</nx-message>
+      <nx-message context="warning" class="exploration-banner"
+        >EXPLORATION BUILD — work in progress, not final</nx-message
+      >
     }
     @if (unlocked()) {
       <div class="dev-banner-row">
@@ -53,10 +65,10 @@ import { environment } from '../environments/environment';
     } @else {
       <app-access-gate (unlocked)="onUnlocked()" />
     }
-  `,
+  `
 })
 export class App implements OnInit {
-  readonly helper   = inject(ClaimDevHelperService);
+  readonly helper = inject(ClaimDevHelperService);
   private readonly router = inject(Router);
   readonly prototypeEntry = inject(PrototypeEntryService);
   readonly tour = inject(TourService);

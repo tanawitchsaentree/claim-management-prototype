@@ -10,12 +10,12 @@ import rawEntities from '../data/entities-damages.json';
 
 interface RawMatch {
   policyNumber: string;
-  matchReason:  string;
+  matchReason: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class MockImpactedPoliciesService extends MockBaseService {
-  private readonly matches  = rawImpacted as unknown as Record<string, RawMatch[]>;
+  private readonly matches = rawImpacted as unknown as Record<string, RawMatch[]>;
   private readonly policies = rawPolicies as unknown as Policy[];
   private readonly entities = rawEntities as unknown as Record<string, EntitiesDamagesData>;
 
@@ -43,14 +43,14 @@ export class MockImpactedPoliciesService extends MockBaseService {
       if (count === 0) continue;
 
       result.push({
-        policyNumber:         policy.policyNumber,
-        clientName:           policy.clientName,
-        lineOfBusiness:       policy.lineOfBusiness,
-        effectiveDate:        policy.effectiveDate,
-        expiryDate:           policy.expiryDate,
-        status:               policy.status,
-        matchReason:          match.matchReason,
-        availableEntityCount: count,
+        policyNumber: policy.policyNumber,
+        clientName: policy.clientName,
+        lineOfBusiness: policy.lineOfBusiness,
+        effectiveDate: policy.effectiveDate,
+        expiryDate: policy.expiryDate,
+        status: policy.status,
+        matchReason: match.matchReason,
+        availableEntityCount: count
       });
     }
     return this.list(result);
@@ -64,14 +64,12 @@ export class MockImpactedPoliciesService extends MockBaseService {
 
   resetState(basePolicyId?: string): void {
     if (basePolicyId) this.added.delete(basePolicyId);
-    else              this.added.clear();
+    else this.added.clear();
   }
 
   private countEntities(policyId: string): number {
     const data = this.entities[policyId];
     if (!data) return 0;
-    return data.sections
-      .flatMap(s => s.damageGroups.flatMap(g => g.entities))
-      .length;
+    return data.sections.flatMap(s => s.damageGroups.flatMap(g => g.entities)).length;
   }
 }

@@ -5,7 +5,7 @@ import {
   CoinsuranceParticipant,
   LinkedClaimRow,
   PolicyCoverage,
-  PolicyOverview,
+  PolicyOverview
 } from '../../models/policy-overview.model';
 import { Policy } from '../../models/policy.model';
 import policiesData from '../data/policies.json';
@@ -13,25 +13,25 @@ import policyDetailsData from '../data/policy-details.json';
 import claimsData from '../data/claims.json';
 
 interface PolicyDetailEntry {
-  coverages:   PolicyCoverage[];
+  coverages: PolicyCoverage[];
   coinsurance: CoinsuranceParticipant[];
 }
 
 interface ClaimRecord {
-  claimId:      string;
+  claimId: string;
   policyNumber: string;
-  clientName:   string;
-  description:  string;
-  dateCreated:  string;
-  lossDate:     string;
-  status:       string;
+  clientName: string;
+  description: string;
+  dateCreated: string;
+  lossDate: string;
+  status: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class MockPolicyOverviewService extends MockBaseService {
   private readonly policies = policiesData as Policy[];
-  private readonly details  = policyDetailsData as Record<string, PolicyDetailEntry>;
-  private readonly claims   = claimsData as ClaimRecord[];
+  private readonly details = policyDetailsData as Record<string, PolicyDetailEntry>;
+  private readonly claims = claimsData as ClaimRecord[];
 
   // Linked claims are DERIVED from claims.json, not stored alongside the
   // policy. A claim already owns its policyNumber, so a second copy of that
@@ -42,12 +42,12 @@ export class MockPolicyOverviewService extends MockBaseService {
     return this.claims
       .filter(c => c.policyNumber === policyNumber)
       .map(c => ({
-        claimId:         c.claimId,
+        claimId: c.claimId,
         lossDescription: c.description,
-        clientName:      c.clientName,
-        createdDate:     c.dateCreated,
-        dateOfLoss:      c.lossDate,
-        status:          c.status,
+        clientName: c.clientName,
+        createdDate: c.dateCreated,
+        dateOfLoss: c.lossDate,
+        status: c.status
       }))
       .sort((a, b) => b.dateOfLoss.localeCompare(a.dateOfLoss));
   }
@@ -59,9 +59,9 @@ export class MockPolicyOverviewService extends MockBaseService {
     const detail = this.details[policyNumber];
     return this.respond<PolicyOverview>({
       ...policy,
-      coverages:    detail ? structuredClone(detail.coverages)   : [],
-      coinsurance:  detail ? structuredClone(detail.coinsurance) : [],
-      linkedClaims: this.linkedClaimsFor(policyNumber),
+      coverages: detail ? structuredClone(detail.coverages) : [],
+      coinsurance: detail ? structuredClone(detail.coinsurance) : [],
+      linkedClaims: this.linkedClaimsFor(policyNumber)
     });
   }
 

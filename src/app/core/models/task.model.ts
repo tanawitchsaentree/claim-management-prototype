@@ -1,5 +1,14 @@
 export type TaskStatus = 'open' | 'in-progress' | 'done';
-export type TaskType = 'Review' | 'Contact' | 'Document' | 'Site visit' | 'Finance' | 'Legal' | 'Approval' | 'Investigation' | 'Notification';
+export type TaskType =
+  | 'Review'
+  | 'Contact'
+  | 'Document'
+  | 'Site visit'
+  | 'Finance'
+  | 'Legal'
+  | 'Approval'
+  | 'Investigation'
+  | 'Notification';
 
 export interface Task {
   taskId: string;

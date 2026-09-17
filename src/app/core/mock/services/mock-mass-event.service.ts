@@ -28,21 +28,39 @@ export class MockMassEventService extends MockBaseService {
   }
 
   /** Creates a new link in 'pending' state — never auto-confirms. */
-  linkClaim(claimId: string, massEventId: string, by: { userId: string; name: string }): Observable<void> {
+  linkClaim(
+    claimId: string,
+    massEventId: string,
+    by: { userId: string; name: string }
+  ): Observable<void> {
     const linkedBy = { userId: by.userId, name: by.name, at: new Date().toISOString() };
     this.stateSvc.patchClaims(claims =>
-      claims.map(c => c.claimId === claimId
-        ? { ...c, massEventId, massEventLinkStatus: 'pending' as MassEventLinkStatus, massEventLinkedBy: linkedBy }
-        : c
+      claims.map(c =>
+        c.claimId === claimId
+          ? {
+              ...c,
+              massEventId,
+              massEventLinkStatus: 'pending' as MassEventLinkStatus,
+              massEventLinkedBy: linkedBy
+            }
+          : c
       )
     );
-    this.stateSvc.patchOverview(claimId, { massEventId, massEventLinkStatus: 'pending', massEventLinkedBy: linkedBy });
+    this.stateSvc.patchOverview(claimId, {
+      massEventId,
+      massEventLinkStatus: 'pending',
+      massEventLinkedBy: linkedBy
+    });
     return this.respond(undefined);
   }
 
   confirmLink(claimId: string): Observable<void> {
     this.stateSvc.patchClaims(claims =>
-      claims.map(c => c.claimId === claimId ? { ...c, massEventLinkStatus: 'confirmed' as MassEventLinkStatus } : c)
+      claims.map(c =>
+        c.claimId === claimId
+          ? { ...c, massEventLinkStatus: 'confirmed' as MassEventLinkStatus }
+          : c
+      )
     );
     this.stateSvc.patchOverview(claimId, { massEventLinkStatus: 'confirmed' });
     return this.respond(undefined);
@@ -58,23 +76,41 @@ export class MockMassEventService extends MockBaseService {
   overrideLink(claimId: string, by: { userId: string; name: string }): Observable<void> {
     const overriddenBy = { userId: by.userId, name: by.name, at: new Date().toISOString() };
     this.stateSvc.patchClaims(claims =>
-      claims.map(c => c.claimId === claimId
-        ? { ...c, massEventLinkStatus: 'overridden' as MassEventLinkStatus, massEventOverriddenBy: overriddenBy }
-        : c
+      claims.map(c =>
+        c.claimId === claimId
+          ? {
+              ...c,
+              massEventLinkStatus: 'overridden' as MassEventLinkStatus,
+              massEventOverriddenBy: overriddenBy
+            }
+          : c
       )
     );
-    this.stateSvc.patchOverview(claimId, { massEventLinkStatus: 'overridden', massEventOverriddenBy: overriddenBy });
+    this.stateSvc.patchOverview(claimId, {
+      massEventLinkStatus: 'overridden',
+      massEventOverriddenBy: overriddenBy
+    });
     return this.respond(undefined);
   }
 
   unlinkClaim(claimId: string): Observable<void> {
     this.stateSvc.patchClaims(claims =>
-      claims.map(c => c.claimId === claimId
-        ? { ...c, massEventId: undefined, massEventLinkStatus: undefined, massEventLinkedBy: undefined }
-        : c
+      claims.map(c =>
+        c.claimId === claimId
+          ? {
+              ...c,
+              massEventId: undefined,
+              massEventLinkStatus: undefined,
+              massEventLinkedBy: undefined
+            }
+          : c
       )
     );
-    this.stateSvc.patchOverview(claimId, { massEventId: undefined, massEventLinkStatus: undefined, massEventLinkedBy: undefined });
+    this.stateSvc.patchOverview(claimId, {
+      massEventId: undefined,
+      massEventLinkStatus: undefined,
+      massEventLinkedBy: undefined
+    });
     return this.respond(undefined);
   }
 
@@ -103,14 +139,14 @@ export class MockMassEventService extends MockBaseService {
   private applyFilters(list: MassEvent[], f?: MassEventFilters): MassEvent[] {
     if (!f) return list;
     return list.filter(e => {
-      if (f.id        && !e.id.toLowerCase().includes(f.id.toLowerCase())) return false;
-      if (f.code      && !e.code.toLowerCase().includes(f.code.toLowerCase())) return false;
-      if (f.name      && !e.name.toLowerCase().includes(f.name.toLowerCase())) return false;
-      if (f.country   && e.country !== f.country) return false;
-      if (f.region    && e.region  !== f.region)  return false;
+      if (f.id && !e.id.toLowerCase().includes(f.id.toLowerCase())) return false;
+      if (f.code && !e.code.toLowerCase().includes(f.code.toLowerCase())) return false;
+      if (f.name && !e.name.toLowerCase().includes(f.name.toLowerCase())) return false;
+      if (f.country && e.country !== f.country) return false;
+      if (f.region && e.region !== f.region) return false;
       if (f.lossCause && e.lossCause !== f.lossCause) return false;
       if (f.dateStartFrom && e.dateStart < f.dateStartFrom) return false;
-      if (f.dateStartTo   && e.dateStart > f.dateStartTo)   return false;
+      if (f.dateStartTo && e.dateStart > f.dateStartTo) return false;
       return true;
     });
   }

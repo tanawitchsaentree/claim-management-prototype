@@ -6,24 +6,36 @@
     @if (ticket.epicId) {
       <span class="cddm-ticket-epic">Epic: {{ ticket.epicId }}</span>
     }
-    <button nxIconButton="tertiary small"
-            type="button"
-            (click)="onMinimize()"
-            [disabled]="!selectedAc()"
-            aria-label="Minimize modal">
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      (click)="onMinimize()"
+      [disabled]="!selectedAc()"
+      aria-label="Minimize modal"
+    >
       <nx-icon name="minus-circle"></nx-icon>
     </button>
   </div>
   @if (isFullMode) {
     <div class="cddm-inspector">
-      <span>Status: <strong>{{ stateInspector().status }}</strong></span>
+      <span
+        >Status: <strong>{{ stateInspector().status }}</strong></span
+      >
       <span class="cddm-sep">·</span>
-      <span>Tasks: <strong>{{ stateInspector().tasks }}</strong></span>
+      <span
+        >Tasks: <strong>{{ stateInspector().tasks }}</strong></span
+      >
       <span class="cddm-sep">·</span>
-      <span>Sections: <strong>{{ stateInspector().sections }}</strong></span>
+      <span
+        >Sections: <strong>{{ stateInspector().sections }}</strong></span
+      >
       <span class="cddm-sep">·</span>
-      <span>Can close:
-        <strong [class.cddm-yes]="stateInspector().canClose" [class.cddm-no]="!stateInspector().canClose">
+      <span
+        >Can close:
+        <strong
+          [class.cddm-yes]="stateInspector().canClose"
+          [class.cddm-no]="!stateInspector().canClose"
+        >
           {{ stateInspector().canClose ? 'YES' : 'NO' }}
         </strong>
       </span>
@@ -32,7 +44,6 @@
 </div>
 
 <div class="cddm-columns">
-
   <!-- LEFT: AC list -->
   <div class="cddm-left">
     <p class="cddm-col-label">Acceptance Criteria</p>
@@ -48,20 +59,25 @@
           [attr.tabindex]="ac.buildStatus === 'todo' ? -1 : 0"
           role="radio"
           [attr.aria-checked]="selectedAcId() === ac.id"
-          [attr.aria-disabled]="ac.buildStatus === 'todo'">
+          [attr.aria-disabled]="ac.buildStatus === 'todo'"
+        >
           <nx-icon
             [name]="statusIcon(ac.buildStatus)"
             class="cddm-ac-icon"
             [class.cddm-ac-icon--done]="ac.buildStatus === 'done'"
-            [class.cddm-ac-icon--todo]="ac.buildStatus === 'todo'">
+            [class.cddm-ac-icon--todo]="ac.buildStatus === 'todo'"
+          >
           </nx-icon>
           <div class="cddm-ac-text">
             <div class="cddm-ac-id-row">
               <span class="cddm-ac-id">{{ ac.id }}</span>
               @if (data.helper.isVerified(ticket.ticketId, ac.id)) {
-                <span class="cddm-ac-verified"
-                      [nxTooltip]="getVerifyTooltip(ac.id)"
-                      nxTooltipPosition="right">✓ verified</span>
+                <span
+                  class="cddm-ac-verified"
+                  [nxTooltip]="getVerifyTooltip(ac.id)"
+                  nxTooltipPosition="right"
+                  >✓ verified</span
+                >
               }
             </div>
             <span class="cddm-ac-statement" [innerHTML]="ac.statement | inlineMarkdown"></span>
@@ -97,9 +113,7 @@
                     <small class="cddm-precon-hint">{{ pre.hint }}</small>
                   }
                   @if (pre.page !== 'any' && shouldShowLink(pre)) {
-                    <button type="button"
-                            class="cddm-precon-link"
-                            (click)="onGoTo(pre)">
+                    <button type="button" class="cddm-precon-link" (click)="onGoTo(pre)">
                       Verify on {{ pre.page }} ↗
                     </button>
                   }
@@ -138,14 +152,14 @@
 
         <div class="cddm-verify-section">
           @if (ac.buildStatus !== 'done') {
-            <p class="cddm-verify-disabled">
-              Cannot verify — build status: {{ ac.buildStatus }}
-            </p>
+            <p class="cddm-verify-disabled">Cannot verify — build status: {{ ac.buildStatus }}</p>
           } @else if (isSelectedAcVerified()) {
             <div class="cddm-verify-confirmed">
               <nx-icon name="check-circle" class="cddm-verify-confirmed-icon"></nx-icon>
               <div class="cddm-verify-confirmed-text">
-                <span>✓ Verified by <strong>{{ getVerifier() }}</strong> on {{ getVerifyDate() }}</span>
+                <span
+                  >✓ Verified by <strong>{{ getVerifier() }}</strong> on {{ getVerifyDate() }}</span
+                >
               </div>
               <button nxButton="tertiary small" type="button" (click)="onUnverify()">Unmark</button>
             </div>
@@ -163,7 +177,6 @@
       </div>
     }
   </div>
-
 </div>
 
 <div class="cddm-footer">

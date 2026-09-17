@@ -1,47 +1,41 @@
-export type PromiseStatus     = 'possibly-promised' | 'not-promised';
-export type EntityStatus      = 'promised' | 'conditional' | 'by-extension' | 'not-promised';
-export type DamageItemStatus  = 'open' | 'assessed' | 'approved' | 'rejected';
+export type PromiseStatus = 'possibly-promised' | 'not-promised';
+export type EntityStatus = 'promised' | 'conditional' | 'by-extension' | 'not-promised';
+export type DamageItemStatus = 'open' | 'assessed' | 'approved' | 'rejected';
 
 export interface UploadedDocument {
-  fileId:     string;
-  fileName:   string;
-  fileSize:   number;   // bytes
-  uploadedAt: string;   // ISO date string
+  fileId: string;
+  fileName: string;
+  fileSize: number; // bytes
+  uploadedAt: string; // ISO date string
 }
 
 export interface DamageItem {
-  itemId:      string;
-  description: string;          // e.g. "Roof damage", "Broken window"
-  causeOfLoss: string;          // cause key from cause-schemas
-  amount:      number;          // estimated value
-  currency:    string;          // "EUR", "USD"
-  status:      DamageItemStatus;
-  notes?:      string;
-  documents?:  UploadedDocument[];
+  itemId: string;
+  description: string; // e.g. "Roof damage", "Broken window"
+  causeOfLoss: string; // cause key from cause-schemas
+  amount: number; // estimated value
+  currency: string; // "EUR", "USD"
+  status: DamageItemStatus;
+  notes?: string;
+  documents?: UploadedDocument[];
 }
 
-export type EntityType =
-  | 'building'
-  | 'vehicle'
-  | 'marine'
-  | 'employee'
-  | 'financial'
-  | 'other';
+export type EntityType = 'building' | 'vehicle' | 'marine' | 'employee' | 'financial' | 'other';
 
 export const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
-  building:  'Add building(s)',
-  vehicle:   'Add vehicle(s)',
-  marine:    'Add marine vessel(s)',
-  employee:  'Add employee group(s)',
+  building: 'Add building(s)',
+  vehicle: 'Add vehicle(s)',
+  marine: 'Add marine vessel(s)',
+  employee: 'Add employee group(s)',
   financial: 'Add financial asset(s)',
-  other:     'Add other entity',
+  other: 'Add other entity'
 };
 
 export const COUNTRY_OPTIONS: { value: string; label: string }[] = [
-  { value: 'Germany',        label: 'Germany' },
-  { value: 'France',         label: 'France' },
+  { value: 'Germany', label: 'Germany' },
+  { value: 'France', label: 'France' },
   { value: 'United Kingdom', label: 'United Kingdom' },
-  { value: 'Netherlands',    label: 'Netherlands' },
+  { value: 'Netherlands', label: 'Netherlands' }
 ];
 
 export interface EntitySearchResult {

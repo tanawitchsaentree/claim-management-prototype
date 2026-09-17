@@ -8,7 +8,9 @@
   </div>
   <p class="csm-context">
     {{ skeleton.clientName }} &middot; {{ skeleton.description }}
-    @if (skeleton.lossDate) { &middot; Loss date {{ skeleton.lossDate }} }
+    @if (skeleton.lossDate) {
+      &middot; Loss date {{ skeleton.lossDate }}
+    }
   </p>
 </div>
 
@@ -37,22 +39,30 @@
       </thead>
       <tbody>
         @for (row of rows(); track row.policy.policyNumber) {
-          <tr class="csm-row"
-              [class.csm-row--eligible]="row.eligible"
-              [class.csm-row--ineligible]="!row.eligible"
-              [class.csm-row--selected]="selectedNumber() === row.policy.policyNumber"
-              (click)="select(row)">
+          <tr
+            class="csm-row"
+            [class.csm-row--eligible]="row.eligible"
+            [class.csm-row--ineligible]="!row.eligible"
+            [class.csm-row--selected]="selectedNumber() === row.policy.policyNumber"
+            (click)="select(row)"
+          >
             <td class="csm-col-radio">
               @if (row.eligible) {
-                <input type="radio" name="policySelect" class="csm-radio"
-                       [checked]="selectedNumber() === row.policy.policyNumber"
-                       (change)="select(row)" />
+                <nx-radio
+                  name="policySelect"
+                  labelSize="small"
+                  [checked]="selectedNumber() === row.policy.policyNumber"
+                  [attr.aria-label]="'Select policy ' + row.policy.policyNumber"
+                  (click)="select(row); $event.stopPropagation()"
+                ></nx-radio>
               }
             </td>
             <td>{{ row.policy.policyNumber }}</td>
             <td>{{ row.policy.clientName }}</td>
             <td>{{ row.policy.lineOfBusiness }}</td>
-            <td class="csm-coverage">{{ row.policy.effectiveDate }} – {{ row.policy.expiryDate }}</td>
+            <td class="csm-coverage">
+              {{ row.policy.effectiveDate }} – {{ row.policy.expiryDate }}
+            </td>
             <td>
               @if (row.eligible) {
                 <span class="csm-status csm-status--ok">{{ row.policy.status }}</span>
@@ -73,9 +83,7 @@
 <!-- Footer — modal zone: small buttons -->
 <div class="csm-footer">
   <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="!canContinue()"
-          (click)="onContinue()">
+  <button nxButton="primary small" type="button" [disabled]="!canContinue()" (click)="onContinue()">
     Continue conversion
   </button>
 </div>

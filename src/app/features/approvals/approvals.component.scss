@@ -1,4 +1,8 @@
-:host { display: block; min-height: 100vh; background: var(--ui-background); }
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--ui-background);
+}
 
 .approvals-outer {
   padding-top: 24px;
@@ -63,7 +67,9 @@
     }
   }
 
-  &:hover:not(.tab-btn--active) { background: var(--ui-02); }
+  &:hover:not(.tab-btn--active) {
+    background: var(--ui-02);
+  }
 }
 
 // ── Toggle row ────────────────────────────────────────────────────
@@ -85,17 +91,42 @@
   width: 100%;
   table-layout: fixed;
 
-  .col-expand   { width: 40px; padding: 0 !important; }
-  .col-req-id   { width: 120px; }
-  .col-claim-id { width: 200px; }
-  .col-oe       { width: 50px; }
-  .col-lob      { width: 90px; }
-  .col-type     { width: 130px; }
-  .col-currency { width: 70px; }
-  .col-amount   { width: 80px; }
-  .col-requester{ width: 200px; }
-  .col-date     { width: 110px; }
-  .col-action   { width: 56px; text-align: center !important; padding: 0 !important; }
+  .col-expand {
+    width: 40px;
+    padding: 0 !important;
+  }
+  .col-req-id {
+    width: 120px;
+  }
+  .col-claim-id {
+    width: 200px;
+  }
+  .col-oe {
+    width: 50px;
+  }
+  .col-lob {
+    width: 90px;
+  }
+  .col-type {
+    width: 130px;
+  }
+  .col-currency {
+    width: 70px;
+  }
+  .col-amount {
+    width: 80px;
+  }
+  .col-requester {
+    width: 200px;
+  }
+  .col-date {
+    width: 110px;
+  }
+  .col-action {
+    width: 56px;
+    text-align: center !important;
+    padding: 0 !important;
+  }
 
   th[nxHeaderCell] {
     font-weight: 600 !important;
@@ -114,30 +145,35 @@
   }
 }
 
-
 // ── Links ─────────────────────────────────────────────────────────
 .text-link {
   color: var(--interactive-text);
   text-decoration: none;
   font-weight: 500;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ── NDBX overrides ────────────────────────────────────────────────
 button[nxIconButton] {
   color: var(--text-01) !important;
   background: transparent !important;
-  &:hover { background: var(--hover-secondary) !important; }
-  nx-icon { color: var(--text-01) !important; }
+  &:hover {
+    background: var(--hover-secondary) !important;
+  }
+  nx-icon {
+    color: var(--text-01) !important;
+  }
 }
 
-button[nxButton="secondary small"] {
+button[nxButton='secondary small'] {
   background: transparent !important;
   color: var(--interactive-primary) !important;
   border: 2px solid var(--interactive-primary) !important;
 }
 
-button[nxButton="tertiary small"] {
+button[nxButton='tertiary small'] {
   background: transparent !important;
   color: var(--text-muted) !important;
   border: none !important;

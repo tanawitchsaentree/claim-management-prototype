@@ -9,10 +9,7 @@
     "totalReserve": 2450000,
     "currency": "EUR",
     "status": "Open",
-    "proximateCause": [
-      "Storm",
-      "Flood"
-    ],
+    "proximateCause": ["Storm", "Flood"],
     "eventOccurrenceTime": "14:20",
     "eventLocation": "Rhineland-Palatinate, Germany",
     "causesRelations": [
@@ -23,18 +20,11 @@
     "damagesCaused": [
       {
         "type": "Material damage",
-        "damages": [
-          "Building",
-          "Contents",
-          "Machinery"
-        ]
+        "damages": ["Building", "Contents", "Machinery"]
       },
       {
         "type": "Business interruption",
-        "damages": [
-          "Loss of production",
-          "Extra expenses"
-        ]
+        "damages": ["Loss of production", "Extra expenses"]
       }
     ]
   },
@@ -48,9 +38,7 @@
     "totalReserve": 1820000,
     "currency": "USD",
     "status": "Open",
-    "proximateCause": [
-      "Storm"
-    ],
+    "proximateCause": ["Storm"],
     "eventOccurrenceTime": "03:45",
     "eventLocation": "North Sea, off Stavanger, Norway",
     "causesRelations": [
@@ -61,16 +49,11 @@
     "damagesCaused": [
       {
         "type": "Material damage",
-        "damages": [
-          "Hull",
-          "Cargo"
-        ]
+        "damages": ["Hull", "Cargo"]
       },
       {
         "type": "Financial loss",
-        "damages": [
-          "Salvage costs"
-        ]
+        "damages": ["Salvage costs"]
       }
     ]
   },
@@ -84,9 +67,7 @@
     "totalReserve": 940000,
     "currency": "EUR",
     "status": "Monitoring",
-    "proximateCause": [
-      "Fire"
-    ],
+    "proximateCause": ["Fire"],
     "eventOccurrenceTime": "23:10",
     "eventLocation": "Ingolstadt, Bavaria, Germany",
     "causesRelations": [
@@ -97,17 +78,11 @@
     "damagesCaused": [
       {
         "type": "Material damage",
-        "damages": [
-          "Building",
-          "Contents",
-          "Machinery"
-        ]
+        "damages": ["Building", "Contents", "Machinery"]
       },
       {
         "type": "Business interruption",
-        "damages": [
-          "Loss of gross profit"
-        ]
+        "damages": ["Loss of gross profit"]
       }
     ]
   },
@@ -121,9 +96,7 @@
     "totalReserve": 1310000,
     "currency": "EUR",
     "status": "Open",
-    "proximateCause": [
-      "Flood"
-    ],
+    "proximateCause": ["Flood"],
     "eventOccurrenceTime": "07:30",
     "eventLocation": "Innsbruck, Tyrol, Austria",
     "causesRelations": [
@@ -134,22 +107,17 @@
     "damagesCaused": [
       {
         "type": "Material damage",
-        "damages": [
-          "Construction works",
-          "Plant and equipment"
-        ]
+        "damages": ["Construction works", "Plant and equipment"]
       },
       {
         "type": "Financial loss",
-        "damages": [
-          "Delay in start-up"
-        ]
+        "damages": ["Delay in start-up"]
       }
     ]
   },
   {
     "lossEventId": "910111",
-    "name": "Cyber Outage — adesso Supply Chain",
+    "name": "Cyber Outage — Nordbyte Supply Chain",
     "eventDate": "2024-06-08",
     "oe": "Germany",
     "lineOfBusiness": "Cyber",
@@ -157,9 +125,7 @@
     "totalReserve": 560000,
     "currency": "EUR",
     "status": "Monitoring",
-    "proximateCause": [
-      "Cyber attack"
-    ],
+    "proximateCause": ["Cyber attack"],
     "eventOccurrenceTime": "02:15",
     "eventLocation": "Dortmund, North Rhine-Westphalia, Germany",
     "causesRelations": [
@@ -170,16 +136,11 @@
     "damagesCaused": [
       {
         "type": "Financial loss",
-        "damages": [
-          "Business interruption",
-          "Incident response costs"
-        ]
+        "damages": ["Business interruption", "Incident response costs"]
       },
       {
         "type": "Liability",
-        "damages": [
-          "Third-party data claims"
-        ]
+        "damages": ["Third-party data claims"]
       }
     ]
   },
@@ -193,9 +154,7 @@
     "totalReserve": 0,
     "currency": "EUR",
     "status": "Closed",
-    "proximateCause": [
-      "Hail"
-    ],
+    "proximateCause": ["Hail"],
     "eventOccurrenceTime": "16:50",
     "eventLocation": "Hanover, Lower Saxony, Germany",
     "causesRelations": [
@@ -206,10 +165,7 @@
     "damagesCaused": [
       {
         "type": "Material damage",
-        "damages": [
-          "Roof",
-          "Vehicles"
-        ]
+        "damages": ["Roof", "Vehicles"]
       }
     ]
   },
@@ -223,27 +179,18 @@
     "totalReserve": 380000,
     "currency": "EUR",
     "status": "Monitoring",
-    "proximateCause": [
-      "Machinery breakdown"
-    ],
+    "proximateCause": ["Machinery breakdown"],
     "eventOccurrenceTime": "11:05",
     "eventLocation": "Budapest, Hungary",
-    "causesRelations": [
-      "Bearing failure on press line 3",
-      "Unplanned shutdown of 9 days"
-    ],
+    "causesRelations": ["Bearing failure on press line 3", "Unplanned shutdown of 9 days"],
     "damagesCaused": [
       {
         "type": "Material damage",
-        "damages": [
-          "Machinery"
-        ]
+        "damages": ["Machinery"]
       },
       {
         "type": "Business interruption",
-        "damages": [
-          "Loss of output"
-        ]
+        "damages": ["Loss of output"]
       }
     ]
   }

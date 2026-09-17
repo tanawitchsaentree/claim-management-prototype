@@ -1,6 +1,8 @@
 @use '../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .sim-header {
   @include modal.header;
@@ -16,6 +18,10 @@
   color: var(--text-01);
 }
 
-.sim-body { @include modal.body; }
+.sim-body {
+  @include modal.body;
+}
 
-.sim-footer { @include modal.footer; }
+.sim-footer {
+  @include modal.footer;
+}

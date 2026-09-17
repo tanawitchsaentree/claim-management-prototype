@@ -26,7 +26,7 @@ import { StatusChipComponent } from '../status-chip/status-chip.component';
   standalone: true,
   imports: [NxButtonModule, NxIconModule, NxMessageModule, StatusChipComponent],
   templateUrl: './arrival-panel.component.html',
-  styleUrl: './arrival-panel.component.scss',
+  styleUrl: './arrival-panel.component.scss'
 })
 export class ArrivalPanelComponent {
   @Input({ required: true }) context!: ArrivalContext;
@@ -48,14 +48,16 @@ export class ArrivalPanelComponent {
   /** Which criterion is expanded, by id. Only one at a time — the panel is small. */
   readonly openCriterion = signal<string | null>(null);
 
-  readonly builtCriteria = computed(() => this.context.criteria.filter((c) => c.buildStatus !== 'todo'));
+  readonly builtCriteria = computed(() =>
+    this.context.criteria.filter(c => c.buildStatus !== 'todo')
+  );
 
   get shownRoute(): string {
     return this.currentRoute ?? this.context.route;
   }
 
   toggleCriterion(id: string): void {
-    this.openCriterion.update((current) => (current === id ? null : id));
+    this.openCriterion.update(current => (current === id ? null : id));
   }
 
   onStartTour(): void {

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+  signal
+} from '@angular/core';
 import { animate, style, transition, trigger, query, stagger } from '@angular/animations';
 import { DecimalPipe, LowerCasePipe } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -12,7 +21,13 @@ import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { MockReservesService } from '../../../../../../core/mock/services/mock-reserves.service';
 import { EmptyStateComponent } from '../../../../../../shared/components/empty-state/empty-state.component';
 import {
-  Reserve, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, DamagedItem, SubReserve, CoInsuranceFlag,
+  Reserve,
+  ReservesPolicyData,
+  ReserveType,
+  RESERVE_TYPE_LABELS,
+  DamagedItem,
+  SubReserve,
+  CoInsuranceFlag
 } from '../../../../../../core/models/reserve.model';
 
 export interface SectionMutation {
@@ -24,9 +39,17 @@ export interface SectionMutation {
   selector: 'app-reserve-detail-panel',
   standalone: true,
   imports: [
-    DecimalPipe, LowerCasePipe,
-    NxIconModule, NxButtonModule, NxTableModule, NxFormfieldModule, NxInputModule,
-    NxDropdownModule, NxContextMenuModule, NxSwitcherModule, EmptyStateComponent,
+    DecimalPipe,
+    LowerCasePipe,
+    NxIconModule,
+    NxButtonModule,
+    NxTableModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxDropdownModule,
+    NxContextMenuModule,
+    NxSwitcherModule,
+    EmptyStateComponent
   ],
   templateUrl: './reserve-detail-panel.component.html',
   styleUrl: './reserve-detail-panel.component.scss',
@@ -34,36 +57,41 @@ export interface SectionMutation {
     trigger('detailSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(24px)' }),
-        animate('220ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, transform: 'translateX(0)' })),
+        animate(
+          '220ms cubic-bezier(0.2, 0, 0, 1)',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        )
       ]),
       transition(':leave', [
-        animate('180ms ease-in',
-          style({ opacity: 0, transform: 'translateX(24px)' })),
-      ]),
+        animate('180ms ease-in', style({ opacity: 0, transform: 'translateX(24px)' }))
+      ])
     ]),
     trigger('itemExpand', [
       transition(':enter', [
         style({ opacity: 0, height: 0, overflow: 'hidden' }),
-        animate('200ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, height: '*' })),
+        animate('200ms cubic-bezier(0.2, 0, 0, 1)', style({ opacity: 1, height: '*' }))
       ]),
       transition(':leave', [
         style({ overflow: 'hidden' }),
-        animate('160ms ease-in',
-          style({ opacity: 0, height: 0 })),
-      ]),
+        animate('160ms ease-in', style({ opacity: 0, height: 0 }))
+      ])
     ]),
     trigger('rowFade', [
       transition('* => *', [
-        query(':enter', [
-          style({ opacity: 0, transform: 'translateY(-4px)' }),
-          stagger('40ms', animate('180ms ease-out',
-            style({ opacity: 1, transform: 'translateY(0)' }))),
-        ], { optional: true }),
-      ]),
-    ]),
-  ],
+        query(
+          ':enter',
+          [
+            style({ opacity: 0, transform: 'translateY(-4px)' }),
+            stagger(
+              '40ms',
+              animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+            )
+          ],
+          { optional: true }
+        )
+      ])
+    ])
+  ]
 })
 export class ReserveDetailPanelComponent implements OnChanges {
   @Input({ required: true }) reserve!: Reserve;
@@ -88,7 +116,9 @@ export class ReserveDetailPanelComponent implements OnChanges {
   readonly subTypeOptions = ['Lorem ipsum', 'Direct loss', 'Consequential', 'Salvage'];
 
   readonly activeTab = signal<ReserveType>('indemnity');
-  setActiveTab(t: ReserveType): void { this.activeTab.set(t); }
+  setActiveTab(t: ReserveType): void {
+    this.activeTab.set(t);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialActiveTab'] && this.initialActiveTab) {
@@ -97,13 +127,16 @@ export class ReserveDetailPanelComponent implements OnChanges {
   }
 
   readonly damagedItemLevel = signal<boolean>(true);
-  toggleDamagedItemLevel(): void { this.damagedItemLevel.update(v => !v); }
+  toggleDamagedItemLevel(): void {
+    this.damagedItemLevel.update(v => !v);
+  }
 
   // Only ever called from behind an isCrossPolicy check, so the reserve is
   // guaranteed to belong to another policy — no need to check "own" reserves.
   crossPolicyLabel(reserveId: string): string {
     for (const pol of this.allPolicies) {
-      if (pol.reserves.some(r => r.reserveId === reserveId)) return this.policyLabel(pol.policyNumber);
+      if (pol.reserves.some(r => r.reserveId === reserveId))
+        return this.policyLabel(pol.policyNumber);
     }
     return '';
   }
@@ -126,14 +159,18 @@ export class ReserveDetailPanelComponent implements OnChanges {
     return (item.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0);
   }
 
-  trackByItem(_: number, item: DamagedItem): string { return item.damagedItemId; }
-  trackBySub(_: number, sub: SubReserve): string { return sub.subReserveId; }
+  trackByItem(_: number, item: DamagedItem): string {
+    return item.damagedItemId;
+  }
+  trackBySub(_: number, sub: SubReserve): string {
+    return sub.subReserveId;
+  }
 
   expandItem(itemId: string, value: boolean): void {
     if (!this.reserve.damagedItems) return;
     const sel = structuredClone(this.reserve);
     sel.damagedItems = (sel.damagedItems ?? []).map(it =>
-      it.damagedItemId === itemId ? { ...it, expanded: value } : it,
+      it.damagedItemId === itemId ? { ...it, expanded: value } : it
     );
     this.sectionMutated.emit({ reserve: sel, markDirty: false });
   }
@@ -157,11 +194,22 @@ export class ReserveDetailPanelComponent implements OnChanges {
       subType: 'Lorem ipsum',
       currency: sel.currency,
       amount: 0,
-      coInsurance: 'RI',
+      coInsurance: 'RI'
     };
     selItem.subReserves = { ...selItem.subReserves, [tab]: [...list, next] };
     this.recomputeSectionTotals(sel);
     this.sectionMutated.emit({ reserve: sel, markDirty: true });
+  }
+
+  // Handler walkthrough self-QA — the amount input had no min and `+v || 0`
+  // happily accepts negatives (`+'-500' === -500`, which is truthy so `|| 0`
+  // never kicks in) — a handler could enter a negative reserve amount with
+  // zero validation. Clamped at the parse boundary, not just the input's
+  // `min` attribute (which only affects the stepper arrows, not typed/pasted
+  // input).
+  clampAmount(raw: string): number {
+    const n = +raw || 0;
+    return n < 0 ? 0 : n;
   }
 
   onUpdateSub(item: DamagedItem, sub: SubReserve, patch: Partial<SubReserve>): void {
@@ -171,7 +219,7 @@ export class ReserveDetailPanelComponent implements OnChanges {
     const selItem = (sel.damagedItems ?? []).find(it => it.damagedItemId === item.damagedItemId);
     if (!selItem) return;
     const list = (selItem.subReserves[tab] ?? []).map(s =>
-      s.subReserveId === sub.subReserveId ? { ...s, ...patch } : s,
+      s.subReserveId === sub.subReserveId ? { ...s, ...patch } : s
     );
     selItem.subReserves = { ...selItem.subReserves, [tab]: list };
     this.recomputeSectionTotals(sel);
@@ -194,13 +242,16 @@ export class ReserveDetailPanelComponent implements OnChanges {
     const total = (type: ReserveType): number =>
       (sel.damagedItems ?? []).reduce(
         (sum, it) => sum + (it.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0),
-        0,
+        0
       );
     sel.subAmounts = {
-      indemnity:  total('indemnity'),
-      expenses:   total('expenses'),
-      recoveries: total('recoveries'),
+      indemnity: total('indemnity'),
+      expenses: total('expenses'),
+      recoveries: total('recoveries')
     };
-    sel.amount = (sel.subAmounts.indemnity ?? 0) + (sel.subAmounts.expenses ?? 0) + (sel.subAmounts.recoveries ?? 0);
+    sel.amount =
+      (sel.subAmounts.indemnity ?? 0) +
+      (sel.subAmounts.expenses ?? 0) +
+      (sel.subAmounts.recoveries ?? 0);
   }
 }

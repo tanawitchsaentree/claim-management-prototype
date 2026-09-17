@@ -10,18 +10,22 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockPolicyLocationService } from '../../../core/mock/services/mock-policy-location.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
-import { PolicyLocation, LocationItem, LocationPickerOutput, LookupOption, CwbModalResult } from '../../../core/models';
 import {
-  PolicyLocationSearchModalComponent,
-  PolicyLocationSearchModalResult,
-} from '../policy-location-search-modal/policy-location-search-modal.component';
+  PolicyLocation,
+  LocationItem,
+  LocationPickerOutput,
+  LookupOption,
+  AddLocationModalResult
+} from '../../../core/models';
 import {
   ManualLocationEntryModalComponent,
   ManualLocationEntryModalData,
-  ManualLocationEntryModalResult,
+  ManualLocationEntryModalResult
 } from '../manual-location-entry-modal/manual-location-entry-modal.component';
-import { CwbLocationSearchModalComponent, CwbLocationSearchModalData } from '../cwb-location-search-modal/cwb-location-search-modal.component';
-import { LocationSourceModalComponent, LocationSource } from '../location-source-modal/location-source-modal.component';
+import {
+  AddLocationModalComponent,
+  AddLocationModalData
+} from '../add-location-modal/add-location-modal.component';
 
 interface LocationPickerVM {
   countries: LookupOption[];
@@ -38,10 +42,10 @@ interface LocationPickerVM {
     NxIconModule,
     NxContextMenuModule,
     NxMessageModule,
-    NxTableModule,
+    NxTableModule
   ],
   templateUrl: './location-picker.component.html',
-  styleUrl:    './location-picker.component.scss',
+  styleUrl: './location-picker.component.scss'
 })
 export class LocationPickerComponent implements OnInit {
   @Input() policyNumber: string | null | undefined = null;
@@ -52,8 +56,8 @@ export class LocationPickerComponent implements OnInit {
   @Output() locationChange = new EventEmitter<LocationPickerOutput>();
 
   private policyLocationSvc = inject(MockPolicyLocationService);
-  private lookupSvc         = inject(MockLookupService);
-  private dialogSvc         = inject(NxDialogService);
+  private lookupSvc = inject(MockLookupService);
+  private dialogSvc = inject(NxDialogService);
 
   hasPolicyNumber = false;
   locations: LocationItem[] = [];
@@ -66,157 +70,127 @@ export class LocationPickerComponent implements OnInit {
     if (this.value?.locations?.length) this.locations = this.value.locations;
 
     const policyLocations$ = this.hasPolicyNumber
-      ? this.policyLocationSvc.getByPolicyNumber(this.policyNumber!).pipe(
-          catchError(() => of([] as PolicyLocation[]))
-        )
+      ? this.policyLocationSvc
+          .getByPolicyNumber(this.policyNumber!)
+          .pipe(catchError(() => of([] as PolicyLocation[])))
       : of([] as PolicyLocation[]);
 
     this.vm$ = combineLatest({
-      countries:       this.lookupSvc.getCountries(),
+      countries: this.lookupSvc.getCountries(),
       policyLocations: policyLocations$,
       policyLoadError: policyLocations$.pipe(
         map(() => false),
         startWith(false),
         catchError(() => of(true))
-      ),
+      )
     });
   }
 
   /**
    * Single entry point. Host picks the right modal based on context:
-   *   - has policy → let the user choose Find in policy / Retrieve from CWB / Enter manually
+   *   - has policy → one combined modal: Policy locations / CWB search tabs, Manual entry
+   *     always visible below — no upfront "which source?" choice step
    *   - no policy (skeleton) → there's no policy or CWB mapping to search, so go straight to ManualEntry
    */
   async addLocation(policyLocations: PolicyLocation[] = []): Promise<void> {
     this.allPolicyLocations = policyLocations;
-    if (!this.hasPolicyNumber) { await this.openManualEntry(); return; }
-
-    const sourceRef = this.dialogSvc.open<LocationSourceModalComponent, undefined, LocationSource | null>(
-      LocationSourceModalComponent,
-      { width: '480px', maxWidth: '92vw' },
-    );
-    const source = await firstValueFrom(sourceRef.afterClosed());
-    if (!source) return;
-
-    if (source === 'cwb') { await this.openCwbModal(); return; }
-    if (source === 'manual') { await this.openManualEntry(); return; }
-    await this.openPolicySearchOrFallback();
+    if (!this.hasPolicyNumber) {
+      await this.openManualEntry();
+      return;
+    }
+    await this.openAddLocationModal();
   }
 
-  editItem(item: LocationItem): void { void this.openManualEntry(item); }
+  editItem(item: LocationItem): void {
+    void this.openManualEntry(item);
+  }
 
   removeItem(id: string): void {
     this.locations = this.locations.filter(l => l.id !== id);
     this._emit();
   }
 
-  private async openPolicySearchOrFallback(seedQuery?: string): Promise<void> {
+  private async openAddLocationModal(): Promise<void> {
     const ref = this.dialogSvc.open<
-      PolicyLocationSearchModalComponent,
-      { policyNumber: string; policyLocations: PolicyLocation[] },
-      PolicyLocationSearchModalResult
-    >(PolicyLocationSearchModalComponent, {
+      AddLocationModalComponent,
+      AddLocationModalData,
+      AddLocationModalResult | null
+    >(AddLocationModalComponent, {
       data: { policyNumber: this.policyNumber!, policyLocations: this.allPolicyLocations },
-      panelClass: 'bottom-sheet-modal-panel',
-    });
-    const result = await firstValueFrom(ref.afterClosed());
-    if (!result) return;
-
-    if (result.kind === 'fallback-manual') {
-      await this.openManualEntry(undefined, result.seedQuery ?? seedQuery);
-      return;
-    }
-
-    const items: LocationItem[] = result.locations.map(l => ({
-      id:                this._newId(),
-      source:            'policy',
-      displayName:       l.name,
-      addressLine1:      l.addressLine1,
-      addressLine2:      l.addressLine2,
-      postalCode:        l.postalCode,
-      city:              l.city,
-      country:           l.country,
-      state:             l.state,
-      propertyId:        l.propertyId,
-      policyLocationRef: l.id,
-    }));
-    this._commitItems(items);
-  }
-
-  private async openCwbModal(): Promise<void> {
-    const ref = this.dialogSvc.open<
-      CwbLocationSearchModalComponent,
-      CwbLocationSearchModalData,
-      CwbModalResult | null
-    >(CwbLocationSearchModalComponent, {
-      data: { policyNumber: this.policyNumber! },
       width: '960px',
-      maxWidth: '95vw',
+      maxWidth: '95vw'
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
 
     const items: LocationItem[] = [
-      ...result.cwb.map((l): LocationItem => ({
-        id:                 this._newId(),
-        source:             'cwb',
-        displayName:        l.locationName,
-        addressLine1:       l.streetAndNumber,
-        postalCode:         l.postalCode,
-        city:               l.city,
-        country:            l.country,
-        latitude:           l.latitude,
-        longitude:          l.longitude,
-        cwbReference:       l.cwbReference,
-        locationRuleNumber: l.locationRuleNumber,
-      })),
-      ...result.manual.map((m): LocationItem => ({
-        id:            this._newId(),
-        source:        'cwb',
-        displayName:   m.streetAndNumber,
-        addressLine1:  m.streetAndNumber,
-        addressLine2:  m.addressLine2,
-        postalCode:    m.postalCode,
-        city:          m.city,
-        country:       m.country,
-        state:         m.state,
-        additionalInfo: m.notes,
-      })),
+      ...result.policy.map(
+        (l): LocationItem => ({
+          id: this._newId(),
+          source: 'policy',
+          displayName: l.name,
+          addressLine1: l.addressLine1,
+          addressLine2: l.addressLine2,
+          postalCode: l.postalCode,
+          city: l.city,
+          country: l.country,
+          state: l.state,
+          propertyId: l.propertyId,
+          policyLocationRef: l.id
+        })
+      ),
+      ...result.cwb.map(
+        (l): LocationItem => ({
+          id: this._newId(),
+          source: 'cwb',
+          displayName: l.locationName,
+          addressLine1: l.streetAndNumber,
+          postalCode: l.postalCode,
+          city: l.city,
+          country: l.country,
+          latitude: l.latitude,
+          longitude: l.longitude,
+          cwbReference: l.cwbReference,
+          locationRuleNumber: l.locationRuleNumber
+        })
+      ),
+      ...result.manual.map(
+        (m): LocationItem => ({
+          id: this._newId(),
+          source: 'manual',
+          displayName: m.streetAndNumber,
+          addressLine1: m.streetAndNumber,
+          addressLine2: m.addressLine2,
+          postalCode: m.postalCode,
+          city: m.city,
+          country: m.country,
+          state: m.state,
+          additionalInfo: m.notes
+        })
+      )
     ];
     if (items.length) this._commitItems(items);
   }
 
-  private async openManualEntry(seed?: LocationItem, seedQuery?: string): Promise<void> {
+  private async openManualEntry(seed?: LocationItem): Promise<void> {
     const ref = this.dialogSvc.open<
       ManualLocationEntryModalComponent,
       ManualLocationEntryModalData,
       ManualLocationEntryModalResult
     >(ManualLocationEntryModalComponent, {
-      data: { seed: seed ?? (seedQuery ? this._seedFromQuery(seedQuery) : undefined) },
+      data: { seed },
       width: '960px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
 
     if (seed) {
-      this.locations = this.locations.map(l => l.id === seed.id ? result : l);
+      this.locations = this.locations.map(l => (l.id === seed.id ? result : l));
       this._emit();
     } else {
       this._commitItems([result]);
     }
-  }
-
-  private _seedFromQuery(query: string): LocationItem {
-    return {
-      id: this._newId(),
-      source: 'manual',
-      displayName: query,
-      addressLine1: query,
-      postalCode: '',
-      city: '',
-      country: '',
-    };
   }
 
   private _commitItems(items: LocationItem[]): void {
@@ -225,7 +199,11 @@ export class LocationPickerComponent implements OnInit {
     this._emit();
   }
 
-  private _emit(): void { this.locationChange.emit({ locations: this.locations }); }
+  private _emit(): void {
+    this.locationChange.emit({ locations: this.locations });
+  }
 
-  private _newId(): string { return 'loc-' + Math.random().toString(36).slice(2, 9); }
+  private _newId(): string {
+    return 'loc-' + Math.random().toString(36).slice(2, 9);
+  }
 }

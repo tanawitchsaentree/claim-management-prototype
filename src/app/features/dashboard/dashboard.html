@@ -1,212 +1,262 @@
-<ng-container *ngIf="vm$ | async as vm">
-
-<div class="page-shell">
-
-  <app-navbar></app-navbar>
-
-  <!-- ══ BODY ════════════════════════════════════════════════════════════ -->
-  <div class="body-layout">
-
-    <!-- ══ MAIN CONTENT ══════════════════════════════════════════════════ -->
-    <main class="main-content" tabindex="0">
-
-      <!-- Financial closure banner (all users) -->
-      <app-financial-closure-banner [period]="closurePeriod()"></app-financial-closure-banner>
-
-      <!-- Page headline -->
-      <div class="page-headline-row">
-        <h1 class="page-headline">Welcome {{ auth.user()?.name }}</h1>
-        <span class="page-role-badge page-role-badge--{{ auth.user()?.dashboardRole }}">
-          {{ roleBadgeLabel() }}
-        </span>
-      </div>
-
-      <!-- KCM KPI row -->
-      @if (auth.isKcm()) {
-        <app-kpi-row [data]="kpiData()"></app-kpi-row>
-      }
-
-      @if (vm.loading) {
-        <div class="widget-loading"><nx-spinner size="medium"></nx-spinner><span class="text-muted">Loading dashboard…</span></div>
-      }
-      @if (vm.error) {
-        <div class="widget-error"><nx-icon name="exclamation-triangle-o" class="widget-error-icon"></nx-icon><span>{{ vm.error }}</span></div>
-      }
-
-      @if (!vm.loading && !vm.error) {
-
-        <!-- Task list -->
-        <div class="widget-card widget-card--tasklist">
-          <div class="widget-header">
-            <div class="widget-header-left">
-              <div class="widget-icon-wrap"><nx-icon name="product-to-do-list" class="widget-icon"></nx-icon></div>
-              <span class="widget-title">Task list</span>
-            </div>
-            <a class="widget-link widget-link--disabled" aria-disabled="true" title="Task manager coming soon">View all tasks</a>
-          </div>
-          <div class="widget-toggle-row">
-            <nx-switcher [checked]="showMyTasksOnly()" (checkedChange)="showMyTasksOnly.set($event)">Show my tasks only</nx-switcher>
-          </div>
-          @if (displayedTasks().length === 0) {
-            <app-empty-state [message]="showMyTasksOnly() ? 'No tasks assigned to you yet.' : 'No tasks assigned yet.'"></app-empty-state>
-          } @else {
-            <div class="data-table-wrap" tabindex="0">
-            <table nxTable sticky="last" class="dash-table">
-              <thead>
-                <tr nxTableRow>
-                  <th nxHeaderCell><button type="button" class="th-sort" aria-label="Sort by Task type">Task type <nx-icon name="chevron-down-small"></nx-icon></button></th>
-                  <th nxHeaderCell class="dash-col--desc">Description</th>
-                  <th nxHeaderCell><button type="button" class="th-sort" aria-label="Sort by Status">Status <nx-icon name="chevron-down-small"></nx-icon></button></th>
-                  <th nxHeaderCell class="dash-col--nowrap"><button type="button" class="th-sort" aria-label="Sort by Due date">Due date <nx-icon name="chevron-down-small"></nx-icon></button></th>
-                  <th nxHeaderCell class="dash-col--nowrap">Task key</th>
-                  @if (!showMyTasksOnly()) {
-                    <th nxHeaderCell class="dash-col--nowrap">Assignee</th>
-                  }
-                  <th nxHeaderCell>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (task of displayedTasks(); track task.taskId) {
-                  <tr nxTableRow>
-                    <td nxCell>{{ task.taskType }}</td>
-                    <td nxCell class="dash-col--desc">{{ task.description }}</td>
-                    <td nxCell><app-status-chip [status]="task.status" domain="task"></app-status-chip></td>
-                    <td nxCell class="dash-col--nowrap"
-                        [class.text-due-today]="task.dueDate === 'Today'"
-                        [class.text-overdue]="isOverdue(task.dueDate) && task.status !== 'done'">
-                      @if (isOverdue(task.dueDate) && task.status !== 'done') {
-                        <span class="overdue-cell">
-                          <nx-icon name="exclamation-triangle-o" class="overdue-icon"></nx-icon>
-                          {{ task.dueDate | date:'dd-MM-yyyy' }}
-                          <span class="overdue-days">({{ daysSinceUpdate(task.dueDate) }}d overdue)</span>
-                        </span>
-                      } @else {
-                        {{ task.dueDate | date:'dd-MM-yyyy' }}
-                      }
-                    </td>
-                    <td nxCell class="text-link dash-col--nowrap">{{ task.taskKey }}</td>
-                    @if (!showMyTasksOnly()) {
-                      <td nxCell class="dash-col--nowrap">{{ task.assignee || '–' }}</td>
-                    }
-                    <td nxCell><a class="table-action-link" [routerLink]="['/claims', task.claimId, 'overview']">See details</a></td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-            </div>
-          }
-          <div class="widget-footer">
-            <a routerLink="/tasks" class="widget-link-secondary">
-              <nx-icon name="launch"></nx-icon> Visit task manager for more functionalities
-            </a>
-          </div>
+@if (vm$ | async; as vm) {
+  <div class="page-shell">
+    <app-navbar></app-navbar>
+    <!-- ══ BODY ════════════════════════════════════════════════════════════ -->
+    <div class="body-layout">
+      <!-- ══ MAIN CONTENT ══════════════════════════════════════════════════ -->
+      <main class="main-content" tabindex="0">
+        <!-- Financial closure banner (all users) -->
+        <app-financial-closure-banner [period]="closurePeriod()"></app-financial-closure-banner>
+        <!-- Page headline -->
+        <div class="page-headline-row">
+          <h1 class="page-headline">Welcome {{ auth.user()?.name }}</h1>
+          <span class="page-role-badge page-role-badge--{{ auth.user()?.dashboardRole }}">
+            {{ roleBadgeLabel() }}
+          </span>
         </div>
-
-        <!-- Claims portfolio -->
-        <app-claims-portfolio-widget
-          [claims]="dateRangedClaims()"
-          [lossEvents]="lossEvents()"
-          [dateRange]="claimsDateRange()"
-          (dateRangeChanged)="setClaimsDateRange($event)">
-        </app-claims-portfolio-widget>
-
-        <!-- Recovery potential prompt (BMPCC-17779) — the dashboard channel the
-             Recoveries call asked for, so the Yes/No does not wait until the
-             handler happens to reopen the claim. -->
-        <app-recovery-potential-panel [items]="recoveryAttention()"></app-recovery-potential-panel>
-
-        <!-- Heads-up panel (KCM only) -->
+        <!-- KCM KPI row -->
         @if (auth.isKcm()) {
-          <app-heads-up-panel [items]="headsUp()"></app-heads-up-panel>
+          <app-kpi-row [data]="kpiData()"></app-kpi-row>
         }
-
-        <!-- Recent approvals -->
-        <app-recent-approvals-widget
-          [approvals]="vm.urgentApprovals"
-          [payments]="paymentApprovals()">
-        </app-recent-approvals-widget>
-
-      }
-      <!-- end !loading && !error -->
-    </main>
-
-    <!-- ══ RIGHT PANEL ════════════════════════════════════════════════════ -->
-    <aside class="right-panel" tabindex="0">
-
-      <div class="action-card">
-        <div class="action-card-top">
-          <div class="action-card-icon"><nx-icon name="product-important-info"></nx-icon></div>
-          <span class="action-card-title">Register a new claim</span>
-        </div>
-        <button nxButton="primary small" type="button" class="action-card-btn" (click)="navigateToFnol()">
-          <nx-icon name="launch" nxIconPositionStart></nx-icon>New claim
-        </button>
-      </div>
-
-      <div class="action-card">
-        <div class="action-card-top">
-          <div class="action-card-icon"><nx-icon name="product-search-document"></nx-icon></div>
-          <span class="action-card-title">General search</span>
-        </div>
-        <button nxButton="primary small" type="button" class="action-card-btn" (click)="navigateToSearch()">
-          <nx-icon name="launch" nxIconPositionStart></nx-icon>Go to search
-        </button>
-      </div>
-
-      <!-- Claims stats card — shares the same default date range as the portfolio widget above -->
-      <div class="panel-card">
-        <div class="panel-card-header"><span class="panel-card-title">Claims · {{ claimsDateRangeLabel() }}</span></div>
-        <div class="stats-total">
-          <span class="stats-number">{{ dateRangedStats().total }}</span>
-          <span class="stats-label">Claims</span>
-        </div>
-        @if (!vm.loading) {
-          <div class="stats-bars">
-            <div class="stats-bar-row">
-              <span class="stats-bar-label">Opened</span>
-              <div class="stats-bar-track"><div class="stats-bar-fill stats-bar-fill--opened" [style.width.%]="barWidth(dateRangedStats().opened, dateRangedStats().total)"></div></div>
-              <span class="stats-bar-value">{{ dateRangedStats().opened }}</span>
-            </div>
-            <div class="stats-bar-row">
-              <span class="stats-bar-label">Closed</span>
-              <div class="stats-bar-track"><div class="stats-bar-fill stats-bar-fill--closed" [style.width.%]="barWidth(dateRangedStats().closed, dateRangedStats().total)"></div></div>
-              <span class="stats-bar-value">{{ dateRangedStats().closed }}</span>
-            </div>
+        @if (vm.loading) {
+          <div class="widget-loading">
+            <nx-spinner size="medium"></nx-spinner
+            ><span class="text-muted">Loading dashboard…</span>
           </div>
         }
-      </div>
-
-      <!-- Payments made card -->
-      <div class="panel-card">
-        <div class="panel-card-header"><span class="panel-card-title">Payments · All time</span></div>
-        <div class="payments-amount">150,000 <span class="payments-currency">EUR</span></div>
-      </div>
-
-      <!-- Calendar widget (all roles) -->
-      <app-calendar-widget [events]="calendarEvents()"></app-calendar-widget>
-
-      <!-- News & updates (all roles) -->
-      <app-news-panel [items]="news()"></app-news-panel>
-
-      <!-- Expense breakdown (all roles — merged in from former Aviation persona) -->
-      <app-expense-breakdown [items]="providerExpenses()"></app-expense-breakdown>
-
-      <!-- Quick links -->
-      <div class="panel-card">
-        <div class="panel-card-header"><span class="panel-card-title">Quick links</span></div>
-        <div class="quick-links-list">
-          @for (link of vm.quickLinks; track link.label) {
-            <a class="quick-link-item" [href]="link.url" target="_blank" rel="noopener noreferrer"
-               [title]="link.label + ' (opens in a new tab)'">
-              <span>{{ link.label }}</span>
-              <nx-icon name="launch" class="quick-link-icon"></nx-icon>
-            </a>
+        @if (vm.error) {
+          <div class="widget-error">
+            <nx-icon name="exclamation-triangle-o" class="widget-error-icon"></nx-icon
+            ><span>{{ vm.error }}</span>
+          </div>
+        }
+        @if (!vm.loading && !vm.error) {
+          <!-- Task list -->
+          <div class="widget-card widget-card--tasklist">
+            <div class="widget-header">
+              <div class="widget-header-left">
+                <div class="widget-icon-wrap">
+                  <nx-icon name="product-to-do-list" class="widget-icon"></nx-icon>
+                </div>
+                <span class="widget-title">Task list</span>
+              </div>
+              <a routerLink="/tasks" class="widget-link">View all tasks</a>
+            </div>
+            <div class="widget-toggle-row">
+              <nx-switcher
+                [checked]="showMyTasksOnly()"
+                (checkedChange)="showMyTasksOnly.set($event)"
+                >Show my tasks only</nx-switcher
+              >
+            </div>
+            @if (displayedTasks().length === 0) {
+              <app-empty-state
+                [message]="
+                  showMyTasksOnly() ? 'No tasks assigned to you yet.' : 'No tasks assigned yet.'
+                "
+              ></app-empty-state>
+            } @else {
+              <div class="data-table-wrap" tabindex="0">
+                <table nxTable class="dash-table">
+                  <thead>
+                    <tr nxTableRow>
+                      <th nxHeaderCell>
+                        <button type="button" class="th-sort" aria-label="Sort by Task type">
+                          Task type <nx-icon name="chevron-down-small"></nx-icon>
+                        </button>
+                      </th>
+                      <th nxHeaderCell class="dash-col--desc">Description</th>
+                      <th nxHeaderCell>
+                        <button type="button" class="th-sort" aria-label="Sort by Status">
+                          Status <nx-icon name="chevron-down-small"></nx-icon>
+                        </button>
+                      </th>
+                      <th nxHeaderCell class="dash-col--nowrap">
+                        <button type="button" class="th-sort" aria-label="Sort by Due date">
+                          Due date <nx-icon name="chevron-down-small"></nx-icon>
+                        </button>
+                      </th>
+                      <th nxHeaderCell class="dash-col--nowrap dash-col--divider">Task key</th>
+                      @if (!showMyTasksOnly()) {
+                        <th nxHeaderCell class="dash-col--nowrap">Assignee</th>
+                      }
+                      <th nxHeaderCell>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (task of displayedTasks(); track task.taskId) {
+                      <tr nxTableRow>
+                        <td nxCell>{{ task.taskType }}</td>
+                        <td nxCell class="dash-col--desc">{{ task.description }}</td>
+                        <td nxCell>
+                          <app-status-chip [status]="task.status" domain="task"></app-status-chip>
+                        </td>
+                        <td
+                          nxCell
+                          class="dash-col--nowrap"
+                          [class.text-due-today]="task.dueDate === 'Today'"
+                          [class.text-overdue]="isOverdue(task.dueDate) && task.status !== 'done'"
+                        >
+                          @if (isOverdue(task.dueDate) && task.status !== 'done') {
+                            <span class="overdue-cell">
+                              <nx-icon name="exclamation-triangle-o" class="overdue-icon"></nx-icon>
+                              {{ task.dueDate | date: 'dd-MM-yyyy' }}
+                              <span class="overdue-days"
+                                >({{ daysSinceUpdate(task.dueDate) }}d overdue)</span
+                              >
+                            </span>
+                          } @else {
+                            {{ task.dueDate | date: 'dd-MM-yyyy' }}
+                          }
+                        </td>
+                        <td nxCell class="text-link dash-col--nowrap dash-col--divider">
+                          {{ task.taskKey }}
+                        </td>
+                        @if (!showMyTasksOnly()) {
+                          <td nxCell class="dash-col--nowrap">{{ task.assignee || '–' }}</td>
+                        }
+                        <td nxCell>
+                          <a
+                            class="table-action-link"
+                            [routerLink]="['/claims', task.claimId, 'overview']"
+                            >See details</a
+                          >
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+            <div class="widget-footer">
+              <a routerLink="/tasks" class="widget-link-secondary">
+                <nx-icon name="launch"></nx-icon> Visit task manager for more functionalities
+              </a>
+            </div>
+          </div>
+          <!-- Claims portfolio -->
+          <app-claims-portfolio-widget
+            [claims]="dateRangedClaims()"
+            [lossEvents]="lossEvents()"
+            [dateRange]="claimsDateRange()"
+            (dateRangeChanged)="setClaimsDateRange($event)"
+          >
+          </app-claims-portfolio-widget>
+          <!-- Recovery potential prompt (BMPCC-17779) — the dashboard channel the
+          Recoveries call asked for, so the Yes/No does not wait until the
+          handler happens to reopen the claim. -->
+          <app-recovery-potential-panel
+            [items]="recoveryAttention()"
+          ></app-recovery-potential-panel>
+          <!-- Heads-up panel (KCM only) -->
+          @if (auth.isKcm()) {
+            <app-heads-up-panel [items]="headsUp()"></app-heads-up-panel>
+          }
+          <!-- Recent approvals -->
+          <app-recent-approvals-widget
+            [approvals]="vm.urgentApprovals"
+            [payments]="paymentApprovals()"
+          >
+          </app-recent-approvals-widget>
+        }
+        <!-- end !loading && !error -->
+      </main>
+      <!-- ══ RIGHT PANEL ════════════════════════════════════════════════════ -->
+      <aside class="right-panel" tabindex="0">
+        <div class="action-card">
+          <div class="action-card-top">
+            <div class="action-card-icon"><nx-icon name="product-important-info"></nx-icon></div>
+            <span class="action-card-title">Register a new claim</span>
+          </div>
+          <button
+            nxButton="primary small"
+            type="button"
+            class="action-card-btn"
+            (click)="navigateToFnol()"
+          >
+            <nx-icon name="launch" nxIconPositionStart></nx-icon>New claim
+          </button>
+        </div>
+        <div class="action-card">
+          <div class="action-card-top">
+            <div class="action-card-icon"><nx-icon name="product-search-document"></nx-icon></div>
+            <span class="action-card-title">General search</span>
+          </div>
+          <button
+            nxButton="primary small"
+            type="button"
+            class="action-card-btn"
+            (click)="navigateToSearch()"
+          >
+            <nx-icon name="launch" nxIconPositionStart></nx-icon>Go to search
+          </button>
+        </div>
+        <!-- Claims stats card — shares the same default date range as the portfolio widget above -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <span class="panel-card-title">Claims · {{ claimsDateRangeLabel() }}</span>
+          </div>
+          <div class="stats-total">
+            <span class="stats-number">{{ dateRangedStats().total }}</span>
+            <span class="stats-label">Claims</span>
+          </div>
+          @if (!vm.loading) {
+            <div class="stats-bars">
+              <div class="stats-bar-row">
+                <span class="stats-bar-label">Opened</span>
+                <div class="stats-bar-track">
+                  <div
+                    class="stats-bar-fill stats-bar-fill--opened"
+                    [style.width.%]="barWidth(dateRangedStats().opened, dateRangedStats().total)"
+                  ></div>
+                </div>
+                <span class="stats-bar-value">{{ dateRangedStats().opened }}</span>
+              </div>
+              <div class="stats-bar-row">
+                <span class="stats-bar-label">Closed</span>
+                <div class="stats-bar-track">
+                  <div
+                    class="stats-bar-fill stats-bar-fill--closed"
+                    [style.width.%]="barWidth(dateRangedStats().closed, dateRangedStats().total)"
+                  ></div>
+                </div>
+                <span class="stats-bar-value">{{ dateRangedStats().closed }}</span>
+              </div>
+            </div>
           }
         </div>
-      </div>
-
-    </aside>
+        <!-- Payments made card -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <span class="panel-card-title">Payments · All time</span>
+          </div>
+          <div class="payments-amount">150,000 <span class="payments-currency">EUR</span></div>
+        </div>
+        <!-- Calendar widget (all roles) -->
+        <app-calendar-widget [events]="calendarEvents()"></app-calendar-widget>
+        <!-- News & updates (all roles) -->
+        <app-news-panel [items]="news()"></app-news-panel>
+        <!-- Expense breakdown (all roles — merged in from former Aviation persona) -->
+        <app-expense-breakdown [items]="providerExpenses()"></app-expense-breakdown>
+        <!-- Quick links -->
+        <div class="panel-card">
+          <div class="panel-card-header"><span class="panel-card-title">Quick links</span></div>
+          <div class="quick-links-list">
+            @for (link of vm.quickLinks; track link.label) {
+              <a
+                class="quick-link-item"
+                [href]="link.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                [title]="link.label + ' (opens in a new tab)'"
+              >
+                <span>{{ link.label }}</span>
+                <nx-icon name="launch" class="quick-link-icon"></nx-icon>
+              </a>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
-</div>
-
-</ng-container>
+}

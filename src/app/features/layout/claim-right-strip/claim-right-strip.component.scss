@@ -16,10 +16,16 @@
   overflow: hidden;
   flex-shrink: 0;
 
-  app-claim-notes-panel { display: block; height: 100%; }
+  app-claim-notes-panel {
+    display: block;
+    height: 100%;
+  }
 
   &--ref {
-    app-claim-reference-panel { display: block; height: 100%; }
+    app-claim-reference-panel {
+      display: block;
+      height: 100%;
+    }
   }
 }
 
@@ -64,7 +70,9 @@
   padding: var(--space-sm) 0;
   gap: 2px;
   overflow: hidden;
-  transition: max-height 0.2s ease, opacity 0.15s ease;
+  transition:
+    max-height 0.2s ease,
+    opacity 0.15s ease;
 
   .crs-strip--collapsed & {
     max-height: 0;
@@ -85,7 +93,7 @@
   // Collapsed: move toggle to top so it's always visible regardless of viewport height
   .crs-strip--collapsed & {
     border-top: none;
-    order: -1;   // render above crs-items
+    order: -1; // render above crs-items
     border-bottom: 1px solid var(--ui-04);
   }
 }
@@ -101,7 +109,9 @@
   border: none;
   cursor: pointer;
   color: var(--text-muted);
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 
   &:hover {
     background: var(--interactive-primary);
@@ -131,7 +141,9 @@
   border-radius: 4px;
   cursor: pointer;
   color: var(--text-muted);
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 
   &:hover {
     background: var(--claim-overlay-nav-hover);

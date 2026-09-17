@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxModalModule, NxModalRef } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -10,9 +10,16 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 @Component({
   selector: 'app-verifier-name-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NxModalModule, NxFormfieldModule, NxInputModule, NxButtonModule, NxIconModule],
+  imports: [
+    ReactiveFormsModule,
+    NxModalModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxButtonModule,
+    NxIconModule
+  ],
   templateUrl: './verifier-name-modal.component.html',
-  styleUrl:    './verifier-name-modal.component.scss',
+  styleUrl: './verifier-name-modal.component.scss'
 })
 export class VerifierNameModalComponent {
   readonly modalRef = inject<NxModalRef<VerifierNameModalComponent, string | null>>(NxModalRef);

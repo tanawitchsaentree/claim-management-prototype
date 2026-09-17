@@ -1,6 +1,8 @@
 @use '../../../../shared/styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
 .med-header {
   @include modal.header;
@@ -25,4 +27,6 @@
   gap: 0;
 }
 
-.med-footer { @include modal.footer; }
+.med-footer {
+  @include modal.footer;
+}

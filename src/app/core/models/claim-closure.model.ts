@@ -4,9 +4,9 @@ import { SectionStatus } from './section.model';
 // ─── Status transition validation ─────────────────────────────────────────
 
 const CLAIM_TRANSITIONS: Partial<Record<ClaimStatus, ClaimStatus[]>> = {
-  'Open':        ['In progress', 'Closed'],
+  'Open': ['In progress', 'Closed'],
   'In progress': ['Closed'],
-  'Closed':      ['Open'],
+  'Closed': ['Open']
 };
 
 /**
@@ -21,8 +21,8 @@ export function validateClaimTransition(from: ClaimStatus, to: ClaimStatus): boo
 }
 
 const SECTION_TRANSITIONS: Partial<Record<SectionStatus, SectionStatus[]>> = {
-  'Open':   ['Closed'],
-  'Closed': ['Open'],
+  'Open': ['Closed'],
+  'Closed': ['Open']
 };
 
 export function validateSectionTransition(from: SectionStatus, to: SectionStatus): boolean {
@@ -48,7 +48,14 @@ export type BlockerType =
   | 'litigation'
   | 'provider'
   | 'bills'
-  | 'reports';
+  | 'reports'
+  // A converted orphan claim (claimType 'skeleton') that never had a section
+  // or reserve added — the Overview "needs setup" banner used to be purely
+  // informational with no enforcement, so a handler could close a claim that
+  // was never actually set up. Separate from 'sections'/'reserves' above,
+  // which fire on OPEN sections/reserves that exist — this fires on having
+  // NONE at all yet.
+  | 'needs-setup';
 
 export type ClosureReason = 'Claim Finalised' | 'Claim Not Pursued' | 'Claim Rejected';
 

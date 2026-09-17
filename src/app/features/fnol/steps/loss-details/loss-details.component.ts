@@ -11,7 +11,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
       <h1>Loss Details (Skeleton Mode)</h1>
       <button nxButton="secondary" type="button" (click)="onBack()">Back</button>
     </div>
-  `,
+  `
 })
 export class LossDetailsComponent {
   private router = inject(Router);

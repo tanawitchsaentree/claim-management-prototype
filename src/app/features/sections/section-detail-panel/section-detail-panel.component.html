@@ -2,21 +2,41 @@
   <div class="sdp-header__left">
     @if (editingName()) {
       <nx-formfield class="sdp-name-field">
-        <input nxInput [value]="nameDraft()" (input)="nameDraft.set($any($event.target).value)"
-               (keydown.enter)="saveName()" (keydown.escape)="cancelEditName()" />
+        <input
+          nxInput
+          [value]="nameDraft()"
+          (input)="nameDraft.set($any($event.target).value)"
+          (keydown.enter)="saveName()"
+          (keydown.escape)="cancelEditName()"
+        />
       </nx-formfield>
       <div class="sdp-name-actions">
-        <button nxIconButton="tertiary small" type="button" (click)="saveName()" aria-label="Save name">
+        <button
+          nxIconButton="tertiary small"
+          type="button"
+          (click)="saveName()"
+          aria-label="Save name"
+        >
           <nx-icon name="check"></nx-icon>
         </button>
-        <button nxIconButton="tertiary small" type="button" (click)="cancelEditName()" aria-label="Cancel">
+        <button
+          nxIconButton="tertiary small"
+          type="button"
+          (click)="cancelEditName()"
+          aria-label="Cancel"
+        >
           <nx-icon name="close"></nx-icon>
         </button>
       </div>
     } @else {
       <h2 class="sdp-title">{{ section.name }}</h2>
       @if (!claimClosed) {
-        <button nxIconButton="tertiary small" type="button" (click)="startEditName()" aria-label="Edit section name">
+        <button
+          nxIconButton="tertiary small"
+          type="button"
+          (click)="startEditName()"
+          aria-label="Edit section name"
+        >
           <nx-icon name="pencil" size="s"></nx-icon>
         </button>
       }

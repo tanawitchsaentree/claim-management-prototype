@@ -10,7 +10,7 @@ import {
   LossEventGeneralInfo,
   LossEventOverview,
   LossEventPartyRow,
-  LossEventRelatedClaim,
+  LossEventRelatedClaim
 } from '../../models/loss-event-overview.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
@@ -47,7 +47,7 @@ export class MockLossEventService extends MockBaseService {
       relatedClaims: claims.map(c => this.toRelatedClaim(c)),
       parties: this.collectParties(claims),
       financials: this.rollUp(summary.totalReserve, summary.currency, claims),
-      documents: this.collectDocuments(claims),
+      documents: this.collectDocuments(claims)
     } satisfies LossEventOverview);
   }
 
@@ -57,7 +57,7 @@ export class MockLossEventService extends MockBaseService {
       eventOccurrenceTime: raw.eventOccurrenceTime,
       eventLocation: raw.eventLocation,
       causesRelations: raw.causesRelations,
-      damagesCaused: raw.damagesCaused,
+      damagesCaused: raw.damagesCaused
     });
   }
 
@@ -70,7 +70,7 @@ export class MockLossEventService extends MockBaseService {
       claimHandler: c.assignee ?? 'Unassigned',
       claimStatus: c.status,
       lossAmount: c.lossAmount,
-      currency: c.currency,
+      currency: c.currency
     };
   }
 
@@ -90,7 +90,7 @@ export class MockLossEventService extends MockBaseService {
           partyName: p.legalName,
           role,
           clearanceStatus: p.clearanceStatus,
-          claimId: p.claimId,
+          claimId: p.claimId
         });
       }
     }
@@ -106,10 +106,18 @@ export class MockLossEventService extends MockBaseService {
     return this.documents.filter(d => ids.has(d.claimId)).map(d => structuredClone(d));
   }
 
-  private rollUp(totalReserve: number, reserveCurrency: string, claims: Claim[]): LossEventFinancials {
+  private rollUp(
+    totalReserve: number,
+    reserveCurrency: string,
+    claims: Claim[]
+  ): LossEventFinancials {
     const byCurrency = new Map<string, LossEventCurrencyTotal>();
     for (const c of claims) {
-      const row = byCurrency.get(c.currency) ?? { currency: c.currency, claimCount: 0, lossAmount: 0 };
+      const row = byCurrency.get(c.currency) ?? {
+        currency: c.currency,
+        claimCount: 0,
+        lossAmount: 0
+      };
       row.claimCount += 1;
       row.lossAmount += c.lossAmount;
       byCurrency.set(c.currency, row);
@@ -117,7 +125,7 @@ export class MockLossEventService extends MockBaseService {
     return {
       reserveCurrency,
       totalReserve,
-      totals: [...byCurrency.values()].sort((a, b) => a.currency.localeCompare(b.currency)),
+      totals: [...byCurrency.values()].sort((a, b) => a.currency.localeCompare(b.currency))
     };
   }
 }

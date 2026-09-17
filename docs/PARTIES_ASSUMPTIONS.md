@@ -36,6 +36,7 @@ not inferred from party `sectionId` fields.
 ## A3 — Add Party entry points (3 paths)
 
 **Assumption:**
+
 1. Top toolbar button → adds to first claim's directParties
 2. Claim row kebab "Add additional parties" → adds to that claim's directParties
 3. Section row kebab "Add additional parties" → adds to that section's parties

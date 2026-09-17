@@ -1,12 +1,20 @@
 @use '../../styles/modal-layout' as modal;
 
-:host { @include modal.shell; }
+:host {
+  @include modal.shell;
+}
 
-.cd-header { @include modal.header; }
+.cd-header {
+  @include modal.header;
+}
 
-.cd-title { @include modal.title; }
+.cd-title {
+  @include modal.title;
+}
 
-.cd-body { @include modal.body; }
+.cd-body {
+  @include modal.body;
+}
 
 .cd-message {
   margin: 0;
@@ -29,7 +37,7 @@
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: 0.04em;
     padding: var(--space-sm) var(--space-sm);
     border-bottom: 1px solid var(--ui-04);
     text-align: left;
@@ -60,7 +68,9 @@
   color: var(--text-muted);
   width: 24px;
   text-align: center;
-  nx-icon { font-size: 12px; }
+  nx-icon {
+    font-size: 12px;
+  }
 }
 
 .cd-updated {
@@ -70,7 +80,9 @@
   word-break: break-word;
 }
 
-.cd-footer { @include modal.footer; }
+.cd-footer {
+  @include modal.footer;
+}
 
 .cd-btn--danger {
   background: var(--message-error-border-color) !important;

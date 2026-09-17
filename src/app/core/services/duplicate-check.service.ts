@@ -37,19 +37,20 @@ export class DuplicateCheckService {
   checkDuplicates(
     policyNumber: string,
     dateOfOccurrence: string,
-    causeOfLoss?: string[],
+    causeOfLoss?: string[]
   ): Observable<DuplicateCheckResult> {
-    let matches = this.claims.filter(c =>
-      c.policyNumber === policyNumber &&
-      c.lossDate === dateOfOccurrence
+    let matches = this.claims.filter(
+      c => c.policyNumber === policyNumber && c.lossDate === dateOfOccurrence
     );
 
     // When cause is provided, narrow to claims with overlapping causes.
     // A claim with no causeOfLoss stored is always included (legacy data).
     if (causeOfLoss && causeOfLoss.length > 0) {
-      matches = matches.filter(c =>
-        !c.causeOfLoss || c.causeOfLoss.length === 0 ||
-        c.causeOfLoss.some(cause => causeOfLoss.includes(cause))
+      matches = matches.filter(
+        c =>
+          !c.causeOfLoss ||
+          c.causeOfLoss.length === 0 ||
+          c.causeOfLoss.some(cause => causeOfLoss.includes(cause))
       );
     }
 
@@ -59,7 +60,7 @@ export class DuplicateCheckService {
       status: c.status,
       lossDate: c.lossDate,
       lossAmount: c.lossAmount,
-      currency: c.currency,
+      currency: c.currency
     }));
 
     return of({ hasDuplicates: duplicates.length > 0, duplicates }).pipe(

@@ -1,7 +1,4 @@
-<div class="cpop"
-     (mouseenter)="onCardMouseEnter()"
-     (mouseleave)="onCardMouseLeave()">
-
+<div class="cpop" (mouseenter)="onCardMouseEnter()" (mouseleave)="onCardMouseLeave()">
   @if (vm().loading) {
     <div class="cpop__loading">
       <nx-icon name="refresh" class="cpop__spinner"></nx-icon>
@@ -28,7 +25,9 @@
       <dt>Sections</dt>
       <dd>{{ closedSections() }}/{{ totalSections() }} closed</dd>
       <dt>Total reserve</dt>
-      <dd>{{ claim.financialSummary.currency }} {{ claim.financialSummary.totalReserve | number }}</dd>
+      <dd>
+        {{ claim.financialSummary.currency }} {{ claim.financialSummary.totalReserve | number }}
+      </dd>
     </dl>
 
     <div class="cpop__footer">
@@ -36,8 +35,11 @@
         <nx-icon name="link" nxIconPositionStart></nx-icon>
         Open in panel
       </button>
-      <a nxButton="secondary small" [routerLink]="['/claims', previewSvc.claimId(), 'overview']"
-         (click)="previewSvc.hide()">
+      <a
+        nxButton="secondary small"
+        [routerLink]="['/claims', previewSvc.claimId(), 'overview']"
+        (click)="previewSvc.hide()"
+      >
         Full view
         <nx-icon name="launch" nxIconPositionEnd></nx-icon>
       </a>

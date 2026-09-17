@@ -9,11 +9,14 @@
 </div>
 
 <div class="edp-body" tabindex="0">
-
   <!-- Instruction status -->
   <div class="edp-card">
     <p class="edp-card__label">Instruction status</p>
-    <span class="edp-status-chip edp-status-chip--{{ entity.instructionStatus.toLowerCase().replace(' ', '-') }}">
+    <span
+      class="edp-status-chip edp-status-chip--{{
+        entity.instructionStatus.toLowerCase().replace(' ', '-')
+      }}"
+    >
       {{ entity.instructionStatus }}
     </span>
   </div>
@@ -25,7 +28,11 @@
       <div class="edp-field">
         <span class="edp-field__label">Coverage review</span>
         @if (entity.coverageReview) {
-          <app-status-chip [status]="entity.coverageReview" domain="coverage-review" [label]="entity.coverageReview"></app-status-chip>
+          <app-status-chip
+            [status]="entity.coverageReview"
+            domain="coverage-review"
+            [label]="entity.coverageReview"
+          ></app-status-chip>
         } @else {
           <span class="edp-field__value">–</span>
         }
@@ -46,7 +53,8 @@
         <div class="edp-field">
           <span class="edp-field__label">Interruption period</span>
           <span class="edp-field__value">
-            {{ entity.interruptionStartDate ?? '–' }} → {{ entity.interruptionEndDate ?? 'ongoing' }}
+            {{ entity.interruptionStartDate ?? '–' }} →
+            {{ entity.interruptionEndDate ?? 'ongoing' }}
           </span>
         </div>
       }
@@ -59,7 +67,9 @@
           <span class="edp-field__label">Third party</span>
           <span class="edp-field__value">
             {{ entity.thirdPartyName ?? '–' }}
-            @if (entity.thirdPartyRelationship) { ({{ entity.thirdPartyRelationship }}) }
+            @if (entity.thirdPartyRelationship) {
+              ({{ entity.thirdPartyRelationship }})
+            }
           </span>
         </div>
       }
@@ -70,9 +80,12 @@
   <div class="edp-card" data-tour-id="edp-damaged-items">
     <div class="edp-card__titlebar">
       <h3 class="edp-card__title">Damaged items</h3>
-      <button nxButton="primary small" type="button"
+      <button
+        nxButton="primary small"
+        type="button"
         [disabled]="claimClosed || section.status === 'Closed'"
-        (click)="onAddItem()">
+        (click)="onAddItem()"
+      >
         Add damaged item
       </button>
     </div>
@@ -104,13 +117,21 @@
                 @if (item.injuredPartyName) {
                   <span class="edp-item-sub">
                     {{ item.injuredPartyName }}
-                    @if (item.injuredPartyRole) { · {{ item.injuredPartyRole }} }
-                    @if (item.injuredPartyCountry) { · {{ item.injuredPartyCountry }} }
+                    @if (item.injuredPartyRole) {
+                      · {{ item.injuredPartyRole }}
+                    }
+                    @if (item.injuredPartyCountry) {
+                      · {{ item.injuredPartyCountry }}
+                    }
                   </span>
                 }
               </td>
               <td nxTableCell>
-                @if (item.causedBy) { {{ item.causedBy }} } @else { <span class="edp-item-sub">–</span> }
+                @if (item.causedBy) {
+                  {{ item.causedBy }}
+                } @else {
+                  <span class="edp-item-sub">–</span>
+                }
               </td>
               <td nxTableCell>
                 {{ item.description }}
@@ -120,15 +141,31 @@
               </td>
               <td nxTableCell>{{ item.damage }}</td>
               <td nxTableCell class="edp-col-action">
-                <button class="sec-kebab-btn" type="button"
-                  [nxContextMenuTriggerFor]="itemMenu" aria-label="Item actions">⋮</button>
+                <button
+                  class="sec-kebab-btn"
+                  type="button"
+                  [nxContextMenuTriggerFor]="itemMenu"
+                  aria-label="Item actions"
+                >
+                  ⋮
+                </button>
                 <nx-context-menu #itemMenu="nxContextMenu">
-                  <button nxContextMenuItem type="button"
+                  <button
+                    nxContextMenuItem
+                    type="button"
                     [disabled]="claimClosed || section.status === 'Closed'"
-                    (click)="onEditItem(item)">Edit</button>
-                  <button nxContextMenuItem type="button"
+                    (click)="onEditItem(item)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    nxContextMenuItem
+                    type="button"
                     [disabled]="claimClosed || section.status === 'Closed'"
-                    (click)="onDeleteItem(item)">Delete</button>
+                    (click)="onDeleteItem(item)"
+                  >
+                    Delete
+                  </button>
                 </nx-context-menu>
               </td>
             </tr>
@@ -137,5 +174,4 @@
       </table>
     }
   </div>
-
 </div>

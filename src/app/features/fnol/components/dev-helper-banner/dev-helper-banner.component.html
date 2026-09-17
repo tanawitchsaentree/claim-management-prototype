@@ -1,78 +1,102 @@
-<ng-container *ngIf="isVisible$ | async">
+@if (isVisible$ | async) {
   <div class="dev-banner">
     <span class="dev-banner__scope">FNOL helper:</span>
-
-    <ng-container [ngSwitch]="currentPage$ | async">
-
+    @switch (currentPage$ | async) {
       <!-- ─── SEARCH PAGE ─── -->
-      <ng-container *ngSwitchCase="'search'">
-        <span class="dev-banner__hint">Skip the search — pre-fill a sample client &amp; policy.</span>
-        <button nxButton="secondary small" type="button" [disabled]="filling"
-                (click)="onFill('search')">
-          <nx-icon name="bolt" nxIconPositionStart *ngIf="!filling"></nx-icon>
-          <nx-spinner size="small" *ngIf="filling"></nx-spinner>
+      @case ('search') {
+        <span class="dev-banner__hint"
+          >Skip the search — pre-fill a sample client &amp; policy.</span
+        >
+        <button
+          nxButton="secondary small"
+          type="button"
+          [disabled]="filling"
+          (click)="onFill('search')"
+        >
+          @if (!filling) {
+            <nx-icon name="bolt" nxIconPositionStart></nx-icon>
+          }
+          @if (filling) {
+            <nx-spinner size="small"></nx-spinner>
+          }
           Pre-fill form
         </button>
-      </ng-container>
-
+      }
       <!-- ─── LOSS INFO PAGE ─── -->
-      <ng-container *ngSwitchCase="'loss-info'">
-        <ng-container *ngIf="isReady('loss-info'); else needsPolicy">
-          <span class="dev-banner__hint">Pre-fill cause, dates &amp; description with a sample loss.</span>
-          <button nxButton="secondary small" type="button" [disabled]="filling"
-                  (click)="onFill('loss-info')">
-            <nx-icon name="bolt" nxIconPositionStart *ngIf="!filling"></nx-icon>
-            <nx-spinner size="small" *ngIf="filling"></nx-spinner>
+      @case ('loss-info') {
+        @if (isReady('loss-info')) {
+          <span class="dev-banner__hint"
+            >Pre-fill cause, dates &amp; description with a sample loss.</span
+          >
+          <button
+            nxButton="secondary small"
+            type="button"
+            [disabled]="filling"
+            (click)="onFill('loss-info')"
+          >
+            @if (!filling) {
+              <nx-icon name="bolt" nxIconPositionStart></nx-icon>
+            }
+            @if (filling) {
+              <nx-spinner size="small"></nx-spinner>
+            }
             Pre-fill form
           </button>
-        </ng-container>
-      </ng-container>
-
+        } @else {
+          <span class="dev-banner__muted">Select a policy first (go to Search).</span>
+        }
+      }
       <!-- ─── ENTITIES PAGE ─── -->
-      <ng-container *ngSwitchCase="'entities'">
-        <ng-container *ngIf="isReady('entities'); else needsPolicy">
+      @case ('entities') {
+        @if (isReady('entities')) {
           <span class="dev-banner__hint">Auto-select the first entity for this policy.</span>
-          <button nxButton="secondary small" type="button" [disabled]="filling"
-                  (click)="onFill('entities')">
-            <nx-icon name="bolt" nxIconPositionStart *ngIf="!filling"></nx-icon>
-            <nx-spinner size="small" *ngIf="filling"></nx-spinner>
+          <button
+            nxButton="secondary small"
+            type="button"
+            [disabled]="filling"
+            (click)="onFill('entities')"
+          >
+            @if (!filling) {
+              <nx-icon name="bolt" nxIconPositionStart></nx-icon>
+            }
+            @if (filling) {
+              <nx-spinner size="small"></nx-spinner>
+            }
             Pre-fill form
           </button>
-        </ng-container>
-      </ng-container>
-
+        } @else {
+          <span class="dev-banner__muted">Select a policy first (go to Search).</span>
+        }
+      }
       <!-- ─── PAGES WITH NO FILL ACTION ─── -->
-      <ng-container *ngSwitchCase="'parties'">
+      @case ('parties') {
         <span class="dev-banner__muted">No pre-fill on this page.</span>
-      </ng-container>
-      <ng-container *ngSwitchCase="'reserves'">
+      }
+      @case ('reserves') {
         <span class="dev-banner__muted">No pre-fill on this page.</span>
-      </ng-container>
-      <ng-container *ngSwitchCase="'summary'">
+      }
+      @case ('summary') {
         <span class="dev-banner__muted">No pre-fill on this page.</span>
-      </ng-container>
-
+      }
       <!-- ─── OTHER / UNKNOWN ─── -->
-      <ng-container *ngSwitchDefault>
+      @default {
         <span class="dev-banner__muted">No pre-fill on this page.</span>
-      </ng-container>
-
-    </ng-container>
-
+      }
+    }
     <!-- Result toast -->
-    <div *ngIf="showResult && lastResult"
-         class="dev-banner__result"
-         [class.dev-banner__result--success]="lastResult.success"
-         [class.dev-banner__result--error]="!lastResult.success">
-      {{ lastResult.message }}
-      <span *ngIf="lastResult.warnings?.length" class="dev-banner__result-warn">
-        — {{ lastResult.warnings!.length }} warning(s)
-      </span>
-    </div>
-
+    @if (showResult && lastResult) {
+      <div
+        class="dev-banner__result"
+        [class.dev-banner__result--success]="lastResult.success"
+        [class.dev-banner__result--error]="!lastResult.success"
+      >
+        {{ lastResult.message }}
+        @if (lastResult.warnings?.length) {
+          <span class="dev-banner__result-warn">
+            — {{ lastResult.warnings!.length }} warning(s)
+          </span>
+        }
+      </div>
+    }
   </div>
-</ng-container>
-
-<ng-template #needsPolicy>
-  <span class="dev-banner__muted">Select a policy first (go to Search).</span>
-</ng-template>
+}

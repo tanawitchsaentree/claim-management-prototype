@@ -1,7 +1,11 @@
 @use '../../card-shell' as shell;
 
-.co-card { @include shell.card; }
-.co-card-title { @include shell.card-title; }
+.co-card {
+  @include shell.card;
+}
+.co-card-title {
+  @include shell.card-title;
+}
 
 .co-value {
   font-size: var(--paragraph-02-font-size);
@@ -21,7 +25,9 @@
 .rp-header {
   @include shell.card-title-row;
 
-  .co-card-title { margin-bottom: 0; }
+  .co-card-title {
+    margin-bottom: 0;
+  }
 }
 
 .rp-prompt {

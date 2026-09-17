@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -9,7 +17,7 @@ import { Navbar } from '../../../features/layout/navbar/navbar';
 
 export interface BreadcrumbItem {
   label: string;
-  route?: string;       // omit on the last (current) item
+  route?: string; // omit on the last (current) item
 }
 
 /**
@@ -24,16 +32,9 @@ export interface BreadcrumbItem {
 @Component({
   selector: 'app-page-shell',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    Navbar,
-    NxBreadcrumbModule,
-    NxGridModule,
-    NxMessageModule,
-  ],
+  imports: [CommonModule, RouterLink, Navbar, NxBreadcrumbModule, NxGridModule, NxMessageModule],
   templateUrl: './page-shell.component.html',
-  styleUrl: './page-shell.component.scss',
+  styleUrl: './page-shell.component.scss'
 })
 export class PageShellComponent implements OnChanges {
   private readonly live = inject(LiveAnnouncer);

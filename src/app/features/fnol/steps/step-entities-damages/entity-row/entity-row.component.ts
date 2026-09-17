@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -13,22 +13,25 @@ import { StatusChipComponent } from '../../../../../shared/components/status-chi
   selector: 'app-entity-row',
   standalone: true,
   imports: [
-    CommonModule,
     NxTableModule,
     NxCheckboxModule,
     NxButtonModule,
     NxIconModule,
     NxTooltipModule,
     NxContextMenuModule,
-    StatusChipComponent,
+    StatusChipComponent
   ],
-  templateUrl: './entity-row.component.html',
+  templateUrl: './entity-row.component.html'
 })
 export class EntityRowComponent {
   @Input({ required: true }) entity!: EntityRow;
   @Input() showCoveredForEvents = false;
   @Output() entityToggle = new EventEmitter<{ entity: EntityRow; checked: boolean }>();
-  @Output() subItemToggle = new EventEmitter<{ entity: EntityRow; subItem: SubItem; checked: boolean }>();
+  @Output() subItemToggle = new EventEmitter<{
+    entity: EntityRow;
+    subItem: SubItem;
+    checked: boolean;
+  }>();
 
   isChecked(): boolean {
     if (!this.entity.subItems?.length) return this.entity.selected;

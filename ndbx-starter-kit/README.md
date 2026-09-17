@@ -23,16 +23,17 @@ docs/
 
 ## What each file does
 
-| File | When Claude reads it |
-|------|---------------------|
-| `CONTEXT.md` | Before any code — stack, tokens, component protocol, forbidden patterns |
-| `BLESSED.md` | Before writing UI — copy these patterns instead of improvising |
-| `NDBX_RECIPES.md` | Before writing any NDBX component — exact verified HTML snippets |
-| `skills/nx-formfield-spacing-trap/SKILL.md` | When spacing looks wrong on dense layouts with inputs |
+| File                                        | When Claude reads it                                                    |
+| ------------------------------------------- | ----------------------------------------------------------------------- |
+| `CONTEXT.md`                                | Before any code — stack, tokens, component protocol, forbidden patterns |
+| `BLESSED.md`                                | Before writing UI — copy these patterns instead of improvising          |
+| `NDBX_RECIPES.md`                           | Before writing any NDBX component — exact verified HTML snippets        |
+| `skills/nx-formfield-spacing-trap/SKILL.md` | When spacing looks wrong on dense layouts with inputs                   |
 
 ## Adding your own patterns
 
 When Claude builds something and you confirm it works:
+
 1. Add the HTML + SCSS block to `BLESSED.md` under a new heading
 2. Update the Variant Registry in any skill file if a new case was encountered
 

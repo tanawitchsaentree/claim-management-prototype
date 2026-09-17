@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -7,7 +7,10 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { MockUserDirectoryService, UserDirectoryEntry } from '../../../core/mock/services/mock-user-directory.service';
+import {
+  MockUserDirectoryService,
+  UserDirectoryEntry
+} from '../../../core/mock/services/mock-user-directory.service';
 
 export interface ReassignClaimPreviewRow {
   claimId: string;
@@ -30,33 +33,33 @@ export interface ReassignClaimModalResult {
   selector: 'app-reassign-claim-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxButtonModule,
     NxFormfieldModule,
     NxInputModule,
-    NxIconModule,
+    NxIconModule
   ],
   templateUrl: './reassign-claim-modal.component.html',
-  styleUrl: './reassign-claim-modal.component.scss',
+  styleUrl: './reassign-claim-modal.component.scss'
 })
 export class ReassignClaimModalComponent implements OnInit {
-  readonly data     = inject<ReassignClaimModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<ReassignClaimModalComponent, ReassignClaimModalResult | null>>(NxModalRef);
+  readonly data = inject<ReassignClaimModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ReassignClaimModalComponent, ReassignClaimModalResult | null>>(NxModalRef);
   private readonly userDirSvc = inject(MockUserDirectoryService);
 
   // Default list shown on open; narrows to search results once the handler types 2+ chars.
-  readonly defaultHandlers  = signal<UserDirectoryEntry[]>([]);
-  readonly searchResults    = signal<UserDirectoryEntry[] | null>(null);
-  readonly handlerQuery     = signal('');
+  readonly defaultHandlers = signal<UserDirectoryEntry[]>([]);
+  readonly searchResults = signal<UserDirectoryEntry[] | null>(null);
+  readonly handlerQuery = signal('');
   private searchGeneration = 0;
 
   readonly visibleHandlers = () => this.searchResults() ?? this.defaultHandlers();
 
   readonly form = new FormGroup({
     handlerName: new FormControl<string | null>(null, { validators: [Validators.required] }),
-    reason:      new FormControl<string>('', { nonNullable: true }),
+    reason: new FormControl<string>('', { nonNullable: true })
   });
 
   constructor() {
@@ -85,7 +88,9 @@ export class ReassignClaimModalComponent implements OnInit {
     this.searchResults.set(null);
   }
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -93,6 +98,9 @@ export class ReassignClaimModalComponent implements OnInit {
       return;
     }
     const raw = this.form.getRawValue();
-    this.modalRef.close({ handlerName: raw.handlerName as string, reason: raw.reason || undefined });
+    this.modalRef.close({
+      handlerName: raw.handlerName as string,
+      reason: raw.reason || undefined
+    });
   }
 }

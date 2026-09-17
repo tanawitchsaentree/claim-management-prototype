@@ -42,10 +42,17 @@
   align-items: start;
   width: 80%;
 
-  &--3col { grid-template-columns: 1fr 1fr 1fr; }
-  &--1col { grid-template-columns: 1fr; max-width: calc((80% - 48px) / 3); }
+  &--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  &--1col {
+    grid-template-columns: 1fr;
+    max-width: calc((80% - 48px) / 3);
+  }
 
-  &--extended { margin-top: 0; }
+  &--extended {
+    margin-top: 0;
+  }
 }
 
 // Row 1: inputs group (80%) + actions group (20%)
@@ -85,7 +92,10 @@
   border-radius: 4px;
   font-size: var(--paragraph-03-font-size);
 
-  &__icon { font-size: var(--icon-size-s); flex-shrink: 0; }
+  &__icon {
+    font-size: var(--icon-size-s);
+    flex-shrink: 0;
+  }
 }
 
 // ─── Toggle filters ───────────────────────────────────────────────
@@ -103,8 +113,12 @@
   margin-top: 12px;
   margin-bottom: 0;
 
-  nx-icon { font-size: 16px; }
-  &:hover { text-decoration: underline; }
+  nx-icon {
+    font-size: 16px;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ─── Results ──────────────────────────────────────────────────────
@@ -136,7 +150,10 @@
   border-radius: 4px;
   font-size: var(--paragraph-03-font-size);
 
-  nx-icon { font-size: 18px; flex-shrink: 0; }
+  nx-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
 }
 
 .results-table-wrap {
@@ -172,17 +189,27 @@
 
 .results-row {
   cursor: pointer;
-  &:hover td { background: var(--ui-02); }
-  &--selected td { background: var(--action-selected-background-color); }
+  &:hover td {
+    background: var(--ui-02);
+  }
+  &--selected td {
+    background: var(--action-selected-background-color);
+  }
 }
 
 // ─── Skeleton Claims tab row states ───────────────────────────────
 // No row tint — status is conveyed by the "Awaiting policy" status text only.
 // (Removed yellow row background; it read like an error.)
-.skeleton-awaiting:hover td { background: var(--ui-02); }
+.skeleton-awaiting:hover td {
+  background: var(--ui-02);
+}
 
-.skeleton-matched td  { background: var(--ui-01); }
-.skeleton-abandoned td { color: var(--text-muted); }
+.skeleton-matched td {
+  background: var(--ui-01);
+}
+.skeleton-abandoned td {
+  color: var(--text-muted);
+}
 
 .col-radio {
   width: 40px;
@@ -195,7 +222,10 @@
   cursor: pointer;
   accent-color: var(--interactive-primary);
 
-  &:disabled { cursor: not-allowed; opacity: 0.4; }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
 }
 
 // Action column frozen to the right edge so the kebab stays visible
@@ -210,7 +240,10 @@
   background: var(--ui-01);
 }
 
-thead .col-action { background: var(--ui-01); z-index: 2; }
+thead .col-action {
+  background: var(--ui-01);
+  z-index: 2;
+}
 
 .action-menu-btn {
   background: none;
@@ -219,14 +252,20 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   cursor: pointer;
   color: var(--text-muted);
   border-radius: 4px;
-  &:hover { background: var(--ui-02); color: var(--text-01); }
+  &:hover {
+    background: var(--ui-02);
+    color: var(--text-01);
+  }
 }
 
 .th-sort {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  nx-icon { font-size: 14px; color: var(--text-muted); }
+  nx-icon {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
 }
 
 // ─── Claims table internals (also covers orphan/skeleton statuses) ──
@@ -287,11 +326,19 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   gap: 4px;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
-  nx-icon { font-size: 14px; color: var(--text-muted); }
+  nx-icon {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
 }
 
-.text-link   { color: var(--interactive-text); font-weight: 500; }
-.text-muted  { color: var(--text-muted); }
+.text-link {
+  color: var(--interactive-text);
+  font-weight: 500;
+}
+.text-muted {
+  color: var(--text-muted);
+}
 
 .table-action-link {
   background: none;
@@ -302,7 +349,9 @@ thead .col-action { background: var(--ui-01); z-index: 2; }
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ─── Footer ───────────────────────────────────────────────────────

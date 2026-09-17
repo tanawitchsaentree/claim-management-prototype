@@ -57,11 +57,15 @@
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
   &--disabled {
     color: var(--text-muted);
     cursor: not-allowed;
-    &:hover { text-decoration: none; }
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -96,13 +100,17 @@
     &::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 0; right: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       height: 3px;
       background: var(--interactive-text);
     }
   }
 
-  &:hover:not(&--active) { color: var(--text-01); }
+  &:hover:not(&--active) {
+    color: var(--text-01);
+  }
 }
 
 @mixin data-table-wrap {
@@ -129,9 +137,13 @@
   }
 
   ::ng-deep .nx-header-cell:first-child,
-  ::ng-deep .nx-table-cell:first-child { padding-left: 24px !important; }
+  ::ng-deep .nx-table-cell:first-child {
+    padding-left: 24px !important;
+  }
   ::ng-deep .nx-header-cell:last-child,
-  ::ng-deep .nx-table-cell:last-child  { padding-right: 24px !important; }
+  ::ng-deep .nx-table-cell:last-child {
+    padding-right: 24px !important;
+  }
 }
 
 @mixin dash-col-nowrap {
@@ -139,11 +151,18 @@
 
   ::ng-deep .nx-header-cell,
   &.nx-header-cell,
-  &.nx-table-cell { white-space: nowrap; }
+  &.nx-table-cell {
+    white-space: nowrap;
+  }
 }
 
-@mixin text-muted { color: var(--text-muted); }
-@mixin text-link  { color: var(--interactive-text); font-weight: 500; }
+@mixin text-muted {
+  color: var(--text-muted);
+}
+@mixin text-link {
+  color: var(--interactive-text);
+  font-weight: 500;
+}
 
 @mixin scope-tabs {
   display: flex;
@@ -171,16 +190,27 @@
   background: var(--ui-01);
   color: var(--text-muted);
   cursor: pointer;
-  transition: background .12s, border-color .12s, color .12s;
-  &:hover { background: var(--ui-02); }
-  &--active { background: var(--interactive-primary); color: #fff; border-color: var(--interactive-primary); }
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+  &:hover {
+    background: var(--ui-02);
+  }
+  &--active {
+    background: var(--interactive-primary);
+    color: var(--text-02);
+    border-color: var(--interactive-primary);
+  }
 
   &--meta {
     padding: 2px 6px;
     border: none;
     background: none;
     border-radius: 8px;
-    &:hover { background: var(--ui-02); }
+    &:hover {
+      background: var(--ui-02);
+    }
 
     &.scope-tab--active {
       background: none;
@@ -215,5 +245,7 @@
   line-height: 1;
   letter-spacing: 1px;
   font-family: inherit;
-  &:hover { background: var(--ui-02); }
+  &:hover {
+    background: var(--ui-02);
+  }
 }

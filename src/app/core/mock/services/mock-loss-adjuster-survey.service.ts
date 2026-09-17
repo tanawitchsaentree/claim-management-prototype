@@ -14,7 +14,12 @@ export class MockLossAdjusterSurveyService extends MockBaseService {
     return this.respond(found ? structuredClone(found) : null);
   }
 
-  submit(assignmentId: string, claimId: string, rating: number, comments: string): Observable<LossAdjusterSurvey> {
+  submit(
+    assignmentId: string,
+    claimId: string,
+    rating: number,
+    comments: string
+  ): Observable<LossAdjusterSurvey> {
     const survey: LossAdjusterSurvey = {
       surveyId: `LAS-${Date.now()}`,
       assignmentId,
@@ -23,7 +28,7 @@ export class MockLossAdjusterSurveyService extends MockBaseService {
       comments,
       status: 'submitted',
       submittedBy: 'Current User',
-      submittedAt: new Date().toISOString(),
+      submittedAt: new Date().toISOString()
     };
     this.store.set([...this.store().filter(s => s.assignmentId !== assignmentId), survey]);
     return this.respond(structuredClone(survey));

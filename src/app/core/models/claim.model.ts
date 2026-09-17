@@ -1,8 +1,17 @@
 // 'Awaiting policy' / 'Matched' / 'Abandoned' are the orphan-claim (skeleton) lifecycle
 // states — merged into the same Claim record instead of a separate model so a claim
 // found via search, listed, or shown on the dashboard is always the same record.
-export type ClaimStatus = 'In progress' | 'Priced' | 'Quoted' | 'Bound' | 'Declined' | 'Open' | 'Closed'
-  | 'Awaiting policy' | 'Matched' | 'Abandoned';
+export type ClaimStatus =
+  | 'In progress'
+  | 'Priced'
+  | 'Quoted'
+  | 'Bound'
+  | 'Declined'
+  | 'Open'
+  | 'Closed'
+  | 'Awaiting policy'
+  | 'Matched'
+  | 'Abandoned';
 export type MassEventLinkStatus = 'pending' | 'confirmed' | 'overridden';
 export type Priority = 'high' | 'medium' | 'low';
 export type LineOfBusiness = 'Property' | 'Liability' | 'Marine' | 'Cyber' | 'Engineering';

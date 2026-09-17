@@ -4,246 +4,348 @@
     <span>Loading loss information…</span>
   </div>
 } @else {
+  <div class="eli-page" [formGroup]="form">
+    <!-- Page header — status + client name answer "which record, what state"
+    before the user touches anything (DESIGN_PRINCIPLES.md rule #1). -->
+    <app-page-header
+      title="Edit claim details"
+      [eyebrow]="claimId()"
+      [subtitle]="clientName()"
+      [showBack]="true"
+      backLabel="Back to claim overview"
+      (back)="onDiscard()"
+    >
+      <div actions class="eli-header-actions">
+        @if (claimStatus()) {
+          <app-status-chip [status]="claimStatus().toLowerCase()" domain="claim"></app-status-chip>
+        }
+        @if (pendingChanges().length > 0) {
+          <span class="eli-change-counter"
+            >{{ pendingChanges().length }} unsaved update{{
+              pendingChanges().length === 1 ? '' : 's'
+            }}</span
+          >
+        } @else {
+          <span class="eli-change-counter eli-change-counter--none">No updates</span>
+        }
+      </div>
+    </app-page-header>
 
-<div class="eli-page" [formGroup]="form">
+    <!-- Update ledger — the diff modal's content, promoted to where it can
+    prevent a mistake instead of only reporting one at the last second.
+    Present only when there's something to show. No per-field Revert —
+    Discard (whole-form) and the Confirm/Cancel step on save are the only
+    undo paths now (Marlene feedback, 2026-08-31): a per-row Revert was a
+    second, redundant way to back out of an update. -->
+    @if (pendingChanges().length > 0) {
+      <section class="eli-ledger">
+        <h2 class="eli-ledger__title">Pending updates</h2>
+        <ul class="eli-ledger__list">
+          @for (d of pendingChanges(); track d.label) {
+            <li class="eli-ledger__item">
+              <span class="eli-ledger__field">{{ d.label }}</span>
+              <span class="eli-ledger__delta">
+                <span class="eli-ledger__was">{{ d.original || 'Not provided' }}</span>
+                →
+                <span class="eli-ledger__now">{{ d.updated || 'Not provided' }}</span>
+              </span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
 
-  <!-- Page header — status + client name answer "which record, what state"
-       before the user touches anything (DESIGN_PRINCIPLES.md rule #1). -->
-  <app-page-header
-    title="Edit claim details"
-    [eyebrow]="claimId()"
-    [subtitle]="clientName()"
-    [showBack]="true"
-    backLabel="Back to claim overview"
-    (back)="onDiscard()">
-    <div actions class="eli-header-actions">
-      @if (claimStatus()) {
-        <app-status-chip [status]="claimStatus().toLowerCase()" domain="claim"></app-status-chip>
-      }
-      @if (pendingChanges().length > 0) {
-        <span class="eli-change-counter">{{ pendingChanges().length }} unsaved update{{ pendingChanges().length === 1 ? '' : 's' }}</span>
+    <!-- Card: Loss information — Claim description card removed entirely
+    (Marlene feedback, 2026-08-31): users update Loss description instead,
+    so a separate Claim-level description field was redundant. -->
+    <section class="eli-card">
+      <h2 class="eli-section-heading">Loss information</h2>
+
+      @if (!isEditing('causeOfLoss')) {
+        <div class="eli-field" [class.eli-field--changed]="fieldChanged('causeOfLoss')">
+          <span class="eli-label">Cause of loss</span>
+          <span class="eli-value">{{ causeOfLossDisplay || 'Not provided' }}</span>
+          @if (fieldChanged('causeOfLoss')) {
+            <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
+          }
+          <nx-link size="small"
+            ><a
+              tabindex="0"
+              (click)="startEdit('causeOfLoss')"
+              (keydown.enter)="startEdit('causeOfLoss')"
+              >{{ causeOfLossDisplay ? 'Update' : 'Add' }}</a
+            ></nx-link
+          >
+        </div>
       } @else {
-        <span class="eli-change-counter eli-change-counter--none">No updates</span>
-      }
-    </div>
-  </app-page-header>
-
-  <!-- Update ledger — the diff modal's content, promoted to where it can
-       prevent a mistake instead of only reporting one at the last second.
-       Present only when there's something to show. No per-field Revert —
-       Discard (whole-form) and the Confirm/Cancel step on save are the only
-       undo paths now (Marlene feedback, 2026-08-31): a per-row Revert was a
-       second, redundant way to back out of an update. -->
-  @if (pendingChanges().length > 0) {
-    <section class="eli-ledger">
-      <h2 class="eli-ledger__title">Pending updates</h2>
-      <ul class="eli-ledger__list">
-        @for (d of pendingChanges(); track d.label) {
-          <li class="eli-ledger__item">
-            <span class="eli-ledger__field">{{ d.label }}</span>
-            <span class="eli-ledger__delta">
-              <span class="eli-ledger__was">{{ d.original || 'Not provided' }}</span>
-              →
-              <span class="eli-ledger__now">{{ d.updated || 'Not provided' }}</span>
-            </span>
-          </li>
+        <nx-formfield label="Cause of loss" class="eli-full-width">
+          <nx-multi-select
+            [options]="causeOfLossOptions()"
+            selectValue="value"
+            selectLabel="label"
+            placeholder="Select cause of loss"
+            formControlName="causeOfLoss"
+            (selectionChange)="onCauseOfLossChange($event)"
+          >
+          </nx-multi-select>
+        </nx-formfield>
+        @if (showSpecifyOtherCause) {
+          <nx-formfield label="Specify other cause of loss" class="eli-full-width">
+            <input
+              nxInput
+              formControlName="specifyOtherCauseOfLoss"
+              maxlength="100"
+              data-testid="specify-other-cause-of-loss-input"
+            />
+            @if (submitAttempted && form.get('specifyOtherCauseOfLoss')?.invalid) {
+              <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
+            }
+          </nx-formfield>
         }
-      </ul>
+      }
+
+      <hr class="eli-divider" />
+
+      <!-- BMPCC-18160 — sits directly under Cause of loss, the field it is
+      filtered by. Editable here and on FNOL only; every other surface shows
+      it read-only. -->
+      @if (!isEditing('circumstance')) {
+        <div class="eli-field" [class.eli-field--changed]="fieldChanged('circumstance')">
+          <span class="eli-label">Incident circumstance</span>
+          <span class="eli-value">{{ circumstanceDisplay || 'Not provided' }}</span>
+          @if (fieldChanged('circumstance')) {
+            <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
+          }
+          <nx-link size="small"
+            ><a
+              tabindex="0"
+              (click)="startEdit('circumstance')"
+              (keydown.enter)="startEdit('circumstance')"
+              >{{ circumstanceDisplay ? 'Update' : 'Add' }}</a
+            ></nx-link
+          >
+        </div>
+      } @else {
+        <nx-formfield label="Incident circumstance" class="eli-full-width">
+          <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+            @for (option of circumstanceOptions; track option.value) {
+              <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          <nx-hint nxFormfieldHint>
+            @if (selectedCauses.length) {
+              Narrowed to the cause of loss on this claim.
+            } @else {
+              Select a cause of loss to narrow this list.
+            }
+          </nx-hint>
+        </nx-formfield>
+      }
+
+      <hr class="eli-divider" />
+
+      @if (!isEditing('typeOfDamage')) {
+        <div class="eli-field" [class.eli-field--changed]="fieldChanged('typeOfDamage')">
+          <span class="eli-label">Type of damage</span>
+          <span class="eli-value">{{ typeOfDamageDisplay || 'Not provided' }}</span>
+          @if (fieldChanged('typeOfDamage')) {
+            <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
+          }
+          <nx-link size="small"
+            ><a
+              tabindex="0"
+              (click)="startEdit('typeOfDamage')"
+              (keydown.enter)="startEdit('typeOfDamage')"
+              >{{ typeOfDamageDisplay ? 'Update' : 'Add' }}</a
+            ></nx-link
+          >
+        </div>
+      } @else {
+        <nx-formfield label="Type of damage" class="eli-full-width">
+          <nx-multi-select
+            [options]="typeOfDamageOptions()"
+            selectValue="value"
+            selectLabel="label"
+            placeholder="Select type of damage"
+            formControlName="typeOfDamage"
+          >
+          </nx-multi-select>
+          <nx-hint nxFormfieldHint
+            >Updating this affects existing Sections — any that are impacted are listed at the top
+            of the page before you save.</nx-hint
+          >
+        </nx-formfield>
+      }
+
+      <hr class="eli-divider" />
+
+      @if (!isEditing('dateGroup')) {
+        <div class="eli-field" [class.eli-field--changed]="fieldChanged('dateGroup')">
+          <span class="eli-label">When did the loss occur?</span>
+          <span class="eli-value">{{ dateGroupDisplay }}</span>
+          @if (fieldChanged('dateGroup')) {
+            <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
+          }
+          <nx-link size="small"
+            ><a
+              tabindex="0"
+              (click)="startEdit('dateGroup')"
+              (keydown.enter)="startEdit('dateGroup')"
+              >Update</a
+            ></nx-link
+          >
+        </div>
+      } @else {
+        <h3 class="eli-sub-heading">When did the loss occur?</h3>
+        <div class="two-col-grid" [formGroup]="dateOfLoss">
+          <nx-formfield label="Date of occurrence">
+            <input
+              nxDatefield
+              nxInput
+              formControlName="dateOfOccurrence"
+              [datepicker]="occPicker"
+            />
+            <nx-datepicker-toggle nxFormfieldSuffix [for]="occPicker"></nx-datepicker-toggle>
+            <nx-datepicker #occPicker></nx-datepicker>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY</nx-hint>
+            @if (submitAttempted && dateOfLoss.get('dateOfOccurrence')?.errors?.['required']) {
+              <nx-error nxFormfieldError>Date of occurrence is required</nx-error>
+            }
+            @if (dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']) {
+              <nx-error nxFormfieldError>Date can't be in the future</nx-error>
+            }
+          </nx-formfield>
+          <div>
+            <nx-timefield
+              label="Time of occurrence"
+              formControlName="timeOfOccurrence"
+            ></nx-timefield>
+          </div>
+          <nx-formfield label="Date of notification">
+            <input
+              nxDatefield
+              nxInput
+              formControlName="dateOfNotification"
+              [datepicker]="notifPicker"
+            />
+            <nx-datepicker-toggle nxFormfieldSuffix [for]="notifPicker"></nx-datepicker-toggle>
+            <nx-datepicker #notifPicker></nx-datepicker>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+            @if (submitAttempted && dateOfLoss.get('dateOfNotification')?.errors?.['required']) {
+              <nx-error nxFormfieldError>Date of notification is required</nx-error>
+            }
+          </nx-formfield>
+          <div>
+            <nx-timefield
+              label="Time of notification"
+              formControlName="timeOfNotification"
+            ></nx-timefield>
+          </div>
+        </div>
+        @if (dateOfLoss.errors?.['dateOrder']) {
+          <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
+        }
+      }
+
+      <hr class="eli-divider" />
+
+      @if (!isEditing('lossDescription')) {
+        <div class="eli-field" [class.eli-field--changed]="fieldChanged('lossDescription')">
+          <span class="eli-label">Loss description</span>
+          <span class="eli-value">{{ form.get('lossDescription')?.value || 'Not provided' }}</span>
+          @if (fieldChanged('lossDescription')) {
+            <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
+          }
+          <nx-link size="small"
+            ><a
+              tabindex="0"
+              (click)="startEdit('lossDescription')"
+              (keydown.enter)="startEdit('lossDescription')"
+              >{{ form.get('lossDescription')?.value ? 'Update' : 'Add' }}</a
+            ></nx-link
+          >
+        </div>
+      } @else {
+        <nx-formfield label="Loss description" class="eli-full-width">
+          <textarea
+            nxInput
+            formControlName="lossDescription"
+            rows="3"
+            [maxlength]="maxDesc"
+          ></textarea>
+          <nx-hint nxFormfieldHint
+            >What happened during the loss event.
+            {{ form.get('lossDescription')?.value?.length ?? 0 }}/{{ maxDesc }}</nx-hint
+          >
+          @if (submitAttempted && form.get('lossDescription')?.errors?.['required']) {
+            <nx-error nxFormfieldError>Loss description is required</nx-error>
+          }
+        </nx-formfield>
+      }
     </section>
-  }
 
-  <!-- Card: Loss information — Claim description card removed entirely
-       (Marlene feedback, 2026-08-31): users update Loss description instead,
-       so a separate Claim-level description field was redundant. -->
-  <section class="eli-card">
-    <h2 class="eli-section-heading">Loss information</h2>
-
-    @if (!isEditing('causeOfLoss')) {
-      <div class="eli-field" [class.eli-field--changed]="fieldChanged('causeOfLoss')">
-        <span class="eli-label">Cause of loss</span>
-        <span class="eli-value">{{ causeOfLossDisplay || 'Not provided' }}</span>
-        @if (fieldChanged('causeOfLoss')) {
-          <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
-        }
-        <nx-link size="small"><a (click)="startEdit('causeOfLoss')">{{ causeOfLossDisplay ? 'Update' : 'Add' }}</a></nx-link>
-      </div>
-    } @else {
-      <nx-formfield label="Cause of loss" class="eli-full-width">
-        <nx-multi-select [options]="causeOfLossOptions()" selectValue="value" selectLabel="label"
-          placeholder="Select cause of loss" formControlName="causeOfLoss"
-          (selectionChange)="onCauseOfLossChange($event)">
-        </nx-multi-select>
-      </nx-formfield>
-      @if (showSpecifyOtherCause) {
-        <nx-formfield label="Specify other cause of loss" class="eli-full-width">
-          <input nxInput formControlName="specifyOtherCauseOfLoss" maxlength="100"
-            data-testid="specify-other-cause-of-loss-input" />
-          <nx-error nxFormfieldError *ngIf="submitAttempted && form.get('specifyOtherCauseOfLoss')?.invalid">
-            Describe the cause of loss
-          </nx-error>
-        </nx-formfield>
+    <!-- Card: Location (CWB Location Picker) — already read-first by its own
+    nature (a table of current locations with an Edit action per row, not
+    an always-open input), so it isn't converted to the eli-field pattern
+    above; it's still part of the change ledger via computeDiffs(). -->
+    <section class="eli-card">
+      <h2 class="eli-section-heading">Locations of loss</h2>
+      <p class="eli-section-desc">Update the location of loss below.</p>
+      @if (fieldChanged('lossLocation')) {
+        <p class="eli-was">was: {{ originalLossLocationDisplay }}</p>
       }
+      <app-location-picker
+        [policyNumber]="policyNumber()"
+        [value]="lossLocation.value"
+        (locationChange)="lossLocation.setValue($event); form.markAsDirty()"
+      >
+      </app-location-picker>
+    </section>
+
+    <!-- Save refused because a required field is incomplete. The fields live
+    inside collapsed groups, so without this the button just did nothing. -->
+    @if (saveBlocked()) {
+      <nx-message context="error" class="eli-save-error">{{ saveBlocked() }}</nx-message>
     }
 
-    <hr class="eli-divider" />
+    @if (saveSuccess()) {
+      <nx-message context="success" class="eli-save-success">
+        Loss information updated successfully.
+      </nx-message>
+    }
 
-    <!-- BMPCC-18160 — sits directly under Cause of loss, the field it is
-         filtered by. Editable here and on FNOL only; every other surface shows
-         it read-only. -->
-    @if (!isEditing('circumstance')) {
-      <div class="eli-field" [class.eli-field--changed]="fieldChanged('circumstance')">
-        <span class="eli-label">Incident circumstance</span>
-        <span class="eli-value">{{ circumstanceDisplay || 'Not provided' }}</span>
-        @if (fieldChanged('circumstance')) {
-          <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
+    <!-- Footer — deliberately NOT the wizard-footer shape: primary action on
+    the left (not FNOL's bottom-right "Next" position/size), disabled
+    while there's nothing to save, cost stated on Discard. -->
+    <div class="eli-step-footer">
+      <button
+        nxButton="primary small"
+        type="button"
+        class="eli-save-btn"
+        [disabled]="pendingChanges().length === 0 || saving()"
+        (click)="onSaveChanges()"
+      >
+        @if (saving()) {
+          <nx-spinner size="small"></nx-spinner>&nbsp;
         }
-        <nx-link size="small"><a (click)="startEdit('circumstance')">{{ circumstanceDisplay ? 'Update' : 'Add' }}</a></nx-link>
-      </div>
-    } @else {
-      <nx-formfield label="Incident circumstance" class="eli-full-width">
-        <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
-          @for (option of circumstanceOptions; track option.value) {
-            <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
-          }
-        </nx-dropdown>
-        <nx-hint nxFormfieldHint>
-          @if (selectedCauses.length) {
-            Narrowed to the cause of loss on this claim.
-          } @else {
-            Select a cause of loss to narrow this list.
-          }
-        </nx-hint>
-      </nx-formfield>
-    }
-
-    <hr class="eli-divider" />
-
-    @if (!isEditing('typeOfDamage')) {
-      <div class="eli-field" [class.eli-field--changed]="fieldChanged('typeOfDamage')">
-        <span class="eli-label">Type of damage</span>
-        <span class="eli-value">{{ typeOfDamageDisplay || 'Not provided' }}</span>
-        @if (fieldChanged('typeOfDamage')) {
-          <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
-        }
-        <nx-link size="small"><a (click)="startEdit('typeOfDamage')">{{ typeOfDamageDisplay ? 'Update' : 'Add' }}</a></nx-link>
-      </div>
-    } @else {
-      <nx-formfield label="Type of damage" class="eli-full-width">
-        <nx-multi-select [options]="typeOfDamageOptions()" selectValue="value" selectLabel="label"
-          placeholder="Select type of damage" formControlName="typeOfDamage">
-        </nx-multi-select>
-        <nx-hint nxFormfieldHint>Updating this affects existing Sections — any that are impacted are listed at the top of the page before you save.</nx-hint>
-      </nx-formfield>
-    }
-
-    <hr class="eli-divider" />
-
-    @if (!isEditing('dateGroup')) {
-      <div class="eli-field" [class.eli-field--changed]="fieldChanged('dateGroup')">
-        <span class="eli-label">When did the loss occur?</span>
-        <span class="eli-value">{{ dateGroupDisplay }}</span>
-        @if (fieldChanged('dateGroup')) {
-          <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
-        }
-        <nx-link size="small"><a (click)="startEdit('dateGroup')">Update</a></nx-link>
-      </div>
-    } @else {
-      <h3 class="eli-sub-heading">When did the loss occur?</h3>
-      <div class="two-col-grid" [formGroup]="dateOfLoss">
-        <nx-formfield label="Date of occurrence">
-          <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="occPicker" />
-          <nx-datepicker-toggle nxFormfieldSuffix [for]="occPicker"></nx-datepicker-toggle>
-          <nx-datepicker #occPicker></nx-datepicker>
-          <nx-hint nxFormfieldHint>DD-MM-YYYY</nx-hint>
-          <nx-error nxFormfieldError *ngIf="submitAttempted && dateOfLoss.get('dateOfOccurrence')?.errors?.['required']">Date of occurrence is required</nx-error>
-          <nx-error nxFormfieldError *ngIf="dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']">Date can't be in the future</nx-error>
-        </nx-formfield>
-        <div>
-          <nx-timefield label="Time of occurrence" formControlName="timeOfOccurrence"></nx-timefield>
-        </div>
-        <nx-formfield label="Date of notification">
-          <input nxDatefield nxInput formControlName="dateOfNotification" [datepicker]="notifPicker" />
-          <nx-datepicker-toggle nxFormfieldSuffix [for]="notifPicker"></nx-datepicker-toggle>
-          <nx-datepicker #notifPicker></nx-datepicker>
-          <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
-          <nx-error nxFormfieldError *ngIf="submitAttempted && dateOfLoss.get('dateOfNotification')?.errors?.['required']">Date of notification is required</nx-error>
-        </nx-formfield>
-        <div>
-          <nx-timefield label="Time of notification" formControlName="timeOfNotification"></nx-timefield>
-        </div>
-      </div>
-      @if (dateOfLoss.errors?.['dateOrder']) {
-        <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
-      }
-    }
-
-    <hr class="eli-divider" />
-
-    @if (!isEditing('lossDescription')) {
-      <div class="eli-field" [class.eli-field--changed]="fieldChanged('lossDescription')">
-        <span class="eli-label">Loss description</span>
-        <span class="eli-value">{{ form.get('lossDescription')?.value || 'Not provided' }}</span>
-        @if (fieldChanged('lossDescription')) {
-          <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
-        }
-        <nx-link size="small"><a (click)="startEdit('lossDescription')">{{ form.get('lossDescription')?.value ? 'Update' : 'Add' }}</a></nx-link>
-      </div>
-    } @else {
-      <nx-formfield label="Loss description" class="eli-full-width">
-        <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDesc"></textarea>
-        <nx-hint nxFormfieldHint>What happened during the loss event. {{ (form.get('lossDescription')?.value?.length ?? 0) }}/{{ maxDesc }}</nx-hint>
-        <nx-error nxFormfieldError *ngIf="submitAttempted && form.get('lossDescription')?.errors?.['required']">Loss description is required</nx-error>
-      </nx-formfield>
-    }
-
-  </section>
-
-  <!-- Card: Location (CWB Location Picker) — already read-first by its own
-       nature (a table of current locations with an Edit action per row, not
-       an always-open input), so it isn't converted to the eli-field pattern
-       above; it's still part of the change ledger via computeDiffs(). -->
-  <section class="eli-card">
-    <h2 class="eli-section-heading">Locations of loss</h2>
-    <p class="eli-section-desc">Update the location of loss below.</p>
-    @if (fieldChanged('lossLocation')) {
-      <p class="eli-was">was: {{ originalLossLocationDisplay }}</p>
-    }
-    <app-location-picker
-      [policyNumber]="policyNumber()"
-      [value]="lossLocation.value"
-      (locationChange)="lossLocation.setValue($event); form.markAsDirty()">
-    </app-location-picker>
-  </section>
-
-  <!-- Save refused because a required field is incomplete. The fields live
-       inside collapsed groups, so without this the button just did nothing. -->
-  @if (saveBlocked()) {
-    <nx-message context="error" class="eli-save-error">{{ saveBlocked() }}</nx-message>
-  }
-
-  @if (saveSuccess()) {
-    <nx-message context="success" class="eli-save-success">
-      Loss information updated successfully.
-    </nx-message>
-  }
-
-  <!-- Footer — deliberately NOT the wizard-footer shape: primary action on
-       the left (not FNOL's bottom-right "Next" position/size), disabled
-       while there's nothing to save, cost stated on Discard. -->
-  <div class="eli-step-footer">
-    <button nxButton="primary small" type="button"
-            class="eli-save-btn"
-            [disabled]="pendingChanges().length === 0 || saving()"
-            (click)="onSaveChanges()">
-      @if (saving()) { <nx-spinner size="small"></nx-spinner>&nbsp; }
-      <nx-icon name="check" size="s" nxIconPositionStart></nx-icon>
-      Save {{ pendingChanges().length > 0 ? (pendingChanges().length + ' update' + (pendingChanges().length === 1 ? '' : 's')) : 'updates' }}
-    </button>
-    <button nxButton="tertiary small" type="button" (click)="onDiscard()">
-      {{ pendingChanges().length > 0 ? ('Discard ' + pendingChanges().length + ' update' + (pendingChanges().length === 1 ? '' : 's')) : 'Discard' }}
-    </button>
+        <nx-icon name="check" size="s" nxIconPositionStart></nx-icon>
+        Save
+        {{
+          pendingChanges().length > 0
+            ? pendingChanges().length + ' update' + (pendingChanges().length === 1 ? '' : 's')
+            : 'updates'
+        }}
+      </button>
+      <button nxButton="tertiary small" type="button" (click)="onDiscard()">
+        {{
+          pendingChanges().length > 0
+            ? 'Discard ' +
+              pendingChanges().length +
+              ' update' +
+              (pendingChanges().length === 1 ? '' : 's')
+            : 'Discard'
+        }}
+      </button>
+    </div>
   </div>
-
-</div>
-
 }

@@ -29,7 +29,9 @@
   color: var(--text-01);
   font-size: var(--paragraph-04-font-size);
 
-  button { margin-left: auto; }
+  button {
+    margin-left: auto;
+  }
 }
 
 .cl-page-wrap {
@@ -44,7 +46,9 @@
 }
 
 // ─── Filter form ────────────────────────────────────────────────────────────
-.cl-form { margin-bottom: 8px; }
+.cl-form {
+  margin-bottom: 8px;
+}
 
 .row1 {
   display: flex;
@@ -119,13 +123,21 @@
   font-style: italic;
 }
 
-.cl-table { width: 100%; }
+.cl-table {
+  width: 100%;
+}
 
-.cl-col--nowrap { white-space: nowrap; }
+.cl-col--nowrap {
+  white-space: nowrap;
+}
 
-.cl-muted { color: var(--text-muted); }
+.cl-muted {
+  color: var(--text-muted);
+}
 
-.cl-dormant-badge { margin-left: 6px; }
+.cl-dormant-badge {
+  margin-left: 6px;
+}
 
 // ─── Priority pill ──────────────────────────────────────────────────────────
 .cl-priority {
@@ -136,9 +148,18 @@
   padding: 2px 8px;
   border-radius: 10px;
 
-  &--high   { background: var(--negative-01, #fde8e8); color: var(--negative, #c0392b); }
-  &--medium { background: var(--warning-01, #fef3e2); color: var(--warning, #d35400); }
-  &--low    { background: var(--positive-01, #eaf4eb); color: var(--positive, #27ae60); }
+  &--high {
+    background: var(--negative-01, #fde8e8);
+    color: var(--negative, #c0392b);
+  }
+  &--medium {
+    background: var(--warning-01, #fef3e2);
+    color: var(--warning, #d35400);
+  }
+  &--low {
+    background: var(--positive-01, #eaf4eb);
+    color: var(--positive, #27ae60);
+  }
 }
 
 // ─── Footer / pagination ────────────────────────────────────────────────────

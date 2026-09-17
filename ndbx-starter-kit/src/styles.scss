@@ -1,17 +1,17 @@
 // ─── NDBX token re-assertions ────────────────────────────────────────────────
 // NxExpertModule overrides these at runtime — re-assert to keep them correct.
 :root {
-  --interactive-primary: #007ab3;      // restore after NxExpertModule override
-  --text-02: #ffffff;                  // restore — NxExpertModule changes this
+  --interactive-primary: #007ab3; // restore after NxExpertModule override
+  --text-02: #ffffff; // restore — NxExpertModule changes this
 
   // ─── Project-level tokens (define your own below) ────────────────────────
   // These are not provided by NDBX — add as needed for your project.
 
   // Text
-  --text-muted: #767676;               // secondary/hint text on white backgrounds
+  --text-muted: #767676; // secondary/hint text on white backgrounds
 
   // Page layout
-  --page-content-top: 40px;           // gap between top chrome and page content
+  --page-content-top: 40px; // gap between top chrome and page content
 
   // Hover overlays
   --hover-primary: rgba(0, 122, 179, 0.06);

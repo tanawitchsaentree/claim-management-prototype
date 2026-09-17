@@ -1,0 +1,43 @@
+// Bottom-sheet variant (see styles.scss .bottom-sheet-modal-panel) — same
+// family as mass-event-edit-modal, not the centered-dialog modal-layout
+// mixin. Host fills whatever height the panelClass gives the overlay.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ui-01);
+}
+
+.cnf-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cnf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--ui-04);
+  flex-shrink: 0;
+}
+
+.cnf-title {
+  margin: 0;
+  font-size: var(--heading-05-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cnf-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+app-claim-notes-panel {
+  flex: 1;
+  width: 100% !important;
+  border-left: none !important;
+}

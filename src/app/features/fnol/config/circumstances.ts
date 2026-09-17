@@ -26,83 +26,83 @@ export const UNKNOWN_CIRCUMSTANCE_KEY = 'unknown';
 
 const UNKNOWN_OPTION: LookupOption = {
   value: UNKNOWN_CIRCUMSTANCE_KEY,
-  label: 'Unknown / not yet established',
+  label: 'Unknown / not yet established'
 };
 
 /** Peril → the circumstances that can sit underneath it. */
 export const CIRCUMSTANCES_BY_CAUSE: Record<string, LookupOption[]> = {
   'fire': [
-    { value: 'electrical-fault',       label: 'Electrical fault'                   },
-    { value: 'hot-work',               label: 'Hot work (welding, cutting)'        },
-    { value: 'cooking-appliance',      label: 'Cooking or heating appliance'       },
-    { value: 'smoking-materials',      label: 'Smoking materials'                  },
-    { value: 'spontaneous-combustion', label: 'Spontaneous combustion'             },
-    { value: 'wildfire-spread',        label: 'Spread from an external wildfire'   },
+    { value: 'electrical-fault', label: 'Electrical fault' },
+    { value: 'hot-work', label: 'Hot work (welding, cutting)' },
+    { value: 'cooking-appliance', label: 'Cooking or heating appliance' },
+    { value: 'smoking-materials', label: 'Smoking materials' },
+    { value: 'spontaneous-combustion', label: 'Spontaneous combustion' },
+    { value: 'wildfire-spread', label: 'Spread from an external wildfire' }
   ],
   'lightning': [
-    { value: 'direct-strike',   label: 'Direct strike'                      },
-    { value: 'surge-secondary', label: 'Secondary surge damage'             },
+    { value: 'direct-strike', label: 'Direct strike' },
+    { value: 'surge-secondary', label: 'Secondary surge damage' }
   ],
   'explosion': [
-    { value: 'gas-leak',           label: 'Gas leak'                        },
-    { value: 'dust-explosion',     label: 'Dust explosion'                  },
-    { value: 'boiler-rupture',     label: 'Boiler or pressure vessel rupture' },
-    { value: 'chemical-reaction',  label: 'Uncontrolled chemical reaction'  },
+    { value: 'gas-leak', label: 'Gas leak' },
+    { value: 'dust-explosion', label: 'Dust explosion' },
+    { value: 'boiler-rupture', label: 'Boiler or pressure vessel rupture' },
+    { value: 'chemical-reaction', label: 'Uncontrolled chemical reaction' }
   ],
   'aircraft-impact': [
-    { value: 'aircraft-crash', label: 'Aircraft crash'          },
-    { value: 'falling-parts',  label: 'Falling aircraft parts'  },
+    { value: 'aircraft-crash', label: 'Aircraft crash' },
+    { value: 'falling-parts', label: 'Falling aircraft parts' }
   ],
   'arson': [
-    { value: 'intruder-arson',      label: 'Arson by intruder'         },
-    { value: 'insider-arson',       label: 'Arson by insider'          },
-    { value: 'civil-unrest-arson',  label: 'Arson during civil unrest' },
+    { value: 'intruder-arson', label: 'Arson by intruder' },
+    { value: 'insider-arson', label: 'Arson by insider' },
+    { value: 'civil-unrest-arson', label: 'Arson during civil unrest' }
   ],
   'robbery': [
-    { value: 'armed-robbery',      label: 'Armed robbery on premises' },
-    { value: 'robbery-in-transit', label: 'Robbery in transit'        },
+    { value: 'armed-robbery', label: 'Armed robbery on premises' },
+    { value: 'robbery-in-transit', label: 'Robbery in transit' }
   ],
   'burglary': [
-    { value: 'forced-entry',   label: 'Forced entry'     },
-    { value: 'unforced-entry', label: 'Entry without force' },
+    { value: 'forced-entry', label: 'Forced entry' },
+    { value: 'unforced-entry', label: 'Entry without force' }
   ],
   'theft': [
-    { value: 'employee-theft',  label: 'Theft by employee'          },
-    { value: 'theft-no-entry',  label: 'Theft without entry'        },
-    { value: 'vehicle-theft',   label: 'Theft of or from a vehicle' },
+    { value: 'employee-theft', label: 'Theft by employee' },
+    { value: 'theft-no-entry', label: 'Theft without entry' },
+    { value: 'vehicle-theft', label: 'Theft of or from a vehicle' }
   ],
   'natural-event': [
-    { value: 'windstorm',           label: 'Windstorm'                 },
-    { value: 'flood-surface-water', label: 'Flood or surface water'    },
-    { value: 'hail',                label: 'Hail'                      },
-    { value: 'snow-load',           label: 'Snow load'                 },
-    { value: 'subsidence',          label: 'Subsidence or landslip'    },
+    { value: 'windstorm', label: 'Windstorm' },
+    { value: 'flood-surface-water', label: 'Flood or surface water' },
+    { value: 'hail', label: 'Hail' },
+    { value: 'snow-load', label: 'Snow load' },
+    { value: 'subsidence', label: 'Subsidence or landslip' }
   ],
   'earthquake': [
-    { value: 'ground-shaking',    label: 'Ground shaking'         },
-    { value: 'liquefaction',      label: 'Soil liquefaction'      },
-    { value: 'tsunami-secondary', label: 'Secondary tsunami'      },
+    { value: 'ground-shaking', label: 'Ground shaking' },
+    { value: 'liquefaction', label: 'Soil liquefaction' },
+    { value: 'tsunami-secondary', label: 'Secondary tsunami' }
   ],
   'business-interruption': [
-    { value: 'supplier-failure', label: 'Supplier failure'            },
-    { value: 'utility-failure',  label: 'Utility failure'             },
-    { value: 'access-denial',    label: 'Denial of access to premises' },
-    { value: 'customer-failure', label: 'Customer premises loss'      },
+    { value: 'supplier-failure', label: 'Supplier failure' },
+    { value: 'utility-failure', label: 'Utility failure' },
+    { value: 'access-denial', label: 'Denial of access to premises' },
+    { value: 'customer-failure', label: 'Customer premises loss' }
   ],
   'act-of-piracy': [
     { value: 'vessel-hijack', label: 'Vessel hijacked' },
-    { value: 'cargo-seizure', label: 'Cargo seized'    },
+    { value: 'cargo-seizure', label: 'Cargo seized' }
   ],
   'act-of-omission': [
-    { value: 'maintenance-omission',  label: 'Maintenance not carried out'  },
-    { value: 'procedure-not-followed', label: 'Procedure not followed'      },
+    { value: 'maintenance-omission', label: 'Maintenance not carried out' },
+    { value: 'procedure-not-followed', label: 'Procedure not followed' }
   ],
   'product-fault': [
-    { value: 'design-defect',        label: 'Design defect'        },
+    { value: 'design-defect', label: 'Design defect' },
     { value: 'manufacturing-defect', label: 'Manufacturing defect' },
-    { value: 'component-failure',    label: 'Bought-in component failure' },
-    { value: 'contamination',        label: 'Contamination'        },
-  ],
+    { value: 'component-failure', label: 'Bought-in component failure' },
+    { value: 'contamination', label: 'Contamination' }
+  ]
   // 'event-involving-kaufmann' and OTHER_CAUSE_KEY are deliberately absent:
   // neither names a peril specific enough to narrow the list, so both fall
   // through to the full catalogue (see ASSUMPTION [CIRC-3]).
@@ -131,9 +131,10 @@ export const ALL_CIRCUMSTANCES: LookupOption[] = (() => {
  */
 export function circumstanceOptionsFor(causes: readonly string[]): LookupOption[] {
   const selected = causes ?? [];
-  const unnamed = selected.length === 0
-    || selected.includes(OTHER_CAUSE_KEY)
-    || selected.some(cause => !CIRCUMSTANCES_BY_CAUSE[cause]);
+  const unnamed =
+    selected.length === 0 ||
+    selected.includes(OTHER_CAUSE_KEY) ||
+    selected.some(cause => !CIRCUMSTANCES_BY_CAUSE[cause]);
   if (unnamed) return [...ALL_CIRCUMSTANCES, UNKNOWN_OPTION];
 
   const seen = new Set<string>();

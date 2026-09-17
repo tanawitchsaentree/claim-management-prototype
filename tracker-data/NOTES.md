@@ -312,7 +312,7 @@ D not_started · B done · H done · assignee: Sarwankar, Mitesh (Allianz Techno
 
 - 2026-08-28 · `Claude` — FE plumbing (thread entityId through API calls), not a visible UI element. Build marked done because step-entities-damages.component.ts already uses entity.entityId when calling moveEntity()/removeEntity() on the mock service.
 
-### BMPCC-14635 — [BE] New  GetAllEntities API to pass all Entities (Promised and Non Promised)
+### BMPCC-14635 — [BE] New GetAllEntities API to pass all Entities (Promised and Non Promised)
 
 D not_started · B not_started · H not_started · assignee: Sarwankar, Mitesh (Allianz Technology SE)
 
@@ -707,8 +707,8 @@ D not_started · B done · H not_started · assignee: Shivapriya, A (Global Test
 **blocked_note:** No 'Policy overview' screen exists in this prototype's routes at all (claims/:id/policy just redirects to claim overview).
 
 - 2026-08-28 · `Claude` — QA defect against a Policy overview page showing linked claims. This prototype has no dedicated Policy overview screen, so no surface here to check this defect against.
-- 2026-08-31 · `claude (real-repo doc audit 2026-08-31)` — Real repo verified (claims-management-main, docs + testing/src/pages/PolicyOverviewPage.ts). Real Policy overview page = policy details block (policy number + client via .nx-data-display__value) plus three expandable detail buttons: "Coverage details", "Coinsurance details", "Linked claims details". Linked claims table columns include claim ID, loss description, client. PROTOTYPE GAP: our /claims/:id/policy route is a stub that redirects to Overview — Policy overview does not exist in the prototype at all. No ticket has asked for it, but it IS a real, E2E-tested nav destination in production. Note on ownership: Policy overview is NOT one of the 10 MFEs in the claims-management repo (no source, only an E2E page object) — it is built by another team in another repo.
-- 2026-08-31 · `claude-code` — Built in the prototype: Policy overview page at /claims/:id/policy, reached from the claim overview policy number link. Scope came from comparing the production repo against this prototype — the prototype had no policy surface at all, so the QA defect (Created date / Date of loss missing from the Linked claims table) could not even be reproduced here. Built the page with both columns present from the start. Page shows: policy header (number, product, underwriting year, status), cover/insured details, and a Linked claims table with Claim number, Created date, Date of loss, Claimant, Status. Dates use the dd-MM-yyyy project format via the date pipe, not the production repo's raw strings. Deviation from production: production splits this across an MFE boundary (wc-cc-policy-*). The prototype renders it as one lazy-loaded standalone component, because there is no MFE shell here to embed into.
+- 2026-08-31 · `claude (real-repo doc audit 2026-08-31)` — Real repo verified (claims-management-main, docs + testing/src/pages/PolicyOverviewPage.ts). Real Policy overview page = policy details block (policy number + client via .nx-data-display\_\_value) plus three expandable detail buttons: "Coverage details", "Coinsurance details", "Linked claims details". Linked claims table columns include claim ID, loss description, client. PROTOTYPE GAP: our /claims/:id/policy route is a stub that redirects to Overview — Policy overview does not exist in the prototype at all. No ticket has asked for it, but it IS a real, E2E-tested nav destination in production. Note on ownership: Policy overview is NOT one of the 10 MFEs in the claims-management repo (no source, only an E2E page object) — it is built by another team in another repo.
+- 2026-08-31 · `claude-code` — Built in the prototype: Policy overview page at /claims/:id/policy, reached from the claim overview policy number link. Scope came from comparing the production repo against this prototype — the prototype had no policy surface at all, so the QA defect (Created date / Date of loss missing from the Linked claims table) could not even be reproduced here. Built the page with both columns present from the start. Page shows: policy header (number, product, underwriting year, status), cover/insured details, and a Linked claims table with Claim number, Created date, Date of loss, Claimant, Status. Dates use the dd-MM-yyyy project format via the date pipe, not the production repo's raw strings. Deviation from production: production splits this across an MFE boundary (wc-cc-policy-\*). The prototype renders it as one lazy-loaded standalone component, because there is no MFE shell here to embed into.
 
 ### BMPCC-16270 — [FE] Entities & Damages — Display Multiple Limits for Selected Location + Warning pop-up in close claim + disable edit claim for closed claim
 
@@ -890,7 +890,7 @@ D not_started · B not_started · H not_started · ⛔ scope_unclear · assignee
 
 - 2026-08-28 · `Claude` — Either this is meant to be invisible (a backend fallback triggered automatically, making it not a UI ticket at all) or it's a genuinely missing affordance — flagging as unclear rather than guessing which.
 
-### BMPCC-17347 — [FE] [Test Env] - Alignment issue  in Approval popup in Appshell and Figma
+### BMPCC-17347 — [FE] [Test Env] - Alignment issue in Approval popup in Appshell and Figma
 
 D not_started · B not_started · H not_started · ⛔ scope_unclear · assignee: Kharya, Harshit (Global Testing Service)
 
@@ -1153,4 +1153,3 @@ D not_started · B not_started · H not_started · assignee: Majumdar, Bhaskar (
 D done · B in_progress · H in_progress · assignee: Omar, Shreenath (Global Testing Service)
 
 - 2026-08-28 · `Claude` — Status colour-coding exists and is built: app-status-chip is used for entity.status on Entities & Damages and section.status/coverageReview on Sections. Marked in_progress because the specific 'Summary back navigation' interaction hasn't been explicitly verified.
-

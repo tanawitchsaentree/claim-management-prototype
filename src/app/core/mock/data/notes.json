@@ -9,9 +9,8 @@
         "accent": "blue"
       },
       "timestamp": "2026-07-10T09:30:00Z",
-      "title": "Kaufmann's Warehouse — damage assessment",
       "body": "Kaufmann's Warehouse inspection completed. Structural damage confirmed on east wing. Contractor report submitted.",
-      "section": "general",
+      "category": "general",
       "pinned": false,
       "attachedTo": "Kaufmann's Warehouse"
     },
@@ -24,9 +23,8 @@
         "accent": "teal"
       },
       "timestamp": "2026-07-11T14:15:00Z",
-      "title": "Forklift — additional documentation",
       "body": "Forklift depreciation schedule requested from client. Awaiting response. Coverage review set to Additional information required.",
-      "section": "general",
+      "category": "recovery",
       "pinned": false,
       "attachedTo": "Forklift"
     },
@@ -39,9 +37,8 @@
         "accent": "blue"
       },
       "timestamp": "2026-07-12T10:00:00Z",
-      "title": "Forklift — follow-up",
       "body": "Second request sent to client regarding Forklift documentation. Escalated to senior handler.",
-      "section": "general",
+      "category": "litigation",
       "pinned": false,
       "attachedTo": "Forklift"
     },
@@ -54,9 +51,8 @@
         "accent": "orange"
       },
       "timestamp": "2026-07-13T16:00:00Z",
-      "title": "Sales of Machinery — BI calculation",
       "body": "Sales of Machinery and Equipment BI calculation under enhanced review. Senior underwriter sign-off required before settlement.",
-      "section": "general",
+      "category": "recovery",
       "pinned": false,
       "attachedTo": "Sales of Machinery and Equipment"
     },
@@ -69,9 +65,8 @@
         "accent": "teal"
       },
       "timestamp": "2026-07-14T09:20:00Z",
-      "title": "Forklift — depreciation schedule received",
       "body": "Client sent the depreciation schedule. Passed to underwriter for the additional-information review.",
-      "section": "general",
+      "category": "general",
       "pinned": false,
       "attachedTo": "Forklift"
     },
@@ -84,9 +79,8 @@
         "accent": "orange"
       },
       "timestamp": "2026-07-15T11:05:00Z",
-      "title": "Forklift — underwriter query",
       "body": "Underwriter flagged a gap between the purchase date on the schedule and the policy inception date. Following up with client.",
-      "section": "general",
+      "category": "recovery",
       "pinned": false,
       "attachedTo": "Forklift"
     },
@@ -99,9 +93,8 @@
         "accent": "blue"
       },
       "timestamp": "2026-07-16T13:40:00Z",
-      "title": "Forklift — gap resolved",
       "body": "Client confirmed the forklift was added to the fleet policy via endorsement two weeks after purchase — gap explained, no coverage issue.",
-      "section": "general",
+      "category": "general",
       "pinned": false,
       "attachedTo": "Forklift"
     },
@@ -115,7 +108,7 @@
       },
       "timestamp": "2026-05-21T08:14:00Z",
       "body": "Settlement proposal sent to broker for review. Need confirmation by EOW so we can release the reserve adjustment in next week's batch.",
-      "section": null,
+      "category": "general",
       "pinned": true
     },
     {
@@ -128,7 +121,7 @@
       },
       "timestamp": "2026-05-20T15:42:00Z",
       "body": "Confirmed no third-party injuries — police report attached. Closing out subrogation track.",
-      "section": "litigation",
+      "category": "litigation",
       "pinned": true
     },
     {
@@ -141,7 +134,7 @@
       },
       "timestamp": "2026-05-20T10:05:00Z",
       "body": "Reserve adjusted from €45k to €52k after the structural engineer's revised estimate. Allianz share 50%.",
-      "section": "recovery",
+      "category": "recovery",
       "pinned": false
     },
     {
@@ -154,7 +147,7 @@
       },
       "timestamp": "2026-05-19T14:20:00Z",
       "body": "Requested additional photos of the sprinkler control panel and the section B mezzanine. Adjuster on site Thursday.",
-      "section": "general",
+      "category": "general",
       "pinned": false
     },
     {
@@ -167,7 +160,7 @@
       },
       "timestamp": "2026-05-18T09:33:00Z",
       "body": "Spoke with broker (Marsh DE) — they will coordinate the inventory list with the insured. ETA Monday.",
-      "section": "general",
+      "category": "general",
       "pinned": false
     },
     {
@@ -180,7 +173,7 @@
       },
       "timestamp": "2026-05-15T11:48:00Z",
       "body": "Litigation hold flagged by legal — preserve all email correspondence with the policyholder until further notice.",
-      "section": "litigation",
+      "category": "litigation",
       "pinned": false
     },
     {
@@ -193,7 +186,78 @@
       },
       "timestamp": "2026-04-28T16:15:00Z",
       "body": "Initial site inspection complete. Damage estimate within range of the reserve. Proceeding to settlement workflow.",
-      "section": "recovery",
+      "category": "recovery",
+      "pinned": false
+    }
+  ],
+  "CLM-2024-011": [
+    {
+      "id": "note-011-001",
+      "claimId": "CLM-2024-011",
+      "author": {
+        "name": "Dirk Haas",
+        "initials": "DH",
+        "accent": "orange"
+      },
+      "timestamp": "2026-05-24T10:12:00Z",
+      "body": "Schäfer Main Warehouse structural survey booked for next week — roof section flagged as priority in the initial walkthrough.",
+      "category": "general",
+      "pinned": true,
+      "attachedTo": "Schäfer Main Warehouse"
+    },
+    {
+      "id": "note-011-002",
+      "claimId": "CLM-2024-011",
+      "author": {
+        "name": "Werner Baum",
+        "initials": "WB",
+        "accent": "aqua"
+      },
+      "timestamp": "2026-05-25T15:47:00Z",
+      "body": "Maintenance records for the conveyor system are disputed by the insured's broker — requesting full service log from the manufacturer before enhanced review can close.",
+      "category": "litigation",
+      "pinned": false,
+      "attachedTo": "Conveyor System"
+    },
+    {
+      "id": "note-011-003",
+      "claimId": "CLM-2024-011",
+      "author": {
+        "name": "Dirk Haas",
+        "initials": "DH",
+        "accent": "orange"
+      },
+      "timestamp": "2026-05-26T09:05:00Z",
+      "body": "Production Line B downtime confirmed at 11 days. BI calculation to follow once the engineer's report on the conveyor is in.",
+      "category": "recovery",
+      "pinned": false,
+      "attachedTo": "Production Line B"
+    },
+    {
+      "id": "note-011-004",
+      "claimId": "CLM-2024-011",
+      "author": {
+        "name": "Werner Baum",
+        "initials": "WB",
+        "accent": "aqua"
+      },
+      "timestamp": "2026-05-27T13:30:00Z",
+      "body": "Client confirmed insurance cover for the leased conveyor unit is separate from the main policy — no double recovery risk.",
+      "category": "general",
+      "pinned": false,
+      "attachedTo": "Conveyor System"
+    },
+    {
+      "id": "note-011-005",
+      "claimId": "CLM-2024-011",
+      "author": {
+        "name": "Dirk Haas",
+        "initials": "DH",
+        "accent": "orange"
+      },
+      "timestamp": "2026-05-28T16:50:00Z",
+      "body": "Both sections now closed — retention timer started per standard 10-year policy.",
+      "category": "general",
       "pinned": false
     }
   ]

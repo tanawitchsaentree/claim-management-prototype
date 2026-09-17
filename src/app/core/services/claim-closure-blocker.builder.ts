@@ -15,15 +15,44 @@ export function buildBlockerResult(
   reservesData: ReservesPolicyData | null,
   pendingPayments: ClaimPayment[],
   activeProviders: ProviderAssignment[],
+  totalSectionsCount: number,
+  hasAnyReserveOnClaim: boolean
 ): BlockerCheckResult {
   const blockers: Blocker[] = [];
+
+  // Converted-from-orphan setup gate. The Overview banner (claim-overview.component.html)
+  // is only a reminder — closing was never actually blocked by it, so a claim
+  // converted from a skeleton with zero sections/reserves ever recorded could
+  // be closed immediately, looking MORE ready to close than a normal claim
+  // with real open work (0 open sections reads as "nothing left", not "nothing
+  // was ever started"). Real blocker now, matching every other item here.
+  const wasConverted =
+    claim.claimType === 'skeleton' &&
+    claim.status !== 'Awaiting policy' &&
+    claim.status !== 'Matched' &&
+    claim.status !== 'Abandoned';
+  if (wasConverted && totalSectionsCount === 0) {
+    blockers.push({
+      type: 'needs-setup',
+      label: 'Converted orphan claim has no sections yet — add at least one before closing',
+      link: `/claims/${claim.claimId}/sections`,
+      linkLabel: 'Go to Sections'
+    });
+  } else if (wasConverted && !hasAnyReserveOnClaim) {
+    blockers.push({
+      type: 'needs-setup',
+      label: 'Converted orphan claim has no reserves set — set at least one before closing',
+      link: `/claims/${claim.claimId}/financial`,
+      linkLabel: 'Go to Financial'
+    });
+  }
 
   const pending = tasks.filter(t => t.status !== 'done');
   if (pending.length > 0) {
     blockers.push({
       type: 'tasks',
       label: `${pending.length} pending task(s) must be resolved before closure`,
-      count: pending.length,
+      count: pending.length
     });
   }
 
@@ -31,7 +60,7 @@ export function buildBlockerResult(
     blockers.push({
       type: 'sections',
       label: `${openSections} open section(s) must be closed before claim closure`,
-      count: openSections,
+      count: openSections
     });
   }
 
@@ -39,18 +68,18 @@ export function buildBlockerResult(
   // Falls back to boolean flag only if no policyNumber/claimId lookup was possible.
   if (activeLit.length > 0) {
     blockers.push({
-      type:      'litigation',
-      label:     `${activeLit.length} active litigation case(s) must be resolved`,
-      count:     activeLit.length,
-      link:      `/claims/${claim.claimId}/litigation`,
-      linkLabel: 'Go to Litigation',
+      type: 'litigation',
+      label: `${activeLit.length} active litigation case(s) must be resolved`,
+      count: activeLit.length,
+      link: `/claims/${claim.claimId}/litigation`,
+      linkLabel: 'Go to Litigation'
     });
   } else if (claim.hasActiveLitigation) {
     blockers.push({
       type: 'litigation',
       label: 'Open litigation must be resolved',
       link: `/claims/${claim.claimId}/litigation`,
-      linkLabel: 'Go to Litigation',
+      linkLabel: 'Go to Litigation'
     });
   }
 
@@ -60,10 +89,10 @@ export function buildBlockerResult(
   if (openReserves.length > 0) {
     const total = openReserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
     blockers.push({
-      type:   'reserves',
-      label:  `${openReserves.length} open reserve line(s) must be released — €${total.toLocaleString()}`,
-      count:  openReserves.length,
-      amount: total,
+      type: 'reserves',
+      label: `${openReserves.length} open reserve line(s) must be released — €${total.toLocaleString()}`,
+      count: openReserves.length,
+      amount: total
     });
   } else if (claim.hasOpenReserves) {
     blockers.push({ type: 'reserves', label: 'Open reserves must be closed or released' });
@@ -74,10 +103,10 @@ export function buildBlockerResult(
   if (pendingPayments.length > 0) {
     const total = pendingPayments.reduce((sum, p) => sum + p.amount, 0);
     blockers.push({
-      type:   'payments',
-      label:  `${pendingPayments.length} pending payment(s) totalling €${total.toLocaleString()} must be settled`,
-      count:  pendingPayments.length,
-      amount: total,
+      type: 'payments',
+      label: `${pendingPayments.length} pending payment(s) totalling €${total.toLocaleString()} must be settled`,
+      count: pendingPayments.length,
+      amount: total
     });
   } else if (claim.hasOpenPayments) {
     blockers.push({ type: 'payments', label: 'Outstanding payments must be settled' });
@@ -87,18 +116,18 @@ export function buildBlockerResult(
   // Falls back to boolean flag when service returns empty.
   if (activeProviders.length > 0) {
     blockers.push({
-      type:      'provider',
-      label:     `${activeProviders.length} active provider assignment(s) must be finalised`,
-      count:     activeProviders.length,
-      link:      `/claims/${claim.claimId}/providers`,
-      linkLabel: 'Go to Provider Management',
+      type: 'provider',
+      label: `${activeProviders.length} active provider assignment(s) must be finalised`,
+      count: activeProviders.length,
+      link: `/claims/${claim.claimId}/providers`,
+      linkLabel: 'Go to Provider Management'
     });
   } else if (claim.hasActiveProvider) {
     blockers.push({
       type: 'provider',
       label: 'Provider instructions must be finalised',
       link: `/claims/${claim.claimId}/providers`,
-      linkLabel: 'Go to Provider Management',
+      linkLabel: 'Go to Provider Management'
     });
   }
 
@@ -109,10 +138,10 @@ export function buildBlockerResult(
   const recoveryState = recoveryPotentialState(claim);
   if (recoveryState === 'unanswered') {
     blockers.push({
-      type:      'recovery-potential-unset',
-      label:     'Recovery potential has not been answered (Yes/No)',
-      link:      `/claims/${claim.claimId}/overview`,
-      linkLabel: 'Answer on Claim Overview',
+      type: 'recovery-potential-unset',
+      label: 'Recovery potential has not been answered (Yes/No)',
+      link: `/claims/${claim.claimId}/overview`,
+      linkLabel: 'Answer on Claim Overview'
     });
   }
 
@@ -124,24 +153,24 @@ export function buildBlockerResult(
   // blocker with somewhere to send the handler.
   if (recoveryState === 'yes-pending') {
     blockers.push({
-      type:      'recovery-not-set-up',
-      label:     'Recovery potential is Yes but no recovery case has been set up',
-      link:      `/claims/${claim.claimId}/recoveries`,
-      linkLabel: 'Go to Recoveries',
+      type: 'recovery-not-set-up',
+      label: 'Recovery potential is Yes but no recovery case has been set up',
+      link: `/claims/${claim.claimId}/recoveries`,
+      linkLabel: 'Go to Recoveries'
     });
   }
 
   if (claim.hasActiveRecovery) {
-    blockers.push({ type: 'recovery',   label: 'Active recovery actions must be resolved' });
+    blockers.push({ type: 'recovery', label: 'Active recovery actions must be resolved' });
   }
   if (claim.hasOpenDeductible) {
     blockers.push({ type: 'deductible', label: 'Deductible collections must be confirmed' });
   }
   if (claim.hasUnpaidBills) {
-    blockers.push({ type: 'bills',      label: 'Unpaid bills must be cleared' });
+    blockers.push({ type: 'bills', label: 'Unpaid bills must be cleared' });
   }
   if (claim.hasIncompleteReports) {
-    blockers.push({ type: 'reports',    label: 'Required reports must be submitted' });
+    blockers.push({ type: 'reports', label: 'Required reports must be submitted' });
   }
 
   return { canClose: blockers.length === 0, blockers };

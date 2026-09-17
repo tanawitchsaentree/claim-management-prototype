@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -18,42 +18,41 @@ import { Party, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 const REASON_LABELS: Record<SkeletonReason, string> = {
-  policy_not_issued:    'Policy not yet issued',
-  policy_not_found:     'Policy not found in system',
+  policy_not_issued: 'Policy not yet issued',
+  policy_not_found: 'Policy not found in system',
   multi_policy_pending: 'Multi-policy case (pending investigation)',
-  other:                'Other',
+  other: 'Other'
 };
 
 @Component({
   selector: 'app-step-skeleton-summary',
   standalone: true,
-  imports: [
-    CommonModule,
-    NxButtonModule,
-    NxIconModule,
-    NxMessageModule,
-    NxSpinnerModule,
-    EmptyStateComponent,
-  ],
+  imports: [NxButtonModule, NxIconModule, NxMessageModule, NxSpinnerModule, EmptyStateComponent],
   templateUrl: './step-skeleton-summary.component.html',
-  styleUrl: './step-skeleton-summary.component.scss',
+  styleUrl: './step-skeleton-summary.component.scss'
 })
 export class StepSkeletonSummaryComponent implements OnInit {
-  private fnolState   = inject(FnolStateService);
-  private claimSvc    = inject(MockClaimService);
-  private partiesSvc  = inject(MockPartiesService);
-  private lookupSvc   = inject(MockLookupService);
-  private router      = inject(Router);
-  private toast       = inject(ToastService);
+  private fnolState = inject(FnolStateService);
+  private claimSvc = inject(MockClaimService);
+  private partiesSvc = inject(MockPartiesService);
+  private lookupSvc = inject(MockLookupService);
+  private router = inject(Router);
+  private toast = inject(ToastService);
 
-  readonly saving    = signal(false);
+  readonly saving = signal(false);
   readonly createdId = signal<string | null>(null);
-  readonly parties   = toSignal(this.partiesSvc.getOrphanParties(), { initialValue: [] as Party[] });
+  readonly parties = toSignal(this.partiesSvc.getOrphanParties(), { initialValue: [] as Party[] });
 
-  private readonly causeOptsSignal  = toSignal(this.lookupSvc.getCauseOfLoss(),  { initialValue: [] as LookupOption[] });
-  private readonly damageOptsSignal = toSignal(this.lookupSvc.getTypeOfDamage(), { initialValue: [] as LookupOption[] });
+  private readonly causeOptsSignal = toSignal(this.lookupSvc.getCauseOfLoss(), {
+    initialValue: [] as LookupOption[]
+  });
+  private readonly damageOptsSignal = toSignal(this.lookupSvc.getTypeOfDamage(), {
+    initialValue: [] as LookupOption[]
+  });
 
-  get draft() { return this.fnolState.skeleton; }
+  get draft() {
+    return this.fnolState.skeleton;
+  }
 
   reasonLabel(key: SkeletonReason | undefined): string {
     return key ? REASON_LABELS[key] : '—';
@@ -70,7 +69,7 @@ export class StepSkeletonSummaryComponent implements OnInit {
     return party.roles.map(r => PARTY_ROLE_LABELS[r]).join(', ');
   }
 
-  private lossInfo(): { [k: string]: unknown } {
+  private lossInfo(): Record<string, unknown> {
     return (this.fnolState.fnolForm.get('lossInformation')?.value as Record<string, unknown>) ?? {};
   }
 
@@ -108,27 +107,36 @@ export class StepSkeletonSummaryComponent implements OnInit {
     this.saving.set(true);
     try {
       const now = new Date().toISOString().split('T')[0];
+      // Filled in by step-skeleton-loss-info — this used to be hardcoded
+      // blank/empty no matter what, because nothing on the orphan path wrote
+      // to it. Whoever converts this claim later and has to add sections
+      // starts with an actual account of what happened instead of nothing.
+      const li = this.lossInfo();
       const skeleton = await firstValueFrom(
-        this.claimSvc.create({
-          policyNumber: '',
-          clientName:   draft.clientName,
-          broker:       draft.brokerName ?? null,
-          assignee:     null,
-          createdBy:    'Current User',
-          dateUpdated:  now,
-          lossDate:     '',
-          lossAmount:   0,
-          currency:     'EUR',
-          description:  draft.notes ?? '',
-          status:       'Awaiting policy',
-          priority:     'medium',
-          lineOfBusiness: 'Property',
-          location:     null,
-          lossEventId:  null,
-          claimType:    'skeleton',
-          skeletonReason: draft.reason,
-          slaDeadlineDays: 3,
-        }, 'SK'),
+        this.claimSvc.create(
+          {
+            policyNumber: '',
+            clientName: draft.clientName,
+            broker: draft.brokerName ?? null,
+            assignee: null,
+            createdBy: 'Current User',
+            dateUpdated: now,
+            lossDate: (li['dateOfLoss'] as { dateOfOccurrence?: string })?.dateOfOccurrence ?? '',
+            lossAmount: 0,
+            currency: 'EUR',
+            description: (li['lossDescription'] as string) || draft.notes || '',
+            causeOfLoss: (li['causeOfLoss'] as string[]) ?? [],
+            status: 'Awaiting policy',
+            priority: 'medium',
+            lineOfBusiness: 'Property',
+            location: null,
+            lossEventId: null,
+            claimType: 'skeleton',
+            skeletonReason: draft.reason,
+            slaDeadlineDays: 3
+          },
+          'SK'
+        )
       );
       this.fnolState.setSkeleton(draft, skeleton.claimId);
       this.fnolState.markStepComplete('skeleton-summary');

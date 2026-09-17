@@ -14,10 +14,10 @@ export interface NotesScope {
 
 @Injectable({ providedIn: 'root' })
 export class RightStripService {
-  readonly requestedPanel   = signal<string | null>(null);
-  readonly highlightNoteId  = signal<string | null>(null);
-  readonly quickAddEntity   = signal<string | null>(null);
-  readonly scope            = signal<NotesScope | null>(null);
+  readonly requestedPanel = signal<string | null>(null);
+  readonly highlightNoteId = signal<string | null>(null);
+  readonly quickAddEntity = signal<string | null>(null);
+  readonly scope = signal<NotesScope | null>(null);
 
   open(panel: string, highlightNoteId?: string): void {
     this.highlightNoteId.set(highlightNoteId ?? null);

@@ -20,7 +20,11 @@ export class MockCwbService extends MockBaseService {
       if (f.country && loc.country !== f.country) return false;
       if (f.city && !loc.city.toLowerCase().includes(f.city.toLowerCase())) return false;
       if (f.postalCode && !loc.postalCode.startsWith(f.postalCode)) return false;
-      if (f.streetAndNumber && !loc.streetAndNumber.toLowerCase().includes(f.streetAndNumber.toLowerCase())) return false;
+      if (
+        f.streetAndNumber &&
+        !loc.streetAndNumber.toLowerCase().includes(f.streetAndNumber.toLowerCase())
+      )
+        return false;
       return true;
     });
     return of(matches).pipe(delay(CWB_DELAY_MS));

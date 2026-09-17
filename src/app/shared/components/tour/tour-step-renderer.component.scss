@@ -14,7 +14,11 @@
   outline: 3px solid var(--interactive-primary);
   outline-offset: 2px;
   border-radius: 4px;
-  transition: top 150ms ease, left 150ms ease, width 150ms ease, height 150ms ease;
+  transition:
+    top 150ms ease,
+    left 150ms ease,
+    width 150ms ease,
+    height 150ms ease;
 }
 
 // Zero-size positioning point the popover trigger anchors to — see
@@ -25,6 +29,39 @@
   width: 0;
   height: 0;
   pointer-events: none;
+}
+
+// Narrative-only steps — plain fixed-position card, no CDK overlay. :host is
+// pointer-events:none, so this needs its own pointer-events:auto to be
+// clickable at all.
+.tour-centered-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  width: 320px;
+  padding: var(--space-lg);
+  border-radius: 4px;
+  background: var(--ui-01);
+  box-shadow: 0 4px 16px var(--claim-overlay-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.tour-centered-card__title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-01);
+  font-size: var(--paragraph-02-font-size);
+}
+
+.tour-centered-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
 }
 
 .tour-popover__body {

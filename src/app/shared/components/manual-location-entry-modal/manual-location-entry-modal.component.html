@@ -14,8 +14,13 @@
   <div class="mle-search">
     <div class="mle-search__input-wrap">
       <nx-icon name="search" class="mle-search__icon"></nx-icon>
-      <input class="mle-search__input" type="text" [formControl]="gisSearch"
-             placeholder="Search location" autocomplete="off" />
+      <input
+        class="mle-search__input"
+        type="text"
+        [formControl]="gisSearch"
+        placeholder="Search location"
+        autocomplete="off"
+      />
     </div>
     @if (gisResults().length > 0) {
       <div class="mle-results">

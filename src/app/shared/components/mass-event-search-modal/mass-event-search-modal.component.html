@@ -9,7 +9,6 @@
 </div>
 
 <div class="mesm-body" tabindex="0">
-
   <form [formGroup]="searchForm" class="mesm-form" (ngSubmit)="onSearch()">
     <div class="mesm-search-row__inputs">
       <nx-formfield label="Mass Event ID">
@@ -32,7 +31,9 @@
     <header class="mesm-section__header">
       <h3 class="mesm-section__title">Results</h3>
       <span class="mesm-section__meta">
-        @if (results().length > 1) { {{ results().length }} mass events }
+        @if (results().length > 1) {
+          {{ results().length }} mass events
+        }
       </span>
     </header>
 
@@ -54,16 +55,20 @@
           </thead>
           <tbody>
             @for (event of results(); track event.id) {
-              <tr nxTableRow class="mesm-row"
-                  [class.mesm-row--selected]="isSelected(event.id)"
-                  (click)="selectRow(event.id)">
+              <tr
+                nxTableRow
+                class="mesm-row"
+                [class.mesm-row--selected]="isSelected(event.id)"
+                (click)="selectRow(event.id)"
+              >
                 <td nxCell class="mesm-col--check">
                   <nx-radio
                     name="mesm-event"
                     labelSize="small"
                     [checked]="isSelected(event.id)"
                     (click)="selectRow(event.id); $event.stopPropagation()"
-                    aria-label="Select mass event">
+                    aria-label="Select mass event"
+                  >
                   </nx-radio>
                 </td>
                 <td nxCell>{{ event.id }}</td>
@@ -88,9 +93,12 @@
   </button>
   <div class="mesm-footer__actions">
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button"
-            [disabled]="!hasSelection()"
-            (click)="onConfirm()">
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!hasSelection()"
+      (click)="onConfirm()"
+    >
       Link Mass Event
     </button>
   </div>

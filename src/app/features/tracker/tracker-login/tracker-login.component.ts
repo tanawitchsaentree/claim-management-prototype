@@ -14,7 +14,7 @@ type LoginState = 'form' | 'sending' | 'sent' | 'error';
   standalone: true,
   imports: [ReactiveFormsModule, NxFormfieldModule, NxInputModule, NxButtonModule, NxMessageModule],
   templateUrl: './tracker-login.component.html',
-  styleUrl: './tracker-login.component.scss',
+  styleUrl: './tracker-login.component.scss'
 })
 export class TrackerLoginComponent {
   private readonly supabase = inject(SupabaseService).client;
@@ -33,7 +33,7 @@ export class TrackerLoginComponent {
     this.state.set('sending');
     const { error } = await this.supabase.auth.signInWithOtp({
       email: this.email.value!,
-      options: { emailRedirectTo: `${window.location.origin}/tracker` },
+      options: { emailRedirectTo: `${window.location.origin}/tracker` }
     });
 
     if (error) {

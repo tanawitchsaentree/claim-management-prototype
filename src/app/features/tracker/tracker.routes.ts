@@ -10,11 +10,11 @@ export const TRACKER_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./tracker-table/tracker-table.component').then((m) => m.TrackerTableComponent),
+      import('./tracker-table/tracker-table.component').then(m => m.TrackerTableComponent)
   },
   {
     path: 'login',
     loadComponent: () =>
-      import('./tracker-login/tracker-login.component').then((m) => m.TrackerLoginComponent),
-  },
+      import('./tracker-login/tracker-login.component').then(m => m.TrackerLoginComponent)
+  }
 ];

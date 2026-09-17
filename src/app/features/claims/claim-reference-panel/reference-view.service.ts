@@ -12,17 +12,17 @@ const DEMO_CLAIM_IDS = ['CLM-2024-011', 'CLM-2024-001', 'CL-2025-001'];
 
 @Injectable({ providedIn: 'root' })
 export class ReferenceViewService {
-  readonly variant        = signal<ReferenceVariant>('none');
-  readonly refTabs        = signal<RefTab[]>([]);
+  readonly variant = signal<ReferenceVariant>('none');
+  readonly refTabs = signal<RefTab[]>([]);
   readonly activeRefTabId = signal<string | null>(null);
   readonly primaryClaimId = signal<string | null>(null);
 
-  readonly isActive      = computed(() => this.variant() !== 'none');
-  readonly isPanelMode   = computed(() => this.variant() === 'panel');
-  readonly isTabsMode    = computed(() => this.variant() === 'tabs');
+  readonly isActive = computed(() => this.variant() !== 'none');
+  readonly isPanelMode = computed(() => this.variant() === 'panel');
+  readonly isTabsMode = computed(() => this.variant() === 'tabs');
   readonly isPopoverMode = computed(() => this.variant() === 'popover');
   readonly canAddRefTab = computed(() => this.refTabs().length < MAX_REF_TABS);
-  readonly refTabCount  = computed(() => this.refTabs().length);
+  readonly refTabCount = computed(() => this.refTabs().length);
 
   // Active tab object (used by panel to load claim data)
   readonly activeRefTab = computed<RefTab | null>(() => {
@@ -31,9 +31,7 @@ export class ReferenceViewService {
   });
 
   // Backward-compat: first ref tab claimId (panel mode single-tab legacy)
-  readonly refClaimId = computed<string | null>(() =>
-    this.activeRefTab()?.claimId ?? null
-  );
+  readonly refClaimId = computed<string | null>(() => this.activeRefTab()?.claimId ?? null);
 
   openRefTab(claimId: string): void {
     if (claimId === this.primaryClaimId()) return;
@@ -50,7 +48,7 @@ export class ReferenceViewService {
 
   closeRefTab(tabId: string): void {
     const tabs = this.refTabs();
-    const idx  = tabs.findIndex(t => t.id === tabId);
+    const idx = tabs.findIndex(t => t.id === tabId);
     if (idx === -1) return;
     const wasActive = this.activeRefTabId() === tabId;
     const next = tabs.filter(t => t.id !== tabId);

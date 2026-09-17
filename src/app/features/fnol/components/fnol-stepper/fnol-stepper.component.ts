@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 
 export interface FnolStep {
@@ -11,9 +11,9 @@ export interface FnolStep {
 @Component({
   selector: 'app-fnol-stepper',
   standalone: true,
-  imports: [CommonModule, NxIconModule],
+  imports: [NxIconModule],
   templateUrl: './fnol-stepper.component.html',
-  styleUrl: './fnol-stepper.component.scss',
+  styleUrl: './fnol-stepper.component.scss'
 })
 export class FnolStepperComponent {
   @Input() steps: FnolStep[] = [];

@@ -22,7 +22,9 @@
 .vnm-body {
   @include modal.body;
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
 .vnm-desc {
@@ -32,4 +34,6 @@
   line-height: 1.5;
 }
 
-.vnm-footer { @include modal.footer; }
+.vnm-footer {
+  @include modal.footer;
+}

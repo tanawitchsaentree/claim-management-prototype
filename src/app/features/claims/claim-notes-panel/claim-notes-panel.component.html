@@ -11,25 +11,33 @@
       <p class="cnp__scope-title">Notes for "{{ scope.label }}" ({{ totalCount() }})</p>
     } @else {
       <div class="cnp__header-top">
-        <button class="cnp__filter-trigger" type="button"
-                [nxContextMenuTriggerFor]="filterMenu"
-                [attr.aria-label]="'Change filter — current: ' + currentFilterLabel()">
-          <span class="cnp__filter-label">{{ currentFilterLabel() }} ({{ totalCount() }})</span>
-          <nx-icon name="chevron-down" size="s"></nx-icon>
-        </button>
-
-        <nx-context-menu #filterMenu="nxContextMenu">
-          @for (opt of filterOptions; track opt.value) {
-            <button nxContextMenuItem type="button" (click)="setFilter(opt.value)">
-              {{ opt.label }}
-            </button>
-          }
-        </nx-context-menu>
-
-        <button class="cnp__translate-btn" type="button" (click)="onTranslate()" aria-label="Translate notes">
+        <button
+          class="cnp__translate-btn"
+          type="button"
+          (click)="onTranslate()"
+          aria-label="Translate notes"
+        >
           <nx-icon name="globe" size="s"></nx-icon>
           Translate
         </button>
+      </div>
+
+      <!-- Segmented filter — always visible with counts, not hidden behind a
+           menu click. A category with 0 notes still shows (0), so a handler
+           can tell at a glance whether it's worth opening. -->
+      <div class="cnp__filter-bar" role="tablist" aria-label="Filter notes">
+        @for (opt of filterOptions; track opt.value) {
+          <button
+            class="cnp__filter-chip"
+            type="button"
+            role="tab"
+            [class.cnp__filter-chip--active]="filter() === opt.value"
+            [attr.aria-selected]="filter() === opt.value"
+            (click)="setFilter(opt.value)"
+          >
+            {{ opt.label }} ({{ filterCounts()[opt.value] }})
+          </button>
+        }
       </div>
     }
 
@@ -51,51 +59,44 @@
   @if (showAddForm()) {
     <div class="cnp-add-form" [formGroup]="addForm">
       @if (quickAddMode()) {
-        <p class="cnp-add-form__quick-add-target">Note for "{{ addForm.value.title }}"</p>
-      } @else {
-        <div class="cnp-add-form__field">
-          <label class="cnp-add-form__label">Title</label>
-          <nx-formfield class="cnp-add-form__select">
-            <input nxInput formControlName="title" placeholder="Enter title" />
-          </nx-formfield>
-        </div>
-
-        <div class="cnp-add-form__field">
-          <label class="cnp-add-form__label">Attach to</label>
-          <nx-formfield class="cnp-add-form__select">
-            <nx-dropdown formControlName="attachTo">
-              @for (opt of attachOptions; track opt) {
-                <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
-              }
-            </nx-dropdown>
-          </nx-formfield>
-        </div>
-
-        <div class="cnp-add-form__field">
-          <label class="cnp-add-form__label">Notes category</label>
-          <nx-formfield class="cnp-add-form__select">
-            <nx-dropdown formControlName="category" placeholder="Select">
-              @for (opt of categoryOptions; track opt.value) {
-                <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-              }
-            </nx-dropdown>
-          </nx-formfield>
-        </div>
+        <p class="cnp-add-form__quick-add-target">Note for "{{ quickAddTarget() }}"</p>
       }
 
       <div class="cnp-add-form__field">
-        <label class="cnp-add-form__label">Note</label>
         <div class="cnp-add-form__textarea-wrap">
-          <textarea class="cnp-add-form__textarea" formControlName="body"
-                    placeholder="Enter note" rows="5"></textarea>
+          <textarea
+            class="cnp-add-form__textarea"
+            formControlName="body"
+            placeholder="Enter note"
+            rows="5"
+          ></textarea>
         </div>
+      </div>
+
+      <div class="cnp-add-form__field">
+        <label class="cnp-add-form__label" for="cnp-category-dropdown"
+          >Category
+          <span class="cnp-add-form__optional">(optional — defaults to General)</span></label
+        >
+        <nx-formfield class="cnp-add-form__select">
+          <nx-dropdown id="cnp-category-dropdown" formControlName="category" placeholder="Select">
+            @for (opt of categoryOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
       </div>
 
       <div class="cnp-add-form__actions">
         <button nxButton="secondary small" type="button" (click)="cancelAddNote()">Cancel</button>
-        <button nxButton="primary small" type="button"
-                [disabled]="!addForm.value.body?.trim()"
-                (click)="submitAddNote()">Add</button>
+        <button
+          nxButton="primary small"
+          type="button"
+          [disabled]="!addForm.value.body?.trim()"
+          (click)="submitAddNote()"
+        >
+          Add
+        </button>
       </div>
     </div>
   }
@@ -105,21 +106,36 @@
   @if (loading()) {
     <p class="cnp__empty">Loading notes…</p>
   } @else if (totalCount() === 0) {
-    <app-empty-state [message]="activeScope() ? 'No notes for this section yet.' : 'No notes found.'"></app-empty-state>
+    <app-empty-state
+      [message]="activeScope() ? 'No notes for this section yet.' : 'No notes found.'"
+    ></app-empty-state>
   } @else {
     <section class="cnp-block">
       @for (note of visibleNotes(); track note.id) {
-        <article class="cnp-note" [class.cnp-note--highlighted]="highlightedId() === note.id" [attr.data-note-id]="note.id">
+        <article
+          class="cnp-note"
+          [class.cnp-note--highlighted]="highlightedId() === note.id"
+          [attr.data-note-id]="note.id"
+        >
           <div class="cnp-note__head">
             <span class="cnp-note__author">{{ note.author.name }}</span>
             <span class="cnp-note__time">{{ formatTimestamp(note.timestamp) }}</span>
-            <button class="cnp-note__pin-btn" type="button"
-                    (click)="togglePin(note.id)"
-                    [class.cnp-note__pin-btn--active]="note.pinned"
-                    [attr.aria-label]="note.pinned ? 'Unpin note' : 'Pin note'"
-                    [nxTooltip]="note.pinned ? 'Unpin' : 'Pin'">
+            <button
+              class="cnp-note__pin-btn"
+              type="button"
+              (click)="togglePin(note.id)"
+              [class.cnp-note__pin-btn--active]="note.pinned"
+              [attr.aria-label]="note.pinned ? 'Unpin note' : 'Pin note'"
+              [nxTooltip]="note.pinned ? 'Unpin' : 'Pin'"
+            >
               <nx-icon [name]="note.pinned ? 'bookmark' : 'bookmark-o'" size="s"></nx-icon>
             </button>
+          </div>
+          <div class="cnp-note__tags">
+            <span class="cnp-note__category-tag">{{ categoryLabel(note.category) }}</span>
+            @if (note.attachedTo) {
+              <span class="cnp-note__attached-tag">{{ note.attachedTo }}</span>
+            }
           </div>
           <p class="cnp-note__body">{{ note.body }}</p>
         </article>
@@ -127,9 +143,7 @@
 
       @if (hasMore()) {
         <div class="cnp__load-more">
-          <button nxButton="tertiary small" type="button" (click)="loadMore()">
-            Load more
-          </button>
+          <button nxButton="tertiary small" type="button" (click)="loadMore()">Load more</button>
         </div>
       }
     </section>

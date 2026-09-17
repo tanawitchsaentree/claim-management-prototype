@@ -26,6 +26,7 @@ If any interface is missing, create it in `core/models/` first.
 ### Service
 
 Use `[ServiceName]` from `src/app/core/services/[service].ts`.
+
 - Method to call: `[methodName()]` returning `Observable<[Type]>`
 - If the service method doesn't exist yet, add it (and the mock implementation in `core/mock/services/`).
 
@@ -35,10 +36,10 @@ Use `[ServiceName]` from `src/app/core/services/[service].ts`.
 
 ### Form fields needed
 
-| Field | NDBX component | Required? | Options source |
-|-------|----------------|-----------|----------------|
-| [field name] | [e.g. `input nxInput`] | [yes/no] | [hardcoded / from service] |
-| [field name] | [e.g. `nx-dropdown`] | [yes/no] | [lookupSvc.getX()] |
+| Field        | NDBX component         | Required? | Options source             |
+| ------------ | ---------------------- | --------- | -------------------------- |
+| [field name] | [e.g. `input nxInput`] | [yes/no]  | [hardcoded / from service] |
+| [field name] | [e.g. `nx-dropdown`]   | [yes/no]  | [lookupSvc.getX()]         |
 
 ### Validation rules
 
@@ -47,10 +48,10 @@ Use `[ServiceName]` from `src/app/core/services/[service].ts`.
 
 ### Actions
 
-| Button | Behavior |
-|--------|----------|
-| Cancel | Navigate to `[/route]` |
-| Back | Navigate to `[/route]` |
+| Button        | Behavior                                                   |
+| ------------- | ---------------------------------------------------------- |
+| Cancel        | Navigate to `[/route]`                                     |
+| Back          | Navigate to `[/route]`                                     |
 | Next / Submit | Validate → navigate to `[/route]` or call `service.save()` |
 
 ### Files to create

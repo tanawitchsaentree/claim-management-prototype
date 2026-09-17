@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -17,16 +17,19 @@ export interface StartInvestigationModalData {
 export interface StartInvestigationResult {
   assignee: string;
   deadline: string;
-  notes:    string;
+  notes: string;
 }
 
-interface User { userId: string; name: string; role: string; }
+interface User {
+  userId: string;
+  name: string;
+  role: string;
+}
 
 @Component({
   selector: 'app-start-investigation-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxButtonModule,
@@ -34,24 +37,29 @@ interface User { userId: string; name: string; role: string; }
     NxFormfieldModule,
     NxInputModule,
     NxDropdownModule,
-    NxDatefieldModule,
+    NxDatefieldModule
   ],
   templateUrl: './start-investigation-modal.component.html',
-  styleUrl: './start-investigation-modal.component.scss',
+  styleUrl: './start-investigation-modal.component.scss'
 })
 export class StartInvestigationModalComponent {
   readonly data = inject<StartInvestigationModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<StartInvestigationModalComponent, StartInvestigationResult | null>>(NxModalRef);
+  readonly modalRef =
+    inject<NxModalRef<StartInvestigationModalComponent, StartInvestigationResult | null>>(
+      NxModalRef
+    );
 
   readonly handlers = (usersData as User[]).filter(u => u.role === 'claim handler');
 
   readonly form = new FormGroup({
     assignee: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
     deadline: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    notes:    new FormControl<string>('', { nonNullable: true }),
+    notes: new FormControl<string>('', { nonNullable: true })
   });
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {

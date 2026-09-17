@@ -7,16 +7,19 @@
 
 <div class="arm-body" tabindex="0">
   <form [formGroup]="form" class="arm-form">
-
     <nx-formfield label="Section">
-      <nx-dropdown placeholder="Select"
-                   [value]="form.get('reserveId')?.value"
-                   (valueChange)="onSectionChange($event)">
+      <nx-dropdown
+        placeholder="Select"
+        [value]="form.get('reserveId')?.value"
+        (valueChange)="onSectionChange($event)"
+      >
         @for (s of data.sections; track s.reserveId) {
           <nx-dropdown-item [value]="s.reserveId">{{ sectionLabel(s) }}</nx-dropdown-item>
         }
         @if (data.sections.length === 0) {
-          <nx-dropdown-item [value]="null" disabled>No sections available — add parties &amp; damages first</nx-dropdown-item>
+          <nx-dropdown-item [value]="null" disabled
+            >No sections available — add parties &amp; damages first</nx-dropdown-item
+          >
         }
       </nx-dropdown>
       @if (form.get('reserveId')?.invalid && form.get('reserveId')?.touched) {
@@ -36,9 +39,11 @@
     </nx-formfield>
 
     <div class="arm-checkbox-row">
-      <nx-checkbox [checked]="itemLevel()"
-                   (checkedChange)="onItemLevelChange($event)"
-                   [disabled]="!selectedSection() || damagedItemOptions().length === 0">
+      <nx-checkbox
+        [checked]="itemLevel()"
+        (checkedChange)="onItemLevelChange($event)"
+        [disabled]="!selectedSection() || damagedItemOptions().length === 0"
+      >
         Make reserve on a damaged item level
       </nx-checkbox>
     </div>
@@ -58,15 +63,10 @@
         }
       </nx-formfield>
     }
-
   </form>
 </div>
 
 <div class="arm-footer">
   <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="!canAdd"
-          (click)="onAdd()">
-    Add
-  </button>
+  <button nxButton="primary small" type="button" [disabled]="!canAdd" (click)="onAdd()">Add</button>
 </div>

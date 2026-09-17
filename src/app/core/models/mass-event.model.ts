@@ -1,31 +1,31 @@
 export type MassEventCatType = 'CAT' | 'Non-CAT';
 
 export interface MassEvent {
-  id:         string;          // ME-2025.102
-  code:       string;          // Y66JGR02
-  name:       string;          // US-CA Earthquake 2025
-  catType?:   MassEventCatType; // CAT = natural catastrophe, Non-CAT = man-made/other
-  type?:      string;           // event category: Earthquake, Storm, Flood, etc.
-  dateStart:  string;          // ISO yyyy-mm-dd
-  dateEnd:    string;          // ISO yyyy-mm-dd
-  timeStart?: string;          // HH:mm
-  timeEnd?:   string;          // HH:mm
-  country:    string;
-  region:     string;
+  id: string; // ME-2025.102
+  code: string; // Y66JGR02
+  name: string; // US-CA Earthquake 2025
+  catType?: MassEventCatType; // CAT = natural catastrophe, Non-CAT = man-made/other
+  type?: string; // event category: Earthquake, Storm, Flood, etc.
+  dateStart: string; // ISO yyyy-mm-dd
+  dateEnd: string; // ISO yyyy-mm-dd
+  timeStart?: string; // HH:mm
+  timeEnd?: string; // HH:mm
+  country: string;
+  region: string;
   lossCause?: string;
   globalCatCode?: string;
-  productCode?:   string;
-  description?:   string;
+  productCode?: string;
+  description?: string;
   postcodes?: string[];
 }
 
 export interface MassEventFilters {
-  id?:        string;
-  code?:      string;
-  name?:      string;
+  id?: string;
+  code?: string;
+  name?: string;
   dateStartFrom?: string;
-  dateStartTo?:   string;
-  country?:   string;
-  region?:    string;
+  dateStartTo?: string;
+  country?: string;
+  region?: string;
   lossCause?: string;
 }

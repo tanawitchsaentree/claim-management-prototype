@@ -45,8 +45,8 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { resolve, dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
-const __dir  = dirname(fileURLToPath(import.meta.url));
-const root   = resolve(__dir, '..');
+const __dir = dirname(fileURLToPath(import.meta.url));
+const root = resolve(__dir, '..');
 const srcDir = resolve(root, 'src/app');
 
 // Sanctioned variants that intentionally do not use the shared mixin —
@@ -54,6 +54,7 @@ const srcDir = resolve(root, 'src/app');
 // Adding a file here must come with a doc entry there, not just a comment.
 const EXEMPT = new Set([
   'mass-event-edit-modal.component.ts', // bottom-sheet variant, own panelClass
+  'claim-notes-full.component.ts' // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
 ]);
 
 function walk(dir, suffix, files = []) {
@@ -74,7 +75,8 @@ const modalTsFiles = walk(srcDir, '.component.ts').filter(f => {
 
 // Matches a flat class rule ending in -header/-body/-footer/-content/-actions
 // OR the BEM equivalent __header/__body/__footer/__content/__actions.
-const SECTION_RULE = /\.[a-zA-Z0-9_-]+(?:[-_]{1,2})(?:header|body|footer|content|actions)\b[^{}]*\{([^}]*)\}/g;
+const SECTION_RULE =
+  /\.[a-zA-Z0-9_-]+(?:[-_]{1,2})(?:header|body|footer|content|actions)\b[^{}]*\{([^}]*)\}/g;
 
 // Nested sub-widgets (a card/row/item/panel/table INSIDE a modal body) can
 // legitimately end in "...header"/"...footer" too (e.g. a bordered card
@@ -85,7 +87,7 @@ const SECTION_RULE = /\.[a-zA-Z0-9_-]+(?:[-_]{1,2})(?:header|body|footer|content
 // whole class of nested-widget name, not just those two files.
 const NESTED_WIDGET_MARKER = /-(?:card|item|row|panel|table|list|tile|chip)(?=[-_])/;
 const SHORTHAND_PADDING = /\bpadding\s*:\s*([^;]+);/g;
-const DISCRETE_PADDING  = /\bpadding-(left|right)\s*:\s*([^;]+);/g;
+const DISCRETE_PADDING = /\bpadding-(left|right)\s*:\s*([^;]+);/g;
 const USES_MIXIN = /@include\s+modal\.(shell|header|body|footer)\b/;
 const HOST_BLOCK = /:host\s*\{([^}]*)\}/;
 
@@ -98,10 +100,16 @@ function isZeroToken(tok) {
 function hasNonzeroHorizontal(value) {
   const tokens = value.trim().split(/\s+/);
   let left, right;
-  if (tokens.length === 1)      { left = right = tokens[0]; }
-  else if (tokens.length === 2) { left = right = tokens[1]; }
-  else if (tokens.length === 3) { left = right = tokens[1]; }
-  else                          { right = tokens[1]; left = tokens[3]; }
+  if (tokens.length === 1) {
+    left = right = tokens[0];
+  } else if (tokens.length === 2) {
+    left = right = tokens[1];
+  } else if (tokens.length === 3) {
+    left = right = tokens[1];
+  } else {
+    right = tokens[1];
+    left = tokens[3];
+  }
   return !isZeroToken(left) || !isZeroToken(right);
 }
 
@@ -129,13 +137,17 @@ for (const tsFile of modalTsFiles) {
 
   const extracted = extractStyles(tsFile);
   if (!extracted) {
-    violations.push(`${relative(root, tsFile)}: no .component.scss and no inline styles array found — cannot verify modal spacing at all`);
+    violations.push(
+      `${relative(root, tsFile)}: no .component.scss and no inline styles array found — cannot verify modal spacing at all`
+    );
     continue;
   }
   const { css, source } = extracted;
 
   if (!USES_MIXIN.test(css)) {
-    violations.push(`${source}: does not use the shared modal-layout mixin (@include modal.shell/header/body/footer) — hand-rolled modal CSS is exactly how this drifted last time`);
+    violations.push(
+      `${source}: does not use the shared modal-layout mixin (@include modal.shell/header/body/footer) — hand-rolled modal CSS is exactly how this drifted last time`
+    );
   }
 
   // :host max-height/overflow pairing — satisfied by the mixin (checked
@@ -147,9 +159,11 @@ for (const tsFile of modalTsFiles) {
   const usesShell = /@include\s+modal\.shell\b/.test(css);
   if (!usesShell) {
     const hasMaxHeight = /\bmax-height\s*:/.test(hostBody);
-    const hasOverflow  = /\boverflow\s*:/.test(hostBody);
+    const hasOverflow = /\boverflow\s*:/.test(hostBody);
     if (!hasMaxHeight || !hasOverflow) {
-      violations.push(`${source}: :host is missing the required max-height + overflow pairing (has max-height: ${hasMaxHeight}, has overflow: ${hasOverflow})`);
+      violations.push(
+        `${source}: :host is missing the required max-height + overflow pairing (has max-height: ${hasMaxHeight}, has overflow: ${hasOverflow})`
+      );
     }
   }
 
@@ -168,14 +182,18 @@ for (const tsFile of modalTsFiles) {
     SHORTHAND_PADDING.lastIndex = 0;
     while ((pm = SHORTHAND_PADDING.exec(body))) {
       if (hasNonzeroHorizontal(pm[1])) {
-        violations.push(`${source}: "${selector}" declares "padding: ${pm[1].trim()}" — nonzero horizontal value doubles NxModalContainer's 40px inset`);
+        violations.push(
+          `${source}: "${selector}" declares "padding: ${pm[1].trim()}" — nonzero horizontal value doubles NxModalContainer's 40px inset`
+        );
       }
     }
     let dm;
     DISCRETE_PADDING.lastIndex = 0;
     while ((dm = DISCRETE_PADDING.exec(body))) {
       if (!isZeroToken(dm[2])) {
-        violations.push(`${source}: "${selector}" declares "padding-${dm[1]}: ${dm[2].trim()}" — nonzero horizontal value doubles NxModalContainer's 40px inset`);
+        violations.push(
+          `${source}: "${selector}" declares "padding-${dm[1]}: ${dm[2].trim()}" — nonzero horizontal value doubles NxModalContainer's 40px inset`
+        );
       }
     }
   }
@@ -187,5 +205,7 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log('[audit:modal-padding] passed — every modal uses the shared modal-layout mixin (or is a documented, sanctioned exception), :host has the required max-height/overflow pairing, and no section redeclares horizontal padding.');
+console.log(
+  '[audit:modal-padding] passed — every modal uses the shared modal-layout mixin (or is a documented, sanctioned exception), :host has the required max-height/overflow pairing, and no section redeclares horizontal padding.'
+);
 process.exit(0);

@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -29,7 +29,7 @@ type Step = 1 | 2 | 3;
 const CLOSURE_REASONS: SectionClosureReason[] = [
   'Section Finalised',
   'Section Not Pursued',
-  'Section Rejected',
+  'Section Rejected'
 ];
 
 interface ChecklistItem {
@@ -44,7 +44,6 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
   selector: 'app-section-closure-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     NxModalModule,
@@ -53,62 +52,94 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
     NxSpinnerModule,
     NxMessageModule,
     NxFormfieldModule,
-    NxDropdownModule,
+    NxDropdownModule
   ],
   templateUrl: './section-closure-modal.component.html',
-  styleUrl: './section-closure-modal.component.scss',
+  styleUrl: './section-closure-modal.component.scss'
 })
 export class SectionClosureModalComponent {
-  readonly data      = inject<SectionClosureModalData>(NX_MODAL_DATA);
-  readonly modalRef  = inject<NxModalRef<SectionClosureModalComponent, SectionClosureModalResult>>(NxModalRef);
+  readonly data = inject<SectionClosureModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<SectionClosureModalComponent, SectionClosureModalResult>>(NxModalRef);
   private readonly sectionSvc = inject(MockSectionService);
-  private readonly fb         = inject(FormBuilder);
-  private readonly live       = inject(LiveAnnouncer);
+  private readonly fb = inject(FormBuilder);
+  private readonly live = inject(LiveAnnouncer);
 
-  readonly step      = signal<Step>(this.data.canClose ? 2 : 1);
-  readonly saving    = signal(false);
+  readonly step = signal<Step>(this.data.canClose ? 2 : 1);
+  readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
-  readonly expanded  = signal<Set<string>>(new Set());
+  readonly expanded = signal<Set<string>>(new Set());
 
   readonly closureReasons = CLOSURE_REASONS;
 
   readonly checklistItems: ChecklistItem[] = [
-    { label: 'No open deductible tasks',          passed: !this.data.section.hasOpenDeductible,   failHint: 'Open deductible task must be closed first.' },
-    { label: 'No active litigation',              passed: !this.data.section.hasActiveLitigation, failHint: 'Active litigation must be resolved.' },
-    { label: 'No pending subrogation or salvage', passed: !this.data.section.hasSubrogation && !this.data.section.hasActiveSalvage, failHint: 'Pending recovery activity must be resolved.' },
-    { label: 'Reserves released to zero',         passed: !this.data.section.hasOpenReserves,     failHint: 'All reserves must be released before closing.' },
-    { label: 'All payments settled',              passed: !this.data.section.hasOpenPayments,     failHint: 'Pending payments must be settled.' },
-    { label: 'No active provider assignment',     passed: !this.data.section.hasActiveProvider,   failHint: 'Active provider assignment must be finalised.' },
+    {
+      label: 'No open deductible tasks',
+      passed: !this.data.section.hasOpenDeductible,
+      failHint: 'Open deductible task must be closed first.'
+    },
+    {
+      label: 'No active litigation',
+      passed: !this.data.section.hasActiveLitigation,
+      failHint: 'Active litigation must be resolved.'
+    },
+    {
+      label: 'No pending subrogation or salvage',
+      passed: !this.data.section.hasSubrogation && !this.data.section.hasActiveSalvage,
+      failHint: 'Pending recovery activity must be resolved.'
+    },
+    {
+      label: 'Reserves released to zero',
+      passed: !this.data.section.hasOpenReserves,
+      failHint: 'All reserves must be released before closing.'
+    },
+    {
+      label: 'All payments settled',
+      passed: !this.data.section.hasOpenPayments,
+      failHint: 'Pending payments must be settled.'
+    },
+    {
+      label: 'No active provider assignment',
+      passed: !this.data.section.hasActiveProvider,
+      failHint: 'Active provider assignment must be finalised.'
+    }
   ];
 
   readonly checklistAllDone = computed(() => this.checklistItems.every(i => i.passed));
 
   readonly form = this.fb.group({
-    reason: [null as SectionClosureReason | null, Validators.required],
+    reason: [null as SectionClosureReason | null, Validators.required]
   });
 
   readonly stepTitle = computed(() => {
     switch (this.step()) {
-      case 1: return `Close Section — Blockers`;
-      case 2: return `Close Section — Pre-closure Checklist`;
-      case 3: return `Close Section — Reason`;
+      case 1:
+        return `Close Section — Blockers`;
+      case 2:
+        return `Close Section — Pre-closure Checklist`;
+      case 3:
+        return `Close Section — Reason`;
     }
   });
 
-  get blockers() { return this.data.blockers; }
-  get section()  { return this.data.section; }
+  get blockers() {
+    return this.data.blockers;
+  }
+  get section() {
+    return this.data.section;
+  }
 
-  private readonly reasonStatus = toSignal(
-    this.form.get('reason')!.statusChanges,
-    { initialValue: this.form.get('reason')!.status }
-  );
+  private readonly reasonStatus = toSignal(this.form.get('reason')!.statusChanges, {
+    initialValue: this.form.get('reason')!.status
+  });
 
   readonly reasonInvalid = computed(() => this.reasonStatus() !== 'VALID');
 
   toggleBlocker(key: string): void {
     this.expanded.update(set => {
       const next = new Set(set);
-      next.has(key) ? next.delete(key) : next.add(key);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
       return next;
     });
   }
@@ -117,7 +148,9 @@ export class SectionClosureModalComponent {
     return this.expanded().has(key);
   }
 
-  onCancel(): void { this.modalRef.close(undefined); }
+  onCancel(): void {
+    this.modalRef.close(undefined);
+  }
 
   onBack(): void {
     if (this.step() === 3) this.step.set(2);

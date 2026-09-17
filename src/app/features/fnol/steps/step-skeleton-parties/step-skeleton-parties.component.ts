@@ -11,13 +11,22 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
 import { Party, PartyRole, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
-import { AddPartyModalComponent, AddPartyModalData } from '../../components/add-party-modal/add-party-modal.component';
+import {
+  AddPartyModalComponent,
+  AddPartyModalData
+} from '../../components/add-party-modal/add-party-modal.component';
 import { PartyDetailPanelComponent } from '../../components/party-detail-panel/party-detail-panel.component';
-import { EditRoleDialogComponent, EditRoleDialogData } from '../../components/edit-role-dialog/edit-role-dialog.component';
+import {
+  EditRoleDialogComponent,
+  EditRoleDialogData
+} from '../../components/edit-role-dialog/edit-role-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 
 interface PartiesVM {
@@ -37,12 +46,12 @@ const ORPHAN_TARGET_CLAIM_ID = 'ORPHAN';
     trigger('rowExpand', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-4px)' }),
-        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ]),
       transition(':leave', [
-        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' })),
-      ]),
-    ]),
+        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' }))
+      ])
+    ])
   ],
   imports: [
     CommonModule,
@@ -55,16 +64,16 @@ const ORPHAN_TARGET_CLAIM_ID = 'ORPHAN';
     StatusChipComponent,
     EmptyStateComponent,
     PartyDetailPanelComponent,
-    WizardFooterComponent,
+    WizardFooterComponent
   ],
   templateUrl: './step-skeleton-parties.component.html',
-  styleUrl: './step-skeleton-parties.component.scss',
+  styleUrl: './step-skeleton-parties.component.scss'
 })
 export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   private readonly partiesSvc = inject(MockPartiesService);
-  private readonly fnolState  = inject(FnolStateService);
-  private readonly router     = inject(Router);
-  private readonly dialogSvc  = inject(NxDialogService);
+  private readonly fnolState = inject(FnolStateService);
+  private readonly router = inject(Router);
+  private readonly dialogSvc = inject(NxDialogService);
 
   // Side panel state
   selectedParty: Party | null = null;
@@ -84,13 +93,15 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
       switchMap(() =>
         this.partiesSvc.getOrphanParties().pipe(
           map(parties => ({ parties, loading: false, error: false })),
-          catchError(() => of({ parties: [], loading: false, error: true })),
-        ),
-      ),
+          catchError(() => of({ parties: [], loading: false, error: true }))
+        )
+      )
     );
   }
 
-  ngOnDestroy(): void { this.unlockScroll(); }
+  ngOnDestroy(): void {
+    this.unlockScroll();
+  }
 
   // Carries the broker selected on the notifier screen into Parties as the
   // first party — only once, and only if it hasn't already been added.
@@ -100,14 +111,16 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
     if (!brokerName) return;
 
     firstValueFrom(this.partiesSvc.getOrphanParties()).then(existing => {
-      const alreadyAdded = existing.some(p => p.roles.includes('broker') && p.legalName === brokerName);
+      const alreadyAdded = existing.some(
+        p => p.roles.includes('broker') && p.legalName === brokerName
+      );
       if (alreadyAdded) return;
 
       const brokerParty: Party = {
         partyId: brokerIpmId || `broker-${brokerName}`,
         legalName: brokerName,
         roles: ['broker'],
-        clearanceStatus: 'cleared',
+        clearanceStatus: 'cleared'
       };
       firstValueFrom(this.partiesSvc.addOrphanParty(brokerParty)).then(() => this.refresh$.next());
     });
@@ -120,11 +133,15 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
     const modalData: AddPartyModalData = {
       policyNumber: '',
       existingPartyIds: existingIds,
-      targetClaimId: ORPHAN_TARGET_CLAIM_ID,
+      targetClaimId: ORPHAN_TARGET_CLAIM_ID
     };
 
-    const ref = this.dialogSvc.open(AddPartyModalComponent, { data: modalData, width: '960px', maxWidth: '92vw' });
-    const selected = await firstValueFrom(ref.afterClosed()) as Party[] | undefined;
+    const ref = this.dialogSvc.open(AddPartyModalComponent, {
+      data: modalData,
+      width: '960px',
+      maxWidth: '92vw'
+    });
+    const selected = (await firstValueFrom(ref.afterClosed())) as Party[] | undefined;
     if (!selected || selected.length === 0) return;
 
     for (const party of selected) {
@@ -136,7 +153,8 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       const firstId = selected[0]?.partyId;
       if (firstId) {
-        document.querySelector(`[data-party-id="${firstId}"]`)
+        document
+          .querySelector(`[data-party-id="${firstId}"]`)
           ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 150);
@@ -153,13 +171,19 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   onClosePanel(): void {
     this.panelOpen = false;
     this.unlockScroll();
-    setTimeout(() => { if (!this.panelOpen) this.selectedParty = null; }, 300);
+    setTimeout(() => {
+      if (!this.panelOpen) this.selectedParty = null;
+    }, 300);
   }
 
   async onEditRole(party: Party): Promise<void> {
     const data: EditRoleDialogData = { party };
-    const ref = this.dialogSvc.open(EditRoleDialogComponent, { data, width: '600px', maxWidth: '92vw' });
-    const newRoles = await firstValueFrom(ref.afterClosed()) as PartyRole[] | null | undefined;
+    const ref = this.dialogSvc.open(EditRoleDialogComponent, {
+      data,
+      width: '600px',
+      maxWidth: '92vw'
+    });
+    const newRoles = (await firstValueFrom(ref.afterClosed())) as PartyRole[] | null | undefined;
     if (!newRoles || newRoles.length === 0) return;
     await firstValueFrom(this.partiesSvc.updateOrphanParty(party.partyId, { roles: newRoles }));
     this.refresh$.next();
@@ -171,10 +195,14 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
       message: `Are you sure you want to remove "${party.legalName}" from this claim?`,
       confirmLabel: 'Remove',
       cancelLabel: 'Cancel',
-      confirmDanger: true,
+      confirmDanger: true
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
-    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '440px',
+      maxWidth: '92vw'
+    });
+    const confirmed = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
     if (!confirmed) return;
     await firstValueFrom(this.partiesSvc.removeOrphanParty(party.partyId));
     if (this.selectedParty?.partyId === party.partyId) this.onClosePanel();
@@ -197,10 +225,16 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
     this.scrollLocked = false;
   }
 
-  trackByParty(_: number, p: Party): string { return p.partyId; }
+  trackByParty(_: number, p: Party): string {
+    return p.partyId;
+  }
 
-  onBack(): void   { this.router.navigate(['/fnol/skeleton-create']); }
-  onCancel(): void { this.router.navigate(['/dashboard']); }
+  onBack(): void {
+    this.router.navigate(['/fnol/skeleton-create']);
+  }
+  onCancel(): void {
+    this.router.navigate(['/dashboard']);
+  }
   onNext(): void {
     this.fnolState.markStepComplete('skeleton-parties');
     this.router.navigate(['/fnol/skeleton-summary']);

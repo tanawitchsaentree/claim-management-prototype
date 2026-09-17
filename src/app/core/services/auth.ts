@@ -18,7 +18,7 @@ export const PERSONAS: User[] = [
     email: 'mara.mustermann@claimsystem.com',
     role: 'adjuster',
     dashboardRole: 'claims-handler',
-    group: 'GPG-001',
+    group: 'GPG-001'
   },
   {
     id: 'usr-klaus',
@@ -26,8 +26,8 @@ export const PERSONAS: User[] = [
     email: 'klaus.schmidt@claimsystem.com',
     role: 'admin',
     dashboardRole: 'kcm',
-    group: 'GPG-001',
-  },
+    group: 'GPG-001'
+  }
 ];
 
 const STORAGE_KEY = 'dashboard:persona';
@@ -45,8 +45,8 @@ function loadPersona(): User {
 export class AuthService {
   private currentUser = signal<User>(loadPersona());
 
-  readonly user       = this.currentUser.asReadonly();
-  readonly isKcm      = computed(() => this.currentUser().dashboardRole === 'kcm');
+  readonly user = this.currentUser.asReadonly();
+  readonly isKcm = computed(() => this.currentUser().dashboardRole === 'kcm');
 
   readonly personas = PERSONAS;
 
@@ -58,5 +58,7 @@ export class AuthService {
     }
   }
 
-  isAuthenticated() { return true; }
+  isAuthenticated() {
+    return true;
+  }
 }

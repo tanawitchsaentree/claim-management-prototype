@@ -1,0 +1,96 @@
+@use '../../styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.alm-header {
+  @include modal.header;
+}
+.alm-title {
+  @include modal.title;
+}
+.alm-body {
+  @include modal.body;
+}
+.alm-footer {
+  @include modal.footer;
+}
+
+.alm-tabs {
+  margin-bottom: 4px;
+}
+
+// ─── Search row (80/20 pattern, matches broker-search-modal / cwb modal) ──
+.alm-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.alm-search-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.alm-search-row__inputs {
+  flex: 0 0 80%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+
+  > * {
+    min-width: 0;
+  }
+  nx-formfield {
+    width: 100%;
+  }
+}
+
+.alm-search-row__actions {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding-top: 22px;
+  white-space: nowrap;
+
+  > button {
+    flex: 0 0 auto;
+  }
+}
+
+// ─── Results table ────────────────────────────────────────────────────────
+.alm-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--space-base) 0;
+  color: var(--text-muted);
+}
+
+.alm-table {
+  width: 100%;
+}
+.alm-col-pick {
+  width: 48px;
+}
+.alm-row--selected {
+  background: var(--claim-overlay-hover);
+  cursor: pointer;
+}
+.alm-inactive {
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+}
+.alm-ref {
+  font-family: monospace;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+app-manual-address-section {
+  display: block;
+}

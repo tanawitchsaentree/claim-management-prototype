@@ -10,5 +10,5 @@ export const environment: Environment = {
   // note this is 1 char shorter than what was originally pasted in chat
   // (no trailing "k"). Safe client-side; RLS is the real access boundary.
   supabaseAnonKey: 'sb_publishable_liEqGoFw_RNdnmpdXQgg-w_UuTrHGP7',
-  devBannerMode: 'full',
+  devBannerMode: 'off'
 };

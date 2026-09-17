@@ -1,0 +1,11 @@
+<div class="cnf-wrap">
+  <div class="cnf-header">
+    <h1 class="cnf-title">Notes</h1>
+    <button nxIconButton="tertiary small" type="button" (click)="close()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <div class="cnf-body">
+    <app-claim-notes-panel [claimId]="data.claimId"></app-claim-notes-panel>
+  </div>
+</div>

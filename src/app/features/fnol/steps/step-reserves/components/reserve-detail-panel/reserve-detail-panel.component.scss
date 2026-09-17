@@ -102,7 +102,9 @@
   cursor: pointer;
   position: relative;
 
-  &:hover { color: var(--interactive-primary); }
+  &:hover {
+    color: var(--interactive-primary);
+  }
 
   &--active {
     color: var(--interactive-primary);
@@ -111,7 +113,9 @@
     &::after {
       content: '';
       position: absolute;
-      left: 0; right: 0; bottom: -1px;
+      left: 0;
+      right: 0;
+      bottom: -1px;
       height: 3px;
       background: var(--interactive-primary);
     }
@@ -135,7 +139,9 @@
   border: 1px solid var(--ui-04);
   border-radius: 4px;
   padding: var(--space-base) var(--space-lg);
-  transition: box-shadow 200ms ease, border-color 200ms ease;
+  transition:
+    box-shadow 200ms ease,
+    border-color 200ms ease;
 
   &--expanded {
     box-shadow: 0 1px 4px var(--claim-overlay-shadow);
@@ -173,7 +179,9 @@
   justify-content: center;
   transition: color 150ms ease;
 
-  &:hover { color: var(--text-01); }
+  &:hover {
+    color: var(--text-01);
+  }
 }
 
 .damaged-item__amount {
@@ -210,16 +218,34 @@
 .sub-table {
   width: 100%;
 
-  th, td { padding-top: 8px; padding-bottom: 8px; }
+  th,
+  td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 
-  .sub-col-type     { min-width: 160px; }
-  .sub-col-currency { width: 100px; }
-  .sub-col-amount   { width: 140px; text-align: right; }
-  .sub-col-coins    { width: 130px; }
-  .sub-col-action   { width: 56px; text-align: right; }
+  .sub-col-type {
+    min-width: 160px;
+  }
+  .sub-col-currency {
+    width: 100px;
+  }
+  .sub-col-amount {
+    width: 140px;
+    text-align: right;
+  }
+  .sub-col-coins {
+    width: 130px;
+  }
+  .sub-col-action {
+    width: 56px;
+    text-align: right;
+  }
 }
 
-.sub-row td { vertical-align: middle; }
+.sub-row td {
+  vertical-align: middle;
+}
 
 // ─── Read-only detail (cross-policy) ─────────────────────────────────────
 .reserves-detail--readonly {
@@ -243,14 +269,22 @@
   border-radius: 4px;
   font-size: var(--paragraph-04-font-size);
 
-  strong { font-weight: 600; }
+  strong {
+    font-weight: 600;
+  }
 }
 
 // Disable interactive controls when read-only
 .reserves-detail--readonly {
-  .sub-field ::ng-deep .nx-formfield__wrapper { pointer-events: none; opacity: 0.6; }
+  .sub-field ::ng-deep .nx-formfield__wrapper {
+    pointer-events: none;
+    opacity: 0.6;
+  }
   .damaged-item__toggle,
-  .damaged-item__actions { pointer-events: none; opacity: 0.5; }
+  .damaged-item__actions {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 .sub-field {
@@ -260,6 +294,10 @@
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
-  ::ng-deep .nx-formfield__label { display: none !important; }
-  ::ng-deep .nx-formfield-hint__wrapper { display: none !important; }
+  ::ng-deep .nx-formfield__label {
+    display: none !important;
+  }
+  ::ng-deep .nx-formfield-hint__wrapper {
+    display: none !important;
+  }
 }

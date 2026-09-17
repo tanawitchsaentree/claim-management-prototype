@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,14 +23,14 @@ import { StatusChipComponent } from '../../../../../shared/components/status-chi
 import {
   ConfirmDialogComponent,
   ConfirmDialogChange,
-  ConfirmDialogData,
+  ConfirmDialogData
 } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import {
   RecoveryPotentialState,
   recoveryPotentialState,
-  RECOVERY_STATE_MESSAGE,
+  RECOVERY_STATE_MESSAGE
 } from '../../../../../core/models/recovery-potential.model';
 
 export interface RecoveryPotentialUpdated {
@@ -49,13 +58,19 @@ const MAX_NOTE = 300;
   selector: 'app-recovery-potential-card',
   standalone: true,
   imports: [
-    ReactiveFormsModule, RouterLink,
-    NxRadioModule, NxMessageModule, NxButtonModule,
-    NxFormfieldModule, NxInputModule, NxIconModule, NxModalModule,
-    StatusChipComponent,
+    ReactiveFormsModule,
+    RouterLink,
+    NxRadioModule,
+    NxMessageModule,
+    NxButtonModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxIconModule,
+    NxModalModule,
+    StatusChipComponent
   ],
   templateUrl: './recovery-potential-card.component.html',
-  styleUrl: './recovery-potential-card.component.scss',
+  styleUrl: './recovery-potential-card.component.scss'
 })
 export class RecoveryPotentialCardComponent implements OnChanges {
   @Input({ required: true }) claim!: ClaimOverview;
@@ -69,11 +84,13 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   readonly choice = new FormControl<'yes' | 'no' | null>(null);
   readonly note = new FormControl<string>('', {
     nonNullable: true,
-    validators: [Validators.required, Validators.maxLength(MAX_NOTE)],
+    validators: [Validators.required, Validators.maxLength(MAX_NOTE)]
   });
 
   private readonly claimSig = signal<ClaimOverview | null>(null);
-  private readonly choiceSig = toSignal(this.choice.valueChanges, { initialValue: this.choice.value });
+  private readonly choiceSig = toSignal(this.choice.valueChanges, {
+    initialValue: this.choice.value
+  });
   private readonly noteSig = toSignal(this.note.valueChanges, { initialValue: this.note.value });
   private readonly noteTouched = signal(false);
 
@@ -87,7 +104,9 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   readonly savedNote = computed(() => this.claimSig()?.recoveryPotentialNote ?? '');
 
   /** The prompt only earns its place on the card while something is outstanding. */
-  readonly showPrompt = computed(() => !this.isClosed() && (this.state() === 'unanswered' || this.state() === 'yes-pending'));
+  readonly showPrompt = computed(
+    () => !this.isClosed() && (this.state() === 'unanswered' || this.state() === 'yes-pending')
+  );
   readonly message = computed(() => RECOVERY_STATE_MESSAGE[this.state()]);
   readonly promptContext = computed(() => (this.state() === 'unanswered' ? 'warning' : 'info'));
 
@@ -97,7 +116,9 @@ export class RecoveryPotentialCardComponent implements OnChanges {
    * it should cost something to give.
    */
   readonly needsNote = computed(() => this.choiceSig() === 'no');
-  readonly noteInvalid = computed(() => this.needsNote() && this.noteTouched() && this.note.invalid);
+  readonly noteInvalid = computed(
+    () => this.needsNote() && this.noteTouched() && this.note.invalid
+  );
 
   readonly canSave = computed(() => {
     if (this.isClosed()) return false;
@@ -137,15 +158,20 @@ export class RecoveryPotentialCardComponent implements OnChanges {
 
     const data: ConfirmDialogData = {
       title: 'Save recovery potential',
-      message: choice === 'yes'
-        ? `Recovery potential will be recorded as Yes on ${this.claim.claimId}. A recovery case has to be set up before this claim can be closed.`
-        : `Recovery potential will be recorded as No on ${this.claim.claimId}, with the reason below. Closure will no longer be held up by recovery.`,
+      message:
+        choice === 'yes'
+          ? `Recovery potential will be recorded as Yes on ${this.claim.claimId}. A recovery case has to be set up before this claim can be closed.`
+          : `Recovery potential will be recorded as No on ${this.claim.claimId}, with the reason below. Closure will no longer be held up by recovery.`,
       changes: this.confirmChanges(choice, note),
       confirmLabel: 'Save answer',
-      cancelLabel: 'Back',
+      cancelLabel: 'Back'
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '520px', maxWidth: '92vw' });
-    if (await firstValueFrom(ref.afterClosed()) !== true) return;
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '520px',
+      maxWidth: '92vw'
+    });
+    if ((await firstValueFrom(ref.afterClosed())) !== true) return;
 
     this.commit(choice, note);
   }
@@ -158,7 +184,7 @@ export class RecoveryPotentialCardComponent implements OnChanges {
       rows.push({
         label: 'Recovery potential',
         original: savedChoice ? this.answerLabel(savedChoice) : 'Not answered',
-        updated: this.answerLabel(choice),
+        updated: this.answerLabel(choice)
       });
     }
     if ((note ?? '') !== this.savedNote()) {
@@ -188,18 +214,24 @@ export class RecoveryPotentialCardComponent implements OnChanges {
       objectType: 'Claim',
       attribute: 'Recovery potential',
       valueOld: previous,
-      valueNew: note ? `${value} — ${note}` : value,
+      valueNew: note ? `${value} — ${note}` : value
     };
 
     this.updated.emit({
       claim: { ...claim, recoveryPotential: value, recoveryPotentialNote: note },
-      activity,
+      activity
     });
 
     if (value === 'yes') {
-      this.toast.success('Recovery potential set to Yes', 'Set up the recovery case to complete this claim.');
+      this.toast.success(
+        'Recovery potential set to Yes',
+        'Set up the recovery case to complete this claim.'
+      );
     } else {
-      this.toast.success('Recovery potential set to No', 'Closure is no longer held up by recovery.');
+      this.toast.success(
+        'Recovery potential set to No',
+        'Closure is no longer held up by recovery.'
+      );
     }
   }
 }

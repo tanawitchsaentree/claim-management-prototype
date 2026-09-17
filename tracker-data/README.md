@@ -40,20 +40,20 @@ Two files still name her from before this rule existed: `CONVERSIONS.md` and
 
 ## Tables — as of the 2026-09-02 dump
 
-| File | Rows | What it is |
-|---|---|---|
-| `pi.json` | 2 | PI 2026.3, PI 2026.4. `start_date`/`end_date` are both null on both rows — never filled in. |
-| `epic.json` | 12 | 9 in PI 2026.3, 3 in PI 2026.4. |
-| `ticket.json` | 167 | 51 active, 116 archived. 163 tagged PI 2026.3, 4 tagged PI 2026.4. |
-| `ticket_state.json` | 167 | One per ticket. Design / build / handoff status, blocker flag, `prototype_route`. |
-| `note.json` | 188 | Free text against a ticket, 2026-08-20 → 2026-08-31, on 166 tickets. |
-| `relation.json` | 0 | Empty. Nothing has ever written a ticket-to-ticket relation. |
-| `sync_log.json` | 7 | Every Jira sync run. All 7 `success`. |
+| File                | Rows | What it is                                                                                  |
+| ------------------- | ---- | ------------------------------------------------------------------------------------------- |
+| `pi.json`           | 2    | PI 2026.3, PI 2026.4. `start_date`/`end_date` are both null on both rows — never filled in. |
+| `epic.json`         | 12   | 9 in PI 2026.3, 3 in PI 2026.4.                                                             |
+| `ticket.json`       | 167  | 51 active, 116 archived. 163 tagged PI 2026.3, 4 tagged PI 2026.4.                          |
+| `ticket_state.json` | 167  | One per ticket. Design / build / handoff status, blocker flag, `prototype_route`.           |
+| `note.json`         | 188  | Free text against a ticket, 2026-08-20 → 2026-08-31, on 166 tickets.                        |
+| `relation.json`     | 0    | Empty. Nothing has ever written a ticket-to-ticket relation.                                |
+| `sync_log.json`     | 7    | Every Jira sync run. All 7 `success`.                                                       |
 
 The table list in `dump-tracker.mjs` is hand-written from
 `supabase/migrations/0001_tracker.sql` rather than discovered, because the
-PostgREST OpenAPI root (`GET /rest/v1/`) rejects a publishable key — *"Only
-secret API keys can be used for this endpoint"*. **If a migration adds a table,
+PostgREST OpenAPI root (`GET /rest/v1/`) rejects a publishable key — _"Only
+secret API keys can be used for this endpoint"_. **If a migration adds a table,
 add it to `TABLES` in the script too, or it will be missing here and nothing will
 warn you.**
 
@@ -61,7 +61,7 @@ warn you.**
 
 **`ticket.jira_status` is live for ~51 tickets, stale or absent for the rest.**
 The `sync-jira` edge function runs a fixed JQL held as a server-side secret; it
-cannot be overridden per request. Most rows carry *some* status, but only the
+cannot be overridden per request. Most rows carry _some_ status, but only the
 ones inside that JQL scope were refreshed on 2026-09-02. A `Done` on a row
 outside the scope is whatever it was when it was last in scope.
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -10,7 +10,7 @@ import { ClaimSection } from '../../../core/models/section.model';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import {
   ConfirmDialogComponent,
-  ConfirmDialogData,
+  ConfirmDialogData
 } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
@@ -20,17 +20,16 @@ import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.
   selector: 'app-section-detail',
   standalone: true,
   imports: [
-    CommonModule,
     NxButtonModule,
     NxIconModule,
     NxFormfieldModule,
     NxInputModule,
     NxModalModule,
     StatusChipComponent,
-    CircumstanceLabelPipe,
+    CircumstanceLabelPipe
   ],
   templateUrl: './section-detail-panel.component.html',
-  styleUrl: './section-detail-panel.component.scss',
+  styleUrl: './section-detail-panel.component.scss'
 })
 export class SectionDetailPanelComponent {
   @Input({ required: true }) section!: ClaimSection;
@@ -45,11 +44,11 @@ export class SectionDetailPanelComponent {
   @Output() closed = new EventEmitter<void>();
 
   private readonly sectionSvc = inject(MockSectionService);
-  private readonly toast      = inject(ToastService);
-  private readonly dialogSvc  = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly dialogSvc = inject(NxDialogService);
 
   readonly editingName = signal(false);
-  readonly nameDraft   = signal('');
+  readonly nameDraft = signal('');
 
   startEditName(): void {
     this.nameDraft.set(this.section.name);
@@ -72,13 +71,18 @@ export class SectionDetailPanelComponent {
 
     const data: ConfirmDialogData = {
       title: 'Rename section',
-      message: 'The new name is used everywhere this section is referenced — reserves, the entity tree and the closure checklist.',
+      message:
+        'The new name is used everywhere this section is referenced — reserves, the entity tree and the closure checklist.',
       changes: [{ label: 'Section name', original: this.section.name, updated: name }],
       confirmLabel: 'Rename',
-      cancelLabel: 'Keep editing',
+      cancelLabel: 'Keep editing'
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '520px', maxWidth: '92vw' });
-    if (await firstValueFrom(ref.afterClosed()) !== true) return;
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '520px',
+      maxWidth: '92vw'
+    });
+    if ((await firstValueFrom(ref.afterClosed())) !== true) return;
 
     const updated = await firstValueFrom(this.sectionSvc.patchSection(this.section.id, { name }));
     this.section = { ...this.section, ...updated };

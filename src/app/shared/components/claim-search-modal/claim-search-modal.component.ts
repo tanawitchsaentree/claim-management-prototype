@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -23,7 +23,6 @@ export type ClaimSearchModalResult = { claim: Claim } | null;
   selector: 'app-claim-search-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
@@ -32,22 +31,23 @@ export type ClaimSearchModalResult = { claim: Claim } | null;
     NxIconModule,
     NxRadioModule,
     NxTableModule,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './claim-search-modal.component.html',
-  styleUrl: './claim-search-modal.component.scss',
+  styleUrl: './claim-search-modal.component.scss'
 })
 export class ClaimSearchModalComponent implements OnInit {
-  readonly data     = inject<ClaimSearchModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<ClaimSearchModalComponent, ClaimSearchModalResult>>(NxModalRef);
+  readonly data = inject<ClaimSearchModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ClaimSearchModalComponent, ClaimSearchModalResult>>(NxModalRef);
   private readonly claimSvc = inject(MockClaimService);
 
   readonly searchForm = new FormGroup({
-    query: new FormControl(''),
+    query: new FormControl('')
   });
 
-  readonly results      = signal<Claim[]>([]);
-  readonly selectedId   = signal<string | null>(null);
+  readonly results = signal<Claim[]>([]);
+  readonly selectedId = signal<string | null>(null);
   readonly hasSelection = computed(() => this.selectedId() !== null);
 
   async ngOnInit(): Promise<void> {
@@ -70,13 +70,17 @@ export class ClaimSearchModalComponent implements OnInit {
     this.results.set(found.filter(c => !excluded.has(c.claimId)));
   }
 
-  isSelected(id: string): boolean { return this.selectedId() === id; }
+  isSelected(id: string): boolean {
+    return this.selectedId() === id;
+  }
 
   selectRow(id: string): void {
     this.selectedId.set(id);
   }
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onConfirm(): void {
     const id = this.selectedId();

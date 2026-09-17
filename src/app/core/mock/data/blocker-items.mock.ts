@@ -11,7 +11,7 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
       assignee: 'Legal Team',
       ownerDomain: 'Litigation',
       link: '/claims/CLM-2024-001/litigation',
-      severity: 'hard',
+      severity: 'hard'
     },
     {
       id: 'CLM-LIT-002',
@@ -22,8 +22,8 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
       assignee: 'External counsel',
       ownerDomain: 'Litigation',
       link: '/claims/CLM-2024-001/litigation',
-      severity: 'hard',
-    },
+      severity: 'hard'
+    }
   ],
   reserves: [
     {
@@ -35,7 +35,7 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
       assignee: 'John Smith',
       ownerDomain: 'Reserves',
       link: '/claims/CLM-2024-001/financial',
-      severity: 'hard',
+      severity: 'hard'
     },
     {
       id: 'RSV-002',
@@ -46,8 +46,8 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
       assignee: 'Legal Team',
       ownerDomain: 'Reserves',
       link: '/claims/CLM-2024-001/financial',
-      severity: 'warning',
-    },
+      severity: 'warning'
+    }
   ],
   payments: [
     {
@@ -58,10 +58,10 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
       lastUpdated: '2026-06-18',
       assignee: 'Finance Team',
       ownerDomain: 'Payments',
-      severity: 'hard',
-    },
+      severity: 'hard'
+    }
   ],
   deductible: [],
   recovery: [],
-  provider: [],
+  provider: []
 };

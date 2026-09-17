@@ -3,6 +3,7 @@
 This is the foundation doc — stack, tokens, traps, folder layout, forbidden patterns, NDBX gotchas. Read before any code.
 
 Companion docs:
+
 - `PRE_BUILD.md` — checklist + workflow for building anything
 - `POST_BUILD.md` — verification before "done"
 - `BLESSED.md` — verified reference implementations to copy from
@@ -13,21 +14,23 @@ Companion docs:
 
 ## Stack
 
-| Layer | Package | Version |
-|-------|---------|---------|
-| Framework | `@angular/core` | ^21.2.0 |
-| Component library | `@allianz/ng-aquila` | ^21.8.0 |
+| Layer                 | Package                  | Version |
+| --------------------- | ------------------------ | ------- |
+| Framework             | `@angular/core`          | ^21.2.0 |
+| Component library     | `@allianz/ng-aquila`     | ^21.8.0 |
 | Design tokens / fonts | `@allianz/ngx-brand-kit` | ^21.8.0 |
-| Reactive extensions | `rxjs` | ~7.8.0 |
-| Language | `typescript` | ~5.9.2 |
+| Reactive extensions   | `rxjs`                   | ~7.8.0  |
+| Language              | `typescript`             | ~5.9.2  |
 
 **CSS loaded in angular.json (in this order — order matters):**
+
 1. `node_modules/@allianz/ngx-brand-kit/css/allianz-base.css` — Allianz Neo font + base resets
 2. `node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css` — NDBX light expert theme tokens
 3. `node_modules/@allianz/ngx-brand-kit/css/ndbx-icons.css` — Allianz icon font glyphs
 4. `src/styles.scss` — project-level overrides only
 
 **`expert.css` is NOT loaded.** This means:
+
 - `appearance="outline"` on `nx-formfield` renders as broken unstyled boxes — **never use it**
 - All forms use the default underline appearance (no `appearance=` attribute)
 
@@ -37,17 +40,18 @@ Companion docs:
 
 ### `--text-02` is WHITE
 
-| Token | Resolved value | Use |
-|-------|---------------|-----|
-| `--text-01` | `#414141` | Body text, labels, table cells — **always safe** |
-| `--text-02` | `#ffffff` | ⚠️ WHITE — only on dark/brand backgrounds |
-| `--text-muted` | `#767676` | Secondary/hint text on white backgrounds |
+| Token          | Resolved value | Use                                              |
+| -------------- | -------------- | ------------------------------------------------ |
+| `--text-01`    | `#414141`      | Body text, labels, table cells — **always safe** |
+| `--text-02`    | `#ffffff`      | ⚠️ WHITE — only on dark/brand backgrounds        |
+| `--text-muted` | `#767676`      | Secondary/hint text on white backgrounds         |
 
 **NEVER use `--text-02` on white or light backgrounds — it is white and will be invisible.**
 
 ### NxExpertModule cascade override
 
 `NxExpertModule` (in `app.config.ts`) injects `expert.css` at runtime AFTER the angular.json styles. It overrides:
+
 - `--interactive-primary`: `#007ab3` → `#27abd6` (dark theme blue)
 - `--text-02`: `#ffffff` → `#0f2a3d` (near-black — breaks primary button white text)
 
@@ -68,6 +72,7 @@ NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides
 FormControl state is RxJS, not a signal — Angular's signal graph cannot track it. `computed()` will evaluate once at init and never re-run.
 
 ✅ Bridge with `toSignal`:
+
 ```ts
 private readonly xStatus = toSignal(
   this.form.get('x')!.statusChanges,
@@ -145,8 +150,11 @@ cat node_modules/@allianz/ng-aquila/<component>/index.d.ts         # public API
 ### Step 4: Use NDBX selector, NOT native HTML
 
 ❌ WRONG:
+
 ```html
-<select><option>...</option></select>
+<select>
+  <option>...</option>
+</select>
 <input type="text" />
 <input type="date" />
 <nx-formfield appearance="outline" label="...">...</nx-formfield>
@@ -158,31 +166,31 @@ cat node_modules/@allianz/ng-aquila/<component>/index.d.ts         # public API
 
 ## NDBX Component Reference (verified in this project)
 
-| What you need | NDBX module | Import path | Selector |
-|---------------|-------------|-------------|----------|
-| Text input | `NxFormfieldModule` + `NxInputModule` | `formfield` / `input` | `<input nxInput>` |
-| Dropdown (single) | `NxDropdownModule` | `dropdown` | `<nx-dropdown>` |
-| Multi-select | `NxMultiSelectComponent` | `dropdown` | `<nx-multi-select>` |
-| Checkbox | `NxCheckboxModule` | `checkbox` | `<nx-checkbox>` |
-| Radio button | `NxRadioModule` | `radio-button` | `<nx-radio>` |
-| Date picker | `NxDatefieldModule` | `datefield` | `<input nxDatefield>` + `<nx-datepicker>` |
-| Time picker | `NxTimefieldModule` | `timefield` | `<nx-timefield>` |
-| Toggle/Switcher | `NxSwitcherModule` | `switcher` | `<nx-switcher>` |
-| Textarea | `NxFormfieldModule` + `NxInputModule` | `formfield` / `input` | `<textarea nxInput>` |
-| Button | `NxButtonModule` | `button` | `<button nxButton="primary">` |
-| Icon | `NxIconModule` | `icon` | `<nx-icon name="...">` |
-| Card | `NxCardModule` | `card` | `<nx-card>` |
-| Tabs | `NxTabsModule` | `tabs` | `<nx-tab-group>` |
-| Tooltip | `NxTooltipModule` | `tooltip` | `[nxTooltip]="text"` |
-| Modal | `NxModalModule` | `modal` | `NxModalService.open()` |
-| Toast/Alert | `NxMessageModule` | `message` | `<nx-message>` |
-| Pagination | `NxPaginationModule` | `pagination` | `<nx-pagination>` |
-| Spinner | `NxSpinnerModule` | `spinner` | `<nx-spinner>` |
-| Context menu | `NxContextMenuModule` | `context-menu` | `<nx-context-menu>` |
-| Toolbar | `NxToolbarModule` | `toolbar` | `<nx-toolbar>` |
-| Breadcrumb | `NxBreadcrumbModule` | `breadcrumb` | `<ol nxBreadcrumb>` |
-| Avatar | `NxAvatarModule` | `avatar` | `[nxAvatar]` |
-| Grid | `NxGridModule` | `grid` | `[nxLayout]`, `[nxRow]`, `[nxCol]` |
+| What you need     | NDBX module                           | Import path           | Selector                                  |
+| ----------------- | ------------------------------------- | --------------------- | ----------------------------------------- |
+| Text input        | `NxFormfieldModule` + `NxInputModule` | `formfield` / `input` | `<input nxInput>`                         |
+| Dropdown (single) | `NxDropdownModule`                    | `dropdown`            | `<nx-dropdown>`                           |
+| Multi-select      | `NxMultiSelectComponent`              | `dropdown`            | `<nx-multi-select>`                       |
+| Checkbox          | `NxCheckboxModule`                    | `checkbox`            | `<nx-checkbox>`                           |
+| Radio button      | `NxRadioModule`                       | `radio-button`        | `<nx-radio>`                              |
+| Date picker       | `NxDatefieldModule`                   | `datefield`           | `<input nxDatefield>` + `<nx-datepicker>` |
+| Time picker       | `NxTimefieldModule`                   | `timefield`           | `<nx-timefield>`                          |
+| Toggle/Switcher   | `NxSwitcherModule`                    | `switcher`            | `<nx-switcher>`                           |
+| Textarea          | `NxFormfieldModule` + `NxInputModule` | `formfield` / `input` | `<textarea nxInput>`                      |
+| Button            | `NxButtonModule`                      | `button`              | `<button nxButton="primary">`             |
+| Icon              | `NxIconModule`                        | `icon`                | `<nx-icon name="...">`                    |
+| Card              | `NxCardModule`                        | `card`                | `<nx-card>`                               |
+| Tabs              | `NxTabsModule`                        | `tabs`                | `<nx-tab-group>`                          |
+| Tooltip           | `NxTooltipModule`                     | `tooltip`             | `[nxTooltip]="text"`                      |
+| Modal             | `NxModalModule`                       | `modal`               | `NxModalService.open()`                   |
+| Toast/Alert       | `NxMessageModule`                     | `message`             | `<nx-message>`                            |
+| Pagination        | `NxPaginationModule`                  | `pagination`          | `<nx-pagination>`                         |
+| Spinner           | `NxSpinnerModule`                     | `spinner`             | `<nx-spinner>`                            |
+| Context menu      | `NxContextMenuModule`                 | `context-menu`        | `<nx-context-menu>`                       |
+| Toolbar           | `NxToolbarModule`                     | `toolbar`             | `<nx-toolbar>`                            |
+| Breadcrumb        | `NxBreadcrumbModule`                  | `breadcrumb`          | `<ol nxBreadcrumb>`                       |
+| Avatar            | `NxAvatarModule`                      | `avatar`              | `[nxAvatar]`                              |
+| Grid              | `NxGridModule`                        | `grid`                | `[nxLayout]`, `[nxRow]`, `[nxCol]`        |
 
 If a component is NOT in this list → run Step 1 to verify before assuming it doesn't exist.
 
@@ -263,20 +271,20 @@ import { SomeComponent } from '../../shared/components/some.component';
 
 ## Forbidden Patterns
 
-| Pattern | Why banned |
-|---------|------------|
-| `subscribe()` in component class | Use `async` pipe — subscriptions leak |
-| `: any` or `<any>` | Define interface in `core/models/` |
-| Inline template over 30 lines | Extract to `.html` file |
-| Inline styles | Extract to `.scss` file |
-| `console.log` in committed code | Except in `mock-base.service.ts` |
-| `TODO` / `FIXME` without owner + ticket | Dead comments rot |
-| Cross-feature imports | Features must be independently deployable |
-| Hardcoded data arrays in components | Use service layer |
-| Native `<select>`, `<input type="date">`, raw `<input>` outside formfield | Use NDBX equivalents |
-| `nx-formfield appearance="outline"` | expert.css not loaded — outline renders broken |
-| Skipping NDBX verification step | Custom HTML breaks design system |
-| `font-size` below 14px on readable text | Fails WCAG 2.1 AA — minimum 14px (`--paragraph-04-font-size`). Icons exempt. |
+| Pattern                                                                   | Why banned                                                                   |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `subscribe()` in component class                                          | Use `async` pipe — subscriptions leak                                        |
+| `: any` or `<any>`                                                        | Define interface in `core/models/`                                           |
+| Inline template over 30 lines                                             | Extract to `.html` file                                                      |
+| Inline styles                                                             | Extract to `.scss` file                                                      |
+| `console.log` in committed code                                           | Except in `mock-base.service.ts`                                             |
+| `TODO` / `FIXME` without owner + ticket                                   | Dead comments rot                                                            |
+| Cross-feature imports                                                     | Features must be independently deployable                                    |
+| Hardcoded data arrays in components                                       | Use service layer                                                            |
+| Native `<select>`, `<input type="date">`, raw `<input>` outside formfield | Use NDBX equivalents                                                         |
+| `nx-formfield appearance="outline"`                                       | expert.css not loaded — outline renders broken                               |
+| Skipping NDBX verification step                                           | Custom HTML breaks design system                                             |
+| `font-size` below 14px on readable text                                   | Fails WCAG 2.1 AA — minimum 14px (`--paragraph-04-font-size`). Icons exempt. |
 
 ---
 
@@ -286,25 +294,25 @@ WCAG 2.1 AA. All readable text must meet the minimum font-size rule below. Audit
 
 ### Minimum font sizes
 
-| Use case | Minimum | Token |
-|---|---|---|
-| Body text, labels, table cells, form hints, form field labels/hints | **14px** | `var(--paragraph-03-font-size)` or `var(--paragraph-04-font-size)` |
-| Headings, section titles | 16px+ | `var(--paragraph-03-font-size)` or above |
-| Decorative icons, checkmark glyphs inside icon containers | no minimum | n/a — not readable text |
+| Use case                                                            | Minimum    | Token                                                              |
+| ------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| Body text, labels, table cells, form hints, form field labels/hints | **14px**   | `var(--paragraph-03-font-size)` or `var(--paragraph-04-font-size)` |
+| Headings, section titles                                            | 16px+      | `var(--paragraph-03-font-size)` or above                           |
+| Decorative icons, checkmark glyphs inside icon containers           | no minimum | n/a — not readable text                                            |
 
 ### Resolved token values in this project
 
 `styles.scss` overrides the NDBX paragraph scale. Use these actual px values when reasoning about sizes:
 
-| Token | Resolved px | Use |
-|---|---|---|
-| `--paragraph-01-font-size` | **16px** | Body copy, input value text |
-| `--paragraph-02-font-size` | **14px** | Secondary text |
-| `--paragraph-03-font-size` | **14px** | Labels, hints, captions (raised from NDBX 12px) |
-| `--paragraph-04-font-size` | **14px** | Same floor — use either 03 or 04 |
-| `--paragraph-05-font-size` | **12px** | Do not use for readable text |
-| `--formfield-label-font-size` | **14px** | Form field floating labels (overridden in styles.scss) |
-| `--formfield-hint-font-size` | **14px** | Form field hint/error text (overridden in styles.scss) |
+| Token                         | Resolved px | Use                                                    |
+| ----------------------------- | ----------- | ------------------------------------------------------ |
+| `--paragraph-01-font-size`    | **16px**    | Body copy, input value text                            |
+| `--paragraph-02-font-size`    | **14px**    | Secondary text                                         |
+| `--paragraph-03-font-size`    | **14px**    | Labels, hints, captions (raised from NDBX 12px)        |
+| `--paragraph-04-font-size`    | **14px**    | Same floor — use either 03 or 04                       |
+| `--paragraph-05-font-size`    | **12px**    | Do not use for readable text                           |
+| `--formfield-label-font-size` | **14px**    | Form field floating labels (overridden in styles.scss) |
+| `--formfield-hint-font-size`  | **14px**    | Form field hint/error text (overridden in styles.scss) |
 
 NDBX defaults for `--paragraph-01/02/03` are 20/18/16px — our project compresses the scale intentionally for UI density. Floor is 14px.
 
@@ -322,19 +330,19 @@ NDBX defaults for `--paragraph-01/02/03` are 20/18/16px — our project compress
 
 ### Known violations (pre-existing — fix before shipping)
 
-| File | Line | Current | Fix |
-|---|---|---|---|
-| `fnol/steps/step-1-search/step-1-search.component.scss` | 235 | 11px `.broker-label` | → `var(--paragraph-04-font-size)` |
-| `fnol/steps/step-1-search/step-1-search.component.scss` | 271 | 11px `.skeleton-linked` | → `var(--paragraph-04-font-size)` |
-| `fnol/steps/step-1-search/step-1-search.component.scss` | 429 | 12px | → `var(--paragraph-04-font-size)` |
-| `fnol/steps/step-1-search/step-1-search.component.scss` | 231 | 13px `.text-mono` | → `var(--paragraph-04-font-size)` |
-| `fnol/steps/step-1-search/step-1-search.component.scss` | 261 | 13px `.skeleton-status` | → `var(--paragraph-04-font-size)` |
-| `fnol/steps/step-1-search/step-1-search.component.scss` | 318 | 13px skeleton table | → `var(--paragraph-04-font-size)` |
-| `claims/claim-detail/claim-detail.scss` | 10 | 13px `.claim-number` | → `var(--paragraph-04-font-size)` |
-| `claims/claim-detail/claim-detail.scss` | 45 | 12px `.info-label` | → `var(--paragraph-04-font-size)` |
-| `shared/components/status-chip/status-chip.component.scss` | 6 | 12px chip text | → `var(--paragraph-04-font-size)` |
-| `dashboard/dashboard.scss` | 384 | 13px table `th` | → `var(--paragraph-04-font-size)` |
-| `dashboard/dashboard.scss` | 547 | 13px `.stats-bar-value` | → `var(--paragraph-04-font-size)` |
+| File                                                       | Line | Current                 | Fix                               |
+| ---------------------------------------------------------- | ---- | ----------------------- | --------------------------------- |
+| `fnol/steps/step-1-search/step-1-search.component.scss`    | 235  | 11px `.broker-label`    | → `var(--paragraph-04-font-size)` |
+| `fnol/steps/step-1-search/step-1-search.component.scss`    | 271  | 11px `.skeleton-linked` | → `var(--paragraph-04-font-size)` |
+| `fnol/steps/step-1-search/step-1-search.component.scss`    | 429  | 12px                    | → `var(--paragraph-04-font-size)` |
+| `fnol/steps/step-1-search/step-1-search.component.scss`    | 231  | 13px `.text-mono`       | → `var(--paragraph-04-font-size)` |
+| `fnol/steps/step-1-search/step-1-search.component.scss`    | 261  | 13px `.skeleton-status` | → `var(--paragraph-04-font-size)` |
+| `fnol/steps/step-1-search/step-1-search.component.scss`    | 318  | 13px skeleton table     | → `var(--paragraph-04-font-size)` |
+| `claims/claim-detail/claim-detail.scss`                    | 10   | 13px `.claim-number`    | → `var(--paragraph-04-font-size)` |
+| `claims/claim-detail/claim-detail.scss`                    | 45   | 12px `.info-label`      | → `var(--paragraph-04-font-size)` |
+| `shared/components/status-chip/status-chip.component.scss` | 6    | 12px chip text          | → `var(--paragraph-04-font-size)` |
+| `dashboard/dashboard.scss`                                 | 384  | 13px table `th`         | → `var(--paragraph-04-font-size)` |
+| `dashboard/dashboard.scss`                                 | 547  | 13px `.stats-bar-value` | → `var(--paragraph-04-font-size)` |
 
 `fnol-stepper/fnol-stepper.component.scss:61` — 10px `.dot-check` is **exempt** (icon glyph, not readable text).
 
@@ -346,11 +354,11 @@ NDBX components are WCAG 2 Level AA compliant out of the box. Using them does **
 
 ### Supported screen reader matrix
 
-| Screen reader | Browser |
-|---|---|
-| NVDA | Firefox |
-| JAWS 2023 | Edge / Chrome |
-| VoiceOver (macOS / iOS) | Safari |
+| Screen reader           | Browser       |
+| ----------------------- | ------------- |
+| NVDA                    | Firefox       |
+| JAWS 2023               | Edge / Chrome |
+| VoiceOver (macOS / iOS) | Safari        |
 
 ### `aria-label` is mandatory for icon-only / ambiguous controls
 
@@ -402,7 +410,7 @@ Custom SVGs need explicit color in high-contrast mode. NDBX components handle th
 ```scss
 @media screen and (-ms-high-contrast: active) {
   .my-custom-svg {
-    fill: windowText;          /* IE/Edge proprietary system color */
+    fill: windowText; /* IE/Edge proprietary system color */
   }
 }
 ```
@@ -414,8 +422,8 @@ Use `fill: currentColor` for SVG/CSS-drawn icons whenever possible — they pick
 Forms must declare expected input type for password managers + a11y:
 
 ```html
-<input nxInput autocomplete="email" />
-<input nxInput autocomplete="off" />     <!-- search/filter inputs -->
+<input nxInput autocomplete="email" /> <input nxInput autocomplete="off" />
+<!-- search/filter inputs -->
 <input nxInput autocomplete="given-name" />
 ```
 
@@ -444,61 +452,61 @@ NDBX provides no tokens for status colors, priority colors, overlay rgba, or pag
 
 ### Page chrome → content gap
 
-| Token | Value | Use |
-|-------|-------|-----|
+| Token                | Value  | Use                                                                                                                                                                                       |
+| -------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--page-content-top` | `40px` | Single canonical gap between top chrome (navbar + optional toolbar/breadcrumb) and page content (eyebrow / h1 / etc.). Equals blessed step-1-search stack: layout-inset-base 32 + 8 = 40. |
 
 ⚠️ See `RUNTIME_OVERRIDES.md` — when an element uses `[nxLayout="grid maxwidth"]`, `padding-top` on the same element is overridden by NDBX inline padding. Wrap it with an outer `*-wrap` div instead.
 
 ### Claim status chip
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `--claim-status-open-bg` / `--claim-status-open-color` | `#dce9f8` / `#006192` | "Open" chip |
-| `--claim-status-in-progress-bg` / `--claim-status-in-progress-color` | `#dce9f8` / `#006192` | "In progress" claim chip |
-| `--claim-status-bound-bg` / `--claim-status-bound-color` | `#d4edda` / `#155724` | "Bound" chip |
-| `--claim-status-declined-bg` / `--claim-status-declined-color` | `#f8d7da` / `#721c24` | "Declined" chip |
-| `--claim-status-closed-bg` / `--claim-status-closed-color` | `#e8e8e8` / `#767676` | "Closed" chip |
-| `--claim-status-priced-bg` / `--claim-status-quoted-bg` | `#e8e8e8` / `#404040` | Neutral — no Figma color yet |
+| Token                                                                | Value                 | Use                          |
+| -------------------------------------------------------------------- | --------------------- | ---------------------------- |
+| `--claim-status-open-bg` / `--claim-status-open-color`               | `#dce9f8` / `#006192` | "Open" chip                  |
+| `--claim-status-in-progress-bg` / `--claim-status-in-progress-color` | `#dce9f8` / `#006192` | "In progress" claim chip     |
+| `--claim-status-bound-bg` / `--claim-status-bound-color`             | `#d4edda` / `#155724` | "Bound" chip                 |
+| `--claim-status-declined-bg` / `--claim-status-declined-color`       | `#f8d7da` / `#721c24` | "Declined" chip              |
+| `--claim-status-closed-bg` / `--claim-status-closed-color`           | `#e8e8e8` / `#767676` | "Closed" chip                |
+| `--claim-status-priced-bg` / `--claim-status-quoted-bg`              | `#e8e8e8` / `#404040` | Neutral — no Figma color yet |
 
 ### Task status chip (different from claim status — amber ≠ blue)
 
-| Token | Value | Use |
-|-------|-------|-----|
+| Token                                                              | Value                 | Use                               |
+| ------------------------------------------------------------------ | --------------------- | --------------------------------- |
 | `--task-status-in-progress-bg` / `--task-status-in-progress-color` | `#fdf3d6` / `#7a5200` | **Task** in-progress chip (amber) |
-| `--task-status-open-bg` / `--task-status-open-color` | `#dce9f8` / `#006192` | Task open chip |
-| `--task-status-done-bg` / `--task-status-done-color` | `#d4edda` / `#155724` | Task done chip |
+| `--task-status-open-bg` / `--task-status-open-color`               | `#dce9f8` / `#006192` | Task open chip                    |
+| `--task-status-done-bg` / `--task-status-done-color`               | `#d4edda` / `#155724` | Task done chip                    |
 
 ⚠️ `--task-status-in-progress-*` (amber) ≠ `--claim-status-in-progress-*` (blue). Different concepts. Wrong token = wrong color.
 
 ### Priority dot
 
-| Token | Value |
-|-------|-------|
-| `--claim-priority-high` | `#e4003a` |
+| Token                     | Value     |
+| ------------------------- | --------- |
+| `--claim-priority-high`   | `#e4003a` |
 | `--claim-priority-medium` | `#fdd25c` |
-| `--claim-priority-low` | `#d9d9d9` |
+| `--claim-priority-low`    | `#d9d9d9` |
 
 ### Stats bars
 
-| Token | Value |
-|-------|-------|
+| Token                     | Value     |
+| ------------------------- | --------- |
 | `--claim-bar-in-progress` | `#fdd25c` |
-| `--claim-bar-priced` | `#8a679c` |
-| `--claim-bar-quoted` | `#7fe4e0` |
-| `--claim-bar-bound` | `#ccdd61` |
-| `--claim-bar-declined` | `#e4003a` |
+| `--claim-bar-priced`      | `#8a679c` |
+| `--claim-bar-quoted`      | `#7fe4e0` |
+| `--claim-bar-bound`       | `#ccdd61` |
+| `--claim-bar-declined`    | `#e4003a` |
 
 ### Overlays
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `--claim-overlay-hover` | `rgba(0, 97, 146, 0.06)` | Interactive hover on white bg |
-| `--claim-overlay-nav-hover` | `rgba(0, 0, 0, 0.05)` | Sidebar nav item hover scrim |
-| `--claim-overlay-shadow` | `rgba(0, 0, 0, 0.12)` | Dropdown / modal shadow |
-| `--claim-overlay-navbar-shadow` | `rgba(0, 0, 0, 0.15)` | Navbar box-shadow |
-| `--claim-overlay-navbar-input` | `rgba(255, 255, 255, 0.2)` | Search on dark navbar |
-| `--claim-overlay-navbar-muted` | `rgba(255, 255, 255, 0.75)` | Secondary text on dark navbar |
+| Token                           | Value                       | Use                           |
+| ------------------------------- | --------------------------- | ----------------------------- |
+| `--claim-overlay-hover`         | `rgba(0, 97, 146, 0.06)`    | Interactive hover on white bg |
+| `--claim-overlay-nav-hover`     | `rgba(0, 0, 0, 0.05)`       | Sidebar nav item hover scrim  |
+| `--claim-overlay-shadow`        | `rgba(0, 0, 0, 0.12)`       | Dropdown / modal shadow       |
+| `--claim-overlay-navbar-shadow` | `rgba(0, 0, 0, 0.15)`       | Navbar box-shadow             |
+| `--claim-overlay-navbar-input`  | `rgba(255, 255, 255, 0.2)`  | Search on dark navbar         |
+| `--claim-overlay-navbar-muted`  | `rgba(255, 255, 255, 0.75)` | Secondary text on dark navbar |
 
 ---
 

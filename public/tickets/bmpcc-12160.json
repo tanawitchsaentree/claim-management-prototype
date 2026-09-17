@@ -24,7 +24,11 @@
       "setup": {
         "description": "Seed a selected policy so /fnol/parties doesn't redirect to /fnol/search",
         "preconditions": [
-          { "text": "At least one party row with an Edit role action is visible", "page": "any", "role": "tested-visible" }
+          {
+            "text": "At least one party row with an Edit role action is visible",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
           "fnolStateOverride": {
@@ -34,7 +38,10 @@
       },
       "expectedUI": {
         "description": "Party row actions menu with Edit role",
-        "visualCues": ["Kebab action button per party row", "Menu includes View details, Edit role, Remove"]
+        "visualCues": [
+          "Kebab action button per party row",
+          "Menu includes View details, Edit role, Remove"
+        ]
       },
       "howToTest": {
         "route": "/fnol/parties",

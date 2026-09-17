@@ -11,12 +11,12 @@ import { PolicyStatus } from './policy.model';
  * what makes those entities selectable.
  */
 export interface ImpactedPolicy {
-  policyNumber:   string;
-  clientName:     string;
+  policyNumber: string;
+  clientName: string;
   lineOfBusiness: string;
-  effectiveDate:  string;
-  expiryDate:     string;
-  status:         PolicyStatus;
+  effectiveDate: string;
+  expiryDate: string;
+  status: PolicyStatus;
   /**
    * Why this policy surfaced. Authored per base policy in
    * `mock/data/impacted-policies.json`, NOT derived: the entity model carries
@@ -31,5 +31,5 @@ export interface ImpactedPolicy {
 /** Result of pulling one or more impacted policies onto the claim. */
 export interface AddedPolicyEntities {
   policyNumbers: string[];
-  entityCount:   number;
+  entityCount: number;
 }

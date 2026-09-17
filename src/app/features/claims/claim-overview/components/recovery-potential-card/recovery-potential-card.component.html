@@ -5,7 +5,8 @@
       <app-status-chip
         [status]="savedChoice() === 'yes' ? 'yes' : 'no'"
         domain="recovery"
-        [label]="savedChoice() === 'yes' ? 'Yes' : 'No'">
+        [label]="savedChoice() === 'yes' ? 'Yes' : 'No'"
+      >
       </app-status-chip>
     }
   </div>
@@ -32,7 +33,8 @@
       [formControl]="choice"
       class="rp-radio-group"
       aria-labelledby="rp-question"
-      data-tour-id="co-recovery-potential-choice">
+      data-tour-id="co-recovery-potential-choice"
+    >
       <nx-radio value="yes" labelSize="small">Yes</nx-radio>
       <nx-radio value="no" labelSize="small">No</nx-radio>
     </nx-radio-group>
@@ -44,7 +46,8 @@
           [formControl]="note"
           rows="2"
           [maxlength]="maxNote"
-          placeholder="e.g. no identifiable third party at fault"></textarea>
+          placeholder="e.g. no identifiable third party at fault"
+        ></textarea>
         @if (noteInvalid()) {
           <nx-error nxFormfieldError>A reason is required when recovery potential is No.</nx-error>
         }
@@ -59,7 +62,8 @@
         type="button"
         [disabled]="!canSave()"
         (click)="onSave()"
-        data-tour-id="co-recovery-potential-save">
+        data-tour-id="co-recovery-potential-save"
+      >
         Save
       </button>
       @if (canSave()) {
@@ -74,7 +78,8 @@
         nxButton="tertiary small"
         class="rp-cta"
         [routerLink]="['/claims', claim.claimId, 'recoveries']"
-        data-tour-id="co-recovery-set-up">
+        data-tour-id="co-recovery-set-up"
+      >
         Set up recovery case
         <nx-icon name="chevron-right" class="rp-cta__icon"></nx-icon>
       </a>

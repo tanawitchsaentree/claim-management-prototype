@@ -5,12 +5,14 @@
 For **any** task involving UI, layout, components, or SCSS — answer Q1–Q5 below first.
 
 **Triggers (no exceptions):**
+
 - "fix layout" / "ตำแหน่ง" / "ชิดซ้าย/ขวา" / "align" / screenshot of broken UI
 - "add component" / "เพิ่มปุ่ม" / "เพิ่ม element" / "สร้าง component"
 - "change SCSS" / "เปลี่ยนสี" / "ระยะห่าง" / "ขนาด"
 - Task description contains: button, toolbar, modal, table, form, panel, header, footer, grid, flex
 
 **The process:**
+
 1. Answer Q1–Q5 below in your response — including which blessed file the pattern comes from
 2. Wait for "proceed" / "go" / "ได้เลย"
 3. THEN write code
@@ -18,6 +20,7 @@ For **any** task involving UI, layout, components, or SCSS — answer Q1–Q5 be
 **Why:** Self-diagnosis identified failure modes where I skip reading existing patterns and invent from memory. The toolbar incident (3 rounds to fix one alignment), and the `[nxLayout]` padding trap (4+ rounds tweaking values that never applied) — both caused by skipping this. Token waste.
 
 **User shortcuts (act immediately, no questions):**
+
 - `/pre-build first` → stop and run the checklist before any code
 - `blessed?` → cite exactly which blessed file + line I'm copying from
 - `stop, what pattern?` → pause and identify the pattern source before continuing
@@ -50,6 +53,7 @@ Q0c. Does the CURRENT order put frequent-first, set-once-last?
 ```
 
 **Gestalt proximity check (same pass):**
+
 - Does the label sit closer to the content it describes than to adjacent elements?
 - If a heading floats equidistant between two groups → it belongs to the group below (reduce gap above heading, increase gap above search/input)
 
@@ -86,6 +90,7 @@ grep -rn "<nx-component-name" src/app/features/
 ### Q4: Will this trigger a runtime override trap?
 
 Check `RUNTIME_OVERRIDES.md` for directives that write inline styles:
+
 - `[nxLayout]` (any variant) — wrap before `padding-top`/`padding-bottom`
 - `<nx-formfield>` — reserves ~20px bottom; ~32px when stacked
 - `NxExpertModule` — re-asserted tokens in `styles.scss`
@@ -123,9 +128,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-feature-name',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, /* NDBX */],
+  imports: [CommonModule, ReactiveFormsModule /* NDBX */],
   templateUrl: './feature-name.component.html',
-  styleUrl: './feature-name.component.scss',
+  styleUrl: './feature-name.component.scss'
 })
 export class FeatureNameComponent {
   // data via inject(Service), signals or vm$ pattern
@@ -161,38 +166,38 @@ features/<feature>/<component>/
 
 ### Step 2: Map every element to NDBX
 
-| Figma element | NDBX equivalent | Watch for |
-|---------------|-----------------|-----------|
-| Text field / input box | `nx-formfield` + `input[nxInput]` | Label always floats (NxExpertModule sets this globally) |
-| Dropdown | `nx-dropdown` + `nx-dropdown-item` | No native `<select>` |
-| Multi-select / tag select | `nx-multi-select` | Different import than dropdown — same path |
-| Date field | `input[nxDatefield][nxInput]` + `nx-datepicker` | Two directives required on input |
-| Time field | `nx-timefield` | No formfield wrapper — self-contained |
-| Checkbox group | `nx-checkbox` + `(checkedChange)` | Not `(change)` |
-| Radio group | `nx-radio` `labelSize="small"` + `[checked]` + `(valueChange)` | Manual checked binding; `labelSize` mandatory |
-| Status badge | `app-status-chip` (project custom) | Use token colors, not hardcoded |
-| Modal / dialog | `NxDialogService.open()` | `firstValueFrom(ref.afterClosed())` |
-| Table | `nxTable` + `nxTableRow` + `nxCell` | Must use NDBX directives |
-| Kebab / action menu | `nxContextMenuTriggerFor` + `nx-context-menu` | Per-row pattern |
-| Toast / alert banner | `nx-message` with context | Not custom div |
-| Spinner / loader | `nx-spinner` | size: small/medium/large |
-| Toolbar / context bar | `nx-toolbar` (or div with `--toolbar-background` + `--toolbar-border-bottom-color`) | bg `--ui-02`, height 48px |
-| Breadcrumb | `<ol nxBreadcrumb><li nxBreadcrumbItem>` | Auto bold last; color `--text-01` not grey |
+| Figma element             | NDBX equivalent                                                                     | Watch for                                               |
+| ------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Text field / input box    | `nx-formfield` + `input[nxInput]`                                                   | Label always floats (NxExpertModule sets this globally) |
+| Dropdown                  | `nx-dropdown` + `nx-dropdown-item`                                                  | No native `<select>`                                    |
+| Multi-select / tag select | `nx-multi-select`                                                                   | Different import than dropdown — same path              |
+| Date field                | `input[nxDatefield][nxInput]` + `nx-datepicker`                                     | Two directives required on input                        |
+| Time field                | `nx-timefield`                                                                      | No formfield wrapper — self-contained                   |
+| Checkbox group            | `nx-checkbox` + `(checkedChange)`                                                   | Not `(change)`                                          |
+| Radio group               | `nx-radio` `labelSize="small"` + `[checked]` + `(valueChange)`                      | Manual checked binding; `labelSize` mandatory           |
+| Status badge              | `app-status-chip` (project custom)                                                  | Use token colors, not hardcoded                         |
+| Modal / dialog            | `NxDialogService.open()`                                                            | `firstValueFrom(ref.afterClosed())`                     |
+| Table                     | `nxTable` + `nxTableRow` + `nxCell`                                                 | Must use NDBX directives                                |
+| Kebab / action menu       | `nxContextMenuTriggerFor` + `nx-context-menu`                                       | Per-row pattern                                         |
+| Toast / alert banner      | `nx-message` with context                                                           | Not custom div                                          |
+| Spinner / loader          | `nx-spinner`                                                                        | size: small/medium/large                                |
+| Toolbar / context bar     | `nx-toolbar` (or div with `--toolbar-background` + `--toolbar-border-bottom-color`) | bg `--ui-02`, height 48px                               |
+| Breadcrumb                | `<ol nxBreadcrumb><li nxBreadcrumbItem>`                                            | Auto bold last; color `--text-01` not grey              |
 
 ### Step 3: Map colors to tokens
 
-| Figma intent | Project token |
-|-------------|---------------|
-| Primary blue | `var(--interactive-primary)` |
-| Text / body | `var(--text-01)` |
-| Secondary / muted text | `var(--text-muted)` |
-| Border | `var(--ui-04)` |
-| Background white | `var(--ui-01)` |
-| Background grey (toolbar/secondary) | `var(--ui-02)` |
-| Hover overlay | `var(--claim-overlay-hover)` |
-| Status: open / in-progress (claim) | `--claim-status-open-bg/color` |
-| Status: in-progress (task, amber) | `--task-status-in-progress-bg/color` |
-| Priority high | `--claim-priority-high` |
+| Figma intent                        | Project token                        |
+| ----------------------------------- | ------------------------------------ |
+| Primary blue                        | `var(--interactive-primary)`         |
+| Text / body                         | `var(--text-01)`                     |
+| Secondary / muted text              | `var(--text-muted)`                  |
+| Border                              | `var(--ui-04)`                       |
+| Background white                    | `var(--ui-01)`                       |
+| Background grey (toolbar/secondary) | `var(--ui-02)`                       |
+| Hover overlay                       | `var(--claim-overlay-hover)`         |
+| Status: open / in-progress (claim)  | `--claim-status-open-bg/color`       |
+| Status: in-progress (task, amber)   | `--task-status-in-progress-bg/color` |
+| Priority high                       | `--claim-priority-high`              |
 
 **Never implement Figma hex colors directly.** Map to project tokens. If no token exists → ask.
 
@@ -227,6 +232,7 @@ If no token exists → ask the user before using a hardcoded value.
 **Skill applies when** task contains: "build new FNOL step", "add step to wizard", "implement step-N".
 
 **Read these in order:**
+
 1. `src/app/features/fnol/fnol-shell/fnol-shell.component.html` — wizard shell, sidebar stepper, router-outlet
 2. `src/app/features/fnol/steps/step-1-search/step-1-search.component.html` — blessed pattern (header + form)
 3. `src/app/features/fnol/_wizard-layout.scss` — shared mixins (`step-page`, `step-header`, `step-footer`, `btn-icons`)
@@ -239,24 +245,22 @@ If no token exists → ask the user before using a hardcoded value.
 **Outputs:** `(cancel)`, `(back)`, `(next)`
 
 ```html
-<app-wizard-footer
-  (cancel)="onCancel()"
-  (back)="onBack()"
-  (next)="onNext()">
-</app-wizard-footer>
+<app-wizard-footer (cancel)="onCancel()" (back)="onBack()" (next)="onNext()"> </app-wizard-footer>
 
 <!-- Submit variant -->
 <app-wizard-footer
   nextLabel="Submit claim"
   (cancel)="onCancel()"
   (back)="onBack()"
-  (next)="onSubmit()">
+  (next)="onSubmit()"
+>
 </app-wizard-footer>
 ```
 
 **Hard rule:** Every FNOL wizard step that has Cancel/Back/Next buttons MUST use `<app-wizard-footer>`. Never write inline `nxButton="secondary small"` Back or `nxButton="primary small"` Next in step templates. `audit:wizard-footer` enforces this in `pre-commit`.
 
 **Exceptions** (do NOT use WizardFooterComponent):
+
 - `step-1-search` — has tooltip-wrapped dynamic buttons with conditional state
 - `step-skeleton-create` — has spinner inside submit button
 
@@ -278,6 +282,7 @@ If no token exists → ask the user before using a hardcoded value.
 **Skill applies when** task contains: "mock data", "new service", "JSON data".
 
 **Read in order:**
+
 1. `src/app/core/mock/services/mock-entities-damages.service.ts` — blessed pattern
 2. `src/app/core/mock/README-mock.md` — mock layer architecture
 

@@ -8,7 +8,6 @@
 
 <!-- Body -->
 <div class="eed-body" [formGroup]="form">
-
   <nx-formfield label="Instruction status">
     <nx-dropdown formControlName="instructionStatus" placeholder="Select status">
       @for (opt of instructionStatusOptions; track opt) {
@@ -19,7 +18,6 @@
       <nx-error nxFormfieldError>Please select an instruction status</nx-error>
     }
   </nx-formfield>
-
 </div>
 
 <!-- Footer -->

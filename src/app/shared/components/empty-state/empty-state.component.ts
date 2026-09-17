@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 
 // Canonical shape derived from the most common existing pattern (governance
@@ -11,9 +11,9 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 @Component({
   selector: 'app-empty-state',
   standalone: true,
-  imports: [CommonModule, NxIconModule],
+  imports: [NxIconModule],
   templateUrl: './empty-state.component.html',
-  styleUrl: './empty-state.component.scss',
+  styleUrl: './empty-state.component.scss'
 })
 export class EmptyStateComponent {
   @Input({ required: true }) message!: string;

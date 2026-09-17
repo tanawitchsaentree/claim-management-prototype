@@ -8,7 +8,6 @@
 
 <!-- ─── Body ──────────────────────────────────────────────────────────────── -->
 <div class="ccm-body" tabindex="0">
-
   <!-- STEP 1 — Expandable blocker cards -->
   @if (step() === 1) {
     <p class="ccm-intro">The following issues must be resolved before this claim can be closed:</p>
@@ -17,23 +16,35 @@
         @let blockerId = b.type + '-' + i;
         @let hasItems = b.items && b.items.length > 0;
         <div class="ccm-blocker-card" [class.ccm-blocker-card--expanded]="isExpanded(blockerId)">
-          <div class="ccm-blocker-card__header"
+          <div
+            class="ccm-blocker-card__header"
             [class.ccm-blocker-card__header--clickable]="hasItems"
-            (click)="hasItems ? toggleBlocker(blockerId) : null">
+            [attr.role]="hasItems ? 'button' : null"
+            [attr.tabindex]="hasItems ? 0 : null"
+            (click)="hasItems ? toggleBlocker(blockerId) : null"
+            (keydown.enter)="hasItems ? toggleBlocker(blockerId) : null"
+            (keydown.space)="hasItems ? toggleBlocker(blockerId) : null"
+          >
             <nx-icon name="exclamation-triangle-o" size="s" class="ccm-blocker-icon"></nx-icon>
             <span class="ccm-blocker-label">{{ b.label }}</span>
             @if (hasItems) {
               <span class="ccm-blocker-count">{{ b.items!.length }}</span>
               <nx-icon
                 [name]="isExpanded(blockerId) ? 'chevron-up-small' : 'chevron-down-small'"
-                size="s" class="ccm-blocker-chevron">
+                size="s"
+                class="ccm-blocker-chevron"
+              >
               </nx-icon>
             }
           </div>
           @if (b.link) {
-            <button nxPlainButton type="button" class="ccm-blocker-link"
+            <button
+              nxPlainButton
+              type="button"
+              class="ccm-blocker-link"
               [attr.data-tour-id]="b.type === 'litigation' ? 'ccm-go-to-litigation' : null"
-              (click)="goToBlocker(b.link)">
+              (click)="goToBlocker(b.link, b.label)"
+            >
               {{ b.linkLabel ?? 'Go to details' }}
             </button>
           }
@@ -44,7 +55,9 @@
                   <div class="ccm-item__main">
                     <div class="ccm-item__top">
                       <span class="ccm-item__title">{{ item.title }}</span>
-                      <span class="ccm-item__status ccm-item__status--{{ item.severity }}">{{ item.status }}</span>
+                      <span class="ccm-item__status ccm-item__status--{{ item.severity }}">{{
+                        item.status
+                      }}</span>
                     </div>
                     <p class="ccm-item__desc">{{ item.description }}</p>
                     <div class="ccm-item__meta">
@@ -69,7 +82,9 @@
 
   <!-- STEP 2 — Pre-closure checklist -->
   @if (step() === 2) {
-    <p class="ccm-intro">System validation — all checks must pass before the claim can be closed:</p>
+    <p class="ccm-intro">
+      System validation — all checks must pass before the claim can be closed:
+    </p>
     <ul class="ccm-checklist" data-tour-id="ccm-checklist">
       @for (item of checklistItems; track item.label) {
         <li class="ccm-check-item" [class.ccm-check-item--fail]="!item.passed">
@@ -78,7 +93,8 @@
             size="s"
             class="ccm-check-icon"
             [class.ccm-check-icon--pass]="item.passed"
-            [class.ccm-check-icon--fail]="!item.passed">
+            [class.ccm-check-icon--fail]="!item.passed"
+          >
           </nx-icon>
           <span class="ccm-check-label">{{ item.label }}</span>
           @if (!item.passed) {
@@ -108,6 +124,13 @@
         </nx-dropdown>
         <nx-error nxFormfieldError>Closure reason is required.</nx-error>
       </nx-formfield>
+
+      @if (isRejection()) {
+        <nx-checkbox formControlName="liabilityInvolved" labelSize="small">
+          This rejection involves a liability determination — requires underwriter pre-notification
+          before finalising
+        </nx-checkbox>
+      }
     </form>
 
     <p class="ccm-section-label">Document retention period</p>
@@ -116,27 +139,31 @@
         <nx-radio labelSize="small" value="default">
           {{ retentionTypeLabel('default') }}
         </nx-radio>
-        <nx-radio labelSize="small" value="custom">
-          Custom date
-        </nx-radio>
-        <nx-radio labelSize="small" value="indefinite">
-          Indefinite
-        </nx-radio>
+        <nx-radio labelSize="small" value="custom"> Custom date </nx-radio>
+        <nx-radio labelSize="small" value="indefinite"> Indefinite </nx-radio>
       </nx-radio-group>
 
       @if (form.value.retentionType === 'custom') {
         <nx-formfield label="Retention date" data-tour-id="ccm-retention-custom-date">
-          <input nxDatefield nxInput formControlName="retentionDate" [datepicker]="retentionPicker" />
+          <input
+            nxDatefield
+            nxInput
+            formControlName="retentionDate"
+            [datepicker]="retentionPicker"
+          />
           <nx-datepicker-toggle nxFormfieldSuffix [for]="retentionPicker"></nx-datepicker-toggle>
           <nx-datepicker #retentionPicker></nx-datepicker>
-          <nx-hint nxFormfieldHint>Must extend beyond the default 10-year period ({{ defaultRetentionDate() }}).</nx-hint>
+          <nx-hint nxFormfieldHint
+            >Must extend beyond the default 10-year period ({{ defaultRetentionDate() }}).</nx-hint
+          >
           @if (retentionDateTooEarly()) {
-            <nx-error nxFormfieldError>Custom date must be after {{ defaultRetentionDate() }}.</nx-error>
+            <nx-error nxFormfieldError
+              >Custom date must be after {{ defaultRetentionDate() }}.</nx-error
+            >
           }
         </nx-formfield>
       }
     </form>
-
   }
 
   <!-- STEP 4 — Post-checklist confirmation warning -->
@@ -152,20 +179,22 @@
       <nx-message context="error" class="ccm-save-error">{{ saveError() }}</nx-message>
     }
   }
-
 </div>
 
 <!-- ─── Footer ────────────────────────────────────────────────────────────── -->
 <div class="ccm-footer">
-
   @if (step() === 1) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
   }
 
   @if (step() === 2) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button"
-      [disabled]="!checklistAllDone()" (click)="onContinue()">
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!checklistAllDone()"
+      (click)="onContinue()"
+    >
       Continue
     </button>
   }
@@ -173,19 +202,40 @@
   @if (step() === 3) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
-    <button nxButton="primary small" type="button"
-      [disabled]="form.invalid || retentionInvalid()" (click)="onContinueToConfirmation()">
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="form.invalid || retentionInvalid()"
+      (click)="onContinueToConfirmation()"
+    >
       Continue
     </button>
   }
 
   @if (step() === 4) {
-    <button nxButton="secondary small" type="button" data-tour-id="ccm-confirm-no" [disabled]="saving()" (click)="onDeclineConfirmation()">No</button>
-    <button nxButton="primary small" type="button" data-tour-id="ccm-confirm-yes"
-      [disabled]="saving()" (click)="onCloseClaim()">
-      @if (saving()) { <nx-spinner size="small"></nx-spinner> }
-      @else { Yes — Close Claim }
+    <button
+      nxButton="secondary small"
+      type="button"
+      data-tour-id="ccm-confirm-no"
+      [disabled]="saving()"
+      (click)="onDeclineConfirmation()"
+    >
+      No
+    </button>
+    <button
+      nxButton="primary small"
+      type="button"
+      data-tour-id="ccm-confirm-yes"
+      [disabled]="saving()"
+      (click)="onCloseClaim()"
+    >
+      @if (saving()) {
+        <nx-spinner size="small"></nx-spinner>
+      } @else if (requiresApproval()) {
+        Yes — Submit for Approval
+      } @else {
+        Yes — Close Claim
+      }
     </button>
   }
-
 </div>

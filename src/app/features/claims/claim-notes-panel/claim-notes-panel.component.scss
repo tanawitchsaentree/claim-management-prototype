@@ -27,23 +27,38 @@
   justify-content: space-between;
 }
 
-.cnp__filter-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  padding: var(--space-xs) 0;
-  cursor: pointer;
-  color: var(--text-01);
-  font-size: var(--paragraph-02-font-size);
-  font-weight: 600;
-
-  nx-icon { color: var(--interactive-primary); }
-  &:hover { color: var(--interactive-primary); }
+// Segmented filter — always visible, not hidden behind a context-menu click
+// (that was the "hard to find categories" complaint: the trigger was a
+// small text button that had to be noticed and opened before you could see
+// what filters even existed).
+.cnp__filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.cnp__filter-label { white-space: nowrap; }
+.cnp__filter-chip {
+  background: var(--ui-02);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 4px 10px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--ui-03);
+    color: var(--text-01);
+  }
+
+  &--active {
+    background: var(--interactive-primary);
+    border-color: var(--interactive-primary);
+    color: var(--text-02);
+  }
+}
 
 // ─── Scoped view (entity-filtered notes) ───────────────────────────────────
 .cnp__back-btn {
@@ -58,7 +73,9 @@
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .cnp__scope-title {
@@ -81,9 +98,13 @@
   font-weight: 500;
   white-space: nowrap;
 
-  nx-icon { flex-shrink: 0; }
+  nx-icon {
+    flex-shrink: 0;
+  }
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .cnp__header-actions {
@@ -120,10 +141,15 @@
   color: var(--text-01);
 }
 
+.cnp-add-form__optional {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 // nx-formfield inside the form — strip top spacing reserved for label
 .cnp-add-form__select {
   width: 100%;
-  margin-top: -16px;   // collapse the formfield's internal label-area reservation
+  margin-top: -16px; // collapse the formfield's internal label-area reservation
 }
 
 .cnp-add-form__textarea-wrap {
@@ -149,7 +175,9 @@
   color: var(--text-01);
   line-height: 1.5;
   font-family: inherit;
-  &::placeholder { color: var(--text-muted); }
+  &::placeholder {
+    color: var(--text-muted);
+  }
 }
 
 .cnp-add-form__actions {
@@ -175,14 +203,21 @@
 }
 
 // ─── Note card ──────────────────────────────────────────────────────────────
-// Deliberately minimal per Phase 2 item 1 — author, timestamp, text, and a
-// single pin toggle. No avatar, no category chip, no per-note kebab menu
-// (edit/delete were unimplemented stubs anyway) — those read as visual bloat
-// at 10-20+ notes, which is the scale this redesign targets.
+// Minimal per Phase 2 item 1 (author, timestamp, text, single pin toggle —
+// no avatar, no per-note kebab menu). Category + attachedTo tags added back
+// 2026-08-21: category was otherwise invisible on the card itself (only
+// discoverable by which filter surfaced it), and attachedTo was real data
+// with no display anywhere at all.
 @keyframes note-flash {
-  0%   { background: var(--info-light, #e3f0fb); }
-  60%  { background: var(--info-light, #e3f0fb); }
-  100% { background: transparent; }
+  0% {
+    background: var(--info-light, #e3f0fb);
+  }
+  60% {
+    background: var(--info-light, #e3f0fb);
+  }
+  100% {
+    background: transparent;
+  }
 }
 
 .cnp-note {
@@ -195,7 +230,10 @@
   border-bottom: 1px solid var(--ui-04);
   border-radius: 6px;
 
-  &:last-child { border-bottom: none; padding-bottom: 0; }
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
 
   &--highlighted::before {
     content: '';
@@ -243,9 +281,30 @@
   cursor: pointer;
   border-radius: 4px;
 
-  &:hover { background: var(--ui-02); color: var(--interactive-primary); }
+  &:hover {
+    background: var(--ui-02);
+    color: var(--interactive-primary);
+  }
 
-  &--active { color: var(--interactive-primary); }
+  &--active {
+    color: var(--interactive-primary);
+  }
+}
+
+.cnp-note__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cnp-note__category-tag,
+.cnp-note__attached-tag {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--ui-02);
+  color: var(--text-muted);
 }
 
 .cnp-note__body {

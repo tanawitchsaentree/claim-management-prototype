@@ -16,8 +16,14 @@ import { MockPartiesService } from '../../../../core/mock/services/mock-parties.
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import {
-  Party, PartyFilters, PartyRole, ClearanceStatus, IdType,
-  PARTY_ROLE_LABELS, CLEARANCE_STATUS_LABELS, ID_TYPE_LABELS,
+  Party,
+  PartyFilters,
+  PartyRole,
+  ClearanceStatus,
+  IdType,
+  PARTY_ROLE_LABELS,
+  CLEARANCE_STATUS_LABELS,
+  ID_TYPE_LABELS
 } from '../../../../core/models/party.model';
 
 export interface AddPartyModalData {
@@ -51,10 +57,10 @@ interface SearchState {
     NxSpinnerModule,
     NxMessageModule,
     StatusChipComponent,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './add-party-modal.component.html',
-  styleUrl: './add-party-modal.component.scss',
+  styleUrl: './add-party-modal.component.scss'
 })
 export class AddPartyModalComponent {
   readonly data = inject<AddPartyModalData>(NX_MODAL_DATA);
@@ -62,49 +68,53 @@ export class AddPartyModalComponent {
   private readonly partiesSvc = inject(MockPartiesService);
 
   readonly filterForm = new FormGroup({
-    legalName:       new FormControl(''),
-    partyRole:       new FormControl<string | null>(null),
-    country:         new FormControl<string | null>(null),
-    city:            new FormControl(''),
-    postalCode:      new FormControl(''),
-    street:          new FormControl(''),
-    partyId:         new FormControl(''),
-    email:           new FormControl(''),
-    phone:           new FormControl(''),
-    idType:          new FormControl<string | null>(null),
-    idNumber:        new FormControl(''),
-    lineOfBusiness:  new FormControl<string | null>(null),
+    legalName: new FormControl(''),
+    partyRole: new FormControl<string | null>(null),
+    country: new FormControl<string | null>(null),
+    city: new FormControl(''),
+    postalCode: new FormControl(''),
+    street: new FormControl(''),
+    partyId: new FormControl(''),
+    email: new FormControl(''),
+    phone: new FormControl(''),
+    idType: new FormControl<string | null>(null),
+    idNumber: new FormControl(''),
+    lineOfBusiness: new FormControl<string | null>(null),
     operatingEntity: new FormControl<string | null>(null),
-    clearanceStatus: new FormControl<string | null>(null),
+    clearanceStatus: new FormControl<string | null>(null)
   });
 
-  readonly partyRoleKeys   = Object.keys(PARTY_ROLE_LABELS) as PartyRole[];
+  readonly partyRoleKeys = Object.keys(PARTY_ROLE_LABELS) as PartyRole[];
   readonly partyRoleLabels = PARTY_ROLE_LABELS;
-  readonly clearanceKeys   = Object.keys(CLEARANCE_STATUS_LABELS) as ClearanceStatus[];
+  readonly clearanceKeys = Object.keys(CLEARANCE_STATUS_LABELS) as ClearanceStatus[];
   readonly clearanceLabels = CLEARANCE_STATUS_LABELS;
-  readonly idTypeKeys      = Object.keys(ID_TYPE_LABELS) as IdType[];
-  readonly idTypeLabels    = ID_TYPE_LABELS;
+  readonly idTypeKeys = Object.keys(ID_TYPE_LABELS) as IdType[];
+  readonly idTypeLabels = ID_TYPE_LABELS;
 
   readonly countryOptions = [
-    { value: 'DE', label: 'Germany' },    { value: 'AT', label: 'Austria' },
-    { value: 'CH', label: 'Switzerland' },{ value: 'FR', label: 'France' },
-    { value: 'IT', label: 'Italy' },      { value: 'ES', label: 'Spain' },
-    { value: 'NL', label: 'Netherlands' },{ value: 'GB', label: 'United Kingdom' },
-    { value: 'US', label: 'United States' },
+    { value: 'DE', label: 'Germany' },
+    { value: 'AT', label: 'Austria' },
+    { value: 'CH', label: 'Switzerland' },
+    { value: 'FR', label: 'France' },
+    { value: 'IT', label: 'Italy' },
+    { value: 'ES', label: 'Spain' },
+    { value: 'NL', label: 'Netherlands' },
+    { value: 'GB', label: 'United Kingdom' },
+    { value: 'US', label: 'United States' }
   ];
 
   readonly lobOptions = [
-    { value: 'Property',    label: 'Property' },
-    { value: 'Liability',   label: 'Liability' },
-    { value: 'Marine',      label: 'Marine' },
-    { value: 'Cyber',       label: 'Cyber' },
-    { value: 'Engineering', label: 'Engineering' },
+    { value: 'Property', label: 'Property' },
+    { value: 'Liability', label: 'Liability' },
+    { value: 'Marine', label: 'Marine' },
+    { value: 'Cyber', label: 'Cyber' },
+    { value: 'Engineering', label: 'Engineering' }
   ];
 
   readonly oeOptions = [
     { value: 'Allianz Commercial Germany', label: 'Allianz Commercial Germany' },
-    { value: 'Allianz Commercial UK',      label: 'Allianz Commercial UK' },
-    { value: 'Allianz Commercial France',  label: 'Allianz Commercial France' },
+    { value: 'Allianz Commercial UK', label: 'Allianz Commercial UK' },
+    { value: 'Allianz Commercial France', label: 'Allianz Commercial France' }
   ];
 
   readonly selectedIds = new Set<string>();
@@ -114,22 +124,26 @@ export class AddPartyModalComponent {
   readonly state$: Observable<SearchState> = this.searchTrigger$.pipe(
     switchMap(filters =>
       this.partiesSvc.searchAll(filters).pipe(
-        map((results): SearchState => ({
-          results: results.filter(p => !this.data.existingPartyIds.has(p.partyId)),
-          loading: false,
-          error: false,
-          searched: true,
-        })),
-        catchError((): Observable<SearchState> =>
-          of({ results: [], loading: false, error: true, searched: true }),
+        map(
+          (results): SearchState => ({
+            results: results.filter(p => !this.data.existingPartyIds.has(p.partyId)),
+            loading: false,
+            error: false,
+            searched: true
+          })
         ),
-      ),
-    ),
+        catchError(
+          (): Observable<SearchState> =>
+            of({ results: [], loading: false, error: true, searched: true })
+        )
+      )
+    )
   );
 
   get filledCount(): number {
-    return Object.values(this.filterForm.value as Record<string, unknown>)
-      .filter(v => v != null && String(v).trim() !== '').length;
+    return Object.values(this.filterForm.value as Record<string, unknown>).filter(
+      v => v != null && String(v).trim() !== ''
+    ).length;
   }
 
   get canSearch(): boolean {
@@ -141,7 +155,7 @@ export class AddPartyModalComponent {
     this.selectedIds.clear();
     const raw = this.filterForm.value;
     const filters = Object.fromEntries(
-      Object.entries(raw).filter(([, v]) => v !== null && v !== ''),
+      Object.entries(raw).filter(([, v]) => v !== null && v !== '')
     ) as Partial<PartyFilters>;
     this.searchTrigger$.next(filters);
   }

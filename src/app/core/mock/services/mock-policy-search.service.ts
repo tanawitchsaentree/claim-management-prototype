@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MockBaseService } from './mock-base.service';
-import { PolicySearchResult, FnolSearchCriteria } from '../../../features/fnol/models/fnol-form.model';
+import {
+  PolicySearchResult,
+  FnolSearchCriteria
+} from '../../../features/fnol/models/fnol-form.model';
 import policiesData from '../data/policies.json';
 
 @Injectable({ providedIn: 'root' })
@@ -15,7 +18,9 @@ export class MockPolicySearchService extends MockBaseService {
   }
 
   searchPolicies(criteria: Partial<FnolSearchCriteria>): Observable<PolicySearchResult[]> {
-    const hasAnyCriteria = Object.values(criteria).some(v => v !== null && v !== undefined && v !== '');
+    const hasAnyCriteria = Object.values(criteria).some(
+      v => v !== null && v !== undefined && v !== ''
+    );
     if (!hasAnyCriteria) {
       return this.respond([]);
     }

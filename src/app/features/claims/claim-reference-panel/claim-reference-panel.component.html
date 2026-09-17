@@ -1,23 +1,18 @@
 <div class="ref-panel" @refPanelSlide>
-
   <!-- ── Internal tab bar ────────────────────────────────────────────────── -->
   <div class="ref-tabs">
     <div class="ref-tabs__scroll">
       @for (tab of svc.refTabs(); track tab.id) {
-        <div
-          class="ref-tab"
-          [class.ref-tab--active]="svc.activeRefTabId() === tab.id">
-          <button
-            class="ref-tab__select"
-            type="button"
-            (click)="selectTab(tab)">
+        <div class="ref-tab" [class.ref-tab--active]="svc.activeRefTabId() === tab.id">
+          <button class="ref-tab__select" type="button" (click)="selectTab(tab)">
             <span class="ref-tab__label">{{ tab.claimId }}</span>
           </button>
           <button
             class="ref-tab__close"
             type="button"
             [attr.aria-label]="'Close ' + tab.claimId"
-            (click)="closeTab(tab, $event)">
+            (click)="closeTab(tab, $event)"
+          >
             <nx-icon name="close" size="s"></nx-icon>
           </button>
         </div>
@@ -32,7 +27,8 @@
           [class.ref-add-btn--open]="showSearch()"
           type="button"
           aria-label="Open reference claim"
-          (click)="toggleSearch()">
+          (click)="toggleSearch()"
+        >
           <nx-icon name="plus" size="s"></nx-icon>
         </button>
       } @else {
@@ -42,13 +38,21 @@
           aria-label="Add reference"
           [nxTooltip]="'Maximum ' + maxTabs + ' reference claims open'"
           nxTooltipPosition="left"
-          disabled>
+          disabled
+        >
           <nx-icon name="plus" size="s"></nx-icon>
         </button>
       }
 
       @if (showSearch()) {
+        <!-- Decorative dismiss-catcher, not a control — Escape on the
+             popover below already gives keyboard users the same dismiss
+             action, so this doesn't need its own focus/keyboard handling. -->
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
         <div class="ref-search-backdrop" (click)="closeSearch()"></div>
+        <!-- Focus lives on the input/listbox inside, not this wrapper —
+             Escape reaches this handler via bubbling regardless. -->
+        <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
         <div class="ref-search-popover" (keydown.escape)="closeSearch()">
           <input
             class="ref-search-input"
@@ -56,7 +60,7 @@
             placeholder="Search claim ID or client…"
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchInput($event)"
-            autofocus />
+          />
           <!-- audit-exempt: tiny inline popover hint shares this class with the
                "Searching…" state — app-empty-state's 24px padding is too much
                chrome for a compact autocomplete dropdown row. -->
@@ -65,16 +69,27 @@
           } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
             <div class="ref-search-hint">No claims found</div>
           } @else if (searchResults().length > 0) {
-            <ul class="ref-search-list" role="listbox" tabindex="0"
-                [attr.aria-activedescendant]="'ref-search-opt-' + highlightedIndex()"
-                (keydown)="onSearchListKeydown($event)">
+            <ul
+              class="ref-search-list"
+              role="listbox"
+              tabindex="0"
+              [attr.aria-activedescendant]="'ref-search-opt-' + highlightedIndex()"
+              (keydown)="onSearchListKeydown($event)"
+            >
               @for (c of searchResults(); track c.claimId; let i = $index) {
-                <li class="ref-search-item"
-                    [id]="'ref-search-opt-' + i"
-                    role="option"
-                    [attr.aria-selected]="i === highlightedIndex()"
-                    [class.ref-search-item--highlighted]="i === highlightedIndex()"
-                    (click)="selectClaim(c)">
+                <!-- role="option" inside a role="listbox" — the standard
+                     aria-activedescendant composite pattern: the listbox
+                     above owns focus and keyboard nav; options are mouse
+                     targets only, by design, not independent tab stops. -->
+                <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+                <li
+                  class="ref-search-item"
+                  [id]="'ref-search-opt-' + i"
+                  role="option"
+                  [attr.aria-selected]="i === highlightedIndex()"
+                  [class.ref-search-item--highlighted]="i === highlightedIndex()"
+                  (click)="selectClaim(c)"
+                >
                   <span class="ref-search-item__id">{{ c.claimId }}</span>
                   <span class="ref-search-item__client">{{ c.clientName }}</span>
                 </li>
@@ -88,7 +103,12 @@
     </div>
 
     <!-- Panel close button -->
-    <button class="ref-panel-close" type="button" (click)="svc.close()" aria-label="Close reference panel">
+    <button
+      class="ref-panel-close"
+      type="button"
+      (click)="svc.close()"
+      aria-label="Close reference panel"
+    >
       <nx-icon name="chevron-right" size="s"></nx-icon>
     </button>
   </div>
@@ -103,18 +123,19 @@
   } @else if (vm().notFound) {
     <app-empty-state message="Claim not found" icon="info-circle-o">
       <p body>
-        <strong>{{ svc.activeRefTab()?.claimId }}</strong> is not in the demo data set.
-        Try CLM-2024-001 or CLM-2024-011.
+        <strong>{{ svc.activeRefTab()?.claimId }}</strong> is not in the demo data set. Try
+        CLM-2024-001 or CLM-2024-011.
       </p>
     </app-empty-state>
   } @else if (vm().claim; as claim) {
-
     <!-- Launch in full view link -->
     <div class="ref-claim-header">
       <span class="ref-claim-id">{{ svc.activeRefTab()?.claimId }}</span>
-      <a class="ref-header__icon-btn"
-         [routerLink]="['/claims', svc.activeRefTab()?.claimId, 'overview']"
-         title="Open in full view">
+      <a
+        class="ref-header__icon-btn"
+        [routerLink]="['/claims', svc.activeRefTab()?.claimId, 'overview']"
+        title="Open in full view"
+      >
         <nx-icon name="launch" size="s"></nx-icon>
       </a>
     </div>
@@ -125,7 +146,9 @@
         <dd><app-status-chip [status]="claim.status" domain="claim" /></dd>
 
         <dt>Priority</dt>
-        <dd><span class="ref-priority ref-priority--{{ claim.priority }}">{{ claim.priority }}</span></dd>
+        <dd>
+          <span class="ref-priority ref-priority--{{ claim.priority }}">{{ claim.priority }}</span>
+        </dd>
 
         <dt>Client</dt>
         <dd>{{ claim.client }}</dd>
@@ -137,7 +160,13 @@
         <dd>{{ claim.lineOfBusiness }}</dd>
 
         <dt>Cause of loss</dt>
-        <dd>{{ (claim.causeOfLoss?.length ? claim.causeOfLoss!.join(' · ') : claim.proximateLossCause) || '–' }}</dd>
+        <dd>
+          {{
+            (claim.causeOfLoss?.length
+              ? claim.causeOfLoss!.join(' · ')
+              : claim.proximateLossCause) || '–'
+          }}
+        </dd>
 
         <dt>Loss date</dt>
         <dd>{{ claim.dateOfLoss }}</dd>
@@ -157,7 +186,8 @@
         <div class="ref-fin-row">
           <span class="ref-fin-row__label">Total payments</span>
           <span class="ref-fin-row__value">
-            {{ claim.financialSummary.currency }} {{ claim.financialSummary.totalPayments | number }}
+            {{ claim.financialSummary.currency }}
+            {{ claim.financialSummary.totalPayments | number }}
           </span>
         </div>
       </div>
@@ -174,5 +204,4 @@
       </div>
     </div>
   }
-
 </div>

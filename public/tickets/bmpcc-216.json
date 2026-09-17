@@ -3,16 +3,27 @@
   "module": "FNOL",
   "title": "Duplicate Claim Check",
   "targetClaim": "CL-2025-001",
-  "pages": [
-    "fnol-loss-info"
-  ],
+  "pages": ["fnol-loss-info"],
   "walkthroughSteps": [
-    "Apply an AC — banner injects matching claims and seeds FNOL policy state",
-    "Land on /fnol/loss-information already past the search step",
-    "Enter Date of occurrence DD-MM-YYYY (01-06-2024) and pick Cause of loss 'Fire'",
-    "Wait ~1s (debounce) — duplicate-check warning banner appears",
-    "Open a duplicate link in a new tab to confirm deep-link",
-    "If 4+ duplicates exist, click 'Show all' to confirm the modal lists them all"
+    "Apply an AC — injects matching claims and lands on /fnol/loss-information already past the search step",
+    {
+      "targetId": "li-cause-of-loss",
+      "title": "Cause of loss",
+      "body": "Together with Date of occurrence, this drives the duplicate check below — matching happens on policy + date + cause.",
+      "direction": "bottom"
+    },
+    {
+      "targetId": "li-date-of-occurrence",
+      "title": "Date of occurrence",
+      "body": "Changing this (or the cause above) re-fires the duplicate check on a ~1s debounce — a brief 'Checking for duplicate claims…' spinner shows first.",
+      "direction": "bottom"
+    },
+    {
+      "targetId": "li-duplicate-banner",
+      "title": "Duplicate warning",
+      "body": "Lists up to 3 matches — each claim ID is a real deep link (opens /claims/:id in a new tab, FNOL state stays intact on return). Past 3 matches, a 'Show all N duplicates' button opens a sortable table with every match. The banner is dismissible and never blocks the wizard's Next button.",
+      "direction": "bottom"
+    }
   ],
   "acceptanceCriteria": [
     {
@@ -66,9 +77,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -82,9 +91,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -160,9 +167,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -176,9 +181,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -242,9 +245,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -258,9 +259,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -325,9 +324,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -341,9 +338,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -408,9 +403,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -424,9 +417,7 @@
           {
             "kind": "fnol-loss-info.prefillDuplicate",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },
@@ -496,9 +487,7 @@
                 "city": "Munich"
               },
               "lossEventId": "LE-DUP-001",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             },
             {
               "claimId": "CLM-DUP-002",
@@ -521,9 +510,7 @@
                 "city": "Hamburg"
               },
               "lossEventId": "LE-DUP-002",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             },
             {
               "claimId": "CLM-DUP-003",
@@ -546,9 +533,7 @@
                 "city": "Berlin"
               },
               "lossEventId": "LE-DUP-003",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             },
             {
               "claimId": "CLM-DUP-004",
@@ -571,9 +556,7 @@
                 "city": "Cologne"
               },
               "lossEventId": "LE-DUP-004",
-              "causeOfLoss": [
-                "fire"
-              ]
+              "causeOfLoss": ["fire"]
             }
           ],
           "fnolStateOverride": {
@@ -587,9 +570,7 @@
           {
             "kind": "fnol-loss-info.openShowAllDuplicates",
             "date": "2024-06-01",
-            "causes": [
-              "fire"
-            ]
+            "causes": ["fire"]
           }
         ]
       },

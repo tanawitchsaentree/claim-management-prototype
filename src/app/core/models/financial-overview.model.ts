@@ -1,71 +1,71 @@
-export type FinancialPaymentStatus  = 'Pending' | 'Credit' | 'Done' | 'Rejected';
-export type FinancialReserveStatus  = 'Approved' | 'Pending' | 'Rejected';
+export type FinancialPaymentStatus = 'Pending' | 'Credit' | 'Done' | 'Rejected';
+export type FinancialReserveStatus = 'Approved' | 'Pending' | 'Rejected';
 export type FinancialRecoveryStatus = 'Approved' | 'Pending' | 'Rejected';
 
 export interface FinancialSummary {
   outstandingReserves: number;
-  completedPayments:   number;
-  pendingPayments:     number;
-  recoveries:          number;
-  incurred:            number;
+  completedPayments: number;
+  pendingPayments: number;
+  recoveries: number;
+  incurred: number;
 }
 
 export interface FinancialDetailRow {
-  label:    string;
-  gross:    number;
+  label: string;
+  gross: number;
   grossNet: number;
-  net:      number;
+  net: number;
 }
 
 export interface FinancialDetails {
   currency: string;
-  ibnr:     number;
-  rows:     FinancialDetailRow[];
+  ibnr: number;
+  rows: FinancialDetailRow[];
 }
 
 export interface FinancialPayment {
-  paymentId:      string;
-  reinsuranceId:  string;
-  payee:          string;
-  handler:        string;
-  sectionType:    string;
-  status:         FinancialPaymentStatus;
-  amount:         number;
-  currency:       string;
-  paymentDate:    string;
+  paymentId: string;
+  reinsuranceId: string;
+  payee: string;
+  handler: string;
+  sectionType: string;
+  status: FinancialPaymentStatus;
+  amount: number;
+  currency: string;
+  paymentDate: string;
 }
 
 export interface FinancialReserve {
-  reserveId:       string;
-  party:           string;
-  damagedItem:     string;
-  section:         string;
-  reserveType:     string;
-  reserveSubType:  string;
-  status:          FinancialReserveStatus;
-  reserveValue:    number;
-  currency:        string;
+  reserveId: string;
+  party: string;
+  damagedItem: string;
+  section: string;
+  reserveType: string;
+  reserveSubType: string;
+  status: FinancialReserveStatus;
+  reserveValue: number;
+  currency: string;
 }
 
 export interface FinancialRecovery {
-  recoveryId:    string;
-  bookingId:     string;
+  recoveryId: string;
+  bookingId: string;
   reinsuranceId: string;
-  party:         string;
-  section:       string;
-  recoveryType:  string;
-  status:        FinancialRecoveryStatus;
-  amount:        number;
-  currency:      string;
-  recoveryDate:  string;
-  bookingDate:   string;
+  party: string;
+  section: string;
+  recoveryType: string;
+  status: FinancialRecoveryStatus;
+  amount: number;
+  currency: string;
+  recoveryDate: string;
+  bookingDate: string;
 }
 
 export interface ReserveHistoryEntry {
-  date:   string;
+  date: string;
   amount: number;
   reason: string;
-  user:   string;
+  user: string;
 }
 
 export interface FinancialReserveWithHistory extends FinancialReserve {
@@ -73,49 +73,49 @@ export interface FinancialReserveWithHistory extends FinancialReserve {
 }
 
 export interface FinancialTransaction {
-  transactionId:      string;
-  date:               string;
-  description:        string;
-  indemnityPayment:   number;
-  expensePayment:     number;
-  totalPayment:       number;
-  indemnityRecovery:  number;
-  expenseRecovery:    number;
-  totalRecovery:      number;
-  recoveries:         number;
-  totalIncurred:      number;
+  transactionId: string;
+  date: string;
+  description: string;
+  indemnityPayment: number;
+  expensePayment: number;
+  totalPayment: number;
+  indemnityRecovery: number;
+  expenseRecovery: number;
+  totalRecovery: number;
+  recoveries: number;
+  totalIncurred: number;
 }
 
 export interface FinancialOverview {
-  claimId:      string;
-  summary:      FinancialSummary;
-  details:      FinancialDetails;
-  payments:     FinancialPayment[];
-  reserves:     FinancialReserve[];
-  recoveries:   FinancialRecovery[];
+  claimId: string;
+  summary: FinancialSummary;
+  details: FinancialDetails;
+  payments: FinancialPayment[];
+  reserves: FinancialReserve[];
+  recoveries: FinancialRecovery[];
   transactions: FinancialTransaction[];
-  sections:     FinancialSection[];
+  sections: FinancialSection[];
 }
 
 // ─── Section level ────────────────────────────────────────────────────────────
 
 export interface FinancialSectionSummaryRow {
-  movementType:        string;
+  movementType: string;
   outstandingReserves: number;
-  completedPayments:   number;
-  pendingPayments:     number;
-  recoveries:          number;
-  incurred:            number;
+  completedPayments: number;
+  pendingPayments: number;
+  recoveries: number;
+  incurred: number;
 }
 
 export interface FinancialSection {
-  sectionId:    string;
-  sectionName:  string;
-  currency:     string;
+  sectionId: string;
+  sectionName: string;
+  currency: string;
   exchangeRate: number;
   baseCurrency: string;
-  summaryRows:  FinancialSectionSummaryRow[];
-  payments:     FinancialPayment[];
-  reserves:     FinancialReserve[];
-  recoveries:   FinancialRecovery[];
+  summaryRows: FinancialSectionSummaryRow[];
+  payments: FinancialPayment[];
+  reserves: FinancialReserve[];
+  recoveries: FinancialRecovery[];
 }

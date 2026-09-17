@@ -5,5 +5,6 @@ import type { EditLossInformationComponent } from './edit-loss-information.compo
 // pending — the discard modal decides, this guard just relays the answer.
 // beforeunload (in the component itself) covers tab-close/refresh, which
 // this guard cannot see.
-export const editLossInformationCanDeactivate: CanDeactivateFn<EditLossInformationComponent> =
-  (component) => component.confirmLeaveIfDirty();
+export const editLossInformationCanDeactivate: CanDeactivateFn<
+  EditLossInformationComponent
+> = component => component.confirmLeaveIfDirty();

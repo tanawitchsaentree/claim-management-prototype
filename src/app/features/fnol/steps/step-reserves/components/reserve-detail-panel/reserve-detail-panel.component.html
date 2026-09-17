@@ -1,6 +1,4 @@
-<aside class="reserves-detail"
-       [class.reserves-detail--readonly]="isCrossPolicy"
-       @detailSlide>
+<aside class="reserves-detail" [class.reserves-detail--readonly]="isCrossPolicy" @detailSlide>
   <header class="reserves-detail__header">
     <h2 class="reserves-detail__title">
       @if (isCrossPolicy) {
@@ -15,10 +13,12 @@
         {{ label }}
       }
     </span>
-    <button nxIconButton="tertiary small"
-            type="button"
-            aria-label="Close detail panel"
-            (click)="closed.emit()">
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      aria-label="Close detail panel"
+      (click)="closed.emit()"
+    >
       <nx-icon name="close"></nx-icon>
     </button>
   </header>
@@ -27,8 +27,9 @@
     <div class="reserves-detail__readonly-banner">
       <nx-icon name="info-circle-o" size="s"></nx-icon>
       <span>
-        Read-only — this section belongs to <strong>{{ crossPolicyLabel(reserve.reserveId) }}</strong>.
-        Switch policy at the search step to edit.
+        Read-only — this section belongs to
+        <strong>{{ crossPolicyLabel(reserve.reserveId) }}</strong
+        >. Switch policy at the search step to edit.
       </span>
     </div>
   }
@@ -41,23 +42,25 @@
       </div>
       <div class="summary-cell">
         <span class="summary-label">Limit</span>
-        <span class="summary-value">{{ reserve.limit ? (reserve.limit | number:'1.0-0') : '—' }}</span>
+        <span class="summary-value">{{
+          reserve.limit ? (reserve.limit | number: '1.0-0') : '—'
+        }}</span>
       </div>
       <div class="summary-cell">
         <span class="summary-label">Section total reserves</span>
-        <span class="summary-value">{{ sectionTotal(reserve) | number:'1.0-0' }}</span>
+        <span class="summary-value">{{ sectionTotal(reserve) | number: '1.0-0' }}</span>
       </div>
       <div class="summary-cell">
         <span class="summary-label">Section indemnity reserve</span>
-        <span class="summary-value">{{ sectionSub(reserve, 'indemnity') | number:'1.0-0' }}</span>
+        <span class="summary-value">{{ sectionSub(reserve, 'indemnity') | number: '1.0-0' }}</span>
       </div>
       <div class="summary-cell">
         <span class="summary-label">Section expenses reserve</span>
-        <span class="summary-value">{{ sectionSub(reserve, 'expenses') | number:'1.0-0' }}</span>
+        <span class="summary-value">{{ sectionSub(reserve, 'expenses') | number: '1.0-0' }}</span>
       </div>
       <div class="summary-cell">
         <span class="summary-label">Section recovery reserve</span>
-        <span class="summary-value">{{ sectionSub(reserve, 'recoveries') | number:'1.0-0' }}</span>
+        <span class="summary-value">{{ sectionSub(reserve, 'recoveries') | number: '1.0-0' }}</span>
       </div>
     </div>
   </section>
@@ -65,12 +68,14 @@
   <!-- Tabs -->
   <nav class="detail-tabs" role="tablist">
     @for (t of subTypes; track t) {
-      <button class="detail-tab"
-              type="button"
-              role="tab"
-              [attr.aria-selected]="activeTab() === t"
-              [class.detail-tab--active]="activeTab() === t"
-              (click)="setActiveTab(t)">
+      <button
+        class="detail-tab"
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab() === t"
+        [class.detail-tab--active]="activeTab() === t"
+        (click)="setActiveTab(t)"
+      >
         {{ typeLabels[t] }}
       </button>
     }
@@ -85,19 +90,23 @@
 
   <!-- Damaged-item cards -->
   <div class="damaged-items">
-    @for (item of (reserve.damagedItems ?? []); track trackByItem($index, item)) {
+    @for (item of reserve.damagedItems ?? []; track trackByItem($index, item)) {
       <article class="damaged-item" [class.damaged-item--expanded]="item.expanded">
         <header class="damaged-item__header">
           <h3 class="damaged-item__title">{{ item.itemName }}</h3>
           <div class="damaged-item__actions">
-            <button nxIconButton="tertiary small" type="button" aria-label="Item actions">
-              <nx-icon name="ellipsis-v"></nx-icon>
-            </button>
-            <button class="damaged-item__toggle"
-                    type="button"
-                    [attr.aria-expanded]="item.expanded"
-                    [attr.aria-label]="item.expanded ? 'Collapse' : 'Expand'"
-                    (click)="toggleItem(item.damagedItemId)">
+            <!-- "Item actions" kebab removed (handler walkthrough self-QA) —
+                 it had no context menu and no action method anywhere in this
+                 component to attach one to; a button that does nothing is
+                 worse than no button. Add it back with real actions if/when
+                 item-level remove or similar is actually specified. -->
+            <button
+              class="damaged-item__toggle"
+              type="button"
+              [attr.aria-expanded]="item.expanded"
+              [attr.aria-label]="item.expanded ? 'Collapse' : 'Expand'"
+              (click)="toggleItem(item.damagedItemId)"
+            >
               <nx-icon [name]="item.expanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
             </button>
           </div>
@@ -105,7 +114,9 @@
 
         <div class="damaged-item__amount">
           <span class="damaged-item__amount-label">Amount</span>
-          <span class="damaged-item__amount-value">{{ itemAmount(item, activeTab()) | number:'1.0-0' }}</span>
+          <span class="damaged-item__amount-value">{{
+            itemAmount(item, activeTab()) | number: '1.0-0'
+          }}</span>
         </div>
 
         @if (item.expanded) {
@@ -119,15 +130,30 @@
             }
 
             @if ((item.subReserves[activeTab()] ?? []).length === 0) {
-              <app-empty-state [message]="'There are no ' + (typeLabels[activeTab()] | lowercase) + ' reserves added to this section.'">
+              <app-empty-state
+                [message]="
+                  'There are no ' +
+                  (typeLabels[activeTab()] | lowercase) +
+                  ' reserves added to this section.'
+                "
+              >
                 @if (!isCrossPolicy) {
-                  <button action nxButton="primary small" type="button" (click)="onAddSubReserve(item)">
+                  <button
+                    action
+                    nxButton="primary small"
+                    type="button"
+                    (click)="onAddSubReserve(item)"
+                  >
                     Add reserve
                   </button>
                 }
               </app-empty-state>
             } @else {
-              <table nxTable class="sub-table" [@rowFade]="(item.subReserves[activeTab()] ?? []).length">
+              <table
+                nxTable
+                class="sub-table"
+                [@rowFade]="(item.subReserves[activeTab()] ?? []).length"
+              >
                 <thead>
                   <tr nxTableRow>
                     <th nxHeaderCell class="sub-col-type">Reserves Sub-type</th>
@@ -138,13 +164,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (sub of (item.subReserves[activeTab()] ?? []); track trackBySub($index, sub)) {
+                  @for (sub of item.subReserves[activeTab()] ?? []; track trackBySub($index, sub)) {
                     <tr nxTableRow class="sub-row">
                       <td nxCell class="sub-col-type">
                         <nx-formfield class="sub-field">
-                          <nx-dropdown [value]="sub.subType"
-                                       placeholder="Select"
-                                       (valueChange)="onUpdateSub(item, sub, { subType: $event })">
+                          <nx-dropdown
+                            [value]="sub.subType"
+                            placeholder="Select"
+                            (valueChange)="onUpdateSub(item, sub, { subType: $event })"
+                          >
                             @for (opt of subTypeOptions; track opt) {
                               <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
                             }
@@ -153,8 +181,10 @@
                       </td>
                       <td nxCell class="sub-col-currency">
                         <nx-formfield class="sub-field">
-                          <nx-dropdown [value]="sub.currency"
-                                       (valueChange)="onUpdateSub(item, sub, { currency: $event })">
+                          <nx-dropdown
+                            [value]="sub.currency"
+                            (valueChange)="onUpdateSub(item, sub, { currency: $event })"
+                          >
                             <nx-dropdown-item value="EUR">EUR</nx-dropdown-item>
                             <nx-dropdown-item value="USD">USD</nx-dropdown-item>
                             <nx-dropdown-item value="GBP">GBP</nx-dropdown-item>
@@ -164,15 +194,25 @@
                       </td>
                       <td nxCell class="sub-col-amount">
                         <nx-formfield class="sub-field">
-                          <input nxInput type="number"
-                                 [value]="sub.amount"
-                                 (input)="onUpdateSub(item, sub, { amount: +($any($event.target).value) || 0 })" />
+                          <input
+                            nxInput
+                            type="number"
+                            min="0"
+                            [value]="sub.amount"
+                            (input)="
+                              onUpdateSub(item, sub, {
+                                amount: clampAmount($any($event.target).value)
+                              })
+                            "
+                          />
                         </nx-formfield>
                       </td>
                       <td nxCell class="sub-col-coins">
                         <nx-formfield class="sub-field">
-                          <nx-dropdown [value]="sub.coInsurance"
-                                       (valueChange)="onUpdateSub(item, sub, { coInsurance: $event })">
+                          <nx-dropdown
+                            [value]="sub.coInsurance"
+                            (valueChange)="onUpdateSub(item, sub, { coInsurance: $event })"
+                          >
                             @for (flag of coInsuranceOptions; track flag) {
                               <nx-dropdown-item [value]="flag">{{ flag }}</nx-dropdown-item>
                             }
@@ -180,13 +220,18 @@
                         </nx-formfield>
                       </td>
                       <td nxCell class="sub-col-action">
-                        <button nxIconButton="tertiary small" type="button"
-                                [nxContextMenuTriggerFor]="subMenu"
-                                aria-label="Sub-reserve actions">
+                        <button
+                          nxIconButton="tertiary small"
+                          type="button"
+                          [nxContextMenuTriggerFor]="subMenu"
+                          aria-label="Sub-reserve actions"
+                        >
                           <nx-icon name="ellipsis-v"></nx-icon>
                         </button>
                         <nx-context-menu #subMenu="nxContextMenu">
-                          <button nxContextMenuItem type="button" (click)="onRemoveSub(item, sub)">Remove</button>
+                          <button nxContextMenuItem type="button" (click)="onRemoveSub(item, sub)">
+                            Remove
+                          </button>
                         </nx-context-menu>
                       </td>
                     </tr>

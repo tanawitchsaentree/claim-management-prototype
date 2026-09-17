@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -26,7 +26,7 @@ import { AuthService } from '../../../core/services/auth';
 import {
   ReassignClaimModalComponent,
   ReassignClaimModalData,
-  ReassignClaimModalResult,
+  ReassignClaimModalResult
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
 import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/models';
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
@@ -37,7 +37,6 @@ const PAGE_SIZE = 15;
   selector: 'app-claims-list',
   standalone: true,
   imports: [
-    CommonModule,
     RouterLink,
     ReactiveFormsModule,
     Navbar,
@@ -55,54 +54,64 @@ const PAGE_SIZE = 15;
     StatusChipComponent,
     EmptyStateComponent,
     PageHeaderComponent,
-    ClaimPreviewDirective,
+    ClaimPreviewDirective
   ],
   templateUrl: './claims-list.component.html',
-  styleUrl: './claims-list.component.scss',
+  styleUrl: './claims-list.component.scss'
 })
 export class ClaimsListComponent {
-  private readonly svc      = inject(MockClaimService);
+  private readonly svc = inject(MockClaimService);
   private readonly dialogSvc = inject(NxDialogService);
-  private readonly toast     = inject(ToastService);
-  private readonly auth      = inject(AuthService);
-  private readonly route     = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
+  private readonly auth = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
   protected readonly router = inject(Router);
 
-  readonly all      = signal<Claim[]>([]);
-  readonly loading  = signal(true);
-  readonly page     = signal(1);
+  readonly all = signal<Claim[]>([]);
+  readonly loading = signal(true);
+  readonly page = signal(1);
   readonly pageSize = PAGE_SIZE;
   readonly selected = signal<Set<string>>(new Set());
 
-  readonly breadcrumb: BreadcrumbItem[] = [
-    { label: 'Claims' },
-  ];
+  readonly breadcrumb: BreadcrumbItem[] = [{ label: 'Claims' }];
 
   readonly statuses: ClaimStatus[] = [
-    'Open', 'In progress', 'Priced', 'Quoted', 'Bound', 'Declined', 'Closed',
-    'Awaiting policy', 'Matched', 'Abandoned',
+    'Open',
+    'In progress',
+    'Priced',
+    'Quoted',
+    'Bound',
+    'Declined',
+    'Closed',
+    'Awaiting policy',
+    'Matched',
+    'Abandoned'
   ];
 
   readonly linesOfBusiness: LineOfBusiness[] = [
-    'Property', 'Liability', 'Marine', 'Cyber', 'Engineering',
+    'Property',
+    'Liability',
+    'Marine',
+    'Cyber',
+    'Engineering'
   ];
 
   readonly priorities: Priority[] = ['high', 'medium', 'low'];
 
   readonly filterForm = new FormGroup({
-    search:          new FormControl(''),
-    status:          new FormControl<ClaimStatus | null>(null),
-    lineOfBusiness:  new FormControl<LineOfBusiness | null>(null),
-    priority:        new FormControl<Priority | null>(null),
+    search: new FormControl(''),
+    status: new FormControl<ClaimStatus | null>(null),
+    lineOfBusiness: new FormControl<LineOfBusiness | null>(null),
+    priority: new FormControl<Priority | null>(null)
   });
 
-  readonly total     = computed(() => this.all().length);
+  readonly total = computed(() => this.all().length);
   readonly pagedRows = computed<Claim[]>(() => {
     const start = (this.page() - 1) * this.pageSize;
     return this.all().slice(start, start + this.pageSize);
   });
 
-  readonly selectedCount     = computed(() => this.selected().size);
+  readonly selectedCount = computed(() => this.selected().size);
   readonly isAllPageSelected = computed(() => {
     const rows = this.pagedRows();
     return rows.length > 0 && rows.every(c => this.selected().has(c.claimId));
@@ -137,10 +146,10 @@ export class ClaimsListComponent {
   onFilter(): void {
     const v = this.filterForm.getRawValue();
     this.load({
-      search:         v.search         || undefined,
-      status:         v.status         ?? undefined,
+      search: v.search || undefined,
+      status: v.status ?? undefined,
       lineOfBusiness: v.lineOfBusiness ?? undefined,
-      priority:       v.priority       ?? undefined,
+      priority: v.priority ?? undefined
     });
   }
 
@@ -162,7 +171,8 @@ export class ClaimsListComponent {
   toggleSelect(claimId: string): void {
     this.selected.update(set => {
       const next = new Set(set);
-      next.has(claimId) ? next.delete(claimId) : next.add(claimId);
+      if (next.has(claimId)) next.delete(claimId);
+      else next.add(claimId);
       return next;
     });
   }
@@ -172,7 +182,7 @@ export class ClaimsListComponent {
     const allSelected = this.isAllPageSelected();
     this.selected.update(set => {
       const next = new Set(set);
-      rows.forEach(c => allSelected ? next.delete(c.claimId) : next.add(c.claimId));
+      rows.forEach(c => (allSelected ? next.delete(c.claimId) : next.add(c.claimId)));
       return next;
     });
   }
@@ -196,11 +206,16 @@ export class ClaimsListComponent {
     const ref = this.dialogSvc.open(ReassignClaimModalComponent, {
       data: { claimIds, claims } satisfies ReassignClaimModalData,
       width: '480px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as ReassignClaimModalResult | null | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | ReassignClaimModalResult
+      | null
+      | undefined;
     if (!result) return;
-    await Promise.all(claimIds.map(id => firstValueFrom(this.svc.update(id, { assignee: result.handlerName }))));
+    await Promise.all(
+      claimIds.map(id => firstValueFrom(this.svc.update(id, { assignee: result.handlerName })))
+    );
     this.toast.success(
       claimIds.length === 1 ? 'Claim reassigned' : `${claimIds.length} claims reassigned`,
       `Now assigned to ${result.handlerName}`

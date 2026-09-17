@@ -28,10 +28,20 @@ mutations:
     - cwbLocationsAppend
 
 pages:
-  enum: [overview, sections, fnol-search, fnol-loss-info, fnol-entities-damages, fnol-skeleton, fnol-summary, any]
+  enum:
+    [
+      overview,
+      sections,
+      fnol-search,
+      fnol-loss-info,
+      fnol-entities-damages,
+      fnol-skeleton,
+      fnol-summary,
+      any
+    ]
   defined-in: src/app/features/claims/dev-banner/claim-dev-helper.service.ts:12
 
-deviation-marker: "[accepted-deviation]"
+deviation-marker: '[accepted-deviation]'
 ---
 
 # PROJECT.md — Claim Management Prototype
@@ -49,7 +59,7 @@ The codebase has two intertwined concerns:
 1. **Application code** — Angular 21 + `@allianz/ng-aquila` (NDBX), real components for FNOL wizard and Claim Overview/Sections.
 2. **Dev banner & ticket runner** — a tooling layer that lets viewers pick a Jira-style ticket from a dropdown, apply pre-canned mock state, and walk through Acceptance Criteria. Files live under `src/app/features/claims/dev-banner/` and `public/tickets/`.
 
-The two layers ship together, but the banner's *visibility* is per-build via `environment.devBannerMode` (`'full' | 'reviewer' | 'off'`): `'full'` in dev and exploration, **`'off'` in the stable/prod build since 2026-09-01** — the deployed link is what stakeholders open, and the harness is not part of the product being shown. It is never gated by `isDevMode()` (see "Why isDevMode() is not used" below); at `'off'` `AppComponent` simply doesn't render it, so the app itself behaves identically in every build.
+The two layers ship together, but the banner's _visibility_ is per-build via `environment.devBannerMode` (`'full' | 'reviewer' | 'off'`): `'full'` in dev and exploration, **`'off'` in the stable/prod build since 2026-09-01** — the deployed link is what stakeholders open, and the harness is not part of the product being shown. It is never gated by `isDevMode()` (see "Why isDevMode() is not used" below); at `'off'` `AppComponent` simply doesn't render it, so the app itself behaves identically in every build.
 
 **Mock-only data layer.** Every service the app talks to is in `src/app/core/mock/services/`. `claims.json`, `tasks.json`, `sections.json`, etc. are the source of truth at runtime, hydrated through `MockStateService`. There is no real backend.
 
@@ -77,14 +87,14 @@ A finished ticket adds a row to `CONVERSIONS.md`.
 
 ```ts
 interface DevTicket {
-  ticketId: string;          // e.g. "BMPCC-219"
-  epicId?: string;           // parent Jira epic ID — ONLY set when confirmed (e.g. from a
-                             // Jira tracker screenshot/export); never guess. Surfaced in the
-                             // dev-banner dropdown and details modal as "Epic: <epicId>" so a
-                             // reader can tell which repo tickets share the same Jira epic.
-  module: string;            // e.g. "FNOL" | "Claims"
+  ticketId: string; // e.g. "BMPCC-219"
+  epicId?: string; // parent Jira epic ID — ONLY set when confirmed (e.g. from a
+  // Jira tracker screenshot/export); never guess. Surfaced in the
+  // dev-banner dropdown and details modal as "Epic: <epicId>" so a
+  // reader can tell which repo tickets share the same Jira epic.
+  module: string; // e.g. "FNOL" | "Claims"
   title: string;
-  targetClaim: string;       // a claimId; used for state-inspector header even on FNOL tickets
+  targetClaim: string; // a claimId; used for state-inspector header even on FNOL tickets
   pages: PreconditionPage[]; // routes the user will visit
   walkthroughSteps: string[];
   acceptanceCriteria: AC[];
@@ -95,18 +105,18 @@ interface DevTicket {
 
 ```ts
 interface AC {
-  id: string;                                  // "AC-01", "AC-02", ...
-  statement: string;                           // plain English
-  plainStatement?: string;                     // markdown — preferred for UI rendering
+  id: string; // "AC-01", "AC-02", ...
+  statement: string; // plain English
+  plainStatement?: string; // markdown — preferred for UI rendering
   page: PreconditionPage;
   buildStatus: 'done' | 'partial' | 'todo';
   setup: {
     description: string;
-    preconditions: PreconditionItem[];         // strings allowed for legacy
+    preconditions: PreconditionItem[]; // strings allowed for legacy
     stateOverrides: ScenarioOverrides;
   };
   expectedUI: { description: string; visualCues: string[] };
-  expectedOutcome?: ExpectedOutcome;           // machine-checkable; see audit-ac-logic.mjs
+  expectedOutcome?: ExpectedOutcome; // machine-checkable; see audit-ac-logic.mjs
   howToTest: { route: string; trigger: string; expectedResult: string };
 }
 
@@ -124,17 +134,17 @@ Authoritative source: `src/app/core/mock/state/mock-state.service.ts:9-20`.
 
 ```ts
 interface ScenarioOverrides {
-  taskStatuses?:       Record<string, TaskStatus>;
-  sectionStatuses?:    Record<string, SectionStatus>;
-  overviewPatch?:      { claimId: string; patch: Partial<ClaimOverview> };
-  claimsAppend?:       Claim[];                         // dedupe by claimId
-  fnolStateOverride?:  {
-    selectedPolicy?:        { policyId: string; policyNumber: string };
-    selectedClient?:        { clientId: string; clientName: string };
-    path?:                  'standard' | 'orphan' | null;
-    convertFromSkeletonId?: string;   // BMPCC-11006: prefill loss-info from a skeleton
+  taskStatuses?: Record<string, TaskStatus>;
+  sectionStatuses?: Record<string, SectionStatus>;
+  overviewPatch?: { claimId: string; patch: Partial<ClaimOverview> };
+  claimsAppend?: Claim[]; // dedupe by claimId
+  fnolStateOverride?: {
+    selectedPolicy?: { policyId: string; policyNumber: string };
+    selectedClient?: { clientId: string; clientName: string };
+    path?: 'standard' | 'orphan' | null;
+    convertFromSkeletonId?: string; // BMPCC-11006: prefill loss-info from a skeleton
   };
-  cwbLocationsAppend?: CwbLocation[];                   // dedupe by cwbReference
+  cwbLocationsAppend?: CwbLocation[]; // dedupe by cwbReference
 }
 ```
 
@@ -144,18 +154,18 @@ interface ScenarioOverrides {
 
 ## Mutation Entity Menu
 
-| Entity | Type | Match key | Used by | Notes |
-|---|---|---|---|---|
-| `taskStatuses` | `Record<taskId, TaskStatus>` | `task.taskId` | closure | Status enum: `'open' \| 'in-progress' \| 'done'` |
-| `sectionStatuses` | `Record<sectionId, SectionStatus>` | `section.id` | closure | Status enum: `'Open' \| 'Closed'` |
-| `overviewPatch` | `{ claimId, patch }` | `overviews[claimId]` | closure | Partial merge into existing overview |
-| `claimsAppend` | `Claim[]` | dedupe by `claimId` | bmpcc-216 | New rows appended to `state.claims` |
-| `fnolStateOverride.selectedPolicy` | `{ policyId, policyNumber }` | sets `FnolStateService.selectedPolicy` | bmpcc-216, bmpcc-219 | Avoids redirect-to-search on FNOL routes |
-| `fnolStateOverride.selectedClient` | `{ clientId, clientName }` | sets `FnolStateService.selectedClient` | (none yet) | Mutually exclusive with selectedPolicy at service level |
-| `fnolStateOverride.path` | `'standard' \| 'orphan' \| null` | sets `FnolStateService.path` | bmpcc-241 | Drives stepper variant (orphan → 2-step Loss/Summary) |
-| `fnolStateOverride.convertFromSkeletonId` | `string` | resolves via `MockSkeletonClaimService` then calls `prefillFullFromSkeleton` | bmpcc-11006 | Demo prefill — populates the **search**, **loss-info**, and downstream forms; user still navigates each step themselves |
-| `fnolStateOverride.convertSuggestedPolicyNumber` | `string` | passed as `opts.policyNumber` to `prefillFullFromSkeleton` | bmpcc-11006 | Hints the policy to drop into the search form so the user only needs one click to find the right row |
-| `cwbLocationsAppend` | `CwbLocation[]` | dedupe by `cwbReference` | bmpcc-219 | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()` |
+| Entity                                           | Type                               | Match key                                                                    | Used by              | Notes                                                                                                                   |
+| ------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `taskStatuses`                                   | `Record<taskId, TaskStatus>`       | `task.taskId`                                                                | closure              | Status enum: `'open' \| 'in-progress' \| 'done'`                                                                        |
+| `sectionStatuses`                                | `Record<sectionId, SectionStatus>` | `section.id`                                                                 | closure              | Status enum: `'Open' \| 'Closed'`                                                                                       |
+| `overviewPatch`                                  | `{ claimId, patch }`               | `overviews[claimId]`                                                         | closure              | Partial merge into existing overview                                                                                    |
+| `claimsAppend`                                   | `Claim[]`                          | dedupe by `claimId`                                                          | bmpcc-216            | New rows appended to `state.claims`                                                                                     |
+| `fnolStateOverride.selectedPolicy`               | `{ policyId, policyNumber }`       | sets `FnolStateService.selectedPolicy`                                       | bmpcc-216, bmpcc-219 | Avoids redirect-to-search on FNOL routes                                                                                |
+| `fnolStateOverride.selectedClient`               | `{ clientId, clientName }`         | sets `FnolStateService.selectedClient`                                       | (none yet)           | Mutually exclusive with selectedPolicy at service level                                                                 |
+| `fnolStateOverride.path`                         | `'standard' \| 'orphan' \| null`   | sets `FnolStateService.path`                                                 | bmpcc-241            | Drives stepper variant (orphan → 2-step Loss/Summary)                                                                   |
+| `fnolStateOverride.convertFromSkeletonId`        | `string`                           | resolves via `MockSkeletonClaimService` then calls `prefillFullFromSkeleton` | bmpcc-11006          | Demo prefill — populates the **search**, **loss-info**, and downstream forms; user still navigates each step themselves |
+| `fnolStateOverride.convertSuggestedPolicyNumber` | `string`                           | passed as `opts.policyNumber` to `prefillFullFromSkeleton`                   | bmpcc-11006          | Hints the policy to drop into the search form so the user only needs one click to find the right row                    |
+| `cwbLocationsAppend`                             | `CwbLocation[]`                    | dedupe by `cwbReference`                                                     | bmpcc-219            | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()`                                       |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).
 
@@ -165,13 +175,14 @@ Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`)
 
 Decide buildStatus per AC, not per ticket.
 
-| Status | Meaning | Apply behavior |
-|---|---|---|
-| `done` | Affordance exists in code AND matches the AC literally OR with a documented `[accepted-deviation]` | Click AC row → `apply + navigate` (1-step) |
-| `partial` | Affordance partially exists OR uses a deviation NOT yet sign-off'd | Select-only (highlight); apply blocked |
-| `todo` | Affordance does not exist | Row disabled; cannot select |
+| Status    | Meaning                                                                                            | Apply behavior                             |
+| --------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `done`    | Affordance exists in code AND matches the AC literally OR with a documented `[accepted-deviation]` | Click AC row → `apply + navigate` (1-step) |
+| `partial` | Affordance partially exists OR uses a deviation NOT yet sign-off'd                                 | Select-only (highlight); apply blocked     |
+| `todo`    | Affordance does not exist                                                                          | Row disabled; cannot select                |
 
 **Rules:**
+
 - A `partial` AC blocks Apply because the deviation is unconfirmed by product. After sign-off, flip to `done` and prepend `[accepted-deviation]` note in `plainStatement`.
 - Never mark `done` without verifying the code path. Use `grep` / read components — do not guess.
 - `done` ≠ "the AC is also test-verified." Apply works; visual verification is human.
@@ -183,6 +194,7 @@ Decide buildStatus per AC, not per ticket.
 ## Audit Mirror Requirement
 
 `scripts/audit-ac-logic.mjs` is a Node-side simulator that:
+
 1. Loads every ticket in `public/tickets/*.json` (skips `index.json`).
 2. Applies `setup.stateOverrides` against bundled mock JSON.
 3. Asserts `expectedOutcome` keys.
@@ -190,13 +202,14 @@ Decide buildStatus per AC, not per ticket.
 
 **Mirror obligations** when extending the schema:
 
-| Change | Mirror file:line |
-|---|---|
-| New mutation entity | `simulateState()` at `audit-ac-logic.mjs:31` |
-| New assertion key | `assertOutcome()` at `audit-ac-logic.mjs:88` |
+| Change                                                          | Mirror file:line                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------------------ |
+| New mutation entity                                             | `simulateState()` at `audit-ac-logic.mjs:31`                       |
+| New assertion key                                               | `assertOutcome()` at `audit-ac-logic.mjs:88`                       |
 | New entity type that is runtime-only (e.g. `fnolStateOverride`) | Add a comment "skipped here" — cannot simulate UI behavior in Node |
 
 **Supported assertion keys (v2.1):**
+
 - Counts: `pendingTasks`, `doneTasks`, `openSections`, `closedSections`
 - Status: `overviewStatus`, `canClose`, `buttonVisible`, `buttonEnabled`
 - Text: `tooltipContains`
@@ -221,7 +234,8 @@ When implementation diverges from the literal AC, do not mark `partial` automati
    - Closing line: `Treated as \`done\` — pending product sign-off.`
 
 **Example** (`bmpcc-216.json` AC-02):
-> The duplicate check *fires automatically* when **cause of loss** or **date of occurrence** changes, with a `1s debounce`. **NOTE [accepted-deviation]:** literal AC-02 said *date-only* trigger; implementation uses *cause+date* per DESIGN DECISION FNOL-DUP-4 (cause-aware narrowing avoids false positives). Treated as `done` — pending product sign-off.
+
+> The duplicate check _fires automatically_ when **cause of loss** or **date of occurrence** changes, with a `1s debounce`. **NOTE [accepted-deviation]:** literal AC-02 said _date-only_ trigger; implementation uses _cause+date_ per DESIGN DECISION FNOL-DUP-4 (cause-aware narrowing avoids false positives). Treated as `done` — pending product sign-off.
 
 This keeps the ticket testable while documenting the gap. Search for `[accepted-deviation]` to inventory all open product decisions.
 
@@ -231,18 +245,18 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 
 `PreconditionPage` (defined: `src/app/features/claims/dev-banner/claim-dev-helper.service.ts:12`):
 
-| Page | Route | Notes |
-|---|---|---|
-| `overview` | `/claims/:claimId/overview` | Closure ticket landing |
-| `sections` | `/claims/:claimId/sections` | Closure cross-page setup |
-| `fnol-search` | `/fnol/search` | BMPCC-11006 landing (Convert orphan banner) |
-| `fnol-loss-info` | `/fnol/loss-information` | BMPCC-216 / 219 / 11006 |
-| `fnol-entities-damages` | `/fnol/entities-damages` | CHAMP-NO-LOSS-LOC |
-| `fnol-skeleton` | `/fnol/skeleton-create` | BMPCC-241 (orphan create) |
-| `fnol-skeleton-parties` | `/fnol/skeleton-parties` | BMPCC-241 (orphan parties — no policy, starts empty) |
-| `fnol-skeleton-location` | `/fnol/skeleton-location` | BMPCC-241 (orphan location — manual entry, no contract-location option) |
-| `fnol-summary` | `/fnol/summary` | Wizard summary (step-summary) |
-| `any` | (empty string) | Metadata-only preconditions; no link rendered |
+| Page                     | Route                       | Notes                                                                   |
+| ------------------------ | --------------------------- | ----------------------------------------------------------------------- |
+| `overview`               | `/claims/:claimId/overview` | Closure ticket landing                                                  |
+| `sections`               | `/claims/:claimId/sections` | Closure cross-page setup                                                |
+| `fnol-search`            | `/fnol/search`              | BMPCC-11006 landing (Convert orphan banner)                             |
+| `fnol-loss-info`         | `/fnol/loss-information`    | BMPCC-216 / 219 / 11006                                                 |
+| `fnol-entities-damages`  | `/fnol/entities-damages`    | CHAMP-NO-LOSS-LOC                                                       |
+| `fnol-skeleton`          | `/fnol/skeleton-create`     | BMPCC-241 (orphan create)                                               |
+| `fnol-skeleton-parties`  | `/fnol/skeleton-parties`    | BMPCC-241 (orphan parties — no policy, starts empty)                    |
+| `fnol-skeleton-location` | `/fnol/skeleton-location`   | BMPCC-241 (orphan location — manual entry, no contract-location option) |
+| `fnol-summary`           | `/fnol/summary`             | Wizard summary (step-summary)                                           |
+| `any`                    | (empty string)              | Metadata-only preconditions; no link rendered                           |
 
 `pageRoute(page, claimId)` mapping: `claim-dev-helper.service.ts:273-277`. Adding a page = update mapping + add row above + update `isFeatureRoute` regex if it lives outside `/claims/:id/...` and `/fnol/...`.
 
@@ -251,6 +265,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 ## Examples
 
 ### `closure.json` — claim-side ticket
+
 - 7 ACs, all `done`
 - Uses `taskStatuses`, `sectionStatuses`, `overviewPatch`
 - Targets `CLM-2024-001`
@@ -259,6 +274,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 **Key learning:** `expectedOutcome` is rich (counts + status + tooltip + per-id spot-checks). Audit script verifies all of it Node-side.
 
 ### `bmpcc-216.json` — FNOL with claims injection
+
 - 6 ACs, all `done` (originally 4 done + 2 partial; flipped after `[accepted-deviation]` notes)
 - Uses `claimsAppend` + `fnolStateOverride.selectedPolicy`
 - Targets `CLM-2024-001` (header inspector only — actual flow is FNOL-side)
@@ -267,6 +283,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 **Key learning:** Use `claimsAppend` to inject duplicate-target claims (`POL-2024-001` + `2024-06-01` + cause `fire`). Banner debounce is 1s — preconditions warn the user.
 
 ### `bmpcc-219.json` — FNOL with CWB MFE
+
 - 5 ACs, all `done`
 - Uses `cwbLocationsAppend` + `fnolStateOverride.selectedPolicy`
 - Demonstrates: external-system simulation as a modal styled with "External system" badge — no real iframe / MFE / module-federation
@@ -280,6 +297,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 ## Do's and Don'ts
 
 ### Do
+
 - Author tickets in `public/tickets/<lowercase>.json` and register in `index.json`
 - Verify each `buildStatus` against actual code paths (grep, read components)
 - Use `[accepted-deviation]` notation for known gaps — never silent-ignore
@@ -290,6 +308,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 - Keep ticket files self-contained — preconditions describe context, walkthroughSteps describe action
 
 ### Don't
+
 - Don't add new `ScenarioOverrides` fields without bumping schema-version + updating this file
 - Don't gate dev banner with `isDevMode()` — production build inlines it to `false`. Use `enabled = true` and rely on the access-gate for security
 - Don't write `mutations` in DOM-runner v3 shape (`{entity, where, set, count}`) — that schema was deferred. Stick with v2.1 hardcoded entity keys
@@ -413,7 +432,7 @@ Production build (`optimization: true`) tree-shakes `isDevMode()` to `false`. An
 
 Fix: hardcoded `enabled = true` (and its kin in `dev-helper-banner.component.ts`, `fnol-dev-helper.service.ts`, `claim-dev-banner.component.ts`). Access-gate (`features/access-gate/`) handles the security side.
 
-Whether the banner *appears* is a separate, explicit build flag — `environment.devBannerMode`, read by `AppComponent` — not a dev-mode check. Since 2026-09-01 the stable/prod build sets it to `'off'`, so the deployed link shows the app alone; `'full'` stays on in dev and exploration. Keep it that way: re-gating with `isDevMode()` is what broke the live deploy the first time.
+Whether the banner _appears_ is a separate, explicit build flag — `environment.devBannerMode`, read by `AppComponent` — not a dev-mode check. Since 2026-09-01 the stable/prod build sets it to `'off'`, so the deployed link shows the app alone; `'full'` stays on in dev and exploration. Keep it that way: re-gating with `isDevMode()` is what broke the live deploy the first time.
 
 ---
 
@@ -422,6 +441,7 @@ Whether the banner *appears* is a separate, explicit build flag — `environment
 If `CLAUDE.md` is gitignored or absent, the **same rule applies**: any AI session must read this file before touching tickets, the banner, ACs, or mocks. Cross-references are stable; if a `file:line` doesn't match, that's drift — fix it before continuing.
 
 For schema/runner discussions, also read:
+
 - `audit-ac-logic.mjs` (Node-side simulator and assertion keys)
 - `mock-state.service.ts` (runtime mutation primitive)
 - `claim-dev-helper.service.ts` (banner state, route filter, ticket loader)

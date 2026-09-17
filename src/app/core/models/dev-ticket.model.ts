@@ -8,23 +8,32 @@ import { TourStep } from '../services/tour.service';
 // features/claims/dev-banner/claim-dev-helper.service.ts (2026-08-20) so
 // core/services/prototype-scenario.service.ts can load/apply these tickets
 // too, without core depending on a features/ file.
-export type PreconditionPage = 'overview' | 'sections' | 'fnol-search' | 'fnol-loss-info' | 'fnol-entities-damages' | 'fnol-skeleton' | 'fnol-skeleton-parties' | 'fnol-summary' | 'any';
+export type PreconditionPage =
+  | 'overview'
+  | 'sections'
+  | 'fnol-search'
+  | 'fnol-loss-info'
+  | 'fnol-entities-damages'
+  | 'fnol-skeleton'
+  | 'fnol-skeleton-parties'
+  | 'fnol-summary'
+  | 'any';
 
 export interface PreconditionItem {
-  text:  string;
-  page:  PreconditionPage;
-  role:  'tested-visible' | 'setup' | 'metadata';
+  text: string;
+  page: PreconditionPage;
+  role: 'tested-visible' | 'setup' | 'metadata';
   hint?: string;
 }
 
 export type BuildStatus = 'done' | 'partial' | 'todo';
 
 export interface TicketAC {
-  id:             string;
-  statement:      string;
+  id: string;
+  statement: string;
   plainStatement?: string;
-  page:           PreconditionPage;
-  buildStatus:    BuildStatus;
+  page: PreconditionPage;
+  buildStatus: BuildStatus;
   /**
    * Claim this AC is asserted against, when it differs from the ticket's
    * `targetClaim` (2026-09-01, BMPCC-17779 phase B). A ticket about a
@@ -34,68 +43,68 @@ export interface TicketAC {
    * case running). Read by audit-ac-logic.mjs and by the dev banner's state
    * inspector; unset means "use the ticket's targetClaim".
    */
-  targetClaim?:   string;
+  targetClaim?: string;
   setup: {
-    description:    string;
-    preconditions:  Array<string | PreconditionItem>;
+    description: string;
+    preconditions: (string | PreconditionItem)[];
     stateOverrides: ScenarioOverrides;
-    postLand?:      PostLandHook[];
+    postLand?: PostLandHook[];
   };
   expectedUI: {
     description: string;
-    visualCues:  string[];
+    visualCues: string[];
   };
   howToTest: {
-    route:          string;
-    trigger:        string;
+    route: string;
+    trigger: string;
     expectedResult: string;
   };
   expectedOutcome?: {
-    pendingTasks?:    number;
-    doneTasks?:       number;
-    openSections?:    number;
-    closedSections?:  number;
-    overviewStatus?:  string;
-    canClose?:        boolean;
-    buttonVisible?:   boolean;
-    buttonEnabled?:   boolean;
+    pendingTasks?: number;
+    doneTasks?: number;
+    openSections?: number;
+    closedSections?: number;
+    overviewStatus?: string;
+    canClose?: boolean;
+    buttonVisible?: boolean;
+    buttonEnabled?: boolean;
     tooltipContains?: string;
-    closedByName?:    string;
-    closureReason?:   string;
-    taskStatuses?:    Record<string, string>;
+    closedByName?: string;
+    closureReason?: string;
+    taskStatuses?: Record<string, string>;
     sectionStatuses?: Record<string, string>;
     // BMPCC-17779 — the recovery-potential decision and the state derived from
     // it, plus how many recovery cases the recovery domain holds for the claim.
-    recoveryPotential?:       'yes' | 'no' | null;
-    recoveryPotentialState?:  'unanswered' | 'yes-pending' | 'yes-active' | 'yes-settled' | 'no';
-    recoveryCasesCount?:      number;
-    openRecoveryCasesCount?:  number;
+    recoveryPotential?: 'yes' | 'no' | null;
+    recoveryPotentialState?: 'unanswered' | 'yes-pending' | 'yes-active' | 'yes-settled' | 'no';
+    recoveryCasesCount?: number;
+    openRecoveryCasesCount?: number;
   };
 }
 
 export interface DevTicket {
-  ticketId:            string;
+  ticketId: string;
   /** Parent Jira epic ID, when a confirmed mapping exists — do not guess, leave unset otherwise. */
-  epicId?:             string;
-  module:              string;
-  title:               string;
-  targetClaim:         string;
-  pages:               PreconditionPage[];
+  epicId?: string;
+  module: string;
+  title: string;
+  targetClaim: string;
+  pages: PreconditionPage[];
   // Extended (2026-08-20, tour-system audit) to optionally carry structured
   // TourStep objects alongside the original plain-text narrative. Both kinds
   // become real tour steps (2026-08-21 fix — string entries were previously
   // filtered out before reaching TourService, silently dropping most of the
   // authored walkthrough): a TourStep entry (has `targetId`) highlights an
   // element; a plain string becomes an untargeted, centered narrative step.
-  walkthroughSteps:    Array<string | TourStep>;
-  acceptanceCriteria:  TicketAC[];
+  walkthroughSteps: (string | TourStep)[];
+  acceptanceCriteria: TicketAC[];
 }
 
 export interface TicketIndexEntry {
-  id:     string;
-  file:   string;
+  id: string;
+  file: string;
   module: string;
-  title:  string;
+  title: string;
 }
 
 export interface TicketIndex {

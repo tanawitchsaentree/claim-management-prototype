@@ -25,7 +25,11 @@
         "description": "Seed CLM-2024-001 as Closed so the Reopen affordance is visible",
         "preconditions": [
           { "text": "Claim status is Closed", "page": "overview", "role": "setup" },
-          { "text": "Reopen Claim button is visible in the card actions", "page": "overview", "role": "tested-visible" }
+          {
+            "text": "Reopen Claim button is visible in the card actions",
+            "page": "overview",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {
           "overviewPatch": {
@@ -41,7 +45,11 @@
       },
       "expectedUI": {
         "description": "Reopen Claim button visible, Close Claim button absent",
-        "visualCues": ["Status chip reads Closed", "Reopen Claim button present", "Close Claim button not shown"]
+        "visualCues": [
+          "Status chip reads Closed",
+          "Reopen Claim button present",
+          "Close Claim button not shown"
+        ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

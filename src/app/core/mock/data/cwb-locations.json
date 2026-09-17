@@ -73,7 +73,7 @@
     "city": "Lyon",
     "postalCode": "69001",
     "streetAndNumber": "Rue de la République 45",
-    "latitude": 45.7640,
+    "latitude": 45.764,
     "longitude": 4.8357,
     "propertyType": "Office"
   },
@@ -100,7 +100,7 @@
     "postalCode": "20121",
     "streetAndNumber": "Via Dante 7",
     "latitude": 45.4642,
-    "longitude": 9.1900,
+    "longitude": 9.19,
     "propertyType": "Office"
   },
   {

@@ -1,0 +1,96 @@
+<app-page-header title="Task manager" subtitle="Every task across every claim you can see."></app-page-header>
+
+<div class="tm-filters">
+  <button
+    class="tm-toggle"
+    type="button"
+    [class.tm-toggle--active]="showMyTasksOnly()"
+    (click)="toggleMyTasksOnly(!showMyTasksOnly())"
+  >
+    Show my tasks only
+  </button>
+
+  <div class="tm-status-tabs">
+    <button
+      class="tm-status-tab"
+      type="button"
+      [class.tm-status-tab--active]="statusFilter() === 'all'"
+      (click)="setStatusFilter('all')"
+    >
+      All
+    </button>
+    @for (opt of statusOptions; track opt.value) {
+      <button
+        class="tm-status-tab"
+        type="button"
+        [class.tm-status-tab--active]="statusFilter() === opt.value"
+        (click)="setStatusFilter(opt.value)"
+      >
+        {{ opt.label }}
+      </button>
+    }
+  </div>
+</div>
+
+@if (loading()) {
+  <p class="tm-loading">Loading…</p>
+} @else if (displayedTasks().length === 0) {
+  <app-empty-state message="No tasks match this filter."></app-empty-state>
+} @else {
+  <div class="tm-table-wrap" tabindex="0">
+    <table nxTable class="tm-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell>Task type</th>
+          <th nxHeaderCell>Description</th>
+          <th nxHeaderCell>Claim</th>
+          <th nxHeaderCell>Status</th>
+          <th nxHeaderCell>Due date</th>
+          <th nxHeaderCell>Priority</th>
+          <th nxHeaderCell>Assignee</th>
+          <th nxHeaderCell class="tm-col-action">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (task of displayedTasks(); track task.taskId) {
+          <tr nxTableRow>
+            <td nxCell>{{ task.taskType }}</td>
+            <td nxCell class="tm-col-desc">{{ task.description }}</td>
+            <td nxCell>
+              <a [routerLink]="['/claims', task.claimId, 'overview']">{{ task.claimId }}</a>
+            </td>
+            <td nxCell>
+              <app-status-chip [status]="task.status" domain="task"></app-status-chip>
+            </td>
+            <td nxCell [class.tm-overdue]="isOverdue(task.dueDate) && task.status !== 'done'">
+              {{ task.dueDate | appDate }}
+              @if (isOverdue(task.dueDate) && task.status !== 'done') {
+                <span class="tm-overdue-tag">
+                  <nx-icon name="exclamation-triangle-o" size="s"></nx-icon>
+                  {{ daysOverdue(task.dueDate) }}d overdue
+                </span>
+              }
+            </td>
+            <td nxCell>{{ task.priority }}</td>
+            <td nxCell>{{ task.assignee }}</td>
+            <td nxCell class="tm-col-action">
+              <div class="tm-status-buttons">
+                @for (opt of statusOptions; track opt.value) {
+                  <button
+                    class="tm-status-btn"
+                    type="button"
+                    [class.tm-status-btn--active]="task.status === opt.value"
+                    [attr.aria-pressed]="task.status === opt.value"
+                    (click)="onStatusChange(task, opt.value)"
+                  >
+                    {{ opt.label }}
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

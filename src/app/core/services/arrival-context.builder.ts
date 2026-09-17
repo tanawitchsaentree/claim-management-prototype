@@ -26,7 +26,7 @@ function toCriterion(ac: TicketAC): ArrivalCriterion {
     expected: ac.expectedUI.description,
     visualCues: ac.expectedUI.visualCues,
     trigger: ac.howToTest.trigger,
-    expectedResult: ac.howToTest.expectedResult,
+    expectedResult: ac.howToTest.expectedResult
   };
 }
 
@@ -56,7 +56,7 @@ export function buildArrivalContext(input: {
     blockedNote: row?.state.blockedNote ?? null,
     criteria: (ticket?.acceptanceCriteria ?? []).map(toCriterion),
     tourStepCount: authored || generated,
-    tourIsGenerated: authored === 0 && generated > 0,
+    tourIsGenerated: authored === 0 && generated > 0
   };
 }
 
@@ -79,14 +79,14 @@ export function buildArrivalContext(input: {
 // so these render as the renderer's centered narrative cards. An authored
 // walkthrough, which CAN name targets, always wins — see the callers.
 export function buildFallbackTour(ticket: DevTicket): TourStep[] {
-  const criteria = ticket.acceptanceCriteria.filter((ac) => ac.buildStatus !== 'todo');
+  const criteria = ticket.acceptanceCriteria.filter(ac => ac.buildStatus !== 'todo');
   if (!criteria.length) return [];
 
   const opening: TourStep = {
     title: ticket.title,
     body:
-      `${criteria.length} acceptance ${criteria.length === 1 ? 'criterion' : 'criteria'} to check on this screen. `
-      + `This walkthrough is generated from them — nobody wrote it by hand, so it describes what the criteria assert, not every detail of the screen.`,
+      `${criteria.length} acceptance ${criteria.length === 1 ? 'criterion' : 'criteria'} to check on this screen. ` +
+      `This walkthrough is generated from them — nobody wrote it by hand, so it describes what the criteria assert, not every detail of the screen.`
   };
 
   const steps = criteria.map((ac, i): TourStep => {
@@ -97,7 +97,7 @@ export function buildFallbackTour(ticket: DevTicket): TourStep[] {
       title: `${i + 1}. ${ac.id}${ac.buildStatus === 'partial' ? ' (partially built)' : ''}`,
       body: `${ac.plainStatement ?? ac.statement}\n\n${ac.expectedUI.description}${cues}\n\nTry: ${ac.howToTest.trigger}`,
       expectedAfterClick: ac.howToTest.expectedResult,
-      route: ac.howToTest.route,
+      route: ac.howToTest.route
     };
   });
 

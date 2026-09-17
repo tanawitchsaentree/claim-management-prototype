@@ -8,7 +8,6 @@
   padding: var(--space-5xl) 0;
 }
 
-
 // ─── General information card ─────────────────────────────────────────────────
 
 .rai-card {
@@ -78,7 +77,9 @@
   color: var(--text-muted);
   transition: color 0.12s;
 
-  .rai-refresh-btn:hover & { color: var(--interactive-primary); }
+  .rai-refresh-btn:hover & {
+    color: var(--interactive-primary);
+  }
 }
 
 // Value row — min-height so chip col and text col stay baseline-aligned
@@ -175,4 +176,3 @@
     line-height: 1.7;
   }
 }
-

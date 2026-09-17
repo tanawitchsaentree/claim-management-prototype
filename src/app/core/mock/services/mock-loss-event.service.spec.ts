@@ -35,8 +35,11 @@ describe('MockLossEventService', () => {
 
   it('lists exactly the claims that point at the event, with handler and claimant', async () => {
     const ov = (await load('123456'))!;
-    expect(ov.relatedClaims.map(c => c.claimId).sort())
-      .toEqual(['CLM-2024-001', 'CLM-2024-011', 'CLM-2024-102']);
+    expect(ov.relatedClaims.map(c => c.claimId).sort()).toEqual([
+      'CLM-2024-001',
+      'CLM-2024-011',
+      'CLM-2024-102'
+    ]);
     const first = ov.relatedClaims.find(c => c.claimId === 'CLM-2024-001')!;
     expect(first.claimant).toBe("Kaufmann's Warehouse GmbH");
     expect(first.claimHandler).toBe('Georg Stein');
@@ -46,8 +49,7 @@ describe('MockLossEventService', () => {
   it('agrees with the claimCount the loss events list shows', async () => {
     for (const id of ['123456', '345678', '910111', '101112', '111213', 'EVT-022', 'EVT-023']) {
       const ov = (await load(id))!;
-      expect(ov.relatedClaims.length, `claimCount mismatch on ${id}`)
-        .toBe(ov.summary.claimCount);
+      expect(ov.relatedClaims.length, `claimCount mismatch on ${id}`).toBe(ov.summary.claimCount);
     }
   });
 
@@ -75,7 +77,7 @@ describe('MockLossEventService', () => {
     expect(ov.financials.totalReserve).toBe(ov.summary.totalReserve);
   });
 
-  it('shows only documents belonging to the event\'s own claims', async () => {
+  it("shows only documents belonging to the event's own claims", async () => {
     const withDocs = (await load('123456'))!;
     expect(withDocs.documents.length).toBe(3);
     expect(withDocs.documents.every(d => d.claimId === 'CLM-2024-001')).toBe(true);

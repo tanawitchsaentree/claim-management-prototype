@@ -1,8 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  AbstractControl, FormArray, FormControl, FormGroup,
-  ReactiveFormsModule, Validators,
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { combineLatest, firstValueFrom, Observable } from 'rxjs';
@@ -22,7 +26,10 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
-import { BrokerSearchModalComponent, BrokerSearchModalResult } from '../../../../shared/components/broker-search-modal/broker-search-modal.component';
+import {
+  BrokerSearchModalComponent,
+  BrokerSearchModalResult
+} from '../../../../shared/components/broker-search-modal/broker-search-modal.component';
 import { Broker, LookupOption, LocationPickerOutput } from '../../../../core/models';
 import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
@@ -31,7 +38,10 @@ import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/
 
 export type NotifierType = 'broker' | 'insured';
 
-interface ReasonOption { value: SkeletonReason; label: string; }
+interface ReasonOption {
+  value: SkeletonReason;
+  label: string;
+}
 
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
@@ -39,10 +49,10 @@ interface LossInfoVM {
 }
 
 const REASON_OPTIONS: ReasonOption[] = [
-  { value: 'policy_not_issued',    label: 'Policy not yet issued' },
-  { value: 'policy_not_found',     label: 'Policy not found in system' },
+  { value: 'policy_not_issued', label: 'Policy not yet issued' },
+  { value: 'policy_not_found', label: 'Policy not found in system' },
   { value: 'multi_policy_pending', label: 'Multi-policy case (pending investigation)' },
-  { value: 'other',                label: 'Other' },
+  { value: 'other', label: 'Other' }
 ];
 
 @Component({
@@ -66,45 +76,45 @@ const REASON_OPTIONS: ReasonOption[] = [
     NxTableModule,
     WizardFooterComponent,
     StatusChipComponent,
-    LocationPickerComponent,
+    LocationPickerComponent
   ],
   templateUrl: './step-skeleton-create.component.html',
-  styleUrl: './step-skeleton-create.component.scss',
+  styleUrl: './step-skeleton-create.component.scss'
 })
 export class StepSkeletonCreateComponent implements OnInit {
-  private fnolState   = inject(FnolStateService);
-  private lookupSvc   = inject(MockLookupService);
-  private router      = inject(Router);
-  private dialogSvc   = inject(NxDialogService);
+  private fnolState = inject(FnolStateService);
+  private lookupSvc = inject(MockLookupService);
+  private router = inject(Router);
+  private dialogSvc = inject(NxDialogService);
 
   readonly reasonOptions = REASON_OPTIONS;
   readonly maxNotes = 500;
   readonly maxDesc = 500;
 
   submitted = false;
-  readonly notifierType   = signal<NotifierType>('broker');
+  readonly notifierType = signal<NotifierType>('broker');
   readonly notifierBroker = signal<Broker | null>(null);
 
   // Local form: client / reason / notes / notifier text
   readonly form = new FormGroup({
-    clientName:   new FormControl('', [Validators.required, Validators.minLength(2)]),
-    reason:       new FormControl<SkeletonReason | null>(null, [Validators.required]),
-    notes:        new FormControl('', [Validators.maxLength(500)]),
-    notifierText: new FormControl(''),
+    clientName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    reason: new FormControl<SkeletonReason | null>(null, [Validators.required]),
+    notes: new FormControl('', [Validators.maxLength(500)]),
+    notifierText: new FormControl('')
   });
 
   // Shared loss-info FormGroup (same shape as happy path)
-  readonly lossForm     = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
-  readonly dateOfLoss   = this.fnolState.getDateOfLossGroup();
-  readonly eventsArray  = this.fnolState.getLossEventsArray();
+  readonly lossForm = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
+  readonly dateOfLoss = this.fnolState.getDateOfLossGroup();
+  readonly eventsArray = this.fnolState.getLossEventsArray();
   readonly lossLocation = this.fnolState.getLossLocationControl();
 
   vm$!: Observable<LossInfoVM>;
 
   ngOnInit(): void {
     this.vm$ = combineLatest({
-      causeOfLoss:  this.lookupSvc.getCauseOfLoss(),
-      typeOfDamage: this.lookupSvc.getTypeOfDamage(),
+      causeOfLoss: this.lookupSvc.getCauseOfLoss(),
+      typeOfDamage: this.lookupSvc.getTypeOfDamage()
     });
 
     const client = this.fnolState.selectedClient;
@@ -117,14 +127,19 @@ export class StepSkeletonCreateComponent implements OnInit {
     if (existing) {
       this.form.patchValue({
         clientName: existing.clientName,
-        reason:     existing.reason,
-        notes:      existing.notes ?? '',
+        reason: existing.reason,
+        notes: existing.notes ?? ''
       });
       if (existing.brokerName) {
         this.notifierType.set('broker');
         this.notifierBroker.set({
-          brokerId: existing.brokerIpmId ?? '', partyType: 'company', legalName: existing.brokerName,
-          ipmId: existing.brokerIpmId ?? '', address: '', status: 'cleared', country: '',
+          brokerId: existing.brokerIpmId ?? '',
+          partyType: 'company',
+          legalName: existing.brokerName,
+          ipmId: existing.brokerIpmId ?? '',
+          address: '',
+          status: 'cleared',
+          country: ''
         });
       } else if (existing.insuredName) {
         this.notifierType.set('insured');
@@ -142,9 +157,11 @@ export class StepSkeletonCreateComponent implements OnInit {
 
   async openBrokerSearch(): Promise<void> {
     const ref = this.dialogSvc.open(BrokerSearchModalComponent, {
-      data: {}, width: '960px', maxWidth: '92vw',
+      data: {},
+      width: '960px',
+      maxWidth: '92vw'
     });
-    const picked = await firstValueFrom(ref.afterClosed()) as BrokerSearchModalResult;
+    const picked = (await firstValueFrom(ref.afterClosed())) as BrokerSearchModalResult;
     if (!picked) return;
     this.notifierBroker.set(picked);
     this.form.controls.notifierText.setValue(picked.legalName);
@@ -170,10 +187,16 @@ export class StepSkeletonCreateComponent implements OnInit {
     return null;
   }
   get notesError(): string | null {
-    return this.form.controls.notes.hasError('maxlength') ? `Maximum ${this.maxNotes} characters.` : null;
+    return this.form.controls.notes.hasError('maxlength')
+      ? `Maximum ${this.maxNotes} characters.`
+      : null;
   }
-  get notesLength(): number { return this.form.controls.notes.value?.length ?? 0; }
-  get descLength(): number { return (this.lossForm.get('lossDescription')?.value as string)?.length ?? 0; }
+  get notesLength(): number {
+    return this.form.controls.notes.value?.length ?? 0;
+  }
+  get descLength(): number {
+    return (this.lossForm.get('lossDescription')?.value as string)?.length ?? 0;
+  }
 
   // ── Loss-info shared helpers (mirror happy path) ────────────
   showError(field: AbstractControl): boolean {
@@ -183,10 +206,16 @@ export class StepSkeletonCreateComponent implements OnInit {
     return !!group.errors?.[key] && (group.touched || this.submitted);
   }
 
-  get selectedCauses(): string[]  { return (this.lossForm.get('causeOfLoss')?.value as string[]) ?? []; }
-  get selectedDamages(): string[] { return (this.lossForm.get('typeOfDamage')?.value as string[]) ?? []; }
+  get selectedCauses(): string[] {
+    return (this.lossForm.get('causeOfLoss')?.value as string[]) ?? [];
+  }
+  get selectedDamages(): string[] {
+    return (this.lossForm.get('typeOfDamage')?.value as string[]) ?? [];
+  }
 
-  getCauseLabel(key: string): string { return getCauseSchema(key)?.causeLabel ?? key; }
+  getCauseLabel(key: string): string {
+    return getCauseSchema(key)?.causeLabel ?? key;
+  }
   getCausedByOptions(key: string): LookupOption[] | null {
     const opts = getCauseSchema(key)?.causedByOptions;
     return opts && opts.length > 0 ? opts : null;
@@ -194,11 +223,19 @@ export class StepSkeletonCreateComponent implements OnInit {
   trackByEventKey(_i: number, c: AbstractControl): string {
     return (c as FormGroup).get('eventKey')!.value as string;
   }
-  eventGroup(i: number): FormGroup { return this.eventsArray.at(i) as FormGroup; }
+  eventGroup(i: number): FormGroup {
+    return this.eventsArray.at(i) as FormGroup;
+  }
 
-  onCauseOfLossChange(selected: string[]): void { this._syncEventsArray(selected); }
-  onTypeOfDamageChange(_s: string[]): void { /* formControlName handles sync */ }
-  onLocationChange(o: LocationPickerOutput): void { this.lossLocation.setValue(o); }
+  onCauseOfLossChange(selected: string[]): void {
+    this._syncEventsArray(selected);
+  }
+  onTypeOfDamageChange(_s: string[]): void {
+    /* formControlName handles sync */
+  }
+  onLocationChange(o: LocationPickerOutput): void {
+    this.lossLocation.setValue(o);
+  }
 
   private _syncEventsArray(selected: string[]): void {
     for (let i = this.eventsArray.length - 1; i >= 0; i--) {
@@ -207,21 +244,30 @@ export class StepSkeletonCreateComponent implements OnInit {
       }
     }
     selected.forEach(key => {
-      const exists = (this.eventsArray.controls as FormGroup[]).some(g => g.get('eventKey')!.value === key);
+      const exists = (this.eventsArray.controls as FormGroup[]).some(
+        g => g.get('eventKey')!.value === key
+      );
       if (!exists) this.eventsArray.push(this._createEventGroup(key));
     });
-    const sorted = selected.map(key =>
-      (this.eventsArray.controls as FormGroup[]).find(g => g.get('eventKey')!.value === key)!
-    ).filter(Boolean);
+    const sorted = selected
+      .map(
+        key =>
+          (this.eventsArray.controls as FormGroup[]).find(g => g.get('eventKey')!.value === key)!
+      )
+      .filter(Boolean);
     while (this.eventsArray.length) this.eventsArray.removeAt(0);
     sorted.forEach(g => this.eventsArray.push(g));
   }
 
   private _createEventGroup(causeKey: string): FormGroup {
-    const schema: CauseSchema = getCauseSchema(causeKey) ?? { causeKey, causeLabel: causeKey, ...DEFAULT_CAUSE_SCHEMA };
+    const schema: CauseSchema = getCauseSchema(causeKey) ?? {
+      causeKey,
+      causeLabel: causeKey,
+      ...DEFAULT_CAUSE_SCHEMA
+    };
     const controls: Record<string, AbstractControl> = {
       eventKey: new FormControl(causeKey),
-      damages:  new FormControl<string[]>([], [Validators.required]),
+      damages: new FormControl<string[]>([], [Validators.required])
     };
     if (schema.causedByOptions && schema.causedByOptions.length > 0) {
       controls['causedBy'] = new FormControl<string[]>([]);
@@ -239,7 +285,11 @@ export class StepSkeletonCreateComponent implements OnInit {
   onDamageToggle(idx: number, v: string, checked: boolean): void {
     const ctrl = this.eventGroup(idx).get('damages')!;
     const list = [...((ctrl.value as string[]) ?? [])];
-    checked ? (list.includes(v) ? null : list.push(v)) : list.splice(list.indexOf(v), 1);
+    if (checked) {
+      if (!list.includes(v)) list.push(v);
+    } else {
+      list.splice(list.indexOf(v), 1);
+    }
     ctrl.setValue(list);
   }
   isCausedByChecked(idx: number, v: string): boolean {
@@ -249,12 +299,20 @@ export class StepSkeletonCreateComponent implements OnInit {
     const ctrl = this.eventGroup(idx).get('causedBy');
     if (!ctrl) return;
     const list = [...((ctrl.value as string[]) ?? [])];
-    checked ? (list.includes(v) ? null : list.push(v)) : list.splice(list.indexOf(v), 1);
+    if (checked) {
+      if (!list.includes(v)) list.push(v);
+    } else {
+      list.splice(list.indexOf(v), 1);
+    }
     ctrl.setValue(list);
   }
   // ── Navigation ──────────────────────────────────────────────
-  onCancel(): void { this.router.navigate(['/dashboard']); }
-  onBack(): void   { this.router.navigate(['/fnol/search']); }
+  onCancel(): void {
+    this.router.navigate(['/dashboard']);
+  }
+  onBack(): void {
+    this.router.navigate(['/fnol/search']);
+  }
 
   onNext(): void {
     this.submitted = true;
@@ -263,21 +321,21 @@ export class StepSkeletonCreateComponent implements OnInit {
 
     if (!this.form.valid || this.dateOfLoss.invalid) return;
 
-    const raw    = this.form.getRawValue();
-    const type   = this.notifierType();
-    const text   = (raw.notifierText ?? '').trim();
+    const raw = this.form.getRawValue();
+    const type = this.notifierType();
+    const text = (raw.notifierText ?? '').trim();
     const broker = this.notifierBroker();
 
     this.fnolState.setSkeleton(
       {
-        clientName:       raw.clientName ?? '',
-        reason:           raw.reason as SkeletonReason,
-        notes:            raw.notes ?? undefined,
-        brokerName:  type === 'broker'  ? (broker?.legalName ?? undefined) : undefined,
-        brokerIpmId: type === 'broker'  ? (broker?.ipmId     ?? undefined) : undefined,
-        insuredName: type === 'insured' ? (text || undefined)              : undefined,
+        clientName: raw.clientName ?? '',
+        reason: raw.reason as SkeletonReason,
+        notes: raw.notes ?? undefined,
+        brokerName: type === 'broker' ? (broker?.legalName ?? undefined) : undefined,
+        brokerIpmId: type === 'broker' ? (broker?.ipmId ?? undefined) : undefined,
+        insuredName: type === 'insured' ? text || undefined : undefined
       },
-      this.fnolState.skeletonClaimId ?? '',
+      this.fnolState.skeletonClaimId ?? ''
     );
     this.fnolState.path = 'orphan';
     this.router.navigate(['/fnol/skeleton-parties']);

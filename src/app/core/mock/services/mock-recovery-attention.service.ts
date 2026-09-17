@@ -5,7 +5,7 @@ import { MockStateService } from '../state/mock-state.service';
 import {
   RecoveryAttentionItem,
   recoveryPotentialState,
-  RECOVERY_STATE_MESSAGE,
+  RECOVERY_STATE_MESSAGE
 } from '../../../core/models/recovery-potential.model';
 
 @Injectable({ providedIn: 'root' })
@@ -38,7 +38,7 @@ export class MockRecoveryAttentionService extends MockBaseService {
         claimId: claim.claimId,
         clientName: claim.clientName,
         state,
-        reason: RECOVERY_STATE_MESSAGE[state],
+        reason: RECOVERY_STATE_MESSAGE[state]
       });
     }
 

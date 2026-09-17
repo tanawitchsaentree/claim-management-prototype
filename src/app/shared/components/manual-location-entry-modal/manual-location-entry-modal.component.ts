@@ -34,20 +34,23 @@ export type ManualLocationEntryModalResult = LocationItem | null;
     NxDropdownModule,
     NxButtonModule,
     NxIconModule,
-    NxRadioModule,
+    NxRadioModule
   ],
   templateUrl: './manual-location-entry-modal.component.html',
-  styleUrl: './manual-location-entry-modal.component.scss',
+  styleUrl: './manual-location-entry-modal.component.scss'
 })
 export class ManualLocationEntryModalComponent implements OnInit {
-  readonly data     = inject<ManualLocationEntryModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<ManualLocationEntryModalComponent, ManualLocationEntryModalResult>>(NxModalRef);
+  readonly data = inject<ManualLocationEntryModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<ManualLocationEntryModalComponent, ManualLocationEntryModalResult>>(
+      NxModalRef
+    );
   private lookupSvc = inject(MockLookupService);
-  private gisSvc    = inject(MockGisLocationService);
+  private gisSvc = inject(MockGisLocationService);
 
   readonly countries$: Observable<LookupOption[]> = this.lookupSvc.getCountries().pipe(
     catchError(() => of([] as LookupOption[])),
-    startWith([] as LookupOption[]),
+    startWith([] as LookupOption[])
   );
 
   // GIS address search — a plain address lookup, not tied to any policy.
@@ -57,35 +60,41 @@ export class ManualLocationEntryModalComponent implements OnInit {
   readonly gisResults = toSignal(
     this.gisSearch.valueChanges.pipe(
       debounceTime(250),
-      switchMap(q => (q && q.trim().length >= 2)
-        ? this.gisSvc.search(q).pipe(catchError(() => of([] as GisAddressSuggestion[])))
-        : of([] as GisAddressSuggestion[])),
+      switchMap(q =>
+        q && q.trim().length >= 2
+          ? this.gisSvc.search(q).pipe(catchError(() => of([] as GisAddressSuggestion[])))
+          : of([] as GisAddressSuggestion[])
+      )
     ),
-    { initialValue: [] as GisAddressSuggestion[] },
+    { initialValue: [] as GisAddressSuggestion[] }
   );
 
   readonly form = new FormGroup({
-    mode:           new FormControl<EntryMode>('address', { nonNullable: true }),
-    addressLine1:   new FormControl('',                  [Validators.required]),
-    addressLine2:   new FormControl(''),
-    postalCode:     new FormControl('',                  [Validators.required]),
-    city:           new FormControl('',                  [Validators.required]),
-    country:        new FormControl<string | null>(null, [Validators.required]),
-    state:          new FormControl(''),
-    propertyId:     new FormControl(''),
-    latitude:       new FormControl<number | null>(null),
-    longitude:      new FormControl<number | null>(null),
-    additionalInfo: new FormControl('',                  [Validators.maxLength(300)]),
+    mode: new FormControl<EntryMode>('address', { nonNullable: true }),
+    addressLine1: new FormControl('', [Validators.required]),
+    addressLine2: new FormControl(''),
+    postalCode: new FormControl('', [Validators.required]),
+    city: new FormControl('', [Validators.required]),
+    country: new FormControl<string | null>(null, [Validators.required]),
+    state: new FormControl(''),
+    propertyId: new FormControl(''),
+    latitude: new FormControl<number | null>(null),
+    longitude: new FormControl<number | null>(null),
+    additionalInfo: new FormControl('', [Validators.maxLength(300)])
   });
 
   submitted = false;
 
   private readonly mode = toSignal(this.form.get('mode')!.valueChanges, {
-    initialValue: this.form.get('mode')!.value,
+    initialValue: this.form.get('mode')!.value
   });
 
-  get isEdit(): boolean { return !!this.data.seed; }
-  get isCoordinatesMode(): boolean { return this.mode() === 'coordinates'; }
+  get isEdit(): boolean {
+    return !!this.data.seed;
+  }
+  get isCoordinatesMode(): boolean {
+    return this.mode() === 'coordinates';
+  }
   get descLength(): number {
     return (this.form.get('additionalInfo')?.value as string)?.length ?? 0;
   }
@@ -95,10 +104,20 @@ export class ManualLocationEntryModalComponent implements OnInit {
     // entry doesn't need a street address, and vice versa.
     effect(() => {
       const coords = this.isCoordinatesMode;
-      const addressCtrls = [this.form.get('addressLine1')!, this.form.get('postalCode')!, this.form.get('city')!];
+      const addressCtrls = [
+        this.form.get('addressLine1')!,
+        this.form.get('postalCode')!,
+        this.form.get('city')!
+      ];
       const coordCtrls = [this.form.get('latitude')!, this.form.get('longitude')!];
-      addressCtrls.forEach(c => { c.setValidators(coords ? [] : [Validators.required]); c.updateValueAndValidity(); });
-      coordCtrls.forEach(c => { c.setValidators(coords ? [Validators.required] : []); c.updateValueAndValidity(); });
+      addressCtrls.forEach(c => {
+        c.setValidators(coords ? [] : [Validators.required]);
+        c.updateValueAndValidity();
+      });
+      coordCtrls.forEach(c => {
+        c.setValidators(coords ? [Validators.required] : []);
+        c.updateValueAndValidity();
+      });
     });
   }
 
@@ -106,35 +125,37 @@ export class ManualLocationEntryModalComponent implements OnInit {
     const s = this.data.seed;
     if (!s) return;
     this.form.reset({
-      mode:           s.source === 'coordinates' ? 'coordinates' : 'address',
-      addressLine1:   s.addressLine1,
-      addressLine2:   s.addressLine2 ?? '',
-      postalCode:     s.postalCode,
-      city:           s.city,
-      country:        s.country,
-      state:          s.state ?? '',
-      propertyId:     s.propertyId ?? '',
-      latitude:       s.latitude ?? null,
-      longitude:      s.longitude ?? null,
-      additionalInfo: s.additionalInfo ?? '',
+      mode: s.source === 'coordinates' ? 'coordinates' : 'address',
+      addressLine1: s.addressLine1,
+      addressLine2: s.addressLine2 ?? '',
+      postalCode: s.postalCode,
+      city: s.city,
+      country: s.country,
+      state: s.state ?? '',
+      propertyId: s.propertyId ?? '',
+      latitude: s.latitude ?? null,
+      longitude: s.longitude ?? null,
+      additionalInfo: s.additionalInfo ?? ''
     });
   }
 
   selectSuggestion(s: GisAddressSuggestion): void {
     this.form.patchValue({
-      mode:         'address',
+      mode: 'address',
       addressLine1: s.addressLine1,
-      postalCode:   s.postalCode,
-      city:         s.city,
-      country:      s.country,
-      state:        s.state ?? '',
-      latitude:     s.latitude,
-      longitude:    s.longitude,
+      postalCode: s.postalCode,
+      city: s.city,
+      country: s.country,
+      state: s.state ?? '',
+      latitude: s.latitude,
+      longitude: s.longitude
     });
     this.gisSearch.setValue('', { emitEvent: false });
   }
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   onConfirm(): void {
     this.submitted = true;
@@ -145,21 +166,21 @@ export class ManualLocationEntryModalComponent implements OnInit {
     // values so switching Address <-> Coordinates never leaves stale data
     // (e.g. a previous address) saved alongside the new entry.
     const item: LocationItem = {
-      id:             this.data.seed?.id ?? this._newId(),
-      source:         coords ? 'coordinates' : 'manual',
-      displayName:    coords ? `${v.latitude}, ${v.longitude}` : `${v.addressLine1}, ${v.city}`,
-      addressLine1:   coords ? '' : (v.addressLine1 || ''),
-      addressLine2:   coords ? undefined : (v.addressLine2 || undefined),
-      postalCode:     coords ? '' : (v.postalCode || ''),
-      city:           coords ? '' : (v.city || ''),
-      country:        v.country!,
-      state:          coords ? undefined : (v.state || undefined),
-      propertyId:     v.propertyId || undefined,
+      id: this.data.seed?.id ?? this._newId(),
+      source: coords ? 'coordinates' : 'manual',
+      displayName: coords ? `${v.latitude}, ${v.longitude}` : `${v.addressLine1}, ${v.city}`,
+      addressLine1: coords ? '' : v.addressLine1 || '',
+      addressLine2: coords ? undefined : v.addressLine2 || undefined,
+      postalCode: coords ? '' : v.postalCode || '',
+      city: coords ? '' : v.city || '',
+      country: v.country!,
+      state: coords ? undefined : v.state || undefined,
+      propertyId: v.propertyId || undefined,
       // In address mode, latitude/longitude are still optional extras (see
       // "Optional details") — only coordinates mode requires them.
-      latitude:       v.latitude ?? undefined,
-      longitude:      v.longitude ?? undefined,
-      additionalInfo: v.additionalInfo || undefined,
+      latitude: v.latitude ?? undefined,
+      longitude: v.longitude ?? undefined,
+      additionalInfo: v.additionalInfo || undefined
     };
     this.modalRef.close(item);
   }

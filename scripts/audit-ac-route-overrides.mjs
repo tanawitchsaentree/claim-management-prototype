@@ -16,27 +16,28 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __dirname  = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const TICKET_DIR = join(__dirname, '..', 'public', 'tickets');
 
 const RULES = [
   {
     route: '/fnol/loss-information',
-    requires: (ovr) =>
-      !!ovr?.fnolStateOverride?.selectedPolicy ||
-      !!ovr?.fnolStateOverride?.selectedClient,
-    message: 'route /fnol/loss-information requires fnolStateOverride.selectedPolicy or selectedClient (otherwise step-loss-information redirects to /fnol/search)',
+    requires: ovr =>
+      !!ovr?.fnolStateOverride?.selectedPolicy || !!ovr?.fnolStateOverride?.selectedClient,
+    message:
+      'route /fnol/loss-information requires fnolStateOverride.selectedPolicy or selectedClient (otherwise step-loss-information redirects to /fnol/search)'
   },
   {
     route: '/fnol/skeleton-create',
-    requires: (ovr) => ovr?.fnolStateOverride?.path === 'orphan',
-    message: 'route /fnol/skeleton-create requires fnolStateOverride.path === "orphan" (otherwise wizard sidebar shows the wrong steps)',
+    requires: ovr => ovr?.fnolStateOverride?.path === 'orphan',
+    message:
+      'route /fnol/skeleton-create requires fnolStateOverride.path === "orphan" (otherwise wizard sidebar shows the wrong steps)'
   },
   {
     route: '/fnol/skeleton-summary',
-    requires: (ovr) => ovr?.fnolStateOverride?.path === 'orphan',
-    message: 'route /fnol/skeleton-summary requires fnolStateOverride.path === "orphan"',
-  },
+    requires: ovr => ovr?.fnolStateOverride?.path === 'orphan',
+    message: 'route /fnol/skeleton-summary requires fnolStateOverride.path === "orphan"'
+  }
 ];
 
 const violations = [];

@@ -8,7 +8,9 @@
   flex-direction: column;
   gap: 24px;
 
-  & + & { margin-top: 24px; }
+  & + & {
+    margin-top: 24px;
+  }
 }
 
 .admin-group__title {
@@ -50,17 +52,32 @@
   height: 64px;
   border-radius: 50%;
 
-  &--green  { background: var(--admin-card-icon-green-bg); }
-  &--red    { background: var(--admin-card-icon-red-bg); }
-  &--purple { background: var(--admin-card-icon-purple-bg); }
+  &--green {
+    background: var(--admin-card-icon-green-bg);
+  }
+  &--red {
+    background: var(--admin-card-icon-red-bg);
+  }
+  &--purple {
+    background: var(--admin-card-icon-purple-bg);
+  }
 
-  nx-icon { font-size: 40px; line-height: 1; }
+  nx-icon {
+    font-size: 40px;
+    line-height: 1;
+  }
 }
 
 .admin-card__icon {
-  &--green  { color: var(--admin-card-icon-green-color); }
-  &--red    { color: var(--admin-card-icon-red-color); }
-  &--purple { color: var(--admin-card-icon-purple-color); }
+  &--green {
+    color: var(--admin-card-icon-green-color);
+  }
+  &--red {
+    color: var(--admin-card-icon-red-color);
+  }
+  &--purple {
+    color: var(--admin-card-icon-purple-color);
+  }
 }
 
 .admin-card__title {

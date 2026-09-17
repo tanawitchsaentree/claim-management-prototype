@@ -30,7 +30,9 @@
     gap: 16px;
   }
 
-  &__right { margin-left: auto; }
+  &__right {
+    margin-left: auto;
+  }
 
   &__count {
     font-size: var(--paragraph-03-font-size);
@@ -46,12 +48,24 @@
   table-layout: fixed;
 }
 
-.col-expand   { width: 44px; }
-.col-check    { width: 44px; }
-.col-name     { min-width: 180px; }
-.col-roles    { min-width: 140px; }
-.col-clearance { width: 160px; }
-.col-action   { width: 52px; }
+.col-expand {
+  width: 44px;
+}
+.col-check {
+  width: 44px;
+}
+.col-name {
+  min-width: 180px;
+}
+.col-roles {
+  min-width: 140px;
+}
+.col-clearance {
+  width: 160px;
+}
+.col-action {
+  width: 52px;
+}
 
 // ─── Tree indent helpers (wrapper divs — never fight NDBX td padding) ─────────
 
@@ -104,13 +118,18 @@
 
 // ─── Level 2A/3: Party rows ───────────────────────────────────────────────────
 
-.party-row { }
+.party-row {
+}
 
 // ─── Recently-added highlight ─────────────────────────────────────────────────
 
 @keyframes highlight-fade {
-  from { background-color: var(--row-recently-added-bg); }
-  to   { background-color: transparent; }
+  from {
+    background-color: var(--row-recently-added-bg);
+  }
+  to {
+    background-color: transparent;
+  }
 }
 
 .party-row--recently-added {
@@ -142,8 +161,12 @@
 }
 
 @keyframes backdrop-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .side-sheet {
@@ -162,9 +185,13 @@
   flex-direction: column;
   overflow: hidden;
 
-  &--open { transform: translateX(0); }
+  &--open {
+    transform: translateX(0);
+  }
 
-  @media (max-width: 768px) { width: 100vw; }
+  @media (max-width: 768px) {
+    width: 100vw;
+  }
 }
 
 // Footer styles live in WizardFooterComponent

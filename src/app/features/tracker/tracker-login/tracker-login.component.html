@@ -10,7 +10,13 @@
     @default {
       <form class="login-form" (ngSubmit)="sendMagicLink()">
         <nx-formfield label="Email">
-          <input nxInput type="email" autocomplete="email" [formControl]="email" placeholder="you@company.com" />
+          <input
+            nxInput
+            type="email"
+            autocomplete="email"
+            [formControl]="email"
+            placeholder="you@company.com"
+          />
           @if (email.invalid && email.touched) {
             <nx-error nxFormfieldError>Enter a valid email address.</nx-error>
           }

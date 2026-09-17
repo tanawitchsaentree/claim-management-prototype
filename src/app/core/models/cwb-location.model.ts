@@ -1,3 +1,5 @@
+import type { PolicyLocation } from './location-picker.model';
+
 export interface CwbLocation {
   cwbReference: string;
   locationRuleNumber: string;
@@ -33,6 +35,12 @@ export interface CwbManualAddress {
 }
 
 export interface CwbModalResult {
-  cwb:    CwbLocation[];
+  cwb: CwbLocation[];
+  manual: CwbManualAddress[];
+}
+
+export interface AddLocationModalResult {
+  policy: PolicyLocation[];
+  cwb: CwbLocation[];
   manual: CwbManualAddress[];
 }

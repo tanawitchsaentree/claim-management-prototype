@@ -14,16 +14,18 @@ export interface TaskFilter {
 @Injectable({ providedIn: 'root' })
 export class MockTaskService extends MockBaseService {
   private readonly stateSvc = inject(MockStateService);
-  private get tasks() { return this.stateSvc.state().tasks; }
+  private get tasks() {
+    return this.stateSvc.state().tasks;
+  }
 
   getAll(filter?: TaskFilter): Observable<Task[]> {
     let result = [...this.tasks];
 
     if (filter) {
-      if (filter.status)    result = result.filter(t => t.status === filter.status);
-      if (filter.taskType)  result = result.filter(t => t.taskType === filter.taskType);
-      if (filter.assignee)  result = result.filter(t => t.assignee === filter.assignee);
-      if (filter.priority)  result = result.filter(t => t.priority === filter.priority);
+      if (filter.status) result = result.filter(t => t.status === filter.status);
+      if (filter.taskType) result = result.filter(t => t.taskType === filter.taskType);
+      if (filter.assignee) result = result.filter(t => t.assignee === filter.assignee);
+      if (filter.priority) result = result.filter(t => t.priority === filter.priority);
     }
 
     return this.list(result);
@@ -35,15 +37,19 @@ export class MockTaskService extends MockBaseService {
   }
 
   getById(taskId: string): Observable<Task> {
-    return this.findById(this.tasks as unknown as Record<string, unknown>[], 'taskId', taskId) as unknown as Observable<Task>;
+    return this.findById(
+      this.tasks as unknown as Record<string, unknown>[],
+      'taskId',
+      taskId
+    ) as unknown as Observable<Task>;
   }
 
   create(payload: Omit<Task, 'taskId' | 'taskKey'>): Observable<Task> {
     const count = this.tasks.length + 1;
     const newTask: Task = {
       ...payload,
-      taskId:  `t${Date.now()}`,
-      taskKey: `TSK-${String(count).padStart(3, '0')}`,
+      taskId: `t${Date.now()}`,
+      taskKey: `TSK-${String(count).padStart(3, '0')}`
     } as Task;
     this.stateSvc.patchTasks(tasks => [...tasks, newTask]);
     return this.respond(newTask);
@@ -55,7 +61,7 @@ export class MockTaskService extends MockBaseService {
       return this.findById([], 'taskId', taskId) as unknown as Observable<Task>;
     }
     const updated = { ...existing, ...payload };
-    this.stateSvc.patchTasks(tasks => tasks.map(t => t.taskId === taskId ? updated : t));
+    this.stateSvc.patchTasks(tasks => tasks.map(t => (t.taskId === taskId ? updated : t)));
     return this.respond(updated);
   }
 

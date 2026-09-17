@@ -8,12 +8,15 @@
 
   // Expand to use available width when the right panel is open.
   &--squeezed {
-    max-width: none;       // use whatever the wizard shell gives us
+    max-width: none; // use whatever the wizard shell gives us
     width: 100%;
   }
 }
 
-.step-content { flex: 1; min-width: 0; }
+.step-content {
+  flex: 1;
+  min-width: 0;
+}
 
 .step-breadcrumb {
   font-size: var(--paragraph-03-font-size);
@@ -43,10 +46,20 @@
     margin-bottom: 12px;
   }
 
-  &__field { display: flex; flex-direction: column; gap: 2px; }
-  &__label { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
-  &__value { font-size: var(--paragraph-02-font-size); font-weight: 600; color: var(--text-01); }
-
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  &__label {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+  &__value {
+    font-size: var(--paragraph-02-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
 }
 
 // Toolbar

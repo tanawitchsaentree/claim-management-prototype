@@ -42,52 +42,57 @@ const PAGE_SIZE = 15;
     NxGridModule,
     StatusChipComponent,
     EmptyStateComponent,
-    PageHeaderComponent,
+    PageHeaderComponent
   ],
   templateUrl: './loss-events-list.component.html',
-  styleUrl: './loss-events-list.component.scss',
+  styleUrl: './loss-events-list.component.scss'
 })
 export class LossEventsListComponent {
   private readonly svc = inject(MockDashboardExtendedService);
 
-  readonly all     = signal<LossEventSummary[]>([]);
+  readonly all = signal<LossEventSummary[]>([]);
   readonly loading = signal(true);
-  readonly page    = signal(1);
+  readonly page = signal(1);
   readonly pageSize = PAGE_SIZE;
 
   readonly statuses: LossEventStatus[] = ['Open', 'Monitoring', 'Closed'];
 
-  readonly linesOfBusiness: string[] = [
-    'Property', 'Liability', 'Marine', 'Cyber', 'Engineering',
-  ];
+  readonly linesOfBusiness: string[] = ['Property', 'Liability', 'Marine', 'Cyber', 'Engineering'];
 
   readonly filterForm = new FormGroup({
-    search:         new FormControl(''),
-    status:         new FormControl<LossEventStatus | null>(null),
-    lineOfBusiness: new FormControl<string | null>(null),
+    search: new FormControl(''),
+    status: new FormControl<LossEventStatus | null>(null),
+    lineOfBusiness: new FormControl<string | null>(null)
   });
 
-  readonly total     = computed(() => this.all().length);
+  readonly total = computed(() => this.all().length);
   readonly pagedRows = computed<LossEventSummary[]>(() => {
     const start = (this.page() - 1) * this.pageSize;
     return this.all().slice(start, start + this.pageSize);
   });
 
-  constructor() { this.load(); }
+  constructor() {
+    this.load();
+  }
 
-  private async load(search?: string, status?: LossEventStatus | null, lob?: string | null): Promise<void> {
+  private async load(
+    search?: string,
+    status?: LossEventStatus | null,
+    lob?: string | null
+  ): Promise<void> {
     this.loading.set(true);
     let data = await firstValueFrom(this.svc.getLossEvents());
     if (search) {
       const q = search.toLowerCase();
-      data = data.filter(e =>
-        e.lossEventId.toLowerCase().includes(q) ||
-        e.name.toLowerCase().includes(q) ||
-        e.oe.toLowerCase().includes(q),
+      data = data.filter(
+        e =>
+          e.lossEventId.toLowerCase().includes(q) ||
+          e.name.toLowerCase().includes(q) ||
+          e.oe.toLowerCase().includes(q)
       );
     }
     if (status) data = data.filter(e => e.status === status);
-    if (lob)    data = data.filter(e => e.lineOfBusiness === lob);
+    if (lob) data = data.filter(e => e.lineOfBusiness === lob);
     this.all.set(data);
     this.loading.set(false);
     this.page.set(1);

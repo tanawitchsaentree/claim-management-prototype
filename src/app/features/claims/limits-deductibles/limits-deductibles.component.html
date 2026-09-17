@@ -3,18 +3,23 @@
     <button
       [nxButton]="level() === 'claim' ? 'primary small' : 'secondary small'"
       type="button"
-      (click)="setLevel('claim')">Claim level</button>
+      (click)="setLevel('claim')"
+    >
+      Claim level
+    </button>
     <button
       [nxButton]="level() === 'section' ? 'primary small' : 'secondary small'"
       type="button"
-      (click)="setLevel('section')">Section level</button>
+      (click)="setLevel('section')"
+    >
+      Section level
+    </button>
   </div>
 </app-page-header>
 
 @if (loading()) {
   <div class="ld-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
 } @else if (data(); as d) {
-
   @if (level() === 'claim') {
     <h2 class="ld-section-heading" data-tour-id="ld-policy-limits">Policy limits</h2>
     @if (d.limits.length) {
@@ -29,7 +34,7 @@
           @for (l of d.limits; track l.limitId) {
             <tr nxTableRow>
               <td nxTableCell>{{ l.type }}</td>
-              <td nxTableCell>{{ l.amount | currency:l.currency:'symbol':'1.0-0' }}</td>
+              <td nxTableCell>{{ l.amount | currency: l.currency : 'symbol' : '1.0-0' }}</td>
             </tr>
           }
         </tbody>
@@ -52,7 +57,7 @@
           @for (dd of d.deductibles; track dd.deductibleId) {
             <tr nxTableRow>
               <td nxTableCell>{{ dd.type }}</td>
-              <td nxTableCell>{{ dd.amount | currency:dd.currency:'symbol':'1.0-0' }}</td>
+              <td nxTableCell>{{ dd.amount | currency: dd.currency : 'symbol' : '1.0-0' }}</td>
               <td nxTableCell>{{ dd.applicationMethod }}</td>
             </tr>
           }
@@ -82,7 +87,7 @@
             <tr nxTableRow>
               <td nxTableCell>{{ l.sectionName }}</td>
               <td nxTableCell>{{ l.type }}</td>
-              <td nxTableCell>{{ l.amount | currency:l.currency:'symbol':'1.0-0' }}</td>
+              <td nxTableCell>{{ l.amount | currency: l.currency : 'symbol' : '1.0-0' }}</td>
             </tr>
           }
         </tbody>
@@ -107,14 +112,16 @@
             <tr nxTableRow>
               <td nxTableCell>{{ dd.sectionName }}</td>
               <td nxTableCell>{{ dd.type }}</td>
-              <td nxTableCell>{{ dd.amount | currency:dd.currency:'symbol':'1.0-0' }}</td>
+              <td nxTableCell>{{ dd.amount | currency: dd.currency : 'symbol' : '1.0-0' }}</td>
               <td nxTableCell>{{ dd.applicationMethod }}</td>
             </tr>
           }
         </tbody>
       </table>
     } @else {
-      <app-empty-state message="No section-level deductibles found for this claim."></app-empty-state>
+      <app-empty-state
+        message="No section-level deductibles found for this claim."
+      ></app-empty-state>
     }
   }
 }

@@ -11,30 +11,36 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { MockRiskService } from '../../../core/mock/services/mock-risk.service';
-import { RiskAnalysis, RiskScore, RiskStatusLabel, InvestigationStatus, InvestigationOutcome } from '../../../core/models';
+import {
+  RiskAnalysis,
+  RiskScore,
+  RiskStatusLabel,
+  InvestigationStatus,
+  InvestigationOutcome
+} from '../../../core/models';
 import {
   StartInvestigationModalComponent,
   StartInvestigationModalData,
-  StartInvestigationResult,
+  StartInvestigationResult
 } from './start-investigation-modal/start-investigation-modal.component';
 
 const RISK_STATUS_CHIP: Record<RiskStatusLabel, string> = {
-  'Low risk':       'closed',
+  'Low risk': 'closed',
   'Potential risk': 'in-progress',
-  'High risk':      'rejected',
+  'High risk': 'rejected'
 };
 
 const INVESTIGATION_CHIP: Record<InvestigationStatus, string> = {
   'Not started': 'open',
   'In progress': 'in-progress',
-  'Completed':   'closed',
+  'Completed': 'closed'
 };
 
 const OUTCOME_CHIP: Record<InvestigationOutcome, string> = {
-  'N/A':                'open',
-  'Inconclusive':       'in-progress',
-  'Fraud confirmed':    'rejected',
-  'No fraud detected':  'closed',
+  'N/A': 'open',
+  'Inconclusive': 'in-progress',
+  'Fraud confirmed': 'rejected',
+  'No fraud detected': 'closed'
 };
 
 const SCORE_CHIP: Record<RiskScore, string> = {
@@ -42,7 +48,7 @@ const SCORE_CHIP: Record<RiskScore, string> = {
   2: 'closed',
   3: 'in-progress',
   4: 'rejected',
-  5: 'rejected',
+  5: 'rejected'
 };
 
 @Component({
@@ -56,28 +62,42 @@ const SCORE_CHIP: Record<RiskScore, string> = {
     NxModalModule,
     StatusChipComponent,
     EmptyStateComponent,
-    PageHeaderComponent,
+    PageHeaderComponent
   ],
   templateUrl: './risk-analysis.component.html',
-  styleUrl: './risk-analysis.component.scss',
+  styleUrl: './risk-analysis.component.scss'
 })
 export class RiskAnalysisComponent implements OnInit {
-  private readonly route     = inject(ActivatedRoute);
-  private readonly svc       = inject(MockRiskService);
-  private readonly toast     = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly svc = inject(MockRiskService);
+  private readonly toast = inject(ToastService);
   private readonly dialogSvc = inject(NxDialogService);
 
-  readonly model      = signal<RiskAnalysis | null>(null);
-  readonly loading    = signal(true);
+  readonly model = signal<RiskAnalysis | null>(null);
+  readonly loading = signal(true);
   readonly refreshing = signal(false);
   readonly markingNoRisk = signal(false);
 
-  readonly riskStatusChip    = computed(() => { const m = this.model(); return m ? RISK_STATUS_CHIP[m.riskStatus] : 'open'; });
-  readonly investigationChip = computed(() => { const m = this.model(); return m ? INVESTIGATION_CHIP[m.investigationStatus] : 'open'; });
-  readonly outcomeChip       = computed(() => { const m = this.model(); return m ? OUTCOME_CHIP[m.investigationOutcome] : 'open'; });
-  readonly scoreChip         = computed(() => { const m = this.model(); return m ? SCORE_CHIP[m.riskScore] : 'open'; });
-  readonly hasInvestigation  = computed(() => this.model()?.investigationStatus !== 'Not started');
-  readonly isNoRisk          = computed(() => this.model()?.riskScore === 1 && this.model()?.riskStatus === 'Low risk');
+  readonly riskStatusChip = computed(() => {
+    const m = this.model();
+    return m ? RISK_STATUS_CHIP[m.riskStatus] : 'open';
+  });
+  readonly investigationChip = computed(() => {
+    const m = this.model();
+    return m ? INVESTIGATION_CHIP[m.investigationStatus] : 'open';
+  });
+  readonly outcomeChip = computed(() => {
+    const m = this.model();
+    return m ? OUTCOME_CHIP[m.investigationOutcome] : 'open';
+  });
+  readonly scoreChip = computed(() => {
+    const m = this.model();
+    return m ? SCORE_CHIP[m.riskScore] : 'open';
+  });
+  readonly hasInvestigation = computed(() => this.model()?.investigationStatus !== 'Not started');
+  readonly isNoRisk = computed(
+    () => this.model()?.riskScore === 1 && this.model()?.riskStatus === 'Low risk'
+  );
 
   private claimId = '';
 
@@ -117,10 +137,19 @@ export class RiskAnalysisComponent implements OnInit {
 
   async startInvestigation(): Promise<void> {
     const data: StartInvestigationModalData = { claimId: this.claimId };
-    const ref = this.dialogSvc.open(StartInvestigationModalComponent, { data, width: '600px', maxWidth: '92vw' });
-    const result = await firstValueFrom(ref.afterClosed()) as StartInvestigationResult | null | undefined;
+    const ref = this.dialogSvc.open(StartInvestigationModalComponent, {
+      data,
+      width: '600px',
+      maxWidth: '92vw'
+    });
+    const result = (await firstValueFrom(ref.afterClosed())) as
+      | StartInvestigationResult
+      | null
+      | undefined;
     if (!result) return;
-    const updated = await firstValueFrom(this.svc.startInvestigation(this.claimId, result.assignee, result.deadline));
+    const updated = await firstValueFrom(
+      this.svc.startInvestigation(this.claimId, result.assignee, result.deadline)
+    );
     if (updated) {
       this.model.set(updated);
       this.toast.success(`Investigation assigned to ${result.assignee}`);

@@ -11,7 +11,6 @@
 <!-- Body — scrolls if needed; tabindex=0 lets keyboard users scroll content
      in browsers that don't natively focus scroll containers (Edge/Chrome). -->
 <form [formGroup]="form" class="me-modal__body" tabindex="0" (ngSubmit)="onSubmit()">
-
   <!-- Section: General information -->
   <section class="me-section">
     <h3 class="me-section__title">General information</h3>
@@ -128,67 +127,86 @@
 
   <!-- Section: Linked claims — only meaningful once the event has an ID -->
   @if (!isCreate()) {
-  <section class="me-section">
-    <div class="me-section__titlebar">
-      <h3 class="me-section__title">Linked claims</h3>
-      <button nxButton="secondary small" type="button" (click)="onLinkClaim()">
-        + Link claim
-      </button>
-    </div>
+    <section class="me-section">
+      <div class="me-section__titlebar">
+        <h3 class="me-section__title">Linked claims</h3>
+        <button nxButton="secondary small" type="button" (click)="onLinkClaim()">
+          + Link claim
+        </button>
+      </div>
 
-    @if (linkedClaims().length === 0) {
-      <app-empty-state message="No claims linked yet."></app-empty-state>
-    } @else {
-      <table nxTable class="me-linked-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Claim ID</th>
-            <th nxHeaderCell>Client</th>
-            <th nxHeaderCell>Status</th>
-            <th nxHeaderCell class="me-linked-table__action-col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (claim of linkedClaims(); track claim.claimId) {
+      @if (linkedClaims().length === 0) {
+        <app-empty-state message="No claims linked yet."></app-empty-state>
+      } @else {
+        <table nxTable class="me-linked-table">
+          <thead>
             <tr nxTableRow>
-              <td nxCell>{{ claim.claimId }}</td>
-              <td nxCell>{{ claim.clientName }}</td>
-              <td nxCell>
-                <span class="me-link-status-badge me-link-status-badge--{{ claim.massEventLinkStatus }}">
-                  {{ claim.massEventLinkStatus === 'confirmed' ? 'Confirmed' : 'Pending confirmation' }}
-                </span>
-              </td>
-              <td nxCell class="me-linked-table__action-col">
-                <button nxIconButton="tertiary small" type="button"
-                        [nxContextMenuTriggerFor]="linkedClaimMenu"
-                        class="me-kebab"
-                        aria-label="Linked claim actions">
-                  <span class="me-kebab__dots" aria-hidden="true">
-                    <span></span><span></span><span></span>
-                  </span>
-                </button>
-                <nx-context-menu #linkedClaimMenu="nxContextMenu">
-                  @if (claim.massEventLinkStatus === 'pending') {
-                    <button nxContextMenuItem type="button" (click)="onConfirmClaimLink(claim)">Confirm link</button>
-                  }
-                  <button nxContextMenuItem type="button" (click)="onUnlinkClaim(claim)">Unlink</button>
-                </nx-context-menu>
-              </td>
+              <th nxHeaderCell>Claim ID</th>
+              <th nxHeaderCell>Client</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell class="me-linked-table__action-col"></th>
             </tr>
-          }
-        </tbody>
-      </table>
-    }
-  </section>
+          </thead>
+          <tbody>
+            @for (claim of linkedClaims(); track claim.claimId) {
+              <tr nxTableRow>
+                <td nxCell>{{ claim.claimId }}</td>
+                <td nxCell>{{ claim.clientName }}</td>
+                <td nxCell>
+                  <span
+                    class="me-link-status-badge me-link-status-badge--{{
+                      claim.massEventLinkStatus
+                    }}"
+                  >
+                    {{
+                      claim.massEventLinkStatus === 'confirmed'
+                        ? 'Confirmed'
+                        : 'Pending confirmation'
+                    }}
+                  </span>
+                </td>
+                <td nxCell class="me-linked-table__action-col">
+                  <button
+                    nxIconButton="tertiary small"
+                    type="button"
+                    [nxContextMenuTriggerFor]="linkedClaimMenu"
+                    class="me-kebab"
+                    aria-label="Linked claim actions"
+                  >
+                    <span class="me-kebab__dots" aria-hidden="true">
+                      <span></span><span></span><span></span>
+                    </span>
+                  </button>
+                  <nx-context-menu #linkedClaimMenu="nxContextMenu">
+                    @if (claim.massEventLinkStatus === 'pending') {
+                      <button nxContextMenuItem type="button" (click)="onConfirmClaimLink(claim)">
+                        Confirm link
+                      </button>
+                    }
+                    <button nxContextMenuItem type="button" (click)="onUnlinkClaim(claim)">
+                      Unlink
+                    </button>
+                  </nx-context-menu>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
   }
 </form>
 
 <!-- Footer -->
 <footer class="me-modal__footer">
   <div class="me-modal__footer-actions">
-    <button nxButton="tertiary small" type="button" (click)="onCancel()">{{ isView() ? 'Close' : 'Cancel' }}</button>
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">
+      {{ isView() ? 'Close' : 'Cancel' }}
+    </button>
     @if (!isView()) {
-      <button nxButton="primary small" type="button" (click)="onSubmit()">{{ submitLabel() }}</button>
+      <button nxButton="primary small" type="button" (click)="onSubmit()">
+        {{ submitLabel() }}
+      </button>
     }
   </div>
 </footer>

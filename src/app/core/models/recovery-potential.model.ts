@@ -31,8 +31,10 @@ export type RecoveryPotentialState =
   | 'no';
 
 /** The subset of ClaimOverview the derivation actually reads. */
-export type RecoveryPotentialSource =
-  Pick<ClaimOverview, 'recoveryPotential' | 'hasRecoveryCase' | 'hasActiveRecovery'>;
+export type RecoveryPotentialSource = Pick<
+  ClaimOverview,
+  'recoveryPotential' | 'hasRecoveryCase' | 'hasActiveRecovery'
+>;
 
 export function recoveryPotentialState(claim: RecoveryPotentialSource): RecoveryPotentialState {
   if (claim.recoveryPotential === 'no') return 'no';
@@ -50,11 +52,11 @@ export function blocksClosure(state: RecoveryPotentialState): boolean {
 }
 
 export const RECOVERY_STATE_MESSAGE: Record<RecoveryPotentialState, string> = {
-  'unanswered':  'A Yes/No recovery decision is required before this claim can be closed.',
+  'unanswered': 'A Yes/No recovery decision is required before this claim can be closed.',
   'yes-pending': 'Recovery is expected but no recovery case has been set up yet.',
-  'yes-active':  'A recovery case is active for this claim.',
+  'yes-active': 'A recovery case is active for this claim.',
   'yes-settled': 'Recovery has been pursued and every case is now resolved.',
-  'no':          'No recovery expected.',
+  'no': 'No recovery expected.'
 };
 
 /**

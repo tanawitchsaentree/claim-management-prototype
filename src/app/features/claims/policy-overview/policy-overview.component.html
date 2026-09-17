@@ -5,10 +5,10 @@
 } @else if (loadError()) {
   <app-empty-state
     message="Policy overview could not be loaded."
-    hint="Try again, or check the claim's policy linkage.">
+    hint="Try again, or check the claim's policy linkage."
+  >
   </app-empty-state>
 } @else if (policy(); as p) {
-
   <!-- Policy details — the header block the real page shows above the
        three expandable detail sections. -->
   <section class="po-details">
@@ -27,7 +27,9 @@
       </div>
       <div class="po-field">
         <span class="po-label">Policy status</span>
-        <span class="po-status" [class]="'po-status--' + p.status.toLowerCase()">{{ p.status }}</span>
+        <span class="po-status" [class]="'po-status--' + p.status.toLowerCase()">{{
+          p.status
+        }}</span>
       </div>
       <div class="po-field">
         <span class="po-label">Policy period</span>
@@ -35,19 +37,18 @@
       </div>
       <div class="po-field">
         <span class="po-label">Premium</span>
-        <span class="po-value">{{ p.premium | currency:p.currency:'symbol':'1.0-0' }}</span>
+        <span class="po-value">{{ p.premium | currency: p.currency : 'symbol' : '1.0-0' }}</span>
       </div>
-      @if (p.allianzShare != null) {
+      @if (p.allianzShare !== null && p.allianzShare !== undefined) {
         <div class="po-field">
           <span class="po-label">Allianz share</span>
-          <span class="po-value">{{ p.allianzShare | number:'1.0-2' }}%</span>
+          <span class="po-value">{{ p.allianzShare | number: '1.0-2' }}%</span>
         </div>
       }
     </div>
   </section>
 
   <nx-accordion [multi]="true" class="po-accordion">
-
     <nx-expansion-panel expanded>
       <nx-expansion-panel-header>
         <nx-expansion-panel-title>Coverage details</nx-expansion-panel-title>
@@ -68,10 +69,12 @@
               <tr nxTableRow>
                 <td nxTableCell>{{ c.policySection }}</td>
                 <td nxTableCell>{{ c.coverage }}</td>
-                <td nxTableCell class="po-col--num">{{ c.sumInsured | currency:c.currency:'symbol':'1.0-0' }}</td>
+                <td nxTableCell class="po-col--num">
+                  {{ c.sumInsured | currency: c.currency : 'symbol' : '1.0-0' }}
+                </td>
                 <td nxTableCell class="po-col--num">
                   @if (c.deductible > 0) {
-                    {{ c.deductible | currency:c.currency:'symbol':'1.0-0' }}
+                    {{ c.deductible | currency: c.currency : 'symbol' : '1.0-0' }}
                   } @else {
                     <span class="po-muted">None</span>
                   }
@@ -93,7 +96,8 @@
       @if (p.coinsurance.length) {
         @if (coinsuranceMismatch()) {
           <nx-message context="warning" class="po-message">
-            Participant shares total {{ coinsuranceTotal() }}%, not 100% — check the policy record before settling.
+            Participant shares total {{ coinsuranceTotal() }}%, not 100% — check the policy record
+            before settling.
           </nx-message>
         }
         <table nxTable class="po-table">
@@ -111,7 +115,7 @@
                 <td nxTableCell>{{ cp.participant }}</td>
                 <td nxTableCell>{{ cp.participantCode }}</td>
                 <td nxTableCell>{{ cp.role }}</td>
-                <td nxTableCell class="po-col--num">{{ cp.sharePercent | number:'1.0-2' }}%</td>
+                <td nxTableCell class="po-col--num">{{ cp.sharePercent | number: '1.0-2' }}%</td>
               </tr>
             }
           </tbody>
@@ -119,7 +123,8 @@
       } @else {
         <app-empty-state
           message="This policy is not coinsured."
-          hint="Allianz carries 100% of the risk.">
+          hint="Allianz carries 100% of the risk."
+        >
         </app-empty-state>
       }
     </nx-expansion-panel>
@@ -169,12 +174,11 @@
         <app-empty-state message="No other claims are linked to this policy."></app-empty-state>
       }
     </nx-expansion-panel>
-
   </nx-accordion>
-
 } @else {
   <app-empty-state
     message="No policy is linked to this claim."
-    hint="Link a policy from the claim overview to see coverage and coinsurance details.">
+    hint="Link a policy from the claim overview to see coverage and coinsurance details."
+  >
   </app-empty-state>
 }

@@ -3,6 +3,7 @@
 ## Read first
 
 Before writing any code, read:
+
 1. `.claude/CONTEXT.md` — stack, token traps, NDBX gotchas, forbidden patterns
 2. `.claude/BLESSED.md` — verified patterns to copy from
 3. `docs/NDBX_RECIPES.md` — verified HTML snippets for every NDBX component
@@ -10,6 +11,7 @@ Before writing any code, read:
 ## Before any UI / SCSS task
 
 Answer these before writing code:
+
 1. Does an NDBX component exist for this element? (check `docs/NDBX_RECIPES.md`)
 2. Does a blessed pattern exist? (check `.claude/BLESSED.md`)
 3. Which design tokens apply? (grep `ndbx.css` — never hardcode hex)
@@ -39,6 +41,7 @@ Answer these before writing code:
 ## Definition of done
 
 Before declaring any UI task complete:
+
 - [ ] Renders correctly in browser
 - [ ] Zero console errors
 - [ ] All interactions work

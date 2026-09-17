@@ -20,7 +20,11 @@ import { TrackerService, daysSince } from '../../../core/services/tracker.servic
 import { TrackerSyncService } from '../../../core/services/tracker-sync.service';
 import { TrackerViewerService } from '../../../core/services/tracker-viewer.service';
 import { PrototypeScenarioService } from '../../../core/services/prototype-scenario.service';
-import type { BlockedReason, TicketFilters, TicketWithDetails } from '../../../core/models/tracker.model';
+import type {
+  BlockedReason,
+  TicketFilters,
+  TicketWithDetails
+} from '../../../core/models/tracker.model';
 import { TicketDetailPanelComponent } from '../ticket-detail-panel/ticket-detail-panel.component';
 import { TrackerOwnerUnlockComponent } from '../tracker-owner-unlock/tracker-owner-unlock.component';
 
@@ -29,13 +33,13 @@ const BLOCKED_BY_OPTIONS: { value: BlockedReason; label: string }[] = [
   { value: 'waiting_ba', label: 'Waiting: BA' },
   { value: 'waiting_dev', label: 'Waiting: Dev' },
   { value: 'waiting_other_epic', label: 'Waiting: Other epic' },
-  { value: 'scope_unclear', label: 'Scope unclear' },
+  { value: 'scope_unclear', label: 'Scope unclear' }
 ];
 
 const HAS_ROUTE_OPTIONS: { value: boolean | null; label: string }[] = [
   { value: null, label: 'Any' },
   { value: true, label: 'Has prototype route' },
-  { value: false, label: 'No prototype route' },
+  { value: false, label: 'No prototype route' }
 ];
 
 interface EpicGroup {
@@ -64,10 +68,10 @@ interface EpicGroup {
     StatusChipComponent,
     AppDatePipe,
     TicketDetailPanelComponent,
-    TrackerOwnerUnlockComponent,
+    TrackerOwnerUnlockComponent
   ],
   templateUrl: './tracker-table.component.html',
-  styleUrl: './tracker-table.component.scss',
+  styleUrl: './tracker-table.component.scss'
 })
 export class TrackerTableComponent {
   private readonly route = inject(ActivatedRoute);
@@ -88,35 +92,70 @@ export class TrackerTableComponent {
   private readonly initialFilters = this.trackerService.filters();
 
   readonly piControl = new FormControl<string | null>(this.initialFilters.piId ?? null);
-  readonly statusControl = new FormControl<string[]>(this.initialFilters.jiraStatus ?? [], { nonNullable: true });
+  readonly statusControl = new FormControl<string[]>(this.initialFilters.jiraStatus ?? [], {
+    nonNullable: true
+  });
   readonly epicControl = new FormControl<string | null>(this.initialFilters.epicId ?? null);
-  readonly blockedControl = new FormControl<BlockedReason | null>(this.initialFilters.blockedBy ?? null);
+  readonly blockedControl = new FormControl<BlockedReason | null>(
+    this.initialFilters.blockedBy ?? null
+  );
   readonly assigneeControl = new FormControl<string | null>(this.initialFilters.assignee ?? null);
-  readonly hasRouteControl = new FormControl<boolean | null>(this.initialFilters.hasPrototypeRoute ?? null);
-  readonly showArchivedControl = new FormControl<boolean>(this.initialFilters.showArchived ?? false, { nonNullable: true });
+  readonly hasRouteControl = new FormControl<boolean | null>(
+    this.initialFilters.hasPrototypeRoute ?? null
+  );
+  readonly showArchivedControl = new FormControl<boolean>(
+    this.initialFilters.showArchived ?? false,
+    { nonNullable: true }
+  );
 
-  private readonly piSignal = toSignal(this.piControl.valueChanges, { initialValue: this.piControl.value });
-  private readonly statusSignal = toSignal(this.statusControl.valueChanges, { initialValue: this.statusControl.value });
-  private readonly epicSignal = toSignal(this.epicControl.valueChanges, { initialValue: this.epicControl.value });
-  private readonly blockedSignal = toSignal(this.blockedControl.valueChanges, { initialValue: this.blockedControl.value });
-  private readonly assigneeSignal = toSignal(this.assigneeControl.valueChanges, { initialValue: this.assigneeControl.value });
-  private readonly hasRouteSignal = toSignal(this.hasRouteControl.valueChanges, { initialValue: this.hasRouteControl.value });
-  private readonly showArchivedSignal = toSignal(this.showArchivedControl.valueChanges, { initialValue: this.showArchivedControl.value });
+  private readonly piSignal = toSignal(this.piControl.valueChanges, {
+    initialValue: this.piControl.value
+  });
+  private readonly statusSignal = toSignal(this.statusControl.valueChanges, {
+    initialValue: this.statusControl.value
+  });
+  private readonly epicSignal = toSignal(this.epicControl.valueChanges, {
+    initialValue: this.epicControl.value
+  });
+  private readonly blockedSignal = toSignal(this.blockedControl.valueChanges, {
+    initialValue: this.blockedControl.value
+  });
+  private readonly assigneeSignal = toSignal(this.assigneeControl.valueChanges, {
+    initialValue: this.assigneeControl.value
+  });
+  private readonly hasRouteSignal = toSignal(this.hasRouteControl.valueChanges, {
+    initialValue: this.hasRouteControl.value
+  });
+  private readonly showArchivedSignal = toSignal(this.showArchivedControl.valueChanges, {
+    initialValue: this.showArchivedControl.value
+  });
 
   private readonly queryParamMap = toSignal(this.route.queryParamMap);
   readonly selectedKey = computed(() => this.queryParamMap()?.get('key') ?? null);
 
   readonly jiraStatusOptions = computed(() => {
-    const values = new Set(this.trackerService.tickets().map((t) => t.jiraStatus).filter((v): v is string => !!v));
+    const values = new Set(
+      this.trackerService
+        .tickets()
+        .map(t => t.jiraStatus)
+        .filter((v): v is string => !!v)
+    );
     return Array.from(values).sort();
   });
 
   // Shape NxMultiSelectComponent's [options]/selectValue/selectLabel expects
   // (BLESSED pattern: add-section-entity-modal.component.html:17).
-  readonly jiraStatusSelectOptions = computed(() => this.jiraStatusOptions().map((s) => ({ value: s, label: s })));
+  readonly jiraStatusSelectOptions = computed(() =>
+    this.jiraStatusOptions().map(s => ({ value: s, label: s }))
+  );
 
   readonly assigneeOptions = computed(() => {
-    const values = new Set(this.trackerService.tickets().map((t) => t.assignee).filter((v): v is string => !!v));
+    const values = new Set(
+      this.trackerService
+        .tickets()
+        .map(t => t.assignee)
+        .filter((v): v is string => !!v)
+    );
     return Array.from(values).sort();
   });
 
@@ -125,7 +164,9 @@ export class TrackerTableComponent {
     for (const t of this.trackerService.tickets()) {
       if (t.epic) map.set(t.epic.id, t.epic.title);
     }
-    return Array.from(map.entries()).map(([id, title]) => ({ id, title })).sort((a, b) => a.title.localeCompare(b.title));
+    return Array.from(map.entries())
+      .map(([id, title]) => ({ id, title }))
+      .sort((a, b) => a.title.localeCompare(b.title));
   });
 
   readonly sortedTickets = computed(() => {
@@ -141,7 +182,11 @@ export class TrackerTableComponent {
     for (const ticket of this.sortedTickets()) {
       const epicId = ticket.epicId ?? '__none__';
       if (!groups.has(epicId)) {
-        groups.set(epicId, { epicId: ticket.epicId, epicTitle: ticket.epic?.title ?? 'No epic', tickets: [] });
+        groups.set(epicId, {
+          epicId: ticket.epicId,
+          epicTitle: ticket.epic?.title ?? 'No epic',
+          tickets: []
+        });
       }
       groups.get(epicId)!.tickets.push(ticket);
     }
@@ -158,7 +203,7 @@ export class TrackerTableComponent {
 
   readonly lastSyncedAt = computed(() => {
     const log = this.trackerService.syncLog();
-    return log.find((s) => s.status === 'success')?.finishedAt ?? null;
+    return log.find(s => s.status === 'success')?.finishedAt ?? null;
   });
 
   daysBlocked(ticket: TicketWithDetails): number {
@@ -169,7 +214,10 @@ export class TrackerTableComponent {
   // ticket JSON's walkthroughSteps contains at least one structured
   // TourStep, not just that a prototype_ticket_id is set.
   hasTour(ticket: TicketWithDetails): boolean {
-    const id = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+    const id = this.prototypeScenarioSvc.resolveTicketId(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId
+    );
     return !!id && this.prototypeScenarioSvc.hasTour(id);
   }
 
@@ -178,17 +226,25 @@ export class TrackerTableComponent {
   // becomes the tour. Without one the link still works, it just lands on a screen
   // the panel can only name.
   hasScenario(ticket: TicketWithDetails): boolean {
-    const id = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
+    const id = this.prototypeScenarioSvc.resolveTicketId(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId
+    );
     return !!id && !!this.prototypeScenarioSvc.getTicketById(id);
   }
 
   // Says what the click will actually give you, before the click. The old fixed
   // "Open in prototype (new tab)" was true of all 30 rows and useful for none.
   launchHint(ticket: TicketWithDetails): string {
-    const id = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
-    const built = (this.prototypeScenarioSvc.getTicketById(id ?? '')?.acceptanceCriteria ?? [])
-      .filter((ac) => ac.buildStatus !== 'todo').length;
-    if (!built) return 'Opens the screen in a new tab — no acceptance criteria recorded, so there is nothing specific to check';
+    const id = this.prototypeScenarioSvc.resolveTicketId(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId
+    );
+    const built = (
+      this.prototypeScenarioSvc.getTicketById(id ?? '')?.acceptanceCriteria ?? []
+    ).filter(ac => ac.buildStatus !== 'todo').length;
+    if (!built)
+      return 'Opens the screen in a new tab — no acceptance criteria recorded, so there is nothing specific to check';
     return `Opens in a new tab with the scenario applied — ${built} acceptance ${built === 1 ? 'criterion' : 'criteria'} explained on arrival`;
   }
 
@@ -196,7 +252,11 @@ export class TrackerTableComponent {
   // whose jiraKey matches a public/tickets/*.json ticketId counts as having a route even if
   // nobody ever typed one into prototype_route by hand.
   hasPrototypeRoute(ticket: TicketWithDetails): boolean {
-    return !!this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
+    return !!this.prototypeScenarioSvc.resolveRoute(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId,
+      ticket.state.prototypeRoute
+    );
   }
 
   constructor() {
@@ -218,7 +278,7 @@ export class TrackerTableComponent {
         blockedBy: this.blockedSignal() ?? undefined,
         assignee: this.assigneeSignal() ?? undefined,
         hasPrototypeRoute: this.hasRouteSignal() ?? undefined,
-        showArchived: this.showArchivedSignal(),
+        showArchived: this.showArchivedSignal()
       };
       this.trackerService.setFilters(filters);
       this.trackerService.getTickets(filters);
@@ -257,11 +317,22 @@ export class TrackerTableComponent {
   // rebuilds it on the other side, so the new tab is self-contained.
   openPrototypeRoute(ticket: TicketWithDetails, event: Event): void {
     event.stopPropagation();
-    const route = this.prototypeScenarioSvc.resolveRoute(ticket.jiraKey, ticket.state.prototypeTicketId, ticket.state.prototypeRoute);
+    const route = this.prototypeScenarioSvc.resolveRoute(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId,
+      ticket.state.prototypeRoute
+    );
     if (!route) return;
 
-    const ticketId = this.prototypeScenarioSvc.resolveTicketId(ticket.jiraKey, ticket.state.prototypeTicketId);
-    window.open(this.prototypeScenarioSvc.buildPrototypeUrl(route, ticketId, ticket.jiraKey), '_blank', 'noopener');
+    const ticketId = this.prototypeScenarioSvc.resolveTicketId(
+      ticket.jiraKey,
+      ticket.state.prototypeTicketId
+    );
+    window.open(
+      this.prototypeScenarioSvc.buildPrototypeUrl(route, ticketId, ticket.jiraKey),
+      '_blank',
+      'noopener'
+    );
   }
 
   openTicket(ticket: TicketWithDetails): void {
@@ -269,7 +340,11 @@ export class TrackerTableComponent {
   }
 
   closeDetail(): void {
-    this.router.navigate([], { relativeTo: this.route, queryParams: { key: null }, queryParamsHandling: 'merge' });
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { key: null },
+      queryParamsHandling: 'merge'
+    });
   }
 
   sync(): void {

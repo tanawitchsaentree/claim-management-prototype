@@ -32,7 +32,7 @@ import { resolve, dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
-const root  = resolve(__dir, '..');
+const root = resolve(__dir, '..');
 const srcDir = resolve(root, 'src/app');
 
 const BUTTON_LINE = /<button\b[^>]*\bnxButton="([^"]*)"/;
@@ -67,7 +67,9 @@ for (const file of modalFiles) {
     if (!m) continue;
     if (isExempt(lines, i)) continue;
     if (!m[1].includes('small')) {
-      violations.push(`${relative(root, file)}:${i + 1}: nxButton="${m[1]}" missing "small" (modal buttons must be small)`);
+      violations.push(
+        `${relative(root, file)}:${i + 1}: nxButton="${m[1]}" missing "small" (modal buttons must be small)`
+      );
     }
   }
 }
@@ -87,7 +89,7 @@ for (const file of allHtml) {
       if (sizes.size > 1) {
         violations.push(
           `${relative(root, file)}: mixed button sizes among siblings — ` +
-          group.map(g => `line ${g.lineNo} (${g.small ? 'small' : 'NOT small'})`).join(', ')
+            group.map(g => `line ${g.lineNo} (${g.small ? 'small' : 'NOT small'})`).join(', ')
         );
       }
     }
@@ -108,7 +110,10 @@ for (const file of allHtml) {
       }
       continue;
     }
-    if (isExempt(lines, i)) { flushGroup(); continue; }
+    if (isExempt(lines, i)) {
+      flushGroup();
+      continue;
+    }
     const indent = line.match(/^\s*/)[0].length;
     const small = m[1].includes('small');
     if (group.length && indent !== group[0].indent) flushGroup();
@@ -123,5 +128,7 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log('[audit:button-size] passed — every modal button is small, no mixed-size sibling groups.');
+console.log(
+  '[audit:button-size] passed — every modal button is small, no mixed-size sibling groups.'
+);
 process.exit(0);

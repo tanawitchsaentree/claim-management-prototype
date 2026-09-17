@@ -31,8 +31,6 @@
   overflow-x: hidden;
 }
 
-
-
 .lit-empty {
   margin: 0;
   padding: var(--space-xl) 0;
@@ -44,10 +42,15 @@
 .lit-table {
   width: 100%;
 
-  &__action { width: 64px; text-align: right; }
+  &__action {
+    width: 64px;
+    text-align: right;
+  }
 }
 
-.lit-row--active { background: var(--ui-02); }
+.lit-row--active {
+  background: var(--ui-02);
+}
 
 .lit-id-link {
   background: none;
@@ -58,7 +61,9 @@
   text-decoration: underline;
   cursor: pointer;
 
-  &:hover { color: var(--interactive-text-hover); }
+  &:hover {
+    color: var(--interactive-text-hover);
+  }
 }
 
 // Kebab — same CSS-drawn dots used in mass-events

@@ -1,10 +1,9 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -24,7 +23,7 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import {
   ConvertSkeletonModalComponent,
   ConvertSkeletonModalData,
-  ConvertSkeletonModalResult,
+  ConvertSkeletonModalResult
 } from '../../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
@@ -33,6 +32,7 @@ import { PolicySearchResult } from '../../models/fnol-form.model';
 import { Claim } from '../../../../core/models/claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { ToastService } from '../../../../shared/components/toast/toast.service';
 import lookupsData from '../../../../core/mock/data/lookups.json';
 
 type SearchState =
@@ -62,7 +62,7 @@ const PAGE_SIZE = 10;
     NxMessageModule,
     NxContextMenuModule,
     StatusChipComponent,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './step-1-search.component.html',
   styleUrl: './step-1-search.component.scss',
@@ -70,28 +70,28 @@ const PAGE_SIZE = 10;
     trigger('expandCollapse', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-8px)' }),
-        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ]),
       transition(':leave', [
-        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-8px)' })),
-      ]),
-    ]),
-  ],
+        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-8px)' }))
+      ])
+    ])
+  ]
 })
 export class Step1SearchComponent {
   private fnolState = inject(FnolStateService);
   private searchSvc = inject(MockPolicySearchService);
-  private claimSvc  = inject(MockClaimService);
+  private claimSvc = inject(MockClaimService);
   private overviewSvc = inject(MockClaimOverviewService);
-  private router     = inject(Router);
-  private dialogSvc  = inject(NxDialogService);
-  private readonly live = inject(LiveAnnouncer);
+  private router = inject(Router);
+  private dialogSvc = inject(NxDialogService);
+  private toast = inject(ToastService);
 
-  readonly years             = UNDERWRITING_YEARS;
-  readonly linesOfBusiness   = lookupsData.linesOfBusiness;
+  readonly years = UNDERWRITING_YEARS;
+  readonly linesOfBusiness = lookupsData.linesOfBusiness;
   readonly operatingEntities = lookupsData.operatingEntities;
-  readonly form: FormGroup   = this.fnolState.getStepGroup('search');
-  readonly pageSize          = PAGE_SIZE;
+  readonly form: FormGroup = this.fnolState.getStepGroup('search');
+  readonly pageSize = PAGE_SIZE;
 
   showSecondaryFilters = false;
   validationError: string | null = null;
@@ -110,16 +110,10 @@ export class Step1SearchComponent {
     '• Need to start investigation immediately\n\n' +
     '⚠ You must match a policy within 3 business days.';
 
-  private readonly trigger$  = new BehaviorSubject<'search' | 'idle'>('idle');
+  private readonly trigger$ = new BehaviorSubject<'search' | 'idle'>('idle');
 
   private readonly devSearchFill = toSignal(this.fnolState.devSearchFill$);
   private pendingAutoSelectPolicyNumber: string | null = null;
-
-  /** Set when a skeleton-conversion fill fires — drives the "Converting
-   *  from…" banner. Not just devSearchFill() itself, since that's a Subject
-   *  emission (fires once, doesn't stay true) and the banner needs to stay
-   *  visible for the rest of the page's lifetime until cancelled. */
-  readonly convertingFromSkeletonId = signal<string | null>(null);
 
   constructor() {
     // Dev-banner triggered fill: set search fields, run the search, then
@@ -138,10 +132,6 @@ export class Step1SearchComponent {
       this.selectedPolicyData = null;
       this.hasSearched = true;
       this.pendingAutoSelectPolicyNumber = policyNumber;
-      this.convertingFromSkeletonId.set(this.fnolState.skeletonClaimId);
-      if (this.fnolState.skeletonClaimId) {
-        this.live.announce(`Converting from ${this.fnolState.skeletonClaimId}`, 'polite');
-      }
       this.trigger$.next('search');
     });
 
@@ -151,12 +141,13 @@ export class Step1SearchComponent {
       const policyNumber = this.pendingAutoSelectPolicyNumber;
       if (!policyNumber || !state || state.kind !== 'results') return;
       this.pendingAutoSelectPolicyNumber = null;
-      const policy = state.policies.find(
-        p => p.policyNumber.toLowerCase() === policyNumber.toLowerCase(),
-      ) ?? state.policies[0] ?? null;
+      const policy =
+        state.policies.find(p => p.policyNumber.toLowerCase() === policyNumber.toLowerCase()) ??
+        state.policies[0] ??
+        null;
       if (policy) {
         this.selectedPolicyNumber = policy.policyNumber;
-        this.selectedPolicyData   = policy;
+        this.selectedPolicyData = policy;
         this.activeTab = 1;
       }
     });
@@ -166,38 +157,42 @@ export class Step1SearchComponent {
     switchMap(t => {
       if (t === 'idle') return of<SearchState>({ kind: 'idle' });
       const criteria = this.form.value;
-      return this.claimSvc.searchClaims({
-        clientName:   criteria.clientName ?? '',
-        policyNumber: criteria.policyNumber ?? '',
-      }).pipe(
-        switchMap(claims =>
-          this.searchSvc.searchPolicies(criteria).pipe(
-            switchMap(policies => {
-              this._applyAutoTabSwitch(claims, policies);
-              return of<SearchState>({ kind: 'results', claims, policies });
-            }),
+      return this.claimSvc
+        .searchClaims({
+          clientName: criteria.clientName ?? '',
+          policyNumber: criteria.policyNumber ?? ''
+        })
+        .pipe(
+          switchMap(claims =>
+            this.searchSvc.searchPolicies(criteria).pipe(
+              switchMap(policies => {
+                this._applyAutoTabSwitch(claims, policies);
+                return of<SearchState>({ kind: 'results', claims, policies });
+              })
+            )
+          ),
+          catchError(err =>
+            of<SearchState>({
+              kind: 'error',
+              message: (err as { message?: string })?.message ?? 'Search failed. Please try again.'
+            })
           )
-        ),
-        catchError(err => of<SearchState>({
-          kind: 'error',
-          message: (err as { message?: string })?.message ?? 'Search failed. Please try again.',
-        })),
-      );
-    }),
+        );
+    })
   );
 
   private readonly searchState = toSignal(this.state$);
 
   private _applyAutoTabSwitch(claims: Claim[], policies: PolicySearchResult[]): void {
-    this.activeTab = (claims.length === 0 && policies.length > 0) ? 1 : 0;
+    this.activeTab = claims.length === 0 && policies.length > 0 ? 1 : 0;
   }
 
   // ── Claims table helpers (also covers orphan-claim statuses) ────────
 
   getSkeletonRowClass(claim: Claim): string {
     if (claim.status === 'Awaiting policy') return 'skeleton-awaiting';
-    if (claim.status === 'Matched')         return 'skeleton-matched';
-    if (claim.status === 'Abandoned')       return 'skeleton-abandoned';
+    if (claim.status === 'Matched') return 'skeleton-matched';
+    if (claim.status === 'Abandoned') return 'skeleton-abandoned';
     return '';
   }
 
@@ -215,8 +210,10 @@ export class Step1SearchComponent {
   }
 
   isDaySlaUrgent(claim: Claim): boolean {
-    return claim.status === 'Awaiting policy' &&
-           ((claim.slaDeadlineDays ?? 0) - this.daysSince(claim.dateCreated)) <= 1;
+    return (
+      claim.status === 'Awaiting policy' &&
+      (claim.slaDeadlineDays ?? 0) - this.daysSince(claim.dateCreated) <= 1
+    );
   }
 
   onViewClaim(claimId: string): void {
@@ -237,14 +234,18 @@ export class Step1SearchComponent {
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
       data,
       width: '960px',
-      maxWidth: '92vw',
+      maxWidth: '92vw'
     });
-    const policy = await firstValueFrom(ref.afterClosed()) as ConvertSkeletonModalResult;
-    if (!policy) return;   // cancelled
+    const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
+    if (!policy) return; // cancelled
 
     // Link the policy onto the same claim record and land on its Overview —
     // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (Convert to claim).
     await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+    this.toast.success(
+      `${skeleton.claimId} converted`,
+      `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
+    );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);
   }
 
@@ -323,17 +324,11 @@ export class Step1SearchComponent {
     this.router.navigate(['/dashboard']);
   }
 
-  onCancelConversion(): void {
-    this.fnolState.reset();
-    this.convertingFromSkeletonId.set(null);
-    this.onReset();
-  }
-
   onRegisterClaim(): void {
     if (this.selectedPolicyNumber) {
       this.fnolState.setSelectedPolicy(
         { policyId: this.selectedPolicyNumber, policyNumber: this.selectedPolicyNumber },
-        this.selectedPolicyData ?? undefined,
+        this.selectedPolicyData ?? undefined
       );
       this.fnolState.path = 'standard';
     }

@@ -14,13 +14,28 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
-import { Party, PartyClaim, PartySection, PartyRole, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
-import { AddPartyModalComponent, AddPartyModalData } from '../../components/add-party-modal/add-party-modal.component';
+import {
+  Party,
+  PartyClaim,
+  PartySection,
+  PartyRole,
+  PARTY_ROLE_LABELS
+} from '../../../../core/models/party.model';
+import {
+  AddPartyModalComponent,
+  AddPartyModalData
+} from '../../components/add-party-modal/add-party-modal.component';
 import { PartyDetailPanelComponent } from '../../components/party-detail-panel/party-detail-panel.component';
-import { EditRoleDialogComponent, EditRoleDialogData } from '../../components/edit-role-dialog/edit-role-dialog.component';
+import {
+  EditRoleDialogComponent,
+  EditRoleDialogData
+} from '../../components/edit-role-dialog/edit-role-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 
@@ -37,12 +52,12 @@ interface ClaimsVM {
     trigger('rowExpand', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-4px)' }),
-        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ]),
       transition(':leave', [
-        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' })),
-      ]),
-    ]),
+        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' }))
+      ])
+    ])
   ],
   imports: [
     CommonModule,
@@ -58,27 +73,27 @@ interface ClaimsVM {
     StatusChipComponent,
     EmptyStateComponent,
     PartyDetailPanelComponent,
-    WizardFooterComponent,
+    WizardFooterComponent
   ],
   templateUrl: './step-parties.component.html',
-  styleUrl: './step-parties.component.scss',
+  styleUrl: './step-parties.component.scss'
 })
 export class StepPartiesComponent implements OnInit, OnDestroy {
   private readonly partiesSvc = inject(MockPartiesService);
-  private readonly fnolState  = inject(FnolStateService);
-  private readonly router     = inject(Router);
-  private readonly dialogSvc  = inject(NxDialogService);
-  private readonly toast      = inject(ToastService);
+  private readonly fnolState = inject(FnolStateService);
+  private readonly router = inject(Router);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
 
   policyNumber = '';
 
-  page           = 1;
-  claimsPerPage  = 2;
+  page = 1;
+  claimsPerPage = 2;
 
   displayBrokerHierarchy = false;
 
   // Selection state (visual cascade only — see docs/PARTIES_ASSUMPTIONS.md)
-  readonly selectedClaimIds   = new Set<string>();
+  readonly selectedClaimIds = new Set<string>();
   readonly selectedSectionIds = new Set<string>();
 
   // Side panel state
@@ -99,13 +114,15 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
       switchMap(() =>
         this.partiesSvc.getClaimsForPolicy(this.policyNumber).pipe(
           map(claims => ({ claims, loading: false, error: false })),
-          catchError(() => of({ claims: [], loading: false, error: true })),
-        ),
-      ),
+          catchError(() => of({ claims: [], loading: false, error: true }))
+        )
+      )
     );
   }
 
-  ngOnDestroy(): void { this.unlockScroll(); }
+  ngOnDestroy(): void {
+    this.unlockScroll();
+  }
 
   // ── Pagination ────────────────────────────────────────────────────────────
 
@@ -115,14 +132,21 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
   }
 
   totalParties(claims: PartyClaim[]): number {
-    return claims.reduce((sum, c) =>
-      sum + c.directParties.length + c.sections.reduce((s, sec) => s + sec.parties.length, 0), 0);
+    return claims.reduce(
+      (sum, c) =>
+        sum + c.directParties.length + c.sections.reduce((s, sec) => s + sec.parties.length, 0),
+      0
+    );
   }
 
   // ── Expand / collapse ────────────────────────────────────────────────────
 
-  toggleClaim(claim: PartyClaim): void   { claim.expanded = !claim.expanded; }
-  toggleSection(section: PartySection): void { section.expanded = !section.expanded; }
+  toggleClaim(claim: PartyClaim): void {
+    claim.expanded = !claim.expanded;
+  }
+  toggleSection(section: PartySection): void {
+    section.expanded = !section.expanded;
+  }
 
   // ── Selection cascade (visual only) ──────────────────────────────────────
 
@@ -172,31 +196,39 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
     await this.openAddPartyModal(claims, claim.claimId);
   }
 
-  async onAddPartiesToSection(claims: PartyClaim[], section: PartySection, claim: PartyClaim): Promise<void> {
+  async onAddPartiesToSection(
+    claims: PartyClaim[],
+    section: PartySection,
+    claim: PartyClaim
+  ): Promise<void> {
     await this.openAddPartyModal(claims, claim.claimId, section.sectionId);
   }
 
   private async openAddPartyModal(
     claims: PartyClaim[],
     targetClaimId: string,
-    targetSectionId?: string,
+    targetSectionId?: string
   ): Promise<void> {
     const existingIds = new Set(
       claims.flatMap(c => [
         ...c.directParties.map(p => p.partyId),
-        ...c.sections.flatMap(s => s.parties.map(p => p.partyId)),
-      ]),
+        ...c.sections.flatMap(s => s.parties.map(p => p.partyId))
+      ])
     );
 
     const modalData: AddPartyModalData = {
       policyNumber: this.policyNumber,
       existingPartyIds: existingIds,
       targetClaimId,
-      targetSectionId,
+      targetSectionId
     };
 
-    const ref = this.dialogSvc.open(AddPartyModalComponent, { data: modalData, width: '960px', maxWidth: '92vw' });
-    const selected = await firstValueFrom(ref.afterClosed()) as Party[] | undefined;
+    const ref = this.dialogSvc.open(AddPartyModalComponent, {
+      data: modalData,
+      width: '960px',
+      maxWidth: '92vw'
+    });
+    const selected = (await firstValueFrom(ref.afterClosed())) as Party[] | undefined;
     if (!selected || selected.length === 0) return;
 
     // try/finally, not try/catch-and-swallow — if party N of the batch fails,
@@ -207,7 +239,12 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
     try {
       for (const party of selected) {
         await firstValueFrom(
-          this.partiesSvc.addParty(this.policyNumber, { ...party, recentlyAdded: true }, targetClaimId, targetSectionId),
+          this.partiesSvc.addParty(
+            this.policyNumber,
+            { ...party, recentlyAdded: true },
+            targetClaimId,
+            targetSectionId
+          )
         );
       }
     } catch {
@@ -224,7 +261,8 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       const firstId = selected[0]?.partyId;
       if (firstId) {
-        document.querySelector(`[data-party-id="${firstId}"]`)
+        document
+          .querySelector(`[data-party-id="${firstId}"]`)
           ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 150);
@@ -241,16 +279,24 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
   onClosePanel(): void {
     this.panelOpen = false;
     this.unlockScroll();
-    setTimeout(() => { if (!this.panelOpen) this.selectedParty = null; }, 300);
+    setTimeout(() => {
+      if (!this.panelOpen) this.selectedParty = null;
+    }, 300);
   }
 
   async onEditRole(party: Party): Promise<void> {
     const data: EditRoleDialogData = { party };
-    const ref = this.dialogSvc.open(EditRoleDialogComponent, { data, width: '600px', maxWidth: '92vw' });
-    const newRoles = await firstValueFrom(ref.afterClosed()) as PartyRole[] | null | undefined;
+    const ref = this.dialogSvc.open(EditRoleDialogComponent, {
+      data,
+      width: '600px',
+      maxWidth: '92vw'
+    });
+    const newRoles = (await firstValueFrom(ref.afterClosed())) as PartyRole[] | null | undefined;
     if (!newRoles || newRoles.length === 0) return;
     try {
-      await firstValueFrom(this.partiesSvc.updateParty(this.policyNumber, party.partyId, { roles: newRoles }));
+      await firstValueFrom(
+        this.partiesSvc.updateParty(this.policyNumber, party.partyId, { roles: newRoles })
+      );
       this.refresh$.next();
     } catch {
       this.toast.error('Failed to update role', 'Please try again.');
@@ -263,10 +309,14 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
       message: `Are you sure you want to remove "${party.legalName}" from this claim?`,
       confirmLabel: 'Remove',
       cancelLabel: 'Cancel',
-      confirmDanger: true,
+      confirmDanger: true
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
-    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '440px',
+      maxWidth: '92vw'
+    });
+    const confirmed = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
     if (!confirmed) return;
     try {
       await firstValueFrom(this.partiesSvc.removeParty(this.policyNumber, party.partyId));
@@ -297,12 +347,22 @@ export class StepPartiesComponent implements OnInit, OnDestroy {
 
   // ── TrackBy helpers ───────────────────────────────────────────────────────
 
-  trackByClaim(_: number, c: PartyClaim): string  { return c.claimId; }
-  trackBySection(_: number, s: PartySection): string { return s.sectionId; }
-  trackByParty(_: number, p: Party): string       { return p.partyId; }
+  trackByClaim(_: number, c: PartyClaim): string {
+    return c.claimId;
+  }
+  trackBySection(_: number, s: PartySection): string {
+    return s.sectionId;
+  }
+  trackByParty(_: number, p: Party): string {
+    return p.partyId;
+  }
 
-  onBack(): void   { this.router.navigate(['/fnol/entities-damages']); }
-  onCancel(): void { this.router.navigate(['/dashboard']); }
+  onBack(): void {
+    this.router.navigate(['/fnol/entities-damages']);
+  }
+  onCancel(): void {
+    this.router.navigate(['/dashboard']);
+  }
   onNext(): void {
     this.fnolState.markStepComplete('parties');
     this.router.navigate(['/fnol/reserves']);

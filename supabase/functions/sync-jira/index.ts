@@ -29,7 +29,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
 };
 
 interface JiraIssue {
@@ -52,7 +52,7 @@ async function fetchAllIssues(baseUrl: string, token: string, jql: string): Prom
   while (true) {
     const url = `${baseUrl}/rest/api/2/search?jql=${encodeURIComponent(jql)}&fields=summary,status,assignee,issuetype,customfield_16101&startAt=${startAt}&maxResults=${maxResults}`;
     const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
     });
 
     if (!res.ok) {
@@ -71,38 +71,44 @@ async function fetchAllIssues(baseUrl: string, token: string, jql: string): Prom
 
 // deno-lint-ignore no-explicit-any
 async function upsertIssues(supabase: any, baseUrl: string, issues: JiraIssue[]) {
-  const epics = issues.filter((i) => i.fields.issuetype?.name === 'Epic');
-  const tickets = issues.filter((i) => i.fields.issuetype?.name !== 'Epic');
+  const epics = issues.filter(i => i.fields.issuetype?.name === 'Epic');
+  const tickets = issues.filter(i => i.fields.issuetype?.name !== 'Epic');
 
   if (epics.length > 0) {
     const { error } = await supabase.from('epic').upsert(
-      epics.map((e) => ({
+      epics.map(e => ({
         jira_key: e.key,
         title: e.fields.summary,
-        jira_status: e.fields.status?.name ?? null,
+        jira_status: e.fields.status?.name ?? null
       })),
-      { onConflict: 'jira_key' },
+      { onConflict: 'jira_key' }
     );
     if (error) throw new Error(`epic upsert failed: ${error.message}`);
   }
 
   // epic_id is a FK to our epic.id — resolve jira epic key -> our row id
   // after epics are upserted.
-  const { data: epicRows, error: epicFetchError } = await supabase.from('epic').select('id, jira_key');
+  const { data: epicRows, error: epicFetchError } = await supabase
+    .from('epic')
+    .select('id, jira_key');
   if (epicFetchError) throw new Error(`epic fetch failed: ${epicFetchError.message}`);
-  const epicIdByKey = new Map<string, string>((epicRows ?? []).map((r: { id: string; jira_key: string }) => [r.jira_key, r.id]));
+  const epicIdByKey = new Map<string, string>(
+    (epicRows ?? []).map((r: { id: string; jira_key: string }) => [r.jira_key, r.id])
+  );
 
   if (tickets.length > 0) {
     const { error } = await supabase.from('ticket').upsert(
-      tickets.map((t) => ({
+      tickets.map(t => ({
         jira_key: t.key,
         title: t.fields.summary,
         jira_status: t.fields.status?.name ?? null,
         assignee: t.fields.assignee?.displayName ?? null,
-        epic_id: t.fields.customfield_16101 ? epicIdByKey.get(t.fields.customfield_16101) ?? null : null,
-        jira_url: `${baseUrl}/browse/${t.key}`,
+        epic_id: t.fields.customfield_16101
+          ? (epicIdByKey.get(t.fields.customfield_16101) ?? null)
+          : null,
+        jira_url: `${baseUrl}/browse/${t.key}`
       })),
-      { onConflict: 'jira_key' },
+      { onConflict: 'jira_key' }
     );
     if (error) throw new Error(`ticket upsert failed: ${error.message}`);
   }
@@ -124,7 +130,7 @@ Deno.serve(async (req: Request) => {
   if (!baseUrl || !token || !jql) {
     return new Response(
       JSON.stringify({ error: 'Missing JIRA_BASE_URL / JIRA_TOKEN / JIRA_JQL secret' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 
@@ -138,7 +144,7 @@ Deno.serve(async (req: Request) => {
   if (logError) {
     return new Response(JSON.stringify({ error: logError.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 
@@ -148,12 +154,17 @@ Deno.serve(async (req: Request) => {
 
     await supabase
       .from('sync_log')
-      .update({ status: 'success', finished_at: new Date().toISOString(), ticket_count: ticketCount, epic_count: epicCount })
+      .update({
+        status: 'success',
+        finished_at: new Date().toISOString(),
+        ticket_count: ticketCount,
+        epic_count: epicCount
+      })
       .eq('id', logRow.id);
 
     return new Response(JSON.stringify({ epicCount, ticketCount }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   } catch (err) {
     await supabase
@@ -163,7 +174,7 @@ Deno.serve(async (req: Request) => {
 
     return new Response(JSON.stringify({ error: String(err) }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 });

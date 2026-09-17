@@ -94,7 +94,7 @@
     </div>
   </form>
 
-  <ng-container *ngIf="state$ | async as vm">
+  @if (state$ | async; as vm) {
     @if (vm.loading) {
       <div class="apm-loading">
         <nx-spinner size="medium"></nx-spinner>
@@ -104,12 +104,17 @@
     @if (!vm.loading && vm.searched) {
       <div class="apm-results">
         <div class="apm-results-meta">
-          <span class="apm-results-count">Number of parties: <strong>{{ vm.results.length }}</strong></span>
+          <span class="apm-results-count"
+            >Number of parties: <strong>{{ vm.results.length }}</strong></span
+          >
         </div>
         @if (vm.error) {
           <nx-message context="error">Search failed. Please try again.</nx-message>
         } @else if (vm.results.length === 0) {
-          <app-empty-state message="No parties found." hint="Try different filters."></app-empty-state>
+          <app-empty-state
+            message="No parties found."
+            hint="Try different filters."
+          ></app-empty-state>
         } @else {
           <table nxTable class="apm-table">
             <thead>
@@ -128,14 +133,18 @@
                     <nx-checkbox
                       [checked]="isSelected(party.partyId)"
                       (checkedChange)="toggleRow(party.partyId)"
-                      [attr.aria-label]="'Select ' + party.legalName">
+                      [attr.aria-label]="'Select ' + party.legalName"
+                    >
                     </nx-checkbox>
                   </td>
                   <td nxCell class="apm-col-name">{{ party.legalName }}</td>
                   <td nxCell class="apm-col-roles">{{ rolesDisplay(party) }}</td>
                   <td nxCell class="apm-col-ucv">{{ party.partyId }}</td>
                   <td nxCell class="apm-col-clearance">
-                    <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
+                    <app-status-chip
+                      [status]="party.clearanceStatus"
+                      domain="clearance"
+                    ></app-status-chip>
                   </td>
                 </tr>
               }
@@ -147,9 +156,12 @@
             }
             <div class="apm-footer-actions">
               <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-              <button nxButton="primary small" type="button"
-                      [disabled]="selectedCount === 0"
-                      (click)="onAdd(vm.results)">
+              <button
+                nxButton="primary small"
+                type="button"
+                [disabled]="selectedCount === 0"
+                (click)="onAdd(vm.results)"
+              >
                 Add ({{ selectedCount }})
               </button>
             </div>
@@ -157,14 +169,14 @@
         }
       </div>
     }
-  </ng-container>
+  }
 
-  <ng-container *ngIf="!(state$ | async)">
+  @if ((state$ | async) === null) {
     <div class="apm-footer apm-footer--no-results">
       <div class="apm-footer-actions">
         <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
         <button nxButton="primary small" type="button" disabled>Add (0)</button>
       </div>
     </div>
-  </ng-container>
+  }
 </div>

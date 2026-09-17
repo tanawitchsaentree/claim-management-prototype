@@ -1,37 +1,55 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { NxModalModule, NxModalRef, NX_MODAL_DATA, NxDialogService } from '@allianz/ng-aquila/modal';
+import {
+  NxModalModule,
+  NxModalRef,
+  NX_MODAL_DATA,
+  NxDialogService
+} from '@allianz/ng-aquila/modal';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { MockStateService } from '../../../../core/mock/state/mock-state.service';
-import { ClaimDevHelperService, TicketCard, TicketAC, PreconditionItem, ACVerification } from '../claim-dev-helper.service';
+import {
+  ClaimDevHelperService,
+  TicketCard,
+  TicketAC,
+  PreconditionItem,
+  ACVerification
+} from '../claim-dev-helper.service';
 import { InlineMarkdownPipe } from '../../../../shared/pipes/inline-markdown.pipe';
 import { VerifierNameModalComponent } from '../verifier-name-modal/verifier-name-modal.component';
 import { environment } from '../../../../../environments/environment';
 
 export interface ClaimDevDetailsModalData {
-  card:             TicketCard;
-  helper:           ClaimDevHelperService;
-  preselectedAcId:  string | null;
+  card: TicketCard;
+  helper: ClaimDevHelperService;
+  preselectedAcId: string | null;
 }
 
 @Component({
   selector: 'app-claim-dev-details-modal',
   standalone: true,
-  imports: [CommonModule, NxModalModule, NxRadioModule, NxButtonModule, NxIconModule, NxTooltipModule, InlineMarkdownPipe],
+  imports: [
+    NxModalModule,
+    NxRadioModule,
+    NxButtonModule,
+    NxIconModule,
+    NxTooltipModule,
+    InlineMarkdownPipe
+  ],
   templateUrl: './claim-dev-details-modal.component.html',
-  styleUrl:    './claim-dev-details-modal.component.scss',
+  styleUrl: './claim-dev-details-modal.component.scss'
 })
 export class ClaimDevDetailsModalComponent implements OnInit {
-  readonly data     = inject<ClaimDevDetailsModalData>(NX_MODAL_DATA);
+  readonly data = inject<ClaimDevDetailsModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<ClaimDevDetailsModalComponent>>(NxModalRef);
   private readonly stateSvc = inject(MockStateService);
-  private readonly router   = inject(Router);
-  private readonly dialog   = inject(NxDialogService);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(NxDialogService);
 
   readonly selectedAcId = signal<string | null>(null);
 
@@ -39,9 +57,15 @@ export class ClaimDevDetailsModalComponent implements OnInit {
   // is a dev-only debugging aid, not needed to understand a demo scenario.
   readonly isFullMode = environment.devBannerMode === 'full';
 
-  get card()   { return this.data.card; }
-  get ticket() { return this.card.ticket; }
-  get acs()    { return this.ticket.acceptanceCriteria; }
+  get card() {
+    return this.data.card;
+  }
+  get ticket() {
+    return this.card.ticket;
+  }
+  get acs() {
+    return this.ticket.acceptanceCriteria;
+  }
 
   readonly selectedAc = computed<TicketAC | null>(() => {
     const id = this.selectedAcId();
@@ -67,25 +91,25 @@ export class ClaimDevDetailsModalComponent implements OnInit {
     const normalized = this.normalize(ac.setup.preconditions);
     return {
       tested: normalized.filter(p => p.role === 'tested-visible'),
-      setup:  normalized.filter(p => p.role !== 'tested-visible'),
+      setup: normalized.filter(p => p.role !== 'tested-visible')
     };
   });
 
   readonly stateInspector = computed(() => {
-    const state   = this.stateSvc.state();
+    const state = this.stateSvc.state();
     // The selected AC wins over the ticket's target: an AC that names its own
     // claim would otherwise be read against another claim's state.
     const claimId = this.selectedAc()?.targetClaim ?? this.ticket.targetClaim;
     const overview = state.overviews[claimId];
-    const tasks    = state.tasks.filter(t => t.claimId === claimId);
+    const tasks = state.tasks.filter(t => t.claimId === claimId);
     const sections = state.sections.filter(s => s.claimId === claimId);
-    const openTasks    = tasks.filter(t => t.status !== 'done').length;
+    const openTasks = tasks.filter(t => t.status !== 'done').length;
     const openSections = sections.filter(s => s.status !== 'Closed').length;
     return {
-      status:   overview?.status ?? '—',
-      tasks:    `${openTasks} pending · ${tasks.length - openTasks} done`,
+      status: overview?.status ?? '—',
+      tasks: `${openTasks} pending · ${tasks.length - openTasks} done`,
       sections: `${openSections} open · ${sections.length - openSections} closed`,
-      canClose: openTasks === 0 && openSections === 0 && overview?.status !== 'Closed',
+      canClose: openTasks === 0 && openSections === 0 && overview?.status !== 'Closed'
     };
   });
 
@@ -103,9 +127,12 @@ export class ClaimDevDetailsModalComponent implements OnInit {
 
   statusIcon(status: 'done' | 'partial' | 'todo'): string {
     switch (status) {
-      case 'done':    return 'check-circle';
-      case 'partial': return 'minus-circle';
-      case 'todo':    return 'circle';
+      case 'done':
+        return 'check-circle';
+      case 'partial':
+        return 'minus-circle';
+      case 'todo':
+        return 'circle';
     }
   }
 
@@ -204,11 +231,9 @@ export class ClaimDevDetailsModalComponent implements OnInit {
     return `${base} ${hh}:${mi}`;
   }
 
-  private normalize(raw: Array<string | PreconditionItem>): PreconditionItem[] {
+  private normalize(raw: (string | PreconditionItem)[]): PreconditionItem[] {
     return raw.map(p =>
-      typeof p === 'string'
-        ? { text: p, page: 'any' as const, role: 'metadata' as const }
-        : p
+      typeof p === 'string' ? { text: p, page: 'any' as const, role: 'metadata' as const } : p
     );
   }
 }

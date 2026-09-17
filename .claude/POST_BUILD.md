@@ -20,6 +20,7 @@ npm run audit:file-size
 ```
 
 `pre-commit` includes:
+
 - `audit:stage-pattern` — catches stage register-late regressions (FNOL)
 - `audit:ac-logic` — Node-side simulator for AC `expectedOutcome`
 - `audit:all` — colors / radio-size / imports / any / subscribe / hardcoded-data / formfield-error / wizard-footer
@@ -64,15 +65,16 @@ npm run audit:file-size        # component file line count vs limits
 
 ## How to interpret results
 
-| Output | Meaning |
-|--------|---------|
-| Command exits 0, no output | PASS |
-| Lines printed | FAIL — each line is a violation with file:line |
+| Output                            | Meaning                                            |
+| --------------------------------- | -------------------------------------------------- |
+| Command exits 0, no output        | PASS                                               |
+| Lines printed                     | FAIL — each line is a violation with file:line     |
 | `OVER LIMIT file.html: 213 lines` | File exceeds limit — split before adding more code |
 
 ### Existing baseline violations (pre-2026-05-07 — do NOT fix inline with feature work)
 
 These files fail `audit:colors` by design — they predate the token enforcement rule:
+
 - `sections/sections.scss` — 30+ hardcoded hex
 - `layout/sidebar/sidebar.scss` — 8
 - `layout/navbar/navbar.scss` — 8
@@ -170,6 +172,7 @@ Done = code written + terminal checks pass + browser evidence + **user confirms 
 ```
 
 **Axe Jasmine snippet** (add to component spec when ready):
+
 ```ts
 import * as axe from 'axe-core';
 
@@ -182,6 +185,7 @@ it('passes a11y checks', async () => {
 ### High-contrast check (Edge / Windows)
 
 Open page in MS Edge → Windows Settings → Vision → High Contrast → toggle on. Verify:
+
 - [ ] All text remains readable
 - [ ] Custom SVGs have visible fill (use `currentColor` or `@media (-ms-high-contrast: active) { fill: windowText }`)
 - [ ] Borders + focus indicators stay visible
@@ -222,6 +226,7 @@ grep -rh '"damageTypeKey"' src/app/core/mock/data/ \
 ### Cross-reference rules
 
 For each JSON file that references IDs from another file:
+
 - `entities-damages.json` keys must match policy numbers in `policies.json`
 - `searchable-entities.json` keys must match policy numbers in `policies.json`
 - Any `clientId` references must exist in `clients.json`
@@ -256,9 +261,11 @@ DATA INTEGRITY REPORT:
 ## When the user confirms a feature works
 
 Immediately ask:
+
 > "Should I add `[file path]` to BLESSED.md as a verified reference implementation?"
 
 A file qualifies as blessed when ALL are true:
+
 - ✅ Renders correctly in browser (confirmed by user)
 - ✅ DevTools console shows zero errors
 - ✅ All interactions work

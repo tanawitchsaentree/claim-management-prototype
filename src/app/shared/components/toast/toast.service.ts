@@ -3,13 +3,13 @@ import { Injectable, signal } from '@angular/core';
 export type ToastTone = 'success' | 'info' | 'warning' | 'error';
 
 export interface ToastAction {
-  label:   string;
+  label: string;
   onClick: () => void;
 }
 
 export interface Toast {
-  id:    string;
-  tone:  ToastTone;
+  id: string;
+  tone: ToastTone;
   title: string;
   description?: string;
   durationMs?: number;
@@ -53,5 +53,7 @@ export class ToastService {
     this._toasts.update(list => list.filter(t => t.id !== id));
   }
 
-  clearAll(): void { this._toasts.set([]); }
+  clearAll(): void {
+    this._toasts.set([]);
+  }
 }

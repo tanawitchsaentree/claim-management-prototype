@@ -19,11 +19,11 @@ export const SCENARIOS: Record<string, DevScenario> = Object.entries(CAUSE_SCHEM
       description: `Auto-filled ${schema.causeLabel.toLowerCase()} scenario for testing`,
       eventCausedBy: schema.causedByOptions?.length
         ? { [key]: [schema.causedByOptions[0].value] }
-        : undefined,
+        : undefined
     };
     return acc;
   },
-  {} as Record<string, DevScenario>,
+  {} as Record<string, DevScenario>
 );
 
 export const SCENARIO_LIST: DevScenario[] = Object.values(SCENARIOS);

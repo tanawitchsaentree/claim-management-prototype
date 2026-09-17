@@ -19,7 +19,9 @@
 
   // NxMessage already paints its own bg + border. The shadow on the wrapper
   // gives the toast its lifted feel. Keep .toast as a thin positioning shell.
-  ::ng-deep .nx-message { margin: 0; }
+  ::ng-deep .nx-message {
+    margin: 0;
+  }
 }
 
 .toast__desc {

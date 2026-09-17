@@ -1,7 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HeadsUpItem, NewsItem, CalendarEvent, ProviderExpense, FinancialClosurePeriod, ReserveMovement, LossEventSummary, PaymentApproval } from '../../models';
+import {
+  HeadsUpItem,
+  NewsItem,
+  CalendarEvent,
+  ProviderExpense,
+  FinancialClosurePeriod,
+  ReserveMovement,
+  LossEventSummary,
+  PaymentApproval
+} from '../../models';
 import { MockStateService } from '../state/mock-state.service';
 import headsUpData from '../data/heads-up.json';
 import newsData from '../data/news.json';
@@ -34,9 +43,7 @@ export class MockDashboardExtendedService {
   }
 
   getLossEvents(): Observable<LossEventSummary[]> {
-    return of(this.stateSvc.state().lossEvents).pipe(
-      map(events => events as LossEventSummary[])
-    );
+    return of(this.stateSvc.state().lossEvents).pipe(map(events => events as LossEventSummary[]));
   }
 
   getPaymentApprovals(): Observable<PaymentApproval[]> {
@@ -48,7 +55,8 @@ export class MockDashboardExtendedService {
       active: true,
       start: '2026-06-25',
       end: '2026-07-02',
-      message: 'Q2 Financial Closure Period: 25 June – 2 July. All reserve movements and payments above €50k require Head of Claims approval.',
+      message:
+        'Q2 Financial Closure Period: 25 June – 2 July. All reserve movements and payments above €50k require Head of Claims approval.'
     });
   }
 }

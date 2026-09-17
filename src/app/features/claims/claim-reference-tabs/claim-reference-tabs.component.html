@@ -1,12 +1,12 @@
 <!-- Tab bar strip — below navbar, above all page content -->
 <div class="rt-bar">
-
   <!-- Primary tab — always leftmost, never closeable -->
   <button
     class="rt-tab rt-tab--primary"
     [class.rt-tab--active]="activeTabId() === 'primary'"
     type="button"
-    (click)="goToPrimary()">
+    (click)="goToPrimary()"
+  >
     <nx-icon name="product-board-paper-note" size="s" class="rt-tab__icon"></nx-icon>
     <span class="rt-tab__label">{{ svc.primaryClaimId() }}</span>
   </button>
@@ -14,13 +14,8 @@
   <!-- Scrollable reference tabs -->
   <div class="rt-tabs-scroll">
     @for (tab of svc.refTabs(); track tab.id) {
-      <div
-        class="rt-tab"
-        [class.rt-tab--active]="activeTabId() === tab.id">
-        <button
-          class="rt-tab__select"
-          type="button"
-          (click)="goToRef(tab)">
+      <div class="rt-tab" [class.rt-tab--active]="activeTabId() === tab.id">
+        <button class="rt-tab__select" type="button" (click)="goToRef(tab)">
           <span class="rt-tab__badge">Ref</span>
           <span class="rt-tab__label">{{ tab.claimId }}</span>
         </button>
@@ -28,7 +23,8 @@
           class="rt-tab__close"
           type="button"
           (click)="$event.stopPropagation(); closeRef(tab)"
-          [attr.aria-label]="'Close ' + tab.claimId">
+          [attr.aria-label]="'Close ' + tab.claimId"
+        >
           <nx-icon name="close" size="s"></nx-icon>
         </button>
       </div>
@@ -43,14 +39,21 @@
         [class.rt-add-btn--open]="showAddPopover()"
         type="button"
         aria-label="Open reference claim in new tab"
-        (click)="toggleAddPopover()">
+        (click)="toggleAddPopover()"
+      >
         <nx-icon name="plus" size="s"></nx-icon>
       </button>
 
       @if (showAddPopover()) {
-        <!-- Backdrop: click-outside closes popover -->
+        <!-- Backdrop: click-outside closes popover. Decorative dismiss-catcher,
+             not a control — Escape below already gives keyboard users the
+             same dismiss action. -->
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
         <div class="rt-popover-backdrop" (click)="closeAddPopover()"></div>
 
+        <!-- Focus lives on the input/listbox inside, not this wrapper —
+             Escape reaches this handler via bubbling regardless. -->
+        <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
         <div class="rt-popover" (keydown.escape)="closeAddPopover()">
           <input
             class="rt-popover__input"
@@ -58,7 +61,7 @@
             placeholder="Search claim ID or client…"
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchInput($event)"
-            autofocus />
+          />
 
           <!-- audit-exempt: tiny inline popover hint shares this class with the
                "Searching…" state — app-empty-state's 24px padding is too much
@@ -68,17 +71,27 @@
           } @else if (searchResults().length === 0 && searchQuery().length >= 2) {
             <div class="rt-popover__empty">No claims found</div>
           } @else if (searchResults().length > 0) {
-            <ul class="rt-popover__list" role="listbox" tabindex="0"
-                [attr.aria-activedescendant]="'rt-search-opt-' + highlightedIndex()"
-                (keydown)="onSearchListKeydown($event)">
+            <ul
+              class="rt-popover__list"
+              role="listbox"
+              tabindex="0"
+              [attr.aria-activedescendant]="'rt-search-opt-' + highlightedIndex()"
+              (keydown)="onSearchListKeydown($event)"
+            >
               @for (claim of searchResults(); track claim.claimId; let i = $index) {
+                <!-- role="option" inside a role="listbox" — the standard
+                     aria-activedescendant composite pattern: the listbox
+                     above owns focus and keyboard nav; options are mouse
+                     targets only, by design, not independent tab stops. -->
+                <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
                 <li
                   class="rt-popover__item"
                   [id]="'rt-search-opt-' + i"
                   role="option"
                   [attr.aria-selected]="i === highlightedIndex()"
                   [class.rt-popover__item--highlighted]="i === highlightedIndex()"
-                  (click)="selectResult(claim)">
+                  (click)="selectResult(claim)"
+                >
                   <span class="rt-popover__claim-id">{{ claim.claimId }}</span>
                   <span class="rt-popover__client">{{ claim.clientName }}</span>
                 </li>
@@ -91,5 +104,4 @@
       }
     </div>
   }
-
 </div>

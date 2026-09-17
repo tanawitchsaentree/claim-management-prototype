@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { animate, style, transition, trigger } from '@angular/animations';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -13,21 +13,21 @@ import { Toast, ToastService, ToastTone } from './toast.service';
 @Component({
   selector: 'app-toast-stack',
   standalone: true,
-  imports: [CommonModule, NxIconModule, NxMessageModule, NxLinkModule],
+  imports: [NxIconModule, NxMessageModule, NxLinkModule],
   template: `
     <div class="toast-stack" aria-live="polite" aria-atomic="true">
       @for (t of toasts(); track t.id) {
         <div class="toast" role="status" @toastSlide>
-          <nx-message [context]="contextFor(t.tone)"
-                      [closable]="true"
-                      (close)="svc.dismiss(t.id)">
+          <nx-message [context]="contextFor(t.tone)" [closable]="true" (close)="svc.dismiss(t.id)">
             <strong>{{ t.title }}</strong>
             @if (t.description) {
               <p class="toast__desc">{{ t.description }}</p>
             }
             @if (t.action) {
               <nx-link size="small" class="toast__action">
-                <a (click)="onAction(t)">{{ t.action.label }}</a>
+                <a tabindex="0" (click)="onAction(t)" (keydown.enter)="onAction(t)">{{
+                  t.action.label
+                }}</a>
               </nx-link>
             }
           </nx-message>
@@ -40,15 +40,16 @@ import { Toast, ToastService, ToastTone } from './toast.service';
     trigger('toastSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(24px)' }),
-        animate('200ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, transform: 'translateX(0)' })),
+        animate(
+          '200ms cubic-bezier(0.2, 0, 0, 1)',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        )
       ]),
       transition(':leave', [
-        animate('160ms ease-in',
-          style({ opacity: 0, transform: 'translateX(24px)' })),
-      ]),
-    ]),
-  ],
+        animate('160ms ease-in', style({ opacity: 0, transform: 'translateX(24px)' }))
+      ])
+    ])
+  ]
 })
 export class ToastStackComponent {
   readonly svc = inject(ToastService);

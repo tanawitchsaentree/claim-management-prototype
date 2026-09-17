@@ -7,27 +7,20 @@ import { LossInformation } from '../../models/loss-information.model';
 import { LossEventSummary } from '../../models/dashboard-extended.model';
 import { CwbLocation } from '../../models/cwb-location.model';
 import { Note } from '../../models/note.model';
+import { FinancialOverview } from '../../models/financial-overview.model';
+import { ProviderAssignment } from '../../models/provider-assignment.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 
 export interface ScenarioOverrides {
-  taskStatuses?:    Record<string, TaskStatus>;
+  taskStatuses?: Record<string, TaskStatus>;
   sectionStatuses?: Record<string, SectionStatus>;
   sectionBlockers?: Record<string, Partial<SectionBlockers>>;
-  overviewPatch?:   { claimId: string; patch: Partial<ClaimOverview> };
-  claimsAppend?:    Claim[];
+  overviewPatch?: { claimId: string; patch: Partial<ClaimOverview> };
+  claimsAppend?: Claim[];
   fnolStateOverride?: {
     selectedPolicy?: { policyId: string; policyNumber: string };
     selectedClient?: { clientId: string; clientName: string };
-    path?:           'standard' | 'orphan' | null;
-    // BMPCC-11006: prefill the happy-path FNOL form from a skeleton claim
-    // so the demo can land on /fnol/search with every step's fields already
-    // populated; user navigates through the wizard themselves. The skeleton
-    // ID resolves against `claims.json` (orphan claims are Claim records
-    // with an SK- id and status 'Awaiting policy'/'Matched'/'Abandoned').
-    convertFromSkeletonId?: string;
-    // Optional hint for the prefill: the policy number to drop into the
-    // search form so the user only needs one click to find the right row.
-    convertSuggestedPolicyNumber?: string;
+    path?: 'standard' | 'orphan' | null;
   };
   cwbLocationsAppend?: CwbLocation[];
   notesAppend?: { claimId: string; notes: Note[] };
@@ -40,20 +33,31 @@ import tasksData from '../data/tasks.json';
 import claimsData from '../data/claims.json';
 import lossInfoData from '../data/loss-information.json';
 import lossEventsData from '../data/loss-events.json';
+import financialOverviewData from '../data/financial-overview.json';
+import providerAssignmentsData from '../data/provider-assignments.json';
 
 export interface MockState {
-  overviews:        Record<string, ClaimOverview>;
-  activities:       ClaimActivity[];
-  sections:         ClaimSection[];
-  tasks:            Task[];
-  claims:           Claim[];
-  lossInformation:  LossInformation[];
-  lossEvents:       LossEventSummary[];
+  overviews: Record<string, ClaimOverview>;
+  activities: ClaimActivity[];
+  sections: ClaimSection[];
+  tasks: Task[];
+  claims: Claim[];
+  lossInformation: LossInformation[];
+  lossEvents: LossEventSummary[];
+  // Keyed by claimId, same idempotent insert-then-patch pattern as `overviews`
+  // — added because MockFinancialOverviewService used to keep this in a bare
+  // in-memory Map with no sessionStorage backing at all, silently losing every
+  // reserve added on a page reload while everything else in the app survived.
+  financialOverviews: Record<string, FinancialOverview>;
+  // Was a bare in-memory array inside MockProviderService with no persistence
+  // and no way to add to it at all — "Instruct provider" from a Section just
+  // navigated here with zero way to actually create an assignment.
+  providerAssignments: ProviderAssignment[];
 }
 
-const STORAGE_KEY          = 'champ-mock-state';
+const STORAGE_KEY = 'champ-mock-state';
 const STORAGE_SCENARIO_KEY = 'champ-mock-scenario';
-const STORAGE_VERSION_KEY  = 'champ-mock-version';
+const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped for BMPCC-17779 — claim-overview.json gained recoveryPotential on
 // four records. Without a bump, anyone with cached state keeps the old
 // overviews and every seeded claim reads as unanswered.
@@ -62,17 +66,25 @@ const STORAGE_VERSION_KEY  = 'champ-mock-version';
 // recovery-domain demo claim) and every record gained `hasRecoveryCase`.
 // Cached state without the new field reads a claim with a running recovery
 // case as "no case set up", which is a closure blocker that cannot be cleared.
-const STATE_VERSION        = 'recovery-cases-v6';
+// Bumped again: added `financialOverviews` and `providerAssignments` — cached
+// state from before these keys existed would throw reading them.
+const STATE_VERSION = 'recovery-cases-v8';
 
 function defaultState(): MockState {
   return {
-    overviews:       overviewData   as unknown as Record<string, ClaimOverview>,
-    activities:      activitiesData as unknown as ClaimActivity[],
-    sections:        sectionsData   as unknown as ClaimSection[],
-    tasks:           tasksData      as unknown as Task[],
-    claims:          claimsData     as unknown as Claim[],
-    lossInformation: lossInfoData   as unknown as LossInformation[],
-    lossEvents:      lossEventsData as unknown as LossEventSummary[],
+    overviews: overviewData as unknown as Record<string, ClaimOverview>,
+    activities: activitiesData as unknown as ClaimActivity[],
+    sections: sectionsData as unknown as ClaimSection[],
+    tasks: tasksData as unknown as Task[],
+    claims: claimsData as unknown as Claim[],
+    lossInformation: lossInfoData as unknown as LossInformation[],
+    lossEvents: lossEventsData as unknown as LossEventSummary[],
+    // financial-overview.json is an array (one entry per seeded claim), unlike
+    // claim-overview.json which is already claimId-keyed — reshape once here.
+    financialOverviews: Object.fromEntries(
+      (financialOverviewData as unknown as FinancialOverview[]).map(f => [f.claimId, f])
+    ),
+    providerAssignments: providerAssignmentsData as unknown as ProviderAssignment[]
   };
 }
 
@@ -80,10 +92,10 @@ function defaultState(): MockState {
 export class MockStateService {
   private readonly injector = inject(Injector);
 
-  private readonly _state    = signal<MockState>(this.hydrateState());
+  private readonly _state = signal<MockState>(this.hydrateState());
   private readonly _scenario = signal<MockScenario>(this.hydrateScenario());
 
-  readonly state:    Signal<MockState>    = this._state.asReadonly();
+  readonly state: Signal<MockState> = this._state.asReadonly();
   readonly scenario: Signal<MockScenario> = this._scenario.asReadonly();
 
   patchOverview(claimId: string, partial: Partial<ClaimOverview>): void {
@@ -92,7 +104,7 @@ export class MockStateService {
     if (!existing) return;
     this._state.set({
       ...cur,
-      overviews: { ...cur.overviews, [claimId]: { ...existing, ...partial } },
+      overviews: { ...cur.overviews, [claimId]: { ...existing, ...partial } }
     });
     this.persist();
   }
@@ -109,7 +121,29 @@ export class MockStateService {
     if (cur.overviews[claimId]) return;
     this._state.set({
       ...cur,
-      overviews: { ...cur.overviews, [claimId]: overview },
+      overviews: { ...cur.overviews, [claimId]: overview }
+    });
+    this.persist();
+  }
+
+  patchFinancialOverview(claimId: string, partial: Partial<FinancialOverview>): void {
+    const cur = this._state();
+    const existing = cur.financialOverviews[claimId];
+    if (!existing) return;
+    this._state.set({
+      ...cur,
+      financialOverviews: { ...cur.financialOverviews, [claimId]: { ...existing, ...partial } }
+    });
+    this.persist();
+  }
+
+  /** Insert-if-missing — same idempotency reason as `ensureOverview`. */
+  ensureFinancialOverview(claimId: string, overview: FinancialOverview): void {
+    const cur = this._state();
+    if (cur.financialOverviews[claimId]) return;
+    this._state.set({
+      ...cur,
+      financialOverviews: { ...cur.financialOverviews, [claimId]: overview }
     });
     this.persist();
   }
@@ -118,7 +152,7 @@ export class MockStateService {
     const cur = this._state();
     this._state.set({
       ...cur,
-      sections: cur.sections.map(s => s.id === sectionId ? { ...s, ...partial } : s),
+      sections: cur.sections.map(s => (s.id === sectionId ? { ...s, ...partial } : s))
     });
     this.persist();
   }
@@ -129,6 +163,26 @@ export class MockStateService {
   appendSections(sections: ClaimSection[]): void {
     const cur = this._state();
     this._state.set({ ...cur, sections: [...cur.sections, ...sections] });
+    this.persist();
+  }
+
+  appendProviderAssignments(assignments: ProviderAssignment[]): void {
+    const cur = this._state();
+    this._state.set({
+      ...cur,
+      providerAssignments: [...cur.providerAssignments, ...assignments]
+    });
+    this.persist();
+  }
+
+  patchProviderAssignment(assignmentId: string, partial: Partial<ProviderAssignment>): void {
+    const cur = this._state();
+    this._state.set({
+      ...cur,
+      providerAssignments: cur.providerAssignments.map(a =>
+        a.assignmentId === assignmentId ? { ...a, ...partial } : a
+      )
+    });
     this.persist();
   }
 
@@ -162,7 +216,7 @@ export class MockStateService {
       ...cur,
       lossEvents: cur.lossEvents.map(e =>
         e.lossEventId === lossEventId ? { ...e, ...partial } : e
-      ),
+      )
     });
     this.persist();
   }
@@ -215,17 +269,26 @@ export class MockStateService {
 
     if (overrides.taskStatuses) {
       const map = overrides.taskStatuses;
-      next = { ...next, tasks: next.tasks.map(t => map[t.taskId] ? { ...t, status: map[t.taskId] } : t) };
+      next = {
+        ...next,
+        tasks: next.tasks.map(t => (map[t.taskId] ? { ...t, status: map[t.taskId] } : t))
+      };
     }
 
     if (overrides.sectionStatuses) {
       const map = overrides.sectionStatuses;
-      next = { ...next, sections: next.sections.map(s => map[s.id] ? { ...s, status: map[s.id] } : s) };
+      next = {
+        ...next,
+        sections: next.sections.map(s => (map[s.id] ? { ...s, status: map[s.id] } : s))
+      };
     }
 
     if (overrides.sectionBlockers) {
       const map = overrides.sectionBlockers;
-      next = { ...next, sections: next.sections.map(s => map[s.id] ? { ...s, ...map[s.id] } : s) };
+      next = {
+        ...next,
+        sections: next.sections.map(s => (map[s.id] ? { ...s, ...map[s.id] } : s))
+      };
     }
 
     if (overrides.overviewPatch) {

@@ -15,6 +15,7 @@ All patterns verified with Angular 21 standalone, no `expert.css`, underline app
 ```
 
 With validation error:
+
 ```html
 <nx-formfield label="Policy number">
   <input nxInput formControlName="policyNumber" />
@@ -61,13 +62,17 @@ With validation error:
   <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="occurrencePicker" />
   <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
   <nx-datepicker #occurrencePicker></nx-datepicker>
-  <nx-error nxFormfieldError *ngIf="form.get('dateOfOccurrence')?.errors?.['required'] && submitted">
+  <nx-error
+    nxFormfieldError
+    *ngIf="form.get('dateOfOccurrence')?.errors?.['required'] && submitted"
+  >
     Required.
   </nx-error>
 </nx-formfield>
 ```
 
 **Gotchas:**
+
 - Link input → picker with `[datepicker]="ref"` (NOT `[nxDatefield]="ref"`)
 - Toggle links with `[for]="ref"` (NOT `[datepicker]="ref"`)
 - Both `nxDatefield` AND `nxInput` directives are required on the `<input>`
@@ -84,7 +89,9 @@ With validation error:
 ```html
 <!-- ✅ CORRECT -->
 <nx-timefield label="Time of occurrence" formControlName="timeOfOccurrence"></nx-timefield>
-<p class="field-error" *ngIf="form.get('timeOfOccurrence')?.errors?.['required'] && submitted">Required.</p>
+<p class="field-error" *ngIf="form.get('timeOfOccurrence')?.errors?.['required'] && submitted">
+  Required.
+</p>
 
 <!-- ❌ WRONG — do NOT wrap in nx-formfield -->
 <nx-formfield label="Time of occurrence">
@@ -102,7 +109,7 @@ With validation error:
 <nx-formfield label="Country">
   <nx-dropdown formControlName="country" placeholder="Select country">
     @for (c of countries; track c.value) {
-      <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+    <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
     }
   </nx-dropdown>
   <nx-error nxFormfieldError *ngIf="form.get('country')?.errors?.['required'] && submitted">
@@ -134,6 +141,7 @@ With validation error:
 ```
 
 **Gotchas:**
+
 - Does NOT use `NG_VALUE_ACCESSOR` — uses `NgControl` injection. `formControlName` works.
 - Do NOT use `[value]` input — it does not exist as a public input.
 - `[options]` = full array; `selectValue` = field used as form value; `selectLabel` = field displayed.
@@ -145,17 +153,20 @@ With validation error:
 **Modules:** `NxCheckboxModule`
 
 Group (FormArray-backed, manual checked/change):
+
 ```html
 <div class="checkbox-row">
   <nx-checkbox
     *ngFor="let opt of options"
     [checked]="isChecked(opt.value)"
     (checkedChange)="onToggle(opt.value, $event)"
-  >{{ opt.label }}</nx-checkbox>
+    >{{ opt.label }}</nx-checkbox
+  >
 </div>
 ```
 
 Single boolean with `formControlName`:
+
 ```html
 <nx-checkbox formControlName="agreeToTerms">I agree to the terms</nx-checkbox>
 ```
@@ -169,16 +180,27 @@ Single boolean with `formControlName`:
 **CRITICAL:** Every `<nx-radio>` must have `labelSize="small"` — without it the label renders at the wrong size.
 
 Manual boolean pattern:
+
 ```html
 <div class="radio-field">
   <p class="radio-label">Fire department called?</p>
   <div class="radio-row">
-    <nx-radio name="fireDept" [value]="true"
+    <nx-radio
+      name="fireDept"
+      [value]="true"
       [checked]="fireDeptCalled === true"
-      (valueChange)="setFireDeptCalled(true)" labelSize="small">Yes</nx-radio>
-    <nx-radio name="fireDept" [value]="false"
+      (valueChange)="setFireDeptCalled(true)"
+      labelSize="small"
+      >Yes</nx-radio
+    >
+    <nx-radio
+      name="fireDept"
+      [value]="false"
       [checked]="fireDeptCalled === false"
-      (valueChange)="setFireDeptCalled(false)" labelSize="small">No</nx-radio>
+      (valueChange)="setFireDeptCalled(false)"
+      labelSize="small"
+      >No</nx-radio
+    >
   </div>
 </div>
 ```
@@ -193,12 +215,13 @@ Manual boolean pattern:
 <!-- ✅ CORRECT — nx-radio-group owns formControlName -->
 <nx-radio-group formControlName="reasonKey" class="my-form__radios">
   @for (opt of options; track opt.value) {
-    <nx-radio [value]="opt.value" labelSize="small">{{ opt.label }}</nx-radio>
+  <nx-radio [value]="opt.value" labelSize="small">{{ opt.label }}</nx-radio>
   }
 </nx-radio-group>
 ```
 
 **Gotchas:**
+
 - `formControlName` goes on `nx-radio-group`, NOT individual `nx-radio`
 - Always `labelSize="small"` on every `<nx-radio>`
 - Parent `<form [formGroup]="fg">` is required
@@ -249,8 +272,7 @@ Sizes: `primary`, `primary small`, `secondary`, `secondary small`, `tertiary`, `
 ```html
 <!-- Inside button -->
 <button nxButton="primary small" type="submit" [disabled]="isLoading">
-  @if (isLoading) { <nx-spinner size="small"></nx-spinner> }
-  @else { Submit }
+  @if (isLoading) { <nx-spinner size="small"></nx-spinner> } @else { Submit }
 </button>
 
 <!-- Standalone loading state -->
@@ -340,8 +362,11 @@ Sizes: `s`, `m` (default), `l`, `xl`, `2xl`, `3xl`.
   </nx-tab>
 </nx-tab-group>
 
-@if (activeTab === 0) { <!-- tab one content --> }
-@if (activeTab === 1) { <!-- tab two content --> }
+@if (activeTab === 0) {
+<!-- tab one content -->
+} @if (activeTab === 1) {
+<!-- tab two content -->
+}
 ```
 
 Tab content is rendered with `@if`, NOT inside `<nx-tab>` body — prevents unmounting hidden tabs.
@@ -360,7 +385,8 @@ Tab content is rendered with `@if`, NOT inside `<nx-tab>` body — prevents unmo
   type="advanced"
   (goPrev)="currentPage = currentPage - 1"
   (goNext)="currentPage = currentPage + 1"
-  (goPage)="currentPage = $event">
+  (goPage)="currentPage = $event"
+>
 </nx-pagination>
 ```
 
@@ -385,9 +411,11 @@ Positions: `top`, `bottom`, `left`, `right`.
 **Modules:** `NxContextMenuModule`
 
 ```html
-<button type="button"
-        [nxContextMenuTriggerFor]="rowMenu"
-        [nxContextMenuTriggerData]="{ item: row }">
+<button
+  type="button"
+  [nxContextMenuTriggerFor]="rowMenu"
+  [nxContextMenuTriggerData]="{ item: row }"
+>
   <nx-icon name="ellipsis-v"></nx-icon>
 </button>
 
@@ -416,13 +444,13 @@ Positions: `top`, `bottom`, `left`, `right`.
 
 ## FORBIDDEN patterns
 
-| Pattern | Why broken |
-|---------|------------|
-| `appearance="outline"` on `nx-formfield` | Renders as unstyled broken box without expert.css |
-| `<input type="date">` | Use `input[nxDatefield]` + `nx-datepicker` |
-| `<select>` / `<option>` | Use `nx-dropdown` + `nx-dropdown-item` |
-| `[value]="myVal"` on `nx-multi-select` | No public `[value]` input — use `formControlName` |
-| `[nxDatefield]="pickerRef"` on input | Wrong attribute — use `[datepicker]="pickerRef"` |
-| `<nx-formfield><nx-timefield>` | nx-timefield is self-contained — wrapping breaks all formfields on the page |
-| `subscribe()` in component | Use `async` pipe |
-| `<nx-error>` without `nxFormfieldError` | Error shows unconditionally regardless of touched/invalid state |
+| Pattern                                  | Why broken                                                                  |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| `appearance="outline"` on `nx-formfield` | Renders as unstyled broken box without expert.css                           |
+| `<input type="date">`                    | Use `input[nxDatefield]` + `nx-datepicker`                                  |
+| `<select>` / `<option>`                  | Use `nx-dropdown` + `nx-dropdown-item`                                      |
+| `[value]="myVal"` on `nx-multi-select`   | No public `[value]` input — use `formControlName`                           |
+| `[nxDatefield]="pickerRef"` on input     | Wrong attribute — use `[datepicker]="pickerRef"`                            |
+| `<nx-formfield><nx-timefield>`           | nx-timefield is self-contained — wrapping breaks all formfields on the page |
+| `subscribe()` in component               | Use `async` pipe                                                            |
+| `<nx-error>` without `nxFormfieldError`  | Error shows unconditionally regardless of touched/invalid state             |

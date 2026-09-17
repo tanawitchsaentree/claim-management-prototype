@@ -3,7 +3,7 @@ import {
   circumstanceLabel,
   circumstanceOptionsFor,
   isCircumstanceValidFor,
-  UNKNOWN_CIRCUMSTANCE_KEY,
+  UNKNOWN_CIRCUMSTANCE_KEY
 } from './circumstances';
 
 // Pure ref-data logic — no TestBed. Exercises the real function the FNOL field,
@@ -71,7 +71,9 @@ describe('circumstanceLabel', () => {
   });
 
   it('falls back to the raw key rather than rendering blank', () => {
-    expect(circumstanceLabel('key-from-a-future-rda-release')).toBe('key-from-a-future-rda-release');
+    expect(circumstanceLabel('key-from-a-future-rda-release')).toBe(
+      'key-from-a-future-rda-release'
+    );
   });
 
   it('renders empty for no value', () => {

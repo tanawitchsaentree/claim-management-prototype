@@ -15,13 +15,22 @@ import { Policy } from '../../../core/models';
 @Component({
   selector: 'app-fnol-shell',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, NxIconModule, NxButtonModule, NxPopoverModule, NxLinkModule, FnolStepperComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    NxIconModule,
+    NxButtonModule,
+    NxPopoverModule,
+    NxLinkModule,
+    FnolStepperComponent
+  ],
   templateUrl: './fnol-shell.component.html',
-  styleUrl: './fnol-shell.component.scss',
+  styleUrl: './fnol-shell.component.scss'
 })
 export class FnolShellComponent {
-  private router     = inject(Router);
-  private fnolState  = inject(FnolStateService);
+  private router = inject(Router);
+  private fnolState = inject(FnolStateService);
 
   get policyContext(): Policy | null {
     return this.fnolState.selectedPolicyFull;
@@ -31,11 +40,11 @@ export class FnolShellComponent {
     filter(e => e instanceof NavigationEnd),
     map(e => (e as NavigationEnd).urlAfterRedirects),
     startWith(this.router.url),
-    shareReplay(1),
+    shareReplay(1)
   );
 
   readonly showStepper$: Observable<boolean> = this.url$.pipe(
-    map(url => this.fnolState.isWizardRoute(url)),
+    map(url => this.fnolState.isWizardRoute(url))
   );
 
   readonly steps$: Observable<FnolStep[]> = this.url$.pipe(
@@ -43,16 +52,18 @@ export class FnolShellComponent {
       // Pick wizard path based on FNOL state. Orphan/skeleton flow has its own
       // 2-step sidebar (Loss → Summary).
       const wizardPath: 'happy' | 'skeleton' =
-        this.fnolState.path === 'orphan' || url.includes('/fnol/skeleton-')
-          ? 'skeleton'
-          : 'happy';
+        this.fnolState.path === 'orphan' || url.includes('/fnol/skeleton-') ? 'skeleton' : 'happy';
       const configs: StepConfig[] = this.fnolState.getStepsForPath(wizardPath);
       const activeIndex = this.fnolState.getCurrentStepIndex(url, wizardPath);
       return configs.map((s, i) => ({
-        key:    s.key,
-        label:  s.label,
-        status: (i < activeIndex ? 'completed' : i === activeIndex ? 'active' : 'pending') as FnolStep['status'],
+        key: s.key,
+        label: s.label,
+        status: (i < activeIndex
+          ? 'completed'
+          : i === activeIndex
+            ? 'active'
+            : 'pending') as FnolStep['status']
       }));
-    }),
+    })
   );
 }

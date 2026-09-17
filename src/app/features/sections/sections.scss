@@ -1,12 +1,12 @@
 // ─── Variables ───────────────────────────────────────────────────
-$sidebar-width:       288px;
-$header-height:       64px;
-$blue-active:         var(--interactive-text);
-$gray-bg:             var(--ui-02);
-$text-main:           var(--text-01);
-$text-muted:          var(--text-muted);
-$border-color:        var(--ui-04);
-$brand-blue:          var(--info);
+$sidebar-width: 288px;
+$header-height: 64px;
+$blue-active: var(--interactive-text);
+$gray-bg: var(--ui-02);
+$text-main: var(--text-01);
+$text-muted: var(--text-muted);
+$border-color: var(--ui-04);
+$brand-blue: var(--info);
 
 // ─── Split layout ────────────────────────────────────────────────
 .sec-split {
@@ -17,13 +17,25 @@ $brand-blue:          var(--info);
 }
 
 @keyframes slideInLeft {
-  from { transform: translateX(-16px); opacity: 0; }
-  to   { transform: translateX(0);     opacity: 1; }
+  from {
+    transform: translateX(-16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideInRight {
-  from { transform: translateX(24px); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .sec-tree {
@@ -32,15 +44,25 @@ $brand-blue:          var(--info);
   border-right: 1px solid var(--ui-04);
   animation: slideInLeft 0.22s ease-out;
 
-  &__table { width: 100%; }
+  &__table {
+    width: 100%;
+  }
 
-  &__col-toggle { width: 48px; padding: 0 !important; }
-  &__col-name   { }
+  &__col-toggle {
+    width: 48px;
+    padding: 0 !important;
+  }
+  &__col-name {
+  }
 
   &__section-row {
     cursor: pointer;
-    td { font-weight: 600 !important; }
-    &:hover td { background: var(--ui-02) !important; }
+    td {
+      font-weight: 600 !important;
+    }
+    &:hover td {
+      background: var(--ui-02) !important;
+    }
 
     &--active {
       box-shadow: inset 3px 0 0 var(--interactive-primary);
@@ -50,7 +72,9 @@ $brand-blue:          var(--info);
       }
     }
   }
-  &__section-name { font-size: var(--paragraph-03-font-size) !important; }
+  &__section-name {
+    font-size: var(--paragraph-03-font-size) !important;
+  }
 
   &__entity-row {
     cursor: pointer;
@@ -62,8 +86,14 @@ $brand-blue:          var(--info);
       text-overflow: ellipsis !important;
       max-width: 0 !important;
     }
-    td.sec-tree__col-toggle { padding-left: 4px !important; max-width: none !important; }
-    &:hover td { background: var(--ui-02) !important; color: var(--text-01) !important; }
+    td.sec-tree__col-toggle {
+      padding-left: 4px !important;
+      max-width: none !important;
+    }
+    &:hover td {
+      background: var(--ui-02) !important;
+      color: var(--text-01) !important;
+    }
 
     &--active {
       box-shadow: inset 3px 0 0 var(--interactive-primary);
@@ -75,7 +105,9 @@ $brand-blue:          var(--info);
     }
   }
 
-  &__entity-name { padding-left: 16px !important; }
+  &__entity-name {
+    padding-left: 16px !important;
+  }
 }
 
 .sec-main {
@@ -170,7 +202,9 @@ $brand-blue:          var(--info);
   position: relative;
   transition: color 0.12s;
 
-  &:hover { color: var(--interactive-text); }
+  &:hover {
+    color: var(--interactive-text);
+  }
 
   &--active {
     color: var(--interactive-text);
@@ -225,7 +259,9 @@ $brand-blue:          var(--info);
   flex: 1;
   background: var(--ui-01);
   height: 100%;
-  &::placeholder { color: var(--text-muted); }
+  &::placeholder {
+    color: var(--text-muted);
+  }
 }
 
 .search-btn {
@@ -241,7 +277,10 @@ $brand-blue:          var(--info);
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  nx-icon { color: var(--ui-01) !important; font-size: 16px !important; }
+  nx-icon {
+    color: var(--ui-01) !important;
+    font-size: 16px !important;
+  }
 }
 
 .user-avatar {
@@ -339,10 +378,14 @@ $brand-blue:          var(--info);
 
     .side-nav-icon {
       color: var(--text-02);
-      nx-icon { color: var(--text-02) !important; }
+      nx-icon {
+        color: var(--text-02) !important;
+      }
     }
 
-    .side-nav-label { color: var(--text-02); }
+    .side-nav-label {
+      color: var(--text-02);
+    }
   }
 }
 
@@ -369,12 +412,17 @@ $brand-blue:          var(--info);
   border-radius: 4px;
   font-size: var(--paragraph-03-font-size);
 
-  nx-icon { color: $text-muted; font-size: 18px; }
+  nx-icon {
+    color: $text-muted;
+    font-size: 18px;
+  }
 
   &:hover {
     background: var(--ui-03);
     color: $text-main;
-    nx-icon { color: $text-main; }
+    nx-icon {
+      color: $text-main;
+    }
   }
 
   &--collapse {
@@ -456,12 +504,37 @@ $brand-blue:          var(--info);
   // overflow/ellipsis reset: this column only ever holds an icon-button, never
   // truncatable text — whitespace text nodes around the button otherwise trip
   // the inherited text-overflow:ellipsis into showing a stray "…" mark.
-  .col-toggle   { width: 48px;  padding: 0 !important; overflow: visible !important; text-overflow: clip !important; white-space: normal !important; }
-  .col-entity   { width: 18%; }
-  .col-status   { width: 90px; }
-  .col-damage   { width: 24%; }
-  .col-coverage  { width: 240px; }
-  .col-actions   { width: 56px; text-align: center !important; padding: 0 !important; }
+  // All percentage, not a px/% mix — table-layout:fixed here proportionally
+  // scales px-declared columns to fill whatever's left AFTER the % columns
+  // take their exact share, so a px column's rendered width silently drifts
+  // from its declared value depending on how much room the % columns leave.
+  // That's what pushed "Coverage review" (often blank) out to ~339px while
+  // "Entity" (the identifying text, sometimes long) was squeezed to ~190px
+  // and had to truncate. Same-unit columns render exactly as declared.
+  .col-toggle {
+    width: 5%;
+    padding: 0 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+  .col-entity {
+    width: 36%;
+  }
+  .col-status {
+    width: 9%;
+  }
+  .col-damage {
+    width: 20%;
+  }
+  .col-coverage {
+    width: 22%;
+  }
+  .col-actions {
+    width: 8%;
+    text-align: center !important;
+    padding: 0 !important;
+  }
 
   th[nxHeaderCell] {
     font-size: var(--paragraph-03-font-size) !important;
@@ -481,10 +554,10 @@ $brand-blue:          var(--info);
     white-space: nowrap;
   }
 
-  td.col-coverage { overflow: visible; }
+  td.col-coverage {
+    overflow: visible;
+  }
 }
-
-
 
 // ─── Coverage review column ───────────────────────────────────────
 .coverage-cell {
@@ -493,10 +566,15 @@ $brand-blue:          var(--info);
   gap: 6px;
   overflow: visible;
 
-  .coverage-edit-btn { opacity: 0; transition: opacity 0.15s; }
+  .coverage-edit-btn {
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
 }
 
-.entity-row:hover .coverage-edit-btn { opacity: 1; }
+.entity-row:hover .coverage-edit-btn {
+  opacity: 1;
+}
 
 .coverage-chip {
   display: inline-block;
@@ -514,13 +592,21 @@ $brand-blue:          var(--info);
   border: none;
   padding: 0;
   cursor: pointer;
-  &:disabled { cursor: default; }
-  &:not(:disabled):hover .coverage-chip { opacity: 0.8; }
+  &:disabled {
+    cursor: default;
+  }
+  &:not(:disabled):hover .coverage-chip {
+    opacity: 0.8;
+  }
 }
 
-.coverage-overridden-icon { color: var(--interactive-primary); }
+.coverage-overridden-icon {
+  color: var(--interactive-primary);
+}
 
-.coverage-empty { color: var(--text-muted); }
+.coverage-empty {
+  color: var(--text-muted);
+}
 
 // ─── Right strip ──────────────────────────────────────────────────
 .right-strip {
@@ -539,15 +625,21 @@ $brand-blue:          var(--info);
   width: 36px !important;
   height: 36px !important;
   border-radius: 4px !important;
-  nx-icon { color: $text-muted !important; }
-  &:hover nx-icon { color: $brand-blue !important; }
+  nx-icon {
+    color: $text-muted !important;
+  }
+  &:hover nx-icon {
+    color: $brand-blue !important;
+  }
 
   &--active {
     background: $brand-blue !important;
     border-radius: 0 4px 4px 0 !important;
     width: 44px !important;
     margin-right: -4px !important;
-    nx-icon { color: var(--text-02) !important; }
+    nx-icon {
+      color: var(--text-02) !important;
+    }
   }
 }
 
@@ -562,24 +654,32 @@ $brand-blue:          var(--info);
 button[nxIconButton] {
   color: var(--text-01) !important;
   background: transparent !important;
-  &:hover { background: var(--hover-secondary) !important; }
-  nx-icon { color: var(--text-01) !important; }
+  &:hover {
+    background: var(--hover-secondary) !important;
+  }
+  nx-icon {
+    color: var(--text-01) !important;
+  }
 }
 
-button[nxButton="primary"],
-button[nxButton="primary small"] {
+button[nxButton='primary'],
+button[nxButton='primary small'] {
   background: var(--info) !important;
   color: var(--text-02) !important;
   border-color: var(--info) !important;
-  &:hover { background: var(--info-hover) !important; }
+  &:hover {
+    background: var(--info-hover) !important;
+  }
 }
 
-button[nxButton="secondary"],
-button[nxButton="secondary small"] {
+button[nxButton='secondary'],
+button[nxButton='secondary small'] {
   background: transparent !important;
   color: var(--info) !important;
   border: 1px solid var(--info) !important;
-  &:hover { background: var(--action-hover-background) !important; }
+  &:hover {
+    background: var(--action-hover-background) !important;
+  }
 }
 
 .nx-context-menu {
@@ -597,10 +697,15 @@ button[nxContextMenuItem] {
   background: transparent !important;
   width: 100% !important;
   text-align: left !important;
-  &:hover { background: var(--ui-02) !important; color: var(--info) !important; }
+  &:hover {
+    background: var(--ui-02) !important;
+    color: var(--info) !important;
+  }
 }
 
-[nxHeadline] { color: var(--text-01) !important; }
+[nxHeadline] {
+  color: var(--text-01) !important;
+}
 
 .sec-kebab-btn {
   background: none;
@@ -614,7 +719,9 @@ button[nxContextMenuItem] {
   line-height: 1;
   letter-spacing: 1px;
   font-family: inherit;
-  &:hover { background: var(--ui-02); }
+  &:hover {
+    background: var(--ui-02);
+  }
 }
 
 .sec-review-banner {

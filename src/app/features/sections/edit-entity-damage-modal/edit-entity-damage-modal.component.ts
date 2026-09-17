@@ -22,7 +22,7 @@ export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
   'Pending',
   'Not assigned',
   'In progress',
-  'Completed',
+  'Completed'
 ];
 
 @Component({
@@ -34,20 +34,21 @@ export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
     NxFormfieldModule,
     NxDropdownModule,
     NxButtonModule,
-    NxIconModule,
+    NxIconModule
   ],
   templateUrl: './edit-entity-damage-modal.component.html',
-  styleUrl:    './edit-entity-damage-modal.component.scss',
+  styleUrl: './edit-entity-damage-modal.component.scss'
 })
 export class EditEntityDamageModalComponent {
-  readonly data      = inject<EditEntityDamageModalData>(NX_MODAL_DATA);
-  readonly modalRef  = inject<NxModalRef<EditEntityDamageModalComponent, EditEntityDamageModalResult>>(NxModalRef);
+  readonly data = inject<EditEntityDamageModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<EditEntityDamageModalComponent, EditEntityDamageModalResult>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
 
   readonly instructionStatusOptions = INSTRUCTION_STATUS_OPTIONS;
 
   readonly form = this.fb.group({
-    instructionStatus: [this.data.entity.instructionStatus, Validators.required],
+    instructionStatus: [this.data.entity.instructionStatus, Validators.required]
   });
 
   confirm(): void {
@@ -56,7 +57,7 @@ export class EditEntityDamageModalComponent {
       return;
     }
     this.modalRef.close({
-      instructionStatus: this.form.value.instructionStatus as InstructionStatus,
+      instructionStatus: this.form.value.instructionStatus as InstructionStatus
     });
   }
 

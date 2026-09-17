@@ -5,7 +5,7 @@ import {
   Stage,
   StagePage,
   OverviewStage,
-  FnolLossInfoStage,
+  FnolLossInfoStage
 } from './scenario-stage.model';
 import { TourService } from '../services/tour.service';
 
@@ -42,7 +42,10 @@ export class ScenarioStageService {
     return this.stages.get(key) ?? null;
   }
 
-  private async waitForStage<T extends Stage>(page: StagePage, claimId?: string): Promise<T | null> {
+  private async waitForStage<T extends Stage>(
+    page: StagePage,
+    claimId?: string
+  ): Promise<T | null> {
     const existing = this.get(page, claimId);
     if (existing) return existing as T;
     const key = claimId ? `${page}::${claimId}` : page;
@@ -50,7 +53,7 @@ export class ScenarioStageService {
       filter(k => k === key),
       take(1),
       timeout(STAGE_READY_TIMEOUT_MS),
-      catchError(() => of(null)),
+      catchError(() => of(null))
     );
     const got = await firstValueFrom(ready$);
     if (!got) return null;
@@ -58,7 +61,12 @@ export class ScenarioStageService {
   }
 
   private async waitForStable(): Promise<void> {
-    await firstValueFrom(this.appRef.isStable.pipe(filter(s => s), take(1)));
+    await firstValueFrom(
+      this.appRef.isStable.pipe(
+        filter(s => s),
+        take(1)
+      )
+    );
   }
 
   async run(hooks: PostLandHook[] | undefined, claimId?: string): Promise<void> {

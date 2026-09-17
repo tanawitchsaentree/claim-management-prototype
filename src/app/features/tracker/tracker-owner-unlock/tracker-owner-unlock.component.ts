@@ -20,7 +20,7 @@ import { OWNER_LABEL } from '../../../core/services/tracker-visibility';
   standalone: true,
   imports: [ReactiveFormsModule, NxFormfieldModule, NxInputModule, NxButtonModule, NxIconModule],
   templateUrl: './tracker-owner-unlock.component.html',
-  styleUrl: './tracker-owner-unlock.component.scss',
+  styleUrl: './tracker-owner-unlock.component.scss'
 })
 export class TrackerOwnerUnlockComponent {
   private readonly viewerService = inject(TrackerViewerService);

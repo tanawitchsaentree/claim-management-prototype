@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -25,19 +25,32 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
-import { LossInformation, LossInformationFormValue } from '../../../core/models/loss-information.model';
+import {
+  LossInformation,
+  LossInformationFormValue
+} from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
 import { LocationPickerOutput, LookupOption, OTHER_CAUSE_KEY } from '../../../core/models';
-import { circumstanceLabel, circumstanceOptionsFor, isCircumstanceValidFor } from '../../fnol/config/circumstances';
-import { futureDateValidator, dateOrderValidator } from '../../../shared/validators/date.validators';
-import { LossInfoConfirmModalComponent, LossInfoConfirmModalData } from './loss-info-confirm-modal.component';
+import {
+  circumstanceLabel,
+  circumstanceOptionsFor,
+  isCircumstanceValidFor
+} from '../../fnol/config/circumstances';
+import {
+  futureDateValidator,
+  dateOrderValidator
+} from '../../../shared/validators/date.validators';
+import {
+  LossInfoConfirmModalComponent,
+  LossInfoConfirmModalData
+} from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 import {
   IMPACT_LABELS,
   LABEL_TO_FIELD_KEY,
   VALIDATED_FIELDS,
   LossInfoDiffField,
-  computeLossInfoDiffs,
+  computeLossInfoDiffs
 } from './loss-info-diff';
 
 type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
@@ -46,55 +59,73 @@ type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
   selector: 'app-edit-loss-information',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, RouterLink,
-    NxButtonModule, NxIconModule, NxFormfieldModule, NxInputModule,
-    NxTimefieldModule, NxDatefieldModule,
-    NxDropdownModule, NxMultiSelectComponent, NxLinkModule,
-    NxMessageModule, NxModalModule, NxSpinnerModule,
+    ReactiveFormsModule,
+    RouterLink,
+    NxButtonModule,
+    NxIconModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxTimefieldModule,
+    NxDatefieldModule,
+    NxDropdownModule,
+    NxMultiSelectComponent,
+    NxLinkModule,
+    NxMessageModule,
+    NxModalModule,
+    NxSpinnerModule,
     LocationPickerComponent,
     PageHeaderComponent,
-    StatusChipComponent,
+    StatusChipComponent
   ],
   templateUrl: './edit-loss-information.component.html',
-  styleUrl: './edit-loss-information.component.scss',
+  styleUrl: './edit-loss-information.component.scss'
 })
 export class EditLossInformationComponent implements OnInit {
-  private readonly route        = inject(ActivatedRoute);
-  private readonly router       = inject(Router);
-  private readonly lossInfoSvc  = inject(MockLossInformationService);
-  private readonly lookupSvc    = inject(MockLookupService);
-  private readonly overviewSvc  = inject(MockClaimOverviewService);
-  private readonly dialogSvc    = inject(NxDialogService);
-  private readonly toast        = inject(ToastService);
-  private readonly live         = inject(LiveAnnouncer);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly lossInfoSvc = inject(MockLossInformationService);
+  private readonly lookupSvc = inject(MockLookupService);
+  private readonly overviewSvc = inject(MockClaimOverviewService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly live = inject(LiveAnnouncer);
 
-  readonly claimId      = signal<string>('');
-  readonly clientName   = signal<string>('');
-  readonly claimStatus  = signal<string>('');
-  readonly loading      = signal(true);
-  readonly saving       = signal(false);
-  readonly saveSuccess  = signal(false);
+  readonly claimId = signal<string>('');
+  readonly clientName = signal<string>('');
+  readonly claimStatus = signal<string>('');
+  readonly loading = signal(true);
+  readonly saving = signal(false);
+  readonly saveSuccess = signal(false);
   /** Why the last Save attempt refused — see revealFirstInvalid(). */
-  readonly saveBlocked  = signal<string | null>(null);
-  readonly original     = signal<LossInformation | null>(null);
+  readonly saveBlocked = signal<string | null>(null);
+  readonly original = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
-  readonly maxDesc   = 500;
-  submitAttempted    = false;
+  readonly maxDesc = 500;
+  submitAttempted = false;
 
   // ── Own FormGroup — isolated from FNOL wizard ────────────────────────
   readonly form = new FormGroup({
-    dateOfLoss: new FormGroup({
-      dateOfOccurrence:   new FormControl<string | null>(null, [Validators.required, futureDateValidator]),
-      timeOfOccurrence:   new FormControl<string | null>(null, [Validators.required]),
-      dateOfNotification: new FormControl<string | null>(null, [Validators.required, futureDateValidator]),
-      timeOfNotification: new FormControl<string | null>(null, [Validators.required]),
-    }, { validators: dateOrderValidator }),
-    lossLocation:    new FormControl<LocationPickerOutput>({ locations: [] }),
-    causeOfLoss:     new FormControl<string[]>([], []),
+    dateOfLoss: new FormGroup(
+      {
+        dateOfOccurrence: new FormControl<string | null>(null, [
+          Validators.required,
+          futureDateValidator
+        ]),
+        timeOfOccurrence: new FormControl<string | null>(null, [Validators.required]),
+        dateOfNotification: new FormControl<string | null>(null, [
+          Validators.required,
+          futureDateValidator
+        ]),
+        timeOfNotification: new FormControl<string | null>(null, [Validators.required])
+      },
+      { validators: dateOrderValidator }
+    ),
+    lossLocation: new FormControl<LocationPickerOutput>({ locations: [] }),
+    causeOfLoss: new FormControl<string[]>([], []),
     // Added 2026-08-31 (Marlene feedback) — was FNOL-only until now; the
     // LossInformation model/service already carried typeOfDamage end to end,
     // this form just never exposed it.
-    typeOfDamage:    new FormControl<string[]>([], []),
+    typeOfDamage: new FormControl<string[]>([], []),
     // Free-text qualifier for the "Other Event" cause. The validator is
     // attached at runtime by syncSpecifyOther() because "required" depends on
     // whether causeOfLoss currently includes that value. typeOfDamage has no
@@ -103,21 +134,29 @@ export class EditLossInformationComponent implements OnInit {
     // BMPCC-18160 — single incident circumstance, options narrowed by
     // causeOfLoss. Not required: the peril is often confirmed long before
     // anyone can say what actually happened.
-    circumstance:    new FormControl<string | null>(null),
-    lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
+    circumstance: new FormControl<string | null>(null),
+    lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)])
   });
 
-  get dateOfLoss()   { return this.form.get('dateOfLoss') as FormGroup; }
-  get lossLocation() { return this.form.get('lossLocation') as FormControl<LocationPickerOutput>; }
+  get dateOfLoss() {
+    return this.form.get('dateOfLoss') as FormGroup;
+  }
+  get lossLocation() {
+    return this.form.get('lossLocation') as FormControl<LocationPickerOutput>;
+  }
 
   // ── Lookups ──────────────────────────────────────────────────────────
-  readonly causeOfLossOptions$  = this.lookupSvc.getCauseOfLoss();
-  readonly causeOfLossOptions   = toSignal(this.causeOfLossOptions$, { initialValue: [] });
+  readonly causeOfLossOptions$ = this.lookupSvc.getCauseOfLoss();
+  readonly causeOfLossOptions = toSignal(this.causeOfLossOptions$, { initialValue: [] });
   readonly typeOfDamageOptions$ = this.lookupSvc.getTypeOfDamage();
-  readonly typeOfDamageOptions  = toSignal(this.typeOfDamageOptions$, { initialValue: [] });
+  readonly typeOfDamageOptions = toSignal(this.typeOfDamageOptions$, { initialValue: [] });
 
-  get selectedCauses(): string[]  { return (this.form.get('causeOfLoss')?.value  as string[]) ?? []; }
-  get selectedDamages(): string[] { return (this.form.get('typeOfDamage')?.value as string[]) ?? []; }
+  get selectedCauses(): string[] {
+    return (this.form.get('causeOfLoss')?.value as string[]) ?? [];
+  }
+  get selectedDamages(): string[] {
+    return (this.form.get('typeOfDamage')?.value as string[]) ?? [];
+  }
 
   // `specify` folds the typed qualifier into the "Other" entry — reading back
   // "Other" alone would hide the only part of that selection that says anything.
@@ -125,7 +164,9 @@ export class EditLossInformationComponent implements OnInit {
     if (!keys.length) return '';
     const opts = this.causeOfLossOptions();
     return keys
-      .map(k => this.qualify(opts.find(o => o.value === k)?.label ?? k, k === OTHER_CAUSE_KEY, specify))
+      .map(k =>
+        this.qualify(opts.find(o => o.value === k)?.label ?? k, k === OTHER_CAUSE_KEY, specify)
+      )
       .join(', ');
   }
 
@@ -148,9 +189,13 @@ export class EditLossInformationComponent implements OnInit {
     return this.causeLabelsFor(this.selectedCauses, this.specifyValue('specifyOtherCauseOfLoss'));
   }
 
-  get typeOfDamageDisplay(): string { return this.damageLabelsFor(this.selectedDamages); }
+  get typeOfDamageDisplay(): string {
+    return this.damageLabelsFor(this.selectedDamages);
+  }
 
-  get showSpecifyOtherCause(): boolean { return this.selectedCauses.includes(OTHER_CAUSE_KEY); }
+  get showSpecifyOtherCause(): boolean {
+    return this.selectedCauses.includes(OTHER_CAUSE_KEY);
+  }
 
   onCauseOfLossChange(selected: string[]): void {
     this.syncSpecifyOther('specifyOtherCauseOfLoss', selected.includes(OTHER_CAUSE_KEY));
@@ -162,9 +207,15 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   // ── Incident circumstance (BMPCC-18160) ───────────────────────────────
-  get circumstanceOptions(): LookupOption[] { return circumstanceOptionsFor(this.selectedCauses); }
-  get circumstanceDisplay(): string { return circumstanceLabel(this.form.get('circumstance')?.value as string | null); }
-  get originalCircumstanceDisplay(): string { return circumstanceLabel(this.original()?.circumstance) || 'Not provided'; }
+  get circumstanceOptions(): LookupOption[] {
+    return circumstanceOptionsFor(this.selectedCauses);
+  }
+  get circumstanceDisplay(): string {
+    return circumstanceLabel(this.form.get('circumstance')?.value as string | null);
+  }
+  get originalCircumstanceDisplay(): string {
+    return circumstanceLabel(this.original()?.circumstance) || 'Not provided';
+  }
 
   // Clearing the value on hide matters here as much as on FNOL: a hidden
   // control holding stale text would keep the Save button gated with nothing
@@ -186,19 +237,26 @@ export class EditLossInformationComponent implements OnInit {
   // users need multiple fields open simultaneously; this is the documented
   // default from the review spec, not a resolved product decision.
   readonly editingField = signal<string | null>(null);
-  isEditing(key: string): boolean { return this.editingField() === key; }
-  startEdit(key: string): void { this.editingField.set(key); }
-  closeEdit(): void { this.editingField.set(null); }
+  isEditing(key: string): boolean {
+    return this.editingField() === key;
+  }
+  startEdit(key: string): void {
+    this.editingField.set(key);
+  }
+  closeEdit(): void {
+    this.editingField.set(null);
+  }
 
-  readonly isDirty = toSignal(this.form.valueChanges.pipe(map(() => this.form.dirty)), { initialValue: false });
+  readonly isDirty = toSignal(this.form.valueChanges.pipe(map(() => this.form.dirty)), {
+    initialValue: false
+  });
 
   // Reactive diff list — the confirm-modal payload, the change ledger, the
   // header counter, and the Save-button gate all read from this one signal
   // instead of four separate ad-hoc checks.
-  private readonly formSnapshot = toSignal(
-    this.form.valueChanges.pipe(startWith(null)),
-    { initialValue: null },
-  );
+  private readonly formSnapshot = toSignal(this.form.valueChanges.pipe(startWith(null)), {
+    initialValue: null
+  });
   readonly pendingChanges = computed<LossInfoDiffField[]>(() => {
     this.formSnapshot(); // form.valueChanges fires for every control in this.form
     return this.computeDiffs();
@@ -226,18 +284,18 @@ export class EditLossInformationComponent implements OnInit {
 
   private prefillForm(li: LossInformation): void {
     this.dateOfLoss.patchValue({
-      dateOfOccurrence:   li.dateOfLoss?.dateOfOccurrence   ?? null,
-      timeOfOccurrence:   li.dateOfLoss?.timeOfOccurrence   ?? null,
+      dateOfOccurrence: li.dateOfLoss?.dateOfOccurrence ?? null,
+      timeOfOccurrence: li.dateOfLoss?.timeOfOccurrence ?? null,
       dateOfNotification: li.dateOfLoss?.dateOfNotification ?? null,
-      timeOfNotification: li.dateOfLoss?.timeOfNotification ?? null,
+      timeOfNotification: li.dateOfLoss?.timeOfNotification ?? null
     });
     this.form.patchValue({
-      causeOfLoss:     li.causeOfLoss     ?? [],
-      typeOfDamage:    li.typeOfDamage    ?? [],
+      causeOfLoss: li.causeOfLoss ?? [],
+      typeOfDamage: li.typeOfDamage ?? [],
       specifyOtherCauseOfLoss: li.specifyOtherCauseOfLoss ?? '',
-      circumstance:    li.circumstance    ?? null,
+      circumstance: li.circumstance ?? null,
       lossDescription: li.lossDescription ?? '',
-      lossLocation:    (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
+      lossLocation: (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] }
     });
     // Reconcile the runtime validator against what was just loaded — no
     // selectionChange fires on a patchValue, so this is the only chance.
@@ -249,7 +307,9 @@ export class EditLossInformationComponent implements OnInit {
   // ── "was" display, per field group ────────────────────────────────────
   get originalCauseOfLossDisplay(): string {
     const o = this.original();
-    return this.causeLabelsFor(o?.causeOfLoss ?? [], o?.specifyOtherCauseOfLoss ?? '') || 'Not provided';
+    return (
+      this.causeLabelsFor(o?.causeOfLoss ?? [], o?.specifyOtherCauseOfLoss ?? '') || 'Not provided'
+    );
   }
 
   get originalTypeOfDamageDisplay(): string {
@@ -271,13 +331,20 @@ export class EditLossInformationComponent implements OnInit {
 
   get originalDateGroupDisplay(): string {
     const o = this.original();
-    const occ = this.formatDateTime(o?.dateOfLoss?.dateOfOccurrence, o?.dateOfLoss?.timeOfOccurrence);
-    const notif = this.formatDateTime(o?.dateOfLoss?.dateOfNotification, o?.dateOfLoss?.timeOfNotification);
+    const occ = this.formatDateTime(
+      o?.dateOfLoss?.dateOfOccurrence,
+      o?.dateOfLoss?.timeOfOccurrence
+    );
+    const notif = this.formatDateTime(
+      o?.dateOfLoss?.dateOfNotification,
+      o?.dateOfLoss?.timeOfNotification
+    );
     return `Occurred: ${occ} · Reported: ${notif}`;
   }
 
   get originalLossLocationDisplay(): string {
-    const loc = (this.original()?.lossLocation as { locations?: { displayName?: string }[] } | null)?.locations?.[0]?.displayName;
+    const loc = (this.original()?.lossLocation as { locations?: { displayName?: string }[] } | null)
+      ?.locations?.[0]?.displayName;
     return loc || 'Not provided';
   }
 
@@ -291,7 +358,7 @@ export class EditLossInformationComponent implements OnInit {
   private computeDiffs(): LossInfoDiffField[] {
     return computeLossInfoDiffs(
       this.original(),
-      this.form.getRawValue() as unknown as LossInformationFormValue,
+      this.form.getRawValue() as unknown as LossInformationFormValue
     );
   }
 
@@ -317,9 +384,13 @@ export class EditLossInformationComponent implements OnInit {
     // judgement, not theirs.
     const data: LossInfoConfirmModalData = {
       claimId: this.claimId(),
-      diffs,
+      diffs
     };
-    const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, { data, width: '600px', maxWidth: '92vw' });
+    const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, {
+      data,
+      width: '600px',
+      maxWidth: '92vw'
+    });
     const result = await firstValueFrom(ref.afterClosed());
     if (result !== 'confirmed') return;
 
@@ -331,14 +402,14 @@ export class EditLossInformationComponent implements OnInit {
 
       // Write activity log entries for changed fields
       const activities: ClaimActivity[] = diffs.map((d, i) => ({
-        id:         `act-edit-${Date.now()}-${i}`,
-        claimId:    this.claimId(),
-        user:       'Current User',
-        timestamp:  new Date().toISOString(),
+        id: `act-edit-${Date.now()}-${i}`,
+        claimId: this.claimId(),
+        user: 'Current User',
+        timestamp: new Date().toISOString(),
         objectType: 'Loss Information',
-        attribute:  d.label,
-        valueOld:   d.original || null,
-        valueNew:   d.updated  || null,
+        attribute: d.label,
+        valueOld: d.original || null,
+        valueNew: d.updated || null
       }));
 
       if (activities.length) {
@@ -357,7 +428,10 @@ export class EditLossInformationComponent implements OnInit {
       // ledger (and the canDeactivate guard) would still see the just-saved
       // values as "pending", firing the leave-confirmation on the very
       // navigate() call below.
-      this.original.set({ ...(this.original() as LossInformation), ...formValue } as LossInformation);
+      this.original.set({
+        ...(this.original() as LossInformation),
+        ...formValue
+      } as LossInformation);
 
       this.form.markAsPristine();
       this.saveSuccess.set(true);
@@ -383,12 +457,15 @@ export class EditLossInformationComponent implements OnInit {
         this.router.navigate(['/claims', this.claimId(), 'sections'], {
           queryParams: {
             changedFields: impactedDiffs.map(d => d.label),
-            changedOld:    impactedDiffs.map(d => d.original),
-            changedNew:    impactedDiffs.map(d => d.updated),
-          },
+            changedOld: impactedDiffs.map(d => d.original),
+            changedNew: impactedDiffs.map(d => d.updated)
+          }
         });
       } else {
-        this.toast.success('Loss information updated', `${activities.length} field(s) updated on ${this.claimId()}`);
+        this.toast.success(
+          'Loss information updated',
+          `${activities.length} field(s) updated on ${this.claimId()}`
+        );
         this.router.navigate(['/claims', this.claimId(), 'overview']);
       }
     } catch {
@@ -410,20 +487,38 @@ export class EditLossInformationComponent implements OnInit {
     this.saveBlocked.set(
       labels.length
         ? `Can't save yet — check ${labels.join(', ')}.`
-        : "Can't save yet — some details are still incomplete.",
+        : "Can't save yet — some details are still incomplete."
     );
     this.editingField.set(incomplete[0]?.field ?? 'dateGroup');
     this.form.markAllAsTouched();
     this.live.announce(this.saveBlocked()!, 'assertive');
   }
 
-  private async syncOverviewFromLossInfo(formValue: LossInformationFormValue, diffs: LossInfoDiffField[]): Promise<void> {
+  private async syncOverviewFromLossInfo(
+    formValue: LossInformationFormValue,
+    diffs: LossInfoDiffField[]
+  ): Promise<void> {
     const patch: {
-      dateOfLoss?: string; proximateLossCause?: string; causeOfLoss?: string[];
+      dateOfLoss?: string;
+      proximateLossCause?: string;
+      causeOfLoss?: string[];
       incidentCircumstance?: string;
+      description?: string;
     } = {};
 
-    if (diffs.some(d => d.label === 'Date of occurrence') && formValue.dateOfLoss?.dateOfOccurrence) {
+    // Claim Overview's "Claim description" field reads ClaimOverview.description,
+    // not LossInformation.lossDescription directly — without this, editing the
+    // description here saved correctly (activity log shows the diff) but Overview
+    // silently kept showing the pre-edit text forever. Same gap as the
+    // incidentCircumstance fix below, just missed for this field.
+    if (diffs.some(d => d.label === 'Loss description')) {
+      patch.description = formValue.lossDescription ?? undefined;
+    }
+
+    if (
+      diffs.some(d => d.label === 'Date of occurrence') &&
+      formValue.dateOfLoss?.dateOfOccurrence
+    ) {
       patch.dateOfLoss = formValue.dateOfLoss.dateOfOccurrence;
     }
     if (diffs.some(d => d.label === 'Cause of loss')) {
@@ -432,7 +527,9 @@ export class EditLossInformationComponent implements OnInit {
       // Reference Panel and any other detail view can show the full list
       // instead of silently only ever showing the first one.
       const causeKeys = formValue.causeOfLoss ?? [];
-      const causeLabels = causeKeys.map(k => this.causeOfLossOptions().find(o => o.value === k)?.label ?? k);
+      const causeLabels = causeKeys.map(
+        k => this.causeOfLossOptions().find(o => o.value === k)?.label ?? k
+      );
       patch.proximateLossCause = causeLabels[0] ?? '–';
       patch.causeOfLoss = causeLabels;
     }

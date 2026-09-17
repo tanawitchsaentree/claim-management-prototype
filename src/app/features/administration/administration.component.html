@@ -6,10 +6,15 @@
       <div class="admin-cards">
         @for (card of group.cards; track card.key) {
           <article class="admin-card">
-            <span class="admin-card__icon-circle"
-                  [class]="'admin-card__icon-circle--' + card.iconAccent">
-              <nx-icon [name]="card.icon" size="m"
-                       [class]="'admin-card__icon--' + card.iconAccent"></nx-icon>
+            <span
+              class="admin-card__icon-circle"
+              [class]="'admin-card__icon-circle--' + card.iconAccent"
+            >
+              <nx-icon
+                [name]="card.icon"
+                size="m"
+                [class]="'admin-card__icon--' + card.iconAccent"
+              ></nx-icon>
             </span>
 
             <h3 class="admin-card__title">{{ card.title }}</h3>

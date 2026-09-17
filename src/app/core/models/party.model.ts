@@ -8,18 +8,9 @@ export type PartyRole =
   | 'expert'
   | 'authority';
 
-export type ClearanceStatus =
-  | 'cleared'
-  | 'not-cleared'
-  | 'pending'
-  | 'not-applicable';
+export type ClearanceStatus = 'cleared' | 'not-cleared' | 'pending' | 'not-applicable';
 
-export type IdType =
-  | 'national-id'
-  | 'vat'
-  | 'tax-id'
-  | 'passport'
-  | 'company-registration';
+export type IdType = 'national-id' | 'vat' | 'tax-id' | 'passport' | 'company-registration';
 
 export interface Party {
   partyId: string;
@@ -77,27 +68,27 @@ export interface PartyFilters {
 }
 
 export const PARTY_ROLE_LABELS: Record<PartyRole, string> = {
-  'client':      'Client',
-  'broker':      'Broker',
-  'insured':     'Insured',
-  'claimant':    'Claimant',
+  'client': 'Client',
+  'broker': 'Broker',
+  'insured': 'Insured',
+  'claimant': 'Claimant',
   'third-party': 'Third party',
-  'witness':     'Witness',
-  'expert':      'Expert',
-  'authority':   'Authority',
+  'witness': 'Witness',
+  'expert': 'Expert',
+  'authority': 'Authority'
 };
 
 export const CLEARANCE_STATUS_LABELS: Record<ClearanceStatus, string> = {
-  'cleared':        'Cleared',
-  'not-cleared':    'Not cleared',
-  'pending':        'Pending',
-  'not-applicable': 'Not applicable',
+  'cleared': 'Cleared',
+  'not-cleared': 'Not cleared',
+  'pending': 'Pending',
+  'not-applicable': 'Not applicable'
 };
 
 export const ID_TYPE_LABELS: Record<IdType, string> = {
-  'national-id':          'National ID',
-  'vat':                  'VAT',
-  'tax-id':               'Tax ID',
-  'passport':             'Passport',
-  'company-registration': 'Company registration',
+  'national-id': 'National ID',
+  'vat': 'VAT',
+  'tax-id': 'Tax ID',
+  'passport': 'Passport',
+  'company-registration': 'Company registration'
 };

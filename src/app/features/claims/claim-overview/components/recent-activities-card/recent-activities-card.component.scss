@@ -1,17 +1,28 @@
 @use '../../card-shell' as shell;
 
-.co-card { @include shell.card; }
-.co-card-title { @include shell.card-title; }
+.co-card {
+  @include shell.card;
+}
+.co-card-title {
+  @include shell.card-title;
+}
 
-.pt-collapse { @include shell.collapse; }
-.pt-collapse__inner { overflow: hidden; }
+.pt-collapse {
+  @include shell.collapse;
+}
+.pt-collapse__inner {
+  overflow: hidden;
+}
 
 .pt-th-sort {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   cursor: pointer;
-  nx-icon { font-size: 14px; color: var(--text-muted); }
+  nx-icon {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
 }
 
 .co-activities-toggle {
@@ -25,7 +36,9 @@
   padding: 0;
   margin-bottom: 0;
 
-  .co-card-title { margin: 0; }
+  .co-card-title {
+    margin: 0;
+  }
 }
 
 .act-table-wrap {
@@ -34,11 +47,17 @@
   margin-top: 12px;
 }
 
-.act-table { width: 100%; }
+.act-table {
+  width: 100%;
+}
 
-.act-col--nowrap { white-space: nowrap; }
+.act-col--nowrap {
+  white-space: nowrap;
+}
 
-.act-col--muted { color: var(--text-muted); }
+.act-col--muted {
+  color: var(--text-muted);
+}
 
 .act-log-link {
   display: inline-block;
@@ -49,5 +68,7 @@
   cursor: pointer;
   text-decoration: none;
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }

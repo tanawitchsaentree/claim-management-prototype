@@ -4,13 +4,15 @@
   } @else if (notFound()) {
     <app-empty-state
       message="Loss event {{ lossEventId() }} was not found."
-      hint="It may have been merged into another event, or the link is out of date.">
+      hint="It may have been merged into another event, or the link is out of date."
+    >
       <div ngProjectAs="[action]">
-        <button nxButton="secondary small" type="button" [routerLink]="['/loss-events']">Back to loss events</button>
+        <button nxButton="secondary small" type="button" [routerLink]="['/loss-events']">
+          Back to loss events
+        </button>
       </div>
     </app-empty-state>
   } @else if (overview(); as ov) {
-
     <p class="leo-id-label">Loss event</p>
     <div class="leo-title-row">
       <h1 class="leo-title">{{ ov.summary.lossEventId }} — {{ ov.summary.name }}</h1>
@@ -40,14 +42,20 @@
                   <th nxHeaderCell>Claim handler</th>
                   <th nxHeaderCell>Claim status</th>
                   <th nxHeaderCell class="leo-nowrap">Loss amount</th>
-                  <th nxHeaderCell class="leo-col-action"><span class="leo-sr-only">Actions</span></th>
+                  <th nxHeaderCell class="leo-col-action">
+                    <span class="leo-sr-only">Actions</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 @for (c of ov.relatedClaims; track c.claimId) {
                   <tr nxTableRow>
                     <td nxCell class="leo-nowrap">
-                      <a class="text-link" [routerLink]="['/claims', c.claimId, 'overview']" [claimPreview]="c.claimId">
+                      <a
+                        class="text-link"
+                        [routerLink]="['/claims', c.claimId, 'overview']"
+                        [appClaimPreview]="c.claimId"
+                      >
                         {{ c.claimId }}
                       </a>
                     </td>
@@ -62,8 +70,12 @@
                       }
                     </td>
                     <td nxCell class="leo-col-action">
-                      <button nxPlainButton type="button" (click)="openClaim(c.claimId)"
-                              [attr.aria-label]="'Open claim ' + c.claimId">
+                      <button
+                        nxPlainButton
+                        type="button"
+                        (click)="openClaim(c.claimId)"
+                        [attr.aria-label]="'Open claim ' + c.claimId"
+                      >
                         <nx-icon name="arrow-right" size="s"></nx-icon>
                       </button>
                     </td>
@@ -95,7 +107,9 @@
                   <tr nxTableRow>
                     <td nxCell>{{ p.partyName }}</td>
                     <td nxCell class="leo-capitalise">{{ p.role }}</td>
-                    <td nxCell><app-status-chip [status]="p.clearanceStatus" domain="clearance" /></td>
+                    <td nxCell>
+                      <app-status-chip [status]="p.clearanceStatus" domain="clearance" />
+                    </td>
                     <td nxCell class="leo-nowrap leo-muted">{{ p.claimId }}</td>
                   </tr>
                 }
@@ -124,8 +138,8 @@
             <h2 class="leo-card-title">Reported loss by currency</h2>
           </div>
           <nx-message context="info" class="leo-info">
-            Claims on one loss event can be booked in different currencies, so totals are
-            reported per currency rather than summed.
+            Claims on one loss event can be booked in different currencies, so totals are reported
+            per currency rather than summed.
           </nx-message>
           @if (ov.financials.totals.length === 0) {
             <app-empty-state message="No amounts reported on this loss event yet." />
@@ -160,7 +174,8 @@
           @if (ov.documents.length === 0) {
             <app-empty-state
               message="No documents have been uploaded to this loss event's claims."
-              hint="Documents are attached on the claim itself and appear here automatically." />
+              hint="Documents are attached on the claim itself and appear here automatically."
+            />
           } @else {
             <table nxTable class="leo-table">
               <thead>
@@ -176,7 +191,9 @@
                   <tr nxTableRow>
                     <td nxCell>{{ d.fileName }}</td>
                     <td nxCell class="leo-nowrap">
-                      <a class="text-link" [routerLink]="['/claims', d.claimId, 'overview']">{{ d.claimId }}</a>
+                      <a class="text-link" [routerLink]="['/claims', d.claimId, 'overview']">{{
+                        d.claimId
+                      }}</a>
                     </td>
                     <td nxCell class="leo-nowrap leo-muted">{{ fileSize(d.fileSize) }}</td>
                     <td nxCell class="leo-nowrap leo-muted">{{ d.uploadedAt }}</td>

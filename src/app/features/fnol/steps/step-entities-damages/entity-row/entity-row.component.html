@@ -4,16 +4,22 @@
     <nx-checkbox
       [checked]="isChecked()"
       [indeterminate]="isIndeterminate()"
-      (checkedChange)="onEntityChecked($event)">
+      (checkedChange)="onEntityChecked($event)"
+    >
     </nx-checkbox>
   </td>
   <td nxCell class="col-name">
     <div class="entity-cell">
       @if (entity.subItems && entity.subItems.length > 0) {
-        <button nxIconButton="tertiary small" type="button"
-                (click)="toggleExpand()"
-                [attr.aria-label]="entity.expanded ? 'Collapse' : 'Expand'">
-          <nx-icon [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+        <button
+          nxIconButton="tertiary small"
+          type="button"
+          (click)="toggleExpand()"
+          [attr.aria-label]="entity.expanded ? 'Collapse' : 'Expand'"
+        >
+          <nx-icon
+            [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+          ></nx-icon>
         </button>
       }
       <span>{{ entity.name }}</span>
@@ -25,7 +31,7 @@
   @if (showCoveredForEvents) {
     <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '—' }}</td>
   }
-  <td nxCell class="col-limit">
+  <td nxCell class="col-limit" data-tour-id="ed-limit-column">
     @if (entity.limits?.length) {
       <ul class="limit-list">
         @for (lim of entity.limits; track lim.label) {
@@ -38,18 +44,24 @@
     } @else {
       {{ entity.limit }}
       @if (entity.limit !== '—') {
-        <nx-icon name="info-circle-o" class="limit-info-icon"
-                 [nxTooltip]="'Limit details for ' + entity.name"
-                 nxTooltipPosition="top">
+        <nx-icon
+          name="info-circle-o"
+          class="limit-info-icon"
+          [nxTooltip]="'Limit details for ' + entity.name"
+          nxTooltipPosition="top"
+        >
         </nx-icon>
       }
     }
   </td>
   <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
   <td nxCell class="col-action">
-    <button nxIconButton="tertiary small" type="button"
-            [nxContextMenuTriggerFor]="entityMenu"
-            aria-label="Entity actions">
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      [nxContextMenuTriggerFor]="entityMenu"
+      aria-label="Entity actions"
+    >
       <nx-icon name="ellipsis-v"></nx-icon>
     </button>
     <nx-context-menu #entityMenu="nxContextMenu">
@@ -66,7 +78,8 @@
       <td nxCell class="col-check">
         <nx-checkbox
           [checked]="subItem.selected"
-          (checkedChange)="onSubItemChecked(subItem, $event)">
+          (checkedChange)="onSubItemChecked(subItem, $event)"
+        >
         </nx-checkbox>
       </td>
       <td nxCell class="col-name sub-item-name" [attr.colspan]="showCoveredForEvents ? 5 : 4">

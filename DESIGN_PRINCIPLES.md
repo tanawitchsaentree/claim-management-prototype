@@ -12,6 +12,7 @@
 ## Layout Patterns
 
 ### List page (`/claims`)
+
 ```
 ┌─────────────────────────────────────────────┐
 │  Page title                    [+ New claim] │
@@ -23,11 +24,13 @@
 │          │  Pagination                      │
 └──────────┴──────────────────────────────────┘
 ```
+
 - Filter bar: ซ้าย fixed width ~240px
 - Table: flex-1, ใช้ `nx-table` จาก ng-aquila
 - Status column ใช้ chip/badge เสมอ ห้ามใช้ text ล้วน
 
 ### Detail page (`/claims/:id`)
+
 ```
 ┌─────────────────────────────────────────────┐
 │  ← Back   Claim ID   Status badge  [Action] │
@@ -39,10 +42,12 @@
 │  - Section C         │  - Quick actions     │
 └──────────────────────┴──────────────────────┘
 ```
+
 - Main: `flex: 2`, Sidebar: `flex: 1`, max sidebar width 360px
 - ทุก section ใน main มี heading (font-size 20px, font-weight 600) + border-bottom
 
 ### Form page (`/claims/new`, `/claims/:id/edit`)
+
 ```
 ┌─────────────────────────────────────────────┐
 │  Page title                                  │
@@ -54,11 +59,13 @@
 │                         [Cancel] [Submit →]  │
 └─────────────────────────────────────────────┘
 ```
+
 - Single column, max-width 720px, margin: 0 auto
 - Action buttons: float right, Submit = primary, Cancel = tertiary
 - Form group spacing: 24px ระหว่าง field groups
 
 ### Dashboard page (`/dashboard`)
+
 ```
 ┌─────────────────────────────────────────────┐
 │  Header (full width)                         │
@@ -69,6 +76,7 @@
 │  - Recently created widget   │    links     │
 └──────────────────────────────┴──────────────┘
 ```
+
 - Main: flex-1, Right panel: 328px fixed
 - ไม่มี left sidebar
 
@@ -76,14 +84,14 @@
 
 ## Spacing Scale (ใช้ตาม rhythm นี้เท่านั้น)
 
-| ชื่อ | ค่า | ใช้เมื่อ |
-|------|-----|---------|
-| xs | 4px | gap ระหว่าง icon กับ label |
-| sm | 8px | gap ระหว่าง badge/chip |
-| md | 16px | padding ใน card, gap ระหว่าง fields |
-| lg | 24px | gap ระหว่าง sections |
-| xl | 32px | page padding, margin ระหว่าง widget |
-| 2xl | 48px | section breaks ใหญ่ |
+| ชื่อ | ค่า  | ใช้เมื่อ                            |
+| ---- | ---- | ----------------------------------- |
+| xs   | 4px  | gap ระหว่าง icon กับ label          |
+| sm   | 8px  | gap ระหว่าง badge/chip              |
+| md   | 16px | padding ใน card, gap ระหว่าง fields |
+| lg   | 24px | gap ระหว่าง sections                |
+| xl   | 32px | page padding, margin ระหว่าง widget |
+| 2xl  | 48px | section breaks ใหญ่                 |
 
 ห้ามใช้เลขแปลก เช่น 13px, 22px, 37px
 
@@ -93,14 +101,14 @@
 
 ใช้สีนี้เท่านั้น — ห้ามประดิษฐ์สีใหม่
 
-| Status | Background | Text | ใช้กับ |
-|--------|-----------|------|--------|
-| Open | `#dce9f8` | `#006192` | claim/task เปิดอยู่ |
-| In Progress | `#fdf3d6` | `#7a5200` | กำลังดำเนินการ |
-| Completed | `#d4edda` | `#155724` | เสร็จแล้ว |
-| Closed | `#e8e8e8` | `#767676` | ปิดแล้ว |
-| Pending | `#fdf3d6` | `#7a5200` | รอดำเนินการ |
-| Rejected / Error | `#f8d7da` | `#721c24` | ปฏิเสธ / error เท่านั้น |
+| Status           | Background | Text      | ใช้กับ                  |
+| ---------------- | ---------- | --------- | ----------------------- |
+| Open             | `#dce9f8`  | `#006192` | claim/task เปิดอยู่     |
+| In Progress      | `#fdf3d6`  | `#7a5200` | กำลังดำเนินการ          |
+| Completed        | `#d4edda`  | `#155724` | เสร็จแล้ว               |
+| Closed           | `#e8e8e8`  | `#767676` | ปิดแล้ว                 |
+| Pending          | `#fdf3d6`  | `#7a5200` | รอดำเนินการ             |
+| Rejected / Error | `#f8d7da`  | `#721c24` | ปฏิเสธ / error เท่านั้น |
 
 ---
 
@@ -119,7 +127,7 @@
 
 Governance rule for every primitive below: **VARIES** = safe to change per-usage. **FIXED** = single source, do not fork — change it in the shared component/token, never inline. If you think you need a variant not listed here, that's a sign to extend the shared component's API, not to copy its markup.
 
-- **Modal** — VARIES: content, width tier (per `MODAL_WIDTH.md`), step count. FIXED: header structure (title + close button), footer button placement (right-aligned, Cancel left of primary), button size (`small`), `_modal-layout.scss` mixin usage — every centered dialog opened via `dialogSvc.open()` uses the mixin's header/body/footer `@include`s, no local padding override (decided 2026-08-21, `.claude/BLESSED.md`). **Sanctioned exception:** `mass-event-edit-modal` — a bottom-sheet variant (`panelClass: 'me-edit-modal-panel'` docks it to the viewport bottom, `height: 100%` + rounded top corners only, not the mixin's centered `max-height`/`overflow` shell). Its own `--space-2xl`/`--space-3xl` (32/40px) header/body/footer padding is deliberate for that larger, full-width canvas, not copied from the fixed-in-2026-08-14 broken lineage — verified via its own inline comments showing deliberate spacing decisions elsewhere in the same file (e.g. the 20px-not-32px grid-gap note). Does not use the mixin and is not required to; audited separately (see `audit-modal-padding.mjs`'s explicit bottom-sheet exemption list).
+- **Modal** — VARIES: content, width tier (per `MODAL_WIDTH.md`), step count. FIXED: header structure (title + close button), footer button placement (right-aligned, Cancel left of primary), button size (`small`), `_modal-layout.scss` mixin usage — every centered dialog opened via `dialogSvc.open()` uses the mixin's header/body/footer `@include`s, no local padding override (decided 2026-08-21, `.claude/BLESSED.md`). **Sanctioned exception — bottom-sheet family** (`panelClass: 'bottom-sheet-modal-panel'`, `styles.scss` — docks to the viewport bottom with a `--layout-inset-base` gutter on top/left/right, `height: 100%` fill, not the mixin's centered `max-height`/`overflow` shell): `mass-event-edit-modal` — its own `--space-2xl`/`--space-3xl` (32/40px) header/body/footer padding is deliberate for that larger, full-width canvas, not copied from the fixed-in-2026-08-14 broken lineage — verified via its own inline comments showing deliberate spacing decisions elsewhere in the same file (e.g. the 20px-not-32px grid-gap note). `claim-notes-full` (added 2026-08-21, replacing the old `/claims/:id/notes` full-page route for "View all notes") — reuses the same bottom-sheet shell for a simple title+close header wrapping `<app-claim-notes-panel>`, no reason to force it through the centered-dialog mixin either. Neither uses the mixin and neither is required to; audited separately (see `audit-modal-padding.mjs`'s explicit bottom-sheet exemption list).
 - **Status chip** (`app-status-chip`) — VARIES: status value, domain (`claim`/`task`/`entity`/`damage-item`/`clearance`/`risk-severity`/`recovery`/`policy`/`skeleton-claim`). FIXED: shape (pill or text variant), size, color mapping — single source in `status-chip.component.ts`'s `TOKEN_MAP`, never a local hex or local status-color class.
 - **Empty state** (`app-empty-state`) — VARIES: message, hint, icon, optional `[action]`/`[body]` projected content. FIXED: layout, typography, spacing (`empty-state.component.scss`). A table/list with no rows either uses this component or carries an explicit `<!-- audit-exempt: reason -->` comment — never a bespoke "no data" `<p>`.
 - **Page header** (`app-page-header`) — VARIES: title, eyebrow, subtitle, back button, projected `[actions]`. FIXED: structure, spacing (32px bottom margin), typography (28px/400 title, 14px muted eyebrow/subtitle). Pages with no existing header (claim overview, approvals) or a fundamentally different purpose (dashboard's personalized greeting) are exempt — don't force a header onto a page that never had one.

@@ -67,8 +67,14 @@
   width: 100%;
 }
 
-.rec-col-amount  { text-align: right; white-space: nowrap; }
-.rec-col-action  { width: 96px; text-align: right; }
+.rec-col-amount {
+  text-align: right;
+  white-space: nowrap;
+}
+.rec-col-action {
+  width: 96px;
+  text-align: right;
+}
 
 .rec-id,
 .rec-counterparty {

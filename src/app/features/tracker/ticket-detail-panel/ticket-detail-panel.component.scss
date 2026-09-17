@@ -71,7 +71,9 @@
   flex-direction: column;
   gap: var(--space-sm);
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
 .tdp-label {
@@ -114,7 +116,10 @@
   display: flex;
   gap: var(--space-base);
 
-  nx-formfield { flex: 1; width: auto; }
+  nx-formfield {
+    flex: 1;
+    width: auto;
+  }
 }
 
 .tdp-blocked {
@@ -122,7 +127,9 @@
   flex-direction: column;
   gap: var(--space-sm);
 
-  nx-formfield { width: 100%; }
+  nx-formfield {
+    width: 100%;
+  }
 }
 
 .tdp-blocked-days {

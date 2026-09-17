@@ -11,9 +11,9 @@
 <div class="crc-body" tabindex="0">
   @if (contradictsClaim()) {
     <nx-message context="warning">
-      This claim is on record as having no recovery potential. Creating a case here
-      does not change that answer — update the Recovery potential card on Claim
-      Overview if the position has changed.
+      This claim is on record as having no recovery potential. Creating a case here does not change
+      that answer — update the Recovery potential card on Claim Overview if the position has
+      changed.
     </nx-message>
   }
 
@@ -24,7 +24,9 @@
           <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
         }
       </nx-dropdown>
-      <nx-hint nxFormfieldHint>The basis for the pursuit — what gives us the right to claim it back.</nx-hint>
+      <nx-hint nxFormfieldHint
+        >The basis for the pursuit — what gives us the right to claim it back.</nx-hint
+      >
       <nx-error nxFormfieldError>A recovery route is required.</nx-error>
     </nx-formfield>
 
@@ -57,9 +59,15 @@
     </nx-formfield>
 
     <nx-formfield label="Basis / note (optional)">
-      <textarea nxInput formControlName="note" rows="3"
-                placeholder="e.g. carrier accepted the shipment undamaged per the signed bill of lading"></textarea>
-      <nx-hint nxFormfieldHint>Kept with the case so the next handler knows why it was opened.</nx-hint>
+      <textarea
+        nxInput
+        formControlName="note"
+        rows="3"
+        placeholder="e.g. carrier accepted the shipment undamaged per the signed bill of lading"
+      ></textarea>
+      <nx-hint nxFormfieldHint
+        >Kept with the case so the next handler knows why it was opened.</nx-hint
+      >
     </nx-formfield>
   </form>
 </div>

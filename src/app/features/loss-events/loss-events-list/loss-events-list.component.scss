@@ -31,7 +31,9 @@
 
 // ─── Filter form ─────────────────────────────────────────────────────────────
 
-.lel-form { margin-bottom: 8px; }
+.lel-form {
+  margin-bottom: 8px;
+}
 
 .row1 {
   display: flex;
@@ -75,11 +77,17 @@
   font-style: italic;
 }
 
-.lel-table { width: 100%; }
+.lel-table {
+  width: 100%;
+}
 
-.lel-col--nowrap { white-space: nowrap; }
+.lel-col--nowrap {
+  white-space: nowrap;
+}
 
-.lel-muted { color: var(--text-muted); }
+.lel-muted {
+  color: var(--text-muted);
+}
 
 // ─── Footer / pagination ─────────────────────────────────────────────────────
 

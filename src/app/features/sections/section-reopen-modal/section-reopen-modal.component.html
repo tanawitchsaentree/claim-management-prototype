@@ -7,7 +7,8 @@
 
 <div class="srm-body">
   <p class="srm-intro">
-    Reopen <strong>{{ section.name }}</strong>. Select a mandatory reason for the audit trail.
+    Reopen <strong>{{ section.name }}</strong
+    >. Select a mandatory reason for the audit trail.
   </p>
 
   <form [formGroup]="form" class="srm-form">
@@ -28,10 +29,16 @@
 
 <div class="srm-footer">
   <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button"
-          [disabled]="form.invalid || saving"
-          (click)="onReopen()">
-    @if (saving) { <nx-spinner size="small"></nx-spinner> }
-    @else        { Reopen }
+  <button
+    nxButton="primary small"
+    type="button"
+    [disabled]="form.invalid || saving"
+    (click)="onReopen()"
+  >
+    @if (saving) {
+      <nx-spinner size="small"></nx-spinner>
+    } @else {
+      Reopen
+    }
   </button>
 </div>

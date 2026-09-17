@@ -30,7 +30,9 @@
   flex: 1;
   overflow-x: auto;
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .ref-tab {
@@ -47,9 +49,15 @@
   color: var(--text-muted);
   white-space: nowrap;
   flex-shrink: 0;
-  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  transition:
+    color 0.12s,
+    border-color 0.12s,
+    background 0.12s;
 
-  &:hover { color: var(--text-01); background: var(--ui-03); }
+  &:hover {
+    color: var(--text-01);
+    background: var(--ui-03);
+  }
 
   &--active {
     color: var(--text-01);
@@ -91,9 +99,14 @@
   color: var(--text-muted);
   padding: 0;
   flex-shrink: 0;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
 
-  &:hover { background: var(--ui-04); color: var(--text-01); }
+  &:hover {
+    background: var(--ui-04);
+    color: var(--text-01);
+  }
 }
 
 .ref-add-wrap {
@@ -115,10 +128,19 @@
   background: transparent;
   cursor: pointer;
   color: var(--text-muted);
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 
-  &:hover, &--open { background: var(--ui-03); color: var(--text-01); }
-  &--disabled { opacity: 0.4; cursor: not-allowed; }
+  &:hover,
+  &--open {
+    background: var(--ui-03);
+    color: var(--text-01);
+  }
+  &--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }
 
 .ref-panel-close {
@@ -133,9 +155,14 @@
   cursor: pointer;
   color: var(--text-muted);
   flex-shrink: 0;
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 
-  &:hover { background: var(--ui-03); color: var(--text-01); }
+  &:hover {
+    background: var(--ui-03);
+    color: var(--text-01);
+  }
 }
 
 // ─── Search popover ───────────────────────────────────────────────────────────
@@ -168,7 +195,9 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--text-01);
   outline: none;
-  &::placeholder { color: var(--text-muted); }
+  &::placeholder {
+    color: var(--text-muted);
+  }
 }
 
 .ref-search-hint {
@@ -193,12 +222,23 @@
   padding: var(--space-sm) var(--space-md);
   cursor: pointer;
   transition: background 0.1s;
-  &:hover { background: var(--ui-03); }
+  &:hover {
+    background: var(--ui-03);
+  }
 
-  &--highlighted { background: var(--ui-03); }
+  &--highlighted {
+    background: var(--ui-03);
+  }
 
-  &__id { font-size: var(--paragraph-04-font-size); font-weight: 500; color: var(--text-01); }
-  &__client { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
+  &__id {
+    font-size: var(--paragraph-04-font-size);
+    font-weight: 500;
+    color: var(--text-01);
+  }
+  &__client {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
 }
 
 // ─── Claim header row (id + launch) ──────────────────────────────────────────
@@ -280,7 +320,9 @@
   cursor: pointer;
   color: var(--text-muted);
   text-decoration: none;
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 
   &:hover {
     background: var(--ui-04);
@@ -309,8 +351,14 @@
   justify-content: flex-start;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-.ref-spinner { animation: spin 0.8s linear infinite; }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ref-spinner {
+  animation: spin 0.8s linear infinite;
+}
 
 // ─── Body ────────────────────────────────────────────────────────────────────
 .ref-body {
@@ -322,7 +370,6 @@
   padding: 0;
 }
 
-
 .ref-priority {
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
@@ -333,9 +380,18 @@
   background: var(--ui-03);
   color: var(--text-01);
 
-  &--high   { background: var(--negative-01, #fde8e8); color: var(--negative, #c0392b); }
-  &--medium { background: var(--warning-01, #fef3e2); color: var(--warning, #d35400); }
-  &--low    { background: var(--positive-01, #eaf4eb); color: var(--positive, #27ae60); }
+  &--high {
+    background: var(--negative-01, #fde8e8);
+    color: var(--negative, #c0392b);
+  }
+  &--medium {
+    background: var(--warning-01, #fef3e2);
+    color: var(--warning, #d35400);
+  }
+  &--low {
+    background: var(--positive-01, #eaf4eb);
+    color: var(--positive, #27ae60);
+  }
 }
 
 // ─── Key-value fields ────────────────────────────────────────────────────────
@@ -347,7 +403,8 @@
   padding: var(--space-sm) 0;
   border-bottom: 1px solid var(--ui-04);
 
-  dt, dd {
+  dt,
+  dd {
     padding: var(--space-xs) var(--space-base);
     font-size: var(--paragraph-04-font-size);
     margin: 0;
@@ -392,8 +449,15 @@
   align-items: baseline;
   gap: 8px;
 
-  &__label { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
-  &__value { font-size: var(--paragraph-04-font-size); font-weight: 600; color: var(--text-01); }
+  &__label {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+  &__value {
+    font-size: var(--paragraph-04-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
 }
 
 // ─── Sections list ───────────────────────────────────────────────────────────

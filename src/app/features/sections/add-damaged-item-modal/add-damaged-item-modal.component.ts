@@ -13,7 +13,7 @@ import {
   DamagedItem,
   FINANCIAL_LOSS_DAMAGE,
   buildDamagedItem,
-  damagedItemMissingConditional,
+  damagedItemMissingConditional
 } from '../damaged-item.config';
 
 export interface AddDamagedItemModalData {
@@ -25,50 +25,63 @@ export type AddDamagedItemModalResult = DamagedItem;
 @Component({
   selector: 'app-add-damaged-item-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, NxModalModule, NxFormfieldModule, NxDropdownModule, NxInputModule, NxButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    NxModalModule,
+    NxFormfieldModule,
+    NxDropdownModule,
+    NxInputModule,
+    NxButtonModule
+  ],
   templateUrl: './add-damaged-item-modal.component.html',
-  styleUrl: './add-damaged-item-modal.component.scss',
+  styleUrl: './add-damaged-item-modal.component.scss'
 })
 export class AddDamagedItemModalComponent {
-  readonly data     = inject<AddDamagedItemModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<AddDamagedItemModalComponent, AddDamagedItemModalResult>>(NxModalRef);
-  private readonly fb        = inject(FormBuilder);
+  readonly data = inject<AddDamagedItemModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<AddDamagedItemModalComponent, AddDamagedItemModalResult>>(NxModalRef);
+  private readonly fb = inject(FormBuilder);
   private readonly lookupSvc = inject(MockLookupService);
 
-  readonly damageOptions   = DAMAGE_OPTIONS;
+  readonly damageOptions = DAMAGE_OPTIONS;
   readonly causedByOptions = this.lookupSvc.getCauseOfLossSync();
-  readonly countryOptions  = this.lookupSvc.getCountriesSync();
-  readonly roleOptions     = this.lookupSvc.getPartyRolesSync();
+  readonly countryOptions = this.lookupSvc.getCountriesSync();
+  readonly roleOptions = this.lookupSvc.getPartyRolesSync();
 
   readonly form = this.fb.group({
-    name:        ['', Validators.required],
+    name: ['', Validators.required],
     description: ['', Validators.required],
-    damage:      ['', Validators.required],
-    causedBy:    [null as string | null, Validators.required],
+    damage: ['', Validators.required],
+    causedBy: [null as string | null, Validators.required],
     // Validators on the branch-specific controls below are for nx-formfield's
     // invalid styling only, not gating — see the same note in
     // edit-damaged-item-modal.component.ts; confirm() does the real check.
     financialLossDetails: [''],
-    injuredPartyName:     ['', Validators.required],
-    injuredPartyCountry:  [null as string | null],
-    injuredPartyRole:     [null as string | null],
+    injuredPartyName: ['', Validators.required],
+    injuredPartyCountry: [null as string | null],
+    injuredPartyRole: [null as string | null]
   });
 
   private readonly damageSig = toSignal(this.form.get('damage')!.valueChanges, {
-    initialValue: this.form.value.damage ?? '',
+    initialValue: this.form.value.damage ?? ''
   });
   readonly isFinancialLoss = computed(() => this.damageSig() === FINANCIAL_LOSS_DAMAGE);
-  readonly isBodilyInjury  = computed(() => this.damageSig() === BODILY_INJURY_DAMAGE);
+  readonly isBodilyInjury = computed(() => this.damageSig() === BODILY_INJURY_DAMAGE);
 
   confirm(): void {
-    if (this.form.get('name')!.invalid || this.form.get('description')!.invalid
-        || this.form.get('damage')!.invalid
-        || damagedItemMissingConditional(this.form.value)) {
+    if (
+      this.form.get('name')!.invalid ||
+      this.form.get('description')!.invalid ||
+      this.form.get('damage')!.invalid ||
+      damagedItemMissingConditional(this.form.value)
+    ) {
       this.form.markAllAsTouched();
       return;
     }
     this.modalRef.close(buildDamagedItem(this.form.value));
   }
 
-  cancel(): void { this.modalRef.close(); }
+  cancel(): void {
+    this.modalRef.close();
+  }
 }

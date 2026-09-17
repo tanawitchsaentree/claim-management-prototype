@@ -5,15 +5,13 @@
       <nx-icon name="close"></nx-icon>
     </button>
   </div>
-  <p class="apm-subtitle">
-    {{ data.policies.length }} found alongside {{ data.basePolicyNumber }}
-  </p>
+  <p class="apm-subtitle">{{ data.policies.length }} found alongside {{ data.basePolicyNumber }}</p>
 </div>
 
 <div class="apm-body" tabindex="0">
   <p class="apm-intro">
-    These policies are not on the claim. Adding one makes its entities available
-    for selection on Entities &amp; damages — nothing else about the claim changes.
+    These policies are not on the claim. Adding one makes its entities available for selection on
+    Entities &amp; damages — nothing else about the claim changes.
   </p>
 
   <!-- audit-exempt: this table cannot be empty. The banner that opens this modal
@@ -38,7 +36,8 @@
             <nx-checkbox
               [checked]="isSelected(policy.policyNumber)"
               (checkedChange)="toggle(policy.policyNumber)"
-              [attr.aria-label]="'Add ' + policy.policyNumber + ' to the claim'">
+              [attr.aria-label]="'Add ' + policy.policyNumber + ' to the claim'"
+            >
             </nx-checkbox>
           </td>
           <td nxCell class="apm-col-policy">
@@ -47,7 +46,9 @@
             <span class="apm-reason">{{ policy.matchReason }}</span>
           </td>
           <td nxCell class="apm-col-lob">{{ policy.lineOfBusiness }}</td>
-          <td nxCell class="apm-col-period">{{ policy.effectiveDate | appDate }} – {{ policy.expiryDate | appDate }}</td>
+          <td nxCell class="apm-col-period">
+            {{ policy.effectiveDate | appDate }} – {{ policy.expiryDate | appDate }}
+          </td>
           <td nxCell class="apm-col-status">
             <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
           </td>

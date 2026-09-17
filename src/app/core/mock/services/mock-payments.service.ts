@@ -32,9 +32,9 @@ export class MockPaymentsService extends MockBaseService {
     for (const bucket of this.cache.values()) {
       results = results.concat(bucket);
     }
-    if (filters?.claimId)   results = results.filter(p => p.claimId   === filters.claimId);
+    if (filters?.claimId) results = results.filter(p => p.claimId === filters.claimId);
     if (filters?.sectionId) results = results.filter(p => p.sectionId === filters.sectionId);
-    if (filters?.status)    results = results.filter(p => p.status    === filters.status);
+    if (filters?.status) results = results.filter(p => p.status === filters.status);
     return this.respond(results.map(p => ({ ...p })));
   }
 
@@ -64,7 +64,7 @@ export class MockPaymentsService extends MockBaseService {
       return throwError(() => new Error(`No pending payment for section ${sectionId}`));
     }
     target.isFinalPayment = true;
-    target.status         = 'Final';
+    target.status = 'Final';
     return this.respond({ ...target });
   }
 }

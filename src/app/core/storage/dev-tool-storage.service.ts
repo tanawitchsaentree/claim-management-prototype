@@ -4,7 +4,7 @@ import { ACVerification } from '../../features/claims/dev-banner/claim-dev-helpe
 @Injectable({ providedIn: 'root' })
 export class DevToolStorageService {
   private readonly VERIFICATIONS_KEY = 'dev-tool:verifications';
-  private readonly VERIFIER_KEY      = 'dev-tool:verifier-name';
+  private readonly VERIFIER_KEY = 'dev-tool:verifier-name';
 
   loadVerifications(): Map<string, ACVerification> {
     try {

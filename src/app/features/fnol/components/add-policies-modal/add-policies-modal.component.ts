@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -11,7 +11,7 @@ import { ImpactedPolicy } from '../../../../core/models/impacted-policy.model';
 
 export interface AddPoliciesModalData {
   basePolicyNumber: string;
-  policies:         ImpactedPolicy[];
+  policies: ImpactedPolicy[];
 }
 
 /**
@@ -25,20 +25,19 @@ export interface AddPoliciesModalData {
   selector: 'app-add-policies-modal',
   standalone: true,
   imports: [
-    CommonModule,
     NxModalModule,
     NxButtonModule,
     NxIconModule,
     NxTableModule,
     NxCheckboxModule,
     StatusChipComponent,
-    AppDatePipe,
+    AppDatePipe
   ],
   templateUrl: './add-policies-modal.component.html',
-  styleUrl: './add-policies-modal.component.scss',
+  styleUrl: './add-policies-modal.component.scss'
 })
 export class AddPoliciesModalComponent {
-  readonly data     = inject<AddPoliciesModalData>(NX_MODAL_DATA);
+  readonly data = inject<AddPoliciesModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<AddPoliciesModalComponent, string[]>>(NxModalRef);
 
   private readonly selected = new Set<string>();
@@ -49,7 +48,7 @@ export class AddPoliciesModalComponent {
 
   toggle(policyNumber: string): void {
     if (this.selected.has(policyNumber)) this.selected.delete(policyNumber);
-    else                                 this.selected.add(policyNumber);
+    else this.selected.add(policyNumber);
   }
 
   get selectedCount(): number {
@@ -73,7 +72,7 @@ export class AddPoliciesModalComponent {
     // reports "added N entities from M policies" and the order it walks them in
     // should match what the handler just read down the table.
     this.modalRef.close(
-      this.data.policies.filter(p => this.selected.has(p.policyNumber)).map(p => p.policyNumber),
+      this.data.policies.filter(p => this.selected.has(p.policyNumber)).map(p => p.policyNumber)
     );
   }
 }

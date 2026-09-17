@@ -1,0 +1,8 @@
+@if (resolveLabel(); as label) {
+  <nx-message context="warning" class="brb-banner" [closable]="true" (close)="dismiss()">
+    <strong>Resolving to close this claim:</strong> {{ label }}
+    @if (returnTo(); as back) {
+      <a [routerLink]="back" class="brb-back-link">Back to Claim Overview</a>
+    }
+  </nx-message>
+}

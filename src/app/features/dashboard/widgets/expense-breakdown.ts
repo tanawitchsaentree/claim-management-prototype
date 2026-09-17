@@ -22,7 +22,8 @@ import { ProviderExpense } from '../../../core/models';
               class="exp-bar"
               [value]="item.amount"
               [max]="maxAmount()"
-              [ariaLabel]="item.label">
+              [ariaLabel]="item.label"
+            >
             </nx-progressbar>
             <span class="exp-amount">{{ item.amount | number }} {{ item.currency }}</span>
           </div>
@@ -34,31 +35,79 @@ import { ProviderExpense } from '../../../core/models';
       </div>
     </div>
   `,
-  styles: [`
-    :host { display: block; }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
+      /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
        from reaching this standalone component). Keep in sync with .panel-card. */
-    .panel-card {
-      background: var(--ui-01);
-      border: 1px solid var(--ui-04);
-      border-radius: 4px;
-      padding: 16px;
-    }
-    .panel-card-title { font-size: 16px; font-weight: 600; color: var(--text-01); line-height: 1.4; }
+      .panel-card {
+        background: var(--ui-01);
+        border: 1px solid var(--ui-04);
+        border-radius: 4px;
+        padding: 16px;
+      }
+      .panel-card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-01);
+        line-height: 1.4;
+      }
 
-    .exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-    .exp-period { font-size: var(--paragraph-04-font-size); color: var(--text-muted); }
-    .exp-list { display: flex; flex-direction: column; gap: 10px; }
-    .exp-row { display: flex; align-items: center; gap: 8px; }
-    .exp-label { width: 110px; font-size: var(--paragraph-04-font-size); color: var(--text-01); flex-shrink: 0; }
-    .exp-bar { flex: 1; }
-    .exp-amount { font-size: var(--paragraph-04-font-size); color: var(--text-muted); width: 100px; text-align: right; flex-shrink: 0; }
-    .exp-total { margin-top: 12px; font-size: var(--paragraph-04-font-size); color: var(--text-muted); border-top: 1px solid var(--ui-03); padding-top: 8px; }
-  `],
+      .exp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 12px;
+      }
+      .exp-period {
+        font-size: var(--paragraph-04-font-size);
+        color: var(--text-muted);
+      }
+      .exp-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .exp-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .exp-label {
+        width: 110px;
+        font-size: var(--paragraph-04-font-size);
+        color: var(--text-01);
+        flex-shrink: 0;
+      }
+      .exp-bar {
+        flex: 1;
+      }
+      .exp-amount {
+        font-size: var(--paragraph-04-font-size);
+        color: var(--text-muted);
+        width: 100px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .exp-total {
+        margin-top: 12px;
+        font-size: var(--paragraph-04-font-size);
+        color: var(--text-muted);
+        border-top: 1px solid var(--ui-03);
+        padding-top: 8px;
+      }
+    `
+  ]
 })
 export class ExpenseBreakdownComponent {
   @Input({ required: true }) items!: ProviderExpense[];
-  total(): number { return this.items.reduce((s, i) => s + i.amount, 0); }
-  maxAmount(): number { return Math.max(...this.items.map(i => i.amount), 1); }
+  total(): number {
+    return this.items.reduce((s, i) => s + i.amount, 0);
+  }
+  maxAmount(): number {
+    return Math.max(...this.items.map(i => i.amount), 1);
+  }
 }

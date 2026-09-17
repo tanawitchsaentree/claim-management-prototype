@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -15,48 +15,51 @@ import { Reserve, ReserveType } from '../../../../core/models/reserve.model';
 export interface AddReserveModalData {
   policyNumber: string;
   // Existing sections (reserves) the user can pick from.
-  sections:    Reserve[];
+  sections: Reserve[];
   // Optional: open the modal pre-filled for a specific section
   preselectSectionId?: string;
 }
 
 export interface AddReserveResult {
-  reserveId:     string;          // selected section
-  reserveType:   ReserveType;     // tab to add to
-  itemLevel:     boolean;
-  damagedItemId?: string;          // required when itemLevel = true
+  reserveId: string; // selected section
+  reserveType: ReserveType; // tab to add to
+  itemLevel: boolean;
+  damagedItemId?: string; // required when itemLevel = true
 }
 
 @Component({
   selector: 'app-add-reserve-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
     NxDropdownModule,
     NxCheckboxModule,
     NxButtonModule,
-    NxIconModule,
+    NxIconModule
   ],
   templateUrl: './add-reserve-modal.component.html',
-  styleUrl: './add-reserve-modal.component.scss',
+  styleUrl: './add-reserve-modal.component.scss'
 })
 export class AddReserveModalComponent implements OnInit {
-  readonly data     = inject<AddReserveModalData>(NX_MODAL_DATA);
-  readonly modalRef = inject<NxModalRef<AddReserveModalComponent, AddReserveResult | null>>(NxModalRef);
+  readonly data = inject<AddReserveModalData>(NX_MODAL_DATA);
+  readonly modalRef =
+    inject<NxModalRef<AddReserveModalComponent, AddReserveResult | null>>(NxModalRef);
 
   private readonly lookupSvc = inject(MockLookupService);
-  private readonly fb        = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
 
   reserveTypeOptions: LookupOption[] = [];
 
   readonly form = this.fb.group({
-    reserveId:     new FormControl<string | null>(null, Validators.required),
-    reserveType:   new FormControl<ReserveType | null>('indemnity' as ReserveType, Validators.required),
-    itemLevel:     new FormControl<boolean>(false),
-    damagedItemId: new FormControl<string | null>(null),
+    reserveId: new FormControl<string | null>(null, Validators.required),
+    reserveType: new FormControl<ReserveType | null>(
+      'indemnity' as ReserveType,
+      Validators.required
+    ),
+    itemLevel: new FormControl<boolean>(false),
+    damagedItemId: new FormControl<string | null>(null)
   });
 
   // Reactive helpers
@@ -102,20 +105,28 @@ export class AddReserveModalComponent implements OnInit {
     this.form.patchValue({ itemLevel: checked });
     const ctrl = this.form.get('damagedItemId')!;
     if (checked) ctrl.setValidators(Validators.required);
-    else { ctrl.clearValidators(); ctrl.setValue(null); }
+    else {
+      ctrl.clearValidators();
+      ctrl.setValue(null);
+    }
     ctrl.updateValueAndValidity();
   }
 
-  onCancel(): void { this.modalRef.close(null); }
+  onCancel(): void {
+    this.modalRef.close(null);
+  }
 
   async onAdd(): Promise<void> {
-    if (!this.canAdd) { this.form.markAllAsTouched(); return; }
+    if (!this.canAdd) {
+      this.form.markAllAsTouched();
+      return;
+    }
     const v = this.form.value;
     this.modalRef.close({
-      reserveId:     v.reserveId!,
-      reserveType:   v.reserveType as ReserveType,
-      itemLevel:     !!v.itemLevel,
-      damagedItemId: v.itemLevel ? (v.damagedItemId ?? undefined) : undefined,
+      reserveId: v.reserveId!,
+      reserveType: v.reserveType as ReserveType,
+      itemLevel: !!v.itemLevel,
+      damagedItemId: v.itemLevel ? (v.damagedItemId ?? undefined) : undefined
     });
   }
 }

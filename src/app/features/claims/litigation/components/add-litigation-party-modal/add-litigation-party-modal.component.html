@@ -1,7 +1,9 @@
 <div class="aplp-header">
   <h2 class="aplp-title">{{ title }}</h2>
   <div class="aplp-header__actions">
-    <button nxButton="primary small" type="button" disabled>Add new {{ data.kind === 'opposing-lawyer' ? 'lawyer' : data.kind }}</button>
+    <button nxButton="primary small" type="button" disabled>
+      Add new {{ data.kind === 'opposing-lawyer' ? 'lawyer' : data.kind }}
+    </button>
     <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
       <nx-icon name="close"></nx-icon>
     </button>
@@ -29,12 +31,20 @@
       @for (p of visibleRows(); track p.partyId) {
         <tr nxTableRow [class.aplp-row--selected]="isSelected(p.partyId)">
           <td nxCell class="aplp-col-check">
-            <nx-checkbox [checked]="isSelected(p.partyId)" (checkedChange)="select(p.partyId)" aria-label="Select party"></nx-checkbox>
+            <nx-checkbox
+              [checked]="isSelected(p.partyId)"
+              (checkedChange)="select(p.partyId)"
+              aria-label="Select party"
+            ></nx-checkbox>
           </td>
           <td nxCell>{{ p.legalName }}</td>
           <td nxCell>{{ rolesDisplay(p) }}</td>
           <td nxCell>
-            <app-status-chip [status]="clearanceChip(p.clearanceStatus)" domain="claim" [label]="clearanceLabels[p.clearanceStatus]"></app-status-chip>
+            <app-status-chip
+              [status]="clearanceChip(p.clearanceStatus)"
+              domain="claim"
+              [label]="clearanceLabels[p.clearanceStatus]"
+            ></app-status-chip>
           </td>
         </tr>
       }
@@ -50,12 +60,15 @@
       ariaLabel="Party search pagination"
       (goPage)="goToPage($event)"
       (goPrev)="goToPage(page() - 1)"
-      (goNext)="goToPage(page() + 1)">
+      (goNext)="goToPage(page() + 1)"
+    >
     </nx-pagination>
   }
 </div>
 
 <div class="aplp-footer">
   <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button" [disabled]="!selectedId()" (click)="onAdd()">Add</button>
+  <button nxButton="primary small" type="button" [disabled]="!selectedId()" (click)="onAdd()">
+    Add
+  </button>
 </div>

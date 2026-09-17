@@ -22,11 +22,11 @@ Read `package.json` before anything else:
 grep "ng-aquila" package.json
 ```
 
-| Result | Action |
-|--------|--------|
-| `^21.x` or lower | Proceed — bug confirmed in this range |
+| Result            | Action                                                                                                                                                                                               |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `^21.x` or lower  | Proceed — bug confirmed in this range                                                                                                                                                                |
 | `^22.x` or higher | **Verify first** — run Step 1 symptom check. If symptom is absent, use `nx-formfield` normally. Only proceed to Step 3 if symptom is still present. Update the Variant Registry below with findings. |
-| Not found | This is not an NDBX project — see [Non-NDBX frameworks](#non-ndbx-frameworks) |
+| Not found         | This is not an NDBX project — see [Non-NDBX frameworks](#non-ndbx-frameworks)                                                                                                                        |
 
 ---
 
@@ -35,6 +35,7 @@ grep "ng-aquila" package.json
 Before touching any code, verify the symptom matches. Open DevTools → inspect the input:
 
 **Confirm ALL of:**
+
 - [ ] An empty `.nx-formfield__label-area` block is present in the DOM
 - [ ] That block has non-zero height (inspect computed styles)
 - [ ] Removing it in DevTools closes the gap
@@ -58,12 +59,12 @@ grep -r "nx-formfield\|bare.*input\|raw.*input" .claude/ CLAUDE.md docs/ --inclu
 
 > **Note:** If your project doesn't use Claude Code conventions (no `.claude/` directory), skip the second grep and check your project's coding-standards doc manually.
 
-| Detected state | Branch |
-|----------------|--------|
-| **Existing wrapper pattern found** | Match that exact pattern — use its class names, height, border style. Do NOT introduce a new wrapper convention. Skip to Step 3b. |
-| **No existing pattern + no rule** | Introduce wrapper using Step 3a template |
-| **Hard no-bare-input rule exists** | Flag to user: "Project rule conflicts with this pattern. Confirm exception before proceeding." Do not apply silently. If user confirms: whitelist this component in the project's rule doc, then proceed to Step 3a. |
-| **Rule exists but already has exceptions** | Check if this component qualifies under existing exception conditions. If yes, proceed to Step 3a. |
+| Detected state                             | Branch                                                                                                                                                                                                               |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Existing wrapper pattern found**         | Match that exact pattern — use its class names, height, border style. Do NOT introduce a new wrapper convention. Skip to Step 3b.                                                                                    |
+| **No existing pattern + no rule**          | Introduce wrapper using Step 3a template                                                                                                                                                                             |
+| **Hard no-bare-input rule exists**         | Flag to user: "Project rule conflicts with this pattern. Confirm exception before proceeding." Do not apply silently. If user confirms: whitelist this component in the project's rule doc, then proceed to Step 3a. |
+| **Rule exists but already has exceptions** | Check if this component qualifies under existing exception conditions. If yes, proceed to Step 3a.                                                                                                                   |
 
 ---
 
@@ -85,7 +86,8 @@ Only reach here if Step 2 found no existing pattern.
       class="[prefix]-wrap__field"
       type="text"
       [formControl]="searchControl"
-      placeholder="Search…" />
+      placeholder="Search…"
+    />
     <nx-icon name="search" class="[prefix]-wrap__icon"></nx-icon>
   </div>
 </div>
@@ -102,14 +104,14 @@ Only reach here if Step 2 found no existing pattern.
   &__input {
     display: flex;
     align-items: center;
-    border: 1px solid var(--border-color, #c8c8c8);   /* your border token */
+    border: 1px solid var(--border-color, #c8c8c8); /* your border token */
     border-radius: 4px;
     padding: 0 12px;
     height: 40px;
-    background: var(--input-bg, #ffffff);              /* your input background token */
+    background: var(--input-bg, #ffffff); /* your input background token */
 
     &:focus-within {
-      border-color: var(--focus-color, #007aff);       /* your focus/brand token */
+      border-color: var(--focus-color, #007aff); /* your focus/brand token */
       outline: 2px solid var(--focus-color, #007aff);
       outline-offset: 0;
     }
@@ -120,13 +122,15 @@ Only reach here if Step 2 found no existing pattern.
     border: none;
     outline: none;
     background: transparent;
-    font-size: 14px;                                   /* or your body font-size token */
-    color: var(--text-primary, #333333);               /* your primary text token */
-    &::placeholder { color: var(--text-muted, #767676); }
+    font-size: 14px; /* or your body font-size token */
+    color: var(--text-primary, #333333); /* your primary text token */
+    &::placeholder {
+      color: var(--text-muted, #767676);
+    }
   }
 
   &__icon {
-    color: var(--text-muted, #767676);                 /* your muted/secondary text token */
+    color: var(--text-muted, #767676); /* your muted/secondary text token */
     flex-shrink: 0;
   }
 }
@@ -158,13 +162,13 @@ After applying, verify in DevTools before reporting done:
 
 If the gap persists after applying, answer these diagnostic questions before trying anything else:
 
-| Question | If yes → |
-|----------|----------|
-| Is the input inside another `nx-formfield` further up the DOM? | Fix the outer formfield first — nested formfields stack reserved zones |
-| Is the gap coming from a `gap` on the parent flex/grid container? | Adjust parent `gap`, not the input wrapper |
-| Does an ancestor element have inline `padding` written by a layout directive (not a CSS class)? | Inspect the ancestor's `style` attribute in DevTools — remove or override that inline padding |
-| Does the project use an expert/dense theme module that overrides component sizing globally? | Check if a theme class on `<body>` or a root module is setting `--formfield-*` custom properties — those affect reserved zone height |
-| Is the remaining gap exactly equal to a sibling's `margin-bottom`? | Margin collapsing between siblings — not a formfield issue, adjust sibling margins |
+| Question                                                                                        | If yes →                                                                                                                             |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Is the input inside another `nx-formfield` further up the DOM?                                  | Fix the outer formfield first — nested formfields stack reserved zones                                                               |
+| Is the gap coming from a `gap` on the parent flex/grid container?                               | Adjust parent `gap`, not the input wrapper                                                                                           |
+| Does an ancestor element have inline `padding` written by a layout directive (not a CSS class)? | Inspect the ancestor's `style` attribute in DevTools — remove or override that inline padding                                        |
+| Does the project use an expert/dense theme module that overrides component sizing globally?     | Check if a theme class on `<body>` or a root module is setting `--formfield-*` custom properties — those affect reserved zone height |
+| Is the remaining gap exactly equal to a sibling's `margin-bottom`?                              | Margin collapsing between siblings — not a formfield issue, adjust sibling margins                                                   |
 
 If none of these explain it: escalate to user with a DevTools screenshot showing computed styles on the gap element. Do not guess further.
 
@@ -173,12 +177,14 @@ If none of these explain it: escalate to user with a DevTools screenshot showing
 ## When to use / When NOT to use
 
 **Use this pattern when ALL of:**
+
 - Input has no label
 - Input has no inline validation error message
 - Input is in a dense layout where reserved space causes visible gaps
 - Input is not part of a validated form
 
 **Do NOT use when ANY of:**
+
 - A label is needed — keep `nx-formfield`, the spacing is correct
 - Inline error messages are needed — keep `nx-formfield`
 - The project's design system audit tool will flag bare inputs as a violation
@@ -191,6 +197,7 @@ If none of these explain it: escalate to user with a DevTools screenshot showing
 This pattern is a **narrow exception** to the common NDBX rule "native `<input>` must always be in `nx-formfield`."
 
 Exception protocol:
+
 1. All four "when to use" conditions must be met
 2. Whitelist this specific component in the project's rule doc with a comment explaining why
 3. Never apply silently if a hard rule exists
@@ -202,11 +209,11 @@ Exception protocol:
 
 Same root cause exists in other component libraries. Detection differs:
 
-| Library | Internal reserved zone | Detection |
-|---------|----------------------|-----------|
-| Angular Material | `mat-form-field` — `mat-form-field-subscript-wrapper` | Inspect for empty subscript wrapper |
-| PrimeNG | `p-field` wrapper | Inspect for empty `.p-field` padding |
-| Any custom design system | Look for always-rendered label/hint/error slots | Inspect computed height of empty siblings |
+| Library                  | Internal reserved zone                                | Detection                                 |
+| ------------------------ | ----------------------------------------------------- | ----------------------------------------- |
+| Angular Material         | `mat-form-field` — `mat-form-field-subscript-wrapper` | Inspect for empty subscript wrapper       |
+| PrimeNG                  | `p-field` wrapper                                     | Inspect for empty `.p-field` padding      |
+| Any custom design system | Look for always-rendered label/hint/error slots       | Inspect computed height of empty siblings |
 
 If confirmed: same fix applies — replace the wrapper with a plain `div`. Adapt class names to the project's convention.
 
@@ -218,9 +225,9 @@ If confirmed: same fix applies — replace the wrapper with a plain `div`. Adapt
 
 When to write back: after applying in a project where the symptom, fix, or detection differed from the base pattern above — add a row and note what was different.
 
-| Date | Project | ng-aquila version | Variant | Outcome |
-|------|---------|-------------------|---------|---------|
-| _(add row when you apply this in a project)_ | — | — | — | — |
+| Date                                         | Project | ng-aquila version | Variant | Outcome |
+| -------------------------------------------- | ------- | ----------------- | ------- | ------- |
+| _(add row when you apply this in a project)_ | —       | —                 | —       | —       |
 
 ---
 

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  effect,
+  inject,
+  signal
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
@@ -9,9 +18,16 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { MockUserDirectoryService, UserDirectoryEntry } from '../../../../../core/mock/services/mock-user-directory.service';
+import {
+  MockUserDirectoryService,
+  UserDirectoryEntry
+} from '../../../../../core/mock/services/mock-user-directory.service';
 import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
-import { FileRestriction, RESTRICTION_REASONS, AccessListEntry } from '../../../../../core/models/claim-overview.model';
+import {
+  FileRestriction,
+  RESTRICTION_REASONS,
+  AccessListEntry
+} from '../../../../../core/models/claim-overview.model';
 
 @Component({
   selector: 'app-file-restriction-card',
@@ -24,10 +40,10 @@ import { FileRestriction, RESTRICTION_REASONS, AccessListEntry } from '../../../
     NxInputModule,
     NxIconModule,
     NxButtonModule,
-    EmptyStateComponent,
+    EmptyStateComponent
   ],
   templateUrl: './file-restriction-card.component.html',
-  styleUrl: './file-restriction-card.component.scss',
+  styleUrl: './file-restriction-card.component.scss'
 })
 export class FileRestrictionCardComponent implements OnChanges {
   @Input({ required: true }) restriction: FileRestriction | undefined;
@@ -40,21 +56,29 @@ export class FileRestrictionCardComponent implements OnChanges {
 
   readonly restrictionForm = new FormGroup({
     isRestricted: new FormControl(false),
-    reason:       new FormControl<string>(''),
-    otherReason:  new FormControl(''),
+    reason: new FormControl<string>(''),
+    otherReason: new FormControl('')
   });
 
-  get isRestricted(): boolean { return !!this.restrictionForm.get('isRestricted')?.value; }
-  get selectedReason(): string { return this.restrictionForm.get('reason')?.value ?? ''; }
-  get isOtherReason(): boolean { return this.selectedReason === 'Other'; }
-  get restrictionToggle(): FormControl { return this.restrictionForm.get('isRestricted') as FormControl; }
+  get isRestricted(): boolean {
+    return !!this.restrictionForm.get('isRestricted')?.value;
+  }
+  get selectedReason(): string {
+    return this.restrictionForm.get('reason')?.value ?? '';
+  }
+  get isOtherReason(): boolean {
+    return this.selectedReason === 'Other';
+  }
+  get restrictionToggle(): FormControl {
+    return this.restrictionForm.get('isRestricted') as FormControl;
+  }
 
   readonly coAccessList = signal<AccessListEntry[]>([]);
   readonly coUserSearchControl = new FormControl('');
   readonly coUserSearchResults = signal<UserDirectoryEntry[]>([]);
   private readonly coUserSearchQuery = toSignal(
     this.coUserSearchControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()),
-    { initialValue: this.coUserSearchControl.value },
+    { initialValue: this.coUserSearchControl.value }
   );
 
   constructor() {
@@ -77,10 +101,13 @@ export class FileRestrictionCardComponent implements OnChanges {
 
   ngOnChanges(): void {
     const r = this.restriction;
-    this.restrictionForm.patchValue({
-      isRestricted: r?.isRestricted ?? false,
-      reason: r?.reason ?? '',
-    }, { emitEvent: false });
+    this.restrictionForm.patchValue(
+      {
+        isRestricted: r?.isRestricted ?? false,
+        reason: r?.reason ?? ''
+      },
+      { emitEvent: false }
+    );
     this.coAccessList.set(r?.accessList ?? []);
   }
 
@@ -97,19 +124,23 @@ export class FileRestrictionCardComponent implements OnChanges {
     const isRestricted = this.isRestricted;
     const restriction: FileRestriction = {
       isRestricted,
-      reason: isRestricted ? (this.isOtherReason ? (this.restrictionForm.get('otherReason')?.value ?? '') : this.selectedReason) : undefined,
-      accessList: isRestricted ? this.coAccessList() : [],
+      reason: isRestricted
+        ? this.isOtherReason
+          ? (this.restrictionForm.get('otherReason')?.value ?? '')
+          : this.selectedReason
+        : undefined,
+      accessList: isRestricted ? this.coAccessList() : []
     };
     this.restrictionChanged.emit(restriction);
   }
 
   addCoUser(user: UserDirectoryEntry): void {
     const entry: AccessListEntry = {
-      userId:  user.userId,
-      name:    user.name,
-      role:    user.role,
-      email:   user.email,
-      addedAt: new Date().toISOString().split('T')[0],
+      userId: user.userId,
+      name: user.name,
+      role: user.role,
+      email: user.email,
+      addedAt: new Date().toISOString().split('T')[0]
     };
     this.coAccessList.update(list => [...list, entry]);
     this.coUserSearchControl.setValue('');

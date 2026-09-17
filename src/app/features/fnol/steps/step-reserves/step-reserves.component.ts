@@ -8,15 +8,34 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
-import { Reserve, ReserveNarrative, ReservesPolicyData, ReserveType, RESERVE_TYPE_LABELS, SubReserve } from '../../../../core/models/reserve.model';
-import { AddReserveModalComponent, AddReserveResult } from '../../components/add-reserve-modal/add-reserve-modal.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  Reserve,
+  ReserveNarrative,
+  ReservesPolicyData,
+  ReserveType,
+  RESERVE_TYPE_LABELS,
+  SubReserve
+} from '../../../../core/models/reserve.model';
+import {
+  AddReserveModalComponent,
+  AddReserveResult
+} from '../../components/add-reserve-modal/add-reserve-modal.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ReserveNarrativePanelComponent } from './components/reserve-narrative-panel/reserve-narrative-panel.component';
-import { ReserveListComponent, ReserveListViewMode } from './components/reserve-list/reserve-list.component';
-import { ReserveDetailPanelComponent, SectionMutation } from './components/reserve-detail-panel/reserve-detail-panel.component';
+import {
+  ReserveListComponent,
+  ReserveListViewMode
+} from './components/reserve-list/reserve-list.component';
+import {
+  ReserveDetailPanelComponent,
+  SectionMutation
+} from './components/reserve-detail-panel/reserve-detail-panel.component';
 
 @Component({
   selector: 'app-step-reserves',
@@ -32,19 +51,19 @@ import { ReserveDetailPanelComponent, SectionMutation } from './components/reser
     EmptyStateComponent,
     ReserveNarrativePanelComponent,
     ReserveListComponent,
-    ReserveDetailPanelComponent,
+    ReserveDetailPanelComponent
   ],
   templateUrl: './step-reserves.component.html',
-  styleUrl: './step-reserves.component.scss',
+  styleUrl: './step-reserves.component.scss'
 })
 export class StepReservesComponent implements OnInit, OnDestroy {
-  private readonly reservesSvc  = inject(MockReservesService);
-  private readonly fnolState    = inject(FnolStateService);
-  private readonly dialogSvc    = inject(NxDialogService);
-  private readonly router       = inject(Router);
-  private readonly toast        = inject(ToastService);
+  private readonly reservesSvc = inject(MockReservesService);
+  private readonly fnolState = inject(FnolStateService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
 
-  readonly data$      = new BehaviorSubject<ReservesPolicyData | null>(null);
+  readonly data$ = new BehaviorSubject<ReservesPolicyData | null>(null);
   readonly typeLabels = RESERVE_TYPE_LABELS;
 
   // Master/detail squeeze mode
@@ -53,19 +72,19 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
   // Edit state — drives the "Save & back" vs "Back to list" label and the
   // "Saved Xs ago" indicator on the right-panel header.
-  readonly isDirty     = signal(false);
+  readonly isDirty = signal(false);
   readonly lastSavedAt = signal<Date | null>(null);
-  readonly nowTick     = signal(Date.now());
+  readonly nowTick = signal(Date.now());
 
   readonly savedAgoLabel = computed<string | null>(() => {
     const t = this.lastSavedAt();
     if (!t) return null;
-    this.nowTick();                                  // re-run every tick
+    this.nowTick(); // re-run every tick
     const seconds = Math.max(0, Math.floor((Date.now() - t.getTime()) / 1000));
-    if (seconds < 5)   return 'Saved just now';
-    if (seconds < 60)  return `Saved ${seconds}s ago`;
+    if (seconds < 5) return 'Saved just now';
+    if (seconds < 60) return `Saved ${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60)  return `Saved ${minutes}m ago`;
+    if (minutes < 60) return `Saved ${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
     return `Saved ${hours}h ago`;
   });
@@ -135,7 +154,10 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   }
 
   private stopSavedAgoTicker(): void {
-    if (this.savedAgoTimer) { clearInterval(this.savedAgoTimer); this.savedAgoTimer = null; }
+    if (this.savedAgoTimer) {
+      clearInterval(this.savedAgoTimer);
+      this.savedAgoTimer = null;
+    }
   }
 
   async onSaveChanges(): Promise<void> {
@@ -147,14 +169,18 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   async closeSection(): Promise<void> {
     if (this.isDirty() && !this.isCrossPolicy()) {
       const data: ConfirmDialogData = {
-        title:         'Discard unsaved changes?',
-        message:       'Your edits to this section will be lost.',
-        confirmLabel:  'Discard',
-        cancelLabel:   'Keep editing',
-        confirmDanger: true,
+        title: 'Discard unsaved changes?',
+        message: 'Your edits to this section will be lost.',
+        confirmLabel: 'Discard',
+        cancelLabel: 'Keep editing',
+        confirmDanger: true
       };
-      const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
-      const discard = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+      const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+        data,
+        width: '440px',
+        maxWidth: '92vw'
+      });
+      const discard = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
       if (!discard) return;
     }
     this.selectedSection.set(null);
@@ -180,12 +206,22 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     this.isDirty.set(false);
   }
 
-  get policyNumber(): string { return this.fnolState.policyNumber; }
-  get reserves(): Reserve[]  { return this.data$.value?.reserves ?? []; }
-  get totalReserve(): number { return this.data$.value?.totalReserve ?? 0; }
-  get allianzShare(): number { return this.data$.value?.allianzShare ?? 50; }
+  get policyNumber(): string {
+    return this.fnolState.policyNumber;
+  }
+  get reserves(): Reserve[] {
+    return this.data$.value?.reserves ?? [];
+  }
+  get totalReserve(): number {
+    return this.data$.value?.totalReserve ?? 0;
+  }
+  get allianzShare(): number {
+    return this.data$.value?.allianzShare ?? 50;
+  }
 
-  get narrative(): ReserveNarrative | undefined { return this.data$.value?.narrative; }
+  get narrative(): ReserveNarrative | undefined {
+    return this.data$.value?.narrative;
+  }
 
   async ngOnInit(): Promise<void> {
     if (!this.fnolState.selectedPolicy && !this.fnolState.selectedClient && !this.fnolState.path) {
@@ -210,11 +246,11 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
       data: {
         policyNumber: this.policyNumber,
-        sections: this.reserves,
+        sections: this.reserves
       },
-      width: '480px',
+      width: '480px'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as AddReserveResult | null | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as AddReserveResult | null | undefined;
     if (!result) return;
 
     // Find the chosen section + push a fresh sub-reserve into the chosen tab
@@ -228,11 +264,13 @@ export class StepReservesComponent implements OnInit, OnDestroy {
       subType: 'Lorem ipsum',
       currency: section.currency,
       amount: 0,
-      coInsurance: 'RI',
+      coInsurance: 'RI'
     };
 
     if (result.itemLevel && result.damagedItemId) {
-      const item = (sectionClone.damagedItems ?? []).find(i => i.damagedItemId === result.damagedItemId);
+      const item = (sectionClone.damagedItems ?? []).find(
+        i => i.damagedItemId === result.damagedItemId
+      );
       if (item) {
         const list = item.subReserves[tab] ?? [];
         item.subReserves = { ...item.subReserves, [tab]: [...list, blank] };
@@ -246,7 +284,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
           damagedItemId: `${section.reserveId}-DI-1`,
           itemName: `${section.partyName} — ${section.damageType}`,
           expanded: true,
-          subReserves: { [tab]: [blank] },
+          subReserves: { [tab]: [blank] }
         });
         sectionClone.damagedItems = items;
       } else {
@@ -281,14 +319,17 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     const total = (type: ReserveType): number =>
       (sel.damagedItems ?? []).reduce(
         (sum, it) => sum + (it.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0),
-        0,
+        0
       );
     sel.subAmounts = {
-      indemnity:  total('indemnity'),
-      expenses:   total('expenses'),
-      recoveries: total('recoveries'),
+      indemnity: total('indemnity'),
+      expenses: total('expenses'),
+      recoveries: total('recoveries')
     };
-    sel.amount = (sel.subAmounts.indemnity ?? 0) + (sel.subAmounts.expenses ?? 0) + (sel.subAmounts.recoveries ?? 0);
+    sel.amount =
+      (sel.subAmounts.indemnity ?? 0) +
+      (sel.subAmounts.expenses ?? 0) +
+      (sel.subAmounts.recoveries ?? 0);
   }
 
   // ── Kebab actions ────────────────────────────────────────────────────────────
@@ -296,12 +337,14 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   async onEditReserve(reserve: Reserve): Promise<void> {
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
       data: { policyNumber: this.policyNumber, prefill: reserve },
-      width: '480px',
+      width: '480px'
     });
-    const result = await firstValueFrom(ref.afterClosed()) as AddReserveResult | null | undefined;
+    const result = (await firstValueFrom(ref.afterClosed())) as AddReserveResult | null | undefined;
     if (!result) return;
     try {
-      await firstValueFrom(this.reservesSvc.updateReserve(this.policyNumber, reserve.reserveId, result));
+      await firstValueFrom(
+        this.reservesSvc.updateReserve(this.policyNumber, reserve.reserveId, result)
+      );
     } catch {
       this.toast.error('Failed to update reserve', 'Please try again.');
       return;
@@ -311,13 +354,17 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
   async onRemoveReserve(reserve: Reserve): Promise<void> {
     const data: ConfirmDialogData = {
-      title:         'Remove reserve',
-      message:       `Remove reserve for "${reserve.partyName} — ${reserve.damageType}"?`,
-      confirmLabel:  'Remove',
-      confirmDanger: true,
+      title: 'Remove reserve',
+      message: `Remove reserve for "${reserve.partyName} — ${reserve.damageType}"?`,
+      confirmLabel: 'Remove',
+      confirmDanger: true
     };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
-    const confirmed = await firstValueFrom(ref.afterClosed()) as boolean | undefined;
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '440px',
+      maxWidth: '92vw'
+    });
+    const confirmed = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
     if (!confirmed) return;
     try {
       await firstValueFrom(this.reservesSvc.removeReserve(this.policyNumber, reserve.reserveId));
@@ -332,9 +379,16 @@ export class StepReservesComponent implements OnInit, OnDestroy {
 
   // ── Navigation ───────────────────────────────────────────────────────────────
 
-  onCancel(): void { this.router.navigate(['/dashboard']); }
-  onBack(): void   { this.router.navigate(['/fnol/parties']); }
-  onNext(): void   { this.fnolState.markStepComplete('reserves'); this.router.navigate(['/fnol/summary']); }
+  onCancel(): void {
+    this.router.navigate(['/dashboard']);
+  }
+  onBack(): void {
+    this.router.navigate(['/fnol/parties']);
+  }
+  onNext(): void {
+    this.fnolState.markStepComplete('reserves');
+    this.router.navigate(['/fnol/summary']);
+  }
 
   // ── Private ──────────────────────────────────────────────────────────────────
 
@@ -356,6 +410,10 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     }
   }
 
-  private lockBodyScroll(): void   { document.body.style.overflow = 'hidden'; }
-  private unlockBodyScroll(): void { document.body.style.overflow = ''; }
+  private lockBodyScroll(): void {
+    document.body.style.overflow = 'hidden';
+  }
+  private unlockBodyScroll(): void {
+    document.body.style.overflow = '';
+  }
 }

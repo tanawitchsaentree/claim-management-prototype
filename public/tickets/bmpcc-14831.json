@@ -24,13 +24,21 @@
       "setup": {
         "description": "Uses CLM-2024-001's existing financial data — no override needed",
         "preconditions": [
-          { "text": "Transaction Summary section visible with item count", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Transaction Summary section visible with item count",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
       "expectedUI": {
         "description": "Transaction Summary table with item count, no pagination controls",
-        "visualCues": ["Transaction Summary heading", "Item count below heading", "No pagination controls present"]
+        "visualCues": [
+          "Transaction Summary heading",
+          "Item count below heading",
+          "No pagination controls present"
+        ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial",

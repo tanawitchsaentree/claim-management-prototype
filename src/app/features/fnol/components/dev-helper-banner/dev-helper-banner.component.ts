@@ -13,23 +13,18 @@ const DEFAULT_LOSS_SCENARIO = 'fire';
 @Component({
   selector: 'app-dev-helper-banner',
   standalone: true,
-  imports: [
-    CommonModule,
-    NxButtonModule,
-    NxIconModule,
-    NxSpinnerModule,
-  ],
+  imports: [CommonModule, NxButtonModule, NxIconModule, NxSpinnerModule],
   templateUrl: './dev-helper-banner.component.html',
-  styleUrl:    './dev-helper-banner.component.scss',
+  styleUrl: './dev-helper-banner.component.scss'
 })
 export class DevHelperBannerComponent {
   private readonly helper = inject(FnolDevHelperService);
-  private readonly live   = inject(LiveAnnouncer);
+  private readonly live = inject(LiveAnnouncer);
 
-  readonly isVisible$   = of(true);
+  readonly isVisible$ = of(true);
   readonly currentPage$ = this.helper.currentPage$;
 
-  filling    = false;
+  filling = false;
   lastResult: FillResult | null = null;
   showResult = false;
 
@@ -67,7 +62,9 @@ export class DevHelperBannerComponent {
           : this.lastResult.message;
         this.live.announce(msg, 'polite');
       }
-      setTimeout(() => { this.showResult = false; }, 4000);
+      setTimeout(() => {
+        this.showResult = false;
+      }, 4000);
     }
   }
 }

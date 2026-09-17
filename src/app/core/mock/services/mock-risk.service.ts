@@ -17,9 +17,10 @@ export class MockRiskService extends MockBaseService {
     const idx = this.cache.findIndex(r => r.claimId === claimId);
     if (idx < 0) return this.respond(null);
     const next = this.cache[idx];
-    const drift = next.riskScore >= 5 ? -1 : next.riskScore <= 1 ? 1 : (next.riskScore % 2 === 0 ? -1 : 1);
-    next.riskScore       = Math.max(1, Math.min(5, next.riskScore + drift)) as RiskScore;
-    next.riskStatus      = this.deriveRiskStatus(next.riskScore);
+    const drift =
+      next.riskScore >= 5 ? -1 : next.riskScore <= 1 ? 1 : next.riskScore % 2 === 0 ? -1 : 1;
+    next.riskScore = Math.max(1, Math.min(5, next.riskScore + drift)) as RiskScore;
+    next.riskStatus = this.deriveRiskStatus(next.riskScore);
     next.lastScoreUpdated = new Date().toISOString();
     return this.respond(this.clone(next));
   }
@@ -29,21 +30,25 @@ export class MockRiskService extends MockBaseService {
     if (idx < 0) return this.respond(null);
     this.cache[idx] = {
       ...this.cache[idx],
-      riskScore:        1,
-      riskStatus:       'Low risk',
-      lastScoreUpdated: new Date().toISOString(),
+      riskScore: 1,
+      riskStatus: 'Low risk',
+      lastScoreUpdated: new Date().toISOString()
     };
     return this.respond(this.clone(this.cache[idx]));
   }
 
-  startInvestigation(claimId: string, assignee: string, deadline: string): Observable<RiskAnalysis | null> {
+  startInvestigation(
+    claimId: string,
+    assignee: string,
+    deadline: string
+  ): Observable<RiskAnalysis | null> {
     const idx = this.cache.findIndex(r => r.claimId === claimId);
     if (idx < 0) return this.respond(null);
     this.cache[idx] = {
       ...this.cache[idx],
       investigationStatus: 'In progress',
       assignee,
-      deadline,
+      deadline
     };
     return this.respond(this.clone(this.cache[idx]));
   }
@@ -58,5 +63,7 @@ export class MockRiskService extends MockBaseService {
     return 'High risk';
   }
 
-  private clone<T>(v: T): T { return JSON.parse(JSON.stringify(v)); }
+  private clone<T>(v: T): T {
+    return JSON.parse(JSON.stringify(v));
+  }
 }
