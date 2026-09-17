@@ -400,7 +400,11 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       if (!this.selectedCbiCaseType) {
         errors.push({ fieldId: 'cbiCaseType', message: `${this.fieldLabels['cbiCaseType']}: required` });
       }
-      if (this.showCbiThirdPartyName && !this.form.get('cbiThirdPartyName')?.value) {
+      if (
+        this.showCbiThirdPartyName &&
+        this.cbiThirdPartyRequired &&
+        !this.form.get('cbiThirdPartyName')?.value
+      ) {
         errors.push({
           fieldId: 'cbiThirdPartyName',
           message: `${this.fieldLabels['cbiThirdPartyName']}: required`
@@ -585,15 +589,29 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     return !!key && (key.startsWith('supplier-') || key.startsWith('customer-'));
   }
 
+  // ASSUMPTION [CBI-FNOL-3]: the functional design's field table literally
+  // says the name is "Required for: Supplier Named/Unnamed, Customer
+  // Named/Unnamed" — read at face value that would force a name on an
+  // "Unnamed" party, which contradicts what "Unnamed" means. Only the
+  // "-named" case types require it here; "-unnamed" still offers the field
+  // (a handler may know a loose description even without a formal name)
+  // but doesn't block on it.
+  get cbiThirdPartyRequired(): boolean {
+    return !!this.selectedCbiCaseType?.endsWith('-named');
+  }
+
   get cbiThirdPartyLabel(): string {
-    return this.selectedCbiCaseType?.startsWith('customer-') ? 'Customer name' : 'Supplier name';
+    const base = this.selectedCbiCaseType?.startsWith('customer-')
+      ? 'Customer name'
+      : 'Supplier name';
+    return this.cbiThirdPartyRequired ? base : `${base} (optional)`;
   }
 
   onCbiApplicableChange(): void {
     this.syncCbi();
   }
 
-  private syncCbi(): void {
+  syncCbi(): void {
     const applicableCtrl = this.form.get('cbiApplicable');
     if (applicableCtrl) {
       if (this.showCbiQuestion) {
@@ -620,8 +638,10 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     }
 
     if (thirdPartyCtrl) {
-      if (showDetails && this.showCbiThirdPartyName) {
+      if (showDetails && this.showCbiThirdPartyName && this.cbiThirdPartyRequired) {
         thirdPartyCtrl.setValidators([Validators.required, Validators.maxLength(100)]);
+      } else if (showDetails && this.showCbiThirdPartyName) {
+        thirdPartyCtrl.setValidators([Validators.maxLength(100)]);
       } else {
         thirdPartyCtrl.clearValidators();
         thirdPartyCtrl.setValue('');

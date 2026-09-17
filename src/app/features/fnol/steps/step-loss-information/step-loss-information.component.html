@@ -183,7 +183,11 @@
         <div class="two-col-grid">
           <div data-field="cbiCaseType">
             <nx-formfield label="CBI case type">
-              <nx-dropdown formControlName="cbiCaseType" placeholder="Select case type">
+              <nx-dropdown
+                formControlName="cbiCaseType"
+                placeholder="Select case type"
+                (selectionChange)="syncCbi()"
+              >
                 @for (opt of cbiCaseTypeOptions; track opt.value) {
                   <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
                 }
@@ -197,7 +201,9 @@
             <div data-field="cbiThirdPartyName">
               <nx-formfield [label]="cbiThirdPartyLabel">
                 <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
-                @if (submitAttempted && !form.get('cbiThirdPartyName')?.value) {
+                @if (
+                  submitAttempted && cbiThirdPartyRequired && !form.get('cbiThirdPartyName')?.value
+                ) {
                   <nx-error nxFormfieldError>Required</nx-error>
                 }
               </nx-formfield>
