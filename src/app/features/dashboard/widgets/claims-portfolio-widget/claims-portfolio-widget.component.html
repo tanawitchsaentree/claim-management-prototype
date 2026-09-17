@@ -30,11 +30,35 @@
     >
       Loss events
     </button>
+    @if (portfolioTab === 'claims') {
+      <div class="portfolio-filters">
+        <span class="portfolio-filter-label">Showing</span>
+        <nx-dropdown
+          class="portfolio-filter-dropdown"
+          [value]="claimsScope()"
+          (selectionChange)="setClaimsScope($event.value)"
+        >
+          @for (opt of scopeOptions; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <span class="portfolio-filter-label">from</span>
+        <nx-dropdown
+          class="portfolio-filter-dropdown"
+          [value]="dateRange()"
+          (selectionChange)="setDateRange($event.value)"
+        >
+          @for (opt of dateRangeOptions; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </div>
+    }
   </div>
   <div class="portfolio-tabs-spacer"></div>
 
   @if (portfolioTab === 'loss-events') {
-    @if (lossEvents.length === 0) {
+    @if (lossEvents().length === 0) {
       <app-empty-state message="No loss events found."></app-empty-state>
     } @else {
       <div class="data-table-wrap" tabindex="0">
@@ -50,7 +74,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (event of lossEvents; track event.lossEventId) {
+            @for (event of lossEvents(); track event.lossEventId) {
               <tr nxTableRow>
                 <td nxCell class="text-link dash-col--nowrap">
                   <a
@@ -76,7 +100,10 @@
     }
   } @else {
     @if (displayedClaims().length === 0) {
-      <app-empty-state message="No claims found for this view."></app-empty-state>
+      <app-empty-state
+        message="No claims found for this view."
+        [hint]="canWidenDateRange() ? 'Try widening the date range above.' : undefined"
+      ></app-empty-state>
     } @else {
       <div class="data-table-wrap" tabindex="0">
         <table nxTable sticky="last" class="dash-table">

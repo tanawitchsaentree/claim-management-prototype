@@ -32,6 +32,27 @@
   @include widget.portfolio-tab;
 }
 
+// Pushed to the far right of the flex tab row — same "left info / right
+// action" split-toolbar pattern used elsewhere (BLESSED.md), never
+// justify-content: space-between (that leaves dead space mid-row instead).
+.portfolio-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 8px 0;
+}
+
+.portfolio-filter-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.portfolio-filter-dropdown {
+  width: 140px;
+}
+
 .data-table-wrap {
   @include widget.data-table-wrap;
 }
