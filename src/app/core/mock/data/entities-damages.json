@@ -136,6 +136,23 @@
             ]
           },
           {
+            "damageType": "Business interruption",
+            "damageTypeKey": "business-interruption",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-401",
+                "name": "Kaufmann's Warehouse",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "200,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false
+              }
+            ]
+          },
+          {
             "damageType": "Financial Loss",
             "damageTypeKey": "financial-loss",
             "expanded": true,

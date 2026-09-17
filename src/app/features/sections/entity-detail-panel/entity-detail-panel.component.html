@@ -72,6 +72,12 @@
             }
           </span>
         </div>
+        @if (showCbiLocation) {
+          <div class="edp-field">
+            <span class="edp-field__label">Originating loss location</span>
+            <span class="edp-field__value">{{ cbiLocationLine() }}</span>
+          </div>
+        }
       }
     </div>
   </div>

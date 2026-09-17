@@ -28,6 +28,7 @@ import {
 import { DamagedItem } from '../damaged-item.config';
 import { DamageTypeLabelPipe } from '../../../shared/pipes/damage-type-label.pipe';
 import { CbiCaseTypeLabelPipe } from '../../../shared/pipes/cbi-case-type-label.pipe';
+import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 
 // `causedBy` is set on every item, not just the financial-loss one — the field
 // stopped being financial-loss-only on 2026-09-03 (see damaged-item.config.ts),
@@ -121,11 +122,31 @@ export class EntityDetailPanelComponent implements OnInit {
 
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
+  private readonly lookupSvc = inject(MockLookupService);
 
   readonly items = signal<DamagedItem[]>([]);
 
+  // Built but held back on purpose (2026-09-17) — CBI (BMPCC-17927) is still
+  // "Draft A v2", not signed off. Open Points #1 (validate insured has own PD
+  // cover) and #4 (which of the 12 case types are approved for baseline) are
+  // still open with Sarah/UW. Flip to true only when told to turn it on —
+  // until then the capture at FNOL keeps writing this data, it just doesn't
+  // surface here yet.
+  readonly showCbiLocation = false;
+
   ngOnInit(): void {
     this.items.set([...(MOCK_ITEMS[this.entity.id] ?? [])]);
+  }
+
+  cbiLocationLine(): string {
+    const loc = this.entity.cbiOriginatingLocation;
+    if (!loc) return '–';
+    const countryLabel =
+      this.lookupSvc.getCountriesSync().find(o => o.value === loc.country)?.label ?? loc.country;
+    const streetPart = [loc.street, loc.houseNumber].filter(Boolean).join(' ');
+    const line1 = [streetPart, loc.zip, loc.city].filter(Boolean).join(', ');
+    const line2 = [loc.state, countryLabel].filter(Boolean).join(', ');
+    return [line1, line2].filter(Boolean).join(' — ') || '–';
   }
 
   async onAddItem(): Promise<void> {
