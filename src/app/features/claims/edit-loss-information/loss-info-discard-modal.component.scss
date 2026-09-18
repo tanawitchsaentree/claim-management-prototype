@@ -17,10 +17,29 @@
 
 .ldm-body {
   @include modal.body;
+  // Deliberate local override of the shared mixin's 24px bottom padding.
+  // modal.body's 20/24 spacing is sized for content-heavy modals (tables,
+  // multi-block forms) where the footer divider reads as "end of a data
+  // section". This modal is one sentence — 24px body-pb + 20px footer-pt
+  // (modal.footer) stacked into ~45px of dead air below a single line of
+  // text, which reads as broken, not spacious. Tightened for this
+  // short-message case specifically; not a signal to also shrink the
+  // shared mixin used by every other (content-heavy) modal.
+  padding-bottom: 8px;
+}
+
+.ldm-message {
+  // Bare <p> here used to keep the browser's default ~16px top/bottom
+  // paragraph margin, stacking on top of modal.body's own 24px padding —
+  // the extra ~40px gap above the text read as broken spacing, not as a
+  // deliberate design. Reset to margin: 0, same as ConfirmDialogComponent's
+  // .cd-message, so this dialog matches the rest instead of drifting.
+  margin: 0;
   font-size: 14px;
   color: var(--text-muted);
 }
 
 .ldm-footer {
   @include modal.footer;
+  padding-top: 8px; // paired with .ldm-body's padding-bottom override above
 }
