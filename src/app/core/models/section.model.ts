@@ -27,6 +27,18 @@ export interface CbiOriginatingLocation {
   state?: string;
 }
 
+// A named third party already captured on this claim's Sections (CBI entities
+// only, today) — surfaced read-only on Trade Sanctions so the person
+// answering "any sanctions exposure?" can see who is already on file instead
+// of screening blind. Name only: CbiOriginatingLocation.country is
+// deliberately withheld here too, same as entity-detail-panel's
+// showCbiLocation — CBI (BMPCC-17927) is still unsigned-off, and country is
+// the one field that hold explicitly covers.
+export interface NamedThirdParty {
+  name: string;
+  sectionName: string;
+}
+
 export interface SectionEntity {
   id: string;
   name: string;

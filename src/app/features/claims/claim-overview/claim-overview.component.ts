@@ -11,6 +11,7 @@ import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
+import { NamedThirdParty } from '../../../core/models/section.model';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
@@ -151,6 +152,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   // "set" either — see refreshClosedSectionsCount().
   readonly sectionsCount = signal<number>(0);
   readonly hasOpenReserves = signal<boolean>(false);
+  // Named parties already on file via a CBI entity — read by Trade Sanctions
+  // so the person answering that question isn't screening blind. Name only,
+  // never the CBI originating-location country: that field stays withheld
+  // pending BMPCC-17927 sign-off (see entity-detail-panel.component.ts's
+  // showCbiLocation).
+  readonly namedThirdParties = signal<NamedThirdParty[]>([]);
 
   private readonly paramMap = toSignal(this.route.paramMap);
   private loadGeneration = 0;
@@ -239,11 +246,22 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         if (generation !== this.loadGeneration) return;
         this.closedSectionsCount.set(secs.filter(s => s.status === 'Closed').length);
         this.sectionsCount.set(secs.length);
+        this.namedThirdParties.set(
+          secs.flatMap(s =>
+            s.entities
+              .filter(e => e.isContingentBi && e.thirdPartyName)
+              .map(e => ({
+                name: e.thirdPartyName!,
+                sectionName: s.name
+              }))
+          )
+        );
       })
       .catch(() => {
         if (generation !== this.loadGeneration) return;
         this.closedSectionsCount.set(0);
         this.sectionsCount.set(0);
+        this.namedThirdParties.set([]);
       });
     // Claim-level, not per-section: "Add reserve" lets the handler leave a
     // reserve unattached to any section ("Claim level (no section)" in the

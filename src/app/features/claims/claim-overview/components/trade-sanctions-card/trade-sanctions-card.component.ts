@@ -19,6 +19,7 @@ import {
   ClaimActivity,
   TradeSanctionsCheck
 } from '../../../../../core/models/claim-overview.model';
+import { NamedThirdParty } from '../../../../../core/models/section.model';
 
 export interface TradeSanctionsUpdated {
   claim: ClaimOverview;
@@ -57,6 +58,10 @@ export interface TradeSanctionsUpdated {
 })
 export class TradeSanctionsCardComponent implements OnChanges {
   @Input({ required: true }) claim!: ClaimOverview;
+  // Context only — never auto-answers the question. Lets the handler see who
+  // is already on file (via a CBI entity's third party) instead of screening
+  // blind; the actual sanctions determination is still theirs to make.
+  @Input() namedThirdParties: NamedThirdParty[] = [];
   @Output() updated = new EventEmitter<TradeSanctionsUpdated>();
 
   private readonly toast = inject(ToastService);

@@ -8,6 +8,19 @@
       {{ saved()?.exposure === 'yes' ? 'Yes' : saved()?.exposure === 'no' ? 'No' : 'Not answered' }}
     </p>
   } @else {
+    @if (namedThirdParties.length) {
+      <div class="ts-named-parties">
+        <p class="ts-named-parties__label">Named third parties already on this claim:</p>
+        <ul class="ts-named-parties__list">
+          @for (p of namedThirdParties; track p.name + p.sectionName) {
+            <li>
+              {{ p.name }}
+              <span class="ts-named-parties__meta">— {{ p.sectionName }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
     <p class="ts-question" id="ts-question">Exposure to trade sanctions?</p>
 
     <nx-radio-group [formControl]="exposure" class="ts-radio-group" aria-labelledby="ts-question">

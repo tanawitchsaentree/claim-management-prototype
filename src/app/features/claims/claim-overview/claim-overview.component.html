@@ -297,6 +297,7 @@
 
     <app-trade-sanctions-card
       [claim]="claim"
+      [namedThirdParties]="namedThirdParties()"
       (updated)="onTradeSanctionsUpdated($event)"
     ></app-trade-sanctions-card>
 

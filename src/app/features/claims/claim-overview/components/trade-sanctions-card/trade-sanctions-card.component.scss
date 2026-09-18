@@ -20,6 +20,31 @@
   }
 }
 
+.ts-named-parties {
+  margin: 0 0 16px;
+  padding: 12px;
+  background: var(--ui-02);
+  border-radius: 4px;
+}
+
+.ts-named-parties__label {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 4px;
+}
+
+.ts-named-parties__list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.ts-named-parties__meta {
+  color: var(--text-muted);
+}
+
 .ts-question,
 .ts-subquestion {
   font-size: var(--paragraph-03-font-size);
