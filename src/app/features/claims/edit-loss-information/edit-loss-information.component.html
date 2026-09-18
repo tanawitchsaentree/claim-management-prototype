@@ -62,9 +62,14 @@
       <h2 class="eli-section-heading">Loss information</h2>
 
       @if (!isEditing('causeOfLoss')) {
-        <div class="eli-field" [class.eli-field--changed]="fieldChanged('causeOfLoss')">
+        <div class="eli-field">
           <span class="eli-label">Cause of loss</span>
-          <span class="eli-value">{{ causeOfLossDisplay || 'Not provided' }}</span>
+          <span class="eli-value"
+            >{{ causeOfLossDisplay || 'Not provided' }}
+            @if (fieldChanged('causeOfLoss')) {
+              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+            }</span
+          >
           @if (fieldChanged('causeOfLoss')) {
             <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
           }
@@ -110,9 +115,14 @@
       filtered by. Editable here and on FNOL only; every other surface shows
       it read-only. -->
       @if (!isEditing('circumstance')) {
-        <div class="eli-field" [class.eli-field--changed]="fieldChanged('circumstance')">
+        <div class="eli-field">
           <span class="eli-label">Incident circumstance</span>
-          <span class="eli-value">{{ circumstanceDisplay || 'Not provided' }}</span>
+          <span class="eli-value"
+            >{{ circumstanceDisplay || 'Not provided' }}
+            @if (fieldChanged('circumstance')) {
+              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+            }</span
+          >
           @if (fieldChanged('circumstance')) {
             <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
           }
@@ -151,9 +161,14 @@
       <hr class="eli-divider" />
 
       @if (!isEditing('typeOfDamage')) {
-        <div class="eli-field" [class.eli-field--changed]="fieldChanged('typeOfDamage')">
+        <div class="eli-field">
           <span class="eli-label">Type of damage</span>
-          <span class="eli-value">{{ typeOfDamageDisplay || 'Not provided' }}</span>
+          <span class="eli-value"
+            >{{ typeOfDamageDisplay || 'Not provided' }}
+            @if (fieldChanged('typeOfDamage')) {
+              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+            }</span
+          >
           @if (fieldChanged('typeOfDamage')) {
             <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
           }
@@ -194,9 +209,14 @@
       <hr class="eli-divider" />
 
       @if (!isEditing('dateGroup')) {
-        <div class="eli-field" [class.eli-field--changed]="fieldChanged('dateGroup')">
+        <div class="eli-field">
           <span class="eli-label">When did the loss occur?</span>
-          <span class="eli-value">{{ dateGroupDisplay }}</span>
+          <span class="eli-value"
+            >{{ dateGroupDisplay }}
+            @if (fieldChanged('dateGroup')) {
+              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+            }</span
+          >
           @if (fieldChanged('dateGroup')) {
             <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
           }
@@ -264,9 +284,14 @@
       <hr class="eli-divider" />
 
       @if (!isEditing('lossDescription')) {
-        <div class="eli-field" [class.eli-field--changed]="fieldChanged('lossDescription')">
+        <div class="eli-field">
           <span class="eli-label">Loss description</span>
-          <span class="eli-value">{{ form.get('lossDescription')?.value || 'Not provided' }}</span>
+          <span class="eli-value"
+            >{{ form.get('lossDescription')?.value || 'Not provided' }}
+            @if (fieldChanged('lossDescription')) {
+              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+            }</span
+          >
           @if (fieldChanged('lossDescription')) {
             <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
           }
@@ -303,7 +328,12 @@
     an always-open input), so it isn't converted to the eli-field pattern
     above; it's still part of the change ledger via computeDiffs(). -->
     <section class="eli-card">
-      <h2 class="eli-section-heading">Locations of loss</h2>
+      <h2 class="eli-section-heading"
+        >Locations of loss
+        @if (fieldChanged('lossLocation')) {
+          <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+        }</h2
+      >
       <p class="eli-section-desc">Update the location of loss below.</p>
       @if (fieldChanged('lossLocation')) {
         <p class="eli-was">was: {{ originalLossLocationDisplay }}</p>

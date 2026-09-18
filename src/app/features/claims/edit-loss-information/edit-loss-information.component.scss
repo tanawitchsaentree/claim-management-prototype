@@ -154,22 +154,13 @@
   flex-direction: column;
   gap: 4px;
   margin-bottom: 16px;
-  padding-left: 10px;
-  border-left: 3px solid transparent;
+}
 
-  // Non-colour-dependent change marker — a left rule + icon, not colour alone.
-  &--changed {
-    border-left-color: var(--interactive-primary);
-
-    .eli-value::before {
-      content: '●';
-      display: inline-block;
-      margin-right: 6px;
-      font-size: 8px;
-      vertical-align: middle;
-      color: var(--interactive-primary);
-    }
-  }
+// NDBX nx-badge, not a hand-rolled border/dot — matches the "You"/"Dormant"
+// badge precedent in recent-approvals-widget / claims-portfolio-widget.
+.eli-changed-badge {
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
 .eli-label {
