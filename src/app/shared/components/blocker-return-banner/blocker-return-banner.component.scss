@@ -1,5 +1,6 @@
+// No display override — nx-message's own :host is flex (icon + text on one
+// row). display: block here stacked the icon above the text instead.
 .brb-banner {
-  display: block;
   margin-bottom: var(--space-lg);
 }
 

@@ -21,8 +21,10 @@
   }
 }
 
+// No display override — nx-message's own :host is flex (icon + text on one
+// row via align-items: flex-start). display: block here used to stomp on
+// that, stacking the icon above the text as two separate block lines.
 .rp-prompt {
-  display: block;
   margin-bottom: 16px;
 }
 
