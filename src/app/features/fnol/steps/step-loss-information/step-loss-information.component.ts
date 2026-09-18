@@ -441,11 +441,19 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   }
 
   scrollToField(fieldId: string): void {
-    const el = document.querySelector(`[data-field="${fieldId}"]`);
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const input = el.querySelector('input, textarea, nx-multi-select') as HTMLElement | null;
-    input?.focus();
+    // Re-open the accordion first — clicking an error-summary link for a
+    // field inside a collapsed "Originating loss location" must not land
+    // on an invisible target.
+    if (fieldId.startsWith('cbiLocation')) {
+      this.cbiLocationPanelExpanded = true;
+    }
+    setTimeout(() => {
+      const el = document.querySelector(`[data-field="${fieldId}"]`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const input = el.querySelector('input, textarea, nx-multi-select') as HTMLElement | null;
+      input?.focus();
+    });
   }
 
   // ── Duplicate banner ────────────────────────────────────────────────
@@ -565,7 +573,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   // Open Points #1 and #4 aren't signed off with Sarah/UW. This gates
   // showCbiQuestion itself, so showCbiDetails/syncCbi()'s validators all
   // cascade off — nothing partially shows. Flip to true only when told.
-  readonly cbiFeatureEnabled = false;
+  readonly cbiFeatureEnabled = true; // LOCAL ONLY for tonight's boss walkthrough — not deployed
 
   get showCbiQuestion(): boolean {
     // ASSUMPTION [CBI-FNOL-2]: functional design gates this on the
@@ -584,6 +592,14 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   get showCbiDetails(): boolean {
     return this.showCbiQuestion && this.cbiApplicable === 'yes';
   }
+
+  // Accordion, open by default (user's call — collapsing all 7 fields,
+  // including the 3 required ones, trades a real risk: a handler who
+  // collapses it and clicks Next would see the error summary point at a
+  // field they can't see). Mitigated, not avoided: onNext() below force-
+  // reopens this if any Originating Loss Location field is still invalid,
+  // so the collapsed state can never hide a blocking error.
+  cbiLocationPanelExpanded = true;
 
   get selectedCbiCaseType(): string | null {
     return (this.form.get('cbiCaseType')?.value as string | null) ?? null;
@@ -788,6 +804,14 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     );
 
     this.formErrors = this.collectErrors();
+
+    // A collapsed accordion must never hide a blocking error — if the
+    // handler closed "Originating loss location" before filling the
+    // required fields, force it back open so the error summary's links
+    // actually point at something visible.
+    if (this.showCbiDetails && this.cbiLocation.invalid) {
+      this.cbiLocationPanelExpanded = true;
+    }
 
     if (!causeValid || !damageValid || !eventsValid || this.form.invalid) {
       this.scrollToErrorSummary();

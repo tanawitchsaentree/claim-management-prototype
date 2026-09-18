@@ -195,6 +195,20 @@
   gap: 8px 24px;
 }
 
+// ─── CBI originating loss location (accordion) ──────────────────────────
+
+.cbi-location-accordion {
+  margin-bottom: 20px; // matches .field-group's between-group spacing elsewhere in this file
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+
+  nx-expansion-panel {
+    --accordion-regular-font-size: var(--paragraph-03-font-size);
+    --accordion-regular-font-weight: 600;
+    --accordion-regular-header-active-font-weight: 600;
+  }
+}
+
 // ─── In-card divider ────────────────────────────────────────────────────
 
 .li-divider {
