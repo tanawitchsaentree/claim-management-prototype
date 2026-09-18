@@ -7,7 +7,7 @@
 </div>
 
 <!-- ─── Body ──────────────────────────────────────────────────────────────── -->
-<div class="ccm-body" tabindex="0">
+<div class="ccm-body" [class.ccm-body--compact]="step() === 1" tabindex="0">
   <!-- STEP 1 — Expandable blocker cards -->
   @if (step() === 1) {
     <p class="ccm-intro">The following issues must be resolved before this claim can be closed:</p>
@@ -182,7 +182,7 @@
 </div>
 
 <!-- ─── Footer ────────────────────────────────────────────────────────────── -->
-<div class="ccm-footer">
+<div class="ccm-footer" [class.ccm-footer--compact]="step() === 1">
   @if (step() === 1) {
     <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
   }

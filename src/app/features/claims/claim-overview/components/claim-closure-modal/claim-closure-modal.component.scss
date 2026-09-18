@@ -21,6 +21,16 @@
 
 .ccm-body {
   @include modal.body;
+
+  // Step 1 (blockers) only — same reasoning as loss-info-discard-modal's
+  // override: modal.body's 24px bottom padding is sized for the
+  // content-heavier steps (2-4, forms/checklists), not a one-or-two-line
+  // blocker list. Stacked with modal.footer's 20px top padding it read as
+  // ~45px of dead air below a single short warning card. Steps 2-4 keep
+  // the full mixin spacing untouched.
+  &--compact {
+    padding-bottom: 8px;
+  }
 }
 
 .ccm-intro {
@@ -281,4 +291,8 @@ nx-radio-group {
 
 .ccm-footer {
   @include modal.footer;
+
+  &--compact {
+    padding-top: 8px; // paired with .ccm-body--compact above
+  }
 }
