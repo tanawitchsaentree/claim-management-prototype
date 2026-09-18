@@ -1,0 +1,41 @@
+@use '../../styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.asm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.asm-title {
+  @include modal.title;
+}
+
+.asm-body {
+  @include modal.body;
+}
+
+.asm-intro {
+  margin: 0 0 16px;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.asm-reason-field {
+  width: 100%;
+}
+
+.asm-footer {
+  @include modal.footer;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.asm-btn--danger {
+  background: var(--message-error-border-color) !important;
+  border-color: var(--message-error-border-color) !important;
+}

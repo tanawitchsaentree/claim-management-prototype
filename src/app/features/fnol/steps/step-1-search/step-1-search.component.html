@@ -253,20 +253,27 @@
                     <button nxContextMenuItem type="button" (click)="onConvertSkeleton(claim)">
                       Convert to claim
                     </button>
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">
+                    <button nxContextMenuItem type="button" (click)="onExtendSla(claim)">
                       Extend SLA
                     </button>
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">
+                    <button nxContextMenuItem type="button" (click)="onAbandonSkeleton(claim)">
                       Abandon claim
                     </button>
                   }
                   @if (claim.status === 'Matched') {
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="!claim.linkedClaimId"
+                      (click)="onViewLinkedClaim(claim)"
+                    >
                       View linked claim
                     </button>
                   }
                   @if (claim.status === 'Abandoned') {
-                    <button nxContextMenuItem type="button" (click)="onComingSoon()">Reopen</button>
+                    <button nxContextMenuItem type="button" (click)="onReopenSkeleton(claim)">
+                      Reopen
+                    </button>
                   }
                 </ng-template>
               </nx-context-menu>

@@ -33,6 +33,15 @@ import { Claim } from '../../../../core/models/claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  AbandonSkeletonModalComponent,
+  AbandonSkeletonModalData,
+  AbandonSkeletonModalResult
+} from '../../../../shared/components/abandon-skeleton-modal/abandon-skeleton-modal.component';
 import lookupsData from '../../../../core/mock/data/lookups.json';
 
 type SearchState =
@@ -220,8 +229,12 @@ export class Step1SearchComponent {
     this.router.navigate(['/claims', claimId]);
   }
 
-  onComingSoon(): void {
-    // Phase 2 actions — silently ignore for now
+  // 'Matched' means a policy candidate is already linked (linkedClaimId) —
+  // this used to be a no-op ("Phase 2 actions"); the data to act on it was
+  // already on the record.
+  onViewLinkedClaim(claim: Claim): void {
+    if (!claim.linkedClaimId) return;
+    this.router.navigate(['/claims', claim.linkedClaimId]);
   }
 
   // BMPCC-11006: convert skeleton → regular claim
@@ -239,6 +252,27 @@ export class Step1SearchComponent {
     const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return; // cancelled
 
+    // Same rule as every other save on Claim Overview — a diff before
+    // commit, not a bare "are you sure?". This action used to skip straight
+    // to convertToRegularClaim() with no confirm step at all, despite being
+    // the least reversible action in the whole skeleton lifecycle.
+    const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Convert to claim',
+        message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
+        changes: [
+          { label: 'Status', original: skeleton.status, updated: 'Open' },
+          { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
+          ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
+        ],
+        confirmLabel: 'Convert claim'
+      } satisfies ConfirmDialogData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    const confirmed = await firstValueFrom(confirmRef.afterClosed());
+    if (!confirmed) return;
+
     // Link the policy onto the same claim record and land on its Overview —
     // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (Convert to claim).
     await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
@@ -247,6 +281,120 @@ export class Step1SearchComponent {
       `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
     );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);
+  }
+
+  // Reason required — an abandoned claim with no reason on record is the
+  // exact unaudited write-off Recovery Potential's "No" rule exists to
+  // prevent elsewhere on this same codebase.
+  async onAbandonSkeleton(skeleton: Claim): Promise<void> {
+    if (skeleton.status !== 'Awaiting policy') return;
+
+    const ref = this.dialogSvc.open(AbandonSkeletonModalComponent, {
+      data: { skeleton } satisfies AbandonSkeletonModalData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    const reason = (await firstValueFrom(ref.afterClosed())) as AbandonSkeletonModalResult;
+    if (!reason) return;
+
+    await firstValueFrom(this.claimSvc.abandonSkeleton(skeleton.claimId, reason));
+    this.overviewSvc.appendActivities(skeleton.claimId, [
+      {
+        id: `act-${Date.now()}`,
+        claimId: skeleton.claimId,
+        user: skeleton.assignee ?? 'Unassigned',
+        timestamp: new Date().toISOString(),
+        objectType: 'Claim',
+        attribute: 'Status',
+        valueOld: skeleton.status,
+        valueNew: `Abandoned — ${reason}`
+      }
+    ]);
+    this.toast.success(`${skeleton.claimId} abandoned`, reason);
+    this.refreshResults();
+  }
+
+  async onReopenSkeleton(claim: Claim): Promise<void> {
+    if (claim.status !== 'Abandoned') return;
+
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Reopen claim',
+        message: `${claim.claimId} will move back to Awaiting policy.`,
+        changes: [{ label: 'Status', original: 'Abandoned', updated: 'Awaiting policy' }],
+        confirmLabel: 'Reopen'
+      } satisfies ConfirmDialogData,
+      width: '440px',
+      maxWidth: '92vw'
+    });
+    const confirmed = await firstValueFrom(ref.afterClosed());
+    if (!confirmed) return;
+
+    await firstValueFrom(this.claimSvc.reopenSkeleton(claim.claimId));
+    this.overviewSvc.appendActivities(claim.claimId, [
+      {
+        id: `act-${Date.now()}`,
+        claimId: claim.claimId,
+        user: claim.assignee ?? 'Unassigned',
+        timestamp: new Date().toISOString(),
+        objectType: 'Claim',
+        attribute: 'Status',
+        valueOld: 'Abandoned',
+        valueNew: 'Awaiting policy'
+      }
+    ]);
+    this.toast.success(`${claim.claimId} reopened`, 'Back in the Awaiting policy queue.');
+    this.refreshResults();
+  }
+
+  async onExtendSla(claim: Claim): Promise<void> {
+    if (claim.status !== 'Awaiting policy') return;
+    const addedDays = 3;
+    const current = claim.slaDeadlineDays ?? 0;
+
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Extend SLA',
+        message: `Give ${claim.claimId} ${addedDays} more days before its SLA deadline.`,
+        changes: [
+          { label: 'SLA deadline', original: `${current} days`, updated: `${current + addedDays} days` }
+        ],
+        confirmLabel: 'Extend'
+      } satisfies ConfirmDialogData,
+      width: '440px',
+      maxWidth: '92vw'
+    });
+    const confirmed = await firstValueFrom(ref.afterClosed());
+    if (!confirmed) return;
+
+    await firstValueFrom(this.claimSvc.extendSla(claim.claimId, addedDays));
+    this.overviewSvc.appendActivities(claim.claimId, [
+      {
+        id: `act-${Date.now()}`,
+        claimId: claim.claimId,
+        user: claim.assignee ?? 'Unassigned',
+        timestamp: new Date().toISOString(),
+        objectType: 'Claim',
+        attribute: 'SLA deadline',
+        valueOld: `${current} days`,
+        valueNew: `${current + addedDays} days`
+      }
+    ]);
+    this.toast.success(`${claim.claimId} SLA extended`, `+${addedDays} days`);
+    this.refreshResults();
+  }
+
+  // Re-runs the current search so the skeleton-claims table reflects a
+  // status/SLA change just made from its own context menu, without resetting
+  // the criteria the handler already typed (unlike onSearch(), which also
+  // resets pagination/selection for a fresh search).
+  //
+  // Deferred a tick: called right after the context menu closes, and
+  // NxContextMenuTriggerDirective updates its own aria-expanded host binding
+  // on that same close — triggering this synchronously collided with that
+  // and threw NG0100 (ExpressionChangedAfterItHasBeenChecked) in dev mode.
+  private refreshResults(): void {
+    setTimeout(() => this.trigger$.next('search'));
   }
 
   // ── Button visibility/state ──────────────────────────────────────

@@ -119,6 +119,25 @@ export class MockClaimService extends MockBaseService {
     });
   }
 
+  // Skeleton lifecycle — Abandon / Reopen / Extend SLA. These sat as
+  // context-menu items wired to a no-op ("Phase 2 actions") until now; the
+  // only real transition was Convert. All three are plain status/field
+  // writes on the same claim record, same rationale as linkPolicy().
+  abandonSkeleton(claimId: string, reason: string): Observable<Claim> {
+    return this.update(claimId, { status: 'Abandoned', abandonReason: reason });
+  }
+
+  reopenSkeleton(claimId: string): Observable<Claim> {
+    return this.update(claimId, { status: 'Awaiting policy', abandonReason: undefined });
+  }
+
+  // Fixed +3 days, matching the SLA convertToRegularClaim() already grants a
+  // freshly-converted claim's follow-up task — not an arbitrary number.
+  extendSla(claimId: string, additionalDays = 3): Observable<Claim> {
+    const current = this.claims.find(c => c.claimId === claimId)?.slaDeadlineDays ?? 0;
+    return this.update(claimId, { slaDeadlineDays: current + additionalDays });
+  }
+
   delete(claimId: string): Observable<void> {
     this.stateSvc.patchClaims(claims => claims.filter(c => c.claimId !== claimId));
     return this.respond(undefined as void);

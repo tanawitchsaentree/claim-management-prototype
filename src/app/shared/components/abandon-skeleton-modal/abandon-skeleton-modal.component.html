@@ -1,0 +1,33 @@
+<div class="asm-header">
+  <h2 class="asm-title">Abandon {{ skeleton.claimId }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="asm-body" tabindex="0">
+  <p class="asm-intro">
+    {{ skeleton.clientName }} will move out of the orphan-claim queue as Abandoned. It can be
+    reopened later, but a reason is required now for the audit trail.
+  </p>
+
+  <nx-formfield label="Reason for abandoning this claim" class="asm-reason-field">
+    <textarea
+      nxInput
+      [formControl]="reason"
+      rows="3"
+      maxlength="300"
+      placeholder="e.g. no valid policy found after investigation"
+    ></textarea>
+    @if (submitAttempted && reason.invalid) {
+      <nx-error nxFormfieldError>A reason is required.</nx-error>
+    }
+  </nx-formfield>
+</div>
+
+<div class="asm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" class="asm-btn--danger" (click)="onAbandon()">
+    Abandon claim
+  </button>
+</div>

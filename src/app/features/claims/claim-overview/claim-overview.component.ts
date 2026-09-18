@@ -69,6 +69,10 @@ import {
   ConvertSkeletonModalResult
 } from '../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface OverviewVM {
   loading: boolean;
@@ -519,6 +523,27 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
     const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return;
+
+    // Highest-stakes action on this page (links a real policy, flips status,
+    // creates a task) was the one action with no confirm-diff step — every
+    // lower-stakes save here (Recovery potential, Trade Sanctions) already
+    // has one. Added instead of letting "Continue conversion" commit outright.
+    const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Convert to claim',
+        message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
+        changes: [
+          { label: 'Status', original: skeleton.status, updated: 'Open' },
+          { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
+          ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
+        ],
+        confirmLabel: 'Convert claim'
+      } satisfies ConfirmDialogData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    const confirmed = await firstValueFrom(confirmRef.afterClosed());
+    if (!confirmed) return;
 
     await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
     // No navigation needed — the constructor's reactivity bridge (above)

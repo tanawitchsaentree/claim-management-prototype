@@ -18,13 +18,25 @@
 <div class="csm-body" tabindex="0">
   <p class="csm-intro">Select a policy to link this skeleton claim to.</p>
 
+  <nx-formfield label="Search all policies" class="csm-search-field">
+    <input
+      nxInput
+      [formControl]="searchQuery"
+      placeholder="Policy number or client name — use this if the correct policy isn't listed below"
+    />
+  </nx-formfield>
+
   @if (loading()) {
     <div class="csm-loading">
       <nx-spinner size="small"></nx-spinner>
       <span>Loading policies…</span>
     </div>
   } @else if (rows().length === 0) {
-    <app-empty-state message="No policies found."></app-empty-state>
+    <app-empty-state
+      [message]="
+        isSearching() ? 'No policies match that search.' : 'No matching policies found.'
+      "
+    ></app-empty-state>
   } @else {
     <table class="csm-table">
       <thead>
