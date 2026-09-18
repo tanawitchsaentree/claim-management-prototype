@@ -351,7 +351,10 @@ export class Sections {
   async onEditEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
       data: { entity } satisfies EditEntityDamageModalData,
-      width: '480px',
+      // Wider only for CBI entities — the extra case type / third-party /
+      // 7-field location grid needs the room; the plain instruction-status-
+      // only case stays at the original compact width.
+      width: entity.isContingentBi ? '560px' : '480px',
       maxWidth: '92vw'
     });
     const result = (await firstValueFrom(ref.afterClosed())) as

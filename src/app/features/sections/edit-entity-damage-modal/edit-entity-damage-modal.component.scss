@@ -22,6 +22,29 @@
   gap: 4px;
 }
 
+.eed-divider {
+  border: none;
+  border-top: 1px solid var(--ui-04);
+  margin: 12px 0;
+}
+
+.eed-section-label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 4px 0 4px;
+}
+
+.eed-location-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .eed-footer {
   @include modal.footer;
   justify-content: flex-end;

@@ -230,18 +230,52 @@ export class MockSectionService extends MockBaseService {
       if (!section) continue;
       const idx = section.entities.findIndex(e => e.id === entityId);
       if (idx === -1) continue;
-      const updated = { ...section.entities[idx], ...patch };
+      const before = section.entities[idx];
+      const updated = { ...before, ...patch };
       section.entities = section.entities.map((e, i) => (i === idx ? updated : e));
       this.stateSvc.patchSection(sectionId, { entities: [...section.entities] });
+
+      // Hardcoded to "Instruction status" before CBI fields (BMPCC-18353,
+      // 2026-09-18) became editable through this same patch — a CBI edit
+      // used to log as a no-op "Instruction status: X -> X" while the real
+      // change (case type/third party/location) went unrecorded. Report
+      // whichever field the caller actually changed instead.
+      const attribute =
+        patch.instructionStatus !== undefined && patch.instructionStatus !== before.instructionStatus
+          ? 'Instruction status'
+          : patch.cbiCaseType !== undefined
+            ? 'CBI case type'
+            : patch.thirdPartyName !== undefined
+              ? 'Third party name'
+              : patch.cbiOriginatingLocation !== undefined
+                ? 'Originating loss location'
+                : 'Instruction status';
+      const valueOld =
+        attribute === 'CBI case type'
+          ? before.cbiCaseType ?? ''
+          : attribute === 'Third party name'
+            ? before.thirdPartyName ?? ''
+            : attribute === 'Originating loss location'
+              ? before.cbiOriginatingLocation?.city ?? ''
+              : before.instructionStatus ?? '';
+      const valueNew =
+        attribute === 'CBI case type'
+          ? updated.cbiCaseType ?? ''
+          : attribute === 'Third party name'
+            ? updated.thirdPartyName ?? ''
+            : attribute === 'Originating loss location'
+              ? updated.cbiOriginatingLocation?.city ?? ''
+              : updated.instructionStatus ?? '';
+
       const activity: ClaimActivity = {
         id: `act-entity-edit-${Date.now()}`,
         claimId: section.claimId,
         user: 'Leonie Fischer',
         timestamp: new Date().toISOString(),
         objectType: 'Section Entity',
-        attribute: 'Instruction status',
-        valueOld: section.entities[idx]?.instructionStatus ?? '',
-        valueNew: patch.instructionStatus ?? updated.instructionStatus
+        attribute,
+        valueOld,
+        valueNew
       };
       this.stateSvc.patchActivities(items => [activity, ...items]);
       return this.respond({ ...updated });
