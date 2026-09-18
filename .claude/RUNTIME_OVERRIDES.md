@@ -202,6 +202,64 @@ private readonly xValue = toSignal(
 
 ---
 
+## Never set `display` on an NDBX component's own host
+
+**Source:** several NDBX components lay out their own icon + content via
+`:host { display: flex; align-items: flex-start }` (or `inline-flex`) — the
+component owns its internal layout, not just its colors/spacing.
+
+**The trap:** a project CSS class applied directly to the component tag
+(not a wrapper) that declares `display: block` (or any other value)
+overrides that `:host` rule. The component's internal children — icon and
+text — fall back to stacking as separate block lines instead of sitting on
+one row, with dead space between them. This is NOT the same failure mode
+as the rest of this file (nothing writes inline styles at runtime here) —
+it's a plain specificity/cascade collision, but just as invisible in a
+code review, because the component itself really is genuine, unmodified
+NDBX. The bug is in fighting a layout it already owns, not in the markup.
+
+**Confirmed via `node_modules/@allianz/ng-aquila` source** (not memory —
+grep the fesm2022 bundle for `selector: '<tag>'`, then check that
+specific match's own `styles` array, since one bundle file holds a dozen
+unrelated selectors): `nx-message` (flex), `nx-badge` (inline-flex),
+`nx-tag`/`nx-tag-group`/`nx-taglist` (flex), `nx-indicator` (inline-flex),
+`nx-tile-group` (flex). Checked and NOT at risk: `nx-dropdown`,
+`nx-tab-group`, `nx-context-menu` — their own `:host` is block/inline, so
+a display override there doesn't fight anything.
+
+### Workaround
+
+Never declare `display` in a class applied straight to one of the tags
+above. Need spacing? Use `margin`/`gap` on that same class — it composes
+with the component's own flex layout instead of replacing it.
+
+```scss
+// ❌ WRONG — stacks the icon above the text
+.rp-prompt {
+  display: block;
+  margin-bottom: 16px;
+}
+
+// ✅ CORRECT — nx-message's own display: flex still applies
+.rp-prompt {
+  margin-bottom: 16px;
+}
+```
+
+**Enforced:** `audit:ndbx-host-display` (in `audit:all` / `pre-commit`) —
+scans every `*.component.html` for one of the tags above with a static
+`class="..."`, then fails if the matching `.component.scss` rule for that
+class declares `display`.
+
+**Burned:** session 2026-09-18 — `.rp-prompt` (recovery-potential-card)
+and `.brb-banner` (blocker-return-banner) both had this, on two different
+`<nx-message>` warnings, independently. Found by the user pointing at a
+screenshot and getting (rightly) angry that a "genuine NDBX component"
+still rendered broken — the review gap was assuming "uses a real NDBX
+tag" was sufficient proof nothing was overriding it.
+
+---
+
 ## `<nx-radio-group>` zero default gap
 
 **Source:** NDBX `nx-radio-group` has no default vertical spacing.
