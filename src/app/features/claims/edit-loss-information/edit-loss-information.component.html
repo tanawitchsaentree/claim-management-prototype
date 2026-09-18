@@ -116,14 +116,20 @@
           @if (fieldChanged('circumstance')) {
             <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
           }
-          <nx-link size="small"
-            ><a
-              tabindex="0"
-              (click)="startEdit('circumstance')"
-              (keydown.enter)="startEdit('circumstance')"
-              >{{ circumstanceDisplay ? 'Update' : 'Add' }}</a
-            ></nx-link
-          >
+          @if (selectedCauses.length) {
+            <nx-link size="small"
+              ><a
+                tabindex="0"
+                (click)="startEdit('circumstance')"
+                (keydown.enter)="startEdit('circumstance')"
+                >{{ circumstanceDisplay ? 'Update' : 'Add' }}</a
+              ></nx-link
+            >
+          } @else {
+            <span class="eli-link-disabled" title="Select a cause of loss first">{{
+              circumstanceDisplay ? 'Update' : 'Add'
+            }}</span>
+          }
         </div>
       } @else {
         <nx-formfield label="Incident circumstance" class="eli-full-width">
@@ -175,6 +181,14 @@
             of the page before you save.</nx-hint
           >
         </nx-formfield>
+        <!-- nx-hint is white-space: nowrap by design (single-line) — this
+        caution is too long to fit there without silently truncating, so it
+        gets its own line instead of fighting that constraint. -->
+        <p class="eli-caution">
+          Adding a damage type that wasn't part of the original claim doesn't create its Section
+          automatically. You'll still need to use Add Section on the Sections page, and only
+          entities already on the policy for that damage type can be attached to it.
+        </p>
       }
 
       <hr class="eli-divider" />

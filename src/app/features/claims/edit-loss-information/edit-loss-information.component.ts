@@ -300,7 +300,12 @@ export class EditLossInformationComponent implements OnInit {
     // Reconcile the runtime validator against what was just loaded — no
     // selectionChange fires on a patchValue, so this is the only chance.
     this.syncSpecifyOther('specifyOtherCauseOfLoss', this.showSpecifyOtherCause);
-    this.editingField.set(!li.causeOfLoss?.length ? 'causeOfLoss' : null);
+    // Cause of loss used to auto-open when empty while every other field
+    // (Incident circumstance, Type of damage — also frequently empty on the
+    // same claim) stayed closed behind its Update/Add link. One field
+    // behaving differently from its siblings for no reason a user can see
+    // read as broken, not deliberate. All fields now start closed uniformly.
+    this.editingField.set(null);
     this.form.markAsPristine();
   }
 

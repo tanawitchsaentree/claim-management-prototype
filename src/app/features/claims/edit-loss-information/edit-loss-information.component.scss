@@ -20,7 +20,7 @@
 // compliance with the app's documented spec rather than further from it.
 .eli-page {
   max-width: 720px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 0 48px;
 }
 
@@ -187,6 +187,24 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   text-decoration: line-through;
+}
+
+// Stands in for the Update/Add nx-link when the action is blocked by a
+// missing dependency (e.g. Incident circumstance needs Cause of loss set
+// first) — same size/weight as the real link, just not clickable and not
+// styled as if it were, so it doesn't read as a broken button.
+.eli-link-disabled {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.eli-caution {
+  margin: 4px 0 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 // ─── Two-col grid — shared with FNOL's step-loss-information ─────────
