@@ -2,7 +2,7 @@ import { Component, inject, signal, effect, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -178,6 +178,23 @@ export class StepSummaryComponent implements OnInit {
   }
 
   readonly recoveryPotential = new FormControl<'yes' | 'no' | null>(null);
+  // Validators.required declared unconditionally, same as
+  // RecoveryPotentialCardComponent.note on Claim Overview — harmless while
+  // hidden (the field only renders behind needsRecoveryNote below), and it's
+  // what makes .invalid/.touched real reactive-forms state that nx-error
+  // actually reacts to, instead of a hand-rolled flag it silently ignores.
+  readonly maxRecoveryNote = 300;
+  readonly recoveryPotentialNote = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.maxLength(this.maxRecoveryNote)]
+  });
+
+  get needsRecoveryNote(): boolean {
+    return this.recoveryPotential.value === 'no';
+  }
+  get recoveryNoteInvalid(): boolean {
+    return this.needsRecoveryNote && this.recoveryPotentialNote.invalid && this.recoveryPotentialNote.touched;
+  }
 
   get policyNumber(): string {
     return this.fnolState.policyNumber;
@@ -237,6 +254,12 @@ export class StepSummaryComponent implements OnInit {
 
   async onSubmit(): Promise<void> {
     if (this.submitting()) return;
+    if (this.needsRecoveryNote && !this.recoveryPotentialNote.value.trim()) {
+      this.recoveryPotentialNote.markAsTouched();
+      this.submitError = 'Enter a reason before submitting — recovery potential is set to No.';
+      this.live.announce(this.submitError, 'assertive');
+      return;
+    }
     this.submitting.set(true);
     this.submitError = null;
     try {
@@ -268,6 +291,9 @@ export class StepSummaryComponent implements OnInit {
       accessList: this.isRestricted ? this.accessList() : []
     };
     this.fnolState.recoveryPotential = this.recoveryPotential.value ?? null;
+    this.fnolState.recoveryPotentialNote = this.needsRecoveryNote
+      ? this.recoveryPotentialNote.value.trim()
+      : null;
 
     const groupCount = Math.max(1, this.claimGroupCount);
     const base = Date.now();
@@ -564,7 +590,8 @@ export class StepSummaryComponent implements OnInit {
         incidentCircumstance: formValue.circumstance ?? undefined,
         description: formValue.lossDescription || undefined,
         restriction: this.fnolState.restriction,
-        recoveryPotential: this.fnolState.recoveryPotential ?? undefined
+        recoveryPotential: this.fnolState.recoveryPotential ?? undefined,
+        recoveryPotentialNote: this.fnolState.recoveryPotentialNote ?? undefined
       })
     );
   }

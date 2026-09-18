@@ -119,8 +119,16 @@ export class FnolStateService {
   // File restriction state (BMPCC-10994) — set from summary step
   restriction: FileRestriction = { isRestricted: false, accessList: [] };
 
-  // Recovery Potential flag — optional, captured during FNOL Summary
+  // Recovery Potential flag — can be left blank at FNOL and answered later,
+  // but the claim cannot be closed until it has a Yes/No on record (see
+  // claim-closure-blocker.builder.ts). Not "optional" in the sense of not
+  // mattering — see recovery-potential.model.ts.
   recoveryPotential: 'yes' | 'no' | null = null;
+  // Required rationale when recoveryPotential is 'no' — same rule Claim
+  // Overview's card enforces (RecoveryPotentialCardComponent). FNOL used to
+  // let a "No" through with no reason captured anywhere, which is exactly
+  // the unaudited answer the rule exists to prevent.
+  recoveryPotentialNote: string | null = null;
   selectedPolicyFull: Policy | null = null;
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;

@@ -225,7 +225,7 @@
           <div class="ss-recovery-label">
             <span class="ss-recovery-label__text">Recovery potential</span>
             <span class="ss-recovery-label__hint"
-              >Optional — can be updated after claim creation</span
+              >Can be left blank now, but must be answered before this claim can be closed</span
             >
           </div>
           <nx-radio-group [formControl]="recoveryPotential" class="ss-recovery-radio-group">
@@ -233,6 +233,20 @@
             <nx-radio value="no" labelSize="small">No</nx-radio>
           </nx-radio-group>
         </div>
+        @if (needsRecoveryNote) {
+          <nx-formfield label="Why is no recovery expected?" class="ss-recovery-note">
+            <textarea
+              nxInput
+              [formControl]="recoveryPotentialNote"
+              rows="2"
+              [maxlength]="maxRecoveryNote"
+              placeholder="e.g. no identifiable third party at fault"
+            ></textarea>
+            @if (recoveryNoteInvalid) {
+              <nx-error nxFormfieldError>A reason is required when recovery potential is No.</nx-error>
+            }
+          </nx-formfield>
+        }
       </section>
       <!-- Card 4: Reserves narrative (conditional) -->
       @if (vm.narrative) {
