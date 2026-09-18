@@ -199,8 +199,11 @@
 
 .cbi-location-accordion {
   margin-bottom: 20px; // matches .field-group's between-group spacing elsewhere in this file
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  // No wrapper border here — nx-accordion has its own internal spacing above
+  // the panel header that doesn't hug the header's top edge, so a border
+  // drawn around this wrapper exposed a floating line stub above the grey
+  // header bar instead of a clean box. policy-overview's .po-accordion
+  // (the blessed reference this was copied from) doesn't add one either.
 
   nx-expansion-panel {
     --accordion-regular-font-size: var(--paragraph-03-font-size);
