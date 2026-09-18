@@ -12,15 +12,6 @@
   color: var(--text-01);
 }
 
-// Left accent so an unanswered claim is findable while scanning the column of
-// otherwise identical cards. Accent only — no card-wide tint, per the same
-// rule the dashboard rows follow (state goes on an edge or a badge, never a
-// background wash that fights the text on top of it).
-.co-card--attention {
-  border-left: 3px solid var(--warning);
-  padding-left: calc(var(--space-xl) - 2px);
-}
-
 // BLESSED: card-shell.card-title-row — title + trailing chip on one baseline.
 .rp-header {
   @include shell.card-title-row;
