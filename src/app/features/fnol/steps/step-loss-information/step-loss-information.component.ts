@@ -582,7 +582,17 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     // prototype, so the question is shown whenever Business Interruption is
     // selected — the full 12-option list is offered rather than a
     // policy-filtered subset. Recorded, not blocking.
-    return this.cbiFeatureEnabled && this.selectedDamages.includes('business-interruption');
+    //
+    // BMPCC-17927 ticket scope, checked 2026-09-21: "shown when Business
+    // Interruption is checked and Property Damage is not" — CBI is BI caused
+    // by damage at a third party's premises, not the insured's own, so BI +
+    // Property Damage together isn't a CBI scenario. Missing the second half
+    // of that condition let the question appear on exactly that combination.
+    return (
+      this.cbiFeatureEnabled &&
+      this.selectedDamages.includes('business-interruption') &&
+      !this.selectedDamages.includes('material-damage')
+    );
   }
 
   get cbiApplicable(): 'yes' | 'no' | null {
