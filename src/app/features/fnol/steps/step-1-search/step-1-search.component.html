@@ -7,19 +7,6 @@
     <nx-icon name="info-circle-o" size="s" class="subtitle-icon"></nx-icon>
   </p>
 
-  <!-- Reachable with zero typing — can't search for a skeleton claim you
-       can't remember (or never knew) the exact name for. A separate path
-       from the form below on purpose, not another filter inside it. -->
-  <button
-    nxButton="tertiary small"
-    type="button"
-    class="queue-link-btn"
-    (click)="onViewAwaitingPolicyQueue()"
-  >
-    <nx-icon name="list-ul" size="s"></nx-icon>
-    View claims awaiting policy
-  </button>
-
   <!-- Form-level validation banner -->
   @if (validationError) {
     <div class="form-validation-banner" role="alert">
@@ -208,21 +195,14 @@
                         </td>
                         <td>{{ claim.clientName }}</td>
                         <td>
-                          <!-- Real status only — 'Awaiting policy'/'Matched'/'Abandoned'
-                               are not statuses (BMPCC-17927 functional review,
-                               2026-09-22, item 4: only Open/Closed exist). The
-                               skeleton-lifecycle tag below is a separate, clearly
-                               secondary marker, not an alternate status pill. -->
+                          <!-- Only Open/Closed shown — no other status text,
+                               tag, or badge (BMPCC-17927 functional review,
+                               2026-09-22, item 4). -->
                           <app-status-chip
                             [status]="claim.status"
                             domain="claim"
                             variant="text"
                           ></app-status-chip>
-                          @if (claim.skeletonState && claim.skeletonState !== 'linked') {
-                            <span class="skeleton-tag skeleton-tag--{{ claim.skeletonState }}">
-                              {{ skeletonStateTagLabel(claim.skeletonState) }}
-                            </span>
-                          }
                           @if (claim.skeletonState === 'matched' && claim.linkedClaimId) {
                             <span class="skeleton-linked">→ {{ claim.linkedClaimId }}</span>
                           }

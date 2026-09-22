@@ -69,7 +69,6 @@ import {
   ConvertSkeletonModalResult
 } from '../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
-import { SkeletonState } from '../../../core/models/claim.model';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
@@ -641,15 +640,5 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       },
       massEvent: event.massEvent
     });
-  }
-
-  // Deliberately not "Awaiting Policy"/"Matched"/"Abandoned" verbatim — those
-  // read as status names, which is exactly the confusion this tag exists to
-  // avoid now that status is only ever Open/Closed (BMPCC-17927, 2026-09-22).
-  skeletonStateTagLabel(state: SkeletonState): string {
-    if (state === 'awaiting-policy') return 'Needs policy';
-    if (state === 'matched') return 'Policy matched';
-    if (state === 'abandoned') return 'Abandoned';
-    return '';
   }
 }

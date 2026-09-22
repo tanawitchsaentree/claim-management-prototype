@@ -136,14 +136,7 @@
             <div class="co-field">
               <span class="co-label">Claim status</span>
               <div class="co-field-value">
-                <!-- Real status only — skeletonState is a separate marker
-                     below (BMPCC-17927 functional review, 2026-09-22, item 4). -->
                 <app-status-chip [status]="claim.status"></app-status-chip>
-                @if (claim.skeletonState && claim.skeletonState !== 'linked') {
-                  <span class="co-skeleton-tag co-skeleton-tag--{{ claim.skeletonState }}">
-                    {{ skeletonStateTagLabel(claim.skeletonState) }}
-                  </span>
-                }
               </div>
             </div>
             <div class="co-field">
@@ -203,7 +196,7 @@
           <div class="co-field">
             <span class="co-label">Claim status</span>
             <div class="co-field-value">
-              <app-status-chip [status]="claim.skeletonState ?? claim.status"></app-status-chip>
+              <app-status-chip [status]="claim.status"></app-status-chip>
             </div>
           </div>
           <div class="co-field">

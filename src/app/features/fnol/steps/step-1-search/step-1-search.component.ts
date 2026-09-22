@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, switchMap, map } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -29,7 +29,7 @@ import { MockPolicySearchService } from '../../../../core/mock/services/mock-pol
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
 import { PolicySearchResult } from '../../models/fnol-form.model';
-import { Claim, SkeletonState } from '../../../../core/models/claim.model';
+import { Claim } from '../../../../core/models/claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
@@ -119,12 +119,7 @@ export class Step1SearchComponent {
     '• Need to start investigation immediately\n\n' +
     '⚠ You must match a policy within 3 business days.';
 
-  // 'queue' bypasses search criteria entirely — see onViewAwaitingPolicyQueue().
-  // BMPCC-17927 functional review, 2026-09-22: a handler who can't remember
-  // (or never knew) the exact client name typed at skeleton creation has no
-  // way to find their own claim through search at all — search requires
-  // typing something. The queue is the reachable-with-zero-typing fallback.
-  private readonly trigger$ = new BehaviorSubject<'search' | 'idle' | 'queue'>('idle');
+  private readonly trigger$ = new BehaviorSubject<'search' | 'idle'>('idle');
 
   private readonly devSearchFill = toSignal(this.fnolState.devSearchFill$);
   private pendingAutoSelectPolicyNumber: string | null = null;
@@ -170,21 +165,6 @@ export class Step1SearchComponent {
   readonly state$: Observable<SearchState> = this.trigger$.pipe(
     switchMap(t => {
       if (t === 'idle') return of<SearchState>({ kind: 'idle' });
-      if (t === 'queue') {
-        return this.claimSvc.getAll().pipe(
-          map(claims => claims.filter(c => c.claimType === 'skeleton')),
-          switchMap(claims => {
-            this.activeTab = 0; // no policies in this view — always the Claims tab
-            return of<SearchState>({ kind: 'results', claims, policies: [] });
-          }),
-          catchError(err =>
-            of<SearchState>({
-              kind: 'error',
-              message: (err as { message?: string })?.message ?? 'Failed to load the queue.'
-            })
-          )
-        );
-      }
       const criteria = this.form.value;
       return this.claimSvc
         .searchClaims({
@@ -222,16 +202,6 @@ export class Step1SearchComponent {
     if (claim.skeletonState === 'awaiting-policy') return 'skeleton-awaiting';
     if (claim.skeletonState === 'matched') return 'skeleton-matched';
     if (claim.skeletonState === 'abandoned') return 'skeleton-abandoned';
-    return '';
-  }
-
-  // Deliberately not "Awaiting Policy"/"Matched"/"Abandoned" verbatim —
-  // those read as status names, which is exactly the confusion this tag
-  // exists to avoid now that status is only ever Open/Closed.
-  skeletonStateTagLabel(state: SkeletonState): string {
-    if (state === 'awaiting-policy') return 'Needs policy';
-    if (state === 'matched') return 'Policy matched';
-    if (state === 'abandoned') return 'Abandoned';
     return '';
   }
 
@@ -498,21 +468,6 @@ export class Step1SearchComponent {
     this.selectedPolicyData = null;
     this.hasSearched = true;
     this.trigger$.next('search');
-  }
-
-  // Reachable with zero typing — see the trigger$ comment above for why this
-  // exists. Shows every orphan claim (all skeletonStates), not just
-  // awaiting-policy ones — a handler managing their queue also needs to spot
-  // one they already abandoned or that's sitting matched-but-unlinked.
-  onViewAwaitingPolicyQueue(): void {
-    this.validationError = null;
-    this.form.reset();
-    this.claimPage = 1;
-    this.policyPage = 1;
-    this.selectedPolicyNumber = null;
-    this.selectedPolicyData = null;
-    this.hasSearched = true;
-    this.trigger$.next('queue');
   }
 
   onReset(): void {
