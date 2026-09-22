@@ -54,7 +54,8 @@ const srcDir = resolve(root, 'src/app');
 // Adding a file here must come with a doc entry there, not just a comment.
 const EXEMPT = new Set([
   'mass-event-edit-modal.component.ts', // bottom-sheet variant, own panelClass
-  'claim-notes-full.component.ts' // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
+  'claim-notes-full.component.ts', // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
+  'convert-skeleton-modal.component.ts' // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
 ]);
 
 function walk(dir, suffix, files = []) {

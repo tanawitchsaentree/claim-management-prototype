@@ -524,8 +524,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const skeleton = await firstValueFrom(this.claimSvc.getById(claim.claimId));
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
       data: { skeleton } satisfies ConvertSkeletonModalData,
-      width: '960px',
-      maxWidth: '92vw'
+      panelClass: 'bottom-sheet-modal-panel',
+      showCloseIcon: false
     });
     const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return;

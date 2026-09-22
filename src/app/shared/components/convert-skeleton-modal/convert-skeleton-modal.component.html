@@ -1,21 +1,23 @@
-<!-- Header — skeleton context, always visible (sticky) -->
-<div class="csm-header">
-  <div class="csm-header-row">
-    <h2 class="csm-title">Link policy — {{ skeleton.claimId }}</h2>
-    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
-      <nx-icon name="close"></nx-icon>
-    </button>
-  </div>
+<!-- Close ✕ — CSS-drawn (does not depend on icon font). Bottom-sheet
+     shape (BLESSED.md / DESIGN_PRINCIPLES.md "sanctioned exception —
+     bottom-sheet family"), copied from mass-event-edit-modal.component.html. -->
+<button class="csm-modal__close" type="button" aria-label="Close" (click)="onCancel()">
+  <span class="csm-modal__close-x" aria-hidden="true"></span>
+</button>
+
+<!-- Header -->
+<header class="csm-modal__header">
+  <h2 class="csm-modal__title">Link policy — {{ skeleton.claimId }}</h2>
   <p class="csm-context">
     {{ skeleton.clientName }} &middot; {{ skeleton.description }}
     @if (skeleton.lossDate) {
       &middot; Loss date {{ skeleton.lossDate }}
     }
   </p>
-</div>
+</header>
 
-<!-- Body — eligible policy list (scrolls internally) -->
-<div class="csm-body" tabindex="0">
+<!-- Body — scrolls if needed -->
+<div class="csm-modal__body" tabindex="0">
   <p class="csm-intro">Select a policy to link this skeleton claim to.</p>
 
   <nx-formfield label="Search all policies" class="csm-search-field">
@@ -38,15 +40,19 @@
       "
     ></app-empty-state>
   } @else {
+    <!-- Sortable-look header (decorative — same pattern as
+         step-1-search.component.html's .th-sort, no live sort wired on
+         either). No Action column — this table only ever picks a row. -->
     <table class="csm-table">
       <thead>
         <tr>
           <th class="csm-col-radio"></th>
-          <th>Policy number</th>
-          <th>Client</th>
+          <th><span class="th-sort">Policy number <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th><span class="th-sort">Client name <nx-icon name="chevron-down-small"></nx-icon></span></th>
           <th>Line of business</th>
-          <th>Coverage</th>
-          <th>Status</th>
+          <th><span class="th-sort">Inception date <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th><span class="th-sort">Expiry date <nx-icon name="chevron-down-small"></nx-icon></span></th>
+          <th><span class="th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
         </tr>
       </thead>
       <tbody>
@@ -72,9 +78,8 @@
             <td>{{ row.policy.policyNumber }}</td>
             <td>{{ row.policy.clientName }}</td>
             <td>{{ row.policy.lineOfBusiness }}</td>
-            <td class="csm-coverage">
-              {{ row.policy.effectiveDate }} – {{ row.policy.expiryDate }}
-            </td>
+            <td>{{ row.policy.effectiveDate }}</td>
+            <td>{{ row.policy.expiryDate }}</td>
             <td>
               @if (row.eligible) {
                 <span class="csm-status csm-status--ok">{{ row.policy.status }}</span>
@@ -92,10 +97,12 @@
   }
 </div>
 
-<!-- Footer — modal zone: small buttons -->
-<div class="csm-footer">
-  <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button" [disabled]="!canContinue()" (click)="onContinue()">
-    Continue
-  </button>
-</div>
+<!-- Footer -->
+<footer class="csm-modal__footer">
+  <div class="csm-modal__footer-actions">
+    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
+    <button nxButton="primary small" type="button" [disabled]="!canContinue()" (click)="onContinue()">
+      Continue
+    </button>
+  </div>
+</footer>

@@ -246,8 +246,8 @@ export class Step1SearchComponent {
     const data: ConvertSkeletonModalData = { skeleton };
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
       data,
-      width: '960px',
-      maxWidth: '92vw'
+      panelClass: 'bottom-sheet-modal-panel',
+      showCloseIcon: false
     });
     const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return; // cancelled
