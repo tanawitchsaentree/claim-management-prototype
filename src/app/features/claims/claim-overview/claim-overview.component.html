@@ -15,9 +15,7 @@
          can't share one gate. Disappears for good only once both are true. -->
     @if (
       claim.claimType === 'skeleton' &&
-      claim.status !== 'Awaiting policy' &&
-      claim.status !== 'Matched' &&
-      claim.status !== 'Abandoned' &&
+      claim.skeletonState === 'linked' &&
       (sectionsCount() === 0 || !hasOpenReserves())
     ) {
       <nx-message context="warning" class="co-setup-banner">
@@ -44,7 +42,7 @@
     <section class="co-card">
       <div class="co-card-title-row">
         <h2 class="co-card-title">General information</h2>
-        @if (claim.status === 'Awaiting policy') {
+        @if (claim.skeletonState === 'awaiting-policy') {
           <div class="co-card-title-actions">
             <button nxButton="primary small" type="button" (click)="onConvertToClaim(claim)">
               Convert to claim
@@ -53,8 +51,8 @@
         } @else if (
           claim.status !== 'Closed' &&
           claim.status !== 'Pending Rejection Approval' &&
-          claim.status !== 'Matched' &&
-          claim.status !== 'Abandoned'
+          claim.skeletonState !== 'matched' &&
+          claim.skeletonState !== 'abandoned'
         ) {
           <div class="co-card-title-actions">
             <a
@@ -138,7 +136,7 @@
             <div class="co-field">
               <span class="co-label">Claim status</span>
               <div class="co-field-value">
-                <app-status-chip [status]="claim.status"></app-status-chip>
+                <app-status-chip [status]="claim.skeletonState ?? claim.status"></app-status-chip>
               </div>
             </div>
             <div class="co-field">
@@ -166,7 +164,9 @@
             <!-- 'Closed by' removed — same person as the claim handler (redundant) -->
             <div class="co-field">
               <span class="co-label">Closure reason</span>
-              <span class="co-value">{{ claim.closureReason ?? '–' }}</span>
+              <span class="co-value">{{
+                claim.skeletonState === 'abandoned' ? 'Abandoned — ' + claim.abandonReason : claim.closureReason ?? '–'
+              }}</span>
             </div>
             <div class="co-field">
               <span class="co-label">Retention until</span>
@@ -196,7 +196,7 @@
           <div class="co-field">
             <span class="co-label">Claim status</span>
             <div class="co-field-value">
-              <app-status-chip [status]="claim.status"></app-status-chip>
+              <app-status-chip [status]="claim.skeletonState ?? claim.status"></app-status-chip>
             </div>
           </div>
           <div class="co-field">
@@ -261,9 +261,9 @@
       @if (
         claim.status !== 'Closed' &&
         claim.status !== 'Pending Rejection Approval' &&
-        claim.status !== 'Awaiting policy' &&
-        claim.status !== 'Matched' &&
-        claim.status !== 'Abandoned'
+        claim.skeletonState !== 'awaiting-policy' &&
+        claim.skeletonState !== 'matched' &&
+        claim.skeletonState !== 'abandoned'
       ) {
         <div class="co-card-actions">
           <button
@@ -281,7 +281,13 @@
           </button>
         </div>
       }
-      @if (claim.status === 'Closed') {
+      <!-- Excludes skeletonState 'abandoned': that's also status 'Closed' now
+           (BMPCC-17927 functional review, 2026-09-22 — only Open/Closed
+           exist), but reopening an abandoned skeleton is its own flow (FNOL
+           search's kebab menu, no reserve required) — this generic modal
+           asks for a reserve + an unrelated reason list and would desync
+           skeletonState from status if used here instead. -->
+      @if (claim.status === 'Closed' && claim.skeletonState !== 'abandoned') {
         <div class="co-card-actions">
           <button
             nxButton="secondary small"

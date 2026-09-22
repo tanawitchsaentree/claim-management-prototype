@@ -199,9 +199,9 @@ export class Step1SearchComponent {
   // ── Claims table helpers (also covers orphan-claim statuses) ────────
 
   getSkeletonRowClass(claim: Claim): string {
-    if (claim.status === 'Awaiting policy') return 'skeleton-awaiting';
-    if (claim.status === 'Matched') return 'skeleton-matched';
-    if (claim.status === 'Abandoned') return 'skeleton-abandoned';
+    if (claim.skeletonState === 'awaiting-policy') return 'skeleton-awaiting';
+    if (claim.skeletonState === 'matched') return 'skeleton-matched';
+    if (claim.skeletonState === 'abandoned') return 'skeleton-abandoned';
     return '';
   }
 
@@ -211,7 +211,7 @@ export class Step1SearchComponent {
 
   getDaysSinceLabel(claim: Claim): string {
     const days = this.daysSince(claim.dateCreated);
-    if (claim.status !== 'Awaiting policy') return `${days}d`;
+    if (claim.skeletonState !== 'awaiting-policy') return `${days}d`;
     const remaining = (claim.slaDeadlineDays ?? 0) - days;
     if (remaining < 0) return `${days}d (overdue ${Math.abs(remaining)}d)`;
     if (remaining === 0) return `${days}d (due today)`;
@@ -220,7 +220,7 @@ export class Step1SearchComponent {
 
   isDaySlaUrgent(claim: Claim): boolean {
     return (
-      claim.status === 'Awaiting policy' &&
+      claim.skeletonState === 'awaiting-policy' &&
       (claim.slaDeadlineDays ?? 0) - this.daysSince(claim.dateCreated) <= 1
     );
   }
@@ -241,7 +241,7 @@ export class Step1SearchComponent {
   // Prefills loss-information from the skeleton record, drops the user back
   // into the standard FNOL flow (search → policy → loss-info → ... → summary).
   async onConvertSkeleton(skeleton: Claim): Promise<void> {
-    if (skeleton.status !== 'Awaiting policy') return;
+    if (skeleton.skeletonState !== 'awaiting-policy') return;
 
     const data: ConvertSkeletonModalData = { skeleton };
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
@@ -256,12 +256,15 @@ export class Step1SearchComponent {
     // commit, not a bare "are you sure?". This action used to skip straight
     // to convertToRegularClaim() with no confirm step at all, despite being
     // the least reversible action in the whole skeleton lifecycle.
+    //
+    // Status itself no longer changes here (it's 'Open' from creation) —
+    // the diff row that means something now is skeletonState.
     const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Convert to claim',
         message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
         changes: [
-          { label: 'Status', original: skeleton.status, updated: 'Open' },
+          { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
           { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
           ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
         ],
@@ -287,7 +290,7 @@ export class Step1SearchComponent {
   // exact unaudited write-off Recovery Potential's "No" rule exists to
   // prevent elsewhere on this same codebase.
   async onAbandonSkeleton(skeleton: Claim): Promise<void> {
-    if (skeleton.status !== 'Awaiting policy') return;
+    if (skeleton.skeletonState !== 'awaiting-policy') return;
 
     const ref = this.dialogSvc.open(AbandonSkeletonModalComponent, {
       data: { skeleton } satisfies AbandonSkeletonModalData,
@@ -298,6 +301,7 @@ export class Step1SearchComponent {
     if (!reason) return;
 
     await firstValueFrom(this.claimSvc.abandonSkeleton(skeleton.claimId, reason));
+    await this.overviewSvc.resyncOverview(skeleton.claimId);
     this.overviewSvc.appendActivities(skeleton.claimId, [
       {
         id: `act-${Date.now()}`,
@@ -307,7 +311,7 @@ export class Step1SearchComponent {
         objectType: 'Claim',
         attribute: 'Status',
         valueOld: skeleton.status,
-        valueNew: `Abandoned — ${reason}`
+        valueNew: `Closed — abandoned: ${reason}`
       }
     ]);
     this.toast.success(`${skeleton.claimId} abandoned`, reason);
@@ -315,13 +319,16 @@ export class Step1SearchComponent {
   }
 
   async onReopenSkeleton(claim: Claim): Promise<void> {
-    if (claim.status !== 'Abandoned') return;
+    if (claim.skeletonState !== 'abandoned') return;
 
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Reopen claim',
         message: `${claim.claimId} will move back to Awaiting policy.`,
-        changes: [{ label: 'Status', original: 'Abandoned', updated: 'Awaiting policy' }],
+        changes: [
+          { label: 'Status', original: 'Closed', updated: 'Open' },
+          { label: 'Skeleton state', original: 'Abandoned', updated: 'Awaiting policy' }
+        ],
         confirmLabel: 'Reopen'
       } satisfies ConfirmDialogData,
       width: '440px',
@@ -331,6 +338,7 @@ export class Step1SearchComponent {
     if (!confirmed) return;
 
     await firstValueFrom(this.claimSvc.reopenSkeleton(claim.claimId));
+    await this.overviewSvc.resyncOverview(claim.claimId);
     this.overviewSvc.appendActivities(claim.claimId, [
       {
         id: `act-${Date.now()}`,
@@ -339,8 +347,8 @@ export class Step1SearchComponent {
         timestamp: new Date().toISOString(),
         objectType: 'Claim',
         attribute: 'Status',
-        valueOld: 'Abandoned',
-        valueNew: 'Awaiting policy'
+        valueOld: 'Closed',
+        valueNew: 'Open — reopened to Awaiting policy'
       }
     ]);
     this.toast.success(`${claim.claimId} reopened`, 'Back in the Awaiting policy queue.');
@@ -348,7 +356,7 @@ export class Step1SearchComponent {
   }
 
   async onExtendSla(claim: Claim): Promise<void> {
-    if (claim.status !== 'Awaiting policy') return;
+    if (claim.skeletonState !== 'awaiting-policy') return;
     const addedDays = 3;
     const current = claim.slaDeadlineDays ?? 0;
 
@@ -368,6 +376,7 @@ export class Step1SearchComponent {
     if (!confirmed) return;
 
     await firstValueFrom(this.claimSvc.extendSla(claim.claimId, addedDays));
+    await this.overviewSvc.resyncOverview(claim.claimId);
     this.overviewSvc.appendActivities(claim.claimId, [
       {
         id: `act-${Date.now()}`,

@@ -65,16 +65,11 @@ export class MockClaimOverviewService extends MockBaseService {
       claimId: claim.claimId,
       client: claim.clientName,
       assignedHandler: claim.assignee ?? 'Unassigned',
-      // Orphan-claim statuses pass through as-is — collapsing them to 'Open'
-      // hid that a claim has no linked policy yet (showed a "Close Claim"
-      // button on a claim that was never opened against a policy).
-      status:
-        claim.status === 'Closed' ||
-        claim.status === 'Awaiting policy' ||
-        claim.status === 'Matched' ||
-        claim.status === 'Abandoned'
-          ? claim.status
-          : 'Open',
+      // status is always a real ClaimStatus now (Open/Closed/...) — the
+      // orphan-claim pre-policy stage lives in skeletonState below instead
+      // of being squeezed into this field.
+      status: claim.status,
+      skeletonState: claim.skeletonState,
       proximateLossCause: causeOfLoss[0] ?? '–',
       causeOfLoss: causeOfLoss.length ? causeOfLoss : undefined,
       riskScore: 0,
@@ -106,7 +101,8 @@ export class MockClaimOverviewService extends MockBaseService {
       massEventLinkStatus: claim.massEventLinkStatus,
       massEventLinkedBy: claim.massEventLinkedBy,
       massEventOverriddenBy: claim.massEventOverriddenBy,
-      claimType: claim.claimType
+      claimType: claim.claimType,
+      abandonReason: claim.abandonReason
     };
   }
 
@@ -114,10 +110,10 @@ export class MockClaimOverviewService extends MockBaseService {
   // and patches any ALREADY-CACHED overview for it. getOverview() caches on
   // first read (persistAndRespond -> ensureOverview, which only inserts if
   // missing) — without this, a claim viewed once before converting would
-  // keep showing its pre-conversion snapshot (no policy, "Awaiting policy")
-  // forever, since ensureOverview never overwrites an existing entry.
+  // keep showing its pre-conversion snapshot (no policy, skeletonState
+  // 'awaiting-policy') forever, since ensureOverview never overwrites an
+  // existing entry.
   async convertToRegularClaim(claimId: string, policy: LinkablePolicy): Promise<Claim> {
-    const before = await firstValueFrom(this.claimSvc.getById(claimId));
     const claim = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
     this.stateSvc.patchOverview(claimId, this.synthesizeOverviewFromClaim(claim));
     this.appendActivities(claimId, [
@@ -128,8 +124,10 @@ export class MockClaimOverviewService extends MockBaseService {
         timestamp: new Date().toISOString(),
         objectType: 'Claim',
         attribute: 'Policy',
-        valueOld: before.status,
-        valueNew: `${policy.policyNumber} — status changed to Open`
+        // status is 'Open' before and after (unchanged) — skeletonState is
+        // what actually transitions on conversion.
+        valueOld: 'Awaiting policy',
+        valueNew: `${policy.policyNumber} — linked`
       }
     ]);
     // A converted orphan claim needs its structure set up (sections, reserves)
@@ -154,6 +152,16 @@ export class MockClaimOverviewService extends MockBaseService {
       })
     );
     return claim;
+  }
+
+  // Same re-sync convertToRegularClaim does, exposed for the other skeleton
+  // transitions (Abandon / Reopen / Extend SLA) — they write to the Claim
+  // record via MockClaimService but, without this, a cached overview (the
+  // handler opened this claim's Overview before acting from FNOL search)
+  // would keep showing the pre-transition snapshot forever.
+  async resyncOverview(claimId: string): Promise<void> {
+    const claim = await firstValueFrom(this.claimSvc.getById(claimId));
+    this.stateSvc.patchOverview(claimId, this.synthesizeOverviewFromClaim(claim));
   }
 
   hasOverview(claimId: string): boolean {

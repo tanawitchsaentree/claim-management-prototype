@@ -524,16 +524,20 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return;
 
-    // Highest-stakes action on this page (links a real policy, flips status,
-    // creates a task) was the one action with no confirm-diff step — every
-    // lower-stakes save here (Recovery potential, Trade Sanctions) already
-    // has one. Added instead of letting "Continue conversion" commit outright.
+    // Highest-stakes action on this page (links a real policy, flips
+    // skeletonState, creates a task) was the one action with no confirm-diff
+    // step — every lower-stakes save here (Recovery potential, Trade
+    // Sanctions) already has one. Added instead of letting "Continue
+    // conversion" commit outright.
+    //
+    // Status itself no longer changes here (it's 'Open' from creation) —
+    // the diff row that means something now is skeletonState.
     const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Convert to claim',
         message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
         changes: [
-          { label: 'Status', original: skeleton.status, updated: 'Open' },
+          { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
           { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
           ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
         ],

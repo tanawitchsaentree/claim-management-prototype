@@ -26,11 +26,7 @@ export function buildBlockerResult(
   // be closed immediately, looking MORE ready to close than a normal claim
   // with real open work (0 open sections reads as "nothing left", not "nothing
   // was ever started"). Real blocker now, matching every other item here.
-  const wasConverted =
-    claim.claimType === 'skeleton' &&
-    claim.status !== 'Awaiting policy' &&
-    claim.status !== 'Matched' &&
-    claim.status !== 'Abandoned';
+  const wasConverted = claim.claimType === 'skeleton' && claim.skeletonState === 'linked';
   if (wasConverted && totalSectionsCount === 0) {
     blockers.push({
       type: 'needs-setup',

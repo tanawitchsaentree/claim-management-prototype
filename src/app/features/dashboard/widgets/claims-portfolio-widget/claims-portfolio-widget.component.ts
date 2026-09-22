@@ -101,13 +101,16 @@ export class ClaimsPortfolioWidgetComponent {
   readonly displayedClaims = computed<Claim[]>(() => {
     const scope = this.claimsScope();
     const user = this.auth.user();
-    // 'Matched'/'Abandoned' are terminal skeleton-only bookkeeping states — the
-    // skeleton record that produced them is dead weight once resolved (either
-    // superseded by a real claim, or dropped). They don't belong in a claims
-    // handler's portfolio overview; FNOL Search's Claims tab is where an orphan
-    // claim's full lifecycle (including these terminal states) is meant to be
-    // reviewed. Every other status (including 'Awaiting policy') shows.
-    let filtered = this.claims().filter(c => c.status !== 'Matched' && c.status !== 'Abandoned');
+    // skeletonState 'matched'/'abandoned' are terminal skeleton-only
+    // bookkeeping states — the skeleton record that produced them is dead
+    // weight once resolved (either superseded by a real claim, or dropped).
+    // They don't belong in a claims handler's portfolio overview; FNOL
+    // Search's Claims tab is where an orphan claim's full lifecycle
+    // (including these terminal states) is meant to be reviewed. Every other
+    // claim shows, including skeletonState 'awaiting-policy'.
+    let filtered = this.claims().filter(
+      c => c.skeletonState !== 'matched' && c.skeletonState !== 'abandoned'
+    );
     if (user) {
       if (scope === 'mine') filtered = filtered.filter(c => c.assignee === user.name);
       else if (scope === 'group') filtered = filtered.filter(c => c.group === user.group);

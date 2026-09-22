@@ -147,7 +147,7 @@
                   </td>
                   <td nxCell>{{ claim.clientName }}</td>
                   <td nxCell>
-                    <app-status-chip [status]="claim.status" domain="claim" />
+                    <app-status-chip [status]="claim.skeletonState ?? claim.status" domain="claim" />
                     @if (
                       isDormant(claim.dateUpdated) &&
                       claim.status !== 'Closed' &&

@@ -150,8 +150,8 @@
           </nx-tab-group>
 
           <!-- ── Claims tab (includes orphan/skeleton claims — distinguished by
-               the SK- id prefix and the Awaiting policy/Matched/Abandoned
-               statuses) ────────────────────────────────────────────────── -->
+               the SK- id prefix and skeletonState: awaiting-policy/matched/
+               abandoned/linked) ────────────────────────────────────────── -->
           @if (activeTab === 0) {
             @if (state.claims.length === 0) {
               <app-empty-state message="No claims found."></app-empty-state>
@@ -196,11 +196,11 @@
                         <td>{{ claim.clientName }}</td>
                         <td>
                           <app-status-chip
-                            [status]="claim.status"
+                            [status]="claim.skeletonState ?? claim.status"
                             domain="claim"
                             variant="text"
                           ></app-status-chip>
-                          @if (claim.status === 'Matched' && claim.linkedClaimId) {
+                          @if (claim.skeletonState === 'matched' && claim.linkedClaimId) {
                             <span class="skeleton-linked">→ {{ claim.linkedClaimId }}</span>
                           }
                         </td>
@@ -249,7 +249,7 @@
                   <button nxContextMenuItem type="button" (click)="onViewClaim(claim.claimId)">
                     View claim
                   </button>
-                  @if (claim.status === 'Awaiting policy') {
+                  @if (claim.skeletonState === 'awaiting-policy') {
                     <button nxContextMenuItem type="button" (click)="onConvertSkeleton(claim)">
                       Convert to claim
                     </button>
@@ -260,7 +260,7 @@
                       Abandon claim
                     </button>
                   }
-                  @if (claim.status === 'Matched') {
+                  @if (claim.skeletonState === 'matched') {
                     <button
                       nxContextMenuItem
                       type="button"
@@ -270,7 +270,7 @@
                       View linked claim
                     </button>
                   }
-                  @if (claim.status === 'Abandoned') {
+                  @if (claim.skeletonState === 'abandoned') {
                     <button nxContextMenuItem type="button" (click)="onReopenSkeleton(claim)">
                       Reopen
                     </button>

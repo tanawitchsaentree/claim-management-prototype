@@ -115,7 +115,8 @@ export class MockClaimService extends MockBaseService {
       policyNumber: policy.policyNumber,
       ...(lineOfBusiness ? { lineOfBusiness } : {}),
       ...(policy.broker ? { broker: policy.broker } : {}),
-      status: 'Open'
+      status: 'Open',
+      skeletonState: 'linked'
     });
   }
 
@@ -123,12 +124,27 @@ export class MockClaimService extends MockBaseService {
   // context-menu items wired to a no-op ("Phase 2 actions") until now; the
   // only real transition was Convert. All three are plain status/field
   // writes on the same claim record, same rationale as linkPolicy().
+  //
+  // Abandoning sets status: 'Closed' too — business rules only recognise
+  // Open/Closed (BMPCC-17927 functional review, 2026-09-22); an abandoned
+  // skeleton isn't being worked any further, so it reads as closed, not a
+  // third open-ended state. ASSUMPTION: not yet confirmed with the business
+  // whether "abandoned" should map to Closed specifically — flagged for
+  // Marlene's review, not settled.
   abandonSkeleton(claimId: string, reason: string): Observable<Claim> {
-    return this.update(claimId, { status: 'Abandoned', abandonReason: reason });
+    return this.update(claimId, {
+      status: 'Closed',
+      skeletonState: 'abandoned',
+      abandonReason: reason
+    });
   }
 
   reopenSkeleton(claimId: string): Observable<Claim> {
-    return this.update(claimId, { status: 'Awaiting policy', abandonReason: undefined });
+    return this.update(claimId, {
+      status: 'Open',
+      skeletonState: 'awaiting-policy',
+      abandonReason: undefined
+    });
   }
 
   // Fixed +3 days, matching the SLA convertToRegularClaim() already grants a

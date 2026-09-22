@@ -82,10 +82,7 @@ export class ClaimsListComponent {
     'Quoted',
     'Bound',
     'Declined',
-    'Closed',
-    'Awaiting policy',
-    'Matched',
-    'Abandoned'
+    'Closed'
   ];
 
   readonly linesOfBusiness: LineOfBusiness[] = [

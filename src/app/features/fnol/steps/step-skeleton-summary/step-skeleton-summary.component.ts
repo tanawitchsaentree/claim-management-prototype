@@ -126,7 +126,11 @@ export class StepSkeletonSummaryComponent implements OnInit {
             currency: 'EUR',
             description: (li['lossDescription'] as string) || draft.notes || '',
             causeOfLoss: (li['causeOfLoss'] as string[]) ?? [],
-            status: 'Awaiting policy',
+            // status is 'Open' from creation — a skeleton is already a claim
+            // (BMPCC-17927 functional review, 2026-09-22), not something
+            // Convert creates. skeletonState carries the pre-policy stage.
+            status: 'Open',
+            skeletonState: 'awaiting-policy',
             priority: 'medium',
             lineOfBusiness: 'Property',
             location: null,

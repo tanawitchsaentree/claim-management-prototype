@@ -1,4 +1,4 @@
-import { MassEventLinkStatus } from './claim.model';
+import { MassEventLinkStatus, SkeletonState } from './claim.model';
 
 export interface AccessListEntry {
   userId: string;
@@ -127,9 +127,13 @@ export interface ClaimOverview {
   massEventOverriddenBy?: { userId: string; name: string; at: string };
 
   // Historical fact that this claim originated as an orphan/skeleton claim —
-  // kept even after it's converted (status moves off 'Awaiting policy') so
-  // Overview can show the "needs setup" banner. Never cleared.
+  // kept even after it's converted so Overview can show the "needs setup"
+  // banner. Never cleared. skeletonState carries which pre-policy stage
+  // (or 'linked', once resolved) — see claim.model.ts.
   claimType?: 'skeleton';
+  skeletonState?: SkeletonState;
+  /** Only set when skeletonState is 'abandoned'. */
+  abandonReason?: string;
 
   // File restriction (BMPCC-10994) — informational only, no enforcement
   restriction?: FileRestriction;
