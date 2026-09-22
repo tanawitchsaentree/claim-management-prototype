@@ -28,7 +28,7 @@ import {
   ReassignClaimModalData,
   ReassignClaimModalResult
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
-import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/models';
+import { Claim, ClaimStatus, LineOfBusiness, Priority, SkeletonState } from '../../../core/models';
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
 
 const PAGE_SIZE = 15;
@@ -231,5 +231,15 @@ export class ClaimsListComponent {
 
   priorityLabel(p: Priority): string {
     return p.charAt(0).toUpperCase() + p.slice(1);
+  }
+
+  // Deliberately not "Awaiting Policy"/"Matched"/"Abandoned" verbatim — those
+  // read as status names, which is exactly the confusion this tag exists to
+  // avoid now that status is only ever Open/Closed (BMPCC-17927, 2026-09-22).
+  skeletonStateTagLabel(state: SkeletonState): string {
+    if (state === 'awaiting-policy') return 'Needs policy';
+    if (state === 'matched') return 'Policy matched';
+    if (state === 'abandoned') return 'Abandoned';
+    return '';
   }
 }

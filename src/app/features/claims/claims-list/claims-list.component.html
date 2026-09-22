@@ -147,7 +147,14 @@
                   </td>
                   <td nxCell>{{ claim.clientName }}</td>
                   <td nxCell>
-                    <app-status-chip [status]="claim.skeletonState ?? claim.status" domain="claim" />
+                    <!-- Real status only — skeletonState is a separate, secondary
+                         marker (BMPCC-17927 functional review, 2026-09-22, item 4). -->
+                    <app-status-chip [status]="claim.status" domain="claim" />
+                    @if (claim.skeletonState && claim.skeletonState !== 'linked') {
+                      <span class="cl-skeleton-tag cl-skeleton-tag--{{ claim.skeletonState }}">
+                        {{ skeletonStateTagLabel(claim.skeletonState) }}
+                      </span>
+                    }
                     @if (
                       isDormant(claim.dateUpdated) &&
                       claim.status !== 'Closed' &&

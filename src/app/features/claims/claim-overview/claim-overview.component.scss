@@ -143,6 +143,30 @@
   display: flex;
   align-items: center;
   min-height: 24px;
+  gap: 6px;
+}
+
+// Qualifier on an Open claim, not an alternate status pill — plain small
+// text, not the same visual weight as app-status-chip.
+.co-skeleton-tag {
+  display: inline-block;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+
+  &--awaiting-policy {
+    background: var(--skeleton-claim-awaiting-bg);
+    color: var(--skeleton-claim-awaiting-color);
+  }
+  &--matched {
+    background: var(--skeleton-claim-matched-bg);
+    color: var(--skeleton-claim-matched-color);
+  }
+  &--abandoned {
+    background: var(--skeleton-claim-abandoned-bg);
+    color: var(--skeleton-claim-abandoned-color);
+  }
 }
 
 // Risk score / risk status field styles moved to
