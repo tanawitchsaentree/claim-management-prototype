@@ -261,14 +261,14 @@ export class Step1SearchComponent {
     // the diff row that means something now is skeletonState.
     const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
-        title: 'Convert to claim',
+        title: 'Link policy',
         message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
         changes: [
           { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
           { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
           ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
         ],
-        confirmLabel: 'Convert claim'
+        confirmLabel: 'Link policy'
       } satisfies ConfirmDialogData,
       width: '480px',
       maxWidth: '92vw'
@@ -277,10 +277,12 @@ export class Step1SearchComponent {
     if (!confirmed) return;
 
     // Link the policy onto the same claim record and land on its Overview —
-    // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (Convert to claim).
+    // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (originally "Convert
+    // to claim"; renamed "Link policy" — BMPCC-17927 functional review,
+    // 2026-09-22, item 3 — a skeleton claim is already a claim).
     await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
     this.toast.success(
-      `${skeleton.claimId} converted`,
+      `${skeleton.claimId} — policy linked`,
       `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
     );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);

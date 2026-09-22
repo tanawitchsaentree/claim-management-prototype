@@ -511,9 +511,15 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   }
 
   // Same modal + hand-off used by the FNOL search page's kebab menu
-  // ("Convert to claim") — a handler reaching an orphan claim via the
+  // ("Link policy") — a handler reaching an orphan claim via the
   // dashboard/claims list needs the identical action available here, not a
   // second path back to Search.
+  //
+  // Renamed from "Convert to claim" (BMPCC-17927 functional review,
+  // 2026-09-22, item 3) — a skeleton claim is already a claim (has a
+  // claimId, shows in search); the action is linking a policy onto it, not
+  // creating a claim. Internal method/component names (onConvertToClaim,
+  // ConvertSkeletonModalComponent) are unchanged — not user-facing.
   async onConvertToClaim(claim: ClaimOverview): Promise<void> {
     const skeleton = await firstValueFrom(this.claimSvc.getById(claim.claimId));
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
@@ -534,14 +540,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // the diff row that means something now is skeletonState.
     const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
-        title: 'Convert to claim',
+        title: 'Link policy',
         message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
         changes: [
           { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
           { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
           ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
         ],
-        confirmLabel: 'Convert claim'
+        confirmLabel: 'Link policy'
       } satisfies ConfirmDialogData,
       width: '480px',
       maxWidth: '92vw'
@@ -558,7 +564,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // that tells them a follow-up task landed in their queue — convertToRegularClaim
     // creates it silently, with nothing else surfacing that in the moment.
     this.toast.success(
-      `${skeleton.claimId} converted`,
+      `${skeleton.claimId} — policy linked`,
       `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
     );
   }
