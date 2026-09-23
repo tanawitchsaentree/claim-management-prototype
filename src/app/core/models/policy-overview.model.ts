@@ -9,6 +9,10 @@ export interface PolicyCoverage {
   sumInsured: number;
   deductible: number;
   currency: string;
+  // Not populated anywhere in mock data — no attachment-point source exists
+  // yet. Displayed as 0 when absent (matches the reference system, which
+  // shows the same for every row on the policy this was checked against).
+  attachmentPoint?: number;
 }
 
 export interface CoinsuranceParticipant {
@@ -32,6 +36,8 @@ export interface LinkedClaimRow {
   createdDate: string;
   dateOfLoss: string;
   status: string;
+  claimHandler?: string | null;
+  causeOfLoss?: string[];
 }
 
 export interface PolicyOverview {

@@ -25,6 +25,8 @@ interface ClaimRecord {
   dateCreated: string;
   lossDate: string;
   status: string;
+  assignee: string | null;
+  causeOfLoss?: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -47,7 +49,9 @@ export class MockPolicyOverviewService extends MockBaseService {
         clientName: c.clientName,
         createdDate: c.dateCreated,
         dateOfLoss: c.lossDate,
-        status: c.status
+        status: c.status,
+        claimHandler: c.assignee,
+        causeOfLoss: c.causeOfLoss
       }))
       .sort((a, b) => b.dateOfLoss.localeCompare(a.dateOfLoss));
   }

@@ -50,4 +50,185 @@
       }
     </div>
   </section>
+
+  @if (loadingDetails()) {
+    <div class="pom-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
+  } @else if (overview(); as ov) {
+    <nx-accordion [multi]="true" class="pom-accordion">
+      <!-- Coverage details -->
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Coverage details</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+
+        @if (ov.coverages.length) {
+          <table nxTable class="pom-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Policy section</th>
+                <th nxHeaderCell>Coverage</th>
+                <th nxHeaderCell class="pom-col--num">Attachment point</th>
+                <th nxHeaderCell class="pom-col--num">Limit</th>
+                <th nxHeaderCell class="pom-col--num">Deductible</th>
+                <th nxHeaderCell>Start date</th>
+                <th nxHeaderCell>End date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of ov.coverages; track c.coverageId) {
+                <tr nxTableRow>
+                  <td nxTableCell>{{ c.policySection }}</td>
+                  <td nxTableCell>{{ c.coverage }}</td>
+                  <td nxTableCell class="pom-col--num">
+                    {{ c.attachmentPoint ?? 0 | currency: c.currency : 'symbol' : '1.0-0' }}
+                  </td>
+                  <td nxTableCell class="pom-col--num">
+                    {{ c.sumInsured | currency: c.currency : 'symbol' : '1.0-0' }}
+                  </td>
+                  <td nxTableCell class="pom-col--num">
+                    @if (c.deductible > 0) {
+                      {{ c.deductible | currency: c.currency : 'symbol' : '1.0-0' }}
+                    } @else {
+                      <span class="pom-muted">None</span>
+                    }
+                  </td>
+                  <td nxTableCell>{{ policy.effectiveDate | appDate }}</td>
+                  <td nxTableCell>{{ policy.expiryDate | appDate }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <app-empty-state message="No coverages recorded on this policy."></app-empty-state>
+        }
+      </nx-expansion-panel>
+
+      <!-- Coinsurance details -->
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Coinsurance details</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+
+        @if (ov.coinsurance.length) {
+          @if (coinsuranceMismatch()) {
+            <nx-message context="warning" class="pom-message">
+              Participant shares total {{ coinsuranceTotal() }}%, not 100% — check the policy
+              record before settling.
+            </nx-message>
+          }
+          <table nxTable class="pom-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell class="pom-col--num">Share</th>
+                <th nxHeaderCell>Produce docs</th>
+                <th nxHeaderCell>Participant</th>
+                <th nxHeaderCell>Participant name code</th>
+                <th nxHeaderCell>Participant type</th>
+                <th nxHeaderCell class="pom-col--num">Signed line</th>
+                <th nxHeaderCell class="pom-col--num">Written line</th>
+                <th nxHeaderCell>Participant sequence</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (cp of ov.coinsurance; track cp.participantCode) {
+                <tr nxTableRow>
+                  <td nxTableCell class="pom-col--num">{{ cp.sharePercent | number: '1.0-2' }}%</td>
+                  <td nxTableCell class="pom-muted">—</td>
+                  <td nxTableCell>{{ cp.participant }}</td>
+                  <td nxTableCell>{{ cp.participantCode }}</td>
+                  <td nxTableCell>{{ cp.role }}</td>
+                  <td nxTableCell class="pom-muted">—</td>
+                  <td nxTableCell class="pom-muted">—</td>
+                  <td nxTableCell class="pom-muted">—</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <app-empty-state message="This policy is not coinsured." hint="Allianz carries 100% of the risk.">
+          </app-empty-state>
+        }
+      </nx-expansion-panel>
+
+      <!-- Reinsurance details — no reinsurance data model exists in this
+           prototype yet (nothing to fetch), so this section stays a
+           column-shell with placeholder rows rather than inventing figures. -->
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Reinsurance details</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+
+        <table nxTable class="pom-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Reinsurance policy number</th>
+              <th nxHeaderCell>Reinsurance type</th>
+              <th nxHeaderCell>Start date</th>
+              <th nxHeaderCell>End date</th>
+              <th nxHeaderCell>Legal name</th>
+              <th nxHeaderCell class="pom-col--num">Cession</th>
+              <th nxHeaderCell class="pom-col--num">Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr nxTableRow>
+              <td nxTableCell class="pom-muted">N/A</td>
+              <td nxTableCell class="pom-muted">N/A</td>
+              <td nxTableCell class="pom-muted">N/A</td>
+              <td nxTableCell class="pom-muted">N/A</td>
+              <td nxTableCell class="pom-muted">N/A</td>
+              <td nxTableCell class="pom-muted">N/A</td>
+              <td nxTableCell class="pom-muted">N/A</td>
+            </tr>
+          </tbody>
+        </table>
+      </nx-expansion-panel>
+
+      <!-- Linked claims details -->
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Linked claims details</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+
+        @if (ov.linkedClaims.length) {
+          <div class="pom-table-wrap" tabindex="0">
+            <table nxTable class="pom-table">
+              <thead>
+                <tr nxTableRow>
+                  <th nxHeaderCell>Claim ID</th>
+                  <th nxHeaderCell>Loss description</th>
+                  <th nxHeaderCell>Client name</th>
+                  <th nxHeaderCell>Status</th>
+                  <th nxHeaderCell>Claim handler</th>
+                  <th nxHeaderCell>Cause of loss</th>
+                  <th nxHeaderCell>Created date</th>
+                  <th nxHeaderCell>Date of loss</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (lc of ov.linkedClaims; track lc.claimId) {
+                  <tr nxTableRow>
+                    <td nxTableCell>
+                      <button class="pom-claim-link" type="button" (click)="openClaim(lc.claimId)">
+                        {{ lc.claimId }}
+                      </button>
+                    </td>
+                    <td nxTableCell class="pom-cell--desc">{{ lc.lossDescription }}</td>
+                    <td nxTableCell>{{ lc.clientName }}</td>
+                    <td nxTableCell>{{ lc.status }}</td>
+                    <td nxTableCell>{{ lc.claimHandler ?? '—' }}</td>
+                    <td nxTableCell>{{ formatCauseOfLoss(lc.causeOfLoss) }}</td>
+                    <td nxTableCell>{{ lc.createdDate | appDate }}</td>
+                    <td nxTableCell>{{ lc.dateOfLoss | appDate }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <app-empty-state message="No other claims are linked to this policy."></app-empty-state>
+        }
+      </nx-expansion-panel>
+    </nx-accordion>
+  }
 </div>
