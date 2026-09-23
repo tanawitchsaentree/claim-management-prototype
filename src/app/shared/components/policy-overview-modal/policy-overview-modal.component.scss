@@ -1,0 +1,108 @@
+// Bottom-sheet modal (sanctioned exception — DESIGN_PRINCIPLES.md
+// "Component Variant Contracts"), copied from
+// convert-skeleton-modal.component.scss. Layout overrides for the dialog
+// overlay live in .bottom-sheet-modal-panel in src/styles.scss.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ui-01);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+// ─── Close ─────────────────────────────────────────────────────────────────
+.pom-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  z-index: 1;
+  border-radius: 4px;
+
+  &:hover {
+    color: var(--hover-link);
+    background: var(--claim-overlay-hover);
+  }
+}
+
+// CSS-drawn ✕ — two crossed bars, no icon font dependency.
+.pom-modal__close-x {
+  position: relative;
+  width: 16px;
+  height: 16px;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+  }
+  &::before {
+    transform: rotate(45deg);
+  }
+  &::after {
+    transform: rotate(-45deg);
+  }
+}
+
+// ─── Header ────────────────────────────────────────────────────────────────
+.pom-modal__header {
+  flex-shrink: 0;
+  padding: var(--space-2xl) var(--space-2xl) 0;
+}
+
+.pom-modal__title {
+  margin: 0;
+  font-size: var(--heading-04-font-size);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-01);
+}
+
+// ─── Body — scrollable ─────────────────────────────────────────────────────
+.pom-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2xl);
+}
+
+// ─── Policy details field grid ──────────────────────────────────────────────
+.pom-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl) var(--space-lg);
+}
+
+.pom-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pom-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.pom-value {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+
+  &--strong {
+    font-weight: 600;
+  }
+}

@@ -55,7 +55,8 @@ const srcDir = resolve(root, 'src/app');
 const EXEMPT = new Set([
   'mass-event-edit-modal.component.ts', // bottom-sheet variant, own panelClass
   'claim-notes-full.component.ts', // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
-  'convert-skeleton-modal.component.ts' // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
+  'convert-skeleton-modal.component.ts', // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
+  'policy-overview-modal.component.ts' // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
 ]);
 
 function walk(dir, suffix, files = []) {

@@ -216,16 +216,54 @@
                         </td>
                         <td>{{ claim.assignee ?? '—' }}</td>
                         <td class="col-action">
+                          <!-- Menu declared per-row (inside @for), same
+                             pattern as step-entities-damages's blessed kebab —
+                             not a single shared menu + triggerData. A shared
+                             menu instance reused across every row via
+                             triggerData was closing/reopening against a
+                             different row's aria-expanded binding on the
+                             same change-detection tick and threw NG0100 in
+                             dev mode; a menu per row has nothing to desync. -->
                           <button
                             class="action-menu-btn"
                             type="button"
                             aria-label="more actions"
                             data-tour-id="fnol-skeleton-kebab"
                             [nxContextMenuTriggerFor]="claimMenu"
-                            [nxContextMenuTriggerData]="{ claim: claim }"
                           >
                             <nx-icon name="ellipsis-v"></nx-icon>
                           </button>
+                          <nx-context-menu #claimMenu="nxContextMenu">
+                            <button nxContextMenuItem type="button" (click)="onViewClaim(claim.claimId)">
+                              View claim
+                            </button>
+                            @if (claim.skeletonState === 'awaiting-policy') {
+                              <button nxContextMenuItem type="button" (click)="onConvertSkeleton(claim)">
+                                Link policy
+                              </button>
+                              <button nxContextMenuItem type="button" (click)="onExtendSla(claim)">
+                                Extend SLA
+                              </button>
+                              <button nxContextMenuItem type="button" (click)="onAbandonSkeleton(claim)">
+                                Abandon claim
+                              </button>
+                            }
+                            @if (claim.skeletonState === 'matched') {
+                              <button
+                                nxContextMenuItem
+                                type="button"
+                                [disabled]="!claim.linkedClaimId"
+                                (click)="onViewLinkedClaim(claim)"
+                              >
+                                View linked claim
+                              </button>
+                            }
+                            @if (claim.skeletonState === 'abandoned') {
+                              <button nxContextMenuItem type="button" (click)="onReopenSkeleton(claim)">
+                                Reopen
+                              </button>
+                            }
+                          </nx-context-menu>
                         </td>
                       </tr>
                     }
@@ -248,41 +286,6 @@
                 >
                 </nx-pagination>
               </div>
-
-              <!-- Claim row context menu -->
-              <nx-context-menu #claimMenu="nxContextMenu">
-                <ng-template nxContextMenuContent let-claim="claim">
-                  <button nxContextMenuItem type="button" (click)="onViewClaim(claim.claimId)">
-                    View claim
-                  </button>
-                  @if (claim.skeletonState === 'awaiting-policy') {
-                    <button nxContextMenuItem type="button" (click)="onConvertSkeleton(claim)">
-                      Link policy
-                    </button>
-                    <button nxContextMenuItem type="button" (click)="onExtendSla(claim)">
-                      Extend SLA
-                    </button>
-                    <button nxContextMenuItem type="button" (click)="onAbandonSkeleton(claim)">
-                      Abandon claim
-                    </button>
-                  }
-                  @if (claim.skeletonState === 'matched') {
-                    <button
-                      nxContextMenuItem
-                      type="button"
-                      [disabled]="!claim.linkedClaimId"
-                      (click)="onViewLinkedClaim(claim)"
-                    >
-                      View linked claim
-                    </button>
-                  }
-                  @if (claim.skeletonState === 'abandoned') {
-                    <button nxContextMenuItem type="button" (click)="onReopenSkeleton(claim)">
-                      Reopen
-                    </button>
-                  }
-                </ng-template>
-              </nx-context-menu>
             }
           }
 
@@ -347,16 +350,30 @@
                           ></app-status-chip>
                         </td>
                         <td class="col-action">
+                          <!-- Menu declared per-row — see the Claims tab's
+                             identical comment above for why (not a shared
+                             menu + triggerData). -->
                           <button
                             class="action-menu-btn"
                             type="button"
                             aria-label="more actions"
                             (click)="$event.stopPropagation()"
                             [nxContextMenuTriggerFor]="policyMenu"
-                            [nxContextMenuTriggerData]="{ policy: policy }"
                           >
                             <nx-icon name="ellipsis-v"></nx-icon>
                           </button>
+                          <nx-context-menu #policyMenu="nxContextMenu">
+                            <button nxContextMenuItem type="button" (click)="onSeeDetails(policy)">
+                              See details
+                            </button>
+                            <button
+                              nxContextMenuItem
+                              type="button"
+                              (click)="onRegisterClaimWithPolicy(policy)"
+                            >
+                              Register a claim with this policy
+                            </button>
+                          </nx-context-menu>
                         </td>
                       </tr>
                     }
@@ -379,23 +396,6 @@
                 >
                 </nx-pagination>
               </div>
-
-              <!-- Policy row context menu -->
-              <nx-context-menu #policyMenu="nxContextMenu">
-                <ng-template nxContextMenuContent let-policy="policy">
-                  <!-- Stub — no standalone policy-detail view exists yet
-                     (2026-09-23 design parity check). Wire this once that
-                     destination exists. -->
-                  <button nxContextMenuItem type="button">See details</button>
-                  <button
-                    nxContextMenuItem
-                    type="button"
-                    (click)="onRegisterClaimWithPolicy(policy)"
-                  >
-                    Register a claim with this policy
-                  </button>
-                </ng-template>
-              </nx-context-menu>
             }
           }
 

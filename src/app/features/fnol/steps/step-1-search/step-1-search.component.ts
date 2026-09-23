@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -25,6 +25,10 @@ import {
   ConvertSkeletonModalData,
   ConvertSkeletonModalResult
 } from '../../../../shared/components/convert-skeleton-modal/convert-skeleton-modal.component';
+import {
+  PolicyOverviewModalComponent,
+  PolicyOverviewModalData
+} from '../../../../shared/components/policy-overview-modal/policy-overview-modal.component';
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
@@ -202,7 +206,18 @@ export class Step1SearchComponent {
             })
           )
         );
-    })
+    }),
+    // Shared — this template reads `state$ | async` in ~5 separate places
+    // (search button loading state, results block, footer block, plus the
+    // toSignal() below). Without sharing, EVERY one of those is its own
+    // independent subscription that re-runs the whole switchMap chain from
+    // scratch, so two places could momentarily hold different `claims`/
+    // `policies`/`clients` array instances for what's supposed to be the
+    // same search — which is what was tripping NG0100 on the context-menu
+    // trigger's aria-expanded binding (a value depending on `state` differed
+    // between change-detection's two dev-mode passes because a second,
+    // independent subscription resolved in between them).
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   private readonly searchState = toSignal(this.state$);
@@ -490,6 +505,20 @@ export class Step1SearchComponent {
     this.selectedClientId = client.partyId;
   }
 
+  // Deferred a tick — same reason as refreshResults() below: opening a
+  // dialog synchronously from a context-menu item click collides with
+  // NxContextMenuTriggerDirective's own aria-expanded host binding update
+  // on that same close, throwing NG0100 in dev mode.
+  onSeeDetails(policy: PolicySearchResult): void {
+    setTimeout(() =>
+      this.dialogSvc.open(PolicyOverviewModalComponent, {
+        data: { policy } satisfies PolicyOverviewModalData,
+        panelClass: 'bottom-sheet-modal-panel',
+        showCloseIcon: false
+      })
+    );
+  }
+
   onSearch(): void {
     this.validationError = null;
     if (!this.hasAnyCriteria) {
@@ -560,18 +589,49 @@ export class Step1SearchComponent {
     this.activeTab = index;
   }
 
+  // Memoized by (source array reference + page) — these are called inline
+  // from the template on every change-detection run. A plain .slice() would
+  // return a new array each call, and closing a context menu on one of
+  // these rows re-runs CD synchronously, so dev-mode's checkNoChanges pass
+  // would see a "changed" array for the same state and throw NG0100 on the
+  // context-menu trigger's own aria-expanded binding. Returning the same
+  // cached array when nothing actually changed keeps both passes identical.
+  private pagedClaimsCache: { source: Claim[]; page: number; result: Claim[] } | null = null;
+  private pagedPoliciesCache: {
+    source: PolicySearchResult[];
+    page: number;
+    result: PolicySearchResult[];
+  } | null = null;
+  private pagedClientsCache: {
+    source: ClientSearchResult[];
+    page: number;
+    result: ClientSearchResult[];
+  } | null = null;
+
   pagedClaims(claims: Claim[]): Claim[] {
+    const cache = this.pagedClaimsCache;
+    if (cache && cache.source === claims && cache.page === this.claimPage) return cache.result;
     const start = (this.claimPage - 1) * PAGE_SIZE;
-    return claims.slice(start, start + PAGE_SIZE);
+    const result = claims.slice(start, start + PAGE_SIZE);
+    this.pagedClaimsCache = { source: claims, page: this.claimPage, result };
+    return result;
   }
 
   pagedPolicies(policies: PolicySearchResult[]): PolicySearchResult[] {
+    const cache = this.pagedPoliciesCache;
+    if (cache && cache.source === policies && cache.page === this.policyPage) return cache.result;
     const start = (this.policyPage - 1) * PAGE_SIZE;
-    return policies.slice(start, start + PAGE_SIZE);
+    const result = policies.slice(start, start + PAGE_SIZE);
+    this.pagedPoliciesCache = { source: policies, page: this.policyPage, result };
+    return result;
   }
 
   pagedClients(clients: ClientSearchResult[]): ClientSearchResult[] {
+    const cache = this.pagedClientsCache;
+    if (cache && cache.source === clients && cache.page === this.clientPage) return cache.result;
     const start = (this.clientPage - 1) * PAGE_SIZE;
-    return clients.slice(start, start + PAGE_SIZE);
+    const result = clients.slice(start, start + PAGE_SIZE);
+    this.pagedClientsCache = { source: clients, page: this.clientPage, result };
+    return result;
   }
 }

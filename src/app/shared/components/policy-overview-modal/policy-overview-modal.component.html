@@ -1,0 +1,53 @@
+<!-- Close ✕ — CSS-drawn (does not depend on icon font). Bottom-sheet
+     shape (BLESSED.md / DESIGN_PRINCIPLES.md "sanctioned exception —
+     bottom-sheet family"), copied from convert-skeleton-modal.component.html. -->
+<button class="pom-modal__close" type="button" aria-label="Close" (click)="onClose()">
+  <span class="pom-modal__close-x" aria-hidden="true"></span>
+</button>
+
+<!-- Header -->
+<header class="pom-modal__header">
+  <h2 class="pom-modal__title">Policy overview</h2>
+</header>
+
+<!-- Body -->
+<div class="pom-modal__body" tabindex="0">
+  <section class="pom-details">
+    <div class="pom-fields">
+      <div class="pom-field">
+        <span class="pom-label">Policy number</span>
+        <span class="pom-value pom-value--strong">{{ policy.policyNumber }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Client</span>
+        <span class="pom-value">{{ policy.clientName }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Line of business</span>
+        <span class="pom-value">{{ policy.lineOfBusiness }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Policy status</span>
+        <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Policy period</span>
+        <span class="pom-value"
+          >{{ policy.effectiveDate | appDate }} – {{ policy.expiryDate | appDate }}</span
+        >
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Premium</span>
+        <span class="pom-value"
+          >{{ policy.premium | currency: policy.currency : 'symbol' : '1.0-0' }}</span
+        >
+      </div>
+      @if (policy.allianzShare !== null && policy.allianzShare !== undefined) {
+        <div class="pom-field">
+          <span class="pom-label">Allianz share</span>
+          <span class="pom-value">{{ policy.allianzShare | number: '1.0-2' }}%</span>
+        </div>
+      }
+    </div>
+  </section>
+</div>
