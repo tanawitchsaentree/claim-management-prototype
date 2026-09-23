@@ -1,4 +1,4 @@
-import { PolicyStatus } from './policy.model';
+import { Policy } from './policy.model';
 
 export type CoinsuranceRole = 'Leader' | 'Follower';
 
@@ -40,16 +40,7 @@ export interface LinkedClaimRow {
   causeOfLoss?: string[];
 }
 
-export interface PolicyOverview {
-  policyNumber: string;
-  clientName: string;
-  lineOfBusiness: string;
-  status: PolicyStatus;
-  effectiveDate: string;
-  expiryDate: string;
-  premium: number;
-  currency: string;
-  allianzShare?: number;
+export interface PolicyOverview extends Policy {
   coverages: PolicyCoverage[];
   coinsurance: CoinsuranceParticipant[];
   linkedClaims: LinkedClaimRow[];

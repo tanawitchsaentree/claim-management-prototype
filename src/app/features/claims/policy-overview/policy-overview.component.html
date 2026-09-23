@@ -18,18 +18,16 @@
         <span class="po-value po-value--strong">{{ p.policyNumber }}</span>
       </div>
       <div class="po-field">
-        <span class="po-label">Client</span>
+        <span class="po-label">Client name</span>
         <span class="po-value">{{ p.clientName }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Client name code</span>
+        <span class="po-value">{{ p.clientNameCode ?? 'N/A' }}</span>
       </div>
       <div class="po-field">
         <span class="po-label">Line of business</span>
         <span class="po-value">{{ p.lineOfBusiness }}</span>
-      </div>
-      <div class="po-field">
-        <span class="po-label">Policy status</span>
-        <span class="po-status" [class]="'po-status--' + p.status.toLowerCase()">{{
-          p.status
-        }}</span>
       </div>
       <div class="po-field">
         <span class="po-label">Inception date</span>
@@ -40,8 +38,34 @@
         <span class="po-value">{{ p.expiryDate | appDate }}</span>
       </div>
       <div class="po-field">
+        <span class="po-label">Broker</span>
+        <span class="po-value">{{ p.broker ?? 'N/A' }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Broker name code</span>
+        <span class="po-value">{{ p.brokerNameCode ?? 'N/A' }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Lead insurer policy no</span>
+        <span class="po-value">{{ p.leadInsurerPolicyNo ?? 'N/A' }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Business role</span>
+        <span class="po-value">{{ p.businessRole ?? 'N/A' }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Business owned by</span>
+        <span class="po-value">{{ p.businessOwnedBy ?? 'N/A' }}</span>
+      </div>
+      <div class="po-field">
         <span class="po-label">Premium</span>
         <span class="po-value">{{ p.premium | currency: p.currency : 'symbol' : '1.0-0' }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Policy status</span>
+        <span class="po-status" [class]="'po-status--' + p.status.toLowerCase()">{{
+          p.status
+        }}</span>
       </div>
       @if (p.allianzShare !== null && p.allianzShare !== undefined) {
         <div class="po-field">

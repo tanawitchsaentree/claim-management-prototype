@@ -19,28 +19,54 @@
         <span class="pom-value pom-value--strong">{{ policy.policyNumber }}</span>
       </div>
       <div class="pom-field">
-        <span class="pom-label">Client</span>
+        <span class="pom-label">Client name</span>
         <span class="pom-value">{{ policy.clientName }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Client name code</span>
+        <span class="pom-value">{{ policy.clientNameCode ?? 'N/A' }}</span>
       </div>
       <div class="pom-field">
         <span class="pom-label">Line of business</span>
         <span class="pom-value">{{ policy.lineOfBusiness }}</span>
       </div>
       <div class="pom-field">
-        <span class="pom-label">Policy status</span>
-        <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
+        <span class="pom-label">Inception date</span>
+        <span class="pom-value">{{ policy.effectiveDate | appDate }}</span>
       </div>
       <div class="pom-field">
-        <span class="pom-label">Policy period</span>
-        <span class="pom-value"
-          >{{ policy.effectiveDate | appDate }} – {{ policy.expiryDate | appDate }}</span
-        >
+        <span class="pom-label">Expiry date</span>
+        <span class="pom-value">{{ policy.expiryDate | appDate }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Broker</span>
+        <span class="pom-value">{{ policy.broker ?? 'N/A' }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Broker name code</span>
+        <span class="pom-value">{{ policy.brokerNameCode ?? 'N/A' }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Lead insurer policy no</span>
+        <span class="pom-value">{{ policy.leadInsurerPolicyNo ?? 'N/A' }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Business role</span>
+        <span class="pom-value">{{ policy.businessRole ?? 'N/A' }}</span>
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Business owned by</span>
+        <span class="pom-value">{{ policy.businessOwnedBy ?? 'N/A' }}</span>
       </div>
       <div class="pom-field">
         <span class="pom-label">Premium</span>
         <span class="pom-value"
           >{{ policy.premium | currency: policy.currency : 'symbol' : '1.0-0' }}</span
         >
+      </div>
+      <div class="pom-field">
+        <span class="pom-label">Policy status</span>
+        <app-status-chip [status]="policy.status" domain="policy"></app-status-chip>
       </div>
       @if (policy.allianzShare !== null && policy.allianzShare !== undefined) {
         <div class="pom-field">
