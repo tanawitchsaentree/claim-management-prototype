@@ -347,17 +347,13 @@
                           ></app-status-chip>
                         </td>
                         <td class="col-action">
-                          <!-- Handler walkthrough self-QA — this had no context menu and no
-                             (click) at all, so clicking it bubbled into the row's own
-                             (click)="onSelectPolicy" instead: looked broken, secretly
-                             selected the row. stopPropagation() makes it visibly inert
-                             instead of silently wrong; wire a real menu here if/when this
-                             row needs its own actions distinct from selecting it. -->
                           <button
                             class="action-menu-btn"
                             type="button"
                             aria-label="more actions"
                             (click)="$event.stopPropagation()"
+                            [nxContextMenuTriggerFor]="policyMenu"
+                            [nxContextMenuTriggerData]="{ policy: policy }"
                           >
                             <nx-icon name="ellipsis-v"></nx-icon>
                           </button>
@@ -383,6 +379,23 @@
                 >
                 </nx-pagination>
               </div>
+
+              <!-- Policy row context menu -->
+              <nx-context-menu #policyMenu="nxContextMenu">
+                <ng-template nxContextMenuContent let-policy="policy">
+                  <!-- Stub — no standalone policy-detail view exists yet
+                     (2026-09-23 design parity check). Wire this once that
+                     destination exists. -->
+                  <button nxContextMenuItem type="button">See details</button>
+                  <button
+                    nxContextMenuItem
+                    type="button"
+                    (click)="onRegisterClaimWithPolicy(policy)"
+                  >
+                    Register a claim with this policy
+                  </button>
+                </ng-template>
+              </nx-context-menu>
             }
           }
 

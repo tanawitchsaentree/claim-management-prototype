@@ -531,6 +531,14 @@ export class Step1SearchComponent {
     this.router.navigate(['/fnol/loss-information']);
   }
 
+  // Kebab shortcut — selects this row's policy then runs the same path as
+  // the footer's "Register a claim" button, without requiring the radio
+  // click first.
+  onRegisterClaimWithPolicy(policy: PolicySearchResult): void {
+    this.onSelectPolicy(policy);
+    this.onRegisterClaim();
+  }
+
   onRegisterSkeleton(): void {
     const clientName = (this.form.get('clientName')?.value as string)?.trim() ?? '';
     if (clientName) {
