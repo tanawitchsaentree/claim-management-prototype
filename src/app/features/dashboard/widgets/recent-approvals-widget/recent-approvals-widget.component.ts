@@ -1,6 +1,6 @@
 import { Component, Input, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxBadgeModule } from '@allianz/ng-aquila/badge';
@@ -35,6 +35,7 @@ export class RecentApprovalsWidgetComponent {
   @Input({ required: true }) payments: PaymentApproval[] = [];
 
   readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly showMyApprovalsOnly = signal(false);
   readonly approvalsTab = signal<'reserves' | 'payments'>('reserves');
@@ -60,5 +61,9 @@ export class RecentApprovalsWidgetComponent {
 
   isOwnRequest(requesterEmail: string): boolean {
     return requesterEmail === this.auth.user()?.email;
+  }
+
+  onViewDetails(): void {
+    this.router.navigate(['/approvals']);
   }
 }

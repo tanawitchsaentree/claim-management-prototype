@@ -89,7 +89,9 @@
                     ⋮
                   </button>
                   <nx-context-menu #approvalMenu="nxContextMenu">
-                    <button nxContextMenuItem type="button">View details</button>
+                    <button nxContextMenuItem type="button" (click)="onViewDetails()">
+                      View details
+                    </button>
                     <button nxContextMenuItem type="button">Approve</button>
                     <button nxContextMenuItem type="button">Reject</button>
                     @if (isOwnRequest(approval.requester)) {
@@ -167,7 +169,9 @@
                     ⋮
                   </button>
                   <nx-context-menu #paymentMenu="nxContextMenu">
-                    <button nxContextMenuItem type="button">View details</button>
+                    <button nxContextMenuItem type="button" (click)="onViewDetails()">
+                      View details
+                    </button>
                     <button nxContextMenuItem type="button">Approve</button>
                     <button nxContextMenuItem type="button">Reject</button>
                     @if (isOwnRequest(payment.requester)) {
