@@ -24,6 +24,15 @@ export interface PolicySearchResult extends Policy {
   broker?: string;
 }
 
+export interface ClientSearchResult {
+  partyId: string;
+  legalName: string;
+  address: string;
+  country: string;
+  role: string;
+  activePolicyCount: number;
+}
+
 export interface FnolSelectedClient {
   clientId: string;
   clientName: string;

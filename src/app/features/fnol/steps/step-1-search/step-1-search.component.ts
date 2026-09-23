@@ -28,7 +28,8 @@ import {
 import { MockPolicySearchService } from '../../../../core/mock/services/mock-policy-search.service';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
-import { PolicySearchResult } from '../../models/fnol-form.model';
+import { MockClientSearchService } from '../../../../core/mock/services/mock-client-search.service';
+import { PolicySearchResult, ClientSearchResult } from '../../models/fnol-form.model';
 import { Claim } from '../../../../core/models/claim.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -47,7 +48,12 @@ import lookupsData from '../../../../core/mock/data/lookups.json';
 type SearchState =
   | { kind: 'idle' }
   | { kind: 'loading' }
-  | { kind: 'results'; claims: Claim[]; policies: PolicySearchResult[] }
+  | {
+      kind: 'results';
+      claims: Claim[];
+      policies: PolicySearchResult[];
+      clients: ClientSearchResult[];
+    }
   | { kind: 'error'; message: string };
 
 const UNDERWRITING_YEARS = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
@@ -92,6 +98,7 @@ export class Step1SearchComponent {
   private searchSvc = inject(MockPolicySearchService);
   private claimSvc = inject(MockClaimService);
   private overviewSvc = inject(MockClaimOverviewService);
+  private clientSvc = inject(MockClientSearchService);
   private router = inject(Router);
   private dialogSvc = inject(NxDialogService);
   private toast = inject(ToastService);
@@ -104,11 +111,13 @@ export class Step1SearchComponent {
 
   showSecondaryFilters = false;
   validationError: string | null = null;
-  activeTab = 0; // 0 = Claims, 1 = Policies
+  activeTab = 0; // 0 = Claims, 1 = Policies, 2 = Clients
   selectedPolicyNumber: string | null = null;
   selectedPolicyData: PolicySearchResult | null = null;
+  selectedClientId: string | null = null;
   claimPage = 1;
   policyPage = 1;
+  clientPage = 1;
   hasSearched = false;
 
   readonly skeletonDetailedTooltip =
@@ -137,8 +146,10 @@ export class Step1SearchComponent {
       this.validationError = null;
       this.claimPage = 1;
       this.policyPage = 1;
+      this.clientPage = 1;
       this.selectedPolicyNumber = null;
       this.selectedPolicyData = null;
+      this.selectedClientId = null;
       this.hasSearched = true;
       this.pendingAutoSelectPolicyNumber = policyNumber;
       this.trigger$.next('search');
@@ -174,10 +185,14 @@ export class Step1SearchComponent {
         .pipe(
           switchMap(claims =>
             this.searchSvc.searchPolicies(criteria).pipe(
-              switchMap(policies => {
-                this._applyAutoTabSwitch(claims, policies);
-                return of<SearchState>({ kind: 'results', claims, policies });
-              })
+              switchMap(policies =>
+                this.clientSvc.searchClients({ clientName: criteria.clientName ?? '' }).pipe(
+                  switchMap(clients => {
+                    this._applyAutoTabSwitch(claims, policies, clients);
+                    return of<SearchState>({ kind: 'results', claims, policies, clients });
+                  })
+                )
+              )
             )
           ),
           catchError(err =>
@@ -192,8 +207,18 @@ export class Step1SearchComponent {
 
   private readonly searchState = toSignal(this.state$);
 
-  private _applyAutoTabSwitch(claims: Claim[], policies: PolicySearchResult[]): void {
-    this.activeTab = claims.length === 0 && policies.length > 0 ? 1 : 0;
+  private _applyAutoTabSwitch(
+    claims: Claim[],
+    policies: PolicySearchResult[],
+    clients: ClientSearchResult[]
+  ): void {
+    if (claims.length === 0 && policies.length > 0) {
+      this.activeTab = 1;
+    } else if (claims.length === 0 && policies.length === 0 && clients.length > 0) {
+      this.activeTab = 2;
+    } else {
+      this.activeTab = 0;
+    }
   }
 
   // ── Claims table helpers (also covers orphan-claim statuses) ────────
@@ -411,7 +436,12 @@ export class Step1SearchComponent {
   // ── Button visibility/state ──────────────────────────────────────
 
   isEmptyResults(state: SearchState): boolean {
-    return state.kind === 'results' && state.claims.length === 0 && state.policies.length === 0;
+    return (
+      state.kind === 'results' &&
+      state.claims.length === 0 &&
+      state.policies.length === 0 &&
+      state.clients.length === 0
+    );
   }
 
   showRegisterClaim(state: SearchState): boolean {
@@ -456,6 +486,10 @@ export class Step1SearchComponent {
     this.selectedPolicyData = policy;
   }
 
+  onSelectClient(client: ClientSearchResult): void {
+    this.selectedClientId = client.partyId;
+  }
+
   onSearch(): void {
     this.validationError = null;
     if (!this.hasAnyCriteria) {
@@ -464,8 +498,10 @@ export class Step1SearchComponent {
     }
     this.claimPage = 1;
     this.policyPage = 1;
+    this.clientPage = 1;
     this.selectedPolicyNumber = null;
     this.selectedPolicyData = null;
+    this.selectedClientId = null;
     this.hasSearched = true;
     this.trigger$.next('search');
   }
@@ -476,6 +512,7 @@ export class Step1SearchComponent {
     this.hasSearched = false;
     this.selectedPolicyNumber = null;
     this.selectedPolicyData = null;
+    this.selectedClientId = null;
     this.trigger$.next('idle');
   }
 
@@ -523,5 +560,10 @@ export class Step1SearchComponent {
   pagedPolicies(policies: PolicySearchResult[]): PolicySearchResult[] {
     const start = (this.policyPage - 1) * PAGE_SIZE;
     return policies.slice(start, start + PAGE_SIZE);
+  }
+
+  pagedClients(clients: ClientSearchResult[]): ClientSearchResult[] {
+    const start = (this.clientPage - 1) * PAGE_SIZE;
+    return clients.slice(start, start + PAGE_SIZE);
   }
 }

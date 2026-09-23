@@ -147,6 +147,9 @@
             <nx-tab>
               <ng-template nxTabLabel>Policies ({{ state.policies.length }})</ng-template>
             </nx-tab>
+            <nx-tab>
+              <ng-template nxTabLabel>Clients ({{ state.clients.length }})</ng-template>
+            </nx-tab>
           </nx-tab-group>
 
           <!-- ── Claims tab (includes orphan/skeleton claims — distinguished by
@@ -383,6 +386,102 @@
                   (goPrev)="policyPage = policyPage - 1"
                   (goNext)="policyPage = policyPage + 1"
                   (goPage)="policyPage = $event"
+                >
+                </nx-pagination>
+              </div>
+            }
+          }
+
+          <!-- ── Clients tab ─────────────────────────────────────────── -->
+          @if (activeTab === 2) {
+            @if (state.clients.length === 0) {
+              <app-empty-state message="No clients found."></app-empty-state>
+            } @else {
+              <div class="results-table-wrap" tabindex="0">
+                <table class="results-table">
+                  <thead>
+                    <tr>
+                      <th class="col-radio"></th>
+                      <th>
+                        <span class="th-sort"
+                          >Legal name <nx-icon name="chevron-down-small"></nx-icon
+                        ></span>
+                      </th>
+                      <th>
+                        <span class="th-sort"
+                          >Address <nx-icon name="chevron-down-small"></nx-icon
+                        ></span>
+                      </th>
+                      <th>
+                        <span class="th-sort"
+                          >Country <nx-icon name="chevron-down-small"></nx-icon
+                        ></span>
+                      </th>
+                      <th>
+                        <span class="th-sort"
+                          >Role <nx-icon name="chevron-down-small"></nx-icon
+                        ></span>
+                      </th>
+                      <th>
+                        <span class="th-sort"
+                          >Party ID <nx-icon name="chevron-down-small"></nx-icon
+                        ></span>
+                      </th>
+                      <th class="col-action">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (client of pagedClients(state.clients); track client.partyId) {
+                      <tr
+                        class="results-row"
+                        [class.results-row--selected]="selectedClientId === client.partyId"
+                        (click)="onSelectClient(client)"
+                      >
+                        <td class="col-radio">
+                          <input
+                            type="radio"
+                            class="row-radio"
+                            name="clientSelect"
+                            [checked]="selectedClientId === client.partyId"
+                            (change)="onSelectClient(client)"
+                          />
+                        </td>
+                        <td>{{ client.legalName }}</td>
+                        <td class="text-muted">{{ client.address }}</td>
+                        <td>{{ client.country }}</td>
+                        <td>{{ client.role }}</td>
+                        <td class="text-muted">{{ client.partyId }}</td>
+                        <td class="col-action">
+                          <!-- Same stubbed-inert pattern as the Policies tab's Action
+                             column above — no menu wired yet, stopPropagation just
+                             keeps the click from bubbling into the row's own select. -->
+                          <button
+                            class="action-menu-btn"
+                            type="button"
+                            aria-label="more actions"
+                            (click)="$event.stopPropagation()"
+                          >
+                            <nx-icon name="ellipsis-v"></nx-icon>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <div class="results-footer">
+                <span class="items-per-page"
+                  >Items per page: <strong>{{ pageSize }}</strong>
+                  <nx-icon name="chevron-down-small"></nx-icon
+                ></span>
+                <nx-pagination
+                  [count]="state.clients.length"
+                  [page]="clientPage"
+                  [perPage]="pageSize"
+                  type="advanced"
+                  (goPrev)="clientPage = clientPage - 1"
+                  (goNext)="clientPage = clientPage + 1"
+                  (goPage)="clientPage = $event"
                 >
                 </nx-pagination>
               </div>
