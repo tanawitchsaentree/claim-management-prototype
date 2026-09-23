@@ -73,4 +73,9 @@ export class PolicyOverviewComponent implements OnInit {
   openClaim(claimId: string): void {
     this.router.navigate(['/claims', claimId, 'overview']);
   }
+
+  formatCauseOfLoss(causes: string[] | undefined): string {
+    if (!causes?.length) return '—';
+    return causes.map(c => c.replace(/[-_]/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase())).join(', ');
+  }
 }

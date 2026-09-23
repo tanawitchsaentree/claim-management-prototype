@@ -32,8 +32,12 @@
         }}</span>
       </div>
       <div class="po-field">
-        <span class="po-label">Policy period</span>
-        <span class="po-value">{{ p.effectiveDate | appDate }} – {{ p.expiryDate | appDate }}</span>
+        <span class="po-label">Inception date</span>
+        <span class="po-value">{{ p.effectiveDate | appDate }}</span>
+      </div>
+      <div class="po-field">
+        <span class="po-label">Expiry date</span>
+        <span class="po-value">{{ p.expiryDate | appDate }}</span>
       </div>
       <div class="po-field">
         <span class="po-label">Premium</span>
@@ -60,8 +64,11 @@
             <tr nxTableRow>
               <th nxHeaderCell>Policy section</th>
               <th nxHeaderCell>Coverage</th>
-              <th nxHeaderCell class="po-col--num">Sum insured</th>
+              <th nxHeaderCell class="po-col--num">Attachment point</th>
+              <th nxHeaderCell class="po-col--num">Limit</th>
               <th nxHeaderCell class="po-col--num">Deductible</th>
+              <th nxHeaderCell>Start date</th>
+              <th nxHeaderCell>End date</th>
             </tr>
           </thead>
           <tbody>
@@ -69,6 +76,9 @@
               <tr nxTableRow>
                 <td nxTableCell>{{ c.policySection }}</td>
                 <td nxTableCell>{{ c.coverage }}</td>
+                <td nxTableCell class="po-col--num">
+                  {{ c.attachmentPoint ?? 0 | currency: c.currency : 'symbol' : '1.0-0' }}
+                </td>
                 <td nxTableCell class="po-col--num">
                   {{ c.sumInsured | currency: c.currency : 'symbol' : '1.0-0' }}
                 </td>
@@ -79,6 +89,8 @@
                     <span class="po-muted">None</span>
                   }
                 </td>
+                <td nxTableCell>{{ p.effectiveDate | appDate }}</td>
+                <td nxTableCell>{{ p.expiryDate | appDate }}</td>
               </tr>
             }
           </tbody>
@@ -129,6 +141,40 @@
       }
     </nx-expansion-panel>
 
+    <!-- No reinsurance data model exists in this prototype yet (nothing to
+         fetch), so this section stays a column-shell with placeholder rows
+         rather than inventing figures — same as the Policy overview modal. -->
+    <nx-expansion-panel>
+      <nx-expansion-panel-header>
+        <nx-expansion-panel-title>Reinsurance details</nx-expansion-panel-title>
+      </nx-expansion-panel-header>
+
+      <table nxTable class="po-table">
+        <thead>
+          <tr nxTableRow>
+            <th nxHeaderCell>Reinsurance policy number</th>
+            <th nxHeaderCell>Reinsurance type</th>
+            <th nxHeaderCell>Start date</th>
+            <th nxHeaderCell>End date</th>
+            <th nxHeaderCell>Legal name</th>
+            <th nxHeaderCell class="po-col--num">Cession</th>
+            <th nxHeaderCell class="po-col--num">Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr nxTableRow>
+            <td nxTableCell class="po-muted">N/A</td>
+            <td nxTableCell class="po-muted">N/A</td>
+            <td nxTableCell class="po-muted">N/A</td>
+            <td nxTableCell class="po-muted">N/A</td>
+            <td nxTableCell class="po-muted">N/A</td>
+            <td nxTableCell class="po-muted">N/A</td>
+            <td nxTableCell class="po-muted">N/A</td>
+          </tr>
+        </tbody>
+      </table>
+    </nx-expansion-panel>
+
     <nx-expansion-panel>
       <nx-expansion-panel-header>
         <nx-expansion-panel-title>Linked claims details</nx-expansion-panel-title>
@@ -142,9 +188,11 @@
                 <th nxHeaderCell>Claim ID</th>
                 <th nxHeaderCell>Loss description</th>
                 <th nxHeaderCell>Client</th>
+                <th nxHeaderCell>Status</th>
+                <th nxHeaderCell>Claim handler</th>
+                <th nxHeaderCell>Cause of loss</th>
                 <th nxHeaderCell>Created date</th>
                 <th nxHeaderCell>Date of loss</th>
-                <th nxHeaderCell>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -162,9 +210,11 @@
                   </td>
                   <td nxTableCell class="po-cell--desc">{{ lc.lossDescription }}</td>
                   <td nxTableCell>{{ lc.clientName }}</td>
+                  <td nxTableCell>{{ lc.status }}</td>
+                  <td nxTableCell>{{ lc.claimHandler ?? '—' }}</td>
+                  <td nxTableCell>{{ formatCauseOfLoss(lc.causeOfLoss) }}</td>
                   <td nxTableCell>{{ lc.createdDate | appDate }}</td>
                   <td nxTableCell>{{ lc.dateOfLoss | appDate }}</td>
-                  <td nxTableCell>{{ lc.status }}</td>
                 </tr>
               }
             </tbody>
