@@ -21,6 +21,7 @@ import { PaymentApproval } from '../../core/models/dashboard-extended.model';
 import { firstValueFrom } from 'rxjs';
 import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.directive';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { RequesterNamePipe } from '../../shared/pipes/requester-name.pipe';
 
 @Component({
   selector: 'app-approvals',
@@ -40,7 +41,8 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
     NxDatefieldModule,
     Navbar,
     ClaimPreviewDirective,
-    EmptyStateComponent
+    EmptyStateComponent,
+    RequesterNamePipe
   ],
   templateUrl: './approvals.component.html',
   styleUrl: './approvals.component.scss'

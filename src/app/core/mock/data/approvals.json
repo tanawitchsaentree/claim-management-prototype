@@ -53,5 +53,16 @@
     "amount": 1200,
     "requester": "extern.d.kiel@allianz.com",
     "reviewerEmail": "n.feld@allianz.com"
+  },
+  {
+    "requestId": "REQ701188",
+    "claimId": "CL-C-00063671-2026.409.14",
+    "oe": "DE",
+    "lineOfBusiness": "property",
+    "reserveType": "Indemnity",
+    "currency": "EUR",
+    "amount": 3500,
+    "requester": "mara.mustermann@claimsystem.com",
+    "reviewerEmail": "n.feld@allianz.com"
   }
 ]

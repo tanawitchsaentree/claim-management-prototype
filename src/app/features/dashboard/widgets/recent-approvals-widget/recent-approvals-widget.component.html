@@ -74,7 +74,7 @@
                 <td nxCell>{{ approval.currency }}</td>
                 <td nxCell class="dash-col--nowrap">{{ approval.amount | number }}</td>
                 <td nxCell>
-                  {{ approval.requester }}
+                  {{ approval.requester | requesterName }}
                   @if (approval.reviewerEmail === auth.user()?.email) {
                     <nx-badge type="active" class="by-me-nx-badge">You</nx-badge>
                   }
@@ -92,7 +92,9 @@
                     <button nxContextMenuItem type="button">View details</button>
                     <button nxContextMenuItem type="button">Approve</button>
                     <button nxContextMenuItem type="button">Reject</button>
-                    <button nxContextMenuItem type="button">Withdraw</button>
+                    @if (isOwnRequest(approval.requester)) {
+                      <button nxContextMenuItem type="button">Withdraw</button>
+                    }
                   </nx-context-menu>
                 </td>
               </tr>
@@ -150,7 +152,7 @@
                 <td nxCell>{{ payment.currency }}</td>
                 <td nxCell class="dash-col--nowrap">{{ payment.amount | number }}</td>
                 <td nxCell>
-                  {{ payment.requester }}
+                  {{ payment.requester | requesterName }}
                   @if (payment.reviewerEmail === auth.user()?.email) {
                     <nx-badge type="active" class="by-me-nx-badge">You</nx-badge>
                   }
@@ -168,7 +170,9 @@
                     <button nxContextMenuItem type="button">View details</button>
                     <button nxContextMenuItem type="button">Approve</button>
                     <button nxContextMenuItem type="button">Reject</button>
-                    <button nxContextMenuItem type="button">Withdraw</button>
+                    @if (isOwnRequest(payment.requester)) {
+                      <button nxContextMenuItem type="button">Withdraw</button>
+                    }
                   </nx-context-menu>
                 </td>
               </tr>

@@ -8,6 +8,7 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ClaimPreviewDirective } from '../../../../shared/directives/claim-preview.directive';
+import { RequesterNamePipe } from '../../../../shared/pipes/requester-name.pipe';
 import { AuthService } from '../../../../core/services/auth';
 import { UrgentApproval, PaymentApproval } from '../../../../core/models';
 
@@ -23,7 +24,8 @@ import { UrgentApproval, PaymentApproval } from '../../../../core/models';
     NxTableModule,
     NxContextMenuModule,
     EmptyStateComponent,
-    ClaimPreviewDirective
+    ClaimPreviewDirective,
+    RequesterNamePipe
   ],
   templateUrl: './recent-approvals-widget.component.html',
   styleUrl: './recent-approvals-widget.component.scss'
@@ -40,15 +42,23 @@ export class RecentApprovalsWidgetComponent {
     this.approvalsTab.set(tab);
   }
 
+  // `requester` on the mock records is an email — this used to compare it
+  // against the logged-in persona's *name*, which can never match (wrong
+  // field entirely), so the toggle silently showed nothing whenever it was
+  // switched on.
   readonly displayedApprovals = computed<UrgentApproval[]>(() => {
     if (!this.showMyApprovalsOnly()) return this.approvals;
-    const name = this.auth.user()?.name ?? '';
-    return this.approvals.filter(a => a.requester === name);
+    const email = this.auth.user()?.email ?? '';
+    return this.approvals.filter(a => a.requester === email);
   });
 
   readonly displayedPayments = computed<PaymentApproval[]>(() => {
     if (!this.showMyApprovalsOnly()) return this.payments;
-    const name = this.auth.user()?.name ?? '';
-    return this.payments.filter(p => p.requester === name);
+    const email = this.auth.user()?.email ?? '';
+    return this.payments.filter(p => p.requester === email);
   });
+
+  isOwnRequest(requesterEmail: string): boolean {
+    return requesterEmail === this.auth.user()?.email;
+  }
 }

@@ -94,7 +94,7 @@
                 <td nxTableCell class="col-type">{{ item.reserveType }}</td>
                 <td nxTableCell class="col-currency">{{ item.currency }}</td>
                 <td nxTableCell class="col-amount">{{ item.amount | number: '1.0-0' }}</td>
-                <td nxTableCell class="col-requester">{{ item.requester }}</td>
+                <td nxTableCell class="col-requester">{{ item.requester | requesterName }}</td>
                 <td nxTableCell class="col-date">–</td>
                 <td nxTableCell class="col-action">
                   <button
@@ -185,7 +185,7 @@
                 <td nxTableCell class="col-type">{{ item.paymentType }}</td>
                 <td nxTableCell class="col-currency">{{ item.currency }}</td>
                 <td nxTableCell class="col-amount">{{ item.amount | number: '1.0-0' }}</td>
-                <td nxTableCell class="col-requester">{{ item.requester }}</td>
+                <td nxTableCell class="col-requester">{{ item.requester | requesterName }}</td>
                 <td nxTableCell class="col-date">–</td>
                 <td nxTableCell class="col-action">
                   <button

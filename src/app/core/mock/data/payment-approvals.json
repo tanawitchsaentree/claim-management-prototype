@@ -63,5 +63,18 @@
     "amount": 2200,
     "requester": "c.wolff@allianz.com",
     "reviewerEmail": "n.feld@allianz.com"
+  },
+  {
+    "requestId": "PAY-701288",
+    "paymentId": "PMT-C-00063659-2026.51.2.4",
+    "claimId": "CL-C-00063659-2026.51.2",
+    "oe": "DE",
+    "lineOfBusiness": "property",
+    "paymentType": "Indemnity",
+    "payee": "extern.d.kiel@allianz.com",
+    "currency": "EUR",
+    "amount": 1600,
+    "requester": "mara.mustermann@claimsystem.com",
+    "reviewerEmail": "n.feld@allianz.com"
   }
 ]
