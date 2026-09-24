@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { MockBaseService } from './mock-base.service';
+import { MockStateService } from '../state/mock-state.service';
 import {
   CoinsuranceParticipant,
   LinkedClaimRow,
@@ -10,30 +11,25 @@ import {
 import { Policy } from '../../models/policy.model';
 import policiesData from '../data/policies.json';
 import policyDetailsData from '../data/policy-details.json';
-import claimsData from '../data/claims.json';
 
 interface PolicyDetailEntry {
   coverages: PolicyCoverage[];
   coinsurance: CoinsuranceParticipant[];
 }
 
-interface ClaimRecord {
-  claimId: string;
-  policyNumber: string;
-  clientName: string;
-  description: string;
-  dateCreated: string;
-  lossDate: string;
-  status: string;
-  assignee: string | null;
-  causeOfLoss?: string[];
-}
-
 @Injectable({ providedIn: 'root' })
 export class MockPolicyOverviewService extends MockBaseService {
+  private readonly stateSvc = inject(MockStateService);
   private readonly policies = policiesData as Policy[];
   private readonly details = policyDetailsData as Record<string, PolicyDetailEntry>;
-  private readonly claims = claimsData as ClaimRecord[];
+
+  // Reactive — reads the live mutated claim list, not a frozen claims.json
+  // import. A skeleton claim's policyNumber changes at runtime (Link policy),
+  // and this service must see that write immediately, the same way
+  // MockClaimService.claims does.
+  private get claims() {
+    return this.stateSvc.state().claims;
+  }
 
   // Linked claims are DERIVED from claims.json, not stored alongside the
   // policy. A claim already owns its policyNumber, so a second copy of that
