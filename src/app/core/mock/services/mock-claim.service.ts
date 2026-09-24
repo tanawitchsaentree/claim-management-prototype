@@ -74,11 +74,21 @@ export class MockClaimService extends MockBaseService {
     return this.respond(newClaim);
   }
 
-  // Used by the FNOL search page's Claims tab — same 3-field search the old
-  // skeleton-only search used, now run against every claim (regular +
-  // orphan) so an orphan claim shows up as a claim, not a separate concept.
-  searchClaims(criteria: { clientName?: string; policyNumber?: string }): Observable<Claim[]> {
-    const hasAny = !!(criteria.clientName || criteria.policyNumber);
+  // Used by the FNOL search page's Claims tab — run against every claim
+  // (regular + orphan) so an orphan claim shows up as a claim, not a
+  // separate concept. claimLossEventNumber matches production's General
+  // Search screen (inputClaimNumber) — a claim-number lookup, checked
+  // against both claimId and lossEventId.
+  searchClaims(criteria: {
+    clientName?: string;
+    policyNumber?: string;
+    claimLossEventNumber?: string;
+  }): Observable<Claim[]> {
+    const hasAny = !!(
+      criteria.clientName ||
+      criteria.policyNumber ||
+      criteria.claimLossEventNumber
+    );
     if (!hasAny) return this.respond([]);
 
     let results = [...this.claims];
@@ -89,6 +99,14 @@ export class MockClaimService extends MockBaseService {
     if (criteria.policyNumber) {
       const q = criteria.policyNumber.toLowerCase();
       results = results.filter(c => c.policyNumber.toLowerCase().includes(q));
+    }
+    if (criteria.claimLossEventNumber) {
+      const q = criteria.claimLossEventNumber.toLowerCase();
+      results = results.filter(
+        c =>
+          c.claimId.toLowerCase().includes(q) ||
+          (c.lossEventId?.toLowerCase().includes(q) ?? false)
+      );
     }
     return this.list(results);
   }

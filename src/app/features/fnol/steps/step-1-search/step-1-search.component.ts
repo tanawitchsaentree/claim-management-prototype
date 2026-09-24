@@ -184,7 +184,8 @@ export class Step1SearchComponent {
       return this.claimSvc
         .searchClaims({
           clientName: criteria.clientName ?? '',
-          policyNumber: criteria.policyNumber ?? ''
+          policyNumber: criteria.policyNumber ?? '',
+          claimLossEventNumber: criteria.claimLossEventNumber ?? ''
         })
         .pipe(
           switchMap(claims =>
