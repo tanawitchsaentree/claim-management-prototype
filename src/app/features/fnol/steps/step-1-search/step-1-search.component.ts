@@ -195,7 +195,7 @@ export class Step1SearchComponent {
               switchMap(policies =>
                 this.clientSvc.searchClients({ clientName: criteria.clientName ?? '' }).pipe(
                   switchMap(clients => {
-                    this._applyAutoTabSwitch(claims, policies, clients);
+                    this._applyAutoTabSwitch(criteria, claims, policies, clients);
                     return of<SearchState>({ kind: 'results', claims, policies, clients });
                   })
                 )
@@ -225,12 +225,26 @@ export class Step1SearchComponent {
 
   private readonly searchState = toSignal(this.state$);
 
+  // Which tab a search should land on depends on what the handler actually
+  // typed, not just which lists came back non-empty — clientName matches
+  // rows in all three tabs, so "search by client" was landing on Claims
+  // just because that claim also had results, not because the handler
+  // wanted claims. Priority: the most specific identifier typed wins
+  // (claim/loss-event number > policy number > client name); each only
+  // switches if its own tab actually has something to show.
   private _applyAutoTabSwitch(
+    criteria: { claimLossEventNumber?: string; policyNumber?: string; clientName?: string },
     claims: Claim[],
     policies: PolicySearchResult[],
     clients: ClientSearchResult[]
   ): void {
-    if (claims.length === 0 && policies.length > 0) {
+    if (criteria.claimLossEventNumber && claims.length > 0) {
+      this.activeTab = 0;
+    } else if (criteria.policyNumber && policies.length > 0) {
+      this.activeTab = 1;
+    } else if (criteria.clientName && clients.length > 0) {
+      this.activeTab = 2;
+    } else if (claims.length === 0 && policies.length > 0) {
       this.activeTab = 1;
     } else if (claims.length === 0 && policies.length === 0 && clients.length > 0) {
       this.activeTab = 2;
