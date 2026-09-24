@@ -18,9 +18,16 @@ export class MockPolicySearchService extends MockBaseService {
   }
 
   searchPolicies(criteria: Partial<FnolSearchCriteria>): Observable<PolicySearchResult[]> {
-    const hasAnyCriteria = Object.values(criteria).some(
-      v => v !== null && v !== undefined && v !== ''
-    );
+    // Only fields with an actual filter branch below count as "a policy
+    // criterion was given" — claim-only fields (claimLossEventNumber,
+    // externalRef, dateOfLoss, ...) must not silently unlock an unfiltered
+    // "return every policy" result.
+    const hasAnyCriteria = [
+      criteria.clientName,
+      criteria.policyNumber,
+      criteria.underwritingYear,
+      criteria.broker
+    ].some(v => v !== null && v !== undefined && v !== '');
     if (!hasAnyCriteria) {
       return this.respond([]);
     }
