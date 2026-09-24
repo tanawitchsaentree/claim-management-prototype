@@ -5,7 +5,7 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["overview"],
   "walkthroughSteps": [
-    "Land on CLM-2024-001 overview — status chip reads 'In progress'",
+    "Land on CLM-2024-001 overview — status chip reads 'Open'",
     {
       "targetId": "co-tasks-widget",
       "title": "All tasks done",
@@ -99,7 +99,7 @@
         "doneTasks": 5,
         "openSections": 0,
         "closedSections": 4,
-        "overviewStatus": "In progress",
+        "overviewStatus": "Open",
         "canClose": true,
         "buttonVisible": true,
         "buttonEnabled": true
@@ -173,7 +173,7 @@
         "doneTasks": 5,
         "openSections": 0,
         "closedSections": 4,
-        "overviewStatus": "In progress",
+        "overviewStatus": "Open",
         "canClose": true,
         "buttonVisible": true,
         "buttonEnabled": true

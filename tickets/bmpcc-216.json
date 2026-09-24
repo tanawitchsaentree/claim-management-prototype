@@ -502,7 +502,7 @@
               "lossAmount": 41000,
               "currency": "EUR",
               "description": "Seeded duplicate-test claim 2.",
-              "status": "In progress",
+              "status": "Open",
               "priority": "high",
               "lineOfBusiness": "Property",
               "location": {
@@ -548,7 +548,7 @@
               "lossAmount": 12000,
               "currency": "EUR",
               "description": "Seeded duplicate-test claim 4.",
-              "status": "Priced",
+              "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
               "location": {
