@@ -8,36 +8,6 @@
   } @else if (vm.claim; as claim) {
     <app-blocker-return-banner></app-blocker-return-banner>
 
-    <!-- Converted-but-not-set-up-yet — shown first, above everything else, so
-         it's the first thing a handler sees on this claim. Each step tracks
-         its OWN completion signal (sectionsCount / hasOpenReserves) — a
-         section existing does not mean a reserve was set on it, so the two
-         can't share one gate. Disappears for good only once both are true. -->
-    @if (
-      claim.claimType === 'skeleton' &&
-      claim.skeletonState === 'linked' &&
-      (sectionsCount() === 0 || !hasOpenReserves())
-    ) {
-      <nx-message context="info" class="co-setup-banner">
-        <strong>Converted from an orphan claim — needs setup before this claim can be closed.</strong>
-        <ol class="co-setup-banner__list">
-          @if (sectionsCount() === 0) {
-            <li>
-              <a [routerLink]="['/claims', claim.claimId, 'sections']">Add sections</a>
-            </li>
-          }
-          @if (!hasOpenReserves()) {
-            <li>
-              <a [routerLink]="['/claims', claim.claimId, 'financial']">Set reserves</a>
-              @if (sectionsCount() === 0) {
-                (after a section exists)
-              }
-            </li>
-          }
-        </ol>
-      </nx-message>
-    }
-
     <!-- General Info Card -->
     <section class="co-card">
       <div class="co-card-title-row">

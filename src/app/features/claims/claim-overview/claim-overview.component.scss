@@ -24,24 +24,6 @@
   margin-bottom: 12px;
 }
 
-// First thing on the page — same gap a .co-card leaves before the next
-// element (shell.card's own margin-bottom), so it doesn't sit flush against
-// the card below it.
-.co-setup-banner {
-  margin-bottom: 16px;
-
-  &__list {
-    margin: 8px 0 0;
-    padding-left: 20px;
-
-    li {
-      margin-bottom: 4px;
-    }
-    li:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
 
 // ─── Closure block ────────────────────────────────────────────────────────────
 
