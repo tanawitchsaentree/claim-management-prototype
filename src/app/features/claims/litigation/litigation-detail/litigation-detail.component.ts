@@ -222,7 +222,7 @@ export class LitigationDetailComponent implements OnChanges {
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Save litigation changes',
-        message: `The following will be updated on litigation ${this.model.id}.`,
+        message: `${changes.map(c => c.label).join(', ')} will be updated on litigation ${this.model.id}.`,
         changes,
         confirmLabel: 'Save changes',
         cancelLabel: 'Back to editing'

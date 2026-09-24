@@ -15,11 +15,10 @@ export interface ConfirmDialogData {
   title: string;
   message: string;
   /**
-   * What is about to be written. A confirm step that only asks "are you sure?"
-   * is the barrier nobody reads — every save that passes a diff here gets a
-   * dialog that STATES the change instead of charging a second click for
-   * nothing. Same Field / Original → Updated table as
-   * loss-info-confirm-modal.component.html:21.
+   * Kept for callers that already build a diff (recovery-potential-card,
+   * trade-sanctions-card, etc.) — no longer rendered as a table here.
+   * User call 2026-09-24: replace the diff table with a plain icon+message
+   * confirm. `message` is now expected to state the change in prose instead.
    */
   changes?: ConfirmDialogChange[];
   confirmLabel?: string;
