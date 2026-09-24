@@ -163,6 +163,7 @@
                 <table class="results-table">
                   <thead>
                     <tr>
+                      <th class="col-radio"></th>
                       <th>
                         <span class="th-sort"
                           >Claim ID <nx-icon name="chevron-down-small"></nx-icon
@@ -186,12 +187,25 @@
                   </thead>
                   <tbody>
                     @for (claim of pagedClaims(state.claims); track claim.claimId) {
-                      <tr class="results-row {{ getSkeletonRowClass(claim) }}">
+                      <tr
+                        class="results-row {{ getSkeletonRowClass(claim) }}"
+                        [class.results-row--selected]="selectedClaimId === claim.claimId"
+                        (click)="onSelectClaim(claim)"
+                      >
+                        <td class="col-radio">
+                          <input
+                            type="radio"
+                            class="row-radio"
+                            name="claimSelect"
+                            [checked]="selectedClaimId === claim.claimId"
+                            (change)="onSelectClaim(claim)"
+                          />
+                        </td>
                         <td>
                           <button
                             class="table-action-link"
                             type="button"
-                            (click)="onViewClaim(claim.claimId)"
+                            (click)="$event.stopPropagation(); onViewClaim(claim.claimId)"
                           >
                             {{ claim.claimId }}
                           </button>
@@ -229,6 +243,7 @@
                             type="button"
                             aria-label="more actions"
                             data-tour-id="fnol-skeleton-kebab"
+                            (click)="$event.stopPropagation()"
                             [nxContextMenuTriggerFor]="claimMenu"
                           >
                             <nx-icon name="ellipsis-v"></nx-icon>

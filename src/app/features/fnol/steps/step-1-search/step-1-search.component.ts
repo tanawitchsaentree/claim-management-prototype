@@ -119,6 +119,7 @@ export class Step1SearchComponent {
   selectedPolicyNumber: string | null = null;
   selectedPolicyData: PolicySearchResult | null = null;
   selectedClientId: string | null = null;
+  selectedClaimId: string | null = null;
   claimPage = 1;
   policyPage = 1;
   clientPage = 1;
@@ -154,6 +155,7 @@ export class Step1SearchComponent {
       this.selectedPolicyNumber = null;
       this.selectedPolicyData = null;
       this.selectedClientId = null;
+      this.selectedClaimId = null;
       this.hasSearched = true;
       this.pendingAutoSelectPolicyNumber = policyNumber;
       this.trigger$.next('search');
@@ -502,6 +504,10 @@ export class Step1SearchComponent {
     this.selectedPolicyData = policy;
   }
 
+  onSelectClaim(claim: Claim): void {
+    this.selectedClaimId = claim.claimId;
+  }
+
   onSelectClient(client: ClientSearchResult): void {
     this.selectedClientId = client.partyId;
   }
@@ -532,6 +538,7 @@ export class Step1SearchComponent {
     this.selectedPolicyNumber = null;
     this.selectedPolicyData = null;
     this.selectedClientId = null;
+    this.selectedClaimId = null;
     this.hasSearched = true;
     this.trigger$.next('search');
   }
@@ -543,6 +550,7 @@ export class Step1SearchComponent {
     this.selectedPolicyNumber = null;
     this.selectedPolicyData = null;
     this.selectedClientId = null;
+    this.selectedClaimId = null;
     this.trigger$.next('idle');
   }
 
