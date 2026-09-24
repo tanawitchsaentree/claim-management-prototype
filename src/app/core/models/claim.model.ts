@@ -6,14 +6,14 @@
 // out to SkeletonState below. A skeleton claim's `status` is 'Open' from
 // creation (it's already a claim — Convert doesn't create one) or 'Closed'
 // once abandoned; `skeletonState` carries which pre-policy stage it's in.
-export type ClaimStatus =
-  | 'In progress'
-  | 'Priced'
-  | 'Quoted'
-  | 'Bound'
-  | 'Declined'
-  | 'Open'
-  | 'Closed';
+//
+// 2026-09-24: the same review's other half finally enforced — 'In progress'
+// / 'Priced' / 'Quoted' / 'Bound' / 'Declined' were New-Business/quote-bind
+// lifecycle labels leaking onto claims (a claim is never "quoted"). Removed
+// from the type and from claims.json; the claim-closure transition map,
+// dashboard aggregation, and claims-list filter that referenced them were
+// updated in the same pass — see CONVERSIONS.md.
+export type ClaimStatus = 'Open' | 'Closed';
 
 // Orphan-claim (skeleton) pre-policy lifecycle — independent of ClaimStatus.
 // 'linked' is terminal-and-resolved (policy attached, behaves like any other

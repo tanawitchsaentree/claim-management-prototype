@@ -223,7 +223,7 @@ export class Dashboard {
       r => r.delta >= this.BIG_RESERVE_THRESHOLD && new Date(r.date) >= cutoff
     ).length;
     return {
-      openClaims: allClaims.filter(c => c.status === 'Open' || c.status === 'In progress').length,
+      openClaims: allClaims.filter(c => c.status === 'Open').length,
       pendingApprovals: allApprovals.length,
       bigReserveMovements: bigMovements
     };
@@ -273,8 +273,8 @@ export class Dashboard {
   }
 
   private buildStats(claims: Claim[]): ClaimStats {
-    const opened = claims.filter(c => c.status === 'Open' || c.status === 'In progress').length;
-    const closed = claims.filter(c => c.status === 'Closed' || c.status === 'Declined').length;
+    const opened = claims.filter(c => c.status === 'Open').length;
+    const closed = claims.filter(c => c.status === 'Closed').length;
     return { total: claims.length, opened, closed };
   }
 }

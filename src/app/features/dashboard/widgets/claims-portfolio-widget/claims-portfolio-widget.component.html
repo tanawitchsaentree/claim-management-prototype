@@ -135,11 +135,7 @@
                 <td nxCell>
                   <div class="dash-status-cell">
                     <app-status-chip [status]="claim.status" domain="claim"></app-status-chip>
-                    @if (
-                      isDormant(claim.dateUpdated) &&
-                      claim.status !== 'Closed' &&
-                      claim.status !== 'Declined'
-                    ) {
+                    @if (isDormant(claim.dateUpdated) && claim.status !== 'Closed') {
                       <nx-badge
                         type="critical"
                         [title]="'No activity for ' + daysSinceUpdate(claim.dateUpdated) + ' days'"

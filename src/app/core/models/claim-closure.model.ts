@@ -4,16 +4,11 @@ import { SectionStatus } from './section.model';
 // ─── Status transition validation ─────────────────────────────────────────
 
 const CLAIM_TRANSITIONS: Partial<Record<ClaimStatus, ClaimStatus[]>> = {
-  'Open': ['In progress', 'Closed'],
-  'In progress': ['Closed'],
+  'Open': ['Closed'],
   'Closed': ['Open']
 };
 
-/**
- * Validates a claim status transition. Statuses outside the closure lifecycle
- * (Priced/Quoted/Bound/Declined) are unrestricted — they have no CLAIM_TRANSITIONS
- * entry, so the function returns true.
- */
+/** Validates a claim status transition — ClaimStatus is just Open/Closed now. */
 export function validateClaimTransition(from: ClaimStatus, to: ClaimStatus): boolean {
   const allowed = CLAIM_TRANSITIONS[from];
   if (!allowed) return true;

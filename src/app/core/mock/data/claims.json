@@ -12,7 +12,7 @@
     "lossAmount": 425000,
     "currency": "EUR",
     "description": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage. Initial assessment indicates structural damage to the roof and walls of approximately 200 sqm. Forklifts and racking systems also damaged. Business interruption expected for 6-8 weeks pending full structural survey and rebuilding work. Insurance adjuster appointed and on-site visit scheduled.",
-    "status": "In progress",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Property",
     "location": {
@@ -58,7 +58,7 @@
     "lossAmount": 312000,
     "currency": "USD",
     "description": "Cargo vessel collision in Rotterdam port. Partial loss of containerised goods.",
-    "status": "Priced",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Marine",
     "location": {
@@ -81,7 +81,7 @@
     "lossAmount": 55000,
     "currency": "EUR",
     "description": "Third-party bodily injury claim arising from construction site incident.",
-    "status": "Quoted",
+    "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Liability",
     "location": {
@@ -104,7 +104,7 @@
     "lossAmount": 999999999,
     "currency": "EUR",
     "description": "Major machinery breakdown at production line 4. Complete stoppage of assembly operations.",
-    "status": "Bound",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Engineering",
     "location": {
@@ -151,7 +151,7 @@
     "lossAmount": 185000,
     "currency": "USD",
     "description": "Storm damage to vessel hull during North Sea transit.",
-    "status": "Declined",
+    "status": "Closed",
     "priority": "medium",
     "lineOfBusiness": "Marine",
     "location": {
@@ -174,7 +174,7 @@
     "lossAmount": 34000,
     "currency": "SGD",
     "description": "Data breach exposing customer PII. Regulatory notification required.",
-    "status": "In progress",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Cyber",
     "location": {
@@ -197,7 +197,7 @@
     "lossAmount": 760000,
     "currency": "EUR",
     "description": "Crane collapse on construction site injuring two workers and damaging adjacent structure.",
-    "status": "Priced",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Engineering",
     "location": {
@@ -220,7 +220,7 @@
     "lossAmount": 120000,
     "currency": "GBP",
     "description": "Product liability claim — faulty component caused customer equipment failure.",
-    "status": "Quoted",
+    "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Liability",
     "location": {
@@ -294,7 +294,7 @@
     "lossAmount": 15000,
     "currency": "EUR",
     "description": "Phishing attack resulting in unauthorised wire transfer.",
-    "status": "Bound",
+    "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Cyber",
     "location": {
@@ -341,7 +341,7 @@
     "lossAmount": 230000,
     "currency": "EUR",
     "description": "Public liability claim after customer slipped on wet floor in retail premises.",
-    "status": "In progress",
+    "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Liability",
     "location": {
@@ -363,7 +363,7 @@
     "lossAmount": 670000,
     "currency": "CHF",
     "description": "Landslide caused by unusually heavy rainfall destroyed warehouse perimeter wall and damaged 40% of stock. Emergency containment measures taken. Environmental remediation may be required pending soil assessment. Local authority notification issued. Loss adjuster appointed. Estimated rebuild timeline 4-6 months. Business continuity plan activated with temporary off-site storage arranged at three locations across the canton. Insurance survey team visit scheduled within 72 hours to assess full extent of structural and contents damage. Police report filed. Photos and drone survey footage attached.",
-    "status": "Priced",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Property",
     "location": {
@@ -387,7 +387,7 @@
     "lossAmount": 95000,
     "currency": "USD",
     "description": "Engine room fire on cargo vessel. Total loss of propulsion system.",
-    "status": "Quoted",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Marine",
     "location": {
@@ -410,7 +410,7 @@
     "lossAmount": 8750,
     "currency": "SGD",
     "description": "DDoS attack caused 14-hour service outage. Revenue loss and SLA penalties incurred.",
-    "status": "Declined",
+    "status": "Closed",
     "priority": "medium",
     "lineOfBusiness": "Cyber",
     "location": {
@@ -503,7 +503,7 @@
     "lossAmount": 62000,
     "currency": "EUR",
     "description": "Fire in main production area. Partial loss of equipment.",
-    "status": "In progress",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Property",
     "location": {
@@ -553,7 +553,7 @@
     "lossAmount": 185000,
     "currency": "EUR",
     "description": "Fire broke out in the main storage hall. Arson suspected. Business operations halted for 3 weeks.",
-    "status": "In progress",
+    "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Property",
     "location": {

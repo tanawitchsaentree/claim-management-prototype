@@ -75,15 +75,7 @@ export class ClaimsListComponent {
 
   readonly breadcrumb: BreadcrumbItem[] = [{ label: 'Claims' }];
 
-  readonly statuses: ClaimStatus[] = [
-    'Open',
-    'In progress',
-    'Priced',
-    'Quoted',
-    'Bound',
-    'Declined',
-    'Closed'
-  ];
+  readonly statuses: ClaimStatus[] = ['Open', 'Closed'];
 
   readonly linesOfBusiness: LineOfBusiness[] = [
     'Property',

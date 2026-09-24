@@ -86,7 +86,7 @@
     "assignedHandler": "Nina Feld",
     "lossEventId": "LE98765432",
     "massEventId": "ME-2025.102",
-    "status": "In progress",
+    "status": "Open",
     "proximateLossCause": "Water damage",
     "incidentCircumstance": "hot-work",
     "riskScore": 2,

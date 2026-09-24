@@ -83,7 +83,7 @@
         ]
       },
       "expectedOutcome": {
-        "claimStatus": "In progress",
+        "claimStatus": "Open",
         "activityLogged": false
       },
       "howToTest": {
