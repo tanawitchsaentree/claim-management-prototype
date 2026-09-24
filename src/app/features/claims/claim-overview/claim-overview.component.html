@@ -18,7 +18,7 @@
       claim.skeletonState === 'linked' &&
       (sectionsCount() === 0 || !hasOpenReserves())
     ) {
-      <nx-message context="warning" class="co-setup-banner">
+      <nx-message context="info" class="co-setup-banner">
         <strong>Converted from an orphan claim — needs setup before this claim can be closed.</strong>
         <ol class="co-setup-banner__list">
           @if (sectionsCount() === 0) {
