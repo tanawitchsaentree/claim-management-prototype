@@ -110,6 +110,7 @@
           <thead>
             <tr nxTableRow>
               <th nxHeaderCell class="dash-col--nowrap">Claim ID</th>
+              <th nxHeaderCell class="dash-col--nowrap">Policy number</th>
               <th nxHeaderCell>Client Name</th>
               <th nxHeaderCell>Status</th>
               <th nxHeaderCell class="dash-col--nowrap">Date created</th>
@@ -129,6 +130,7 @@
                     >{{ claim.claimId }}</a
                   >
                 </td>
+                <td nxCell class="dash-col--nowrap">{{ claim.policyNumber || '–' }}</td>
                 <td nxCell>{{ claim.clientName }}</td>
                 <td nxCell>
                   <div class="dash-status-cell">
