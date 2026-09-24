@@ -15,7 +15,6 @@ import {
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 import lossEventsData from '../data/loss-events.json';
-import claimsData from '../data/claims.json';
 import partiesData from '../data/parties.json';
 import documentsData from '../data/claim-documents.json';
 
@@ -24,7 +23,12 @@ export class MockLossEventService extends MockBaseService {
   private readonly stateSvc = inject(MockStateService);
 
   private readonly rawEvents = lossEventsData as unknown as LossEventDetail[];
-  private readonly claims = claimsData as unknown as Claim[];
+  // Reactive — a frozen claims.json import would go stale the moment a
+  // related claim's status/assignee/policy changes at runtime (same gap
+  // fixed in MockPolicyOverviewService).
+  private get claims() {
+    return this.stateSvc.state().claims;
+  }
   private readonly parties = partiesData as unknown as Party[];
   private readonly documents = documentsData as LossEventDocumentRow[];
 
