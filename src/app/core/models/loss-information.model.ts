@@ -1,3 +1,5 @@
+import type { LocationPickerOutput } from './location-picker.model';
+
 export interface DateOfLoss {
   dateOfOccurrence: string | null;
   timeOfOccurrence: string | null;
@@ -49,9 +51,9 @@ export interface LossInformationFormValue {
   cbiCaseType?: string | null;
   cbiThirdPartyName?: string;
   cbiThirdPartyIndustry?: string;
-  // Free text (team call, 2026-09-25) — see section.model.ts's
-  // SectionEntity.cbiOriginatingLocation for the same simplification.
-  cbiLocation?: string;
+  // Same GIS-search-or-manual pattern as lossLocation — see
+  // fnol-state.service.ts's cbiLocation control.
+  cbiLocation?: LocationPickerOutput;
   lossDescription: string;
   events: LossEvent[];
 }
@@ -71,9 +73,9 @@ export interface LossInformation {
   cbiCaseType?: string | null;
   cbiThirdPartyName?: string;
   cbiThirdPartyIndustry?: string;
-  // Free text (team call, 2026-09-25) — see section.model.ts's
-  // SectionEntity.cbiOriginatingLocation for the same simplification.
-  cbiLocation?: string;
+  // Same GIS-search-or-manual pattern as lossLocation — see
+  // fnol-state.service.ts's cbiLocation control.
+  cbiLocation?: LocationPickerOutput;
   lossDescription: string;
   events: LossEvent[];
   createdAt: string;

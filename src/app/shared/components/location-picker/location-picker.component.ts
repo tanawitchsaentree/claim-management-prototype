@@ -53,6 +53,11 @@ export class LocationPickerComponent implements OnInit {
   /** FNOL only — shows the "you can add/update later via Edit Claim" hint.
    *  Off on the Edit Claim screen itself (where that hint would be circular). */
   @Input() showEditLaterHint = false;
+  // Overridable so a non-loss-location caller (e.g. CBI's "originating
+  // event location", which isn't the insured's own loss location) doesn't
+  // inherit copy that only makes sense for the claim's own loss.
+  @Input() promptLabel = 'Where did the loss occur?';
+  @Input() skipHintText = 'Skip if location is not applicable to this claim.';
   @Output() locationChange = new EventEmitter<LocationPickerOutput>();
 
   private policyLocationSvc = inject(MockPolicyLocationService);

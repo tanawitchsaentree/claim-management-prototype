@@ -37,7 +37,7 @@ import {
   MockUserDirectoryService,
   UserDirectoryEntry
 } from '../../../../core/mock/services/mock-user-directory.service';
-import { EntitiesDamagesData, EntityRow } from '../../../../core/models';
+import { EntitiesDamagesData, EntityRow, formatLocationItem } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
 import { LookupOption, OTHER_CAUSE_KEY } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
@@ -668,6 +668,8 @@ export class StepSummaryComponent implements OnInit {
     const cbiCaseType =
       lossInfoValue.cbiApplicable === 'yes' ? lossInfoValue.cbiCaseType : null;
 
+    const cbiLocationItem = lossInfoValue.cbiLocation?.locations[0];
+
     for (const [damageType, entities] of byDamageType) {
       const isCbi = damageType === 'business-interruption' && !!cbiCaseType;
       const cbiExtras = isCbi
@@ -677,7 +679,8 @@ export class StepSummaryComponent implements OnInit {
             thirdPartyName: lossInfoValue.cbiThirdPartyName || undefined,
             thirdPartyRelationship: this.cbiRelationshipFor(cbiCaseType!),
             thirdPartyIndustry: lossInfoValue.cbiThirdPartyIndustry || undefined,
-            cbiOriginatingLocation: lossInfoValue.cbiLocation || undefined
+            cbiOriginatingLocation: cbiLocationItem ? formatLocationItem(cbiLocationItem) : undefined,
+            cbiOriginatingLocationDetail: cbiLocationItem
           }
         : {};
 

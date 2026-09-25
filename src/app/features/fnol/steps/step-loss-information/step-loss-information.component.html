@@ -165,6 +165,7 @@
       <hr class="li-divider" />
       <h3 class="sub-heading li-sub-heading">Locations of loss</h3>
       <app-location-picker
+        #lossLocationPicker
         [policyNumber]="policyNumber"
         [value]="lossLocation.value"
         [showEditLaterHint]="true"
@@ -309,14 +310,18 @@
               </nx-formfield>
             </div>
           }
-          <div data-field="cbiLocation">
-            <nx-formfield label="Originating loss location">
-              <input nxInput formControlName="cbiLocation" maxlength="200" />
-              @if (submitAttempted && !form.get('cbiLocation')?.value) {
-                <nx-error nxFormfieldError>Required</nx-error>
-              }
-            </nx-formfield>
-          </div>
+        </div>
+        <div data-field="cbiLocation">
+          <app-location-picker
+            [policyNumber]="null"
+            [value]="cbiLocation.value"
+            [promptLabel]="'Where did the originating CBI event occur?'"
+            [skipHintText]="'Where the CBI-triggering event happened — the third party\'s site, not the insured\'s own loss location.'"
+            (locationChange)="onCbiLocationChange($event)"
+          ></app-location-picker>
+          @if (submitAttempted && cbiLocation.value.locations.length === 0) {
+            <p class="field-error">Originating loss location: required</p>
+          }
         </div>
       }
       <hr class="li-divider" />

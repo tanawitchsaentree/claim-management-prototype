@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
@@ -8,6 +8,8 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { SectionEntity, InstructionStatus } from '../../../core/models/section.model';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
+import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
+import { LocationPickerOutput, formatLocationItem } from '../../../core/models';
 
 export interface EditEntityDamageModalData {
   entity: SectionEntity;
@@ -31,6 +33,7 @@ export type EditEntityDamageModalResult = Pick<
   | 'thirdPartyRelationship'
   | 'thirdPartyIndustry'
   | 'cbiOriginatingLocation'
+  | 'cbiOriginatingLocationDetail'
 >;
 
 export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
@@ -50,7 +53,8 @@ export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
     NxDropdownModule,
     NxInputModule,
     NxButtonModule,
-    NxIconModule
+    NxIconModule,
+    LocationPickerComponent
   ],
   templateUrl: './edit-entity-damage-modal.component.html',
   styleUrl: './edit-entity-damage-modal.component.scss'
@@ -73,10 +77,32 @@ export class EditEntityDamageModalComponent {
     instructionStatus: [this.data.entity.instructionStatus, Validators.required],
     cbiCaseType: [this.data.entity.cbiCaseType ?? null],
     thirdPartyName: [this.data.entity.thirdPartyName ?? ''],
-    thirdPartyIndustry: [this.data.entity.thirdPartyIndustry ?? ''],
-    // Free text (team call, 2026-09-25) — was a 7-field nested group.
-    cbiLocation: [this.data.entity.cbiOriginatingLocation ?? '']
+    thirdPartyIndustry: [this.data.entity.thirdPartyIndustry ?? '']
   });
+
+  // Same GIS-search-or-manual pattern as FNOL's cbiLocation (see
+  // step-loss-information) — supersedes the brief free-text version (team
+  // call, 2026-09-25, itself replacing a 7-field nested group). Seeded from
+  // the structured pick if one exists; a pre-existing entity that only has
+  // the legacy display string (no detail) starts empty and re-search is
+  // required — there's nothing structured to rehydrate from a plain string.
+  readonly cbiLocation = new FormControl<LocationPickerOutput>(
+    {
+      locations: this.data.entity.cbiOriginatingLocationDetail
+        ? [this.data.entity.cbiOriginatingLocationDetail]
+        : []
+    },
+    { nonNullable: true }
+  );
+
+  onCbiLocationChange(output: LocationPickerOutput): void {
+    this.cbiLocation.setValue(output);
+  }
+
+  // LocationPickerComponent isn't a form control — no `.touched` to key the
+  // "Required" error off. Set on a failed confirm() instead, same as
+  // add-location-modal's manualSubmitted.
+  submitted = false;
 
   get selectedCbiCaseType(): string | null {
     return (this.form.get('cbiCaseType')?.value as string | null) ?? null;
@@ -132,14 +158,16 @@ export class EditEntityDamageModalComponent {
       this.showThirdPartyName &&
       this.thirdPartyRequired &&
       !this.form.value.thirdPartyName;
-    const missingLocation = this.isContingentBi && !this.form.value.cbiLocation;
+    const missingLocation = this.isContingentBi && this.cbiLocation.value.locations.length === 0;
 
     if (this.form.get('instructionStatus')?.invalid || missingCaseType || missingThirdParty || missingLocation) {
       this.form.markAllAsTouched();
+      this.submitted = true;
       return;
     }
 
     const caseType = this.selectedCbiCaseType;
+    const cbiLocationItem = this.cbiLocation.value.locations[0];
 
     this.modalRef.close({
       instructionStatus: this.form.value.instructionStatus as InstructionStatus,
@@ -153,7 +181,8 @@ export class EditEntityDamageModalComponent {
             thirdPartyIndustry: this.showThirdPartyIndustry
               ? (this.form.value.thirdPartyIndustry as string) || undefined
               : undefined,
-            cbiOriginatingLocation: (this.form.value.cbiLocation as string) || undefined
+            cbiOriginatingLocation: cbiLocationItem ? formatLocationItem(cbiLocationItem) : undefined,
+            cbiOriginatingLocationDetail: cbiLocationItem
           }
         : {})
     });

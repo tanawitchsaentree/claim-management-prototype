@@ -6,13 +6,13 @@
   Table only renders once a location exists (see @else below). -->
   @if (locations.length === 0) {
     <div class="lp-initial">
-      <p class="lp-hint">Where did the loss occur?</p>
+      <p class="lp-hint">{{ promptLabel }}</p>
       <button nxButton="secondary" type="button" (click)="addLocation(vm.policyLocations)">
         <nx-icon name="plus" nxIconPositionStart></nx-icon>
         Add location
       </button>
       <p class="lp-skip-hint">
-        Skip if location is not applicable to this claim.
+        {{ skipHintText }}
         @if (showEditLaterHint) {
           You can add or update this later via Edit Claim.
         }

@@ -270,7 +270,10 @@ export class Sections {
         reportedCause: this.proximateLossCause(),
         reportedDescription: this.claimDescription()
       } satisfies AddSectionEntityModalData,
-      width: '480px',
+      // Widened from 480px (Marlene's original instruction-status-only
+      // shape) — CBI capture added a location-picker table that needs more
+      // room to not wrap awkwardly.
+      width: '720px',
       maxWidth: '92vw'
     });
     const result = (await firstValueFrom(ref.afterClosed())) as
@@ -290,7 +293,14 @@ export class Sections {
             instructionStatus: result.instructionStatus,
             dateOfOccurrence: result.dateOfOccurrence,
             interruptionStartDate: result.interruptionStartDate,
-            interruptionEndDate: result.interruptionEndDate
+            interruptionEndDate: result.interruptionEndDate,
+            isContingentBi: result.isContingentBi,
+            cbiCaseType: result.cbiCaseType,
+            thirdPartyName: result.thirdPartyName,
+            thirdPartyRelationship: result.thirdPartyRelationship,
+            thirdPartyIndustry: result.thirdPartyIndustry,
+            cbiOriginatingLocation: result.cbiOriginatingLocation,
+            cbiOriginatingLocationDetail: result.cbiOriginatingLocationDetail
           }))
         )
       );
@@ -313,7 +323,14 @@ export class Sections {
           instructionStatus: result.instructionStatus,
           dateOfOccurrence: result.dateOfOccurrence,
           interruptionStartDate: result.interruptionStartDate,
-          interruptionEndDate: result.interruptionEndDate
+          interruptionEndDate: result.interruptionEndDate,
+          isContingentBi: result.isContingentBi,
+          cbiCaseType: result.cbiCaseType,
+          thirdPartyName: result.thirdPartyName,
+          thirdPartyRelationship: result.thirdPartyRelationship,
+          thirdPartyIndustry: result.thirdPartyIndustry,
+          cbiOriginatingLocation: result.cbiOriginatingLocation,
+          cbiOriginatingLocationDetail: result.cbiOriginatingLocationDetail
         })
       );
     }
@@ -352,9 +369,9 @@ export class Sections {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
       data: { entity } satisfies EditEntityDamageModalData,
       // Wider only for CBI entities — the extra case type / third-party /
-      // 7-field location grid needs the room; the plain instruction-status-
+      // location-picker table needs the room; the plain instruction-status-
       // only case stays at the original compact width.
-      width: entity.isContingentBi ? '560px' : '480px',
+      width: entity.isContingentBi ? '720px' : '480px',
       maxWidth: '92vw'
     });
     const result = (await firstValueFrom(ref.afterClosed())) as

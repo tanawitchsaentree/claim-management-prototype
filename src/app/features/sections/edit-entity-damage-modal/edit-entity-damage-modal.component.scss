@@ -35,14 +35,14 @@
   margin: 4px 0 4px;
 }
 
-.eed-location-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 16px;
+.eed-cbi-location {
+  margin-top: 4px;
+}
 
-  @media (max-width: 500px) {
-    grid-template-columns: 1fr;
-  }
+.eed-field-error {
+  margin: 4px 0 0;
+  color: var(--message-error-color);
+  font-size: var(--paragraph-03-font-size);
 }
 
 .eed-footer {

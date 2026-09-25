@@ -124,13 +124,9 @@ export class EntityDetailPanelComponent implements OnInit {
 
   readonly items = signal<DamagedItem[]>([]);
 
-  // Built but held back on purpose (2026-09-17) — CBI (BMPCC-17927) is still
-  // "Draft A v2", not signed off. Open Points #1 (validate insured has own PD
-  // cover) and #4 (which of the 12 case types are approved for baseline) are
-  // still open with Sarah/UW. Flip to true only when told to turn it on —
-  // until then the capture at FNOL keeps writing this data, it just doesn't
-  // surface here yet.
-  readonly showCbiLocation = false;
+  // Was held back pending CBI (BMPCC-17927) sign-off from Sarah/UW — signed
+  // off 2026-09-25, turned on.
+  readonly showCbiLocation = true;
 
   ngOnInit(): void {
     this.items.set([...(MOCK_ITEMS[this.entity.id] ?? [])]);

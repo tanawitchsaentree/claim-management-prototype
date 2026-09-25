@@ -8,6 +8,7 @@ import {
   SectionEntity
 } from '../../models/section.model';
 import { ClaimActivity } from '../../models/claim-overview.model';
+import { LocationItem } from '../../models/location-picker.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 import { MockLookupService } from './mock-lookup.service';
@@ -69,6 +70,7 @@ export class MockSectionService extends MockBaseService {
       thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
       thirdPartyIndustry?: string;
       cbiOriginatingLocation?: string;
+      cbiOriginatingLocationDetail?: LocationItem;
     }[],
     createdBy: { userId: string; name: string } = { userId: 'usr-lf', name: 'Leonie Fischer' }
   ): Observable<ClaimSection> {
@@ -113,7 +115,8 @@ export class MockSectionService extends MockBaseService {
         thirdPartyName: e.thirdPartyName,
         thirdPartyRelationship: e.thirdPartyRelationship,
         thirdPartyIndustry: e.thirdPartyIndustry,
-        cbiOriginatingLocation: e.cbiOriginatingLocation
+        cbiOriginatingLocation: e.cbiOriginatingLocation,
+        cbiOriginatingLocationDetail: e.cbiOriginatingLocationDetail
       }))
     };
     sections.push(newSection);
@@ -316,6 +319,9 @@ export class MockSectionService extends MockBaseService {
       cbiCaseType?: string;
       thirdPartyName?: string;
       thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
+      thirdPartyIndustry?: string;
+      cbiOriginatingLocation?: string;
+      cbiOriginatingLocationDetail?: LocationItem;
     }
   ): Observable<SectionEntity> {
     for (const [, sections] of this.cache) {
@@ -332,7 +338,10 @@ export class MockSectionService extends MockBaseService {
         isContingentBi: entity.isContingentBi,
         cbiCaseType: entity.cbiCaseType,
         thirdPartyName: entity.thirdPartyName,
-        thirdPartyRelationship: entity.thirdPartyRelationship
+        thirdPartyRelationship: entity.thirdPartyRelationship,
+        thirdPartyIndustry: entity.thirdPartyIndustry,
+        cbiOriginatingLocation: entity.cbiOriginatingLocation,
+        cbiOriginatingLocationDetail: entity.cbiOriginatingLocationDetail
       };
       section.entities = [...section.entities, newEntity];
       const activity: ClaimActivity = {

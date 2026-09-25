@@ -90,9 +90,13 @@ export class FnolStateService {
       cbiCaseType: new FormControl<string | null>(null),
       cbiThirdPartyName: new FormControl<string>(''),
       cbiThirdPartyIndustry: new FormControl<string>(''),
-      // Free text (team call, 2026-09-25) — was a 7-field FormGroup
-      // (country/city/zip/street/houseNumber/landRecordNumber/state).
-      cbiLocation: new FormControl<string>(''),
+      // Reuses the exact same GIS-search-or-manual pattern as lossLocation
+      // above (LocationPickerComponent, no-policy path — CBI's originating
+      // location is a third party's site, never the insured's own policy
+      // locations). Was free text briefly (team call, 2026-09-25), before
+      // that a 7-field FormGroup (country/city/zip/street/houseNumber/
+      // landRecordNumber/state) — this supersedes both.
+      cbiLocation: new FormControl<LocationPickerOutput>({ locations: [] }),
       lossDescription: new FormControl('', [Validators.maxLength(500)]),
       events: new FormArray([])
     })
@@ -175,6 +179,10 @@ export class FnolStateService {
 
   getLossLocationControl(): FormControl<LocationPickerOutput> {
     return this.fnolForm.get('lossInformation.lossLocation') as FormControl<LocationPickerOutput>;
+  }
+
+  getCbiLocationControl(): FormControl<LocationPickerOutput> {
+    return this.fnolForm.get('lossInformation.cbiLocation') as FormControl<LocationPickerOutput>;
   }
 
   getLossEventsArray(): FormArray {

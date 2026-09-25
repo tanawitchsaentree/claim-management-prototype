@@ -108,11 +108,15 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   private deregisterStage: (() => void) | null = null;
 
   @ViewChild('duplicatesModalTpl') duplicatesModalTpl!: TemplateRef<void>;
-  @ViewChild(LocationPickerComponent) locationPicker?: LocationPickerComponent;
+  // Named ref, not a bare type query — the template now has a second
+  // <app-location-picker> for CBI's originating location, and a type-only
+  // @ViewChild would resolve ambiguously between the two.
+  @ViewChild('lossLocationPicker') locationPicker?: LocationPickerComponent;
 
   readonly form = this.fnolState.fnolForm.get('lossInformation') as FormGroup;
   readonly dateOfLoss = this.fnolState.getDateOfLossGroup();
   readonly lossLocation = this.fnolState.getLossLocationControl();
+  readonly cbiLocation = this.fnolState.getCbiLocationControl();
   readonly eventsArray = this.fnolState.getLossEventsArray();
   readonly policyNumber = this.fnolState.selectedPolicy?.policyNumber ?? null;
   readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesSync();
@@ -404,7 +408,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
           message: `${this.fieldLabels['cbiThirdPartyName']}: required`
         });
       }
-      if (!this.form.get('cbiLocation')?.value) {
+      if (this.cbiLocation.value.locations.length === 0) {
         errors.push({
           fieldId: 'cbiLocation',
           message: `${this.fieldLabels['cbiLocation']}: required`
@@ -476,6 +480,10 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
 
   onLocationChange(output: LocationPickerOutput): void {
     this.lossLocation.setValue(output);
+  }
+
+  onCbiLocationChange(output: LocationPickerOutput): void {
+    this.cbiLocation.setValue(output);
   }
 
   // ── Schema helpers ─────────────────────────────────────────────────
@@ -686,15 +694,12 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       industryCtrl.updateValueAndValidity({ emitEvent: false });
     }
 
-    const locationCtrl = this.form.get('cbiLocation');
-    if (locationCtrl) {
-      if (showDetails) {
-        locationCtrl.setValidators([Validators.required, Validators.maxLength(200)]);
-      } else {
-        locationCtrl.clearValidators();
-        locationCtrl.setValue('');
-      }
-      locationCtrl.updateValueAndValidity({ emitEvent: false });
+    // No Angular validator here — LocationPickerOutput isn't a validatable
+    // primitive the same way. "Required" is enforced manually in
+    // getValidationErrors() below (checks locations.length), same place
+    // that already hand-builds every other CBI error message.
+    if (!showDetails) {
+      this.cbiLocation.setValue({ locations: [] });
     }
   }
 

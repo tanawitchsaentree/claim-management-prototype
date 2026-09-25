@@ -1,3 +1,5 @@
+import type { LocationItem } from './location-picker.model';
+
 export type SectionStatus = 'Open' | 'Closed';
 export type InstructionStatus = 'Pending' | 'Not assigned' | 'In progress' | 'Completed';
 export type SectionClosureReason = 'Section Finalised' | 'Section Not Pursued' | 'Section Rejected';
@@ -60,10 +62,13 @@ export interface SectionEntity {
   thirdPartyIndustry?: string;
   // Originating loss location — where the CBI-triggering event actually
   // happened (the third party's premises), not the insured's own loss
-  // location. Free text (team call, 2026-09-25) — the granular Country/
-  // City/ZIP field set mirroring the legacy ABS precedent was more than
-  // baseline needs right now.
+  // location. `cbiOriginatingLocation` is the display string (kept for
+  // every existing string-only reader — entity-detail-panel, claim-overview);
+  // `cbiOriginatingLocationDetail` is the structured pick behind it (same
+  // LocationItem shape lossLocation itself uses) so re-opening the picker
+  // to edit starts from the actual chosen address, not a re-parsed string.
   cbiOriginatingLocation?: string;
+  cbiOriginatingLocationDetail?: LocationItem;
 }
 
 export interface SectionBlockers {

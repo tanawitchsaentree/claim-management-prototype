@@ -49,12 +49,18 @@
       </nx-formfield>
     }
 
-    <nx-formfield label="Originating loss location">
-      <input nxInput formControlName="cbiLocation" maxlength="200" />
-      @if (!form.value.cbiLocation && form.get('cbiLocation')?.touched) {
-        <nx-error nxFormfieldError>Required</nx-error>
+    <div class="eed-cbi-location">
+      <app-location-picker
+        [policyNumber]="null"
+        [value]="cbiLocation.value"
+        [promptLabel]="'Where did the originating CBI event occur?'"
+        [skipHintText]="'The third party\'s site, not the insured\'s own loss location.'"
+        (locationChange)="onCbiLocationChange($event)"
+      ></app-location-picker>
+      @if (submitted && cbiLocation.value.locations.length === 0) {
+        <p class="eed-field-error">Originating loss location: required</p>
       }
-    </nx-formfield>
+    </div>
   }
 </div>
 

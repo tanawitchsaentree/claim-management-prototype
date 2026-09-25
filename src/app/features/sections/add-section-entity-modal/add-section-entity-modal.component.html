@@ -89,6 +89,67 @@
           <nx-datepicker #biEndPicker></nx-datepicker>
         </nx-formfield>
       </div>
+
+      <div class="ase-radio-field">
+        <p class="ase-radio-label">
+          Is this Business Interruption due to Contingent Business Interruption (CBI)?
+        </p>
+        <nx-radio-group class="ase-radio-row" formControlName="cbiApplicable">
+          <nx-radio labelSize="small" value="yes">Yes</nx-radio>
+          <nx-radio labelSize="small" value="no">No</nx-radio>
+        </nx-radio-group>
+        @if (submitAttempted && !form.value.cbiApplicable) {
+          <p class="ase-field-error">Answer required</p>
+        }
+      </div>
+
+      @if (showCbiDetails()) {
+        <p class="ase-entity-group__title">Contingent business interruption details</p>
+
+        <nx-formfield label="CBI case type">
+          <nx-dropdown
+            formControlName="cbiCaseType"
+            placeholder="Select case type"
+            (selectionChange)="onCbiCaseTypeChange()"
+          >
+            @for (opt of cbiCaseTypeOptions; track opt.value) {
+              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          @if (submitAttempted && !selectedCbiCaseType()) {
+            <nx-error nxFormfieldError>Select a case type</nx-error>
+          }
+        </nx-formfield>
+
+        @if (showThirdPartyName()) {
+          <nx-formfield [label]="thirdPartyLabel()">
+            <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
+            @if (
+              submitAttempted && thirdPartyRequired() && !form.value.cbiThirdPartyName
+            ) {
+              <nx-error nxFormfieldError>Required</nx-error>
+            }
+          </nx-formfield>
+        }
+        @if (showThirdPartyIndustry()) {
+          <nx-formfield [label]="thirdPartyIndustryLabel()">
+            <input nxInput formControlName="cbiThirdPartyIndustry" maxlength="100" />
+          </nx-formfield>
+        }
+
+        <div class="ase-cbi-location">
+          <app-location-picker
+            [policyNumber]="null"
+            [value]="cbiLocation.value"
+            [promptLabel]="'Where did the originating CBI event occur?'"
+            [skipHintText]="'The third party\'s site, not the insured\'s own loss location.'"
+            (locationChange)="onCbiLocationChange($event)"
+          ></app-location-picker>
+          @if (submitAttempted && cbiLocation.value.locations.length === 0) {
+            <p class="ase-field-error">Originating loss location: required</p>
+          }
+        </div>
+      }
     }
   }
 </div>
