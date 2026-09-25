@@ -32,6 +32,8 @@ export interface CwbManualAddress {
   addressLine2?: string;
   state?: string;
   notes?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface CwbModalResult {

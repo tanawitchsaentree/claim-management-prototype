@@ -129,8 +129,11 @@
 }
 
 // ─── GIS address search ("Add location manually" screen) ─────────────────
+// Reference (2026-09-25): search box reads as one field among others, not a
+// full-width bar — capped rather than stretched across the whole body.
 .alm-gis-field {
   width: 100%;
+  max-width: 480px;
 }
 .alm-gis-suggestions {
   list-style: none;
@@ -153,19 +156,32 @@
     background: var(--claim-overlay-hover);
   }
 }
-.alm-gis-picked {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: var(--space-base);
-  color: var(--text-01);
 
-  nx-icon {
-    color: var(--task-status-done-color);
-  }
+.alm-manual-hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
 }
 
-app-manual-address-section {
-  display: block;
-  margin-top: var(--space-base);
+// Same 4-col grid as the policy-search rows — Country/State/City/Street,
+// then Number/Zip/Latitude/Longitude. Country + Latitude + Longitude get
+// disabled (see syncDerivedFieldsLock) once derived from a GIS pick; NDBX's
+// own disabled-field grey is what signals "system-derived" here, no custom
+// styling needed.
+.alm-manual-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.alm-manual-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px 24px;
+
+  nx-formfield {
+    width: 100%;
+  }
+}
+.alm-manual-form__notes {
+  width: 100%;
 }

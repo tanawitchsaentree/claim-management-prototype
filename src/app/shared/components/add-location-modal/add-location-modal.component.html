@@ -100,7 +100,11 @@
     <!-- ─── Add location manually ──────────────────────────────────────── -->
     <nx-formfield label="Search location" class="alm-gis-field">
       <input nxInput [formControl]="gisSearch" autocomplete="off" />
-      <nx-icon name="search" nxFormfieldSuffix></nx-icon>
+      @if (gisSearch.value) {
+        <nx-icon name="close" nxFormfieldSuffix (click)="clearGisSearch()"></nx-icon>
+      } @else {
+        <nx-icon name="search" nxFormfieldSuffix></nx-icon>
+      }
     </nx-formfield>
 
     @if (gisSearch.value && (gisResults()?.length ?? 0) > 0 && !selectedGisSuggestion()) {
@@ -115,29 +119,58 @@
       </ul>
     }
 
-    @if (selectedGisSuggestion(); as picked) {
-      <div class="alm-gis-picked">
-        <nx-icon name="check-circle"></nx-icon>
-        <span>{{ picked.formattedAddress }}</span>
-      </div>
-    }
-
     <nx-checkbox
       [checked]="addAddressManually()"
       (checkedChange)="toggleAddAddressManually($event)"
     >
       Add the address manually
     </nx-checkbox>
+    <p class="alm-manual-hint">
+      If you do not know the exact address fill the additional location information field.
+    </p>
 
-    @if (addAddressManually()) {
-      <app-manual-address-section
-        [form]="manualForm"
-        [countries]="(countries$ | async) ?? []"
-        [entries]="manualEntries()"
-        [submitted]="manualSubmitted"
-        (add)="addManual()"
-        (remove)="removeManual($event)"
-      ></app-manual-address-section>
+    @if (showManualGrid()) {
+      <form [formGroup]="manualForm" class="alm-manual-form">
+        <div class="alm-manual-grid">
+          <nx-formfield label="Country">
+            <nx-dropdown formControlName="country" placeholder="Select">
+              @for (c of (countries$ | async) ?? []; track c.value) {
+                <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+          </nx-formfield>
+          <nx-formfield label="State / Province">
+            <input nxInput formControlName="state" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="City">
+            <input nxInput formControlName="city" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Street">
+            <input nxInput formControlName="street" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Number">
+            <input nxInput formControlName="number" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="ZIP / Postal code">
+            <input nxInput formControlName="postalCode" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Latitude">
+            <input nxInput formControlName="latitude" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Longitude">
+            <input nxInput formControlName="longitude" autocomplete="off" />
+          </nx-formfield>
+        </div>
+        <nx-formfield label="Additional location information" class="alm-manual-form__notes">
+          <input
+            nxInput
+            formControlName="additionalInfo"
+            [maxlength]="maxAdditionalInfo"
+            autocomplete="off"
+          />
+          <nx-hint nxFormfieldHint>{{ additionalInfoLength() }}/{{ maxAdditionalInfo }}</nx-hint>
+        </nx-formfield>
+      </form>
     }
   }
 </div>

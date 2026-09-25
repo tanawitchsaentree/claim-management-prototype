@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { Observable, catchError, of, startWith, debounceTime, switchMap } from 'rxjs';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -22,7 +22,6 @@ import {
   LookupOption
 } from '../../../core/models';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { ManualAddressSectionComponent } from './manual-address-section/manual-address-section.component';
 
 export interface AddLocationModalData {
   policyNumber: string;
@@ -47,8 +46,7 @@ type Screen = 'policy' | 'manual';
     NxRadioModule,
     NxTableModule,
     NxCheckboxModule,
-    EmptyStateComponent,
-    ManualAddressSectionComponent
+    EmptyStateComponent
   ],
   templateUrl: './add-location-modal.component.html',
   styleUrl: './add-location-modal.component.scss'
@@ -57,7 +55,6 @@ export class AddLocationModalComponent implements OnInit {
   readonly data = inject<AddLocationModalData>(NX_MODAL_DATA);
   readonly modalRef =
     inject<NxModalRef<AddLocationModalComponent, AddLocationModalResult | null>>(NxModalRef);
-  private readonly fb = inject(FormBuilder);
   private readonly lookupSvc = inject(MockLookupService);
   private readonly gisSvc = inject(MockGisLocationService);
 
@@ -101,32 +98,49 @@ export class AddLocationModalComponent implements OnInit {
     { initialValue: [] as GisAddressSuggestion[] }
   );
   readonly selectedGisSuggestion = signal<GisAddressSuggestion | null>(null);
+  // "Add the address manually" — unlocks country/latitude/longitude for direct
+  // editing instead of trusting whatever a GIS pick derived (reference,
+  // 2026-09-25: those 3 fields render disabled/grey after a pick; the rest
+  // — state/city/street/number/postal code — stay editable regardless, since
+  // a geocode match only reliably gives country + coordinates).
   readonly addAddressManually = signal(false);
 
-  readonly manualForm: FormGroup = this.fb.group({
-    country: [''],
-    city: [''],
-    postalCode: [''],
-    streetAndNumber: [''],
-    addressLine2: [''],
-    state: [''],
-    notes: ['']
+  readonly manualForm = new FormGroup({
+    country: new FormControl<string | null>(null),
+    state: new FormControl(''),
+    city: new FormControl(''),
+    street: new FormControl(''),
+    number: new FormControl(''),
+    postalCode: new FormControl(''),
+    latitude: new FormControl<number | null>(null),
+    longitude: new FormControl<number | null>(null),
+    additionalInfo: new FormControl('')
   });
-  manualSubmitted = false;
-  readonly manualEntries = signal<CwbManualAddress[]>([]);
+  readonly maxAdditionalInfo = 300;
+  private readonly manualFormValue = toSignal(this.manualForm.valueChanges, {
+    initialValue: this.manualForm.getRawValue()
+  });
+  readonly additionalInfoLength = computed(() => this.manualFormValue().additionalInfo?.length ?? 0);
+  readonly hasManualData = computed(() => {
+    const v = this.manualFormValue();
+    return Object.values(v).some(val => val !== null && val !== '');
+  });
+  // Grid only appears once there's something to show it for — a GIS pick, or
+  // the user opting into fully manual entry.
+  readonly showManualGrid = computed(
+    () => this.selectedGisSuggestion() !== null || this.addAddressManually()
+  );
 
+  // hasManualData() reads valueChanges, which omits disabled controls —
+  // country/latitude/longitude go disabled once locked (syncDerivedFieldsLock),
+  // so a pure GIS pick with no other field touched must be OR'd in separately.
+  readonly hasManualEntry = computed(
+    () => this.selectedGisSuggestion() !== null || this.hasManualData()
+  );
   readonly hasAnySelection = computed(
-    () =>
-      this.selectedPolicyId() !== null ||
-      this.selectedGisSuggestion() !== null ||
-      this.manualEntries().length > 0
+    () => this.selectedPolicyId() !== null || this.hasManualEntry()
   );
-  readonly addCount = computed(
-    () =>
-      (this.selectedPolicyId() ? 1 : 0) +
-      (this.selectedGisSuggestion() ? 1 : 0) +
-      this.manualEntries().length
-  );
+  readonly addCount = computed(() => (this.selectedPolicyId() ? 1 : 0) + (this.hasManualEntry() ? 1 : 0));
 
   ngOnInit(): void {
     // Reference (production, 2026-09-25): body is empty until the user runs
@@ -173,43 +187,42 @@ export class AddLocationModalComponent implements OnInit {
   }
 
   // ── Add location manually ────────────────────────────────────────────────
+  // A GIS pick only reliably derives country + coordinates (reference,
+  // 2026-09-25) — the rest is left for the user to fill in, not overwritten.
   selectGisSuggestion(s: GisAddressSuggestion): void {
     this.selectedGisSuggestion.set(s);
     this.gisSearch.setValue(s.formattedAddress, { emitEvent: false });
+    this.manualForm.patchValue({
+      country: s.country,
+      latitude: s.latitude,
+      longitude: s.longitude
+    });
+    this.syncDerivedFieldsLock();
+  }
+
+  clearGisSearch(): void {
+    this.gisSearch.setValue('', { emitEvent: false });
+    this.selectedGisSuggestion.set(null);
+    this.manualForm.patchValue({ country: null, latitude: null, longitude: null });
+    this.syncDerivedFieldsLock();
   }
 
   toggleAddAddressManually(checked: boolean): void {
     this.addAddressManually.set(checked);
+    this.syncDerivedFieldsLock();
   }
 
-  addManual(): void {
-    this.manualSubmitted = true;
-    if (this.manualForm.invalid) return;
-    const v = this.manualForm.getRawValue();
-    const entry: CwbManualAddress = {
-      country: v.country,
-      city: v.city,
-      postalCode: v.postalCode,
-      streetAndNumber: v.streetAndNumber,
-      addressLine2: v.addressLine2 || undefined,
-      state: v.state || undefined,
-      notes: v.notes || undefined
-    };
-    this.manualEntries.set([...this.manualEntries(), entry]);
-    this.manualForm.reset({
-      country: '',
-      city: '',
-      postalCode: '',
-      streetAndNumber: '',
-      addressLine2: '',
-      state: '',
-      notes: ''
-    });
-    this.manualSubmitted = false;
-  }
-
-  removeManual(idx: number): void {
-    this.manualEntries.set(this.manualEntries().filter((_, i) => i !== idx));
+  // Country/latitude/longitude are locked (derived, read-only) whenever
+  // they came from a GIS pick and the user hasn't opted into overriding
+  // them — everything else is always editable.
+  private syncDerivedFieldsLock(): void {
+    const locked = this.selectedGisSuggestion() !== null && !this.addAddressManually();
+    const controls = ['country', 'latitude', 'longitude'] as const;
+    for (const name of controls) {
+      const control = this.manualForm.get(name)!;
+      if (locked) control.disable();
+      else control.enable();
+    }
   }
 
   // ── Confirm / cancel ─────────────────────────────────────────────────────
@@ -221,19 +234,20 @@ export class AddLocationModalComponent implements OnInit {
     if (!this.hasAnySelection()) return;
     const policyId = this.selectedPolicyId();
     const policy = policyId ? this.data.policyLocations.filter(l => l.id === policyId) : [];
-    const gis = this.selectedGisSuggestion();
-    const manual: CwbManualAddress[] = gis
-      ? [
-          ...this.manualEntries(),
-          {
-            country: gis.country,
-            city: gis.city,
-            postalCode: gis.postalCode,
-            streetAndNumber: gis.addressLine1,
-            state: gis.state
-          }
-        ]
-      : this.manualEntries();
+    const manual: CwbManualAddress[] = [];
+    if (this.hasManualEntry()) {
+      const v = this.manualForm.getRawValue();
+      manual.push({
+        country: v.country ?? '',
+        city: v.city ?? '',
+        postalCode: v.postalCode ?? '',
+        streetAndNumber: [v.street, v.number].filter(Boolean).join(' '),
+        state: v.state || undefined,
+        notes: v.additionalInfo || undefined,
+        latitude: v.latitude ?? undefined,
+        longitude: v.longitude ?? undefined
+      });
+    }
     this.modalRef.close({ policy, manual });
   }
 }
