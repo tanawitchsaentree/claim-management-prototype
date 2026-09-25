@@ -19,6 +19,7 @@ import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
+import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import {
   EntitiesDamagesData,
   DamageGroup,
@@ -96,6 +97,7 @@ const LIMIT_CAP = 3;
 export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   private readonly fnolState = inject(FnolStateService);
   private readonly entitiesSvc = inject(MockEntitiesDamagesService);
+  private readonly lookupSvc = inject(MockLookupService);
   private readonly router = inject(Router);
   private readonly dialog = inject(NxDialogService);
   private readonly toast = inject(ToastService);
@@ -140,13 +142,63 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
     this.vm$ = this.refresh$.pipe(
       switchMap(() =>
         this.entitiesSvc.getByPolicyId(this.policyNumber).pipe(
-          map(data => ({ data, loading: false, error: false })),
+          map(data => ({ data: this.seedGroupsFromTypeOfDamage(data), loading: false, error: false })),
           catchError(() =>
             of({ data: { sections: [] } as EntitiesDamagesData, loading: false, error: true })
           )
         )
       )
     );
+  }
+
+  // Cause of loss -> Type of damage -> Entities & Damages groups are a single
+  // chain, not independent (production reference, 2026-09-25): a Type of
+  // damage selected on Loss Information always produces a matching group
+  // here, even when the policy has no promise data for it (an empty group
+  // with no entities yet — not a section-wide "no entities" empty state,
+  // and not silently dropped). getByPolicyId() only knows what the POLICY
+  // promises; it has no idea what was actually reported, so that reconciliation
+  // has to happen here, not in the mock service.
+  private seedGroupsFromTypeOfDamage(data: EntitiesDamagesData): EntitiesDamagesData {
+    const selectedTypes = (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ??
+      []) as string[];
+    if (!selectedTypes.length) return data;
+
+    const typeLabels = this.lookupSvc.getTypeOfDamageSync();
+    const labelFor = (key: string) => typeLabels.find(o => o.value === key)?.label ?? key;
+
+    const sections = data.sections.map(section => ({
+      ...section,
+      damageGroups: section.damageGroups.filter(g => selectedTypes.includes(g.damageTypeKey))
+    }));
+
+    const presentKeys = new Set(sections.flatMap(s => s.damageGroups.map(g => g.damageTypeKey)));
+    const missingKeys = selectedTypes.filter(key => !presentKeys.has(key));
+    if (!missingKeys.length) return { sections };
+
+    const missingGroups: DamageGroup[] = missingKeys.map(key => ({
+      damageType: labelFor(key),
+      damageTypeKey: key,
+      expanded: true,
+      entities: []
+    }));
+
+    const targetSection = sections.find(s => s.promiseStatus === 'possibly-promised');
+    if (targetSection) {
+      targetSection.damageGroups = [...targetSection.damageGroups, ...missingGroups];
+      return { sections };
+    }
+    return {
+      sections: [
+        ...sections,
+        {
+          promiseStatus: 'possibly-promised',
+          label: 'Possibly promised entities',
+          expanded: true,
+          damageGroups: missingGroups
+        }
+      ]
+    };
   }
 
   // ── Selection helpers ──────────────────────────────────────────────────────
