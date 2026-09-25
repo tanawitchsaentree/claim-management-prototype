@@ -1,15 +1,16 @@
 <div class="alm-header">
-  <h2 class="alm-title">
-    {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
-  </h2>
-  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
-    <nx-icon name="close"></nx-icon>
-  </button>
+  <div class="alm-header-row">
+    <h2 class="alm-title">
+      {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
+    </h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
 </div>
 
 <div class="alm-body" tabindex="0">
-  <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
-
   @if (screen() === 'policy') {
     <!-- ─── Add location from policy ───────────────────────────────────── -->
     <form [formGroup]="policyForm" class="alm-form">
@@ -34,7 +35,7 @@
         </div>
         <div class="alm-search-row__actions">
           <button nxButton="primary small" type="button" (click)="onPolicySearch()">Search</button>
-          <button nxButton="secondary small" type="button" (click)="onPolicyReset()">
+          <button type="button" class="alm-link-btn" (click)="onPolicyReset()">
             Reset search
           </button>
         </div>
@@ -51,9 +52,9 @@
       </div>
     </form>
 
-    @if (policyResults().length === 0) {
+    @if (hasSearched() && policyResults().length === 0) {
       <app-empty-state message="No locations found."></app-empty-state>
-    } @else {
+    } @else if (policyResults().length > 0) {
       <div class="alm-table-wrap" tabindex="0">
         <table nxTable class="alm-table">
           <thead>

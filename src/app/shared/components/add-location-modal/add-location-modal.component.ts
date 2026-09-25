@@ -81,6 +81,7 @@ export class AddLocationModalComponent implements OnInit {
     postalCode: new FormControl('')
   });
   readonly policyResults = signal<PolicyLocation[]>([]);
+  readonly hasSearched = signal(false);
   readonly selectedPolicyId = signal<string | null>(null);
 
   // ── Screen: Add location manually ───────────────────────────────────────
@@ -128,7 +129,8 @@ export class AddLocationModalComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.policyResults.set(this.data.policyLocations);
+    // Reference (production, 2026-09-25): body is empty until the user runs
+    // a search — locations are not pre-listed on open.
   }
 
   goToManual(): void {
@@ -142,6 +144,7 @@ export class AddLocationModalComponent implements OnInit {
   onPolicySearch(): void {
     const { country, state, city, street, number, postalCode } = this.policyForm.value;
     const streetQuery = [street, number].filter(Boolean).join(' ').toLowerCase();
+    this.hasSearched.set(true);
     this.policyResults.set(
       this.data.policyLocations.filter(l => {
         if (country && l.country !== country) return false;
@@ -157,7 +160,8 @@ export class AddLocationModalComponent implements OnInit {
 
   onPolicyReset(): void {
     this.policyForm.reset();
-    this.policyResults.set(this.data.policyLocations);
+    this.hasSearched.set(false);
+    this.policyResults.set([]);
   }
 
   isPolicySelected(id: string): boolean {
