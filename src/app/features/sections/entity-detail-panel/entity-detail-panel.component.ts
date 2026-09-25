@@ -28,7 +28,6 @@ import {
 import { DamagedItem } from '../damaged-item.config';
 import { DamageTypeLabelPipe } from '../../../shared/pipes/damage-type-label.pipe';
 import { CbiCaseTypeLabelPipe } from '../../../shared/pipes/cbi-case-type-label.pipe';
-import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 
 // `causedBy` is set on every item, not just the financial-loss one — the field
 // stopped being financial-loss-only on 2026-09-03 (see damaged-item.config.ts),
@@ -122,7 +121,6 @@ export class EntityDetailPanelComponent implements OnInit {
 
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
-  private readonly lookupSvc = inject(MockLookupService);
 
   readonly items = signal<DamagedItem[]>([]);
 
@@ -139,14 +137,7 @@ export class EntityDetailPanelComponent implements OnInit {
   }
 
   cbiLocationLine(): string {
-    const loc = this.entity.cbiOriginatingLocation;
-    if (!loc) return '–';
-    const countryLabel =
-      this.lookupSvc.getCountriesSync().find(o => o.value === loc.country)?.label ?? loc.country;
-    const streetPart = [loc.street, loc.houseNumber].filter(Boolean).join(' ');
-    const line1 = [streetPart, loc.zip, loc.city].filter(Boolean).join(', ');
-    const line2 = [loc.state, countryLabel].filter(Boolean).join(', ');
-    return [line1, line2].filter(Boolean).join(' — ') || '–';
+    return this.entity.cbiOriginatingLocation || '–';
   }
 
   async onAddItem(): Promise<void> {

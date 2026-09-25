@@ -6,11 +6,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import {
-  SectionEntity,
-  InstructionStatus,
-  CbiOriginatingLocation
-} from '../../../core/models/section.model';
+import { SectionEntity, InstructionStatus } from '../../../core/models/section.model';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 
 export interface EditEntityDamageModalData {
@@ -33,6 +29,7 @@ export type EditEntityDamageModalResult = Pick<
   | 'cbiCaseType'
   | 'thirdPartyName'
   | 'thirdPartyRelationship'
+  | 'thirdPartyIndustry'
   | 'cbiOriginatingLocation'
 >;
 
@@ -71,26 +68,15 @@ export class EditEntityDamageModalComponent {
   // never changes here (that's decided at FNOL, see step-loss-information).
   readonly isContingentBi = !!this.data.entity.isContingentBi;
   readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesSync();
-  readonly countryOptions = this.lookupSvc.getCountriesSync();
 
   readonly form = this.fb.group({
     instructionStatus: [this.data.entity.instructionStatus, Validators.required],
     cbiCaseType: [this.data.entity.cbiCaseType ?? null],
     thirdPartyName: [this.data.entity.thirdPartyName ?? ''],
-    cbiLocation: this.fb.group({
-      country: [this.data.entity.cbiOriginatingLocation?.country ?? null],
-      city: [this.data.entity.cbiOriginatingLocation?.city ?? ''],
-      zip: [this.data.entity.cbiOriginatingLocation?.zip ?? ''],
-      street: [this.data.entity.cbiOriginatingLocation?.street ?? ''],
-      houseNumber: [this.data.entity.cbiOriginatingLocation?.houseNumber ?? ''],
-      landRecordNumber: [this.data.entity.cbiOriginatingLocation?.landRecordNumber ?? ''],
-      state: [this.data.entity.cbiOriginatingLocation?.state ?? '']
-    })
+    thirdPartyIndustry: [this.data.entity.thirdPartyIndustry ?? ''],
+    // Free text (team call, 2026-09-25) — was a 7-field nested group.
+    cbiLocation: [this.data.entity.cbiOriginatingLocation ?? '']
   });
-
-  get cbiLocationGroup() {
-    return this.form.get('cbiLocation') as ReturnType<FormBuilder['group']>;
-  }
 
   get selectedCbiCaseType(): string | null {
     return (this.form.get('cbiCaseType')?.value as string | null) ?? null;
@@ -116,9 +102,20 @@ export class EditEntityDamageModalComponent {
     return this.thirdPartyRequired ? base : `${base} (optional)`;
   }
 
+  get showThirdPartyIndustry(): boolean {
+    return this.showThirdPartyName;
+  }
+
+  get thirdPartyIndustryLabel(): string {
+    return this.selectedCbiCaseType?.startsWith('customer-')
+      ? 'Customer industry (optional)'
+      : 'Supplier industry (optional)';
+  }
+
   onCbiCaseTypeChange(): void {
     if (!this.showThirdPartyName) {
       this.form.get('thirdPartyName')?.setValue('');
+      this.form.get('thirdPartyIndustry')?.setValue('');
     }
   }
 
@@ -135,13 +132,7 @@ export class EditEntityDamageModalComponent {
       this.showThirdPartyName &&
       this.thirdPartyRequired &&
       !this.form.value.thirdPartyName;
-    const loc = this.cbiLocationGroup.value as {
-      country: string | null;
-      city: string;
-      zip: string;
-    };
-    const missingLocation =
-      this.isContingentBi && (!loc.country || !loc.city || !loc.zip);
+    const missingLocation = this.isContingentBi && !this.form.value.cbiLocation;
 
     if (this.form.get('instructionStatus')?.invalid || missingCaseType || missingThirdParty || missingLocation) {
       this.form.markAllAsTouched();
@@ -149,7 +140,6 @@ export class EditEntityDamageModalComponent {
     }
 
     const caseType = this.selectedCbiCaseType;
-    const locationValue = this.cbiLocationGroup.value as CbiOriginatingLocation;
 
     this.modalRef.close({
       instructionStatus: this.form.value.instructionStatus as InstructionStatus,
@@ -160,15 +150,10 @@ export class EditEntityDamageModalComponent {
               ? (this.form.value.thirdPartyName as string) || undefined
               : undefined,
             thirdPartyRelationship: this.cbiRelationshipFor(caseType),
-            cbiOriginatingLocation: {
-              country: locationValue.country ?? '',
-              city: locationValue.city ?? '',
-              zip: locationValue.zip ?? '',
-              street: locationValue.street || undefined,
-              houseNumber: locationValue.houseNumber || undefined,
-              landRecordNumber: locationValue.landRecordNumber || undefined,
-              state: locationValue.state || undefined
-            }
+            thirdPartyIndustry: this.showThirdPartyIndustry
+              ? (this.form.value.thirdPartyIndustry as string) || undefined
+              : undefined,
+            cbiOriginatingLocation: (this.form.value.cbiLocation as string) || undefined
           }
         : {})
     });

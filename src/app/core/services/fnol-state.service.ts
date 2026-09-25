@@ -89,15 +89,10 @@ export class FnolStateService {
       cbiApplicable: new FormControl<'yes' | 'no' | null>(null),
       cbiCaseType: new FormControl<string | null>(null),
       cbiThirdPartyName: new FormControl<string>(''),
-      cbiLocation: new FormGroup({
-        country: new FormControl<string | null>(null),
-        city: new FormControl<string>(''),
-        zip: new FormControl<string>(''),
-        street: new FormControl<string>(''),
-        houseNumber: new FormControl<string>(''),
-        landRecordNumber: new FormControl<string>(''),
-        state: new FormControl<string>('')
-      }),
+      cbiThirdPartyIndustry: new FormControl<string>(''),
+      // Free text (team call, 2026-09-25) — was a 7-field FormGroup
+      // (country/city/zip/street/houseNumber/landRecordNumber/state).
+      cbiLocation: new FormControl<string>(''),
       lossDescription: new FormControl('', [Validators.maxLength(500)]),
       events: new FormArray([])
     })

@@ -32,20 +32,6 @@ export interface LossEvent {
   // location?: ManualAddress;  ← will be added with MFE task
 }
 
-// CBI (contingent business interruption) — BMPCC-18353. Captured only while
-// typeOfDamage includes 'business-interruption' and cbiApplicable === 'yes'.
-// Country/city/zip mandatory when present; the rest optional (mirrors the
-// legacy ABS field set — see CbiOriginatingLocation in section.model.ts).
-export interface CbiLossInfoLocation {
-  country: string | null;
-  city: string;
-  zip: string;
-  street?: string;
-  houseNumber?: string;
-  landRecordNumber?: string;
-  state?: string;
-}
-
 export interface LossInformationFormValue {
   dateOfLoss: DateOfLoss;
   lossLocation: LossLocation;
@@ -62,7 +48,10 @@ export interface LossInformationFormValue {
   cbiApplicable?: 'yes' | 'no' | null;
   cbiCaseType?: string | null;
   cbiThirdPartyName?: string;
-  cbiLocation?: CbiLossInfoLocation;
+  cbiThirdPartyIndustry?: string;
+  // Free text (team call, 2026-09-25) — see section.model.ts's
+  // SectionEntity.cbiOriginatingLocation for the same simplification.
+  cbiLocation?: string;
   lossDescription: string;
   events: LossEvent[];
 }
@@ -81,7 +70,10 @@ export interface LossInformation {
   cbiApplicable?: 'yes' | 'no' | null;
   cbiCaseType?: string | null;
   cbiThirdPartyName?: string;
-  cbiLocation?: CbiLossInfoLocation;
+  cbiThirdPartyIndustry?: string;
+  // Free text (team call, 2026-09-25) — see section.model.ts's
+  // SectionEntity.cbiOriginatingLocation for the same simplification.
+  cbiLocation?: string;
   lossDescription: string;
   events: LossEvent[];
   createdAt: string;

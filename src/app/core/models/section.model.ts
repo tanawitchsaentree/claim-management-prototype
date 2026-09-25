@@ -12,28 +12,12 @@ export type CoverageReview =
   | 'Additional information required'
   | 'Enhanced review required';
 
-// Originating Loss Location — where the CBI-triggering event actually
-// happened (the third party's premises), not the insured's own loss
-// location. Field set mirrors the legacy ABS precedent (BR CBI Extension
-// location): Country/City/ZIP mandatory, the rest optional. Manual capture
-// only — no CWB/GIS lookup in baseline (BMPCC-17927).
-export interface CbiOriginatingLocation {
-  country: string;
-  city: string;
-  zip: string;
-  street?: string;
-  houseNumber?: string;
-  landRecordNumber?: string;
-  state?: string;
-}
-
 // A named third party already captured on this claim's Sections (CBI entities
 // only, today) — surfaced read-only on Trade Sanctions so the person
 // answering "any sanctions exposure?" can see who is already on file instead
-// of screening blind. Name only: CbiOriginatingLocation.country is
-// deliberately withheld here too, same as entity-detail-panel's
-// showCbiLocation — CBI (BMPCC-17927) is still unsigned-off, and country is
-// the one field that hold explicitly covers.
+// of screening blind. Name only — location/industry stay off this summary,
+// same as entity-detail-panel's showCbiLocation — CBI (BMPCC-17927) is still
+// unsigned-off.
 export interface NamedThirdParty {
   name: string;
   sectionName: string;
@@ -69,7 +53,17 @@ export interface SectionEntity {
   cbiCaseType?: string;
   thirdPartyName?: string;
   thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
-  cbiOriginatingLocation?: CbiOriginatingLocation;
+  // Supplier/customer industry — net-new per the CBI FD's "category-specific
+  // fields" table (11 Sep 2026 meeting, Sarah/Marlene/Joerg). Only meaningful
+  // for the Supplier/Customer category (thirdPartyRelationship 'supplier' |
+  // 'customer'), same gating as thirdPartyName.
+  thirdPartyIndustry?: string;
+  // Originating loss location — where the CBI-triggering event actually
+  // happened (the third party's premises), not the insured's own loss
+  // location. Free text (team call, 2026-09-25) — the granular Country/
+  // City/ZIP field set mirroring the legacy ABS precedent was more than
+  // baseline needs right now.
+  cbiOriginatingLocation?: string;
 }
 
 export interface SectionBlockers {

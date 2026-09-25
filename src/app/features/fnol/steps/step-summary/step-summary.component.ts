@@ -531,6 +531,8 @@ export class StepSummaryComponent implements OnInit {
       cbiApplicable: formValue.cbiApplicable ?? null,
       cbiCaseType: formValue.cbiApplicable === 'yes' ? formValue.cbiCaseType : null,
       cbiThirdPartyName: formValue.cbiApplicable === 'yes' ? formValue.cbiThirdPartyName : undefined,
+      cbiThirdPartyIndustry:
+        formValue.cbiApplicable === 'yes' ? formValue.cbiThirdPartyIndustry : undefined,
       cbiLocation: formValue.cbiApplicable === 'yes' ? formValue.cbiLocation : undefined,
       lossDescription: formValue.lossDescription ?? '',
       events: formValue.events ?? [],
@@ -674,17 +676,8 @@ export class StepSummaryComponent implements OnInit {
             cbiCaseType: cbiCaseType!,
             thirdPartyName: lossInfoValue.cbiThirdPartyName || undefined,
             thirdPartyRelationship: this.cbiRelationshipFor(cbiCaseType!),
-            cbiOriginatingLocation: lossInfoValue.cbiLocation
-              ? {
-                  country: lossInfoValue.cbiLocation.country ?? '',
-                  city: lossInfoValue.cbiLocation.city ?? '',
-                  zip: lossInfoValue.cbiLocation.zip ?? '',
-                  street: lossInfoValue.cbiLocation.street || undefined,
-                  houseNumber: lossInfoValue.cbiLocation.houseNumber || undefined,
-                  landRecordNumber: lossInfoValue.cbiLocation.landRecordNumber || undefined,
-                  state: lossInfoValue.cbiLocation.state || undefined
-                }
-              : undefined
+            thirdPartyIndustry: lossInfoValue.cbiThirdPartyIndustry || undefined,
+            cbiOriginatingLocation: lossInfoValue.cbiLocation || undefined
           }
         : {};
 

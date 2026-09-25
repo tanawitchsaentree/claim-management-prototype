@@ -72,6 +72,12 @@
             }
           </span>
         </div>
+        @if (entity.thirdPartyIndustry) {
+          <div class="edp-field">
+            <span class="edp-field__label">Industry</span>
+            <span class="edp-field__value">{{ entity.thirdPartyIndustry }}</span>
+          </div>
+        }
         @if (showCbiLocation) {
           <div class="edp-field">
             <span class="edp-field__label">Originating loss location</span>

@@ -36,7 +36,6 @@ import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
-import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
@@ -63,7 +62,6 @@ type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
   typeOfDamage: LookupOption[];
-  countries: LookupOption[];
   duplicates: DuplicateClaim[];
   showDuplicateBanner: boolean;
 }
@@ -92,8 +90,7 @@ interface LossInfoVM {
     LocationPickerComponent,
     StatusChipComponent,
     RouterLink,
-    WizardFooterComponent,
-    NxAccordionModule
+    WizardFooterComponent
   ],
   templateUrl: './step-loss-information.component.html',
   styleUrl: './step-loss-information.component.scss'
@@ -118,7 +115,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   readonly lossLocation = this.fnolState.getLossLocationControl();
   readonly eventsArray = this.fnolState.getLossEventsArray();
   readonly policyNumber = this.fnolState.selectedPolicy?.policyNumber ?? null;
-  readonly cbiLocation = this.form.get('cbiLocation') as FormGroup;
   readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesSync();
 
   readonly maxDesc = 500;
@@ -144,9 +140,8 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     'cbiApplicable': 'Contingent business interruption',
     'cbiCaseType': 'CBI case type',
     'cbiThirdPartyName': 'Third-party name',
-    'cbiLocationCountry': 'Originating loss location: country',
-    'cbiLocationCity': 'Originating loss location: city',
-    'cbiLocationZip': 'Originating loss location: ZIP'
+    'cbiThirdPartyIndustry': 'Supplier/customer industry',
+    'cbiLocation': 'Originating loss location'
   };
 
   ngOnInit(): void {
@@ -210,7 +205,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     this.vm$ = combineLatest({
       causeOfLoss: this.lookupSvc.getCauseOfLoss(),
       typeOfDamage: this.lookupSvc.getTypeOfDamage(),
-      countries: this.lookupSvc.getCountries(),
       duplicates: duplicates$,
       showDuplicateBanner: combineLatest([duplicates$, this.bannerDismissed$]).pipe(
         map(([dups, dismissed]) => ({ show: dups.length > 0 && !dismissed, count: dups.length })),
@@ -410,14 +404,12 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
           message: `${this.fieldLabels['cbiThirdPartyName']}: required`
         });
       }
-      (['country', 'city', 'zip'] as const).forEach(key => {
-        if (!this.cbiLocation.get(key)?.value) {
-          errors.push({
-            fieldId: `cbiLocation${key.charAt(0).toUpperCase()}${key.slice(1)}`,
-            message: `${this.fieldLabels[`cbiLocation${key.charAt(0).toUpperCase()}${key.slice(1)}`]}: required`
-          });
-        }
-      });
+      if (!this.form.get('cbiLocation')?.value) {
+        errors.push({
+          fieldId: 'cbiLocation',
+          message: `${this.fieldLabels['cbiLocation']}: required`
+        });
+      }
     }
 
     return errors;
@@ -441,12 +433,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   }
 
   scrollToField(fieldId: string): void {
-    // Re-open the accordion first — clicking an error-summary link for a
-    // field inside a collapsed "Originating loss location" must not land
-    // on an invisible target.
-    if (fieldId.startsWith('cbiLocation')) {
-      this.cbiLocationPanelExpanded = true;
-    }
     setTimeout(() => {
       const el = document.querySelector(`[data-field="${fieldId}"]`);
       if (!el) return;
@@ -603,14 +589,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     return this.showCbiQuestion && this.cbiApplicable === 'yes';
   }
 
-  // Accordion, open by default (user's call — collapsing all 7 fields,
-  // including the 3 required ones, trades a real risk: a handler who
-  // collapses it and clicks Next would see the error summary point at a
-  // field they can't see). Mitigated, not avoided: onNext() below force-
-  // reopens this if any Originating Loss Location field is still invalid,
-  // so the collapsed state can never hide a blocking error.
-  cbiLocationPanelExpanded = true;
-
   get selectedCbiCaseType(): string | null {
     return (this.form.get('cbiCaseType')?.value as string | null) ?? null;
   }
@@ -639,6 +617,20 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       ? 'Customer name'
       : 'Supplier name';
     return this.cbiThirdPartyRequired ? base : `${base} (optional)`;
+  }
+
+  // Industry — net-new per the CBI FD's category-specific fields table (11
+  // Sep 2026 meeting). Same gating as the name field: only the Supplier/
+  // Customer category has an industry to name. Optional either way — the
+  // FD doesn't state a required/optional split the way it does for name.
+  get showCbiThirdPartyIndustry(): boolean {
+    return this.showCbiThirdPartyName;
+  }
+
+  get cbiThirdPartyIndustryLabel(): string {
+    return this.selectedCbiCaseType?.startsWith('customer-')
+      ? 'Customer industry (optional)'
+      : 'Supplier industry (optional)';
   }
 
   onCbiApplicableChange(): void {
@@ -683,22 +675,26 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
       thirdPartyCtrl.updateValueAndValidity({ emitEvent: false });
     }
 
-    const locationRequired = ['country', 'city', 'zip'];
-    for (const key of locationRequired) {
-      const ctrl = this.cbiLocation.get(key);
-      if (!ctrl) continue;
-      if (showDetails) {
-        ctrl.setValidators([Validators.required]);
+    const industryCtrl = this.form.get('cbiThirdPartyIndustry');
+    if (industryCtrl) {
+      if (showDetails && this.showCbiThirdPartyIndustry) {
+        industryCtrl.setValidators([Validators.maxLength(100)]);
       } else {
-        ctrl.clearValidators();
-        ctrl.setValue(key === 'country' ? null : '');
+        industryCtrl.clearValidators();
+        industryCtrl.setValue('');
       }
-      ctrl.updateValueAndValidity({ emitEvent: false });
+      industryCtrl.updateValueAndValidity({ emitEvent: false });
     }
-    if (!showDetails) {
-      ['street', 'houseNumber', 'landRecordNumber', 'state'].forEach(key =>
-        this.cbiLocation.get(key)?.setValue('')
-      );
+
+    const locationCtrl = this.form.get('cbiLocation');
+    if (locationCtrl) {
+      if (showDetails) {
+        locationCtrl.setValidators([Validators.required, Validators.maxLength(200)]);
+      } else {
+        locationCtrl.clearValidators();
+        locationCtrl.setValue('');
+      }
+      locationCtrl.updateValueAndValidity({ emitEvent: false });
     }
   }
 
@@ -814,14 +810,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     );
 
     this.formErrors = this.collectErrors();
-
-    // A collapsed accordion must never hide a blocking error — if the
-    // handler closed "Originating loss location" before filling the
-    // required fields, force it back open so the error summary's links
-    // actually point at something visible.
-    if (this.showCbiDetails && this.cbiLocation.invalid) {
-      this.cbiLocationPanelExpanded = true;
-    }
 
     if (!causeValid || !damageValid || !eventsValid || this.form.invalid) {
       this.scrollToErrorSummary();

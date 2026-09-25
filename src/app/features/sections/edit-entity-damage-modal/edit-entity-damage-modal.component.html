@@ -43,35 +43,18 @@
         <input nxInput formControlName="thirdPartyName" maxlength="100" />
       </nx-formfield>
     }
+    @if (showThirdPartyIndustry) {
+      <nx-formfield [label]="thirdPartyIndustryLabel">
+        <input nxInput formControlName="thirdPartyIndustry" maxlength="100" />
+      </nx-formfield>
+    }
 
-    <p class="eed-section-label">Originating loss location</p>
-    <div class="eed-location-grid" [formGroup]="cbiLocationGroup">
-      <nx-formfield label="Country">
-        <nx-dropdown formControlName="country" placeholder="Select country">
-          @for (opt of countryOptions; track opt.value) {
-            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-          }
-        </nx-dropdown>
-      </nx-formfield>
-      <nx-formfield label="City">
-        <input nxInput formControlName="city" />
-      </nx-formfield>
-      <nx-formfield label="ZIP">
-        <input nxInput formControlName="zip" />
-      </nx-formfield>
-      <nx-formfield label="Street (optional)">
-        <input nxInput formControlName="street" />
-      </nx-formfield>
-      <nx-formfield label="House number (optional)">
-        <input nxInput formControlName="houseNumber" />
-      </nx-formfield>
-      <nx-formfield label="Land record number (optional)">
-        <input nxInput formControlName="landRecordNumber" />
-      </nx-formfield>
-      <nx-formfield label="State (optional)">
-        <input nxInput formControlName="state" />
-      </nx-formfield>
-    </div>
+    <nx-formfield label="Originating loss location">
+      <input nxInput formControlName="cbiLocation" maxlength="200" />
+      @if (!form.value.cbiLocation && form.get('cbiLocation')?.touched) {
+        <nx-error nxFormfieldError>Required</nx-error>
+      }
+    </nx-formfield>
   }
 </div>
 

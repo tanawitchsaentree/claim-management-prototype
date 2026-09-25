@@ -5,8 +5,7 @@ import {
   InstructionStatus,
   SectionClosureReason,
   SectionReopenReason,
-  SectionEntity,
-  CbiOriginatingLocation
+  SectionEntity
 } from '../../models/section.model';
 import { ClaimActivity } from '../../models/claim-overview.model';
 import { MockBaseService } from './mock-base.service';
@@ -68,7 +67,8 @@ export class MockSectionService extends MockBaseService {
       cbiCaseType?: string;
       thirdPartyName?: string;
       thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
-      cbiOriginatingLocation?: CbiOriginatingLocation;
+      thirdPartyIndustry?: string;
+      cbiOriginatingLocation?: string;
     }[],
     createdBy: { userId: string; name: string } = { userId: 'usr-lf', name: 'Leonie Fischer' }
   ): Observable<ClaimSection> {
@@ -112,6 +112,7 @@ export class MockSectionService extends MockBaseService {
         cbiCaseType: e.cbiCaseType,
         thirdPartyName: e.thirdPartyName,
         thirdPartyRelationship: e.thirdPartyRelationship,
+        thirdPartyIndustry: e.thirdPartyIndustry,
         cbiOriginatingLocation: e.cbiOriginatingLocation
       }))
     };
@@ -256,7 +257,7 @@ export class MockSectionService extends MockBaseService {
           : attribute === 'Third party name'
             ? before.thirdPartyName ?? ''
             : attribute === 'Originating loss location'
-              ? before.cbiOriginatingLocation?.city ?? ''
+              ? before.cbiOriginatingLocation ?? ''
               : before.instructionStatus ?? '';
       const valueNew =
         attribute === 'CBI case type'
@@ -264,7 +265,7 @@ export class MockSectionService extends MockBaseService {
           : attribute === 'Third party name'
             ? updated.thirdPartyName ?? ''
             : attribute === 'Originating loss location'
-              ? updated.cbiOriginatingLocation?.city ?? ''
+              ? updated.cbiOriginatingLocation ?? ''
               : updated.instructionStatus ?? '';
 
       const activity: ClaimActivity = {

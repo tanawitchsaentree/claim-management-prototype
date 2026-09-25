@@ -209,66 +209,22 @@
               </nx-formfield>
             </div>
           }
-        </div>
-
-        <!-- Originating Loss Location — where the CBI-triggering event
-        happened at the third party's premises, not the insured's own loss
-        location. Manual entry only in baseline (no CWB/GIS lookup).
-        Accordion open by default (user's call) — onNext()/scrollToField()
-        force it back open if a required field inside is still invalid, so
-        collapsing it can never hide a blocking error. -->
-        <nx-accordion [multi]="true" class="cbi-location-accordion">
-          <nx-expansion-panel
-            [expanded]="cbiLocationPanelExpanded"
-            (expandedChange)="cbiLocationPanelExpanded = $event"
-          >
-            <nx-expansion-panel-header>
-              <nx-expansion-panel-title>Originating loss location</nx-expansion-panel-title>
-            </nx-expansion-panel-header>
-            <div class="two-col-grid" [formGroup]="cbiLocation">
-              <div data-field="cbiLocationCountry">
-                <nx-formfield label="Country">
-                  <nx-dropdown formControlName="country" placeholder="Select country">
-                    @for (opt of vm.countries; track opt.value) {
-                      <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-                    }
-                  </nx-dropdown>
-                  @if (submitAttempted && !cbiLocation.get('country')?.value) {
-                    <nx-error nxFormfieldError>Required</nx-error>
-                  }
-                </nx-formfield>
-              </div>
-              <div data-field="cbiLocationCity">
-                <nx-formfield label="City">
-                  <input nxInput formControlName="city" />
-                  @if (submitAttempted && !cbiLocation.get('city')?.value) {
-                    <nx-error nxFormfieldError>Required</nx-error>
-                  }
-                </nx-formfield>
-              </div>
-              <div data-field="cbiLocationZip">
-                <nx-formfield label="ZIP">
-                  <input nxInput formControlName="zip" />
-                  @if (submitAttempted && !cbiLocation.get('zip')?.value) {
-                    <nx-error nxFormfieldError>Required</nx-error>
-                  }
-                </nx-formfield>
-              </div>
-              <nx-formfield label="Street (optional)">
-                <input nxInput formControlName="street" />
-              </nx-formfield>
-              <nx-formfield label="House number (optional)">
-                <input nxInput formControlName="houseNumber" />
-              </nx-formfield>
-              <nx-formfield label="Land record number (optional)">
-                <input nxInput formControlName="landRecordNumber" />
-              </nx-formfield>
-              <nx-formfield label="State (optional)">
-                <input nxInput formControlName="state" />
+          @if (showCbiThirdPartyIndustry) {
+            <div data-field="cbiThirdPartyIndustry">
+              <nx-formfield [label]="cbiThirdPartyIndustryLabel">
+                <input nxInput formControlName="cbiThirdPartyIndustry" maxlength="100" />
               </nx-formfield>
             </div>
-          </nx-expansion-panel>
-        </nx-accordion>
+          }
+          <div data-field="cbiLocation">
+            <nx-formfield label="Originating loss location">
+              <input nxInput formControlName="cbiLocation" maxlength="200" />
+              @if (submitAttempted && !form.get('cbiLocation')?.value) {
+                <nx-error nxFormfieldError>Required</nx-error>
+              }
+            </nx-formfield>
+          </div>
+        </div>
       }
       <hr class="li-divider" />
       <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
