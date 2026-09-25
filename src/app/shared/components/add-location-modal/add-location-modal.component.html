@@ -1,42 +1,52 @@
 <div class="alm-header">
-  <h2 class="alm-title">Add location</h2>
+  <h2 class="alm-title">
+    {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
+  </h2>
   <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
 </div>
 
 <div class="alm-body" tabindex="0">
-  <nx-tab-group
-    class="alm-tabs"
-    [selectedIndex]="activeTab()"
-    (selectedIndexChange)="setTab($event === 0 ? 0 : 1)"
-  >
-    <nx-tab>
-      <ng-template nxTabLabel>Policy locations</ng-template>
-    </nx-tab>
-    <nx-tab>
-      <ng-template nxTabLabel>Retrieve from CWB</ng-template>
-    </nx-tab>
-  </nx-tab-group>
+  <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
 
-  @if (activeTab() === 0) {
-    <!-- ─── Policy locations ─────────────────────────────────────────── -->
+  @if (screen() === 'policy') {
+    <!-- ─── Add location from policy ───────────────────────────────────── -->
     <form [formGroup]="policyForm" class="alm-form">
       <div class="alm-search-row">
         <div class="alm-search-row__inputs">
-          <nx-formfield label="Location name">
-            <input nxInput formControlName="name" autocomplete="off" />
+          <nx-formfield label="Country">
+            <nx-dropdown formControlName="country" placeholder="Select country">
+              @for (c of (countries$ | async) ?? []; track c.value) {
+                <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
           </nx-formfield>
-          <nx-formfield label="Property ID">
-            <input nxInput formControlName="id" autocomplete="off" />
+          <nx-formfield label="State">
+            <input nxInput formControlName="state" autocomplete="off" />
           </nx-formfield>
           <nx-formfield label="City">
             <input nxInput formControlName="city" autocomplete="off" />
           </nx-formfield>
+          <nx-formfield label="Street (optional)">
+            <input nxInput formControlName="street" autocomplete="off" />
+          </nx-formfield>
+        </div>
+      </div>
+      <div class="alm-search-row">
+        <div class="alm-search-row__inputs">
+          <nx-formfield label="Number (optional)">
+            <input nxInput formControlName="number" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Zip or Postal code (optional)">
+            <input nxInput formControlName="postalCode" autocomplete="off" />
+          </nx-formfield>
         </div>
         <div class="alm-search-row__actions">
           <button nxButton="primary small" type="button" (click)="onPolicySearch()">Search</button>
-          <button nxButton="secondary small" type="button" (click)="onPolicyReset()">Reset</button>
+          <button nxButton="secondary small" type="button" (click)="onPolicyReset()">
+            Reset search
+          </button>
         </div>
       </div>
     </form>
@@ -58,7 +68,11 @@
           </thead>
           <tbody>
             @for (loc of policyResults(); track loc.id) {
-              <tr nxTableRow [class.alm-row--selected]="isPolicySelected(loc.id)" (click)="selectPolicyRow(loc.id)">
+              <tr
+                nxTableRow
+                [class.alm-row--selected]="isPolicySelected(loc.id)"
+                (click)="selectPolicyRow(loc.id)"
+              >
                 <td nxCell class="alm-col-pick">
                   <nx-radio
                     name="alm-policy-location"
@@ -68,8 +82,15 @@
                     (click)="selectPolicyRow(loc.id); $event.stopPropagation()"
                   ></nx-radio>
                 </td>
-                <td nxCell>{{ loc.name }} @if (!loc.active) { <span class="alm-inactive">Inactive</span> }</td>
-                <td nxCell>{{ loc.addressLine1 }}@if (loc.addressLine2) {, {{ loc.addressLine2 }}}</td>
+                <td nxCell>
+                  {{ loc.name }}
+                  @if (!loc.active) {
+                    <span class="alm-inactive">Inactive</span>
+                  }
+                </td>
+                <td nxCell
+                  >{{ loc.addressLine1 }}@if (loc.addressLine2) {, {{ loc.addressLine2 }}}</td
+                >
                 <td nxCell>{{ loc.postalCode }}</td>
                 <td nxCell>{{ loc.city }}</td>
                 <td nxCell>{{ loc.propertyId ?? '–' }}</td>
@@ -79,100 +100,73 @@
         </table>
       </div>
     }
+
+    <button type="button" class="alm-link-btn" (click)="goToManual()">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add location manually
+    </button>
   } @else {
-    <!-- ─── CWB search ───────────────────────────────────────────────── -->
-    <form [formGroup]="cwbForm" class="alm-form">
-      <div class="alm-search-row">
-        <div class="alm-search-row__inputs">
-          <nx-formfield label="Country *">
-            <nx-dropdown formControlName="country" placeholder="Select country">
-              @for (c of (countries$ | async) ?? []; track c.value) {
-                <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
-              }
-            </nx-dropdown>
-            @if (showError('country')) {
-              <nx-error nxFormfieldError>Country is required.</nx-error>
-            }
-          </nx-formfield>
-          <nx-formfield label="City">
-            <input nxInput formControlName="city" autocomplete="off" />
-          </nx-formfield>
-          <nx-formfield label="ZIP / postal code">
-            <input nxInput formControlName="postalCode" autocomplete="off" />
-          </nx-formfield>
-          <nx-formfield label="Street and number">
-            <input nxInput formControlName="streetAndNumber" autocomplete="off" />
-          </nx-formfield>
-        </div>
-        <div class="alm-search-row__actions">
-          <button nxButton="primary small" type="button" (click)="onCwbSearch()">Search</button>
-          <button nxButton="secondary small" type="button" (click)="onCwbReset()">Reset</button>
-        </div>
-      </div>
-    </form>
+    <!-- ─── Add location manually ──────────────────────────────────────── -->
+    <nx-formfield label="Search location" class="alm-gis-field">
+      <input nxInput [formControl]="gisSearch" autocomplete="off" />
+      <nx-icon name="search" nxFormfieldSuffix></nx-icon>
+    </nx-formfield>
 
-    @if (cwbState$ | async; as cwbVm) {
-      @if (cwbVm.loading) {
-        <div class="alm-loading">
-          <nx-spinner size="medium"></nx-spinner>
-          <span>Querying CWB…</span>
-        </div>
-      } @else if (cwbVm.searched) {
-        @if (cwbVm.error) {
-          <nx-message context="error">CWB unreachable. Try again or enter the address manually below.</nx-message>
-        } @else if (cwbVm.results.length === 0) {
-          <app-empty-state message="No locations found." hint="Enter an address manually below."></app-empty-state>
-        } @else {
-          <div class="alm-table-wrap" tabindex="0">
-            <table nxTable class="alm-table">
-              <thead>
-                <tr nxTableRow>
-                  <th nxHeaderCell class="alm-col-pick"></th>
-                  <th nxHeaderCell>CWB ref</th>
-                  <th nxHeaderCell>Location</th>
-                  <th nxHeaderCell>Address</th>
-                  <th nxHeaderCell>City</th>
-                  <th nxHeaderCell>Country</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (r of cwbVm.results; track r.cwbReference) {
-                  <tr nxTableRow [class.alm-row--selected]="isCwbSelected(r.cwbReference)" (click)="toggleCwbRow(r.cwbReference, !isCwbSelected(r.cwbReference))">
-                    <td nxCell class="alm-col-pick">
-                      <nx-checkbox [checked]="isCwbSelected(r.cwbReference)" [attr.aria-label]="'Select ' + r.locationName" (checkedChange)="toggleCwbRow(r.cwbReference, $event)" (click)="$event.stopPropagation()"></nx-checkbox>
-                    </td>
-                    <td nxCell><code class="alm-ref">{{ r.cwbReference }}</code></td>
-                    <td nxCell>{{ r.locationName }}</td>
-                    <td nxCell>{{ r.streetAndNumber }}, {{ r.postalCode }}</td>
-                    <td nxCell>{{ r.city }}</td>
-                    <td nxCell>{{ r.country }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+    @if (gisSearch.value && (gisResults()?.length ?? 0) > 0 && !selectedGisSuggestion()) {
+      <ul class="alm-gis-suggestions">
+        @for (s of gisResults(); track s.formattedAddress) {
+          <li>
+            <button type="button" class="alm-gis-suggestion" (click)="selectGisSuggestion(s)">
+              {{ s.formattedAddress }}
+            </button>
+          </li>
         }
-      }
+      </ul>
     }
-  }
 
-  <!-- ─── Manual entry — shared across both tabs ─────────────────────── -->
-  <app-manual-address-section
-    [form]="manualForm"
-    [countries]="(countries$ | async) ?? []"
-    [entries]="manualEntries()"
-    [submitted]="manualSubmitted"
-    (add)="addManual()"
-    (remove)="removeManual($event)"
-  ></app-manual-address-section>
+    @if (selectedGisSuggestion(); as picked) {
+      <div class="alm-gis-picked">
+        <nx-icon name="check-circle"></nx-icon>
+        <span>{{ picked.formattedAddress }}</span>
+      </div>
+    }
+
+    <nx-checkbox
+      [checked]="addAddressManually()"
+      (checkedChange)="toggleAddAddressManually($event)"
+    >
+      Add the address manually
+    </nx-checkbox>
+
+    @if (addAddressManually()) {
+      <app-manual-address-section
+        [form]="manualForm"
+        [countries]="(countries$ | async) ?? []"
+        [entries]="manualEntries()"
+        [submitted]="manualSubmitted"
+        (add)="addManual()"
+        (remove)="removeManual($event)"
+      ></app-manual-address-section>
+    }
+
+    <button type="button" class="alm-link-btn" (click)="goToPolicy()">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add location from policy
+    </button>
+  }
 </div>
 
 <footer class="alm-footer">
   <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  @if (cwbState$ | async; as cwbVm) {
-    <button nxButton="primary small" type="button" [disabled]="!hasAnySelection()" (click)="onConfirm(cwbVm.results)">
-      Add selected
-      @if (addCount() > 0) { ({{ addCount() }}) }
-    </button>
-  }
+  <button
+    nxButton="primary small"
+    type="button"
+    [disabled]="!hasAnySelection()"
+    (click)="onConfirm()"
+  >
+    Add
+    @if (addCount() > 0) {
+      ({{ addCount() }})
+    }
+  </button>
 </footer>

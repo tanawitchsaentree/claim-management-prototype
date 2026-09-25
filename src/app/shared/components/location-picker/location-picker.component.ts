@@ -139,21 +139,6 @@ export class LocationPickerComponent implements OnInit {
           policyLocationRef: l.id
         })
       ),
-      ...result.cwb.map(
-        (l): LocationItem => ({
-          id: this._newId(),
-          source: 'cwb',
-          displayName: l.locationName,
-          addressLine1: l.streetAndNumber,
-          postalCode: l.postalCode,
-          city: l.city,
-          country: l.country,
-          latitude: l.latitude,
-          longitude: l.longitude,
-          cwbReference: l.cwbReference,
-          locationRuleNumber: l.locationRuleNumber
-        })
-      ),
       ...result.manual.map(
         (m): LocationItem => ({
           id: this._newId(),

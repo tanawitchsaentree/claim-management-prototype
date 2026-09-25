@@ -1,18 +1,9 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import {
-  Observable,
-  ReplaySubject,
-  switchMap,
-  catchError,
-  of,
-  map,
-  startWith,
-  shareReplay
-} from 'rxjs';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { Observable, catchError, of, startWith, debounceTime, switchMap } from 'rxjs';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
-import { NxTabsModule } from '@allianz/ng-aquila/tabs';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
@@ -21,16 +12,13 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
-import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
-import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { MockCwbService } from '../../../core/mock/services/mock-cwb.service';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
+import { MockGisLocationService } from '../../../core/mock/services/mock-gis-location.service';
 import {
   PolicyLocation,
-  CwbLocation,
-  CwbSearchFilters,
   CwbManualAddress,
   AddLocationModalResult,
+  GisAddressSuggestion,
   LookupOption
 } from '../../../core/models';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
@@ -42,12 +30,7 @@ export interface AddLocationModalData {
   policyLocations: PolicyLocation[];
 }
 
-interface CwbSearchState {
-  results: CwbLocation[];
-  loading: boolean;
-  error: boolean;
-  searched: boolean;
-}
+type Screen = 'policy' | 'manual';
 
 @Component({
   selector: 'app-add-location-modal',
@@ -56,7 +39,6 @@ interface CwbSearchState {
     CommonModule,
     ReactiveFormsModule,
     NxModalModule,
-    NxTabsModule,
     NxFormfieldModule,
     NxInputModule,
     NxDropdownModule,
@@ -65,8 +47,6 @@ interface CwbSearchState {
     NxRadioModule,
     NxTableModule,
     NxCheckboxModule,
-    NxSpinnerModule,
-    NxMessageModule,
     EmptyStateComponent,
     ManualAddressSectionComponent
   ],
@@ -78,60 +58,58 @@ export class AddLocationModalComponent implements OnInit {
   readonly modalRef =
     inject<NxModalRef<AddLocationModalComponent, AddLocationModalResult | null>>(NxModalRef);
   private readonly fb = inject(FormBuilder);
-  private readonly cwbSvc = inject(MockCwbService);
   private readonly lookupSvc = inject(MockLookupService);
+  private readonly gisSvc = inject(MockGisLocationService);
 
-  readonly activeTab = signal<0 | 1>(0);
+  // Two linked screens (production reference, 2026-09-25), not tabs — "Add
+  // location from policy" and "Add location manually" each link to the
+  // other via a text button, matching what production actually does.
+  readonly screen = signal<Screen>('policy');
 
   readonly countries$: Observable<LookupOption[]> = this.lookupSvc.getCountries().pipe(
     catchError(() => of([] as LookupOption[])),
     startWith([] as LookupOption[])
   );
 
-  // ── Policy tab ───────────────────────────────────────────────────────────
+  // ── Screen: Add location from policy ────────────────────────────────────
   readonly policyForm = new FormGroup({
-    name: new FormControl(''),
-    id: new FormControl(''),
-    city: new FormControl('')
+    country: new FormControl<string | null>(null),
+    state: new FormControl(''),
+    city: new FormControl(''),
+    street: new FormControl(''),
+    number: new FormControl(''),
+    postalCode: new FormControl('')
   });
   readonly policyResults = signal<PolicyLocation[]>([]);
   readonly selectedPolicyId = signal<string | null>(null);
 
-  // ── CWB tab ──────────────────────────────────────────────────────────────
-  readonly cwbForm: FormGroup = this.fb.group({
-    policyNumber: [{ value: '', disabled: true }, Validators.required],
-    locationRuleNumber: [{ value: '', disabled: true }, Validators.required],
-    country: ['', Validators.required],
-    city: [''],
-    postalCode: [''],
-    streetAndNumber: ['']
-  });
-  private readonly cwbSearchTrigger$ = new ReplaySubject<CwbSearchFilters>(1);
-  readonly cwbState$: Observable<CwbSearchState> = this.cwbSearchTrigger$.pipe(
-    switchMap(filters =>
-      this.cwbSvc.search(filters).pipe(
-        map((results): CwbSearchState => ({ results, loading: false, error: false, searched: true })),
-        catchError(
-          (): Observable<CwbSearchState> =>
-            of({ results: [], loading: false, error: true, searched: true })
-        ),
-        startWith({ results: [], loading: true, error: false, searched: false } as CwbSearchState)
+  // ── Screen: Add location manually ───────────────────────────────────────
+  // GIS address search — a plain free-text lookup, independent of the
+  // policy (same mechanism the orphan-claim location entry already uses —
+  // see ManualLocationEntryModalComponent).
+  readonly gisSearch = new FormControl('');
+  readonly gisResults = toSignal(
+    this.gisSearch.valueChanges.pipe(
+      debounceTime(250),
+      switchMap(q =>
+        q && q.trim().length >= 2
+          ? this.gisSvc.search(q).pipe(catchError(() => of([] as GisAddressSuggestion[])))
+          : of([] as GisAddressSuggestion[])
       )
     ),
-    startWith({ results: [], loading: false, error: false, searched: false } as CwbSearchState),
-    shareReplay({ bufferSize: 1, refCount: true })
+    { initialValue: [] as GisAddressSuggestion[] }
   );
-  readonly selectedCwbRefs = signal<Set<string>>(new Set());
+  readonly selectedGisSuggestion = signal<GisAddressSuggestion | null>(null);
+  readonly addAddressManually = signal(false);
 
-  // ── Manual entry (shared across both tabs) ──────────────────────────────
   readonly manualForm: FormGroup = this.fb.group({
-    country: ['', Validators.required],
-    city: ['', Validators.required],
-    postalCode: ['', Validators.required],
-    streetAndNumber: ['', Validators.required],
+    country: [''],
+    city: [''],
+    postalCode: [''],
+    streetAndNumber: [''],
     addressLine2: [''],
     state: [''],
-    notes: ['', Validators.maxLength(300)]
+    notes: ['']
   });
   manualSubmitted = false;
   readonly manualEntries = signal<CwbManualAddress[]>([]);
@@ -139,41 +117,39 @@ export class AddLocationModalComponent implements OnInit {
   readonly hasAnySelection = computed(
     () =>
       this.selectedPolicyId() !== null ||
-      this.selectedCwbRefs().size > 0 ||
+      this.selectedGisSuggestion() !== null ||
       this.manualEntries().length > 0
   );
   readonly addCount = computed(
     () =>
-      (this.selectedPolicyId() ? 1 : 0) + this.selectedCwbRefs().size + this.manualEntries().length
+      (this.selectedPolicyId() ? 1 : 0) +
+      (this.selectedGisSuggestion() ? 1 : 0) +
+      this.manualEntries().length
   );
 
   ngOnInit(): void {
     this.policyResults.set(this.data.policyLocations);
-    this.cwbForm.patchValue({
-      policyNumber: this.data.policyNumber,
-      locationRuleNumber:
-        this.data.locationRuleNumber ?? this.derivedRuleNumber(this.data.policyNumber)
-    });
   }
 
-  setTab(index: 0 | 1): void {
-    this.activeTab.set(index);
+  goToManual(): void {
+    this.screen.set('manual');
+  }
+  goToPolicy(): void {
+    this.screen.set('policy');
   }
 
-  private derivedRuleNumber(policyNumber: string): string {
-    const m = /POL-(\d{4})-(\d+)/.exec(policyNumber);
-    if (!m) return '';
-    return `LRN-${m[1]}-PROP-${m[2].padStart(3, '0')}`;
-  }
-
-  // ── Policy tab ───────────────────────────────────────────────────────────
+  // ── Add location from policy ─────────────────────────────────────────────
   onPolicySearch(): void {
-    const { name, id, city } = this.policyForm.value;
+    const { country, state, city, street, number, postalCode } = this.policyForm.value;
+    const streetQuery = [street, number].filter(Boolean).join(' ').toLowerCase();
     this.policyResults.set(
       this.data.policyLocations.filter(l => {
-        if (name && !l.name.toLowerCase().includes(name.toLowerCase())) return false;
-        if (id && !l.propertyId?.toLowerCase().includes(id.toLowerCase())) return false;
+        if (country && l.country !== country) return false;
+        if (state && !l.state?.toLowerCase().includes(state.toLowerCase())) return false;
         if (city && !l.city.toLowerCase().includes(city.toLowerCase())) return false;
+        if (streetQuery && !l.addressLine1.toLowerCase().includes(streetQuery)) return false;
+        if (postalCode && !l.postalCode.toLowerCase().includes(postalCode.toLowerCase()))
+          return false;
         return true;
       })
     );
@@ -192,43 +168,16 @@ export class AddLocationModalComponent implements OnInit {
     this.selectedPolicyId.set(id);
   }
 
-  // ── CWB tab ──────────────────────────────────────────────────────────────
-  showError(field: string): boolean {
-    const c = this.cwbForm.get(field);
-    return !!c && c.invalid && c.touched;
+  // ── Add location manually ────────────────────────────────────────────────
+  selectGisSuggestion(s: GisAddressSuggestion): void {
+    this.selectedGisSuggestion.set(s);
+    this.gisSearch.setValue(s.formattedAddress, { emitEvent: false });
   }
 
-  get canSearchCwb(): boolean {
-    const v = this.cwbForm.getRawValue();
-    return !!v.policyNumber && !!v.locationRuleNumber && !!v.country;
+  toggleAddAddressManually(checked: boolean): void {
+    this.addAddressManually.set(checked);
   }
 
-  onCwbSearch(): void {
-    if (!this.canSearchCwb) {
-      this.cwbForm.markAllAsTouched();
-      return;
-    }
-    const v = this.cwbForm.getRawValue() as CwbSearchFilters;
-    this.cwbSearchTrigger$.next({ ...v, geoCoordinates: '' });
-  }
-
-  onCwbReset(): void {
-    this.cwbForm.patchValue({ country: '', city: '', postalCode: '', streetAndNumber: '' });
-    this.selectedCwbRefs.set(new Set());
-  }
-
-  isCwbSelected(ref: string): boolean {
-    return this.selectedCwbRefs().has(ref);
-  }
-
-  toggleCwbRow(ref: string, checked: boolean): void {
-    const next = new Set(this.selectedCwbRefs());
-    if (checked) next.add(ref);
-    else next.delete(ref);
-    this.selectedCwbRefs.set(next);
-  }
-
-  // ── Manual entry ─────────────────────────────────────────────────────────
   addManual(): void {
     this.manualSubmitted = true;
     if (this.manualForm.invalid) return;
@@ -264,12 +213,23 @@ export class AddLocationModalComponent implements OnInit {
     this.modalRef.close(null);
   }
 
-  onConfirm(cwbResults: CwbLocation[]): void {
+  onConfirm(): void {
     if (!this.hasAnySelection()) return;
     const policyId = this.selectedPolicyId();
     const policy = policyId ? this.data.policyLocations.filter(l => l.id === policyId) : [];
-    const refs = this.selectedCwbRefs();
-    const cwb = cwbResults.filter(r => refs.has(r.cwbReference));
-    this.modalRef.close({ policy, cwb, manual: this.manualEntries() });
+    const gis = this.selectedGisSuggestion();
+    const manual: CwbManualAddress[] = gis
+      ? [
+          ...this.manualEntries(),
+          {
+            country: gis.country,
+            city: gis.city,
+            postalCode: gis.postalCode,
+            streetAndNumber: gis.addressLine1,
+            state: gis.state
+          }
+        ]
+      : this.manualEntries();
+    this.modalRef.close({ policy, manual });
   }
 }

@@ -17,8 +17,9 @@
   @include modal.footer;
 }
 
-.alm-tabs {
-  margin-bottom: 4px;
+.alm-subtitle {
+  margin: 0 0 var(--space-base);
+  color: var(--text-muted);
 }
 
 // ─── Search row (80/20 pattern, matches broker-search-modal / cwb modal) ──
@@ -63,14 +64,6 @@
 }
 
 // ─── Results table ────────────────────────────────────────────────────────
-.alm-loading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: var(--space-base) 0;
-  color: var(--text-muted);
-}
-
 .alm-table {
   width: 100%;
 }
@@ -85,12 +78,66 @@
   color: var(--text-muted);
   font-size: var(--paragraph-04-font-size);
 }
-.alm-ref {
-  font-family: monospace;
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
+
+// ─── Screen-to-screen link ("+ Add location manually" / "+ Add location
+// from policy") — a plain text link, not a full-width button, so it reads
+// as "go elsewhere" rather than a primary action competing with Add/Cancel.
+.alm-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-base);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--interactive-primary);
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  cursor: pointer;
+
+  nx-icon {
+    font-size: 14px;
+  }
+}
+
+// ─── GIS address search ("Add location manually" screen) ─────────────────
+.alm-gis-field {
+  width: 100%;
+}
+.alm-gis-suggestions {
+  list-style: none;
+  margin: 0 0 var(--space-base);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.alm-gis-suggestion {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--claim-overlay-hover);
+  }
+}
+.alm-gis-picked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-base);
+  color: var(--text-01);
+
+  nx-icon {
+    color: var(--task-status-done-color);
+  }
 }
 
 app-manual-address-section {
   display: block;
+  margin-top: var(--space-base);
 }

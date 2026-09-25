@@ -41,6 +41,5 @@ export interface CwbModalResult {
 
 export interface AddLocationModalResult {
   policy: PolicyLocation[];
-  cwb: CwbLocation[];
   manual: CwbManualAddress[];
 }
