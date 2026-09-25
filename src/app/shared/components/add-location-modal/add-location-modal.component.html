@@ -1,12 +1,7 @@
 <div class="alm-header">
-  <div class="alm-header-row">
-    <h2 class="alm-title">
-      {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
-    </h2>
-    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
-      <nx-icon name="close"></nx-icon>
-    </button>
-  </div>
+  <h2 class="alm-title">
+    {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
+  </h2>
   <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
 </div>
 
