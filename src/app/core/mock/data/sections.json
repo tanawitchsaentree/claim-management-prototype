@@ -1,5 +1,28 @@
 [
   {
+    "id": "SEC-SK-2024-001",
+    "claimId": "SK-2024-001",
+    "name": "Material damage — Jonas Kaufmann",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-SK-2024-001-0",
+        "name": "Jonas Kaufmann",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
     "id": "SEC-001",
     "claimId": "CLM-2024-001",
     "name": "Property Damage — Warehouse & Forklift",

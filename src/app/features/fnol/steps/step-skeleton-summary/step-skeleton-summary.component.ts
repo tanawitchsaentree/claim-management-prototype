@@ -11,6 +11,7 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
+import { MockSectionService } from '../../../../core/mock/services/mock-section.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LocationItem, LookupOption } from '../../../../core/models';
@@ -36,6 +37,7 @@ export class StepSkeletonSummaryComponent implements OnInit {
   private claimSvc = inject(MockClaimService);
   private partiesSvc = inject(MockPartiesService);
   private lookupSvc = inject(MockLookupService);
+  private sectionSvc = inject(MockSectionService);
   private router = inject(Router);
   private toast = inject(ToastService);
 
@@ -142,6 +144,18 @@ export class StepSkeletonSummaryComponent implements OnInit {
           'SK'
         )
       );
+      // Cause of loss is required info the wizard already collected above
+      // (step-skeleton-loss-info) — the section it implies shouldn't wait
+      // for a policy to get linked later.
+      if (skeleton.causeOfLoss?.length) {
+        await firstValueFrom(
+          this.sectionSvc.createSectionFromCauseOfLoss(
+            skeleton.claimId,
+            skeleton.causeOfLoss,
+            draft.clientName
+          )
+        );
+      }
       this.fnolState.setSkeleton(draft, skeleton.claimId);
       this.fnolState.markStepComplete('skeleton-summary');
       this.createdId.set(skeleton.claimId);

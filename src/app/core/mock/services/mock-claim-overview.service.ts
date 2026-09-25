@@ -132,16 +132,14 @@ export class MockClaimOverviewService extends MockBaseService {
         valueNew: `${policy.policyNumber} — linked`
       }
     ]);
-    // A converted orphan claim needs a section as soon as the cause of loss
-    // is known — an orphan never went through FNOL step 2 (Entities &
-    // Damages), so createSectionsFromEntitiesDamages() (step-summary.ts)
-    // never ran for it. Mirror that same creation primitive here instead of
-    // leaving Sections empty until someone manually adds one.
-    if (claim.causeOfLoss?.length) {
+    // The skeleton-creation path (step-skeleton-summary.ts) already creates
+    // this claim's section from its cause of loss at creation time — this
+    // is only a fallback for claims that predate that fix (or somehow
+    // reached conversion without ever getting one), guarded so conversion
+    // never double-creates a section that already exists.
+    if (claim.causeOfLoss?.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
       await firstValueFrom(
-        this.sectionSvc.createSection(claimId, this.damageTypeFromCauseOfLoss(claim.causeOfLoss), [
-          { name: claim.clientName }
-        ])
+        this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, claim.clientName)
       );
     }
     // Reserves still need manual setup — nothing derives a reserve amount
@@ -163,15 +161,6 @@ export class MockClaimOverviewService extends MockBaseService {
       })
     );
     return claim;
-  }
-
-  // Cause of loss (incident-level, "what happened") and type of damage
-  // (section-level, "what coverage responds") are different lookups with no
-  // structured mapping in this app (see CONVERSIONS.md) — business
-  // interruption is the one cause that maps straight across; every other
-  // cause is physical/property loss, which 'material-damage' covers.
-  private damageTypeFromCauseOfLoss(causeOfLoss: string[]): string {
-    return causeOfLoss.includes('business-interruption') ? 'business-interruption' : 'material-damage';
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton

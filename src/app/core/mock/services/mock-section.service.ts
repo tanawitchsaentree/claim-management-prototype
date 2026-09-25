@@ -134,6 +134,26 @@ export class MockSectionService extends MockBaseService {
     return this.respond({ ...newSection });
   }
 
+  // Cause of loss (incident-level, "what happened") is required info on
+  // every claim — orphan/skeleton claims capture it at creation (FNOL
+  // skeleton-summary), before any policy exists — so the section it implies
+  // shouldn't wait for conversion either. Type of damage (section-level,
+  // "what coverage responds") has no structured mapping from cause of loss
+  // in this app; business interruption is the one cause that maps straight
+  // across, everything else is physical/property loss, which
+  // 'material-damage' covers.
+  createSectionFromCauseOfLoss(
+    claimId: string,
+    causeOfLoss: string[],
+    entityName: string,
+    createdBy?: { userId: string; name: string }
+  ): Observable<ClaimSection> {
+    const damageType = causeOfLoss.includes('business-interruption')
+      ? 'business-interruption'
+      : 'material-damage';
+    return this.createSection(claimId, damageType, [{ name: entityName }], createdBy);
+  }
+
   closeSection(
     sectionId: string,
     closedBy: { userId: string; name: string },
