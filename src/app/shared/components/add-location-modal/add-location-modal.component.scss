@@ -22,10 +22,16 @@
   color: var(--text-muted);
 }
 
-// ─── Search row (80/20 pattern, matches broker-search-modal / cwb modal) ──
+// ─── Search row ───────────────────────────────────────────────────────────
+// Actions (Search/Reset) size to their own content first (flex: 0 0 auto);
+// inputs take whatever's left. The old fixed 80/20 split assumed exactly one
+// row holding all fields + actions together — splitting the fields across
+// several rows (this modal now has 2) left a row with only 2 fields still
+// forced into an 80%-wide box, squeezing "Reset search" until it overflowed.
 .alm-form {
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 .alm-search-row {
@@ -35,7 +41,8 @@
 }
 
 .alm-search-row__inputs {
-  flex: 0 0 80%;
+  flex: 1 1 auto;
+  min-width: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px 24px;
@@ -50,7 +57,7 @@
 }
 
 .alm-search-row__actions {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: row;
   align-items: center;
