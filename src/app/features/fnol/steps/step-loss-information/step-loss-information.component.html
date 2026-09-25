@@ -73,160 +73,15 @@
         }
       </nx-message>
     }
-    <!-- Card 1: General information -->
+    <!-- Card 1: General information — Date/time -> Location -> Cause/Type ->
+    Loss description (reordered to match reference design, 2026-09-25).
+    Location merged into this card rather than staying its own — the
+    reference has no second card border around it. -->
     <section class="li-card">
       <h2 class="section-heading">General information</h2>
       <p class="section-desc">
         Your selections here determine which cause-specific fields appear below.
       </p>
-      <div class="two-col-grid">
-        <div data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
-          <nx-formfield label="Cause of loss">
-            <nx-multi-select
-              [options]="vm.causeOfLoss"
-              selectValue="value"
-              selectLabel="label"
-              placeholder="Select cause of loss"
-              formControlName="causeOfLoss"
-              (selectionChange)="onCauseOfLossChange($event)"
-            ></nx-multi-select>
-            @if (submitAttempted && selectedCauses.length === 0) {
-              <nx-error nxFormfieldError> Select at least one cause of loss </nx-error>
-            }
-          </nx-formfield>
-        </div>
-        <div data-field="typeOfDamage">
-          <nx-formfield label="Type of damage">
-            <nx-multi-select
-              [options]="vm.typeOfDamage"
-              selectValue="value"
-              selectLabel="label"
-              placeholder="Select type of damage"
-              formControlName="typeOfDamage"
-              (selectionChange)="onTypeOfDamageChange($event)"
-            ></nx-multi-select>
-            @if (submitAttempted && selectedDamages.length === 0) {
-              <nx-error nxFormfieldError> Select at least one type of damage </nx-error>
-            }
-          </nx-formfield>
-        </div>
-        <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance
-        per claim. Sits in the same grid so it lands directly under the
-        Cause of loss it is filtered by. Options come from
-        circumstanceOptionsFor() and narrow as soon as a peril is confirmed;
-        with no cause yet, or "Other event", the full catalogue plus
-        "Unknown" is offered. -->
-        <div data-field="circumstance">
-          <nx-formfield label="Incident circumstance">
-            <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
-              @for (option of circumstanceOptions; track option.value) {
-                <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
-              }
-            </nx-dropdown>
-            <nx-hint nxFormfieldHint>
-              @if (selectedCauses.length) {
-                Narrowed to the cause of loss selected.
-              } @else {
-                Select a cause of loss to narrow this list.
-              }
-            </nx-hint>
-          </nx-formfield>
-        </div>
-        <!-- Free-text qualifier, shown only while Cause of loss includes "Other
-        Event". Sits in the same grid so it lands directly under the select
-        it qualifies instead of in a separate row below. There is no damage
-        equivalent — typeOfDamage has no "Other" option by design, see
-        OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
-        @if (showSpecifyOtherCause) {
-          <div data-field="specifyOtherCauseOfLoss">
-            <nx-formfield label="Specify other cause of loss">
-              <input
-                nxInput
-                formControlName="specifyOtherCauseOfLoss"
-                maxlength="100"
-                data-testid="specify-other-cause-of-loss-input"
-              />
-              @if (showError(form.get('specifyOtherCauseOfLoss')!)) {
-                <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
-              }
-            </nx-formfield>
-          </div>
-        }
-      </div>
-
-      <!-- CBI (contingent business interruption) trigger — BMPCC-18353. Sits
-      directly below the General information grid (not inside a per-cause
-      event block in Events details): CBI is a refinement of the Business
-      Interruption damage type itself, not of any one cause of loss. -->
-      @if (showCbiQuestion) {
-        <div class="radio-field" data-field="cbiApplicable">
-          <p class="radio-label">
-            Is this Business Interruption due to Contingent Business Interruption (CBI)?
-          </p>
-          <nx-radio-group
-            class="radio-row"
-            formControlName="cbiApplicable"
-            (valueChange)="onCbiApplicableChange()"
-          >
-            <nx-radio labelSize="small" value="yes">Yes</nx-radio>
-            <nx-radio labelSize="small" value="no">No</nx-radio>
-          </nx-radio-group>
-          @if (submitAttempted && !cbiApplicable) {
-            <p class="field-error">Answer required</p>
-          }
-        </div>
-      }
-
-      @if (showCbiDetails) {
-        <hr class="li-divider" />
-        <h3 class="sub-heading li-sub-heading">Contingent business interruption details</h3>
-        <div class="two-col-grid">
-          <div data-field="cbiCaseType">
-            <nx-formfield label="CBI case type">
-              <nx-dropdown
-                formControlName="cbiCaseType"
-                placeholder="Select case type"
-                (selectionChange)="syncCbi()"
-              >
-                @for (opt of cbiCaseTypeOptions; track opt.value) {
-                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-                }
-              </nx-dropdown>
-              @if (submitAttempted && !selectedCbiCaseType) {
-                <nx-error nxFormfieldError>Select a case type</nx-error>
-              }
-            </nx-formfield>
-          </div>
-          @if (showCbiThirdPartyName) {
-            <div data-field="cbiThirdPartyName">
-              <nx-formfield [label]="cbiThirdPartyLabel">
-                <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
-                @if (
-                  submitAttempted && cbiThirdPartyRequired && !form.get('cbiThirdPartyName')?.value
-                ) {
-                  <nx-error nxFormfieldError>Required</nx-error>
-                }
-              </nx-formfield>
-            </div>
-          }
-          @if (showCbiThirdPartyIndustry) {
-            <div data-field="cbiThirdPartyIndustry">
-              <nx-formfield [label]="cbiThirdPartyIndustryLabel">
-                <input nxInput formControlName="cbiThirdPartyIndustry" maxlength="100" />
-              </nx-formfield>
-            </div>
-          }
-          <div data-field="cbiLocation">
-            <nx-formfield label="Originating loss location">
-              <input nxInput formControlName="cbiLocation" maxlength="200" />
-              @if (submitAttempted && !form.get('cbiLocation')?.value) {
-                <nx-error nxFormfieldError>Required</nx-error>
-              }
-            </nx-formfield>
-          </div>
-        </div>
-      }
-      <hr class="li-divider" />
       <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
       <div class="two-col-grid" [formGroup]="dateOfLoss">
         <div data-field="dateOfOccurrence" data-tour-id="li-date-of-occurrence">
@@ -306,6 +161,164 @@
           Notification date must be on or after date of occurrence.
         </nx-error>
       }
+
+      <hr class="li-divider" />
+      <h3 class="sub-heading li-sub-heading">Locations of loss</h3>
+      <app-location-picker
+        [policyNumber]="policyNumber"
+        [value]="lossLocation.value"
+        [showEditLaterHint]="true"
+        (locationChange)="onLocationChange($event)"
+      ></app-location-picker>
+
+      <hr class="li-divider" />
+      <div class="two-col-grid">
+        <div data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
+          <nx-formfield label="Cause of loss">
+            <nx-multi-select
+              [options]="vm.causeOfLoss"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select cause of loss"
+              formControlName="causeOfLoss"
+              (selectionChange)="onCauseOfLossChange($event)"
+            ></nx-multi-select>
+            @if (submitAttempted && selectedCauses.length === 0) {
+              <nx-error nxFormfieldError> Select at least one cause of loss </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div data-field="typeOfDamage">
+          <nx-formfield label="Type of damage">
+            <nx-multi-select
+              [options]="vm.typeOfDamage"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select type of damage"
+              formControlName="typeOfDamage"
+              (selectionChange)="onTypeOfDamageChange($event)"
+            ></nx-multi-select>
+            @if (submitAttempted && selectedDamages.length === 0) {
+              <nx-error nxFormfieldError> Select at least one type of damage </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance
+        per claim. Sits in the same grid so it lands directly under the
+        Cause of loss it is filtered by. Options come from
+        circumstanceOptionsFor() and narrow as soon as a peril is confirmed;
+        with no cause yet, or "Other event", the full catalogue plus
+        "Unknown" is offered. -->
+        <div data-field="circumstance">
+          <nx-formfield label="Incident circumstance">
+            <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+              @for (option of circumstanceOptions; track option.value) {
+                <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+            <nx-hint nxFormfieldHint>
+              @if (selectedCauses.length) {
+                Narrowed to the cause of loss selected.
+              } @else {
+                Select a cause of loss to narrow this list.
+              }
+            </nx-hint>
+          </nx-formfield>
+        </div>
+        <!-- Free-text qualifier, shown only while Cause of loss includes "Other
+        Event". Sits in the same grid so it lands directly under the select
+        it qualifies instead of in a separate row below. There is no damage
+        equivalent — typeOfDamage has no "Other" option by design, see
+        OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
+        @if (showSpecifyOtherCause) {
+          <div data-field="specifyOtherCauseOfLoss">
+            <nx-formfield label="Specify other cause of loss">
+              <input
+                nxInput
+                formControlName="specifyOtherCauseOfLoss"
+                maxlength="100"
+                data-testid="specify-other-cause-of-loss-input"
+              />
+              @if (showError(form.get('specifyOtherCauseOfLoss')!)) {
+                <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
+              }
+            </nx-formfield>
+          </div>
+        }
+      </div>
+
+      <!-- CBI (contingent business interruption) trigger — BMPCC-18353. Sits
+      directly below the Cause of loss / Type of damage grid (not inside a
+      per-cause event block in Events details): CBI is a refinement of the
+      Business Interruption damage type itself, not of any one cause of loss. -->
+      @if (showCbiQuestion) {
+        <div class="radio-field" data-field="cbiApplicable">
+          <p class="radio-label">
+            Is this Business Interruption due to Contingent Business Interruption (CBI)?
+          </p>
+          <nx-radio-group
+            class="radio-row"
+            formControlName="cbiApplicable"
+            (valueChange)="onCbiApplicableChange()"
+          >
+            <nx-radio labelSize="small" value="yes">Yes</nx-radio>
+            <nx-radio labelSize="small" value="no">No</nx-radio>
+          </nx-radio-group>
+          @if (submitAttempted && !cbiApplicable) {
+            <p class="field-error">Answer required</p>
+          }
+        </div>
+      }
+
+      @if (showCbiDetails) {
+        <hr class="li-divider" />
+        <h3 class="sub-heading li-sub-heading">Contingent business interruption details</h3>
+        <div class="two-col-grid">
+          <div data-field="cbiCaseType">
+            <nx-formfield label="CBI case type">
+              <nx-dropdown
+                formControlName="cbiCaseType"
+                placeholder="Select case type"
+                (selectionChange)="syncCbi()"
+              >
+                @for (opt of cbiCaseTypeOptions; track opt.value) {
+                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+              @if (submitAttempted && !selectedCbiCaseType) {
+                <nx-error nxFormfieldError>Select a case type</nx-error>
+              }
+            </nx-formfield>
+          </div>
+          @if (showCbiThirdPartyName) {
+            <div data-field="cbiThirdPartyName">
+              <nx-formfield [label]="cbiThirdPartyLabel">
+                <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
+                @if (
+                  submitAttempted && cbiThirdPartyRequired && !form.get('cbiThirdPartyName')?.value
+                ) {
+                  <nx-error nxFormfieldError>Required</nx-error>
+                }
+              </nx-formfield>
+            </div>
+          }
+          @if (showCbiThirdPartyIndustry) {
+            <div data-field="cbiThirdPartyIndustry">
+              <nx-formfield [label]="cbiThirdPartyIndustryLabel">
+                <input nxInput formControlName="cbiThirdPartyIndustry" maxlength="100" />
+              </nx-formfield>
+            </div>
+          }
+          <div data-field="cbiLocation">
+            <nx-formfield label="Originating loss location">
+              <input nxInput formControlName="cbiLocation" maxlength="200" />
+              @if (submitAttempted && !form.get('cbiLocation')?.value) {
+                <nx-error nxFormfieldError>Required</nx-error>
+              }
+            </nx-formfield>
+          </div>
+        </div>
+      }
       <hr class="li-divider" />
       <nx-formfield label="Loss description (optional)" class="full-width">
         <textarea
@@ -316,16 +329,6 @@
         ></textarea>
         <nx-hint nxFormfieldHint>{{ descLength }}/{{ maxDesc }}</nx-hint>
       </nx-formfield>
-    </section>
-    <!-- Card 2: Locations of loss -->
-    <section class="li-card">
-      <h2 class="section-heading">Locations of loss</h2>
-      <app-location-picker
-        [policyNumber]="policyNumber"
-        [value]="lossLocation.value"
-        [showEditLaterHint]="true"
-        (locationChange)="onLocationChange($event)"
-      ></app-location-picker>
     </section>
     <!-- Card 3: Events Details -->
     <section class="li-card">
