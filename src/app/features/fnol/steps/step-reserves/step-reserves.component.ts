@@ -8,6 +8,7 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
+import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import {
   Reserve,
   ReserveNarrative,
@@ -58,6 +59,7 @@ import {
 })
 export class StepReservesComponent implements OnInit, OnDestroy {
   private readonly reservesSvc = inject(MockReservesService);
+  private readonly lookupSvc = inject(MockLookupService);
   private readonly fnolState = inject(FnolStateService);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly router = inject(Router);
@@ -261,7 +263,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     const tab = result.reserveType;
     const blank: SubReserve = {
       subReserveId: `${section.reserveId}-${tab}-${Date.now()}`,
-      subType: 'Lorem ipsum',
+      subType: this.lookupSvc.getReserveSubTypesSync()[0].label,
       currency: section.currency,
       amount: 0,
       coInsurance: 'RI'

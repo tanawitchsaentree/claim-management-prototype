@@ -58,6 +58,26 @@ export class MockLookupService extends MockBaseService {
   getReserveTypes(): Observable<LookupOption[]> {
     return this.respond(this.lookups.reserveTypes);
   }
+  getReserveSubTypes(): Observable<LookupOption[]> {
+    return this.respond(this.lookups.reserveSubTypes);
+  }
+  // Sync — reserve-detail-panel builds a blank sub-reserve outside an
+  // async/subscribe context (a plain object literal on button click).
+  getReserveSubTypesSync(): LookupOption[] {
+    return this.lookups.reserveSubTypes;
+  }
+  getLinesOfBusiness(): Observable<LookupOption[]> {
+    return this.respond(this.lookups.linesOfBusiness);
+  }
+  getLinesOfBusinessSync(): LookupOption[] {
+    return this.lookups.linesOfBusiness;
+  }
+  getOperatingEntities(): Observable<LookupOption[]> {
+    return this.respond(this.lookups.operatingEntities);
+  }
+  getOperatingEntitiesSync(): LookupOption[] {
+    return this.lookups.operatingEntities;
+  }
   getNarrativeOptions(): Observable<LookupOption[]> {
     return this.respond(this.lookups.narrativeOptions);
   }

@@ -13,6 +13,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { Observable, Subject, switchMap, catchError, of, map } from 'rxjs';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
+import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import {
@@ -66,6 +67,7 @@ export class AddPartyModalComponent {
   readonly data = inject<AddPartyModalData>(NX_MODAL_DATA);
   readonly modalRef = inject<NxModalRef<AddPartyModalComponent, Party[]>>(NxModalRef);
   private readonly partiesSvc = inject(MockPartiesService);
+  private readonly lookupSvc = inject(MockLookupService);
 
   readonly filterForm = new FormGroup({
     legalName: new FormControl(''),
@@ -91,31 +93,9 @@ export class AddPartyModalComponent {
   readonly idTypeKeys = Object.keys(ID_TYPE_LABELS) as IdType[];
   readonly idTypeLabels = ID_TYPE_LABELS;
 
-  readonly countryOptions = [
-    { value: 'DE', label: 'Germany' },
-    { value: 'AT', label: 'Austria' },
-    { value: 'CH', label: 'Switzerland' },
-    { value: 'FR', label: 'France' },
-    { value: 'IT', label: 'Italy' },
-    { value: 'ES', label: 'Spain' },
-    { value: 'NL', label: 'Netherlands' },
-    { value: 'GB', label: 'United Kingdom' },
-    { value: 'US', label: 'United States' }
-  ];
-
-  readonly lobOptions = [
-    { value: 'Property', label: 'Property' },
-    { value: 'Liability', label: 'Liability' },
-    { value: 'Marine', label: 'Marine' },
-    { value: 'Cyber', label: 'Cyber' },
-    { value: 'Engineering', label: 'Engineering' }
-  ];
-
-  readonly oeOptions = [
-    { value: 'Allianz Commercial Germany', label: 'Allianz Commercial Germany' },
-    { value: 'Allianz Commercial UK', label: 'Allianz Commercial UK' },
-    { value: 'Allianz Commercial France', label: 'Allianz Commercial France' }
-  ];
+  readonly countryOptions = this.lookupSvc.getCountriesSync();
+  readonly lobOptions = this.lookupSvc.getLinesOfBusinessSync();
+  readonly oeOptions = this.lookupSvc.getOperatingEntitiesSync();
 
   readonly selectedIds = new Set<string>();
 

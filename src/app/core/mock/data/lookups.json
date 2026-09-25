@@ -142,6 +142,16 @@
     { "value": "expenses", "label": "Expenses" },
     { "value": "recoveries", "label": "Recoveries" }
   ],
+  "reserveSubTypes": [
+    { "value": "direct-loss", "label": "Direct loss" },
+    { "value": "consequential", "label": "Consequential" },
+    { "value": "salvage", "label": "Salvage" }
+  ],
+  "operatingEntities": [
+    { "value": "Allianz Commercial Germany", "label": "Allianz Commercial Germany" },
+    { "value": "Allianz Commercial UK", "label": "Allianz Commercial UK" },
+    { "value": "Allianz Commercial France", "label": "Allianz Commercial France" }
+  ],
   "narrativeOptions": [
     { "value": "pending-assessment", "label": "Pending damage assessment" },
     { "value": "awaiting-docs", "label": "Awaiting third-party documentation" },

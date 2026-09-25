@@ -41,6 +41,8 @@ export interface Lookups {
   clearanceStatuses: LookupOption[];
   idTypes: LookupOption[];
   reserveTypes: LookupOption[];
+  reserveSubTypes: LookupOption[];
   narrativeOptions: LookupOption[];
   cbiCaseTypes: LookupOption[];
+  operatingEntities: LookupOption[];
 }

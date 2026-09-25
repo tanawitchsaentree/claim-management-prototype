@@ -19,6 +19,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { MockReservesService } from '../../../../../../core/mock/services/mock-reserves.service';
+import { MockLookupService } from '../../../../../../core/mock/services/mock-lookup.service';
 import { EmptyStateComponent } from '../../../../../../shared/components/empty-state/empty-state.component';
 import {
   Reserve,
@@ -109,11 +110,12 @@ export class ReserveDetailPanelComponent implements OnChanges {
   @Output() sectionMutated = new EventEmitter<SectionMutation>();
 
   private readonly reservesSvc = inject(MockReservesService);
+  private readonly lookupSvc = inject(MockLookupService);
 
   readonly typeLabels = RESERVE_TYPE_LABELS;
   readonly subTypes: ReserveType[] = ['indemnity', 'expenses', 'recoveries'];
   readonly coInsuranceOptions: CoInsuranceFlag[] = ['RI', 'CO', 'NONE'];
-  readonly subTypeOptions = ['Lorem ipsum', 'Direct loss', 'Consequential', 'Salvage'];
+  readonly subTypeOptions = this.lookupSvc.getReserveSubTypesSync().map(o => o.label);
 
   readonly activeTab = signal<ReserveType>('indemnity');
   setActiveTab(t: ReserveType): void {
@@ -191,7 +193,7 @@ export class ReserveDetailPanelComponent implements OnChanges {
     const list = selItem.subReserves[tab] ?? [];
     const next: SubReserve = {
       subReserveId: `${item.damagedItemId}-${tab}-${list.length + 1}-${Date.now()}`,
-      subType: 'Lorem ipsum',
+      subType: this.subTypeOptions[0],
       currency: sel.currency,
       amount: 0,
       coInsurance: 'RI'

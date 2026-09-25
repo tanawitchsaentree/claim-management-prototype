@@ -74,7 +74,35 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: that section's entity was wrongly named after the claimant
 // ("Material damage — Jonas Kaufmann") instead of the property affected —
 // fixed to "Munich Warehouse", and SK-2024-001 gained a `location`.
-const STATE_VERSION = 'recovery-cases-v10';
+// Bumped again: 5 new claims added for Mara Mustermann (CLM-2024-025..029)
+// so the dashboard's default "My claims / Last 30 days" view isn't empty —
+// their dateCreated/dateUpdated use the new "today-Nd" resolver instead of
+// literal dates specifically so this doesn't rot again.
+const STATE_VERSION = 'recovery-cases-v11';
+
+// Seed dates written as literal ISO strings silently rot: the dashboard's
+// "Last 30 days" filter compares against real wall-clock Date.now(), so a
+// claim seeded as "2 weeks old" stops qualifying the moment 2+real weeks
+// pass since whoever wrote that literal — the exact failure the
+// claims-portfolio-widget's own code comment already calls out. A seed
+// date written as "today-Nd" instead is resolved HERE, at load time, so it
+// stays "N days old" forever regardless of when the app is actually opened.
+const RELATIVE_DATE = /^today(-(\d+)d)?$/;
+function resolveRelativeDate(value: string): string {
+  const m = RELATIVE_DATE.exec(value);
+  if (!m) return value;
+  const days = m[2] ? Number(m[2]) : 0;
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString().split('T')[0];
+}
+function resolveClaimDates(claims: Claim[]): Claim[] {
+  return claims.map(c => ({
+    ...c,
+    dateCreated: resolveRelativeDate(c.dateCreated),
+    dateUpdated: resolveRelativeDate(c.dateUpdated)
+  }));
+}
 
 function defaultState(): MockState {
   return {
@@ -82,7 +110,7 @@ function defaultState(): MockState {
     activities: activitiesData as unknown as ClaimActivity[],
     sections: sectionsData as unknown as ClaimSection[],
     tasks: tasksData as unknown as Task[],
-    claims: claimsData as unknown as Claim[],
+    claims: resolveClaimDates(claimsData as unknown as Claim[]),
     lossInformation: lossInfoData as unknown as LossInformation[],
     lossEvents: lossEventsData as unknown as LossEventSummary[],
     // financial-overview.json is an array (one entry per seeded claim), unlike
