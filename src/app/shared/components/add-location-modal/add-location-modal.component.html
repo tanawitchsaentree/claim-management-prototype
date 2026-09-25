@@ -32,6 +32,12 @@
             <input nxInput formControlName="street" autocomplete="off" />
           </nx-formfield>
         </div>
+        <div class="alm-search-row__actions">
+          <button nxButton="primary small" type="button" (click)="onPolicySearch()">Search</button>
+          <button nxButton="secondary small" type="button" (click)="onPolicyReset()">
+            Reset search
+          </button>
+        </div>
       </div>
       <div class="alm-search-row">
         <div class="alm-search-row__inputs">
@@ -41,12 +47,6 @@
           <nx-formfield label="Zip or Postal code (optional)">
             <input nxInput formControlName="postalCode" autocomplete="off" />
           </nx-formfield>
-        </div>
-        <div class="alm-search-row__actions">
-          <button nxButton="primary small" type="button" (click)="onPolicySearch()">Search</button>
-          <button nxButton="secondary small" type="button" (click)="onPolicyReset()">
-            Reset search
-          </button>
         </div>
       </div>
     </form>

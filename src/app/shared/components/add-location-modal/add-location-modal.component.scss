@@ -40,11 +40,14 @@
   gap: 24px;
 }
 
+// 4 columns fixed (the widest row — Country/State/City/Street — has 4
+// fields) so a row with fewer fields (Number/Zip) still sizes each one the
+// same as the row above it, instead of stretching to fill the gap.
 .alm-search-row__inputs {
   flex: 1 1 auto;
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px 24px;
   align-items: start;
 

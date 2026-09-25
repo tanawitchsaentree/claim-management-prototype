@@ -117,7 +117,7 @@ export class LocationPickerComponent implements OnInit {
       AddLocationModalResult | null
     >(AddLocationModalComponent, {
       data: { policyNumber: this.policyNumber!, policyLocations: this.allPolicyLocations },
-      width: '960px',
+      width: '1200px',
       maxWidth: '95vw'
     });
     const result = await firstValueFrom(ref.afterClosed());
