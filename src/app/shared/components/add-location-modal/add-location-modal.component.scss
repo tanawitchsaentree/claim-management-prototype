@@ -2,6 +2,8 @@
 
 :host {
   @include modal.shell;
+  max-height: 100% !important;
+  height: 100%;
 }
 
 .alm-header {
