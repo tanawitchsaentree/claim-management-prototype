@@ -35,18 +35,18 @@ export class MockPolicySearchService extends MockBaseService {
     let results = [...this.policies];
 
     if (criteria.clientName) {
-      const q = criteria.clientName.toLowerCase();
+      const q = criteria.clientName.trim().toLowerCase();
       results = results.filter(p => p.clientName.toLowerCase().includes(q));
     }
     if (criteria.policyNumber) {
-      const q = criteria.policyNumber.toLowerCase();
+      const q = criteria.policyNumber.trim().toLowerCase();
       results = results.filter(p => p.policyNumber.toLowerCase().includes(q));
     }
     if (criteria.underwritingYear) {
-      results = results.filter(p => p.effectiveDate?.startsWith(criteria.underwritingYear!));
+      results = results.filter(p => p.effectiveDate?.startsWith(criteria.underwritingYear!.trim()));
     }
     if (criteria.broker) {
-      const q = criteria.broker.toLowerCase();
+      const q = criteria.broker.trim().toLowerCase();
       results = results.filter(p => p.broker?.toLowerCase().includes(q));
     }
 

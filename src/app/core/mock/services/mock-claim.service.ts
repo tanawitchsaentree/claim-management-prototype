@@ -93,15 +93,15 @@ export class MockClaimService extends MockBaseService {
 
     let results = [...this.claims];
     if (criteria.clientName) {
-      const q = criteria.clientName.toLowerCase();
+      const q = criteria.clientName.trim().toLowerCase();
       results = results.filter(c => c.clientName.toLowerCase().includes(q));
     }
     if (criteria.policyNumber) {
-      const q = criteria.policyNumber.toLowerCase();
+      const q = criteria.policyNumber.trim().toLowerCase();
       results = results.filter(c => c.policyNumber.toLowerCase().includes(q));
     }
     if (criteria.claimLossEventNumber) {
-      const q = criteria.claimLossEventNumber.toLowerCase();
+      const q = criteria.claimLossEventNumber.trim().toLowerCase();
       results = results.filter(
         c =>
           c.claimId.toLowerCase().includes(q) ||
