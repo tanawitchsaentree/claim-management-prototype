@@ -71,7 +71,10 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: SK-2024-001 gained `causeOfLoss` + a seeded section — cached
 // state from before this claim had a section would keep showing "No sections
 // found" after Link policy no matter what the code does now.
-const STATE_VERSION = 'recovery-cases-v9';
+// Bumped again: that section's entity was wrongly named after the claimant
+// ("Material damage — Jonas Kaufmann") instead of the property affected —
+// fixed to "Munich Warehouse", and SK-2024-001 gained a `location`.
+const STATE_VERSION = 'recovery-cases-v10';
 
 function defaultState(): MockState {
   return {

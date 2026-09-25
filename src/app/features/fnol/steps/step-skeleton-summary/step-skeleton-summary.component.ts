@@ -147,13 +147,16 @@ export class StepSkeletonSummaryComponent implements OnInit {
       // Cause of loss is required info the wizard already collected above
       // (step-skeleton-loss-info) — the section it implies shouldn't wait
       // for a policy to get linked later.
+      //
+      // A section's entity is the property/asset affected (see the
+      // "Warehouse & Forklift" seed example) — never the claimant's own
+      // name, which reads as nonsense ("Material damage — Jonas Kaufmann").
+      // Prefer the loss location captured on this same wizard step; only
+      // fall back to the client's name when no location was given at all.
       if (skeleton.causeOfLoss?.length) {
+        const entityName = this.locations()[0]?.displayName || draft.clientName;
         await firstValueFrom(
-          this.sectionSvc.createSectionFromCauseOfLoss(
-            skeleton.claimId,
-            skeleton.causeOfLoss,
-            draft.clientName
-          )
+          this.sectionSvc.createSectionFromCauseOfLoss(skeleton.claimId, skeleton.causeOfLoss, entityName)
         );
       }
       this.fnolState.setSkeleton(draft, skeleton.claimId);

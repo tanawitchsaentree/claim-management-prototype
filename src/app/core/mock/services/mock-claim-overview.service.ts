@@ -138,8 +138,13 @@ export class MockClaimOverviewService extends MockBaseService {
     // reached conversion without ever getting one), guarded so conversion
     // never double-creates a section that already exists.
     if (claim.causeOfLoss?.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
+      // Entity = the property/asset affected, never the claimant's own name
+      // (see step-skeleton-summary.ts's onCreate for the same rule) — this
+      // claim model only has a coarse city/country, but that still reads
+      // sane ("Material damage — Munich") where the client's name doesn't.
+      const entityName = claim.location?.city || claim.clientName;
       await firstValueFrom(
-        this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, claim.clientName)
+        this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, entityName)
       );
     }
     // Reserves still need manual setup — nothing derives a reserve amount

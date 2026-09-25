@@ -2,7 +2,7 @@
   {
     "id": "SEC-SK-2024-001",
     "claimId": "SK-2024-001",
-    "name": "Material damage — Jonas Kaufmann",
+    "name": "Material damage — Munich Warehouse",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -16,7 +16,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-001-0",
-        "name": "Jonas Kaufmann",
+        "name": "Munich Warehouse",
         "instructionStatus": "Not assigned",
         "expandable": false
       }

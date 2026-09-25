@@ -766,7 +766,7 @@
     "skeletonState": "awaiting-policy",
     "priority": "medium",
     "lineOfBusiness": "Property",
-    "location": null,
+    "location": { "country": "DE", "city": "Munich" },
     "lossEventId": null,
     "claimType": "skeleton",
     "skeletonReason": "policy_not_issued",
