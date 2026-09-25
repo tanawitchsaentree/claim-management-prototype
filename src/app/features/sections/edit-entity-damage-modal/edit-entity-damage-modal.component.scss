@@ -35,6 +35,25 @@
   margin: 4px 0 4px;
 }
 
+.eed-radio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+  margin-bottom: 8px;
+}
+.eed-radio-label {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  font-weight: 600;
+  margin: 0;
+}
+.eed-radio-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
 .eed-cbi-location {
   margin-top: 4px;
 }

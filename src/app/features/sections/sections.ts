@@ -367,11 +367,13 @@ export class Sections {
 
   async onEditEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
-      data: { entity } satisfies EditEntityDamageModalData,
-      // Wider only for CBI entities — the extra case type / third-party /
-      // location-picker table needs the room; the plain instruction-status-
-      // only case stays at the original compact width.
-      width: entity.isContingentBi ? '720px' : '480px',
+      data: { entity, damageType: section.damageType } satisfies EditEntityDamageModalData,
+      // Wider whenever the CBI question is even askable (any
+      // business-interruption entity, not just ones already marked CBI —
+      // that entity might get answered "Yes" here for the first time and
+      // need the location-picker table's room). Everything else stays at
+      // the original compact width.
+      width: section.damageType === 'business-interruption' ? '720px' : '480px',
       maxWidth: '92vw'
     });
     const result = (await firstValueFrom(ref.afterClosed())) as

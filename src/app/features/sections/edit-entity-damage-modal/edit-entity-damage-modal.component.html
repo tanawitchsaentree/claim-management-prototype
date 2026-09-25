@@ -19,48 +19,63 @@
     }
   </nx-formfield>
 
-  @if (isContingentBi) {
+  @if (isBusinessInterruption) {
     <hr class="eed-divider" />
-    <p class="eed-section-label">Contingent business interruption</p>
-
-    <nx-formfield label="CBI case type">
-      <nx-dropdown
-        formControlName="cbiCaseType"
-        placeholder="Select case type"
-        (selectionChange)="onCbiCaseTypeChange()"
-      >
-        @for (opt of cbiCaseTypeOptions; track opt.value) {
-          <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-        }
-      </nx-dropdown>
-      @if (!selectedCbiCaseType && form.get('cbiCaseType')?.touched) {
-        <nx-error nxFormfieldError>Select a case type</nx-error>
-      }
-    </nx-formfield>
-
-    @if (showThirdPartyName) {
-      <nx-formfield [label]="thirdPartyLabel">
-        <input nxInput formControlName="thirdPartyName" maxlength="100" />
-      </nx-formfield>
-    }
-    @if (showThirdPartyIndustry) {
-      <nx-formfield [label]="thirdPartyIndustryLabel">
-        <input nxInput formControlName="thirdPartyIndustry" maxlength="100" />
-      </nx-formfield>
-    }
-
-    <div class="eed-cbi-location">
-      <app-location-picker
-        [policyNumber]="null"
-        [value]="cbiLocation.value"
-        [promptLabel]="'Where did the originating CBI event occur?'"
-        [skipHintText]="'The third party\'s site, not the insured\'s own loss location.'"
-        (locationChange)="onCbiLocationChange($event)"
-      ></app-location-picker>
-      @if (submitted && cbiLocation.value.locations.length === 0) {
-        <p class="eed-field-error">Originating loss location: required</p>
+    <div class="eed-radio-field">
+      <p class="eed-radio-label">
+        Is this Business Interruption due to Contingent Business Interruption (CBI)?
+      </p>
+      <nx-radio-group class="eed-radio-row" formControlName="cbiApplicable">
+        <nx-radio labelSize="small" value="yes">Yes</nx-radio>
+        <nx-radio labelSize="small" value="no">No</nx-radio>
+      </nx-radio-group>
+      @if (submitted && !form.value.cbiApplicable) {
+        <p class="eed-field-error">Answer required</p>
       }
     </div>
+
+    @if (showCbiDetails()) {
+      <p class="eed-section-label">Contingent business interruption details</p>
+
+      <nx-formfield label="CBI case type">
+        <nx-dropdown
+          formControlName="cbiCaseType"
+          placeholder="Select case type"
+          (selectionChange)="onCbiCaseTypeChange()"
+        >
+          @for (opt of cbiCaseTypeOptions; track opt.value) {
+            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        @if (submitted && !selectedCbiCaseType) {
+          <nx-error nxFormfieldError>Select a case type</nx-error>
+        }
+      </nx-formfield>
+
+      @if (showThirdPartyName) {
+        <nx-formfield [label]="thirdPartyLabel">
+          <input nxInput formControlName="thirdPartyName" maxlength="100" />
+        </nx-formfield>
+      }
+      @if (showThirdPartyIndustry) {
+        <nx-formfield [label]="thirdPartyIndustryLabel">
+          <input nxInput formControlName="thirdPartyIndustry" maxlength="100" />
+        </nx-formfield>
+      }
+
+      <div class="eed-cbi-location">
+        <app-location-picker
+          [policyNumber]="null"
+          [value]="cbiLocation.value"
+          [promptLabel]="'Where did the originating CBI event occur?'"
+          [skipHintText]="'The third party\'s site, not the insured\'s own loss location.'"
+          (locationChange)="onCbiLocationChange($event)"
+        ></app-location-picker>
+        @if (submitted && cbiLocation.value.locations.length === 0) {
+          <p class="eed-field-error">Originating loss location: required</p>
+        }
+      </div>
+    }
   }
 </div>
 
