@@ -96,11 +96,6 @@
         </table>
       </div>
     }
-
-    <button type="button" class="alm-link-btn" (click)="goToManual()">
-      <nx-icon name="plus" nxIconPositionStart></nx-icon>
-      Add location manually
-    </button>
   } @else {
     <!-- ─── Add location manually ──────────────────────────────────────── -->
     <nx-formfield label="Search location" class="alm-gis-field">
@@ -144,25 +139,33 @@
         (remove)="removeManual($event)"
       ></app-manual-address-section>
     }
-
-    <button type="button" class="alm-link-btn" (click)="goToPolicy()">
-      <nx-icon name="plus" nxIconPositionStart></nx-icon>
-      Add location from policy
-    </button>
   }
 </div>
 
 <footer class="alm-footer">
-  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <button
-    nxButton="primary small"
-    type="button"
-    [disabled]="!hasAnySelection()"
-    (click)="onConfirm()"
-  >
-    Add
-    @if (addCount() > 0) {
-      ({{ addCount() }})
-    }
-  </button>
+  @if (screen() === 'policy') {
+    <button nxPlainButton type="button" class="alm-fallback-link" (click)="goToManual()">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add location manually
+    </button>
+  } @else {
+    <button nxPlainButton type="button" class="alm-fallback-link" (click)="goToPolicy()">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add location from policy
+    </button>
+  }
+  <div class="alm-footer__actions">
+    <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!hasAnySelection()"
+      (click)="onConfirm()"
+    >
+      Add
+      @if (addCount() > 0) {
+        ({{ addCount() }})
+      }
+    </button>
+  </div>
 </footer>

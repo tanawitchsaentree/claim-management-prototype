@@ -15,6 +15,22 @@
 }
 .alm-footer {
   @include modal.footer;
+  justify-content: space-between;
+}
+.alm-footer__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.alm-fallback-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+
+  nx-icon {
+    font-size: 14px;
+  }
 }
 
 .alm-subtitle {
