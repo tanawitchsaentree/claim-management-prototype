@@ -68,7 +68,10 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // case as "no case set up", which is a closure blocker that cannot be cleared.
 // Bumped again: added `financialOverviews` and `providerAssignments` — cached
 // state from before these keys existed would throw reading them.
-const STATE_VERSION = 'recovery-cases-v8';
+// Bumped again: SK-2024-001 gained `causeOfLoss` + a seeded section — cached
+// state from before this claim had a section would keep showing "No sections
+// found" after Link policy no matter what the code does now.
+const STATE_VERSION = 'recovery-cases-v9';
 
 function defaultState(): MockState {
   return {
