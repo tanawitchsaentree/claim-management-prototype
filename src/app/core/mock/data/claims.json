@@ -770,7 +770,8 @@
     "lossEventId": null,
     "claimType": "skeleton",
     "skeletonReason": "policy_not_issued",
-    "slaDeadlineDays": 3
+    "slaDeadlineDays": 3,
+    "causeOfLoss": ["fire"]
   },
   {
     "claimId": "SK-2024-002",

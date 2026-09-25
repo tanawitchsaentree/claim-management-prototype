@@ -8,6 +8,7 @@ import { MockStateService } from '../state/mock-state.service';
 import { MockClaimService } from './mock-claim.service';
 import { MockTaskService } from './mock-task.service';
 import { MockLookupService } from './mock-lookup.service';
+import { MockSectionService } from './mock-section.service';
 
 interface LinkablePolicy {
   policyNumber: string;
@@ -21,6 +22,7 @@ export class MockClaimOverviewService extends MockBaseService {
   private readonly claimSvc = inject(MockClaimService);
   private readonly taskSvc = inject(MockTaskService);
   private readonly lookupSvc = inject(MockLookupService);
+  private readonly sectionSvc = inject(MockSectionService);
 
   getOverview(claimId: string): Observable<ClaimOverview> {
     const existing = this.stateSvc.state().overviews[claimId];
@@ -130,13 +132,22 @@ export class MockClaimOverviewService extends MockBaseService {
         valueNew: `${policy.policyNumber} — linked`
       }
     ]);
-    // A converted orphan claim needs its structure set up (sections, reserves)
-    // just like any other claim — but nothing surfaces that anywhere a handler
-    // actually works from (Dashboard task list, Task manager). Without this,
-    // the only place it was visible was the Overview banner/Close-Claim
-    // blocker, both of which only trigger if the handler happens to open this
-    // specific claim again. A real task puts it in the same queue as every
-    // other piece of work, and carries forward the urgency the skeleton had
+    // A converted orphan claim needs a section as soon as the cause of loss
+    // is known — an orphan never went through FNOL step 2 (Entities &
+    // Damages), so createSectionsFromEntitiesDamages() (step-summary.ts)
+    // never ran for it. Mirror that same creation primitive here instead of
+    // leaving Sections empty until someone manually adds one.
+    if (claim.causeOfLoss?.length) {
+      await firstValueFrom(
+        this.sectionSvc.createSection(claimId, this.damageTypeFromCauseOfLoss(claim.causeOfLoss), [
+          { name: claim.clientName }
+        ])
+      );
+    }
+    // Reserves still need manual setup — nothing derives a reserve amount
+    // from cause of loss the way a section's damage type can be derived.
+    // Surfaced as a real task so it's in the same queue as every other
+    // piece of work, carrying forward the urgency the skeleton had
     // pre-conversion (3-day SLA) instead of it evaporating at conversion.
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 3);
@@ -144,7 +155,7 @@ export class MockClaimOverviewService extends MockBaseService {
       this.taskSvc.create({
         claimId,
         taskType: 'Review',
-        description: `Set up sections and reserves for ${claimId} (converted from orphan claim)`,
+        description: `Set up reserves for ${claimId} (converted from orphan claim)`,
         status: 'open',
         dueDate: dueDate.toISOString().split('T')[0],
         priority: 'high',
@@ -152,6 +163,15 @@ export class MockClaimOverviewService extends MockBaseService {
       })
     );
     return claim;
+  }
+
+  // Cause of loss (incident-level, "what happened") and type of damage
+  // (section-level, "what coverage responds") are different lookups with no
+  // structured mapping in this app (see CONVERSIONS.md) — business
+  // interruption is the one cause that maps straight across; every other
+  // cause is physical/property loss, which 'material-damage' covers.
+  private damageTypeFromCauseOfLoss(causeOfLoss: string[]): string {
+    return causeOfLoss.includes('business-interruption') ? 'business-interruption' : 'material-damage';
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton

@@ -565,7 +565,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // creates it silently, with nothing else surfacing that in the moment.
     this.toast.success(
       `${skeleton.claimId} — policy linked`,
-      `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
+      `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
     );
   }
 
