@@ -212,6 +212,14 @@ export class StepSkeletonCreateComponent implements OnInit {
   get selectedDamages(): string[] {
     return (this.lossForm.get('typeOfDamage')?.value as string[]) ?? [];
   }
+  // Every skeleton claim is lineOfBusiness 'Property', where a Section's
+  // entity is the property/asset affected — never the claimant's own name
+  // (see step-skeleton-summary.onCreate). Location isn't a FormControl
+  // validator because it's shared with the regular FNOL loss-info step,
+  // which isn't always Property, so it's enforced here instead.
+  get hasLocation(): boolean {
+    return (this.lossLocation.value?.locations?.length ?? 0) > 0;
+  }
 
   getCauseLabel(key: string): string {
     return getCauseSchema(key)?.causeLabel ?? key;
@@ -319,7 +327,7 @@ export class StepSkeletonCreateComponent implements OnInit {
     this.markAllTouched(this.form);
     this.markAllTouched(this.dateOfLoss);
 
-    if (!this.form.valid || this.dateOfLoss.invalid) return;
+    if (!this.form.valid || this.dateOfLoss.invalid || !this.hasLocation) return;
 
     const raw = this.form.getRawValue();
     const type = this.notifierType();

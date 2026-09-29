@@ -283,6 +283,12 @@
         [showEditLaterHint]="true"
         (locationChange)="onLocationChange($event)"
       ></app-location-picker>
+      @if (submitted && !hasLocation) {
+        <nx-message context="error" class="location-error">
+          Add at least one location before continuing — this is what the section will be named
+          after.
+        </nx-message>
+      }
     </section>
     <!-- Card 6: Events Details (optional in skeleton — fill in detail after policy match) -->
     <section class="li-card">

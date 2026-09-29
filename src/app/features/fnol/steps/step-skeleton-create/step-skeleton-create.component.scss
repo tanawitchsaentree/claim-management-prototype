@@ -159,6 +159,10 @@
   max-width: 720px;
 }
 
+.location-error {
+  margin-top: var(--space-sm);
+}
+
 .notifier-broker-actions {
   display: flex;
   align-items: center;
