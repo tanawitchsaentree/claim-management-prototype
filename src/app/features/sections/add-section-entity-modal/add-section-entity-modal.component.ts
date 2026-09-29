@@ -21,8 +21,6 @@ export interface AddSectionEntityModalData {
   sections: ClaimSection[];
   claimId: string;
   policyNumber: string;
-  reportedCause?: string | null;
-  reportedDescription?: string | null;
 }
 
 // dateOfOccurrence applies to every damage type (entities in the same

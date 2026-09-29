@@ -119,8 +119,6 @@ export class Sections {
   // Handed to Add Section so a claim converted from an orphan claim — where
   // whoever creates the section may not be whoever took the original notice —
   // has an actual account of what happened to work from, not a blank form.
-  readonly claimDescription = signal<string | null>(null);
-  readonly proximateLossCause = signal<string | null>(null);
 
   readonly devMode = true;
 
@@ -167,12 +165,6 @@ export class Sections {
         this.claimClosed.set(claim.status === 'Closed');
         this.policyNumber.set(claim.policyNumber ?? '');
         this.incidentCircumstance.set(claim.incidentCircumstance ?? null);
-        this.claimDescription.set(claim.description || null);
-        this.proximateLossCause.set(
-          claim.proximateLossCause && claim.proximateLossCause !== '–'
-            ? claim.proximateLossCause
-            : null
-        );
       } catch {
         this.loadError.set(true);
       } finally {
@@ -266,9 +258,7 @@ export class Sections {
       data: {
         sections: this.sections(),
         claimId,
-        policyNumber: this.policyNumber(),
-        reportedCause: this.proximateLossCause(),
-        reportedDescription: this.claimDescription()
+        policyNumber: this.policyNumber()
       } satisfies AddSectionEntityModalData,
       // Widened from 480px (Marlene's original instruction-status-only
       // shape) — CBI capture added a location-picker table that needs more

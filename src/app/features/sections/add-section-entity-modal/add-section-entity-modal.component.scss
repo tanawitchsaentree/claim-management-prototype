@@ -24,36 +24,6 @@
   @include modal.footer;
 }
 
-.ase-reported-loss {
-  margin-bottom: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-  background: var(--ui-02);
-  border-radius: 4px;
-  border-left: 3px solid var(--interactive-primary);
-}
-
-.ase-reported-loss__label {
-  margin: 0 0 2px;
-  font-size: var(--paragraph-04-font-size);
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.ase-reported-loss__cause {
-  margin: 0 0 2px;
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-}
-
-.ase-reported-loss__desc {
-  margin: 0;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-01);
-}
-
 .ase-entity-group__title {
   margin: var(--space-sm) 0 var(--space-xs);
   font-size: var(--paragraph-03-font-size);

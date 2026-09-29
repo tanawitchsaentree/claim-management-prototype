@@ -3,18 +3,6 @@
 </div>
 
 <div class="ase-body" [formGroup]="form">
-  @if (data.reportedCause || data.reportedDescription) {
-    <div class="ase-reported-loss">
-      <p class="ase-reported-loss__label">Reported at notice</p>
-      @if (data.reportedCause) {
-        <p class="ase-reported-loss__cause">{{ data.reportedCause }}</p>
-      }
-      @if (data.reportedDescription) {
-        <p class="ase-reported-loss__desc">{{ data.reportedDescription }}</p>
-      }
-    </div>
-  }
-
   <nx-formfield label="Damage type">
     <nx-dropdown formControlName="damageType" placeholder="Select damage type">
       @for (opt of damageTypeOptions; track opt.value) {
