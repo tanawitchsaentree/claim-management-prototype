@@ -387,9 +387,33 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.router.navigate(['/fnol/parties']);
   }
-  onNext(): void {
+  // Production gate (verified against claims-management-main's Reserves e2e spec,
+  // ReservesPage.ts:745-747): a claim with zero reserve AND no narrative is blocked
+  // from proceeding — "Please add a indemnity reserve or a narrative before
+  // proceeding." This prototype previously let Next through unconditionally.
+  async onNext(): Promise<void> {
+    if (!this.hasReserveOrNarrative()) {
+      const data: ConfirmDialogData = {
+        title: 'Reserve required',
+        message:
+          'Add an indemnity reserve, or explain why none exists yet, before continuing to the next step.',
+        confirmLabel: 'Got it',
+        cancelLabel: 'Close'
+      };
+      const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+        data,
+        width: '440px',
+        maxWidth: '92vw'
+      });
+      await firstValueFrom(ref.afterClosed());
+      return;
+    }
     this.fnolState.markStepComplete('reserves');
     this.router.navigate(['/fnol/summary']);
+  }
+
+  private hasReserveOrNarrative(): boolean {
+    return this.totalReserve > 0 || (!!this.narrative && !this.narrative.archivedAt);
   }
 
   // ── Private ──────────────────────────────────────────────────────────────────
