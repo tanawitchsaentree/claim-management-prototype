@@ -28,6 +28,7 @@ import { MockLookupService } from '../../../../core/mock/services/mock-lookup.se
 import { MockSectionService } from '../../../../core/mock/services/mock-section.service';
 import { MockStateService } from '../../../../core/mock/state/mock-state.service';
 import { MockClaimOverviewService } from '../../../../core/mock/services/mock-claim-overview.service';
+import { MockFinancialOverviewService } from '../../../../core/mock/services/mock-financial-overview.service';
 import {
   LossInformation,
   LossInformationFormValue
@@ -113,6 +114,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly stateSvc = inject(MockStateService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
+  private readonly financialSvc = inject(MockFinancialOverviewService);
   private readonly userDir = inject(MockUserDirectoryService);
   private readonly router = inject(Router);
   private readonly appDate = new AppDatePipe();
@@ -310,6 +312,13 @@ export class StepSummaryComponent implements OnInit {
       // regardless of path — now lands on the same claim the sections above
       // just landed on.
       await this.writeLossInformationToClaim(newClaimId);
+      // Stage 6: the Reserves step's indemnity/expense entries previously
+      // died at submit too, same as the sections/loss-info above — the
+      // Financial tab (a completely separate reserves system, see
+      // MockFinancialOverviewService) started every claim with zero reserves
+      // regardless of what was entered during FNOL. Runs after sections exist
+      // (financial reserves attach to a real ClaimSection).
+      await this.seedFinancialReservesFromFnol(newClaimId);
     }
 
     this.fnolState.markStepComplete('summary');
@@ -704,6 +713,44 @@ export class StepSummaryComponent implements OnInit {
           { userId: CREATOR.userId, name: CREATOR.name }
         )
       );
+    }
+  }
+
+  // Financial tab reserves are Indemnity/Expenses only (see
+  // add-reserve-modal.component.ts RESERVE_TYPES) — recoveries live on a
+  // structurally different entity there (FinancialRecovery: recoveryDate,
+  // bookingId, reinsuranceId, ...), not a reserve subtype, so FNOL's
+  // recoveries sub-amounts are deliberately NOT seeded here. Matches
+  // MockFinancialOverviewService's own reserve/recovery split.
+  private async seedFinancialReservesFromFnol(claimId: string): Promise<void> {
+    const reservesData = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+    if (!reservesData.reserves.length) return;
+    const sections = this.sectionSvc.getByClaimIdSync(claimId);
+
+    for (const reserve of reservesData.reserves) {
+      const matchedSection = sections.find(s => s.damageType === reserve.damageTypeKey);
+      for (const item of reserve.damagedItems ?? []) {
+        for (const [type, label] of [
+          ['indemnity', 'Indemnity'],
+          ['expenses', 'Expenses']
+        ] as const) {
+          for (const sub of item.subReserves[type] ?? []) {
+            if (sub.amount <= 0) continue;
+            await firstValueFrom(
+              this.financialSvc.addReserve(claimId, {
+                reserveType: label,
+                reserveSubType: sub.subType,
+                party: reserve.partyName,
+                damagedItem: item.itemName,
+                section: matchedSection?.id ?? reserve.damageType,
+                reserveValue: sub.amount,
+                currency: sub.currency,
+                status: 'Pending'
+              })
+            );
+          }
+        }
+      }
     }
   }
 
