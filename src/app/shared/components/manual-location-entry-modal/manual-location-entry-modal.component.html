@@ -33,6 +33,19 @@
     }
   </div>
 
+  @if (!isEdit) {
+    <nx-checkbox
+      [checked]="addAddressManually()"
+      (checkedChange)="toggleAddAddressManually($event)"
+    >
+      Add the address manually
+    </nx-checkbox>
+    <p class="mle-manual-hint">
+      If you do not know the exact address fill the additional location information field.
+    </p>
+  }
+
+  @if (showManualGrid()) {
   <div [formGroup]="form" class="mle-form">
     <div class="mle-radio-field">
       <p class="mle-radio-label">Entry method</p>
@@ -128,6 +141,7 @@
       </div>
     </details>
   </div>
+  }
 </div>
 
 <footer class="mle-footer">

@@ -96,6 +96,12 @@
   }
 }
 
+.mle-manual-hint {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
 .mle-form {
   display: flex;
   flex-direction: column;

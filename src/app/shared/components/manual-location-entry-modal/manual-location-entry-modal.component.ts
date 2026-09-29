@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, effect } from '@angular/core';
+import { Component, OnInit, inject, effect, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,6 +10,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
+import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockGisLocationService } from '../../../core/mock/services/mock-gis-location.service';
 import { GisAddressSuggestion, LocationItem, LookupOption } from '../../../core/models';
@@ -34,7 +35,8 @@ export type ManualLocationEntryModalResult = LocationItem | null;
     NxDropdownModule,
     NxButtonModule,
     NxIconModule,
-    NxRadioModule
+    NxRadioModule,
+    NxCheckboxModule
   ],
   templateUrl: './manual-location-entry-modal.component.html',
   styleUrl: './manual-location-entry-modal.component.scss'
@@ -88,6 +90,18 @@ export class ManualLocationEntryModalComponent implements OnInit {
   private readonly mode = toSignal(this.form.get('mode')!.valueChanges, {
     initialValue: this.form.get('mode')!.value
   });
+
+  // Search-first gate, matching add-location-modal.component.ts's
+  // showManualGrid — the form used to render fully unconditionally, which
+  // made this whole modal read as "manual by default" next to the
+  // policy-location picker's gated screen. Editing an existing entry always
+  // shows the grid immediately (see isEdit below); there's nothing to search
+  // for that case.
+  readonly hasGisPick = signal(false);
+  readonly addAddressManually = signal(false);
+  readonly showManualGrid = computed(
+    () => this.hasGisPick() || this.addAddressManually() || this.isEdit
+  );
 
   get isEdit(): boolean {
     return !!this.data.seed;
@@ -151,6 +165,11 @@ export class ManualLocationEntryModalComponent implements OnInit {
       longitude: s.longitude
     });
     this.gisSearch.setValue('', { emitEvent: false });
+    this.hasGisPick.set(true);
+  }
+
+  toggleAddAddressManually(checked: boolean): void {
+    this.addAddressManually.set(checked);
   }
 
   onCancel(): void {
