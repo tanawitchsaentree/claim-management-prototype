@@ -547,6 +547,14 @@ export class StepSummaryComponent implements OnInit {
     const causeLookups = await firstValueFrom(this.lookupSvc.getCauseOfLoss());
     const causeLabels = (formValue.causeOfLoss ?? []).map(k => this.label(causeLookups, k));
 
+    // Reserves step's totals previously never made it past FNOL — Claim
+    // Overview's financialSummary derives totalReserve/outstanding straight
+    // from claim.lossAmount (mock-claim-overview.service.ts
+    // synthesizeOverviewFromClaim), so what the handler entered on the
+    // Reserves step has to land here to survive. Cache hit — buildViewModel()
+    // already loaded this policy's reserves for the Summary screen.
+    const reservesData = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+
     const claim: Claim = {
       claimId,
       policyNumber: this.policyNumber || '',
@@ -557,8 +565,8 @@ export class StepSummaryComponent implements OnInit {
       dateCreated: now.split('T')[0],
       dateUpdated: now.split('T')[0],
       lossDate: formValue.dateOfLoss?.dateOfOccurrence ?? now.split('T')[0],
-      lossAmount: 0,
-      currency: 'EUR',
+      lossAmount: reservesData.totalReserve,
+      currency: (reservesData.currency as Claim['currency']) || 'EUR',
       description: formValue.lossDescription ?? '',
       status: 'Open',
       priority: 'medium',
