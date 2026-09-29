@@ -328,9 +328,13 @@ export class StepReservesComponent implements OnInit, OnDestroy {
       expenses: total('expenses'),
       recoveries: total('recoveries')
     };
+    // Recoveries net OFF the reserve, not onto it — money coming back reduces
+    // exposure. Verified against production's Reserves e2e spec
+    // (ReservesPage.ts:590-652, verifyReserveValuesInTable): indemnity 5,000 +
+    // expense 3,000 - recovery 250 = total 7,750.
     sel.amount =
       (sel.subAmounts.indemnity ?? 0) +
-      (sel.subAmounts.expenses ?? 0) +
+      (sel.subAmounts.expenses ?? 0) -
       (sel.subAmounts.recoveries ?? 0);
   }
 

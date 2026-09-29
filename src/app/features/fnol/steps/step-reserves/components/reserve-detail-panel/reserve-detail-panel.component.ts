@@ -150,7 +150,8 @@ export class ReserveDetailPanelComponent implements OnChanges {
 
   sectionTotal(reserve: Reserve): number {
     const s = reserve.subAmounts ?? {};
-    return (s.indemnity ?? 0) + (s.expenses ?? 0) + (s.recoveries ?? 0);
+    // Recoveries net off the total — see step-reserves.component.ts recomputeSectionTotals.
+    return (s.indemnity ?? 0) + (s.expenses ?? 0) - (s.recoveries ?? 0);
   }
 
   sectionSub(reserve: Reserve, type: ReserveType): number {

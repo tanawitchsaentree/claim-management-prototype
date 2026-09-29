@@ -163,7 +163,9 @@ export class MockReservesService {
               damageType,
               damageTypeKey,
               currency: 'EUR',
-              amount: sumByType('indemnity') + sumByType('expenses') + sumByType('recoveries'),
+              // Recoveries net off the total, they don't add to it (see
+              // step-reserves.component.ts recomputeSectionTotals for why).
+              amount: sumByType('indemnity') + sumByType('expenses') - sumByType('recoveries'),
               limit: 50000,
               subAmounts: {
                 indemnity: sumByType('indemnity'),
@@ -242,7 +244,8 @@ export class MockReservesService {
           damageType: dmg.label,
           damageTypeKey: dmg.key,
           currency: seed.currency,
-          amount: sumByType('indemnity') + sumByType('expenses') + sumByType('recoveries'),
+          // Recoveries net off the total, they don't add to it.
+          amount: sumByType('indemnity') + sumByType('expenses') - sumByType('recoveries'),
           limit: 50000,
           subAmounts: {
             indemnity: sumByType('indemnity'),
