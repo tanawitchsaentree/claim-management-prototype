@@ -12,20 +12,34 @@
   color: var(--text-01);
 }
 
-// BLESSED: card-shell.card-title-row — title + trailing chip on one baseline.
+// Plain accordion header — title, Yes/No chip once answered, chevron toggle.
+// Same shape as pending-tasks-widget's .pt-header, no warning tone anywhere.
 .rp-header {
-  @include shell.card-title-row;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 
   .co-card-title {
     margin-bottom: 0;
   }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
 }
 
-// No display override — nx-message's own :host is flex (icon + text on one
-// row via align-items: flex-start). display: block here used to stomp on
-// that, stacking the icon above the text as two separate block lines.
-.rp-prompt {
-  margin-bottom: 16px;
+.co-icon-btn {
+  @include shell.icon-btn;
+}
+
+.rp-collapse {
+  @include shell.collapse;
+}
+.rp-collapse__inner {
+  overflow: hidden;
 }
 
 .rp-question {

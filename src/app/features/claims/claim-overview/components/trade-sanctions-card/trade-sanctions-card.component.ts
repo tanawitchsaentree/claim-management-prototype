@@ -6,6 +6,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
+import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -31,11 +32,9 @@ export interface TradeSanctionsUpdated {
  * a claim handler records that a screening was determined/performed and its
  * outcome. This never calls ESRA and never blocks claim progression.
  *
- * The Yes/No trigger sits directly on the card surface, not behind a
- * pencil-edit link — Recovery potential (this file's sibling card) tried the
- * hidden-behind-a-link shape first and the Recoveries call rejected it:
- * "nobody was answering, because a question hidden one click behind a link
- * labelled 'Set' reads as optional." Same reasoning applies here.
+ * Plain accordion (2026-09-28, same pattern as recovery-potential-card):
+ * collapsed by default, title + chevron in the header, everything else
+ * behind the toggle.
  *
  * Save opens a confirm dialog with a before/after diff, same as every other
  * save-affecting-record action on this page — never save-and-done, never a
@@ -51,6 +50,7 @@ export interface TradeSanctionsUpdated {
     NxFormfieldModule,
     NxInputModule,
     NxDatefieldModule,
+    NxIconModule,
     NxModalModule
   ],
   templateUrl: './trade-sanctions-card.component.html',
@@ -93,6 +93,11 @@ export class TradeSanctionsCardComponent implements OnChanges {
   private readonly commentsSig = toSignal(this.comments.valueChanges, {
     initialValue: this.comments.value
   });
+
+  // Plain accordion, collapsed by default — matches recovery-potential-card's
+  // 2026-09-28 redesign. Only user actions touch this, never ngOnChanges (the
+  // parent hands every card a new `claim` object on ANY sibling card's save).
+  readonly collapsed = signal(true);
 
   readonly isClosed = computed(() => this.claimSig()?.status === 'Closed');
   readonly saved = computed<TradeSanctionsCheck | null>(() => this.claimSig()?.tradeSanctions ?? null);
@@ -187,6 +192,11 @@ export class TradeSanctionsCardComponent implements OnChanges {
 
   onReset(): void {
     this.ngOnChanges();
+    this.collapsed.set(true);
+  }
+
+  toggleCollapsed(): void {
+    this.collapsed.set(!this.collapsed());
   }
 
   private confirmChanges(next: TradeSanctionsCheck): ConfirmDialogChange[] {
@@ -265,5 +275,6 @@ export class TradeSanctionsCardComponent implements OnChanges {
       'Trade sanctions check saved',
       next.exposure === 'yes' ? 'Recorded with exposure.' : 'Recorded — no exposure.'
     );
+    this.collapsed.set(true);
   }
 }

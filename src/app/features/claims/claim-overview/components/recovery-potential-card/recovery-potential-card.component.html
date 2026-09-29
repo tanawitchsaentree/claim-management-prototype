@@ -1,23 +1,30 @@
 <section class="co-card">
   <div class="rp-header">
     <h2 class="co-card-title">Recovery potential</h2>
-    @if (savedChoice()) {
-      <app-status-chip
-        [status]="savedChoice() === 'yes' ? 'yes' : 'no'"
-        domain="recovery"
-        [label]="savedChoice() === 'yes' ? 'Yes' : 'No'"
-      >
-      </app-status-chip>
-    }
-  </div>
-
-  <!-- Says out loud that this claim is waiting on a decision. Before the
-       Recoveries call an unanswered claim rendered a silent "–". -->
-  @if (showPrompt()) {
-    <div role="status">
-      <nx-message [context]="promptContext()" class="rp-prompt">{{ message() }}</nx-message>
+    <div class="rp-header__actions">
+      @if (savedChoice()) {
+        <app-status-chip
+          [status]="savedChoice() === 'yes' ? 'yes' : 'no'"
+          domain="recovery"
+          [label]="savedChoice() === 'yes' ? 'Yes' : 'No'"
+        >
+        </app-status-chip>
+      }
+      @if (!isClosed()) {
+        <button
+          type="button"
+          class="co-icon-btn"
+          (click)="toggleCollapsed()"
+          [title]="collapsed() ? 'Expand' : 'Collapse'"
+          [attr.aria-label]="collapsed() ? 'Expand' : 'Collapse'"
+          [attr.aria-expanded]="!collapsed()"
+          data-tour-id="co-recovery-potential-choice"
+        >
+          <nx-icon [name]="collapsed() ? 'chevron-down' : 'chevron-up'" size="s"></nx-icon>
+        </button>
+      }
     </div>
-  }
+  </div>
 
   @if (isClosed()) {
     <p class="co-value">
@@ -27,62 +34,61 @@
       <p class="rp-note">{{ savedNote() }}</p>
     }
   } @else {
-    <p class="rp-question" id="rp-question">Is recovery possible on this claim?</p>
+    <div class="rp-collapse" [class.rp-collapse--open]="!collapsed()">
+      <div class="rp-collapse__inner">
+        <p class="rp-question" id="rp-question">Is recovery possible on this claim?</p>
 
-    <nx-radio-group
-      [formControl]="choice"
-      class="rp-radio-group"
-      aria-labelledby="rp-question"
-      data-tour-id="co-recovery-potential-choice"
-    >
-      <nx-radio value="yes" labelSize="small">Yes</nx-radio>
-      <nx-radio value="no" labelSize="small">No</nx-radio>
-    </nx-radio-group>
+        <nx-radio-group [formControl]="choice" class="rp-radio-group" aria-labelledby="rp-question">
+          <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+          <nx-radio value="no" labelSize="small">No</nx-radio>
+        </nx-radio-group>
 
-    @if (needsNote()) {
-      <nx-formfield label="Why is no recovery expected?" class="rp-note-field">
-        <textarea
-          nxInput
-          [formControl]="note"
-          rows="2"
-          [maxlength]="maxNote"
-          placeholder="e.g. no identifiable third party at fault"
-        ></textarea>
-        @if (noteInvalid()) {
-          <nx-error nxFormfieldError>A reason is required when recovery potential is No.</nx-error>
+        @if (needsNote()) {
+          <nx-formfield label="Why is no recovery expected?" class="rp-note-field">
+            <textarea
+              nxInput
+              [formControl]="note"
+              rows="2"
+              [maxlength]="maxNote"
+              placeholder="e.g. no identifiable third party at fault"
+            ></textarea>
+            @if (noteInvalid()) {
+              <nx-error nxFormfieldError>A reason is required when recovery potential is No.</nx-error>
+            }
+          </nx-formfield>
+        } @else if (state() === 'no' && savedNote()) {
+          <p class="rp-note">{{ savedNote() }}</p>
         }
-      </nx-formfield>
-    } @else if (state() === 'no' && savedNote()) {
-      <p class="rp-note">{{ savedNote() }}</p>
-    }
 
-    <div class="rp-actions">
-      <button
-        nxButton="primary small"
-        type="button"
-        [disabled]="!canSave()"
-        (click)="onSave()"
-        data-tour-id="co-recovery-potential-save"
-      >
-        Save
-      </button>
-      @if (canSave()) {
-        <button nxButton="secondary small" type="button" (click)="onReset()">Cancel</button>
-      }
+        <div class="rp-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="!canSave()"
+            (click)="onSave()"
+            data-tour-id="co-recovery-potential-save"
+          >
+            Save
+          </button>
+          @if (canSave()) {
+            <button nxButton="secondary small" type="button" (click)="onReset()">Cancel</button>
+          }
+        </div>
+
+        <!-- The half of the loop that used to be missing: "Yes" on its own
+             changes nothing until a recovery case actually exists. -->
+        @if (showSetUpRecovery()) {
+          <a
+            nxButton="tertiary small"
+            class="rp-cta"
+            [routerLink]="['/claims', claim.claimId, 'recoveries']"
+            data-tour-id="co-recovery-set-up"
+          >
+            Set up recovery case
+            <nx-icon name="chevron-right" class="rp-cta__icon"></nx-icon>
+          </a>
+        }
+      </div>
     </div>
-
-    <!-- The half of the loop that used to be missing: "Yes" on its own changes
-         nothing until a recovery case actually exists in the recovery domain. -->
-    @if (showSetUpRecovery()) {
-      <a
-        nxButton="tertiary small"
-        class="rp-cta"
-        [routerLink]="['/claims', claim.claimId, 'recoveries']"
-        data-tour-id="co-recovery-set-up"
-      >
-        Set up recovery case
-        <nx-icon name="chevron-right" class="rp-cta__icon"></nx-icon>
-      </a>
-    }
   }
 </section>

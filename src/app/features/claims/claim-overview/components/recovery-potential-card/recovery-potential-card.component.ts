@@ -12,7 +12,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
-import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -29,8 +28,7 @@ import { ToastService } from '../../../../../shared/components/toast/toast.servi
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import {
   RecoveryPotentialState,
-  recoveryPotentialState,
-  RECOVERY_STATE_MESSAGE
+  recoveryPotentialState
 } from '../../../../../core/models/recovery-potential.model';
 
 export interface RecoveryPotentialUpdated {
@@ -41,13 +39,11 @@ export interface RecoveryPotentialUpdated {
 const MAX_NOTE = 300;
 
 /**
- * Recovery potential — answered with radios directly on the card.
- *
- * This used to be a chip plus a "Set/Update" link that opened a modal. The
- * Recoveries call (2026-09-01) rejected that: nobody was answering, because a
- * question hidden one click behind a link labelled "Set" reads as optional.
- * The radios are on the surface now, an unanswered claim says so in a warning,
- * and the closure checklist refuses to pass until it has an answer.
+ * Recovery potential — a plain accordion card (2026-09-28: replaced an
+ * amber-banner collapsed state that read as a warning box rather than a
+ * control). Collapsed by default, showing just the title, a Yes/No chip once
+ * answered, and a chevron; expand to answer. The closure checklist still
+ * refuses to pass without an answer regardless of whether the card is open.
  *
  * Save is a deliberate second click rather than committing on selection —
  * "it needs to be clear the user needs to interact and take action", and a
@@ -61,7 +57,6 @@ const MAX_NOTE = 300;
     ReactiveFormsModule,
     RouterLink,
     NxRadioModule,
-    NxMessageModule,
     NxButtonModule,
     NxFormfieldModule,
     NxInputModule,
@@ -87,6 +82,14 @@ export class RecoveryPotentialCardComponent implements OnChanges {
     validators: [Validators.required, Validators.maxLength(MAX_NOTE)]
   });
 
+  // Collapsed by default (2026-09-28 redesign) — the old always-open form sat
+  // on the page whether answered or not, giving every claim the same visual
+  // weight regardless of urgency. Only user actions (expand/save/cancel) ever
+  // touch this, never ngOnChanges — the parent's vm$ hands every card a new
+  // `claim` object on ANY sibling card's save, and collapsing this one just
+  // because Trade Sanctions saved would blow away an in-progress answer here.
+  readonly collapsed = signal(true);
+
   private readonly claimSig = signal<ClaimOverview | null>(null);
   private readonly choiceSig = toSignal(this.choice.valueChanges, {
     initialValue: this.choice.value
@@ -102,13 +105,6 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   readonly isClosed = computed(() => this.claimSig()?.status === 'Closed');
   readonly savedChoice = computed(() => this.claimSig()?.recoveryPotential ?? null);
   readonly savedNote = computed(() => this.claimSig()?.recoveryPotentialNote ?? '');
-
-  /** The prompt only earns its place on the card while something is outstanding. */
-  readonly showPrompt = computed(
-    () => !this.isClosed() && (this.state() === 'unanswered' || this.state() === 'yes-pending')
-  );
-  readonly message = computed(() => RECOVERY_STATE_MESSAGE[this.state()]);
-  readonly promptContext = computed(() => (this.state() === 'unanswered' ? 'warning' : 'info'));
 
   /**
    * "No" takes a rationale. An unexplained No is the answer an audit asks
@@ -197,9 +193,14 @@ export class RecoveryPotentialCardComponent implements OnChanges {
     return value === 'yes' ? 'Yes' : 'No';
   }
 
+  toggleCollapsed(): void {
+    this.collapsed.set(!this.collapsed());
+  }
+
   /** Discard an in-progress change and go back to what is on record. */
   onReset(): void {
     this.ngOnChanges();
+    this.collapsed.set(true);
   }
 
   private commit(value: 'yes' | 'no', note: string | undefined): void {
@@ -233,5 +234,6 @@ export class RecoveryPotentialCardComponent implements OnChanges {
         'Closure is no longer held up by recovery.'
       );
     }
+    this.collapsed.set(true);
   }
 }
