@@ -31,6 +31,12 @@
           </div>
         }
         @if (!vm.loading && !vm.error) {
+          <!-- Recent approvals -->
+          <app-recent-approvals-widget
+            [approvals]="vm.urgentApprovals"
+            [payments]="paymentApprovals()"
+          >
+          </app-recent-approvals-widget>
           <!-- Task list -->
           <div class="widget-card widget-card--tasklist">
             <div class="widget-header">
@@ -152,12 +158,6 @@
           @if (auth.isKcm()) {
             <app-heads-up-panel [items]="headsUp()"></app-heads-up-panel>
           }
-          <!-- Recent approvals -->
-          <app-recent-approvals-widget
-            [approvals]="vm.urgentApprovals"
-            [payments]="paymentApprovals()"
-          >
-          </app-recent-approvals-widget>
         }
         <!-- end !loading && !error -->
       </main>
