@@ -78,7 +78,11 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // so the dashboard's default "My claims / Last 30 days" view isn't empty —
 // their dateCreated/dateUpdated use the new "today-Nd" resolver instead of
 // literal dates specifically so this doesn't rot again.
-const STATE_VERSION = 'recovery-cases-v11';
+// Bumped again: added SK-2024-004 and bumped SK-2024-001's dateUpdated to
+// "today" — user wanted the Claims portfolio widget's top-5 to show a mix
+// including at least 2 skeleton claims (only 'awaiting-policy' skeletons
+// are eligible there; 'matched'/'abandoned' are deliberately excluded).
+const STATE_VERSION = 'recovery-cases-v12';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a
