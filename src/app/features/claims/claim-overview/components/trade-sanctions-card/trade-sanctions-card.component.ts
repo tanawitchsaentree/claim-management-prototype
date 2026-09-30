@@ -32,9 +32,10 @@ export interface TradeSanctionsUpdated {
  * a claim handler records that a screening was determined/performed and its
  * outcome. This never calls ESRA and never blocks claim progression.
  *
- * Plain accordion (2026-09-28, same pattern as recovery-potential-card):
- * collapsed by default, title + chevron in the header, everything else
- * behind the toggle.
+ * Always expanded (2026-09-30: accordion/chevron removed same day it was
+ * requested — user call, "ไม่เอา accordion กางออกมาก่อน"). Question, radios,
+ * named-third-parties context, and the sub-form (once "Yes" is picked) are
+ * all visible unconditionally.
  *
  * Two different commit models on one card (2026-09-30, team call — same
  * change as recovery-potential-card, adapted for this card's extra fields).
@@ -45,15 +46,13 @@ export interface TradeSanctionsUpdated {
  * found live (2026-09-30) that this page's card list is torn down and
  * rebuilt on every `(updated)` emit (confirmed via MutationObserver: every
  * sibling card unmounts/remounts ~900ms after any one card saves, not just
- * this one). Recovery potential's Yes/No is the complete fact, so that
- * remount is harmless — it already collapses on commit either way. But
- * "Yes" here only REVEALS a multi-field sub-form (referral applicable, ESRA
- * date/ID, referral approved, comments); auto-saving the bare fact first
- * would open a ~900ms window where the handler could start typing into that
- * sub-form and have the remount wipe it before their first "Save details"
- * click. So "Yes" just reveals the form; exposure + whatever sub-fields are
- * filled in commit together on "Save details", exactly like before this
- * change — same deliberate Save + confirm dialog, unchanged.
+ * this one). "Yes" here REVEALS a multi-field sub-form (referral applicable,
+ * ESRA date/ID, referral approved, comments); auto-saving the bare fact
+ * first would open a ~900ms window where the handler could start typing
+ * into that sub-form and have the remount wipe it before their first "Save
+ * details" click. So "Yes" just reveals the form; exposure + whatever
+ * sub-fields are filled in commit together on "Save details", exactly like
+ * before this change — same deliberate Save + confirm dialog, unchanged.
  *
  * Same confirm-gated "Clear answer" as recovery potential for the top-level
  * exposure fact — the one action here that still asks first, since erasing a
@@ -113,11 +112,6 @@ export class TradeSanctionsCardComponent implements OnChanges {
   private readonly commentsSig = toSignal(this.comments.valueChanges, {
     initialValue: this.comments.value
   });
-
-  // Plain accordion, collapsed by default — matches recovery-potential-card's
-  // 2026-09-28 redesign. Only user actions touch this, never ngOnChanges (the
-  // parent hands every card a new `claim` object on ANY sibling card's save).
-  readonly collapsed = signal(true);
 
   readonly isClosed = computed(() => this.claimSig()?.status === 'Closed');
   readonly saved = computed<TradeSanctionsCheck | null>(() => this.claimSig()?.tradeSanctions ?? null);
@@ -238,10 +232,6 @@ export class TradeSanctionsCardComponent implements OnChanges {
     this.ngOnChanges();
   }
 
-  toggleCollapsed(): void {
-    this.collapsed.set(!this.collapsed());
-  }
-
   private confirmDetailChanges(next: TradeSanctionsCheck): ConfirmDialogChange[] {
     const rows: ConfirmDialogChange[] = [];
     const saved = this.saved();
@@ -300,8 +290,7 @@ export class TradeSanctionsCardComponent implements OnChanges {
 
   /**
    * Top-level exposure fact — only ever called for "No" and "Clear" (see
-   * class doc for why "Yes" is excluded). Always collapses: both are
-   * complete, final answers, nothing left to fill in.
+   * class doc for why "Yes" is excluded).
    */
   private commitExposure(next: TradeSanctionsCheck | null): void {
     const claim = this.claim;
@@ -320,7 +309,6 @@ export class TradeSanctionsCardComponent implements OnChanges {
 
     this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });
     this.toast.success(...this.exposureToastFor(next));
-    this.collapsed.set(true);
   }
 
   private exposureToastFor(next: TradeSanctionsCheck | null): [string, string] {

@@ -12,34 +12,13 @@
   color: var(--text-01);
 }
 
-// Plain accordion header — title, Yes/No chip once answered, chevron toggle.
-// Same shape as pending-tasks-widget's .pt-header, no warning tone anywhere.
+// BLESSED: card-shell.card-title-row — title + trailing chip on one baseline.
 .rp-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  @include shell.card-title-row;
 
   .co-card-title {
     margin-bottom: 0;
   }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-}
-
-.co-icon-btn {
-  @include shell.icon-btn;
-}
-
-.rp-collapse {
-  @include shell.collapse;
-}
-.rp-collapse__inner {
-  overflow: hidden;
 }
 
 .rp-question {

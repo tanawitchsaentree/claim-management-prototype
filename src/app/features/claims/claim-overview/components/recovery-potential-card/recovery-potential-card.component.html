@@ -1,29 +1,14 @@
 <section class="co-card">
   <div class="rp-header">
     <h2 class="co-card-title">Recovery potential</h2>
-    <div class="rp-header__actions">
-      @if (savedChoice()) {
-        <app-status-chip
-          [status]="savedChoice() === 'yes' ? 'yes' : 'no'"
-          domain="recovery"
-          [label]="savedChoice() === 'yes' ? 'Yes' : 'No'"
-        >
-        </app-status-chip>
-      }
-      @if (!isClosed()) {
-        <button
-          type="button"
-          class="co-icon-btn"
-          (click)="toggleCollapsed()"
-          [title]="collapsed() ? 'Expand' : 'Collapse'"
-          [attr.aria-label]="collapsed() ? 'Expand' : 'Collapse'"
-          [attr.aria-expanded]="!collapsed()"
-          data-tour-id="co-recovery-potential-choice"
-        >
-          <nx-icon [name]="collapsed() ? 'chevron-down' : 'chevron-up'" size="s"></nx-icon>
-        </button>
-      }
-    </div>
+    @if (savedChoice()) {
+      <app-status-chip
+        [status]="savedChoice() === 'yes' ? 'yes' : 'no'"
+        domain="recovery"
+        [label]="savedChoice() === 'yes' ? 'Yes' : 'No'"
+      >
+      </app-status-chip>
+    }
   </div>
 
   @if (isClosed()) {
@@ -31,47 +16,43 @@
       {{ savedChoice() === 'yes' ? 'Yes' : savedChoice() === 'no' ? 'No' : 'Not answered' }}
     </p>
   } @else {
-    <div class="rp-collapse" [class.rp-collapse--open]="!collapsed()">
-      <div class="rp-collapse__inner">
-        <p class="rp-question" id="rp-question">Is recovery possible on this claim?</p>
+    <p class="rp-question" id="rp-question">Is recovery possible on this claim?</p>
 
-        <nx-radio-group
-          [formControl]="choice"
-          class="rp-radio-group"
-          aria-labelledby="rp-question"
-          (groupValueChange)="onAnswerSelected($event.value)"
-          data-tour-id="co-recovery-potential-choice-group"
-        >
-          <nx-radio value="yes" labelSize="small">Yes</nx-radio>
-          <nx-radio value="no" labelSize="small">No</nx-radio>
-        </nx-radio-group>
+    <nx-radio-group
+      [formControl]="choice"
+      class="rp-radio-group"
+      aria-labelledby="rp-question"
+      (groupValueChange)="onAnswerSelected($event.value)"
+      data-tour-id="co-recovery-potential-choice-group"
+    >
+      <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+      <nx-radio value="no" labelSize="small">No</nx-radio>
+    </nx-radio-group>
 
-        @if (canClear()) {
-          <button
-            nxPlainButton
-            type="button"
-            class="rp-clear"
-            (click)="onClearAnswer()"
-            data-tour-id="co-recovery-potential-clear"
-          >
-            Clear answer
-          </button>
-        }
+    @if (canClear()) {
+      <button
+        nxPlainButton
+        type="button"
+        class="rp-clear"
+        (click)="onClearAnswer()"
+        data-tour-id="co-recovery-potential-clear"
+      >
+        Clear answer
+      </button>
+    }
 
-        <!-- The half of the loop that used to be missing: "Yes" on its own
-             changes nothing until a recovery case actually exists. -->
-        @if (showSetUpRecovery()) {
-          <a
-            nxButton="tertiary small"
-            class="rp-cta"
-            [routerLink]="['/claims', claim.claimId, 'recoveries']"
-            data-tour-id="co-recovery-set-up"
-          >
-            Set up recovery case
-            <nx-icon name="chevron-right" class="rp-cta__icon"></nx-icon>
-          </a>
-        }
-      </div>
-    </div>
+    <!-- The half of the loop that used to be missing: "Yes" on its own
+         changes nothing until a recovery case actually exists. -->
+    @if (showSetUpRecovery()) {
+      <a
+        nxButton="tertiary small"
+        class="rp-cta"
+        [routerLink]="['/claims', claim.claimId, 'recoveries']"
+        data-tour-id="co-recovery-set-up"
+      >
+        Set up recovery case
+        <nx-icon name="chevron-right" class="rp-cta__icon"></nx-icon>
+      </a>
+    }
   }
 </section>

@@ -34,11 +34,11 @@ export interface RecoveryPotentialUpdated {
 }
 
 /**
- * Recovery potential — a plain accordion card (2026-09-28: replaced an
- * amber-banner collapsed state that read as a warning box rather than a
- * control). Collapsed by default, showing just the title, a Yes/No chip once
- * answered, and a chevron; expand to answer. The closure checklist still
- * refuses to pass without an answer regardless of whether the card is open.
+ * Recovery potential — always expanded (2026-09-30: accordion/chevron
+ * removed same day it was requested — user call, "ไม่เอา accordion กางออกมาก่อน").
+ * Question, radios, and status chip are all visible unconditionally; nothing
+ * to expand/collapse. The closure checklist still refuses to pass without an
+ * answer regardless.
  *
  * Auto-saves on selection (2026-09-30, team call — no Save button, no
  * confirm dialog for picking Yes/No). This is genuinely a 3-state field
@@ -77,14 +77,6 @@ export class RecoveryPotentialCardComponent implements OnChanges {
 
   readonly choice = new FormControl<'yes' | 'no' | null>(null);
 
-  // Collapsed by default (2026-09-28 redesign) — the old always-open form sat
-  // on the page whether answered or not, giving every claim the same visual
-  // weight regardless of urgency. Only user actions (expand/save/cancel) ever
-  // touch this, never ngOnChanges — the parent's vm$ hands every card a new
-  // `claim` object on ANY sibling card's save, and collapsing this one just
-  // because Trade Sanctions saved would blow away an in-progress answer here.
-  readonly collapsed = signal(true);
-
   private readonly claimSig = signal<ClaimOverview | null>(null);
   private readonly choiceSig = toSignal(this.choice.valueChanges, {
     initialValue: this.choice.value
@@ -119,10 +111,6 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   onAnswerSelected(value: 'yes' | 'no' | null): void {
     if (!value || this.isClosed() || value === this.savedChoice()) return;
     this.commitAnswer(value);
-  }
-
-  toggleCollapsed(): void {
-    this.collapsed.set(!this.collapsed());
   }
 
   /**
@@ -168,7 +156,6 @@ export class RecoveryPotentialCardComponent implements OnChanges {
     });
 
     this.toast.success(...this.toastFor(value));
-    this.collapsed.set(true);
   }
 
   private toastFor(value: 'yes' | 'no' | null): [string, string] {

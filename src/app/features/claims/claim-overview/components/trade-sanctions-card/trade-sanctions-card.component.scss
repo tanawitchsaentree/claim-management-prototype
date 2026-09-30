@@ -12,26 +12,14 @@
   color: var(--text-01);
 }
 
+// BLESSED: card-shell.card-title-row — title on its own baseline (no
+// trailing chip on this card, but matches recovery-potential-card's pattern).
 .ts-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  @include shell.card-title-row;
 
   .co-card-title {
     margin-bottom: 0;
   }
-}
-
-.co-icon-btn {
-  @include shell.icon-btn;
-}
-
-.ts-collapse {
-  @include shell.collapse;
-}
-.ts-collapse__inner {
-  overflow: hidden;
 }
 
 .ts-named-parties {
