@@ -17,6 +17,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { NxExpertModule } from '@allianz/ng-aquila/config';
 import { NX_ICON_INITIALIZER, NxIconRegistry } from '@allianz/ng-aquila/icon';
 import { NX_DATE_FORMATS, NxDateFormats } from '@allianz/ng-aquila/datefield';
+import { NX_MODAL_DEFAULT_OPTIONS } from '@allianz/ng-aquila/modal';
 import { NxIsoDateModule } from '@allianz/ng-aquila/iso-date-adapter';
 import { provideAllianzIcons } from '@allianz/ngx-brand-kit/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -63,6 +64,15 @@ export const appConfig: ApplicationConfig = {
     // NX_DATE_FORMATS ('L' → US format). Forces DD-MM-YYYY app-wide.
     { provide: NX_DATE_FORMATS, useValue: APP_DATE_FORMATS },
     provideAllianzIcons(),
+    // CDK's dialog focus-trap defaults to autoFocus: 'first-tabbable' — in
+    // every modal header here (close button, then title), the close (×)
+    // button is that first tabbable element, so it shows its focus-visible
+    // ring the instant ANY modal opens, before the user ever pressed Tab.
+    // 'dialog' focuses the modal panel itself instead — still traps focus,
+    // still fully keyboard-accessible, just doesn't ring a random header
+    // button on open. Global provider — every NxDialogService.open() call
+    // in the app inherits this, not just the one this was found on.
+    { provide: NX_MODAL_DEFAULT_OPTIONS, useValue: { autoFocus: 'dialog' } },
     {
       provide: NX_ICON_INITIALIZER,
       useFactory: (sanitizer: DomSanitizer) => (registry: NxIconRegistry) => {
