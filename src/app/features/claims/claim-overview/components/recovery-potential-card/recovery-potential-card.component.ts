@@ -19,7 +19,6 @@ import { firstValueFrom } from 'rxjs';
 import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
 import {
   ConfirmDialogComponent,
-  ConfirmDialogChange,
   ConfirmDialogData
 } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
@@ -41,10 +40,17 @@ export interface RecoveryPotentialUpdated {
  * answered, and a chevron; expand to answer. The closure checklist still
  * refuses to pass without an answer regardless of whether the card is open.
  *
- * Save is a deliberate second click rather than committing on selection —
- * "it needs to be clear the user needs to interact and take action", and a
- * radio that saves the instant it is grazed gives no chance to undo a misclick
- * on a field that gates claim closure.
+ * Auto-saves on selection (2026-09-30, team call — no Save button, no
+ * confirm dialog for picking Yes/No). This is genuinely a 3-state field
+ * (blank / yes / no), not a boolean with a default — a freshly created claim
+ * must render blank, never silently default to "no", because blank and "no
+ * recovery expected" are different recorded facts an audit needs to tell
+ * apart. Losing the old confirm-before-commit step (deliberately added
+ * 2026-09-02 specifically so a misclick on a closure-gating field wasn't
+ * unrecoverable) is a real trade-off — the mitigation is the Undo action on
+ * the save toast, plus a separate "Clear answer" control (below) that DOES
+ * still confirm, since erasing a fact that was already on record is a
+ * bigger deal than recording one in the first place.
  */
 @Component({
   selector: 'app-recovery-potential-card',
@@ -91,12 +97,8 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   readonly isClosed = computed(() => this.claimSig()?.status === 'Closed');
   readonly savedChoice = computed(() => this.claimSig()?.recoveryPotential ?? null);
 
-  readonly canSave = computed(() => {
-    if (this.isClosed()) return false;
-    const choice = this.choiceSig();
-    if (!choice) return false;
-    return choice !== this.savedChoice();
-  });
+  /** "Clear answer" only makes sense once there is an answer on record. */
+  readonly canClear = computed(() => !this.isClosed() && this.savedChoice() !== null);
 
   /** Link out to the recovery domain once a recovery has been committed to. */
   readonly showSetUpRecovery = computed(() => !this.isClosed() && this.state() === 'yes-pending');
@@ -109,65 +111,42 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   }
 
   /**
-   * Confirms before committing (2026-09-02, user: no save lands without a
-   * modal). This one has more reason to than most — the answer gates claim
-   * closure, "Yes" obliges someone to set up a recovery case, and the radio is
-   * on the card surface where it can be grazed. The dialog names the old and
-   * new value rather than asking a bare "are you sure?".
+   * Fires on every radio click (NxRadioGroup's own (valueChange) output, not
+   * a FormControl.valueChanges subscription — this class stays subscribe()-free).
+   * Auto-saves immediately; no confirm dialog for picking Yes/No (2026-09-30).
    */
-  async onSave(): Promise<void> {
-    const choice = this.choiceSig();
-    if (!choice || this.isClosed()) return;
-
-    const data: ConfirmDialogData = {
-      title: 'Save recovery potential',
-      message:
-        choice === 'yes'
-          ? `Recovery potential will be recorded as Yes on ${this.claim.claimId}. A recovery case has to be set up before this claim can be closed.`
-          : `Recovery potential will be recorded as No on ${this.claim.claimId}. Closure will no longer be held up by recovery.`,
-      changes: this.confirmChanges(choice),
-      confirmLabel: 'Save answer',
-      cancelLabel: 'Back'
-    };
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-      data,
-      width: '520px',
-      maxWidth: '92vw'
-    });
-    if ((await firstValueFrom(ref.afterClosed())) !== true) return;
-
-    this.commit(choice);
-  }
-
-  /** Only the rows that actually differ — a "changed from X to X" row is noise. */
-  private confirmChanges(choice: 'yes' | 'no'): ConfirmDialogChange[] {
-    const rows: ConfirmDialogChange[] = [];
-    const savedChoice = this.savedChoice();
-    if (choice !== savedChoice) {
-      rows.push({
-        label: 'Recovery potential',
-        original: savedChoice ? this.answerLabel(savedChoice) : 'Not answered',
-        updated: this.answerLabel(choice)
-      });
-    }
-    return rows;
-  }
-
-  private answerLabel(value: 'yes' | 'no'): string {
-    return value === 'yes' ? 'Yes' : 'No';
+  onAnswerSelected(value: 'yes' | 'no' | null): void {
+    if (!value || this.isClosed() || value === this.savedChoice()) return;
+    this.commitAnswer(value);
   }
 
   toggleCollapsed(): void {
     this.collapsed.set(!this.collapsed());
   }
 
-  /** Discard an in-progress change and go back to what is on record. */
-  onReset(): void {
-    this.ngOnChanges();
-    this.collapsed.set(true);
+  /**
+   * Erasing a recorded answer is a bigger deal than recording one — this is
+   * the one action on this card that still confirms, deliberately.
+   */
+  async onClearAnswer(): Promise<void> {
+    if (!this.canClear()) return;
+    const data: ConfirmDialogData = {
+      title: 'Clear recovery potential',
+      message: `${this.claim.claimId} will show as Not answered again. This does not delete the claim's history — it can be answered again at any time.`,
+      confirmLabel: 'Clear answer',
+      confirmDanger: true,
+      cancelLabel: 'Back'
+    };
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    if ((await firstValueFrom(ref.afterClosed())) !== true) return;
+    this.commitAnswer(null);
   }
 
-  private commit(value: 'yes' | 'no'): void {
+  private commitAnswer(value: 'yes' | 'no' | null): void {
     const claim = this.claim;
     const previous = claim.recoveryPotential ?? null;
 
@@ -187,17 +166,20 @@ export class RecoveryPotentialCardComponent implements OnChanges {
       activity
     });
 
-    if (value === 'yes') {
-      this.toast.success(
-        'Recovery potential set to Yes',
-        'Set up the recovery case to complete this claim.'
-      );
-    } else {
-      this.toast.success(
-        'Recovery potential set to No',
-        'Closure is no longer held up by recovery.'
-      );
-    }
+    this.toast.success(...this.toastFor(value), {
+      label: 'Undo',
+      onClick: () => this.commitAnswer(previous)
+    });
     this.collapsed.set(true);
+  }
+
+  private toastFor(value: 'yes' | 'no' | null): [string, string] {
+    if (value === 'yes') {
+      return ['Recovery potential set to Yes', 'Set up the recovery case to complete this claim.'];
+    }
+    if (value === 'no') {
+      return ['Recovery potential set to No', 'Closure is no longer held up by recovery.'];
+    }
+    return ['Recovery potential cleared', 'This claim shows as Not answered again.'];
   }
 }

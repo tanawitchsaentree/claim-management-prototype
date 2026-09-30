@@ -35,25 +35,28 @@
       <div class="rp-collapse__inner">
         <p class="rp-question" id="rp-question">Is recovery possible on this claim?</p>
 
-        <nx-radio-group [formControl]="choice" class="rp-radio-group" aria-labelledby="rp-question">
+        <nx-radio-group
+          [formControl]="choice"
+          class="rp-radio-group"
+          aria-labelledby="rp-question"
+          (groupValueChange)="onAnswerSelected($event.value)"
+          data-tour-id="co-recovery-potential-choice-group"
+        >
           <nx-radio value="yes" labelSize="small">Yes</nx-radio>
           <nx-radio value="no" labelSize="small">No</nx-radio>
         </nx-radio-group>
 
-        <div class="rp-actions">
+        @if (canClear()) {
           <button
-            nxButton="primary small"
+            nxPlainButton
             type="button"
-            [disabled]="!canSave()"
-            (click)="onSave()"
-            data-tour-id="co-recovery-potential-save"
+            class="rp-clear"
+            (click)="onClearAnswer()"
+            data-tour-id="co-recovery-potential-clear"
           >
-            Save
+            Clear answer
           </button>
-          @if (canSave()) {
-            <button nxButton="secondary small" type="button" (click)="onReset()">Cancel</button>
-          }
-        </div>
+        }
 
         <!-- The half of the loop that used to be missing: "Yes" on its own
              changes nothing until a recovery case actually exists. -->
