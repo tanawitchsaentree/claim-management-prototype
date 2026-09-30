@@ -47,10 +47,11 @@ export interface RecoveryPotentialUpdated {
  * recovery expected" are different recorded facts an audit needs to tell
  * apart. Losing the old confirm-before-commit step (deliberately added
  * 2026-09-02 specifically so a misclick on a closure-gating field wasn't
- * unrecoverable) is a real trade-off — the mitigation is the Undo action on
- * the save toast, plus a separate "Clear answer" control (below) that DOES
- * still confirm, since erasing a fact that was already on record is a
- * bigger deal than recording one in the first place.
+ * unrecoverable) is a real trade-off, accepted as-is (no Undo action on the
+ * save toast — tried, then explicitly asked to be removed same day) — the
+ * only remaining mitigation is the separate "Clear answer" control (below),
+ * which DOES still confirm, since erasing a fact that was already on record
+ * is a bigger deal than recording one in the first place.
  */
 @Component({
   selector: 'app-recovery-potential-card',
@@ -166,10 +167,7 @@ export class RecoveryPotentialCardComponent implements OnChanges {
       activity
     });
 
-    this.toast.success(...this.toastFor(value), {
-      label: 'Undo',
-      onClick: () => this.commitAnswer(previous)
-    });
+    this.toast.success(...this.toastFor(value));
     this.collapsed.set(true);
   }
 

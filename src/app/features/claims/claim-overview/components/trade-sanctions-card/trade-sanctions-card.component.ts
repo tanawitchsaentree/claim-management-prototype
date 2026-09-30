@@ -55,9 +55,10 @@ export interface TradeSanctionsUpdated {
  * filled in commit together on "Save details", exactly like before this
  * change — same deliberate Save + confirm dialog, unchanged.
  *
- * Same Undo-toast / confirm-gated "Clear answer" trade-off as recovery
- * potential for the top-level exposure fact (No / Clear only — "Yes" was
- * never auto-committed in the first place, so there's nothing to Undo for it).
+ * Same confirm-gated "Clear answer" as recovery potential for the top-level
+ * exposure fact — the one action here that still asks first, since erasing a
+ * recorded fact is a bigger deal than recording one. No Undo action on the
+ * save toast (tried, then explicitly asked to be removed same day).
  */
 @Component({
   selector: 'app-trade-sanctions-card',
@@ -318,10 +319,7 @@ export class TradeSanctionsCardComponent implements OnChanges {
     };
 
     this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });
-    this.toast.success(...this.exposureToastFor(next), {
-      label: 'Undo',
-      onClick: () => this.commitExposure(previous)
-    });
+    this.toast.success(...this.exposureToastFor(next));
     this.collapsed.set(true);
   }
 
