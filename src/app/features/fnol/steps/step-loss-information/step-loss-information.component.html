@@ -73,113 +73,26 @@
         }
       </nx-message>
     }
-    <!-- Card 1: General information — Date/time -> Location -> Cause/Type ->
-    Loss description (reordered to match reference design, 2026-09-25).
-    Location merged into this card rather than staying its own — the
-    reference has no second card border around it. -->
+    <!-- Card 1: General information — Cause/Type -> CBI -> Date/time ->
+    Location -> Loss description. Reverted 2026-09-30 (user/manager call) —
+    a prior pass (2026-09-25) had moved Date/time above Cause of loss to
+    match what was believed to be the reference design; a real production
+    team Slack thread surfaced the same day showed Date/time was pulled
+    above Cause specifically so DOL stays capturable independent of
+    Promise/cause data, and design had NOT signed off on that move — so
+    put Cause of loss back on top and flag the process gap separately,
+    rather than silently keep the un-signed-off order. Location stays
+    merged into this card either way (no second card border). -->
     <section class="li-card">
       <h2 class="section-heading">General information</h2>
       <p class="section-desc">
         Your selections here determine which cause-specific fields appear below.
       </p>
-      <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
-      <div class="two-col-grid" [formGroup]="dateOfLoss">
-        <div data-field="dateOfOccurrence" data-tour-id="li-date-of-occurrence">
-          <nx-formfield label="Date of occurrence">
-            <input
-              nxDatefield
-              nxInput
-              formControlName="dateOfOccurrence"
-              [datepicker]="occurrencePicker"
-            />
-            <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
-            <nx-datepicker #occurrencePicker></nx-datepicker>
-            <nx-hint nxFormfieldHint>DD-MM-YYYY — used to check for duplicate claims</nx-hint>
-            @if (
-              showError(dateOfLoss.get('dateOfOccurrence')!) &&
-              dateOfLoss.get('dateOfOccurrence')?.errors?.['required']
-            ) {
-              <nx-error nxFormfieldError> Date of occurrence is required </nx-error>
-            }
-            @if (dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']) {
-              <nx-error nxFormfieldError> Date can't be in the future </nx-error>
-            }
-          </nx-formfield>
-        </div>
-        <div data-field="timeOfOccurrence">
-          <nx-timefield
-            label="Time of occurrence"
-            formControlName="timeOfOccurrence"
-          ></nx-timefield>
-          @if (
-            showError(dateOfLoss.get('timeOfOccurrence')!) &&
-            dateOfLoss.get('timeOfOccurrence')?.errors?.['required']
-          ) {
-            <p class="field-error">Time of occurrence is required</p>
-          }
-        </div>
-        <div data-field="dateOfNotification">
-          <nx-formfield label="Date of notification">
-            <input
-              nxDatefield
-              nxInput
-              formControlName="dateOfNotification"
-              [datepicker]="notificationPicker"
-            />
-            <nx-datepicker-toggle
-              nxFormfieldSuffix
-              [for]="notificationPicker"
-            ></nx-datepicker-toggle>
-            <nx-datepicker #notificationPicker></nx-datepicker>
-            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
-            @if (
-              showError(dateOfLoss.get('dateOfNotification')!) &&
-              dateOfLoss.get('dateOfNotification')?.errors?.['required']
-            ) {
-              <nx-error nxFormfieldError> Date of notification is required </nx-error>
-            }
-            @if (dateOfLoss.get('dateOfNotification')?.errors?.['futureDate']) {
-              <nx-error nxFormfieldError> Date can't be in the future </nx-error>
-            }
-          </nx-formfield>
-        </div>
-        <div data-field="timeOfNotification">
-          <nx-timefield
-            label="Time of notification"
-            formControlName="timeOfNotification"
-          ></nx-timefield>
-          @if (
-            showError(dateOfLoss.get('timeOfNotification')!) &&
-            dateOfLoss.get('timeOfNotification')?.errors?.['required']
-          ) {
-            <p class="field-error">Time of notification is required</p>
-          }
-        </div>
-      </div>
-      @if (showGroupError(dateOfLoss, 'dateOrder')) {
-        <nx-error class="group-error">
-          Notification date must be on or after date of occurrence.
-        </nx-error>
-      }
-
-      <hr class="li-divider" />
-      <h3 class="sub-heading li-sub-heading">Locations of loss</h3>
-      <app-location-picker
-        #lossLocationPicker
-        [policyNumber]="policyNumber"
-        [value]="lossLocation.value"
-        [showEditLaterHint]="true"
-        (locationChange)="onLocationChange($event)"
-      ></app-location-picker>
-
-      <hr class="li-divider" />
-      <!-- EXPERIMENT (2026-09-30, user request): Cause of loss and Type of
-      damage sequential (own row each) instead of side-by-side — cause
-      determines damage type, so answering it first before damage type is
-      asked reads more naturally than answering both at once. Circumstance
-      and "specify other cause" stay directly under Cause of loss (both are
-      filtered by/qualify it, not Type of damage), so only Type of damage's
-      position moved, to after that whole cause-dependent group. -->
+      <!-- Cause of loss / Type of damage sequential (own row each) instead of
+      side-by-side, per 2026-09-30 request — cause determines damage type,
+      so answering it first reads more naturally than answering both at
+      once. Circumstance and "specify other cause" stay directly under
+      Cause of loss (both are filtered by/qualify it, not Type of damage). -->
       <div class="two-col-grid">
         <div class="full-row" data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
           <nx-formfield label="Cause of loss">
@@ -327,6 +240,98 @@
           }
         </div>
       }
+
+      <hr class="li-divider" />
+      <h3 class="sub-heading li-sub-heading">When did the loss occur?</h3>
+      <div class="two-col-grid" [formGroup]="dateOfLoss">
+        <div data-field="dateOfOccurrence" data-tour-id="li-date-of-occurrence">
+          <nx-formfield label="Date of occurrence">
+            <input
+              nxDatefield
+              nxInput
+              formControlName="dateOfOccurrence"
+              [datepicker]="occurrencePicker"
+            />
+            <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
+            <nx-datepicker #occurrencePicker></nx-datepicker>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY — used to check for duplicate claims</nx-hint>
+            @if (
+              showError(dateOfLoss.get('dateOfOccurrence')!) &&
+              dateOfLoss.get('dateOfOccurrence')?.errors?.['required']
+            ) {
+              <nx-error nxFormfieldError> Date of occurrence is required </nx-error>
+            }
+            @if (dateOfLoss.get('dateOfOccurrence')?.errors?.['futureDate']) {
+              <nx-error nxFormfieldError> Date can't be in the future </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div data-field="timeOfOccurrence">
+          <nx-timefield
+            label="Time of occurrence"
+            formControlName="timeOfOccurrence"
+          ></nx-timefield>
+          @if (
+            showError(dateOfLoss.get('timeOfOccurrence')!) &&
+            dateOfLoss.get('timeOfOccurrence')?.errors?.['required']
+          ) {
+            <p class="field-error">Time of occurrence is required</p>
+          }
+        </div>
+        <div data-field="dateOfNotification">
+          <nx-formfield label="Date of notification">
+            <input
+              nxDatefield
+              nxInput
+              formControlName="dateOfNotification"
+              [datepicker]="notificationPicker"
+            />
+            <nx-datepicker-toggle
+              nxFormfieldSuffix
+              [for]="notificationPicker"
+            ></nx-datepicker-toggle>
+            <nx-datepicker #notificationPicker></nx-datepicker>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+            @if (
+              showError(dateOfLoss.get('dateOfNotification')!) &&
+              dateOfLoss.get('dateOfNotification')?.errors?.['required']
+            ) {
+              <nx-error nxFormfieldError> Date of notification is required </nx-error>
+            }
+            @if (dateOfLoss.get('dateOfNotification')?.errors?.['futureDate']) {
+              <nx-error nxFormfieldError> Date can't be in the future </nx-error>
+            }
+          </nx-formfield>
+        </div>
+        <div data-field="timeOfNotification">
+          <nx-timefield
+            label="Time of notification"
+            formControlName="timeOfNotification"
+          ></nx-timefield>
+          @if (
+            showError(dateOfLoss.get('timeOfNotification')!) &&
+            dateOfLoss.get('timeOfNotification')?.errors?.['required']
+          ) {
+            <p class="field-error">Time of notification is required</p>
+          }
+        </div>
+      </div>
+      @if (showGroupError(dateOfLoss, 'dateOrder')) {
+        <nx-error class="group-error">
+          Notification date must be on or after date of occurrence.
+        </nx-error>
+      }
+
+      <hr class="li-divider" />
+      <h3 class="sub-heading li-sub-heading">Locations of loss</h3>
+      <app-location-picker
+        #lossLocationPicker
+        [policyNumber]="policyNumber"
+        [value]="lossLocation.value"
+        [showEditLaterHint]="true"
+        (locationChange)="onLocationChange($event)"
+      ></app-location-picker>
+
       <hr class="li-divider" />
       <nx-formfield label="Loss description (optional)" class="full-width">
         <textarea
