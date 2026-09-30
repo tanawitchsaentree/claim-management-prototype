@@ -173,8 +173,15 @@
       ></app-location-picker>
 
       <hr class="li-divider" />
+      <!-- EXPERIMENT (2026-09-30, user request): Cause of loss and Type of
+      damage sequential (own row each) instead of side-by-side — cause
+      determines damage type, so answering it first before damage type is
+      asked reads more naturally than answering both at once. Circumstance
+      and "specify other cause" stay directly under Cause of loss (both are
+      filtered by/qualify it, not Type of damage), so only Type of damage's
+      position moved, to after that whole cause-dependent group. -->
       <div class="two-col-grid">
-        <div data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
+        <div class="full-row" data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
           <nx-formfield label="Cause of loss">
             <nx-multi-select
               [options]="vm.causeOfLoss"
@@ -189,28 +196,29 @@
             }
           </nx-formfield>
         </div>
-        <div data-field="typeOfDamage">
-          <nx-formfield label="Type of damage">
-            <nx-multi-select
-              [options]="vm.typeOfDamage"
-              selectValue="value"
-              selectLabel="label"
-              placeholder="Select type of damage"
-              formControlName="typeOfDamage"
-              (selectionChange)="onTypeOfDamageChange($event)"
-            ></nx-multi-select>
-            @if (submitAttempted && selectedDamages.length === 0) {
-              <nx-error nxFormfieldError> Select at least one type of damage </nx-error>
-            }
-          </nx-formfield>
-        </div>
+        <!-- Free-text qualifier, shown only while Cause of loss includes "Other
+        Event". There is no damage equivalent — typeOfDamage has no "Other"
+        option by design, see OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
+        @if (showSpecifyOtherCause) {
+          <div class="full-row" data-field="specifyOtherCauseOfLoss">
+            <nx-formfield label="Specify other cause of loss">
+              <input
+                nxInput
+                formControlName="specifyOtherCauseOfLoss"
+                maxlength="100"
+                data-testid="specify-other-cause-of-loss-input"
+              />
+              @if (showError(form.get('specifyOtherCauseOfLoss')!)) {
+                <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
+              }
+            </nx-formfield>
+          </div>
+        }
         <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance
-        per claim. Sits in the same grid so it lands directly under the
-        Cause of loss it is filtered by. Options come from
-        circumstanceOptionsFor() and narrow as soon as a peril is confirmed;
-        with no cause yet, or "Other event", the full catalogue plus
-        "Unknown" is offered. -->
-        <div data-field="circumstance">
+        per claim. Options come from circumstanceOptionsFor() and narrow as
+        soon as a peril is confirmed; with no cause yet, or "Other event",
+        the full catalogue plus "Unknown" is offered. -->
+        <div class="full-row" data-field="circumstance">
           <nx-formfield label="Incident circumstance">
             <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
               @for (option of circumstanceOptions; track option.value) {
@@ -226,26 +234,21 @@
             </nx-hint>
           </nx-formfield>
         </div>
-        <!-- Free-text qualifier, shown only while Cause of loss includes "Other
-        Event". Sits in the same grid so it lands directly under the select
-        it qualifies instead of in a separate row below. There is no damage
-        equivalent — typeOfDamage has no "Other" option by design, see
-        OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
-        @if (showSpecifyOtherCause) {
-          <div data-field="specifyOtherCauseOfLoss">
-            <nx-formfield label="Specify other cause of loss">
-              <input
-                nxInput
-                formControlName="specifyOtherCauseOfLoss"
-                maxlength="100"
-                data-testid="specify-other-cause-of-loss-input"
-              />
-              @if (showError(form.get('specifyOtherCauseOfLoss')!)) {
-                <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
-              }
-            </nx-formfield>
-          </div>
-        }
+        <div class="full-row" data-field="typeOfDamage">
+          <nx-formfield label="Type of damage">
+            <nx-multi-select
+              [options]="vm.typeOfDamage"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select type of damage"
+              formControlName="typeOfDamage"
+              (selectionChange)="onTypeOfDamageChange($event)"
+            ></nx-multi-select>
+            @if (submitAttempted && selectedDamages.length === 0) {
+              <nx-error nxFormfieldError> Select at least one type of damage </nx-error>
+            }
+          </nx-formfield>
+        </div>
       </div>
 
       <!-- CBI (contingent business interruption) trigger — BMPCC-18353. Sits

@@ -133,6 +133,12 @@
   @include fs.two-col-grid;
 }
 
+// Spans both tracks of the parent .two-col-grid so a field takes its own
+// row instead of pairing side-by-side with whatever comes next in the DOM.
+.full-row {
+  grid-column: 1 / -1;
+}
+
 .full-width {
   width: 100%;
   margin-top: 8px;
