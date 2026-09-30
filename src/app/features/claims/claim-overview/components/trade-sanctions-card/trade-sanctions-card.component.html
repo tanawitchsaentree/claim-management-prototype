@@ -41,10 +41,17 @@
           [formControl]="exposure"
           class="ts-radio-group"
           aria-labelledby="ts-question"
+          (groupValueChange)="onExposureSelected($event.value)"
         >
           <nx-radio value="yes" labelSize="small">Yes</nx-radio>
           <nx-radio value="no" labelSize="small">No</nx-radio>
         </nx-radio-group>
+
+        @if (canClear()) {
+          <button nxPlainButton type="button" class="ts-clear" (click)="onClearExposure()">
+            Clear answer
+          </button>
+        }
 
         @if (showExpanded()) {
           <div class="ts-details">
@@ -99,22 +106,24 @@
             <nx-formfield label="Additional comments (optional)" class="ts-comments">
               <textarea nxInput [formControl]="comments" rows="2" maxlength="500"></textarea>
             </nx-formfield>
+
+            <div class="ts-actions">
+              <button
+                nxButton="primary small"
+                type="button"
+                [disabled]="!canSaveDetails()"
+                (click)="onSaveDetails()"
+              >
+                Save details
+              </button>
+              @if (canSaveDetails()) {
+                <button nxButton="secondary small" type="button" (click)="onResetDetails()">
+                  Cancel
+                </button>
+              }
+            </div>
           </div>
         }
-
-        <div class="ts-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="!canSave()"
-            (click)="onSave()"
-          >
-            Save
-          </button>
-          @if (canSave()) {
-            <button nxButton="secondary small" type="button" (click)="onReset()">Cancel</button>
-          }
-        </div>
       </div>
     </div>
   }

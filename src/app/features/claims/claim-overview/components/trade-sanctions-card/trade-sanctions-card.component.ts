@@ -36,9 +36,28 @@ export interface TradeSanctionsUpdated {
  * collapsed by default, title + chevron in the header, everything else
  * behind the toggle.
  *
- * Save opens a confirm dialog with a before/after diff, same as every other
- * save-affecting-record action on this page — never save-and-done, never a
- * bare "are you sure?".
+ * Two different commit models on one card (2026-09-30, team call — same
+ * change as recovery-potential-card, adapted for this card's extra fields).
+ * "No" auto-saves the instant it's picked, no Save button, no confirm — it's
+ * the whole fact, same reasoning as recovery potential.
+ *
+ * "Yes" does NOT auto-save by itself, unlike recovery potential's Yes/No —
+ * found live (2026-09-30) that this page's card list is torn down and
+ * rebuilt on every `(updated)` emit (confirmed via MutationObserver: every
+ * sibling card unmounts/remounts ~900ms after any one card saves, not just
+ * this one). Recovery potential's Yes/No is the complete fact, so that
+ * remount is harmless — it already collapses on commit either way. But
+ * "Yes" here only REVEALS a multi-field sub-form (referral applicable, ESRA
+ * date/ID, referral approved, comments); auto-saving the bare fact first
+ * would open a ~900ms window where the handler could start typing into that
+ * sub-form and have the remount wipe it before their first "Save details"
+ * click. So "Yes" just reveals the form; exposure + whatever sub-fields are
+ * filled in commit together on "Save details", exactly like before this
+ * change — same deliberate Save + confirm dialog, unchanged.
+ *
+ * Same Undo-toast / confirm-gated "Clear answer" trade-off as recovery
+ * potential for the top-level exposure fact (No / Clear only — "Yes" was
+ * never auto-committed in the first place, so there's nothing to Undo for it).
  */
 @Component({
   selector: 'app-trade-sanctions-card',
@@ -110,15 +129,10 @@ export class TradeSanctionsCardComponent implements OnChanges {
   // leaving it live is the resolution this build takes.
   readonly referralApprovedDisabled = computed(() => this.referralApplicableSig() !== 'yes');
 
-  readonly canSave = computed(() => {
-    if (this.isClosed()) return false;
-    const exposure = this.exposureSig();
-    if (!exposure) return false;
+  /** Only the sub-form fields — exposure itself auto-saves separately. */
+  readonly canSaveDetails = computed(() => {
+    if (this.isClosed() || this.exposureSig() !== 'yes') return false;
     const saved = this.saved();
-    if (exposure === 'no') {
-      return (saved?.exposure ?? 'no') !== 'no';
-    }
-    // exposure === 'yes'
     return (
       saved?.exposure !== 'yes' ||
       this.boolToYesNo(saved.referralApplicable) !== this.referralApplicableSig() ||
@@ -128,6 +142,8 @@ export class TradeSanctionsCardComponent implements OnChanges {
       (saved.comments ?? '') !== (this.commentsSig() ?? '')
     );
   });
+
+  readonly canClear = computed(() => !this.isClosed() && this.saved() !== null);
 
   ngOnChanges(): void {
     this.claimSig.set(this.claim);
@@ -147,37 +163,64 @@ export class TradeSanctionsCardComponent implements OnChanges {
     this.comments.setValue(ts?.comments ?? '');
   }
 
-  async onSave(): Promise<void> {
-    const exposure = this.exposureSig();
-    if (!exposure || this.isClosed()) return;
+  /**
+   * Top-level exposure Yes/No — fires on NxRadioGroup's own (groupValueChange)
+   * output (not a FormControl.valueChanges subscription; stays subscribe()-free).
+   * Only "No" auto-saves here — see class doc for why "Yes" doesn't.
+   */
+  onExposureSelected(value: 'yes' | 'no' | null): void {
+    if (value !== 'no' || this.isClosed() || value === (this.saved()?.exposure ?? null)) return;
+    this.commitExposure({ exposure: 'no' });
+  }
 
-    const next: TradeSanctionsCheck =
-      exposure === 'no'
-        ? { exposure: 'no' }
-        : {
-            exposure: 'yes',
-            // Leave unanswered radios as `undefined`, not a coerced `false`
-            // — an untouched "Sanction referral applicable?" must read back
-            // as "Not answered", not silently commit to "No" just because
-            // Exposure was saved.
-            referralApplicable:
-              this.referralApplicableSig() === null
-                ? undefined
-                : this.referralApplicableSig() === 'yes',
-            esraCompletionDate: this.esraCompletionDateSig() ?? undefined,
-            referralApproved:
-              this.referralApplicableSig() === 'yes' && this.referralApprovedSig() !== null
-                ? this.referralApprovedSig() === 'yes'
-                : undefined,
-            esraId: this.esraIdSig() || undefined,
-            comments: this.commentsSig() || undefined
-          };
+  /**
+   * Erasing a recorded check is a bigger deal than recording one — this is
+   * the one action on this card that still confirms, deliberately.
+   */
+  async onClearExposure(): Promise<void> {
+    if (!this.canClear()) return;
+    const data: ConfirmDialogData = {
+      title: 'Clear trade sanctions check',
+      message: `${this.claim.claimId} will show as Not answered again. This does not delete the claim's history — it can be answered again at any time.`,
+      confirmLabel: 'Clear answer',
+      confirmDanger: true,
+      cancelLabel: 'Back'
+    };
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    if ((await firstValueFrom(ref.afterClosed())) !== true) return;
+    this.commitExposure(null);
+  }
+
+  /** The multi-field sub-form only — exposure itself already saved. */
+  async onSaveDetails(): Promise<void> {
+    if (this.exposureSig() !== 'yes' || this.isClosed()) return;
+
+    const next: TradeSanctionsCheck = {
+      exposure: 'yes',
+      // Leave unanswered radios as `undefined`, not a coerced `false` — an
+      // untouched "Sanction referral applicable?" must read back as "Not
+      // answered", not silently commit to "No" just because Exposure was
+      // saved.
+      referralApplicable:
+        this.referralApplicableSig() === null ? undefined : this.referralApplicableSig() === 'yes',
+      esraCompletionDate: this.esraCompletionDateSig() ?? undefined,
+      referralApproved:
+        this.referralApplicableSig() === 'yes' && this.referralApprovedSig() !== null
+          ? this.referralApprovedSig() === 'yes'
+          : undefined,
+      esraId: this.esraIdSig() || undefined,
+      comments: this.commentsSig() || undefined
+    };
 
     const data: ConfirmDialogData = {
-      title: 'Save trade sanctions check',
-      message: `Trade sanctions exposure will be recorded on ${this.claim.claimId}.`,
-      changes: this.confirmChanges(next),
-      confirmLabel: 'Save answer',
+      title: 'Save trade sanctions details',
+      message: `Trade sanctions details will be recorded on ${this.claim.claimId}.`,
+      changes: this.confirmDetailChanges(next),
+      confirmLabel: 'Save details',
       cancelLabel: 'Back'
     };
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
@@ -187,61 +230,60 @@ export class TradeSanctionsCardComponent implements OnChanges {
     });
     if ((await firstValueFrom(ref.afterClosed())) !== true) return;
 
-    this.commit(next);
+    this.commitDetails(next);
   }
 
-  onReset(): void {
+  onResetDetails(): void {
     this.ngOnChanges();
-    this.collapsed.set(true);
   }
 
   toggleCollapsed(): void {
     this.collapsed.set(!this.collapsed());
   }
 
-  private confirmChanges(next: TradeSanctionsCheck): ConfirmDialogChange[] {
+  private confirmDetailChanges(next: TradeSanctionsCheck): ConfirmDialogChange[] {
     const rows: ConfirmDialogChange[] = [];
     const saved = this.saved();
-    const savedExposure = saved?.exposure ?? 'Not answered';
+    // Exposure is usually already 'yes' by the time this fires, but this is
+    // also the FIRST save for a brand-new "Yes" pick — exposure hasn't been
+    // recorded at all yet in that case, so it belongs in this diff too.
     if (next.exposure !== (saved?.exposure ?? null)) {
       rows.push({
         label: 'Exposure to trade sanctions',
-        original: this.answerLabel(savedExposure),
+        original: this.answerLabel(saved?.exposure ?? 'Not answered'),
         updated: this.answerLabel(next.exposure)
       });
     }
-    if (next.exposure === 'yes') {
-      if (this.boolToYesNo(saved?.referralApplicable) !== this.boolToYesNo(next.referralApplicable)) {
-        rows.push({
-          label: 'Sanction referral applicable',
-          original: this.answerLabel(this.boolToYesNo(saved?.referralApplicable) ?? 'Not answered'),
-          updated: this.answerLabel(this.boolToYesNo(next.referralApplicable) ?? 'Not answered')
-        });
-      }
-      if ((saved?.esraCompletionDate ?? '') !== (next.esraCompletionDate ?? '')) {
-        rows.push({
-          label: 'Date of completion of ESRA',
-          original: saved?.esraCompletionDate ?? '—',
-          updated: next.esraCompletionDate ?? '—'
-        });
-      }
-      if (this.boolToYesNo(saved?.referralApproved) !== this.boolToYesNo(next.referralApproved)) {
-        rows.push({
-          label: 'Sanction referral approved in ESRA',
-          original: this.answerLabel(this.boolToYesNo(saved?.referralApproved) ?? 'Not answered'),
-          updated: this.answerLabel(this.boolToYesNo(next.referralApproved) ?? 'Not answered')
-        });
-      }
-      if ((saved?.esraId ?? '') !== (next.esraId ?? '')) {
-        rows.push({ label: 'ESRA ID', original: saved?.esraId ?? '—', updated: next.esraId ?? '—' });
-      }
-      if ((saved?.comments ?? '') !== (next.comments ?? '')) {
-        rows.push({
-          label: 'Additional comments',
-          original: saved?.comments ?? '—',
-          updated: next.comments ?? '—'
-        });
-      }
+    if (this.boolToYesNo(saved?.referralApplicable) !== this.boolToYesNo(next.referralApplicable)) {
+      rows.push({
+        label: 'Sanction referral applicable',
+        original: this.answerLabel(this.boolToYesNo(saved?.referralApplicable) ?? 'Not answered'),
+        updated: this.answerLabel(this.boolToYesNo(next.referralApplicable) ?? 'Not answered')
+      });
+    }
+    if ((saved?.esraCompletionDate ?? '') !== (next.esraCompletionDate ?? '')) {
+      rows.push({
+        label: 'Date of completion of ESRA',
+        original: saved?.esraCompletionDate ?? '—',
+        updated: next.esraCompletionDate ?? '—'
+      });
+    }
+    if (this.boolToYesNo(saved?.referralApproved) !== this.boolToYesNo(next.referralApproved)) {
+      rows.push({
+        label: 'Sanction referral approved in ESRA',
+        original: this.answerLabel(this.boolToYesNo(saved?.referralApproved) ?? 'Not answered'),
+        updated: this.answerLabel(this.boolToYesNo(next.referralApproved) ?? 'Not answered')
+      });
+    }
+    if ((saved?.esraId ?? '') !== (next.esraId ?? '')) {
+      rows.push({ label: 'ESRA ID', original: saved?.esraId ?? '—', updated: next.esraId ?? '—' });
+    }
+    if ((saved?.comments ?? '') !== (next.comments ?? '')) {
+      rows.push({
+        label: 'Additional comments',
+        original: saved?.comments ?? '—',
+        updated: next.comments ?? '—'
+      });
     }
     return rows;
   }
@@ -255,7 +297,51 @@ export class TradeSanctionsCardComponent implements OnChanges {
     return value ? 'yes' : 'no';
   }
 
-  private commit(next: TradeSanctionsCheck): void {
+  /**
+   * Top-level exposure fact — only ever called for "No" and "Clear" (see
+   * class doc for why "Yes" is excluded). Always collapses: both are
+   * complete, final answers, nothing left to fill in.
+   */
+  private commitExposure(next: TradeSanctionsCheck | null): void {
+    const claim = this.claim;
+    const previous = this.saved();
+
+    const activity: ClaimActivity = {
+      id: `act-${Date.now()}`,
+      claimId: claim.claimId,
+      user: claim.assignedHandler,
+      timestamp: new Date().toISOString(),
+      objectType: 'Claim',
+      attribute: 'Trade sanctions check',
+      valueOld: previous?.exposure ?? 'Not answered',
+      valueNew: next?.exposure ?? 'Not answered'
+    };
+
+    this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });
+    this.toast.success(...this.exposureToastFor(next), {
+      label: 'Undo',
+      onClick: () => this.commitExposure(previous)
+    });
+    this.collapsed.set(true);
+  }
+
+  private exposureToastFor(next: TradeSanctionsCheck | null): [string, string] {
+    if (next?.exposure === 'yes') {
+      return ['Trade sanctions check saved', 'Recorded with exposure.'];
+    }
+    if (next?.exposure === 'no') {
+      return ['Trade sanctions check saved', 'Recorded — no exposure.'];
+    }
+    return ['Trade sanctions check cleared', 'This claim shows as Not answered again.'];
+  }
+
+  /**
+   * Sub-form details — unchanged deliberate Save + confirm dialog flow.
+   * This is also where a first-time "Yes" actually gets recorded (see class
+   * doc) — the exposure fact and whatever sub-fields are filled in commit
+   * together, same as before this change.
+   */
+  private commitDetails(next: TradeSanctionsCheck): void {
     const claim = this.claim;
     const previous = this.saved()?.exposure ?? 'Not answered';
 
@@ -271,10 +357,6 @@ export class TradeSanctionsCardComponent implements OnChanges {
     };
 
     this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });
-    this.toast.success(
-      'Trade sanctions check saved',
-      next.exposure === 'yes' ? 'Recorded with exposure.' : 'Recorded — no exposure.'
-    );
-    this.collapsed.set(true);
+    this.toast.success('Trade sanctions check saved', 'Recorded with exposure.');
   }
 }
