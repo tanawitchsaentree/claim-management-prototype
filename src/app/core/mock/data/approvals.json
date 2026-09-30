@@ -1,7 +1,7 @@
 [
   {
     "requestId": "REQ483140",
-    "claimId": "CL-C-00063373-2026.537.1",
+    "claimId": "CLM-2024-001",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity, Expenses",
@@ -12,7 +12,7 @@
   },
   {
     "requestId": "REQ270243",
-    "claimId": "CL-C-00063671-2026.119.1",
+    "claimId": "CLM-2024-006",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity",
@@ -23,7 +23,7 @@
   },
   {
     "requestId": "REQ215587",
-    "claimId": "CL-C-00063659-2026.77.1",
+    "claimId": "CLM-2024-016",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity, Expenses",
@@ -34,7 +34,7 @@
   },
   {
     "requestId": "REQ562237",
-    "claimId": "CL-C-00063659-2026.51.1",
+    "claimId": "CLM-2024-022",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity, Expenses",
@@ -45,7 +45,7 @@
   },
   {
     "requestId": "REQ562292",
-    "claimId": "CL-C-00063659-2026.51.2",
+    "claimId": "CLM-2024-023",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity",
@@ -56,7 +56,7 @@
   },
   {
     "requestId": "REQ701188",
-    "claimId": "CL-C-00063671-2026.409.14",
+    "claimId": "CLM-2024-101",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity",
