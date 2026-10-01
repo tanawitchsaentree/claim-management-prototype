@@ -258,76 +258,86 @@
       <!-- CBI (contingent business interruption) trigger — BMPCC-18353. Sits
       directly below the Cause of loss / Type of damage grid (not inside a
       per-cause event block in Events details): CBI is a refinement of the
-      Business Interruption damage type itself, not of any one cause of loss. -->
+      Business Interruption damage type itself, not of any one cause of loss.
+      Boxed in .cbi-panel (2026-10-01, user call) — a plain <hr> divider read
+      as "just another field group" next to Date/time and Location, blending
+      into the rest of the card; a tinted panel (same treatment as
+      trade-sanctions-card's .ts-named-parties) marks it as a distinct,
+      third-party dataset without introducing any new visual language. -->
       @if (showCbiQuestion) {
-        <div class="radio-field" data-field="cbiApplicable">
-          <p class="radio-label">
-            Is this Business Interruption due to Contingent Business Interruption (CBI)?
-          </p>
-          <nx-radio-group
-            class="radio-row"
-            formControlName="cbiApplicable"
-            (valueChange)="onCbiApplicableChange()"
-          >
-            <nx-radio labelSize="small" value="yes">Yes</nx-radio>
-            <nx-radio labelSize="small" value="no">No</nx-radio>
-          </nx-radio-group>
-          @if (submitAttempted && !cbiApplicable) {
-            <p class="field-error">Answer required</p>
-          }
-        </div>
-      }
-
-      @if (showCbiDetails) {
-        <hr class="li-divider" />
-        <h3 class="sub-heading li-sub-heading">Contingent business interruption details</h3>
-        <div class="two-col-grid">
-          <div data-field="cbiCaseType">
-            <nx-formfield label="CBI case type">
-              <nx-dropdown
-                formControlName="cbiCaseType"
-                placeholder="Select case type"
-                (selectionChange)="syncCbi()"
-              >
-                @for (opt of cbiCaseTypeOptions; track opt.value) {
-                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-                }
-              </nx-dropdown>
-              @if (submitAttempted && !selectedCbiCaseType) {
-                <nx-error nxFormfieldError>Select a case type</nx-error>
-              }
-            </nx-formfield>
+        <div class="cbi-panel">
+          <p class="cbi-panel__label">Contingent business interruption (CBI)</p>
+          <div class="radio-field" data-field="cbiApplicable">
+            <p class="radio-label">
+              Is this Business Interruption due to Contingent Business Interruption (CBI)?
+            </p>
+            <nx-radio-group
+              class="radio-row"
+              formControlName="cbiApplicable"
+              (valueChange)="onCbiApplicableChange()"
+            >
+              <nx-radio labelSize="small" value="yes">Yes</nx-radio>
+              <nx-radio labelSize="small" value="no">No</nx-radio>
+            </nx-radio-group>
+            @if (submitAttempted && !cbiApplicable) {
+              <p class="field-error">Answer required</p>
+            }
           </div>
-          @if (showCbiThirdPartyName) {
-            <div data-field="cbiThirdPartyName">
-              <nx-formfield [label]="cbiThirdPartyLabel">
-                <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
-                @if (
-                  submitAttempted && cbiThirdPartyRequired && !form.get('cbiThirdPartyName')?.value
-                ) {
-                  <nx-error nxFormfieldError>Required</nx-error>
-                }
-              </nx-formfield>
+
+          @if (showCbiDetails) {
+            <hr class="li-divider cbi-panel__divider" />
+            <h3 class="sub-heading li-sub-heading">Contingent business interruption details</h3>
+            <div class="two-col-grid">
+              <div data-field="cbiCaseType">
+                <nx-formfield label="CBI case type">
+                  <nx-dropdown
+                    formControlName="cbiCaseType"
+                    placeholder="Select case type"
+                    (selectionChange)="syncCbi()"
+                  >
+                    @for (opt of cbiCaseTypeOptions; track opt.value) {
+                      <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+                    }
+                  </nx-dropdown>
+                  @if (submitAttempted && !selectedCbiCaseType) {
+                    <nx-error nxFormfieldError>Select a case type</nx-error>
+                  }
+                </nx-formfield>
+              </div>
+              @if (showCbiThirdPartyName) {
+                <div data-field="cbiThirdPartyName">
+                  <nx-formfield [label]="cbiThirdPartyLabel">
+                    <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
+                    @if (
+                      submitAttempted &&
+                      cbiThirdPartyRequired &&
+                      !form.get('cbiThirdPartyName')?.value
+                    ) {
+                      <nx-error nxFormfieldError>Required</nx-error>
+                    }
+                  </nx-formfield>
+                </div>
+              }
+              @if (showCbiThirdPartyIndustry) {
+                <div data-field="cbiThirdPartyIndustry">
+                  <nx-formfield [label]="cbiThirdPartyIndustryLabel">
+                    <input nxInput formControlName="cbiThirdPartyIndustry" maxlength="100" />
+                  </nx-formfield>
+                </div>
+              }
             </div>
-          }
-          @if (showCbiThirdPartyIndustry) {
-            <div data-field="cbiThirdPartyIndustry">
-              <nx-formfield [label]="cbiThirdPartyIndustryLabel">
-                <input nxInput formControlName="cbiThirdPartyIndustry" maxlength="100" />
-              </nx-formfield>
+            <div data-field="cbiLocation">
+              <app-location-picker
+                [policyNumber]="null"
+                [value]="cbiLocation.value"
+                [promptLabel]="'Where did the originating CBI event occur?'"
+                [skipHintText]="'Where the CBI-triggering event happened — the third party\'s site, not the insured\'s own loss location.'"
+                (locationChange)="onCbiLocationChange($event)"
+              ></app-location-picker>
+              @if (submitAttempted && cbiLocation.value.locations.length === 0) {
+                <p class="field-error">Originating loss location: required</p>
+              }
             </div>
-          }
-        </div>
-        <div data-field="cbiLocation">
-          <app-location-picker
-            [policyNumber]="null"
-            [value]="cbiLocation.value"
-            [promptLabel]="'Where did the originating CBI event occur?'"
-            [skipHintText]="'Where the CBI-triggering event happened — the third party\'s site, not the insured\'s own loss location.'"
-            (locationChange)="onCbiLocationChange($event)"
-          ></app-location-picker>
-          @if (submitAttempted && cbiLocation.value.locations.length === 0) {
-            <p class="field-error">Originating loss location: required</p>
           }
         </div>
       }

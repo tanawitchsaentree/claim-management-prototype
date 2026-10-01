@@ -201,21 +201,34 @@
   gap: 8px 24px;
 }
 
-// ─── CBI originating loss location (accordion) ──────────────────────────
+// ─── CBI panel (boxed, distinct dataset) ─────────────────────────────────
+// Same tinted-box treatment as trade-sanctions-card's .ts-named-parties —
+// reused, not invented, so CBI reads as "a grouped third-party dataset"
+// without adding any new visual language to the page (2026-10-01 user call:
+// a plain <hr> divider made CBI blend into Date/time and Location above/
+// below it).
 
-.cbi-location-accordion {
-  margin-bottom: 20px; // matches .field-group's between-group spacing elsewhere in this file
-  // No wrapper border here — nx-accordion has its own internal spacing above
-  // the panel header that doesn't hug the header's top edge, so a border
-  // drawn around this wrapper exposed a floating line stub above the grey
-  // header bar instead of a clean box. policy-overview's .po-accordion
-  // (the blessed reference this was copied from) doesn't add one either.
+.cbi-panel {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--ui-02);
+  border-radius: 4px;
+}
 
-  nx-expansion-panel {
-    --accordion-regular-font-size: var(--paragraph-03-font-size);
-    --accordion-regular-font-weight: 600;
-    --accordion-regular-header-active-font-weight: 600;
-  }
+.cbi-panel__label {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0 0 12px;
+}
+
+// The divider between the Yes/No question and the detail fields stays
+// inside the panel — just tightens .li-divider's vertical margin (24px,
+// card-level rhythm) down to the panel's own tighter internal spacing.
+.cbi-panel__divider {
+  margin: 16px 0;
 }
 
 // ─── In-card divider ────────────────────────────────────────────────────
