@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, effect, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -9,13 +9,10 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockGisLocationService } from '../../../core/mock/services/mock-gis-location.service';
 import { GisAddressSuggestion, LocationItem, LookupOption } from '../../../core/models';
-
-type EntryMode = 'address' | 'coordinates';
 
 export interface ManualLocationEntryModalData {
   seed?: LocationItem;
@@ -23,6 +20,16 @@ export interface ManualLocationEntryModalData {
 
 export type ManualLocationEntryModalResult = LocationItem | null;
 
+/**
+ * 2026-10-01: rebuilt to match AddLocationModalComponent's "Add location
+ * manually" screen field-for-field (that screen is itself verified against
+ * the real production reference, 2026-09-25) — this modal and that one are
+ * the same conceptual action gated on a different source list (no policy
+ * here), they should never have diverged in field set/layout. Dropped: the
+ * "Entry method: Address/Coordinates" radio (not in the reference —
+ * latitude/longitude are just two more fields in the one grid), the
+ * addressLine1/2 split, and the collapsible "Optional details" section.
+ */
 @Component({
   selector: 'app-manual-location-entry-modal',
   standalone: true,
@@ -35,7 +42,6 @@ export type ManualLocationEntryModalResult = LocationItem | null;
     NxDropdownModule,
     NxButtonModule,
     NxIconModule,
-    NxRadioModule,
     NxCheckboxModule
   ],
   templateUrl: './manual-location-entry-modal.component.html',
@@ -70,106 +76,106 @@ export class ManualLocationEntryModalComponent implements OnInit {
     ),
     { initialValue: [] as GisAddressSuggestion[] }
   );
+  readonly selectedGisSuggestion = signal<GisAddressSuggestion | null>(null);
 
   readonly form = new FormGroup({
-    mode: new FormControl<EntryMode>('address', { nonNullable: true }),
-    addressLine1: new FormControl('', [Validators.required]),
-    addressLine2: new FormControl(''),
-    postalCode: new FormControl('', [Validators.required]),
-    city: new FormControl('', [Validators.required]),
-    country: new FormControl<string | null>(null, [Validators.required]),
+    country: new FormControl<string | null>(null),
     state: new FormControl(''),
-    propertyId: new FormControl(''),
+    city: new FormControl(''),
+    street: new FormControl(''),
+    number: new FormControl(''),
+    postalCode: new FormControl(''),
     latitude: new FormControl<number | null>(null),
     longitude: new FormControl<number | null>(null),
     additionalInfo: new FormControl('', [Validators.maxLength(300)])
   });
 
-  submitted = false;
+  // "Add the address manually" — unlocks country/latitude/longitude for direct
+  // editing instead of trusting whatever a GIS pick derived (reference,
+  // 2026-09-25: those 3 fields render disabled/grey after a pick; the rest
+  // — state/city/street/number/postal code — stay editable regardless, since
+  // a geocode match only reliably gives country + coordinates).
+  readonly addAddressManually = signal(false);
 
-  private readonly mode = toSignal(this.form.get('mode')!.valueChanges, {
-    initialValue: this.form.get('mode')!.value
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue()
+  });
+  readonly descLength = computed(() => this.formValue().additionalInfo?.length ?? 0);
+  readonly hasManualData = computed(() => {
+    const v = this.formValue();
+    return Object.values(v).some(val => val !== null && val !== '');
   });
 
-  // Search-first gate, matching add-location-modal.component.ts's
-  // showManualGrid — the form used to render fully unconditionally, which
-  // made this whole modal read as "manual by default" next to the
-  // policy-location picker's gated screen. Editing an existing entry always
-  // shows the grid immediately (see isEdit below); there's nothing to search
-  // for that case.
-  readonly hasGisPick = signal(false);
-  readonly addAddressManually = signal(false);
+  // Grid only appears once there's something to show it for — a GIS pick, or
+  // the user opting into fully manual entry. Editing an existing entry always
+  // shows the grid immediately; there's nothing to search for that case.
   readonly showManualGrid = computed(
-    () => this.hasGisPick() || this.addAddressManually() || this.isEdit
+    () => this.selectedGisSuggestion() !== null || this.addAddressManually() || this.isEdit
+  );
+  readonly canConfirm = computed(
+    () => this.selectedGisSuggestion() !== null || this.hasManualData()
   );
 
   get isEdit(): boolean {
     return !!this.data.seed;
   }
-  get isCoordinatesMode(): boolean {
-    return this.mode() === 'coordinates';
-  }
-  get descLength(): number {
-    return (this.form.get('additionalInfo')?.value as string)?.length ?? 0;
-  }
-
-  constructor() {
-    // Swap required validators between the two modes so a coordinates-only
-    // entry doesn't need a street address, and vice versa.
-    effect(() => {
-      const coords = this.isCoordinatesMode;
-      const addressCtrls = [
-        this.form.get('addressLine1')!,
-        this.form.get('postalCode')!,
-        this.form.get('city')!
-      ];
-      const coordCtrls = [this.form.get('latitude')!, this.form.get('longitude')!];
-      addressCtrls.forEach(c => {
-        c.setValidators(coords ? [] : [Validators.required]);
-        c.updateValueAndValidity();
-      });
-      coordCtrls.forEach(c => {
-        c.setValidators(coords ? [Validators.required] : []);
-        c.updateValueAndValidity();
-      });
-    });
-  }
 
   ngOnInit(): void {
     const s = this.data.seed;
     if (!s) return;
+    // Can't losslessly split a single stored addressLine1 back into
+    // separate Street/Number fields — the whole stored line goes into
+    // Street, Number stays blank. Still round-trips correctly: onConfirm
+    // rejoins street+number back into one addressLine1 on save.
     this.form.reset({
-      mode: s.source === 'coordinates' ? 'coordinates' : 'address',
-      addressLine1: s.addressLine1,
-      addressLine2: s.addressLine2 ?? '',
+      street: s.addressLine1,
+      number: '',
       postalCode: s.postalCode,
       city: s.city,
       country: s.country,
       state: s.state ?? '',
-      propertyId: s.propertyId ?? '',
       latitude: s.latitude ?? null,
       longitude: s.longitude ?? null,
       additionalInfo: s.additionalInfo ?? ''
     });
   }
 
+  // A GIS pick only reliably derives country + coordinates (reference,
+  // 2026-09-25) — the rest is left for the user to fill in, not overwritten.
   selectSuggestion(s: GisAddressSuggestion): void {
+    this.selectedGisSuggestion.set(s);
+    this.gisSearch.setValue(s.formattedAddress, { emitEvent: false });
     this.form.patchValue({
-      mode: 'address',
-      addressLine1: s.addressLine1,
-      postalCode: s.postalCode,
-      city: s.city,
       country: s.country,
-      state: s.state ?? '',
       latitude: s.latitude,
       longitude: s.longitude
     });
+    this.syncDerivedFieldsLock();
+  }
+
+  clearGisSearch(): void {
     this.gisSearch.setValue('', { emitEvent: false });
-    this.hasGisPick.set(true);
+    this.selectedGisSuggestion.set(null);
+    this.form.patchValue({ country: null, latitude: null, longitude: null });
+    this.syncDerivedFieldsLock();
   }
 
   toggleAddAddressManually(checked: boolean): void {
     this.addAddressManually.set(checked);
+    this.syncDerivedFieldsLock();
+  }
+
+  // Country/latitude/longitude are locked (derived, read-only) whenever
+  // they came from a GIS pick and the user hasn't opted into overriding
+  // them — everything else is always editable.
+  private syncDerivedFieldsLock(): void {
+    const locked = this.selectedGisSuggestion() !== null && !this.addAddressManually();
+    const controls = ['country', 'latitude', 'longitude'] as const;
+    for (const name of controls) {
+      const control = this.form.get(name)!;
+      if (locked) control.disable();
+      else control.enable();
+    }
   }
 
   onCancel(): void {
@@ -177,26 +183,18 @@ export class ManualLocationEntryModalComponent implements OnInit {
   }
 
   onConfirm(): void {
-    this.submitted = true;
-    if (this.form.invalid) return;
-    const v = this.form.value;
-    const coords = v.mode === 'coordinates';
-    // Only one mode's fields are ever meaningful — drop the other mode's
-    // values so switching Address <-> Coordinates never leaves stale data
-    // (e.g. a previous address) saved alongside the new entry.
+    if (!this.canConfirm()) return;
+    const v = this.form.getRawValue();
+    const addressLine1 = [v.street, v.number].filter(Boolean).join(' ');
     const item: LocationItem = {
       id: this.data.seed?.id ?? this._newId(),
-      source: coords ? 'coordinates' : 'manual',
-      displayName: coords ? `${v.latitude}, ${v.longitude}` : `${v.addressLine1}, ${v.city}`,
-      addressLine1: coords ? '' : v.addressLine1 || '',
-      addressLine2: coords ? undefined : v.addressLine2 || undefined,
-      postalCode: coords ? '' : v.postalCode || '',
-      city: coords ? '' : v.city || '',
-      country: v.country!,
-      state: coords ? undefined : v.state || undefined,
-      propertyId: v.propertyId || undefined,
-      // In address mode, latitude/longitude are still optional extras (see
-      // "Optional details") — only coordinates mode requires them.
+      source: 'manual',
+      displayName: [addressLine1, v.city].filter(Boolean).join(', '),
+      addressLine1,
+      postalCode: v.postalCode || '',
+      city: v.city || '',
+      country: v.country ?? '',
+      state: v.state || undefined,
       latitude: v.latitude ?? undefined,
       longitude: v.longitude ?? undefined,
       additionalInfo: v.additionalInfo || undefined

@@ -13,27 +13,26 @@
 </div>
 
 <div class="mle-body" tabindex="0">
-  <div class="mle-search">
-    <div class="mle-search__input-wrap">
-      <nx-icon name="search" class="mle-search__icon"></nx-icon>
-      <input
-        class="mle-search__input"
-        type="text"
-        [formControl]="gisSearch"
-        placeholder="Search location"
-        autocomplete="off"
-      />
-    </div>
-    @if (gisResults().length > 0) {
-      <div class="mle-results">
-        @for (s of gisResults(); track s.formattedAddress) {
-          <button type="button" class="mle-result" (click)="selectSuggestion(s)">
-            <span class="mle-result__name">{{ s.formattedAddress }}</span>
-          </button>
-        }
-      </div>
+  <nx-formfield label="Search location" class="mle-gis-field">
+    <input nxInput [formControl]="gisSearch" autocomplete="off" />
+    @if (gisSearch.value) {
+      <nx-icon name="close" nxFormfieldSuffix (click)="clearGisSearch()"></nx-icon>
+    } @else {
+      <nx-icon name="search" nxFormfieldSuffix></nx-icon>
     }
-  </div>
+  </nx-formfield>
+
+  @if (gisSearch.value && gisResults().length > 0 && !selectedGisSuggestion()) {
+    <ul class="mle-gis-suggestions">
+      @for (s of gisResults(); track s.formattedAddress) {
+        <li>
+          <button type="button" class="mle-gis-suggestion" (click)="selectSuggestion(s)">
+            {{ s.formattedAddress }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
 
   @if (!isEdit) {
     <nx-checkbox
@@ -48,107 +47,53 @@
   }
 
   @if (showManualGrid()) {
-  <div [formGroup]="form" class="mle-form">
-    <div class="mle-radio-field">
-      <p class="mle-radio-label">Entry method</p>
-      <nx-radio-group formControlName="mode" class="mle-radio-row">
-        <nx-radio value="address" labelSize="small">Address</nx-radio>
-        <nx-radio value="coordinates" labelSize="small">Coordinates</nx-radio>
-      </nx-radio-group>
-    </div>
-
-    @if (isCoordinatesMode) {
-      <div class="mle-grid">
-        <nx-formfield label="Latitude *">
-          <input nxInput type="number" formControlName="latitude" />
-          @if (form.get('latitude')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
-        </nx-formfield>
-        <nx-formfield label="Longitude *">
-          <input nxInput type="number" formControlName="longitude" />
-          @if (form.get('longitude')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
-        </nx-formfield>
-        <nx-formfield label="Country *">
-          <nx-dropdown formControlName="country" placeholder="Select country">
+    <form [formGroup]="form" class="mle-manual-form">
+      <div class="mle-manual-grid">
+        <nx-formfield label="Country">
+          <nx-dropdown formControlName="country" placeholder="Select">
             @for (c of (countries$ | async) ?? []; track c.value) {
               <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
             }
           </nx-dropdown>
-          @if (form.get('country')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
+        </nx-formfield>
+        <nx-formfield label="State / Province">
+          <input nxInput formControlName="state" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="City">
+          <input nxInput formControlName="city" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Street">
+          <input nxInput formControlName="street" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Number">
+          <input nxInput formControlName="number" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="ZIP / Postal code">
+          <input nxInput formControlName="postalCode" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Latitude">
+          <input nxInput formControlName="latitude" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Longitude">
+          <input nxInput formControlName="longitude" autocomplete="off" />
         </nx-formfield>
       </div>
-    } @else {
-      <div class="mle-grid">
-        <nx-formfield label="Address line 1 *" class="mle-full">
-          <input nxInput formControlName="addressLine1" />
-          @if (form.get('addressLine1')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
-        </nx-formfield>
-        <nx-formfield label="Address line 2 (optional)" class="mle-full">
-          <input nxInput formControlName="addressLine2" />
-        </nx-formfield>
-        <nx-formfield label="Postal code *">
-          <input nxInput formControlName="postalCode" />
-          @if (form.get('postalCode')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
-        </nx-formfield>
-        <nx-formfield label="City *">
-          <input nxInput formControlName="city" />
-          @if (form.get('city')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
-        </nx-formfield>
-        <nx-formfield label="Country *">
-          <nx-dropdown formControlName="country" placeholder="Select country">
-            @for (c of (countries$ | async) ?? []; track c.value) {
-              <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-          @if (form.get('country')?.errors?.['required'] && submitted) {
-            <nx-error nxFormfieldError>Required.</nx-error>
-          }
-        </nx-formfield>
-        <nx-formfield label="Province / State (optional)">
-          <input nxInput formControlName="state" />
-        </nx-formfield>
-      </div>
-    }
-
-    <details class="mle-optional">
-      <summary class="mle-optional-toggle">Optional details</summary>
-      <div class="mle-grid mle-optional-body">
-        <nx-formfield label="Property ID (if known)">
-          <input nxInput formControlName="propertyId" />
-        </nx-formfield>
-        <div></div>
-        @if (!isCoordinatesMode) {
-          <nx-formfield label="Latitude (if known)">
-            <input nxInput type="number" formControlName="latitude" />
-          </nx-formfield>
-          <nx-formfield label="Longitude (if known)">
-            <input nxInput type="number" formControlName="longitude" />
-          </nx-formfield>
-        }
-        <nx-formfield label="Additional location information (optional)" class="mle-full">
-          <textarea nxInput formControlName="additionalInfo" rows="3" [maxlength]="300"></textarea>
-          <nx-hint nxFormfieldHint>{{ descLength }}/300</nx-hint>
-        </nx-formfield>
-      </div>
-    </details>
-  </div>
+      <nx-formfield label="Additional location information" class="mle-manual-form__notes">
+        <input nxInput formControlName="additionalInfo" [maxlength]="300" autocomplete="off" />
+        <nx-hint nxFormfieldHint>{{ descLength() }}/300</nx-hint>
+      </nx-formfield>
+    </form>
   }
 </div>
 
 <footer class="mle-footer">
   <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button" (click)="onConfirm()">
+  <button
+    nxButton="primary small"
+    type="button"
+    [disabled]="!canConfirm()"
+    (click)="onConfirm()"
+  >
     {{ isEdit ? 'Save changes' : 'Add location' }}
   </button>
 </footer>
