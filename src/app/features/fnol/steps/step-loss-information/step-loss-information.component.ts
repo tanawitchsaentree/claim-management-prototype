@@ -620,11 +620,14 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     return !!this.selectedCbiCaseType?.endsWith('-named');
   }
 
+  // Label never says "(optional)" even when cbiThirdPartyRequired is false
+  // (reviewer feedback, 2026-10-01) — the field being non-blocking for
+  // "Unnamed" case types doesn't mean the name is unimportant: a handler
+  // may know exactly which supplier/customer caused the CBI loss even when
+  // the policy itself doesn't name one. "Optional" reads as "skip this",
+  // which is the opposite of what we want here.
   get cbiThirdPartyLabel(): string {
-    const base = this.selectedCbiCaseType?.startsWith('customer-')
-      ? 'Customer name'
-      : 'Supplier name';
-    return this.cbiThirdPartyRequired ? base : `${base} (optional)`;
+    return this.selectedCbiCaseType?.startsWith('customer-') ? 'Customer name' : 'Supplier name';
   }
 
   // Industry — net-new per the CBI FD's category-specific fields table (11
