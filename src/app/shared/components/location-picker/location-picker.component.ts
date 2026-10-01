@@ -169,8 +169,7 @@ export class LocationPickerComponent implements OnInit {
       ManualLocationEntryModalResult
     >(ManualLocationEntryModalComponent, {
       data: { seed },
-      width: '960px',
-      maxWidth: '92vw'
+      panelClass: 'bottom-sheet-modal-panel'
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
