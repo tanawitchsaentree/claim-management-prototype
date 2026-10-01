@@ -7,8 +7,7 @@
   @if (locations.length === 0) {
     <div class="lp-initial">
       <p class="lp-hint">{{ promptLabel }}</p>
-      <button nxButton="secondary small" type="button" (click)="addLocation(vm.policyLocations)">
-        <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      <button nxButton="primary small" type="button" (click)="addLocation(vm.policyLocations)">
         Add location
       </button>
       @if (skipHintText || showEditLaterHint) {
