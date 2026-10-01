@@ -1,6 +1,8 @@
 <div class="mle-header">
   <div class="mle-header-row">
-    <h2 class="mle-title">{{ isEdit ? 'Edit location' : 'Add location manually' }}</h2>
+    <h2 class="mle-title">
+      {{ isEdit ? 'Edit location' : showManualGrid() ? 'Add location manually' : 'Add location' }}
+    </h2>
     <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
       <nx-icon name="close"></nx-icon>
     </button>
