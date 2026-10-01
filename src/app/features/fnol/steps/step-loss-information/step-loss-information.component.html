@@ -285,8 +285,7 @@
           </div>
 
           @if (showCbiDetails) {
-            <hr class="li-divider cbi-panel__divider" />
-            <h3 class="sub-heading li-sub-heading">Contingent business interruption details</h3>
+            <h3 class="sub-heading cbi-panel__sub-heading">Contingent business interruption details</h3>
             <div class="two-col-grid">
               <div data-field="cbiCaseType">
                 <nx-formfield label="CBI case type">
@@ -331,7 +330,7 @@
                 [policyNumber]="null"
                 [value]="cbiLocation.value"
                 [promptLabel]="'Where did the originating CBI event occur?'"
-                [skipHintText]="'Where the CBI-triggering event happened — the third party\'s site, not the insured\'s own loss location.'"
+                [skipHintText]="''"
                 (locationChange)="onCbiLocationChange($event)"
               ></app-location-picker>
               @if (submitAttempted && cbiLocation.value.locations.length === 0) {

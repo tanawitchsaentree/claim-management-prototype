@@ -11,12 +11,14 @@
         <nx-icon name="plus" nxIconPositionStart></nx-icon>
         Add location
       </button>
-      <p class="lp-skip-hint">
-        {{ skipHintText }}
-        @if (showEditLaterHint) {
-          You can add or update this later via Edit Claim.
-        }
-      </p>
+      @if (skipHintText || showEditLaterHint) {
+        <p class="lp-skip-hint">
+          {{ skipHintText }}
+          @if (showEditLaterHint) {
+            You can add or update this later via Edit Claim.
+          }
+        </p>
+      }
     </div>
   } @else {
     <div class="lp-selected">

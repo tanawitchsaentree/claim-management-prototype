@@ -224,11 +224,11 @@
   margin: 0 0 12px;
 }
 
-// The divider between the Yes/No question and the detail fields stays
-// inside the panel — just tightens .li-divider's vertical margin (24px,
-// card-level rhythm) down to the panel's own tighter internal spacing.
-.cbi-panel__divider {
-  margin: 16px 0;
+// No divider between the Yes/No question and the detail fields — the panel
+// itself is the one unit now, a second line inside it read as two separate
+// sections. Spacing alone (not a rule) carries the transition.
+.cbi-panel__sub-heading {
+  margin-top: 20px;
 }
 
 // ─── In-card divider ────────────────────────────────────────────────────
