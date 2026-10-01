@@ -37,10 +37,14 @@
     height: 40px;
     background: var(--ui-01);
 
+    // box-shadow, not outline — outline is painted as a separate path from
+    // the element's own border-radius, so at non-integer device pixel
+    // ratios the two rounded corners don't perfectly coincide and a sliver
+    // of background shows through ("ring looks eaten" at the corner).
+    // box-shadow traces the box's actual rounded geometry, so it can't drift.
     &:focus-within {
       border-color: var(--interactive-primary);
-      outline: 2px solid var(--interactive-primary);
-      outline-offset: 0;
+      box-shadow: 0 0 0 2px var(--interactive-primary);
     }
   }
 

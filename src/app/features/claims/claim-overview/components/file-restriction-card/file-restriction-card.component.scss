@@ -94,10 +94,13 @@
     height: 40px;
     background: var(--ui-01);
 
+    // box-shadow, not outline — see BLESSED.md "Card Body — Form Sections"
+    // (outline-offset:0 on a rounded border can show a sliver of background
+    // through the corner at non-integer device pixel ratios; box-shadow
+    // traces the box's own rounded geometry so it can't drift).
     &:focus-within {
       border-color: var(--interactive-primary);
-      outline: 2px solid var(--interactive-primary);
-      outline-offset: 0;
+      box-shadow: 0 0 0 2px var(--interactive-primary);
     }
   }
 

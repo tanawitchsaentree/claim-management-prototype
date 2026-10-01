@@ -634,10 +634,15 @@ readonly breadcrumb: BreadcrumbItem[] = [
     height: 40px;
     background: var(--ui-01);
 
+    // box-shadow, not outline (fixed 2026-10-01 — outline-offset:0 on a
+    // rounded border can show a sliver of background through the corner at
+    // non-integer device pixel ratios; box-shadow traces the box's own
+    // rounded geometry so it can't drift). All copies of this pattern
+    // (claim-notes-panel, file-restriction-card, manual-location-entry-modal)
+    // updated the same way — copy this version, not outline.
     &:focus-within {
       border-color: var(--interactive-primary);
-      outline: 2px solid var(--interactive-primary);
-      outline-offset: 0;
+      box-shadow: 0 0 0 2px var(--interactive-primary);
     }
   }
 
