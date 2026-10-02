@@ -81,7 +81,7 @@
           <button
             nxButton="primary small"
             type="button"
-            [disabled]="saving()"
+            [disabled]="saving() || !fieldChanged('causeOfLoss')"
             (click)="onSaveField('causeOfLoss')"
           >
             @if (saving()) {
@@ -156,7 +156,7 @@
           <button
             nxButton="primary small"
             type="button"
-            [disabled]="saving()"
+            [disabled]="saving() || !fieldChanged('circumstance')"
             (click)="onSaveField('circumstance')"
           >
             @if (saving()) {
@@ -223,7 +223,7 @@
           <button
             nxButton="primary small"
             type="button"
-            [disabled]="saving()"
+            [disabled]="saving() || !fieldChanged('typeOfDamage')"
             (click)="onSaveField('typeOfDamage')"
           >
             @if (saving()) {
@@ -317,7 +317,7 @@
           <button
             nxButton="primary small"
             type="button"
-            [disabled]="saving()"
+            [disabled]="saving() || !fieldChanged('dateGroup')"
             (click)="onSaveField('dateGroup')"
           >
             @if (saving()) {
@@ -377,7 +377,7 @@
           <button
             nxButton="primary small"
             type="button"
-            [disabled]="saving()"
+            [disabled]="saving() || !fieldChanged('lossDescription')"
             (click)="onSaveField('lossDescription')"
           >
             @if (saving()) {
@@ -419,7 +419,7 @@
           <button
             nxButton="primary small"
             type="button"
-            [disabled]="saving()"
+            [disabled]="saving() || !fieldChanged('lossLocation')"
             (click)="onSaveField('lossLocation')"
           >
             @if (saving()) {
