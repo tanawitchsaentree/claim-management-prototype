@@ -8,7 +8,7 @@ import { editLossInformationCanDeactivate } from './edit-loss-information.guard'
 
 // Gate Proof tests for the safety-review acceptance criteria — these exercise
 // the REAL component methods/signals (pendingChanges, confirmLeaveIfDirty,
-// onSaveField/onCancelField) and the REAL exported guard function, not
+// onUpdateAll/onCancelField) and the REAL exported guard function, not
 // re-typed copies, so a regression in the component is what actually fails
 // these.
 //
@@ -25,7 +25,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     TestBed.configureTestingModule({
       imports: [EditLossInformationComponent],
       providers: [
-        // A wildcard route so onSaveField()'s post-save router.navigate()
+        // A wildcard route so onDiscard()'s post-discard router.navigate()
         // resolves cleanly instead of rejecting with "cannot match any
         // routes" — noise, not a failure, but worth keeping the test output clean.
         provideRouter([{ path: '**', children: [] }]),
@@ -100,32 +100,38 @@ describe('EditLossInformationComponent — Gate Proof', () => {
   });
 
   // REVERSED on 2026-10-02. Gate 3 used to assert the opposite — that every
-  // save, batched or not, opened a confirm modal with no exceptions (user
-  // mandate from 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save แล้ว
-  // จบ"). That mandate answered a different problem: a single bottom button
-  // could silently commit several fields' changes at once with nothing to
-  // double check against. Per-field Save removes the thing the modal was
-  // guarding — there is exactly one field open, its new value is sitting
-  // right there in the input, and Save commits only that. Kept as a gate
-  // rather than deleted, since "a per-field save now also pops a redundant
-  // modal" is precisely the regression to catch if this ever drifts back.
-  describe('Gate 3 — per-field save commits directly, no confirm modal', () => {
-    it('onSaveField does not open any dialog', async () => {
+  // save opened a confirm modal with no exceptions (user mandate from
+  // 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save แล้วจบ"). Per-field
+  // Save/Cancel came and went in between; this is the third shape — any
+  // number of fields can sit "Edited" uncommitted at once, and one Update
+  // button commits all of them together, still with no modal (the fields'
+  // own inputs already show the new values plainly; nothing is hidden the
+  // way a single-click batch save used to hide it). Kept as a gate rather
+  // than deleted, since "Update pops a redundant confirm modal" is precisely
+  // the regression to catch if this ever drifts back.
+  describe('Gate 3 — Update commits every pending field at once, no confirm modal', () => {
+    it('onUpdateAll does not open any dialog', async () => {
       component.form.get('lossDescription')!.setValue('changed value');
-      await component.onSaveField('lossDescription');
+      await component.onUpdateAll();
       expect(fakeDialogOpen).not.toHaveBeenCalled();
     });
 
-    it('onSaveField clears the diff for that field and closes edit mode', async () => {
+    it('onUpdateAll commits every edited field in one call, even ones left closed/uncommitted', async () => {
       component.startEdit('lossDescription');
-      component.form.get('lossDescription')!.setValue('changed value');
-      await component.onSaveField('lossDescription');
+      component.form.get('lossDescription')!.setValue('changed description');
+      component.startEdit('typeOfDamage'); // closes lossDescription's edit mode without saving/cancelling it
+      component.form.get('typeOfDamage')!.setValue(['fire-damage']);
+      expect(component.pendingChanges().length).toBe(2);
+
+      await component.onUpdateAll();
+
       expect(component.fieldChanged('lossDescription')).toBe(false);
-      expect(component.isEditing('lossDescription')).toBe(false);
+      expect(component.fieldChanged('typeOfDamage')).toBe(false);
+      expect(component.pendingChanges().length).toBe(0);
     });
 
-    it('onSaveField does nothing when there is no diff for that field', async () => {
-      await component.onSaveField('lossDescription');
+    it('onUpdateAll does nothing when there is no diff', async () => {
+      await component.onUpdateAll();
       expect(component.saving()).toBe(false);
     });
 
@@ -175,16 +181,18 @@ describe('EditLossInformationComponent — Gate Proof', () => {
       component.startEdit('lossDescription');
       component.form.get('lossDescription')!.setValue('Revised after survey report.');
       expect(component.pendingChanges().length).toBe(1);
-      await component.onSaveField('lossDescription');
+      await component.onUpdateAll();
       expect(component.fieldChanged('lossDescription')).toBe(false);
+      expect(component.saveBlocked()).toBeNull();
     });
 
-    it('refuses to save and keeps the field open when a required value is cleared', async () => {
+    it('refuses to update and reopens the field holding the missing value', async () => {
       component.startEdit('lossDescription');
       component.form.get('lossDescription')!.setValue('');
-      await component.onSaveField('lossDescription');
+      await component.onUpdateAll();
       expect(component.form.get('lossDescription')!.invalid).toBe(true);
       expect(component.isEditing('lossDescription')).toBe(true);
+      expect(component.saveBlocked()).not.toBeNull();
     });
   });
 });

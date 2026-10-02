@@ -100,6 +100,8 @@ export class EditLossInformationComponent implements OnInit {
   readonly claimStatus = signal<string>('');
   readonly loading = signal(true);
   readonly saving = signal(false);
+  /** Why the last Update attempt refused — see firstInvalidField(). */
+  readonly saveBlocked = signal<string | null>(null);
   readonly original = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
   readonly maxDesc = 500;
@@ -369,33 +371,21 @@ export class EditLossInformationComponent implements OnInit {
     );
   }
 
-  // ── Per-field save/cancel ──────────────────────────────────────────────
-  // Every field commits on its own as soon as the user is done with it — no
-  // bottom "Save all" round trip, no confirm modal (the field's own input is
-  // the last look: there's nothing hidden or batched to lose). Cause of loss
-  // also reverts Incident circumstance on cancel, since editing it can
-  // silently invalidate circumstance's current value (onCauseOfLossChange).
-  private fieldPayload(key: PerFieldKey): Partial<LossInformationFormValue> {
-    switch (key) {
-      case 'causeOfLoss':
-        return {
-          causeOfLoss: this.form.get('causeOfLoss')!.value as string[],
-          specifyOtherCauseOfLoss: this.form.get('specifyOtherCauseOfLoss')!.value as string
-        };
-      case 'circumstance':
-        return { circumstance: this.form.get('circumstance')!.value as string | null };
-      case 'typeOfDamage':
-        return { typeOfDamage: this.form.get('typeOfDamage')!.value as string[] };
-      case 'dateGroup':
-        return { dateOfLoss: this.dateOfLoss.getRawValue() };
-      case 'lossDescription':
-        return { lossDescription: this.form.get('lossDescription')!.value as string };
-      case 'lossLocation':
-        return {
-          lossLocation: this.lossLocation.value as unknown as LossInformationFormValue['lossLocation']
-        };
-    }
-  }
+  // ── Edit/cancel per field, commit all at once ──────────────────────────
+  // Any number of fields can sit "Edited" (uncommitted) at the same time —
+  // opening one doesn't force a decision on another. Cancel reverts just
+  // that one field (Cause of loss also reverts Incident circumstance, since
+  // editing it can silently invalidate circumstance's current value via
+  // onCauseOfLossChange). The single Update button commits everything
+  // that's currently Edited in one go — no per-field Save, no modal.
+  private readonly fieldOrder: PerFieldKey[] = [
+    'causeOfLoss',
+    'circumstance',
+    'typeOfDamage',
+    'dateGroup',
+    'lossDescription',
+    'lossLocation'
+  ];
 
   private fieldControls(key: PerFieldKey): AbstractControl[] {
     switch (key) {
@@ -414,27 +404,29 @@ export class EditLossInformationComponent implements OnInit {
     }
   }
 
-  async onSaveField(key: PerFieldKey): Promise<void> {
+  private firstInvalidField(): PerFieldKey | null {
+    return this.fieldOrder.find(key => this.fieldControls(key).some(c => c.invalid)) ?? null;
+  }
+
+  async onUpdateAll(): Promise<void> {
     this.submitAttempted = true;
-    const controls = this.fieldControls(key);
-    if (controls.some(c => c.invalid)) {
-      controls.forEach(c => c.markAllAsTouched());
+    this.saveBlocked.set(null);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      const invalidKey = this.firstInvalidField();
+      if (invalidKey) this.editingField.set(invalidKey);
+      this.saveBlocked.set("Can't update yet — some details are still incomplete.");
+      this.live.announce(this.saveBlocked()!, 'assertive');
       return;
     }
 
-    const diffs = this.computeDiffs().filter(d => LABEL_TO_FIELD_KEY[d.label] === key);
-    if (!diffs.length) {
-      this.submitAttempted = false;
-      this.editingField.set(null);
-      return;
-    }
+    const diffs = this.pendingChanges();
+    if (!diffs.length) return;
 
     this.saving.set(true);
-    const partial = this.fieldPayload(key);
+    const formValue = this.form.getRawValue() as unknown as LossInformationFormValue;
     try {
-      await firstValueFrom(
-        this.lossInfoSvc.save(partial as LossInformationFormValue, this.claimId())
-      );
+      await firstValueFrom(this.lossInfoSvc.save(formValue, this.claimId()));
 
       const activities: ClaimActivity[] = diffs.map((d, i) => ({
         id: `act-edit-${Date.now()}-${i}`,
@@ -452,28 +444,17 @@ export class EditLossInformationComponent implements OnInit {
       // incidentCircumstance/description fields, separate from the
       // LossInformation record this form edits — without this an edit here
       // saves correctly but Overview keeps showing the pre-edit value.
-      await this.syncOverviewFromLossInfo(
-        this.form.getRawValue() as unknown as LossInformationFormValue,
-        diffs
-      );
+      await this.syncOverviewFromLossInfo(formValue, diffs);
 
-      // pendingChanges() compares live form values against this snapshot,
-      // independently of form.dirty — without updating it post-save, the
-      // canDeactivate guard would still see the just-saved value as pending.
-      this.original.set({ ...(this.original() as LossInformation), ...partial } as LossInformation);
-      controls.forEach(c => c.markAsPristine());
+      this.original.set({ ...(this.original() as LossInformation), ...formValue } as LossInformation);
+      this.form.markAsPristine();
       this.submitAttempted = false;
       this.editingField.set(null);
-      this.live.announce(`${diffs[0].label} updated successfully.`, 'polite');
-      this.toast.success(`${diffs[0].label} updated`, this.claimId());
-
-      // No more auto-redirect to Sections for cause-of-loss/type-of-damage/
-      // location changes (dropped 2026-10-02, overriding the "notify +
-      // redirect" mandate signed off 2026-08-18 — see CONVERSIONS.md). Every
-      // field now behaves identically: save, stay put. If Sections needs
-      // reviewing after a change, that's a separate, deliberate trip the
-      // user takes themselves — not a side effect sprung on them by saving
-      // one field here.
+      this.live.announce('Loss information updated successfully.', 'polite');
+      this.toast.success(
+        'Loss information updated',
+        `${activities.length} field(s) updated on ${this.claimId()}`
+      );
     } catch {
       this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
     } finally {

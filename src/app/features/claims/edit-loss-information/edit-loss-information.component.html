@@ -5,6 +5,30 @@
   </div>
 } @else {
   <div class="eli-page" [formGroup]="form">
+    <!-- Sticky — stays visible while scrolling a page where several fields
+    can sit "Edited" at once; a bottom-of-page button would be out of view
+    exactly when there's something to commit. -->
+    <div class="eli-update-bar">
+      @if (saveBlocked()) {
+        <span class="eli-update-bar__error">{{ saveBlocked() }}</span>
+      }
+      <button
+        nxButton="primary small"
+        type="button"
+        class="eli-update-bar__btn"
+        [disabled]="pendingChanges().length === 0 || saving()"
+        (click)="onUpdateAll()"
+      >
+        @if (saving()) {
+          <nx-spinner size="small"></nx-spinner>&nbsp;
+        }
+        Update
+        @if (pendingChanges().length > 0) {
+          ({{ pendingChanges().length }})
+        }
+      </button>
+    </div>
+
     <!-- Page header — status + client name answer "which record, what state"
     before the user touches anything (DESIGN_PRINCIPLES.md rule #1). -->
     <app-page-header
@@ -78,17 +102,6 @@
           </nx-formfield>
         }
         <div class="eli-field-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="saving() || !fieldChanged('causeOfLoss')"
-            (click)="onSaveField('causeOfLoss')"
-          >
-            @if (saving()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Save
-          </button>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('causeOfLoss')">
             Cancel
           </button>
@@ -153,17 +166,6 @@
           </nx-hint>
         </nx-formfield>
         <div class="eli-field-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="saving() || !fieldChanged('circumstance')"
-            (click)="onSaveField('circumstance')"
-          >
-            @if (saving()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Save
-          </button>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('circumstance')">
             Cancel
           </button>
@@ -220,17 +222,6 @@
           entities already on the policy for that damage type can be attached to it.
         </p>
         <div class="eli-field-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="saving() || !fieldChanged('typeOfDamage')"
-            (click)="onSaveField('typeOfDamage')"
-          >
-            @if (saving()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Save
-          </button>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('typeOfDamage')">
             Cancel
           </button>
@@ -314,17 +305,6 @@
           <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
         }
         <div class="eli-field-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="saving() || !fieldChanged('dateGroup')"
-            (click)="onSaveField('dateGroup')"
-          >
-            @if (saving()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Save
-          </button>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('dateGroup')">
             Cancel
           </button>
@@ -374,17 +354,6 @@
           }
         </nx-formfield>
         <div class="eli-field-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="saving() || !fieldChanged('lossDescription')"
-            (click)="onSaveField('lossDescription')"
-          >
-            @if (saving()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Save
-          </button>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('lossDescription')">
             Cancel
           </button>
@@ -416,17 +385,6 @@
       </app-location-picker>
       @if (fieldChanged('lossLocation')) {
         <div class="eli-field-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="saving() || !fieldChanged('lossLocation')"
-            (click)="onSaveField('lossLocation')"
-          >
-            @if (saving()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Save
-          </button>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('lossLocation')">
             Cancel
           </button>

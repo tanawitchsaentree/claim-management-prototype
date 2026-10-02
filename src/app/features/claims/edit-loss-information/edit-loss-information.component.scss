@@ -31,6 +31,32 @@
   gap: 12px;
 }
 
+// ─── Sticky Update bar — top of the page, stays put while scrolling ───
+.eli-update-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 0;
+  margin: 0 0 16px;
+  background: var(--ui-01);
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.eli-update-bar__error {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--danger);
+}
+
+.eli-update-bar__btn {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 // ─── Cards — shared with FNOL's step-loss-information via _form-section ───
 .eli-card {
   @include fs.card;
