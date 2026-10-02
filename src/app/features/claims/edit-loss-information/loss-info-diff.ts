@@ -16,7 +16,7 @@ export interface LossInfoDiffField {
 }
 
 // Fields whose update is treated as sections-impacting (see
-// EditLossInformationComponent.onSaveChanges). 'Type of damages' added
+// EditLossInformationComponent.onSaveField). 'Type of damages' added
 // 2026-08-31 (Marlene feedback) — ClaimSection.damageType maps directly to
 // that field, unlike Cause of loss / Loss location, which stay best-effort
 // proxies: nothing on ClaimSection or SectionEntity points back at a
@@ -44,21 +44,6 @@ export const LABEL_TO_FIELD_KEY: Record<string, string> = {
   'Loss description': 'lossDescription',
   'Loss location': 'lossLocation'
 };
-
-// Every field group sits collapsed behind an Update/Add link, so a required
-// control that fails validation takes its error message down with it — Save
-// simply refused with nothing on screen to fix. revealFirstInvalid() walks
-// this list to name what is missing and to reopen the group that holds it.
-export const VALIDATED_FIELDS: { path: string; field: string; label: string }[] = [
-  { path: 'dateOfLoss.dateOfOccurrence', field: 'dateGroup', label: 'Date of occurrence' },
-  { path: 'dateOfLoss.timeOfOccurrence', field: 'dateGroup', label: 'Time of occurrence' },
-  { path: 'dateOfLoss.dateOfNotification', field: 'dateGroup', label: 'Date of notification' },
-  { path: 'dateOfLoss.timeOfNotification', field: 'dateGroup', label: 'Time of notification' },
-  { path: 'causeOfLoss', field: 'causeOfLoss', label: 'Cause of loss' },
-  { path: 'specifyOtherCauseOfLoss', field: 'causeOfLoss', label: 'Specify other cause of loss' },
-  { path: 'typeOfDamage', field: 'typeOfDamage', label: 'Type of damage' },
-  { path: 'lossDescription', field: 'lossDescription', label: 'Loss description' }
-];
 
 // Diff baseline for a claim with no LossInformation record at all — an unknown
 // claimId, since a real claim gets one synthesized (see

@@ -19,15 +19,6 @@
         @if (claimStatus()) {
           <app-status-chip [status]="claimStatus().toLowerCase()" domain="claim"></app-status-chip>
         }
-        @if (pendingChanges().length > 0) {
-          <span class="eli-change-counter"
-            >{{ pendingChanges().length }} unsaved update{{
-              pendingChanges().length === 1 ? '' : 's'
-            }}</span
-          >
-        } @else {
-          <span class="eli-change-counter eli-change-counter--none">No updates</span>
-        }
       </div>
     </app-page-header>
 
@@ -86,6 +77,22 @@
             }
           </nx-formfield>
         }
+        <div class="eli-field-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="saving()"
+            (click)="onSaveField('causeOfLoss')"
+          >
+            @if (saving()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
+            Save
+          </button>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('causeOfLoss')">
+            Cancel
+          </button>
+        </div>
       }
 
       <hr class="eli-divider" />
@@ -387,8 +394,9 @@
 
     <!-- Card: Location (CWB Location Picker) — already read-first by its own
     nature (a table of current locations with an Edit action per row, not
-    an always-open input), so it isn't converted to the eli-field pattern
-    above; it's still part of the change ledger via computeDiffs(). -->
+    an always-open input), so it isn't gated behind isEditing() like the
+    fields above. Save/Cancel appear the same way the diff appears: the
+    moment there's something pending, not behind a toggle. -->
     <section class="eli-card">
       <h2 class="eli-section-heading"
         >Locations of loss
@@ -406,52 +414,25 @@
         (locationChange)="lossLocation.setValue($event); form.markAsDirty()"
       >
       </app-location-picker>
+      @if (fieldChanged('lossLocation')) {
+        <div class="eli-field-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="saving()"
+            (click)="onSaveField('lossLocation')"
+          >
+            @if (saving()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
+            Save
+          </button>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('lossLocation')">
+            Cancel
+          </button>
+        </div>
+      }
     </section>
 
-    <!-- Save refused because a required field is incomplete. The fields live
-    inside collapsed groups, so without this the button just did nothing. -->
-    @if (saveBlocked()) {
-      <nx-message context="error" class="eli-save-error">{{ saveBlocked() }}</nx-message>
-    }
-
-    @if (saveSuccess()) {
-      <nx-message context="success" class="eli-save-success">
-        Loss information updated successfully.
-      </nx-message>
-    }
-
-    <!-- Footer — deliberately NOT the wizard-footer shape: primary action on
-    the left (not FNOL's bottom-right "Next" position/size), disabled
-    while there's nothing to save, cost stated on Discard. -->
-    <div class="eli-step-footer">
-      <button
-        nxButton="primary small"
-        type="button"
-        class="eli-save-btn"
-        [disabled]="pendingChanges().length === 0 || saving()"
-        (click)="onSaveChanges()"
-      >
-        @if (saving()) {
-          <nx-spinner size="small"></nx-spinner>&nbsp;
-        }
-        <nx-icon name="check" size="s" nxIconPositionStart></nx-icon>
-        Save
-        {{
-          pendingChanges().length > 0
-            ? pendingChanges().length + ' update' + (pendingChanges().length === 1 ? '' : 's')
-            : 'updates'
-        }}
-      </button>
-      <button nxButton="tertiary small" type="button" (click)="onDiscard()">
-        {{
-          pendingChanges().length > 0
-            ? 'Discard ' +
-              pendingChanges().length +
-              ' update' +
-              (pendingChanges().length === 1 ? '' : 's')
-            : 'Discard'
-        }}
-      </button>
-    </div>
   </div>
 }

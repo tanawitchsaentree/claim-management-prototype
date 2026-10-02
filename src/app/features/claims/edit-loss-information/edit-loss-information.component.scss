@@ -24,44 +24,11 @@
   padding: 0 0 48px;
 }
 
-// ─── Page header actions — status chip + change counter ───────────────
+// ─── Page header actions — status chip ─────────────────────────────────
 .eli-header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.eli-change-counter {
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--interactive-primary);
-
-  &--none {
-    font-weight: 400;
-    color: var(--text-muted);
-  }
-}
-
-// ─── Footer — deliberately NOT the wizard step-footer shape. Primary action
-// (Save) sits at the LEFT edge, not the bottom-right "Next" coordinates a
-// user's FNOL muscle memory is trained on; Discard sits at the right.
-.eli-step-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-top: 48px;
-  padding-top: 16px;
-  border-top: 1px solid var(--ui-04);
-}
-
-// Same size as every other footer button in this app (audit:button-size
-// enforces no mixed sizes among siblings) — the icon + dynamic label are the
-// remaining differentiators beyond position, which is the axis that actually
-// matters for the trained-muscle-memory concern (Rental Car pattern).
-.eli-save-btn {
-  display: inline-flex;
-  align-items: center;
 }
 
 // ─── Cards — shared with FNOL's step-loss-information via _form-section ───
@@ -137,8 +104,7 @@
   text-decoration: line-through;
 }
 
-// Per-field Save/Cancel — same shape as .eli-step-footer, scoped to one
-// field's edit block instead of the whole page.
+// Per-field Save/Cancel, directly under that field's own input(s).
 .eli-field-actions {
   display: flex;
   align-items: center;

@@ -8,8 +8,9 @@ import { editLossInformationCanDeactivate } from './edit-loss-information.guard'
 
 // Gate Proof tests for the safety-review acceptance criteria — these exercise
 // the REAL component methods/signals (pendingChanges, confirmLeaveIfDirty,
-// onSaveChanges) and the REAL exported guard function, not re-typed copies,
-// so a regression in the component is what actually fails these.
+// onSaveField/onCancelField) and the REAL exported guard function, not
+// re-typed copies, so a regression in the component is what actually fails
+// these.
 //
 // NxDialogService is overridden at the DI level (not spied on the real
 // singleton) — the real .open() attaches a live NDBX modal/overlay that never
@@ -24,7 +25,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     TestBed.configureTestingModule({
       imports: [EditLossInformationComponent],
       providers: [
-        // A wildcard route so onSaveChanges()'s post-save router.navigate()
+        // A wildcard route so onSaveField()'s post-save router.navigate()
         // resolves cleanly instead of rejecting with "cannot match any
         // routes" — noise, not a failure, but worth keeping the test output clean.
         provideRouter([{ path: '**', children: [] }]),
@@ -56,23 +57,18 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     await mount('CLM-2024-001');
   });
 
-  describe('Gate 1 — Save is unreachable while the ledger is empty', () => {
+  describe('Gate 1 — pendingChanges reacts to any field edit', () => {
     it('has zero pending changes right after load', () => {
       expect(component.pendingChanges().length).toBe(0);
     });
 
-    it("the exact condition Save's [disabled] binding uses is true when nothing changed", () => {
-      expect(component.pendingChanges().length === 0 || component.saving()).toBe(true);
-    });
-
-    it('becomes reachable the moment a field changes', () => {
+    it('becomes non-zero the moment a field changes', () => {
       component.form.get('lossDescription')!.setValue('changed value');
       expect(component.pendingChanges().length).toBeGreaterThan(0);
-      expect(component.pendingChanges().length === 0 || component.saving()).toBe(false);
     });
   });
 
-  describe('Gate 2 — leaving with pending changes is intercepted', () => {
+  describe('Gate 2 — leaving mid-edit is intercepted', () => {
     it('confirmLeaveIfDirty allows leaving immediately with no pending changes (no dialog opened)', async () => {
       const canLeave = await component.confirmLeaveIfDirty();
       expect(fakeDialogOpen).not.toHaveBeenCalled();
@@ -94,39 +90,64 @@ describe('EditLossInformationComponent — Gate Proof', () => {
       const result = await (editLossInformationCanDeactivate as any)(component, {}, {}, {});
       expect(result).toBe(true);
     });
+
+    it('onDiscard resets the form to original before navigating, so the guard does not re-open the modal on its own navigate() call', async () => {
+      component.form.get('lossDescription')!.setValue('changed value');
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('discard') });
+      await component.onDiscard();
+      expect(component.pendingChanges().length).toBe(0);
+    });
   });
 
-  // INVERTED on 2026-09-02. This gate used to assert the opposite — that a
-  // low-impact-only change set (description only) saved with no modal at all,
-  // because the header ledger had already shown it. User overrode that: no save
-  // commits without a confirm step. Kept as a gate rather than deleted, since
-  // "this particular save is silent" is precisely the regression to catch.
-  describe('Gate 3 — every save with pending changes opens the confirm modal', () => {
-    it('opens for a Loss description-only edit (was the silent case)', async () => {
+  // REVERSED on 2026-10-02. Gate 3 used to assert the opposite — that every
+  // save, batched or not, opened a confirm modal with no exceptions (user
+  // mandate from 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save แล้ว
+  // จบ"). That mandate answered a different problem: a single bottom button
+  // could silently commit several fields' changes at once with nothing to
+  // double check against. Per-field Save removes the thing the modal was
+  // guarding — there is exactly one field open, its new value is sitting
+  // right there in the input, and Save commits only that. Kept as a gate
+  // rather than deleted, since "a per-field save now also pops a redundant
+  // modal" is precisely the regression to catch if this ever drifts back.
+  describe('Gate 3 — per-field save commits directly, no confirm modal', () => {
+    it('onSaveField does not open any dialog', async () => {
       component.form.get('lossDescription')!.setValue('changed value');
-      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
-      await component.onSaveChanges();
-      expect(fakeDialogOpen).toHaveBeenCalled();
-    });
-
-    it('opens when Cause of loss changed', async () => {
-      component.form.get('causeOfLoss')!.setValue(['fire', 'lightning']);
-      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
-      await component.onSaveChanges();
-      expect(fakeDialogOpen).toHaveBeenCalled();
-    });
-
-    it('cancelling the modal aborts the save — the form stays dirty', async () => {
-      component.form.get('lossDescription')!.setValue('changed value');
-      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
-      await component.onSaveChanges();
-      expect(component.pendingChanges().length).toBeGreaterThan(0);
-      expect(component.saveSuccess()).toBe(false);
-    });
-
-    it('does not open when nothing is pending', async () => {
-      await component.onSaveChanges();
+      await component.onSaveField('lossDescription');
       expect(fakeDialogOpen).not.toHaveBeenCalled();
+    });
+
+    it('onSaveField clears the diff for that field and closes edit mode', async () => {
+      component.startEdit('lossDescription');
+      component.form.get('lossDescription')!.setValue('changed value');
+      await component.onSaveField('lossDescription');
+      expect(component.fieldChanged('lossDescription')).toBe(false);
+      expect(component.isEditing('lossDescription')).toBe(false);
+    });
+
+    it('onSaveField does nothing when there is no diff for that field', async () => {
+      await component.onSaveField('lossDescription');
+      expect(component.saving()).toBe(false);
+    });
+
+    it('onCancelField reverts the field to its original value without saving', () => {
+      const before = component.form.get('lossDescription')!.value;
+      component.startEdit('lossDescription');
+      component.form.get('lossDescription')!.setValue('should not persist');
+      component.onCancelField('lossDescription');
+      expect(component.form.get('lossDescription')!.value).toBe(before);
+      expect(component.isEditing('lossDescription')).toBe(false);
+    });
+
+    it('cancelling Cause of loss also reverts Incident circumstance, since editing the cause can silently invalidate it', () => {
+      const originalCircumstance = component.form.get('circumstance')!.value;
+      component.startEdit('causeOfLoss');
+      component.form.get('causeOfLoss')!.setValue(['other-event']); // a cause that invalidates most circumstances
+      component.onCauseOfLossChange(['other-event']);
+      component.onCancelField('causeOfLoss');
+      expect(component.form.get('causeOfLoss')!.value).toEqual(
+        component.original()?.causeOfLoss ?? []
+      );
+      expect(component.form.get('circumstance')!.value).toBe(originalCircumstance);
     });
   });
 
@@ -151,20 +172,18 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     });
 
     it('registers a pending change and reaches the save path', async () => {
+      component.startEdit('lossDescription');
       component.form.get('lossDescription')!.setValue('Revised after survey report.');
       expect(component.pendingChanges().length).toBe(1);
-      // Every save routes through the confirm modal now (Gate 3) — stub it as
-      // confirmed so this gate still tests the save itself, not the dialog.
-      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('confirmed') });
-      await component.onSaveChanges();
-      expect(component.saveBlocked()).toBeNull();
-      expect(component.saveSuccess()).toBe(true);
+      await component.onSaveField('lossDescription');
+      expect(component.fieldChanged('lossDescription')).toBe(false);
     });
 
-    it('names the missing field and reopens its group when a required value is cleared', async () => {
+    it('refuses to save and keeps the field open when a required value is cleared', async () => {
+      component.startEdit('lossDescription');
       component.form.get('lossDescription')!.setValue('');
-      await component.onSaveChanges();
-      expect(component.saveBlocked()).toContain('Loss description');
+      await component.onSaveField('lossDescription');
+      expect(component.form.get('lossDescription')!.invalid).toBe(true);
       expect(component.isEditing('lossDescription')).toBe(true);
     });
   });

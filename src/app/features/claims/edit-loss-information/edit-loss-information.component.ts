@@ -1,7 +1,13 @@
 import { Component, HostListener, OnInit, inject, signal, computed } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormControl,
+  FormGroup,
+  AbstractControl,
+  Validators
+} from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { firstValueFrom } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -40,21 +46,22 @@ import {
   futureDateValidator,
   dateOrderValidator
 } from '../../../shared/validators/date.validators';
-import {
-  LossInfoConfirmModalComponent,
-  LossInfoConfirmModalData
-} from './loss-info-confirm-modal.component';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 import {
   IMPACT_LABELS,
   LABEL_TO_FIELD_KEY,
-  VALIDATED_FIELDS,
   LossInfoDiffField,
   computeLossInfoDiffs
 } from './loss-info-diff';
 
 type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
-type PerFieldKey = 'circumstance' | 'typeOfDamage' | 'dateGroup' | 'lossDescription';
+type PerFieldKey =
+  | 'causeOfLoss'
+  | 'circumstance'
+  | 'typeOfDamage'
+  | 'dateGroup'
+  | 'lossDescription'
+  | 'lossLocation';
 
 @Component({
   selector: 'app-edit-loss-information',
@@ -96,9 +103,6 @@ export class EditLossInformationComponent implements OnInit {
   readonly claimStatus = signal<string>('');
   readonly loading = signal(true);
   readonly saving = signal(false);
-  readonly saveSuccess = signal(false);
-  /** Why the last Save attempt refused — see revealFirstInvalid(). */
-  readonly saveBlocked = signal<string | null>(null);
   readonly original = signal<LossInformation | null>(null);
   readonly policyNumber = signal<string | null>(null);
   readonly maxDesc = 500;
@@ -252,9 +256,9 @@ export class EditLossInformationComponent implements OnInit {
     initialValue: false
   });
 
-  // Reactive diff list — the confirm-modal payload, the change ledger, the
-  // header counter, and the Save-button gate all read from this one signal
-  // instead of four separate ad-hoc checks.
+  // Reactive diff list — fieldChanged()'s "Changed" badge/"was:" line, each
+  // onSaveField()'s per-field diff, and confirmLeaveIfDirty()'s pending-edit
+  // check all read from this one signal instead of separate ad-hoc checks.
   private readonly formSnapshot = toSignal(this.form.valueChanges.pipe(startWith(null)), {
     initialValue: null
   });
@@ -368,127 +372,19 @@ export class EditLossInformationComponent implements OnInit {
     );
   }
 
-  // ── Save flow ─────────────────────────────────────────────────────────
-  async onSaveChanges(): Promise<void> {
-    this.submitAttempted = true;
-    this.saveBlocked.set(null);
-    if (this.form.invalid) {
-      this.revealFirstInvalid();
-      return;
-    }
-
-    const diffs = this.pendingChanges();
-    if (!diffs.length) return;
-
-    // EVERY save confirms — no impact-based calibration. This used to fire only
-    // when a high-impact field changed (Cause of loss / Type of damages / Loss
-    // location), on the argument that the header's change ledger already showed
-    // a description-only edit and a modal would be a barrier nobody reads. User
-    // overrode that on 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save
-    // แล้วจบ". A save that commits silently gives the reviewer no last look and
-    // no way to back out, and which fields count as high-impact was our
-    // judgement, not theirs.
-    const data: LossInfoConfirmModalData = {
-      claimId: this.claimId(),
-      diffs
-    };
-    const ref = this.dialogSvc.open(LossInfoConfirmModalComponent, {
-      data,
-      width: '600px',
-      maxWidth: '92vw'
-    });
-    const result = await firstValueFrom(ref.afterClosed());
-    if (result !== 'confirmed') return;
-
-    this.saveSuccess.set(false);
-    this.saving.set(true);
-    const formValue = this.form.getRawValue() as unknown as LossInformationFormValue;
-    try {
-      await firstValueFrom(this.lossInfoSvc.save(formValue, this.claimId()));
-
-      // Write activity log entries for changed fields
-      const activities: ClaimActivity[] = diffs.map((d, i) => ({
-        id: `act-edit-${Date.now()}-${i}`,
-        claimId: this.claimId(),
-        user: 'Current User',
-        timestamp: new Date().toISOString(),
-        objectType: 'Loss Information',
-        attribute: d.label,
-        valueOld: d.original || null,
-        valueNew: d.updated || null
-      }));
-
-      if (activities.length) {
-        this.overviewSvc.appendActivities?.(this.claimId(), activities);
-      }
-
-      // Claim Overview shows its own dateOfLoss/proximateLossCause fields —
-      // separate from the LossInformation record this form edits. Without
-      // this, the overview page (and any downstream copy of the claim, e.g.
-      // its financial and reference-panel summaries) keeps showing the
-      // original date/cause after an investigation reveals the real ones.
-      await this.syncOverviewFromLossInfo(formValue, diffs);
-
-      // pendingChanges() compares live form values against these two snapshots,
-      // independently of form.dirty — without updating them post-save, the
-      // ledger (and the canDeactivate guard) would still see the just-saved
-      // values as "pending", firing the leave-confirmation on the very
-      // navigate() call below.
-      this.original.set({
-        ...(this.original() as LossInformation),
-        ...formValue
-      } as LossInformation);
-
-      this.form.markAsPristine();
-      this.saveSuccess.set(true);
-      this.live.announce('Loss information updated successfully.', 'polite');
-
-      // ClaimSection/SectionEntity still carry no structured link back to a
-      // cause-of-loss or location key — there is no reliable way to tell
-      // which existing sections a change actually affects, even after the
-      // FNOL/claim-file model work (ClaimSection.damageType has no
-      // relationship to causeOfLoss anywhere). Treat cause-of-loss OR
-      // location changes as sections-impacting and send the user to review
-      // manually, per the Miro flow ("triggers changes to existing sections" →
-      // notify + redirect). Signed off 2026-08-18 — see CONVERSIONS.md.
-      //
-      // The redirect used to carry nothing — Sections looked identical to a
-      // plain nav-bar visit, and a toast said the same thing the review
-      // banner below now says, less usefully and with a 4s expiry. Passing
-      // what changed (old/new values) as query params — the same mechanism
-      // sections.ts already uses to hand a highlight to Provider Management
-      // via ?sectionId= — replaces the toast on this path entirely.
-      const impactedDiffs = diffs.filter(d => IMPACT_LABELS.includes(d.label));
-      if (impactedDiffs.length) {
-        this.router.navigate(['/claims', this.claimId(), 'sections'], {
-          queryParams: {
-            changedFields: impactedDiffs.map(d => d.label),
-            changedOld: impactedDiffs.map(d => d.original),
-            changedNew: impactedDiffs.map(d => d.updated)
-          }
-        });
-      } else {
-        this.toast.success(
-          'Loss information updated',
-          `${activities.length} field(s) updated on ${this.claimId()}`
-        );
-        this.router.navigate(['/claims', this.claimId(), 'overview']);
-      }
-    } catch {
-      this.toast.error('Failed to save', 'Please try again. Your updates have been kept.');
-      // Form stays dirty — user remains on edit screen to retry.
-    } finally {
-      this.saving.set(false);
-    }
-  }
-
   // ── Per-field save/cancel ──────────────────────────────────────────────
-  // Cause of loss stays on the batched Save/Discard + confirm-modal flow
-  // below (it drives Incident circumstance's options and is the most
-  // interdependent field here) — every other field commits on its own as
-  // soon as the user is done with it, no bottom-button round trip.
+  // Every field commits on its own as soon as the user is done with it — no
+  // bottom "Save all" round trip, no confirm modal (the field's own input is
+  // the last look: there's nothing hidden or batched to lose). Cause of loss
+  // also reverts Incident circumstance on cancel, since editing it can
+  // silently invalidate circumstance's current value (onCauseOfLossChange).
   private fieldPayload(key: PerFieldKey): Partial<LossInformationFormValue> {
     switch (key) {
+      case 'causeOfLoss':
+        return {
+          causeOfLoss: this.form.get('causeOfLoss')!.value as string[],
+          specifyOtherCauseOfLoss: this.form.get('specifyOtherCauseOfLoss')!.value as string
+        };
       case 'circumstance':
         return { circumstance: this.form.get('circumstance')!.value as string | null };
       case 'typeOfDamage':
@@ -497,18 +393,35 @@ export class EditLossInformationComponent implements OnInit {
         return { dateOfLoss: this.dateOfLoss.getRawValue() };
       case 'lossDescription':
         return { lossDescription: this.form.get('lossDescription')!.value as string };
+      case 'lossLocation':
+        return {
+          lossLocation: this.lossLocation.value as unknown as LossInformationFormValue['lossLocation']
+        };
     }
   }
 
-  private fieldControl(key: PerFieldKey) {
-    return key === 'dateGroup' ? this.dateOfLoss : this.form.get(key)!;
+  private fieldControls(key: PerFieldKey): AbstractControl[] {
+    switch (key) {
+      case 'causeOfLoss':
+        return [this.form.get('causeOfLoss')!, this.form.get('specifyOtherCauseOfLoss')!];
+      case 'circumstance':
+        return [this.form.get('circumstance')!];
+      case 'typeOfDamage':
+        return [this.form.get('typeOfDamage')!];
+      case 'dateGroup':
+        return [this.dateOfLoss];
+      case 'lossDescription':
+        return [this.form.get('lossDescription')!];
+      case 'lossLocation':
+        return [this.lossLocation];
+    }
   }
 
   async onSaveField(key: PerFieldKey): Promise<void> {
     this.submitAttempted = true;
-    const control = this.fieldControl(key);
-    if (control.invalid) {
-      control.markAllAsTouched();
+    const controls = this.fieldControls(key);
+    if (controls.some(c => c.invalid)) {
+      controls.forEach(c => c.markAllAsTouched());
       return;
     }
 
@@ -538,23 +451,38 @@ export class EditLossInformationComponent implements OnInit {
       }));
       if (activities.length) this.overviewSvc.appendActivities?.(this.claimId(), activities);
 
+      // Claim Overview shows its own dateOfLoss/proximateLossCause/
+      // incidentCircumstance/description fields, separate from the
+      // LossInformation record this form edits — without this an edit here
+      // saves correctly but Overview keeps showing the pre-edit value.
       await this.syncOverviewFromLossInfo(
         this.form.getRawValue() as unknown as LossInformationFormValue,
         diffs
       );
 
+      // pendingChanges() compares live form values against this snapshot,
+      // independently of form.dirty — without updating it post-save, the
+      // canDeactivate guard would still see the just-saved value as
+      // "pending" and fire the leave-confirmation on this save's own
+      // sections-impact navigate() below.
       this.original.set({ ...(this.original() as LossInformation), ...partial } as LossInformation);
-      control.markAsPristine();
+      controls.forEach(c => c.markAsPristine());
       this.submitAttempted = false;
       this.editingField.set(null);
       this.toast.success(`${diffs[0].label} updated`, this.claimId());
       this.live.announce(`${diffs[0].label} updated successfully.`, 'polite');
 
-      // Same sections-impact redirect as the batched Save — see the long
-      // comment on that path (onSaveChanges) for why Cause of loss / Type of
-      // damages / Loss location trigger it. Firing here per-field instead of
-      // once at the end of a batch is the accepted tradeoff of this field no
-      // longer going through that bottom button.
+      // ClaimSection/SectionEntity still carry no structured link back to a
+      // cause-of-loss or location key — there is no reliable way to tell
+      // which existing sections a change actually affects, even after the
+      // FNOL/claim-file model work (ClaimSection.damageType has no
+      // relationship to causeOfLoss anywhere). Treat cause-of-loss, type of
+      // damages, or location changes as sections-impacting and send the user
+      // to review manually, per the Miro flow ("triggers changes to existing
+      // sections" → notify + redirect). Signed off 2026-08-18 — see
+      // CONVERSIONS.md. Fires per-field now instead of once at the end of a
+      // batch — the accepted tradeoff of no field going through a bottom
+      // "Save all" button anymore.
       const impacted = diffs.filter(d => IMPACT_LABELS.includes(d.label));
       if (impacted.length) {
         this.router.navigate(['/claims', this.claimId(), 'sections'], {
@@ -575,6 +503,15 @@ export class EditLossInformationComponent implements OnInit {
   onCancelField(key: PerFieldKey): void {
     const o = this.original();
     switch (key) {
+      case 'causeOfLoss': {
+        const causeKeys = o?.causeOfLoss ?? [];
+        this.form.get('causeOfLoss')!.setValue(causeKeys);
+        this.form.get('specifyOtherCauseOfLoss')!.setValue(o?.specifyOtherCauseOfLoss ?? '');
+        this.syncSpecifyOther('specifyOtherCauseOfLoss', causeKeys.includes(OTHER_CAUSE_KEY));
+        this.form.get('circumstance')!.setValue(o?.circumstance ?? null);
+        this.form.get('circumstance')!.markAsPristine();
+        break;
+      }
       case 'circumstance':
         this.form.get('circumstance')!.setValue(o?.circumstance ?? null);
         break;
@@ -592,28 +529,15 @@ export class EditLossInformationComponent implements OnInit {
       case 'lossDescription':
         this.form.get('lossDescription')!.setValue(o?.lossDescription ?? '');
         break;
+      case 'lossLocation':
+        this.lossLocation.setValue(
+          (o?.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] }
+        );
+        break;
     }
-    this.fieldControl(key).markAsPristine();
+    this.fieldControls(key).forEach(c => c.markAsPristine());
     this.submitAttempted = false;
     this.editingField.set(null);
-  }
-
-  // Names the incomplete fields and reopens the first group that holds one, so
-  // a refused Save is explainable on screen instead of a dead button.
-  private revealFirstInvalid(): void {
-    const incomplete = VALIDATED_FIELDS.filter(t => this.form.get(t.path)?.invalid);
-    const labels = incomplete.map(t => t.label);
-    if (this.dateOfLoss.errors?.['dateOrder']) {
-      labels.push('Notification date must be on or after date of occurrence');
-    }
-    this.saveBlocked.set(
-      labels.length
-        ? `Can't save yet — check ${labels.join(', ')}.`
-        : "Can't save yet — some details are still incomplete."
-    );
-    this.editingField.set(incomplete[0]?.field ?? 'dateGroup');
-    this.form.markAllAsTouched();
-    this.live.announce(this.saveBlocked()!, 'assertive');
   }
 
   private async syncOverviewFromLossInfo(
