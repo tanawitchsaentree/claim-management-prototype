@@ -70,7 +70,7 @@
                       </span>
                       @if (item.link) {
                         <a class="scm-item__link" [routerLink]="item.link" (click)="onCancel()">
-                          Go to {{ item.ownerDomain }}
+                          <span class="scm-item__link-label">Go to {{ item.ownerDomain }}</span>
                           <nx-icon name="arrow-right-o" size="s"></nx-icon>
                         </a>
                       }

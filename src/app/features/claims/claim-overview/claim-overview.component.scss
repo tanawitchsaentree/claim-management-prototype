@@ -112,7 +112,10 @@
   color: var(--interactive-text);
   text-decoration: none;
   cursor: pointer;
-  &:hover {
+
+  // Underline the label only — on the link itself it also painted under
+  // the edit icon beside it.
+  &:hover .co-edit-loss-label {
     text-decoration: underline;
   }
 }

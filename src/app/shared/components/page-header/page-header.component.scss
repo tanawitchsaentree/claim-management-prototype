@@ -22,10 +22,12 @@
   padding: 0;
   margin: 0 0 8px;
   cursor: pointer;
+}
 
-  &:hover {
-    text-decoration: underline;
-  }
+// Underline on the label only — set on the shared button, it painted
+// straight across the icon too, which has no text baseline to draw against.
+.page-header__back:hover .page-header__back-label {
+  text-decoration: underline;
 }
 
 .page-header__eyebrow {

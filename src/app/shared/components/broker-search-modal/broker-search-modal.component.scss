@@ -84,7 +84,10 @@
   font-weight: 600;
   color: var(--interactive-text);
   cursor: pointer;
-  &:hover {
+
+  // Underline the label only — on the button itself it also painted under
+  // the chevron icon beside it.
+  &:hover .bsm-advanced-toggle-label {
     text-decoration: underline;
   }
 }

@@ -188,7 +188,10 @@ $header-bp: 1024px;
   nx-icon {
     font-size: 14px;
   } // match text size
-  &:hover {
+
+  // Underline the label only — on the link itself it also painted under
+  // the launch icon beside it.
+  &:hover .widget-link-secondary-label {
     text-decoration: underline;
   }
 }
@@ -494,7 +497,12 @@ $header-bp: 1024px;
 
   &:hover {
     background: var(--claim-overlay-hover);
-    text-decoration: underline;
+
+    // Underline the label only — on the whole item it also painted under
+    // the launch icon beside it.
+    .quick-link-label {
+      text-decoration: underline;
+    }
   }
 
   .quick-link-icon {

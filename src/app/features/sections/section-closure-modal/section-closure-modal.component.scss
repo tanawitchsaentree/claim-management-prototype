@@ -179,7 +179,10 @@
   text-decoration: none;
   font-weight: 500;
   margin-left: auto;
-  &:hover {
+
+  // Underline the label only — on the link itself it also painted under
+  // the arrow icon beside it.
+  &:hover .scm-item__link-label {
     text-decoration: underline;
   }
 }

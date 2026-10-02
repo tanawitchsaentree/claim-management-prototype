@@ -136,7 +136,8 @@
             }
             <div class="widget-footer">
               <a routerLink="/tasks" class="widget-link-secondary">
-                <nx-icon name="launch"></nx-icon> Visit task manager for more functionalities
+                <nx-icon name="launch"></nx-icon>
+                <span class="widget-link-secondary-label">Visit task manager for more functionalities</span>
               </a>
             </div>
           </div>
@@ -250,7 +251,7 @@
                 rel="noopener noreferrer"
                 [title]="link.label + ' (opens in a new tab)'"
               >
-                <span>{{ link.label }}</span>
+                <span class="quick-link-label">{{ link.label }}</span>
                 <nx-icon name="launch" class="quick-link-icon"></nx-icon>
               </a>
             }

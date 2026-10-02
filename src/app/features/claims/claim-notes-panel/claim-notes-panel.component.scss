@@ -73,7 +73,9 @@
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
 
-  &:hover {
+  // Underline the label only — on the button itself it also painted under
+  // the chevron icon beside it.
+  &:hover .cnp__back-btn-label {
     text-decoration: underline;
   }
 }
@@ -102,7 +104,9 @@
     flex-shrink: 0;
   }
 
-  &:hover {
+  // Underline the label only — on the button itself it also painted under
+  // the globe icon beside it.
+  &:hover .cnp__translate-btn-label {
     text-decoration: underline;
   }
 }

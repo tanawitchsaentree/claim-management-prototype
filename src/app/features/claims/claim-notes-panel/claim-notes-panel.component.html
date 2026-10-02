@@ -5,7 +5,7 @@
       <div class="cnp__header-top">
         <button class="cnp__back-btn" type="button" (click)="clearScope()">
           <nx-icon name="chevron-left-small" size="s"></nx-icon>
-          All notes
+          <span class="cnp__back-btn-label">All notes</span>
         </button>
       </div>
       <p class="cnp__scope-title">Notes for "{{ scope.label }}" ({{ totalCount() }})</p>
@@ -18,7 +18,7 @@
           aria-label="Translate notes"
         >
           <nx-icon name="globe" size="s"></nx-icon>
-          Translate
+          <span class="cnp__translate-btn-label">Translate</span>
         </button>
       </div>
 

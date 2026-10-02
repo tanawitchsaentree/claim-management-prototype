@@ -51,7 +51,9 @@
     <!-- Advanced filters toggle -->
     <button type="button" class="bsm-advanced-toggle" (click)="toggleAdvanced()">
       <nx-icon [name]="showAdvanced() ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
-      {{ showAdvanced() ? 'Fewer filters' : 'More filters' }}
+      <span class="bsm-advanced-toggle-label">{{
+        showAdvanced() ? 'Fewer filters' : 'More filters'
+      }}</span>
     </button>
 
     @if (showAdvanced()) {

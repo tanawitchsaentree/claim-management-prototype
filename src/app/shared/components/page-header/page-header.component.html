@@ -3,7 +3,7 @@
     @if (showBack) {
       <button type="button" class="page-header__back" (click)="back.emit()">
         <nx-icon name="arrow-left" size="s"></nx-icon>
-        {{ backLabel }}
+        <span class="page-header__back-label">{{ backLabel }}</span>
       </button>
     }
     @if (eyebrow) {
