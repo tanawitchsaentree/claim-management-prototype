@@ -5,30 +5,6 @@
   </div>
 } @else {
   <div class="eli-page" [formGroup]="form">
-    <!-- Sticky — stays visible while scrolling a page where several fields
-    can sit "Edited" at once; a bottom-of-page button would be out of view
-    exactly when there's something to commit. -->
-    <div class="eli-update-bar">
-      @if (saveBlocked()) {
-        <span class="eli-update-bar__error">{{ saveBlocked() }}</span>
-      }
-      <button
-        nxButton="primary small"
-        type="button"
-        class="eli-update-bar__btn"
-        [disabled]="pendingChanges().length === 0 || saving()"
-        (click)="onUpdateAll()"
-      >
-        @if (saving()) {
-          <nx-spinner size="small"></nx-spinner>&nbsp;
-        }
-        Update
-        @if (pendingChanges().length > 0) {
-          ({{ pendingChanges().length }})
-        }
-      </button>
-    </div>
-
     <!-- Page header — status + client name answer "which record, what state"
     before the user touches anything (DESIGN_PRINCIPLES.md rule #1). -->
     <app-page-header
@@ -392,5 +368,28 @@
       }
     </section>
 
+    <!-- Footer — Discard and Update clustered bottom-right. Update commits
+    every field currently "Edited" in one call; Discard reverts all of them
+    and leaves (shares onDiscard() with the page-header Back link). -->
+    <div class="eli-footer">
+      @if (saveBlocked()) {
+        <span class="eli-footer__error">{{ saveBlocked() }}</span>
+      }
+      <button nxButton="tertiary small" type="button" (click)="onDiscard()">Discard</button>
+      <button
+        nxButton="primary small"
+        type="button"
+        [disabled]="pendingChanges().length === 0 || saving()"
+        (click)="onUpdateAll()"
+      >
+        @if (saving()) {
+          <nx-spinner size="small"></nx-spinner>&nbsp;
+        }
+        Update
+        @if (pendingChanges().length > 0) {
+          ({{ pendingChanges().length }})
+        }
+      </button>
+    </div>
   </div>
 }
