@@ -24,13 +24,6 @@
   padding: 0 0 48px;
 }
 
-// ─── Page header actions — status chip ─────────────────────────────────
-.eli-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 // ─── Footer — Discard + Update clustered bottom-right ──────────────────
 .eli-footer {
   display: flex;
@@ -84,9 +77,14 @@
   gap: 16px;
   margin-bottom: 16px;
 
+  // nx-formfield always renders its label row above the input, ~28px tall
+  // regardless of input type (measured: multi-select, dropdown, and
+  // textarea all offset their input by the same amount) — without this,
+  // Cancel aligns with the LABEL text instead of the input it actually sits
+  // beside, reading as unanchored from everything in the row.
   > button[nxButton] {
     flex-shrink: 0;
-    margin-top: 4px; // nx-formfield's own label row offsets the input's top edge
+    margin-top: 28px;
   }
 }
 

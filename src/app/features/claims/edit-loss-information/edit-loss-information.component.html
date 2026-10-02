@@ -5,8 +5,8 @@
   </div>
 } @else {
   <div class="eli-page" [formGroup]="form">
-    <!-- Page header — status + client name answer "which record, what state"
-    before the user touches anything (DESIGN_PRINCIPLES.md rule #1). -->
+    <!-- Page header — client name answers "which record" before the user
+    touches anything (DESIGN_PRINCIPLES.md rule #1). -->
     <app-page-header
       title="Edit claim details"
       [eyebrow]="claimId()"
@@ -15,11 +15,6 @@
       backLabel="Back to claim overview"
       (back)="onDiscard()"
     >
-      <div actions class="eli-header-actions">
-        @if (claimStatus()) {
-          <app-status-chip [status]="claimStatus().toLowerCase()" domain="claim"></app-status-chip>
-        }
-      </div>
     </app-page-header>
 
     <!-- Card: Loss information — Claim description card removed entirely

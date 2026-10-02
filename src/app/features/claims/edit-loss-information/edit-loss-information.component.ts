@@ -29,7 +29,6 @@ import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import {
   LossInformation,
   LossInformationFormValue
@@ -85,7 +84,6 @@ type PerFieldKey =
     NxSpinnerModule,
     LocationPickerComponent,
     PageHeaderComponent,
-    StatusChipComponent
   ],
   templateUrl: './edit-loss-information.component.html',
   styleUrl: './edit-loss-information.component.scss'
@@ -102,7 +100,6 @@ export class EditLossInformationComponent implements OnInit {
 
   readonly claimId = signal<string>('');
   readonly clientName = signal<string>('');
-  readonly claimStatus = signal<string>('');
   readonly loading = signal(true);
   readonly saving = signal(false);
   /** Why the last Update attempt refused — see firstInvalidField(). */
@@ -287,7 +284,6 @@ export class EditLossInformationComponent implements OnInit {
     firstValueFrom(this.overviewSvc.getOverview(id)).then(claim => {
       this.policyNumber.set(claim?.policyNumber ?? null);
       this.clientName.set(claim?.client ?? '');
-      this.claimStatus.set(claim?.status ?? '');
     });
   }
 
