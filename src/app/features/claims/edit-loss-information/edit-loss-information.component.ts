@@ -19,7 +19,6 @@ import { NxTimefieldModule } from '@allianz/ng-aquila/timefield';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxMultiSelectComponent } from '@allianz/ng-aquila/dropdown';
-import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
@@ -48,7 +47,6 @@ import {
 } from '../../../shared/validators/date.validators';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 import {
-  IMPACT_LABELS,
   LABEL_TO_FIELD_KEY,
   LossInfoDiffField,
   computeLossInfoDiffs
@@ -77,7 +75,6 @@ type PerFieldKey =
     NxDatefieldModule,
     NxDropdownModule,
     NxMultiSelectComponent,
-    NxBadgeModule,
     NxMessageModule,
     NxModalModule,
     NxSpinnerModule,
@@ -462,45 +459,21 @@ export class EditLossInformationComponent implements OnInit {
 
       // pendingChanges() compares live form values against this snapshot,
       // independently of form.dirty — without updating it post-save, the
-      // canDeactivate guard would still see the just-saved value as
-      // "pending" and fire the leave-confirmation on this save's own
-      // sections-impact navigate() below.
+      // canDeactivate guard would still see the just-saved value as pending.
       this.original.set({ ...(this.original() as LossInformation), ...partial } as LossInformation);
       controls.forEach(c => c.markAsPristine());
       this.submitAttempted = false;
       this.editingField.set(null);
       this.live.announce(`${diffs[0].label} updated successfully.`, 'polite');
+      this.toast.success(`${diffs[0].label} updated`, this.claimId());
 
-      // ClaimSection/SectionEntity still carry no structured link back to a
-      // cause-of-loss or location key — there is no reliable way to tell
-      // which existing sections a change actually affects, even after the
-      // FNOL/claim-file model work (ClaimSection.damageType has no
-      // relationship to causeOfLoss anywhere). Treat cause-of-loss, type of
-      // damages, or location changes as sections-impacting and send the user
-      // to review manually, per the Miro flow ("triggers changes to existing
-      // sections" → notify + redirect). Signed off 2026-08-18 — see
-      // CONVERSIONS.md. Fires per-field now instead of once at the end of a
-      // batch — the accepted tradeoff of no field going through a bottom
-      // "Save all" button anymore.
-      const impacted = diffs.filter(d => IMPACT_LABELS.includes(d.label));
-      if (impacted.length) {
-        // The toast says where the user is about to land and why, instead of
-        // the generic "X updated" — that redirect was landing as a jump-cut
-        // with no warning. The brief pause lets it register as "saved, then
-        // handed off" rather than the save and the navigate happening in the
-        // same instant.
-        this.toast.success(`${diffs[0].label} updated`, 'Opening Sections to review the impact.');
-        await new Promise(resolve => setTimeout(resolve, 500));
-        this.router.navigate(['/claims', this.claimId(), 'sections'], {
-          queryParams: {
-            changedFields: impacted.map(d => d.label),
-            changedOld: impacted.map(d => d.original),
-            changedNew: impacted.map(d => d.updated)
-          }
-        });
-      } else {
-        this.toast.success(`${diffs[0].label} updated`, this.claimId());
-      }
+      // No more auto-redirect to Sections for cause-of-loss/type-of-damage/
+      // location changes (dropped 2026-10-02, overriding the "notify +
+      // redirect" mandate signed off 2026-08-18 — see CONVERSIONS.md). Every
+      // field now behaves identically: save, stay put. If Sections needs
+      // reviewing after a change, that's a separate, deliberate trip the
+      // user takes themselves — not a side effect sprung on them by saving
+      // one field here.
     } catch {
       this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
     } finally {

@@ -80,10 +80,14 @@
   gap: 4px;
 }
 
-// NDBX nx-badge, not a hand-rolled border/dot — matches the "You"/"Dormant"
-// badge precedent in recent-approvals-widget / claims-portfolio-widget.
-.eli-changed-badge {
+// Deliberately plain text, not a colored nx-badge pill — a field left
+// uncommitted while editing another one shouldn't shout for attention,
+// just quietly say it hasn't been saved yet.
+.eli-edited-tag {
   margin-left: 6px;
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 400;
+  color: var(--text-muted);
   vertical-align: middle;
 }
 
