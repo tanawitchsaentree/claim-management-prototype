@@ -147,13 +147,21 @@
   width: 100%;
 }
 
-// Static value + "Change"/"Done" nx-link — matches .co-field/.co-label/.co-value
-// pattern from claim-overview.component.html (Assigned Claim handler + Reassign).
+// Static value + "Change"/"Done" nx-link, row layout — label/value on the
+// left, action link right-aligned on the same row (matches .co-restrict-entry
+// in file-restriction-card.component.scss).
 .eli-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.eli-field__info {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 16px;
 }
 
 // NDBX nx-badge, not a hand-rolled border/dot — matches the "You"/"Dormant"

@@ -63,16 +63,18 @@
 
       @if (!isEditing('causeOfLoss')) {
         <div class="eli-field">
-          <span class="eli-label">Cause of loss</span>
-          <span class="eli-value"
-            >{{ causeOfLossDisplay || 'Not provided' }}
+          <div class="eli-field__info">
+            <span class="eli-label">Cause of loss</span>
+            <span class="eli-value"
+              >{{ causeOfLossDisplay || 'Not provided' }}
+              @if (fieldChanged('causeOfLoss')) {
+                <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+              }</span
+            >
             @if (fieldChanged('causeOfLoss')) {
-              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
-            }</span
-          >
-          @if (fieldChanged('causeOfLoss')) {
-            <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
-          }
+              <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
+            }
+          </div>
           <nx-link size="small"
             ><a
               tabindex="0"
@@ -116,16 +118,18 @@
       it read-only. -->
       @if (!isEditing('circumstance')) {
         <div class="eli-field">
-          <span class="eli-label">Incident circumstance</span>
-          <span class="eli-value"
-            >{{ circumstanceDisplay || 'Not provided' }}
+          <div class="eli-field__info">
+            <span class="eli-label">Incident circumstance</span>
+            <span class="eli-value"
+              >{{ circumstanceDisplay || 'Not provided' }}
+              @if (fieldChanged('circumstance')) {
+                <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+              }</span
+            >
             @if (fieldChanged('circumstance')) {
-              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
-            }</span
-          >
-          @if (fieldChanged('circumstance')) {
-            <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
-          }
+              <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
+            }
+          </div>
           @if (selectedCauses.length) {
             <nx-link size="small"
               ><a
@@ -162,16 +166,18 @@
 
       @if (!isEditing('typeOfDamage')) {
         <div class="eli-field">
-          <span class="eli-label">Type of damage</span>
-          <span class="eli-value"
-            >{{ typeOfDamageDisplay || 'Not provided' }}
+          <div class="eli-field__info">
+            <span class="eli-label">Type of damage</span>
+            <span class="eli-value"
+              >{{ typeOfDamageDisplay || 'Not provided' }}
+              @if (fieldChanged('typeOfDamage')) {
+                <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+              }</span
+            >
             @if (fieldChanged('typeOfDamage')) {
-              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
-            }</span
-          >
-          @if (fieldChanged('typeOfDamage')) {
-            <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
-          }
+              <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
+            }
+          </div>
           <nx-link size="small"
             ><a
               tabindex="0"
@@ -210,16 +216,18 @@
 
       @if (!isEditing('dateGroup')) {
         <div class="eli-field">
-          <span class="eli-label">When did the loss occur?</span>
-          <span class="eli-value"
-            >{{ dateGroupDisplay }}
+          <div class="eli-field__info">
+            <span class="eli-label">When did the loss occur?</span>
+            <span class="eli-value"
+              >{{ dateGroupDisplay }}
+              @if (fieldChanged('dateGroup')) {
+                <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+              }</span
+            >
             @if (fieldChanged('dateGroup')) {
-              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
-            }</span
-          >
-          @if (fieldChanged('dateGroup')) {
-            <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
-          }
+              <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
+            }
+          </div>
           <nx-link size="small"
             ><a
               tabindex="0"
@@ -285,16 +293,18 @@
 
       @if (!isEditing('lossDescription')) {
         <div class="eli-field">
-          <span class="eli-label">Loss description</span>
-          <span class="eli-value"
-            >{{ form.get('lossDescription')?.value || 'Not provided' }}
+          <div class="eli-field__info">
+            <span class="eli-label">Loss description</span>
+            <span class="eli-value"
+              >{{ form.get('lossDescription')?.value || 'Not provided' }}
+              @if (fieldChanged('lossDescription')) {
+                <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
+              }</span
+            >
             @if (fieldChanged('lossDescription')) {
-              <nx-badge type="active" class="eli-changed-badge">Changed</nx-badge>
-            }</span
-          >
-          @if (fieldChanged('lossDescription')) {
-            <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
-          }
+              <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
+            }
+          </div>
           <nx-link size="small"
             ><a
               tabindex="0"
