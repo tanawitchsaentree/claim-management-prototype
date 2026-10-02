@@ -469,7 +469,6 @@ export class EditLossInformationComponent implements OnInit {
       controls.forEach(c => c.markAsPristine());
       this.submitAttempted = false;
       this.editingField.set(null);
-      this.toast.success(`${diffs[0].label} updated`, this.claimId());
       this.live.announce(`${diffs[0].label} updated successfully.`, 'polite');
 
       // ClaimSection/SectionEntity still carry no structured link back to a
@@ -485,6 +484,13 @@ export class EditLossInformationComponent implements OnInit {
       // "Save all" button anymore.
       const impacted = diffs.filter(d => IMPACT_LABELS.includes(d.label));
       if (impacted.length) {
+        // The toast says where the user is about to land and why, instead of
+        // the generic "X updated" — that redirect was landing as a jump-cut
+        // with no warning. The brief pause lets it register as "saved, then
+        // handed off" rather than the save and the navigate happening in the
+        // same instant.
+        this.toast.success(`${diffs[0].label} updated`, 'Opening Sections to review the impact.');
+        await new Promise(resolve => setTimeout(resolve, 500));
         this.router.navigate(['/claims', this.claimId(), 'sections'], {
           queryParams: {
             changedFields: impacted.map(d => d.label),
@@ -492,6 +498,8 @@ export class EditLossInformationComponent implements OnInit {
             changedNew: impacted.map(d => d.updated)
           }
         });
+      } else {
+        this.toast.success(`${diffs[0].label} updated`, this.claimId());
       }
     } catch {
       this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
