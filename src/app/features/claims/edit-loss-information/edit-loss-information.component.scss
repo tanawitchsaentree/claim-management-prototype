@@ -163,13 +163,6 @@
   margin-top: 12px;
 }
 
-.eli-caution {
-  margin: 4px 0 0;
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
 // ─── Two-col grid — shared with FNOL's step-loss-information ─────────
 .two-col-grid {
   @include fs.two-col-grid;

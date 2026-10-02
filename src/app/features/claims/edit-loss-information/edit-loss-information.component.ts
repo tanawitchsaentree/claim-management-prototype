@@ -239,18 +239,27 @@ export class EditLossInformationComponent implements OnInit {
   }
 
   // ── Read/edit field state ─────────────────────────────────────────────
-  // Single field open at a time by default — no confirmed research on whether
-  // users need multiple fields open simultaneously; this is the documented
-  // default from the review spec, not a resolved product decision.
-  readonly editingField = signal<string | null>(null);
+  // Any number of fields can be open at once now — opening Incident
+  // circumstance no longer collapses Cause of loss back to a read-only row,
+  // taking its Cancel button with it. The previous single-field version
+  // left an "Edited" field with no visible way back except reopening it
+  // first; staying open keeps that undo path on screen the whole time.
+  readonly editingFields = signal<ReadonlySet<string>>(new Set());
   isEditing(key: string): boolean {
-    return this.editingField() === key;
+    return this.editingFields().has(key);
   }
   startEdit(key: string): void {
-    this.editingField.set(key);
+    this.editingFields.update(s => new Set(s).add(key));
   }
-  closeEdit(): void {
-    this.editingField.set(null);
+  private closeField(key: string): void {
+    this.editingFields.update(s => {
+      const next = new Set(s);
+      next.delete(key);
+      return next;
+    });
+  }
+  private closeAllFields(): void {
+    this.editingFields.set(new Set());
   }
 
   readonly isDirty = toSignal(this.form.valueChanges.pipe(map(() => this.form.dirty)), {
@@ -310,7 +319,7 @@ export class EditLossInformationComponent implements OnInit {
     // same claim) stayed closed behind its Update/Add link. One field
     // behaving differently from its siblings for no reason a user can see
     // read as broken, not deliberate. All fields now start closed uniformly.
-    this.editingField.set(null);
+    this.closeAllFields();
     this.form.markAsPristine();
   }
 
@@ -415,7 +424,7 @@ export class EditLossInformationComponent implements OnInit {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       const invalidKey = this.firstInvalidField();
-      if (invalidKey) this.editingField.set(invalidKey);
+      if (invalidKey) this.startEdit(invalidKey);
       this.saveBlocked.set("Can't update yet — some details are still incomplete.");
       this.live.announce(this.saveBlocked()!, 'assertive');
       return;
@@ -450,7 +459,7 @@ export class EditLossInformationComponent implements OnInit {
       this.original.set({ ...(this.original() as LossInformation), ...formValue } as LossInformation);
       this.form.markAsPristine();
       this.submitAttempted = false;
-      this.editingField.set(null);
+      this.closeAllFields();
       this.live.announce('Loss information updated successfully.', 'polite');
 
       // What happens next is the user's call, every time — not a silent
@@ -522,8 +531,7 @@ export class EditLossInformationComponent implements OnInit {
         break;
     }
     this.fieldControls(key).forEach(c => c.markAsPristine());
-    this.submitAttempted = false;
-    this.editingField.set(null);
+    this.closeField(key);
   }
 
   private async syncOverviewFromLossInfo(
