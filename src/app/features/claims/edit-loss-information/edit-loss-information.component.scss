@@ -75,6 +75,38 @@
   width: 100%;
 }
 
+// Edit mode's input + Cancel, side by side — Cancel lands in the same
+// top-right spot the Edit button sat in before the field opened, instead
+// of dropping below the input to a position Edit never occupied.
+.eli-edit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  > button[nxButton] {
+    flex-shrink: 0;
+    margin-top: 4px; // nx-formfield's own label row offsets the input's top edge
+  }
+}
+
+.eli-edit-input {
+  flex: 1;
+  min-width: 0;
+}
+
+// When did the loss occur — no single formfield to pair Cancel against, so
+// Cancel pairs with the sub-heading instead, same right edge as every other
+// field's Edit/Cancel.
+.eli-edit-row--heading {
+  align-items: center;
+  justify-content: space-between;
+
+  > .eli-sub-heading {
+    margin: 0;
+  }
+}
+
 // Static value + "Change"/"Done" nx-link, row layout — label/value on the
 // left, action link right-aligned on the same row (matches .co-restrict-entry
 // in file-restriction-card.component.scss).

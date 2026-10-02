@@ -53,17 +53,22 @@
           </button>
         </div>
       } @else {
-        <nx-formfield label="Cause of loss" class="eli-full-width">
-          <nx-multi-select
-            [options]="causeOfLossOptions()"
-            selectValue="value"
-            selectLabel="label"
-            placeholder="Select cause of loss"
-            formControlName="causeOfLoss"
-            (selectionChange)="onCauseOfLossChange($event)"
-          >
-          </nx-multi-select>
-        </nx-formfield>
+        <div class="eli-edit-row">
+          <nx-formfield label="Cause of loss" class="eli-edit-input">
+            <nx-multi-select
+              [options]="causeOfLossOptions()"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select cause of loss"
+              formControlName="causeOfLoss"
+              (selectionChange)="onCauseOfLossChange($event)"
+            >
+            </nx-multi-select>
+          </nx-formfield>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('causeOfLoss')">
+            Cancel
+          </button>
+        </div>
         @if (showSpecifyOtherCause) {
           <nx-formfield label="Specify other cause of loss" class="eli-full-width">
             <input
@@ -77,11 +82,6 @@
             }
           </nx-formfield>
         }
-        <div class="eli-field-actions">
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('causeOfLoss')">
-            Cancel
-          </button>
-        </div>
       }
 
       <hr class="eli-divider" />
@@ -127,21 +127,21 @@
           }
         </div>
       } @else {
-        <nx-formfield label="Incident circumstance" class="eli-full-width">
-          <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
-            @for (option of circumstanceOptions; track option.value) {
-              <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-          <nx-hint nxFormfieldHint>
-            @if (selectedCauses.length) {
-              Narrowed to the cause of loss on this claim.
-            } @else {
-              Select a cause of loss to narrow this list.
-            }
-          </nx-hint>
-        </nx-formfield>
-        <div class="eli-field-actions">
+        <div class="eli-edit-row">
+          <nx-formfield label="Incident circumstance" class="eli-edit-input">
+            <nx-dropdown formControlName="circumstance" placeholder="Select circumstance">
+              @for (option of circumstanceOptions; track option.value) {
+                <nx-dropdown-item [value]="option.value">{{ option.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+            <nx-hint nxFormfieldHint>
+              @if (selectedCauses.length) {
+                Narrowed to the cause of loss on this claim.
+              } @else {
+                Select a cause of loss to narrow this list.
+              }
+            </nx-hint>
+          </nx-formfield>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('circumstance')">
             Cancel
           </button>
@@ -175,20 +175,25 @@
           </button>
         </div>
       } @else {
-        <nx-formfield label="Type of damage" class="eli-full-width">
-          <nx-multi-select
-            [options]="typeOfDamageOptions()"
-            selectValue="value"
-            selectLabel="label"
-            placeholder="Select type of damage"
-            formControlName="typeOfDamage"
-          >
-          </nx-multi-select>
-          <nx-hint nxFormfieldHint
-            >Updating this affects existing Sections — any that are impacted are listed at the top
-            of the page before you save.</nx-hint
-          >
-        </nx-formfield>
+        <div class="eli-edit-row">
+          <nx-formfield label="Type of damage" class="eli-edit-input">
+            <nx-multi-select
+              [options]="typeOfDamageOptions()"
+              selectValue="value"
+              selectLabel="label"
+              placeholder="Select type of damage"
+              formControlName="typeOfDamage"
+            >
+            </nx-multi-select>
+            <nx-hint nxFormfieldHint
+              >Updating this affects existing Sections — any that are impacted are listed at the top
+              of the page before you save.</nx-hint
+            >
+          </nx-formfield>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('typeOfDamage')">
+            Cancel
+          </button>
+        </div>
         <!-- nx-hint is white-space: nowrap by design (single-line) — this
         caution is too long to fit there without silently truncating, so it
         gets its own line instead of fighting that constraint. -->
@@ -197,11 +202,6 @@
           automatically. You'll still need to use Add Section on the Sections page, and only
           entities already on the policy for that damage type can be attached to it.
         </p>
-        <div class="eli-field-actions">
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('typeOfDamage')">
-            Cancel
-          </button>
-        </div>
       }
 
       <hr class="eli-divider" />
@@ -231,7 +231,12 @@
           </button>
         </div>
       } @else {
-        <h3 class="eli-sub-heading">When did the loss occur?</h3>
+        <div class="eli-edit-row eli-edit-row--heading">
+          <h3 class="eli-sub-heading">When did the loss occur?</h3>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('dateGroup')">
+            Cancel
+          </button>
+        </div>
         <div class="two-col-grid" [formGroup]="dateOfLoss">
           <nx-formfield label="Date of occurrence">
             <input
@@ -280,11 +285,6 @@
         @if (dateOfLoss.errors?.['dateOrder']) {
           <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
         }
-        <div class="eli-field-actions">
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('dateGroup')">
-            Cancel
-          </button>
-        </div>
       }
 
       <hr class="eli-divider" />
@@ -314,22 +314,22 @@
           </button>
         </div>
       } @else {
-        <nx-formfield label="Loss description" class="eli-full-width">
-          <textarea
-            nxInput
-            formControlName="lossDescription"
-            rows="3"
-            [maxlength]="maxDesc"
-          ></textarea>
-          <nx-hint nxFormfieldHint
-            >What happened during the loss event.
-            {{ form.get('lossDescription')?.value?.length ?? 0 }}/{{ maxDesc }}</nx-hint
-          >
-          @if (submitAttempted && form.get('lossDescription')?.errors?.['required']) {
-            <nx-error nxFormfieldError>Loss description is required</nx-error>
-          }
-        </nx-formfield>
-        <div class="eli-field-actions">
+        <div class="eli-edit-row">
+          <nx-formfield label="Loss description" class="eli-edit-input">
+            <textarea
+              nxInput
+              formControlName="lossDescription"
+              rows="3"
+              [maxlength]="maxDesc"
+            ></textarea>
+            <nx-hint nxFormfieldHint
+              >What happened during the loss event.
+              {{ form.get('lossDescription')?.value?.length ?? 0 }}/{{ maxDesc }}</nx-hint
+            >
+            @if (submitAttempted && form.get('lossDescription')?.errors?.['required']) {
+              <nx-error nxFormfieldError>Loss description is required</nx-error>
+            }
+          </nx-formfield>
           <button nxButton="tertiary small" type="button" (click)="onCancelField('lossDescription')">
             Cancel
           </button>

@@ -47,6 +47,11 @@ import {
 } from '../../../shared/validators/date.validators';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 import {
+  LossInfoUpdateResultModalComponent,
+  LossInfoUpdateResultModalData
+} from './loss-info-update-result-modal.component';
+import {
+  IMPACT_LABELS,
   LABEL_TO_FIELD_KEY,
   LossInfoDiffField,
   computeLossInfoDiffs
@@ -451,10 +456,33 @@ export class EditLossInformationComponent implements OnInit {
       this.submitAttempted = false;
       this.editingField.set(null);
       this.live.announce('Loss information updated successfully.', 'polite');
-      this.toast.success(
-        'Loss information updated',
-        `${activities.length} field(s) updated on ${this.claimId()}`
-      );
+
+      // What happens next is the user's call, every time — not a silent
+      // stay (easy to miss that Cause of loss/Type of damage/Loss location
+      // just stopped matching what Sections was built from) and not a
+      // forced redirect (fought the point of editing one field and staying
+      // put). "Review Sections" only appears when something actually in
+      // IMPACT_LABELS changed.
+      const impacted = diffs.some(d => IMPACT_LABELS.includes(d.label));
+      const ref = this.dialogSvc.open(LossInfoUpdateResultModalComponent, {
+        data: { claimId: this.claimId(), diffs, impacted } satisfies LossInfoUpdateResultModalData,
+        width: '600px',
+        maxWidth: '92vw'
+      });
+      const result = await firstValueFrom(ref.afterClosed());
+      if (result === 'overview') {
+        this.router.navigate(['/claims', this.claimId(), 'overview']);
+      } else if (result === 'sections') {
+        const impactedDiffs = diffs.filter(d => IMPACT_LABELS.includes(d.label));
+        this.router.navigate(['/claims', this.claimId(), 'sections'], {
+          queryParams: {
+            changedFields: impactedDiffs.map(d => d.label),
+            changedOld: impactedDiffs.map(d => d.original),
+            changedNew: impactedDiffs.map(d => d.updated)
+          }
+        });
+      }
+      // 'stay' (or dismissed via close/backdrop) — nothing further to do.
     } catch {
       this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
     } finally {

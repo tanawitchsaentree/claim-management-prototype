@@ -99,30 +99,35 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     });
   });
 
-  // REVERSED on 2026-10-02. Gate 3 used to assert the opposite — that every
-  // save opened a confirm modal with no exceptions (user mandate from
-  // 2026-09-02: "เวลาจะ save change ให้ modal ด้วย อย่า save แล้วจบ"). Per-field
-  // Save/Cancel came and went in between; this is the third shape — any
-  // number of fields can sit "Edited" uncommitted at once, and one Update
-  // button commits all of them together, still with no modal (the fields'
-  // own inputs already show the new values plainly; nothing is hidden the
-  // way a single-click batch save used to hide it). Kept as a gate rather
-  // than deleted, since "Update pops a redundant confirm modal" is precisely
-  // the regression to catch if this ever drifts back.
-  describe('Gate 3 — Update commits every pending field at once, no confirm modal', () => {
-    it('onUpdateAll does not open any dialog', async () => {
-      component.form.get('lossDescription')!.setValue('changed value');
+  // REVISED 2026-10-02 (third shape — this gate has changed twice before).
+  // No per-field Save anymore and no "every save confirms" batch modal
+  // either. One Update button commits everything currently "Edited" at
+  // once, then opens a single post-save modal asking where to go next
+  // (stay here / back to claim overview / review Sections) — the Sections
+  // choice only offered when something in IMPACT_LABELS actually changed.
+  // Previous shapes of this gate asserted no modal opens; that assertion
+  // is gone because the modal is now deliberate, not a regression.
+  describe('Gate 3 — Update commits every pending field, then offers a destination', () => {
+    it('opens the destination modal with the diffs and impacted=false for a non-impacting change', async () => {
+      component.form.get('lossDescription')!.setValue('changed value — modal data check');
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('stay') });
       await component.onUpdateAll();
-      expect(fakeDialogOpen).not.toHaveBeenCalled();
+      expect(fakeDialogOpen).toHaveBeenCalledTimes(1);
+      const [, options] = fakeDialogOpen.mock.calls[0];
+      expect(options.data.impacted).toBe(false);
+      expect(options.data.diffs).toEqual([
+        expect.objectContaining({ label: 'Loss description' })
+      ]);
     });
 
-    it('onUpdateAll commits every edited field in one call, even ones left closed/uncommitted', async () => {
+    it('commits every edited field in one call, even ones left closed/uncommitted', async () => {
       component.startEdit('lossDescription');
       component.form.get('lossDescription')!.setValue('changed description');
       component.startEdit('typeOfDamage'); // closes lossDescription's edit mode without saving/cancelling it
       component.form.get('typeOfDamage')!.setValue(['fire-damage']);
       expect(component.pendingChanges().length).toBe(2);
 
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('stay') });
       await component.onUpdateAll();
 
       expect(component.fieldChanged('lossDescription')).toBe(false);
@@ -130,9 +135,45 @@ describe('EditLossInformationComponent — Gate Proof', () => {
       expect(component.pendingChanges().length).toBe(0);
     });
 
-    it('onUpdateAll does nothing when there is no diff', async () => {
+    it('flags impacted=true for a Type of damage change and routes to Sections when that is chosen', async () => {
+      const navigateSpy = vi.spyOn(component['router'], 'navigate');
+      // A value distinct from the other Gate 3 tests' ['fire-damage'] — this
+      // spec's real lossInfoSvc.save() persists into the imported mock JSON
+      // module, which every test in this file shares (TestBed.resetTestingModule
+      // doesn't re-import the JSON), so an earlier test committing the same
+      // value here would make this one a no-op diff against a now-identical
+      // "original".
+      component.form.get('typeOfDamage')!.setValue(['flood-damage']);
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('sections') });
+      await component.onUpdateAll();
+      const [, options] = fakeDialogOpen.mock.calls[0];
+      expect(options.data.impacted).toBe(true);
+      expect(navigateSpy).toHaveBeenCalledWith(
+        ['/claims', 'CLM-2024-001', 'sections'],
+        expect.anything()
+      );
+    });
+
+    it('routes to the claim overview when the modal result is "overview"', async () => {
+      const navigateSpy = vi.spyOn(component['router'], 'navigate');
+      component.form.get('lossDescription')!.setValue('changed value — route to overview');
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('overview') });
+      await component.onUpdateAll();
+      expect(navigateSpy).toHaveBeenCalledWith(['/claims', 'CLM-2024-001', 'overview']);
+    });
+
+    it('stays on the page with no navigation when the modal result is "stay" (or dismissed)', async () => {
+      const navigateSpy = vi.spyOn(component['router'], 'navigate');
+      component.form.get('lossDescription')!.setValue('changed value — stay on page');
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
+      await component.onUpdateAll();
+      expect(navigateSpy).not.toHaveBeenCalled();
+    });
+
+    it('onUpdateAll does nothing (no save, no dialog) when there is no diff', async () => {
       await component.onUpdateAll();
       expect(component.saving()).toBe(false);
+      expect(fakeDialogOpen).not.toHaveBeenCalled();
     });
 
     it('onCancelField reverts the field to its original value without saving', () => {
@@ -181,6 +222,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
       component.startEdit('lossDescription');
       component.form.get('lossDescription')!.setValue('Revised after survey report.');
       expect(component.pendingChanges().length).toBe(1);
+      fakeDialogOpen.mockReturnValue({ afterClosed: () => of('stay') });
       await component.onUpdateAll();
       expect(component.fieldChanged('lossDescription')).toBe(false);
       expect(component.saveBlocked()).toBeNull();
