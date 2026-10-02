@@ -193,6 +193,15 @@
   text-decoration: line-through;
 }
 
+// Per-field Save/Cancel — same shape as .eli-step-footer, scoped to one
+// field's edit block instead of the whole page.
+.eli-field-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
 .eli-caution {
   margin: 4px 0 0;
   font-size: var(--paragraph-04-font-size);

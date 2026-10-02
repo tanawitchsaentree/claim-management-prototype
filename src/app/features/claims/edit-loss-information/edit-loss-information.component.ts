@@ -54,6 +54,7 @@ import {
 } from './loss-info-diff';
 
 type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
+type PerFieldKey = 'circumstance' | 'typeOfDamage' | 'dateGroup' | 'lossDescription';
 
 @Component({
   selector: 'app-edit-loss-information',
@@ -481,6 +482,122 @@ export class EditLossInformationComponent implements OnInit {
     }
   }
 
+  // ── Per-field save/cancel ──────────────────────────────────────────────
+  // Cause of loss stays on the batched Save/Discard + confirm-modal flow
+  // below (it drives Incident circumstance's options and is the most
+  // interdependent field here) — every other field commits on its own as
+  // soon as the user is done with it, no bottom-button round trip.
+  private fieldPayload(key: PerFieldKey): Partial<LossInformationFormValue> {
+    switch (key) {
+      case 'circumstance':
+        return { circumstance: this.form.get('circumstance')!.value as string | null };
+      case 'typeOfDamage':
+        return { typeOfDamage: this.form.get('typeOfDamage')!.value as string[] };
+      case 'dateGroup':
+        return { dateOfLoss: this.dateOfLoss.getRawValue() };
+      case 'lossDescription':
+        return { lossDescription: this.form.get('lossDescription')!.value as string };
+    }
+  }
+
+  private fieldControl(key: PerFieldKey) {
+    return key === 'dateGroup' ? this.dateOfLoss : this.form.get(key)!;
+  }
+
+  async onSaveField(key: PerFieldKey): Promise<void> {
+    this.submitAttempted = true;
+    const control = this.fieldControl(key);
+    if (control.invalid) {
+      control.markAllAsTouched();
+      return;
+    }
+
+    const diffs = this.computeDiffs().filter(d => LABEL_TO_FIELD_KEY[d.label] === key);
+    if (!diffs.length) {
+      this.submitAttempted = false;
+      this.editingField.set(null);
+      return;
+    }
+
+    this.saving.set(true);
+    const partial = this.fieldPayload(key);
+    try {
+      await firstValueFrom(
+        this.lossInfoSvc.save(partial as LossInformationFormValue, this.claimId())
+      );
+
+      const activities: ClaimActivity[] = diffs.map((d, i) => ({
+        id: `act-edit-${Date.now()}-${i}`,
+        claimId: this.claimId(),
+        user: 'Current User',
+        timestamp: new Date().toISOString(),
+        objectType: 'Loss Information',
+        attribute: d.label,
+        valueOld: d.original || null,
+        valueNew: d.updated || null
+      }));
+      if (activities.length) this.overviewSvc.appendActivities?.(this.claimId(), activities);
+
+      await this.syncOverviewFromLossInfo(
+        this.form.getRawValue() as unknown as LossInformationFormValue,
+        diffs
+      );
+
+      this.original.set({ ...(this.original() as LossInformation), ...partial } as LossInformation);
+      control.markAsPristine();
+      this.submitAttempted = false;
+      this.editingField.set(null);
+      this.toast.success(`${diffs[0].label} updated`, this.claimId());
+      this.live.announce(`${diffs[0].label} updated successfully.`, 'polite');
+
+      // Same sections-impact redirect as the batched Save — see the long
+      // comment on that path (onSaveChanges) for why Cause of loss / Type of
+      // damages / Loss location trigger it. Firing here per-field instead of
+      // once at the end of a batch is the accepted tradeoff of this field no
+      // longer going through that bottom button.
+      const impacted = diffs.filter(d => IMPACT_LABELS.includes(d.label));
+      if (impacted.length) {
+        this.router.navigate(['/claims', this.claimId(), 'sections'], {
+          queryParams: {
+            changedFields: impacted.map(d => d.label),
+            changedOld: impacted.map(d => d.original),
+            changedNew: impacted.map(d => d.updated)
+          }
+        });
+      }
+    } catch {
+      this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  onCancelField(key: PerFieldKey): void {
+    const o = this.original();
+    switch (key) {
+      case 'circumstance':
+        this.form.get('circumstance')!.setValue(o?.circumstance ?? null);
+        break;
+      case 'typeOfDamage':
+        this.form.get('typeOfDamage')!.setValue(o?.typeOfDamage ?? []);
+        break;
+      case 'dateGroup':
+        this.dateOfLoss.patchValue({
+          dateOfOccurrence: o?.dateOfLoss?.dateOfOccurrence ?? null,
+          timeOfOccurrence: o?.dateOfLoss?.timeOfOccurrence ?? null,
+          dateOfNotification: o?.dateOfLoss?.dateOfNotification ?? null,
+          timeOfNotification: o?.dateOfLoss?.timeOfNotification ?? null
+        });
+        break;
+      case 'lossDescription':
+        this.form.get('lossDescription')!.setValue(o?.lossDescription ?? '');
+        break;
+    }
+    this.fieldControl(key).markAsPristine();
+    this.submitAttempted = false;
+    this.editingField.set(null);
+  }
+
   // Names the incomplete fields and reopens the first group that holds one, so
   // a refused Save is explainable on screen instead of a dead button.
   private revealFirstInvalid(): void {
@@ -564,7 +681,14 @@ export class EditLossInformationComponent implements OnInit {
 
   async onDiscard(): Promise<void> {
     const canLeave = await this.confirmLeaveIfDirty();
-    if (canLeave) this.router.navigate(['/claims', this.claimId(), 'overview']);
+    if (!canLeave) return;
+    // Reset to original BEFORE navigating — the route's canDeactivate guard
+    // re-runs confirmLeaveIfDirty() on this very navigate() call, and without
+    // this it still saw the untouched form as dirty and opened the same
+    // discard modal a second time right after the user had just confirmed it.
+    const o = this.original();
+    if (o) this.prefillForm(o);
+    this.router.navigate(['/claims', this.claimId(), 'overview']);
   }
 
   // Covers the case the router guard can't: an actual tab close/refresh/

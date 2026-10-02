@@ -169,6 +169,22 @@
             }
           </nx-hint>
         </nx-formfield>
+        <div class="eli-field-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="saving()"
+            (click)="onSaveField('circumstance')"
+          >
+            @if (saving()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
+            Save
+          </button>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('circumstance')">
+            Cancel
+          </button>
+        </div>
       }
 
       <hr class="eli-divider" />
@@ -220,6 +236,22 @@
           automatically. You'll still need to use Add Section on the Sections page, and only
           entities already on the policy for that damage type can be attached to it.
         </p>
+        <div class="eli-field-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="saving()"
+            (click)="onSaveField('typeOfDamage')"
+          >
+            @if (saving()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
+            Save
+          </button>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('typeOfDamage')">
+            Cancel
+          </button>
+        </div>
       }
 
       <hr class="eli-divider" />
@@ -298,6 +330,22 @@
         @if (dateOfLoss.errors?.['dateOrder']) {
           <p class="eli-group-error">Notification date must be on or after date of occurrence.</p>
         }
+        <div class="eli-field-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="saving()"
+            (click)="onSaveField('dateGroup')"
+          >
+            @if (saving()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
+            Save
+          </button>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('dateGroup')">
+            Cancel
+          </button>
+        </div>
       }
 
       <hr class="eli-divider" />
@@ -342,6 +390,22 @@
             <nx-error nxFormfieldError>Loss description is required</nx-error>
           }
         </nx-formfield>
+        <div class="eli-field-actions">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="saving()"
+            (click)="onSaveField('lossDescription')"
+          >
+            @if (saving()) {
+              <nx-spinner size="small"></nx-spinner>&nbsp;
+            }
+            Save
+          </button>
+          <button nxButton="tertiary small" type="button" (click)="onCancelField('lossDescription')">
+            Cancel
+          </button>
+        </div>
       }
     </section>
 
