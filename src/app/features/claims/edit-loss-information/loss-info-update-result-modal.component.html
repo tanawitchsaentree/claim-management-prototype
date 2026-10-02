@@ -42,7 +42,6 @@
 
 <footer class="lurm-footer">
   @if (data.impacted) {
-    <button nxButton="tertiary small" type="button" (click)="stay()">Stay here</button>
     <button nxButton="tertiary small" type="button" (click)="goToOverview()">
       Back to claim overview
     </button>
@@ -50,9 +49,8 @@
       Review Sections
     </button>
   } @else {
-    <button nxButton="tertiary small" type="button" (click)="goToOverview()">
+    <button nxButton="primary small" type="button" (click)="goToOverview()">
       Back to claim overview
     </button>
-    <button nxButton="primary small" type="button" (click)="stay()">Stay here</button>
   }
 </footer>
