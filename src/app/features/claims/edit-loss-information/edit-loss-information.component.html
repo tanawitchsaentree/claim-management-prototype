@@ -76,13 +76,13 @@
             }
           </div>
           <button
-            nxIconButton="tertiary small"
+            nxButton="tertiary small"
             type="button"
-            [attr.aria-label]="(causeOfLossDisplay ? 'Update' : 'Add') + ' cause of loss'"
-            [title]="(causeOfLossDisplay ? 'Update' : 'Add') + ' cause of loss'"
+            aria-label="Edit cause of loss"
             (click)="startEdit('causeOfLoss')"
           >
-            <nx-icon [name]="causeOfLossDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+            <nx-icon name="pencil" size="s" nxIconPositionStart></nx-icon>
+            Edit
           </button>
         </div>
       } @else {
@@ -133,23 +133,24 @@
           </div>
           @if (selectedCauses.length) {
             <button
-              nxIconButton="tertiary small"
+              nxButton="tertiary small"
               type="button"
-              [attr.aria-label]="(circumstanceDisplay ? 'Update' : 'Add') + ' incident circumstance'"
-              [title]="(circumstanceDisplay ? 'Update' : 'Add') + ' incident circumstance'"
+              aria-label="Edit incident circumstance"
               (click)="startEdit('circumstance')"
             >
-              <nx-icon [name]="circumstanceDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+              <nx-icon name="pencil" size="s" nxIconPositionStart></nx-icon>
+              Edit
             </button>
           } @else {
             <button
-              nxIconButton="tertiary small"
+              nxButton="tertiary small"
               type="button"
               disabled
               aria-label="Select a cause of loss first"
               title="Select a cause of loss first"
             >
-              <nx-icon [name]="circumstanceDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+              <nx-icon name="pencil" size="s" nxIconPositionStart></nx-icon>
+              Edit
             </button>
           }
         </div>
@@ -187,13 +188,13 @@
             }
           </div>
           <button
-            nxIconButton="tertiary small"
+            nxButton="tertiary small"
             type="button"
-            [attr.aria-label]="(typeOfDamageDisplay ? 'Update' : 'Add') + ' type of damage'"
-            [title]="(typeOfDamageDisplay ? 'Update' : 'Add') + ' type of damage'"
+            aria-label="Edit type of damage"
             (click)="startEdit('typeOfDamage')"
           >
-            <nx-icon [name]="typeOfDamageDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+            <nx-icon name="pencil" size="s" nxIconPositionStart></nx-icon>
+            Edit
           </button>
         </div>
       } @else {
@@ -238,13 +239,13 @@
             }
           </div>
           <button
-            nxIconButton="tertiary small"
+            nxButton="tertiary small"
             type="button"
-            aria-label="Update when did the loss occur"
-            title="Update when did the loss occur"
+            aria-label="Edit when did the loss occur"
             (click)="startEdit('dateGroup')"
           >
-            <nx-icon name="pencil" size="s"></nx-icon>
+            <nx-icon name="pencil" size="s" nxIconPositionStart></nx-icon>
+            Edit
           </button>
         </div>
       } @else {
@@ -316,13 +317,13 @@
             }
           </div>
           <button
-            nxIconButton="tertiary small"
+            nxButton="tertiary small"
             type="button"
-            [attr.aria-label]="(form.get('lossDescription')?.value ? 'Update' : 'Add') + ' loss description'"
-            [title]="(form.get('lossDescription')?.value ? 'Update' : 'Add') + ' loss description'"
+            aria-label="Edit loss description"
             (click)="startEdit('lossDescription')"
           >
-            <nx-icon [name]="form.get('lossDescription')?.value ? 'pencil' : 'plus'" size="s"></nx-icon>
+            <nx-icon name="pencil" size="s" nxIconPositionStart></nx-icon>
+            Edit
           </button>
         </div>
       } @else {

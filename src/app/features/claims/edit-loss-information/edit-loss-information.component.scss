@@ -157,8 +157,8 @@
   gap: 12px;
   margin-bottom: 16px;
 
-  // Icon-only edit trigger — fixed width, never squeezed by a long value.
-  > button[nxIconButton] {
+  // Edit trigger — fixed width, never squeezed by a long value.
+  > button[nxButton] {
     flex-shrink: 0;
   }
 }
