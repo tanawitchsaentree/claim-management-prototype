@@ -42,62 +42,6 @@
   }
 }
 
-// ─── Change ledger — promoted diff, visible continuously not just at save ──
-.eli-ledger {
-  border: 1px solid var(--interactive-primary);
-  border-radius: 4px;
-  padding: var(--space-md) var(--space-xl);
-  margin-bottom: 16px;
-  background: var(--ui-02);
-}
-
-.eli-ledger__title {
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  margin: 0 0 8px;
-}
-
-.eli-ledger__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.eli-ledger__item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 0;
-  border-top: 1px solid var(--ui-04);
-
-  &:first-child {
-    border-top: none;
-  }
-}
-
-.eli-ledger__field {
-  flex: 0 0 160px;
-  font-size: var(--paragraph-04-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-}
-
-.eli-ledger__delta {
-  flex: 1 1 auto;
-  min-width: 0;
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-}
-
-.eli-ledger__was {
-  text-decoration: line-through;
-}
-.eli-ledger__now {
-  color: var(--text-01);
-  font-weight: 600;
-}
-
 // ─── Footer — deliberately NOT the wizard step-footer shape. Primary action
 // (Save) sits at the LEFT edge, not the bottom-right "Next" coordinates a
 // user's FNOL muscle memory is trained on; Discard sits at the right.

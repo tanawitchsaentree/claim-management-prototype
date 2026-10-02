@@ -31,30 +31,6 @@
       </div>
     </app-page-header>
 
-    <!-- Update ledger — the diff modal's content, promoted to where it can
-    prevent a mistake instead of only reporting one at the last second.
-    Present only when there's something to show. No per-field Revert —
-    Discard (whole-form) and the Confirm/Cancel step on save are the only
-    undo paths now (Marlene feedback, 2026-08-31): a per-row Revert was a
-    second, redundant way to back out of an update. -->
-    @if (pendingChanges().length > 0) {
-      <section class="eli-ledger">
-        <h2 class="eli-ledger__title">Pending updates</h2>
-        <ul class="eli-ledger__list">
-          @for (d of pendingChanges(); track d.label) {
-            <li class="eli-ledger__item">
-              <span class="eli-ledger__field">{{ d.label }}</span>
-              <span class="eli-ledger__delta">
-                <span class="eli-ledger__was">{{ d.original || 'Not provided' }}</span>
-                →
-                <span class="eli-ledger__now">{{ d.updated || 'Not provided' }}</span>
-              </span>
-            </li>
-          }
-        </ul>
-      </section>
-    }
-
     <!-- Card: Loss information — Claim description card removed entirely
     (Marlene feedback, 2026-08-31): users update Loss description instead,
     so a separate Claim-level description field was redundant. -->
