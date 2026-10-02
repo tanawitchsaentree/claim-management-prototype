@@ -13,7 +13,6 @@ import { NxTimefieldModule } from '@allianz/ng-aquila/timefield';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxMultiSelectComponent } from '@allianz/ng-aquila/dropdown';
-import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
@@ -70,7 +69,6 @@ type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
     NxDatefieldModule,
     NxDropdownModule,
     NxMultiSelectComponent,
-    NxLinkModule,
     NxBadgeModule,
     NxMessageModule,
     NxModalModule,

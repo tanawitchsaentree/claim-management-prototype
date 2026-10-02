@@ -156,6 +156,11 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
+
+  // Icon-only edit trigger — fixed width, never squeezed by a long value.
+  > button[nxIconButton] {
+    flex-shrink: 0;
+  }
 }
 
 .eli-field__info {
@@ -186,17 +191,6 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   text-decoration: line-through;
-}
-
-// Stands in for the Update/Add nx-link when the action is blocked by a
-// missing dependency (e.g. Incident circumstance needs Cause of loss set
-// first) — same size/weight as the real link, just not clickable and not
-// styled as if it were, so it doesn't read as a broken button.
-.eli-link-disabled {
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: not-allowed;
 }
 
 .eli-caution {

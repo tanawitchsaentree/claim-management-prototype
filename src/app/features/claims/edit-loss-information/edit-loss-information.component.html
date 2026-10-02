@@ -75,14 +75,15 @@
               <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
             }
           </div>
-          <nx-link size="small"
-            ><a
-              tabindex="0"
-              (click)="startEdit('causeOfLoss')"
-              (keydown.enter)="startEdit('causeOfLoss')"
-              >{{ causeOfLossDisplay ? 'Update' : 'Add' }}</a
-            ></nx-link
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            [attr.aria-label]="(causeOfLossDisplay ? 'Update' : 'Add') + ' cause of loss'"
+            [title]="(causeOfLossDisplay ? 'Update' : 'Add') + ' cause of loss'"
+            (click)="startEdit('causeOfLoss')"
           >
+            <nx-icon [name]="causeOfLossDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+          </button>
         </div>
       } @else {
         <nx-formfield label="Cause of loss" class="eli-full-width">
@@ -131,18 +132,25 @@
             }
           </div>
           @if (selectedCauses.length) {
-            <nx-link size="small"
-              ><a
-                tabindex="0"
-                (click)="startEdit('circumstance')"
-                (keydown.enter)="startEdit('circumstance')"
-                >{{ circumstanceDisplay ? 'Update' : 'Add' }}</a
-              ></nx-link
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              [attr.aria-label]="(circumstanceDisplay ? 'Update' : 'Add') + ' incident circumstance'"
+              [title]="(circumstanceDisplay ? 'Update' : 'Add') + ' incident circumstance'"
+              (click)="startEdit('circumstance')"
             >
+              <nx-icon [name]="circumstanceDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+            </button>
           } @else {
-            <span class="eli-link-disabled" title="Select a cause of loss first">{{
-              circumstanceDisplay ? 'Update' : 'Add'
-            }}</span>
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              disabled
+              aria-label="Select a cause of loss first"
+              title="Select a cause of loss first"
+            >
+              <nx-icon [name]="circumstanceDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+            </button>
           }
         </div>
       } @else {
@@ -178,14 +186,15 @@
               <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
             }
           </div>
-          <nx-link size="small"
-            ><a
-              tabindex="0"
-              (click)="startEdit('typeOfDamage')"
-              (keydown.enter)="startEdit('typeOfDamage')"
-              >{{ typeOfDamageDisplay ? 'Update' : 'Add' }}</a
-            ></nx-link
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            [attr.aria-label]="(typeOfDamageDisplay ? 'Update' : 'Add') + ' type of damage'"
+            [title]="(typeOfDamageDisplay ? 'Update' : 'Add') + ' type of damage'"
+            (click)="startEdit('typeOfDamage')"
           >
+            <nx-icon [name]="typeOfDamageDisplay ? 'pencil' : 'plus'" size="s"></nx-icon>
+          </button>
         </div>
       } @else {
         <nx-formfield label="Type of damage" class="eli-full-width">
@@ -228,14 +237,15 @@
               <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
             }
           </div>
-          <nx-link size="small"
-            ><a
-              tabindex="0"
-              (click)="startEdit('dateGroup')"
-              (keydown.enter)="startEdit('dateGroup')"
-              >Update</a
-            ></nx-link
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            aria-label="Update when did the loss occur"
+            title="Update when did the loss occur"
+            (click)="startEdit('dateGroup')"
           >
+            <nx-icon name="pencil" size="s"></nx-icon>
+          </button>
         </div>
       } @else {
         <h3 class="eli-sub-heading">When did the loss occur?</h3>
@@ -305,14 +315,15 @@
               <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
             }
           </div>
-          <nx-link size="small"
-            ><a
-              tabindex="0"
-              (click)="startEdit('lossDescription')"
-              (keydown.enter)="startEdit('lossDescription')"
-              >{{ form.get('lossDescription')?.value ? 'Update' : 'Add' }}</a
-            ></nx-link
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            [attr.aria-label]="(form.get('lossDescription')?.value ? 'Update' : 'Add') + ' loss description'"
+            [title]="(form.get('lossDescription')?.value ? 'Update' : 'Add') + ' loss description'"
+            (click)="startEdit('lossDescription')"
           >
+            <nx-icon [name]="form.get('lossDescription')?.value ? 'pencil' : 'plus'" size="s"></nx-icon>
+          </button>
         </div>
       } @else {
         <nx-formfield label="Loss description" class="eli-full-width">
