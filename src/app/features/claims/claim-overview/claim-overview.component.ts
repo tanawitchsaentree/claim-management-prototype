@@ -95,8 +95,8 @@ const EMPTY_VM: OverviewVM = {
   activitiesExpanded: false,
   tasks: [],
   tasksExpanded: true,
-  tradeSanctionsExpanded: true,
-  recoveryExpanded: true,
+  tradeSanctionsExpanded: false,
+  recoveryExpanded: false,
   massEvent: null
 };
 
@@ -212,8 +212,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         activitiesExpanded: false,
         tasks,
         tasksExpanded: true,
-        tradeSanctionsExpanded: true,
-        recoveryExpanded: true,
+        tradeSanctionsExpanded: false,
+        recoveryExpanded: false,
         massEvent: massEvent ?? null
       });
       if (overview.claim) {

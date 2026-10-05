@@ -86,7 +86,7 @@ export class TradeSanctionsCardComponent implements OnChanges {
   // is already on file (via a CBI entity's third party) instead of screening
   // blind; the actual sanctions determination is still theirs to make.
   @Input() namedThirdParties: NamedThirdParty[] = [];
-  @Input() expanded = true;
+  @Input() expanded = false;
   @Output() updated = new EventEmitter<TradeSanctionsUpdated>();
   @Output() toggled = new EventEmitter<void>();
 

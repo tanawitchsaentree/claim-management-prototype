@@ -78,7 +78,7 @@ export interface RecoveryPotentialUpdated {
 })
 export class RecoveryPotentialCardComponent implements OnChanges {
   @Input({ required: true }) claim!: ClaimOverview;
-  @Input() expanded = true;
+  @Input() expanded = false;
   @Output() updated = new EventEmitter<RecoveryPotentialUpdated>();
   @Output() toggled = new EventEmitter<void>();
 
