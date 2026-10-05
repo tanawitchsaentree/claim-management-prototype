@@ -165,6 +165,37 @@ export class MockClaimOverviewService extends MockBaseService {
         assignee: claim.assignee ?? 'Unassigned'
       })
     );
+    // Marlene confirmed (2026-10-05) that a Location of loss captured during
+    // the skeleton stage must be RE-CONFIRMED, not silently carried forward,
+    // once a policy is linked — it was entered through the no-policy manual
+    // modal (location-picker.component.ts routes to ManualLocationEntryModal
+    // when policyNumber is null), so it was never checked against the
+    // policy's actual CWB locations. Edit Claim Details' Locations of loss
+    // section already re-points the SAME location-picker at the real,
+    // policy-aware modal the moment policyNumber is set (no picker-routing
+    // fix needed — confirmed), so re-confirming is just a normal edit there.
+    // What was missing was anything telling the handler to go do it. Same
+    // task-queue mechanism as the reserves task above, not a new pattern —
+    // and only fires when there's an existing manually-entered location to
+    // recheck; a never-filled-in location already gets its own normal
+    // "fill this in" prompt from the empty-state picker.
+    const lossInfo = this.stateSvc.state().lossInformation.find(li => li.claimId === claimId);
+    const hadManualLocation = !!(
+      lossInfo?.lossLocation as unknown as { locations?: unknown[] } | undefined
+    )?.locations?.length;
+    if (hadManualLocation) {
+      await firstValueFrom(
+        this.taskSvc.create({
+          claimId,
+          taskType: 'Review',
+          description: `Confirm loss location for ${claimId} — entered manually before the policy was linked`,
+          status: 'open',
+          dueDate: dueDate.toISOString().split('T')[0],
+          priority: 'high',
+          assignee: claim.assignee ?? 'Unassigned'
+        })
+      );
+    }
     return claim;
   }
 
