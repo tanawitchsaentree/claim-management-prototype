@@ -98,13 +98,21 @@ $action-gap: 8px;
   // footer's rendered box below :host's own auto-computed height, which
   // clip's the buttons silently regardless of viewport size (found via
   // screenshot audit 2026-08-26 — every modal using this mixin had its
-  // footer buttons cropped to a sliver). Padding-bottom + the wrapper's own
-  // 40px bottom padding is enough breathing room without that trick.
+  // footer buttons cropped to a sliver).
+  //
+  // padding-bottom is 0, not $footer-pt (fixed 2026-10-05) — mirrors header's
+  // padding-top: 0 above. header has 0 extra top padding and relies solely on
+  // the wrapper's native 40px, so the gap above the title is exactly 40px;
+  // footer previously added its own 20px UNDERNEATH that same 40px, making
+  // the gap below the buttons 60px — a visible, unbalanced-looking mismatch
+  // against the top. padding-top stays $footer-pt to separate the buttons
+  // from the border-top/body content above, same role header's padding-bottom
+  // plays below the title.
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: $action-gap;
-  padding: $footer-pt var(--modal-padding) $footer-pt;
+  padding: $footer-pt var(--modal-padding) 0;
   margin: 0 calc(-1 * var(--modal-padding));
   border-top: 1px solid var(--ui-04);
   flex-shrink: 0;
