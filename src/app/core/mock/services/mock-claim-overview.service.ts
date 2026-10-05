@@ -115,7 +115,15 @@ export class MockClaimOverviewService extends MockBaseService {
   // keep showing its pre-conversion snapshot (no policy, skeletonState
   // 'awaiting-policy') forever, since ensureOverview never overwrites an
   // existing entry.
-  async convertToRegularClaim(claimId: string, policy: LinkablePolicy): Promise<Claim> {
+  //
+  // Returns locationNeedsReconfirm alongside the claim so both call sites'
+  // success toast can say so accurately instead of only ever mentioning the
+  // reserves task — the toast text used to be a flat string that silently
+  // under-reported what actually landed in the handler's task queue.
+  async convertToRegularClaim(
+    claimId: string,
+    policy: LinkablePolicy
+  ): Promise<{ claim: Claim; locationNeedsReconfirm: boolean }> {
     const claim = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
     this.stateSvc.patchOverview(claimId, this.synthesizeOverviewFromClaim(claim));
     this.appendActivities(claimId, [
@@ -196,7 +204,7 @@ export class MockClaimOverviewService extends MockBaseService {
         })
       );
     }
-    return claim;
+    return { claim, locationNeedsReconfirm: hadManualLocation };
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton

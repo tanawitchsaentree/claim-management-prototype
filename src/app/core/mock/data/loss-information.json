@@ -185,5 +185,63 @@
     ],
     "createdAt": "2025-04-21T09:15:00Z",
     "updatedAt": "2025-04-21T09:15:00Z"
+  },
+  {
+    "id": "LI-SK-2024-001",
+    "claimId": "SK-2024-001",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-05-04",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-05-04",
+      "timeOfNotification": "11:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-001",
+          "source": "manual",
+          "displayName": "Jonas Kaufmann — Munich",
+          "addressLine1": "Industriestraße 8",
+          "postalCode": "80333",
+          "city": "Munich",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": ["fire"],
+    "typeOfDamage": [],
+    "lossDescription": "Fire at Munich warehouse",
+    "events": [{ "eventKey": "fire", "damages": [], "causedBy": [] }],
+    "createdAt": "2024-05-04T11:05:00Z",
+    "updatedAt": "2024-05-04T11:05:00Z"
+  },
+  {
+    "id": "LI-SK-2024-004",
+    "claimId": "SK-2024-004",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-19",
+      "timeOfOccurrence": "15:00",
+      "dateOfNotification": "2026-09-20",
+      "timeOfNotification": "09:30"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-004",
+          "source": "manual",
+          "displayName": "Rieke Vogt — Hamburg",
+          "addressLine1": "Speicherstraße 21",
+          "postalCode": "20457",
+          "city": "Hamburg",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": ["storm"],
+    "typeOfDamage": [],
+    "lossDescription": "Storm damage to warehouse roof",
+    "events": [{ "eventKey": "storm", "damages": [], "causedBy": [] }],
+    "createdAt": "2026-09-20T09:35:00Z",
+    "updatedAt": "2026-09-20T09:35:00Z"
   }
 ]

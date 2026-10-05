@@ -561,7 +561,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
     if (!confirmed) return;
 
-    await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+    const { locationNeedsReconfirm } = await this.overviewSvc.convertToRegularClaim(
+      skeleton.claimId,
+      policy
+    );
     // No navigation needed — the constructor's reactivity bridge (above)
     // reloads this same Overview automatically once mock state changes.
     // Every other action on this page confirms with a toast — this one
@@ -569,9 +572,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // anything beyond the status chip quietly changing. Also the only place
     // that tells them a follow-up task landed in their queue — convertToRegularClaim
     // creates it silently, with nothing else surfacing that in the moment.
+    // Wording now reflects BOTH possible follow-up tasks, not just reserves —
+    // the location one only fires when there's a skeleton-stage manual
+    // location to recheck, so this used to under-report it.
     this.toast.success(
       `${skeleton.claimId} — policy linked`,
-      `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
+      locationNeedsReconfirm
+        ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
+        : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
     );
   }
 
