@@ -32,10 +32,15 @@ export interface TradeSanctionsUpdated {
  * a claim handler records that a screening was determined/performed and its
  * outcome. This never calls ESRA and never blocks claim progression.
  *
- * Always expanded (2026-09-30: accordion/chevron removed same day it was
- * requested — user call, "ไม่เอา accordion กางออกมาก่อน"). Question, radios,
- * named-third-parties context, and the sub-form (once "Yes" is picked) are
- * all visible unconditionally.
+ * Collapsible (reinstated 2026-10-05 — built, then reverted same-day on
+ * 2026-09-30 per "ไม่เอา accordion กางออกมาก่อน"; this time by direct request).
+ * `expanded` is an `@Input`, not a local signal — this page's card list
+ * remounts every sibling card ~900ms after any one of them saves (see the
+ * "Yes" paragraph below), which would silently reset a local boolean back to
+ * its default on an unrelated save. The parent (claim-overview.component.ts)
+ * owns the state on its VM and survives the remount, same fix already proven
+ * by pending-tasks-widget. Collapsed view shows a one-line answer summary
+ * instead of the question/radios/sub-form.
  *
  * Two different commit models on one card (2026-09-30, team call — same
  * change as recovery-potential-card, adapted for this card's extra fields).
@@ -81,7 +86,9 @@ export class TradeSanctionsCardComponent implements OnChanges {
   // is already on file (via a CBI entity's third party) instead of screening
   // blind; the actual sanctions determination is still theirs to make.
   @Input() namedThirdParties: NamedThirdParty[] = [];
+  @Input() expanded = true;
   @Output() updated = new EventEmitter<TradeSanctionsUpdated>();
+  @Output() toggled = new EventEmitter<void>();
 
   private readonly toast = inject(ToastService);
   private readonly dialogSvc = inject(NxDialogService);
@@ -139,6 +146,14 @@ export class TradeSanctionsCardComponent implements OnChanges {
   });
 
   readonly canClear = computed(() => !this.isClosed() && this.saved() !== null);
+
+  /** Shown in the header when collapsed, in place of the question/radios. */
+  readonly summaryText = computed(() => {
+    const exposure = this.saved()?.exposure;
+    if (exposure === 'yes') return 'Exposure to trade sanctions: Yes';
+    if (exposure === 'no') return 'Exposure to trade sanctions: No';
+    return 'Exposure to trade sanctions: Not answered';
+  });
 
   ngOnChanges(): void {
     this.claimSig.set(this.claim);

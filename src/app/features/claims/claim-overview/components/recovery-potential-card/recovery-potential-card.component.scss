@@ -12,13 +12,38 @@
   color: var(--text-01);
 }
 
-// BLESSED: card-shell.card-title-row — title + trailing chip on one baseline.
+// BLESSED: card-shell.card-title-row — title + trailing chip/collapse toggle.
 .rp-header {
   @include shell.card-title-row;
 
   .co-card-title {
     margin-bottom: 0;
   }
+}
+
+.rp-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.co-icon-btn {
+  @include shell.icon-btn;
+}
+
+// BLESSED: card-shell.collapse — same grid-rows animation as
+// pending-tasks-widget/recent-activities-card.
+.rp-collapse {
+  @include shell.collapse;
+}
+.rp-collapse__inner {
+  overflow: hidden;
+}
+
+.rp-summary {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+  margin: 0;
 }
 
 .rp-question {

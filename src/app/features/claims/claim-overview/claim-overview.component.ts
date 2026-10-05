@@ -82,6 +82,8 @@ interface OverviewVM {
   activitiesExpanded: boolean;
   tasks: Task[];
   tasksExpanded: boolean;
+  tradeSanctionsExpanded: boolean;
+  recoveryExpanded: boolean;
   massEvent: MassEvent | null;
 }
 
@@ -93,6 +95,8 @@ const EMPTY_VM: OverviewVM = {
   activitiesExpanded: false,
   tasks: [],
   tasksExpanded: true,
+  tradeSanctionsExpanded: true,
+  recoveryExpanded: true,
   massEvent: null
 };
 
@@ -208,6 +212,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         activitiesExpanded: false,
         tasks,
         tasksExpanded: true,
+        tradeSanctionsExpanded: true,
+        recoveryExpanded: true,
         massEvent: massEvent ?? null
       });
       if (overview.claim) {
@@ -626,6 +632,22 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   toggleTasks(): void {
     const cur = this.vm$.value;
     this.vm$.next({ ...cur, tasksExpanded: !cur.tasksExpanded });
+  }
+
+  // Owned here, not as a local signal on the card itself — this page's card
+  // list remounts every sibling card ~900ms after any one of them saves (see
+  // trade-sanctions-card's class doc), which would reset a local "expanded"
+  // signal back to its default on every unrelated save. Pending-tasks-widget
+  // already proved the fix: the boolean lives on the VM, survives the card's
+  // own remount because the VM never does.
+  toggleTradeSanctions(): void {
+    const cur = this.vm$.value;
+    this.vm$.next({ ...cur, tradeSanctionsExpanded: !cur.tradeSanctionsExpanded });
+  }
+
+  toggleRecovery(): void {
+    const cur = this.vm$.value;
+    this.vm$.next({ ...cur, recoveryExpanded: !cur.recoveryExpanded });
   }
 
   onMassEventChanged(event: MassEventChanged): void {

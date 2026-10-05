@@ -274,11 +274,15 @@
     <app-trade-sanctions-card
       [claim]="claim"
       [namedThirdParties]="namedThirdParties()"
+      [expanded]="vm.tradeSanctionsExpanded"
+      (toggled)="toggleTradeSanctions()"
       (updated)="onTradeSanctionsUpdated($event)"
     ></app-trade-sanctions-card>
 
     <app-recovery-potential-card
       [claim]="claim"
+      [expanded]="vm.recoveryExpanded"
+      (toggled)="toggleRecovery()"
       (updated)="onRecoveryUpdated($event)"
     ></app-recovery-potential-card>
 

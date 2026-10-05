@@ -24,6 +24,7 @@ import {
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import {
+  RECOVERY_STATE_MESSAGE,
   RecoveryPotentialState,
   recoveryPotentialState
 } from '../../../../../core/models/recovery-potential.model';
@@ -34,11 +35,18 @@ export interface RecoveryPotentialUpdated {
 }
 
 /**
- * Recovery potential — always expanded (2026-09-30: accordion/chevron
- * removed same day it was requested — user call, "ไม่เอา accordion กางออกมาก่อน").
- * Question, radios, and status chip are all visible unconditionally; nothing
- * to expand/collapse. The closure checklist still refuses to pass without an
- * answer regardless.
+ * Recovery potential — collapsible (reinstated 2026-10-05; built, then
+ * reverted same-day on 2026-09-30 per "ไม่เอา accordion กางออกมาก่อน" — this
+ * time by direct request). `expanded` is an `@Input`, not a local signal —
+ * this page's card list remounts every sibling card ~900ms after any one of
+ * them saves (see trade-sanctions-card's class doc for how that was found),
+ * which would silently reset a local boolean back to its default on an
+ * unrelated save. The parent (claim-overview.component.ts) owns the state on
+ * its VM and survives the remount, same fix already proven by
+ * pending-tasks-widget. Collapsed view shows a one-line status summary
+ * (`RECOVERY_STATE_MESSAGE[state]`) instead of the question/radios. The
+ * closure checklist still refuses to pass without an answer regardless of
+ * collapse state.
  *
  * Auto-saves on selection (2026-09-30, team call — no Save button, no
  * confirm dialog for picking Yes/No). This is genuinely a 3-state field
@@ -70,7 +78,9 @@ export interface RecoveryPotentialUpdated {
 })
 export class RecoveryPotentialCardComponent implements OnChanges {
   @Input({ required: true }) claim!: ClaimOverview;
+  @Input() expanded = true;
   @Output() updated = new EventEmitter<RecoveryPotentialUpdated>();
+  @Output() toggled = new EventEmitter<void>();
 
   private readonly toast = inject(ToastService);
   private readonly dialogSvc = inject(NxDialogService);
@@ -95,6 +105,9 @@ export class RecoveryPotentialCardComponent implements OnChanges {
 
   /** Link out to the recovery domain once a recovery has been committed to. */
   readonly showSetUpRecovery = computed(() => !this.isClosed() && this.state() === 'yes-pending');
+
+  /** Shown in the header when collapsed, in place of the question/radios. */
+  readonly summaryText = computed(() => RECOVERY_STATE_MESSAGE[this.state()]);
 
   ngOnChanges(): void {
     this.claimSig.set(this.claim);
