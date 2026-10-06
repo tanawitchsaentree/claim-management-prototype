@@ -50,6 +50,20 @@
   @include fs.section-heading;
 }
 
+// BLESSED pattern: claim-overview/_card-shell.scss card-title-row (title +
+// trailing action in one row) — copied in rather than cross-feature
+// imported, per CLAUDE.md's no-cross-feature-import rule.
+.eli-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+
+  .eli-section-heading {
+    margin-bottom: 0;
+  }
+}
+
 .eli-sub-heading {
   @include fs.sub-heading;
 }
@@ -153,6 +167,11 @@
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   text-decoration: line-through;
+}
+
+.eli-hint {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
 }
 
 // Per-field Save/Cancel, directly under that field's own input(s).

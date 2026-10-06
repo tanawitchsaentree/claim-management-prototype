@@ -21,7 +21,20 @@
     (Marlene feedback, 2026-08-31): users update Loss description instead,
     so a separate Claim-level description field was redundant. -->
     <section class="eli-card">
-      <h2 class="eli-section-heading">Loss information</h2>
+      <div class="eli-card-title-row">
+        <h2 class="eli-section-heading">Loss information</h2>
+        @if (!allFieldsEditing()) {
+          <button
+            nxButton="tertiary small"
+            type="button"
+            aria-label="Edit loss information"
+            (click)="startEditAll()"
+          >
+            <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
+            Edit
+          </button>
+        }
+      </div>
 
       @if (!isEditing('causeOfLoss')) {
         <div class="eli-field">
@@ -37,15 +50,6 @@
               <span class="eli-was">was: {{ originalCauseOfLossDisplay }}</span>
             }
           </div>
-          <button
-            nxButton="tertiary small"
-            type="button"
-            aria-label="Edit cause of loss"
-            (click)="startEdit('causeOfLoss')"
-          >
-            <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
-            Edit
-          </button>
         </div>
       } @else {
         <div class="eli-edit-row">
@@ -97,29 +101,10 @@
             @if (fieldChanged('circumstance')) {
               <span class="eli-was">was: {{ originalCircumstanceDisplay }}</span>
             }
+            @if (!selectedCauses.length) {
+              <span class="eli-hint">Select a cause of loss first</span>
+            }
           </div>
-          @if (selectedCauses.length) {
-            <button
-              nxButton="tertiary small"
-              type="button"
-              aria-label="Edit incident circumstance"
-              (click)="startEdit('circumstance')"
-            >
-              <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
-              Edit
-            </button>
-          } @else {
-            <button
-              nxButton="tertiary small"
-              type="button"
-              disabled
-              aria-label="Select a cause of loss first"
-              title="Select a cause of loss first"
-            >
-              <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
-              Edit
-            </button>
-          }
         </div>
       } @else {
         <div class="eli-edit-row">
@@ -159,15 +144,6 @@
               <span class="eli-was">was: {{ originalTypeOfDamageDisplay }}</span>
             }
           </div>
-          <button
-            nxButton="tertiary small"
-            type="button"
-            aria-label="Edit type of damage"
-            (click)="startEdit('typeOfDamage')"
-          >
-            <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
-            Edit
-          </button>
         </div>
       } @else {
         <div class="eli-edit-row">
@@ -207,15 +183,6 @@
               <span class="eli-was">was: {{ originalDateGroupDisplay }}</span>
             }
           </div>
-          <button
-            nxButton="tertiary small"
-            type="button"
-            aria-label="Edit when did the loss occur"
-            (click)="startEdit('dateGroup')"
-          >
-            <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
-            Edit
-          </button>
         </div>
       } @else {
         <div class="eli-edit-row eli-edit-row--heading">
@@ -290,15 +257,6 @@
               <span class="eli-was">was: {{ original()?.lossDescription || 'Not provided' }}</span>
             }
           </div>
-          <button
-            nxButton="tertiary small"
-            type="button"
-            aria-label="Edit loss description"
-            (click)="startEdit('lossDescription')"
-          >
-            <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
-            Edit
-          </button>
         </div>
       } @else {
         <div class="eli-edit-row">

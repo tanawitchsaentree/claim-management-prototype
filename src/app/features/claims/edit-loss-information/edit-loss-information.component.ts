@@ -251,6 +251,33 @@ export class EditLossInformationComponent implements OnInit {
   startEdit(key: string): void {
     this.editingFields.update(s => new Set(s).add(key));
   }
+
+  // Card-level "Edit" button (top-right, replaces clicking Edit 5 times) —
+  // opens every field this card currently has a reason to show one for.
+  // Circumstance only joins once a cause of loss is actually selected,
+  // same gate its own per-field button used to enforce; excluded here
+  // rather than force-opened empty.
+  private readonly PER_FIELD_KEYS = [
+    'causeOfLoss',
+    'typeOfDamage',
+    'dateGroup',
+    'lossDescription'
+  ] as const;
+  eligibleFieldKeys(): string[] {
+    return this.selectedCauses.length
+      ? [...this.PER_FIELD_KEYS, 'circumstance']
+      : [...this.PER_FIELD_KEYS];
+  }
+  allFieldsEditing(): boolean {
+    return this.eligibleFieldKeys().every(key => this.isEditing(key));
+  }
+  startEditAll(): void {
+    this.editingFields.update(s => {
+      const next = new Set(s);
+      for (const key of this.eligibleFieldKeys()) next.add(key);
+      return next;
+    });
+  }
   private closeField(key: string): void {
     this.editingFields.update(s => {
       const next = new Set(s);
