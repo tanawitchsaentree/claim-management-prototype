@@ -23,7 +23,7 @@
     <section class="eli-card">
       <div class="eli-card-title-row">
         <h2 class="eli-section-heading">Loss information</h2>
-        @if (!allFieldsEditing()) {
+        @if (!anyFieldEditing()) {
           <button
             nxButton="tertiary small"
             type="button"
@@ -32,6 +32,10 @@
           >
             <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
             Edit
+          </button>
+        } @else {
+          <button nxButton="tertiary small" type="button" (click)="cancelAllFields()">
+            Cancel
           </button>
         }
       </div>
@@ -64,9 +68,6 @@
             >
             </nx-multi-select>
           </nx-formfield>
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('causeOfLoss')">
-            Cancel
-          </button>
         </div>
         @if (showSpecifyOtherCause) {
           <nx-formfield label="Specify other cause of loss" class="eli-full-width">
@@ -122,9 +123,6 @@
               }
             </nx-hint>
           </nx-formfield>
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('circumstance')">
-            Cancel
-          </button>
         </div>
       }
 
@@ -161,9 +159,6 @@
               of the page before you save.</nx-hint
             >
           </nx-formfield>
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('typeOfDamage')">
-            Cancel
-          </button>
         </div>
       }
 
@@ -185,12 +180,7 @@
           </div>
         </div>
       } @else {
-        <div class="eli-edit-row eli-edit-row--heading">
-          <h3 class="eli-sub-heading">When did the loss occur?</h3>
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('dateGroup')">
-            Cancel
-          </button>
-        </div>
+        <h3 class="eli-sub-heading">When did the loss occur?</h3>
         <div class="two-col-grid" [formGroup]="dateOfLoss">
           <nx-formfield label="Date of occurrence">
             <input
@@ -275,9 +265,6 @@
               <nx-error nxFormfieldError>Loss description is required</nx-error>
             }
           </nx-formfield>
-          <button nxButton="tertiary small" type="button" (click)="onCancelField('lossDescription')">
-            Cancel
-          </button>
         </div>
       }
     </section>

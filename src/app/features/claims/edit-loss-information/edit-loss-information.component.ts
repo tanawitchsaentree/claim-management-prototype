@@ -268,15 +268,22 @@ export class EditLossInformationComponent implements OnInit {
       ? [...this.PER_FIELD_KEYS, 'circumstance']
       : [...this.PER_FIELD_KEYS];
   }
-  allFieldsEditing(): boolean {
-    return this.eligibleFieldKeys().every(key => this.isEditing(key));
-  }
   startEditAll(): void {
     this.editingFields.update(s => {
       const next = new Set(s);
       for (const key of this.eligibleFieldKeys()) next.add(key);
       return next;
     });
+  }
+  // The master button is Edit/Cancel, not Edit/"Edit the rest" — once
+  // anything is open, the one action offered here is to abandon all of it.
+  anyFieldEditing(): boolean {
+    return this.editingFields().size > 0;
+  }
+  cancelAllFields(): void {
+    for (const key of [...this.editingFields()]) {
+      this.onCancelField(key as PerFieldKey);
+    }
   }
   private closeField(key: string): void {
     this.editingFields.update(s => {
