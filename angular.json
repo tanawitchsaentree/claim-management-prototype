@@ -28,11 +28,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "*.css",
+                "input": "node_modules/@allianz/ngx-brand-kit/css/themes",
+                "output": "themes"
               }
             ],
             "styles": [
               "node_modules/@allianz/ngx-brand-kit/css/allianz-base.css",
-              "node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css",
               "node_modules/@allianz/ngx-brand-kit/css/ndbx-icons.css",
               "src/styles.scss"
             ]

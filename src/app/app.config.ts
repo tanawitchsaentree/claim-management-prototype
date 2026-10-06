@@ -24,6 +24,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
 import { PrototypeEntryService } from './core/services/prototype-entry.service';
+import { ThemeService } from './core/services/theme.service';
 
 // Manual SVG fallbacks ONLY for icons NOT in the Allianz icon font.
 // Everything that exists in @allianz/ngx-brand-kit (info-circle-o, speech-bubble-o,
@@ -105,6 +106,9 @@ export const appConfig: ApplicationConfig = {
     // navigation, so the target page's first render already sees the right data.
     // Bootstrap waits on the returned promise; it resolves immediately when the
     // param is absent, which is every normal page load.
-    provideAppInitializer(() => inject(PrototypeEntryService).applyFromUrl())
+    provideAppInitializer(() => inject(PrototypeEntryService).applyFromUrl()),
+    // Matches the <link disabled> state in index.html to whichever theme
+    // ('ndbx' | 'a1') was last picked via the dev banner's toggle.
+    provideAppInitializer(() => inject(ThemeService).sync())
   ]
 };

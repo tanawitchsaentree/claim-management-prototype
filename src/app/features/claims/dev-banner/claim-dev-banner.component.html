@@ -85,6 +85,14 @@
       @if (isFullMode) {
         <button nxButton="tertiary small" (click)="onReset()">Reset</button>
 
+        <button
+          nxButton="tertiary small"
+          class="cdb-theme-toggle"
+          (click)="themeSvc.toggle()"
+        >
+          {{ themeSvc.theme() === 'ndbx' ? 'Switch to A1' : 'Switch to NDBX' }}
+        </button>
+
         @if (helper.isOverviewRoute()) {
           <div class="cdb-spacer"></div>
           <span class="cdb-ref-label">Reference view</span>

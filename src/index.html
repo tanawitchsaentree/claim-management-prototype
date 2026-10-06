@@ -6,6 +6,12 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Theme A/B toggle (ThemeService) — exactly one of these is enabled
+         at a time. Default state here matches ThemeService's default
+         ('ndbx'); ThemeService.sync() corrects it on boot if localStorage
+         says otherwise. -->
+    <link rel="stylesheet" id="theme-link-ndbx" href="themes/ndbx.css" />
+    <link rel="stylesheet" id="theme-link-a1" href="themes/allianz-one.css" disabled />
   </head>
   <body>
     <app-root></app-root>

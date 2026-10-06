@@ -10,6 +10,7 @@ import {
   ReferenceViewService,
   ReferenceVariant
 } from '../claim-reference-panel/reference-view.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -28,6 +29,7 @@ import { environment } from '../../../../environments/environment';
 export class ClaimDevBannerComponent implements OnInit {
   readonly helper = inject(ClaimDevHelperService);
   readonly refSvc = inject(ReferenceViewService);
+  readonly themeSvc = inject(ThemeService);
 
   readonly visible = true;
 
