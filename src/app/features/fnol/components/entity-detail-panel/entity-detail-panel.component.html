@@ -2,7 +2,6 @@
   <div class="detail-panel__header">
     <div class="detail-panel__title-row">
       <h2 class="detail-panel__title">{{ entity.name }}</h2>
-      <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
     </div>
     <button
       nxIconButton="tertiary small"
@@ -16,8 +15,8 @@
 
   <div class="detail-panel__info">
     <div class="info-field">
-      <span class="info-field__label">Currency</span>
-      <span class="info-field__value">{{ currency }}</span>
+      <span class="info-field__label">Status</span>
+      <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
     </div>
     <div class="info-field" [class.info-field--multi]="hasLossLocation && entity.limits?.length">
       <span class="info-field__label">Limit</span>
@@ -41,35 +40,43 @@
   </div>
 
   <div class="detail-panel__section" tabindex="0">
-    <div class="section-header">
-      <h3 class="section-header__title">Damage information</h3>
+    <h3 class="section-header__title">Damage information</h3>
+    @if (hasItems || addingItem) {
       <div class="section-header__actions">
-        <button nxButton="secondary small" type="button" [disabled]="true">
-          <nx-icon name="upload" nxIconPositionStart></nx-icon>
-          Upload items
+        <button
+          nxButton="tertiary small-medium"
+          type="button"
+          aria-label="Show or hide the Amount column"
+          [attr.aria-pressed]="showAmount"
+          (click)="showAmount = !showAmount"
+        >
+          <nx-icon name="filter"></nx-icon>
         </button>
+        <button nxButton="secondary small" type="button" [disabled]="true">Upload items</button>
         <button
           nxButton="primary small"
           type="button"
           (click)="startAddItem()"
           [disabled]="addingItem"
         >
-          <nx-icon name="plus" nxIconPositionStart></nx-icon>
           Add item
         </button>
       </div>
-    </div>
+    }
 
     @if (addingItem) {
       <div class="item-form-row" [formGroup]="itemForm">
         <div class="item-form-row__fields">
-          <nx-formfield label="Description" class="item-form-field item-form-field--description">
+          <nx-formfield label="Damaged item" class="item-form-field item-form-field--description">
             <input nxInput formControlName="description" autocomplete="off" />
             @if (itemForm.get('description')?.invalid && itemForm.get('description')?.touched) {
               <nx-error nxFormfieldError>Min. 3 characters required</nx-error>
             }
           </nx-formfield>
-          <nx-formfield label="Cause of loss" class="item-form-field">
+          <nx-formfield label="Description" class="item-form-field">
+            <input nxInput formControlName="notes" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Caused by" class="item-form-field">
             <nx-dropdown formControlName="causeOfLoss" placeholder="Select">
               @for (opt of causeOptions; track opt.value) {
                 <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
@@ -104,28 +111,59 @@
     }
 
     @if (!hasItems && !addingItem) {
-      <app-empty-state
-        message="No items added yet."
-        hint="Use the buttons above to provide data."
-      ></app-empty-state>
+      <div class="items-empty">
+        <p class="items-empty__text">No items added yet. Use the buttons below to provide the data.</p>
+        <button nxButton="primary small" type="button" (click)="startAddItem()">Add item</button>
+        <button nxButton="tertiary small" type="button" [disabled]="true">Upload items</button>
+      </div>
     }
 
     @if (hasItems) {
-      <div class="items-list">
-        @for (item of entity.damageItems; track item.itemId) {
-          <div class="item-row">
-            <div class="item-row__main">
-              <span class="item-row__description">{{ item.description }}</span>
-              <span class="item-row__cause">Cause: {{ item.causeOfLoss }}</span>
-            </div>
-            <div class="item-row__meta">
-              <span class="item-row__amount"
-                >{{ item.amount | number: '1.0-0' }} {{ item.currency }}</span
-              >
-              <app-status-chip [status]="item.status" domain="damage-item"></app-status-chip>
-            </div>
-          </div>
-        }
+      <div class="items-table-wrap">
+        <table nxTable class="items-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell>Damaged item</th>
+              <th nxHeaderCell>Caused by</th>
+              <th nxHeaderCell>Description</th>
+              @if (showAmount) {
+                <th nxHeaderCell class="items-col-num">Amount</th>
+              }
+              <th nxHeaderCell class="items-col-num">Documents</th>
+              <th nxHeaderCell class="items-col-action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of entity.damageItems; track item.itemId) {
+              <tr nxTableRow>
+                <td nxTableCell>{{ item.description }}</td>
+                <td nxTableCell>{{ item.causeOfLoss }}</td>
+                <td nxTableCell>{{ item.notes || '–' }}</td>
+                @if (showAmount) {
+                  <td nxTableCell class="items-col-num">
+                    {{ item.amount | number: '1.0-0' }} {{ item.currency }}
+                  </td>
+                }
+                <td nxTableCell class="items-col-num">{{ item.documents?.length ?? 0 }}</td>
+                <td nxTableCell class="items-col-action">
+                  <button
+                    nxIconButton="tertiary small-medium"
+                    type="button"
+                    [nxContextMenuTriggerFor]="itemMenu"
+                    aria-label="Item actions"
+                  >
+                    <nx-icon name="ellipsis-h" aria-hidden="true"></nx-icon>
+                  </button>
+                  <nx-context-menu #itemMenu="nxContextMenu">
+                    <button nxContextMenuItem type="button" (click)="deleteItem(item)">
+                      Delete
+                    </button>
+                  </nx-context-menu>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     }
   </div>

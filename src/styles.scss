@@ -704,6 +704,11 @@ code {
     transform: translateX(0);
   }
 
+  // Entities & damages: 5-column items table needs more room than parties.
+  &--wide {
+    width: min(760px, 100vw);
+  }
+
   @media (max-width: 768px) {
     width: 100vw;
   }

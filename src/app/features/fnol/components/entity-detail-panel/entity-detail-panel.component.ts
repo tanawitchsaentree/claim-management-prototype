@@ -15,6 +15,8 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
+import { NxTableModule } from '@allianz/ng-aquila/table';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { EntityRow, DamageItem } from '../../../../core/models/entity-damage.model';
@@ -34,6 +36,8 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
     NxFormfieldModule,
     NxInputModule,
     NxDropdownModule,
+    NxTableModule,
+    NxContextMenuModule,
     StatusChipComponent,
     EmptyStateComponent
   ],
@@ -54,10 +58,12 @@ export class EntityDetailPanelComponent implements OnChanges {
   currency = 'EUR';
   addingItem = false;
   savingItem = false;
+  showAmount = false;
   causeOptions: LookupOption[] = [];
 
   readonly itemForm = new FormGroup({
     description: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    notes: new FormControl(''),
     causeOfLoss: new FormControl('', [Validators.required]),
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0)])
   });
@@ -109,10 +115,11 @@ export class EntityDetailPanelComponent implements OnChanges {
     if (this.itemForm.invalid) return;
 
     this.savingItem = true;
-    const { description, causeOfLoss, amount } = this.itemForm.value;
+    const { description, notes, causeOfLoss, amount } = this.itemForm.value;
     const newItem: DamageItem = {
       itemId: `DMG-NEW-${Date.now()}`,
       description: description!,
+      notes: notes || undefined,
       causeOfLoss: causeOfLoss!,
       amount: amount!,
       currency: this.currency,
@@ -129,6 +136,14 @@ export class EntityDetailPanelComponent implements OnChanges {
     this.savingItem = false;
     this.addingItem = false;
     this.itemForm.reset();
+    this.itemSaved.emit();
+  }
+
+  async deleteItem(item: DamageItem): Promise<void> {
+    await firstValueFrom(
+      this.entitiesSvc.removeDamageItem(this.policyNumber, this.entity.entityId, item.itemId)
+    );
+    this.entity.damageItems = (this.entity.damageItems ?? []).filter(i => i.itemId !== item.itemId);
     this.itemSaved.emit();
   }
 
