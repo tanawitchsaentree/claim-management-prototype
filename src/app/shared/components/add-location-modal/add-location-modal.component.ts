@@ -19,14 +19,21 @@ import {
   CwbManualAddress,
   AddLocationModalResult,
   GisAddressSuggestion,
-  LookupOption
+  LookupOption,
+  LocationItem,
+  formatLocationItem
 } from '../../../core/models';
+import { rankByCloseness } from './location-match';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface AddLocationModalData {
   policyNumber: string;
   locationRuleNumber?: string;
   policyLocations: PolicyLocation[];
+  // Policy just got linked to a skeleton claim: the handler confirms which
+  // policy location their hand-typed one meant. Policy screen only, closest
+  // match listed first and pre-selected.
+  reconfirm?: { original: LocationItem[] };
 }
 
 type Screen = 'policy' | 'manual';
@@ -62,6 +69,8 @@ export class AddLocationModalComponent implements OnInit {
   // location from policy" and "Add location manually" each link to the
   // other via a text button, matching what production actually does.
   readonly screen = signal<Screen>('policy');
+  readonly reconfirm = this.data.reconfirm ?? null;
+  readonly originalText = (this.data.reconfirm?.original ?? []).map(formatLocationItem).join('; ');
 
   readonly countries$: Observable<LookupOption[]> = this.lookupSvc.getCountries().pipe(
     catchError(() => of([] as LookupOption[])),
@@ -143,6 +152,13 @@ export class AddLocationModalComponent implements OnInit {
   readonly addCount = computed(() => (this.selectedPolicyId() ? 1 : 0) + (this.hasManualEntry() ? 1 : 0));
 
   ngOnInit(): void {
+    if (this.data.reconfirm) {
+      const ranked = rankByCloseness(this.data.reconfirm.original, this.data.policyLocations);
+      this.hasSearched.set(true);
+      this.policyResults.set(ranked);
+      this.selectedPolicyId.set(ranked[0]?.id ?? null);
+      return;
+    }
     // Reference (production, 2026-09-25): body is empty until the user runs
     // a search — locations are not pre-listed on open.
   }

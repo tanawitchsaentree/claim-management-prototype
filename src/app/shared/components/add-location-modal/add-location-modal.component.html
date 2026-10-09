@@ -1,8 +1,19 @@
 <div class="alm-header">
   <h2 class="alm-title">
-    {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
+    @if (reconfirm) {
+      Confirm loss location
+    } @else {
+      {{ screen() === 'policy' ? 'Add location from policy' : 'Add location manually' }}
+    }
   </h2>
-  <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
+  @if (reconfirm) {
+    <p class="alm-subtitle">
+      Entered earlier: {{ originalText }}. Choose the policy location it refers to. The closest
+      match is listed first.
+    </p>
+  } @else {
+    <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
+  }
 </div>
 
 <div class="alm-body" tabindex="0">
@@ -176,7 +187,9 @@
 </div>
 
 <footer class="alm-footer">
-  @if (screen() === 'policy') {
+  @if (reconfirm) {
+    <span></span>
+  } @else if (screen() === 'policy') {
     <button nxPlainButton type="button" class="alm-fallback-link" (click)="goToManual()">
       <nx-icon name="plus" nxIconPositionStart></nx-icon>
       Add location manually
@@ -195,9 +208,13 @@
       [disabled]="!hasAnySelection()"
       (click)="onConfirm()"
     >
-      Add
-      @if (addCount() > 0) {
-        ({{ addCount() }})
+      @if (reconfirm) {
+        Confirm
+      } @else {
+        Add
+        @if (addCount() > 0) {
+          ({{ addCount() }})
+        }
       }
     </button>
   </div>

@@ -2,10 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import {
-  ConfirmDialogComponent,
-  ConfirmDialogData
-} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import {
   AddLocationModalComponent,
   AddLocationModalData
 } from '../../../shared/components/add-location-modal/add-location-modal.component';
@@ -16,14 +12,13 @@ import {
   AddLocationModalResult,
   LocationItem,
   LocationPickerOutput,
-  PolicyLocation,
-  formatLocationItem
+  PolicyLocation
 } from '../../../core/models';
 
 /**
  * Right after Link policy, a Location of loss typed in at skeleton stage (never
  * checked against Location Manager) is swapped for the policy's real one.
- * Reuses ConfirmDialog + AddLocationModal as-is. Anything the handler skips
+ * Opens AddLocationModal in its policy-only reconfirm mode: closest match first. Anything the handler skips
  * stays covered by the "Confirm loss location" task convertToRegularClaim makes.
  */
 @Injectable({ providedIn: 'root' })
@@ -43,37 +38,18 @@ export class SkeletonLocationReconfirmService {
     ).filter(l => l.active);
     if (!policyLocations.length) return false;
 
-    const oldText = oldItems.map(formatLocationItem).join('; ');
-    let chosen: PolicyLocation[];
-    if (policyLocations.length === 1) {
-      const only = policyLocations[0];
-      const ok = await this.confirm({
-        title: 'Confirm loss location',
-        message: `Location entered earlier: ${oldText}. Replace it with the location on policy ${policyNumber}: ${this.policyText(only)}?`,
-        confirmLabel: 'Replace location'
-      });
-      if (!ok) return false;
-      chosen = [only];
-    } else {
-      const ok = await this.confirm({
-        title: 'Confirm loss location',
-        message: `Location entered earlier: ${oldText}. Policy ${policyNumber} has ${policyLocations.length} locations. Choose the one where the loss happened.`,
-        confirmLabel: 'Choose location'
-      });
-      if (!ok) return false;
-      const ref = this.dialogSvc.open<
-        AddLocationModalComponent,
-        AddLocationModalData,
-        AddLocationModalResult | null
-      >(AddLocationModalComponent, {
-        data: { policyNumber, policyLocations },
-        showCloseIcon: true,
-        panelClass: 'bottom-sheet-modal-panel'
-      });
-      const result = await firstValueFrom(ref.afterClosed());
-      if (!result?.policy.length) return false;
-      chosen = result.policy;
-    }
+    const ref = this.dialogSvc.open<
+      AddLocationModalComponent,
+      AddLocationModalData,
+      AddLocationModalResult | null
+    >(AddLocationModalComponent, {
+      data: { policyNumber, policyLocations, reconfirm: { original: oldItems } },
+      showCloseIcon: true,
+      panelClass: 'bottom-sheet-modal-panel'
+    });
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result?.policy.length) return false;
+    const chosen = result.policy;
 
     this.writeLocations(claimId, chosen);
     await this.closeReconfirmTask(claimId);
@@ -83,19 +59,6 @@ export class SkeletonLocationReconfirmService {
   private currentLocations(claimId: string): LocationItem[] {
     const info = this.stateSvc.state().lossInformation.find(li => li.claimId === claimId);
     return (info?.lossLocation as unknown as LocationPickerOutput | undefined)?.locations ?? [];
-  }
-
-  private policyText(l: PolicyLocation): string {
-    return [l.addressLine1, l.postalCode, l.city, l.country].filter(Boolean).join(', ');
-  }
-
-  private async confirm(data: ConfirmDialogData): Promise<boolean> {
-    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-      data,
-      width: '480px',
-      maxWidth: '92vw'
-    });
-    return !!(await firstValueFrom(ref.afterClosed()));
   }
 
   private writeLocations(claimId: string, chosen: PolicyLocation[]): void {
