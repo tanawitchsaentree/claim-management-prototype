@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -8,7 +8,7 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { firstValueFrom } from 'rxjs';
 import { MockPolicySearchService } from '../../../core/mock/services/mock-policy-search.service';
 import { PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
@@ -40,6 +40,7 @@ interface PolicyRow {
     NxRadioModule,
     NxFormfieldModule,
     NxInputModule,
+    NxDropdownModule,
     EmptyStateComponent
   ],
   templateUrl: './convert-skeleton-modal.component.html',
@@ -55,15 +56,19 @@ export class ConvertSkeletonModalComponent implements OnInit {
   readonly allPolicies = signal<PolicySearchResult[]>([]);
   readonly selectedNumber = signal<string | null>(null);
 
-  // Manual fallback — the auto-narrowed list below only ever shows policies
-  // that share a name token with the skeleton's typed client name. A skeleton
-  // exists precisely because someone was unsure which policy applies, so a
-  // typo'd/renamed/abbreviated client name would make the correct policy
-  // vanish from that list with no trace and no way to recover from this
-  // modal. Searching here bypasses the client-name narrowing entirely.
-  readonly searchQuery = new FormControl<string>('');
-  private readonly searchQuerySig = toSignal(this.searchQuery.valueChanges, {
-    initialValue: this.searchQuery.value
+  // Same fields and layout as the FNOL "Client and policy search", policy
+  // criteria only (no claim number / external ref / date of loss). Searching
+  // bypasses the client-name narrowing below: a skeleton exists because
+  // someone was unsure which policy applies, so a typo'd or abbreviated
+  // client name must not make the right policy unreachable from here.
+  readonly years = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+  readonly showMore = signal(false);
+  readonly searched = signal<PolicySearchResult[] | null>(null);
+  readonly searchForm = new FormGroup({
+    clientName: new FormControl(''),
+    policyNumber: new FormControl(''),
+    underwritingYear: new FormControl<string | null>(null),
+    broker: new FormControl('')
   });
 
   get skeleton(): Claim {
@@ -72,34 +77,48 @@ export class ConvertSkeletonModalComponent implements OnInit {
 
   readonly canContinue = computed(() => this.selectedNumber() !== null);
 
-  readonly isSearching = computed(() => !!this.searchQuerySig()?.trim());
+  readonly isSearching = computed(() => this.searched() !== null);
 
   readonly rows = computed<PolicyRow[]>(() => {
-    const query = this.searchQuerySig()?.trim().toLowerCase();
-    const policies = this.allPolicies();
-
-    if (query) {
-      // Manual search: match on policy number or client name substring,
-      // enforce the coverage-period rule (a real fact), but skip the
-      // client-name-match rule (the exact thing search exists to route
-      // around).
-      return policies
-        .filter(
-          p =>
-            p.policyNumber.toLowerCase().includes(query) ||
-            p.clientName.toLowerCase().includes(query)
-        )
+    const found = this.searched();
+    // Searched: coverage-period rule still enforced (a real fact), client-name
+    // match skipped (the exact thing search exists to route around).
+    if (found) {
+      return found
         .map(p => this.evaluate(p, false))
         .sort((a, b) => Number(b.eligible) - Number(a.eligible));
     }
-
-    // Default: auto-narrowed to policies relevant to this client, full
-    // client-match + coverage-period evaluation.
-    return policies
+    // Default: auto-narrowed to policies relevant to this client.
+    return this.allPolicies()
       .filter(p => this.isRelevant(p))
       .map(p => this.evaluate(p, true))
       .sort((a, b) => Number(b.eligible) - Number(a.eligible));
   });
+
+  async onSearch(): Promise<void> {
+    const v = this.searchForm.value;
+    if (!v.clientName && !v.policyNumber && !v.underwritingYear && !v.broker) {
+      this.searched.set(null);
+      return;
+    }
+    this.selectedNumber.set(null);
+    this.searched.set(
+      await firstValueFrom(
+        this.policySvc.searchPolicies({
+          clientName: v.clientName ?? '',
+          policyNumber: v.policyNumber ?? '',
+          underwritingYear: v.underwritingYear ?? '',
+          broker: v.broker ?? ''
+        })
+      )
+    );
+  }
+
+  onReset(): void {
+    this.searchForm.reset();
+    this.searched.set(null);
+    this.selectedNumber.set(null);
+  }
 
   ngOnInit(): void {
     firstValueFrom(this.policySvc.getAllPolicies()).then(policies => {

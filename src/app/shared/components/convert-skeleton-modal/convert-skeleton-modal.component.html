@@ -20,13 +20,40 @@
 <div class="csm-modal__body" tabindex="0">
   <p class="csm-intro">Select a policy to link this skeleton claim to.</p>
 
-  <nx-formfield label="Search all policies" class="csm-search-field">
-    <input
-      nxInput
-      [formControl]="searchQuery"
-      placeholder="Policy number or client name — use this if the correct policy isn't listed below"
-    />
-  </nx-formfield>
+  <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="csm-search" novalidate>
+    <div class="csm-search__row">
+      <div class="csm-search__inputs">
+        <nx-formfield label="Client name">
+          <input nxInput formControlName="clientName" />
+        </nx-formfield>
+        <nx-formfield label="Policy number">
+          <input nxInput formControlName="policyNumber" />
+        </nx-formfield>
+        <nx-formfield label="Underwriting year">
+          <nx-dropdown formControlName="underwritingYear" placeholder="Select">
+            @for (year of years; track year) {
+              <nx-dropdown-item [value]="year">{{ year }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      </div>
+      <div class="csm-search__actions">
+        <button nxButton="primary small" type="submit">Search</button>
+        <button nxButton="tertiary small" type="button" (click)="onReset()">Reset search</button>
+      </div>
+    </div>
+    @if (showMore()) {
+      <div class="csm-search__inputs csm-search__inputs--extra">
+        <nx-formfield label="Broker">
+          <input nxInput formControlName="broker" />
+        </nx-formfield>
+      </div>
+    }
+    <button type="button" class="csm-toggle" (click)="showMore.set(!showMore())">
+      <nx-icon [name]="showMore() ? 'chevron-up-small' : 'chevron-down-small'"></nx-icon>
+      {{ showMore() ? 'Show less' : 'Show more' }}
+    </button>
+  </form>
 
   @if (loading()) {
     <div class="csm-loading">
