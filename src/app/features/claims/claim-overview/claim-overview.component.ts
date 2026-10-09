@@ -50,6 +50,7 @@ import {
   TradeSanctionsCardComponent,
   TradeSanctionsUpdated
 } from './components/trade-sanctions-card/trade-sanctions-card.component';
+import { SkeletonLocationReconfirmService } from './skeleton-location-reconfirm.service';
 import { RiskScoreFieldComponent } from './components/risk-score-field/risk-score-field.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import {
@@ -146,6 +147,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly sectionSvc = inject(MockSectionService);
   private readonly financialSvc = inject(MockFinancialOverviewService);
   private readonly claimSvc = inject(MockClaimService);
+  private readonly locationReconfirmSvc = inject(SkeletonLocationReconfirmService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
@@ -561,10 +563,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
     if (!confirmed) return;
 
-    const { locationNeedsReconfirm } = await this.overviewSvc.convertToRegularClaim(
-      skeleton.claimId,
-      policy
-    );
+    const converted = await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+    // Show the skeleton-stage location next to the policy's real one right
+    // away; skipping leaves the follow-up task in place.
+    const locationNeedsReconfirm =
+      converted.locationNeedsReconfirm &&
+      !(await this.locationReconfirmSvc.run(skeleton.claimId, policy.policyNumber));
     // No navigation needed — the constructor's reactivity bridge (above)
     // reloads this same Overview automatically once mock state changes.
     // Every other action on this page confirms with a toast — this one
