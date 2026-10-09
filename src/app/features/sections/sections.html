@@ -1,22 +1,7 @@
 <app-blocker-return-banner></app-blocker-return-banner>
 
 <!-- ── Page header ── -->
-<app-page-header title="Sections">
-  @if (!hasDetailOpen()) {
-    <ng-container actions>
-      <button
-        class="btn-add-section"
-        nxButton="secondary small"
-        type="button"
-        [disabled]="claimClosed()"
-        [nxTooltip]="claimClosed() ? 'Claim is closed' : ''"
-        (click)="onAddSection()"
-      >
-        Add Section
-      </button>
-    </ng-container>
-  }
-</app-page-header>
+<app-page-header title="Sections"></app-page-header>
 
 @if (reviewBanner(); as changes) {
   <nx-message
