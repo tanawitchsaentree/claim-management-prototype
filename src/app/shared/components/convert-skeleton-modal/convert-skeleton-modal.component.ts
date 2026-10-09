@@ -62,7 +62,6 @@ export class ConvertSkeletonModalComponent implements OnInit {
   // someone was unsure which policy applies, so a typo'd or abbreviated
   // client name must not make the right policy unreachable from here.
   readonly years = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
-  readonly showMore = signal(false);
   readonly searched = signal<PolicySearchResult[] | null>(null);
   readonly searchForm = new FormGroup({
     clientName: new FormControl(''),
