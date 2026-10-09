@@ -29,16 +29,6 @@
         <nx-formfield label="Policy number">
           <input nxInput formControlName="policyNumber" />
         </nx-formfield>
-        <nx-formfield label="Underwriting year">
-          <nx-dropdown formControlName="underwritingYear" placeholder="Select">
-            @for (year of years; track year) {
-              <nx-dropdown-item [value]="year">{{ year }}</nx-dropdown-item>
-            }
-          </nx-dropdown>
-        </nx-formfield>
-        <nx-formfield label="Broker">
-          <input nxInput formControlName="broker" />
-        </nx-formfield>
       </div>
       <div class="csm-search__actions">
         <button nxButton="primary small" type="submit">Search</button>
@@ -46,13 +36,6 @@
       </div>
     </div>
   </form>
-
-  @if (!isSearching()) {
-    <p class="csm-hint">
-      Showing policies that match {{ skeleton.clientName }}. Use the search above to look for a
-      different policy.
-    </p>
-  }
 
   @if (loading()) {
     <div class="csm-loading">
@@ -62,7 +45,7 @@
   } @else if (rows().length === 0) {
     <app-empty-state
       [message]="
-        isSearching() ? 'No policies match that search.' : 'No matching policies found.'
+        'No policies match that search.'
       "
     ></app-empty-state>
   } @else {

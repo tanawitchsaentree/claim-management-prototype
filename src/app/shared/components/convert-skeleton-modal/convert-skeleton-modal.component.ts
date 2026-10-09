@@ -8,7 +8,6 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
-import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { firstValueFrom } from 'rxjs';
 import { MockPolicySearchService } from '../../../core/mock/services/mock-policy-search.service';
 import { PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
@@ -40,7 +39,6 @@ interface PolicyRow {
     NxRadioModule,
     NxFormfieldModule,
     NxInputModule,
-    NxDropdownModule,
     EmptyStateComponent
   ],
   templateUrl: './convert-skeleton-modal.component.html',
@@ -56,19 +54,16 @@ export class ConvertSkeletonModalComponent implements OnInit {
   readonly allPolicies = signal<PolicySearchResult[]>([]);
   readonly selectedNumber = signal<string | null>(null);
 
-  // Same fields and layout as the FNOL "Client and policy search", policy
-  // criteria only (no claim number / external ref / date of loss). Searching
-  // bypasses the client-name narrowing below: a skeleton exists because
-  // someone was unsure which policy applies, so a typo'd or abbreviated
-  // client name must not make the right policy unreachable from here.
-  readonly years = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
-  readonly searched = signal<PolicySearchResult[] | null>(null);
+  // Same layout as the FNOL "Client and policy search", reduced to the two
+  // fields that matter when linking: client name (pre-filled from the
+  // skeleton, so the filter is visible and editable if the typed name was a
+  // typo/abbreviation) and policy number. Underwriting year is redundant
+  // with the loss-date coverage check below.
   readonly searchForm = new FormGroup({
     clientName: new FormControl(''),
-    policyNumber: new FormControl(''),
-    underwritingYear: new FormControl<string | null>(null),
-    broker: new FormControl('')
+    policyNumber: new FormControl('')
   });
+  private readonly applied = signal<{ clientName: string; policyNumber: string } | null>(null);
 
   get skeleton(): Claim {
     return this.data.skeleton;
@@ -76,50 +71,42 @@ export class ConvertSkeletonModalComponent implements OnInit {
 
   readonly canContinue = computed(() => this.selectedNumber() !== null);
 
-  readonly isSearching = computed(() => this.searched() !== null);
-
   readonly rows = computed<PolicyRow[]>(() => {
-    const found = this.searched();
-    // Searched: coverage-period rule still enforced (a real fact), client-name
-    // match skipped (the exact thing search exists to route around).
-    if (found) {
-      return found
-        .map(p => this.evaluate(p, false))
-        .sort((a, b) => Number(b.eligible) - Number(a.eligible));
-    }
-    // Default: auto-narrowed to policies relevant to this client.
+    const q = this.applied();
+    if (!q) return [];
+    const policyNo = q.policyNumber.trim().toLowerCase();
+    // Name left as the skeleton typed it: token match + "Different client"
+    // evaluation (near-matches stay visible, flagged). Name edited by the
+    // handler: plain substring, client-name rule skipped, since overriding
+    // the name is exactly them saying the typed one was wrong.
+    const untouched =
+      this.normalizeClientName(q.clientName) === this.normalizeClientName(this.skeleton.clientName);
     return this.allPolicies()
-      .filter(p => this.isRelevant(p))
-      .map(p => this.evaluate(p, true))
+      .filter(p => !policyNo || p.policyNumber.toLowerCase().includes(policyNo))
+      .filter(p =>
+        untouched
+          ? this.isRelevant(p)
+          : !q.clientName.trim() ||
+            p.clientName.toLowerCase().includes(q.clientName.trim().toLowerCase())
+      )
+      .map(p => this.evaluate(p, untouched))
       .sort((a, b) => Number(b.eligible) - Number(a.eligible));
   });
 
-  async onSearch(): Promise<void> {
-    const v = this.searchForm.value;
-    if (!v.clientName && !v.policyNumber && !v.underwritingYear && !v.broker) {
-      this.searched.set(null);
-      return;
-    }
+  onSearch(): void {
+    const v = this.searchForm.getRawValue();
     this.selectedNumber.set(null);
-    this.searched.set(
-      await firstValueFrom(
-        this.policySvc.searchPolicies({
-          clientName: v.clientName ?? '',
-          policyNumber: v.policyNumber ?? '',
-          underwritingYear: v.underwritingYear ?? '',
-          broker: v.broker ?? ''
-        })
-      )
-    );
+    this.applied.set({ clientName: v.clientName ?? '', policyNumber: v.policyNumber ?? '' });
   }
 
   onReset(): void {
-    this.searchForm.reset();
-    this.searched.set(null);
-    this.selectedNumber.set(null);
+    this.searchForm.reset({ clientName: this.skeleton.clientName, policyNumber: '' });
+    this.onSearch();
   }
 
   ngOnInit(): void {
+    this.searchForm.patchValue({ clientName: this.skeleton.clientName });
+    this.onSearch();
     firstValueFrom(this.policySvc.getAllPolicies()).then(policies => {
       this.allPolicies.set(policies);
       this.loading.set(false);
