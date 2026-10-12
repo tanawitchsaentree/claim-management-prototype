@@ -190,8 +190,12 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
 
   private async loadOverview(claimId: string): Promise<void> {
     const generation = ++this.loadGeneration;
+    // Same claim reloading after a save: keep what's on screen (and which cards
+    // are expanded) instead of blanking to the loading state, which made every
+    // save, Link policy included, flash the whole page.
+    const prev = this.claimId === claimId && this.vm$.value.claim ? this.vm$.value : null;
     this.claimId = claimId;
-    this.vm$.next(EMPTY_VM);
+    if (!prev) this.vm$.next(EMPTY_VM);
     try {
       const [overview, tasks, closure] = await Promise.all([
         firstValueFrom(this.overviewSvc.getOverviewWithActivities(claimId)),
@@ -211,11 +215,11 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         error: null,
         claim: overview.claim,
         activities: overview.activities,
-        activitiesExpanded: false,
+        activitiesExpanded: prev?.activitiesExpanded ?? false,
         tasks,
-        tasksExpanded: true,
-        tradeSanctionsExpanded: false,
-        recoveryExpanded: false,
+        tasksExpanded: prev?.tasksExpanded ?? true,
+        tradeSanctionsExpanded: prev?.tradeSanctionsExpanded ?? false,
+        recoveryExpanded: prev?.recoveryExpanded ?? false,
         massEvent: massEvent ?? null
       });
       if (overview.claim) {
@@ -537,6 +541,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
     const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
     if (!policy) return;
+    // Load the policy's locations while the handler reads the confirm dialog, so
+    // the location sheet has them ready the instant they confirm.
+    const prepared = this.locationReconfirmSvc.prepare(policy.policyNumber);
 
     // Highest-stakes action on this page (links a real policy, flips
     // skeletonState, creates a task) was the one action with no confirm-diff
@@ -563,12 +570,19 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
     if (!confirmed) return;
 
-    const converted = await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
-    // Show the skeleton-stage location next to the policy's real one right
-    // away; skipping leaves the follow-up task in place.
-    const locationNeedsReconfirm =
-      converted.locationNeedsReconfirm &&
-      !(await this.locationReconfirmSvc.run(skeleton.claimId, policy.policyNumber));
+    // Link and location step run side by side: the Confirm loss location sheet
+    // opens the moment the handler confirms (its data is already known), while
+    // the link finishes behind it. The location is only written once the link
+    // has landed. Skipping the sheet leaves the follow-up task in place.
+    const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+    const replaced = await this.locationReconfirmSvc.run(
+      skeleton.claimId,
+      policy.policyNumber,
+      prepared,
+      linking
+    );
+    const converted = await linking;
+    const locationNeedsReconfirm = converted.locationNeedsReconfirm && !replaced;
     // No navigation needed — the constructor's reactivity bridge (above)
     // reloads this same Overview automatically once mock state changes.
     // Every other action on this page confirms with a toast — this one

@@ -69,8 +69,6 @@ export class ConvertSkeletonModalComponent implements OnInit {
     return this.data.skeleton;
   }
 
-  readonly canContinue = computed(() => this.selectedNumber() !== null);
-
   readonly rows = computed<PolicyRow[]>(() => {
     const q = this.applied();
     if (!q) return [];
@@ -154,14 +152,12 @@ export class ConvertSkeletonModalComponent implements OnInit {
     return { policy, eligible: true, reason: null };
   }
 
+  // Picking a policy goes straight on to the "Link policy" confirm: no separate
+  // Continue click between the two.
   select(row: PolicyRow): void {
     if (!row.eligible) return;
     this.selectedNumber.set(row.policy.policyNumber);
-  }
-
-  onContinue(): void {
-    const sel = this.rows().find(r => r.policy.policyNumber === this.selectedNumber());
-    this.modalRef.close(sel?.policy ?? null);
+    this.modalRef.close(row.policy);
   }
 
   onCancel(): void {

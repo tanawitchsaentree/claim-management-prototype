@@ -28,14 +28,25 @@ export class SkeletonLocationReconfirmService {
   private readonly taskSvc = inject(MockTaskService);
   private readonly stateSvc = inject(MockStateService);
 
+  /** Start loading the policy's active locations; pass the result to run(). */
+  prepare(policyNumber: string): Promise<PolicyLocation[]> {
+    return firstValueFrom(this.policyLocationSvc.getByPolicyNumber(policyNumber)).then(all =>
+      all.filter(l => l.active)
+    );
+  }
+
   /** Resolves true when the location was replaced (and its follow-up task closed). */
-  async run(claimId: string, policyNumber: string): Promise<boolean> {
+  async run(
+    claimId: string,
+    policyNumber: string,
+    prepared: Promise<PolicyLocation[]> = this.prepare(policyNumber),
+    // Resolves once the policy link has been saved; the write waits for it.
+    linked: Promise<unknown> = Promise.resolve()
+  ): Promise<boolean> {
     const oldItems = this.currentLocations(claimId);
     if (!oldItems.length) return false;
 
-    const policyLocations = (
-      await firstValueFrom(this.policyLocationSvc.getByPolicyNumber(policyNumber))
-    ).filter(l => l.active);
+    const policyLocations = await prepared;
     if (!policyLocations.length) return false;
 
     const ref = this.dialogSvc.open<
@@ -51,6 +62,7 @@ export class SkeletonLocationReconfirmService {
     if (!result?.policy.length) return false;
     const chosen = result.policy;
 
+    await linked;
     this.writeLocations(claimId, chosen);
     await this.closeReconfirmTask(claimId);
     return true;

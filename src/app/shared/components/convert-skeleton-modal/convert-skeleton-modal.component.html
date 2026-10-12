@@ -18,7 +18,7 @@
 
 <!-- Body — scrolls if needed -->
 <div class="csm-modal__body" tabindex="0">
-  <p class="csm-intro">Select a policy to link this skeleton claim to.</p>
+  <p class="csm-intro">Select the policy to link this skeleton claim to.</p>
 
   <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="csm-search" novalidate>
     <div class="csm-search__row">
@@ -108,8 +108,5 @@
 <footer class="csm-modal__footer">
   <div class="csm-modal__footer-actions">
     <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button" [disabled]="!canContinue()" (click)="onContinue()">
-      Continue
-    </button>
   </div>
 </footer>
