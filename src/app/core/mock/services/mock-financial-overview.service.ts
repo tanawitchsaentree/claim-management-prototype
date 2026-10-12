@@ -8,6 +8,7 @@ import {
 } from '../../models/financial-overview.model';
 import { MockSectionService } from './mock-section.service';
 import { MockStateService } from '../state/mock-state.service';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { AuthService } from '../../services/auth';
 import { UrgentApproval } from '../../models/approval.model';
 import policiesData from '../data/policies.json';
@@ -23,7 +24,8 @@ function countryCode(country: string | undefined): string {
 }
 
 // dd-MM-yyyy, same as the seeded history entries.
-const todayLabel = (): string => new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+const appDate = new AppDatePipe();
+const todayLabel = (): string => appDate.transform(new Date());
 
 // Short label after the party in the Reserves table's Section column.
 const SECTION_CODES: Record<string, string> = {
