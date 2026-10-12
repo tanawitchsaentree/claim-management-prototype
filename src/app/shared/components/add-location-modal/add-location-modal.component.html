@@ -79,7 +79,9 @@
               <th nxHeaderCell>Number and Street</th>
               <th nxHeaderCell>Postal code</th>
               <th nxHeaderCell>City</th>
-              <th nxHeaderCell>Property ID</th>
+              @if (!reconfirm) {
+                <th nxHeaderCell>Property ID</th>
+              }
               @if (reconfirm) {
                 <th nxHeaderCell>Line of business</th>
                 <th nxHeaderCell>Compared with entered</th>
@@ -95,7 +97,6 @@
                   <td nxCell>{{ o.addressLine1 }}</td>
                   <td nxCell>{{ o.postalCode }}</td>
                   <td nxCell>{{ o.city }}</td>
-                  <td nxCell>–</td>
                   <td nxCell>{{ r.claimLineOfBusiness || '–' }}</td>
                   <td nxCell><nx-badge type="active">Skeleton claim location</nx-badge></td>
                 </tr>
@@ -139,7 +140,9 @@
                     {{ loc.city }}
                   }
                 </td>
-                <td nxCell>{{ loc.propertyId ?? '–' }}</td>
+                @if (!reconfirm) {
+                  <td nxCell>{{ loc.propertyId ?? '–' }}</td>
+                }
                 @if (reconfirm; as r) {
                   <td nxCell>
                     @if (r.policyLineOfBusiness && r.claimLineOfBusiness && r.policyLineOfBusiness !== r.claimLineOfBusiness) {
