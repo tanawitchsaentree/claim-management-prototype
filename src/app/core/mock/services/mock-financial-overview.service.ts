@@ -1,10 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MockBaseService } from './mock-base.service';
-import { FinancialOverview, FinancialReserve } from '../../models/financial-overview.model';
+import {
+  FinancialOverview,
+  FinancialReserve,
+  FinancialReserveWithHistory
+} from '../../models/financial-overview.model';
 import { MockSectionService } from './mock-section.service';
 import { MockStateService } from '../state/mock-state.service';
 import policiesData from '../data/policies.json';
+
+// The signed-in persona (header avatar "MM"). No auth service exists yet; this
+// matches the CREATOR stand-in in step-summary.component.ts.
+const CURRENT_USER = 'Mara Mustermann';
+
+// dd-MM-yyyy, same as the seeded history entries.
+function formatDate(d: Date): string {
+  const pad = (n: number): string => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
+}
 
 // Short label after the party in the Reserves table's Section column.
 const SECTION_CODES: Record<string, string> = {
@@ -39,12 +53,20 @@ export class MockFinancialOverviewService extends MockBaseService {
       s => s.sectionId === input.section || s.sectionName === input.section
     );
     const real = section ? this.sectionSvc.getByClaimIdSync(claimId).find(r => r.id === section.sectionId) : undefined;
-    const reserve: FinancialReserve = {
+    const reserve: FinancialReserveWithHistory = {
       ...input,
       section: section?.sectionName ?? input.section,
       sectionId: section?.sectionId,
       sectionCode: input.sectionCode ?? section?.code ?? (real ? sectionCodeFor(real.damageType) : undefined),
-      reserveId: this.nextReserveId(claimId, overview, section?.sectionId, input.damagedItem)
+      reserveId: this.nextReserveId(claimId, overview, section?.sectionId, input.damagedItem),
+      history: [
+        {
+          date: formatDate(new Date()),
+          amount: input.reserveValue,
+          reason: 'Initial reserve set',
+          user: CURRENT_USER
+        }
+      ]
     };
     overview.reserves = [...overview.reserves, reserve];
     overview.summary.outstandingReserves += input.reserveValue;

@@ -57,14 +57,6 @@
         }
       </nx-dropdown>
     </nx-formfield>
-
-    <nx-formfield label="Status *">
-      <nx-dropdown formControlName="status" placeholder="Select">
-        @for (s of statuses; track s) {
-          <nx-dropdown-item [value]="s">{{ s }}</nx-dropdown-item>
-        }
-      </nx-dropdown>
-    </nx-formfield>
   </div>
 </div>
 

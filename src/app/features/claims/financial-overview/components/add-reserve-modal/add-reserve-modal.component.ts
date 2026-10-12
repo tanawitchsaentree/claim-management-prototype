@@ -9,7 +9,6 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import {
   FinancialReserve,
-  FinancialReserveStatus,
   FinancialSection
 } from '../../../../../core/models/financial-overview.model';
 
@@ -21,7 +20,6 @@ export type AddReserveModalResult = Omit<FinancialReserve, 'reserveId'> | null;
 
 const RESERVE_TYPES = ['Indemnity', 'Expenses'];
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
-const STATUSES: FinancialReserveStatus[] = ['Pending', 'Approved'];
 
 @Component({
   selector: 'app-add-reserve-modal',
@@ -45,7 +43,6 @@ export class AddReserveModalComponent {
 
   readonly reserveTypes = RESERVE_TYPES;
   readonly currencies = CURRENCIES;
-  readonly statuses = STATUSES;
 
   readonly form = new FormGroup({
     reserveType: new FormControl<string | null>(null, [Validators.required]),
@@ -54,8 +51,7 @@ export class AddReserveModalComponent {
     damagedItem: new FormControl(''),
     section: new FormControl<string | null>(null),
     reserveValue: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
-    currency: new FormControl<string | null>('EUR', [Validators.required]),
-    status: new FormControl<FinancialReserveStatus | null>('Pending', [Validators.required])
+    currency: new FormControl<string | null>('EUR', [Validators.required])
   });
 
   submitted = false;
@@ -76,7 +72,9 @@ export class AddReserveModalComponent {
       section: v.section ?? '',
       reserveValue: v.reserveValue!,
       currency: v.currency!,
-      status: v.status!
+      // Whoever sets a reserve can't approve it: it always starts Pending and is
+      // approved separately.
+      status: 'Pending'
     });
   }
 }
