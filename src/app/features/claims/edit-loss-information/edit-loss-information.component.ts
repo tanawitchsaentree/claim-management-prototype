@@ -46,9 +46,9 @@ import {
 } from '../../../shared/validators/date.validators';
 import { LossInfoDiscardModalComponent } from './loss-info-discard-modal.component';
 import {
-  LossInfoUpdateResultModalComponent,
-  LossInfoUpdateResultModalData
-} from './loss-info-update-result-modal.component';
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
   IMPACT_LABELS,
   LABEL_TO_FIELD_KEY,
@@ -467,6 +467,23 @@ export class EditLossInformationComponent implements OnInit {
     const diffs = this.pendingChanges();
     if (!diffs.length) return;
 
+    // Confirm BEFORE anything is written, and say plainly what saving does.
+    // "Keep editing" (not "Cancel") so it can't be mistaken for discarding.
+    const impactedBefore = diffs.some(d => IMPACT_LABELS.includes(d.label));
+    const fieldNames = diffs.map(d => d.label).join(', ');
+    const proceed = await this.confirm({
+      title: 'Update claim details',
+      message:
+        `${diffs.length === 1 ? '1 field' : `${diffs.length} fields`} will be updated on ` +
+        `${this.claimId()}: ${fieldNames}. The change is saved to the claim straight away.` +
+        (impactedBefore
+          ? ' Sections on this claim were built from the old values, so you will be asked to review them next.'
+          : ''),
+      confirmLabel: 'Update',
+      cancelLabel: 'Keep editing'
+    });
+    if (!proceed) return;
+
     this.saving.set(true);
     const formValue = this.form.getRawValue() as unknown as LossInformationFormValue;
     try {
@@ -496,37 +513,51 @@ export class EditLossInformationComponent implements OnInit {
       this.closeAllFields();
       this.live.announce('Loss information updated successfully.', 'polite');
 
-      // What happens next is the user's call, every time — not a silent
-      // stay (easy to miss that Cause of loss/Type of damage/Loss location
-      // just stopped matching what Sections was built from) and not a
-      // forced redirect (fought the point of editing one field and staying
-      // put). "Review Sections" only appears when something actually in
-      // IMPACT_LABELS changed.
+      // Tell the handler it is done: a toast every time (nothing else on screen
+      // says "saved"). The page itself stays put with the new values showing.
       const impacted = diffs.some(d => IMPACT_LABELS.includes(d.label));
-      const ref = this.dialogSvc.open(LossInfoUpdateResultModalComponent, {
-        data: { claimId: this.claimId(), diffs, impacted } satisfies LossInfoUpdateResultModalData,
-        width: '600px',
-        maxWidth: '92vw'
-      });
-      const result = await firstValueFrom(ref.afterClosed());
-      if (result === 'overview') {
-        this.router.navigate(['/claims', this.claimId(), 'overview']);
-      } else if (result === 'sections') {
+      this.toast.success('Claim details updated', `${this.claimId()}: ${fieldNames} saved.`);
+      // Saving is over: the Update button must stop spinning before the review prompt.
+      this.saving.set(false);
+
+      // Only when something Sections were built from changed is there a decision
+      // left to make, so only then a second prompt. Its buttons say what they
+      // do; neither one reads as undoing the save, which is already done.
+      if (impacted) {
         const impactedDiffs = diffs.filter(d => IMPACT_LABELS.includes(d.label));
-        this.router.navigate(['/claims', this.claimId(), 'sections'], {
-          queryParams: {
-            changedFields: impactedDiffs.map(d => d.label),
-            changedOld: impactedDiffs.map(d => d.original),
-            changedNew: impactedDiffs.map(d => d.updated)
-          }
+        const names = impactedDiffs.map(d => d.label).join(' and ');
+        const review = await this.confirm({
+          title: 'Review sections',
+          message:
+            `Saved. ${names} changed, but the sections on this claim were built from the ` +
+            `old values and may no longer match. Review them now?`,
+          confirmLabel: 'Review sections',
+          cancelLabel: 'Stay on this page'
         });
+        if (review) {
+          this.router.navigate(['/claims', this.claimId(), 'sections'], {
+            queryParams: {
+              changedFields: impactedDiffs.map(d => d.label),
+              changedOld: impactedDiffs.map(d => d.original),
+              changedNew: impactedDiffs.map(d => d.updated)
+            }
+          });
+        }
       }
-      // 'stay' (or dismissed via close/backdrop) — nothing further to do.
     } catch {
       this.toast.error('Failed to save', 'Please try again. Your changes have been kept.');
     } finally {
       this.saving.set(false);
     }
+  }
+
+  private async confirm(data: ConfirmDialogData): Promise<boolean> {
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    return !!(await firstValueFrom(ref.afterClosed()));
   }
 
   onCancelField(key: PerFieldKey): void {
