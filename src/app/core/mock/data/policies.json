@@ -22,7 +22,7 @@
     "currency": "EUR",
     "status": "Active",
     "clientNameCode": "C-00063672",
-    "broker": "Greta B\u00f6ck Assekuranz",
+    "broker": "Greta Böck Assekuranz",
     "brokerNameCode": "GRBK1201"
   },
   {
@@ -79,7 +79,7 @@
   },
   {
     "policyNumber": "POL-2024-006",
-    "clientName": "Sch\u00e4fer & S\u00f6hne AG",
+    "clientName": "Schäfer & Söhne AG",
     "lineOfBusiness": "Property",
     "effectiveDate": "2024-09-01",
     "expiryDate": "2025-09-01",
@@ -87,7 +87,7 @@
     "currency": "CHF",
     "status": "Active",
     "clientNameCode": "C-00063677",
-    "broker": "Greta B\u00f6ck Assekuranz",
+    "broker": "Greta Böck Assekuranz",
     "brokerNameCode": "GRBK1206"
   },
   {
@@ -152,7 +152,7 @@
     "currency": "EUR",
     "status": "Active",
     "clientNameCode": "C-00063682",
-    "broker": "Greta B\u00f6ck Assekuranz",
+    "broker": "Greta Böck Assekuranz",
     "brokerNameCode": "GRBK1211"
   },
   {
@@ -180,5 +180,18 @@
     "clientNameCode": "C-00063684",
     "broker": "Marsh GmbH",
     "brokerNameCode": "MRSH1213"
+  },
+  {
+    "policyNumber": "POL-2026-001",
+    "clientName": "Rieke Vogt",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2026-01-01",
+    "expiryDate": "2027-01-01",
+    "premium": 64000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063690",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
   }
 ]

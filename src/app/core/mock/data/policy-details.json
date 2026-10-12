@@ -463,5 +463,18 @@
       }
     ],
     "coinsurance": []
+  },
+  "POL-2026-001": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2601-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Storm and allied perils",
+        "sumInsured": 1800000,
+        "deductible": 7500,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
   }
 }

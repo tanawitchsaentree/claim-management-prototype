@@ -154,5 +154,29 @@
     "propertyId": "DEU-JKM-0002",
     "type": "Office",
     "active": true
+  },
+  {
+    "id": "LOC-030",
+    "policyNumber": "POL-2026-001",
+    "name": "Rieke Vogt — Hamburg Warehouse",
+    "addressLine1": "Speicherstraße 4",
+    "postalCode": "20457",
+    "city": "Hamburg",
+    "country": "DE",
+    "propertyId": "DEU-RVO-0001",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-031",
+    "policyNumber": "POL-2026-001",
+    "name": "Rieke Vogt — Bremen Depot",
+    "addressLine1": "Hafenstraße 9",
+    "postalCode": "28195",
+    "city": "Bremen",
+    "country": "DE",
+    "propertyId": "DEU-RVO-0002",
+    "type": "Storage",
+    "active": true
   }
 ]
