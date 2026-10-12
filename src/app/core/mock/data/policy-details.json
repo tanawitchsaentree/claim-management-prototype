@@ -476,5 +476,83 @@
       }
     ],
     "coinsurance": []
+  },
+  "POL-2026-002": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2026-002-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Fire, storm and water",
+        "sumInsured": 1200000,
+        "deductible": 5000,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
+  },
+  "POL-2026-003": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2026-003-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Fire, storm and water",
+        "sumInsured": 1200000,
+        "deductible": 5000,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
+  },
+  "POL-2026-004": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2026-004-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Fire, storm and water",
+        "sumInsured": 1200000,
+        "deductible": 5000,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
+  },
+  "POL-2026-005": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2026-005-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Fire, storm and water",
+        "sumInsured": 1200000,
+        "deductible": 5000,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
+  },
+  "POL-2026-006": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2026-006-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Fire, storm and water",
+        "sumInsured": 1200000,
+        "deductible": 5000,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
+  },
+  "POL-2026-007": {
+    "coverages": [
+      {
+        "coverageId": "CVG-2026-007-1",
+        "policySection": "Section 1 — Buildings",
+        "coverage": "Fire, storm and water",
+        "sumInsured": 1200000,
+        "deductible": 5000,
+        "currency": "EUR"
+      }
+    ],
+    "coinsurance": []
   }
 }

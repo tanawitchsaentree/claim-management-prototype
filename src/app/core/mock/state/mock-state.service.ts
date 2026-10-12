@@ -85,7 +85,9 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: CLM-2024-001's reserves were re-seeded (production-style IDs,
 // sectionId/sectionCode, party names) and section-level reserves now derive from
 // the claim-level list. Cached reserves would show blank Section codes.
-const STATE_VERSION = 'recovery-cases-v13';
+// Bumped again: six new skeleton claims (SK-2024-005..010), one per conversion
+// flow in docs/SKELETON_CONVERSION_FLOWS.md; cached claims would not list them.
+const STATE_VERSION = 'recovery-cases-v14';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a

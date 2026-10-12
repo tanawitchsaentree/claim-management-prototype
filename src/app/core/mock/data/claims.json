@@ -511,7 +511,9 @@
       "city": "Munich"
     },
     "_scenario": "duplicate-check-test",
-    "causeOfLoss": ["fire"],
+    "causeOfLoss": [
+      "fire"
+    ],
     "lossEventId": "EVT-022",
     "group": "GPG-002"
   },
@@ -536,7 +538,10 @@
       "city": "Munich"
     },
     "_scenario": "duplicate-check-test",
-    "causeOfLoss": ["fire", "water-damage"],
+    "causeOfLoss": [
+      "fire",
+      "water-damage"
+    ],
     "lossEventId": "EVT-023",
     "group": "GPG-002"
   },
@@ -578,14 +583,24 @@
         "postalCode": "60311",
         "country": "DE"
       },
-      "causeOfLoss": ["fire", "business-interruption"],
-      "typeOfDamage": ["material-damage", "financial-loss"],
+      "causeOfLoss": [
+        "fire",
+        "business-interruption"
+      ],
+      "typeOfDamage": [
+        "material-damage",
+        "financial-loss"
+      ],
       "lossDescription": "Arson-suspected fire in main storage hall. Extensive structural damage. Sprinkler system activated causing secondary water damage.",
       "events": [
         {
           "eventKey": "fire",
-          "causedBy": ["arson"],
-          "damages": ["material-damage"],
+          "causedBy": [
+            "arson"
+          ],
+          "damages": [
+            "material-damage"
+          ],
           "dateOfOccurrence": "2024-06-08",
           "timeOfOccurrence": "02:15",
           "dateOfNotification": "2024-06-08",
@@ -593,8 +608,12 @@
         },
         {
           "eventKey": "business-interruption",
-          "causedBy": ["fire"],
-          "damages": ["financial-loss"]
+          "causedBy": [
+            "fire"
+          ],
+          "damages": [
+            "financial-loss"
+          ]
         }
       ]
     },
@@ -639,13 +658,19 @@
         "postalCode": "10117",
         "country": "DE"
       },
-      "causeOfLoss": ["theft"],
-      "typeOfDamage": ["loss"],
+      "causeOfLoss": [
+        "theft"
+      ],
+      "typeOfDamage": [
+        "loss"
+      ],
       "lossDescription": "IT equipment stolen from server room overnight. Estimated 12 servers and networking equipment missing.",
       "events": [
         {
           "eventKey": "theft",
-          "damages": ["loss"],
+          "damages": [
+            "loss"
+          ],
           "dateOfOccurrence": "2024-07-20",
           "timeOfOccurrence": "23:00",
           "dateOfNotification": "2024-07-21",
@@ -694,14 +719,25 @@
         "postalCode": "20457",
         "country": "DE"
       },
-      "causeOfLoss": ["natural-event"],
-      "typeOfDamage": ["material-damage", "financial-loss"],
+      "causeOfLoss": [
+        "natural-event"
+      ],
+      "typeOfDamage": [
+        "material-damage",
+        "financial-loss"
+      ],
       "lossDescription": "Storm with wind speeds exceeding 120 km/h damaged turbine array. Lower facility level flooded. Three turbines offline.",
       "events": [
         {
           "eventKey": "natural-event",
-          "causedBy": ["storm", "flood"],
-          "damages": ["material-damage", "financial-loss"],
+          "causedBy": [
+            "storm",
+            "flood"
+          ],
+          "damages": [
+            "material-damage",
+            "financial-loss"
+          ],
           "dateOfOccurrence": "2024-09-03",
           "timeOfOccurrence": "11:30",
           "dateOfNotification": "2024-09-03",
@@ -765,7 +801,10 @@
     "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Property",
-    "location": { "country": "Germany", "city": "Cologne" },
+    "location": {
+      "country": "Germany",
+      "city": "Cologne"
+    },
     "lossEventId": null,
     "group": "GPG-001"
   },
@@ -785,7 +824,10 @@
     "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Liability",
-    "location": { "country": "Germany", "city": "Bremen" },
+    "location": {
+      "country": "Germany",
+      "city": "Bremen"
+    },
     "lossEventId": null,
     "group": "GPG-001"
   },
@@ -805,9 +847,15 @@
     "status": "Closed",
     "priority": "low",
     "lineOfBusiness": "Marine",
-    "location": { "country": "Germany", "city": "Kiel" },
+    "location": {
+      "country": "Germany",
+      "city": "Kiel"
+    },
     "closureDate": "2026-09-23",
-    "closedBy": { "userId": "usr-mara", "name": "Mara Mustermann" },
+    "closedBy": {
+      "userId": "usr-mara",
+      "name": "Mara Mustermann"
+    },
     "closureReason": "Claim Finalised",
     "retentionDate": "2036-09-25",
     "retentionType": "default",
@@ -830,7 +878,10 @@
     "status": "Open",
     "priority": "high",
     "lineOfBusiness": "Cyber",
-    "location": { "country": "Germany", "city": "Munich" },
+    "location": {
+      "country": "Germany",
+      "city": "Munich"
+    },
     "lossEventId": null,
     "group": "GPG-001"
   },
@@ -850,7 +901,10 @@
     "status": "Open",
     "priority": "medium",
     "lineOfBusiness": "Engineering",
-    "location": { "country": "Germany", "city": "Stuttgart" },
+    "location": {
+      "country": "Germany",
+      "city": "Stuttgart"
+    },
     "lossEventId": null,
     "group": "GPG-001"
   },
@@ -871,12 +925,17 @@
     "skeletonState": "awaiting-policy",
     "priority": "medium",
     "lineOfBusiness": "Property",
-    "location": { "country": "DE", "city": "Munich" },
+    "location": {
+      "country": "DE",
+      "city": "Munich"
+    },
     "lossEventId": null,
     "claimType": "skeleton",
     "skeletonReason": "policy_not_issued",
     "slaDeadlineDays": 3,
-    "causeOfLoss": ["fire"]
+    "causeOfLoss": [
+      "fire"
+    ]
   },
   {
     "claimId": "SK-2024-002",
@@ -945,11 +1004,185 @@
     "skeletonState": "awaiting-policy",
     "priority": "medium",
     "lineOfBusiness": "Property",
-    "location": { "country": "DE", "city": "Hamburg" },
+    "location": {
+      "country": "DE",
+      "city": "Hamburg"
+    },
     "lossEventId": null,
     "claimType": "skeleton",
     "skeletonReason": "policy_not_found",
     "slaDeadlineDays": 3,
-    "causeOfLoss": ["storm"]
+    "causeOfLoss": [
+      "storm"
+    ]
+  },
+  {
+    "claimId": "SK-2024-005",
+    "policyNumber": "",
+    "clientName": "Mira Lenz",
+    "broker": null,
+    "assignee": "Lena Zorn",
+    "createdBy": "Lena Zorn",
+    "dateCreated": "today-5d",
+    "dateUpdated": "today-1d",
+    "lossDate": "2026-09-25",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "description": "Fire in shop storage room",
+    "status": "Open",
+    "skeletonState": "awaiting-policy",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Cologne"
+    },
+    "lossEventId": null,
+    "claimType": "skeleton",
+    "skeletonReason": "policy_not_found",
+    "slaDeadlineDays": 3,
+    "causeOfLoss": [
+      "fire"
+    ]
+  },
+  {
+    "claimId": "SK-2024-006",
+    "policyNumber": "",
+    "clientName": "Bruno Albers",
+    "broker": null,
+    "assignee": "Lena Zorn",
+    "createdBy": "Lena Zorn",
+    "dateCreated": "today-5d",
+    "dateUpdated": "today-1d",
+    "lossDate": "2026-09-22",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "description": "Water damage after pipe burst",
+    "status": "Open",
+    "skeletonState": "awaiting-policy",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Munich"
+    },
+    "lossEventId": null,
+    "claimType": "skeleton",
+    "skeletonReason": "policy_not_found",
+    "slaDeadlineDays": 3,
+    "causeOfLoss": [
+      "water"
+    ]
+  },
+  {
+    "claimId": "SK-2024-007",
+    "policyNumber": "",
+    "clientName": "Sven Brandt",
+    "broker": null,
+    "assignee": "Lena Zorn",
+    "createdBy": "Lena Zorn",
+    "dateCreated": "today-5d",
+    "dateUpdated": "today-1d",
+    "lossDate": "2026-09-27",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "description": "Theft from workshop",
+    "status": "Open",
+    "skeletonState": "awaiting-policy",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Nuremberg"
+    },
+    "lossEventId": null,
+    "claimType": "skeleton",
+    "skeletonReason": "policy_not_found",
+    "slaDeadlineDays": 3,
+    "causeOfLoss": [
+      "theft"
+    ]
+  },
+  {
+    "claimId": "SK-2024-008",
+    "policyNumber": "",
+    "clientName": "Ida Falk",
+    "broker": null,
+    "assignee": "Lena Zorn",
+    "createdBy": "Lena Zorn",
+    "dateCreated": "today-5d",
+    "dateUpdated": "today-1d",
+    "lossDate": "2026-09-21",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "description": "Production halt after supplier fire",
+    "status": "Open",
+    "skeletonState": "awaiting-policy",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Frankfurt"
+    },
+    "lossEventId": null,
+    "claimType": "skeleton",
+    "skeletonReason": "policy_not_found",
+    "slaDeadlineDays": 3,
+    "causeOfLoss": [
+      "business-interruption"
+    ]
+  },
+  {
+    "claimId": "SK-2024-009",
+    "policyNumber": "",
+    "clientName": "Otto Weiss",
+    "broker": null,
+    "assignee": "Lena Zorn",
+    "createdBy": "Lena Zorn",
+    "dateCreated": "today-5d",
+    "dateUpdated": "today-1d",
+    "lossDate": "2026-09-23",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "description": "Damage reported, cause still unclear",
+    "status": "Open",
+    "skeletonState": "awaiting-policy",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": {
+      "country": "DE",
+      "city": "Stuttgart"
+    },
+    "lossEventId": null,
+    "claimType": "skeleton",
+    "skeletonReason": "policy_not_found",
+    "slaDeadlineDays": 3,
+    "causeOfLoss": []
+  },
+  {
+    "claimId": "SK-2024-010",
+    "policyNumber": "",
+    "clientName": "Lars Nord",
+    "broker": null,
+    "assignee": "Lena Zorn",
+    "createdBy": "Lena Zorn",
+    "dateCreated": "today-5d",
+    "dateUpdated": "today-1d",
+    "lossDate": "2026-09-24",
+    "lossAmount": 0,
+    "currency": "EUR",
+    "description": "Storm damage to warehouse",
+    "status": "Open",
+    "skeletonState": "awaiting-policy",
+    "priority": "medium",
+    "lineOfBusiness": "Property",
+    "location": null,
+    "lossEventId": null,
+    "claimType": "skeleton",
+    "skeletonReason": "policy_not_found",
+    "slaDeadlineDays": 3,
+    "causeOfLoss": [
+      "storm"
+    ]
   }
 ]

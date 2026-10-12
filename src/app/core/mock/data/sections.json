@@ -72,7 +72,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2026-06-22",
-    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
+    "closedBy": {
+      "userId": "usr-lf",
+      "name": "Nina Feld"
+    },
     "entities": [
       {
         "id": "SE-003",
@@ -101,7 +104,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2026-06-25",
-    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Dirk Haas"
+    },
     "entities": []
   },
   {
@@ -119,7 +125,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2024-05-28",
-    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Dirk Haas"
+    },
     "entities": [
       {
         "id": "SE-007",
@@ -146,7 +155,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2024-05-28",
-    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Dirk Haas"
+    },
     "entities": [
       {
         "id": "SE-008",
@@ -175,7 +187,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2024-05-30",
-    "closedBy": { "userId": "usr-cm", "name": "Dirk Haas" },
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Dirk Haas"
+    },
     "entities": [
       {
         "id": "SE-009",
@@ -202,7 +217,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2026-06-28",
-    "closedBy": { "userId": "usr-lf", "name": "Nina Feld" },
+    "closedBy": {
+      "userId": "usr-lf",
+      "name": "Nina Feld"
+    },
     "entities": [
       {
         "id": "SE-010",
@@ -229,7 +247,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "reopenedDate": "2025-04-15",
-    "reopenedBy": { "userId": "usr-002", "name": "Nina Feld" },
+    "reopenedBy": {
+      "userId": "usr-002",
+      "name": "Nina Feld"
+    },
     "reopeningReason": "New information received",
     "entities": [
       {
@@ -256,7 +277,10 @@
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "closureDate": "2024-09-01",
-    "closedBy": { "userId": "usr-003", "name": "Werner Baum" },
+    "closedBy": {
+      "userId": "usr-003",
+      "name": "Werner Baum"
+    },
     "closureReason": "Section Finalised",
     "entities": [
       {
@@ -265,6 +289,121 @@
         "instructionStatus": "Completed",
         "expandable": false,
         "coverageReview": "Standard Review"
+      }
+    ]
+  },
+  {
+    "id": "SEC-SK-2024-005",
+    "claimId": "SK-2024-005",
+    "name": "Material damage — Cologne shop",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-SK-2024-005-0",
+        "name": "Cologne shop",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-SK-2024-006",
+    "claimId": "SK-2024-006",
+    "name": "Material damage — Munich office",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-SK-2024-006-0",
+        "name": "Munich office",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-SK-2024-007",
+    "claimId": "SK-2024-007",
+    "name": "Material damage — Workshop",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-SK-2024-007-0",
+        "name": "Workshop",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-SK-2024-008",
+    "claimId": "SK-2024-008",
+    "name": "Business interruption — Frankfurt plant",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-SK-2024-008-0",
+        "name": "Frankfurt plant",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-SK-2024-010",
+    "claimId": "SK-2024-010",
+    "name": "Material damage — Hannover warehouse",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-SK-2024-010-0",
+        "name": "Hannover warehouse",
+        "instructionStatus": "Not assigned",
+        "expandable": false
       }
     ]
   }

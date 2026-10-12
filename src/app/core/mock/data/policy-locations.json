@@ -178,5 +178,89 @@
     "propertyId": "DEU-RVO-0002",
     "type": "Storage",
     "active": true
+  },
+  {
+    "id": "LOC-032",
+    "policyNumber": "POL-2026-002",
+    "name": "Mira Lenz — Cologne Shop",
+    "addressLine1": "Marktplatz 1",
+    "postalCode": "50667",
+    "city": "Cologne",
+    "country": "DE",
+    "propertyId": "DEU-032",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-033",
+    "policyNumber": "POL-2026-003",
+    "name": "Bruno Albers — Berlin Office",
+    "addressLine1": "Torstraße 5",
+    "postalCode": "10119",
+    "city": "Berlin",
+    "country": "DE",
+    "propertyId": "DEU-033",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-034",
+    "policyNumber": "POL-2026-003",
+    "name": "Bruno Albers — Dresden Depot",
+    "addressLine1": "Prager Straße 2",
+    "postalCode": "01069",
+    "city": "Dresden",
+    "country": "DE",
+    "propertyId": "DEU-034",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-035",
+    "policyNumber": "POL-2026-004",
+    "name": "Sven Brandt — Nuremberg Workshop",
+    "addressLine1": "Industrieweg 3",
+    "postalCode": "90402",
+    "city": "Nuremberg",
+    "country": "DE",
+    "propertyId": "DEU-035",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-036",
+    "policyNumber": "POL-2026-005",
+    "name": "Ida Falk — Frankfurt Plant",
+    "addressLine1": "Mainzer Landstraße 50",
+    "postalCode": "60325",
+    "city": "Frankfurt",
+    "country": "DE",
+    "propertyId": "DEU-036",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-037",
+    "policyNumber": "POL-2026-006",
+    "name": "Otto Weiss — Stuttgart Shop",
+    "addressLine1": "Königstraße 20",
+    "postalCode": "70173",
+    "city": "Stuttgart",
+    "country": "DE",
+    "propertyId": "DEU-037",
+    "type": "Storage",
+    "active": true
+  },
+  {
+    "id": "LOC-038",
+    "policyNumber": "POL-2026-007",
+    "name": "Lars Nord — Hannover Warehouse",
+    "addressLine1": "Georgstraße 8",
+    "postalCode": "30159",
+    "city": "Hannover",
+    "country": "DE",
+    "propertyId": "DEU-038",
+    "type": "Storage",
+    "active": true
   }
 ]

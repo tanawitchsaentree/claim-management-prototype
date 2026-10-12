@@ -193,5 +193,83 @@
     "clientNameCode": "C-00063690",
     "broker": "Greta Böck Assekuranz",
     "brokerNameCode": "GRBK1211"
+  },
+  {
+    "policyNumber": "POL-2026-002",
+    "clientName": "Mira Lenz",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2026-01-01",
+    "expiryDate": "2027-01-01",
+    "premium": 52000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063692",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
+  },
+  {
+    "policyNumber": "POL-2026-003",
+    "clientName": "Bruno Albers",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2026-01-01",
+    "expiryDate": "2027-01-01",
+    "premium": 52000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063693",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
+  },
+  {
+    "policyNumber": "POL-2026-004",
+    "clientName": "Sven Brandt",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2025-01-01",
+    "expiryDate": "2026-01-01",
+    "premium": 52000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063694",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
+  },
+  {
+    "policyNumber": "POL-2026-005",
+    "clientName": "Ida Falk",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2026-01-01",
+    "expiryDate": "2027-01-01",
+    "premium": 52000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063695",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
+  },
+  {
+    "policyNumber": "POL-2026-006",
+    "clientName": "Otto Weiss",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2026-01-01",
+    "expiryDate": "2027-01-01",
+    "premium": 52000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063696",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
+  },
+  {
+    "policyNumber": "POL-2026-007",
+    "clientName": "Lars Nord",
+    "lineOfBusiness": "Property",
+    "effectiveDate": "2026-01-01",
+    "expiryDate": "2027-01-01",
+    "premium": 52000,
+    "currency": "EUR",
+    "status": "Active",
+    "clientNameCode": "C-00063697",
+    "broker": "Greta Böck Assekuranz",
+    "brokerNameCode": "GRBK1211"
   }
 ]

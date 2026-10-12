@@ -21,11 +21,23 @@
         }
       ]
     },
-    "causeOfLoss": ["fire"],
-    "typeOfDamage": ["material-damage"],
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
     "circumstance": "electrical-fault",
     "lossDescription": "This claim relates to a fire at XYZ's warehouse on 12 May 2025. The current incurred value is $4.2M, primarily property damage.",
-    "events": [{ "eventKey": "fire", "damages": ["material-damage"], "causedBy": [] }],
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
     "createdAt": "2025-01-11T10:30:00Z",
     "updatedAt": "2025-01-11T10:30:00Z"
   },
@@ -51,12 +63,24 @@
         }
       ]
     },
-    "causeOfLoss": ["fire"],
-    "typeOfDamage": ["material-damage", "financial-loss"],
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "financial-loss"
+    ],
     "circumstance": "hot-work",
     "lossDescription": "Fire damage to warehouse section B. Sprinkler system activated causing water damage to goods in storage.",
     "events": [
-      { "eventKey": "fire", "damages": ["material-damage", "financial-loss"], "causedBy": [] }
+      {
+        "eventKey": "fire",
+        "damages": [
+          "material-damage",
+          "financial-loss"
+        ],
+        "causedBy": []
+      }
     ],
     "createdAt": "2024-01-15T08:05:00Z",
     "updatedAt": "2024-01-15T08:05:00Z"
@@ -76,11 +100,25 @@
       "city": "Munich",
       "address": "Maximilianstrasse 12"
     },
-    "causeOfLoss": ["fire"],
-    "typeOfDamage": ["structural", "contents"],
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [
+      "structural",
+      "contents"
+    ],
     "circumstance": "electrical-fault",
     "lossDescription": "Fire broke out in the server room at 14:30. Fire department arrived within 10 minutes. Significant structural damage to the east wing.",
-    "events": [{ "eventKey": "fire", "damages": ["structural", "contents"], "causedBy": [] }],
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [
+          "structural",
+          "contents"
+        ],
+        "causedBy": []
+      }
+    ],
     "createdAt": "2025-03-10T16:05:00Z",
     "updatedAt": "2025-03-10T16:05:00Z"
   },
@@ -99,10 +137,22 @@
       "city": "Vienna",
       "address": ""
     },
-    "causeOfLoss": ["water-damage"],
-    "typeOfDamage": ["structural"],
+    "causeOfLoss": [
+      "water-damage"
+    ],
+    "typeOfDamage": [
+      "structural"
+    ],
     "lossDescription": "",
-    "events": [{ "eventKey": "water-damage", "damages": ["structural"], "causedBy": [] }],
+    "events": [
+      {
+        "eventKey": "water-damage",
+        "damages": [
+          "structural"
+        ],
+        "causedBy": []
+      }
+    ],
     "createdAt": "2025-04-02T10:05:00Z",
     "updatedAt": "2025-04-02T10:05:00Z"
   },
@@ -121,13 +171,32 @@
       "city": "London",
       "address": "1 Cornhill Street"
     },
-    "causeOfLoss": ["theft", "fire"],
-    "typeOfDamage": ["contents", "equipment"],
+    "causeOfLoss": [
+      "theft",
+      "fire"
+    ],
+    "typeOfDamage": [
+      "contents",
+      "equipment"
+    ],
     "circumstance": "theft-no-entry",
     "lossDescription": "Break-in overnight. Perpetrators caused fire after theft to destroy evidence. Police notified immediately.",
     "events": [
-      { "eventKey": "theft", "damages": ["contents", "equipment"], "causedBy": [] },
-      { "eventKey": "fire", "damages": ["equipment"], "causedBy": [] }
+      {
+        "eventKey": "theft",
+        "damages": [
+          "contents",
+          "equipment"
+        ],
+        "causedBy": []
+      },
+      {
+        "eventKey": "fire",
+        "damages": [
+          "equipment"
+        ],
+        "causedBy": []
+      }
     ],
     "createdAt": "2025-02-14T09:00:00Z",
     "updatedAt": "2025-02-15T11:20:00Z"
@@ -147,14 +216,22 @@
       "city": "Amsterdam",
       "address": "Damrak 70"
     },
-    "causeOfLoss": ["wind-storm"],
-    "typeOfDamage": ["structural", "business-interruption"],
+    "causeOfLoss": [
+      "wind-storm"
+    ],
+    "typeOfDamage": [
+      "structural",
+      "business-interruption"
+    ],
     "circumstance": "windstorm",
     "lossDescription": "Storm damage to roof and facade. Business operations interrupted for 3 weeks. Late notification due to ongoing litigation with contractor.",
     "events": [
       {
         "eventKey": "wind-storm",
-        "damages": ["structural", "business-interruption"],
+        "damages": [
+          "structural",
+          "business-interruption"
+        ],
         "causedBy": []
       }
     ],
@@ -176,12 +253,26 @@
       "city": "Zurich",
       "address": "Bahnhofstrasse 100"
     },
-    "causeOfLoss": ["other"],
-    "typeOfDamage": ["vehicle", "structural"],
+    "causeOfLoss": [
+      "other"
+    ],
+    "typeOfDamage": [
+      "vehicle",
+      "structural"
+    ],
     "circumstance": "unknown",
     "lossDescription": "Vehicle drove through building facade. Driver fled the scene. Security footage available.",
     "events": [
-      { "eventKey": "other", "damages": ["vehicle", "structural"], "causedBy": ["event10"] }
+      {
+        "eventKey": "other",
+        "damages": [
+          "vehicle",
+          "structural"
+        ],
+        "causedBy": [
+          "event10"
+        ]
+      }
     ],
     "createdAt": "2025-04-21T09:15:00Z",
     "updatedAt": "2025-04-21T09:15:00Z"
@@ -208,10 +299,18 @@
         }
       ]
     },
-    "causeOfLoss": ["fire"],
+    "causeOfLoss": [
+      "fire"
+    ],
     "typeOfDamage": [],
     "lossDescription": "Fire at Munich warehouse",
-    "events": [{ "eventKey": "fire", "damages": [], "causedBy": [] }],
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [],
+        "causedBy": []
+      }
+    ],
     "createdAt": "2024-05-04T11:05:00Z",
     "updatedAt": "2024-05-04T11:05:00Z"
   },
@@ -237,11 +336,196 @@
         }
       ]
     },
-    "causeOfLoss": ["storm"],
+    "causeOfLoss": [
+      "storm"
+    ],
     "typeOfDamage": [],
     "lossDescription": "Storm damage to warehouse roof",
-    "events": [{ "eventKey": "storm", "damages": [], "causedBy": [] }],
+    "events": [
+      {
+        "eventKey": "storm",
+        "damages": [],
+        "causedBy": []
+      }
+    ],
     "createdAt": "2026-09-20T09:35:00Z",
     "updatedAt": "2026-09-20T09:35:00Z"
+  },
+  {
+    "id": "LI-SK-2024-005",
+    "claimId": "SK-2024-005",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-25",
+      "timeOfOccurrence": "10:00",
+      "dateOfNotification": "2026-09-25",
+      "timeOfNotification": "12:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-2024-005",
+          "source": "manual",
+          "displayName": "Cologne shop",
+          "addressLine1": "Marktplatz 1",
+          "postalCode": "50667",
+          "city": "Cologne",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [],
+    "lossDescription": "Fire in shop storage room",
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-09-26T09:00:00Z",
+    "updatedAt": "2026-09-26T09:00:00Z"
+  },
+  {
+    "id": "LI-SK-2024-006",
+    "claimId": "SK-2024-006",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-22",
+      "timeOfOccurrence": "10:00",
+      "dateOfNotification": "2026-09-22",
+      "timeOfNotification": "12:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-2024-006",
+          "source": "manual",
+          "displayName": "Munich office",
+          "addressLine1": "Leopoldstraße 10",
+          "postalCode": "80802",
+          "city": "Munich",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "water"
+    ],
+    "typeOfDamage": [],
+    "lossDescription": "Water damage after pipe burst",
+    "events": [
+      {
+        "eventKey": "water",
+        "damages": [],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-09-26T09:00:00Z",
+    "updatedAt": "2026-09-26T09:00:00Z"
+  },
+  {
+    "id": "LI-SK-2024-007",
+    "claimId": "SK-2024-007",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-27",
+      "timeOfOccurrence": "10:00",
+      "dateOfNotification": "2026-09-27",
+      "timeOfNotification": "12:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-2024-007",
+          "source": "manual",
+          "displayName": "Workshop",
+          "addressLine1": "Industrieweg 3",
+          "postalCode": "90402",
+          "city": "Nuremberg",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "theft"
+    ],
+    "typeOfDamage": [],
+    "lossDescription": "Theft from workshop",
+    "events": [
+      {
+        "eventKey": "theft",
+        "damages": [],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-09-26T09:00:00Z",
+    "updatedAt": "2026-09-26T09:00:00Z"
+  },
+  {
+    "id": "LI-SK-2024-008",
+    "claimId": "SK-2024-008",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-21",
+      "timeOfOccurrence": "10:00",
+      "dateOfNotification": "2026-09-21",
+      "timeOfNotification": "12:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-2024-008",
+          "source": "manual",
+          "displayName": "Frankfurt plant",
+          "addressLine1": "Mainzer Landstraße 48",
+          "postalCode": "60325",
+          "city": "Frankfurt",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "business-interruption"
+    ],
+    "typeOfDamage": [],
+    "lossDescription": "Production halt after supplier fire",
+    "events": [
+      {
+        "eventKey": "business-interruption",
+        "damages": [],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-09-26T09:00:00Z",
+    "updatedAt": "2026-09-26T09:00:00Z"
+  },
+  {
+    "id": "LI-SK-2024-009",
+    "claimId": "SK-2024-009",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-23",
+      "timeOfOccurrence": "10:00",
+      "dateOfNotification": "2026-09-23",
+      "timeOfNotification": "12:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-sk-2024-009",
+          "source": "manual",
+          "displayName": "Stuttgart shop",
+          "addressLine1": "Königstraße 22",
+          "postalCode": "70173",
+          "city": "Stuttgart",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [],
+    "typeOfDamage": [],
+    "lossDescription": "Damage reported, cause still unclear",
+    "events": [],
+    "createdAt": "2026-09-26T09:00:00Z",
+    "updatedAt": "2026-09-26T09:00:00Z"
   }
 ]
