@@ -56,7 +56,8 @@ const EXEMPT = new Set([
   'mass-event-edit-modal.component.ts', // bottom-sheet variant, own panelClass
   'claim-notes-full.component.ts', // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
   'convert-skeleton-modal.component.ts', // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
-  'policy-overview-modal.component.ts' // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
+  'policy-overview-modal.component.ts', // same bottom-sheet family (styles.scss .bottom-sheet-modal-panel)
+  'add-location-modal.component.ts' // bottom sheet; uses shared/styles/_bottom-sheet-layout.scss like convert-skeleton-modal
 ]);
 
 function walk(dir, suffix, files = []) {
