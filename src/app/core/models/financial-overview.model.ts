@@ -40,6 +40,11 @@ export interface FinancialReserve {
   party: string;
   damagedItem: string;
   section: string;
+  // The section this reserve belongs to; the Section-level view is a filter on
+  // this, not a second list. Absent = not attached to a section.
+  sectionId?: string;
+  // Short label shown after the party in the Section column ("PD", "BI", ...).
+  sectionCode?: string;
   reserveType: string;
   reserveSubType: string;
   status: FinancialReserveStatus;
@@ -111,6 +116,8 @@ export interface FinancialSectionSummaryRow {
 export interface FinancialSection {
   sectionId: string;
   sectionName: string;
+  // Short label for the Reserves table's Section column ("PD", "BI", ...).
+  code?: string;
   currency: string;
   exchangeRate: number;
   baseCurrency: string;

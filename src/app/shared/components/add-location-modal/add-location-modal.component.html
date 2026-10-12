@@ -8,7 +8,7 @@
   </h2>
   @if (reconfirm) {
     <p class="alm-subtitle">
-      Choose the policy location the address entered earlier refers to. The closest match is
+      Choose the policy location that matches the skeleton claim location. The closest match is
       listed first.
     </p>
   } @else {
@@ -95,7 +95,7 @@
                   <td nxCell>{{ o.postalCode }}</td>
                   <td nxCell>{{ o.city }}</td>
                   <td nxCell>–</td>
-                  <td nxCell><nx-badge type="active">Entered earlier</nx-badge></td>
+                  <td nxCell><nx-badge type="active">Skeleton claim location</nx-badge></td>
                 </tr>
               }
             }

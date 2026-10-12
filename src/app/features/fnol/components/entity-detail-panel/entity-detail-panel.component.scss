@@ -102,23 +102,6 @@
   }
 }
 
-.items-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 40px var(--space-base);
-  border-top: 2px solid var(--ui-04);
-  border-bottom: 2px solid var(--ui-04);
-  text-align: center;
-
-  &__text {
-    margin: 0;
-    font-size: var(--paragraph-03-font-size);
-    color: var(--text-muted);
-  }
-}
-
 // Table scrolls sideways inside the panel instead of squeezing columns on
 // narrow screens (panel is 100vw under 768px).
 .items-table-wrap {

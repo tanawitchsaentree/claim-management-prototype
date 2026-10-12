@@ -12,10 +12,30 @@
       "currency": "EUR",
       "ibnr": 0,
       "rows": [
-        { "label": "Insured", "gross": 993000, "grossNet": 900000, "net": 850000 },
-        { "label": "Reserve", "gross": 113000, "grossNet": 100000, "net": 90000 },
-        { "label": "Payments", "gross": 144000, "grossNet": 130000, "net": 120000 },
-        { "label": "Recoveries", "gross": 0, "grossNet": 0, "net": 0 }
+        {
+          "label": "Insured",
+          "gross": 993000,
+          "grossNet": 900000,
+          "net": 850000
+        },
+        {
+          "label": "Reserve",
+          "gross": 113000,
+          "grossNet": 100000,
+          "net": 90000
+        },
+        {
+          "label": "Payments",
+          "gross": 144000,
+          "grossNet": 130000,
+          "net": 120000
+        },
+        {
+          "label": "Recoveries",
+          "gross": 0,
+          "grossNet": 0,
+          "net": 0
+        }
       ]
     },
     "payments": [
@@ -77,8 +97,8 @@
     ],
     "reserves": [
       {
-        "reserveId": "RES-001",
-        "party": "Section 1 | PD",
+        "reserveId": "RES-C-00063676-2024.001.1.1.1",
+        "party": "Peter Pane",
         "damagedItem": "Building 1",
         "section": "Section 1: - Property Damage",
         "reserveType": "Indemnity",
@@ -99,11 +119,13 @@
             "reason": "Revised after adjuster report",
             "user": "Lena Zorn"
           }
-        ]
+        ],
+        "sectionCode": "PD",
+        "sectionId": "S1"
       },
       {
-        "reserveId": "RES-002",
-        "party": "Section 1 | PD",
+        "reserveId": "RES-C-00063676-2024.001.1.1.2",
+        "party": "Peter Pane",
         "damagedItem": "Building 1",
         "section": "Section 1: - Property Damage",
         "reserveType": "Indemnity",
@@ -118,12 +140,14 @@
             "reason": "Initial reserve set",
             "user": "Nina Feld"
           }
-        ]
+        ],
+        "sectionCode": "PD",
+        "sectionId": "S1"
       },
       {
-        "reserveId": "RES-003",
-        "party": "Section 1 | BI",
-        "damagedItem": "n/a",
+        "reserveId": "RES-C-00063676-2024.001.2.0.1",
+        "party": "Peter Pane",
+        "damagedItem": "",
         "section": "Section 1: - Business Interruption",
         "reserveType": "Expenses",
         "reserveSubType": "Loss Adjustor fees",
@@ -137,11 +161,13 @@
             "reason": "Initial reserve set",
             "user": "Dirk Haas"
           }
-        ]
+        ],
+        "sectionCode": "BI",
+        "sectionId": "S2"
       },
       {
-        "reserveId": "RES-004",
-        "party": "Section 2 | LD",
+        "reserveId": "RES-C-00063676-2024.001.0.1.1",
+        "party": "Carlo Clerk",
         "damagedItem": "Vehicle 1",
         "section": "Section 2: - Liability",
         "reserveType": "Indemnity",
@@ -162,11 +188,12 @@
             "reason": "Updated after legal review",
             "user": "Petra Kohl"
           }
-        ]
+        ],
+        "sectionCode": "Liability"
       },
       {
-        "reserveId": "RES-005",
-        "party": "Section 1 | PD",
+        "reserveId": "RES-C-00063676-2024.001.1.1.3",
+        "party": "Peter Pane",
         "damagedItem": "Building 1",
         "section": "Section 1: - Property Damage",
         "reserveType": "Indemnity",
@@ -181,7 +208,9 @@
             "reason": "Initial reserve set",
             "user": "Nina Feld"
           }
-        ]
+        ],
+        "sectionCode": "PD",
+        "sectionId": "S1"
       }
     ],
     "recoveries": [
@@ -334,103 +363,7 @@
             "paymentDate": "24-12-2024"
           }
         ],
-        "reserves": [
-          {
-            "reserveId": "123678-1",
-            "party": "Section 1 | PD",
-            "damagedItem": "Building 1",
-            "section": "Section 1: - Property Damage",
-            "reserveType": "Indemnity",
-            "reserveSubType": "Property Damage",
-            "status": "Approved",
-            "reserveValue": 15000,
-            "currency": "EUR",
-            "history": [
-              {
-                "date": "01-06-2024",
-                "amount": 15000,
-                "reason": "Initial reserve",
-                "user": "Nina Feld"
-              }
-            ]
-          },
-          {
-            "reserveId": "123678-2",
-            "party": "Section 1 | PD",
-            "damagedItem": "Building 1",
-            "section": "Section 1: - Property Damage",
-            "reserveType": "Indemnity",
-            "reserveSubType": "Additional Expenditure",
-            "status": "Approved",
-            "reserveValue": 3000,
-            "currency": "EUR",
-            "history": [
-              {
-                "date": "01-06-2024",
-                "amount": 3000,
-                "reason": "Initial reserve",
-                "user": "Nina Feld"
-              }
-            ]
-          },
-          {
-            "reserveId": "123678-3",
-            "party": "Section 1 | BI",
-            "damagedItem": "n/a",
-            "section": "Section 1: - Business Interruption",
-            "reserveType": "Indemnity",
-            "reserveSubType": "Revenue/income",
-            "status": "Approved",
-            "reserveValue": 20000,
-            "currency": "EUR",
-            "history": [
-              {
-                "date": "02-06-2024",
-                "amount": 20000,
-                "reason": "Initial reserve",
-                "user": "Nina Feld"
-              }
-            ]
-          },
-          {
-            "reserveId": "123678-4",
-            "party": "Section 1 | BI",
-            "damagedItem": "n/a",
-            "section": "Section 1: - Business Interruption",
-            "reserveType": "Expenses",
-            "reserveSubType": "Loss Adjustor fees",
-            "status": "Pending",
-            "reserveValue": 5000,
-            "currency": "EUR",
-            "history": [
-              {
-                "date": "03-06-2024",
-                "amount": 5000,
-                "reason": "Initial reserve",
-                "user": "Dirk Haas"
-              }
-            ]
-          },
-          {
-            "reserveId": "123678-5",
-            "party": "Section 2 | LD",
-            "damagedItem": "Vehicle 1",
-            "section": "Section 2: - Liability",
-            "reserveType": "Indemnity",
-            "reserveSubType": "Property Damage",
-            "status": "Pending",
-            "reserveValue": 10000,
-            "currency": "EUR",
-            "history": [
-              {
-                "date": "10-06-2024",
-                "amount": 10000,
-                "reason": "Initial reserve",
-                "user": "Georg Stein"
-              }
-            ]
-          }
-        ],
+        "reserves": [],
         "recoveries": [
           {
             "recoveryId": "REC-S1-001",
@@ -458,7 +391,8 @@
             "recoveryDate": "20-01-2025",
             "bookingDate": "20-01-2025"
           }
-        ]
+        ],
+        "code": "PD"
       },
       {
         "sectionId": "S2",
@@ -516,46 +450,7 @@
             "paymentDate": "15-01-2025"
           }
         ],
-        "reserves": [
-          {
-            "reserveId": "123678-6",
-            "party": "Section 2 | LI",
-            "damagedItem": "Vehicle 1",
-            "section": "Section 2: - Business Interruption",
-            "reserveType": "Indemnity",
-            "reserveSubType": "Indemnity",
-            "status": "Approved",
-            "reserveValue": 50000,
-            "currency": "USD",
-            "history": [
-              {
-                "date": "01-07-2024",
-                "amount": 50000,
-                "reason": "Initial reserve",
-                "user": "Nina Feld"
-              }
-            ]
-          },
-          {
-            "reserveId": "123678-7",
-            "party": "Section 2 | LI",
-            "damagedItem": "Vehicle 1",
-            "section": "Section 2: - Business Interruption",
-            "reserveType": "Expenses",
-            "reserveSubType": "Expenses",
-            "status": "Pending",
-            "reserveValue": 5000,
-            "currency": "USD",
-            "history": [
-              {
-                "date": "01-07-2024",
-                "amount": 5000,
-                "reason": "Initial reserve",
-                "user": "Dirk Haas"
-              }
-            ]
-          }
-        ],
+        "reserves": [],
         "recoveries": [
           {
             "recoveryId": "REC-S2-001",
@@ -570,7 +465,8 @@
             "recoveryDate": "25-01-2025",
             "bookingDate": "25-01-2025"
           }
-        ]
+        ],
+        "code": "BI"
       }
     ]
   }

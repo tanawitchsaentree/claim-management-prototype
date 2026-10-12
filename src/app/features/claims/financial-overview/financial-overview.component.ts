@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { NxTableModule } from '@allianz/ng-aquila/table';
@@ -10,6 +11,9 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
+import { NxBadgeModule, NxBadgeColorScheme, NxBadgeType } from '@allianz/ng-aquila/badge';
+import { FinancialReserve } from '../../../core/models/financial-overview.model';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
@@ -37,6 +41,7 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
   imports: [
     CommonModule,
     CurrencyPipe,
+    ReactiveFormsModule,
     NxTableModule,
     NxButtonModule,
     NxIconModule,
@@ -44,6 +49,8 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     NxDropdownModule,
     NxTooltipModule,
     NxMessageModule,
+    NxRadioToggleModule,
+    NxBadgeModule,
     EmptyStateComponent,
     PageHeaderComponent,
     BlockerReturnBannerComponent
@@ -64,7 +71,8 @@ export class FinancialOverviewComponent implements OnInit {
 
   readonly loading = signal(true);
   readonly fo = signal<FinancialOverview | null>(null);
-  readonly level = signal<LevelToggle>('claim');
+  readonly levelControl = new FormControl<LevelToggle>('claim', { nonNullable: true });
+  readonly level = toSignal(this.levelControl.valueChanges, { initialValue: 'claim' as LevelToggle });
   readonly currency = signal('EUR');
   readonly sectionId = signal('');
   readonly expandedReserveIds = signal<Set<string>>(new Set());
@@ -123,6 +131,35 @@ export class FinancialOverviewComponent implements OnInit {
     return sections.find(s => s.sectionId === this.sectionId()) ?? sections[0];
   });
 
+  // Section level is a filter on the one claim-level list, so a reserve can
+  // never show in one view and not the other.
+  readonly reserveRows = computed<FinancialReserve[]>(() => {
+    const all = this.fo()?.reserves ?? [];
+    if (this.level() === 'claim') return all;
+    const id = this.activeSection()?.sectionId;
+    return all.filter(r => r.sectionId === id);
+  });
+
+  /** "Peter Pane | PD": party, then the section's short code. */
+  sectionLabel(r: FinancialReserve): string {
+    return [r.party, r.sectionCode].filter(Boolean).join(' | ');
+  }
+
+  /** NDBX badge look for a payment / reserve / recovery status. */
+  badgeFor(status: string): { type: NxBadgeType; scheme: NxBadgeColorScheme | undefined } {
+    switch (status) {
+      case 'Approved':
+      case 'Done':
+        return { type: 'positive', scheme: undefined };
+      case 'Rejected':
+        return { type: 'negative', scheme: undefined };
+      case 'Credit':
+        return { type: 'active', scheme: undefined };
+      default:
+        return { type: '', scheme: 'yellow' };
+    }
+  }
+
   get kpis() {
     const s = this.fo()?.summary;
     if (!s) return [];
@@ -158,10 +195,6 @@ export class FinancialOverviewComponent implements OnInit {
 
   setView(v: FinancialView): void {
     this.router.navigate([], { queryParams: { view: v }, replaceUrl: true });
-  }
-
-  setLevel(l: LevelToggle): void {
-    this.level.set(l);
   }
 
   // The "Update reserves" button had no handler at all before this — there

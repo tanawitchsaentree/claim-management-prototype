@@ -4,6 +4,19 @@ import { MockBaseService } from './mock-base.service';
 import { FinancialOverview, FinancialReserve } from '../../models/financial-overview.model';
 import { MockSectionService } from './mock-section.service';
 import { MockStateService } from '../state/mock-state.service';
+import policiesData from '../data/policies.json';
+
+// Short label after the party in the Reserves table's Section column.
+const SECTION_CODES: Record<string, string> = {
+  'material-damage': 'PD',
+  'business-interruption': 'BI'
+};
+export function sectionCodeFor(damageType: string): string {
+  return (
+    SECTION_CODES[damageType] ??
+    damageType.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase())
+  );
+}
 
 @Injectable({ providedIn: 'root' })
 export class MockFinancialOverviewService extends MockBaseService {
@@ -14,22 +27,28 @@ export class MockFinancialOverviewService extends MockBaseService {
     return this.respond(structuredClone(this.getOrCreate(claimId)));
   }
 
-  // "Add reserve" — the Reserves view's "Update reserves" button had no
-  // handler at all before this; there was no way to set a reserve on a
-  // claim outside the FNOL wizard's step-reserves.
+  // "Update reserves" and the FNOL submit both land here. The claim-level
+  // list is the single source of truth (claim closure reads it); a section's
+  // reserves are the ones whose sectionId points at it.
   addReserve(
     claimId: string,
     input: Omit<FinancialReserve, 'reserveId'>
   ): Observable<FinancialReserve> {
     const overview = structuredClone(this.getOrCreate(claimId));
-    const reserve: FinancialReserve = { ...input, reserveId: `RES-${Date.now()}` };
-    overview.reserves = [...overview.reserves, reserve];
-    overview.summary.outstandingReserves += input.reserveValue;
     const section = overview.sections.find(
       s => s.sectionId === input.section || s.sectionName === input.section
     );
+    const real = section ? this.sectionSvc.getByClaimIdSync(claimId).find(r => r.id === section.sectionId) : undefined;
+    const reserve: FinancialReserve = {
+      ...input,
+      section: section?.sectionName ?? input.section,
+      sectionId: section?.sectionId,
+      sectionCode: input.sectionCode ?? section?.code ?? (real ? sectionCodeFor(real.damageType) : undefined),
+      reserveId: this.nextReserveId(claimId, overview, section?.sectionId, input.damagedItem)
+    };
+    overview.reserves = [...overview.reserves, reserve];
+    overview.summary.outstandingReserves += input.reserveValue;
     if (section) {
-      section.reserves = [...section.reserves, reserve];
       // Close Section's "Reserves released to zero" checklist item reads
       // ClaimSection.hasOpenReserves directly — a reserve attached here
       // without this flip left that check green forever, letting a section
@@ -37,13 +56,37 @@ export class MockFinancialOverviewService extends MockBaseService {
       // patchSection mutates MockSectionService's state synchronously inside
       // the call itself — the returned Observable is just its respond()
       // wrapper and doesn't need subscribing to take effect.
-      const hasOpenReserves = section.reserves.some(
-        r => r.status !== 'Rejected' && r.reserveValue > 0
+      const hasOpenReserves = overview.reserves.some(
+        r => r.sectionId === section.sectionId && r.status !== 'Rejected' && r.reserveValue > 0
       );
       this.sectionSvc.patchSection(section.sectionId, { hasOpenReserves });
     }
     this.stateSvc.patchFinancialOverview(claimId, overview);
     return this.respond(reserve);
+  }
+
+  // RES-C-00063671-2026.234.1.1.2 (shape taken from the production screen):
+  // client code, then year . claim no . section no . damaged item no . reserve no.
+  // What each trailing number means is my reading of the shape, not confirmed.
+  private nextReserveId(
+    claimId: string,
+    overview: FinancialOverview,
+    sectionId: string | undefined,
+    damagedItem: string
+  ): string {
+    const claim = this.stateSvc.state().claims.find(c => c.claimId === claimId);
+    const clientCode =
+      (policiesData as { policyNumber: string; clientNameCode?: string }[]).find(
+        p => p.policyNumber === claim?.policyNumber
+      )?.clientNameCode ?? 'C-00000000';
+    const year = (claim?.dateCreated ?? '').slice(0, 4) || String(new Date().getFullYear());
+    const claimNo = claimId.match(/(\d+)$/)?.[1] ?? '0';
+    const sectionNo = sectionId ? overview.sections.findIndex(s => s.sectionId === sectionId) + 1 : 0;
+    const inSection = overview.reserves.filter(r => (r.sectionId ?? undefined) === sectionId);
+    const items = [...new Set(inSection.map(r => r.damagedItem).filter(Boolean))];
+    const itemNo = damagedItem ? (items.includes(damagedItem) ? items.indexOf(damagedItem) : items.length) + 1 : 0;
+    const reserveNo = inSection.filter(r => (r.damagedItem || '') === (damagedItem || '')).length + 1;
+    return `RES-${clientCode}-${year}.${claimNo}.${sectionNo}.${itemNo}.${reserveNo}`;
   }
 
   private getOrCreate(claimId: string): FinancialOverview {
@@ -78,6 +121,7 @@ export class MockFinancialOverviewService extends MockBaseService {
       overview.sections.push({
         sectionId: section.id,
         sectionName: section.name,
+        code: sectionCodeFor(section.damageType),
         currency: overview.details.currency,
         exchangeRate: 1,
         baseCurrency: overview.details.currency,

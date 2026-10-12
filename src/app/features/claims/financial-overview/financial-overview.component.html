@@ -1,24 +1,18 @@
 <app-blocker-return-banner></app-blocker-return-banner>
 
 <!-- ── Page header ─────────────────────────────────────────────────────── -->
-<app-page-header [title]="viewTitle()">
-  <div actions class="fo-level-toggle">
-    <button
-      [nxButton]="level() === 'claim' ? 'primary small' : 'secondary small'"
-      type="button"
-      (click)="setLevel('claim')"
-    >
-      Claim level
-    </button>
-    <button
-      [nxButton]="level() === 'section' ? 'primary small' : 'secondary small'"
-      type="button"
-      (click)="setLevel('section')"
-    >
-      Section level
-    </button>
-  </div>
-</app-page-header>
+<app-page-header [title]="viewTitle()"></app-page-header>
+
+<!-- Claim/Section level: a two-state view switch, so NDBX radio-toggle. -->
+<nx-radio-toggle
+  class="fo-level-toggle"
+  ariaLabel="Reserve level"
+  variant="small"
+  [formControl]="levelControl"
+>
+  <nx-radio-toggle-button value="claim">Claim level</nx-radio-toggle-button>
+  <nx-radio-toggle-button value="section">Section level</nx-radio-toggle-button>
+</nx-radio-toggle>
 
 @if (actionsDisabled()) {
   <nx-message context="info" class="fo-closed-banner"
@@ -229,7 +223,7 @@
               <td nxCell>{{ p.handler }}</td>
               <td nxCell>{{ p.sectionType }}</td>
               <td nxCell>
-                <span class="fo-badge fo-badge--{{ p.status.toLowerCase() }}">{{ p.status }}</span>
+                <nx-badge [type]="badgeFor(p.status).type" [colorScheme]="badgeFor(p.status).scheme">{{ p.status }}</nx-badge>
               </td>
               <td nxCell class="fo-cell--right">
                 {{ p.amount | currency: currency() : 'symbol' : '1.0-0' }}
@@ -245,7 +239,7 @@
 
   <!-- ── RESERVES ───────────────────────────────────────────────────────── -->
   @else if (view() === 'reserves') {
-    @let rows = level() === 'claim' ? fo.reserves : (activeSection()?.reserves ?? []);
+    @let rows = reserveRows();
 
     <div class="fo-toolbar">
       <p class="fo-count">{{ rows.length }} items</p>
@@ -263,83 +257,98 @@
     @if (rows.length === 0) {
       <app-empty-state message="No reserves found."></app-empty-state>
     } @else {
-      <table nxTable class="fo-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell class="fo-col--history"></th>
-            <th nxHeaderCell>Reserve ID</th>
-            <th nxHeaderCell>Section</th>
-            <th nxHeaderCell>Damage item</th>
-            <th nxHeaderCell>Reserve type</th>
-            <th nxHeaderCell>Reserve sub-type</th>
-            <th nxHeaderCell>Status</th>
-            <th nxHeaderCell class="fo-cell--right">Reserve amount</th>
-            <th nxHeaderCell>Currency</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of rows; track r.reserveId) {
+      <!-- Wider than the viewport on purpose (production scrolls sideways) -->
+      <div class="fo-table-wrap">
+        <table nxTable class="fo-table fo-table--reserves">
+          <thead>
             <tr nxTableRow>
-              <td nxCell class="fo-col--history">
-                <button
-                  class="fo-history-btn"
-                  type="button"
-                  (click)="toggleReserveHistory(r.reserveId)"
-                  title="History"
-                  aria-label="History"
-                >
-                  <nx-icon name="clock" size="s"></nx-icon>
-                </button>
-              </td>
-              <td nxCell>
-                <span class="fo-link">{{ r.reserveId }}</span>
-              </td>
-              <td nxCell>{{ r.section }}</td>
-              <td nxCell>{{ r.damagedItem || 'NA' }}</td>
-              <td nxCell>{{ r.reserveType }}</td>
-              <td nxCell>{{ r.reserveSubType }}</td>
-              <td nxCell>
-                <span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span>
-              </td>
-              <td nxCell class="fo-cell--right">
-                {{ r.reserveValue | currency: currency() : 'symbol' : '1.0-0' }}
-              </td>
-              <td nxCell>{{ r.currency }}</td>
+              <th nxHeaderCell class="fo-col--history">History</th>
+              <th nxHeaderCell>Reserve ID</th>
+              <th nxHeaderCell>Section</th>
+              <th nxHeaderCell>Damaged Item</th>
+              <th nxHeaderCell>Reserve type</th>
+              <th nxHeaderCell>Reserve sub-type</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell class="fo-cell--right">Reserve amount</th>
+              <th nxHeaderCell>Currency</th>
             </tr>
-            @if (isReserveExpanded(r.reserveId) && $any(r).history?.length) {
-              <tr nxTableRow class="fo-history-row">
-                <td nxCell [attr.colspan]="9">
-                  <div class="fo-history-panel">
-                    <p class="fo-history-panel__title">Reserve history</p>
-                    <table class="fo-history-table">
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th class="fo-cell--right">Amount</th>
-                          <th>Reason</th>
-                          <th>User</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (h of $any(r).history; track h.date) {
-                          <tr>
-                            <td class="fo-cell--nowrap">{{ h.date }}</td>
-                            <td class="fo-cell--right">
-                              {{ h.amount | currency: currency() : 'symbol' : '1.0-0' }}
-                            </td>
-                            <td>{{ h.reason }}</td>
-                            <td>{{ h.user }}</td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </div>
+          </thead>
+          <tbody>
+            @for (r of rows; track r.reserveId) {
+              <tr nxTableRow>
+                <td nxCell class="fo-col--history">
+                  <button
+                    nxIconButton="tertiary small"
+                    type="button"
+                    (click)="toggleReserveHistory(r.reserveId)"
+                    aria-label="History"
+                  >
+                    <nx-icon name="clock-o"></nx-icon>
+                  </button>
                 </td>
+                <td nxCell class="fo-cell--nowrap">
+                  <button
+                    nxPlainButton
+                    type="button"
+                    (click)="toggleReserveHistory(r.reserveId)"
+                    [attr.aria-label]="'Show history of ' + r.reserveId"
+                  >
+                    {{ r.reserveId }}
+                  </button>
+                </td>
+                <td nxCell class="fo-cell--truncate" [nxTooltip]="sectionLabel(r)">
+                  {{ sectionLabel(r) }}
+                </td>
+                <td nxCell>{{ r.damagedItem || '—' }}</td>
+                <td nxCell>{{ r.reserveType }}</td>
+                <td nxCell>{{ r.reserveSubType }}</td>
+                <td nxCell>
+                  <nx-badge [type]="badgeFor(r.status).type" [colorScheme]="badgeFor(r.status).scheme">{{ r.status }}</nx-badge>
+                </td>
+                <td nxCell class="fo-cell--right">
+                  {{ r.reserveValue | currency: r.currency : 'symbol' : '1.0-0' }}
+                </td>
+                <td nxCell>{{ r.currency }}</td>
               </tr>
+              @if (isReserveExpanded(r.reserveId)) {
+                <tr nxTableRow class="fo-history-row">
+                  <td nxCell [attr.colspan]="9">
+                    <div class="fo-history-panel">
+                      <p class="fo-history-panel__title">Reserve history</p>
+                      @if ($any(r).history?.length) {
+                        <table class="fo-history-table">
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th class="fo-cell--right">Amount</th>
+                              <th>Reason</th>
+                              <th>User</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (h of $any(r).history; track h.date) {
+                              <tr>
+                                <td class="fo-cell--nowrap">{{ h.date }}</td>
+                                <td class="fo-cell--right">
+                                  {{ h.amount | currency: r.currency : 'symbol' : '1.0-0' }}
+                                </td>
+                                <td>{{ h.reason }}</td>
+                                <td>{{ h.user }}</td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      } @else {
+                        <p class="fo-history-panel__empty">No changes recorded since this reserve was set.</p>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
             }
-          }
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     }
   }
 
@@ -382,7 +391,7 @@
               </td>
               <td nxCell>{{ r.currency }}</td>
               <td nxCell>
-                <span class="fo-badge fo-badge--{{ r.status.toLowerCase() }}">{{ r.status }}</span>
+                <nx-badge [type]="badgeFor(r.status).type" [colorScheme]="badgeFor(r.status).scheme">{{ r.status }}</nx-badge>
               </td>
               <td nxCell>{{ r.party || '—' }}</td>
               <td nxCell class="fo-cell--nowrap">{{ r.bookingDate }}</td>

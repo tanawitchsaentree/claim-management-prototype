@@ -82,7 +82,10 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // "today" — user wanted the Claims portfolio widget's top-5 to show a mix
 // including at least 2 skeleton claims (only 'awaiting-policy' skeletons
 // are eligible there; 'matched'/'abandoned' are deliberately excluded).
-const STATE_VERSION = 'recovery-cases-v12';
+// Bumped again: CLM-2024-001's reserves were re-seeded (production-style IDs,
+// sectionId/sectionCode, party names) and section-level reserves now derive from
+// the claim-level list. Cached reserves would show blank Section codes.
+const STATE_VERSION = 'recovery-cases-v13';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a

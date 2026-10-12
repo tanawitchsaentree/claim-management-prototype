@@ -111,11 +111,12 @@
     }
 
     @if (!hasItems && !addingItem) {
-      <div class="items-empty">
-        <p class="items-empty__text">No items added yet. Use the buttons below to provide the data.</p>
-        <button nxButton="primary small" type="button" (click)="startAddItem()">Add item</button>
-        <button nxButton="tertiary small" type="button" [disabled]="true">Upload items</button>
-      </div>
+      <app-empty-state message="No items added yet. Use the buttons below to provide the data.">
+        <div action>
+          <button nxButton="primary small" type="button" (click)="startAddItem()">Add item</button>
+          <button nxButton="tertiary small" type="button" [disabled]="true">Upload items</button>
+        </div>
+      </app-empty-state>
     }
 
     @if (hasItems) {
