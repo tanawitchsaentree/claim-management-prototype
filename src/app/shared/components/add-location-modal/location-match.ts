@@ -26,3 +26,25 @@ export function rankByCloseness(
     .sort((a, b) => b.s - a.s || a.i - b.i)
     .map(x => x.c);
 }
+
+export type LocationField = 'street' | 'postal code' | 'city' | 'country';
+
+/**
+ * Which fields of a policy location differ from the typed one. Compared
+ * trimmed + case-insensitive; the typed country is free text ("Germany")
+ * while the policy holds a code ("DE"), so the caller passes the country's
+ * display name for the policy side.
+ */
+export function differingFields(
+  original: LocationItem,
+  candidate: PolicyLocation,
+  candidateCountryName: string
+): LocationField[] {
+  const out: LocationField[] = [];
+  if (norm(original.addressLine1) !== norm(candidate.addressLine1)) out.push('street');
+  if (norm(original.postalCode) !== norm(candidate.postalCode)) out.push('postal code');
+  if (norm(original.city) !== norm(candidate.city)) out.push('city');
+  const c = norm(original.country);
+  if (c !== norm(candidate.country) && c !== norm(candidateCountryName)) out.push('country');
+  return out;
+}

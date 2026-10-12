@@ -20,10 +20,11 @@ import {
   AddLocationModalResult,
   GisAddressSuggestion,
   LookupOption,
-  LocationItem,
-  formatLocationItem
+  LocationItem
 } from '../../../core/models';
-import { rankByCloseness } from './location-match';
+import { rankByCloseness, differingFields, LocationField } from './location-match';
+import { NxBadgeModule } from '@allianz/ng-aquila/badge';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface AddLocationModalData {
@@ -53,6 +54,8 @@ type Screen = 'policy' | 'manual';
     NxRadioModule,
     NxTableModule,
     NxCheckboxModule,
+    NxBadgeModule,
+    NxMessageModule,
     EmptyStateComponent
   ],
   templateUrl: './add-location-modal.component.html',
@@ -70,7 +73,6 @@ export class AddLocationModalComponent implements OnInit {
   // other via a text button, matching what production actually does.
   readonly screen = signal<Screen>('policy');
   readonly reconfirm = this.data.reconfirm ?? null;
-  readonly originalText = (this.data.reconfirm?.original ?? []).map(formatLocationItem).join('; ');
 
   readonly countries$: Observable<LookupOption[]> = this.lookupSvc.getCountries().pipe(
     catchError(() => of([] as LookupOption[])),
@@ -156,12 +158,37 @@ export class AddLocationModalComponent implements OnInit {
       const ranked = rankByCloseness(this.data.reconfirm.original, this.data.policyLocations);
       this.hasSearched.set(true);
       this.policyResults.set(ranked);
-      this.selectedPolicyId.set(ranked[0]?.id ?? null);
+      this.selectedPolicyId.set(this.noCloseMatch() ? null : (ranked[0]?.id ?? null));
       return;
     }
     // Reference (production, 2026-09-25): body is empty until the user runs
     // a search — locations are not pre-listed on open.
   }
+
+  // ── Confirm loss location: how each policy location differs from the typed one
+  private readonly countryOptions = toSignal(this.countries$, { initialValue: [] as LookupOption[] });
+
+  /** Differences vs the closest typed location (fewest differing fields). */
+  diffsFor(loc: PolicyLocation): LocationField[] {
+    const name = this.countryOptions().find(c => c.value === loc.country)?.label ?? loc.country;
+    const all = (this.data.reconfirm?.original ?? []).map(o => differingFields(o, loc, name));
+    return all.sort((a, b) => a.length - b.length)[0] ?? [];
+  }
+
+  differs(loc: PolicyLocation, field: LocationField): boolean {
+    return this.diffsFor(loc).includes(field);
+  }
+
+  /** True when no policy location shares the typed city or postal code. */
+  readonly noCloseMatch = computed(
+    () =>
+      !!this.reconfirm &&
+      this.policyResults().length > 0 &&
+      this.policyResults().every(l => {
+        const d = this.diffsFor(l);
+        return d.includes('city') && d.includes('postal code');
+      })
+  );
 
   goToManual(): void {
     this.screen.set('manual');

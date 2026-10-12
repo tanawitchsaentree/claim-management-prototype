@@ -185,3 +185,12 @@
 .alm-manual-form__notes {
   width: 100%;
 }
+
+// Confirm loss location: the typed address pinned above the candidates.
+.alm-row--entered td {
+  background: var(--ui-02);
+}
+
+.alm-notice {
+  margin-bottom: 16px;
+}

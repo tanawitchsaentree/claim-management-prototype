@@ -8,8 +8,8 @@
   </h2>
   @if (reconfirm) {
     <p class="alm-subtitle">
-      Entered earlier: {{ originalText }}. Choose the policy location it refers to. The closest
-      match is listed first.
+      Choose the policy location the address entered earlier refers to. The closest match is
+      listed first.
     </p>
   } @else {
     <p class="alm-subtitle">Enter address attributes to search locations covered by this policy</p>
@@ -19,6 +19,7 @@
 <div class="alm-body" tabindex="0">
   @if (screen() === 'policy') {
     <!-- ─── Add location from policy ───────────────────────────────────── -->
+    @if (!reconfirm) {
     <form [formGroup]="policyForm" class="alm-form">
       <div class="alm-search-row">
         <div class="alm-search-row__inputs">
@@ -57,6 +58,14 @@
         </div>
       </div>
     </form>
+    }
+
+    @if (reconfirm && noCloseMatch()) {
+      <nx-message context="warning" class="alm-notice">
+        None of the policy locations is in the same city or postal code as the address entered.
+        Check which one the loss happened at before confirming.
+      </nx-message>
+    }
 
     @if (hasSearched() && policyResults().length === 0) {
       <app-empty-state message="No locations found."></app-empty-state>
@@ -71,9 +80,25 @@
               <th nxHeaderCell>Postal code</th>
               <th nxHeaderCell>City</th>
               <th nxHeaderCell>Property ID</th>
+              @if (reconfirm) {
+                <th nxHeaderCell>Compared with entered</th>
+              }
             </tr>
           </thead>
           <tbody>
+            @if (reconfirm; as r) {
+              @for (o of r.original; track o.id) {
+                <tr nxTableRow class="alm-row--entered">
+                  <td nxCell class="alm-col-pick"></td>
+                  <td nxCell>{{ o.displayName }}</td>
+                  <td nxCell>{{ o.addressLine1 }}</td>
+                  <td nxCell>{{ o.postalCode }}</td>
+                  <td nxCell>{{ o.city }}</td>
+                  <td nxCell>–</td>
+                  <td nxCell><nx-badge type="active">Entered earlier</nx-badge></td>
+                </tr>
+              }
+            }
             @for (loc of policyResults(); track loc.id) {
               <tr
                 nxTableRow
@@ -96,11 +121,32 @@
                   }
                 </td>
                 <td nxCell
-                  >{{ loc.addressLine1 }}@if (loc.addressLine2) {, {{ loc.addressLine2 }}}</td
+                  >@if (reconfirm && differs(loc, 'street')) {<strong>{{ loc.addressLine1 }}</strong>} @else {{{ loc.addressLine1 }}}@if (loc.addressLine2) {, {{ loc.addressLine2 }}}</td
                 >
-                <td nxCell>{{ loc.postalCode }}</td>
-                <td nxCell>{{ loc.city }}</td>
+                <td nxCell>
+                  @if (reconfirm && differs(loc, 'postal code')) {
+                    <strong>{{ loc.postalCode }}</strong>
+                  } @else {
+                    {{ loc.postalCode }}
+                  }
+                </td>
+                <td nxCell>
+                  @if (reconfirm && differs(loc, 'city')) {
+                    <strong>{{ loc.city }}</strong>
+                  } @else {
+                    {{ loc.city }}
+                  }
+                </td>
                 <td nxCell>{{ loc.propertyId ?? '–' }}</td>
+                @if (reconfirm) {
+                  <td nxCell>
+                    @if (diffsFor(loc).length === 0) {
+                      <nx-badge type="positive">Exact match</nx-badge>
+                    } @else {
+                      <nx-badge type="critical">Differs: {{ diffsFor(loc).join(', ') }}</nx-badge>
+                    }
+                  </td>
+                }
               </tr>
             }
           </tbody>
