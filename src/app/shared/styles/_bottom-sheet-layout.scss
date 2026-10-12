@@ -1,0 +1,136 @@
+// Bottom-sheet layout: the near-full-screen sheets opened with
+// panelClass 'bottom-sheet-modal-panel' (Link policy picker, Confirm loss
+// location, mass-event edit, ...). The sheet itself has NO wrapper padding
+// (src/styles.scss zeroes it), so unlike _modal-layout.scss these mixins own
+// all the padding. Two sheets in one flow (picker -> location) MUST use the
+// same values, otherwise the title, spacing and table text change size when
+// one hands over to the other.
+//
+// Usage:
+//   @use '../../styles/bottom-sheet-layout' as sheet;
+//   :host { @include sheet.shell; }
+//   .x-close { @include sheet.close; }  .x-close-x { @include sheet.close-x; }
+//   .x-header { @include sheet.header; } .x-title { @include sheet.title; }
+//   .x-subtitle { @include sheet.subtitle; }
+//   .x-body { @include sheet.body; }  .x-footer { @include sheet.footer; }
+
+@mixin shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ui-01);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+@mixin close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  z-index: 1;
+  border-radius: 4px;
+
+  &:hover {
+    color: var(--hover-link);
+    background: var(--claim-overlay-hover);
+  }
+}
+
+// CSS-drawn X: does not depend on the icon font.
+@mixin close-x {
+  position: relative;
+  width: 16px;
+  height: 16px;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+  }
+  &::before {
+    transform: rotate(45deg);
+  }
+  &::after {
+    transform: rotate(-45deg);
+  }
+}
+
+@mixin header {
+  flex-shrink: 0;
+  padding: var(--space-2xl) var(--space-2xl) 0;
+}
+
+@mixin title {
+  margin: 0 0 4px;
+  font-size: var(--heading-04-font-size);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-01);
+}
+
+@mixin subtitle {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+@mixin body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2xl);
+}
+
+@mixin footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--ui-04);
+  padding: var(--space-base) var(--space-3xl);
+  background: var(--ui-01);
+}
+
+@mixin footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+// Results tables inside a sheet: same header/cell type as FNOL search's
+// .results-table, so a table looks the same wherever it appears in a sheet.
+@mixin table-cells {
+  th {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+    padding: var(--space-md) var(--space-base);
+    text-align: left;
+    border-bottom: 2px solid var(--ui-04);
+    white-space: nowrap;
+    background: var(--ui-01);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  td {
+    font-size: var(--paragraph-03-font-size);
+    line-height: normal;
+    color: var(--text-01);
+    padding: var(--space-md) var(--space-base);
+    border-bottom: 1px solid var(--ui-04);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+}

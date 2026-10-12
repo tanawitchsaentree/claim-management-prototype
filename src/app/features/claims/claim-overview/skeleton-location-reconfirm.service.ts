@@ -64,7 +64,7 @@ export class SkeletonLocationReconfirmService {
           policyLineOfBusiness: lineOfBusiness?.policy
         }
       },
-      showCloseIcon: true,
+      showCloseIcon: false,
       // Takes over from the policy picker in place: no slide, no backdrop fade.
       panelClass: ['bottom-sheet-modal-panel', 'bottom-sheet-modal-panel--instant'],
       backdropClass: 'instant-backdrop'

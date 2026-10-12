@@ -1,22 +1,35 @@
-@use '../../styles/modal-layout' as modal;
+@use '../../styles/bottom-sheet-layout' as sheet;
 
+// Same bottom-sheet shell as the Link policy picker (convert-skeleton-modal),
+// so the hand-over between the two does not change title size, spacing or
+// table text. All values live in shared/styles/_bottom-sheet-layout.scss.
 :host {
-  @include modal.shell;
-  max-height: 100% !important;
-  height: 100%;
+  @include sheet.shell;
+}
+
+.alm-close {
+  @include sheet.close;
+}
+.alm-close-x {
+  @include sheet.close-x;
 }
 
 .alm-header {
-  @include modal.header;
+  @include sheet.header;
 }
 .alm-title {
-  @include modal.title;
+  @include sheet.title;
 }
 .alm-body {
-  @include modal.body;
+  @include sheet.body;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 .alm-footer {
-  @include modal.footer;
+  @include sheet.footer;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 .alm-footer__actions {
@@ -36,8 +49,7 @@
 }
 
 .alm-subtitle {
-  margin: 0 0 var(--space-base);
-  color: var(--text-muted);
+  @include sheet.subtitle;
 }
 
 // ─── Search row ───────────────────────────────────────────────────────────
@@ -94,6 +106,18 @@
 // ─── Results table ────────────────────────────────────────────────────────
 .alm-table {
   width: 100%;
+}
+
+// Same header / cell type as the Link policy picker's table.
+:host ::ng-deep .alm-table {
+  @include sheet.table-cells;
+
+  // NDBX draws a heavy rule under the whole table; the picker's table has none.
+  border-bottom: 0;
+
+  tbody tr:last-child td {
+    border-bottom: 1px solid var(--ui-04);
+  }
 }
 .alm-col-pick {
   width: 48px;
