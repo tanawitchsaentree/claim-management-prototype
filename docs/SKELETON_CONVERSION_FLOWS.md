@@ -64,7 +64,7 @@ What creation writes:
 ## 3. What "Link policy" does (the common part)
 
 1. Handler opens **Link policy** from the claim overview (button) or from the FNOL search results (row menu).
-2. The picker lists policies, with their **line of business**. Client name is pre-filled with the skeleton's client; policy number can be added. A row is selectable only if the client matches and the loss date is inside the policy period. Other rows show a reason ("Different client", "Loss date outside policy period").
+2. The picker is the same search as FNOL "Client and policy search" (Client name, Policy number, Underwriting year, Search, Reset search, Show more for Broker and Line of Business), with **Clients** and **Policies** result tabs. Client name is **pre-filled with the skeleton's client** and the search runs when the picker opens. Choosing a row on the Clients tab narrows the Policies tab to that client. A policy row is selectable only if the loss date is inside the policy period (and, while the client name is left as typed, the client matches). Other rows are greyed with a reason such as "Loss date outside policy period".
 3. Picking a row shows the **Link policy** confirm over the picker.
 4. Confirm: the policy is attached, the state becomes `linked`, two things are created: a task "Set up reserves" (due in 3 days, high priority) and, only when the skeleton has a stored location, a task "Confirm loss location".
 5. **Claim overview path only:** the **Confirm loss location** sheet opens straight away (no slide), listing the policy's active locations with the skeleton's location pinned on top. A **Line of business** column shows the skeleton claim's value on the pinned row and the policy's value on the others (bold when they differ). The handler picks one and confirms. The claim location is replaced and the "Confirm loss location" task is closed.
@@ -82,7 +82,7 @@ How many flows: **9 flows that depend on the data (L1 to L9)**, **2 that depend 
 |---|---|---|---|---|---|---|
 | **L1** | Exact match, one policy location | **SK-2024-005** | 1 policy | "Exact match", pre-selected | Location replaced, location task closed. 1 section | Verified |
 | **L2** | Near match, policy has several locations | **SK-2024-004** | 1 policy | "Differs: street" on the closest, pre-selected | Location replaced, task closed. 1 section (created now: see note) | Verified |
-| **L3** | Several eligible policies, the first has locations | **SK-2024-001** (pick POL-2024-021) | 3 eligible, 1 shown as "Different client" | "Differs: street, postal code" pre-selected | Location replaced, task closed | Verified |
+| **L3** | Several eligible policies, the first has locations | **SK-2024-001** (pick POL-2024-021) | 3 eligible | "Differs: street, postal code" pre-selected | Location replaced, task closed | Verified |
 | **L4** | The chosen policy has **no locations** | **SK-2024-001** (pick POL-2024-022 or 023) | same as L3 | **Skipped** | Location stays as typed, task "Confirm loss location" stays open | Verified |
 | **L5** | **No close match**: no policy location shares the city or postal code | **SK-2024-006** | 1 policy | Warning shown, **nothing pre-selected**, Confirm disabled until one is chosen | If cancelled: location stays typed, task stays open | Verified |
 | **L6** | **No eligible policy**: the only policy expired before the loss date | **SK-2024-007** | 1 row, greyed "Loss date outside policy period" | Never reached | Dead end: only Cancel. See G5 | Verified |

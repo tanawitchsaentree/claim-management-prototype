@@ -20,6 +20,7 @@
 <div class="csm-modal__body" tabindex="0">
   <p class="csm-intro">Select the policy to link this skeleton claim to.</p>
 
+  <!-- Same general search fields as FNOL "Client and policy search" -->
   <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="csm-search" novalidate>
     <div class="csm-search__row">
       <div class="csm-search__inputs">
@@ -29,80 +30,144 @@
         <nx-formfield label="Policy number">
           <input nxInput formControlName="policyNumber" />
         </nx-formfield>
+        <nx-formfield label="Underwriting year">
+          <nx-dropdown formControlName="underwritingYear" placeholder="Select">
+            @for (year of years; track year) {
+              <nx-dropdown-item [value]="year">{{ year }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
       </div>
       <div class="csm-search__actions">
-        <button nxButton="primary small" type="submit">Search</button>
+        <button nxButton="primary small" type="submit" [disabled]="searching()">Search</button>
         <button nxButton="tertiary small" type="button" (click)="onReset()">Reset search</button>
       </div>
     </div>
+
+    @if (showMore()) {
+      <div class="csm-search__inputs csm-search__inputs--more">
+        <nx-formfield label="Broker">
+          <input nxInput formControlName="broker" />
+        </nx-formfield>
+        <nx-formfield label="Line of Business">
+          <nx-dropdown formControlName="lineOfBusiness" placeholder="Select">
+            @for (lob of linesOfBusiness; track lob.value) {
+              <nx-dropdown-item [value]="lob.value">{{ lob.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+      </div>
+    }
+
+    <button type="button" class="csm-toggle" (click)="showMore.set(!showMore())">
+      <nx-icon [name]="showMore() ? 'chevron-up-small' : 'chevron-down-small'"></nx-icon>
+      {{ showMore() ? 'Show less' : 'Show more' }}
+    </button>
   </form>
 
-  @if (loading()) {
+  <!-- Results: Clients / Policies tabs, as in FNOL search -->
+  @if (searching()) {
     <div class="csm-loading">
       <nx-spinner size="small"></nx-spinner>
-      <span>Loading policies…</span>
+      <span>Searching…</span>
     </div>
-  } @else if (rows().length === 0) {
-    <app-empty-state
-      [message]="
-        'No policies match that search.'
-      "
-    ></app-empty-state>
   } @else {
-    <!-- Sortable-look header (decorative — same pattern as
-         step-1-search.component.html's .th-sort, no live sort wired on
-         either). No Action column — this table only ever picks a row. -->
-    <table class="csm-table">
-      <thead>
-        <tr>
-          <th class="csm-col-radio"></th>
-          <th><span class="th-sort">Policy number <nx-icon name="chevron-down-small"></nx-icon></span></th>
-          <th><span class="th-sort">Client name <nx-icon name="chevron-down-small"></nx-icon></span></th>
-          <th><span class="th-sort">Line of business <nx-icon name="chevron-down-small"></nx-icon></span></th>
-          <th><span class="th-sort">Inception date <nx-icon name="chevron-down-small"></nx-icon></span></th>
-          <th><span class="th-sort">Expiry date <nx-icon name="chevron-down-small"></nx-icon></span></th>
-          <th><span class="th-sort">Status <nx-icon name="chevron-down-small"></nx-icon></span></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (row of rows(); track row.policy.policyNumber) {
-          <tr
-            class="csm-row"
-            [class.csm-row--eligible]="row.eligible"
-            [class.csm-row--ineligible]="!row.eligible"
-            [class.csm-row--selected]="selectedNumber() === row.policy.policyNumber"
-            (click)="select(row)"
-          >
-            <td class="csm-col-radio">
-              @if (row.eligible) {
-                <nx-radio
-                  name="policySelect"
-                  labelSize="small"
-                  [checked]="selectedNumber() === row.policy.policyNumber"
-                  [attr.aria-label]="'Select policy ' + row.policy.policyNumber"
-                  (click)="select(row); $event.stopPropagation()"
-                ></nx-radio>
-              }
-            </td>
-            <td>{{ row.policy.policyNumber }}</td>
-            <td>{{ row.policy.clientName }}</td>
-            <td>{{ row.policy.lineOfBusiness }}</td>
-            <td>{{ row.policy.effectiveDate }}</td>
-            <td>{{ row.policy.expiryDate }}</td>
-            <td>
-              @if (row.eligible) {
-                <span class="csm-status csm-status--ok">{{ row.policy.status }}</span>
-              } @else {
-                <span class="csm-reason">
-                  <nx-icon name="exclamation-circle-o" class="csm-reason-icon"></nx-icon>
-                  {{ row.reason }}
-                </span>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+    <nx-tab-group class="csm-tabs" [selectedIndex]="activeTab()" (selectedIndexChange)="activeTab.set($event)">
+      <nx-tab>
+        <ng-template nxTabLabel>Clients ({{ clients().length }})</ng-template>
+      </nx-tab>
+      <nx-tab>
+        <ng-template nxTabLabel>Policies ({{ rows().length }})</ng-template>
+      </nx-tab>
+    </nx-tab-group>
+
+    @if (activeTab() === 0) {
+      @if (clients().length === 0) {
+        <app-empty-state message="No clients found."></app-empty-state>
+      } @else {
+        <table class="csm-table">
+          <thead>
+            <tr>
+              <th class="csm-col-radio"></th>
+              <th>Legal name</th>
+              <th>Address</th>
+              <th>Country</th>
+              <th>Role</th>
+              <th>Party ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (client of clients(); track client.partyId) {
+              <tr class="csm-row csm-row--eligible" (click)="onSelectClient(client)">
+                <td class="csm-col-radio"></td>
+                <td>{{ client.legalName }}</td>
+                <td>{{ client.address }}</td>
+                <td>{{ client.country }}</td>
+                <td>{{ client.role }}</td>
+                <td>{{ client.partyId }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <p class="csm-hint">Choose a client to see their policies.</p>
+      }
+    } @else {
+      @if (rows().length === 0) {
+        <app-empty-state message="No policies found."></app-empty-state>
+      } @else {
+        <table class="csm-table">
+          <thead>
+            <tr>
+              <th class="csm-col-radio"></th>
+              <th>Policy number</th>
+              <th>Client name</th>
+              <th>Line of business</th>
+              <th>Inception date</th>
+              <th>Expiry date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.policy.policyNumber) {
+              <tr
+                class="csm-row"
+                [class.csm-row--eligible]="row.eligible"
+                [class.csm-row--ineligible]="!row.eligible"
+                [class.csm-row--selected]="selectedNumber() === row.policy.policyNumber"
+                (click)="select(row)"
+              >
+                <td class="csm-col-radio">
+                  @if (row.eligible) {
+                    <nx-radio
+                      name="policySelect"
+                      labelSize="small"
+                      [checked]="selectedNumber() === row.policy.policyNumber"
+                      [attr.aria-label]="'Select policy ' + row.policy.policyNumber"
+                      (click)="select(row); $event.stopPropagation()"
+                    ></nx-radio>
+                  }
+                </td>
+                <td>{{ row.policy.policyNumber }}</td>
+                <td>{{ row.policy.clientName }}</td>
+                <td>{{ row.policy.lineOfBusiness }}</td>
+                <td>{{ row.policy.effectiveDate }}</td>
+                <td>{{ row.policy.expiryDate }}</td>
+                <td>
+                  @if (row.eligible) {
+                    <app-status-chip [status]="row.policy.status" domain="policy"></app-status-chip>
+                  } @else {
+                    <span class="csm-reason">
+                      <nx-icon name="exclamation-circle-o" class="csm-reason-icon"></nx-icon>
+                      {{ row.reason }}
+                    </span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    }
   }
 </div>
 
