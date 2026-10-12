@@ -16,6 +16,10 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface ConvertSkeletonModalData {
   skeleton: Claim;
+  // Called when a policy is picked. Resolve true to close the picker (the caller
+  // has taken over), false to stay on the list. Without it, picking just closes
+  // the picker with the policy.
+  onPick?: (policy: PolicySearchResult) => Promise<boolean>;
 }
 
 // Result: the eligible policy the user picked to bind the skeleton to (or null on cancel)
@@ -152,12 +156,24 @@ export class ConvertSkeletonModalComponent implements OnInit {
     return { policy, eligible: true, reason: null };
   }
 
+  readonly picking = signal(false);
+
   // Picking a policy goes straight on to the "Link policy" confirm: no separate
-  // Continue click between the two.
-  select(row: PolicyRow): void {
-    if (!row.eligible) return;
+  // Continue click between the two, and the list stays open underneath it.
+  async select(row: PolicyRow): Promise<void> {
+    if (!row.eligible || this.picking()) return;
     this.selectedNumber.set(row.policy.policyNumber);
-    this.modalRef.close(row.policy);
+    if (!this.data.onPick) {
+      this.modalRef.close(row.policy);
+      return;
+    }
+    this.picking.set(true);
+    try {
+      if (await this.data.onPick(row.policy)) this.modalRef.close(row.policy);
+      else this.selectedNumber.set(null);
+    } finally {
+      this.picking.set(false);
+    }
   }
 
   onCancel(): void {

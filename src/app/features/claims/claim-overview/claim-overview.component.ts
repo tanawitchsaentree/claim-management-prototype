@@ -30,6 +30,8 @@ import {
 } from '../../../core/scenario/scenario-stage.model';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
+import { Claim } from '../../../core/models/claim.model';
+import { PolicyLocation } from '../../../core/models';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
 import { MassEvent } from '../../../core/models/mass-event.model';
 import { Task } from '../../../core/models/task.model';
@@ -100,6 +102,8 @@ const EMPTY_VM: OverviewVM = {
   recoveryExpanded: false,
   massEvent: null
 };
+
+type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
 
 @Component({
   selector: 'app-claim-overview',
@@ -534,22 +538,29 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   // ConvertSkeletonModalComponent) are unchanged — not user-facing.
   async onConvertToClaim(claim: ClaimOverview): Promise<void> {
     const skeleton = await firstValueFrom(this.claimSvc.getById(claim.claimId));
+    // The policy picker stays open the whole way: the confirm pops up over it
+    // (cancel = back to the list), and it only closes once the next sheet
+    // (Confirm loss location) is already opening, so the handler never drops
+    // back onto the page in between.
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
-      data: { skeleton } satisfies ConvertSkeletonModalData,
+      data: {
+        skeleton,
+        onPick: policy => this.confirmAndLink(skeleton, policy)
+      } satisfies ConvertSkeletonModalData,
       panelClass: 'bottom-sheet-modal-panel',
       showCloseIcon: false
     });
-    const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
-    if (!policy) return;
+    await firstValueFrom(ref.afterClosed());
+  }
+
+  /** Returns true once the link is confirmed and under way (picker may close). */
+  private async confirmAndLink(skeleton: Claim, policy: LinkablePolicy): Promise<boolean> {
     // Load the policy's locations while the handler reads the confirm dialog, so
     // the location sheet has them ready the instant they confirm.
     const prepared = this.locationReconfirmSvc.prepare(policy.policyNumber);
 
     // Highest-stakes action on this page (links a real policy, flips
-    // skeletonState, creates a task) was the one action with no confirm-diff
-    // step — every lower-stakes save here (Recovery potential, Trade
-    // Sanctions) already has one. Added instead of letting "Continue
-    // conversion" commit outright.
+    // skeletonState, creates a task): confirm before committing.
     //
     // Status itself no longer changes here (it's 'Open' from creation) —
     // the diff row that means something now is skeletonState.
@@ -568,21 +579,30 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       maxWidth: '92vw'
     });
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
-    if (!confirmed) return;
+    if (!confirmed) return false;
+    void this.completeLink(skeleton, policy, prepared);
+    return true;
+  }
 
-    // Link and location step run side by side: the Confirm loss location sheet
-    // opens the moment the handler confirms (its data is already known), while
-    // the link finishes behind it. The location is only written once the link
-    // has landed. Skipping the sheet leaves the follow-up task in place.
-    const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
-    const replaced = await this.locationReconfirmSvc.run(
-      skeleton.claimId,
-      policy.policyNumber,
-      prepared,
-      linking
-    );
-    const converted = await linking;
-    const locationNeedsReconfirm = converted.locationNeedsReconfirm && !replaced;
+  private async completeLink(
+    skeleton: Claim,
+    policy: LinkablePolicy,
+    prepared: Promise<PolicyLocation[]>
+  ): Promise<void> {
+    try {
+      // Link and location step run side by side: the Confirm loss location sheet
+      // opens the moment the handler confirms (its data is already known), while
+      // the link finishes behind it. The location is only written once the link
+      // has landed. Skipping the sheet leaves the follow-up task in place.
+      const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+      const replaced = await this.locationReconfirmSvc.run(
+        skeleton.claimId,
+        policy.policyNumber,
+        prepared,
+        linking
+      );
+      const converted = await linking;
+      const locationNeedsReconfirm = converted.locationNeedsReconfirm && !replaced;
     // No navigation needed — the constructor's reactivity bridge (above)
     // reloads this same Overview automatically once mock state changes.
     // Every other action on this page confirms with a toast — this one
@@ -593,12 +613,16 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // Wording now reflects BOTH possible follow-up tasks, not just reserves —
     // the location one only fires when there's a skeleton-stage manual
     // location to recheck, so this used to under-report it.
-    this.toast.success(
-      `${skeleton.claimId} — policy linked`,
-      locationNeedsReconfirm
-        ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
-        : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
-    );
+      this.toast.success(
+        `${skeleton.claimId} — policy linked`,
+        locationNeedsReconfirm
+          ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
+          : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
+      );
+
+    } catch {
+      this.toast.error('Could not link the policy', 'Nothing was changed. Please try again.');
+    }
   }
 
   async openReopenModal(claim: ClaimOverview): Promise<void> {
