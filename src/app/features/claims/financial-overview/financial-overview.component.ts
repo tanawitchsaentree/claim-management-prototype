@@ -11,6 +11,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
 import { NxBadgeModule, NxBadgeColorScheme, NxBadgeType } from '@allianz/ng-aquila/badge';
 import { FinancialReserve } from '../../../core/models/financial-overview.model';
@@ -18,6 +19,7 @@ import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
+import { MockReservesService } from '../../../core/mock/services/mock-reserves.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { FinancialOverview, FinancialSection } from '../../../core/models/financial-overview.model';
 import { ClaimSection } from '../../../core/models/section.model';
@@ -50,6 +52,7 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     NxTooltipModule,
     NxMessageModule,
     NxRadioToggleModule,
+    NxContextMenuModule,
     NxBadgeModule,
     EmptyStateComponent,
     PageHeaderComponent,
@@ -66,6 +69,7 @@ export class FinancialOverviewComponent implements OnInit {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
+  private readonly reservesSvc = inject(MockReservesService);
 
   private claimId = '';
 
@@ -84,6 +88,8 @@ export class FinancialOverviewComponent implements OnInit {
   // looked up by sectionId.
   readonly claimClosed = signal(false);
   readonly sectionStatuses = signal<ClaimSection[]>([]);
+  // Why a claim has no reserve yet, written at notification (FNOL Reserves step).
+  readonly noReserveReason = signal<string | null>(null);
 
   readonly activeSectionClosed = computed(() => {
     const id = this.sectionId();
@@ -187,10 +193,20 @@ export class FinancialOverviewComponent implements OnInit {
     this.fo.set(data);
     this.claimClosed.set(claim.status === 'Closed');
     this.sectionStatuses.set(sections);
+    await this.loadNoReserveReason(claimId);
     if (data?.sections?.length) {
       this.sectionId.set(data.sections[0].sectionId);
     }
     this.loading.set(false);
+  }
+
+  private async loadNoReserveReason(claimId: string): Promise<void> {
+    const claim = await firstValueFrom(this.overviewSvc.getOverview(claimId));
+    const policy = (claim as { policyNumber?: string }).policyNumber;
+    if (!policy) return;
+    const data = await firstValueFrom(this.reservesSvc.getReservesForPolicy(policy));
+    const n = data.narrative;
+    this.noReserveReason.set(n && !n.archivedAt ? (n.notes || n.reasonKey) : null);
   }
 
   setView(v: FinancialView): void {
@@ -217,6 +233,26 @@ export class FinancialOverviewComponent implements OnInit {
     this.toast.success(
       'Reserve added',
       `${input.currency} ${input.reserveValue.toLocaleString()} reserve added.`
+    );
+  }
+
+  async onUpdateReserve(reserve: FinancialReserve): Promise<void> {
+    const current = this.fo();
+    if (!current) return;
+    const ref = this.dialogSvc.open(AddReserveModalComponent, {
+      data: { sections: current.sections, reserve } satisfies AddReserveModalData,
+      width: '600px',
+      maxWidth: '92vw'
+    });
+    const input = (await firstValueFrom(ref.afterClosed())) as AddReserveModalResult;
+    if (!input) return;
+    await firstValueFrom(
+      this.svc.updateReserveAmount(this.claimId, reserve.reserveId, input.reserveValue, input.reason ?? '')
+    );
+    this.fo.set(await firstValueFrom(this.svc.getByClaimId(this.claimId)));
+    this.toast.success(
+      'Reserve updated',
+      `${reserve.reserveId} is now ${input.currency} ${input.reserveValue.toLocaleString()} and waits for approval.`
     );
   }
 

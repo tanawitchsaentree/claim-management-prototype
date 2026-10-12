@@ -189,7 +189,8 @@
             "user": "Petra Kohl"
           }
         ],
-        "sectionCode": "Liability"
+        "sectionCode": "Liability",
+        "requestedBy": "n.feld@allianz.com"
       },
       {
         "reserveId": "RES-C-00063676-2024.001.1.1.3",

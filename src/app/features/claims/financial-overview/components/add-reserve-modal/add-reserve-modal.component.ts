@@ -14,9 +14,13 @@ import {
 
 export interface AddReserveModalData {
   sections: FinancialSection[];
+  // Set = update this reserve: only the amount (and a reason) can change.
+  reserve?: FinancialReserve;
 }
 
-export type AddReserveModalResult = Omit<FinancialReserve, 'reserveId'> | null;
+export type AddReserveModalResult =
+  | (Omit<FinancialReserve, 'reserveId'> & { reason?: string })
+  | null;
 
 const RESERVE_TYPES = ['Indemnity', 'Expenses'];
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
@@ -54,6 +58,27 @@ export class AddReserveModalComponent {
     currency: new FormControl<string | null>('EUR', [Validators.required])
   });
 
+  readonly editing = this.data.reserve ?? null;
+  readonly reason = new FormControl('', [Validators.required]);
+
+  constructor() {
+    const r = this.editing;
+    if (!r) return;
+    this.form.patchValue({
+      reserveType: r.reserveType,
+      reserveSubType: r.reserveSubType,
+      party: r.party,
+      damagedItem: r.damagedItem,
+      section: r.sectionId ?? null,
+      reserveValue: r.reserveValue,
+      currency: r.currency
+    });
+    // A reserve keeps what it is; only how much changes.
+    for (const name of ['reserveType', 'reserveSubType', 'party', 'damagedItem', 'section', 'currency'] as const) {
+      this.form.get(name)!.disable();
+    }
+  }
+
   submitted = false;
 
   onCancel(): void {
@@ -62,7 +87,7 @@ export class AddReserveModalComponent {
 
   onSave(): void {
     this.submitted = true;
-    if (this.form.invalid) return;
+    if (this.form.invalid || (this.editing && this.reason.invalid)) return;
     const v = this.form.getRawValue();
     this.modalRef.close({
       reserveType: v.reserveType!,
@@ -74,7 +99,8 @@ export class AddReserveModalComponent {
       currency: v.currency!,
       // Whoever sets a reserve can't approve it: it always starts Pending and is
       // approved separately.
-      status: 'Pending'
+      status: 'Pending',
+      reason: this.editing ? (this.reason.value ?? '') : undefined
     });
   }
 }

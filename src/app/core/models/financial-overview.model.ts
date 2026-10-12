@@ -50,6 +50,9 @@ export interface FinancialReserve {
   status: FinancialReserveStatus;
   reserveValue: number;
   currency: string;
+  // Email of whoever set / last changed the reserve. The approver has to be
+  // someone else; also what the Approvals page shows as Requester.
+  requestedBy?: string;
 }
 
 export interface FinancialRecovery {

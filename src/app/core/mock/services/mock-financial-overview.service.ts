@@ -8,17 +8,22 @@ import {
 } from '../../models/financial-overview.model';
 import { MockSectionService } from './mock-section.service';
 import { MockStateService } from '../state/mock-state.service';
+import { AuthService } from '../../services/auth';
+import { UrgentApproval } from '../../models/approval.model';
 import policiesData from '../data/policies.json';
+import lookupsData from '../data/lookups.json';
 
-// The signed-in persona (header avatar "MM"). No auth service exists yet; this
-// matches the CREATOR stand-in in step-summary.component.ts.
-const CURRENT_USER = 'Mara Mustermann';
+// Claims store the country as a name or a code; the Approvals OE column wants the code.
+function countryCode(country: string | undefined): string {
+  if (!country) return '';
+  const hit = lookupsData.countries.find(
+    c => c.value === country || c.label.toLowerCase() === country.toLowerCase()
+  );
+  return hit?.value ?? country;
+}
 
 // dd-MM-yyyy, same as the seeded history entries.
-function formatDate(d: Date): string {
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
-}
+const todayLabel = (): string => new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
 
 // Short label after the party in the Reserves table's Section column.
 const SECTION_CODES: Record<string, string> = {
@@ -36,6 +41,7 @@ export function sectionCodeFor(damageType: string): string {
 export class MockFinancialOverviewService extends MockBaseService {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly stateSvc = inject(MockStateService);
+  private readonly auth = inject(AuthService);
 
   getByClaimId(claimId: string): Observable<FinancialOverview> {
     return this.respond(structuredClone(this.getOrCreate(claimId)));
@@ -58,13 +64,14 @@ export class MockFinancialOverviewService extends MockBaseService {
       section: section?.sectionName ?? input.section,
       sectionId: section?.sectionId,
       sectionCode: input.sectionCode ?? section?.code ?? (real ? sectionCodeFor(real.damageType) : undefined),
+      requestedBy: this.auth.user().email,
       reserveId: this.nextReserveId(claimId, overview, section?.sectionId, input.damagedItem),
       history: [
         {
-          date: formatDate(new Date()),
+          date: todayLabel(),
           amount: input.reserveValue,
           reason: 'Initial reserve set',
-          user: CURRENT_USER
+          user: this.auth.user().name
         }
       ]
     };
@@ -82,6 +89,89 @@ export class MockFinancialOverviewService extends MockBaseService {
         r => r.sectionId === section.sectionId && r.status !== 'Rejected' && r.reserveValue > 0
       );
       this.sectionSvc.patchSection(section.sectionId, { hasOpenReserves });
+    }
+    this.stateSvc.patchFinancialOverview(claimId, overview);
+    return this.respond(reserve);
+  }
+
+  /** Every reserve still waiting for approval, across all claims, as approval requests. */
+  getPendingApprovals(): Observable<UrgentApproval[]> {
+    const state = this.stateSvc.state();
+    const out: UrgentApproval[] = [];
+    for (const [claimId, overview] of Object.entries(state.financialOverviews)) {
+      const claim = state.claims.find(c => c.claimId === claimId);
+      for (const r of overview.reserves as FinancialReserveWithHistory[]) {
+        if (r.status !== 'Pending') continue;
+        out.push({
+          requestId: r.reserveId,
+          claimId,
+          oe: countryCode(claim?.location?.country),
+          lineOfBusiness: claim?.lineOfBusiness ?? '',
+          reserveType: r.reserveType as UrgentApproval['reserveType'],
+          currency: r.currency,
+          amount: r.reserveValue,
+          requester: r.requestedBy ?? '',
+          dateRequested: r.history?.[r.history.length - 1]?.date
+        });
+      }
+    }
+    return this.respond(out);
+  }
+
+  /** Approver decision on a Pending reserve. */
+  decideReserve(
+    claimId: string,
+    reserveId: string,
+    decision: 'Approved' | 'Rejected'
+  ): Observable<FinancialReserve | null> {
+    return this.changeReserve(claimId, reserveId, (r, overview) => {
+      if (decision === 'Rejected') overview.summary.outstandingReserves -= r.reserveValue;
+      r.status = decision;
+      return decision;
+    });
+  }
+
+  /** Handler changes the amount of an existing reserve: needs approving again. */
+  updateReserveAmount(
+    claimId: string,
+    reserveId: string,
+    reserveValue: number,
+    reason: string
+  ): Observable<FinancialReserve | null> {
+    return this.changeReserve(claimId, reserveId, (r, overview) => {
+      overview.summary.outstandingReserves += reserveValue - r.reserveValue;
+      r.reserveValue = reserveValue;
+      r.status = 'Pending';
+      r.requestedBy = this.auth.user().email;
+      return reason;
+    });
+  }
+
+  private changeReserve(
+    claimId: string,
+    reserveId: string,
+    apply: (r: FinancialReserveWithHistory, overview: FinancialOverview) => string
+  ): Observable<FinancialReserve | null> {
+    const overview = structuredClone(this.getOrCreate(claimId));
+    const reserve = (overview.reserves as FinancialReserveWithHistory[]).find(
+      r => r.reserveId === reserveId
+    );
+    if (!reserve) return this.respond(null);
+    const reason = apply(reserve, overview);
+    reserve.history = [
+      ...(reserve.history ?? []),
+      {
+        date: todayLabel(),
+        amount: reserve.reserveValue,
+        reason,
+        user: this.auth.user().name
+      }
+    ];
+    if (reserve.sectionId) {
+      const hasOpenReserves = overview.reserves.some(
+        r => r.sectionId === reserve.sectionId && r.status !== 'Rejected' && r.reserveValue > 0
+      );
+      this.sectionSvc.patchSection(reserve.sectionId, { hasOpenReserves });
     }
     this.stateSvc.patchFinancialOverview(claimId, overview);
     return this.respond(reserve);

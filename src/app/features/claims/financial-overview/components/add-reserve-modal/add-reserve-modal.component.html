@@ -1,5 +1,5 @@
 <div class="arm-header">
-  <h2 class="arm-title">Add reserve</h2>
+  <h2 class="arm-title">{{ editing ? 'Update reserve' : 'Add reserve' }}</h2>
   <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
@@ -57,10 +57,19 @@
         }
       </nx-dropdown>
     </nx-formfield>
+
+    @if (editing) {
+      <nx-formfield label="Reason for change *" class="arm-full">
+        <input nxInput [formControl]="reason" />
+        @if (reason.invalid && submitted) {
+          <nx-error nxFormfieldError>Required.</nx-error>
+        }
+      </nx-formfield>
+    }
   </div>
 </div>
 
 <div class="arm-footer">
   <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button" (click)="onSave()">Add reserve</button>
+  <button nxButton="primary small" type="button" (click)="onSave()">{{ editing ? 'Update reserve' : 'Add reserve' }}</button>
 </div>

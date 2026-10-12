@@ -11,4 +11,5 @@ export interface UrgentApproval {
   amount: number;
   requester: string;
   reviewerEmail?: string;
+  dateRequested?: string;
 }

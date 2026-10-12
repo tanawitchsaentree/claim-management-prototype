@@ -95,7 +95,7 @@
                 <td nxTableCell class="col-currency">{{ item.currency }}</td>
                 <td nxTableCell class="col-amount">{{ item.amount | number: '1.0-0' }}</td>
                 <td nxTableCell class="col-requester">{{ item.requester | requesterName }}</td>
-                <td nxTableCell class="col-date">–</td>
+                <td nxTableCell class="col-date">{{ item.dateRequested ?? '–' }}</td>
                 <td nxTableCell class="col-action">
                   <button
                     nxIconButton="tertiary"
@@ -110,21 +110,21 @@
                     <button
                       nxContextMenuItem
                       type="button"
-                      (click)="onAction('approve', item.requestId)"
+                      (click)="onAction('approve', item)"
                     >
                       Approve
                     </button>
                     <button
                       nxContextMenuItem
                       type="button"
-                      (click)="onAction('reject', item.requestId)"
+                      (click)="onAction('reject', item)"
                     >
                       Reject
                     </button>
                     <button
                       nxContextMenuItem
                       type="button"
-                      (click)="onAction('view', item.requestId)"
+                      (click)="onAction('view', item)"
                     >
                       View details
                     </button>
@@ -200,21 +200,21 @@
                     <button
                       nxContextMenuItem
                       type="button"
-                      (click)="onAction('approve', item.requestId)"
+                      (click)="onPaymentAction('approve', item.requestId)"
                     >
                       Approve
                     </button>
                     <button
                       nxContextMenuItem
                       type="button"
-                      (click)="onAction('reject', item.requestId)"
+                      (click)="onPaymentAction('reject', item.requestId)"
                     >
                       Reject
                     </button>
                     <button
                       nxContextMenuItem
                       type="button"
-                      (click)="onAction('view', item.requestId)"
+                      (click)="onPaymentAction('view', item.requestId)"
                     >
                       View details
                     </button>
