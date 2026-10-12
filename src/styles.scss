@@ -553,6 +553,27 @@ code {
         opacity 140ms ease-in !important;
     }
   }
+
+  // A sheet that hands over to / takes over from another sheet (Link policy ->
+  // Confirm loss location): no slide in, no slide out, so the swap reads as the
+  // content changing, not as one sheet leaving and another arriving.
+  &.bottom-sheet-modal-panel--instant {
+    .nx-modal-container,
+    .nx-modal__container,
+    nx-modal-container {
+      &,
+      &.nx-modal-container--entering,
+      &.nx-modal-container--exiting {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+      }
+    }
+  }
+}
+
+.instant-backdrop {
+  transition: none !important;
 }
 
 // ─── Global route transitions (View Transitions API via withViewTransitions) ───

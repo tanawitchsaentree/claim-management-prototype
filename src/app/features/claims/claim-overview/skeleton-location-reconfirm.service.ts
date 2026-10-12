@@ -56,8 +56,14 @@ export class SkeletonLocationReconfirmService {
     >(AddLocationModalComponent, {
       data: { policyNumber, policyLocations, reconfirm: { original: oldItems } },
       showCloseIcon: true,
-      panelClass: 'bottom-sheet-modal-panel'
+      // Takes over from the policy picker in place: no slide, no backdrop fade.
+      panelClass: ['bottom-sheet-modal-panel', 'bottom-sheet-modal-panel--instant'],
+      backdropClass: 'instant-backdrop'
     });
+    // Instant only for the hand-over; closing it later slides away as usual.
+    void firstValueFrom(ref.afterOpened()).then(() =>
+      ref.removePanelClass('bottom-sheet-modal-panel--instant')
+    );
     const result = await firstValueFrom(ref.afterClosed());
     if (!result?.policy.length) return false;
     const chosen = result.policy;

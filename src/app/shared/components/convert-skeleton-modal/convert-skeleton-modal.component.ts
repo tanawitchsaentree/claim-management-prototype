@@ -169,8 +169,13 @@ export class ConvertSkeletonModalComponent implements OnInit {
     }
     this.picking.set(true);
     try {
-      if (await this.data.onPick(row.policy)) this.modalRef.close(row.policy);
-      else this.selectedNumber.set(null);
+      if (await this.data.onPick(row.policy)) {
+        // The next sheet is taking over: leave without sliding away.
+        this.modalRef.addPanelClass('bottom-sheet-modal-panel--instant');
+        this.modalRef.close(row.policy);
+      } else {
+        this.selectedNumber.set(null);
+      }
     } finally {
       this.picking.set(false);
     }
