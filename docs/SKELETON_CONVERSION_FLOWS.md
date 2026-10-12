@@ -64,10 +64,10 @@ What creation writes:
 ## 3. What "Link policy" does (the common part)
 
 1. Handler opens **Link policy** from the claim overview (button) or from the FNOL search results (row menu).
-2. The picker lists policies. Client name is pre-filled with the skeleton's client; policy number can be added. A row is selectable only if the client matches and the loss date is inside the policy period. Other rows show a reason ("Different client", "Loss date outside policy period").
+2. The picker lists policies, with their **line of business**. Client name is pre-filled with the skeleton's client; policy number can be added. A row is selectable only if the client matches and the loss date is inside the policy period. Other rows show a reason ("Different client", "Loss date outside policy period").
 3. Picking a row shows the **Link policy** confirm over the picker.
 4. Confirm: the policy is attached, the state becomes `linked`, two things are created: a task "Set up reserves" (due in 3 days, high priority) and, only when the skeleton has a stored location, a task "Confirm loss location".
-5. **Claim overview path only:** the **Confirm loss location** sheet opens straight away (no slide), listing the policy's active locations with the skeleton's location pinned on top. The handler picks one and confirms. The claim location is replaced and the "Confirm loss location" task is closed.
+5. **Claim overview path only:** the **Confirm loss location** sheet opens straight away (no slide), listing the policy's active locations with the skeleton's location pinned on top. A **Line of business** column shows the skeleton claim's value on the pinned row and the policy's value on the others (bold when they differ). The handler picks one and confirms. The claim location is replaced and the "Confirm loss location" task is closed.
 6. A toast confirms. The claim overview stays on screen. Nothing else guides the handler (the old "needs setup" banner was removed in `efd4fdb`).
 
 Entry points: **A** = claim overview button (full flow above). **B** = FNOL search row menu (skips step 5, then opens the claim overview).

@@ -81,6 +81,7 @@
               <th nxHeaderCell>City</th>
               <th nxHeaderCell>Property ID</th>
               @if (reconfirm) {
+                <th nxHeaderCell>Line of business</th>
                 <th nxHeaderCell>Compared with entered</th>
               }
             </tr>
@@ -95,6 +96,7 @@
                   <td nxCell>{{ o.postalCode }}</td>
                   <td nxCell>{{ o.city }}</td>
                   <td nxCell>–</td>
+                  <td nxCell>{{ r.claimLineOfBusiness || '–' }}</td>
                   <td nxCell><nx-badge type="active">Skeleton claim location</nx-badge></td>
                 </tr>
               }
@@ -138,7 +140,14 @@
                   }
                 </td>
                 <td nxCell>{{ loc.propertyId ?? '–' }}</td>
-                @if (reconfirm) {
+                @if (reconfirm; as r) {
+                  <td nxCell>
+                    @if (r.policyLineOfBusiness && r.claimLineOfBusiness && r.policyLineOfBusiness !== r.claimLineOfBusiness) {
+                      <strong>{{ r.policyLineOfBusiness }}</strong>
+                    } @else {
+                      {{ r.policyLineOfBusiness || '–' }}
+                    }
+                  </td>
                   <td nxCell>
                     @if (diffsFor(loc).length === 0) {
                       <nx-badge type="positive">Exact match</nx-badge>

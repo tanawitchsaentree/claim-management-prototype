@@ -34,7 +34,12 @@ export interface AddLocationModalData {
   // Policy just got linked to a skeleton claim: the handler confirms which
   // policy location their hand-typed one meant. Policy screen only, closest
   // match listed first and pre-selected.
-  reconfirm?: { original: LocationItem[] };
+  reconfirm?: {
+    original: LocationItem[];
+    // Shown next to each side so the handler can see the line of business too.
+    claimLineOfBusiness?: string;
+    policyLineOfBusiness?: string;
+  };
 }
 
 type Screen = 'policy' | 'manual';

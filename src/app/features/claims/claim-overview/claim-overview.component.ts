@@ -599,7 +599,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         skeleton.claimId,
         policy.policyNumber,
         prepared,
-        linking
+        linking,
+        { claim: skeleton.lineOfBusiness, policy: policy.lineOfBusiness }
       );
       const converted = await linking;
       const locationNeedsReconfirm = converted.locationNeedsReconfirm && !replaced;

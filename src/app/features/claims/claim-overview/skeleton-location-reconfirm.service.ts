@@ -41,7 +41,8 @@ export class SkeletonLocationReconfirmService {
     policyNumber: string,
     prepared: Promise<PolicyLocation[]> = this.prepare(policyNumber),
     // Resolves once the policy link has been saved; the write waits for it.
-    linked: Promise<unknown> = Promise.resolve()
+    linked: Promise<unknown> = Promise.resolve(),
+    lineOfBusiness?: { claim?: string; policy?: string }
   ): Promise<boolean> {
     const oldItems = this.currentLocations(claimId);
     if (!oldItems.length) return false;
@@ -54,7 +55,15 @@ export class SkeletonLocationReconfirmService {
       AddLocationModalData,
       AddLocationModalResult | null
     >(AddLocationModalComponent, {
-      data: { policyNumber, policyLocations, reconfirm: { original: oldItems } },
+      data: {
+        policyNumber,
+        policyLocations,
+        reconfirm: {
+          original: oldItems,
+          claimLineOfBusiness: lineOfBusiness?.claim,
+          policyLineOfBusiness: lineOfBusiness?.policy
+        }
+      },
       showCloseIcon: true,
       // Takes over from the policy picker in place: no slide, no backdrop fade.
       panelClass: ['bottom-sheet-modal-panel', 'bottom-sheet-modal-panel--instant'],
