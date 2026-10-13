@@ -106,13 +106,10 @@ export const routes: Routes = [
             m => m.FinancialOverviewComponent
           )
       },
-      {
-        path: 'claims/:id/notes',
-        loadComponent: () =>
-          import('./features/claims/claim-notes-full/claim-notes-full.component').then(
-            m => m.ClaimNotesFullComponent
-          )
-      },
+      // "View all notes" is a bottom-sheet dialog now (claim-notes-panel opens it);
+      // the component needs dialog data, so rendering it as a page threw NG0201.
+      // Old links and typed URLs land on the claim overview instead.
+      { path: 'claims/:id/notes', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       {
         path: 'claims/:id/limits',
         loadComponent: () =>
