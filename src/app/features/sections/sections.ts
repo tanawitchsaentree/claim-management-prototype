@@ -124,35 +124,7 @@ export class Sections {
 
   readonly devMode = true;
 
-  // Review banner (redirect-context handoff) — populated only when arriving
-  // via edit-loss-information's redirect (?changedFields=&changedOld=&changedNew=,
-  // same query-param mechanism sections.ts already uses to hand ?sectionId=
-  // to Provider Management). A plain nav-bar visit carries none of these, so
-  // this stays null — the banner is tied to the redirect, not to claim state.
-  readonly reviewBanner = signal<{ label: string; oldValue: string; newValue: string }[] | null>(
-    null
-  );
-
   constructor() {
-    const qp = this.route.snapshot.queryParamMap;
-    const changedFields = qp.getAll('changedFields');
-    if (changedFields.length) {
-      const changedOld = qp.getAll('changedOld');
-      const changedNew = qp.getAll('changedNew');
-      this.reviewBanner.set(
-        changedFields.map((label, i) => ({
-          label,
-          oldValue: changedOld[i] ?? '–',
-          newValue: changedNew[i] ?? '–'
-        }))
-      );
-      this.live.announce('Review sections — loss information changed', 'polite');
-      // Strip the params from the URL so a refresh (or navigating back here
-      // later) doesn't resurrect a banner for a change that's already been
-      // reviewed or dismissed — it's a one-time redirect artifact.
-      this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
-    }
-
     effect(async () => {
       const id = this.route.snapshot.params['id'];
       if (!id) return;
@@ -173,10 +145,6 @@ export class Sections {
         this.loading.set(false);
       }
     });
-  }
-
-  dismissReviewBanner(): void {
-    this.reviewBanner.set(null);
   }
 
   toggleSection(id: string): void {

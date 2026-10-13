@@ -40,14 +40,6 @@
         }
       </div>
 
-      @if (anyFieldEditing()) {
-        <nx-message context="info" class="eli-coverage-hint">
-          Cause of loss, Type of damage and Loss location decide what the policy covers, and the
-          sections were built from them. If you change any of these, the open sections are marked
-          "Review needed" after you update.
-        </nx-message>
-      }
-
       @if (!isEditing('causeOfLoss')) {
         <div class="eli-field">
           <div class="eli-field__info">

@@ -2,30 +2,6 @@
 
 <!-- ── Page header ── -->
 <app-page-header title="Sections"></app-page-header>
-
-@if (reviewBanner(); as changes) {
-  <nx-message
-    context="warning"
-    [closable]="true"
-    (close)="dismissReviewBanner()"
-    class="sec-review-banner"
-  >
-    <p class="sec-review-banner__title">Review sections — loss information updated</p>
-    <ul class="sec-review-banner__changes">
-      @for (c of changes; track c.label) {
-        <li>
-          {{ c.label }}: <strong>{{ c.oldValue }}</strong> → <strong>{{ c.newValue }}</strong>
-        </li>
-      }
-    </ul>
-    <p class="sec-review-banner__reason">
-      Coverage depends on cause of loss and loss location, so the sections below may no longer
-      reflect what's covered. Each open section is marked "Review needed". Check it, then choose
-      Mark as reviewed, or close it with Close section if it no longer applies.
-    </p>
-  </nx-message>
-}
-
 <!-- ── Split layout ── -->
 <div class="sec-split" [class.sec-split--detail-open]="hasDetailOpen()">
   <!-- ── Left: tree nav (only when detail open) ── -->

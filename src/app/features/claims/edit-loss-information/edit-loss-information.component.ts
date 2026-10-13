@@ -556,13 +556,7 @@ export class EditLossInformationComponent implements OnInit {
           cancelLabel: 'Later'
         });
         if (review) {
-          this.router.navigate(['/claims', this.claimId(), 'sections'], {
-            queryParams: {
-              changedFields: impactedDiffs.map(d => d.label),
-              changedOld: impactedDiffs.map(d => d.original),
-              changedNew: impactedDiffs.map(d => d.updated)
-            }
-          });
+          this.router.navigate(['/claims', this.claimId(), 'sections']);
         }
       }
     } catch {
