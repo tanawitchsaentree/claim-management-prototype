@@ -87,7 +87,9 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // the claim-level list. Cached reserves would show blank Section codes.
 // Bumped again: six new skeleton claims (SK-2024-005..010), one per conversion
 // flow in docs/SKELETON_CONVERSION_FLOWS.md; cached claims would not list them.
-const STATE_VERSION = 'recovery-cases-v14';
+// Bumped again: CLM-2024-001's overview cause now says Fire (it said Water damage while
+// its loss information and circumstance said Fire / hot work).
+const STATE_VERSION = 'recovery-cases-v15';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a
