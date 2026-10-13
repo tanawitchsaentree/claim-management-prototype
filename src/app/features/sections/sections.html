@@ -20,8 +20,8 @@
     </ul>
     <p class="sec-review-banner__reason">
       Coverage depends on cause of loss and loss location, so the sections below may no longer
-      reflect what's covered. Close any section that no longer applies using its Close section
-      action.
+      reflect what's covered. Each open section is marked "Review needed". Check it, then choose
+      Mark as reviewed, or close it with Close section if it no longer applies.
     </p>
   </nx-message>
 }
@@ -152,7 +152,18 @@
                   ></app-status-chip>
                 </td>
                 <td nxTableCell class="col-damage">{{ section.damageType | damageTypeLabel }}</td>
-                <td nxTableCell class="col-coverage"></td>
+                <td nxTableCell class="col-coverage">
+                  <!-- Section level has no coverage review of its own; this is where the
+                       "built from facts that changed" mark belongs. -->
+                  @if (section.reviewNeeded && section.status === 'Open') {
+                    <nx-badge
+                      type="critical"
+                      class="section-review-badge"
+                      [nxTooltip]="'Changed: ' + section.reviewNeeded.fields.join(', ')"
+                      >Review needed</nx-badge
+                    >
+                  }
+                </td>
                 <td nxTableCell class="col-actions">
                   <button
                     class="sec-kebab-btn"
@@ -182,6 +193,16 @@
                     >
                       Edit
                     </button>
+                    @if (section.reviewNeeded && section.status === 'Open') {
+                      <button
+                        nxContextMenuItem
+                        type="button"
+                        [disabled]="claimClosed()"
+                        (click)="onMarkReviewed(section)"
+                      >
+                        Mark as reviewed
+                      </button>
+                    }
                     <button
                       nxContextMenuItem
                       type="button"

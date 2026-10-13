@@ -111,16 +111,16 @@ Nothing on the Sections page writes to loss information or the overview. Closing
 
 | # | Steps | What is now inconsistent | Evidence |
 |---|---|---|---|
-| S1 | Edit **Cause of loss**, Update, "Stay on this page" | Overview shows the new cause. The section keeps its old name and damage type. **No marker remains anywhere** that the sections need a look | **Verified.** Cause changed, section rows identical, no banner after Stay |
+| S1 | Edit **Cause of loss**, Update, "Stay on this page" | Overview shows the new cause. The section keeps its old name and damage type. *Fixed 2026-10-13: the open sections now carry a persistent "Review needed" mark until marked reviewed* | **Verified.** Cause changed, section rows identical, no banner after Stay |
 | S2 | Edit cause to **Business interruption** | No BI section, no CBI captured, and Edit cannot capture CBI | Per code |
 | S3 | Edit cause **away from** BI on a claim with a CBI section | Section keeps damage type BI, CBI fields and CBI-labelled name | Per code |
 | S4 | Edit **Type of damage**, Update, Review sections | Banner lists the change; section damage type unchanged; the overview has no type-of-damage field, so the new value lives only in loss information | **Verified.** The code comment claiming it "maps directly" to the section damage type is wrong: nothing applies it |
-| S5 | Edit **Loss location** | Loss information updated; overview location, claim location and entity names stay old. Editing only the 2nd+ location or any attribute other than the first location's display name produces **no change at all** | Per code |
-| S6 | Edit **Date of occurrence** | Overview date updates; the claim record date does not, so duplicate check and claim search use the old date. Entity dates unchanged | Per code |
+| S5 | Edit **Loss location** | Entity names still stay old. *Fixed 2026-10-13: overview and claim-record location now follow, and a change to the 2nd+ location now counts* | Per code |
+| S6 | Edit **Date of occurrence** | *Fixed 2026-10-13: the claim record date now follows.* Entity dates are still unchanged | Per code |
 | S7 | Edit "Other" cause text | Only loss information holds it. The closure modal's "other" check compares against `'other'` but the label is `'Other Event'`, so it likely never fires | Per code (not played) |
-| S8 | Edit **Description** | Claim record keeps the old text | Per code |
+| S8 | Edit **Description** | *Fixed 2026-10-13: the claim record now follows* | Per code |
 | S9 | Any cause or date edit, then a new FNOL | Duplicate check compares against the **old** cause and date | Per code |
-| S10 | Skip or dismiss the review | No task, flag or activity is left for the unreviewed sections | **Verified** (banner count 0 after Stay) |
+| S10 | Skip or dismiss the review | *Fixed 2026-10-13: "Review needed" stays on the sections until reviewed.* Before: nothing was left | **Verified** both before and after |
 | S11 | Open Edit on a claim created through FNOL | Location is saved in a different shape than Edit reads, so "Loss location" likely shows "Not provided" | Per code (not played) |
 | S12 | Link policy then confirm a location | Loss information gets the policy location. Overview location and entity names keep their pre-reconfirm values | Per code |
 | S13 | Open Edit on a claim with no loss-information record | A record is synthesised with empty type of damage and a mostly empty cause, while sections already exist with a damage type | Per code |
@@ -143,4 +143,4 @@ Each with what the code supports and a recommendation.
 6. **Section name freeze.** The name embeds the first entity at creation. When the location changes, should the name follow? Today only manual rename does that.
 7. **Persisting what the handler skipped.** "Stay on this page" should not mean "forget". Same marker as decision 1.
 
-Cheap, unambiguous fixes available now: the claim-record copies (S6, S8, cause), the location sync (S5, S12), and the 2nd+ location diff (S5).
+Decision on the edit model (one card-level Edit vs per-row) and the fixes made: see `EDIT_CLAIM_EDIT_MODEL.md`.

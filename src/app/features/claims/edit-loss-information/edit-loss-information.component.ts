@@ -27,6 +27,7 @@ import { MockLossInformationService } from '../../../core/mock/services/mock-los
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { LossInfoSyncService } from '../../../core/services/loss-info-sync.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import {
@@ -97,6 +98,7 @@ export class EditLossInformationComponent implements OnInit {
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
   private readonly live = inject(LiveAnnouncer);
+  private readonly sync = inject(LossInfoSyncService);
 
   readonly claimId = signal<string>('');
   readonly clientName = signal<string>('');
@@ -477,7 +479,7 @@ export class EditLossInformationComponent implements OnInit {
         `${diffs.length === 1 ? '1 field' : `${diffs.length} fields`} will be updated on ` +
         `${this.claimId()}: ${fieldNames}. The change is saved to the claim straight away.` +
         (impactedBefore
-          ? ' Sections on this claim were built from the old values, so you will be asked to review them next.'
+          ? ' Sections were built from the old values, so the open ones will be marked "Review needed".'
           : ''),
       confirmLabel: 'Update',
       cancelLabel: 'Keep editing'
@@ -506,6 +508,11 @@ export class EditLossInformationComponent implements OnInit {
       // LossInformation record this form edits — without this an edit here
       // saves correctly but Overview keeps showing the pre-edit value.
       await this.syncOverviewFromLossInfo(formValue, diffs);
+      await this.sync.syncClaimCopies(
+        this.claimId(),
+        formValue,
+        diffs.map(d => d.label)
+      );
 
       this.original.set({ ...(this.original() as LossInformation), ...formValue } as LossInformation);
       this.form.markAsPristine();
@@ -515,24 +522,38 @@ export class EditLossInformationComponent implements OnInit {
 
       // Tell the handler it is done: a toast every time (nothing else on screen
       // says "saved"). The page itself stays put with the new values showing.
-      const impacted = diffs.some(d => IMPACT_LABELS.includes(d.label));
-      this.toast.success('Claim details updated', `${this.claimId()}: ${fieldNames} saved.`);
+      const impactedDiffs = diffs.filter(d => IMPACT_LABELS.includes(d.label));
+      // What sections were built from changed: mark the open ones "Review needed"
+      // so the warning stays on the sections themselves, not only in this moment.
+      const flagged = impactedDiffs.length
+        ? this.sync.flagSectionsForReview(
+            this.claimId(),
+            impactedDiffs.map(d => d.label)
+          )
+        : 0;
+      this.toast.success(
+        'Claim details updated',
+        `${this.claimId()}: ${fieldNames} saved.` +
+          (flagged
+            ? ` ${flagged} open section${flagged === 1 ? '' : 's'} marked "Review needed".`
+            : '')
+      );
       // Saving is over: the Update button must stop spinning before the review prompt.
       this.saving.set(false);
 
-      // Only when something Sections were built from changed is there a decision
-      // left to make, so only then a second prompt. Its buttons say what they
-      // do; neither one reads as undoing the save, which is already done.
-      if (impacted) {
-        const impactedDiffs = diffs.filter(d => IMPACT_LABELS.includes(d.label));
+      // A second prompt only when there is something to review. Its buttons say
+      // what they do; neither reads as undoing the save, which is already done.
+      if (flagged) {
         const names = impactedDiffs.map(d => d.label).join(' and ');
         const review = await this.confirm({
           title: 'Review sections',
           message:
-            `Saved. ${names} changed, but the sections on this claim were built from the ` +
-            `old values and may no longer match. Review them now?`,
+            `Saved. ${names} changed, and the ${flagged} open section${flagged === 1 ? '' : 's'} ` +
+            `on this claim ${flagged === 1 ? 'was' : 'were'} built from the old values. ` +
+            `${flagged === 1 ? 'It is' : 'They are'} marked "Review needed" until you check ` +
+            `${flagged === 1 ? 'it' : 'them'}. Review now?`,
           confirmLabel: 'Review sections',
-          cancelLabel: 'Stay on this page'
+          cancelLabel: 'Later'
         });
         if (review) {
           this.router.navigate(['/claims', this.claimId(), 'sections'], {

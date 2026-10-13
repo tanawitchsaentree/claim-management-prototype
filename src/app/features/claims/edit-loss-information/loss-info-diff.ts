@@ -114,9 +114,12 @@ export function computeLossInfoDiffs(
   );
   addIf('Loss description', orig.lossDescription, cur.lossDescription);
 
-  // Loss location (compare by displayName of first location as proxy)
-  const origLoc = (orig.lossLocation as LocationsBag)?.locations?.[0]?.displayName ?? '';
-  const curLoc = (cur.lossLocation as LocationsBag)?.locations?.[0]?.displayName ?? '';
+  // Loss location: every location, by display name. (Comparing only the first
+  // one meant adding, removing or changing a 2nd+ location was no change at all.)
+  const names = (bag: LocationsBag): string =>
+    (bag?.locations ?? []).map(l => l.displayName ?? '').join(', ');
+  const origLoc = names(orig.lossLocation as LocationsBag);
+  const curLoc = names(cur.lossLocation as LocationsBag);
   addIf('Loss location', origLoc, curLoc);
 
   return diffs;

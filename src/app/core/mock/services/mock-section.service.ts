@@ -244,6 +244,20 @@ export class MockSectionService extends MockBaseService {
     return this.respond({} as ClaimSection);
   }
 
+  /** Edit claim details changed what sections were built from: flag every open one. */
+  flagOpenForReview(claimId: string, fields: string[]): number {
+    const since = new Date().toISOString();
+    const open = this.getByClaimIdSync(claimId).filter(s => s.status === 'Open');
+    // patchSection applies synchronously; its Observable is just the respond() wrapper.
+    for (const s of open) this.patchSection(s.id, { reviewNeeded: { fields, since } });
+    return open.length;
+  }
+
+  /** A handler has checked the section against the changed facts. */
+  markReviewed(sectionId: string): void {
+    this.patchSection(sectionId, { reviewNeeded: undefined });
+  }
+
   patchEntity(
     sectionId: string,
     entityId: string,

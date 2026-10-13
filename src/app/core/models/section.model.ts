@@ -101,4 +101,8 @@ export interface ClaimSection extends SectionBlockers {
   reopenedDate?: string;
   reopenedBy?: { userId: string; name: string };
   reopeningReason?: SectionReopenReason;
+  // Set when Edit claim details changed something this section was built from
+  // (cause of loss, type of damage, loss location). Stays until a handler marks
+  // the section reviewed, so the warning does not vanish with the page.
+  reviewNeeded?: { fields: string[]; since: string };
 }

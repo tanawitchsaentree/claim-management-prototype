@@ -10,6 +10,7 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { RightStripService } from '../../core/services/right-strip.service';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -76,6 +77,7 @@ import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
     NxTableModule,
     NxSpinnerModule,
     NxTooltipModule,
+    NxBadgeModule,
     NxModalModule,
     StatusChipComponent,
     EmptyStateComponent,
@@ -383,6 +385,28 @@ export class Sections {
       )
     );
     this.toast.success(`Entity "${entity.name}" updated`);
+  }
+
+  // The handler confirms they checked the section against what changed. Asks first
+  // (a sign-off is a commitment), acknowledges with a toast.
+  async onMarkReviewed(section: ClaimSection): Promise<void> {
+    const fields = section.reviewNeeded?.fields.join(', ') ?? 'the loss information';
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Mark as reviewed',
+        message: `Confirm you have checked "${section.name}" against the changed ${fields}. The "Review needed" mark is removed.`,
+        confirmLabel: 'Mark as reviewed',
+        cancelLabel: 'Not yet'
+      } satisfies ConfirmDialogData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    if (!(await firstValueFrom(ref.afterClosed()))) return;
+    this.sectionSvc.markReviewed(section.id);
+    this.sections.update(list =>
+      list.map(s => (s.id === section.id ? { ...s, reviewNeeded: undefined } : s))
+    );
+    this.toast.success('Section reviewed', `"${section.name}" no longer needs review.`);
   }
 
   async onDeleteEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
