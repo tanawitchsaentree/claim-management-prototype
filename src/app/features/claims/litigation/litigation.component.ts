@@ -69,7 +69,10 @@ export class LitigationComponent implements OnInit {
   private claimId = '';
 
   ngOnInit(): void {
-    this.claimId = this.route.parent?.snapshot.paramMap.get('id') ?? '';
+    // Route is `claims/:id/litigation`: :id is on this route, not the parent (the parent
+    // lookup alone gave '' for every claim).
+    this.claimId =
+      this.route.snapshot.paramMap.get('id') ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
     this.load();
   }
 
