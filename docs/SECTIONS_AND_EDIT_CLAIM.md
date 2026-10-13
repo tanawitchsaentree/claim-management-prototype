@@ -7,7 +7,7 @@ Prepared 2026-10-12 as the basis for a design deep-dive. Evidence labels:
 
 ## 1. The one-page answer
 
-**Edit claim details and Sections are almost not connected.** Two things link them:
+**Edit claim details and Sections are almost not connected, even though the cause of loss is what the sections are built from.** Two things link them:
 
 1. After saving a change to Cause of loss, Type of damage or Loss location, Edit offers to take the handler to Sections and shows a warning banner there.
 2. The claim's *Incident circumstance*, which Edit writes and the Sections detail panel shows read-only.
@@ -18,7 +18,32 @@ A section is built **once** (at FNOL submit, skeleton creation, or conversion) a
 
 ---
 
-## 2. What a section is
+## 2. Where sections come from: the chain starts at the cause of loss
+
+**Cause of loss is what generates the entities, and the entities are what generate the sections.**
+
+```
+Loss information (cause of loss, plus date, location, type of damage)
+        |  sent to the coverage ("Promise") service with the policy
+        v
+Entities & Damages: for EACH cause, the entities that can be damaged, grouped by
+damage type, each marked Promised / Not promised / more information needed,
+with its limit and "covered by"
+        |  handler selects the entities hit by this loss
+        v
+Section: one per damage type that has selected entities
+        |
+        v
+Entity coverage review: Promised = Standard Review, Not promised = Enhanced Review Required
+```
+
+Evidence for the real system: the Entities & Damages screen asks the backend (`getAllEntities/{incident record}?impossibleEntities=true`) and the answer is shaped as `{ causes, damagedEntities: [{ path (damage type), options: [entity + promiseStatus + limit + coveredBy] }] }`, so the entities are listed **per cause**. The calculation itself is not in the repo we have.
+
+**The prototype does not do this.** Its entity list is a fixed file per policy number (3 policies). Cause of loss is not used at all on that screen; only the Type of damage chosen earlier (to pick which groups to show) and the loss location (to show limits per location).
+
+This is why a change of cause matters so much: it changes which entities are possible and promised, so the sections built from them can be wrong. Today Edit claim details does not recompute any of it.
+
+## 2b. What a section is
 
 | Part | Holds | Notes |
 |---|---|---|
@@ -108,6 +133,7 @@ Nothing on the Sections page writes to loss information or the overview. Closing
 
 Each with what the code supports and a recommendation.
 
+0. **Cause of loss is the driver.** Changing it should re-run the entity and coverage step (the same step that created the sections) and show what changes: entities that became Promised or Not promised, and sections that no longer have a basis. Type of damage and location are secondary inputs to the same step. Decisions 1 to 3 below follow from this.
 1. **Should editing cause, type of damage or location change sections?**
    Options: (a) never, only warn (today); (b) warn and persist a "needs review" marker on the affected sections; (c) auto-change. Recommendation: **(b)**. The handler decides, but the warning must not vanish. Section-level "Review needed" chip until a handler marks it reviewed.
 2. **Which section is affected by which edit?** Today none is named. Type of damage maps to a section damage type directly; cause and location do not map at all. Needs a rule, e.g. type-of-damage change flags sections of the changed type, location change flags sections whose entity name matches the old location.
