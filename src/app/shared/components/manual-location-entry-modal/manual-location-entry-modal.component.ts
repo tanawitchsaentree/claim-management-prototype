@@ -10,6 +10,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import lookupsData from '../../../core/mock/data/lookups.json';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockGisLocationService } from '../../../core/mock/services/mock-gis-location.service';
 import { GisAddressSuggestion, LocationItem, LookupOption } from '../../../core/models';
@@ -132,7 +133,12 @@ export class ManualLocationEntryModalComponent implements OnInit {
       number: '',
       postalCode: s.postalCode,
       city: s.city,
-      country: s.country,
+      // Stored locations carry the country as a name ("Germany") or a code ("DE");
+      // the dropdown's values are codes, so a name left the field blank.
+      country:
+        lookupsData.countries.find(
+          c => c.value === s.country || c.label.toLowerCase() === s.country?.toLowerCase()
+        )?.value ?? s.country,
       state: s.state ?? '',
       latitude: s.latitude ?? null,
       longitude: s.longitude ?? null,
