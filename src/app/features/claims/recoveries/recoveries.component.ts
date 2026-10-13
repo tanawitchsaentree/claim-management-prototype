@@ -130,7 +130,10 @@ export class RecoveriesComponent implements OnInit {
   );
 
   async ngOnInit(): Promise<void> {
-    this.claimId = this.route.parent?.snapshot.paramMap.get('id') ?? '';
+    // The route is `claims/:id/recoveries`, so :id is on THIS route. Reading it from
+    // the parent gave '' for every claim and left the page on "Loading…" forever.
+    this.claimId =
+      this.route.snapshot.paramMap.get('id') ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
     await this.load();
   }
 
