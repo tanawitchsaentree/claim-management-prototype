@@ -5,8 +5,8 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
-import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { ENTITY_TYPE_LABELS, EntityRow, EntityType, SubItem } from '../../../../core/models';
+import { EntityEventsInfoComponent } from '../entity-events-info/entity-events-info.component';
 import { EntityLimitCellComponent } from '../entity-limit-cell/entity-limit-cell.component';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import {
@@ -41,9 +41,9 @@ const ENTITY_TYPES: EntityType[] = [
     NxTableModule,
     NxCheckboxModule,
     NxContextMenuModule,
-    NxPopoverModule,
     StatusChipComponent,
-    EntityLimitCellComponent
+    EntityLimitCellComponent,
+    EntityEventsInfoComponent
   ],
   templateUrl: './entities-table.component.html',
   styleUrl: './entities-table.component.scss'
@@ -76,11 +76,5 @@ export class EntitiesTableComponent {
 
   addUnderRule(rule: EntityRow): void {
     this.addEntity.emit({ type: rule.ruleEntityType ?? 'other', rule });
-  }
-
-  eventsTitle(entity: EntityRow): string {
-    return (entity.coveredForEvents?.length ?? 0) > 1
-      ? 'This entity is covered for multiple events:'
-      : 'This entity is covered for:';
   }
 }

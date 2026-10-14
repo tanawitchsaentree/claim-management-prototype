@@ -91,25 +91,6 @@
   padding-left: calc(var(--lvl, 0) * var(--space-xl));
 }
 
-.info-btn {
-  display: inline-flex;
-  align-items: center;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--interactive-primary);
-}
-
-.info-pop__title {
-  margin: 0 0 var(--space-sm);
-}
-
-.info-pop__list {
-  margin: 0;
-  padding-left: var(--space-base);
-}
-
 .sub-item-row {
   background: var(--ui-02);
 }

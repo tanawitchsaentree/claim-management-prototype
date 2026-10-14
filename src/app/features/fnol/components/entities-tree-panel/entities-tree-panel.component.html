@@ -50,17 +50,21 @@
       @for (row of group.rows; track row.entity.entityId) {
         @if (row.entity.isRule) {
           <div class="tp__row tp__row--rule">
-            <button
-              nxIconButton="tertiary small"
-              type="button"
-              (click)="toggleRule.emit(row.entity)"
-              [attr.aria-expanded]="row.entity.expanded"
-              [attr.aria-label]="(row.entity.expanded ? 'Collapse ' : 'Expand ') + row.entity.name"
-            >
-              <nx-icon
-                [name]="row.entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
-              ></nx-icon>
-            </button>
+            @if (row.children.length) {
+              <button
+                nxIconButton="tertiary small"
+                type="button"
+                (click)="toggleRule.emit(row.entity)"
+                [attr.aria-expanded]="row.entity.expanded"
+                [attr.aria-label]="
+                  (row.entity.expanded ? 'Collapse ' : 'Expand ') + row.entity.name
+                "
+              >
+                <nx-icon
+                  [name]="row.entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+                ></nx-icon>
+              </button>
+            }
             <span>{{ row.entity.name }}</span>
           </div>
           @if (row.entity.expanded) {
