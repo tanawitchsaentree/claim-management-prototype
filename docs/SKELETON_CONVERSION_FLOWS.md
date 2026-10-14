@@ -2,6 +2,8 @@
 
 Written 2026-10-12 for team review. Every result marked **verified** was played in the running prototype on that date (browser, fresh session). Anything marked **per code** was read from the source and not played. Anything marked **not verified** is a guess and says so.
 
+> **Claim numbers.** Only the number *shown* changes at conversion. The internal key (`claimId`, e.g. `SK-2024-005`) never changes, so sections, tasks, reserves and links keep pointing at it; the URL still carries the internal key, and a URL with the new or old number redirects to it. The number format `CLM-<year>-<seq>` is an assumption to confirm with the team. Reset in the DEV bar puts the claim back to its SK- number.
+
 A **skeleton claim** (also called an orphan claim) is a claim registered before a policy is known. **Link policy** attaches a real policy to it so it becomes a normal claim. Only the "Link policy" tail has several different outcomes, so most of this document is about that.
 
 ---
@@ -66,7 +68,7 @@ What creation writes:
 1. Handler opens **Link policy** from the claim overview (button) or from the FNOL search results (row menu).
 2. The picker is the same search as FNOL "Client and policy search" (Client name, Policy number, Underwriting year, Search, Reset search, Show more for Broker and Line of Business), with **Clients** and **Policies** result tabs. Client name is **pre-filled with the skeleton's client** and the search runs when the picker opens. Choosing a row on the Clients tab narrows the Policies tab to that client. A policy row is selectable only if the loss date is inside the policy period (and, while the client name is left as typed, the client matches). Other rows are greyed with a reason such as "Loss date outside policy period".
 3. Picking a row shows the **Link policy** confirm over the picker.
-4. Confirm: the policy is attached, the state becomes `linked`, two things are created: a task "Set up reserves" (due in 3 days, high priority) and, only when the skeleton has a stored location, a task "Confirm loss location".
+4. Confirm: the policy is attached, the state becomes `linked`, the claim gets a **regular claim number** (`CLM-<year>-<seq>`, next free number worked out from existing claims; the SK- number is kept as a permanent alias, shown by an info icon next to Claim ID and found by search and by URL), a "Claim number" row is added to the activity log, and two things are created: a task "Set up reserves" (due in 3 days, high priority) and, only when the skeleton has a stored location, a task "Confirm loss location".
 5. **Claim overview path only:** the **Confirm loss location** sheet opens straight away (no slide), listing the policy's active locations with the skeleton's location pinned on top. A **Line of business** column shows the skeleton claim's value on the pinned row and the policy's value on the others (bold when they differ). The handler picks one and confirms. The claim location is replaced and the "Confirm loss location" task is closed.
 6. A toast confirms. The claim overview stays on screen. Nothing else guides the handler (the old "needs setup" banner was removed in `efd4fdb`).
 

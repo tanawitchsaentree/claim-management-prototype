@@ -9,7 +9,7 @@
   <!-- Step 1 — Reason -->
   @if (step() === 1) {
     <p class="crm-intro">
-      Reopen <strong>{{ claim.claimId }}</strong
+      Reopen <strong>{{ claim.claimId | claimNumber }}</strong
       >. Pick a reason and add an optional note for context.
     </p>
 

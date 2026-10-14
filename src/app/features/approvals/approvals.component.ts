@@ -24,11 +24,13 @@ import { firstValueFrom } from 'rxjs';
 import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.directive';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { RequesterNamePipe } from '../../shared/pipes/requester-name.pipe';
+import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-approvals',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,

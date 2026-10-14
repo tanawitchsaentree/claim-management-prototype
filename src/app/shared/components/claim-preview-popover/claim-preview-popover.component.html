@@ -11,7 +11,7 @@
     </div>
   } @else if (vm().claim; as claim) {
     <div class="cpop__header">
-      <span class="cpop__id">{{ previewSvc.claimId() }}</span>
+      <span class="cpop__id">{{ previewSvc.claimId() | claimNumber }}</span>
       <app-status-chip [status]="claim.status" domain="claim" />
     </div>
 

@@ -32,11 +32,13 @@ import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/mode
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
 
 const PAGE_SIZE = 15;
+import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-claims-list',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     RouterLink,
     ReactiveFormsModule,
     Navbar,

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { claimAliasGuard } from './core/guards/claim-alias.guard';
 import { editLossInformationCanDeactivate } from './features/claims/edit-loss-information/edit-loss-information.guard';
 import { trackerGuard } from './core/guards/tracker.guard';
 
@@ -71,6 +72,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/overview',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/claim-overview/claim-overview.component').then(
             m => m.ClaimOverviewComponent
@@ -78,6 +80,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/loss-information/edit',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/edit-loss-information/edit-loss-information.component').then(
             m => m.EditLossInformationComponent
@@ -86,10 +89,12 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/sections',
+        canActivate: [claimAliasGuard],
         loadComponent: () => import('./features/sections/sections').then(m => m.Sections)
       },
       {
         path: 'claims/:id/policy',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/policy-overview/policy-overview.component').then(
             m => m.PolicyOverviewComponent
@@ -101,6 +106,7 @@ export const routes: Routes = [
       { path: 'claims/:id/parties', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       {
         path: 'claims/:id/financial',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/financial-overview/financial-overview.component').then(
             m => m.FinancialOverviewComponent
@@ -112,6 +118,7 @@ export const routes: Routes = [
       { path: 'claims/:id/notes', redirectTo: 'claims/:id/overview', pathMatch: 'full' },
       {
         path: 'claims/:id/limits',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/limits-deductibles/limits-deductibles.component').then(
             m => m.LimitsDeductiblesComponent
@@ -119,6 +126,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/recoveries',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/recoveries/recoveries.component').then(
             m => m.RecoveriesComponent
@@ -126,6 +134,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/providers',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/provider-management/provider-management.component').then(
             m => m.ProviderManagementComponent
@@ -133,6 +142,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/risk',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/risk-analysis/risk-analysis.component').then(
             m => m.RiskAnalysisComponent
@@ -140,6 +150,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims/:id/litigation',
+        canActivate: [claimAliasGuard],
         loadComponent: () =>
           import('./features/claims/litigation/litigation.component').then(
             m => m.LitigationComponent

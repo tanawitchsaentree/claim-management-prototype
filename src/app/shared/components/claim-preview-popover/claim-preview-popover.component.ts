@@ -28,12 +28,15 @@ interface PreviewVM {
   sections: ClaimSection[];
 }
 
+import { ClaimNumberPipe } from '../../pipes/claim-number.pipe';
+
 @Component({
   selector: 'app-claim-preview-popover',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, RouterLink, NxIconModule, NxButtonModule, StatusChipComponent],
+  imports: [
+    ClaimNumberPipe,CommonModule, RouterLink, NxIconModule, NxButtonModule, StatusChipComponent],
   templateUrl: './claim-preview-popover.component.html',
   styleUrl: './claim-preview-popover.component.scss'
 })

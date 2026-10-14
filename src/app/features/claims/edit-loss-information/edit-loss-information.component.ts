@@ -27,6 +27,7 @@ import { MockLossInformationService } from '../../../core/mock/services/mock-los
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 import { LossInfoSyncService } from '../../../core/services/loss-info-sync.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -70,6 +71,7 @@ type PerFieldKey =
   selector: 'app-edit-loss-information',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     ReactiveFormsModule,
     RouterLink,
     NxButtonModule,

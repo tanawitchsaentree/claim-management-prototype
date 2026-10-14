@@ -33,10 +33,13 @@ import { LossEventGeneralInfoComponent } from '../loss-event-general-info/loss-e
  * Reached from: loss-events-list, the claims-portfolio dashboard widget, and
  * FNOL step-summary when one submission derives more than one claim.
  */
+import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
+
 @Component({
   selector: 'app-loss-event-overview',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     CommonModule,
     RouterLink,
     NxButtonModule,

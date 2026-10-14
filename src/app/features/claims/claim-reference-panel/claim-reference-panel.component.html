@@ -5,7 +5,7 @@
       @for (tab of svc.refTabs(); track tab.id) {
         <div class="ref-tab" [class.ref-tab--active]="svc.activeRefTabId() === tab.id">
           <button class="ref-tab__select" type="button" (click)="selectTab(tab)">
-            <span class="ref-tab__label">{{ tab.claimId }}</span>
+            <span class="ref-tab__label">{{ tab.claimId | claimNumber }}</span>
           </button>
           <button
             class="ref-tab__close"
@@ -90,7 +90,7 @@
                   [class.ref-search-item--highlighted]="i === highlightedIndex()"
                   (click)="selectClaim(c)"
                 >
-                  <span class="ref-search-item__id">{{ c.claimId }}</span>
+                  <span class="ref-search-item__id">{{ c.claimId | claimNumber }}</span>
                   <span class="ref-search-item__client">{{ c.clientName }}</span>
                 </li>
               }
@@ -123,14 +123,14 @@
   } @else if (vm().notFound) {
     <app-empty-state message="Claim not found" icon="info-circle-o">
       <p body>
-        <strong>{{ svc.activeRefTab()?.claimId }}</strong> is not in the demo data set. Try
+        <strong>{{ svc.activeRefTab()?.claimId | claimNumber }}</strong> is not in the demo data set. Try
         CLM-2024-001 or CLM-2024-011.
       </p>
     </app-empty-state>
   } @else if (vm().claim; as claim) {
     <!-- Launch in full view link -->
     <div class="ref-claim-header">
-      <span class="ref-claim-id">{{ svc.activeRefTab()?.claimId }}</span>
+      <span class="ref-claim-id">{{ svc.activeRefTab()?.claimId | claimNumber }}</span>
       <a
         class="ref-header__icon-btn"
         [routerLink]="['/claims', svc.activeRefTab()?.claimId, 'overview']"

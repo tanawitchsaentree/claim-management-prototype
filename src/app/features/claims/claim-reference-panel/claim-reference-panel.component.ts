@@ -26,11 +26,13 @@ interface RefVM {
 }
 
 const EMPTY_VM: RefVM = { claim: null, sections: [], notFound: false, loading: true };
+import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-claim-reference-panel',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     CommonModule,
     FormsModule,
     RouterLink,

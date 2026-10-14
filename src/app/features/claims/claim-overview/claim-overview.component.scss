@@ -154,3 +154,17 @@
   color: var(--text-01);
   line-height: 1.6;
 }
+
+// Info icon next to the Claim ID: the number this claim had before conversion.
+.co-former-id {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  color: var(--interactive-primary);
+  cursor: help;
+  border-radius: 4px;
+  vertical-align: middle;
+}

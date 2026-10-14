@@ -19,11 +19,13 @@ const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
   { value: 'in-progress', label: 'In progress' },
   { value: 'done', label: 'Done' }
 ];
+import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-task-manager',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     RouterLink,
     NxTableModule,
     NxIconModule,

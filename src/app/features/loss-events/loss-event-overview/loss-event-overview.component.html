@@ -56,7 +56,7 @@
                         [routerLink]="['/claims', c.claimId, 'overview']"
                         [appClaimPreview]="c.claimId"
                       >
-                        {{ c.claimId }}
+                        {{ c.claimId | claimNumber }}
                       </a>
                     </td>
                     <td nxCell>{{ c.claimant }}</td>
@@ -110,7 +110,7 @@
                     <td nxCell>
                       <app-status-chip [status]="p.clearanceStatus" domain="clearance" />
                     </td>
-                    <td nxCell class="leo-nowrap leo-muted">{{ p.claimId }}</td>
+                    <td nxCell class="leo-nowrap leo-muted">{{ p.claimId | claimNumber }}</td>
                   </tr>
                 }
               </tbody>

@@ -9,7 +9,7 @@
     touches anything (DESIGN_PRINCIPLES.md rule #1). -->
     <app-page-header
       title="Edit claim details"
-      [eyebrow]="claimId()"
+      [eyebrow]="claimId() | claimNumber"
       [subtitle]="clientName()"
       [showBack]="true"
       backLabel="Back to claim overview"

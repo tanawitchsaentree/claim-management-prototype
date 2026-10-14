@@ -62,11 +62,13 @@ type SearchState =
 
 const UNDERWRITING_YEARS = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
 const PAGE_SIZE = 10;
+import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-step-1-search',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     CommonModule,
     ReactiveFormsModule,
     NxButtonModule,
@@ -319,7 +321,7 @@ export class Step1SearchComponent {
     const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Link policy',
-        message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
+        message: `${skeleton.claimId} will be linked to this policy, moved out of the orphan-claim queue and given a regular claim number. ${skeleton.claimId} stays searchable as its previous number. This cannot be undone.`,
         changes: [
           { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
           { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
@@ -337,15 +339,15 @@ export class Step1SearchComponent {
     // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (originally "Convert
     // to claim"; renamed "Link policy" — BMPCC-17927 functional review,
     // 2026-09-22, item 3 — a skeleton claim is already a claim).
-    const { locationNeedsReconfirm } = await this.overviewSvc.convertToRegularClaim(
+    const { locationNeedsReconfirm, claimNumber } = await this.overviewSvc.convertToRegularClaim(
       skeleton.claimId,
       policy
     );
     this.toast.success(
-      `${skeleton.claimId} — policy linked`,
+      `${skeleton.claimId} is now ${claimNumber}`,
       locationNeedsReconfirm
-        ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up sections, reserves, and re-confirm the loss location were added to your task list.`
-        : `Policy ${policy.policyNumber} linked. A follow-up task to set up sections and reserves was added to your task list.`
+        ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
+        : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
     );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);
   }

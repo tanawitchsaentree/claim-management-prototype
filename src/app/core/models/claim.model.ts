@@ -49,7 +49,15 @@ export interface ClaimLocation {
 }
 
 export interface Claim {
+  // Internal key: every record (sections, tasks, reserves, ...) points at it and it
+  // never changes. The number people see and quote is claimNumber when there is one.
   claimId: string;
+  // Assigned when an orphan claim is converted to a regular claim. Unset otherwise
+  // (the claimId is then the number). Lives in mock state, so Reset clears it.
+  claimNumber?: string;
+  // Numbers this claim was known by before (the SK- number). Kept for good: lookups,
+  // search and old links still find the claim by any of them.
+  formerClaimNumbers?: string[];
   policyNumber: string;
   clientName: string;
   broker: string | null;

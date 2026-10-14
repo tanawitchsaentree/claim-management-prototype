@@ -105,6 +105,8 @@ export class MockClaimService extends MockBaseService {
       results = results.filter(
         c =>
           c.claimId.toLowerCase().includes(q) ||
+          (c.claimNumber?.toLowerCase().includes(q) ?? false) ||
+          (c.formerClaimNumbers ?? []).some(f => f.toLowerCase().includes(q)) ||
           (c.lossEventId?.toLowerCase().includes(q) ?? false)
       );
     }

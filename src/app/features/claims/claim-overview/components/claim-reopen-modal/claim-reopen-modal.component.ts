@@ -31,11 +31,13 @@ export interface ClaimReopenModalResult {
 }
 
 type Step = 1 | 2;
+import { ClaimNumberPipe } from '../../../../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-claim-reopen-modal',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     CommonModule,
     ReactiveFormsModule,
     NxModalModule,

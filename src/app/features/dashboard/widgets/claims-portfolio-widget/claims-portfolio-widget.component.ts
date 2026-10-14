@@ -22,11 +22,13 @@ import { Claim, LossEventSummary } from '../../../../core/models';
 const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
 
 export type ClaimsDateRange = '30' | '90' | 'all';
+import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-claims-portfolio-widget',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     DecimalPipe,
     RouterLink,
     NxIconModule,

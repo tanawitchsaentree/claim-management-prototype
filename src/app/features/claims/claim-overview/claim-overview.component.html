@@ -40,7 +40,23 @@
       <div class="co-grid">
         <div class="co-field">
           <span class="co-label">Claim ID</span>
-          <span class="co-value">{{ claim.claimId }}</span>
+          <span class="co-value"
+            >{{ claim.claimId | claimNumber }}
+            @if (formerNumbers(claim.claimId); as former) {
+              @if (former.length) {
+                <!-- Where the number came from: the orphan (SK-) number this claim had before a
+                     policy was linked. A focusable button, not a hover-only icon. -->
+                <button
+                  type="button"
+                  class="co-former-id"
+                  [nxTooltip]="'Previous claim number: ' + former.join(', ')"
+                  [attr.aria-label]="'Previous claim number: ' + former.join(', ')"
+                >
+                  <nx-icon name="info-circle-o" size="s" aria-hidden="true"></nx-icon>
+                </button>
+              }
+            }</span
+          >
         </div>
         <div class="co-field">
           <span class="co-label">Client</span>

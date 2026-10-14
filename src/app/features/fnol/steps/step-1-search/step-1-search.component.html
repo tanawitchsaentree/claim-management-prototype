@@ -207,7 +207,7 @@
                             type="button"
                             (click)="$event.stopPropagation(); onViewClaim(claim.claimId)"
                           >
-                            {{ claim.claimId }}
+                            {{ claim.claimId | claimNumber }}
                           </button>
                         </td>
                         <td>{{ claim.clientName }}</td>

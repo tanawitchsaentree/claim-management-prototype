@@ -11,11 +11,13 @@ import { ClaimPreviewDirective } from '../../../../shared/directives/claim-previ
 import { RequesterNamePipe } from '../../../../shared/pipes/requester-name.pipe';
 import { AuthService } from '../../../../core/services/auth';
 import { UrgentApproval, PaymentApproval } from '../../../../core/models';
+import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
 
 @Component({
   selector: 'app-recent-approvals-widget',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     DecimalPipe,
     RouterLink,
     NxIconModule,

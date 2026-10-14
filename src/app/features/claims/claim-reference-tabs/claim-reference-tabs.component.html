@@ -17,7 +17,7 @@
       <div class="rt-tab" [class.rt-tab--active]="activeTabId() === tab.id">
         <button class="rt-tab__select" type="button" (click)="goToRef(tab)">
           <span class="rt-tab__badge">Ref</span>
-          <span class="rt-tab__label">{{ tab.claimId }}</span>
+          <span class="rt-tab__label">{{ tab.claimId | claimNumber }}</span>
         </button>
         <button
           class="rt-tab__close"
@@ -92,7 +92,7 @@
                   [class.rt-popover__item--highlighted]="i === highlightedIndex()"
                   (click)="selectResult(claim)"
                 >
-                  <span class="rt-popover__claim-id">{{ claim.claimId }}</span>
+                  <span class="rt-popover__claim-id">{{ claim.claimId | claimNumber }}</span>
                   <span class="rt-popover__client">{{ claim.clientName }}</span>
                 </li>
               }

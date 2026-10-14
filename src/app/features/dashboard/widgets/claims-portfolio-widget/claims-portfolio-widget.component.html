@@ -127,7 +127,7 @@
                     class="text-link"
                     [routerLink]="['/claims', claim.claimId, 'overview']"
                     [appClaimPreview]="claim.claimId"
-                    >{{ claim.claimId }}</a
+                    >{{ claim.claimId | claimNumber }}</a
                   >
                 </td>
                 <td nxCell class="dash-col--nowrap">{{ claim.policyNumber || '–' }}</td>

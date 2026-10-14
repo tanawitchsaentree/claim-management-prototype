@@ -142,7 +142,7 @@
                       [routerLink]="['/claims', claim.claimId, 'overview']"
                       [appClaimPreview]="claim.claimId"
                     >
-                      {{ claim.claimId }}
+                      {{ claim.claimId | claimNumber }}
                     </a>
                   </td>
                   <td nxCell>{{ claim.clientName }}</td>

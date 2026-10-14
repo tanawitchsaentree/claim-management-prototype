@@ -4,6 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
 import { Claim } from '../../models/claim.model';
 import { MockBaseService } from './mock-base.service';
+import { ClaimNumberService } from '../../services/claim-number.service';
 import { MockStateService } from '../state/mock-state.service';
 import { MockClaimService } from './mock-claim.service';
 import { MockTaskService } from './mock-task.service';
@@ -23,6 +24,7 @@ export class MockClaimOverviewService extends MockBaseService {
   private readonly taskSvc = inject(MockTaskService);
   private readonly lookupSvc = inject(MockLookupService);
   private readonly sectionSvc = inject(MockSectionService);
+  private readonly numberSvc = inject(ClaimNumberService);
 
   getOverview(claimId: string): Observable<ClaimOverview> {
     const existing = this.stateSvc.state().overviews[claimId];
@@ -123,10 +125,23 @@ export class MockClaimOverviewService extends MockBaseService {
   async convertToRegularClaim(
     claimId: string,
     policy: LinkablePolicy
-  ): Promise<{ claim: Claim; locationNeedsReconfirm: boolean }> {
+  ): Promise<{ claim: Claim; locationNeedsReconfirm: boolean; claimNumber: string; formerNumber: string }> {
     const claim = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
+    // It is a regular claim now: it gets a regular claim number. The internal id (and
+    // so every record pointing at it) stays; the SK- number becomes a permanent alias.
+    const { number: claimNumber, former: formerNumber } = this.numberSvc.assign(claimId);
     this.stateSvc.patchOverview(claimId, this.synthesizeOverviewFromClaim(claim));
     this.appendActivities(claimId, [
+      {
+        id: `act-num-${Date.now()}`,
+        claimId,
+        user: claim.assignee ?? 'Unassigned',
+        timestamp: new Date().toISOString(),
+        objectType: 'Claim',
+        attribute: 'Claim number',
+        valueOld: formerNumber,
+        valueNew: claimNumber
+      },
       {
         id: `act-${Date.now()}`,
         claimId,
@@ -166,7 +181,7 @@ export class MockClaimOverviewService extends MockBaseService {
       this.taskSvc.create({
         claimId,
         taskType: 'Review',
-        description: `Set up reserves for ${claimId} (converted from orphan claim)`,
+        description: `Set up reserves for ${claimNumber} (converted from orphan claim ${formerNumber})`,
         status: 'open',
         dueDate: dueDate.toISOString().split('T')[0],
         priority: 'high',
@@ -196,7 +211,7 @@ export class MockClaimOverviewService extends MockBaseService {
         this.taskSvc.create({
           claimId,
           taskType: 'Review',
-          description: `Confirm loss location for ${claimId} — entered manually before the policy was linked`,
+          description: `Confirm loss location for ${claimNumber} — entered manually before the policy was linked`,
           status: 'open',
           dueDate: dueDate.toISOString().split('T')[0],
           priority: 'high',
@@ -204,7 +219,7 @@ export class MockClaimOverviewService extends MockBaseService {
         })
       );
     }
-    return { claim, locationNeedsReconfirm: hadManualLocation };
+    return { claim, locationNeedsReconfirm: hadManualLocation, claimNumber, formerNumber };
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton

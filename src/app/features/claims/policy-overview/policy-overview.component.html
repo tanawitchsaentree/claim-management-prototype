@@ -224,11 +224,11 @@
                 <tr nxTableRow [class.po-row--current]="lc.claimId === claimId()">
                   <td nxTableCell>
                     @if (lc.claimId === claimId()) {
-                      <span class="po-value--strong">{{ lc.claimId }}</span>
+                      <span class="po-value--strong">{{ lc.claimId | claimNumber }}</span>
                       <span class="po-current-tag">This claim</span>
                     } @else {
                       <button class="po-claim-link" type="button" (click)="openClaim(lc.claimId)">
-                        {{ lc.claimId }}
+                        {{ lc.claimId | claimNumber }}
                       </button>
                     }
                   </td>

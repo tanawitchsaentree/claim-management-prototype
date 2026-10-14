@@ -4,6 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { ClaimNumberService } from '../../../core/services/claim-number.service';
+import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
@@ -109,6 +111,7 @@ type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
   selector: 'app-claim-overview',
   standalone: true,
   imports: [
+    ClaimNumberPipe,
     CommonModule,
     RouterLink,
     NxIconModule,
@@ -149,6 +152,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly massEventSvc = inject(MockMassEventService);
   private readonly toast = inject(ToastService);
   private readonly sectionSvc = inject(MockSectionService);
+  private readonly claimNumbers = inject(ClaimNumberService);
   private readonly financialSvc = inject(MockFinancialOverviewService);
   private readonly claimSvc = inject(MockClaimService);
   private readonly locationReconfirmSvc = inject(SkeletonLocationReconfirmService);
@@ -536,6 +540,11 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   // claimId, shows in search); the action is linking a policy onto it, not
   // creating a claim. Internal method/component names (onConvertToClaim,
   // ConvertSkeletonModalComponent) are unchanged — not user-facing.
+  /** Numbers this claim was known by before (its SK- number once converted). */
+  formerNumbers(claimId: string): string[] {
+    return this.claimNumbers.formerFor(claimId);
+  }
+
   async onConvertToClaim(claim: ClaimOverview): Promise<void> {
     const skeleton = await firstValueFrom(this.claimSvc.getById(claim.claimId));
     // The policy picker stays open the whole way: the confirm pops up over it
@@ -567,7 +576,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
         title: 'Link policy',
-        message: `${skeleton.claimId} will be linked to this policy and moved out of the orphan-claim queue. This cannot be undone.`,
+        message: `${skeleton.claimId} will be linked to this policy, moved out of the orphan-claim queue and given a regular claim number. ${skeleton.claimId} stays searchable as its previous number. This cannot be undone.`,
         changes: [
           { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
           { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
@@ -615,7 +624,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     // the location one only fires when there's a skeleton-stage manual
     // location to recheck, so this used to under-report it.
       this.toast.success(
-        `${skeleton.claimId} — policy linked`,
+        `${skeleton.claimId} is now ${converted.claimNumber}`,
         locationNeedsReconfirm
           ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
           : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`

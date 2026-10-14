@@ -57,7 +57,7 @@
             <td nxCell>{{ task.taskType }}</td>
             <td nxCell class="tm-col-desc">{{ task.description }}</td>
             <td nxCell>
-              <a [routerLink]="['/claims', task.claimId, 'overview']">{{ task.claimId }}</a>
+              <a [routerLink]="['/claims', task.claimId, 'overview']">{{ task.claimId | claimNumber }}</a>
             </td>
             <td nxCell>
               <app-status-chip [status]="task.status" domain="task"></app-status-chip>

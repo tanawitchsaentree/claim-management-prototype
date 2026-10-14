@@ -65,7 +65,7 @@
                     class="text-link"
                     [routerLink]="['/claims', approval.claimId, 'overview']"
                     [appClaimPreview]="approval.claimId"
-                    >{{ approval.claimId }}</a
+                    >{{ approval.claimId | claimNumber }}</a
                   >
                 </td>
                 <td nxCell>{{ approval.oe }}</td>
@@ -144,7 +144,7 @@
                     class="text-link"
                     [routerLink]="['/claims', payment.claimId, 'overview']"
                     [appClaimPreview]="payment.claimId"
-                    >{{ payment.claimId }}</a
+                    >{{ payment.claimId | claimNumber }}</a
                   >
                 </td>
                 <td nxCell>{{ payment.oe }}</td>

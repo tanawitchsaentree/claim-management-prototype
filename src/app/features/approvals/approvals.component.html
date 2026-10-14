@@ -86,7 +86,7 @@
                     class="text-link"
                     [routerLink]="['/claims', item.claimId, 'overview']"
                     [appClaimPreview]="item.claimId"
-                    >{{ item.claimId }}</a
+                    >{{ item.claimId | claimNumber }}</a
                   >
                 </td>
                 <td nxTableCell class="col-oe">{{ item.oe }}</td>
@@ -177,7 +177,7 @@
                     class="text-link"
                     [routerLink]="['/claims', item.claimId, 'overview']"
                     [appClaimPreview]="item.claimId"
-                    >{{ item.claimId }}</a
+                    >{{ item.claimId | claimNumber }}</a
                   >
                 </td>
                 <td nxTableCell class="col-oe">{{ item.oe }}</td>
