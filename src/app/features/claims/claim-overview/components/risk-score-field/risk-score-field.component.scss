@@ -60,8 +60,9 @@
 
 .co-risk-score {
   display: flex;
+  flex-wrap: wrap; // narrow column: the link drops under the badge instead of breaking mid-word
   align-items: center;
-  gap: 8px;
+  gap: 4px 8px;
 }
 
 .co-risk-badge {
@@ -92,6 +93,9 @@
 // Was an <a> with no href — not focusable, not activatable by keyboard. It
 // navigates rather than links to an external target, so a button is correct.
 .co-link {
+  // A <button> centres its text by default; when the label wraps in a narrow column
+  // the second line sat centred under the first.
+  text-align: left;
   padding: 0;
   border: none;
   background: none;

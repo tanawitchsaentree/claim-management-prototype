@@ -156,15 +156,31 @@
 }
 
 // Info icon next to the Claim ID: the number this claim had before conversion.
+// Same shape as the Risk score refresh button beside its label (20px target, muted
+// icon, hover tint) so the two small icons on this card match.
 .co-former-id {
   display: inline-flex;
   align-items: center;
-  margin-left: 6px;
-  padding: 2px;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  padding: 0;
   border: 0;
-  background: transparent;
-  color: var(--interactive-primary);
-  cursor: help;
   border-radius: 4px;
+  background: none;
+  color: var(--text-muted);
+  cursor: help;
   vertical-align: middle;
+
+  nx-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: var(--claim-overlay-nav-hover);
+    color: var(--text-01);
+  }
 }
