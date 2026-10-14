@@ -107,3 +107,13 @@
 .stepper-item:last-child .stepper-label {
   padding-bottom: 0;
 }
+
+// Compact: only the dots and lines; labels stay in the DOM for screen readers.
+.fnol-stepper--compact .stepper-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.efb {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-base);
+  margin-bottom: var(--space-sm);
+}
+
+.efb__field {
+  width: 300px;
+  margin-bottom: 0 !important;
+}
+
+// Buttons sit level with the input line, not with the floating label above it.
+.efb__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-base);
+  padding-top: 24px;
+}

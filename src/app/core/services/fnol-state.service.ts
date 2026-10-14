@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -40,6 +40,9 @@ const SKELETON_PATH_STEPS: StepConfig[] = [
 // Provided in root so FormGroup state persists across wizard navigation.
 @Injectable({ providedIn: 'root' })
 export class FnolStateService {
+  /** The step list shrinks to dots while a step needs the width (entity details). */
+  readonly stepperCompact = signal(false);
+
   readonly fnolForm = new FormGroup({
     search: new FormGroup({
       clientName: new FormControl('', []),

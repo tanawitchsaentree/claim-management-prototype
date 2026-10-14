@@ -8,7 +8,8 @@
 
 .esm-header {
   @include modal.header;
-  display: flex;
+  // The mixin stacks title over close; here the close sits at the right of the title.
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }

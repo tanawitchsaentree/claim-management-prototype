@@ -1,93 +1,75 @@
 import { selectedSectionGroups } from '../step-summary/selected-section-groups';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { trigger, transition, style, animate } from '@angular/animations';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  Injector,
+  OnDestroy,
+  OnInit,
+  signal
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
-import { firstValueFrom } from 'rxjs';
+import { Subject, catchError, forkJoin, map, of, switchMap, firstValueFrom } from 'rxjs';
+import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
-import { NxTableModule } from '@allianz/ng-aquila/table';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
-import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
-import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxModalModule, NxDialogService } from '@allianz/ng-aquila/modal';
-import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockEntitiesDamagesService } from '../../../../core/mock/services/mock-entities-damages.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import {
   EntitiesDamagesData,
-  DamageGroup,
   EntityRow,
-  PromiseSection,
-  SubItem,
   EntityType,
-  EntitySearchResult,
-  ENTITY_TYPE_LABELS,
-  LocationLimit
+  SubItem,
+  ENTITY_TYPE_LABELS
 } from '../../../../core/models';
-import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EntityDetailPanelComponent } from '../../components/entity-detail-panel/entity-detail-panel.component';
-import { EntitySearchModalComponent } from '../../components/entity-search-modal/entity-search-modal.component';
 import {
-  ConfirmDialogComponent,
-  ConfirmDialogData
-} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import {
-  MoveEntityDialogComponent,
-  MoveEntityDialogData,
-  MoveEntityResult
-} from '../../components/move-entity-dialog/move-entity-dialog.component';
+  EntitiesFilterBarComponent,
+  EntitySearchCriteria
+} from '../../components/entities-filter-bar/entities-filter-bar.component';
+import { EntitiesTableComponent } from '../../components/entities-table/entities-table.component';
+import { EntitiesTreePanelComponent } from '../../components/entities-tree-panel/entities-tree-panel.component';
+import { askMove, confirmRemove, pickEntities, warnSelectEntity } from './entity-dialogs';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ImpactedPoliciesBannerComponent } from '../../components/impacted-policies-banner/impacted-policies-banner.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import {
+  EntityFilter,
+  NO_FILTER,
+  TreeGroup,
+  buildTree,
+  countEntities,
+  seedEmptyGroups,
+  setGroupExpanded,
+  toggleEntity,
+  toggleSubItem
+} from './entity-tree';
 
-interface EntitiesDamagesVM {
-  data: EntitiesDamagesData;
-  loading: boolean;
-  error: boolean;
-}
-
-const LIMIT_CAP = 3;
+const EMPTY: EntitiesDamagesData = { sections: [] };
 
 @Component({
   selector: 'app-step-entities-damages',
   standalone: true,
-  animations: [
-    trigger('rowsExpand', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(-4px)' }),
-        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate('140ms ease-in', style({ opacity: 0, transform: 'translateY(-4px)' }))
-      ])
-    ])
-  ],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
+    NxSpinnerModule,
     NxButtonModule,
     NxIconModule,
-    NxSpinnerModule,
-    NxTableModule,
-    NxCheckboxModule,
     NxMessageModule,
-    NxFormfieldModule,
-    NxInputModule,
     NxContextMenuModule,
-    NxTooltipModule,
+    NxSwitcherModule,
     NxModalModule,
-    NxPopoverModule,
-    StatusChipComponent,
     EntityDetailPanelComponent,
+    EntitiesFilterBarComponent,
+    EntitiesTableComponent,
+    EntitiesTreePanelComponent,
     WizardFooterComponent,
     ImpactedPoliciesBannerComponent,
     EmptyStateComponent
@@ -104,23 +86,6 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   private readonly toast = inject(ToastService);
 
   policyNumber = '';
-
-  get hasLossLocation(): boolean {
-    return (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
-  }
-
-  selectedEntity: EntityRow | null = null;
-  panelOpen = false;
-  private scrollLocked = false;
-  // Handler walkthrough self-QA — the 3 setTimeouts in addEntitiesToList()
-  // (plus the one in onClosePanel()) were never cleared. If the component is
-  // destroyed (Back/Next navigation) before the 300ms one fires, ngOnDestroy's
-  // unlockScroll() runs first, then the stale timer calls onViewDetails() ->
-  // lockScroll() *after* destroy, with nothing left alive to unlock it again —
-  // document.body.style.overflow stays 'hidden' permanently, leaking into
-  // every page the handler navigates to next.
-  private pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
-
   readonly entityTypes: EntityType[] = [
     'building',
     'vehicle',
@@ -131,8 +96,31 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   ];
   readonly entityTypeLabels = ENTITY_TYPE_LABELS;
 
-  private readonly refresh$ = new BehaviorSubject<void>(undefined);
-  vm$!: Observable<EntitiesDamagesVM>;
+  get hasLossLocation(): boolean {
+    return (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
+  }
+
+  private readonly refresh$ = new Subject<void>();
+  private readonly filter = signal<EntityFilter>(NO_FILTER);
+  /** Ticks and expand/collapse change cached objects in place; this re-reads them. */
+  private readonly rev = signal(0);
+  private pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
+
+  readonly vm = toSignal(this.refresh$.pipe(switchMap(() => this.load())), {
+    initialValue: { data: EMPTY, loading: true, error: false }
+  });
+  readonly selectedOnly = computed(() => this.filter().selectedOnly);
+  readonly groups = computed<TreeGroup[]>(() => {
+    this.rev();
+    return buildTree(this.vm().data, this.filter());
+  });
+  readonly entityCount = computed(() => countEntities(this.groups()));
+  /** The entity whose details are open; the page shows list + details side by side. */
+  readonly activeEntity = signal<EntityRow | null>(null);
+
+  constructor() {
+    effect(() => this.fnolState.stepperCompact.set(!!this.activeEntity()));
+  }
 
   ngOnInit(): void {
     if (!this.fnolState.selectedPolicy && !this.fnolState.selectedClient) {
@@ -140,293 +128,150 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
       return;
     }
     this.policyNumber = this.fnolState.selectedPolicy?.policyNumber ?? '';
-    this.vm$ = this.refresh$.pipe(
-      switchMap(() =>
-        this.entitiesSvc.getByPolicyId(this.policyNumber).pipe(
-          map(data => ({ data: this.seedGroupsFromTypeOfDamage(data), loading: false, error: false })),
-          catchError(() =>
-            of({ data: { sections: [] } as EntitiesDamagesData, loading: false, error: true })
-          )
-        )
-      )
+    this.refresh$.next();
+  }
+
+  /** Reads the cache and adds an empty group for each chosen type the policy has none for. */
+  private load() {
+    const types = (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ??
+      []) as string[];
+    const labels = this.lookupSvc.getTypeOfDamageSync();
+    const labelFor = (key: string) => labels.find(o => o.value === key)?.label ?? key;
+    return this.entitiesSvc.getByPolicyId(this.policyNumber).pipe(
+      map(data => ({ data: seedEmptyGroups(data, types, labelFor), loading: false, error: false })),
+      catchError(() => of({ data: EMPTY, loading: false, error: true }))
     );
   }
 
-  // Cause of loss -> Type of damage -> Entities & Damages groups are a single
-  // chain, not independent (production reference, 2026-09-25): a Type of
-  // damage selected on Loss Information always produces a matching group
-  // here, even when the policy has no promise data for it (an empty group
-  // with no entities yet — not a section-wide "no entities" empty state,
-  // and not silently dropped). getByPolicyId() only knows what the POLICY
-  // promises; it has no idea what was actually reported, so that reconciliation
-  // has to happen here, not in the mock service.
-  private seedGroupsFromTypeOfDamage(data: EntitiesDamagesData): EntitiesDamagesData {
-    const selectedTypes = (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ??
-      []) as string[];
-    if (!selectedTypes.length) return data;
-
-    const typeLabels = this.lookupSvc.getTypeOfDamageSync();
-    const labelFor = (key: string) => typeLabels.find(o => o.value === key)?.label ?? key;
-
-    const sections = data.sections.map(section => ({
-      ...section,
-      damageGroups: section.damageGroups.filter(g => selectedTypes.includes(g.damageTypeKey))
-    }));
-
-    const presentKeys = new Set(sections.flatMap(s => s.damageGroups.map(g => g.damageTypeKey)));
-    const missingKeys = selectedTypes.filter(key => !presentKeys.has(key));
-    if (!missingKeys.length) return { sections };
-
-    const missingGroups: DamageGroup[] = missingKeys.map(key => ({
-      damageType: labelFor(key),
-      damageTypeKey: key,
-      expanded: true,
-      entities: []
-    }));
-
-    const targetSection = sections.find(s => s.promiseStatus === 'possibly-promised');
-    if (targetSection) {
-      targetSection.damageGroups = [...targetSection.damageGroups, ...missingGroups];
-      return { sections };
-    }
-    return {
-      sections: [
-        ...sections,
-        {
-          promiseStatus: 'possibly-promised',
-          label: 'Possibly promised entities',
-          expanded: true,
-          damageGroups: missingGroups
-        }
-      ]
-    };
+  ngOnDestroy(): void {
+    this.fnolState.stepperCompact.set(false);
+    this.pendingTimeouts.forEach(id => clearTimeout(id));
   }
 
-  // ── Selection helpers ──────────────────────────────────────────────────────
-
-  hasAnySelection(entity: EntityRow): boolean {
-    if (!entity.subItems?.length) return entity.selected;
-    return entity.subItems.some(s => s.selected);
-  }
-
-  isChecked(entity: EntityRow): boolean {
-    if (!entity.subItems?.length) return entity.selected;
-    return entity.subItems.every(s => s.selected);
-  }
-
-  isIndeterminate(entity: EntityRow): boolean {
-    if (!entity.subItems?.length) return false;
-    const n = entity.subItems.filter(s => s.selected).length;
-    return n > 0 && n < entity.subItems.length;
-  }
-
-  // ── Limit list overflow ──────────────────────────────────────────────────────
-
-  visibleLimits(entity: EntityRow): LocationLimit[] {
-    return entity.limits?.slice(0, LIMIT_CAP) ?? [];
-  }
-
-  hiddenLimits(entity: EntityRow): LocationLimit[] {
-    return entity.limits?.slice(LIMIT_CAP) ?? [];
-  }
-
-  onEntityToggle(entity: EntityRow, checked: boolean): void {
-    if (!entity.subItems?.length) {
-      entity.selected = checked;
-      return;
-    }
-    entity.subItems.forEach(s => (s.selected = checked));
-    entity.selected = checked;
-  }
-
-  onSubItemToggle(entity: EntityRow, subItem: SubItem, checked: boolean): void {
-    subItem.selected = checked;
-    entity.selected = entity.subItems!.every(s => s.selected);
+  bump(): void {
+    this.rev.update(n => n + 1);
   }
 
   // ── Filter ─────────────────────────────────────────────────────────────────
 
-  filteredEntities(group: DamageGroup): EntityRow[] {
-    return group.entities;
+  onSearch(c: EntitySearchCriteria): void {
+    this.filter.update(f => ({ ...f, text: c.text, status: c.status }));
   }
 
-  toggleSection(section: PromiseSection): void {
-    section.expanded = !section.expanded;
-  }
-  toggleGroup(group: DamageGroup): void {
-    group.expanded = !group.expanded;
+  onResetSearch(): void {
+    this.filter.update(f => ({ ...NO_FILTER, selectedOnly: f.selectedOnly }));
   }
 
-  totalEntities(data: EntitiesDamagesData): number {
-    return data.sections.flatMap(s => s.damageGroups.flatMap(g => g.entities)).length;
+  onSelectedOnly(on: boolean): void {
+    this.filter.update(f => ({ ...f, selectedOnly: on }));
   }
 
-  // ── Add Entity ─────────────────────────────────────────────────────────────
+  // ── Selection / expansion ──────────────────────────────────────────────────
 
-  async openSearchModal(entityType: EntityType): Promise<void> {
-    const ref = this.dialog.open<EntitySearchModalComponent, unknown, EntitySearchResult[]>(
-      EntitySearchModalComponent,
-      { data: { policyNumber: this.policyNumber, entityType }, width: '900px', maxWidth: '95vw' }
-    );
-    const selected = await firstValueFrom(ref.afterClosed());
-    if (selected?.length) this.addEntitiesToList(selected, entityType);
+  onEntityToggle(e: { entity: EntityRow; checked: boolean }): void {
+    toggleEntity(e.entity, e.checked);
+    this.bump();
   }
 
-  private async addEntitiesToList(
-    selected: EntitySearchResult[],
-    entityType: EntityType
-  ): Promise<void> {
+  onSubItemToggle(e: { entity: EntityRow; sub: SubItem; checked: boolean }): void {
+    toggleSubItem(e.entity, e.sub, e.checked);
+    this.bump();
+  }
+
+  onToggleGroup(group: TreeGroup): void {
+    setGroupExpanded(group, !group.expanded);
+    this.bump();
+  }
+
+  onToggleAll(expanded: boolean): void {
+    this.groups().forEach(g => setGroupExpanded(g, expanded));
+    this.bump();
+  }
+
+  onToggleRule(rule: EntityRow): void {
+    rule.expanded = !rule.expanded;
+    this.bump();
+  }
+
+  // ── Add entity ─────────────────────────────────────────────────────────────
+
+  async onAddEntity(req: { type: EntityType; rule?: EntityRow }): Promise<void> {
+    const selected = await pickEntities(this.dialog, this.policyNumber, req.type, req.rule);
+    if (!selected?.length) return;
     let added: EntityRow[];
     try {
       added = await firstValueFrom(
         forkJoin(
-          selected.map(r => this.entitiesSvc.addEntityFromSearch(this.policyNumber, r, entityType))
+          selected.map(r =>
+            this.entitiesSvc.addEntityFromSearch(this.policyNumber, r, req.type, req.rule?.entityId)
+          )
         )
       );
     } catch {
       this.toast.error('Failed to add entities', 'Please try again.');
       return;
     }
+    if (req.rule) req.rule.expanded = true;
     this.refresh$.next();
-
-    this.pendingTimeouts.push(
-      setTimeout(() => {
-        const firstId = added[0]?.entityId;
-        if (firstId) {
-          document
-            .querySelector(`[data-entity-id="${firstId}"]`)
-            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 60)
-    );
-
-    if (added.length > 0) {
-      this.pendingTimeouts.push(setTimeout(() => this.onViewDetails(added[0]), 300));
-    }
-
-    this.pendingTimeouts.push(
-      setTimeout(() => {
-        added.forEach(e => {
-          e.recentlyAdded = false;
-        });
-        this.refresh$.next();
-      }, 3000)
-    );
+    // Added entities arrive ticked; show the first one's details straight away.
+    this.activeEntity.set(added[0]);
   }
 
-  // ── Entity row kebab actions ───────────────────────────────────────────────
+  // ── Details panel ──────────────────────────────────────────────────────────
 
   onViewDetails(entity: EntityRow): void {
-    this.selectedEntity = entity;
-    this.panelOpen = true;
-    this.lockScroll();
+    this.activeEntity.set(entity);
   }
 
   onClosePanel(): void {
-    this.panelOpen = false;
-    this.unlockScroll();
-    this.pendingTimeouts.push(
-      setTimeout(() => {
-        if (!this.panelOpen) this.selectedEntity = null;
-      }, 300)
-    );
+    this.activeEntity.set(null);
+    this.scheduleClearHighlight();
   }
 
-  ngOnDestroy(): void {
-    this.unlockScroll();
-    this.pendingTimeouts.forEach(id => clearTimeout(id));
-    this.pendingTimeouts = [];
-  }
-
-  private lockScroll(): void {
-    if (this.scrollLocked) return;
-    document.body.style.overflow = 'hidden';
-    this.scrollLocked = true;
-  }
-
-  private unlockScroll(): void {
-    if (!this.scrollLocked) return;
-    document.body.style.overflow = '';
-    this.scrollLocked = false;
-  }
-
-  onItemSaved(): void {
-    this.refresh$.next();
-  }
-
-  /**
-   * Impacted policies were pulled onto the claim — their entities are now in
-   * the tree. The banner already owns the toast and the "don't offer this
-   * policy again" bookkeeping; all this side has to do is re-read the tree, and
-   * clear the recently-added highlight on the same 3s timer as Add Entity does.
-   */
   onPoliciesAdded(): void {
     this.refresh$.next();
+    this.scheduleClearHighlight();
+  }
+
+  /** Added rows stay highlighted for 3 seconds, then settle. */
+  private scheduleClearHighlight(): void {
     this.pendingTimeouts.push(
       setTimeout(() => {
-        this.clearRecentlyAdded();
-        this.refresh$.next();
+        this.vm()
+          .data.sections.flatMap(s => s.damageGroups.flatMap(g => g.entities))
+          .forEach(e => (e.recentlyAdded = false));
+        this.bump();
       }, 3000)
     );
   }
 
-  private async clearRecentlyAdded(): Promise<void> {
-    const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
-    data.sections
-      .flatMap(s => s.damageGroups.flatMap(g => g.entities))
-      .forEach(e => {
-        e.recentlyAdded = false;
-      });
-  }
+  // ── Row actions ────────────────────────────────────────────────────────────
 
   async onMoveEntity(entity: EntityRow): Promise<void> {
-    const data: MoveEntityDialogData = {
-      entity,
-      currentSection: entity.promiseStatus,
-      currentGroupKey: entity.damageTypeKey ?? 'material-damage'
-    };
-    const ref = this.dialog.open<
-      MoveEntityDialogComponent,
-      MoveEntityDialogData,
-      MoveEntityResult | null
-    >(MoveEntityDialogComponent, { data, width: '480px' });
-    const result = await firstValueFrom(ref.afterClosed());
-    if (result) {
-      try {
-        await firstValueFrom(
-          this.entitiesSvc.moveEntity(
-            this.policyNumber,
-            entity.entityId,
-            result.section,
-            result.damageGroupKey
-          )
-        );
-        this.refresh$.next();
-      } catch {
-        this.toast.error('Failed to move entity', 'Please try again.');
-      }
+    const result = await askMove(this.dialog, entity);
+    if (!result) return;
+    try {
+      await firstValueFrom(
+        this.entitiesSvc.moveEntity(
+          this.policyNumber,
+          entity.entityId,
+          result.section,
+          result.damageGroupKey
+        )
+      );
+      this.refresh$.next();
+    } catch {
+      this.toast.error('Failed to move entity', 'Please try again.');
     }
   }
 
   async onRemoveEntity(entity: EntityRow): Promise<void> {
-    const dialogData: ConfirmDialogData = {
-      title: 'Remove entity',
-      message: `Remove "${entity.name}" from the list?`,
-      confirmLabel: 'Remove',
-      confirmDanger: true
-    };
-    const ref = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-      ConfirmDialogComponent,
-      { data: dialogData, width: '480px' }
-    );
-    const confirmed = await firstValueFrom(ref.afterClosed());
-    if (confirmed) {
-      try {
-        await firstValueFrom(this.entitiesSvc.removeEntity(this.policyNumber, entity.entityId));
-        this.refresh$.next();
-      } catch {
-        this.toast.error('Failed to remove entity', 'Please try again.');
-      }
+    if (!(await confirmRemove(this.dialog, entity))) return;
+    try {
+      await firstValueFrom(this.entitiesSvc.removeEntity(this.policyNumber, entity.entityId));
+      this.refresh$.next();
+    } catch {
+      this.toast.error('Failed to remove entity', 'Please try again.');
     }
   }
 
@@ -435,24 +280,17 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.router.navigate(['/fnol/loss-information']);
   }
+
   onCancel(): void {
     this.router.navigate(['/dashboard']);
   }
+
   async onNext(): Promise<void> {
     const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
     const selectedTypes = (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ??
       []) as string[];
     if (!selectedSectionGroups(data, selectedTypes).size) {
-      const dialogData: ConfirmDialogData = {
-        title: 'Select an entity',
-        message: 'Select at least one entity that was damaged before continuing.',
-        confirmLabel: 'Got it',
-        cancelLabel: 'Close'
-      };
-      this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-        ConfirmDialogComponent,
-        { data: dialogData, width: '480px' }
-      );
+      warnSelectEntity(this.dialog);
       return;
     }
     this.fnolState.markStepComplete('entities-damages');

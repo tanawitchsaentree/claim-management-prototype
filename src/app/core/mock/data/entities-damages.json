@@ -12,6 +12,20 @@
             "expanded": true,
             "entities": [
               {
+                "entityId": "RULE-001-B",
+                "name": "Any building located in Munich",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "50,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "isRule": true,
+                "ruleEntityType": "building",
+                "ruleFilters": { "country": "Germany", "city": "Munich" }
+              },
+              {
                 "entityId": "ENT-001",
                 "name": "Kaufmann's Warehouse",
                 "status": "promised",
@@ -22,6 +36,7 @@
                   { "label": "Contents", "value": "150,000 EUR" },
                   { "label": "Business interruption", "value": "200,000 EUR" }
                 ],
+                "coveredForEvents": ["Earthquake", "Fire"],
                 "coveredBy": "FLExA for Building",
                 "documentsCount": 1,
                 "selected": false,
@@ -305,6 +320,20 @@
             "expanded": true,
             "entities": [
               {
+                "entityId": "RULE-006-B",
+                "name": "Any building located in Germany",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "500,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "isRule": true,
+                "ruleEntityType": "building",
+                "ruleFilters": { "country": "Germany" }
+              },
+              {
                 "entityId": "ENT-201",
                 "name": "Schäfer & Söhne AG — Reception Equipment",
                 "status": "promised",
@@ -395,6 +424,20 @@
             "damageTypeKey": "material-damage",
             "expanded": true,
             "entities": [
+              {
+                "entityId": "RULE-009-B",
+                "name": "Any building located in Germany",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "250,000 EUR",
+                "coveredBy": "FLExA for Building",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "isRule": true,
+                "ruleEntityType": "building",
+                "ruleFilters": { "country": "Germany" }
+              },
               {
                 "entityId": "ENT-301",
                 "name": "Rhein Constructions GmbH — Roof Structure",

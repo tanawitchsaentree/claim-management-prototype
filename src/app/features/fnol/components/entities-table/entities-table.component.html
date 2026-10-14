@@ -1,0 +1,194 @@
+<!-- audit-exempt: the step only renders this table when there is at least one group; its zero-rows cases (no entities for the policy, no match for the filter) show app-empty-state in the step. -->
+<div class="et-wrap">
+  <table nxTable class="et-table">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell class="col-check">
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            (click)="toggleAll.emit(!allExpanded())"
+            [attr.aria-label]="allExpanded() ? 'Collapse all groups' : 'Expand all groups'"
+          >
+            <nx-icon
+              [name]="allExpanded() ? 'chevron-down-small' : 'chevron-right-small'"
+            ></nx-icon>
+          </button>
+        </th>
+        <th nxHeaderCell class="col-name">Entity</th>
+        <th nxHeaderCell class="col-status">Status</th>
+        <th nxHeaderCell class="col-limit">Limit</th>
+        <th nxHeaderCell class="col-covered">Covered by</th>
+        <th nxHeaderCell class="col-docs">Documents</th>
+        <th nxHeaderCell class="col-action">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (group of groups(); track group.key) {
+        <tr nxTableRow class="group-row">
+          <td nxCell class="col-check">
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              (click)="toggleGroup.emit(group)"
+              [attr.aria-expanded]="group.expanded"
+              [attr.aria-label]="(group.expanded ? 'Collapse ' : 'Expand ') + group.label"
+            >
+              <nx-icon
+                [name]="group.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+              ></nx-icon>
+            </button>
+          </td>
+          <td nxCell colspan="5" class="group-row__label">{{ group.label }}</td>
+          <td nxCell class="col-action">
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              [nxContextMenuTriggerFor]="groupMenu"
+              [attr.aria-label]="'Actions for ' + group.label"
+            >
+              <nx-icon name="ellipsis-h"></nx-icon>
+            </button>
+            <nx-context-menu #groupMenu="nxContextMenu">
+              @for (type of entityTypes; track type) {
+                <button nxContextMenuItem type="button" (click)="addEntity.emit({ type })">
+                  {{ typeLabels[type] }}
+                </button>
+              }
+            </nx-context-menu>
+          </td>
+        </tr>
+        @if (group.expanded) {
+          @for (row of group.rows; track row.entity.entityId) {
+            <ng-container
+              *ngTemplateOutlet="entityRow; context: { $implicit: row.entity, child: false }"
+            ></ng-container>
+            @if (row.entity.isRule && row.entity.expanded) {
+              @for (child of row.children; track child.entityId) {
+                <ng-container
+                  *ngTemplateOutlet="entityRow; context: { $implicit: child, child: true }"
+                ></ng-container>
+              }
+            }
+          }
+          @if (!group.rows.length) {
+            <tr nxTableRow class="entity-row">
+              <td nxCell class="col-check"></td>
+              <td nxCell colspan="5" class="text-muted">No location selected</td>
+              <td nxCell class="col-action"></td>
+            </tr>
+          }
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #entityRow let-entity let-child="child">
+  <tr
+    nxTableRow
+    class="entity-row"
+    [attr.data-entity-id]="entity.entityId"
+    [class.entity-row--selected]="!entity.isRule && isChecked(entity)"
+    [class.entity-row--recently-added]="entity.recentlyAdded"
+  >
+    <td nxCell class="col-check">
+      @if (entity.isRule || entity.subItems?.length) {
+        <button
+          nxIconButton="tertiary small"
+          type="button"
+          (click)="entity.isRule ? toggleRule.emit(entity) : (entity.expanded = !entity.expanded)"
+          [attr.aria-expanded]="entity.expanded"
+          [attr.aria-label]="(entity.expanded ? 'Collapse ' : 'Expand ') + entity.name"
+        >
+          <nx-icon
+            [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+          ></nx-icon>
+        </button>
+      } @else {
+        <nx-checkbox
+          [checked]="isChecked(entity)"
+          (checkedChange)="entityToggle.emit({ entity, checked: $event })"
+          [attr.aria-label]="'Select ' + entity.name"
+        ></nx-checkbox>
+      }
+    </td>
+    <td nxCell class="col-name">
+      <div class="entity-cell" [class.entity-cell--child]="child">
+        <span>{{ entity.name }}</span>
+        @if (entity.coveredForEvents?.length) {
+          <button
+            type="button"
+            class="info-btn"
+            [nxPopoverTriggerFor]="eventsPopover"
+            nxPopoverTrigger="click"
+            nxPopoverDirection="bottom"
+            [nxPopoverCloseable]="true"
+            [attr.aria-label]="'Events ' + entity.name + ' is covered for'"
+          >
+            <nx-icon name="info-circle-o" size="s"></nx-icon>
+          </button>
+          <nx-popover #eventsPopover>
+            <p class="info-pop__title">{{ eventsTitle(entity) }}</p>
+            <ul class="info-pop__list">
+              @for (ev of entity.coveredForEvents; track ev) {
+                <li>{{ ev }}</li>
+              }
+            </ul>
+          </nx-popover>
+        }
+      </div>
+    </td>
+    <td nxCell class="col-status">
+      <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
+    </td>
+    <td nxCell class="col-limit">
+      <app-entity-limit-cell [entity]="entity" [hasLossLocation]="hasLossLocation()">
+      </app-entity-limit-cell>
+    </td>
+    <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
+    <td nxCell class="col-docs">{{ entity.documentsCount ?? 0 }}</td>
+    <td nxCell class="col-action">
+      <button
+        nxIconButton="tertiary small"
+        type="button"
+        [nxContextMenuTriggerFor]="rowMenu"
+        [attr.aria-label]="'Actions for ' + entity.name"
+      >
+        <nx-icon name="ellipsis-h"></nx-icon>
+      </button>
+      <nx-context-menu #rowMenu="nxContextMenu">
+        @if (entity.isRule) {
+          <button nxContextMenuItem type="button" (click)="addUnderRule(entity)">
+            {{ ruleLabel(entity) }}
+          </button>
+        } @else {
+          <button nxContextMenuItem type="button" (click)="viewDetails.emit(entity)">
+            View details
+          </button>
+          <button nxContextMenuItem type="button" (click)="move.emit(entity)">Move to…</button>
+          <button nxContextMenuItem type="button" (click)="remove.emit(entity)">
+            Remove from list
+          </button>
+        }
+      </nx-context-menu>
+    </td>
+  </tr>
+  @if (!entity.isRule && entity.expanded && entity.subItems?.length) {
+    @for (sub of entity.subItems; track sub.itemId) {
+      <tr nxTableRow class="sub-item-row">
+        <td nxCell class="col-check"></td>
+        <td nxCell colspan="5">
+          <div class="sub-item__cell">
+            <nx-checkbox
+              [checked]="sub.selected"
+              (checkedChange)="subItemToggle.emit({ entity, sub, checked: $event })"
+            ></nx-checkbox>
+            <span class="sub-item__name">{{ sub.name }}</span>
+          </div>
+        </td>
+        <td nxCell class="col-action"></td>
+      </tr>
+    }
+  }
+</ng-template>

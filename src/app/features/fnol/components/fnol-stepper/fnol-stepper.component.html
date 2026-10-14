@@ -1,4 +1,4 @@
-<nav class="fnol-stepper" aria-label="FNOL progress">
+<nav class="fnol-stepper" [class.fnol-stepper--compact]="compact" aria-label="FNOL progress">
   <ol class="stepper-list">
     @for (step of steps; track step; let last = $last) {
       <li

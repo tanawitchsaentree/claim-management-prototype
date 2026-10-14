@@ -18,4 +18,5 @@ export interface FnolStep {
 export class FnolStepperComponent {
   @Input() steps: FnolStep[] = [];
   @Input() currentStep = '';
+  @Input() compact = false;
 }

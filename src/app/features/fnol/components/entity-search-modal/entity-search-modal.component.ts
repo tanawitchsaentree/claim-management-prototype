@@ -25,6 +25,8 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 export interface EntitySearchModalData {
   policyNumber: string;
   entityType: EntityType;
+  /** Pre-filled filters, e.g. the country and city of a policy rule. */
+  initialFilters?: EntitySearchFilters;
 }
 
 interface SearchState {
@@ -93,6 +95,7 @@ export class EntitySearchModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = ENTITY_TYPE_LABELS[this.data.entityType];
+    if (this.data.initialFilters) this.filterForm.patchValue(this.data.initialFilters);
   }
 
   get filledCount(): number {

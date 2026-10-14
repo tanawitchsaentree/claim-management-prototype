@@ -1,6 +1,11 @@
 .step-page {
   padding: var(--space-sm) 0 var(--space-4xl);
   max-width: 1100px;
+
+  // Details open: use the full width, list on the left, details on the right.
+  &--split {
+    max-width: none;
+  }
 }
 
 .step-breadcrumb {
@@ -17,8 +22,6 @@
   line-height: 1.2;
 }
 
-// ─── Toolbar ────────────────────────────────────────────────────────────────
-
 .ed-toolbar {
   display: flex;
   align-items: center;
@@ -26,13 +29,10 @@
   margin-bottom: 16px;
 }
 
-.ed-no-location-banner {
-  margin-bottom: 16px;
-}
-
-.ed-toolbar__actions {
+.ed-toolbar__count {
   display: flex;
   align-items: center;
+  gap: var(--space-base);
 }
 
 .ed-count {
@@ -41,7 +41,9 @@
   white-space: nowrap;
 }
 
-// ─── Loading ────────────────────────────────────────────────────────────────
+.ed-no-location-banner {
+  margin-bottom: 16px;
+}
 
 .loading-state {
   display: flex;
@@ -55,227 +57,22 @@
   color: var(--text-muted);
 }
 
-// ─── Promise section ────────────────────────────────────────────────────────
+// ─── Split view: list beside details ─────────────────────────────────────────
 
-.promise-section {
-  margin-bottom: 24px;
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  background: var(--ui-01);
-  overflow: hidden;
-
-  &--not-promised {
-    background: var(--section-not-promised-tint);
-    border-color: var(--section-not-promised-border);
-  }
+.ed-split {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) 1fr;
+  gap: var(--space-2xl);
+  align-items: start;
 }
 
-.promise-section__header {
-  width: 100%;
-  text-align: left;
-  padding: var(--space-base) var(--space-base);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  &:hover {
-    background: var(--claim-overlay-hover);
-  }
+.ed-split__tree {
+  position: sticky;
+  top: 0;
 }
 
-.section-chevron {
-  flex-shrink: 0;
-  color: var(--interactive-primary);
+.ed-split__detail {
+  min-width: 0;
+  border-left: 1px solid var(--ui-04);
+  padding-left: var(--space-2xl);
 }
-
-.section-label {
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-}
-
-.promise-section__body {
-  padding: 0 16px 16px;
-}
-
-// ─── Damage group ───────────────────────────────────────────────────────────
-
-.damage-group {
-  margin-top: 16px;
-}
-
-.damage-group__header {
-  width: 100%;
-  text-align: left;
-  padding: var(--space-sm);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  &:hover {
-    background: var(--claim-overlay-hover);
-  }
-}
-
-.group-chevron {
-  flex-shrink: 0;
-  color: var(--text-muted);
-}
-
-.damage-group__title {
-  font-size: var(--paragraph-02-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-}
-
-// ─── Table ──────────────────────────────────────────────────────────────────
-
-.ed-table {
-  width: 100%;
-  border-top: 1px solid var(--ui-04);
-  margin-top: 4px;
-  table-layout: fixed;
-}
-
-// col-check: let NDBX edge padding (8px) apply naturally — no override
-.col-check {
-  width: 40px;
-}
-.col-name {
-  min-width: 200px;
-}
-.col-status {
-  width: 130px;
-}
-.col-events {
-  width: 160px;
-}
-.col-limit {
-  min-width: 260px;
-}
-.col-covered {
-  min-width: 160px;
-}
-.col-action {
-  width: 52px;
-}
-
-// ─── Entity row states ───────────────────────────────────────────────────────
-
-@keyframes highlight-fade {
-  0% {
-    background-color: var(--row-recently-added-bg);
-  }
-  70% {
-    background-color: var(--row-recently-added-bg);
-  }
-  100% {
-    background-color: transparent;
-  }
-}
-
-.entity-row {
-  &--selected {
-    background: var(--claim-overlay-hover);
-  }
-
-  &--recently-added {
-    animation: highlight-fade 3s ease-out forwards;
-  }
-}
-
-// Expandable entities: hide checkbox unless has selection
-.entity-row--expandable {
-  .entity-checkbox {
-    display: none;
-
-    &--visible {
-      display: inline-flex;
-    }
-  }
-}
-
-// ─── Entity name cell ────────────────────────────────────────────────────────
-
-.entity-cell {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-// ─── Sub-item rows ───────────────────────────────────────────────────────────
-
-.sub-item-row {
-  background: var(--ui-02);
-}
-
-// checkbox + name in same cell, indented to align under parent's chevron
-.sub-item__cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-left: var(--tree-child-indent);
-}
-
-.sub-item__name {
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-01);
-}
-
-// ─── Overlay side sheet — styles live in src/styles.scss (global scope) ──────
-
-// ─── Multiple limits list ────────────────────────────────────────────────────
-
-.limit-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-
-  &__item {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: var(--paragraph-03-font-size);
-    line-height: 1.4;
-  }
-
-  &__label {
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-
-  &__value {
-    color: var(--text-01);
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  &--popover {
-    gap: 6px;
-  }
-}
-
-.limit-list__more-btn {
-  border: none;
-  background: none;
-  padding: 0;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--interactive-text);
-  cursor: pointer;
-  text-decoration: underline;
-
-  &:hover {
-    color: var(--interactive-primary);
-  }
-}
-
-// Footer styles live in WizardFooterComponent

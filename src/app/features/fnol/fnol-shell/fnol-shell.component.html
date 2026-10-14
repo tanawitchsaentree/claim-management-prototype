@@ -67,8 +67,15 @@
     [class.fnol-body--standalone]="(showStepper$ | async) === false"
   >
     @if (showStepper$ | async) {
-      <aside class="fnol-sidebar" tabindex="0">
-        <app-fnol-stepper [steps]="(steps$ | async) ?? []"></app-fnol-stepper>
+      <aside
+        class="fnol-sidebar"
+        [class.fnol-sidebar--compact]="fnolState.stepperCompact()"
+        tabindex="0"
+      >
+        <app-fnol-stepper
+          [steps]="(steps$ | async) ?? []"
+          [compact]="fnolState.stepperCompact()"
+        ></app-fnol-stepper>
       </aside>
     }
 

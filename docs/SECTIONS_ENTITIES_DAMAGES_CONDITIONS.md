@@ -63,6 +63,16 @@ Other facts: all steps redirect to Search if there is no policy. The stepper is 
 
 ## 3. Entities & Damages screen, atom by atom
 
+**Rebuilt 2026-10-14 to match the production screenshots and the Figma flow "named entities". Where the table below says otherwise, this block wins:**
+
+- One table, grouped by damage type only. Promised / Not promised is the Status chip on each row (no separate boxes). Columns: Entity, Status, Limit, Covered by, Documents, Action (sticky, with a divider, vertical dots). The header chevron expands or collapses every group. Page title is "Entities & Damages".
+- Filter bar: Entity (name contains) and Status, applied by Search, cleared by Reset search. **Show selected only** keeps only ticked entities. "Number of entities" counts the rows on screen (policy rules and sub-items are not counted).
+- **Policy rule rows** ("Any building located in Munich", seeded for POL-2024-001/006/009): no checkbox. Their menu has Add building(s), which opens the search dialog pre-filled with the rule's country and city. Entities added there sit under the rule, take its status, limit and covered by, and arrive **ticked**. Entities added from the group menu or Add Entity also arrive ticked.
+- (i) beside an entity name lists the events it is covered for (popover with close). (i) beside a plain amount limit says where the figure comes from; with a location of loss the per-location limit list is shown instead.
+- View details no longer slides a sheet over the list: the page splits into a compact list on the left (Show selected only, expand/collapse menu, ticking, click a name to switch entity) and the entity's details on the right. The step list on the far left shrinks to dots while details are open. The footer is hidden in this view.
+- Damage items table keeps Caused by / Amount (production columns, commit `0a3809e`); the Figma frames show a shorter table. Upload items is still disabled.
+- Code note: the cache still calls the Possibly promised / Not promised groups `sections`. That is a different thing from a claim Section.
+
 **What loads:** `entities-damages.json`, keyed by policy. Only **POL-2024-001 (16 entities), POL-2024-006 (5), POL-2024-009 (4)** have data. Any other policy returns an empty tree. Each policy has a "Possibly promised" and a "Not promised" section, each holding damage groups.
 
 | Behaviour | Rule |
@@ -70,7 +80,7 @@ Other facts: all steps redirect to Search if there is no policy. The stepper is 
 | Group filter | If Type of damage is empty the whole tree shows. Otherwise only groups whose key is selected; selected types with no entities appear as an **empty group** ("No location selected"). The filter changes only the **view**; the data keeps every group |
 | Statuses | promised / conditional / by-extension / not-promised. **Shown as a chip only.** None changes selectability |
 | Checkbox | No disabled state anywhere. A parent with sub-items is checked when all sub-items are, indeterminate when some |
-| Show selected only | Not found |
+| Show selected only | **(fixed)** Exists now (was missing) |
 | Number of entities | Counts **all shown** entities, not selected ones |
 | Add Entity | 6 types (building, vehicle, marine, employee group, financial, other). Needs at least 2 filters to search. New row: status "promised", possibly-promised section, limit "—", group by type: building/vehicle/marine/other -> Material damage, employee -> Bodily injury, financial -> Financial loss. **No route to Business interruption, Liability, Machinery breakdown, Product recall costs**; use Move to |
 | Add other policy | Banner when sibling policies exist (001 -> 006, 009; 006 -> 009). Copies **all** of that policy's entities (original ids kept), `coveredBy` gets " · POL-…" |

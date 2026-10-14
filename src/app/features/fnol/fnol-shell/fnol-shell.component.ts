@@ -30,7 +30,7 @@ import { Policy } from '../../../core/models';
 })
 export class FnolShellComponent {
   private router = inject(Router);
-  private fnolState = inject(FnolStateService);
+  readonly fnolState = inject(FnolStateService);
 
   get policyContext(): Policy | null {
     return this.fnolState.selectedPolicyFull;

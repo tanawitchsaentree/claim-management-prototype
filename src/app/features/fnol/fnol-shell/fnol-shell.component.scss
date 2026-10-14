@@ -103,6 +103,12 @@
   padding: var(--layout-inset-base) 24px var(--layout-inset-base) var(--layout-inset-base);
   border-right: 1px solid var(--ui-04);
   overflow-y: auto;
+
+  // Dots only, while a step (entity details) needs the width.
+  &--compact {
+    width: 72px;
+    padding-right: var(--space-base);
+  }
 }
 
 .fnol-content {

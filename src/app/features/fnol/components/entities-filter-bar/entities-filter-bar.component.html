@@ -1,0 +1,17 @@
+<form [formGroup]="form" class="efb" (ngSubmit)="onSearch()">
+  <nx-formfield label="Entity" class="efb__field">
+    <input nxInput formControlName="text" autocomplete="off" />
+  </nx-formfield>
+  <nx-formfield label="Status" class="efb__field">
+    <nx-dropdown formControlName="status" placeholder="Select">
+      <nx-dropdown-item value="">All</nx-dropdown-item>
+      @for (opt of statusOptions; track opt.value) {
+        <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+  <div class="efb__actions">
+    <button nxButton="primary small" type="submit">Search</button>
+    <button nxPlainButton type="button" (click)="onReset()">Reset search</button>
+  </div>
+</form>

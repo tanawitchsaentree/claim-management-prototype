@@ -1,0 +1,56 @@
+@if (showsList()) {
+  <ul class="limit-list">
+    @for (lim of visible(); track lim.label) {
+      <li class="limit-list__item">
+        <span class="limit-list__label">{{ lim.label }}</span>
+        <span class="limit-list__value">{{ lim.value }}</span>
+      </li>
+    }
+    @if (hidden().length) {
+      <li class="limit-list__item">
+        <button
+          type="button"
+          class="limit-list__more-btn"
+          [nxPopoverTriggerFor]="morePopover"
+          nxPopoverTrigger="click"
+          nxPopoverDirection="bottom"
+        >
+          +{{ hidden().length }} more
+        </button>
+        <nx-popover #morePopover>
+          <ul class="limit-list limit-list--popover">
+            @for (lim of hidden(); track lim.label) {
+              <li class="limit-list__item">
+                <span class="limit-list__label">{{ lim.label }}</span>
+                <span class="limit-list__value">{{ lim.value }}</span>
+              </li>
+            }
+          </ul>
+        </nx-popover>
+      </li>
+    }
+  </ul>
+} @else {
+  <span class="limit-single">
+    {{ entity().limit }}
+    @if (isAmount()) {
+      <button
+        type="button"
+        class="info-btn"
+        [nxPopoverTriggerFor]="limitPopover"
+        nxPopoverTrigger="click"
+        nxPopoverDirection="bottom"
+        [nxPopoverCloseable]="true"
+        aria-label="About this limit"
+      >
+        <nx-icon name="info-circle-o" size="s"></nx-icon>
+      </button>
+      <nx-popover #limitPopover>
+        <p class="info-pop__title">Limit as per the policy cover</p>
+        <p class="info-pop__text">
+          Add a location of loss on Loss information to see the limit for that location.
+        </p>
+      </nx-popover>
+    }
+  </span>
+}

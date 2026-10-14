@@ -1,0 +1,102 @@
+<div class="tp">
+  <div class="tp__tools">
+    <nx-switcher
+      [checked]="selectedOnly()"
+      (checkedChange)="selectedOnlyChange.emit($event)"
+      labelSize="small"
+    >
+      Show selected only
+    </nx-switcher>
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      [nxContextMenuTriggerFor]="treeMenu"
+      aria-label="List actions"
+    >
+      <nx-icon name="ellipsis-h"></nx-icon>
+    </button>
+    <nx-context-menu #treeMenu="nxContextMenu">
+      <button nxContextMenuItem type="button" (click)="toggleAll.emit(true)">Expand all</button>
+      <button nxContextMenuItem type="button" (click)="toggleAll.emit(false)">Collapse all</button>
+    </nx-context-menu>
+  </div>
+
+  <div class="tp__row tp__row--head">
+    <button
+      nxIconButton="tertiary small"
+      type="button"
+      (click)="toggleAll.emit(!allExpanded())"
+      [attr.aria-label]="allExpanded() ? 'Collapse all groups' : 'Expand all groups'"
+    >
+      <nx-icon [name]="allExpanded() ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+    </button>
+    <span>Entity</span>
+  </div>
+
+  @for (group of groups(); track group.key) {
+    <div class="tp__row tp__row--group">
+      <button
+        nxIconButton="tertiary small"
+        type="button"
+        (click)="toggleGroup.emit(group)"
+        [attr.aria-expanded]="group.expanded"
+        [attr.aria-label]="(group.expanded ? 'Collapse ' : 'Expand ') + group.label"
+      >
+        <nx-icon [name]="group.expanded ? 'chevron-down-small' : 'chevron-right-small'"></nx-icon>
+      </button>
+      <span>{{ group.label }}</span>
+    </div>
+    @if (group.expanded) {
+      @for (row of group.rows; track row.entity.entityId) {
+        @if (row.entity.isRule) {
+          <div class="tp__row tp__row--rule">
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              (click)="toggleRule.emit(row.entity)"
+              [attr.aria-expanded]="row.entity.expanded"
+              [attr.aria-label]="(row.entity.expanded ? 'Collapse ' : 'Expand ') + row.entity.name"
+            >
+              <nx-icon
+                [name]="row.entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+              ></nx-icon>
+            </button>
+            <span>{{ row.entity.name }}</span>
+          </div>
+          @if (row.entity.expanded) {
+            @for (child of row.children; track child.entityId) {
+              <div
+                class="tp__row tp__row--entity tp__row--deep"
+                [class.tp__row--active]="child.entityId === activeId()"
+              >
+                <nx-checkbox
+                  [checked]="isChecked(child)"
+                  (checkedChange)="entityToggle.emit({ entity: child, checked: $event })"
+                  [attr.aria-label]="'Select ' + child.name"
+                ></nx-checkbox>
+                <button type="button" class="tp__name" (click)="open.emit(child)">
+                  {{ child.name }}
+                </button>
+              </div>
+            }
+          }
+        } @else {
+          <div
+            class="tp__row tp__row--entity"
+            [class.tp__row--active]="row.entity.entityId === activeId()"
+          >
+            <nx-checkbox
+              [checked]="isChecked(row.entity)"
+              [indeterminate]="isIndeterminate(row.entity)"
+              (checkedChange)="entityToggle.emit({ entity: row.entity, checked: $event })"
+              [attr.aria-label]="'Select ' + row.entity.name"
+            ></nx-checkbox>
+            <button type="button" class="tp__name" (click)="open.emit(row.entity)">
+              {{ row.entity.name }}
+            </button>
+          </div>
+        }
+      }
+    }
+  }
+</div>

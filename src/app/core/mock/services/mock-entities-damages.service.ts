@@ -48,36 +48,50 @@ export class MockEntitiesDamagesService extends MockBaseService {
 
   // ── Entity CRUD ─────────────────────────────────────────────────────────────
 
+  /**
+   * Adds a searched entity to the list. Adding means "this one was damaged", so
+   * the new row arrives ticked. Added under a policy rule ("Any building
+   * located in Munich") it takes the rule's cover (status, limit, covered by)
+   * and lands in the rule's damage group; added from the Add Entity menu it
+   * lands in the group for its entity type.
+   */
   addEntityFromSearch(
     policyId: string,
     result: EntitySearchResult,
-    entityType: EntityType
+    entityType: EntityType,
+    parentRuleId?: string
   ): Observable<EntityRow> {
     return this.getByPolicyId(policyId).pipe(
       take(1),
       map(data => {
+        const rule = parentRuleId ? this.findEntity(data, parentRuleId) : undefined;
         const route = ENTITY_TYPE_TO_DAMAGE_GROUP[entityType];
+        const groupKey = rule?.damageTypeKey ?? route.damageTypeKey;
+        const promiseStatus = rule?.promiseStatus ?? 'possibly-promised';
         const entity: EntityRow = {
           entityId: `ENT-NEW-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
           name: result.locationName,
-          status: 'promised',
-          promiseStatus: 'possibly-promised',
-          limit: '—',
-          coveredBy: '—',
+          status: rule?.status ?? 'promised',
+          promiseStatus,
+          limit: rule?.limit ?? '—',
+          limits: rule?.limits,
+          coveredBy: rule?.coveredBy ?? '—',
+          coveredForEvents: rule?.coveredForEvents,
           documentsCount: 0,
-          selected: false,
+          selected: true,
           expanded: false,
           recentlyAdded: true,
-          damageTypeKey: route.damageTypeKey,
+          damageTypeKey: groupKey,
           entityType,
-          propertyId: result.propertyId
+          propertyId: result.propertyId,
+          parentRuleId: rule?.entityId
         };
         this.insertIntoData(
           data,
           entity,
-          'possibly-promised',
-          route.damageTypeKey,
-          route.damageType
+          promiseStatus,
+          groupKey,
+          rule ? this.groupLabel(groupKey, route.damageType) : route.damageType
         );
         return entity;
       })
@@ -110,7 +124,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
                 ...entity,
                 coveredBy: `${entity.coveredBy} · ${sourcePolicyId}`,
                 selected: false,
-                expanded: false,
+                expanded: !!entity.isRule,
                 recentlyAdded: true,
                 subItems: entity.subItems?.map(si => ({ ...si, selected: false })),
                 damageItems: entity.damageItems?.map(d => ({
@@ -257,6 +271,10 @@ export class MockEntitiesDamagesService extends MockBaseService {
     group.entities.push(entity);
   }
 
+  private groupLabel(key: string, fallback: string): string {
+    return this.lookupSvc.getTypeOfDamageSync().find(o => o.value === key)?.label ?? fallback;
+  }
+
   private findEntity(data: EntitiesDamagesData, entityId: string): EntityRow | undefined {
     for (const section of data.sections)
       for (const group of section.damageGroups) {
@@ -276,7 +294,7 @@ export class MockEntitiesDamagesService extends MockBaseService {
           expanded: true,
           entities: g.entities.map(e => ({
             ...e,
-            expanded: false,
+            expanded: !!e.isRule,
             selected: false,
             subItems: e.subItems?.map(si => ({ ...si, selected: false })),
             damageItems: e.damageItems?.map(d => ({

@@ -86,6 +86,17 @@ export interface EntityRow {
   propertyId?: string;
   damageItems?: DamageItem[];
   recentlyAdded?: boolean;
+  /**
+   * A policy rule such as "Any building located in Munich": it says what is
+   * covered but is not itself a damaged thing, so it has no checkbox. The
+   * handler adds the real buildings under it (Add building(s)), and those
+   * rows carry `parentRuleId`.
+   */
+  isRule?: boolean;
+  ruleEntityType?: EntityType;
+  /** Pre-fills the search dialog when the handler adds entities under a rule. */
+  ruleFilters?: EntitySearchFilters;
+  parentRuleId?: string;
 }
 
 export interface DamageGroup {
