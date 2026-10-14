@@ -131,8 +131,12 @@ export class EntityDetailPanelComponent implements OnChanges {
       this.entitiesSvc.addDamageItem(this.policyNumber, this.entity.entityId, newItem)
     );
 
-    // Mutate local reference so view updates without a full refresh
-    this.entity.damageItems = [...(this.entity.damageItems ?? []), newItem];
+    // The service pushes onto the cached entity, which is usually this same
+    // object. Only append when it is not already there, or the item shows twice.
+    const items = this.entity.damageItems ?? [];
+    if (!items.some(i => i.itemId === newItem.itemId)) {
+      this.entity.damageItems = [...items, newItem];
+    }
     this.savingItem = false;
     this.addingItem = false;
     this.itemForm.reset();

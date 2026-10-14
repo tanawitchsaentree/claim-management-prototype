@@ -1,3 +1,4 @@
+import { selectedSectionGroups } from './selected-section-groups';
 import { Component, inject, signal, effect, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -394,11 +395,10 @@ export class StepSummaryComponent implements OnInit {
     const causesOfLoss = causeKeys.map(k =>
       this.qualifyOther(causeLookups, k, OTHER_CAUSE_KEY, specifyCause)
     );
-    const allEntities = entitiesData.sections.flatMap(s => s.damageGroups).flatMap(g => g.entities);
-    const damageTypeKeys = [...new Set(allEntities.map(e => e.damageTypeKey).filter(Boolean))];
-    const damageTypes = damageTypeKeys.map(k => this.label(damageLookups, k));
+    const sectionGroups = selectedSectionGroups(entitiesData, this.selectedTypeKeys());
+    const damageTypes = [...sectionGroups.keys()].map(k => this.label(damageLookups, k));
     const lossDateIso = dateOfLoss.get('dateOfOccurrence')?.value as string | null;
-    const earliest = this.deriveEarliestSectionDate(lossDateIso, allEntities.length || 3);
+    const earliest = this.deriveEarliestSectionDate(lossDateIso, sectionGroups.size || 3);
     const claimGroups = this.buildClaimGroups(
       entitiesData,
       reservesData,
@@ -433,13 +433,13 @@ export class StepSummaryComponent implements OnInit {
     damageLookups: LookupOption[],
     earliest: { date: string; time: string }
   ): ClaimGroup[] {
-    const allEntities = data.sections.flatMap(s => s.damageGroups).flatMap(g => g.entities);
-    const damageTypeKeys = [...new Set(allEntities.map(e => e.damageTypeKey).filter(Boolean))];
+    const sectionGroups = selectedSectionGroups(data, this.selectedTypeKeys());
+    const damageTypeKeys = [...sectionGroups.keys()];
     const total = reserves.reserves.reduce((s, r) => s + (r.amount ?? 0), 0);
     const baseGroup: ClaimGroup = {
       policyNumber: this.policyNumber || '—',
       damageTypes: damageTypeKeys.map(k => this.label(damageLookups, k)),
-      sectionCount: allEntities.length,
+      sectionCount: sectionGroups.size,
       partyCount,
       totalReserve: total,
       currency: reserves.currency,
@@ -647,6 +647,10 @@ export class StepSummaryComponent implements OnInit {
   // always assigns one on add — see MockEntitiesDamagesService.addEntityFromSearch
   // — but the seed data's own fixtures are hand-authored and not guaranteed)
   // fall back to material-damage rather than being silently dropped.
+  private selectedTypeKeys(): string[] {
+    return (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ?? []) as string[];
+  }
+
   private async createSectionsFromEntitiesDamages(claimId: string): Promise<void> {
     const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
     // Group by damageGroup, not by each entity's own damageTypeKey — hand-
@@ -657,16 +661,8 @@ export class StepSummaryComponent implements OnInit {
     // (e.g. seed data has "Kaufmann's Company Employees" under both
     // bodily-injury and liability) — that's exactly the "one fire, two
     // sections" case, not a duplicate to be merged away.
-    const groups = data.sections.flatMap(s => s.damageGroups).filter(g => g.entities.length);
-    if (!groups.length) return;
-
-    const byDamageType = new Map<string, EntityRow[]>();
-    for (const group of groups) {
-      byDamageType.set(group.damageTypeKey, [
-        ...(byDamageType.get(group.damageTypeKey) ?? []),
-        ...group.entities
-      ]);
-    }
+    const byDamageType = selectedSectionGroups(data, this.selectedTypeKeys());
+    if (!byDamageType.size) return;
 
     // CBI (contingent business interruption) — BMPCC-18353. Answered at Loss
     // Information (Trigger Flow, functional design BMPCC-17927), not here.

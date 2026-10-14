@@ -6,6 +6,16 @@ Companion docs: `SECTIONS_AND_EDIT_CLAIM.md` (coupling map), `SKELETON_CONVERSIO
 
 ---
 
+## FIXED 2026-10-14 (P1 items 1, 2, 4, 5 and the cause-edit half of 3)
+
+- **Section rule now:** a section exists when its damage type is chosen in Loss information AND at least one entity in that group is ticked. It holds only the ticked entities (`selected-section-groups.ts`, used by both the Summary preview and submit). Verified: POL-2024-001, Material damage, one entity ticked -> 1 section / 1 entity (was 5 / 14); Summary shows "Material damage".
+- **Entities Next gate:** with no ticked entity in the chosen types, Next shows "Select an entity". Verified.
+- **Add item** in the entity panel no longer saves twice.
+- **Edit claim:** setting a cause on a claim with zero sections creates its first section (same rule as skeleton creation).
+- Sections 1, 3, 4 and the case matrix below describe the behaviour **before** this fix (F1, F2, F4, F14, F15, F18 are now changed).
+
+---
+
 ## 0. The headline: what the prototype really does
 
 The design intent is a chain: **cause of loss -> coverage check -> entities per cause -> handler selects the entities hit -> one section per damage type**.

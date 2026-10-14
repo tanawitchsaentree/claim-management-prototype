@@ -1,3 +1,4 @@
+import { selectedSectionGroups } from '../step-summary/selected-section-groups';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
@@ -437,7 +438,23 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   onCancel(): void {
     this.router.navigate(['/dashboard']);
   }
-  onNext(): void {
+  async onNext(): Promise<void> {
+    const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
+    const selectedTypes = (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ??
+      []) as string[];
+    if (!selectedSectionGroups(data, selectedTypes).size) {
+      const dialogData: ConfirmDialogData = {
+        title: 'Select an entity',
+        message: 'Select at least one entity that was damaged before continuing.',
+        confirmLabel: 'Got it',
+        cancelLabel: 'Close'
+      };
+      this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+        ConfirmDialogComponent,
+        { data: dialogData, width: '480px' }
+      );
+      return;
+    }
     this.fnolState.markStepComplete('entities-damages');
     this.router.navigate(['/fnol/parties']);
   }
