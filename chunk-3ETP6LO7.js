@@ -1,0 +1,1 @@
+function s(t){return t.selected||!!t.subItems?.some(e=>e.selected)}function a(t,e){let o=new Map;for(let n of t.sections.flatMap(i=>i.damageGroups)){if(e.length&&!e.includes(n.damageTypeKey))continue;let i=n.entities.filter(s);i.length&&o.set(n.damageTypeKey,[...o.get(n.damageTypeKey)??[],...i])}return o}export{a};
