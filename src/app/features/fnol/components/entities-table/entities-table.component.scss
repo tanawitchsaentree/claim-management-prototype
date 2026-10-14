@@ -9,13 +9,22 @@
 
 .et-table {
   width: 100%;
-  min-width: 860px;
+  min-width: 960px;
   table-layout: fixed;
   border-top: 1px solid var(--ui-04);
 }
 
 .col-check {
-  width: 48px;
+  width: 104px;
+}
+
+// Each tree level steps the first column in: group, then rule / entity, then
+// entities under a rule, then sub-items. (On an inner box because the table
+// cell's own padding wins over a rule set on the cell.)
+.lvl {
+  display: flex;
+  align-items: center;
+  padding-left: calc(var(--lvl, 0) * var(--space-xl));
 }
 .col-name {
   min-width: 220px;
@@ -42,7 +51,13 @@
 }
 
 .group-row__label {
+  font-weight: 600;
   color: var(--text-01);
+}
+
+// Damage-type rows are the top of the tree; a tint separates them from the rows they hold.
+.group-row td {
+  background: var(--ui-02);
 }
 
 .entity-row {
@@ -73,10 +88,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-
-  &--child {
-    padding-left: var(--tree-child-indent);
-  }
+  padding-left: calc(var(--lvl, 0) * var(--space-xl));
 }
 
 .info-btn {
@@ -100,13 +112,6 @@
 
 .sub-item-row {
   background: var(--ui-02);
-}
-
-.sub-item__cell {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding-left: var(--tree-child-indent);
 }
 
 .sub-item__name {

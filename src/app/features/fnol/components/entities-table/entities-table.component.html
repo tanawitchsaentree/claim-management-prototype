@@ -61,12 +61,12 @@
         @if (group.expanded) {
           @for (row of group.rows; track row.entity.entityId) {
             <ng-container
-              *ngTemplateOutlet="entityRow; context: { $implicit: row.entity, child: false }"
+              *ngTemplateOutlet="entityRow; context: { $implicit: row.entity, level: 1 }"
             ></ng-container>
             @if (row.entity.isRule && row.entity.expanded) {
               @for (child of row.children; track child.entityId) {
                 <ng-container
-                  *ngTemplateOutlet="entityRow; context: { $implicit: child, child: true }"
+                  *ngTemplateOutlet="entityRow; context: { $implicit: child, level: 2 }"
                 ></ng-container>
               }
             }
@@ -84,7 +84,7 @@
   </table>
 </div>
 
-<ng-template #entityRow let-entity let-child="child">
+<ng-template #entityRow let-entity let-level="level">
   <tr
     nxTableRow
     class="entity-row"
@@ -93,28 +93,30 @@
     [class.entity-row--recently-added]="entity.recentlyAdded"
   >
     <td nxCell class="col-check">
-      @if (entity.isRule || entity.subItems?.length) {
-        <button
-          nxIconButton="tertiary small"
-          type="button"
-          (click)="entity.isRule ? toggleRule.emit(entity) : (entity.expanded = !entity.expanded)"
-          [attr.aria-expanded]="entity.expanded"
-          [attr.aria-label]="(entity.expanded ? 'Collapse ' : 'Expand ') + entity.name"
-        >
-          <nx-icon
-            [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
-          ></nx-icon>
-        </button>
-      } @else {
-        <nx-checkbox
-          [checked]="isChecked(entity)"
-          (checkedChange)="entityToggle.emit({ entity, checked: $event })"
-          [attr.aria-label]="'Select ' + entity.name"
-        ></nx-checkbox>
-      }
+      <div class="lvl" [style.--lvl]="level">
+        @if (entity.isRule || entity.subItems?.length) {
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            (click)="entity.isRule ? toggleRule.emit(entity) : (entity.expanded = !entity.expanded)"
+            [attr.aria-expanded]="entity.expanded"
+            [attr.aria-label]="(entity.expanded ? 'Collapse ' : 'Expand ') + entity.name"
+          >
+            <nx-icon
+              [name]="entity.expanded ? 'chevron-down-small' : 'chevron-right-small'"
+            ></nx-icon>
+          </button>
+        } @else {
+          <nx-checkbox
+            [checked]="isChecked(entity)"
+            (checkedChange)="entityToggle.emit({ entity, checked: $event })"
+            [attr.aria-label]="'Select ' + entity.name"
+          ></nx-checkbox>
+        }
+      </div>
     </td>
     <td nxCell class="col-name">
-      <div class="entity-cell" [class.entity-cell--child]="child">
+      <div class="entity-cell" [style.--lvl]="level - 1">
         <span>{{ entity.name }}</span>
         @if (entity.coveredForEvents?.length) {
           <button
@@ -177,15 +179,17 @@
   @if (!entity.isRule && entity.expanded && entity.subItems?.length) {
     @for (sub of entity.subItems; track sub.itemId) {
       <tr nxTableRow class="sub-item-row">
-        <td nxCell class="col-check"></td>
-        <td nxCell colspan="5">
-          <div class="sub-item__cell">
+        <td nxCell class="col-check">
+          <div class="lvl" [style.--lvl]="level + 1">
             <nx-checkbox
               [checked]="sub.selected"
               (checkedChange)="subItemToggle.emit({ entity, sub, checked: $event })"
+              [attr.aria-label]="'Select ' + sub.name"
             ></nx-checkbox>
-            <span class="sub-item__name">{{ sub.name }}</span>
           </div>
+        </td>
+        <td nxCell colspan="5">
+          <div class="entity-cell sub-item__name" [style.--lvl]="level">{{ sub.name }}</div>
         </td>
         <td nxCell class="col-action"></td>
       </tr>
