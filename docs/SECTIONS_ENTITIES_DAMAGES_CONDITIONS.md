@@ -12,7 +12,7 @@ Companion docs: `SECTIONS_AND_EDIT_CLAIM.md` (coupling map), `SKELETON_CONVERSIO
 - **Entities Next gate:** with no ticked entity in the chosen types, Next shows "Select an entity". Verified.
 - **Add item** in the entity panel no longer saves twice.
 - **Edit claim:** setting a cause on a claim with zero sections creates its first section (same rule as skeleton creation).
-- Sections 1, 3, 4 and the case matrix below describe the behaviour **before** this fix (F1, F2, F4, F14, F15, F18 are now changed).
+- Rows marked **(fixed)** below were rewritten to the new behaviour. Anything still saying "before" is noted as such. Re-verified in a real browser 2026-10-14 (see section 8b).
 
 ---
 
@@ -25,9 +25,9 @@ The prototype implements almost none of the chain:
 |---|---|
 | Cause of loss -> entities | **Not connected.** The entity list is a fixed file per policy number (3 policies). Cause is used only to fill a dropdown inside the entity side panel |
 | Coverage check (Promised / Not promised) | Fixed value in the file. Does not gate anything |
-| Handler selects entities (checkboxes) | **Ignored.** Nothing downstream reads the checkbox |
-| Type of damage chosen in Loss information | Only hides groups on the Entities screen. **Ignored at submit** |
-| One section per damage type | True, but built from **every entity in the cache**, ticked or not |
+| Handler selects entities (checkboxes) **(fixed)** | Read at submit and by the Next gate |
+| Type of damage chosen in Loss information **(fixed)** | Hides groups on the Entities screen **and** limits which sections can be created |
+| One section per damage type **(fixed)** | One section per chosen type that has at least one ticked entity; only ticked entities go in |
 | Promise status -> Coverage review | **No code.** Seeds are hand-written |
 
 **Verified replay (POL-2024-001):** Loss information = Fire + Material damage only. On the Entities screen only **1 entity** (Kaufmann's Warehouse) ticked, 7 shown, "Number of entities: 7". After Submit the claim has **5 sections / 14 entities**:
@@ -41,7 +41,7 @@ Material damage (7 entities), Business interruption (1), Financial loss (2), Bod
 |---|---|---|
 | Search | Policy selected ("Register a claim" disabled otherwise, tooltip "Select a policy to continue") | Does **not** reset previous FNOL state or caches |
 | Loss information | Date and time of occurrence and notification (required); dates not in the future; notification date not before occurrence; **at least one cause**; **at least one type of damage**; every event block has at least one damage; "Specify other" required if Other Event; CBI answer required when the CBI question is shown; CBI case type when answer is Yes; supplier/customer name when case type ends `-named` | Banner "N issues need attention before continuing". Verified: empty type of damage keeps you on the page |
-| Entities & Damages | **Nothing.** Next only marks the step done | No "select an entity" message exists |
+| Entities & Damages **(fixed)** | At least one ticked entity (or sub-item) inside a chosen Type of damage | Dialog "Select an entity" |
 | Parties | Nothing | |
 | Reserves | A reserve total above 0 **or** an active narrative | Dialog "Reserve required" |
 | Summary | `claimGroupCount > 0` (always 1 for real policies); recovery note when potential = No | "Submit claim" |
@@ -81,18 +81,18 @@ Other facts: all steps redirect to Search if there is no policy. The stepper is 
 
 ## 4. Submit: how sections are created (exact)
 
-`createSectionsFromEntitiesDamages` runs only on the non-skeleton path:
+`createSectionsFromEntitiesDamages` runs only on the non-skeleton path. **Rewritten 2026-10-14:**
 
-1. Read the cache for the policy. Take every group that has at least one entity.
-2. Group by the **group's** `damageTypeKey`; promised and not-promised entities of the same key merge into one list. Checkbox state, Type of damage and promise status are **not consulted**.
-3. For each key, create one section: name `"<damage type label> — <first entity name>"` (CBI case-type label instead of the damage type label when CBI applies), status Open, all blocker flags false, each entity `Not assigned`, **no coverage review**.
+1. Read the cache for the policy. Use `selectedSectionGroups` (shared with the Summary preview).
+2. Keep a group only if its `damageTypeKey` is in Loss information's Type of damage (when any is chosen) **and** it has at least one ticked entity. An entity is ticked if it, or any sub-item, is ticked. Promised and not-promised entities of the same key merge.
+3. For each kept key, create one section: name `"<damage type label> — <first entity name>"` (CBI case-type label instead when CBI applies), status Open, blocker flags false, **only the ticked entities**, each `Not assigned`, no coverage review.
 4. CBI: only if the key is `business-interruption` **and** the answer is Yes: every entity in that group gets the CBI fields.
 5. **Not passed to the section:** location, dates, entity id, limit, covered-by, status, damage items.
 
 Same entity name in two groups gives two sections (intended). Zero entities in the cache: no sections, claim still created. Multi-claim demo policies (`POL-2024-MC*`): only the first claim gets sections.
 Order: sections -> loss information record -> claim/overview -> financial reserves from the FNOL reserves. Failure midway leaves earlier sections behind; retry makes new ids.
 
-The Summary preview is wrong for seed data: "Types of damage" comes from entity keys that seed rows lack (**verified: "Not specified"**), and "section count" is the **entity** count.
+**(fixed)** The Summary preview now uses the same helper: "Types of damage" lists the keys that will become sections and the section count is the number of those keys.
 
 ## 5. Every "damage" in the system
 
@@ -151,24 +151,24 @@ Existing sections untouched; no flag; location reconfirm writes only loss inform
 
 | # | Scenario | Result | Evidence |
 |---|---|---|---|
-| F1 | Nothing ticked, Next | Allowed; sections identical to "everything ticked" | per code |
-| F2 | One entity ticked (POL-001, Material damage) | **5 sections / 14 entities** | **verified** |
+| F1 | Nothing ticked, Next | **(fixed)** Blocked by "Select an entity" | **verified** |
+| F2 | One entity ticked (POL-001, Material damage) | **(fixed)** 1 section / 1 entity (was 5 / 14) | **verified** |
 | F3 | Type of damage empty | Cannot leave Loss information | **verified** |
-| F4 | Type selected with no entities (e.g. Machinery breakdown) | Empty group shown; no section for it; other groups still produce sections | per code |
+| F4 | Type selected with no ticked entities | **(fixed)** No section for it; other groups still produce sections | **verified** (BI + Material, only Material ticked) |
 | F5 | Policy with no entity data (e.g. POL-2024-004) | Empty groups; **no sections**; claim still created | per code |
 | F6 | BI alone | CBI question shown and required | **verified** |
-| F7 | BI + Material damage | CBI hidden; BI group becomes a plain section | **verified** (question), per code (section) |
+| F7 | BI + Material damage | CBI hidden; BI section only if a BI entity is ticked | **verified** (question and section rule) |
 | F8 | CBI Yes, no originating location | Next allowed; section lacks the location | per code |
 | F9 | Cause = Business interruption, type = Material damage | No CBI, no BI section from the cause | per code |
-| F10 | Same entity name in two groups | Two sections | per code |
+| F10 | Same entity name in two groups, both ticked | Two sections | **verified** |
 | F11 | Add entity (building) | Joins Material damage; counted at submit even if the group is hidden | per code |
 | F12 | Add sibling policy | All its entities join and become section entities | per code |
 | F13 | Remove all entities | No sections | per code |
-| F14 | Back, change Type of damage | View filter changes; sections still from the whole cache | per code |
-| F15 | Move entity to an unselected group | Disappears from view; still becomes a section entity | per code |
+| F14 | Back, change Type of damage | **(fixed)** Sections follow the chosen types; ticks in an unchosen type are ignored and block Next if nothing else is ticked | **verified** |
+| F15 | Move entity to an unselected group | **(fixed)** Not counted (its group is not a chosen type) | per code |
 | F16 | Refresh | State and cache lost; redirect to Search | per code |
 | F17 | Submit twice (via Summary revisit) | Second claim, second set of sections | per code |
-| F18 | Add damage item | **Saved twice** (2 rows -> 4 rows; same item duplicated) | **verified** |
+| F18 | Add damage item | **(fixed)** Saved once (2 -> 3) | **verified** |
 | F19 | No parties added | Reserves step empty; "Reserve required" needs a narrative | per code |
 | F20 | Policy mismatch with Reserves cache | Reserves built once, never rebuilt when entities or parties change | per code |
 
@@ -177,7 +177,7 @@ Existing sections untouched; no flag; location reconfirm writes only loss inform
 | # | Scenario | Result | Evidence |
 |---|---|---|---|
 | A1 | Skeleton with cause fire | One Material damage section | **verified** (SK-2024-005) |
-| A2 | Skeleton with no cause | No section; after linking the claim has a "no sections yet" blocker that **cannot be fixed** (no Add section) | **verified** (SK-2024-009) |
+| A2 | Skeleton with no cause | No section at first. **(fixed)** Setting a cause later in Edit claim creates the first section (CLM-2024-002: 0 -> 1) | **verified** |
 | A3 | Edit cause, Update | Flags Open sections; section content unchanged | **verified** |
 | A4 | Edit type of damage | Flags sections; nothing else changes | **verified** |
 | A5 | Edit then "Later" | Flag remains until Mark as reviewed | **verified** |
@@ -186,16 +186,27 @@ Existing sections untouched; no flag; location reconfirm writes only loss inform
 | A8 | Add reserve to a Closed section | Allowed; flag flips on a closed section | per code |
 | A9 | Claim closed, direct URL to Edit | Works; no guard | per code |
 
+## 8b. Re-verified after the fix (2026-10-14, real browser)
+
+| Case | Result |
+|---|---|
+| BI only + CBI Yes, ENT-401 ticked | 1 section "Supplier - Unnamed - Kaufmann's Warehouse", entity tagged CBI |
+| Bodily injury + Liability, sub-item EMP-001 + ENT-104 ticked, ENT-007 not | 2 sections, ENT-007 excluded |
+| Material + BI chosen, only ENT-001 ticked | 1 Material damage section |
+| Material chosen, only financial ENT-005 ticked | Next blocked |
+| Edit claim, zero-section claim, cause set | First section created |
+| Add item | Saved once |
+
 ## 9. Defect register (ranked)
 
 **P1: breaks the intended flow**
-1. Sections are built from every entity, ignoring selection, Type of damage and promise status (verified). Section count and contents are wrong whenever a handler selects fewer entities than the policy lists.
-2. "Add item" in the entity panel saves the item twice (verified).
-3. No way to create a section after FNOL (button removed in `e1f4323`); skeletons without a cause, and every regular claim without sections, are stuck. A converted skeleton with no section has a closure blocker nobody can clear.
-4. Entities screen has no "select at least one" rule; submit works with zero selection.
+1. ~~Sections built from every entity~~ **FIXED 2026-10-14.** Promise status is still not consulted (a not-promised entity can be ticked and becomes a section entity).
+2. ~~"Add item" saved twice~~ **FIXED 2026-10-14.**
+3. **PARTLY FIXED 2026-10-14.** A section-less claim now gets its first section when a cause is set in Edit claim. Still no way to add a second section or entity after FNOL (button removed in `e1f4323`), and a claim with no cause stays stuck.
+4. ~~No "select at least one" rule~~ **FIXED 2026-10-14.**
 
 **P2: wrong data or misleading UI**
-5. Summary: "Types of damage: Not specified" for seed policies (verified); section count = entity count; claim groups always 1.
+5. Summary types and section count **FIXED 2026-10-14**; claim groups still always 1.
 6. Reopen claim is disabled when the claim has no Closed sections (e.g. CLM-2024-007, -018, -019, -027).
 7. Reserves step: empty without parties; rows built once and never refreshed; damaged items are 3 hard-coded names.
 8. CBI originating location not enforced although it is listed as required.
@@ -212,9 +223,9 @@ Existing sections untouched; no flag; location reconfirm writes only loss inform
 
 ## 10. What decides "right" (questions for the team)
 
-1. Should unticked entities ever become section entities? (We assume no.)
-2. Is at least one selected entity required before Next? What does production say?
-3. Should Type of damage restrict sections, or only the screen?
+1. Should unticked entities ever become section entities? (Decided no, implemented 2026-10-14. Confirm with the team.)
+2. Is at least one selected entity required before Next? (Implemented as yes. What does production say?)
+3. Should Type of damage restrict sections, or only the screen? (Implemented: restricts sections.)
 4. Where does a handler create a section after FNOL?
 5. Should Edit claim re-run the entity and coverage step when cause changes?
 6. Which entity data should a section keep (location, limit, covered-by, promise status)?
