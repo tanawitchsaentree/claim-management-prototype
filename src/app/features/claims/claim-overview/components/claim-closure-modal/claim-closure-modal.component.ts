@@ -2,13 +2,19 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors
+} from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -27,8 +33,8 @@ export interface ClaimClosureModalData {
 export interface ClaimClosureModalResult {
   closedClaim: ClaimOverview;
   activity: ClaimActivity;
-  // BMPCC-18352 pilot — true when this result is a liability-related
-  // rejection routed to pending approval instead of an actual closure.
+  // BMPCC-18352 pilot — true when this result is a coverage-related
+  // rejection routed to second-level approval instead of an actual closure.
   // closedClaim.status is 'Pending Rejection Approval' in that case, not
   // 'Closed' — caller must branch on this before treating the claim as closed.
   pendingApproval?: boolean;
@@ -37,6 +43,14 @@ export interface ClaimClosureModalResult {
 type Step = 1 | 2 | 3 | 4;
 
 const CLOSURE_REASONS: ClosureReason[] = ['Claim Finalised', 'Claim Not Pursued', 'Claim Rejected'];
+
+type RejectionType = 'coverage' | 'liability';
+
+// Functional Design BMPCC-17630: a rejection can't proceed until it's classified.
+function rejectionTypeRequired(group: AbstractControl): ValidationErrors | null {
+  const { reason, rejectionType } = group.value;
+  return reason === 'Claim Rejected' && !rejectionType ? { rejectionTypeRequired: true } : null;
+}
 
 interface ChecklistItem {
   label: string;
@@ -61,7 +75,6 @@ const CONFIRMATION_STATEMENTS: string[] = [
     NxFormfieldModule,
     NxDropdownModule,
     NxRadioModule,
-    NxCheckboxModule,
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
@@ -146,28 +159,30 @@ export class ClaimClosureModalComponent {
 
   readonly confirmationStatements = CONFIRMATION_STATEMENTS;
 
-  readonly form: FormGroup = this.fb.group({
-    reason: [null, Validators.required],
-    retentionType: ['default', Validators.required],
-    retentionDate: [''],
-    // Only rendered (and only meaningful) when reason === 'Claim Rejected' —
-    // see PROJECT.md/tracker note on BMPCC-18352 for the open questions this
-    // pilot doesn't resolve (real approver identity, notification channel).
-    liabilityInvolved: [false]
-  });
+  readonly form: FormGroup = this.fb.group(
+    {
+      reason: [null, Validators.required],
+      retentionType: ['default', Validators.required],
+      retentionDate: [''],
+      // Only rendered (and only meaningful) when reason === 'Claim Rejected'.
+      // Per Functional Design BMPCC-17630: coverage-related needs second-level
+      // approval, liability-related never does. UW pre-notification is out of Day 1.
+      rejectionType: [null as RejectionType | null]
+    },
+    { validators: rejectionTypeRequired }
+  );
 
   private readonly reasonSig = toSignal(this.form.get('reason')!.valueChanges, {
     initialValue: this.form.value.reason
   });
   readonly isRejection = computed(() => this.reasonSig() === 'Claim Rejected');
 
-  private readonly liabilityInvolvedSig = toSignal(
-    this.form.get('liabilityInvolved')!.valueChanges,
-    {
-      initialValue: this.form.value.liabilityInvolved ?? false
-    }
+  private readonly rejectionTypeSig = toSignal(this.form.get('rejectionType')!.valueChanges, {
+    initialValue: this.form.value.rejectionType as RejectionType | null
+  });
+  readonly requiresApproval = computed(
+    () => this.isRejection() && this.rejectionTypeSig() === 'coverage'
   );
-  readonly requiresApproval = computed(() => this.isRejection() && !!this.liabilityInvolvedSig());
 
   private readonly retentionTypeSig = toSignal(this.form.get('retentionType')!.valueChanges, {
     initialValue: 'default'
@@ -292,7 +307,7 @@ export class ClaimClosureModalComponent {
     if (this.form.invalid || this.saving()) return;
 
     if (this.requiresApproval()) {
-      // Liability-related rejection — send to pending approval instead of
+      // Coverage-related rejection — send to second-level approval instead of
       // actually closing. No real second-approver/notification mechanism
       // exists in this prototype; approve/decline both render directly on
       // Claim Overview for whoever is looking, same as every other

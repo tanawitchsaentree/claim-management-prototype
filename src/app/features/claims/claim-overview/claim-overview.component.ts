@@ -376,7 +376,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     if (result.pendingApproval) {
       this.toast.success(
         'Rejection submitted',
-        `${result.closedClaim.claimId} — awaiting underwriter approval`
+        `${result.closedClaim.claimId} — awaiting second-level approval`
       );
       return;
     }

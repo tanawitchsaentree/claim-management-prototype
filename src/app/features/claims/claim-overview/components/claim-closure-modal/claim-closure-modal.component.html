@@ -126,10 +126,15 @@
       </nx-formfield>
 
       @if (isRejection()) {
-        <nx-checkbox formControlName="liabilityInvolved" labelSize="small">
-          This rejection involves a liability determination — requires underwriter pre-notification
-          before finalising
-        </nx-checkbox>
+        <p class="ccm-section-label">Rejection type</p>
+        <nx-radio-group formControlName="rejectionType">
+          <nx-radio labelSize="small" value="coverage">
+            Coverage-related (needs second-level approval before closing)
+          </nx-radio>
+          <nx-radio labelSize="small" value="liability">
+            Liability-related (closes without approval)
+          </nx-radio>
+        </nx-radio-group>
       }
     </form>
 
