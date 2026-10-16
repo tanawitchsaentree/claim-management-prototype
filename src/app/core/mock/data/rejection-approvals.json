@@ -1,0 +1,23 @@
+[
+  {
+    "claimId": "CLM-2024-006",
+    "client": "Schäfer & Söhne AG",
+    "lineOfBusiness": "Property",
+    "requester": "Mara Mustermann",
+    "dateRequested": "2026-10-13"
+  },
+  {
+    "claimId": "CLM-2024-016",
+    "client": "Schäfer & Söhne AG",
+    "lineOfBusiness": "Property",
+    "requester": "Lena Zorn",
+    "dateRequested": "2026-10-14"
+  },
+  {
+    "claimId": "CLM-2024-022",
+    "client": "Liver Tea Group",
+    "lineOfBusiness": "Property",
+    "requester": "Nina Feld",
+    "dateRequested": "2026-10-15"
+  }
+]

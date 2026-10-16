@@ -74,6 +74,12 @@ export class ClaimsRejectionTableComponent {
 
   async approve(item: RejectionApproval): Promise<void> {
     if (this.busy()) return;
+    if (this.rejectionSvc.isSeeded(item.claimId)) {
+      this.rejectionSvc.decideSeeded(item.claimId);
+      await this.load();
+      this.toast.success('Rejection approved', `${item.claimId} closed as Claim Rejected`);
+      return;
+    }
     this.busy.set(true);
     try {
       await firstValueFrom(
@@ -95,6 +101,12 @@ export class ClaimsRejectionTableComponent {
 
   async decline(item: RejectionApproval): Promise<void> {
     if (this.busy()) return;
+    if (this.rejectionSvc.isSeeded(item.claimId)) {
+      this.rejectionSvc.decideSeeded(item.claimId);
+      await this.load();
+      this.toast.info('Rejection declined', `${item.claimId} reverted to Open`);
+      return;
+    }
     this.stateSvc.patchOverview(item.claimId, {
       status: 'Open',
       rejectionRequestedAt: undefined,
