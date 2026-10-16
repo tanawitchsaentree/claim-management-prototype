@@ -1,0 +1,1 @@
+import{c as i}from"./chunk-B72J45WZ.js";import{vb as t}from"./chunk-6H5KWZQU.js";var n=class r{transform(e){return i(e)||"\u2013"}static \u0275fac=function(a){return new(a||r)};static \u0275pipe=t({name:"circumstanceLabel",type:r,pure:!0})};export{n as a};
