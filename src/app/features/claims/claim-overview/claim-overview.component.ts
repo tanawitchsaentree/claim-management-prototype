@@ -374,6 +374,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       activities: [result.activity, ...cur.activities]
     });
     if (result.pendingApproval) {
+      // Persist so the Approvals > Claims tab can see it; vm$ alone is local.
+      this.stateSvc.patchOverview(result.closedClaim.claimId, {
+        status: result.closedClaim.status,
+        rejectionRequestedAt: result.activity.timestamp,
+        rejectionRequestedBy: result.activity.user
+      });
+      this.overviewSvc.appendActivities(result.closedClaim.claimId, [result.activity]);
       this.toast.success(
         'Rejection submitted',
         `${result.closedClaim.claimId} — awaiting second-level approval`
@@ -428,7 +435,13 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   declineRejection(claim: ClaimOverview): void {
     if (this.rejectionActionInFlight()) return;
     const now = new Date().toISOString();
-    const revertedClaim: ClaimOverview = { ...claim, status: 'Open' };
+    const revertedClaim: ClaimOverview = {
+      ...claim,
+      status: 'Open',
+      rejectionRequestedAt: undefined,
+      rejectionRequestedBy: undefined
+    };
+    this.stateSvc.patchOverview(claim.claimId, revertedClaim);
     const activity: ClaimActivity = {
       id: `act-${Date.now()}`,
       claimId: claim.claimId,

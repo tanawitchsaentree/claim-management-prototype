@@ -23,6 +23,7 @@ import { PaymentApproval } from '../../core/models/dashboard-extended.model';
 import { firstValueFrom } from 'rxjs';
 import { ClaimPreviewDirective } from '../../shared/directives/claim-preview.directive';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { ClaimsRejectionTableComponent } from './claims-rejection-table/claims-rejection-table.component';
 import { RequesterNamePipe } from '../../shared/pipes/requester-name.pipe';
 import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
 
@@ -46,7 +47,8 @@ import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
     Navbar,
     ClaimPreviewDirective,
     EmptyStateComponent,
-    RequesterNamePipe
+    RequesterNamePipe,
+    ClaimsRejectionTableComponent
   ],
   templateUrl: './approvals.component.html',
   styleUrl: './approvals.component.scss'
@@ -59,7 +61,7 @@ export class ApprovalsComponent implements OnInit {
   private readonly router = inject(Router);
   readonly auth = inject(AuthService);
 
-  readonly activeTab = signal<'reserves' | 'payments'>('reserves');
+  readonly activeTab = signal<'reserves' | 'payments' | 'claims'>('reserves');
   readonly showMineOnly = signal(false);
 
   // Filter fields
@@ -68,7 +70,7 @@ export class ApprovalsComponent implements OnInit {
     requester: new FormControl(''),
     date: new FormControl<string | null>(null)
   });
-  private readonly filterValue = toSignal(this.filterForm.valueChanges, {
+  readonly filterValue = toSignal(this.filterForm.valueChanges, {
     initialValue: this.filterForm.value
   });
 

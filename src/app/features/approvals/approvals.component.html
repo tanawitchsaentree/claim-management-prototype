@@ -37,14 +37,31 @@
       >
         Payments
       </button>
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'claims'"
+        (click)="activeTab.set('claims')"
+      >
+        Claims
+      </button>
     </div>
 
-    <!-- ── My limit toggle ── -->
-    <div class="toggle-row">
-      <nx-switcher [checked]="showMineOnly()" (checkedChange)="showMineOnly.set($event)">
-        Show approvals within my limit only
-      </nx-switcher>
-    </div>
+    <!-- ── My limit toggle (no threshold yet for rejections, BMPCC-17630 #6) ── -->
+    @if (activeTab() !== 'claims') {
+      <div class="toggle-row">
+        <nx-switcher [checked]="showMineOnly()" (checkedChange)="showMineOnly.set($event)">
+          Show approvals within my limit only
+        </nx-switcher>
+      </div>
+    }
+
+    <!-- ── Claim rejections table ── -->
+    @if (activeTab() === 'claims') {
+      <app-claims-rejection-table
+        [claimId]="filterValue().claimId ?? ''"
+        [requester]="filterValue().requester ?? ''"
+      />
+    }
 
     <!-- ── Reserves table ── -->
     @if (activeTab() === 'reserves') {

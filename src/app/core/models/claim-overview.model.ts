@@ -84,6 +84,10 @@ export interface ClaimOverview {
   // section. Sections display the claim's value rather than storing their own,
   // so moving to per-section later is an additive change, not a migration.
   incidentCircumstance?: string;
+  // BMPCC-17630 — set while status is 'Pending Rejection Approval' so the
+  // Approvals > Claims tab can list who asked and when.
+  rejectionRequestedAt?: string;
+  rejectionRequestedBy?: string;
   riskScore: number;
   riskScoreMax: number;
   riskStatus: string;

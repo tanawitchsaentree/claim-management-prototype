@@ -13,3 +13,12 @@ export interface UrgentApproval {
   reviewerEmail?: string;
   dateRequested?: string;
 }
+
+/** BMPCC-17630 — a coverage-related claim rejection waiting for second-level approval. */
+export interface RejectionApproval {
+  claimId: string;
+  client: string;
+  lineOfBusiness: string;
+  requester: string;
+  dateRequested: string;
+}
