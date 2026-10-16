@@ -81,15 +81,12 @@
 
 // ── Table ─────────────────────────────────────────────────────────
 .table-card {
-  background: var(--ui-01);
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  overflow: hidden;
+  // No outer frame (matches the Finance-domain Approvals page): only a hairline above the header.
+  border-top: 1px solid var(--ui-04);
 }
 
 .approvals-table {
   width: 100%;
-  table-layout: fixed;
 
   .col-expand {
     width: 40px;
@@ -109,6 +106,7 @@
   }
   .col-type {
     width: 130px;
+    white-space: nowrap;
   }
   .col-currency {
     width: 70px;
@@ -123,36 +121,31 @@
     width: 110px;
   }
   .col-action {
-    width: 56px;
+    width: 96px;
     text-align: center !important;
     padding: 0 !important;
+    border-left: 1px solid var(--ui-04);
   }
 
   th[nxHeaderCell] {
-    font-weight: 600 !important;
-    padding: var(--space-sm) var(--space-md) !important;
+    font-weight: 400 !important;
+    font-size: var(--paragraph-03-font-size) !important;
+    color: var(--text-01) !important;
+    padding: var(--space-md) var(--space-md) !important;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   td[nxTableCell] {
-    padding: var(--space-sm) var(--space-md) !important;
+    padding: var(--space-md) var(--space-md) !important;
     vertical-align: middle !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 
 // ── Links ─────────────────────────────────────────────────────────
 .text-link {
   color: var(--interactive-text);
-  text-decoration: none;
+  text-decoration: underline;
   font-weight: 500;
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 // ── NDBX overrides ────────────────────────────────────────────────
