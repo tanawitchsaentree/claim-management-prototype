@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -59,6 +59,7 @@ export class ApprovalsComponent implements OnInit {
   private readonly financialSvc = inject(MockFinancialOverviewService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   readonly auth = inject(AuthService);
 
   readonly activeTab = signal<'reserves' | 'payments' | 'claims'>('reserves');
@@ -114,6 +115,7 @@ export class ApprovalsComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    if (this.route.snapshot.queryParamMap.get('tab') === 'claims') this.activeTab.set('claims');
     const payments = await firstValueFrom(this.extSvc.getPaymentApprovals());
     this.allPayments.set(payments);
     await this.loadReserves();

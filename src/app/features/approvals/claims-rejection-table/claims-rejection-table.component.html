@@ -2,6 +2,7 @@
   <table nxTable class="approvals-table">
     <thead>
       <tr nxTableRow>
+        <th nxHeaderCell class="col-req-id">Request ID</th>
         <th nxHeaderCell class="col-claim-id">Claim ID</th>
         <th nxHeaderCell class="col-requester">Client</th>
         <th nxHeaderCell class="col-lob">Line of Business</th>
@@ -14,13 +15,18 @@
     <tbody>
       @if (rows().length === 0) {
         <tr nxTableRow>
-          <td nxTableCell colspan="7" class="empty-cell">
+          <td nxTableCell colspan="8" class="empty-cell">
             <app-empty-state message="No rejection approval requests found."></app-empty-state>
           </td>
         </tr>
       }
       @for (item of rows(); track item.claimId) {
         <tr nxTableRow>
+          <td nxTableCell class="col-req-id">
+            <a class="text-link" [routerLink]="['/approvals/claims', item.claimId]">{{
+              item.requestId
+            }}</a>
+          </td>
           <td nxTableCell class="col-claim-id">
             <a
               class="text-link"

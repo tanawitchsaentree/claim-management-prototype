@@ -16,9 +16,16 @@ export interface UrgentApproval {
 
 /** BMPCC-17630 — a coverage-related claim rejection waiting for second-level approval. */
 export interface RejectionApproval {
+  requestId: string;
   claimId: string;
+  oe: string;
   client: string;
   lineOfBusiness: string;
   requester: string;
   dateRequested: string;
+}
+
+/** REJ2024006 for CLM-2024-006 — stable, so the detail URL can be rebuilt from the claim. */
+export function rejectionRequestId(claimId: string): string {
+  return 'REJ' + claimId.replace(/\D/g, '');
 }

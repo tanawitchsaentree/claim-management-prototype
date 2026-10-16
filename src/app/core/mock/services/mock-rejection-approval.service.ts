@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RejectionApproval } from '../../models/approval.model';
+import { RejectionApproval, rejectionRequestId } from '../../models/approval.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 import rejectionsData from '../data/rejection-approvals.json';
@@ -20,7 +20,9 @@ export class MockRejectionApprovalService extends MockBaseService {
     const pending = Object.values(this.stateSvc.state().overviews)
       .filter(o => o.status === 'Pending Rejection Approval')
       .map(o => ({
+        requestId: rejectionRequestId(o.claimId),
         claimId: o.claimId,
+        oe: 'DE',
         client: o.client,
         lineOfBusiness: o.lineOfBusiness,
         requester: o.rejectionRequestedBy ?? o.assignedHandler,

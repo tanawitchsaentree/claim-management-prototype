@@ -46,6 +46,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/approvals/approvals.component').then(m => m.ApprovalsComponent)
   },
+  {
+    path: 'approvals/claims/:claimId',
+    loadComponent: () =>
+      import('./features/approvals/rejection-detail/rejection-detail.component').then(
+        m => m.RejectionDetailComponent
+      )
+  },
   // FNOL wizard (own layout shell, no sidebar)
   {
     path: 'fnol',

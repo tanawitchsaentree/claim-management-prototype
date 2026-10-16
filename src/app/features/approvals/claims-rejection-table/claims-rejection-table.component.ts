@@ -7,11 +7,8 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { firstValueFrom } from 'rxjs';
 import { RejectionApproval } from '../../../core/models/approval.model';
-import { ClaimActivity } from '../../../core/models/claim-overview.model';
 import { MockRejectionApprovalService } from '../../../core/mock/services/mock-rejection-approval.service';
-import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
-import { MockStateService } from '../../../core/mock/state/mock-state.service';
-import { ClaimClosureService } from '../../../core/services/claim-closure.service';
+import { RejectionApprovalService } from '../../../core/services/rejection-approval.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -46,9 +43,7 @@ export class ClaimsRejectionTableComponent {
   readonly requester = input('');
 
   private readonly rejectionSvc = inject(MockRejectionApprovalService);
-  private readonly overviewSvc = inject(MockClaimOverviewService);
-  private readonly closureSvc = inject(ClaimClosureService);
-  private readonly stateSvc = inject(MockStateService);
+  private readonly decisionSvc = inject(RejectionApprovalService);
   private readonly toast = inject(ToastService);
 
   private readonly all = signal<RejectionApproval[]>([]);
@@ -74,22 +69,9 @@ export class ClaimsRejectionTableComponent {
 
   async approve(item: RejectionApproval): Promise<void> {
     if (this.busy()) return;
-    if (this.rejectionSvc.isSeeded(item.claimId)) {
-      this.rejectionSvc.decideSeeded(item.claimId);
-      await this.load();
-      this.toast.success('Rejection approved', `${item.claimId} closed as Claim Rejected`);
-      return;
-    }
     this.busy.set(true);
     try {
-      await firstValueFrom(
-        this.closureSvc.closeClaim(item.claimId, {
-          reason: 'Claim Rejected',
-          retentionType: 'default',
-          confirmedBy: { userId: 'usr-current', name: item.requester }
-        })
-      );
-      this.logStatus(item, 'Closed');
+      await this.decisionSvc.approve(item);
       await this.load();
       this.toast.success('Rejection approved', `${item.claimId} closed as Claim Rejected`);
     } catch {
@@ -101,33 +83,8 @@ export class ClaimsRejectionTableComponent {
 
   async decline(item: RejectionApproval): Promise<void> {
     if (this.busy()) return;
-    if (this.rejectionSvc.isSeeded(item.claimId)) {
-      this.rejectionSvc.decideSeeded(item.claimId);
-      await this.load();
-      this.toast.info('Rejection declined', `${item.claimId} reverted to Open`);
-      return;
-    }
-    this.stateSvc.patchOverview(item.claimId, {
-      status: 'Open',
-      rejectionRequestedAt: undefined,
-      rejectionRequestedBy: undefined
-    });
-    this.logStatus(item, 'Open');
+    this.decisionSvc.decline(item);
     await this.load();
     this.toast.info('Rejection declined', `${item.claimId} reverted to Open`);
-  }
-
-  private logStatus(item: RejectionApproval, valueNew: string): void {
-    const activity: ClaimActivity = {
-      id: `act-${Date.now()}`,
-      claimId: item.claimId,
-      user: item.requester,
-      timestamp: new Date().toISOString(),
-      objectType: 'Claim',
-      attribute: 'Status',
-      valueOld: 'Pending Rejection Approval',
-      valueNew
-    };
-    this.overviewSvc.appendActivities(item.claimId, [activity]);
   }
 }

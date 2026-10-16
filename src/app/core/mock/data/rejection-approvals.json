@@ -1,20 +1,26 @@
 [
   {
+    "requestId": "REJ2024006",
     "claimId": "CLM-2024-006",
+    "oe": "DE",
     "client": "Schäfer & Söhne AG",
     "lineOfBusiness": "Property",
     "requester": "Mara Mustermann",
     "dateRequested": "2026-10-13"
   },
   {
+    "requestId": "REJ2024016",
     "claimId": "CLM-2024-016",
+    "oe": "DE",
     "client": "Schäfer & Söhne AG",
     "lineOfBusiness": "Property",
     "requester": "Lena Zorn",
     "dateRequested": "2026-10-14"
   },
   {
+    "requestId": "REJ2024022",
     "claimId": "CLM-2024-022",
+    "oe": "DE",
     "client": "Liver Tea Group",
     "lineOfBusiness": "Property",
     "requester": "Nina Feld",

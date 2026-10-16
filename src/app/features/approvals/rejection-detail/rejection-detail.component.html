@@ -1,0 +1,154 @@
+<app-navbar />
+
+<div class="rd-breadcrumb">
+  <div nxLayout="grid maxwidth">
+    <ol nxBreadcrumb>
+      <li nxBreadcrumbItem>
+        <a [routerLink]="['/approvals']" [queryParams]="{ tab: 'claims' }">Approvals</a>
+      </li>
+      <li nxBreadcrumbItem>{{ requestId }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="rd-page">
+  <div nxLayout="grid maxwidth">
+    <h1 class="rd-title">Request ID: {{ requestId }}</h1>
+
+    @if (loaded() && !item() && decision() === 'pending') {
+      <div class="rd-card">
+        <app-empty-state message="This rejection request is no longer pending."></app-empty-state>
+        <button nxButton="secondary small" type="button" (click)="backToApprovals()">
+          Back to approvals
+        </button>
+      </div>
+    }
+
+    @if (item(); as req) {
+      <!-- ── Claim information ── -->
+      <div class="rd-card">
+        <div class="rd-info">
+          <div class="rd-field">
+            <span class="rd-label">Claim Id</span>
+            <a class="text-link" [routerLink]="['/claims', req.claimId, 'overview']">{{
+              req.claimId | claimNumber
+            }}</a>
+          </div>
+          <div class="rd-field">
+            <span class="rd-label">Client</span>
+            <span>{{ req.client }}</span>
+          </div>
+          <div class="rd-field">
+            <span class="rd-label">OE</span>
+            <span>{{ req.oe }}</span>
+          </div>
+          <div class="rd-field">
+            <span class="rd-label">Assigned Claim handler</span>
+            <span>{{ claim()?.assignedHandler ?? '–' }}</span>
+          </div>
+          <div class="rd-field">
+            <span class="rd-label">Proximate loss cause</span>
+            <span>{{ claim()?.proximateLossCause ?? '–' }}</span>
+          </div>
+          <div class="rd-field">
+            <span class="rd-label">Rejection type</span>
+            <span>Coverage-related</span>
+          </div>
+          <div class="rd-field">
+            <span class="rd-label">Closure reason</span>
+            <span>Claim Rejected</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Rejection items ── -->
+      <div class="rd-card">
+        <div class="rd-card-head">
+          <h2 class="rd-card-title">Claim rejection</h2>
+        </div>
+        <div class="rd-toolbar">
+          <span class="rd-count"
+            >Number of items: <strong>{{ showRow() ? 1 : 0 }}</strong></span
+          >
+          <span class="rd-divider"></span>
+          <nx-switcher [checked]="pendingOnly()" (checkedChange)="pendingOnly.set($event)">
+            Show rejections with pending approval only
+          </nx-switcher>
+          <span class="rd-spacer"></span>
+          <button nxButton="secondary small" type="button" [disabled]="!canDecide()" (click)="decline()">
+            Decline
+          </button>
+          <button nxButton="primary small" type="button" [disabled]="!canDecide()" (click)="approve()">
+            Approve
+          </button>
+        </div>
+
+        <table nxTable class="rd-table">
+          <thead>
+            <tr nxTableRow>
+              <th nxHeaderCell class="rd-col-check">
+                <nx-checkbox
+                  [checked]="selected()"
+                  [disabled]="decision() !== 'pending'"
+                  (checkedChange)="selected.set($event)"
+                  aria-label="Select all"
+                ></nx-checkbox>
+              </th>
+              <th nxHeaderCell>Claim</th>
+              <th nxHeaderCell>Rejection type</th>
+              <th nxHeaderCell>Status</th>
+              <th nxHeaderCell>Requester</th>
+              <th nxHeaderCell>Date requested</th>
+              <th nxHeaderCell>Note</th>
+              <th nxHeaderCell class="rd-col-action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (showRow()) {
+              <tr nxTableRow>
+                <td nxTableCell class="rd-col-check">
+                  <nx-checkbox
+                    [checked]="selected()"
+                    [disabled]="decision() !== 'pending'"
+                    (checkedChange)="selected.set($event)"
+                    aria-label="Select rejection"
+                  ></nx-checkbox>
+                </td>
+                <td nxTableCell>{{ req.claimId | claimNumber }}</td>
+                <td nxTableCell>Coverage-related</td>
+                <td nxTableCell>
+                  <app-status-chip
+                    [status]="statusChip().status"
+                    [label]="statusChip().label"
+                  ></app-status-chip>
+                </td>
+                <td nxTableCell>{{ req.requester | requesterName }}</td>
+                <td nxTableCell>{{ req.dateRequested ? (req.dateRequested | appDate) : '–' }}</td>
+                <td nxTableCell>—</td>
+                <td nxTableCell class="rd-col-action">
+                  <button
+                    nxIconButton="tertiary"
+                    type="button"
+                    [disabled]="decision() !== 'pending'"
+                    [nxContextMenuTriggerFor]="rowMenu"
+                    aria-label="actions"
+                  >
+                    <nx-icon name="ellipsis-h"></nx-icon>
+                  </button>
+                  <nx-context-menu #rowMenu="nxContextMenu">
+                    <button nxContextMenuItem type="button" (click)="selected.set(true); approve()">
+                      Approve
+                    </button>
+                    <button nxContextMenuItem type="button" (click)="selected.set(true); decline()">
+                      Decline
+                    </button>
+                  </nx-context-menu>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

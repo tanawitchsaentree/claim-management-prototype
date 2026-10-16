@@ -1,0 +1,91 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--ui-background);
+}
+
+.rd-breadcrumb {
+  background: var(--ui-02);
+  border-bottom: 1px solid var(--ui-04);
+  padding: var(--space-md) 0;
+}
+
+.rd-page {
+  padding: var(--space-lg) 0 var(--space-xl);
+}
+
+.rd-title {
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 var(--space-lg);
+}
+
+.rd-card {
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.rd-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg) var(--space-xl);
+}
+
+.rd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  color: var(--text-01);
+}
+
+.rd-label {
+  font-weight: 700;
+}
+
+.rd-card-title {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-01);
+  margin: 0 0 var(--space-base);
+}
+
+.rd-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-base);
+  padding-bottom: var(--space-base);
+  color: var(--text-01);
+}
+
+.rd-divider {
+  align-self: stretch;
+  border-left: 1px solid var(--ui-04);
+}
+
+.rd-spacer {
+  flex: 1;
+}
+
+.rd-table {
+  width: 100%;
+
+  th {
+    font-weight: 700;
+    color: var(--text-01);
+  }
+
+  .rd-col-check {
+    width: 48px;
+  }
+
+  .rd-col-action {
+    width: 96px;
+    border-left: 1px solid var(--ui-04);
+    text-align: center;
+  }
+}
