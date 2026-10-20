@@ -115,15 +115,12 @@ export class FinancialOverviewComponent implements OnInit {
   readonly level = toSignal(this.levelControl.valueChanges, { initialValue: 'claim' as LevelToggle });
   readonly currency = signal('EUR');
   readonly sectionId = signal('');
-
   readonly claimClosed = signal(false);
   readonly sectionStatuses = signal<ClaimSection[]>([]);
   readonly noReserveReason = signal<string | null>(null);
-
-  readonly activeSectionClosed = computed(() => {
-    const id = this.sectionId();
-    return this.sectionStatuses().find(s => s.id === id)?.status === 'Closed';
-  });
+  readonly activeSectionClosed = computed(
+    () => this.sectionStatuses().find(s => s.id === this.sectionId())?.status === 'Closed'
+  );
 
   readonly actionsDisabled = computed(
     () => this.claimClosed() || (this.level() === 'section' && this.activeSectionClosed())
@@ -176,12 +173,16 @@ export class FinancialOverviewComponent implements OnInit {
   readonly ggRegistration = signal<GgClaimRegistration | undefined>(undefined);
   readonly needsYouOnly = signal({ payments: false, reserves: false, recovery: false });
 
+  private sectionRows<T extends { sectionId?: string }>(rows: T[] | undefined): T[] {
+    return (rows ?? []).filter(r => r.sectionId === this.activeSection()?.sectionId);
+  }
+
   readonly paymentRows = computed(() => {
-    const all = this.level() === 'claim' ? (this.fo()?.payments ?? []) : (this.activeSection()?.payments ?? []);
+    const all = this.level() === 'claim' ? (this.fo()?.payments ?? []) : this.sectionRows(this.fo()?.payments);
     return this.needsYouOnly().payments ? all.filter(p => needsYouCount([p]) > 0) : all;
   });
   readonly recoveryRows = computed(() => {
-    const all = this.level() === 'claim' ? (this.fo()?.recoveries ?? []) : (this.activeSection()?.recoveries ?? []);
+    const all = this.level() === 'claim' ? (this.fo()?.recoveries ?? []) : this.sectionRows(this.fo()?.recoveries);
     return this.needsYouOnly().recovery ? all.filter(r => needsYouCount([r]) > 0) : all;
   });
   readonly needsYou = computed(() => {

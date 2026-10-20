@@ -45,6 +45,8 @@ export interface FinancialPayment extends Bookable {
   amount: number;
   currency: string;
   paymentDate: string;
+  // The section it belongs to. Section level is a filter on the claim-level list by this id.
+  sectionId?: string;
   // Make payment modal (multi-line). Optional: older payments have none.
   lines?: PaymentLine[];
   payeeId?: string;
@@ -76,6 +78,8 @@ export interface FinancialReserve extends Bookable {
 
 export interface FinancialRecovery extends Bookable {
   recoveryId: string;
+  // The section it belongs to (Section level filters the claim-level list by this).
+  sectionId?: string;
   bookingId: string;
   reinsuranceId: string;
   party: string;
@@ -144,6 +148,8 @@ export interface FinancialSection {
   exchangeRate: number;
   baseCurrency: string;
   summaryRows: FinancialSectionSummaryRow[];
+  // Section level filters the claim-level payments / reserves / recoveries by sectionId.
+  // These three lists are no longer filled; they stay so older state still loads.
   payments: FinancialPayment[];
   reserves: FinancialReserve[];
   recoveries: FinancialRecovery[];

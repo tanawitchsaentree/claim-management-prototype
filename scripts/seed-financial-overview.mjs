@@ -168,11 +168,12 @@ function summarize(cur, payments, reserves, recoveries) {
   };
 }
 
-/** A section's Expenses / Indemnity / Total rows: sums of the rows that belong to it. */
-function sectionSummaryRows(fs, reserves) {
+/** A section's Expenses / Indemnity / Total rows: sums of the claim-level rows whose sectionId is this section. */
+function sectionSummaryRows(fs, payments, reserves, recoveries) {
   const rowsFor = type => {
     const rs = reserves.filter(r => r.sectionId === fs.sectionId && r.reserveType.startsWith(type) && r.status !== 'Rejected');
-    const ps = fs.payments.filter(p => p.sectionType === type);
+    const ps = payments.filter(p => p.sectionId === fs.sectionId && p.sectionType === type);
+    const rcs = recoveries.filter(r => r.sectionId === fs.sectionId);
     const outstanding = sum(rs, r => r.reserveValue);
     const completed = sum(ps.filter(p => p.status === 'Done' || p.status === 'Credit'), p => p.amount);
     return {
@@ -180,7 +181,7 @@ function sectionSummaryRows(fs, reserves) {
       outstandingReserves: outstanding,
       completedPayments: completed,
       pendingPayments: sum(ps.filter(p => p.status === 'Pending'), p => p.amount),
-      recoveries: type === 'Indemnity' ? sum(fs.recoveries.filter(r => r.status === 'Approved'), r => r.amount) : 0,
+      recoveries: type === 'Indemnity' ? sum(rcs.filter(r => r.status === 'Approved'), r => r.amount) : 0,
       incurred: outstanding + completed
     };
   };
@@ -474,11 +475,19 @@ function build(claim) {
   const recoveryOverride = overview?.financialSummary.totalRecoveries;
 
   // ── sections ────────────────────────────────────────────────────────────────
+  // Section level is a filter on the claim-level rows (by sectionId), not a second copy.
+  payments.forEach((p, i) => {
+    if (placement[i]) p.sectionId = placement[i];
+  });
+  recoveries.forEach(r => {
+    const sec = finSections.find(x => x.sectionName === r.section);
+    if (sec) r.sectionId = sec.sectionId;
+  });
   finSections.forEach(fs => {
+    fs.payments = [];
     fs.reserves = [];
-    fs.payments = payments.filter((p, i) => placement[i] === fs.sectionId);
-    fs.recoveries = recoveries.filter(r => r.section === fs.sectionName);
-    fs.summaryRows = sectionSummaryRows(fs, reserves);
+    fs.recoveries = [];
+    fs.summaryRows = sectionSummaryRows(fs, payments, reserves, recoveries);
   });
 
   // ── totals, details, transactions ───────────────────────────────────────────
@@ -577,7 +586,16 @@ const first = keep[0];
 const waiting = first.payments.find(p => /^PMT-C-/.test(p.paymentId));
 if (waiting) waiting.paymentId = OWN_PAYMENT_ID_001;
 Object.assign(first, summarize(first.details.currency, first.payments, first.reserves, first.recoveries));
-first.sections.forEach(fs => (fs.summaryRows = sectionSummaryRows(fs, first.reserves)));
+// 001's rows get the section they were listed under; the sections' own lists were separate copies.
+const sectionOf001 = { 'Section 1: - Property Damage': 'S1', 'Section 2: - Business Interruption': 'S2' };
+const paymentSection001 = { '123456-1': 'S1', '123456-2': 'S1', '123456-3': 'S1', '123456-4': 'S2', '123456-5': 'S2', [OWN_PAYMENT_ID_001]: 'S1' };
+first.payments.forEach(p => (p.sectionId = paymentSection001[p.paymentId]));
+first.recoveries.forEach(r => (r.sectionId = sectionOf001[r.section]));
+first.sections.forEach(fs => {
+  fs.payments = [];
+  fs.recoveries = [];
+  fs.summaryRows = sectionSummaryRows(fs, first.payments, first.reserves, first.recoveries);
+});
 
 // sections this script made: open ones with reserves / pending payments say so (Close Section reads it)
 const fin = new Map(seeded.map(f => [f.claimId, f]));
@@ -585,7 +603,7 @@ for (const sec of generatedSections) {
   const f = fin.get(sec.claimId);
   if (sec.status === 'Closed' || !f) continue;
   sec.hasOpenReserves = f.reserves.some(r => r.sectionId === sec.id && r.status !== 'Rejected' && r.reserveValue > 0);
-  sec.hasOpenPayments = f.sections.find(x => x.sectionId === sec.id)?.payments.some(p => p.status === 'Pending') ?? false;
+  sec.hasOpenPayments = f.payments.some(p => p.sectionId === sec.id && p.status === 'Pending');
 }
 
 const out = (path, value) => writeFileSync(path, JSON.stringify(value, null, 2) + '\n');

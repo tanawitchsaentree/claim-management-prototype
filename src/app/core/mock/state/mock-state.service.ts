@@ -93,7 +93,7 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // flow in docs/SKELETON_CONVERSION_FLOWS.md; cached claims would not list them.
 // Bumped again: CLM-2024-001's overview cause now says Fire (it said Water damage while
 // its loss information and circumstance said Fire / hot work).
-const STATE_VERSION = 'financial-seeds-v3';
+const STATE_VERSION = 'financial-seeds-v4';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a

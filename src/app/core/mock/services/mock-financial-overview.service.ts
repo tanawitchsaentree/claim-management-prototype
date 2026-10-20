@@ -117,12 +117,11 @@ export class MockFinancialOverviewService extends MockBaseService {
       handler: input.handler || this.auth.user().name,
       paymentDate: input.paymentDate || todayLabel(),
       paymentId: `${prefix}-${overview.payments.length + 1}`,
+      sectionId,
       status
     };
     overview.payments = [...overview.payments, payment];
     if (status === 'Pending') overview.summary.pendingPayments += input.amount;
-    const section = overview.sections.find(s => s.sectionId === sectionId);
-    if (section) section.payments = [...section.payments, payment];
     this.stateSvc.patchFinancialOverview(claimId, overview);
     return this.respond(payment);
   }

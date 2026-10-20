@@ -48,7 +48,8 @@
         "status": "Pending",
         "amount": 30000,
         "currency": "EUR",
-        "paymentDate": "24-12-2024"
+        "paymentDate": "24-12-2024",
+        "sectionId": "S1"
       },
       {
         "paymentId": "123456-2",
@@ -59,7 +60,8 @@
         "status": "Credit",
         "amount": 30000,
         "currency": "EUR",
-        "paymentDate": "24-12-2024"
+        "paymentDate": "24-12-2024",
+        "sectionId": "S1"
       },
       {
         "paymentId": "123456-3",
@@ -70,7 +72,8 @@
         "status": "Done",
         "amount": 30000,
         "currency": "EUR",
-        "paymentDate": "24-12-2024"
+        "paymentDate": "24-12-2024",
+        "sectionId": "S1"
       },
       {
         "paymentId": "123456-4",
@@ -81,7 +84,8 @@
         "status": "Done",
         "amount": 30000,
         "currency": "EUR",
-        "paymentDate": "24-12-2024"
+        "paymentDate": "24-12-2024",
+        "sectionId": "S2"
       },
       {
         "paymentId": "123456-5",
@@ -92,7 +96,8 @@
         "status": "Pending",
         "amount": 30000,
         "currency": "EUR",
-        "paymentDate": "24-12-2024"
+        "paymentDate": "24-12-2024",
+        "sectionId": "S2"
       },
       {
         "paymentId": "123456-12",
@@ -103,7 +108,8 @@
         "status": "Pending",
         "amount": 8500,
         "currency": "EUR",
-        "paymentDate": "14-10-2026"
+        "paymentDate": "14-10-2026",
+        "sectionId": "S1"
       }
     ],
     "reserves": [
@@ -237,7 +243,8 @@
         "amount": 50000,
         "currency": "EUR",
         "recoveryDate": "15-01-2025",
-        "bookingDate": "15-01-2025"
+        "bookingDate": "15-01-2025",
+        "sectionId": "S1"
       },
       {
         "recoveryId": "REC-002",
@@ -250,7 +257,8 @@
         "amount": 25000,
         "currency": "EUR",
         "recoveryDate": "20-01-2025",
-        "bookingDate": "20-01-2025"
+        "bookingDate": "20-01-2025",
+        "sectionId": "S1"
       },
       {
         "recoveryId": "REC-003",
@@ -263,7 +271,8 @@
         "amount": 10000,
         "currency": "EUR",
         "recoveryDate": "25-01-2025",
-        "bookingDate": "25-01-2025"
+        "bookingDate": "25-01-2025",
+        "sectionId": "S2"
       }
     ],
     "transactions": [
@@ -318,92 +327,31 @@
           {
             "movementType": "Expenses",
             "outstandingReserves": 0,
-            "completedPayments": 0,
-            "pendingPayments": 0,
+            "completedPayments": 30000,
+            "pendingPayments": 30000,
             "recoveries": 0,
-            "incurred": 0
+            "incurred": 30000
           },
           {
             "movementType": "Indemnity",
             "outstandingReserves": 20000,
-            "completedPayments": 90000,
-            "pendingPayments": 0,
-            "recoveries": 30000,
-            "incurred": 110000
+            "completedPayments": 30000,
+            "pendingPayments": 8500,
+            "recoveries": 50000,
+            "incurred": 50000
           },
           {
             "movementType": "Total",
             "outstandingReserves": 20000,
-            "completedPayments": 90000,
-            "pendingPayments": 0,
-            "recoveries": 30000,
-            "incurred": 110000
+            "completedPayments": 60000,
+            "pendingPayments": 38500,
+            "recoveries": 50000,
+            "incurred": 80000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "123456-3",
-            "reinsuranceId": "RI0017",
-            "payee": "Finn Dahl",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 30000,
-            "currency": "EUR",
-            "paymentDate": "24-12-2024"
-          },
-          {
-            "paymentId": "123456-2",
-            "reinsuranceId": "RI0018",
-            "payee": "Oskar Veld",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 30000,
-            "currency": "EUR",
-            "paymentDate": "24-12-2024"
-          },
-          {
-            "paymentId": "123456-1",
-            "reinsuranceId": "RI0019",
-            "payee": "Viktor Bann",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 30000,
-            "currency": "EUR",
-            "paymentDate": "24-12-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-S1-001",
-            "bookingId": "DED-S1-1",
-            "reinsuranceId": "RI0017",
-            "party": "Munich Re",
-            "section": "Section 1: - Property Damage",
-            "recoveryType": "Reinsurance",
-            "status": "Approved",
-            "amount": 30000,
-            "currency": "EUR",
-            "recoveryDate": "15-01-2025",
-            "bookingDate": "15-01-2025"
-          },
-          {
-            "recoveryId": "REC-S1-002",
-            "bookingId": "DED-S1-2",
-            "reinsuranceId": "RI0018",
-            "party": "Swiss Re",
-            "section": "Section 1: - Property Damage",
-            "recoveryType": "Deductible",
-            "status": "Pending",
-            "amount": 15000,
-            "currency": "EUR",
-            "recoveryDate": "20-01-2025",
-            "bookingDate": "20-01-2025"
-          }
-        ],
+        "recoveries": [],
         "code": "PD"
       },
       {
@@ -417,67 +365,30 @@
             "movementType": "Expenses",
             "outstandingReserves": 5000,
             "completedPayments": 0,
-            "pendingPayments": 10000,
+            "pendingPayments": 0,
             "recoveries": 0,
             "incurred": 5000
           },
           {
             "movementType": "Indemnity",
             "outstandingReserves": 0,
-            "completedPayments": 40000,
-            "pendingPayments": 0,
+            "completedPayments": 30000,
+            "pendingPayments": 30000,
             "recoveries": 0,
-            "incurred": 40000
+            "incurred": 30000
           },
           {
             "movementType": "Total",
             "outstandingReserves": 5000,
-            "completedPayments": 40000,
-            "pendingPayments": 10000,
+            "completedPayments": 30000,
+            "pendingPayments": 30000,
             "recoveries": 0,
-            "incurred": 45000
+            "incurred": 35000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "123456-6",
-            "reinsuranceId": "RI0020",
-            "payee": "Roland Kemp",
-            "handler": "Lena Zorn",
-            "sectionType": "Expenses",
-            "status": "Pending",
-            "amount": 10000,
-            "currency": "USD",
-            "paymentDate": "15-01-2025"
-          },
-          {
-            "paymentId": "123456-7",
-            "reinsuranceId": "RI0021",
-            "payee": "Lars Greve",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 40000,
-            "currency": "USD",
-            "paymentDate": "15-01-2025"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-S2-001",
-            "bookingId": "DED-S2-1",
-            "reinsuranceId": "RI0020",
-            "party": "Hannover Re",
-            "section": "Section 2: - Business Interruption",
-            "recoveryType": "Subrogation",
-            "status": "Pending",
-            "amount": 5000,
-            "currency": "USD",
-            "recoveryDate": "25-01-2025",
-            "bookingDate": "25-01-2025"
-          }
-        ],
+        "recoveries": [],
         "code": "BI"
       }
     ]
@@ -531,7 +442,8 @@
         "status": "Done",
         "amount": 10500,
         "currency": "EUR",
-        "paymentDate": "01-09-2026"
+        "paymentDate": "01-09-2026",
+        "sectionId": "SEC-C-CLM-2024-002-1"
       },
       {
         "paymentId": "PMT-C-00063672-2026.002.1.2",
@@ -542,7 +454,8 @@
         "status": "Done",
         "amount": 7000,
         "currency": "EUR",
-        "paymentDate": "21-09-2026"
+        "paymentDate": "21-09-2026",
+        "sectionId": "SEC-C-CLM-2024-002-2"
       }
     ],
     "reserves": [
@@ -586,7 +499,8 @@
         "amount": 3500,
         "currency": "EUR",
         "recoveryDate": "02-10-2026",
-        "bookingDate": "02-10-2026"
+        "bookingDate": "02-10-2026",
+        "sectionId": "SEC-C-CLM-2024-002-1"
       }
     ],
     "transactions": [
@@ -664,35 +578,9 @@
             "incurred": 98000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063672-2026.002.1.1",
-            "reinsuranceId": "R17968",
-            "payee": "Nordbyte SE",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 10500,
-            "currency": "EUR",
-            "paymentDate": "01-09-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-002-01",
-            "bookingId": "DED-002-1",
-            "reinsuranceId": "RI8823",
-            "party": "Nordbyte SE",
-            "section": "System outage & recovery — Dortmund",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 3500,
-            "currency": "EUR",
-            "recoveryDate": "02-10-2026",
-            "bookingDate": "02-10-2026"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-002-2",
@@ -727,19 +615,7 @@
             "incurred": 7000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063672-2026.002.1.2",
-            "reinsuranceId": "R17969",
-            "payee": "Ida Rolf",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 7000,
-            "currency": "EUR",
-            "paymentDate": "21-09-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       }
@@ -794,7 +670,8 @@
         "status": "Pending",
         "amount": 25000,
         "currency": "USD",
-        "paymentDate": "21-03-2024"
+        "paymentDate": "21-03-2024",
+        "sectionId": "SEC-C-CLM-2024-003-1"
       },
       {
         "paymentId": "PMT-C-00063673-2024.003.1.2",
@@ -805,7 +682,8 @@
         "status": "Pending",
         "amount": 15000,
         "currency": "USD",
-        "paymentDate": "31-03-2024"
+        "paymentDate": "31-03-2024",
+        "sectionId": "SEC-C-CLM-2024-003-2"
       },
       {
         "paymentId": "PMT-C-00063673-2024.003.1.3",
@@ -816,7 +694,8 @@
         "status": "Draft",
         "amount": 7500,
         "currency": "USD",
-        "paymentDate": "10-04-2024"
+        "paymentDate": "10-04-2024",
+        "sectionId": "SEC-C-CLM-2024-003-1"
       }
     ],
     "reserves": [
@@ -925,30 +804,7 @@
             "incurred": 312000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063673-2024.003.1.1",
-            "reinsuranceId": "R17999",
-            "payee": "GBF Logistics GmbH",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Pending",
-            "amount": 25000,
-            "currency": "USD",
-            "paymentDate": "21-03-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063673-2024.003.1.3",
-            "reinsuranceId": "R18001",
-            "payee": "Diego Vara",
-            "handler": "Elke Dorn",
-            "sectionType": "Expenses",
-            "status": "Draft",
-            "amount": 7500,
-            "currency": "USD",
-            "paymentDate": "10-04-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       },
@@ -985,19 +841,7 @@
             "incurred": 0
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063673-2024.003.1.2",
-            "reinsuranceId": "R18000",
-            "payee": "Grete Lund",
-            "handler": "Elke Dorn",
-            "sectionType": "Expenses",
-            "status": "Pending",
-            "amount": 15000,
-            "currency": "USD",
-            "paymentDate": "31-03-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       }
@@ -1052,7 +896,8 @@
         "status": "Done",
         "amount": 6600,
         "currency": "EUR",
-        "paymentDate": "19-03-2024"
+        "paymentDate": "19-03-2024",
+        "sectionId": "SEC-C-CLM-2024-004-1"
       },
       {
         "paymentId": "PMT-C-00063674-2024.004.1.2",
@@ -1063,7 +908,8 @@
         "status": "Done",
         "amount": 4400,
         "currency": "EUR",
-        "paymentDate": "08-04-2024"
+        "paymentDate": "08-04-2024",
+        "sectionId": "SEC-C-CLM-2024-004-1"
       }
     ],
     "reserves": [
@@ -1107,7 +953,8 @@
         "amount": 2200,
         "currency": "EUR",
         "recoveryDate": "19-04-2024",
-        "bookingDate": "19-04-2024"
+        "bookingDate": "19-04-2024",
+        "sectionId": "SEC-C-CLM-2024-004-1"
       }
     ],
     "transactions": [
@@ -1185,46 +1032,9 @@
             "incurred": 66000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063674-2024.004.1.1",
-            "reinsuranceId": "R18030",
-            "payee": "Marvel SE",
-            "handler": "Georg Stein",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 6600,
-            "currency": "EUR",
-            "paymentDate": "19-03-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063674-2024.004.1.2",
-            "reinsuranceId": "R18031",
-            "payee": "Swiss Re AG",
-            "handler": "Georg Stein",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 4400,
-            "currency": "EUR",
-            "paymentDate": "08-04-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-004-01",
-            "bookingId": "DED-004-1",
-            "reinsuranceId": "RI8885",
-            "party": "Marvel SE",
-            "section": "Third-party liability — Vienna",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 2200,
-            "currency": "EUR",
-            "recoveryDate": "19-04-2024",
-            "bookingDate": "19-04-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -1277,7 +1087,8 @@
         "status": "Done",
         "amount": 98000,
         "currency": "EUR",
-        "paymentDate": "26-03-2024"
+        "paymentDate": "26-03-2024",
+        "sectionId": "SEC-C-CLM-2024-005-1"
       },
       {
         "paymentId": "PMT-C-00063675-2024.005.1.2",
@@ -1288,7 +1099,8 @@
         "status": "Done",
         "amount": 59000,
         "currency": "EUR",
-        "paymentDate": "15-04-2024"
+        "paymentDate": "15-04-2024",
+        "sectionId": "SEC-C-CLM-2024-005-2"
       },
       {
         "paymentId": "PMT-C-00063675-2024.005.1.3",
@@ -1299,7 +1111,8 @@
         "status": "Done",
         "amount": 39000,
         "currency": "EUR",
-        "paymentDate": "05-05-2024"
+        "paymentDate": "05-05-2024",
+        "sectionId": "SEC-C-CLM-2024-005-1"
       }
     ],
     "reserves": [
@@ -1349,7 +1162,8 @@
         "amount": 39000,
         "currency": "EUR",
         "recoveryDate": "26-04-2024",
-        "bookingDate": "26-04-2024"
+        "bookingDate": "26-04-2024",
+        "sectionId": "SEC-C-CLM-2024-005-1"
       },
       {
         "recoveryId": "REC-005-02",
@@ -1362,7 +1176,8 @@
         "amount": 98000,
         "currency": "EUR",
         "recoveryDate": "21-05-2024",
-        "bookingDate": "21-05-2024"
+        "bookingDate": "21-05-2024",
+        "sectionId": "SEC-C-CLM-2024-005-2"
       }
     ],
     "transactions": [
@@ -1453,46 +1268,9 @@
             "incurred": 1117000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063675-2024.005.1.1",
-            "reinsuranceId": "R18061",
-            "payee": "BMW Budapest Motors",
-            "handler": "Marcus Fehr",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 98000,
-            "currency": "EUR",
-            "paymentDate": "26-03-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063675-2024.005.1.3",
-            "reinsuranceId": "R18063",
-            "payee": "Howden Broking",
-            "handler": "Marcus Fehr",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 39000,
-            "currency": "EUR",
-            "paymentDate": "05-05-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-005-01",
-            "bookingId": "DED-005-1",
-            "reinsuranceId": "RI8916",
-            "party": "BMW Budapest Motors",
-            "section": "Machinery breakdown — Budapest",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 39000,
-            "currency": "EUR",
-            "recoveryDate": "26-04-2024",
-            "bookingDate": "26-04-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-005-2",
@@ -1527,35 +1305,9 @@
             "incurred": 59000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063675-2024.005.1.2",
-            "reinsuranceId": "R18062",
-            "payee": "Kaufmann GmbH",
-            "handler": "Marcus Fehr",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 59000,
-            "currency": "EUR",
-            "paymentDate": "15-04-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-005-02",
-            "bookingId": "DED-005-2",
-            "reinsuranceId": "RI8917",
-            "party": "Munich Re",
-            "section": "Business interruption — Budapest",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 98000,
-            "currency": "EUR",
-            "recoveryDate": "21-05-2024",
-            "bookingDate": "21-05-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -1608,7 +1360,8 @@
         "status": "Done",
         "amount": 3800,
         "currency": "CHF",
-        "paymentDate": "24-08-2026"
+        "paymentDate": "24-08-2026",
+        "sectionId": "SEC-C-CLM-2024-006-1"
       },
       {
         "paymentId": "PMT-C-00063677-2026.006.1.2",
@@ -1619,7 +1372,8 @@
         "status": "Done",
         "amount": 2500,
         "currency": "CHF",
-        "paymentDate": "13-09-2026"
+        "paymentDate": "13-09-2026",
+        "sectionId": "SEC-C-CLM-2024-006-1"
       },
       {
         "paymentId": "PMT-C-00063677-2026.006.1.3",
@@ -1630,7 +1384,8 @@
         "status": "Pending",
         "amount": 1240,
         "currency": "CHF",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-006-1"
       }
     ],
     "reserves": [
@@ -1717,7 +1472,8 @@
         "amount": 720,
         "currency": "CHF",
         "recoveryDate": "24-09-2026",
-        "bookingDate": "24-09-2026"
+        "bookingDate": "24-09-2026",
+        "sectionId": "SEC-C-CLM-2024-006-1"
       }
     ],
     "transactions": [
@@ -1808,57 +1564,9 @@
             "incurred": 20000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063677-2026.006.1.1",
-            "reinsuranceId": "R18092",
-            "payee": "Schäfer & Söhne AG",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 3800,
-            "currency": "CHF",
-            "paymentDate": "24-08-2026"
-          },
-          {
-            "paymentId": "PMT-C-00063677-2026.006.1.2",
-            "reinsuranceId": "R18093",
-            "payee": "Greta Böck Assekuranz",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 2500,
-            "currency": "CHF",
-            "paymentDate": "13-09-2026"
-          },
-          {
-            "paymentId": "PMT-C-00063677-2026.006.1.3",
-            "reinsuranceId": "",
-            "payee": "Schäfer & Söhne AG",
-            "handler": "M. Haas",
-            "sectionType": "Expenses",
-            "status": "Pending",
-            "amount": 1240,
-            "currency": "CHF",
-            "paymentDate": "18-10-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-006-01",
-            "bookingId": "DED-006-1",
-            "reinsuranceId": "RI8947",
-            "party": "Schäfer & Söhne AG",
-            "section": "Property damage — Zürich",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 720,
-            "currency": "CHF",
-            "recoveryDate": "24-09-2026",
-            "bookingDate": "24-09-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -1911,7 +1619,8 @@
         "status": "Done",
         "amount": 92500,
         "currency": "USD",
-        "paymentDate": "20-04-2024"
+        "paymentDate": "20-04-2024",
+        "sectionId": "SEC-C-CLM-2024-007-1"
       },
       {
         "paymentId": "PMT-C-00063678-2024.007.1.2",
@@ -1922,7 +1631,8 @@
         "status": "Done",
         "amount": 55500,
         "currency": "USD",
-        "paymentDate": "20-04-2024"
+        "paymentDate": "20-04-2024",
+        "sectionId": "SEC-C-CLM-2024-007-2"
       },
       {
         "paymentId": "PMT-C-00063678-2024.007.1.3",
@@ -1933,7 +1643,8 @@
         "status": "Done",
         "amount": 37000,
         "currency": "USD",
-        "paymentDate": "20-04-2024"
+        "paymentDate": "20-04-2024",
+        "sectionId": "SEC-C-CLM-2024-007-1"
       }
     ],
     "reserves": [
@@ -2004,7 +1715,8 @@
         "amount": 7400,
         "currency": "USD",
         "recoveryDate": "25-05-2024",
-        "bookingDate": "25-05-2024"
+        "bookingDate": "25-05-2024",
+        "sectionId": "SEC-C-CLM-2024-007-1"
       }
     ],
     "transactions": [
@@ -2082,46 +1794,9 @@
             "incurred": 129500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063678-2024.007.1.1",
-            "reinsuranceId": "R18123",
-            "payee": "Nordic Shipping AS",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 92500,
-            "currency": "USD",
-            "paymentDate": "20-04-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063678-2024.007.1.3",
-            "reinsuranceId": "R18125",
-            "payee": "Meridian Logistics Ltd",
-            "handler": "Lena Zorn",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 37000,
-            "currency": "USD",
-            "paymentDate": "20-04-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-007-01",
-            "bookingId": "DED-007-1",
-            "reinsuranceId": "RI8978",
-            "party": "Nordic Shipping AS",
-            "section": "Cargo damage — Oslo",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 7400,
-            "currency": "USD",
-            "recoveryDate": "25-05-2024",
-            "bookingDate": "25-05-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-007-2",
@@ -2156,19 +1831,7 @@
             "incurred": 55500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063678-2024.007.1.2",
-            "reinsuranceId": "R18124",
-            "payee": "AON Deutschland",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 55500,
-            "currency": "USD",
-            "paymentDate": "20-04-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       }
@@ -2223,7 +1886,8 @@
         "status": "Done",
         "amount": 4100,
         "currency": "SGD",
-        "paymentDate": "06-05-2024"
+        "paymentDate": "06-05-2024",
+        "sectionId": "SEC-C-CLM-2024-008-1"
       },
       {
         "paymentId": "PMT-C-00063679-2024.008.1.2",
@@ -2234,7 +1898,8 @@
         "status": "Done",
         "amount": 2700,
         "currency": "SGD",
-        "paymentDate": "26-05-2024"
+        "paymentDate": "26-05-2024",
+        "sectionId": "SEC-C-CLM-2024-008-1"
       }
     ],
     "reserves": [
@@ -2278,7 +1943,8 @@
         "amount": 1350,
         "currency": "SGD",
         "recoveryDate": "06-06-2024",
-        "bookingDate": "06-06-2024"
+        "bookingDate": "06-06-2024",
+        "sectionId": "SEC-C-CLM-2024-008-1"
       }
     ],
     "transactions": [
@@ -2356,46 +2022,9 @@
             "incurred": 40800
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063679-2024.008.1.1",
-            "reinsuranceId": "R18154",
-            "payee": "TechStart Pte Ltd",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 4100,
-            "currency": "SGD",
-            "paymentDate": "06-05-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063679-2024.008.1.2",
-            "reinsuranceId": "R18155",
-            "payee": "Marsh GmbH",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 2700,
-            "currency": "SGD",
-            "paymentDate": "26-05-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-008-01",
-            "bookingId": "DED-008-1",
-            "reinsuranceId": "RI9009",
-            "party": "TechStart Pte Ltd",
-            "section": "System outage & recovery — Singapore",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 1350,
-            "currency": "SGD",
-            "recoveryDate": "06-06-2024",
-            "bookingDate": "06-06-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -2448,7 +2077,8 @@
         "status": "Done",
         "amount": 76000,
         "currency": "EUR",
-        "paymentDate": "16-05-2024"
+        "paymentDate": "16-05-2024",
+        "sectionId": "SEC-C-CLM-2024-009-1"
       },
       {
         "paymentId": "PMT-C-00063680-2024.009.1.2",
@@ -2459,7 +2089,8 @@
         "status": "Done",
         "amount": 45500,
         "currency": "EUR",
-        "paymentDate": "05-06-2024"
+        "paymentDate": "05-06-2024",
+        "sectionId": "SEC-C-CLM-2024-009-2"
       },
       {
         "paymentId": "PMT-C-00063680-2024.009.1.3",
@@ -2470,7 +2101,8 @@
         "status": "Done",
         "amount": 30500,
         "currency": "EUR",
-        "paymentDate": "25-06-2024"
+        "paymentDate": "25-06-2024",
+        "sectionId": "SEC-C-CLM-2024-009-1"
       }
     ],
     "reserves": [
@@ -2520,7 +2152,8 @@
         "amount": 30500,
         "currency": "EUR",
         "recoveryDate": "16-06-2024",
-        "bookingDate": "16-06-2024"
+        "bookingDate": "16-06-2024",
+        "sectionId": "SEC-C-CLM-2024-009-1"
       },
       {
         "recoveryId": "REC-009-02",
@@ -2533,7 +2166,8 @@
         "amount": 76000,
         "currency": "EUR",
         "recoveryDate": "11-07-2024",
-        "bookingDate": "11-07-2024"
+        "bookingDate": "11-07-2024",
+        "sectionId": "SEC-C-CLM-2024-009-2"
       }
     ],
     "transactions": [
@@ -2624,46 +2258,9 @@
             "incurred": 866500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063680-2024.009.1.1",
-            "reinsuranceId": "R18185",
-            "payee": "Rhein Constructions GmbH",
-            "handler": "Georg Stein",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 76000,
-            "currency": "EUR",
-            "paymentDate": "16-05-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063680-2024.009.1.3",
-            "reinsuranceId": "R18187",
-            "payee": "Rheinmetall Components GmbH",
-            "handler": "Georg Stein",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 30500,
-            "currency": "EUR",
-            "paymentDate": "25-06-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-009-01",
-            "bookingId": "DED-009-1",
-            "reinsuranceId": "RI9040",
-            "party": "Rhein Constructions GmbH",
-            "section": "Machinery breakdown — Cologne",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 30500,
-            "currency": "EUR",
-            "recoveryDate": "16-06-2024",
-            "bookingDate": "16-06-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-009-2",
@@ -2698,35 +2295,9 @@
             "incurred": 45500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063680-2024.009.1.2",
-            "reinsuranceId": "R18186",
-            "payee": "Howden Broking",
-            "handler": "Georg Stein",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 45500,
-            "currency": "EUR",
-            "paymentDate": "05-06-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-009-02",
-            "bookingId": "DED-009-2",
-            "reinsuranceId": "RI9041",
-            "party": "Munich Re",
-            "section": "Business interruption — Cologne",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 76000,
-            "currency": "EUR",
-            "recoveryDate": "11-07-2024",
-            "bookingDate": "11-07-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -2779,7 +2350,8 @@
         "status": "Done",
         "amount": 21000,
         "currency": "GBP",
-        "paymentDate": "29-05-2024"
+        "paymentDate": "29-05-2024",
+        "sectionId": "SEC-C-CLM-2024-010-1"
       },
       {
         "paymentId": "PMT-C-00063681-2024.010.1.2",
@@ -2790,7 +2362,8 @@
         "status": "Done",
         "amount": 12500,
         "currency": "GBP",
-        "paymentDate": "18-06-2024"
+        "paymentDate": "18-06-2024",
+        "sectionId": "SEC-C-CLM-2024-010-1"
       },
       {
         "paymentId": "PMT-C-00063681-2024.010.1.3",
@@ -2801,7 +2374,8 @@
         "status": "Done",
         "amount": 8500,
         "currency": "GBP",
-        "paymentDate": "08-07-2024"
+        "paymentDate": "08-07-2024",
+        "sectionId": "SEC-C-CLM-2024-010-1"
       }
     ],
     "reserves": [
@@ -2866,7 +2440,8 @@
         "amount": 4800,
         "currency": "GBP",
         "recoveryDate": "29-06-2024",
-        "bookingDate": "29-06-2024"
+        "bookingDate": "29-06-2024",
+        "sectionId": "SEC-C-CLM-2024-010-1"
       },
       {
         "recoveryId": "REC-010-02",
@@ -2879,7 +2454,8 @@
         "amount": 12000,
         "currency": "GBP",
         "recoveryDate": "24-07-2024",
-        "bookingDate": "24-07-2024"
+        "bookingDate": "24-07-2024",
+        "sectionId": "SEC-C-CLM-2024-010-1"
       }
     ],
     "transactions": [
@@ -2983,70 +2559,9 @@
             "incurred": 120000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063681-2024.010.1.1",
-            "reinsuranceId": "R18867",
-            "payee": "Pendragon Liability Corp",
-            "handler": "Dirk Haas",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 21000,
-            "currency": "GBP",
-            "paymentDate": "29-05-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063681-2024.010.1.2",
-            "reinsuranceId": "R18868",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Dirk Haas",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 12500,
-            "currency": "GBP",
-            "paymentDate": "18-06-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063681-2024.010.1.3",
-            "reinsuranceId": "R18869",
-            "payee": "Meridian Logistics Ltd",
-            "handler": "Dirk Haas",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 8500,
-            "currency": "GBP",
-            "paymentDate": "08-07-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-010-01",
-            "bookingId": "DED-010-1",
-            "reinsuranceId": "RI9722",
-            "party": "Pendragon Liability Corp",
-            "section": "Third-party liability — London",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 4800,
-            "currency": "GBP",
-            "recoveryDate": "29-06-2024",
-            "bookingDate": "29-06-2024"
-          },
-          {
-            "recoveryId": "REC-010-02",
-            "bookingId": "DED-010-2",
-            "reinsuranceId": "RI9723",
-            "party": "Munich Re",
-            "section": "Third-party liability — London",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 12000,
-            "currency": "GBP",
-            "recoveryDate": "24-07-2024",
-            "bookingDate": "24-07-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -3099,7 +2614,8 @@
         "status": "Done",
         "amount": 24000,
         "currency": "EUR",
-        "paymentDate": "01-06-2024"
+        "paymentDate": "01-06-2024",
+        "sectionId": "SEC-006"
       },
       {
         "paymentId": "PMT-C-00063671-2024.011.1.2",
@@ -3110,7 +2626,8 @@
         "status": "Done",
         "amount": 14500,
         "currency": "EUR",
-        "paymentDate": "01-06-2024"
+        "paymentDate": "01-06-2024",
+        "sectionId": "SEC-006-B"
       },
       {
         "paymentId": "PMT-C-00063671-2024.011.1.3",
@@ -3121,7 +2638,8 @@
         "status": "Done",
         "amount": 9500,
         "currency": "EUR",
-        "paymentDate": "01-06-2024"
+        "paymentDate": "01-06-2024",
+        "sectionId": "SEC-007"
       }
     ],
     "reserves": [
@@ -3219,7 +2737,8 @@
         "amount": 1900,
         "currency": "EUR",
         "recoveryDate": "04-07-2024",
-        "bookingDate": "04-07-2024"
+        "bookingDate": "04-07-2024",
+        "sectionId": "SEC-006"
       }
     ],
     "transactions": [
@@ -3297,35 +2816,9 @@
             "incurred": 24000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2024.011.1.1",
-            "reinsuranceId": "R18898",
-            "payee": "Liver Tea Group",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 24000,
-            "currency": "EUR",
-            "paymentDate": "01-06-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-011-01",
-            "bookingId": "DED-011-1",
-            "reinsuranceId": "RI9753",
-            "party": "Liver Tea Group",
-            "section": "Property Damage — Main Warehouse",
-            "recoveryType": "Deductible",
-            "status": "Pending",
-            "amount": 1900,
-            "currency": "EUR",
-            "recoveryDate": "04-07-2024",
-            "bookingDate": "04-07-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-006-B",
@@ -3360,19 +2853,7 @@
             "incurred": 14500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2024.011.1.2",
-            "reinsuranceId": "R18899",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 14500,
-            "currency": "EUR",
-            "paymentDate": "01-06-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       },
@@ -3409,19 +2890,7 @@
             "incurred": 9500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2024.011.1.3",
-            "reinsuranceId": "R18900",
-            "payee": "Iberia Components S.L.",
-            "handler": "Lena Zorn",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 9500,
-            "currency": "EUR",
-            "paymentDate": "01-06-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       }
@@ -3476,7 +2945,8 @@
         "status": "Done",
         "amount": 4600,
         "currency": "USD",
-        "paymentDate": "16-08-2026"
+        "paymentDate": "16-08-2026",
+        "sectionId": "SEC-C-CLM-2024-012-1"
       },
       {
         "paymentId": "PMT-C-00063673-2026.012.1.2",
@@ -3487,7 +2957,8 @@
         "status": "Done",
         "amount": 3100,
         "currency": "USD",
-        "paymentDate": "05-09-2026"
+        "paymentDate": "05-09-2026",
+        "sectionId": "SEC-C-CLM-2024-012-1"
       }
     ],
     "reserves": [
@@ -3552,7 +3023,8 @@
         "amount": 880,
         "currency": "USD",
         "recoveryDate": "16-09-2026",
-        "bookingDate": "16-09-2026"
+        "bookingDate": "16-09-2026",
+        "sectionId": "SEC-C-CLM-2024-012-1"
       }
     ],
     "transactions": [
@@ -3643,46 +3115,9 @@
             "incurred": 22000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063673-2026.012.1.1",
-            "reinsuranceId": "R18929",
-            "payee": "GBF Logistics GmbH",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 4600,
-            "currency": "USD",
-            "paymentDate": "16-08-2026"
-          },
-          {
-            "paymentId": "PMT-C-00063673-2026.012.1.2",
-            "reinsuranceId": "R18930",
-            "payee": "AON Deutschland",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 3100,
-            "currency": "USD",
-            "paymentDate": "05-09-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-012-01",
-            "bookingId": "DED-012-1",
-            "reinsuranceId": "RI9784",
-            "party": "GBF Logistics GmbH",
-            "section": "Cargo damage",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 880,
-            "currency": "USD",
-            "recoveryDate": "16-09-2026",
-            "bookingDate": "16-09-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -3735,7 +3170,8 @@
         "status": "Done",
         "amount": 1800,
         "currency": "EUR",
-        "paymentDate": "29-06-2024"
+        "paymentDate": "29-06-2024",
+        "sectionId": "SEC-C-CLM-2024-013-1"
       },
       {
         "paymentId": "PMT-C-00063672-2024.013.1.2",
@@ -3746,7 +3182,8 @@
         "status": "Done",
         "amount": 1200,
         "currency": "EUR",
-        "paymentDate": "19-07-2024"
+        "paymentDate": "19-07-2024",
+        "sectionId": "SEC-C-CLM-2024-013-1"
       }
     ],
     "reserves": [
@@ -3790,7 +3227,8 @@
         "amount": 600,
         "currency": "EUR",
         "recoveryDate": "30-07-2024",
-        "bookingDate": "30-07-2024"
+        "bookingDate": "30-07-2024",
+        "sectionId": "SEC-C-CLM-2024-013-1"
       }
     ],
     "transactions": [
@@ -3868,46 +3306,9 @@
             "incurred": 18000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063672-2024.013.1.1",
-            "reinsuranceId": "R18960",
-            "payee": "Nordbyte SE",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 1800,
-            "currency": "EUR",
-            "paymentDate": "29-06-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063672-2024.013.1.2",
-            "reinsuranceId": "R18961",
-            "payee": "Greta Böck Assekuranz",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 1200,
-            "currency": "EUR",
-            "paymentDate": "19-07-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-013-01",
-            "bookingId": "DED-013-1",
-            "reinsuranceId": "RI9815",
-            "party": "Nordbyte SE",
-            "section": "System outage & recovery — Dortmund",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 600,
-            "currency": "EUR",
-            "recoveryDate": "30-07-2024",
-            "bookingDate": "30-07-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -3960,7 +3361,8 @@
         "status": "Done",
         "amount": 1150,
         "currency": "EUR",
-        "paymentDate": "18-07-2024"
+        "paymentDate": "18-07-2024",
+        "sectionId": "SEC-C-CLM-2024-014-1"
       },
       {
         "paymentId": "PMT-C-00063680-2024.014.1.2",
@@ -3971,7 +3373,8 @@
         "status": "Done",
         "amount": 750,
         "currency": "EUR",
-        "paymentDate": "07-08-2024"
+        "paymentDate": "07-08-2024",
+        "sectionId": "SEC-C-CLM-2024-014-1"
       }
     ],
     "reserves": [
@@ -4036,7 +3439,8 @@
         "amount": 220,
         "currency": "EUR",
         "recoveryDate": "18-08-2024",
-        "bookingDate": "18-08-2024"
+        "bookingDate": "18-08-2024",
+        "sectionId": "SEC-C-CLM-2024-014-1"
       }
     ],
     "transactions": [
@@ -4127,46 +3531,9 @@
             "incurred": 5500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063680-2024.014.1.1",
-            "reinsuranceId": "R18991",
-            "payee": "Rhein Constructions GmbH",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 1150,
-            "currency": "EUR",
-            "paymentDate": "18-07-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063680-2024.014.1.2",
-            "reinsuranceId": "R18992",
-            "payee": "Howden Broking",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 750,
-            "currency": "EUR",
-            "paymentDate": "07-08-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-014-01",
-            "bookingId": "DED-014-1",
-            "reinsuranceId": "RI9846",
-            "party": "Rhein Constructions GmbH",
-            "section": "Machinery breakdown — Frankfurt",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 220,
-            "currency": "EUR",
-            "recoveryDate": "18-08-2024",
-            "bookingDate": "18-08-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -4219,7 +3586,8 @@
         "status": "Done",
         "amount": 40500,
         "currency": "EUR",
-        "paymentDate": "24-07-2024"
+        "paymentDate": "24-07-2024",
+        "sectionId": "SEC-C-CLM-2024-015-1"
       },
       {
         "paymentId": "PMT-C-00063674-2024.015.1.2",
@@ -4230,7 +3598,8 @@
         "status": "Done",
         "amount": 24000,
         "currency": "EUR",
-        "paymentDate": "13-08-2024"
+        "paymentDate": "13-08-2024",
+        "sectionId": "SEC-C-CLM-2024-015-1"
       },
       {
         "paymentId": "PMT-C-00063674-2024.015.1.3",
@@ -4241,7 +3610,8 @@
         "status": "Done",
         "amount": 16000,
         "currency": "EUR",
-        "paymentDate": "02-09-2024"
+        "paymentDate": "02-09-2024",
+        "sectionId": "SEC-C-CLM-2024-015-1"
       }
     ],
     "reserves": [
@@ -4306,7 +3676,8 @@
         "amount": 9200,
         "currency": "EUR",
         "recoveryDate": "24-08-2024",
-        "bookingDate": "24-08-2024"
+        "bookingDate": "24-08-2024",
+        "sectionId": "SEC-C-CLM-2024-015-1"
       },
       {
         "recoveryId": "REC-015-02",
@@ -4319,7 +3690,8 @@
         "amount": 23000,
         "currency": "EUR",
         "recoveryDate": "18-09-2024",
-        "bookingDate": "18-09-2024"
+        "bookingDate": "18-09-2024",
+        "sectionId": "SEC-C-CLM-2024-015-1"
       }
     ],
     "transactions": [
@@ -4423,70 +3795,9 @@
             "incurred": 230000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063674-2024.015.1.1",
-            "reinsuranceId": "R19022",
-            "payee": "Marvel SE",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 40500,
-            "currency": "EUR",
-            "paymentDate": "24-07-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063674-2024.015.1.2",
-            "reinsuranceId": "R19023",
-            "payee": "Marsh GmbH",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 24000,
-            "currency": "EUR",
-            "paymentDate": "13-08-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063674-2024.015.1.3",
-            "reinsuranceId": "R19024",
-            "payee": "Iberia Components S.L.",
-            "handler": "Greta Böck",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 16000,
-            "currency": "EUR",
-            "paymentDate": "02-09-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-015-01",
-            "bookingId": "DED-015-1",
-            "reinsuranceId": "RI9877",
-            "party": "Marvel SE",
-            "section": "Third-party liability — Graz",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 9200,
-            "currency": "EUR",
-            "recoveryDate": "24-08-2024",
-            "bookingDate": "24-08-2024"
-          },
-          {
-            "recoveryId": "REC-015-02",
-            "bookingId": "DED-015-2",
-            "reinsuranceId": "RI9878",
-            "party": "Munich Re",
-            "section": "Third-party liability — Graz",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 23000,
-            "currency": "EUR",
-            "recoveryDate": "18-09-2024",
-            "bookingDate": "18-09-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -4539,7 +3850,8 @@
         "status": "Done",
         "amount": 67000,
         "currency": "CHF",
-        "paymentDate": "15-08-2024"
+        "paymentDate": "15-08-2024",
+        "sectionId": "SEC-C-CLM-2024-016-1"
       },
       {
         "paymentId": "PMT-C-00063677-2024.016.1.2",
@@ -4550,7 +3862,8 @@
         "status": "Done",
         "amount": 40000,
         "currency": "CHF",
-        "paymentDate": "04-09-2024"
+        "paymentDate": "04-09-2024",
+        "sectionId": "SEC-C-CLM-2024-016-2"
       },
       {
         "paymentId": "PMT-C-00063677-2024.016.1.3",
@@ -4561,7 +3874,8 @@
         "status": "Done",
         "amount": 27000,
         "currency": "CHF",
-        "paymentDate": "24-09-2024"
+        "paymentDate": "24-09-2024",
+        "sectionId": "SEC-C-CLM-2024-016-1"
       },
       {
         "paymentId": "PMT-C-00063677-2024.016.1.4",
@@ -4572,7 +3886,8 @@
         "status": "Pending",
         "amount": 3180,
         "currency": "CHF",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-016-1"
       }
     ],
     "reserves": [
@@ -4638,7 +3953,8 @@
         "amount": 27000,
         "currency": "CHF",
         "recoveryDate": "15-09-2024",
-        "bookingDate": "15-09-2024"
+        "bookingDate": "15-09-2024",
+        "sectionId": "SEC-C-CLM-2024-016-1"
       },
       {
         "recoveryId": "REC-016-02",
@@ -4651,7 +3967,8 @@
         "amount": 67000,
         "currency": "CHF",
         "recoveryDate": "10-10-2024",
-        "bookingDate": "10-10-2024"
+        "bookingDate": "10-10-2024",
+        "sectionId": "SEC-C-CLM-2024-016-2"
       }
     ],
     "transactions": [
@@ -4742,57 +4059,9 @@
             "incurred": 766000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063677-2024.016.1.1",
-            "reinsuranceId": "R19053",
-            "payee": "Schäfer & Söhne AG",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 67000,
-            "currency": "CHF",
-            "paymentDate": "15-08-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063677-2024.016.1.3",
-            "reinsuranceId": "R19055",
-            "payee": "Rheinmetall Components GmbH",
-            "handler": "Lena Zorn",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 27000,
-            "currency": "CHF",
-            "paymentDate": "24-09-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063677-2024.016.1.4",
-            "reinsuranceId": "",
-            "payee": "Schäfer & Söhne AG",
-            "handler": "D. Kiel (External)",
-            "sectionType": "Expenses",
-            "status": "Pending",
-            "amount": 3180,
-            "currency": "CHF",
-            "paymentDate": "18-10-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-016-01",
-            "bookingId": "DED-016-1",
-            "reinsuranceId": "RI9908",
-            "party": "Schäfer & Söhne AG",
-            "section": "Property damage — Bern",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 27000,
-            "currency": "CHF",
-            "recoveryDate": "15-09-2024",
-            "bookingDate": "15-09-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-016-2",
@@ -4827,35 +4096,9 @@
             "incurred": 40000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063677-2024.016.1.2",
-            "reinsuranceId": "R19054",
-            "payee": "Greta Böck Assekuranz",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 40000,
-            "currency": "CHF",
-            "paymentDate": "04-09-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-016-02",
-            "bookingId": "DED-016-2",
-            "reinsuranceId": "RI9909",
-            "party": "Munich Re",
-            "section": "Business interruption — Bern",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 67000,
-            "currency": "CHF",
-            "recoveryDate": "10-10-2024",
-            "bookingDate": "10-10-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -4908,7 +4151,8 @@
         "status": "Done",
         "amount": 11500,
         "currency": "USD",
-        "paymentDate": "29-08-2024"
+        "paymentDate": "29-08-2024",
+        "sectionId": "SEC-C-CLM-2024-017-1"
       },
       {
         "paymentId": "PMT-C-00063678-2024.017.1.2",
@@ -4919,7 +4163,8 @@
         "status": "Done",
         "amount": 7500,
         "currency": "USD",
-        "paymentDate": "18-09-2024"
+        "paymentDate": "18-09-2024",
+        "sectionId": "SEC-C-CLM-2024-017-1"
       }
     ],
     "reserves": [
@@ -4963,7 +4208,8 @@
         "amount": 3800,
         "currency": "USD",
         "recoveryDate": "29-09-2024",
-        "bookingDate": "29-09-2024"
+        "bookingDate": "29-09-2024",
+        "sectionId": "SEC-C-CLM-2024-017-1"
       },
       {
         "recoveryId": "REC-017-02",
@@ -4976,7 +4222,8 @@
         "amount": 9500,
         "currency": "USD",
         "recoveryDate": "24-10-2024",
-        "bookingDate": "24-10-2024"
+        "bookingDate": "24-10-2024",
+        "sectionId": "SEC-C-CLM-2024-017-1"
       }
     ],
     "transactions": [
@@ -5054,59 +4301,9 @@
             "incurred": 114000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063678-2024.017.1.1",
-            "reinsuranceId": "R19084",
-            "payee": "Nordic Shipping AS",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 11500,
-            "currency": "USD",
-            "paymentDate": "29-08-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063678-2024.017.1.2",
-            "reinsuranceId": "R19085",
-            "payee": "AON Deutschland",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 7500,
-            "currency": "USD",
-            "paymentDate": "18-09-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-017-01",
-            "bookingId": "DED-017-1",
-            "reinsuranceId": "RI9939",
-            "party": "Nordic Shipping AS",
-            "section": "Cargo damage — Copenhagen",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 3800,
-            "currency": "USD",
-            "recoveryDate": "29-09-2024",
-            "bookingDate": "29-09-2024"
-          },
-          {
-            "recoveryId": "REC-017-02",
-            "bookingId": "DED-017-2",
-            "reinsuranceId": "RI9940",
-            "party": "Munich Re",
-            "section": "Cargo damage — Copenhagen",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 9500,
-            "currency": "USD",
-            "recoveryDate": "24-10-2024",
-            "bookingDate": "24-10-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -5159,7 +4356,8 @@
         "status": "Done",
         "amount": 5250,
         "currency": "SGD",
-        "paymentDate": "01-09-2024"
+        "paymentDate": "01-09-2024",
+        "sectionId": "SEC-C-CLM-2024-018-1"
       },
       {
         "paymentId": "PMT-C-00063679-2024.018.1.2",
@@ -5170,7 +4368,8 @@
         "status": "Done",
         "amount": 3500,
         "currency": "SGD",
-        "paymentDate": "01-09-2024"
+        "paymentDate": "01-09-2024",
+        "sectionId": "SEC-C-CLM-2024-018-1"
       }
     ],
     "reserves": [
@@ -5214,7 +4413,8 @@
         "amount": 350,
         "currency": "SGD",
         "recoveryDate": "16-10-2024",
-        "bookingDate": "16-10-2024"
+        "bookingDate": "16-10-2024",
+        "sectionId": "SEC-C-CLM-2024-018-1"
       }
     ],
     "transactions": [
@@ -5279,46 +4479,9 @@
             "incurred": 8750
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063679-2024.018.1.1",
-            "reinsuranceId": "R19115",
-            "payee": "TechStart Pte Ltd",
-            "handler": "Dirk Haas",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 5250,
-            "currency": "SGD",
-            "paymentDate": "01-09-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063679-2024.018.1.2",
-            "reinsuranceId": "R19116",
-            "payee": "Marsh GmbH",
-            "handler": "Dirk Haas",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 3500,
-            "currency": "SGD",
-            "paymentDate": "01-09-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-018-01",
-            "bookingId": "DED-018-1",
-            "reinsuranceId": "RI9970",
-            "party": "TechStart Pte Ltd",
-            "section": "System outage & recovery — Singapore",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 350,
-            "currency": "SGD",
-            "recoveryDate": "16-10-2024",
-            "bookingDate": "16-10-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -5371,7 +4534,8 @@
         "status": "Done",
         "amount": 11000,
         "currency": "EUR",
-        "paymentDate": "26-04-2019"
+        "paymentDate": "26-04-2019",
+        "sectionId": "SEC-C-CLM-2024-019-1"
       },
       {
         "paymentId": "PMT-C-00063671-2019.019.1.2",
@@ -5382,7 +4546,8 @@
         "status": "Done",
         "amount": 7000,
         "currency": "EUR",
-        "paymentDate": "16-05-2019"
+        "paymentDate": "16-05-2019",
+        "sectionId": "SEC-C-CLM-2024-019-1"
       }
     ],
     "reserves": [
@@ -5426,7 +4591,8 @@
         "amount": 720,
         "currency": "EUR",
         "recoveryDate": "27-05-2019",
-        "bookingDate": "27-05-2019"
+        "bookingDate": "27-05-2019",
+        "sectionId": "SEC-C-CLM-2024-019-1"
       }
     ],
     "transactions": [
@@ -5491,46 +4657,9 @@
             "incurred": 18000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2019.019.1.1",
-            "reinsuranceId": "R19146",
-            "payee": "Liver Tea Group",
-            "handler": "Ralf Kern",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 11000,
-            "currency": "EUR",
-            "paymentDate": "26-04-2019"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2019.019.1.2",
-            "reinsuranceId": "R19147",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Ralf Kern",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 7000,
-            "currency": "EUR",
-            "paymentDate": "16-05-2019"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-019-01",
-            "bookingId": "DED-019-1",
-            "reinsuranceId": "RI1002",
-            "party": "Liver Tea Group",
-            "section": "Property damage — Bremen",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 720,
-            "currency": "EUR",
-            "recoveryDate": "27-05-2019",
-            "bookingDate": "27-05-2019"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -5583,7 +4712,8 @@
         "status": "Done",
         "amount": 9900,
         "currency": "GBP",
-        "paymentDate": "21-05-2026"
+        "paymentDate": "21-05-2026",
+        "sectionId": "SEC-C-CLM-2024-020-1"
       },
       {
         "paymentId": "PMT-C-00063681-2026.020.1.2",
@@ -5594,7 +4724,8 @@
         "status": "Done",
         "amount": 6600,
         "currency": "GBP",
-        "paymentDate": "10-06-2026"
+        "paymentDate": "10-06-2026",
+        "sectionId": "SEC-C-CLM-2024-020-1"
       }
     ],
     "reserves": [
@@ -5659,7 +4790,8 @@
         "amount": 1900,
         "currency": "GBP",
         "recoveryDate": "21-06-2026",
-        "bookingDate": "21-06-2026"
+        "bookingDate": "21-06-2026",
+        "sectionId": "SEC-C-CLM-2024-020-1"
       }
     ],
     "transactions": [
@@ -5750,46 +4882,9 @@
             "incurred": 47300
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063681-2026.020.1.1",
-            "reinsuranceId": "R19828",
-            "payee": "Oskar Veld & \"Partners\"",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 9900,
-            "currency": "GBP",
-            "paymentDate": "21-05-2026"
-          },
-          {
-            "paymentId": "PMT-C-00063681-2026.020.1.2",
-            "reinsuranceId": "R19829",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Elke Dorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 6600,
-            "currency": "GBP",
-            "paymentDate": "10-06-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-020-01",
-            "bookingId": "DED-020-1",
-            "reinsuranceId": "RI1684",
-            "party": "Oskar Veld & \"Partners\"",
-            "section": "Third-party liability — Manchester",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 1900,
-            "currency": "GBP",
-            "recoveryDate": "21-06-2026",
-            "bookingDate": "21-06-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -5842,7 +4937,8 @@
         "status": "Done",
         "amount": 660,
         "currency": "EUR",
-        "paymentDate": "19-10-2024"
+        "paymentDate": "19-10-2024",
+        "sectionId": "SEC-C-CLM-2024-021-1"
       },
       {
         "paymentId": "PMT-C-00063680-2024.021.1.2",
@@ -5853,7 +4949,8 @@
         "status": "Done",
         "amount": 440,
         "currency": "EUR",
-        "paymentDate": "08-11-2024"
+        "paymentDate": "08-11-2024",
+        "sectionId": "SEC-C-CLM-2024-021-1"
       }
     ],
     "reserves": [
@@ -5918,7 +5015,8 @@
         "amount": 130,
         "currency": "EUR",
         "recoveryDate": "19-11-2024",
-        "bookingDate": "19-11-2024"
+        "bookingDate": "19-11-2024",
+        "sectionId": "SEC-C-CLM-2024-021-1"
       }
     ],
     "transactions": [
@@ -6009,46 +5107,9 @@
             "incurred": 3200
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063680-2024.021.1.1",
-            "reinsuranceId": "R19859",
-            "payee": "Rhein Constructions GmbH",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 660,
-            "currency": "EUR",
-            "paymentDate": "19-10-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063680-2024.021.1.2",
-            "reinsuranceId": "R19860",
-            "payee": "Howden Broking",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 440,
-            "currency": "EUR",
-            "paymentDate": "08-11-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-021-01",
-            "bookingId": "DED-021-1",
-            "reinsuranceId": "RI1715",
-            "party": "Rhein Constructions GmbH",
-            "section": "Machinery breakdown — Stuttgart",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 130,
-            "currency": "EUR",
-            "recoveryDate": "19-11-2024",
-            "bookingDate": "19-11-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -6101,7 +5162,8 @@
         "status": "Done",
         "amount": 13000,
         "currency": "EUR",
-        "paymentDate": "29-05-2024"
+        "paymentDate": "29-05-2024",
+        "sectionId": "SEC-C-CLM-2024-022-1"
       },
       {
         "paymentId": "PMT-C-00063671-2024.022.1.2",
@@ -6112,7 +5174,8 @@
         "status": "Done",
         "amount": 8500,
         "currency": "EUR",
-        "paymentDate": "18-06-2024"
+        "paymentDate": "18-06-2024",
+        "sectionId": "SEC-C-CLM-2024-022-1"
       },
       {
         "paymentId": "PMT-C-00063671-2024.022.1.3",
@@ -6123,7 +5186,8 @@
         "status": "Pending",
         "amount": 4750,
         "currency": "EUR",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-022-1"
       }
     ],
     "reserves": [
@@ -6210,7 +5274,8 @@
         "amount": 2500,
         "currency": "EUR",
         "recoveryDate": "29-06-2024",
-        "bookingDate": "29-06-2024"
+        "bookingDate": "29-06-2024",
+        "sectionId": "SEC-C-CLM-2024-022-1"
       }
     ],
     "transactions": [
@@ -6301,57 +5366,9 @@
             "incurred": 63800
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2024.022.1.1",
-            "reinsuranceId": "R19890",
-            "payee": "Liver Tea Group",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 13000,
-            "currency": "EUR",
-            "paymentDate": "29-05-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2024.022.1.2",
-            "reinsuranceId": "R19891",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 8500,
-            "currency": "EUR",
-            "paymentDate": "18-06-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2024.022.1.3",
-            "reinsuranceId": "",
-            "payee": "Liver Tea Group",
-            "handler": "D. Kiel (External)",
-            "sectionType": "Indemnity",
-            "status": "Pending",
-            "amount": 4750,
-            "currency": "EUR",
-            "paymentDate": "18-10-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-022-01",
-            "bookingId": "DED-022-1",
-            "reinsuranceId": "RI1746",
-            "party": "Liver Tea Group",
-            "section": "Property damage — Munich",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 2500,
-            "currency": "EUR",
-            "recoveryDate": "29-06-2024",
-            "bookingDate": "29-06-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -6404,7 +5421,8 @@
         "status": "Done",
         "amount": 3050,
         "currency": "EUR",
-        "paymentDate": "30-05-2024"
+        "paymentDate": "30-05-2024",
+        "sectionId": "SEC-C-CLM-2024-023-1"
       },
       {
         "paymentId": "PMT-C-00063671-2024.023.1.2",
@@ -6415,7 +5433,8 @@
         "status": "Done",
         "amount": 2050,
         "currency": "EUR",
-        "paymentDate": "19-06-2024"
+        "paymentDate": "19-06-2024",
+        "sectionId": "SEC-C-CLM-2024-023-1"
       },
       {
         "paymentId": "PMT-C-00063671-2024.023.1.3",
@@ -6426,7 +5445,8 @@
         "status": "Pending",
         "amount": 2200,
         "currency": "EUR",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-023-1"
       },
       {
         "paymentId": "PMT-C-00063671-2024.023.1.4",
@@ -6437,7 +5457,8 @@
         "status": "Pending",
         "amount": 1600,
         "currency": "EUR",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-023-1"
       }
     ],
     "reserves": [
@@ -6524,7 +5545,8 @@
         "amount": 580,
         "currency": "EUR",
         "recoveryDate": "30-06-2024",
-        "bookingDate": "30-06-2024"
+        "bookingDate": "30-06-2024",
+        "sectionId": "SEC-C-CLM-2024-023-1"
       }
     ],
     "transactions": [
@@ -6615,68 +5637,9 @@
             "incurred": 15700
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2024.023.1.1",
-            "reinsuranceId": "R19921",
-            "payee": "Liver Tea Group",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 3050,
-            "currency": "EUR",
-            "paymentDate": "30-05-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2024.023.1.2",
-            "reinsuranceId": "R19922",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Greta Böck",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 2050,
-            "currency": "EUR",
-            "paymentDate": "19-06-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2024.023.1.3",
-            "reinsuranceId": "",
-            "payee": "Liver Tea Group",
-            "handler": "C. Wolff",
-            "sectionType": "Indemnity",
-            "status": "Pending",
-            "amount": 2200,
-            "currency": "EUR",
-            "paymentDate": "18-10-2026"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2024.023.1.4",
-            "reinsuranceId": "",
-            "payee": "Liver Tea Group",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Pending",
-            "amount": 1600,
-            "currency": "EUR",
-            "paymentDate": "18-10-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-023-01",
-            "bookingId": "DED-023-1",
-            "reinsuranceId": "RI1777",
-            "party": "Liver Tea Group",
-            "section": "Property damage — Munich",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 580,
-            "currency": "EUR",
-            "recoveryDate": "30-06-2024",
-            "bookingDate": "30-06-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -6729,7 +5692,8 @@
         "status": "Done",
         "amount": 32500,
         "currency": "EUR",
-        "paymentDate": "24-06-2024"
+        "paymentDate": "24-06-2024",
+        "sectionId": "SEC-C-CLM-2024-101-1"
       },
       {
         "paymentId": "PMT-C-00063681-2024.101.1.2",
@@ -6740,7 +5704,8 @@
         "status": "Done",
         "amount": 19500,
         "currency": "EUR",
-        "paymentDate": "14-07-2024"
+        "paymentDate": "14-07-2024",
+        "sectionId": "SEC-C-CLM-2024-101-2"
       },
       {
         "paymentId": "PMT-C-00063681-2024.101.1.3",
@@ -6751,7 +5716,8 @@
         "status": "Done",
         "amount": 12500,
         "currency": "EUR",
-        "paymentDate": "03-08-2024"
+        "paymentDate": "03-08-2024",
+        "sectionId": "SEC-C-CLM-2024-101-1"
       }
     ],
     "reserves": [
@@ -6865,7 +5831,8 @@
         "amount": 7400,
         "currency": "EUR",
         "recoveryDate": "25-07-2024",
-        "bookingDate": "25-07-2024"
+        "bookingDate": "25-07-2024",
+        "sectionId": "SEC-C-CLM-2024-101-1"
       },
       {
         "recoveryId": "REC-101-02",
@@ -6878,7 +5845,8 @@
         "amount": 18500,
         "currency": "EUR",
         "recoveryDate": "19-08-2024",
-        "bookingDate": "19-08-2024"
+        "bookingDate": "19-08-2024",
+        "sectionId": "SEC-C-CLM-2024-101-2"
       }
     ],
     "transactions": [
@@ -6995,46 +5963,9 @@
             "incurred": 118000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063681-2024.101.1.1",
-            "reinsuranceId": "R47728",
-            "payee": "Müller GmbH",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 32500,
-            "currency": "EUR",
-            "paymentDate": "24-06-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063681-2024.101.1.3",
-            "reinsuranceId": "R47730",
-            "payee": "Nordic Steel Supply AB",
-            "handler": "Nina Feld",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 12500,
-            "currency": "EUR",
-            "paymentDate": "03-08-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-101-01",
-            "bookingId": "DED-101-1",
-            "reinsuranceId": "RI2587",
-            "party": "Müller GmbH",
-            "section": "Property damage — Frankfurt",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 7400,
-            "currency": "EUR",
-            "recoveryDate": "25-07-2024",
-            "bookingDate": "25-07-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-101-2",
@@ -7069,35 +6000,9 @@
             "incurred": 70500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063681-2024.101.1.2",
-            "reinsuranceId": "R47729",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 19500,
-            "currency": "EUR",
-            "paymentDate": "14-07-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-101-02",
-            "bookingId": "DED-101-2",
-            "reinsuranceId": "RI2588",
-            "party": "Munich Re",
-            "section": "Business interruption — Frankfurt",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 18500,
-            "currency": "EUR",
-            "recoveryDate": "19-08-2024",
-            "bookingDate": "19-08-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -7150,7 +6055,8 @@
         "status": "Done",
         "amount": 9000,
         "currency": "EUR",
-        "paymentDate": "05-08-2024"
+        "paymentDate": "05-08-2024",
+        "sectionId": "SEC-C-CLM-2024-102-1"
       },
       {
         "paymentId": "PMT-C-00063675-2024.102.1.2",
@@ -7161,7 +6067,8 @@
         "status": "Done",
         "amount": 6000,
         "currency": "EUR",
-        "paymentDate": "25-08-2024"
+        "paymentDate": "25-08-2024",
+        "sectionId": "SEC-C-CLM-2024-102-1"
       }
     ],
     "reserves": [
@@ -7226,7 +6133,8 @@
         "amount": 1700,
         "currency": "EUR",
         "recoveryDate": "05-09-2024",
-        "bookingDate": "05-09-2024"
+        "bookingDate": "05-09-2024",
+        "sectionId": "SEC-C-CLM-2024-102-1"
       }
     ],
     "transactions": [
@@ -7317,46 +6225,9 @@
             "incurred": 43000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063675-2024.102.1.1",
-            "reinsuranceId": "R47759",
-            "payee": "TechPark Berlin AG",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 9000,
-            "currency": "EUR",
-            "paymentDate": "05-08-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063675-2024.102.1.2",
-            "reinsuranceId": "R47760",
-            "payee": "Howden Broking",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 6000,
-            "currency": "EUR",
-            "paymentDate": "25-08-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-102-01",
-            "bookingId": "DED-102-1",
-            "reinsuranceId": "RI2618",
-            "party": "TechPark Berlin AG",
-            "section": "Property damage — Berlin",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 1700,
-            "currency": "EUR",
-            "recoveryDate": "05-09-2024",
-            "bookingDate": "05-09-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -7409,7 +6280,8 @@
         "status": "Done",
         "amount": 56000,
         "currency": "EUR",
-        "paymentDate": "19-09-2024"
+        "paymentDate": "19-09-2024",
+        "sectionId": "SEC-C-CLM-2024-103-1"
       },
       {
         "paymentId": "PMT-C-00063673-2024.103.1.2",
@@ -7420,7 +6292,8 @@
         "status": "Done",
         "amount": 33500,
         "currency": "EUR",
-        "paymentDate": "09-10-2024"
+        "paymentDate": "09-10-2024",
+        "sectionId": "SEC-C-CLM-2024-103-2"
       },
       {
         "paymentId": "PMT-C-00063673-2024.103.1.3",
@@ -7431,7 +6304,8 @@
         "status": "Done",
         "amount": 22500,
         "currency": "EUR",
-        "paymentDate": "29-10-2024"
+        "paymentDate": "29-10-2024",
+        "sectionId": "SEC-C-CLM-2024-103-1"
       }
     ],
     "reserves": [
@@ -7523,7 +6397,8 @@
         "amount": 13000,
         "currency": "EUR",
         "recoveryDate": "20-10-2024",
-        "bookingDate": "20-10-2024"
+        "bookingDate": "20-10-2024",
+        "sectionId": "SEC-C-CLM-2024-103-1"
       },
       {
         "recoveryId": "REC-103-02",
@@ -7536,7 +6411,8 @@
         "amount": 32000,
         "currency": "EUR",
         "recoveryDate": "14-11-2024",
-        "bookingDate": "14-11-2024"
+        "bookingDate": "14-11-2024",
+        "sectionId": "SEC-C-CLM-2024-103-2"
       }
     ],
     "transactions": [
@@ -7653,46 +6529,9 @@
             "incurred": 198000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063673-2024.103.1.1",
-            "reinsuranceId": "R47790",
-            "payee": "Nordic Renewables GmbH",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 56000,
-            "currency": "EUR",
-            "paymentDate": "19-09-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063673-2024.103.1.3",
-            "reinsuranceId": "R47792",
-            "payee": "Iberia Components S.L.",
-            "handler": "Nina Feld",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 22500,
-            "currency": "EUR",
-            "paymentDate": "29-10-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-103-01",
-            "bookingId": "DED-103-1",
-            "reinsuranceId": "RI2649",
-            "party": "Nordic Renewables GmbH",
-            "section": "Machinery breakdown — Hamburg",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 13000,
-            "currency": "EUR",
-            "recoveryDate": "20-10-2024",
-            "bookingDate": "20-10-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-103-2",
@@ -7727,35 +6566,9 @@
             "incurred": 122000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063673-2024.103.1.2",
-            "reinsuranceId": "R47791",
-            "payee": "AON Deutschland",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 33500,
-            "currency": "EUR",
-            "paymentDate": "09-10-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-103-02",
-            "bookingId": "DED-103-2",
-            "reinsuranceId": "RI2650",
-            "party": "Munich Re",
-            "section": "Business interruption — Hamburg",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 32000,
-            "currency": "EUR",
-            "recoveryDate": "14-11-2024",
-            "bookingDate": "14-11-2024"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -7808,7 +6621,8 @@
         "status": "Done",
         "amount": 35000,
         "currency": "EUR",
-        "paymentDate": "24-03-2024"
+        "paymentDate": "24-03-2024",
+        "sectionId": "SEC-024-A"
       },
       {
         "paymentId": "PMT-C-00063680-2024.024.1.2",
@@ -7819,7 +6633,8 @@
         "status": "Done",
         "amount": 21000,
         "currency": "EUR",
-        "paymentDate": "13-04-2024"
+        "paymentDate": "13-04-2024",
+        "sectionId": "SEC-024-B"
       },
       {
         "paymentId": "PMT-C-00063680-2024.024.1.3",
@@ -7830,7 +6645,8 @@
         "status": "Done",
         "amount": 14000,
         "currency": "EUR",
-        "paymentDate": "03-05-2024"
+        "paymentDate": "03-05-2024",
+        "sectionId": "SEC-024-A"
       }
     ],
     "reserves": [
@@ -7901,7 +6717,8 @@
         "amount": 3800,
         "currency": "EUR",
         "recoveryDate": "24-04-2024",
-        "bookingDate": "24-04-2024"
+        "bookingDate": "24-04-2024",
+        "sectionId": "SEC-024-A"
       }
     ],
     "transactions": [
@@ -7992,46 +6809,9 @@
             "incurred": 74000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063680-2024.024.1.1",
-            "reinsuranceId": "R19952",
-            "payee": "Nordhafen Shipping GmbH",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 35000,
-            "currency": "EUR",
-            "paymentDate": "24-03-2024"
-          },
-          {
-            "paymentId": "PMT-C-00063680-2024.024.1.3",
-            "reinsuranceId": "R19954",
-            "payee": "Nordic Steel Supply AB",
-            "handler": "Nina Feld",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 14000,
-            "currency": "EUR",
-            "paymentDate": "03-05-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-024-01",
-            "bookingId": "DED-024-1",
-            "reinsuranceId": "RI1808",
-            "party": "Nordhafen Shipping GmbH",
-            "section": "Cargo — Hull",
-            "recoveryType": "Deductible",
-            "status": "Pending",
-            "amount": 3800,
-            "currency": "EUR",
-            "recoveryDate": "24-04-2024",
-            "bookingDate": "24-04-2024"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-024-B",
@@ -8066,19 +6846,7 @@
             "incurred": 21000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063680-2024.024.1.2",
-            "reinsuranceId": "R19953",
-            "payee": "Howden Broking",
-            "handler": "Nina Feld",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 21000,
-            "currency": "EUR",
-            "paymentDate": "13-04-2024"
-          }
-        ],
+        "payments": [],
         "reserves": [],
         "recoveries": []
       }
@@ -8133,7 +6901,8 @@
         "status": "Done",
         "amount": 8700,
         "currency": "EUR",
-        "paymentDate": "02-11-2026"
+        "paymentDate": "02-11-2026",
+        "sectionId": "SEC-C-CLM-2024-025-1"
       },
       {
         "paymentId": "PMT-C-00000000-2026.025.1.2",
@@ -8144,7 +6913,8 @@
         "status": "Done",
         "amount": 5800,
         "currency": "EUR",
-        "paymentDate": "22-11-2026"
+        "paymentDate": "22-11-2026",
+        "sectionId": "SEC-C-CLM-2024-025-1"
       }
     ],
     "reserves": [
@@ -8209,7 +6979,8 @@
         "amount": 1700,
         "currency": "EUR",
         "recoveryDate": "03-12-2026",
-        "bookingDate": "03-12-2026"
+        "bookingDate": "03-12-2026",
+        "sectionId": "SEC-C-CLM-2024-025-1"
       }
     ],
     "transactions": [
@@ -8300,46 +7071,9 @@
             "incurred": 42000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00000000-2026.025.1.1",
-            "reinsuranceId": "R19983",
-            "payee": "Rheinfeld Logistics AG",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 8700,
-            "currency": "EUR",
-            "paymentDate": "02-11-2026"
-          },
-          {
-            "paymentId": "PMT-C-00000000-2026.025.1.2",
-            "reinsuranceId": "R19984",
-            "payee": "Meridian Logistics Ltd",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 5800,
-            "currency": "EUR",
-            "paymentDate": "22-11-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-025-01",
-            "bookingId": "DED-025-1",
-            "reinsuranceId": "RI1839",
-            "party": "Rheinfeld Logistics AG",
-            "section": "Property damage — Cologne",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 1700,
-            "currency": "EUR",
-            "recoveryDate": "03-12-2026",
-            "bookingDate": "03-12-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -8392,7 +7126,8 @@
         "status": "Done",
         "amount": 3350,
         "currency": "EUR",
-        "paymentDate": "28-10-2026"
+        "paymentDate": "28-10-2026",
+        "sectionId": "SEC-C-CLM-2024-026-1"
       },
       {
         "paymentId": "PMT-C-00000000-2026.026.1.2",
@@ -8403,7 +7138,8 @@
         "status": "Done",
         "amount": 2200,
         "currency": "EUR",
-        "paymentDate": "17-11-2026"
+        "paymentDate": "17-11-2026",
+        "sectionId": "SEC-C-CLM-2024-026-1"
       }
     ],
     "reserves": [
@@ -8468,7 +7204,8 @@
         "amount": 630,
         "currency": "EUR",
         "recoveryDate": "28-11-2026",
-        "bookingDate": "28-11-2026"
+        "bookingDate": "28-11-2026",
+        "sectionId": "SEC-C-CLM-2024-026-1"
       }
     ],
     "transactions": [
@@ -8559,46 +7296,9 @@
             "incurred": 15800
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00000000-2026.026.1.1",
-            "reinsuranceId": "R20014",
-            "payee": "Baltic Freight Partners",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 3350,
-            "currency": "EUR",
-            "paymentDate": "28-10-2026"
-          },
-          {
-            "paymentId": "PMT-C-00000000-2026.026.1.2",
-            "reinsuranceId": "R20015",
-            "payee": "Iberia Components S.L.",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 2200,
-            "currency": "EUR",
-            "paymentDate": "17-11-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-026-01",
-            "bookingId": "DED-026-1",
-            "reinsuranceId": "RI1870",
-            "party": "Baltic Freight Partners",
-            "section": "Third-party liability — Bremen",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 630,
-            "currency": "EUR",
-            "recoveryDate": "28-11-2026",
-            "bookingDate": "28-11-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -8651,7 +7351,8 @@
         "status": "Done",
         "amount": 30500,
         "currency": "EUR",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-027-1"
       },
       {
         "paymentId": "PMT-C-00000000-2026.027.1.2",
@@ -8662,7 +7363,8 @@
         "status": "Done",
         "amount": 18500,
         "currency": "EUR",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-027-1"
       },
       {
         "paymentId": "PMT-C-00000000-2026.027.1.3",
@@ -8673,7 +7375,8 @@
         "status": "Done",
         "amount": 12200,
         "currency": "EUR",
-        "paymentDate": "18-10-2026"
+        "paymentDate": "18-10-2026",
+        "sectionId": "SEC-C-CLM-2024-027-1"
       }
     ],
     "reserves": [
@@ -8717,7 +7420,8 @@
         "amount": 2450,
         "currency": "EUR",
         "recoveryDate": "20-11-2026",
-        "bookingDate": "20-11-2026"
+        "bookingDate": "20-11-2026",
+        "sectionId": "SEC-C-CLM-2024-027-1"
       }
     ],
     "transactions": [
@@ -8795,57 +7499,9 @@
             "incurred": 61200
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00000000-2026.027.1.1",
-            "reinsuranceId": "R20045",
-            "payee": "Nordsee Marine Services",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 30500,
-            "currency": "EUR",
-            "paymentDate": "18-10-2026"
-          },
-          {
-            "paymentId": "PMT-C-00000000-2026.027.1.2",
-            "reinsuranceId": "R20046",
-            "payee": "Rheinmetall Components GmbH",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 18500,
-            "currency": "EUR",
-            "paymentDate": "18-10-2026"
-          },
-          {
-            "paymentId": "PMT-C-00000000-2026.027.1.3",
-            "reinsuranceId": "R20047",
-            "payee": "Nordsee Marine Services",
-            "handler": "Mara Mustermann",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 12200,
-            "currency": "EUR",
-            "paymentDate": "18-10-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-027-01",
-            "bookingId": "DED-027-1",
-            "reinsuranceId": "RI1901",
-            "party": "Nordsee Marine Services",
-            "section": "Cargo damage — Kiel",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 2450,
-            "currency": "EUR",
-            "recoveryDate": "20-11-2026",
-            "bookingDate": "20-11-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -8898,7 +7554,8 @@
         "status": "Done",
         "amount": 23000,
         "currency": "EUR",
-        "paymentDate": "25-10-2026"
+        "paymentDate": "25-10-2026",
+        "sectionId": "SEC-C-CLM-2024-028-1"
       },
       {
         "paymentId": "PMT-C-00000000-2026.028.1.2",
@@ -8909,7 +7566,8 @@
         "status": "Done",
         "amount": 14000,
         "currency": "EUR",
-        "paymentDate": "14-11-2026"
+        "paymentDate": "14-11-2026",
+        "sectionId": "SEC-C-CLM-2024-028-2"
       },
       {
         "paymentId": "PMT-C-00000000-2026.028.1.3",
@@ -8920,7 +7578,8 @@
         "status": "Done",
         "amount": 9000,
         "currency": "EUR",
-        "paymentDate": "04-12-2026"
+        "paymentDate": "04-12-2026",
+        "sectionId": "SEC-C-CLM-2024-028-1"
       }
     ],
     "reserves": [
@@ -9012,7 +7671,8 @@
         "amount": 5300,
         "currency": "EUR",
         "recoveryDate": "25-11-2026",
-        "bookingDate": "25-11-2026"
+        "bookingDate": "25-11-2026",
+        "sectionId": "SEC-C-CLM-2024-028-1"
       },
       {
         "recoveryId": "REC-028-02",
@@ -9025,7 +7685,8 @@
         "amount": 13000,
         "currency": "EUR",
         "recoveryDate": "20-12-2026",
-        "bookingDate": "20-12-2026"
+        "bookingDate": "20-12-2026",
+        "sectionId": "SEC-C-CLM-2024-028-2"
       }
     ],
     "transactions": [
@@ -9142,46 +7803,9 @@
             "incurred": 81500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00000000-2026.028.1.1",
-            "reinsuranceId": "R20076",
-            "payee": "Vantage Data Systems GmbH",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 23000,
-            "currency": "EUR",
-            "paymentDate": "25-10-2026"
-          },
-          {
-            "paymentId": "PMT-C-00000000-2026.028.1.3",
-            "reinsuranceId": "R20078",
-            "payee": "Vantage Data Systems GmbH",
-            "handler": "Mara Mustermann",
-            "sectionType": "Expenses",
-            "status": "Done",
-            "amount": 9000,
-            "currency": "EUR",
-            "paymentDate": "04-12-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-028-01",
-            "bookingId": "DED-028-1",
-            "reinsuranceId": "RI1932",
-            "party": "Vantage Data Systems GmbH",
-            "section": "System outage & recovery — Munich",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 5300,
-            "currency": "EUR",
-            "recoveryDate": "25-11-2026",
-            "bookingDate": "25-11-2026"
-          }
-        ]
+        "recoveries": []
       },
       {
         "sectionId": "SEC-C-CLM-2024-028-2",
@@ -9216,35 +7840,9 @@
             "incurred": 50500
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00000000-2026.028.1.2",
-            "reinsuranceId": "R20077",
-            "payee": "Nordic Steel Supply AB",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 14000,
-            "currency": "EUR",
-            "paymentDate": "14-11-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-028-02",
-            "bookingId": "DED-028-2",
-            "reinsuranceId": "RI1933",
-            "party": "Munich Re",
-            "section": "Data restoration — Munich",
-            "recoveryType": "Reinsurance",
-            "status": "Pending",
-            "amount": 13000,
-            "currency": "EUR",
-            "recoveryDate": "20-12-2026",
-            "bookingDate": "20-12-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -9297,7 +7895,8 @@
         "status": "Done",
         "amount": 6000,
         "currency": "EUR",
-        "paymentDate": "13-10-2026"
+        "paymentDate": "13-10-2026",
+        "sectionId": "SEC-C-CLM-2024-029-1"
       },
       {
         "paymentId": "PMT-C-00000000-2026.029.1.2",
@@ -9308,7 +7907,8 @@
         "status": "Done",
         "amount": 4000,
         "currency": "EUR",
-        "paymentDate": "02-11-2026"
+        "paymentDate": "02-11-2026",
+        "sectionId": "SEC-C-CLM-2024-029-1"
       }
     ],
     "reserves": [
@@ -9373,7 +7973,8 @@
         "amount": 1150,
         "currency": "EUR",
         "recoveryDate": "13-11-2026",
-        "bookingDate": "13-11-2026"
+        "bookingDate": "13-11-2026",
+        "sectionId": "SEC-C-CLM-2024-029-1"
       }
     ],
     "transactions": [
@@ -9464,46 +8065,9 @@
             "incurred": 28750
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00000000-2026.029.1.1",
-            "reinsuranceId": "R20107",
-            "payee": "Alpenbau Engineering GmbH",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 6000,
-            "currency": "EUR",
-            "paymentDate": "13-10-2026"
-          },
-          {
-            "paymentId": "PMT-C-00000000-2026.029.1.2",
-            "reinsuranceId": "R20108",
-            "payee": "Meridian Logistics Ltd",
-            "handler": "Mara Mustermann",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 4000,
-            "currency": "EUR",
-            "paymentDate": "02-11-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-029-01",
-            "bookingId": "DED-029-1",
-            "reinsuranceId": "RI1963",
-            "party": "Alpenbau Engineering GmbH",
-            "section": "Machinery breakdown — Stuttgart",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 1150,
-            "currency": "EUR",
-            "recoveryDate": "13-11-2026",
-            "bookingDate": "13-11-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },
@@ -9556,7 +8120,8 @@
         "status": "Done",
         "amount": 3800,
         "currency": "EUR",
-        "paymentDate": "19-09-2026"
+        "paymentDate": "19-09-2026",
+        "sectionId": "SEC-C-SK-2024-002-1"
       },
       {
         "paymentId": "PMT-C-00063671-2026.002.1.2",
@@ -9567,7 +8132,8 @@
         "status": "Done",
         "amount": 2500,
         "currency": "EUR",
-        "paymentDate": "09-10-2026"
+        "paymentDate": "09-10-2026",
+        "sectionId": "SEC-C-SK-2024-002-1"
       }
     ],
     "reserves": [
@@ -9632,7 +8198,8 @@
         "amount": 720,
         "currency": "EUR",
         "recoveryDate": "20-10-2026",
-        "bookingDate": "20-10-2026"
+        "bookingDate": "20-10-2026",
+        "sectionId": "SEC-C-SK-2024-002-1"
       }
     ],
     "transactions": [
@@ -9723,46 +8290,9 @@
             "incurred": 18000
           }
         ],
-        "payments": [
-          {
-            "paymentId": "PMT-C-00063671-2026.002.1.1",
-            "reinsuranceId": "R25302",
-            "payee": "Jonas Kaufmann",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 3800,
-            "currency": "EUR",
-            "paymentDate": "19-09-2026"
-          },
-          {
-            "paymentId": "PMT-C-00063671-2026.002.1.2",
-            "reinsuranceId": "R25303",
-            "payee": "Worthing Insurance Brokers",
-            "handler": "Lena Zorn",
-            "sectionType": "Indemnity",
-            "status": "Done",
-            "amount": 2500,
-            "currency": "EUR",
-            "paymentDate": "09-10-2026"
-          }
-        ],
+        "payments": [],
         "reserves": [],
-        "recoveries": [
-          {
-            "recoveryId": "REC-002-01",
-            "bookingId": "DED-002-1",
-            "reinsuranceId": "RI3233",
-            "party": "Jonas Kaufmann",
-            "section": "Property damage",
-            "recoveryType": "Deductible",
-            "status": "Approved",
-            "amount": 720,
-            "currency": "EUR",
-            "recoveryDate": "20-10-2026",
-            "bookingDate": "20-10-2026"
-          }
-        ]
+        "recoveries": []
       }
     ]
   },

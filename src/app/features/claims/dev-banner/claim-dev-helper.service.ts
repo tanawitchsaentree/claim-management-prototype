@@ -56,7 +56,12 @@ export class ClaimDevHelperService {
     { initialValue: this.router.url }
   );
 
-  private readonly isFeatureRoute = computed(() => /^\/(claims\/[^/]+|fnol)\/.+/.test(this.url()));
+  // Every page an AC can land on: claim and FNOL pages, plus the top-level pages the
+  // tickets open (Task manager, Approvals, Dashboard). Without these the tester lost
+  // the banner, and with it the next AC, after landing on one of them.
+  private readonly isFeatureRoute = computed(() =>
+    /^\/(claims\/[^/]+|fnol)\/.+|^\/(tasks|approvals|dashboard)(?:[/?#]|$)/.test(this.url())
+  );
 
   private readonly isFnolRoute = computed(() => /^\/fnol\//.test(this.url()));
 
