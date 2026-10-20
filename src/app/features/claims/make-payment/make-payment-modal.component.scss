@@ -1,50 +1,29 @@
-// A modal-styled sheet on a route: dimmed backdrop under the app bars (so the DEV
-// banner and the top bar stay clickable), a white panel with a margin all round.
-.mp-backdrop {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-  display: flex;
-  padding: var(--space-lg);
-  background: color-mix(in srgb, var(--text-01) 60%, transparent);
-}
+// Bottom-sheet modal (same family as Link policy / Add location). The overlay
+// panel itself is styled by .bottom-sheet-modal-panel in src/styles.scss.
+@use '../../../shared/styles/bottom-sheet-layout' as sheet;
 
-.mp-panel {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  background: var(--ui-01);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px var(--claim-overlay-shadow-heavy);
-}
-
-.mp-header {
-  position: relative;
-  padding: var(--space-lg) var(--space-xl) var(--space-md);
-}
-
-.mp-title {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 400;
-  color: var(--text-01);
+:host {
+  @include sheet.shell;
 }
 
 .mp-close {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
+  @include sheet.close;
+}
+
+.mp-close-x {
+  @include sheet.close-x;
+}
+
+.mp-header {
+  @include sheet.header;
+}
+
+.mp-title {
+  @include sheet.title;
 }
 
 .mp-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 0 var(--space-xl) var(--space-lg);
+  @include sheet.body;
 }
 
 .mp-accordion {
@@ -68,12 +47,12 @@
   }
 }
 
+// Cancel and Save & Draft stay together on the left, the main action on the right.
 .mp-footer {
+  @include sheet.footer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md) var(--space-xl);
-  border-top: 1px solid var(--ui-04);
 }
 
 .mp-footer__left {

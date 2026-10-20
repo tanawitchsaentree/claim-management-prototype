@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { claimAliasGuard } from './core/guards/claim-alias.guard';
+import { makePaymentLinkGuard } from './features/claims/make-payment/make-payment.guard';
 import { editLossInformationCanDeactivate } from './features/claims/edit-loss-information/edit-loss-information.guard';
 import { trackerGuard } from './core/guards/tracker.guard';
 
@@ -119,13 +120,11 @@ export const routes: Routes = [
             m => m.FinancialOverviewComponent
           )
       },
+      // Deep link: shows the Payments list and opens the Make Payment sheet over it.
       {
         path: 'claims/:id/financial/new-payment',
-        canActivate: [claimAliasGuard],
-        loadComponent: () =>
-          import('./features/claims/make-payment/make-payment.component').then(
-            m => m.MakePaymentComponent
-          )
+        canActivate: [claimAliasGuard, makePaymentLinkGuard],
+        children: []
       },
       // "View all notes" is a bottom-sheet dialog now (claim-notes-panel opens it);
       // the component needs dialog data, so rendering it as a page threw NG0201.
