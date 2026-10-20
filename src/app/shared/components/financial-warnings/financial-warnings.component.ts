@@ -47,12 +47,14 @@ export class FinancialWarningsComponent {
     if (check.action?.kind === 'send-claim-again') {
       this.booking.sendClaimAgain(id);
     } else if (check.action?.kind === 'add-reserve') {
+      // "Go to reserves" (payment over the reserve) just opens the list; "Add a USD reserve" opens the form.
+      const list = check.id === 'over-reserve';
       this.router.navigate(['/claims', id, 'financial'], {
         queryParams: {
           view: 'reserves',
-          addReserve: 1,
-          currency: this.currency() || null,
-          section: this.sectionId() || null
+          addReserve: list ? null : 1,
+          currency: list ? null : this.currency() || null,
+          section: list ? null : this.sectionId() || null
         }
       });
     }

@@ -23,6 +23,10 @@
 .as-amount {
   width: 130px;
   margin-left: auto;
+
+  input {
+    text-align: right;
+  }
 }
 
 // Paying more than the reserve holds: still allowed, but visible.

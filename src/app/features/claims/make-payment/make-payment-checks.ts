@@ -51,7 +51,10 @@ export function buildChecks(c: CheckContext): PreCheck[] {
     limitName: head?.name,
     payee: c.payee ? { name: c.payee.name, clearance: c.payee.clearance, ggNameCode: c.payee.ggNameCode } : undefined,
     bankAccountOperational: c.method?.needsBankAccount && account ? account.operational : undefined,
-    sectionCount: c.sectionCount
+    sectionCount: c.sectionCount,
+    overReserveLines: c.lines
+      .map(l => ({ reserveId: l.reserveId, amount: l.amount, outstanding: c.rows.find(r => r.reserveId === l.reserveId)?.reserveValue ?? 0 }))
+      .filter(l => l.amount > l.outstanding)
   });
 }
 

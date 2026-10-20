@@ -7,7 +7,6 @@
   bottom: 0;
   z-index: 10;
   display: flex;
-  align-items: flex-start;
   padding: var(--space-lg);
   background: color-mix(in srgb, var(--text-01) 60%, transparent);
 }
@@ -16,7 +15,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 100%;
+  height: 100%;
   min-height: 0;
   background: var(--ui-01);
   border-radius: 8px;
@@ -60,6 +59,12 @@
     --accordion-regular-header-padding: var(--space-md) var(--space-md);
     --accordion-regular-body-padding: 0 var(--space-md);
     --accordion-regular-header-top-margin: 0;
+    // Thin divider between the bars, as in the design.
+    border-bottom: 1px solid var(--ui-04);
+  }
+
+  nx-expansion-panel:first-child {
+    border-top: 1px solid var(--ui-04);
   }
 }
 

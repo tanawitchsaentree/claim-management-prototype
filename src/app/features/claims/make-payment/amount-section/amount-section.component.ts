@@ -6,6 +6,7 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxTableModule } from '@allianz/ng-aquila/table';
+import { AmountInputDirective } from './amount-input.directive';
 import { Deductible } from '../../../../core/models/deductible.model';
 import { FinancialReserve } from '../../../../core/models/financial-overview.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -15,7 +16,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 @Component({
   selector: 'app-amount-section',
   standalone: true,
-  imports: [DecimalPipe, ReactiveFormsModule, NxDropdownModule, NxFormfieldModule, NxInputModule, NxRadioModule, NxTableModule, EmptyStateComponent],
+  imports: [DecimalPipe, ReactiveFormsModule, NxDropdownModule, NxFormfieldModule, NxInputModule, NxRadioModule, NxTableModule, EmptyStateComponent, AmountInputDirective],
   templateUrl: './amount-section.component.html',
   styleUrl: './amount-section.component.scss'
 })

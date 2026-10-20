@@ -37,7 +37,7 @@
             <td nxCell class="as-num">{{ r.reserveValue | number: '1.0-2' }}</td>
             <td nxCell class="as-num">
               <nx-formfield class="as-amount">
-                <input nxInput type="number" min="0" [formControl]="controlFor()(r.reserveId)" [attr.aria-label]="'Payment amount for ' + r.reserveId" />
+                <input nxInput appAmount [formControl]="controlFor()(r.reserveId)" [attr.aria-label]="'Payment amount for ' + r.reserveId" />
               </nx-formfield>
             </td>
             <td nxCell class="as-num"><span [class.as-over]="remaining()(r) < 0">{{ remaining()(r) | number: '1.0-2' }}</span></td>
