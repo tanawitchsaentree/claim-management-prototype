@@ -45,8 +45,37 @@
 }
 
 .lp-col--action {
-  width: 48px;
+  width: 1%;
+  white-space: nowrap;
   text-align: right;
+}
+
+.lp-actions {
+  display: inline-flex;
+  gap: var(--space-base);
+}
+
+.lp-change-tag {
+  margin-left: 8px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: var(--paragraph-04-font-size);
+  background: var(--ui-03);
+  color: var(--text-01);
+}
+
+.lp-none {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.lp-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
 }
 
 .lp-add-another {

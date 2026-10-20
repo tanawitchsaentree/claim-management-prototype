@@ -4,7 +4,9 @@
   "no data" list state — app-empty-state's centered/italic canonical
   shape would read as a data-absence message here, not a form question.
   Table only renders once a location exists (see @else below). -->
-  @if (locations.length === 0) {
+  @if (locations.length === 0 && readonly) {
+    <p class="lp-none">No location of loss recorded.</p>
+  } @else if (locations.length === 0) {
     <div class="lp-initial">
       <p class="lp-hint">{{ promptLabel }}</p>
       <button nxButton="primary small" type="button" (click)="addLocation(vm.policyLocations)">
@@ -30,7 +32,9 @@
               <th nxHeaderCell>City</th>
               <th nxHeaderCell>Province / State</th>
               <th nxHeaderCell>Country</th>
-              <th nxHeaderCell class="lp-col--action"></th>
+              @if (!readonly) {
+                <th nxHeaderCell class="lp-col--action"><span class="lp-sr">Actions</span></th>
+              }
             </tr>
           </thead>
           <tbody>
@@ -42,7 +46,10 @@
                   <td nxCell>–</td>
                 } @else {
                   <td nxCell>
-                    {{ item.addressLine1 }}
+                    {{ item.addressLine1 || '–' }}
+                    @if (changeTag(item); as tag) {
+                      <span class="lp-change-tag">{{ tag }}</span>
+                    }
                     @if (item.addressLine2) {
                       , {{ item.addressLine2 }}
                     }
@@ -55,32 +62,36 @@
                       </span>
                     }
                   </td>
-                  <td nxCell>{{ item.postalCode }}</td>
-                  <td nxCell>{{ item.city }}</td>
+                  <td nxCell>{{ item.postalCode || '–' }}</td>
+                  <td nxCell>{{ item.city || '–' }}</td>
                 }
-                <td nxCell>{{ item.state ?? '–' }}</td>
-                <td nxCell>{{ item.country }}</td>
-                <td nxCell class="lp-col--action">
-                  <button
-                    nxIconButton="tertiary small"
-                    type="button"
-                    [nxContextMenuTriggerFor]="itemMenu"
-                    aria-label="Location options"
-                  >
-                    <nx-icon name="ellipsis-h"></nx-icon>
-                  </button>
-                  <nx-context-menu #itemMenu>
-                    <button nxContextMenuItem type="button" (click)="editItem(item)">Edit</button>
-                    <button nxContextMenuItem type="button" (click)="removeItem(item.id)">
-                      Remove
-                    </button>
-                  </nx-context-menu>
-                </td>
+                <td nxCell>{{ item.state || '–' }}</td>
+                <td nxCell>{{ countryLabel(item.country, vm.countries) }}</td>
+                @if (!readonly) {
+                  <!-- Visible actions, not a kebab: in Edit claim the kebab was the only
+                       sign the table could be changed at all. -->
+                  <td nxCell class="lp-col--action">
+                    <span class="lp-actions">
+                      <button nxPlainButton type="button" (click)="editItem(item)">Edit</button>
+                      <button nxPlainButton type="button" (click)="removeItem(item.id)">Remove</button>
+                    </span>
+                  </td>
+                }
               </tr>
             }
           </tbody>
         </table>
       </div>
+      @if (!readonly) {
+        <button
+          nxButton="secondary small"
+          type="button"
+          class="lp-add-another"
+          (click)="addLocation(vm.policyLocations)"
+        >
+          Change location
+        </button>
+      }
     </div>
   }
 }

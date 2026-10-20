@@ -280,12 +280,16 @@
           <span class="eli-edited-tag">Edited</span>
         }</h2
       >
-      <p class="eli-section-desc">Update the location of loss below.</p>
+      @if (isEditing('lossLocation')) {
+        <p class="eli-section-desc">Edit, remove or change the location of loss.</p>
+      }
       @if (fieldChanged('lossLocation')) {
         <p class="eli-was">was: {{ originalLossLocationDisplay }}</p>
       }
       <app-location-picker
         [policyNumber]="policyNumber()"
+        [readonly]="!isEditing('lossLocation')"
+        [originalValue]="originalLossLocation"
         [value]="lossLocation.value"
         (locationChange)="lossLocation.setValue($event); form.markAsDirty()"
       >

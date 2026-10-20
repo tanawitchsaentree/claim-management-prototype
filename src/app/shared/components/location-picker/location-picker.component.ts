@@ -1,10 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, Observable, of, firstValueFrom } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
@@ -40,14 +39,13 @@ interface LocationPickerVM {
     CommonModule,
     NxButtonModule,
     NxIconModule,
-    NxContextMenuModule,
     NxMessageModule,
     NxTableModule
   ],
   templateUrl: './location-picker.component.html',
   styleUrl: './location-picker.component.scss'
 })
-export class LocationPickerComponent implements OnInit {
+export class LocationPickerComponent implements OnInit, OnChanges {
   @Input() policyNumber: string | null | undefined = null;
   @Input() value: LocationPickerOutput | null = null;
   /** FNOL only — shows the "you can add/update later via Edit Claim" hint.
@@ -58,6 +56,10 @@ export class LocationPickerComponent implements OnInit {
   // inherit copy that only makes sense for the claim's own loss.
   @Input() promptLabel = 'Where did the loss occur?';
   @Input() skipHintText = 'Skip if location is not applicable to this claim.';
+  /** Edit claim, before the card's Edit is pressed: a plain table, no actions. */
+  @Input() readonly = false;
+  /** Edit claim: the saved value, so a changed row can say "Edited" or "New". */
+  @Input() originalValue: LocationPickerOutput | null = null;
   @Output() locationChange = new EventEmitter<LocationPickerOutput>();
 
   private policyLocationSvc = inject(MockPolicyLocationService);
@@ -69,6 +71,30 @@ export class LocationPickerComponent implements OnInit {
 
   private allPolicyLocations: PolicyLocation[] = [];
   vm$!: Observable<LocationPickerVM>;
+
+  // The host can change `value` itself (Edit claim's Cancel puts the saved
+  // location back); the table used to read it only once and kept showing the
+  // cancelled change.
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['value'] || changes['value'].firstChange) return;
+    const next = this.value?.locations ?? [];
+    if (JSON.stringify(next) !== JSON.stringify(this.locations)) this.locations = next;
+  }
+
+  // Manual entry stores the country code ("DE"), policy/CWB rows the name
+  // ("Germany"); show the name either way.
+  countryLabel(country: string | undefined, countries: LookupOption[]): string {
+    if (!country) return '–';
+    return countries.find(c => c.value === country)?.label ?? country;
+  }
+
+  /** "New" = not in the saved value, "Edited" = same row, different address. */
+  changeTag(item: LocationItem): 'New' | 'Edited' | null {
+    if (!this.originalValue) return null;
+    const was = this.originalValue.locations?.find(l => l.id === item.id);
+    if (!was) return 'New';
+    return JSON.stringify(was) === JSON.stringify(item) ? null : 'Edited';
+  }
 
   ngOnInit(): void {
     this.hasPolicyNumber = !!this.policyNumber;

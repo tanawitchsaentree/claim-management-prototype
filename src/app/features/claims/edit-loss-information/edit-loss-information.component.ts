@@ -265,7 +265,10 @@ export class EditLossInformationComponent implements OnInit {
     'causeOfLoss',
     'typeOfDamage',
     'dateGroup',
-    'lossDescription'
+    'lossDescription',
+    // Joins the card-level Edit like the other fields (it used to be always
+    // live with only a kebab, so Edit changed nothing visible there).
+    'lossLocation'
   ] as const;
   eligibleFieldKeys(): string[] {
     return this.selectedCauses.length
@@ -397,6 +400,10 @@ export class EditLossInformationComponent implements OnInit {
       o?.dateOfLoss?.timeOfNotification
     );
     return `Occurred: ${occ} · Reported: ${notif}`;
+  }
+
+  get originalLossLocation(): LocationPickerOutput | null {
+    return (this.original()?.lossLocation as unknown as LocationPickerOutput) ?? null;
   }
 
   get originalLossLocationDisplay(): string {
