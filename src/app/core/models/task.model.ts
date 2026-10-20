@@ -20,5 +20,8 @@ export interface Task {
   dueDate: string;
   priority: 'high' | 'medium' | 'low';
   assignee: string;
+  // GG booking fix tasks: the payment / reserve / recovery the task is about,
+  // so Task manager can link straight to it.
+  relatedItemId?: string;
   _scenario?: string;
 }

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { MockBaseService } from './mock-base.service';
 import {
   FinancialOverview,
+  FinancialPayment,
   FinancialReserve,
   FinancialReserveWithHistory
 } from '../../models/financial-overview.model';
@@ -94,6 +95,34 @@ export class MockFinancialOverviewService extends MockBaseService {
     }
     this.stateSvc.patchFinancialOverview(claimId, overview);
     return this.respond(reserve);
+  }
+
+  /**
+   * Make payment (GG booking ticket AC-17). New payments start Pending: they
+   * go to approval first and only reach Global Genius once approved (epic
+   * BMPCC-18348 AC2), so no booking status yet. `sectionId` (optional) keeps
+   * the section-level list in step.
+   */
+  addPayment(
+    claimId: string,
+    input: Omit<FinancialPayment, 'paymentId' | 'status'>,
+    sectionId?: string
+  ): Observable<FinancialPayment> {
+    const overview = structuredClone(this.getOrCreate(claimId));
+    const prefix = overview.payments[0]?.paymentId.split('-')[0] ?? claimId;
+    const payment: FinancialPayment = {
+      ...input,
+      handler: input.handler || this.auth.user().name,
+      paymentDate: input.paymentDate || todayLabel(),
+      paymentId: `${prefix}-${overview.payments.length + 1}`,
+      status: 'Pending'
+    };
+    overview.payments = [...overview.payments, payment];
+    overview.summary.pendingPayments += input.amount;
+    const section = overview.sections.find(s => s.sectionId === sectionId);
+    if (section) section.payments = [...section.payments, payment];
+    this.stateSvc.patchFinancialOverview(claimId, overview);
+    return this.respond(payment);
   }
 
   /** Every reserve still waiting for approval, across all claims, as approval requests. */
