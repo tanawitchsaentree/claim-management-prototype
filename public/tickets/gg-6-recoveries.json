@@ -436,7 +436,7 @@
       "statement": "Recoveries page · Same recovery, own journey",
       "plainStatement": "**Opens:** Recoveries page, REC-003 already open.\n\n**You see:** The same status and the same Send again as in Recovery bookings. Send it from one place and the other changes too.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same recovery, own journey",
         "preconditions": [

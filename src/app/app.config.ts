@@ -25,6 +25,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { routes } from './app.routes';
 import { PrototypeEntryService } from './core/services/prototype-entry.service';
 import { ThemeService } from './core/services/theme.service';
+import { MockBookingService } from './core/mock/services/mock-booking.service';
 
 // Manual SVG fallbacks ONLY for icons NOT in the Allianz icon font.
 // Everything that exists in @allianz/ngx-brand-kit (info-circle-o, speech-bubble-o,
@@ -109,6 +110,8 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(PrototypeEntryService).applyFromUrl()),
     // Matches the <link disabled> state in index.html to whichever theme
     // ('ndbx' | 'a1') was last picked via the dev banner's toggle.
-    provideAppInitializer(() => inject(ThemeService).sync())
+    provideAppInitializer(() => inject(ThemeService).sync()),
+    // GG "Send again": resolves any resend left in flight by a page reload.
+    provideAppInitializer(() => void inject(MockBookingService))
   ]
 };

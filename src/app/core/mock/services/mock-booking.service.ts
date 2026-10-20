@@ -30,57 +30,90 @@ export class MockBookingService {
   private readonly stateSvc = inject(MockStateService);
   private readonly notifySvc = inject(MockNotificationService);
 
+  // A resend in flight is saved with an `inFlight` marker, so a page reload
+  // during the wait (the timer is lost) resolves it on the next start
+  // instead of leaving the row on "Booking in progress" forever.
+  constructor() {
+    const st = this.stateSvc.state();
+    for (const fo of Object.values(st.financialOverviews)) {
+      for (const kind of ['payment', 'reserve', 'recovery'] as BookableKind[]) {
+        for (const row of fo[LIST[kind]] as (Bookable & object)[]) {
+          if (row.bookingStatus === 'booking' && row.bookingIssue?.inFlight) {
+            this.resolveItem(fo.claimId, kind, idOf(kind, row));
+          }
+        }
+      }
+    }
+    for (const o of Object.values(st.overviews)) {
+      if (o.ggRegistration === 'registering' && o.ggResendInFlight) this.resolveClaim(o.claimId);
+    }
+  }
+
   /** Only valid on a 'needs-fixing' row; anything else is ignored. */
   sendItemAgain(claimId: string, kind: BookableKind, id: string): void {
     const row = this.find(claimId, kind, id);
     if (row?.bookingStatus !== 'needs-fixing') return;
-    const issue = row.bookingIssue;
-    this.patchRow(claimId, kind, id, { bookingStatus: 'booking' });
-    setTimeout(() => {
-      const outcome = issue?.demoResendOutcome ?? 'booked';
-      if (outcome === 'booked') {
-        const view = kind === 'recovery' ? 'recovery' : `${kind}s`;
-        this.notifySvc.push({
-          id: `booked-${id}`,
-          claimId,
-          tone: 'done',
-          title: `${claimId}: ${kind} ${id} is now booked`,
-          link: ['/claims', claimId, 'financial'],
-          queryParams: { view, expand: id }
-        });
-      }
-      this.patchRow(
-        claimId,
-        kind,
-        id,
-        outcome === 'booked'
-          ? { bookingStatus: 'booked', bookingIssue: undefined }
-          : {
-              bookingStatus: 'needs-fixing',
-              bookingIssue: issue ? { ...issue, attempts: (issue.attempts ?? 1) + 1 } : undefined
-            }
-      );
-    }, ANSWER_MS);
+    this.patchRow(claimId, kind, id, {
+      bookingStatus: 'booking',
+      bookingIssue: row.bookingIssue ? { ...row.bookingIssue, inFlight: true } : undefined
+    });
+    setTimeout(() => this.resolveItem(claimId, kind, id), ANSWER_MS);
   }
 
   /** Claim-level re-trigger (BMPCC-20232). Only from 'failed'. */
   sendClaimAgain(claimId: string): void {
     const overview = this.stateSvc.state().overviews[claimId];
     if (overview?.ggRegistration !== 'failed') return;
-    this.stateSvc.patchOverview(claimId, { ggRegistration: 'registering' });
-    setTimeout(() => {
-      const ok = (overview.ggResendOutcome ?? 'registered') === 'registered';
-      this.stateSvc.patchOverview(claimId, { ggRegistration: ok ? 'registered' : 'failed' });
-      if (ok) {
-        this.notifySvc.push({
-          id: `claim-ready-${claimId}`,
-          claimId,
-          tone: 'done',
-          title: `${claimId} is now set up in Global Genius: payments and reserves can go ahead`,
-          link: ['/claims', claimId, 'overview']
-        });
-      }
-    }, ANSWER_MS);
+    this.stateSvc.patchOverview(claimId, { ggRegistration: 'registering', ggResendInFlight: true });
+    setTimeout(() => this.resolveClaim(claimId), ANSWER_MS);
+  }
+
+  private resolveItem(claimId: string, kind: BookableKind, id: string): void {
+    const row = this.find(claimId, kind, id);
+    const issue = row?.bookingIssue;
+    if (row?.bookingStatus !== 'booking' || !issue?.inFlight) return;
+    const outcome = issue.demoResendOutcome ?? 'booked';
+    if (outcome === 'booked') {
+      const view = kind === 'recovery' ? 'recovery' : `${kind}s`;
+      this.notifySvc.push({
+        id: `booked-${id}`,
+        claimId,
+        tone: 'done',
+        title: `${claimId}: ${kind} ${id} is now booked`,
+        link: ['/claims', claimId, 'financial'],
+        queryParams: { view, expand: id }
+      });
+    }
+    this.patchRow(
+      claimId,
+      kind,
+      id,
+      outcome === 'booked'
+        ? { bookingStatus: 'booked', bookingIssue: undefined }
+        : {
+            bookingStatus: 'needs-fixing',
+            bookingIssue: { ...issue, inFlight: false, attempts: (issue.attempts ?? 1) + 1 }
+          }
+    );
+  }
+
+  private resolveClaim(claimId: string): void {
+    const overview = this.stateSvc.state().overviews[claimId];
+    if (overview?.ggRegistration !== 'registering' || !overview.ggResendInFlight) return;
+    const ok = (overview.ggResendOutcome ?? 'registered') === 'registered';
+    this.stateSvc.patchOverview(claimId, {
+      ggRegistration: ok ? 'registered' : 'failed',
+      ggResendInFlight: false
+    });
+    if (ok) {
+      this.notifySvc.push({
+        id: `claim-ready-${claimId}`,
+        claimId,
+        tone: 'done',
+        title: `${claimId} is now set up in Global Genius: payments and reserves can go ahead`,
+        link: ['/claims', claimId, 'overview']
+      });
+    }
   }
 
   private find(claimId: string, kind: BookableKind, id: string): Bookable | undefined {

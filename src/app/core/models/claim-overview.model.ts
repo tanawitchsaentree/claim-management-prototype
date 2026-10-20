@@ -168,6 +168,8 @@ export interface ClaimOverview {
   // PROTOTYPE ONLY: what "Send claim to Global Genius again" does in the mock,
   // so the DEV banner can show both outcomes.
   ggResendOutcome?: 'registered' | 'fails-again';
+  // A claim "Send again" is waiting for GG's answer (lets a reload resolve it).
+  ggResendInFlight?: boolean;
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;

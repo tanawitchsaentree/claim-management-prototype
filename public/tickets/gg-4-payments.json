@@ -1697,7 +1697,7 @@
       "statement": "Payments · Waiting for the claim",
       "plainStatement": "**Opens:** Payments list while the claim is still being set up.\n\n**You see:** Approved payments show Waiting for claim; the blue claim banner is on top.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Waiting for the claim",
         "preconditions": [

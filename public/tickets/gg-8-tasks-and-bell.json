@@ -16,7 +16,7 @@
       "statement": "Task manager · Fix task for payment 123456-4",
       "plainStatement": "**Opens:** Task manager with TSK-GG-1 highlighted and scrolled to.\n\n**You see:** The task says to correct the bank details and send the SAME payment again (no new payment), with a link to the payment row.",
       "page": "any",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Fix task for payment 123456-4",
         "preconditions": [

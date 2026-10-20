@@ -39,6 +39,8 @@ export interface BookingIssue {
   // PROTOTYPE ONLY: what the mock does when "Send again" is pressed, so the
   // DEV banner can show both outcomes deterministically.
   demoResendOutcome?: 'booked' | 'fails-again';
+  // A "Send again" is waiting for GG's answer (lets a reload resolve it).
+  inFlight?: boolean;
 }
 
 /** Fields a reserve / payment / recovery row carries once it is approved. */

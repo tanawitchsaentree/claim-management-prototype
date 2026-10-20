@@ -181,6 +181,12 @@
       "title": "GG 6 · Recoveries: same status in both places"
     },
     {
+      "id": "GG-7-FINANCIAL-OVERVIEW",
+      "file": "gg-7-financial-overview.json",
+      "module": "GG booking",
+      "title": "GG 7 · Financial Overview: what couldn't be booked"
+    },
+    {
       "id": "GG-8-TASKS-BELL",
       "file": "gg-8-tasks-and-bell.json",
       "module": "GG booking",

@@ -16,7 +16,7 @@
       "statement": "Financial Overview · Items that couldn't be booked",
       "plainStatement": "**Opens:** Financial Overview of CLM-2024-001.\n\n**You see:** One line: how many couldn't be booked, split into \"needs you\" and \"Finance is fixing\", each a link.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Items that couldn't be booked",
         "preconditions": [
@@ -226,7 +226,7 @@
       "statement": "Financial Overview · Claim couldn't be set up in GG",
       "plainStatement": "**Opens:** Financial Overview of CLM-2024-001.\n\n**You see:** The same red claim banner as Claim Overview, with Send claim again.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim couldn't be set up in GG",
         "preconditions": [
