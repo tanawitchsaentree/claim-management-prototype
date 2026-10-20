@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -41,6 +41,10 @@ export class TaskManagerComponent implements OnInit {
   private readonly taskSvc = inject(MockTaskService);
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
+
+  /** Task to highlight when arriving from a "Needs fixing" row. */
+  readonly highlightTaskId = this.route.snapshot.queryParamMap.get('task');
 
   readonly statusOptions = STATUS_OPTIONS;
   readonly loading = signal(true);

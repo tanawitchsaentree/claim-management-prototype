@@ -1,0 +1,26 @@
+.bip {
+  padding: var(--space-md) var(--space-base) var(--space-base);
+}
+
+.bip__title {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bip__reason,
+.bip__owner {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  margin: 0 0 4px;
+}
+
+.bip__owner a {
+  margin-left: 4px;
+  color: var(--interactive-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

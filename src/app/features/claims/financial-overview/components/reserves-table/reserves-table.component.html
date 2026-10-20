@@ -1,0 +1,118 @@
+<!-- audit-exempt: the page shows the empty state when there are no rows -->
+<!-- Wider than the viewport on purpose (production scrolls sideways) -->
+<div class="fo-table-wrap">
+  <table nxTable class="fo-table fo-table--reserves">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell class="fo-col--history">History</th>
+        <th nxHeaderCell>Reserve ID</th>
+        <th nxHeaderCell>Section</th>
+        <th nxHeaderCell>Damaged Item</th>
+        <th nxHeaderCell>Reserve type</th>
+        <th nxHeaderCell>Reserve sub-type</th>
+        <th nxHeaderCell>Status</th>
+        <th nxHeaderCell class="fo-cell--right">Reserve amount</th>
+        <th nxHeaderCell>Currency</th>
+        <th nxHeaderCell class="fo-col--action">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of rows(); track r.reserveId) {
+        <tr nxTableRow>
+          <td nxCell class="fo-col--history">
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              (click)="toggle(r.reserveId)"
+              aria-label="History"
+            >
+              <nx-icon name="clock-o"></nx-icon>
+            </button>
+          </td>
+          <td nxCell class="fo-cell--nowrap">
+            <button
+              nxPlainButton
+              type="button"
+              (click)="toggle(r.reserveId)"
+              [attr.aria-label]="'Show history of ' + r.reserveId"
+            >
+              {{ r.reserveId }}
+            </button>
+          </td>
+          <td nxCell class="fo-cell--truncate" [nxTooltip]="sectionLabel(r)">
+            {{ sectionLabel(r) }}
+          </td>
+          <td nxCell>{{ r.damagedItem || '—' }}</td>
+          <td nxCell>{{ r.reserveType }}</td>
+          <td nxCell>{{ r.reserveSubType }}</td>
+          <td nxCell>
+            <app-booking-status-pill
+              [approvalStatus]="r.status"
+              [booking]="r.bookingStatus"
+            ></app-booking-status-pill>
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ r.reserveValue | currency: r.currency : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell>{{ r.currency }}</td>
+          <td nxCell class="fo-col--action">
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              [nxContextMenuTriggerFor]="reserveMenu"
+              [disabled]="actionsDisabled() || r.status === 'Rejected'"
+              aria-label="Reserve actions"
+            >
+              <nx-icon name="ellipsis-v"></nx-icon>
+            </button>
+            <nx-context-menu #reserveMenu="nxContextMenu">
+              <button nxContextMenuItem type="button" (click)="updateReserve.emit(r)">
+                Update reserve
+              </button>
+            </nx-context-menu>
+          </td>
+        </tr>
+        @if (expandedIds().has(r.reserveId)) {
+          <tr nxTableRow class="fo-history-row">
+            <td nxCell [attr.colspan]="10">
+              @if (r.bookingStatus === 'needs-fixing' && r.bookingIssue; as issue) {
+                <app-booking-issue-panel [issue]="issue"></app-booking-issue-panel>
+              }
+              <div class="fo-history-panel">
+                <p class="fo-history-panel__title">Reserve history</p>
+                @if (history(r)?.length) {
+                  <table class="fo-history-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th class="fo-cell--right">Amount</th>
+                        <th>Reason</th>
+                        <th>User</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (h of history(r); track h.date) {
+                        <tr>
+                          <td class="fo-cell--nowrap">{{ h.date }}</td>
+                          <td class="fo-cell--right">
+                            {{ h.amount | currency: r.currency : 'symbol' : '1.0-0' }}
+                          </td>
+                          <td>{{ h.reason }}</td>
+                          <td>{{ h.user }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                } @else {
+                  <p class="fo-history-panel__empty">
+                    No changes recorded since this reserve was set.
+                  </p>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

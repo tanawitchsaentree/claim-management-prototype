@@ -2,36 +2,12 @@
 
 // ─── Right-side controls ──────────────────────────────────────────────────────
 
-.fo-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.fo-controls-divider {
-  width: 1px;
-  height: 20px;
-  background: var(--ui-04);
-}
-
 // ─── Currency control ─────────────────────────────────────────────────────────
-
-.fo-currency-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
 .fo-currency-label {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   white-space: nowrap;
-}
-
-.fo-currency-value {
-  font-size: var(--paragraph-02-font-size);
-  font-weight: 600;
-  color: var(--text-01);
 }
 
 // ─── Level toggle ─────────────────────────────────────────────────────────────
@@ -87,15 +63,7 @@
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
-.fo-tabs {
-  margin-bottom: var(--layout-inset-base);
-}
-
 // ─── Tab content ──────────────────────────────────────────────────────────────
-
-.fo-tab-content {
-  padding-top: 16px;
-}
 
 // ─── Toolbar (split: count left / action right) ───────────────────────────────
 
@@ -103,11 +71,6 @@
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-}
-
-.fo-toolbar__count {
-  font-size: var(--paragraph-02-font-size);
-  color: var(--text-muted);
 }
 
 .fo-toolbar__action {
@@ -132,75 +95,13 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.fo-table--transactions {
-  width: auto;
-  min-width: 100%;
-}
-
 .fo-cell--right {
   text-align: right !important;
 }
 
-.fo-cell--incurred {
-  font-weight: 600;
-  color: var(--text-01);
-}
-
 // ─── Financial details meta ────────────────────────────────────────────────────
 
-.fo-details-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.fo-details-label {
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-muted);
-}
-
-.fo-details-value {
-  font-size: var(--paragraph-02-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-  margin-right: 16px;
-}
-
 // ─── Inline status badge ──────────────────────────────────────────────────────
-
-.fo-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 500;
-  line-height: 1.4;
-  white-space: nowrap;
-
-  // payment statuses
-  &--pending {
-    background: var(--fo-badge-pending-bg);
-    color: var(--fo-badge-pending-color);
-  }
-  &--credit {
-    background: var(--fo-badge-credit-bg);
-    color: var(--fo-badge-credit-color);
-  }
-  &--done {
-    background: var(--fo-badge-done-bg);
-    color: var(--fo-badge-done-color);
-  }
-  &--rejected {
-    background: var(--fo-badge-rejected-bg);
-    color: var(--fo-badge-rejected-color);
-  }
-  // reserve statuses
-  &--approved {
-    background: var(--fo-badge-approved-bg);
-    color: var(--fo-badge-approved-color);
-  }
-}
 
 // ─── Section level ────────────────────────────────────────────────────────────
 
@@ -256,19 +157,6 @@
   margin: 0 0 12px;
 }
 
-.fo-table--summary {
-  margin-bottom: var(--layout-inset-base);
-}
-
-.fo-row--total td {
-  font-weight: 600;
-  color: var(--text-01);
-}
-
-.fo-tabs--section {
-  margin-top: var(--layout-inset-base);
-}
-
 // ─── Count / empty ────────────────────────────────────────────────────────────
 
 .fo-count {
@@ -279,70 +167,7 @@
 
 // ─── Expand / History col ─────────────────────────────────────────────────────
 
-.fo-col--expand,
-.fo-col--history {
-  width: 32px;
-  padding-right: 0 !important;
-}
-
-.fo-expand-icon {
-  color: var(--text-muted);
-}
-
-.fo-history-btn {
-  background: none;
-  border: none;
-  padding: var(--space-xs);
-  cursor: pointer;
-  color: var(--text-muted);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    background: var(--ui-03);
-    color: var(--text-01);
-  }
-}
-
 // ─── History panel (inline expand) ───────────────────────────────────────────
-
-.fo-history-row td {
-  background: var(--ui-02);
-  padding: 0 !important;
-}
-
-.fo-history-panel {
-  padding: var(--space-md) var(--space-base) var(--space-base);
-}
-
-.fo-history-panel__title {
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--text-muted);
-  margin: 0 0 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.fo-history-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--paragraph-03-font-size);
-
-  th,
-  td {
-    padding: var(--space-xs) var(--space-md) var(--space-xs) 0;
-    text-align: left;
-    color: var(--text-01);
-  }
-
-  th {
-    color: var(--text-muted);
-    font-weight: 500;
-    border-bottom: 1px solid var(--ui-04);
-  }
-}
 
 // ─── Link style ───────────────────────────────────────────────────────────────
 
@@ -365,31 +190,9 @@
   margin-top: var(--layout-inset-base);
 }
 
-// Reserves table: wide enough that narrow screens scroll sideways, and the
-// Section cell cuts long "party | code" text with an ellipsis (full text in
-// the tooltip).
-.fo-table--reserves {
-  width: auto;
-  min-width: 100%;
 
-  th,
-  td {
-    white-space: nowrap;
-  }
-}
+// ─── "N items couldn't be booked" line ────────────────────────────────────────
 
-.fo-cell--truncate {
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.fo-history-panel__empty {
-  margin: 0;
-  color: var(--text-muted);
-}
-
-.fo-col--action {
-  width: 64px;
-  text-align: center;
+.fo-not-booked {
+  margin-bottom: var(--layout-inset-base);
 }

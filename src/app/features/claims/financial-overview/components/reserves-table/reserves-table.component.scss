@@ -1,0 +1,11 @@
+// Wide enough that narrow screens scroll sideways, and the Section cell cuts
+// long "party | code" text with an ellipsis (full text in the tooltip).
+.fo-table--reserves {
+  width: auto;
+  min-width: 100%;
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+}

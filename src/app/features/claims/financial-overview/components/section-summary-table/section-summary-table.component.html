@@ -1,0 +1,25 @@
+<!-- audit-exempt: the page shows the empty state when there are no rows -->
+<table nxTable class="fo-table fo-table--summary">
+  <thead>
+    <tr nxTableRow>
+      <th nxHeaderCell>Movement type</th>
+      <th nxHeaderCell class="fo-cell--right">Outstanding reserves</th>
+      <th nxHeaderCell class="fo-cell--right">Completed payments</th>
+      <th nxHeaderCell class="fo-cell--right">Pending payment</th>
+      <th nxHeaderCell class="fo-cell--right">Recoveries</th>
+      <th nxHeaderCell class="fo-cell--right">Incurred</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of rows(); track row.movementType) {
+      <tr nxTableRow [class.fo-row--total]="row.movementType === 'Total'">
+        <td nxCell>{{ row.movementType }}</td>
+        <td nxCell class="fo-cell--right">{{ row.outstandingReserves | number: '1.2-2' }}</td>
+        <td nxCell class="fo-cell--right">{{ row.completedPayments | number: '1.2-2' }}</td>
+        <td nxCell class="fo-cell--right">{{ row.pendingPayments | number: '1.2-2' }}</td>
+        <td nxCell class="fo-cell--right">{{ row.recoveries | number: '1.2-2' }}</td>
+        <td nxCell class="fo-cell--right">{{ row.incurred | number: '1.2-2' }}</td>
+      </tr>
+    }
+  </tbody>
+</table>

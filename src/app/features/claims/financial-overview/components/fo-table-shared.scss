@@ -1,0 +1,84 @@
+// Table styles shared by the payments / reserves / recoveries tables.
+.fo-table {
+  width: 100%;
+}
+
+.fo-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fo-cell--right {
+  text-align: right !important;
+}
+
+.fo-cell--nowrap {
+  white-space: nowrap;
+}
+
+.fo-cell--truncate {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fo-col--expand,
+.fo-col--history {
+  width: 32px;
+  padding-right: 0 !important;
+}
+
+.fo-col--action {
+  width: 64px;
+  text-align: center;
+}
+
+.fo-link {
+  color: var(--interactive-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+// Inline expand row (reserve history, booking issue)
+.fo-history-row td {
+  background: var(--ui-02);
+  padding: 0 !important;
+}
+
+.fo-history-panel {
+  padding: var(--space-md) var(--space-base) var(--space-base);
+}
+
+.fo-history-panel__title {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fo-history-panel__empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.fo-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--paragraph-03-font-size);
+
+  th,
+  td {
+    padding: var(--space-xs) var(--space-md) var(--space-xs) 0;
+    text-align: left;
+    color: var(--text-01);
+  }
+
+  th {
+    color: var(--text-muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--ui-04);
+  }
+}

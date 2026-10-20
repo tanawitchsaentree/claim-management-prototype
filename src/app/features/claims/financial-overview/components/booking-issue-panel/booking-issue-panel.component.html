@@ -1,0 +1,18 @@
+<div class="bip">
+  <p class="bip__title">Why this needs fixing</p>
+  <p class="bip__reason">{{ issue().reason }}</p>
+  @if (issue().owner === 'handler') {
+    <p class="bip__owner">
+      <strong>You</strong> need to act on this.
+      @if (issue().taskId) {
+        <a [routerLink]="['/tasks']" [queryParams]="{ task: issue().taskId }"
+          >See the task that tells you what to do</a
+        >
+      }
+    </p>
+  } @else {
+    <p class="bip__owner">
+      <strong>The Finance team</strong> is fixing it. There is nothing for you to do.
+    </p>
+  }
+</div>

@@ -1,0 +1,61 @@
+<!-- audit-exempt: the page shows the empty state when there are no rows -->
+<table nxTable class="fo-table">
+  <thead>
+    <tr nxTableRow>
+      <th nxHeaderCell class="fo-col--expand"></th>
+      <th nxHeaderCell>Payment ID</th>
+      <th nxHeaderCell>Payee</th>
+      <th nxHeaderCell>Handler</th>
+      <th nxHeaderCell>Section / Type</th>
+      <th nxHeaderCell>Status</th>
+      <th nxHeaderCell class="fo-cell--right">Payment amount</th>
+      <th nxHeaderCell>Currency</th>
+      <th nxHeaderCell>Payment date</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (p of rows(); track p.paymentId) {
+      <tr nxTableRow>
+        <td nxCell class="fo-col--expand">
+          @if (needsFixing(p)) {
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              (click)="toggle(p.paymentId)"
+              [attr.aria-expanded]="expandedIds().has(p.paymentId)"
+              [attr.aria-label]="'Show why payment ' + p.paymentId + ' needs fixing'"
+            >
+              <nx-icon
+                [name]="
+                  expandedIds().has(p.paymentId) ? 'chevron-down-small' : 'chevron-right-small'
+                "
+              ></nx-icon>
+            </button>
+          }
+        </td>
+        <td nxCell>{{ p.paymentId }}</td>
+        <td nxCell>{{ p.payee }}</td>
+        <td nxCell>{{ p.handler }}</td>
+        <td nxCell>{{ p.sectionType }}</td>
+        <td nxCell>
+          <app-booking-status-pill
+            [approvalStatus]="p.status"
+            [booking]="p.bookingStatus"
+          ></app-booking-status-pill>
+        </td>
+        <td nxCell class="fo-cell--right">
+          {{ p.amount | currency: currency() : 'symbol' : '1.0-0' }}
+        </td>
+        <td nxCell>{{ p.currency }}</td>
+        <td nxCell class="fo-cell--nowrap">{{ p.paymentDate }}</td>
+      </tr>
+      @if (expandedIds().has(p.paymentId) && p.bookingIssue; as issue) {
+        <tr nxTableRow class="fo-history-row">
+          <td nxCell [attr.colspan]="9">
+            <app-booking-issue-panel [issue]="issue"></app-booking-issue-panel>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>

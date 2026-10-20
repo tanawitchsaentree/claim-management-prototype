@@ -1,0 +1,51 @@
+<!-- audit-exempt: the page shows the empty state when there are no rows -->
+<div class="fo-table-wrap" tabindex="0">
+  <table nxTable class="fo-table fo-table--transactions">
+    <thead>
+      <tr nxTableRow>
+        <th nxHeaderCell>Transaction</th>
+        <th nxHeaderCell>Date</th>
+        <th nxHeaderCell class="fo-cell--right">Indemnity payment</th>
+        <th nxHeaderCell class="fo-cell--right">Expense payment</th>
+        <th nxHeaderCell class="fo-cell--right">Total payment</th>
+        <th nxHeaderCell class="fo-cell--right">Ind. reserve</th>
+        <th nxHeaderCell class="fo-cell--right">Exp. reserve</th>
+        <th nxHeaderCell class="fo-cell--right">Total reserve</th>
+        <th nxHeaderCell class="fo-cell--right">Total recoveries received</th>
+        <th nxHeaderCell class="fo-cell--right">Total incurred</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (t of rows(); track t.transactionId) {
+        <tr nxTableRow>
+          <td nxCell class="fo-cell--nowrap">{{ t.description }}</td>
+          <td nxCell class="fo-cell--nowrap">{{ t.date }}</td>
+          <td nxCell class="fo-cell--right">
+            {{ t.indemnityPayment | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ t.expensePayment | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ t.totalPayment | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ t.indemnityRecovery | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ t.expenseRecovery | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ t.totalRecovery | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right">
+            {{ t.recoveries | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+          <td nxCell class="fo-cell--right fo-cell--incurred">
+            {{ t.totalIncurred | currency: currency() : 'symbol' : '1.0-0' }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

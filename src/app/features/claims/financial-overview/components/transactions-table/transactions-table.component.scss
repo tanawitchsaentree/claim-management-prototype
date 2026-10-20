@@ -1,0 +1,11 @@
+// 10 columns with long headers: take the natural width and scroll the
+// wrapper instead of clipping the last column at the container edge.
+.fo-table--transactions {
+  width: auto;
+  min-width: 100%;
+}
+
+.fo-cell--incurred {
+  font-weight: 600;
+  color: var(--text-01);
+}

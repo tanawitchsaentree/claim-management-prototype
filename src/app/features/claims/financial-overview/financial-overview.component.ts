@@ -7,13 +7,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
-import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
-import { NxBadgeModule, NxBadgeColorScheme, NxBadgeType } from '@allianz/ng-aquila/badge';
 import { FinancialReserve } from '../../../core/models/financial-overview.model';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
@@ -27,6 +24,11 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { PaymentsTableComponent } from './components/payments-table/payments-table.component';
+import { ReservesTableComponent } from './components/reserves-table/reserves-table.component';
+import { RecoveriesTableComponent } from './components/recoveries-table/recoveries-table.component';
+import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';
+import { SectionSummaryTableComponent } from './components/section-summary-table/section-summary-table.component';
 import {
   AddReserveModalComponent,
   AddReserveModalData,
@@ -35,6 +37,13 @@ import {
 
 export type FinancialView = 'overview' | 'payments' | 'reserves' | 'recovery';
 type LevelToggle = 'claim' | 'section';
+type NotBookedView = 'payments' | 'reserves' | 'recovery';
+// singular, plural
+const NOT_BOOKED_WORDS: Record<NotBookedView, [string, string]> = {
+  payments: ['payment', 'payments'],
+  reserves: ['reserve', 'reserves'],
+  recovery: ['recovery', 'recoveries']
+};
 const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recovery'];
 
 @Component({
@@ -46,17 +55,19 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     ReactiveFormsModule,
     NxTableModule,
     NxButtonModule,
-    NxIconModule,
     NxSpinnerModule,
     NxDropdownModule,
     NxTooltipModule,
     NxMessageModule,
     NxRadioToggleModule,
-    NxContextMenuModule,
-    NxBadgeModule,
     EmptyStateComponent,
     PageHeaderComponent,
-    BlockerReturnBannerComponent
+    BlockerReturnBannerComponent,
+    PaymentsTableComponent,
+    ReservesTableComponent,
+    RecoveriesTableComponent,
+    TransactionsTableComponent,
+    SectionSummaryTableComponent
   ],
   templateUrl: './financial-overview.component.html',
   styleUrl: './financial-overview.component.scss'
@@ -79,7 +90,6 @@ export class FinancialOverviewComponent implements OnInit {
   readonly level = toSignal(this.levelControl.valueChanges, { initialValue: 'claim' as LevelToggle });
   readonly currency = signal('EUR');
   readonly sectionId = signal('');
-  readonly expandedReserveIds = signal<Set<string>>(new Set());
 
   // BMPCC-14826 — same claimClosed-gating pattern as sections.ts (claim.status
   // fetched via MockClaimOverviewService.getOverview()); sectionStatuses is
@@ -146,25 +156,32 @@ export class FinancialOverviewComponent implements OnInit {
     return all.filter(r => r.sectionId === id);
   });
 
-  /** "Peter Pane | PD": party, then the section's short code. */
-  sectionLabel(r: FinancialReserve): string {
-    return [r.party, r.sectionCode].filter(Boolean).join(' | ');
-  }
+  // Payment to show expanded when arriving from a Task manager link.
+  readonly openPaymentId = toSignal(
+    this.route.queryParamMap.pipe(map(p => p.get('open'))),
+    { initialValue: this.route.snapshot.queryParamMap.get('open') }
+  );
 
-  /** NDBX badge look for a payment / reserve / recovery status. */
-  badgeFor(status: string): { type: NxBadgeType; scheme: NxBadgeColorScheme | undefined } {
-    switch (status) {
-      case 'Approved':
-      case 'Done':
-        return { type: 'positive', scheme: undefined };
-      case 'Rejected':
-        return { type: 'negative', scheme: undefined };
-      case 'Credit':
-        return { type: 'active', scheme: undefined };
-      default:
-        return { type: '', scheme: 'yellow' };
-    }
-  }
+  // Items Global Genius couldn't book and someone has to fix, per list, for
+  // the "N items couldn't be booked" line on the overview.
+  readonly notBooked = computed(() => {
+    const data = this.fo();
+    if (!data) return null;
+    const count = (rows: { bookingStatus?: string }[]) =>
+      rows.filter(r => r.bookingStatus === 'needs-fixing').length;
+    const counts: Record<NotBookedView, number> = {
+      payments: count(data.payments),
+      reserves: count(data.reserves),
+      recovery: count(data.recoveries)
+    };
+    const views = (Object.keys(counts) as NotBookedView[]).filter(v => counts[v] > 0);
+    const parts = views.map(v => ({
+      view: v as FinancialView,
+      text: `${counts[v]} ${NOT_BOOKED_WORDS[v][counts[v] === 1 ? 0 : 1]}`
+    }));
+    const total = views.reduce((sum, v) => sum + counts[v], 0);
+    return total > 0 ? { total, parts } : null;
+  });
 
   get kpis() {
     const s = this.fo()?.summary;
@@ -256,14 +273,7 @@ export class FinancialOverviewComponent implements OnInit {
     );
   }
 
-  toggleReserveHistory(id: string): void {
-    const s = new Set(this.expandedReserveIds());
-    if (s.has(id)) s.delete(id);
-    else s.add(id);
-    this.expandedReserveIds.set(s);
-  }
-
-  isReserveExpanded(id: string): boolean {
-    return this.expandedReserveIds().has(id);
+  onMakePayment(): void {
+    this.router.navigate(['/claims', this.claimId, 'financial', 'new-payment']);
   }
 }
