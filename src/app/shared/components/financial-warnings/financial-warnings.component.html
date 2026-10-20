@@ -7,7 +7,7 @@
         {{ a.label }}
       </button>
     }
-    @if (check.needsReason && reason(); as ctrl) {
+    @if (check.needsReason && !check.afterOutsideBlock && reason(); as ctrl) {
       <nx-formfield label="Reason for going over the limit *" class="fw-reason">
         <input nxInput [formControl]="ctrl" />
         @if (showReasonError() && ctrl.invalid) {

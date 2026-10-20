@@ -23,10 +23,14 @@ export class NotificationPanelComponent {
   private readonly router = inject(Router);
 
   readonly count = this.notifySvc.actionCount;
-  // Things that need the handler first, then good news.
-  readonly items = computed(() => {
+  // Grouped by who has to act: you, someone else, or already sorted.
+  readonly groups = computed(() => {
     const all = this.notifySvc.all();
-    return [...all.filter(n => n.tone === 'action'), ...all.filter(n => n.tone === 'done')];
+    return [
+      { heading: 'Needs you', items: all.filter(n => n.tone === 'action') },
+      { heading: 'Someone else is on it', items: all.filter(n => n.tone === 'info') },
+      { heading: 'Done', items: all.filter(n => n.tone === 'done') }
+    ].filter(g => g.items.length > 0);
   });
 
   open(n: AppNotification): void {

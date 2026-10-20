@@ -27,6 +27,12 @@
     </div>
   }
 
+  @if (needsUnderwriterTick()) {
+    <nx-checkbox class="mp-underwriter" [formControl]="underwriterChecked">
+      I checked with the underwriter
+    </nx-checkbox>
+  }
+
   <section class="mp-card" [formGroup]="form">
     <h2 class="mp-card-title">Payment details</h2>
     <div class="mp-grid">
@@ -74,7 +80,7 @@
 
   <div class="mp-footer">
     <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button" [disabled]="blocked()" (click)="onSubmit()">
+    <button nxButton="primary small" type="button" [disabled]="cannotSubmit()" (click)="onSubmit()">
       Submit
     </button>
   </div>

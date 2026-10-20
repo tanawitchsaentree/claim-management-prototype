@@ -1,9 +1,11 @@
+import { DOCUMENT } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { combineLatest, firstValueFrom, map, startWith } from 'rxjs';
+import { combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -27,6 +29,9 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
 const PAYMENT_TYPES = ['Indemnity', 'Expenses'];
 const CLAIM_LEVEL = '';
+// Opening this dialog the instant the DEV banner's own dialog closes hangs the page
+// (seen with a page already open on a bare Make payment, then Apply on AC-02).
+const CONFIRM_SETTLE_MS = 1500;
 
 @Component({
   selector: 'app-make-payment',
@@ -34,6 +39,7 @@ const CLAIM_LEVEL = '';
   imports: [
     ReactiveFormsModule,
     NxButtonModule,
+    NxCheckboxModule,
     NxDropdownModule,
     NxFormfieldModule,
     NxInputModule,
@@ -48,6 +54,7 @@ const CLAIM_LEVEL = '';
 export class MakePaymentComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
@@ -68,35 +75,54 @@ export class MakePaymentComponent {
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)])
   });
   readonly limitReason = new FormControl<string | null>('', [Validators.required]);
+  readonly underwriterChecked = new FormControl(false, { nonNullable: true });
   // BMPCC-21754 is undecided, so the prototype lets the team flip between both.
   readonly premiumMode = new FormControl<'block' | 'warn'>('block', { nonNullable: true });
   readonly submitted = signal(false);
 
   // The DEV banner (and "Add reserve, then come back") land here with the form
   // already filled in: ?section=&type=&payee=&amount=&currency=&premiumMode=&confirm=1
-  private readonly query = this.route.snapshot.queryParamMap;
-  private readonly openConfirm = this.query.get('confirm') === '1';
+  // The page can already be open when the address changes (banner AC to AC), so
+  // this follows every change of the query, not only the first one. Done in a
+  // tap, before the view is checked, so nothing changes after the page is checked.
+  private readonly confirmRequested = signal(false);
+  private readonly queryWatch = toSignal(
+    this.route.queryParamMap.pipe(tap(q => this.applyQuery(q))),
+    { initialValue: null }
+  );
 
-  // Filled in the constructor, before the first render, so nothing changes after the page is checked.
-  constructor() {
-    const q = this.query;
+  private applyQuery(q: ParamMap): void {
     const amount = q.get('amount');
-    this.form.patchValue({
+    this.form.reset({
       section: q.get('section') ?? CLAIM_LEVEL,
       paymentType: q.get('type'),
       payee: q.get('payee') ?? '',
       currency: q.get('currency') ?? 'EUR',
       amount: amount ? Number(amount) : null
     });
-    if (q.get('premiumMode') === 'warn') this.premiumMode.setValue('warn');
+    this.premiumMode.setValue(q.get('premiumMode') === 'warn' ? 'warn' : 'block');
+    this.limitReason.reset('');
+    this.underwriterChecked.reset(false);
+    this.submitted.set(false);
+    this.confirmRequested.set(q.get('confirm') === '1');
   }
 
-  private confirmed = false;
   private readonly autoConfirm = effect(() => {
-    if (!this.openConfirm || this.confirmed || !this.finance() || !this.overview()) return;
-    this.confirmed = true;
-    setTimeout(() => void this.onSubmit());
+    if (!this.confirmRequested() || !this.finance() || !this.overview()) return;
+    this.confirmRequested.set(false);
+    setTimeout(() => this.openConfirmWhenClear(), CONFIRM_SETTLE_MS);
   });
+
+  // The prefilled confirm waits for the page to settle and for any other overlay to go.
+  private openConfirmWhenClear(tries = 0): void {
+    // Any other overlay still on screen (the DEV banner's dialog is its own, still animating out)?
+    const busy = this.document.querySelector('.cdk-overlay-backdrop-showing, nx-modal-container');
+    if (!busy || tries > 25) {
+      void this.onSubmit();
+      return;
+    }
+    setTimeout(() => this.openConfirmWhenClear(tries + 1), 150);
+  }
 
   private readonly finance = toSignal(this.financeSvc.getByClaimId(this.claimId));
   private readonly limits = toSignal(this.limitsSvc.getByClaimId(this.claimId));
@@ -137,11 +163,24 @@ export class MakePaymentComponent {
   });
 
   readonly blocked = computed(() => preChecksBlockSubmit(this.checks()));
-  readonly needsLimitReason = computed(() => this.checks().some(c => c.needsReason));
+  // The reason is asked for only once nothing outside blocks the payment.
+  readonly needsLimitReason = computed(() =>
+    this.checks().some(c => c.needsReason && !c.afterOutsideBlock)
+  );
+  // Warning-only unpaid premium (BMPCC-21754 variant): paying out needs a tick.
+  readonly needsUnderwriterTick = computed(() =>
+    this.checks().some(c => c.id === 'premium-outstanding' && c.level === 'warn')
+  );
+  private readonly underwriterTicked = toSignal(this.underwriterChecked.valueChanges, {
+    initialValue: false
+  });
+  readonly cannotSubmit = computed(
+    () => this.blocked() || (this.needsUnderwriterTick() && !this.underwriterTicked())
+  );
 
   async onSubmit(): Promise<void> {
     this.submitted.set(true);
-    if (this.blocked() || this.form.invalid) return;
+    if (this.cannotSubmit() || this.form.invalid) return;
     if (this.needsLimitReason() && this.limitReason.invalid) return;
     const v = this.form.getRawValue();
     const where = this.sections().find(s => s.sectionId === v.section)?.sectionName ?? 'claim level';

@@ -28,3 +28,14 @@
 .np-item--done {
   color: var(--text-muted);
 }
+
+// Group titles: labels, not choices. NDBX greys out disabled menu items, so the
+// colour is set on the inner text, which it does not touch.
+.np-heading {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.np-heading-text {
+  color: var(--text-01);
+}

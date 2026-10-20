@@ -4,8 +4,13 @@
     <span class="ggb-body">{{ m.body }}</span>
     @if (m.canSendAgain) {
       <button nxButton="secondary small" type="button" class="ggb-action" (click)="sendAgain()">
-        Send claim to Global Genius again
+        {{ m.sendAgainLabel }}
       </button>
     }
+  </nx-message>
+} @else if (justReady()) {
+  <nx-message context="success" class="ggb-banner" [closable]="true" (close)="justReady.set(false)">
+    <strong>This claim is now set up in Global Genius.</strong>
+    <span class="ggb-body">Payments and reserves can go ahead.</span>
   </nx-message>
 }

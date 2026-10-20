@@ -12,10 +12,13 @@
 </button>
 
 <nx-context-menu #menu="nxContextMenu">
-  @for (n of items(); track n.id) {
-    <button nxContextMenuItem type="button" (click)="open(n)">
-      <span class="np-item" [class.np-item--done]="n.tone === 'done'">{{ n.title }}</span>
-    </button>
+  @for (g of groups(); track g.heading) {
+    <button nxContextMenuItem type="button" disabled class="np-heading"><span class="np-heading-text">{{ g.heading }}</span></button>
+    @for (n of g.items; track n.id) {
+      <button nxContextMenuItem type="button" (click)="open(n)">
+        <span class="np-item" [class.np-item--done]="n.tone === 'done'">{{ n.title }}</span>
+      </button>
+    }
   } @empty {
     <button nxContextMenuItem type="button" disabled>Nothing needs you</button>
   }

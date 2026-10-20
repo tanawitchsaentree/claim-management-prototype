@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import {
@@ -8,9 +8,10 @@ import {
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockBookingService } from '../../../core/mock/services/mock-booking.service';
 
-// Claim-level Global Genius message. Shows only when something is wrong. When
-// the claim can be sent again (DESIGN DECISION GG-2) the button is here; while
-// it runs the banner turns into the "still being set up" note, then disappears.
+// Claim-level Global Genius message. Shows only when something is wrong. A
+// handler-triggered retry shows "Retrying…" while it runs; when it works the
+// banner turns into a short green confirmation (dismissible, gone on the next
+// visit) so the good news is on the page, not only in the bell.
 @Component({
   selector: 'app-gg-registration-banner',
   standalone: true,
@@ -24,19 +25,33 @@ export class GgRegistrationBannerComponent {
 
   readonly claimId = input('');
   readonly registration = input<GgClaimRegistration | undefined>();
-  // "Send again" changes the claim's state in the background; read it live
-  // when we know the claim, else fall back to what the page passed in. Both the
-  // state and the failure count come from the claim, so the banner never
-  // depends on a local "busy" flag that could get stuck.
+
+  // Everything comes from the claim's own state, never from a local busy flag:
+  // the state, the failure count and whether a retry is waiting for GG.
   private readonly liveClaim = computed(() =>
     this.claimId() ? this.stateSvc.state().overviews[this.claimId()] : undefined
   );
+  private readonly current = computed(() => this.liveClaim()?.ggRegistration ?? this.registration());
   readonly message = computed(() =>
     claimRegistrationMessage(
-      this.liveClaim()?.ggRegistration ?? this.registration(),
-      this.liveClaim()?.ggResendFailures ?? 0
+      this.current(),
+      this.liveClaim()?.ggResendFailures ?? 0,
+      this.liveClaim()?.ggResendInFlight ?? false
     )
   );
+
+  // True once, right after a retry this handler started has worked.
+  readonly justReady = signal(false);
+  private wasRetrying = false;
+  private readonly watch = effect(() => {
+    const retrying = this.current() === 'registering' && !!this.liveClaim()?.ggResendInFlight;
+    const registered = this.current() === 'registered';
+    untracked(() => {
+      if (this.wasRetrying && registered) this.justReady.set(true);
+      if (retrying) this.justReady.set(false);
+      this.wasRetrying = retrying;
+    });
+  });
 
   sendAgain(): void {
     this.booking.sendClaimAgain(this.claimId());
