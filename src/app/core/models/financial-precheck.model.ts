@@ -36,6 +36,8 @@ export interface PreCheck {
 export interface PreCheckInput {
   journey: 'payment' | 'reserve';
   ggRegistration?: GgClaimRegistration;
+  // A handler-triggered claim retry is waiting for GG's answer.
+  ggResendInFlight?: boolean;
   premiumOutstanding?: boolean;
   // Undecided in BMPCC-21754; the prototype shows both so the team can pick.
   premiumMode?: 'block' | 'warn';
@@ -83,7 +85,16 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       body: "This claim's policy isn't in Global Genius yet. The policy team has been told and needs to add it. We'll let you know when it's ready."
     });
   }
-  if (input.ggRegistration === 'registering') {
+  if (input.ggRegistration === 'registering' && input.ggResendInFlight) {
+    // Review round 3: after Retry the box fell back to the new-claim wording
+    // and Submit came back on before anyone knew whether the retry worked.
+    out.push({
+      id: 'claim-not-in-gg',
+      level: 'block',
+      title: 'Retrying: setting up this claim in Global Genius',
+      body: 'This usually takes a few seconds. You can submit as soon as it works; your details are kept.'
+    });
+  } else if (input.ggRegistration === 'registering') {
     out.push({
       id: 'claim-registering',
       level: 'warn',

@@ -1305,9 +1305,9 @@
     {
       "id": "AC-07",
       "statement": "Payments · Sent back by the approver",
-      "plainStatement": "**Opens:** Payments, row 123456-5 already open.\n\n**You see:** The approver's note and what to do (change it and submit again). Looks different from a booking failure.",
+      "plainStatement": "**Opens:** Payments, row 123456-5 already open.\n\n**You see:** The approver's note and what to do (change it and submit again). Looks different from a booking failure.\n\n**Try:** press **Change and resubmit**: Make payment opens with this payment filled in; submitting sends the same payment (same number) back to the approver as Pending.",
       "page": "financial",
-      "buildStatus": "done",
+      "buildStatus": "todo",
       "setup": {
         "description": "Sent back by the approver",
         "preconditions": [

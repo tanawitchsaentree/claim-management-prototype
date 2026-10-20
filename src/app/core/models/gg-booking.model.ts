@@ -67,7 +67,8 @@ export interface DisplayStatus {
 
 const BOOKING_DISPLAY: Record<BookingStatus, DisplayStatus> = {
   booking: { label: 'Booking in progress', tone: 'waiting' },
-  'waiting-claim': { label: 'Waiting for claim', tone: 'waiting' },
+  // Review round 3: "Waiting for claim" read as waiting for the claimant.
+  'waiting-claim': { label: 'Waiting for claim set-up', tone: 'waiting' },
   delayed: { label: 'Booking delayed', tone: 'waiting' },
   booked: { label: 'Booked', tone: 'done' },
   'needs-fixing': { label: "Couldn't be booked", tone: 'action' }
@@ -162,6 +163,8 @@ export interface StatusExplanation {
   whoActs: 'you' | 'finance' | 'approver' | 'nobody';
   // Shown under the "Send again" button when canSendAgain().
   sendAgainHint?: string;
+  // Tick box the Send again confirm requires before it goes (label text).
+  confirmFixed?: string;
 }
 
 export function statusExplanation(
@@ -173,7 +176,7 @@ export function statusExplanation(
   const notOut = noun === 'payment' ? 'No money has been paid out.' : 'It is not in the books yet.';
   if (approvalStatus === 'Requires amendment') {
     return {
-      heading: 'Sent back to you by the approver',
+      heading: 'Requires amendment: sent back to you by the approver',
       lines: [item.approvalNote ?? 'The approver asked for changes.', `Change the ${noun} and submit it again.`],
       whoActs: 'you'
     };
@@ -181,13 +184,16 @@ export function statusExplanation(
   if (approvalStatus === 'Rejected') {
     // Review round 2: "make a new payment if still owed" on a rejected item
     // invited exactly the double payment the approver stopped.
+    // Review round 3: "talk to the approver" next to "nothing for you to do"
+    // contradicted itself. A rejection is final but it is the handler's to
+    // close: tell the payee, or challenge it with the approver.
     return {
       heading: 'Rejected by the approver',
       lines: [
         item.approvalNote ?? 'No reason was given.',
-        `Nothing was paid. If you think this is wrong, talk to the approver before doing anything else.`
+        `Nothing was paid. Let the payee know, or talk to the approver if you think it's wrong.`
       ],
-      whoActs: 'nobody'
+      whoActs: 'you'
     };
   }
   if (!handed) return null;
@@ -220,11 +226,9 @@ export function statusExplanation(
       if (effectiveOwner(issue) === 'finance') {
         return {
           heading: escalated ? 'Sent again, still not booked: now with Finance' : "With Finance: couldn't be booked",
-          lines: [
-            issue?.reason ?? 'Global Genius did not accept it.',
-            notOut,
-            "The Finance team has been told and is fixing it. You don't need to do anything. We'll let you know when it's booked."
-          ],
+          // The panel adds the "Finance team is fixing it, nothing for you to
+          // do" line from whoActs; repeating it here doubled it (review round 3).
+          lines: [issue?.reason ?? 'Global Genius did not accept it.', notOut, "We'll let you know when it's booked."],
           whoActs: 'finance'
         };
       }
@@ -232,6 +236,9 @@ export function statusExplanation(
         heading: "Why this couldn't be booked",
         lines: [issue?.reason ?? 'Global Genius did not accept it.', notOut],
         whoActs: 'you',
+        // Data the handler must correct first: the confirm step asks them to
+        // say they did (review round 3: Send again before fixing = a trap).
+        confirmFixed: issue?.cause === 'data-mismatch' ? "I've corrected it" : undefined,
         sendAgainHint:
           issue?.cause === 'gg-unavailable'
             ? 'Global Genius was unavailable. You can send it again now.'

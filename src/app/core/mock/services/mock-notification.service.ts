@@ -55,7 +55,8 @@ export class MockNotificationService {
         if (r.status === 'Requires amendment') {
           out.push({ id: `item-${r.id}`, claimId: fo.claimId, tone: 'action', title: `${fo.claimId}: ${r.kind} ${r.id} was sent back to you by the approver`, link, queryParams });
         } else if (r.status === 'Rejected') {
-          out.push({ id: `item-${r.id}`, claimId: fo.claimId, tone: 'info', title: `${fo.claimId}: ${r.kind} ${r.id} was rejected by the approver`, link, queryParams });
+          // Review round 3: a rejection is the handler's to close, not "someone else is on it".
+          out.push({ id: `item-${r.id}`, claimId: fo.claimId, tone: 'action', title: `${fo.claimId}: ${r.kind} ${r.id} was rejected by the approver: let the payee know`, link, queryParams });
         } else if (needsHandler(r.status, r.item)) {
           out.push({ id: `item-${r.id}`, claimId: fo.claimId, tone: 'action', title: `${fo.claimId}: ${r.kind} ${r.id} couldn't be booked and needs you`, link, queryParams });
         } else if (withFinance(r.status, r.item)) {
