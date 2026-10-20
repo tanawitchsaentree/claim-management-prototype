@@ -384,7 +384,7 @@
       "statement": "Make payment · Changing a payment the approver sent back",
       "plainStatement": "**Opens:** Make payment in edit mode for payment 123456-5 (sent back by the approver), already filled in.\n\n**You see:** The approver's note at the top, the payment's own number, and **Resubmit to approver** instead of Submit.\n\n**Try:** change the amount and resubmit: you land on Payments with 123456-5 highlighted, now Pending. No new payment is created.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Payment 123456-5 sent back by the approver",
         "postLand": [
