@@ -70,6 +70,16 @@ function simulateState(claimId, stateOverrides) {
     Object.assign(overview, so.overviewPatch.patch);
   }
 
+  // tasksAppend (GG booking ticket): extra tasks count toward pending/done.
+  if (Array.isArray(so.tasksAppend) && so.tasksAppend.length) {
+    const existingIds = new Set(tasks.map(t => t.taskId));
+    for (const t of so.tasksAppend) {
+      if (t.claimId === claimId && !existingIds.has(t.taskId)) tasks.push({ ...t });
+    }
+  }
+  // financialPatch: patches financial-overview.json rows (booking status only);
+  // no supported assertion key reads them — skipped here.
+
   if (Array.isArray(so.claimsAppend) && so.claimsAppend.length) {
     const existingIds = new Set(claims.map(c => c.claimId));
     for (const c of so.claimsAppend) {

@@ -2,7 +2,7 @@
 project: claim-management-prototype
 domain: insurance-claims
 modules: [Claims, FNOL]
-schema-version: v2.2
+schema-version: v2.3
 deployed: https://tanawitchsaentree.github.io/claim-management-prototype/
 
 ticket-schema:
@@ -145,6 +145,8 @@ interface ScenarioOverrides {
     convertFromSkeletonId?: string; // BMPCC-11006: prefill loss-info from a skeleton
   };
   cwbLocationsAppend?: CwbLocation[]; // dedupe by cwbReference
+  financialPatch?: FinancialPatchOverride; // v2.3 — GG booking states, see apply-financial-overrides.ts
+  tasksAppend?: Task[]; // v2.3 — dedupe by taskId
 }
 ```
 
@@ -166,6 +168,8 @@ interface ScenarioOverrides {
 | `fnolStateOverride.convertFromSkeletonId`        | `string`                           | resolves via `MockSkeletonClaimService` then calls `prefillFullFromSkeleton` | bmpcc-11006          | Demo prefill — populates the **search**, **loss-info**, and downstream forms; user still navigates each step themselves |
 | `fnolStateOverride.convertSuggestedPolicyNumber` | `string`                           | passed as `opts.policyNumber` to `prefillFullFromSkeleton`                   | bmpcc-11006          | Hints the policy to drop into the search form so the user only needs one click to find the right row                    |
 | `cwbLocationsAppend`                             | `CwbLocation[]`                    | dedupe by `cwbReference`                                                     | bmpcc-219            | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()`                                       |
+| `financialPatch`                                 | `{ claimId, payments?, reserves?, recoveries?, paymentsAppend? }` | `financialOverviews[claimId]` rows by paymentId / reserveId / recoveryId | gg-booking-states | Partial merge (booking status / approval status); `paymentsAppend` dedupes by paymentId. Applied in `apply-financial-overrides.ts` (kept out of mock-state.service.ts, already over 300 lines). Audit: skipped (no assertion key reads it) |
+| `tasksAppend`                                    | `Task[]`                           | dedupe by `taskId`                                                           | gg-booking-states    | Mirrored in audit simulator — counts toward `pendingTasks` / `doneTasks`                                                 |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).
 
@@ -256,6 +260,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 | `fnol-skeleton-parties`  | `/fnol/skeleton-parties`    | BMPCC-241 (orphan parties — no policy, starts empty)                    |
 | `fnol-skeleton-location` | `/fnol/skeleton-location`   | BMPCC-241 (orphan location — manual entry, no contract-location option) |
 | `fnol-summary`           | `/fnol/summary`             | Wizard summary (step-summary)                                           |
+| `financial`              | `/claims/:claimId/financial` | GG booking ticket; `howToTest.route` adds `?view=payments\|reserves\|recovery` |
 | `any`                    | (empty string)              | Metadata-only preconditions; no link rendered                           |
 
 `pageRoute(page, claimId)` mapping: `claim-dev-helper.service.ts:273-277`. Adding a page = update mapping + add row above + update `isFeatureRoute` regex if it lives outside `/claims/:id/...` and `/fnol/...`.

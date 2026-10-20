@@ -1,4 +1,15 @@
-export type FinancialPaymentStatus = 'Pending' | 'Credit' | 'Done' | 'Rejected';
+import { Bookable } from './gg-booking.model';
+
+// Draft / Requires amendment / Approved added for the GG booking journey
+// (BMPCC-19169): approval states first, then the booking state takes over.
+export type FinancialPaymentStatus =
+  | 'Draft'
+  | 'Pending'
+  | 'Requires amendment'
+  | 'Approved'
+  | 'Credit'
+  | 'Done'
+  | 'Rejected';
 export type FinancialReserveStatus = 'Approved' | 'Pending' | 'Rejected';
 export type FinancialRecoveryStatus = 'Approved' | 'Pending' | 'Rejected';
 
@@ -23,7 +34,7 @@ export interface FinancialDetails {
   rows: FinancialDetailRow[];
 }
 
-export interface FinancialPayment {
+export interface FinancialPayment extends Bookable {
   paymentId: string;
   reinsuranceId: string;
   payee: string;
@@ -35,7 +46,7 @@ export interface FinancialPayment {
   paymentDate: string;
 }
 
-export interface FinancialReserve {
+export interface FinancialReserve extends Bookable {
   reserveId: string;
   party: string;
   damagedItem: string;
@@ -55,7 +66,7 @@ export interface FinancialReserve {
   requestedBy?: string;
 }
 
-export interface FinancialRecovery {
+export interface FinancialRecovery extends Bookable {
   recoveryId: string;
   bookingId: string;
   reinsuranceId: string;

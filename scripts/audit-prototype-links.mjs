@@ -45,7 +45,8 @@ for (const [file, prefix] of ROUTE_FILES) {
 }
 
 function routeExists(route) {
-  const want = route.replace(/^\//, '').split('/');
+  // The router matches the path only; '?view=payments' etc. select a view on the page.
+  const want = route.split(/[?#]/)[0].replace(/^\//, '').split('/');
   for (const pattern of patterns) {
     const have = pattern.replace(/^\//, '').split('/');
     if (have.length !== want.length) continue;

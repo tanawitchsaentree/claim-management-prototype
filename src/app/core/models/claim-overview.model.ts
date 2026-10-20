@@ -1,4 +1,5 @@
 import { MassEventLinkStatus, SkeletonState } from './claim.model';
+import { GgClaimRegistration } from './gg-booking.model';
 
 export interface AccessListEntry {
   userId: string;
@@ -158,6 +159,12 @@ export interface ClaimOverview {
   hasOpenReserves?: boolean;
   /** A recovery case exists in the recovery domain, resolved or not (BMPCC-17779 phase B). */
   hasRecoveryCase?: boolean;
+  // BMPCC-20232 / 19412 — is this claim registered in Global Genius? Absent =
+  // registered. Drives the claim-level banner and the Make payment pre-check.
+  ggRegistration?: GgClaimRegistration;
+  // BMPCC-21754 — GG reports outstanding premium at claim creation; payments
+  // are restricted while true (block vs warn still TBC).
+  premiumOutstanding?: boolean;
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;

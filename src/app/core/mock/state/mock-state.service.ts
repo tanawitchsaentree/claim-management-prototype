@@ -10,6 +10,7 @@ import { Note } from '../../models/note.model';
 import { FinancialOverview } from '../../models/financial-overview.model';
 import { ProviderAssignment } from '../../models/provider-assignment.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
+import { FinancialPatchOverride, applyFinancialPatch, appendTasks } from './apply-financial-overrides';
 
 export interface ScenarioOverrides {
   taskStatuses?: Record<string, TaskStatus>;
@@ -25,6 +26,9 @@ export interface ScenarioOverrides {
   cwbLocationsAppend?: CwbLocation[];
   notesAppend?: { claimId: string; notes: Note[] };
   paymentStatuses?: Record<string, 'Pending' | 'Processed' | 'Final'>;
+  // GG booking states (gg-booking-states.json) — see apply-financial-overrides.ts.
+  financialPatch?: FinancialPatchOverride;
+  tasksAppend?: Task[];
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -364,6 +368,11 @@ export class MockStateService {
         this.injector.get(m.MockNotesService).appendNotes(claimId, notes)
       );
     }
+
+    if (overrides.financialPatch) {
+      next = { ...next, financialOverviews: applyFinancialPatch(next.financialOverviews, overrides.financialPatch) };
+    }
+    next = { ...next, tasks: appendTasks(next.tasks, overrides.tasksAppend) };
 
     if (overrides.paymentStatuses) {
       const statuses = overrides.paymentStatuses;
