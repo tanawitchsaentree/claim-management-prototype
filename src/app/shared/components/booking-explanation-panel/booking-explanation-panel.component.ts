@@ -53,11 +53,6 @@ export class BookingExplanationPanelComponent {
   });
   readonly sendAgain = computed(() => canSendAgain(this.item()));
   readonly taskId = computed(() => this.item().bookingIssue?.taskId);
-  /** The handler's fix is a data correction: the claim's parties page is where it is made. */
-  readonly fixInParties = computed(() => {
-    const issue = this.item().bookingIssue;
-    return issue?.owner === 'handler' && issue.cause === 'data-mismatch';
-  });
 
   async onSendAgain(): Promise<void> {
     const noun = this.kind();

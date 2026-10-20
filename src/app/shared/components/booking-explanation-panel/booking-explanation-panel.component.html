@@ -12,9 +12,6 @@
             >See the task that tells you what to do</a
           >
         }
-        @if (fixInParties()) {
-          <a [routerLink]="['/claims', claimId(), 'parties']">Open Parties</a>
-        }
       </p>
     } @else if (whoLine(); as who) {
       <p class="bep__line">{{ who }}</p>
