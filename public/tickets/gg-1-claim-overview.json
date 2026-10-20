@@ -17,7 +17,7 @@
       "statement": "Claim Overview · Claim couldn't be set up in GG",
       "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.\n\n**Try:** Press the button: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\".",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim couldn't be set up in GG",
         "preconditions": [
@@ -58,7 +58,7 @@
       "statement": "Claim Overview · Send claim again, it fails again",
       "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red banner as AC-01.\n\n**Try:** Press Send again: it goes blue, then comes back red after ~3 seconds.",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Send claim again, it fails again",
         "preconditions": [
@@ -99,7 +99,7 @@
       "statement": "Claim Overview · Claim's policy isn't in GG",
       "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy).",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim's policy isn't in GG",
         "preconditions": [
@@ -139,7 +139,7 @@
       "statement": "Claim Overview · Claim still being set up",
       "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Blue information banner: you can carry on, anything you submit is booked once the claim is ready.",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim still being set up",
         "preconditions": [

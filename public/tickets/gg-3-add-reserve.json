@@ -16,7 +16,7 @@
       "statement": "Add reserve · Over the limit",
       "plainStatement": "**Opens:** Reserves with Add reserve open, EUR 900,000 on Business Interruption.\n\n**You see:** Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Over the limit",
         "preconditions": [
@@ -46,7 +46,7 @@
       "statement": "Add reserve · Claim still being set up",
       "plainStatement": "**Opens:** Reserves with Add reserve open.\n\n**You see:** Blue note: the reserve is booked once the claim is ready.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim still being set up",
         "preconditions": [
@@ -86,7 +86,7 @@
       "statement": "Add reserve · Arrived from \"Add a USD reserve\"",
       "plainStatement": "**Opens:** Reserves with Add reserve open in USD (what Make payment AC-05 leads to).\n\n**You see:** Currency already USD.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Arrived from \"Add a USD reserve\"",
         "preconditions": [

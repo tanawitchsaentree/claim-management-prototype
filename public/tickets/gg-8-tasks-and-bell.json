@@ -226,7 +226,7 @@
       "statement": "Bell · Things that need you",
       "plainStatement": "**Opens:** Claim Overview; look at the bell in the top bar.\n\n**You see:** A count on the bell. Open it: one line per claim on hold and per item that couldn't be booked, each linking to the exact row.\n\n**Try:** Send something again (Payments AC-03), then open the bell: \"now booked\" appears.",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Things that need you",
         "preconditions": [
