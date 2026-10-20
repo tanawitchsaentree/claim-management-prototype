@@ -10,13 +10,16 @@
   <!-- Everything that can go wrong sits at the top, before the form, blocks first. -->
   <app-financial-warnings
     [checks]="checks()"
+    [claimId]="claimId"
+    [sectionId]="form.controls.section.value"
+    [currency]="form.controls.currency.value"
     [reason]="limitReason"
-    [showReasonError]="submitted"
+    [showReasonError]="submitted()"
   ></app-financial-warnings>
 
   @if (overview()?.premiumOutstanding) {
     <div class="mp-preview">
-      <span class="mp-preview__label">Unpaid premium: preview as</span>
+      <span class="mp-preview__label">Prototype preview: unpaid premium shows as</span>
       <nx-radio-toggle [formControl]="premiumMode" variant="small">
         <nx-radio-toggle-button value="block">Blocks payment</nx-radio-toggle-button>
         <nx-radio-toggle-button value="warn">Warning only</nx-radio-toggle-button>
@@ -42,20 +45,20 @@
             <nx-dropdown-item [value]="t">{{ t }}</nx-dropdown-item>
           }
         </nx-dropdown>
-        @if (submitted && form.controls.paymentType.invalid) {
+        @if (submitted() && form.controls.paymentType.invalid) {
           <nx-error nxFormfieldError>Required.</nx-error>
         }
       </nx-formfield>
       <nx-formfield label="Payee *">
         <input nxInput formControlName="payee" />
-        @if (submitted && form.controls.payee.invalid) {
+        @if (submitted() && form.controls.payee.invalid) {
           <nx-error nxFormfieldError>Required.</nx-error>
         }
       </nx-formfield>
 
       <nx-formfield label="Amount *">
         <input nxInput type="number" formControlName="amount" />
-        @if (submitted && form.controls.amount.invalid) {
+        @if (submitted() && form.controls.amount.invalid) {
           <nx-error nxFormfieldError>Enter an amount greater than 0.</nx-error>
         }
       </nx-formfield>

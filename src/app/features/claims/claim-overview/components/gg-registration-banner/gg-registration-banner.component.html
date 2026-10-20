@@ -2,5 +2,10 @@
   <nx-message [context]="m.severity === 'error' ? 'error' : 'info'" class="ggb-banner">
     <strong>{{ m.title }}</strong>
     <span class="ggb-body">{{ m.body }}</span>
+    @if (m.canSendAgain) {
+      <button nxButton="secondary small" type="button" class="ggb-action" (click)="sendAgain()">
+        Send claim to Global Genius again
+      </button>
+    }
   </nx-message>
 }

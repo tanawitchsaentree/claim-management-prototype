@@ -11,8 +11,9 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { FinancialWarningsComponent } from '../../../../../shared/components/financial-warnings/financial-warnings.component';
-import { limitHeadroom } from '../../../../../shared/components/financial-warnings/limit-headroom';
+import { claimHeadroom } from '../../../../../shared/components/financial-warnings/limit-headroom';
 import { MockClaimOverviewService } from '../../../../../core/mock/services/mock-claim-overview.service';
+import { MockFinancialOverviewService } from '../../../../../core/mock/services/mock-financial-overview.service';
 import { MockLimitsDeductiblesService } from '../../../../../core/mock/services/mock-limits-deductibles.service';
 import { financialPreChecks } from '../../../../../core/models/financial-precheck.model';
 import {
@@ -26,6 +27,8 @@ export interface AddReserveModalData {
   reserve?: FinancialReserve;
   // Falls back to the claim in the URL when the caller doesn't pass it.
   claimId?: string;
+  // Lands here from "Add a USD reserve" or a DEV-banner link with fields already set.
+  prefill?: { amount?: number; currency?: string; section?: string };
 }
 
 export type AddReserveModalResult =
@@ -76,20 +79,23 @@ export class AddReserveModalComponent {
     this.data.claimId ?? inject(Router).url.match(/\/claims\/([^/?]+)/)?.[1] ?? '';
   private readonly overviewSvc = inject(MockClaimOverviewService);
   private readonly limitsSvc = inject(MockLimitsDeductiblesService);
+  private readonly financeSvc = inject(MockFinancialOverviewService);
+  readonly claimIdValue = this.claimId;
 
   readonly checks = toSignal(
     combineLatest([
       this.overviewSvc.getOverview(this.claimId),
       this.limitsSvc.getByClaimId(this.claimId),
+      this.financeSvc.getByClaimId(this.claimId),
       this.form.valueChanges.pipe(startWith(null))
     ]).pipe(
-      map(([overview, ld]) => {
+      map(([overview, ld, fo]) => {
         const v = this.form.getRawValue();
         const section = this.data.sections.find(s => s.sectionId === v.section);
-        const others = this.data.sections.flatMap(s => s.reserves).filter(r => r.reserveId !== this.editing?.reserveId);
-        const head = limitHeadroom(ld.limits, others, v.currency ?? 'EUR', section?.sectionName);
+        const head = claimHeadroom(fo, ld.limits, v.currency ?? 'EUR', section?.sectionName, this.editing?.reserveId);
         return financialPreChecks({
           journey: 'reserve',
+          currency: v.currency ?? 'EUR',
           ggRegistration: overview.ggRegistration,
           amount: v.reserveValue ?? undefined,
           limitRemaining: head?.remaining,
@@ -101,6 +107,14 @@ export class AddReserveModalComponent {
   );
 
   constructor() {
+    const pre = this.data.prefill;
+    if (pre) {
+      this.form.patchValue({
+        reserveValue: pre.amount ?? null,
+        currency: pre.currency ?? 'EUR',
+        section: pre.section ?? null
+      });
+    }
     const r = this.editing;
     if (!r) return;
     this.form.patchValue({

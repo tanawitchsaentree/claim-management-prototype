@@ -1,18 +1,33 @@
+<ng-template #item let-check>
+  <nx-message [context]="context(check)" class="fw-message" [class.fw-quiet]="check.afterOutsideBlock">
+    <strong>{{ check.title }}</strong>
+    <span class="fw-body">{{ check.body }}</span>
+    @if (check.action; as a) {
+      <button nxButton="secondary small" type="button" class="fw-action" (click)="act(check)">
+        {{ a.label }}
+      </button>
+    }
+    @if (check.needsReason && reason(); as ctrl) {
+      <nx-formfield label="Reason for going over the limit *" class="fw-reason">
+        <input nxInput [formControl]="ctrl" />
+        @if (showReasonError() && ctrl.invalid) {
+          <nx-error nxFormfieldError>Give a reason to continue.</nx-error>
+        }
+      </nx-formfield>
+    }
+  </nx-message>
+</ng-template>
+
 @if (checks().length > 0) {
   <div class="fw-list" role="region" aria-label="Things to check before you submit">
-    @for (check of checks(); track check.id) {
-      <nx-message [context]="context(check)" class="fw-message">
-        <strong>{{ check.title }}</strong>
-        <span class="fw-body">{{ check.body }}</span>
-        @if (check.needsReason && reason(); as ctrl) {
-          <nx-formfield label="Reason for going over the limit *" class="fw-reason">
-            <input nxInput [formControl]="ctrl" />
-            @if (showReasonError() && ctrl.invalid) {
-              <nx-error nxFormfieldError>Give a reason to continue.</nx-error>
-            }
-          </nx-formfield>
-        }
-      </nx-message>
+    @for (check of now(); track check.id) {
+      <ng-container *ngTemplateOutlet="item; context: { $implicit: check }"></ng-container>
+    }
+    @if (later().length > 0) {
+      <p class="fw-later-heading">Once that's sorted</p>
+      @for (check of later(); track check.id) {
+        <ng-container *ngTemplateOutlet="item; context: { $implicit: check }"></ng-container>
+      }
     }
   </div>
 }

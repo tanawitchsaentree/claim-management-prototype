@@ -24,6 +24,8 @@ export interface ConfirmDialogData {
   confirmLabel?: string;
   cancelLabel?: string;
   confirmDanger?: boolean;
+  // A normal "are you sure" confirm needs no warning triangle.
+  hideIcon?: boolean;
 }
 
 @Component({

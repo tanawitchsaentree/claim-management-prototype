@@ -5,11 +5,12 @@ import { NxAvatarModule } from '@allianz/ng-aquila/avatar';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { AuthService } from '../../../core/services/auth';
+import { NotificationPanelComponent } from '../../../shared/components/notification-panel/notification-panel.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NxAvatarModule, NxIconModule, NxButtonModule],
+  imports: [RouterLink, RouterLinkActive, NxAvatarModule, NxIconModule, NxButtonModule, NotificationPanelComponent],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss', './navbar-mobile.scss']
 })

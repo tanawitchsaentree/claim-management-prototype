@@ -1,5 +1,5 @@
 import { PolicyLimit } from '../../../core/models/deductible.model';
-import { FinancialReserve } from '../../../core/models/financial-overview.model';
+import { FinancialOverview, FinancialReserve } from '../../../core/models/financial-overview.model';
 
 export interface LimitHeadroom {
   remaining: number;
@@ -43,4 +43,20 @@ export function limitHeadroom(
     }
   }
   return candidates.length ? candidates.reduce((a, b) => (b.remaining < a.remaining ? b : a)) : null;
+}
+
+/**
+ * The one headroom rule for Make payment AND Add reserve, so the same limit
+ * never reads 795,000 on one and 800,000 on the other: always counted from the
+ * claim-level reserve list, never from a per-section copy of it.
+ */
+export function claimHeadroom(
+  fo: FinancialOverview | undefined,
+  limits: PolicyLimit[],
+  currency: string,
+  sectionName?: string,
+  excludeReserveId?: string
+): LimitHeadroom | null {
+  const reserves = (fo?.reserves ?? []).filter(r => r.reserveId !== excludeReserveId);
+  return limitHeadroom(limits, reserves, currency, sectionName);
 }

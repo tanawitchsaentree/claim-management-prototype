@@ -6,7 +6,8 @@
 
 .arm-header {
   @include modal.header;
-  display: flex;
+  // The mixin stacks header children in a column; title and close sit on one row.
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }

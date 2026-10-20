@@ -1,8 +1,10 @@
 <div class="cd-header">
   <div class="cd-header-row">
-    <span class="cd-icon" aria-hidden="true">
-      <nx-icon name="exclamation-triangle-o"></nx-icon>
-    </span>
+    @if (!data.hideIcon) {
+      <span class="cd-icon" aria-hidden="true">
+        <nx-icon name="exclamation-triangle-o"></nx-icon>
+      </span>
+    }
     <h2 class="cd-title">{{ data.title }}</h2>
     <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
       <nx-icon name="close"></nx-icon>

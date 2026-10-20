@@ -1,17 +1,38 @@
+// Compact on purpose: three warnings at once must not push the form below the fold.
 .fw-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  gap: 8px;
+  margin-bottom: var(--space-md);
+}
+
+.fw-message {
+  --message-padding: 8px 12px;
 }
 
 .fw-body {
   display: block;
-  margin-top: 4px;
+  margin-top: 2px;
+}
+
+.fw-action {
+  display: block;
+  margin-top: var(--space-md);
 }
 
 .fw-reason {
   display: block;
   margin-top: var(--space-md);
   max-width: 480px;
+}
+
+.fw-later-heading {
+  margin: var(--space-md) 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+// Behind an outside block: still visible, but clearly second in line.
+.fw-quiet {
+  opacity: 0.75;
 }
