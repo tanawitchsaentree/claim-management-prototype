@@ -1,0 +1,338 @@
+{
+  "ticketId": "GG-2-MAKE-PAYMENT",
+  "epicId": "BMPCC-18348",
+  "module": "GG booking",
+  "title": "GG 2 · Make payment: checks before you submit",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "financial"
+  ],
+  "walkthroughSteps": [
+    "Make payment opens with the form already filled for each case, so the warning is visible straight away.",
+    "One warning list for every source. Outside blocks (claim not in GG, unpaid premium) come first; anything else waits under \"Once that's sorted\"."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Make payment · Nothing wrong, ready to submit",
+      "plainStatement": "**Opens:** Make payment, filled in: Business Interruption, EUR 12,000 to Kaufmann Warehouse GmbH.\n\n**You see:** No warnings. Submit is enabled.\n\n**Try:** Press Submit: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Nothing wrong, ready to submit",
+        "preconditions": [
+          {
+            "text": "No warnings. Submit is enabled.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Press Submit: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted."
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "No warnings. Submit is enabled.",
+        "visualCues": [
+          "No warnings. Submit is enabled."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=EUR",
+        "trigger": "Make payment, filled in: Business Interruption, EUR 12,000 to Kaufmann Warehouse GmbH.",
+        "expectedResult": "No warnings. Submit is enabled."
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Make payment · Confirm step",
+      "plainStatement": "**Opens:** Make payment with the confirm dialog already open.\n\n**You see:** Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Confirm step",
+        "preconditions": [
+          {
+            "text": "Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Make payment with the confirm dialog already open."
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon.",
+        "visualCues": [
+          "Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=EUR&confirm=1",
+        "trigger": "Make payment with the confirm dialog already open.",
+        "expectedResult": "Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon."
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Make payment · Claim couldn't be set up in GG",
+      "plainStatement": "**Opens:** Make payment, filled in.\n\n**You see:** Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button.\n\n**Try:** Press it: the block turns into the blue \"still being set up\" note and Submit unlocks.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Claim couldn't be set up in GG",
+        "preconditions": [
+          {
+            "text": "Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Press it: the block turns into the blue \"still being set up\" note and Submit unlocks."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggResendOutcome": "registered"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button.",
+        "visualCues": [
+          "Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=EUR",
+        "trigger": "Make payment, filled in.",
+        "expectedResult": "Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Make payment · Claim still being set up",
+      "plainStatement": "**Opens:** Make payment, filled in.\n\n**You see:** Blue note: once submitted it is booked when the claim is ready. Submit enabled.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Claim still being set up",
+        "preconditions": [
+          {
+            "text": "Blue note: once submitted it is booked when the claim is ready. Submit enabled.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Make payment, filled in."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "registering"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Blue note: once submitted it is booked when the claim is ready. Submit enabled.",
+        "visualCues": [
+          "Blue note: once submitted it is booked when the claim is ready. Submit enabled."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=EUR",
+        "trigger": "Make payment, filled in.",
+        "expectedResult": "Blue note: once submitted it is booked when the claim is ready. Submit enabled."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Make payment · Currency with no reserve (USD)",
+      "plainStatement": "**Opens:** Make payment, filled in with USD.\n\n**You see:** Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency).\n\n**Try:** Press Add a USD reserve: Reserves opens with Add reserve already open in USD.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Currency with no reserve (USD)",
+        "preconditions": [
+          {
+            "text": "Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency).",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Press Add a USD reserve: Reserves opens with Add reserve already open in USD."
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency).",
+        "visualCues": [
+          "Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency)."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=USD",
+        "trigger": "Make payment, filled in with USD.",
+        "expectedResult": "Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency)."
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Make payment · Over the limit",
+      "plainStatement": "**Opens:** Make payment, filled in with EUR 900,000 on Business Interruption.\n\n**You see:** Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field.\n\n**Try:** Press Submit without a reason: the reason field shows an error.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Over the limit",
+        "preconditions": [
+          {
+            "text": "Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Press Submit without a reason: the reason field shows an error."
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field.",
+        "visualCues": [
+          "Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=900000&currency=EUR",
+        "trigger": "Make payment, filled in with EUR 900,000 on Business Interruption.",
+        "expectedResult": "Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field."
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "Make payment · Unpaid premium, payments blocked",
+      "plainStatement": "**Opens:** Make payment, filled in.\n\n**You see:** Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Unpaid premium, payments blocked",
+        "preconditions": [
+          {
+            "text": "Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Make payment, filled in."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "premiumOutstanding": true
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled.",
+        "visualCues": [
+          "Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=EUR",
+        "trigger": "Make payment, filled in.",
+        "expectedResult": "Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-08",
+      "statement": "Make payment · Unpaid premium, warning only (alternative)",
+      "plainStatement": "**Opens:** Make payment, filled in, premium preview set to \"Warning only\".\n\n**You see:** Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Unpaid premium, warning only (alternative)",
+        "preconditions": [
+          {
+            "text": "Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Make payment, filled in, premium preview set to \"Warning only\"."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "premiumOutstanding": true
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview.",
+        "visualCues": [
+          "Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=EUR&premiumMode=warn",
+        "trigger": "Make payment, filled in, premium preview set to \"Warning only\".",
+        "expectedResult": "Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-09",
+      "statement": "Make payment · Several problems at once",
+      "plainStatement": "**Opens:** Make payment, filled in with USD, while the claim is still being set up and premium is unpaid.\n\n**You see:** Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Several problems at once",
+        "preconditions": [
+          {
+            "text": "Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Make payment, filled in with USD, while the claim is still being set up and premium is unpaid."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "registering",
+              "premiumOutstanding": true
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter.",
+        "visualCues": [
+          "Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=12000&currency=USD",
+        "trigger": "Make payment, filled in with USD, while the claim is still being set up and premium is unpaid.",
+        "expectedResult": "Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    }
+  ]
+}

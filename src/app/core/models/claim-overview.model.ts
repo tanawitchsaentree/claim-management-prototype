@@ -165,6 +165,9 @@ export interface ClaimOverview {
   // BMPCC-21754 — GG reports outstanding premium at claim creation; payments
   // are restricted while true (block vs warn still TBC).
   premiumOutstanding?: boolean;
+  // PROTOTYPE ONLY: what "Send claim to Global Genius again" does in the mock,
+  // so the DEV banner can show both outcomes.
+  ggResendOutcome?: 'registered' | 'fails-again';
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;

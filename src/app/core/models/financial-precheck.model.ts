@@ -15,6 +15,9 @@ export type PreCheckId =
   | 'limit-breach'
   | 'premium-outstanding';
 
+/** A thing the handler can do straight from the warning. */
+export type PreCheckAction = 'add-reserve' | 'send-claim-again';
+
 export interface PreCheck {
   id: PreCheckId;
   // 'block' = cannot submit; 'warn' = can submit, handler should know.
@@ -23,6 +26,11 @@ export interface PreCheck {
   body: string;
   // Limit breach: submit allowed only with a reason, captured next to the warning.
   needsReason?: boolean;
+  action?: { kind: PreCheckAction; label: string };
+  // Usability review: with an outside block (claim not in GG, unpaid premium)
+  // fixing anything else first is wasted effort. These render after the
+  // outside block, visually quieter, under "Once that's sorted".
+  afterOutsideBlock?: boolean;
 }
 
 export interface PreCheckInput {
@@ -40,7 +48,6 @@ export interface PreCheckInput {
   limitName?: string;
 }
 
-// Blocks first, then warnings; within each, the order a handler can act on them.
 const ORDER: PreCheckId[] = [
   'claim-not-in-gg',
   'premium-outstanding',
@@ -49,19 +56,31 @@ const ORDER: PreCheckId[] = [
   'claim-registering'
 ];
 
+const OUTSIDE_BLOCKS: PreCheckId[] = ['claim-not-in-gg', 'premium-outstanding'];
+
+function money(amount: number, currency?: string): string {
+  return `${currency ? currency + ' ' : ''}${amount.toLocaleString('en-GB')}`;
+}
+
 export function financialPreChecks(input: PreCheckInput): PreCheck[] {
   const out: PreCheck[] = [];
   const noun = input.journey === 'payment' ? 'payment' : 'reserve';
 
-  if (input.ggRegistration === 'failed' || input.ggRegistration === 'policy-missing') {
+  if (input.ggRegistration === 'failed') {
     out.push({
       id: 'claim-not-in-gg',
       level: 'block',
       title: `You can't submit this ${noun} yet`,
-      body:
-        input.ggRegistration === 'failed'
-          ? "This claim couldn't be set up in Global Genius. The Finance team is fixing it. You can save your work and submit once it's resolved."
-          : "This claim's policy isn't in Global Genius yet. The policy team needs to add it before anything can be booked."
+      body: "This claim couldn't be set up in Global Genius, so nothing on it can be booked. Send the claim again, or wait for Finance, who have been told. We'll let you know when it's ready.",
+      action: { kind: 'send-claim-again', label: 'Send claim to Global Genius again' }
+    });
+  }
+  if (input.ggRegistration === 'policy-missing') {
+    out.push({
+      id: 'claim-not-in-gg',
+      level: 'block',
+      title: `You can't submit this ${noun} yet`,
+      body: "This claim's policy isn't in Global Genius yet. The policy team has been told and needs to add it. We'll let you know when it's ready."
     });
   }
   if (input.ggRegistration === 'registering') {
@@ -70,7 +89,7 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       level: 'warn',
       title: 'Claim is still being set up',
       // Neutral wording: it can sit below a block in the same list, so it must not say "you can submit".
-      body: `Once submitted, the ${noun} is booked as soon as Global Genius has finished setting up the claim.`
+      body: `Once submitted, the ${noun} is booked as soon as Global Genius has finished setting up the claim. If that fails, we'll tell you.`
     });
   }
   if (input.journey === 'payment' && input.premiumOutstanding) {
@@ -80,7 +99,7 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       level: block ? 'block' : 'warn',
       title: block ? "This policy has unpaid premium, so payments can't be made" : 'This policy has unpaid premium',
       body: block
-        ? 'Payments open again automatically once the premium is paid.'
+        ? "Payments open again automatically once the premium is paid, and we'll let you know."
         : 'Check with the underwriter before paying out on this claim.'
     });
   }
@@ -94,7 +113,8 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       id: 'no-reserve-in-currency',
       level: 'block',
       title: `There's no ${input.currency} reserve to pay from`,
-      body: `Add a ${input.currency} reserve on this section first, then come back to make the payment.`
+      body: `Payments are paid out of a reserve in the same currency. Add a ${input.currency} reserve where you're paying from, or change the currency.`,
+      action: { kind: 'add-reserve', label: `Add a ${input.currency} reserve` }
     });
   }
   if (
@@ -108,7 +128,7 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       title: `This ${noun} goes over the ${input.limitName ?? 'policy limit'}`,
       // Reason capture is payment-only (BMPCC-20953); Add reserve must not ask for one.
       body:
-        `Only ${input.limitRemaining.toLocaleString('en-GB')} is left on this limit. ` +
+        `Only ${money(input.limitRemaining, input.currency)} is left on this limit. ` +
         (input.journey === 'payment'
           ? 'You can still go ahead, but you need to give a reason.'
           : 'You can still go ahead.'),
@@ -116,7 +136,11 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
     });
   }
 
-  return out.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
+  const sorted = out.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
+  const outside = sorted.some(c => c.level === 'block' && OUTSIDE_BLOCKS.includes(c.id));
+  return sorted.map(c =>
+    outside && !OUTSIDE_BLOCKS.includes(c.id) ? { ...c, afterOutsideBlock: true } : c
+  );
 }
 
 export function preChecksBlockSubmit(checks: PreCheck[]): boolean {

@@ -1,0 +1,645 @@
+{
+  "ticketId": "GG-5-RESERVES",
+  "epicId": "BMPCC-18348",
+  "module": "GG booking",
+  "title": "GG 5 · Reserves list: same booking statuses",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "financial"
+  ],
+  "walkthroughSteps": [
+    "Reserves use the same status pills, explanations and Send again as Payments."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Reserves · Every booking status",
+      "plainStatement": "**Opens:** Reserves list of CLM-2024-001.\n\n**You see:** Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval).",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Every booking status",
+        "preconditions": [
+          {
+            "text": "Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval).",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Reserves list of CLM-2024-001."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "payments": {
+              "123456-2": {
+                "bookingStatus": "booking"
+              },
+              "123456-3": {
+                "bookingStatus": "booked"
+              },
+              "123456-4": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "taskId": "t-gg-1"
+                }
+              },
+              "123456-5": {
+                "status": "Requires amendment",
+                "approvalNote": "Approver: please attach the contractor's final invoice before this goes out."
+              }
+            },
+            "paymentsAppend": [
+              {
+                "paymentId": "123456-6",
+                "reinsuranceId": "R00001",
+                "payee": "Mona Weiss",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Draft",
+                "amount": 4200,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026"
+              },
+              {
+                "paymentId": "123456-7",
+                "reinsuranceId": "R00001",
+                "payee": "Karl Ost",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Rejected",
+                "amount": 18000,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+              },
+              {
+                "paymentId": "123456-8",
+                "reinsuranceId": "R00001",
+                "payee": "Ina Brandt",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Approved",
+                "amount": 12500,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "delayed"
+              },
+              {
+                "paymentId": "123456-9",
+                "reinsuranceId": "R00001",
+                "payee": "Paul Rieger",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Approved",
+                "amount": 7300,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius couldn't match the payment type to a booking code. The Finance team is fixing the setup.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              },
+              {
+                "paymentId": "123456-10",
+                "reinsuranceId": "R00001",
+                "payee": "Jana Vogt",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Approved",
+                "amount": 9800,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              },
+              {
+                "paymentId": "123456-11",
+                "reinsuranceId": "R00001",
+                "payee": "Timo Brandl",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Approved",
+                "amount": 2600,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              }
+            ],
+            "reserves": {
+              "RES-C-00063676-2024.001.1.1.1": {
+                "bookingStatus": "booked"
+              },
+              "RES-C-00063676-2024.001.1.1.2": {
+                "bookingStatus": "booking"
+              },
+              "RES-C-00063676-2024.001.2.0.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius doesn't recognise this expense sub-type yet. The Finance team is adding it.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              },
+              "RES-C-00063676-2024.001.1.1.3": {
+                "bookingStatus": "delayed"
+              }
+            },
+            "recoveries": {
+              "REC-001": {
+                "bookingStatus": "booked"
+              },
+              "REC-002": {
+                "status": "Approved",
+                "bookingStatus": "booking"
+              },
+              "REC-003": {
+                "status": "Approved",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              }
+            }
+          },
+          "tasksAppend": [
+            {
+              "taskId": "t-gg-1",
+              "taskKey": "TSK-GG-1",
+              "claimId": "CLM-2024-001",
+              "taskType": "Finance",
+              "description": "Payment 123456-4 couldn't be booked: the payee's bank details don't match Global Genius. Check them with Elke Dorn, correct them in Parties, then send the same payment again from its row. Don't create a new payment.",
+              "status": "open",
+              "dueDate": "2026-10-27",
+              "priority": "high",
+              "assignee": "Nina Feld",
+              "relatedItemId": "123456-4"
+            }
+          ]
+        }
+      },
+      "expectedUI": {
+        "description": "Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval).",
+        "visualCues": [
+          "Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval)."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial?view=reserves",
+        "trigger": "Reserves list of CLM-2024-001.",
+        "expectedResult": "Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval)."
+      },
+      "expectedOutcome": {
+        "pendingTasks": 1,
+        "doneTasks": 5
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Reserves · Couldn't be booked, Finance is fixing it",
+      "plainStatement": "**Opens:** Reserves, row RES-C-00063676-2024.001.2.0.1 already open.\n\n**You see:** Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\".",
+      "page": "financial",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Couldn't be booked, Finance is fixing it",
+        "preconditions": [
+          {
+            "text": "Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\".",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Reserves, row RES-C-00063676-2024.001.2.0.1 already open."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "payments": {
+              "123456-2": {
+                "bookingStatus": "booking"
+              },
+              "123456-3": {
+                "bookingStatus": "booked"
+              },
+              "123456-4": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "taskId": "t-gg-1"
+                }
+              },
+              "123456-5": {
+                "status": "Requires amendment",
+                "approvalNote": "Approver: please attach the contractor's final invoice before this goes out."
+              }
+            },
+            "paymentsAppend": [
+              {
+                "paymentId": "123456-6",
+                "reinsuranceId": "R00001",
+                "payee": "Mona Weiss",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Draft",
+                "amount": 4200,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026"
+              },
+              {
+                "paymentId": "123456-7",
+                "reinsuranceId": "R00001",
+                "payee": "Karl Ost",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Rejected",
+                "amount": 18000,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+              },
+              {
+                "paymentId": "123456-8",
+                "reinsuranceId": "R00001",
+                "payee": "Ina Brandt",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Approved",
+                "amount": 12500,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "delayed"
+              },
+              {
+                "paymentId": "123456-9",
+                "reinsuranceId": "R00001",
+                "payee": "Paul Rieger",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Approved",
+                "amount": 7300,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius couldn't match the payment type to a booking code. The Finance team is fixing the setup.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              },
+              {
+                "paymentId": "123456-10",
+                "reinsuranceId": "R00001",
+                "payee": "Jana Vogt",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Approved",
+                "amount": 9800,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              },
+              {
+                "paymentId": "123456-11",
+                "reinsuranceId": "R00001",
+                "payee": "Timo Brandl",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Approved",
+                "amount": 2600,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              }
+            ],
+            "reserves": {
+              "RES-C-00063676-2024.001.1.1.1": {
+                "bookingStatus": "booked"
+              },
+              "RES-C-00063676-2024.001.1.1.2": {
+                "bookingStatus": "booking"
+              },
+              "RES-C-00063676-2024.001.2.0.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius doesn't recognise this expense sub-type yet. The Finance team is adding it.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              },
+              "RES-C-00063676-2024.001.1.1.3": {
+                "bookingStatus": "delayed"
+              }
+            },
+            "recoveries": {
+              "REC-001": {
+                "bookingStatus": "booked"
+              },
+              "REC-002": {
+                "status": "Approved",
+                "bookingStatus": "booking"
+              },
+              "REC-003": {
+                "status": "Approved",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              }
+            }
+          },
+          "tasksAppend": [
+            {
+              "taskId": "t-gg-1",
+              "taskKey": "TSK-GG-1",
+              "claimId": "CLM-2024-001",
+              "taskType": "Finance",
+              "description": "Payment 123456-4 couldn't be booked: the payee's bank details don't match Global Genius. Check them with Elke Dorn, correct them in Parties, then send the same payment again from its row. Don't create a new payment.",
+              "status": "open",
+              "dueDate": "2026-10-27",
+              "priority": "high",
+              "assignee": "Nina Feld",
+              "relatedItemId": "123456-4"
+            }
+          ]
+        }
+      },
+      "expectedUI": {
+        "description": "Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\".",
+        "visualCues": [
+          "Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\"."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial?view=reserves&expand=RES-C-00063676-2024.001.2.0.1",
+        "trigger": "Reserves, row RES-C-00063676-2024.001.2.0.1 already open.",
+        "expectedResult": "Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\"."
+      },
+      "expectedOutcome": {
+        "pendingTasks": 1,
+        "doneTasks": 5
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Reserves · Booking delayed",
+      "plainStatement": "**Opens:** Reserves, row RES-C-00063676-2024.001.1.1.3 already open.\n\n**You see:** Same \"taking longer than usual\" explanation as Payments.",
+      "page": "financial",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Booking delayed",
+        "preconditions": [
+          {
+            "text": "Same \"taking longer than usual\" explanation as Payments.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Reserves, row RES-C-00063676-2024.001.1.1.3 already open."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "payments": {
+              "123456-2": {
+                "bookingStatus": "booking"
+              },
+              "123456-3": {
+                "bookingStatus": "booked"
+              },
+              "123456-4": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "taskId": "t-gg-1"
+                }
+              },
+              "123456-5": {
+                "status": "Requires amendment",
+                "approvalNote": "Approver: please attach the contractor's final invoice before this goes out."
+              }
+            },
+            "paymentsAppend": [
+              {
+                "paymentId": "123456-6",
+                "reinsuranceId": "R00001",
+                "payee": "Mona Weiss",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Draft",
+                "amount": 4200,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026"
+              },
+              {
+                "paymentId": "123456-7",
+                "reinsuranceId": "R00001",
+                "payee": "Karl Ost",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Rejected",
+                "amount": 18000,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+              },
+              {
+                "paymentId": "123456-8",
+                "reinsuranceId": "R00001",
+                "payee": "Ina Brandt",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Approved",
+                "amount": 12500,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "delayed"
+              },
+              {
+                "paymentId": "123456-9",
+                "reinsuranceId": "R00001",
+                "payee": "Paul Rieger",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Approved",
+                "amount": 7300,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius couldn't match the payment type to a booking code. The Finance team is fixing the setup.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              },
+              {
+                "paymentId": "123456-10",
+                "reinsuranceId": "R00001",
+                "payee": "Jana Vogt",
+                "handler": "Nina Feld",
+                "sectionType": "Indemnity",
+                "status": "Approved",
+                "amount": 9800,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              },
+              {
+                "paymentId": "123456-11",
+                "reinsuranceId": "R00001",
+                "payee": "Timo Brandl",
+                "handler": "Nina Feld",
+                "sectionType": "Expenses",
+                "status": "Approved",
+                "amount": 2600,
+                "currency": "EUR",
+                "paymentDate": "14-10-2026",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              }
+            ],
+            "reserves": {
+              "RES-C-00063676-2024.001.1.1.1": {
+                "bookingStatus": "booked"
+              },
+              "RES-C-00063676-2024.001.1.1.2": {
+                "bookingStatus": "booking"
+              },
+              "RES-C-00063676-2024.001.2.0.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius doesn't recognise this expense sub-type yet. The Finance team is adding it.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              },
+              "RES-C-00063676-2024.001.1.1.3": {
+                "bookingStatus": "delayed"
+              }
+            },
+            "recoveries": {
+              "REC-001": {
+                "bookingStatus": "booked"
+              },
+              "REC-002": {
+                "status": "Approved",
+                "bookingStatus": "booking"
+              },
+              "REC-003": {
+                "status": "Approved",
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent, and the automatic retries ran out.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              }
+            }
+          },
+          "tasksAppend": [
+            {
+              "taskId": "t-gg-1",
+              "taskKey": "TSK-GG-1",
+              "claimId": "CLM-2024-001",
+              "taskType": "Finance",
+              "description": "Payment 123456-4 couldn't be booked: the payee's bank details don't match Global Genius. Check them with Elke Dorn, correct them in Parties, then send the same payment again from its row. Don't create a new payment.",
+              "status": "open",
+              "dueDate": "2026-10-27",
+              "priority": "high",
+              "assignee": "Nina Feld",
+              "relatedItemId": "123456-4"
+            }
+          ]
+        }
+      },
+      "expectedUI": {
+        "description": "Same \"taking longer than usual\" explanation as Payments.",
+        "visualCues": [
+          "Same \"taking longer than usual\" explanation as Payments."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial?view=reserves&expand=RES-C-00063676-2024.001.1.1.3",
+        "trigger": "Reserves, row RES-C-00063676-2024.001.1.1.3 already open.",
+        "expectedResult": "Same \"taking longer than usual\" explanation as Payments."
+      },
+      "expectedOutcome": {
+        "pendingTasks": 1,
+        "doneTasks": 5
+      }
+    }
+  ]
+}

@@ -145,10 +145,22 @@
       "title": "Damaged items — capture the peril and the working behind a financial loss"
     },
     {
-      "id": "GG-BOOKING-STATES",
-      "file": "gg-booking-states.json",
-      "module": "Claims",
-      "title": "Global Genius booking: claim-level and item-level states"
+      "id": "GG-4-PAYMENTS",
+      "file": "gg-4-payments.json",
+      "module": "GG booking",
+      "title": "GG 4 · Payments list: booking status and Send again"
+    },
+    {
+      "id": "GG-5-RESERVES",
+      "file": "gg-5-reserves.json",
+      "module": "GG booking",
+      "title": "GG 5 · Reserves list: same booking statuses"
+    },
+    {
+      "id": "GG-6-RECOVERIES",
+      "file": "gg-6-recoveries.json",
+      "module": "GG booking",
+      "title": "GG 6 · Recoveries: same status in both places"
     }
   ]
 }
