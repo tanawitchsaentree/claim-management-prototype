@@ -74,7 +74,7 @@
       <h2 class="fo-section-heading fo-section-heading--mt" data-tour-id="fo-transaction-summary">
         Transaction summary
       </h2>
-      <p class="fo-count">{{ fo.transactions.length }} items</p>
+      <p class="fo-count">{{ fo.transactions.length }} {{ fo.transactions.length === 1 ? 'item' : 'items' }}</p>
       <app-fo-transactions-table [rows]="fo.transactions" [currency]="currency()" />
     } @else if (activeSection(); as sec) {
       <div class="fo-section-meta">
