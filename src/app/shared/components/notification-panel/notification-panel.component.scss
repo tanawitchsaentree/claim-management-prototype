@@ -18,15 +18,30 @@
 }
 
 // Messages are sentences, not one-word menu entries.
-.np-item {
-  display: block;
-  max-width: 360px;
-  white-space: normal;
-  text-align: left;
+.np-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  max-width: 400px;
 }
 
-.np-item--done {
-  color: var(--text-muted);
+// Messages are sentences, not one-word menu entries.
+.np-item {
+  flex: 1;
+  white-space: normal;
+  text-align: left;
+  color: var(--text-01);
+}
+
+.np-check {
+  flex-shrink: 0;
+  color: var(--interactive-primary);
+}
+
+// Every line is a link: the chevron says so.
+.np-chevron {
+  flex-shrink: 0;
+  color: var(--interactive-primary);
 }
 
 // Group titles: labels, not choices. NDBX greys out disabled menu items, so the

@@ -1,11 +1,18 @@
 <div class="mp-page">
   <app-page-header
-    title="Make payment"
+    [title]="editing() ? 'Change payment ' + editing()!.paymentId : 'Make payment'"
     [eyebrow]="claimId | claimNumber"
     [showBack]="true"
     backLabel="Back to financial overview"
     (back)="onCancel()"
   ></app-page-header>
+
+  @if (editing(); as p) {
+    <nx-message context="info" class="mp-note">
+      <strong>Sent back by your approver</strong>
+      <span class="mp-note__text">{{ p.approvalNote ?? 'The approver asked for changes.' }}</span>
+    </nx-message>
+  }
 
   <!-- Everything that can go wrong sits at the top, before the form, blocks first. -->
   <app-financial-warnings
@@ -36,6 +43,7 @@
   <section class="mp-card" [formGroup]="form">
     <h2 class="mp-card-title">Payment details</h2>
     <div class="mp-grid">
+      @if (!editing()) {
       <nx-formfield label="Section" class="mp-full">
         <nx-dropdown formControlName="section" placeholder="Claim level (no section)">
           <nx-dropdown-item [value]="claimLevel">Claim level (no section)</nx-dropdown-item>
@@ -44,6 +52,7 @@
           }
         </nx-dropdown>
       </nx-formfield>
+      }
 
       <nx-formfield label="Payment type *">
         <nx-dropdown formControlName="paymentType" placeholder="Select">
@@ -81,7 +90,7 @@
   <div class="mp-footer">
     <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
     <button nxButton="primary small" type="button" [disabled]="cannotSubmit()" (click)="onSubmit()">
-      Submit
+      {{ editing() ? 'Resubmit to approver' : 'Submit' }}
     </button>
   </div>
 </div>

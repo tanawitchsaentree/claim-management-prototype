@@ -58,3 +58,13 @@
   display: block;
   margin-bottom: var(--space-lg);
 }
+
+.mp-note {
+  // No display override: nx-message is flex (icon beside the text).
+  margin-bottom: var(--space-md);
+}
+
+.mp-note__text {
+  display: block;
+  margin-top: 2px;
+}

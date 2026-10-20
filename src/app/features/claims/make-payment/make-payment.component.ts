@@ -6,11 +6,14 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
+import { MockPaymentEditService } from '../../../core/mock/services/mock-payment-edit.service';
+import { FinancialPayment } from '../../../core/models/financial-overview.model';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
@@ -40,6 +43,7 @@ const CLAIM_LEVEL = '';
     NxDropdownModule,
     NxFormfieldModule,
     NxInputModule,
+    NxMessageModule,
     NxRadioToggleModule,
     PageHeaderComponent,
     ClaimNumberPipe,
@@ -58,6 +62,7 @@ export class MakePaymentComponent {
   private readonly financeSvc = inject(MockFinancialOverviewService);
   private readonly limitsSvc = inject(MockLimitsDeductiblesService);
   private readonly stateSvc = inject(MockStateService);
+  private readonly editSvc = inject(MockPaymentEditService);
 
   readonly claimId = this.route.snapshot.paramMap.get('id') ?? '';
   readonly currencies = CURRENCIES;
@@ -83,6 +88,8 @@ export class MakePaymentComponent {
   // this follows every change of the query, not only the first one. Done in a
   // tap, before the view is checked, so nothing changes after the page is checked.
   private readonly confirmRequested = signal(false);
+  // ?edit=<paymentId>: changing a payment the approver sent back (same payment, no new one).
+  readonly editing = signal<FinancialPayment | null>(null);
   private readonly queryWatch = toSignal(
     this.route.queryParamMap.pipe(tap(q => this.applyQuery(q))),
     { initialValue: null }
@@ -90,13 +97,26 @@ export class MakePaymentComponent {
 
   private applyQuery(q: ParamMap): void {
     const amount = q.get('amount');
-    this.form.reset({
-      section: q.get('section') ?? CLAIM_LEVEL,
-      paymentType: q.get('type'),
-      payee: q.get('payee') ?? '',
-      currency: q.get('currency') ?? 'EUR',
-      amount: amount ? Number(amount) : null
-    });
+    const edit = q.get('edit') ? this.editSvc.find(this.claimId, q.get('edit')!) : undefined;
+    this.editing.set(edit?.status === 'Requires amendment' ? edit : null);
+    if (this.editing()) {
+      const p = this.editing()!;
+      this.form.reset({
+        section: CLAIM_LEVEL,
+        paymentType: p.sectionType,
+        payee: p.payee,
+        currency: p.currency,
+        amount: p.amount
+      });
+    } else {
+      this.form.reset({
+        section: q.get('section') ?? CLAIM_LEVEL,
+        paymentType: q.get('type'),
+        payee: q.get('payee') ?? '',
+        currency: q.get('currency') ?? 'EUR',
+        amount: amount ? Number(amount) : null
+      });
+    }
     this.premiumMode.setValue(q.get('premiumMode') === 'warn' ? 'warn' : 'block');
     this.limitReason.reset('');
     this.underwriterChecked.reset(false);
@@ -149,6 +169,7 @@ export class MakePaymentComponent {
     return financialPreChecks({
       journey: 'payment',
       ggRegistration: ov?.ggRegistration,
+      ggResendInFlight: ov?.ggResendInFlight,
       premiumOutstanding: ov?.premiumOutstanding,
       premiumMode: v.premiumMode,
       currency: v.currency,
@@ -180,12 +201,15 @@ export class MakePaymentComponent {
     if (this.cannotSubmit() || this.form.invalid) return;
     if (this.needsLimitReason() && this.limitReason.invalid) return;
     const v = this.form.getRawValue();
+    const edit = this.editing();
     const where = this.sections().find(s => s.sectionId === v.section)?.sectionName ?? 'claim level';
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
       data: {
-        title: 'Send this payment for approval?',
-        message: `${v.amount!.toLocaleString('en-GB')} ${v.currency} to ${v.payee}, ${v.paymentType}, ${where}. It goes to your approver. Once approved, it is booked in Global Genius automatically.`,
-        confirmLabel: 'Send for approval',
+        title: edit ? `Send payment ${edit.paymentId} back to your approver?` : 'Send this payment for approval?',
+        message: edit
+          ? `This sends payment ${edit.paymentId} back to your approver. No new payment is created.`
+          : `${v.amount!.toLocaleString('en-GB')} ${v.currency} to ${v.payee}, ${v.paymentType}, ${where}. It goes to your approver. Once approved, it is booked in Global Genius automatically.`,
+        confirmLabel: edit ? 'Resubmit to approver' : 'Send for approval',
         cancelLabel: 'Cancel',
         hideIcon: true
       } satisfies ConfirmDialogData,
@@ -193,6 +217,20 @@ export class MakePaymentComponent {
       maxWidth: '92vw'
     });
     if (!(await firstValueFrom(ref.afterClosed()))) return;
+    if (edit) {
+      const ok = this.editSvc.resubmit(this.claimId, edit.paymentId, {
+        payee: v.payee!,
+        sectionType: v.paymentType!,
+        amount: v.amount!,
+        currency: v.currency
+      });
+      if (ok) this.toast.success('Sent back to your approver', "We'll let you know if it can't be booked.");
+      else this.toast.info("This payment can't be changed any more", 'The approver has already dealt with it.');
+      this.router.navigate(['/claims', this.claimId, 'financial'], {
+        queryParams: { view: 'payments', highlight: edit.paymentId }
+      });
+      return;
+    }
     const section = this.sections().find(s => s.sectionId === v.section);
     const created = await firstValueFrom(
       this.financeSvc.addPayment(this.claimId, {

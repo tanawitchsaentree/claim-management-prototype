@@ -3,7 +3,7 @@
     <strong>{{ check.title }}</strong>
     <span class="fw-body">{{ check.body }}</span>
     @if (check.action; as a) {
-      <button nxButton="secondary small" type="button" class="fw-action" (click)="act(check)">
+      <button nxButton="secondary small" type="button" class="fw-action" [disabled]="check.afterOutsideBlock" (click)="act(check)">
         {{ a.label }}
       </button>
     }

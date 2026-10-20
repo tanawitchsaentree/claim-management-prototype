@@ -16,7 +16,13 @@
     <button nxContextMenuItem type="button" disabled class="np-heading"><span class="np-heading-text">{{ g.heading }}</span></button>
     @for (n of g.items; track n.id) {
       <button nxContextMenuItem type="button" (click)="open(n)">
-        <span class="np-item" [class.np-item--done]="n.tone === 'done'">{{ n.title }}</span>
+        <span class="np-line">
+          @if (n.tone === 'done') {
+            <nx-icon name="check-circle" size="s" class="np-check" aria-hidden="true"></nx-icon>
+          }
+          <span class="np-item">{{ n.title }}</span>
+          <nx-icon name="chevron-right-small" size="s" class="np-chevron" aria-hidden="true"></nx-icon>
+        </span>
       </button>
     }
   } @empty {
