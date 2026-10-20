@@ -317,27 +317,27 @@
         "summaryRows": [
           {
             "movementType": "Expenses",
-            "outstandingReserves": 15000,
-            "completedPayments": 30000,
-            "pendingPayments": 20000,
+            "outstandingReserves": 0,
+            "completedPayments": 0,
+            "pendingPayments": 0,
             "recoveries": 0,
-            "incurred": 400000
+            "incurred": 0
           },
           {
             "movementType": "Indemnity",
-            "outstandingReserves": 300000,
-            "completedPayments": 130000,
-            "pendingPayments": 20000,
-            "recoveries": 0,
-            "incurred": 500000
+            "outstandingReserves": 20000,
+            "completedPayments": 90000,
+            "pendingPayments": 0,
+            "recoveries": 30000,
+            "incurred": 110000
           },
           {
             "movementType": "Total",
-            "outstandingReserves": 315000,
-            "completedPayments": 160000,
-            "pendingPayments": 40000,
-            "recoveries": 0,
-            "incurred": 900000
+            "outstandingReserves": 20000,
+            "completedPayments": 90000,
+            "pendingPayments": 0,
+            "recoveries": 30000,
+            "incurred": 110000
           }
         ],
         "payments": [
@@ -416,26 +416,26 @@
           {
             "movementType": "Expenses",
             "outstandingReserves": 5000,
-            "completedPayments": 10000,
-            "pendingPayments": 5000,
+            "completedPayments": 0,
+            "pendingPayments": 10000,
             "recoveries": 0,
-            "incurred": 80000
+            "incurred": 5000
           },
           {
             "movementType": "Indemnity",
-            "outstandingReserves": 50000,
+            "outstandingReserves": 0,
             "completedPayments": 40000,
-            "pendingPayments": 10000,
+            "pendingPayments": 0,
             "recoveries": 0,
-            "incurred": 200000
+            "incurred": 40000
           },
           {
             "movementType": "Total",
-            "outstandingReserves": 55000,
-            "completedPayments": 50000,
-            "pendingPayments": 15000,
+            "outstandingReserves": 5000,
+            "completedPayments": 40000,
+            "pendingPayments": 10000,
             "recoveries": 0,
-            "incurred": 280000
+            "incurred": 45000
           }
         ],
         "payments": [

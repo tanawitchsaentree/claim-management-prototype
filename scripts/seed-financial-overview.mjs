@@ -168,6 +168,28 @@ function summarize(cur, payments, reserves, recoveries) {
   };
 }
 
+/** A section's Expenses / Indemnity / Total rows: sums of the rows that belong to it. */
+function sectionSummaryRows(fs, reserves) {
+  const rowsFor = type => {
+    const rs = reserves.filter(r => r.sectionId === fs.sectionId && r.reserveType.startsWith(type) && r.status !== 'Rejected');
+    const ps = fs.payments.filter(p => p.sectionType === type);
+    const outstanding = sum(rs, r => r.reserveValue);
+    const completed = sum(ps.filter(p => p.status === 'Done' || p.status === 'Credit'), p => p.amount);
+    return {
+      movementType: type,
+      outstandingReserves: outstanding,
+      completedPayments: completed,
+      pendingPayments: sum(ps.filter(p => p.status === 'Pending'), p => p.amount),
+      recoveries: type === 'Indemnity' ? sum(fs.recoveries.filter(r => r.status === 'Approved'), r => r.amount) : 0,
+      incurred: outstanding + completed
+    };
+  };
+  const rows = [rowsFor('Expenses'), rowsFor('Indemnity')];
+  const total = { movementType: 'Total' };
+  for (const k of ['outstandingReserves', 'completedPayments', 'pendingPayments', 'recoveries', 'incurred']) total[k] = sum(rows, r => r[k]);
+  return [...rows, total];
+}
+
 // ── per-claim builder ──────────────────────────────────────────────────────────
 function build(claim) {
   const id = claim.claimId;
@@ -456,24 +478,7 @@ function build(claim) {
     fs.reserves = [];
     fs.payments = payments.filter((p, i) => placement[i] === fs.sectionId);
     fs.recoveries = recoveries.filter(r => r.section === fs.sectionName);
-    const rowsFor = type => {
-      const rs = reserves.filter(r => r.sectionId === fs.sectionId && r.reserveType.startsWith(type) && r.status !== 'Rejected');
-      const ps = fs.payments.filter(p => p.sectionType === type || (type === 'Expenses' && p.sectionType === 'Expenses'));
-      const outstanding = sum(rs, r => r.reserveValue);
-      const completed = sum(ps.filter(p => p.status === 'Done'), p => p.amount);
-      return {
-        movementType: type,
-        outstandingReserves: outstanding,
-        completedPayments: completed,
-        pendingPayments: sum(ps.filter(p => p.status === 'Pending'), p => p.amount),
-        recoveries: type === 'Indemnity' ? sum(fs.recoveries.filter(r => r.status === 'Approved'), r => r.amount) : 0,
-        incurred: outstanding + completed
-      };
-    };
-    const rows = [rowsFor('Expenses'), rowsFor('Indemnity')];
-    const total = { movementType: 'Total' };
-    for (const k of ['outstandingReserves', 'completedPayments', 'pendingPayments', 'recoveries', 'incurred']) total[k] = sum(rows, r => r[k]);
-    fs.summaryRows = [...rows, total];
+    fs.summaryRows = sectionSummaryRows(fs, reserves);
   });
 
   // ── totals, details, transactions ───────────────────────────────────────────
@@ -572,6 +577,7 @@ const first = keep[0];
 const waiting = first.payments.find(p => /^PMT-C-/.test(p.paymentId));
 if (waiting) waiting.paymentId = OWN_PAYMENT_ID_001;
 Object.assign(first, summarize(first.details.currency, first.payments, first.reserves, first.recoveries));
+first.sections.forEach(fs => (fs.summaryRows = sectionSummaryRows(fs, first.reserves)));
 
 // sections this script made: open ones with reserves / pending payments say so (Close Section reads it)
 const fin = new Map(seeded.map(f => [f.claimId, f]));
