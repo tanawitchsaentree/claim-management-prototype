@@ -139,7 +139,8 @@ export function canSendAgain(item: Bookable): boolean {
  * Payments said 4, the summary said 3).
  */
 export function needsHandler(approvalStatus: string, item: Bookable): boolean {
-  if (approvalStatus === 'Requires amendment') return true;
+  // Rejected included (review round 3): final, but the handler has to close it.
+  if (approvalStatus === 'Requires amendment' || approvalStatus === 'Rejected') return true;
   return HANDED_TO_GG.has(approvalStatus) && canSendAgain(item);
 }
 

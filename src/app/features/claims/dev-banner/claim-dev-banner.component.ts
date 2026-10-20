@@ -74,6 +74,13 @@ export class ClaimDevBannerComponent implements OnInit {
   ];
 
   constructor() {
+    // Toasts sit just under the app's top bar; with this banner above it they
+    // covered the bell and avatar. Publish the banner's height so the toast
+    // stack can move down while it's showing.
+    effect(() => {
+      const shown = this.helper.shouldShowBanner() && !this.collapsed();
+      document.documentElement.style.setProperty('--dev-banner-offset', shown ? '52px' : '0px');
+    });
     effect(() => {
       const id = this.helper.selectedTicket()?.ticketId ?? null;
       if (this.ticketCtrl.value !== id) {
