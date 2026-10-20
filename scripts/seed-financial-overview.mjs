@@ -26,7 +26,12 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const data = f => JSON.parse(readFileSync(resolve(root, 'src/app/core/mock/data', f), 'utf8'));
 const claims = data('claims.json');
 const parties = data('parties.json');
-const sections = data('sections.json');
+// sections this script created in an earlier run (ids SEC-C...) are rebuilt, everything else is kept as is
+const sections = data('sections.json').filter(x => !x.id.startsWith('SEC-C'));
+const generatedSections = [];
+const users = [...data('users.json'), ...data('user-directory.json')];
+const providerAssignments = data('provider-assignments.json');
+const thirdParties = data('third-parties.json');
 const approvals = data('approvals.json');
 const payAppr = data('payment-approvals.json');
 const movements = data('reserve-movements.json');
@@ -36,6 +41,12 @@ const policies = data('policies.json');
 const outPath = resolve(root, 'src/app/core/mock/data/financial-overview.json');
 const existing = JSON.parse(readFileSync(outPath, 'utf8'));
 const keep = existing.filter(f => f.claimId === 'CLM-2024-001');
+// Payments waiting in Approvals use the claim's own id format. CLM-2024-001's rows are
+// 123456-<n>; -6 to -11 are taken by the GG preset payments, so its approval row is -12.
+const OWN_PAYMENT_ID_001 = '123456-12';
+payAppr.filter(a => a.claimId === 'CLM-2024-001').forEach(a => (a.paymentId = OWN_PAYMENT_ID_001));
+// Staff are never payees: internal users, and every handler / creator named in claims.json.
+const staff = new Set([...users.map(u => u.name), ...claims.flatMap(c => [c.assignee, c.createdBy])].filter(Boolean));
 
 // ── small helpers ──────────────────────────────────────────────────────────────
 const hash = s => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) >>> 0, 7);
@@ -85,6 +96,78 @@ const LOB = {
   Engineering: { item: 'Machinery 1', sub: 'Machinery Damage', exp: 'Expert fees' }
 };
 
+// Scale: what the claim is worth. A claim with no usable loss amount (0, or the
+// 999,999,999 overflow test value) takes its last reserve movement, else a small base.
+function scaleOf(claim) {
+  const mvs = movements.filter(m => m.claimId === claim.claimId).sort((a, b) => a.date.localeCompare(b.date));
+  const lossOk = claim.lossAmount > 0 && claim.lossAmount < 50_000_000;
+  return lossOk ? claim.lossAmount : mvs.length ? mvs[mvs.length - 1].amountAfter : 18000;
+}
+
+// A reserve always belongs to a section. Claims with no sections in sections.json get one or
+// two, named from their line of business and location (second one only on bigger losses).
+const SECTION_PLAN = {
+  Property: [['material-damage', 'Property damage'], ['business-interruption', 'Business interruption', 100000]],
+  Marine: [['material-damage', 'Cargo damage'], ['liability', 'Carrier liability', 150000]],
+  Cyber: [['business-interruption', 'System outage & recovery'], ['material-damage', 'Data restoration', 50000]],
+  Liability: [['liability', 'Third-party liability']],
+  Engineering: [['machinery-breakdown', 'Machinery breakdown'], ['business-interruption', 'Business interruption', 300000]]
+};
+function ensureSections(claim) {
+  const id = claim.claimId;
+  if (sections.some(x => x.claimId === id)) return;
+  const claimNo = id.match(/(\d+)$/)?.[1] ?? '0';
+  const closed = claim.status === 'Closed';
+  const scale = scaleOf(claim);
+  const plan = (SECTION_PLAN[claim.lineOfBusiness] ?? SECTION_PLAN.Property).filter(([, , min]) => !min || scale >= min);
+  const city = claim.location?.city;
+  plan.forEach(([damageType, label], i) => {
+    const sec = {
+      id: `SEC-C-${id}-${i + 1}`,
+      claimId: id,
+      name: city ? `${label} \u2014 ${city}` : label,
+      damageType,
+      status: closed ? 'Closed' : 'Open',
+      expanded: true,
+      hasOpenDeductible: false,
+      hasActiveLitigation: false,
+      hasSubrogation: false,
+      hasActiveSalvage: false,
+      hasOpenReserves: false,
+      hasOpenPayments: false,
+      hasActiveProvider: false,
+      ...(closed
+        ? { closureDate: isoOf(claim.dateUpdated), closedBy: { userId: 'usr-cm', name: claim.assignee || claim.createdBy } }
+        : {}),
+      entities: [
+        {
+          id: `SE-C-${id}-${i + 1}`,
+          name: `${claim.clientName} \u2014 ${label}`,
+          instructionStatus: closed ? 'Completed' : 'Not assigned',
+          expandable: false
+        }
+      ]
+    };
+    sections.push(sec);
+    generatedSections.push(sec);
+  });
+}
+
+/** Summary and details are the sums of the rows (claim-currency rows only). */
+function summarize(cur, payments, reserves, recoveries) {
+  const own = r => r.currency === cur;
+  const outstanding = sum(reserves.filter(r => r.status !== 'Rejected' && own(r)), r => r.reserveValue);
+  const completed = sum(payments.filter(p => own(p) && (p.status === 'Done' || p.status === 'Credit')), p => p.amount);
+  const pending = sum(payments.filter(p => own(p) && p.status === 'Pending'), p => p.amount);
+  const recovered = sum(recoveries.filter(r => own(r) && r.status === 'Approved'), r => r.amount);
+  const incurred = outstanding + completed;
+  const detail = (label, gross) => ({ label, gross, grossNet: Math.round(gross * 0.9), net: Math.round(gross * 0.85) });
+  return {
+    summary: { outstandingReserves: outstanding, completedPayments: completed, pendingPayments: pending, recoveries: recovered, incurred },
+    details: { currency: cur, ibnr: 0, rows: [detail('Insured', incurred), detail('Reserve', outstanding), detail('Payments', completed), detail('Recoveries', recovered)] }
+  };
+}
+
 // ── per-claim builder ──────────────────────────────────────────────────────────
 function build(claim) {
   const id = claim.claimId;
@@ -105,21 +188,15 @@ function build(claim) {
   const myApprovals = approvals.filter(a => a.claimId === id);
   const myPayApprovals = payAppr.filter(a => a.claimId === id);
 
-  // Scale: what the claim is worth. A claim with no usable loss amount (0, or the
-  // 999,999,999 overflow test value) takes its last reserve movement, else a small base.
-  const lossOk = claim.lossAmount > 0 && claim.lossAmount < 50_000_000;
-  const scale = lossOk ? claim.lossAmount : mv.length ? mv[mv.length - 1].amountAfter : 18000;
+  const scale = scaleOf(claim);
 
   // Money position. Explicit totals in claim-overview.json win; otherwise an open
   // claim is 35% paid / 65% reserved (movement claims: the reserve IS the movement
   // total and about 20% of it has been paid), a closed claim is fully paid.
   let reserveTotal, paidTotal;
-  if (overview && id !== 'CL-2025-001') {
+  if (overview) {
     reserveTotal = overview.financialSummary.totalReserve;
     paidTotal = overview.financialSummary.totalPayments;
-  } else if (id === 'CL-2025-001') {
-    reserveTotal = 1250000;
-    paidTotal = 320000;
   } else if (closed) {
     reserveTotal = 0;
     paidTotal = scale;
@@ -131,11 +208,24 @@ function build(claim) {
     reserveTotal = scale - paidTotal;
   }
 
-  // payee pool: the claim's own client, its parties, its broker
+  // payee pool: the client or an external party (the claim's parties, its providers, the policy's
+  // broker, a supplier from third-parties.json). Never an internal user.
+  const external = n => n && !staff.has(n);
   const partyNames = claimParties
     .filter(p => p.roles.some(r => ['client', 'claimant', 'insured', 'third-party', 'expert'].includes(r)))
     .map(p => p.legalName);
-  const payees = [...new Set([claim.clientName, ...partyNames, claim.broker].filter(Boolean))];
+  const suppliers = thirdParties.filter(t => t.relationship === 'supplier');
+  const payees = [
+    ...new Set(
+      [
+        claim.clientName,
+        ...partyNames,
+        ...providerAssignments.filter(p => p.claimId === id).map(p => p.providerName),
+        policy?.broker,
+        suppliers[hash(id) % suppliers.length]?.name
+      ].filter(external)
+    )
+  ];
   const party = claim.clientName;
 
   // ── reserves ────────────────────────────────────────────────────────────────
@@ -197,7 +287,8 @@ function build(claim) {
   if (closed || reserveTotal === 0) {
     // closed claim / closed sections: reserves released to zero, still listed
     (secs.length ? secs : [null]).forEach(s => released(s, lob.item, 'Indemnity', lob.sub));
-  } else if (secs.length) {
+  } else if (secs.length && overview && !mv.length) {
+    // hand-written records (011, 024): reserve split evenly over their open sections
     const targets = openSecs.length ? openSecs : secs;
     split(reserveTotal, targets.map(() => 1)).forEach((v, i) =>
       mkReserve(v, {
@@ -215,6 +306,7 @@ function build(claim) {
   } else if (mv.length) {
     // one reserve whose history is the claim's reserve movements, oldest first
     mkReserve(reserveTotal, {
+      section: openSecs[0] ?? secs[0] ?? null,
       type: 'Indemnity',
       sub: lob.sub,
       item: lob.item,
@@ -237,16 +329,21 @@ function build(claim) {
     );
   } else {
     const [ind, exp] = split(reserveTotal, [85, 15]);
-    mkReserve(ind, {
-      type: 'Indemnity',
-      sub: lob.sub,
-      item: lob.item,
-      history: [
-        { date: histDate(addDays(created, 3)), amount: round(ind * 0.75), reason: 'Initial reserve set', user: initialUser },
-        { date: histDate(addDays(created, 35)), amount: ind, reason: 'Revised after adjuster report', user: initialUser }
-      ]
-    });
+    const targets = openSecs.length ? openSecs : secs;
+    (targets.length ? split(ind, targets.map(() => 1)) : [ind]).forEach((v, i) =>
+      mkReserve(v, {
+        section: targets[i] ?? null,
+        type: 'Indemnity',
+        sub: targets[i]?.damageType === 'business-interruption' ? 'Business Interruption' : lob.sub,
+        item: lob.item,
+        history: [
+          { date: histDate(addDays(created, 3)), amount: round(v * 0.75), reason: 'Initial reserve set', user: initialUser },
+          { date: histDate(addDays(created, 35)), amount: v, reason: 'Revised after adjuster report', user: initialUser }
+        ]
+      })
+    );
     mkReserve(exp, {
+      section: targets[0] ?? null,
       type: 'Expenses',
       sub: lob.exp,
       item: '',
@@ -305,6 +402,7 @@ function build(claim) {
   }
   // payments waiting in Approvals stay on the claim, same id, amount, payee
   for (const a of myPayApprovals) {
+    a.paymentId = `PMT-${clientCode}-${year}.${claimNo}.1.${seq++}`;
     payments.push({
       paymentId: a.paymentId,
       reinsuranceId: '',
@@ -316,7 +414,7 @@ function build(claim) {
       currency: a.currency,
       paymentDate: '18-10-2026'
     });
-    placement.push(null);
+    placement.push(secs.length ? (openSecs[0] ?? secs[0]).id : null);
   }
 
   // ── recoveries ──────────────────────────────────────────────────────────────
@@ -379,15 +477,8 @@ function build(claim) {
   });
 
   // ── totals, details, transactions ───────────────────────────────────────────
-  // Rows in another currency than the claim's (a few approvals are EUR on CHF claims) stay listed but are not added into claim-currency sums.
-  const own = r => r.currency === cur;
-  const outstandingRes = sum(reserves.filter(r => r.status !== 'Rejected' && own(r)), r => r.reserveValue);
-  const completed = sum(payments.filter(p => own(p) && (p.status === 'Done' || p.status === 'Credit')), p => p.amount);
-  const pending = sum(payments.filter(p => own(p) && p.status === 'Pending'), p => p.amount);
-  const recovered = sum(recoveries.filter(r => r.status === 'Approved'), r => r.amount);
-  const outstandingShown = id === 'CL-2025-001' ? overview.financialSummary.outstanding : outstandingRes;
-  const incurred = id === 'CL-2025-001' ? reserveTotal : outstandingShown + completed;
-  const detail = (label, gross) => ({ label, gross, grossNet: Math.round(gross * 0.9), net: Math.round(gross * 0.85) });
+  const { summary, details } = summarize(cur, payments, reserves, recoveries);
+  const recovered = summary.recoveries;
   let run = 0;
   const transactions = [];
   payments.filter(p => p.status === 'Done').forEach((p, i) => {
@@ -422,17 +513,13 @@ function build(claim) {
       totalIncurred: run
     });
   });
-  if (recoveryOverride !== undefined && recovered !== recoveryOverride && id !== 'CL-2025-001' && id !== 'CLM-2024-003') {
+  if (recoveryOverride !== undefined && recovered !== recoveryOverride) {
     throw new Error(`${id}: recoveries ${recovered} != claim-overview ${recoveryOverride}`);
   }
   return {
     claimId: id,
-    summary: { outstandingReserves: outstandingShown, completedPayments: completed, pendingPayments: pending, recoveries: recovered, incurred },
-    details: {
-      currency: cur,
-      ibnr: 0,
-      rows: [detail('Insured', incurred), detail('Reserve', outstandingShown), detail('Payments', completed), detail('Recoveries', recovered)]
-    },
+    summary,
+    details,
     payments,
     reserves,
     recoveries,
@@ -444,6 +531,7 @@ function build(claim) {
 // ── run ─────────────────────────────────────────────────────────────────────────
 const noMoney = c => c.claimId.startsWith('SK-') && ['awaiting-policy', 'abandoned'].includes(c.skeletonState);
 const targets = claims.filter(c => c.claimId !== 'CLM-2024-001' && !noMoney(c));
+targets.forEach(ensureSections);
 const seeded = targets.map(build);
 // CL-2025-001 is the claim most tickets use but it is not in claims.json: build it from its overview record.
 const o = overviews['CL-2025-001'];
@@ -456,7 +544,7 @@ seeded.push(
     policyNumber: o.policyNumber,
     lineOfBusiness: o.lineOfBusiness,
     currency: o.financialSummary.currency,
-    lossAmount: 1250000,
+    lossAmount: o.financialSummary.totalReserve + o.financialSummary.totalPayments,
     status: o.status,
     dateCreated: o.dateCreated,
     dateUpdated: o.dateCreated
@@ -478,5 +566,24 @@ if (bad.length) {
   console.error('Totals do not match claim-overview.json:\n  ' + bad.join('\n  '));
   process.exit(1);
 }
-writeFileSync(outPath, JSON.stringify([...keep, ...seeded], null, 2) + '\n');
-console.log(`Seeded ${seeded.length} claims: ${seeded.map(f => f.claimId).join(', ')}`);
+// CLM-2024-001 keeps its rows; only the approval row takes the claim's own id format, and
+// summary and details become the sums of those rows (they were hand-typed and didn't add up).
+const first = keep[0];
+const waiting = first.payments.find(p => /^PMT-C-/.test(p.paymentId));
+if (waiting) waiting.paymentId = OWN_PAYMENT_ID_001;
+Object.assign(first, summarize(first.details.currency, first.payments, first.reserves, first.recoveries));
+
+// sections this script made: open ones with reserves / pending payments say so (Close Section reads it)
+const fin = new Map(seeded.map(f => [f.claimId, f]));
+for (const sec of generatedSections) {
+  const f = fin.get(sec.claimId);
+  if (sec.status === 'Closed' || !f) continue;
+  sec.hasOpenReserves = f.reserves.some(r => r.sectionId === sec.id && r.status !== 'Rejected' && r.reserveValue > 0);
+  sec.hasOpenPayments = f.sections.find(x => x.sectionId === sec.id)?.payments.some(p => p.status === 'Pending') ?? false;
+}
+
+const out = (path, value) => writeFileSync(path, JSON.stringify(value, null, 2) + '\n');
+out(outPath, [...keep, ...seeded]);
+out(resolve(root, 'src/app/core/mock/data/sections.json'), [...sections]);
+out(resolve(root, 'src/app/core/mock/data/payment-approvals.json'), payAppr);
+console.log(`Seeded ${seeded.length} claims (${generatedSections.length} new sections): ${seeded.map(f => f.claimId).join(', ')}`);

@@ -406,5 +406,927 @@
         "expandable": false
       }
     ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-002-1",
+    "claimId": "CLM-2024-002",
+    "name": "System outage & recovery — Dortmund",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-002-1",
+        "name": "Nordbyte SE — System outage & recovery",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-002-2",
+    "claimId": "CLM-2024-002",
+    "name": "Data restoration — Dortmund",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-002-2",
+        "name": "Nordbyte SE — Data restoration",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-003-1",
+    "claimId": "CLM-2024-003",
+    "name": "Cargo damage — Rotterdam",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": true,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-003-1",
+        "name": "GBF Logistics GmbH — Cargo damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-003-2",
+    "claimId": "CLM-2024-003",
+    "name": "Carrier liability — Rotterdam",
+    "damageType": "liability",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": true,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-003-2",
+        "name": "GBF Logistics GmbH — Carrier liability",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-004-1",
+    "claimId": "CLM-2024-004",
+    "name": "Third-party liability — Vienna",
+    "damageType": "liability",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-004-1",
+        "name": "Marvel SE — Third-party liability",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-005-1",
+    "claimId": "CLM-2024-005",
+    "name": "Machinery breakdown — Budapest",
+    "damageType": "machinery-breakdown",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-005-1",
+        "name": "BMW Budapest Motors — Machinery breakdown",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-005-2",
+    "claimId": "CLM-2024-005",
+    "name": "Business interruption — Budapest",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-005-2",
+        "name": "BMW Budapest Motors — Business interruption",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-006-1",
+    "claimId": "CLM-2024-006",
+    "name": "Property damage — Zürich",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": true,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-006-1",
+        "name": "Schäfer & Söhne AG — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-007-1",
+    "claimId": "CLM-2024-007",
+    "name": "Cargo damage — Oslo",
+    "damageType": "material-damage",
+    "status": "Closed",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "closureDate": "2024-04-20",
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Lena Zorn"
+    },
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-007-1",
+        "name": "Nordic Shipping AS — Cargo damage",
+        "instructionStatus": "Completed",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-007-2",
+    "claimId": "CLM-2024-007",
+    "name": "Carrier liability — Oslo",
+    "damageType": "liability",
+    "status": "Closed",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "closureDate": "2024-04-20",
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Lena Zorn"
+    },
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-007-2",
+        "name": "Nordic Shipping AS — Carrier liability",
+        "instructionStatus": "Completed",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-008-1",
+    "claimId": "CLM-2024-008",
+    "name": "System outage & recovery — Singapore",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-008-1",
+        "name": "TechStart Pte Ltd — System outage & recovery",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-009-1",
+    "claimId": "CLM-2024-009",
+    "name": "Machinery breakdown — Cologne",
+    "damageType": "machinery-breakdown",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-009-1",
+        "name": "Rhein Constructions GmbH — Machinery breakdown",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-009-2",
+    "claimId": "CLM-2024-009",
+    "name": "Business interruption — Cologne",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-009-2",
+        "name": "Rhein Constructions GmbH — Business interruption",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-010-1",
+    "claimId": "CLM-2024-010",
+    "name": "Third-party liability — London",
+    "damageType": "liability",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-010-1",
+        "name": "Pendragon Liability Corp — Third-party liability",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-012-1",
+    "claimId": "CLM-2024-012",
+    "name": "Cargo damage",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-012-1",
+        "name": "GBF Logistics GmbH — Cargo damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-013-1",
+    "claimId": "CLM-2024-013",
+    "name": "System outage & recovery — Dortmund",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-013-1",
+        "name": "Nordbyte SE — System outage & recovery",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-014-1",
+    "claimId": "CLM-2024-014",
+    "name": "Machinery breakdown — Frankfurt",
+    "damageType": "machinery-breakdown",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-014-1",
+        "name": "Rhein Constructions GmbH — Machinery breakdown",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-015-1",
+    "claimId": "CLM-2024-015",
+    "name": "Third-party liability — Graz",
+    "damageType": "liability",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-015-1",
+        "name": "Marvel SE — Third-party liability",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-016-1",
+    "claimId": "CLM-2024-016",
+    "name": "Property damage — Bern",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": true,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-016-1",
+        "name": "Schäfer & Söhne AG — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-016-2",
+    "claimId": "CLM-2024-016",
+    "name": "Business interruption — Bern",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-016-2",
+        "name": "Schäfer & Söhne AG — Business interruption",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-017-1",
+    "claimId": "CLM-2024-017",
+    "name": "Cargo damage — Copenhagen",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-017-1",
+        "name": "Nordic Shipping AS — Cargo damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-018-1",
+    "claimId": "CLM-2024-018",
+    "name": "System outage & recovery — Singapore",
+    "damageType": "business-interruption",
+    "status": "Closed",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "closureDate": "2024-09-01",
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Dirk Haas"
+    },
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-018-1",
+        "name": "TechStart Pte Ltd — System outage & recovery",
+        "instructionStatus": "Completed",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-019-1",
+    "claimId": "CLM-2024-019",
+    "name": "Property damage — Bremen",
+    "damageType": "material-damage",
+    "status": "Closed",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "closureDate": "2019-06-30",
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Ralf Kern"
+    },
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-019-1",
+        "name": "Liver Tea Group — Property damage",
+        "instructionStatus": "Completed",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-020-1",
+    "claimId": "CLM-2024-020",
+    "name": "Third-party liability — Manchester",
+    "damageType": "liability",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-020-1",
+        "name": "Oskar Veld & \"Partners\" — Third-party liability",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-021-1",
+    "claimId": "CLM-2024-021",
+    "name": "Machinery breakdown — Stuttgart",
+    "damageType": "machinery-breakdown",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-021-1",
+        "name": "Rhein Constructions GmbH — Machinery breakdown",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-022-1",
+    "claimId": "CLM-2024-022",
+    "name": "Property damage — Munich",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": true,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-022-1",
+        "name": "Liver Tea Group — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-023-1",
+    "claimId": "CLM-2024-023",
+    "name": "Property damage — Munich",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": true,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-023-1",
+        "name": "Liver Tea Group — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-101-1",
+    "claimId": "CLM-2024-101",
+    "name": "Property damage — Frankfurt",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-101-1",
+        "name": "Müller GmbH — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-101-2",
+    "claimId": "CLM-2024-101",
+    "name": "Business interruption — Frankfurt",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-101-2",
+        "name": "Müller GmbH — Business interruption",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-102-1",
+    "claimId": "CLM-2024-102",
+    "name": "Property damage — Berlin",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-102-1",
+        "name": "TechPark Berlin AG — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-103-1",
+    "claimId": "CLM-2024-103",
+    "name": "Machinery breakdown — Hamburg",
+    "damageType": "machinery-breakdown",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-103-1",
+        "name": "Nordic Renewables GmbH — Machinery breakdown",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-103-2",
+    "claimId": "CLM-2024-103",
+    "name": "Business interruption — Hamburg",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-103-2",
+        "name": "Nordic Renewables GmbH — Business interruption",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-025-1",
+    "claimId": "CLM-2024-025",
+    "name": "Property damage — Cologne",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-025-1",
+        "name": "Rheinfeld Logistics AG — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-026-1",
+    "claimId": "CLM-2024-026",
+    "name": "Third-party liability — Bremen",
+    "damageType": "liability",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-026-1",
+        "name": "Baltic Freight Partners — Third-party liability",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-027-1",
+    "claimId": "CLM-2024-027",
+    "name": "Cargo damage — Kiel",
+    "damageType": "material-damage",
+    "status": "Closed",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": false,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "closureDate": "2026-10-18",
+    "closedBy": {
+      "userId": "usr-cm",
+      "name": "Mara Mustermann"
+    },
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-027-1",
+        "name": "Nordsee Marine Services — Cargo damage",
+        "instructionStatus": "Completed",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-028-1",
+    "claimId": "CLM-2024-028",
+    "name": "System outage & recovery — Munich",
+    "damageType": "business-interruption",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-028-1",
+        "name": "Vantage Data Systems GmbH — System outage & recovery",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-028-2",
+    "claimId": "CLM-2024-028",
+    "name": "Data restoration — Munich",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-028-2",
+        "name": "Vantage Data Systems GmbH — Data restoration",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-CLM-2024-029-1",
+    "claimId": "CLM-2024-029",
+    "name": "Machinery breakdown — Stuttgart",
+    "damageType": "machinery-breakdown",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-CLM-2024-029-1",
+        "name": "Alpenbau Engineering GmbH — Machinery breakdown",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
+  },
+  {
+    "id": "SEC-C-SK-2024-002-1",
+    "claimId": "SK-2024-002",
+    "name": "Property damage",
+    "damageType": "material-damage",
+    "status": "Open",
+    "expanded": true,
+    "hasOpenDeductible": false,
+    "hasActiveLitigation": false,
+    "hasSubrogation": false,
+    "hasActiveSalvage": false,
+    "hasOpenReserves": true,
+    "hasOpenPayments": false,
+    "hasActiveProvider": false,
+    "entities": [
+      {
+        "id": "SE-C-SK-2024-002-1",
+        "name": "Jonas Kaufmann — Property damage",
+        "instructionStatus": "Not assigned",
+        "expandable": false
+      }
+    ]
   }
 ]

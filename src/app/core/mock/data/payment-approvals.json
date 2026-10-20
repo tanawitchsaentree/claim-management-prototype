@@ -1,7 +1,7 @@
 [
   {
     "requestId": "PAY-483201",
-    "paymentId": "PMT-C-00063373-2026.537.1.4",
+    "paymentId": "123456-12",
     "claimId": "CLM-2024-001",
     "oe": "DE",
     "lineOfBusiness": "Property",
@@ -14,33 +14,33 @@
   },
   {
     "requestId": "PAY-270301",
-    "paymentId": "PMT-C-00016836-2026.690.1.1",
+    "paymentId": "PMT-C-00063677-2026.006.1.3",
     "claimId": "CLM-2024-006",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "paymentType": "Expense",
     "payee": "Schäfer & Söhne AG",
-    "currency": "EUR",
+    "currency": "CHF",
     "amount": 1240,
     "requester": "m.haas@allianz.com",
     "reviewerEmail": "n.feld@allianz.com"
   },
   {
     "requestId": "PAY-215601",
-    "paymentId": "PMT-C-00063373-2026.479.1.6",
+    "paymentId": "PMT-C-00063677-2024.016.1.4",
     "claimId": "CLM-2024-016",
     "oe": "DE",
     "lineOfBusiness": "Property",
     "paymentType": "Provider",
     "payee": "Schäfer & Söhne AG",
-    "currency": "EUR",
+    "currency": "CHF",
     "amount": 3180,
     "requester": "extern.d.kiel@allianz.com",
     "reviewerEmail": "n.feld@allianz.com"
   },
   {
     "requestId": "PAY-562301",
-    "paymentId": "PMT-C-00063659-2026.51.1.2",
+    "paymentId": "PMT-C-00063671-2024.022.1.3",
     "claimId": "CLM-2024-022",
     "oe": "DE",
     "lineOfBusiness": "Property",
@@ -53,7 +53,7 @@
   },
   {
     "requestId": "PAY-562302",
-    "paymentId": "PMT-C-00063659-2026.51.1.3",
+    "paymentId": "PMT-C-00063671-2024.023.1.3",
     "claimId": "CLM-2024-023",
     "oe": "DE",
     "lineOfBusiness": "Property",
@@ -66,7 +66,7 @@
   },
   {
     "requestId": "PAY-701288",
-    "paymentId": "PMT-C-00063659-2026.51.2.4",
+    "paymentId": "PMT-C-00063671-2024.023.1.4",
     "claimId": "CLM-2024-023",
     "oe": "DE",
     "lineOfBusiness": "Property",

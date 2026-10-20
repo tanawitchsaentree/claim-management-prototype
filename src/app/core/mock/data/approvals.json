@@ -16,7 +16,7 @@
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity",
-    "currency": "EUR",
+    "currency": "CHF",
     "amount": 2000,
     "requester": "m.haas@allianz.com",
     "reviewerEmail": "n.feld@allianz.com"
@@ -27,7 +27,7 @@
     "oe": "DE",
     "lineOfBusiness": "Property",
     "reserveType": "Indemnity, Expenses",
-    "currency": "EUR",
+    "currency": "CHF",
     "amount": 2000,
     "requester": "extern.d.kiel@allianz.com",
     "reviewerEmail": "n.feld@allianz.com"

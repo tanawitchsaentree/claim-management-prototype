@@ -30,7 +30,7 @@
     },
     "financialSummary": {
       "currency": "EUR",
-      "totalReserve": 1250000,
+      "totalReserve": 885000,
       "totalPayments": 320000,
       "totalRecoveries": 45000,
       "outstanding": 885000
@@ -112,10 +112,10 @@
     },
     "financialSummary": {
       "currency": "EUR",
-      "totalReserve": 425000,
-      "totalPayments": 0,
-      "totalRecoveries": 0,
-      "outstanding": 425000
+      "totalReserve": 35000,
+      "totalPayments": 90000,
+      "totalRecoveries": 50000,
+      "outstanding": 35000
     },
     "restriction": {
       "isRestricted": true,
