@@ -1,6 +1,5 @@
 import { FinancialOverview } from '../../../core/models/financial-overview.model';
 import { Bookable, needsHandler, withFinance } from '../../../core/models/gg-booking.model';
-import { needsYou } from '../../../shared/utils/needs-you';
 
 export type FinancialListView = 'payments' | 'reserves' | 'recovery';
 
@@ -25,7 +24,7 @@ type Row = Bookable & { status: string };
 
 /** How many rows on one list wait for the handler (the "Needs you" chip). Same rule as the summary line and the bell. */
 export function needsYouCount(rows: Row[]): number {
-  return rows.filter(r => needsYou(r.status, r)).length;
+  return rows.filter(r => needsHandler(r.status, r)).length;
 }
 
 export interface NotBookedSummary {
