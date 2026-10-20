@@ -17,7 +17,8 @@ export type PreCheckId =
   | 'payee-not-cleared'
   | 'payee-not-in-gg'
   | 'bank-account-not-operational'
-  | 'multi-section';
+  | 'multi-section'
+  | 'over-reserve';
 
 /** A thing the handler can do straight from the warning. */
 export type PreCheckAction = 'add-reserve' | 'send-claim-again';
@@ -60,6 +61,8 @@ export interface PreCheckInput {
   payee?: { name: string; clearance: 'cleared' | 'pending' | 'sanctioned'; ggNameCode?: string };
   bankAccountOperational?: boolean;
   sectionCount?: number;
+  // Reserve lines where the amount typed is more than what's left on them.
+  overReserveLines?: { reserveId: string; outstanding: number; amount: number }[];
 }
 
 const ORDER: PreCheckId[] = [
@@ -68,6 +71,7 @@ const ORDER: PreCheckId[] = [
   'payee-not-cleared',
   'payee-not-in-gg',
   'bank-account-not-operational',
+  'over-reserve',
   'no-reserve-in-currency',
   'limit-breach',
   'multi-section',
@@ -197,6 +201,22 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       level: 'block',
       title: "This bank account can't be paid into any more",
       body: 'Choose another account for this payee, or ask Names Management to update their details.'
+    });
+  }
+  if (input.journey === 'payment' && input.overReserveLines?.length) {
+    // CLAWS rule (KB "Make Payment"): the reserve must cover the payment;
+    // otherwise raise the reserve first. Remaining used to go negative.
+    const l = input.overReserveLines[0];
+    const more = input.overReserveLines.length - 1;
+    out.push({
+      id: 'over-reserve',
+      level: 'block',
+      title: "This payment is more than what's left on the reserve",
+      body:
+        `Reserve ${l.reserveId} has ${money(l.outstanding, input.currency)} left and you entered ${money(l.amount, input.currency)}` +
+        (more ? ` (and ${more} more line${more > 1 ? 's' : ''})` : '') +
+        '. Increase the reserve first, or lower the amount.',
+      action: { kind: 'add-reserve', label: 'Go to reserves' }
     });
   }
   if (input.journey === 'payment' && (input.sectionCount ?? 0) > 1) {

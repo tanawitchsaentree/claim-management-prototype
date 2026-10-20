@@ -15,7 +15,7 @@
     {
       "id": "AC-01",
       "statement": "Make payment · Nothing wrong, ready to submit",
-      "plainStatement": "**Opens:** Make payment, filled in: Business Interruption, EUR 12,000 to Kaufmann Warehouse GmbH.\n\n**You see:** No warnings. Submit is enabled.\n\n**Try:** Press Submit: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
+      "plainStatement": "**Opens:** the Make Payment window, Payment amount open, filled in: Business Interruption, EUR 12,000 to Kaufmann Warehouse GmbH.\n\n**You see:** No warnings. **Make Payment** is enabled.\n\n**Try:** Press **Make Payment**: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -85,7 +85,7 @@
     {
       "id": "AC-03",
       "statement": "Make payment · Claim couldn't be set up in GG",
-      "plainStatement": "**Opens:** Make payment, filled in.\n\n**You see:** Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button.\n\n**Try:** Press it: the block turns into the blue \"still being set up\" note and Submit unlocks.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in.\n\n**You see:** Red block at the top, **Make Payment** disabled, with a **Send claim to Global Genius again** button.\n\n**Try:** Press it: the block turns into the blue \"still being set up\" note and Make Payment unlocks.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -131,7 +131,7 @@
     {
       "id": "AC-04",
       "statement": "Make payment · Claim still being set up",
-      "plainStatement": "**Opens:** Make payment, filled in.\n\n**You see:** Blue note: once submitted it is booked when the claim is ready. Submit enabled.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in.\n\n**You see:** Blue note: once submitted it is booked when the claim is ready. **Make Payment** enabled.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -176,7 +176,7 @@
     {
       "id": "AC-05",
       "statement": "Make payment · Currency with no reserve (USD)",
-      "plainStatement": "**Opens:** Make payment, filled in with USD.\n\n**You see:** Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency).\n\n**Try:** Press Add a USD reserve: Reserves opens with Add reserve already open in USD.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in with USD.\n\n**You see:** Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency).\n\n**Try:** Press Add a USD reserve: Reserves opens with Add reserve already open in USD.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -211,7 +211,7 @@
     {
       "id": "AC-06",
       "statement": "Make payment · Over the limit",
-      "plainStatement": "**Opens:** Make payment, filled in with EUR 900,000 on Business Interruption.\n\n**You see:** Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field.\n\n**Try:** Press Submit without a reason: the reason field shows an error.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in with EUR 900,000 on Business Interruption.\n\n**You see:** Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field.\n\n**Try:** Press **Make Payment** without a reason: the reason field shows an error.\n\nThe Business Interruption reserve is set to EUR 1,000,000 for this case, so the amount stays within the reserve but goes over the limit.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -224,7 +224,16 @@
             "hint": "Press Submit without a reason: the reason field shows an error."
           }
         ],
-        "stateOverrides": {},
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "reserves": {
+              "RES-C-00063676-2024.001.2.0.1": {
+                "reserveValue": 1000000
+              }
+            }
+          }
+        },
         "postLand": [
           {
             "kind": "none"
@@ -246,7 +255,7 @@
     {
       "id": "AC-07",
       "statement": "Make payment · Unpaid premium, payments blocked",
-      "plainStatement": "**Opens:** Make payment, filled in.\n\n**You see:** Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in.\n\n**You see:** Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. **Make Payment** disabled.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -291,7 +300,7 @@
     {
       "id": "AC-08",
       "statement": "Make payment · Unpaid premium, warning only (alternative)",
-      "plainStatement": "**Opens:** Make payment, filled in, premium preview set to \"Warning only\".\n\n**You see:** Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in, premium preview set to \"Warning only\".\n\n**You see:** Amber warning: check with the underwriter. **Make Payment** enabled. The preview switch is labelled as a prototype preview.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -336,7 +345,7 @@
     {
       "id": "AC-09",
       "statement": "Make payment · Several problems at once",
-      "plainStatement": "**Opens:** Make payment, filled in with USD, while the claim is still being set up and premium is unpaid.\n\n**You see:** Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in with USD, while the claim is still being set up and premium is unpaid.\n\n**You see:** Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
