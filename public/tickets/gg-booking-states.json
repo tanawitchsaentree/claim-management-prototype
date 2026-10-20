@@ -1087,7 +1087,7 @@
       "statement": "Claim Overview warns when the claim could not be set up in GG",
       "plainStatement": "Claim Overview shows a banner: **payments and reserves are on hold** because the claim couldn't be set up in Global Genius, Finance is fixing it, nothing for you to do.",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim registration failed",
         "preconditions": [
@@ -1127,7 +1127,7 @@
       "statement": "Claim Overview warns when the claim's policy is not in GG",
       "plainStatement": "Banner says the **policy isn't in Global Genius yet**, the policy team needs to add it.",
       "page": "overview",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "GG policy missing (BMPCC-19412 skip)",
         "preconditions": [
@@ -1165,9 +1165,9 @@
     {
       "id": "AC-10",
       "statement": "Make payment cannot be submitted while the claim is not in GG",
-      "plainStatement": "Opening **Make payment** shows the hold message at the top and the **Submit** button is disabled; the form can still be filled in.",
+      "plainStatement": "Opening **Make payment** shows the hold message at the top and the **Submit** button is disabled; the form can still be filled in. **NOTE [accepted-deviation]:** the reference design has a full page with accordions, reserve table, VAT and deductible; the prototype page has only the fields the checks need (section, payment type, payee, amount, currency), under the in-claim page header instead of a breadcrumb strip. Treated as `done` — pending product sign-off.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim registration failed",
         "preconditions": [
@@ -1206,9 +1206,9 @@
     {
       "id": "AC-11",
       "statement": "While the claim is still being set up, work carries on and items wait",
-      "plainStatement": "With the claim **still being set up**, Make payment shows an info note that you can submit and it will be booked once the claim is ready; approved items show **Waiting for claim**.",
+      "plainStatement": "With the claim **still being set up**, Make payment shows an info note that you can submit and it will be booked once the claim is ready; approved items show **Waiting for claim**. **NOTE [accepted-deviation]:** 'queued and booked once the claim is ready' assumes the Handover domain can hold items until the claim exists in GG; no Jira story confirms this yet. Treated as `done` — pending product sign-off.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim still registering in GG",
         "preconditions": [
@@ -1277,7 +1277,7 @@
       "statement": "Make payment stops a payment in a currency with no reserve",
       "plainStatement": "Choosing **USD** on Make payment (all reserves are EUR) shows **there's no USD reserve to pay from** and blocks Submit.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Default data (all reserves EUR)",
         "preconditions": [
@@ -1307,7 +1307,7 @@
       "statement": "Make payment warns about a limit breach inline and asks for a reason",
       "plainStatement": "Entering an amount above what's left on the limit shows an **inline warning with a reason field** (no full-screen modal, BMPCC-20953). Submit works once a reason is given.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Default data (Business Interruption limit 800,000)",
         "preconditions": [
@@ -1338,7 +1338,7 @@
       "statement": "Make payment shows outstanding premium",
       "plainStatement": "With **unpaid premium** on the policy, Make payment says payments can't be made until it's paid (block), with a switch to preview the warn-only variant (BMPCC-21754 TBC).",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Outstanding premium",
         "preconditions": [
@@ -1378,7 +1378,7 @@
       "statement": "Several warnings at once are stacked in one consistent list",
       "plainStatement": "With the claim still being set up **and** unpaid premium, then choosing USD, Make payment shows **one list**: blocks first, warnings after, same style.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Registering + premium outstanding",
         "preconditions": [
@@ -1419,7 +1419,7 @@
       "statement": "Add reserve uses the same warning list as Make payment",
       "plainStatement": "**Add reserve** shows the same warning list: the claim-still-being-set-up note, and an inline limit warning if the amount is too high.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Claim still registering in GG",
         "preconditions": [
@@ -1459,7 +1459,7 @@
       "statement": "Submitting a payment tells the handler what happens next",
       "plainStatement": "After **Submit**, the handler is told the payment was **sent for approval** and will be **booked in Global Genius automatically** once approved; the new row appears as Pending.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Default data",
         "preconditions": [

@@ -69,7 +69,8 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       id: 'claim-registering',
       level: 'warn',
       title: 'Claim is still being set up',
-      body: `You can submit. The ${noun} will be booked as soon as Global Genius has finished setting up the claim.`
+      // Neutral wording: it can sit below a block in the same list, so it must not say "you can submit".
+      body: `Once submitted, the ${noun} is booked as soon as Global Genius has finished setting up the claim.`
     });
   }
   if (input.journey === 'payment' && input.premiumOutstanding) {
@@ -105,7 +106,12 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       id: 'limit-breach',
       level: 'warn',
       title: `This ${noun} goes over the ${input.limitName ?? 'policy limit'}`,
-      body: `Only ${input.limitRemaining.toLocaleString('en-GB')} is left on this limit. You can still go ahead, but you need to give a reason.`,
+      // Reason capture is payment-only (BMPCC-20953); Add reserve must not ask for one.
+      body:
+        `Only ${input.limitRemaining.toLocaleString('en-GB')} is left on this limit. ` +
+        (input.journey === 'payment'
+          ? 'You can still go ahead, but you need to give a reason.'
+          : 'You can still go ahead.'),
       needsReason: input.journey === 'payment'
     });
   }
