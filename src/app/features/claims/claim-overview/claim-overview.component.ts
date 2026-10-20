@@ -17,6 +17,7 @@ import { NamedThirdParty } from '../../../core/models/section.model';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
+import { GgRegistrationBannerComponent } from './components/gg-registration-banner/gg-registration-banner.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.pipe';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
@@ -132,7 +133,8 @@ type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
     PendingTasksWidgetComponent,
     RecentActivitiesCardComponent,
     RiskScoreFieldComponent,
-    BlockerReturnBannerComponent
+    BlockerReturnBannerComponent,
+    GgRegistrationBannerComponent
   ],
   templateUrl: './claim-overview.component.html',
   styleUrl: './claim-overview.component.scss'

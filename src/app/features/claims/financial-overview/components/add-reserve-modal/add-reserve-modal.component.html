@@ -6,6 +6,7 @@
 </div>
 
 <div class="arm-body" tabindex="0" [formGroup]="form">
+  <app-financial-warnings [checks]="checks()"></app-financial-warnings>
   <div class="arm-grid">
     <nx-formfield label="Reserve type *">
       <nx-dropdown formControlName="reserveType" placeholder="Select">

@@ -1,0 +1,17 @@
+.fw-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.fw-body {
+  display: block;
+  margin-top: 4px;
+}
+
+.fw-reason {
+  display: block;
+  margin-top: var(--space-md);
+  max-width: 480px;
+}

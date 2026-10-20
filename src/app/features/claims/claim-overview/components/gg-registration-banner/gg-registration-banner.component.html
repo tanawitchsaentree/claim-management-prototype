@@ -1,0 +1,6 @@
+@if (message(); as m) {
+  <nx-message [context]="m.severity === 'error' ? 'error' : 'info'" class="ggb-banner">
+    <strong>{{ m.title }}</strong>
+    <span class="ggb-body">{{ m.body }}</span>
+  </nx-message>
+}

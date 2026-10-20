@@ -119,6 +119,14 @@ export const routes: Routes = [
             m => m.FinancialOverviewComponent
           )
       },
+      {
+        path: 'claims/:id/financial/new-payment',
+        canActivate: [claimAliasGuard],
+        loadComponent: () =>
+          import('./features/claims/make-payment/make-payment.component').then(
+            m => m.MakePaymentComponent
+          )
+      },
       // "View all notes" is a bottom-sheet dialog now (claim-notes-panel opens it);
       // the component needs dialog data, so rendering it as a page threw NG0201.
       // Old links and typed URLs land on the claim overview instead.

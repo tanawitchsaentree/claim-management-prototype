@@ -1,0 +1,9 @@
+// No display override: nx-message's own :host is flex (icon + text on one row).
+.ggb-banner {
+  margin-bottom: var(--space-lg);
+}
+
+.ggb-body {
+  display: block;
+  margin-top: 4px;
+}

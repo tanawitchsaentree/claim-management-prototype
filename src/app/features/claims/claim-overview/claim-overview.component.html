@@ -7,6 +7,7 @@
     <div class="co-error">{{ vm.error }}</div>
   } @else if (vm.claim; as claim) {
     <app-blocker-return-banner></app-blocker-return-banner>
+    <app-gg-registration-banner [registration]="claim.ggRegistration"></app-gg-registration-banner>
 
     <!-- General Info Card -->
     <section class="co-card">
