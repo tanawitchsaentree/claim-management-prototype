@@ -13,7 +13,11 @@ export type PreCheckId =
   | 'claim-registering'
   | 'no-reserve-in-currency'
   | 'limit-breach'
-  | 'premium-outstanding';
+  | 'premium-outstanding'
+  | 'payee-not-cleared'
+  | 'payee-not-in-gg'
+  | 'bank-account-not-operational'
+  | 'multi-section';
 
 /** A thing the handler can do straight from the warning. */
 export type PreCheckAction = 'add-reserve' | 'send-claim-again';
@@ -50,13 +54,23 @@ export interface PreCheckInput {
   // Remaining headroom on the tightest applicable limit, same currency as amount.
   limitRemaining?: number;
   limitName?: string;
+  // Make payment modal: the chosen payee / account, and how many claim
+  // sections the reserve lines span. These stop known Global Genius rejections
+  // before submit (GG/CLAWS decision register gaps 4, 5, 9; BMPCC-21261).
+  payee?: { name: string; clearance: 'cleared' | 'pending' | 'sanctioned'; ggNameCode?: string };
+  bankAccountOperational?: boolean;
+  sectionCount?: number;
 }
 
 const ORDER: PreCheckId[] = [
   'claim-not-in-gg',
   'premium-outstanding',
+  'payee-not-cleared',
+  'payee-not-in-gg',
+  'bank-account-not-operational',
   'no-reserve-in-currency',
   'limit-breach',
+  'multi-section',
   'claim-registering'
 ];
 
@@ -149,6 +163,49 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
           ? 'You can still go ahead, but you need to give a reason.'
           : 'You can still go ahead.'),
       needsReason: input.journey === 'payment'
+    });
+  }
+
+  if (input.journey === 'payment' && input.payee) {
+    const pay = input.payee;
+    if (pay.clearance !== 'cleared') {
+      out.push({
+        id: 'payee-not-cleared',
+        level: 'block',
+        title:
+          pay.clearance === 'sanctioned'
+            ? `${pay.name} is on a sanctions list`
+            : `${pay.name} hasn't cleared sanctions screening yet`,
+        body:
+          pay.clearance === 'sanctioned'
+            ? 'You need an economic sanctions sign-off before you can pay this party.'
+            : "Screening usually finishes within 24 hours. You can save this as a draft and submit once it's cleared."
+      });
+    }
+    if (!pay.ggNameCode) {
+      out.push({
+        id: 'payee-not-in-gg',
+        level: 'block',
+        title: `${pay.name} isn't set up in Global Genius yet`,
+        body: "Global Genius can only book payments to parties it knows. Names Management has been asked to add them. You can save this as a draft until then."
+      });
+    }
+  }
+  if (input.journey === 'payment' && input.bankAccountOperational === false) {
+    out.push({
+      id: 'bank-account-not-operational',
+      level: 'block',
+      title: "This bank account can't be paid into any more",
+      body: 'Choose another account for this payee, or ask Names Management to update their details.'
+    });
+  }
+  if (input.journey === 'payment' && (input.sectionCount ?? 0) > 1) {
+    // Payment Split ADR (PROPOSED): GG books one payment per section.
+    out.push({
+      id: 'multi-section',
+      level: 'warn',
+      title: `This payment comes from ${input.sectionCount} sections`,
+      body: `Global Genius books one payment per section, so it will show as ${input.sectionCount} separate payments there. The payee still gets the full amount.`
     });
   }
 

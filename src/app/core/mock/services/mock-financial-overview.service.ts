@@ -106,7 +106,8 @@ export class MockFinancialOverviewService extends MockBaseService {
   addPayment(
     claimId: string,
     input: Omit<FinancialPayment, 'paymentId' | 'status'>,
-    sectionId?: string
+    sectionId?: string,
+    status: 'Pending' | 'Draft' = 'Pending' // Draft = Make payment's "Save & Draft"
   ): Observable<FinancialPayment> {
     const overview = structuredClone(this.getOrCreate(claimId));
     const prefix = overview.payments[0]?.paymentId.split('-')[0] ?? claimId;
@@ -115,10 +116,10 @@ export class MockFinancialOverviewService extends MockBaseService {
       handler: input.handler || this.auth.user().name,
       paymentDate: input.paymentDate || todayLabel(),
       paymentId: `${prefix}-${overview.payments.length + 1}`,
-      status: 'Pending'
+      status
     };
     overview.payments = [...overview.payments, payment];
-    overview.summary.pendingPayments += input.amount;
+    if (status === 'Pending') overview.summary.pendingPayments += input.amount;
     const section = overview.sections.find(s => s.sectionId === sectionId);
     if (section) section.payments = [...section.payments, payment];
     this.stateSvc.patchFinancialOverview(claimId, overview);

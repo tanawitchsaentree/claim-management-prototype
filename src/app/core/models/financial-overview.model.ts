@@ -1,4 +1,5 @@
 import { Bookable } from './gg-booking.model';
+import { PaymentLine, PaymentMethod } from './payee.model';
 
 // Draft / Requires amendment / Approved added for the GG booking journey
 // (BMPCC-19169): approval states first, then the booking state takes over.
@@ -44,6 +45,13 @@ export interface FinancialPayment extends Bookable {
   amount: number;
   currency: string;
   paymentDate: string;
+  // Make payment modal (multi-line). Optional: older payments have none.
+  lines?: PaymentLine[];
+  payeeId?: string;
+  bankAccountId?: string;
+  method?: PaymentMethod;
+  vatApplicable?: boolean;
+  coInsurance?: 'allianz' | 'market';
 }
 
 export interface FinancialReserve extends Bookable {
