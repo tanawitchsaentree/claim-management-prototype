@@ -243,7 +243,7 @@
     "hasActiveLitigation": false,
     "hasSubrogation": false,
     "hasActiveSalvage": false,
-    "hasOpenReserves": false,
+    "hasOpenReserves": true,
     "hasOpenPayments": false,
     "hasActiveProvider": false,
     "reopenedDate": "2025-04-15",

@@ -17,7 +17,12 @@ export class MockApprovalService extends MockBaseService {
   getAll(): Observable<UrgentApproval[]> {
     const seeded = this.approvals.filter(a => !this.decidedSeeded().has(a.requestId));
     return forkJoin([this.list(seeded), this.financialSvc.getPendingApprovals()]).pipe(
-      map(([s, real]) => [...real, ...s])
+      // A seeded request whose reserve now sits on its claim as a Pending row
+      // (same claim, same amount) would show twice: keep the real one.
+      map(([s, real]) => [
+        ...real,
+        ...s.filter(a => !real.some(r => r.claimId === a.claimId && r.amount === a.amount))
+      ])
     );
   }
 

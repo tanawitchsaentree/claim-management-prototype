@@ -214,6 +214,7 @@ export class FinancialOverviewComponent implements OnInit {
       firstValueFrom(this.sectionSvc.getByClaimId(claimId))
     ]);
     this.fo.set(data);
+    this.currency.set(data.details.currency);
     this.claimClosed.set(claim.status === 'Closed');
     this.sectionStatuses.set(sections);
     await this.loadNoReserveReason(claimId);

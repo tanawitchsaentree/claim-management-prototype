@@ -10,6 +10,7 @@ import { MockClaimService } from './mock-claim.service';
 import { MockTaskService } from './mock-task.service';
 import { MockLookupService } from './mock-lookup.service';
 import { MockSectionService } from './mock-section.service';
+import overviewSeed from '../data/claim-overview.json';
 
 interface LinkablePolicy {
   policyNumber: string;
@@ -28,8 +29,29 @@ export class MockClaimOverviewService extends MockBaseService {
 
   getOverview(claimId: string): Observable<ClaimOverview> {
     const existing = this.stateSvc.state().overviews[claimId];
-    if (existing) return this.respond(existing);
+    if (existing) return this.respond(this.withLiveFinancials(existing));
     return this.fromClaimOrFallback(claimId);
+  }
+
+  // The claim panel's "Total reserve" / "Total payments" used to be the claim's
+  // lossAmount and 0 for every claim that has no hand-written overview record,
+  // while its Financial Overview page showed real rows. Read them from that same
+  // page's summary so the two never disagree. Hand-written records in
+  // claim-overview.json keep their own numbers (they were written to match).
+  private withLiveFinancials(overview: ClaimOverview): ClaimOverview {
+    if (overview.claimId in (overviewSeed as Record<string, unknown>)) return overview;
+    const fo = this.stateSvc.state().financialOverviews[overview.claimId];
+    if (!fo || !(fo.reserves.length || fo.payments.length || fo.recoveries.length)) return overview;
+    return {
+      ...overview,
+      financialSummary: {
+        ...overview.financialSummary,
+        totalReserve: fo.summary.outstandingReserves,
+        totalPayments: fo.summary.completedPayments,
+        totalRecoveries: fo.summary.recoveries,
+        outstanding: fo.summary.outstandingReserves
+      }
+    };
   }
 
   // claims.json (the main Claims list) seeds far more claimIds than
@@ -49,7 +71,7 @@ export class MockClaimOverviewService extends MockBaseService {
 
   private persistAndRespond(claimId: string, overview: ClaimOverview): Observable<ClaimOverview> {
     this.stateSvc.ensureOverview(claimId, overview);
-    return this.respond(overview);
+    return this.respond(this.withLiveFinancials(overview));
   }
 
   // Claim.causeOfLoss stores lookup codes (e.g. "fire"); every other read
