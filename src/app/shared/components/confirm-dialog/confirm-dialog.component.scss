@@ -54,3 +54,50 @@
   background: var(--message-error-border-color) !important;
   border-color: var(--message-error-border-color) !important;
 }
+
+// Restored from the pre-2026-09-24 dialog (961cdd9^), opt-in via showChanges.
+.cd-diff-table {
+  width: 100%;
+  margin-top: var(--space-base);
+  border-collapse: collapse;
+  font-size: var(--paragraph-03-font-size);
+  th {
+    font-size: var(--paragraph-04-font-size);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: var(--space-sm);
+    border-bottom: 1px solid var(--ui-04);
+    text-align: left;
+  }
+  td {
+    padding: var(--space-md) var(--space-sm);
+    border-bottom: 1px solid var(--ui-03);
+    vertical-align: middle;
+  }
+}
+.cd-field-label {
+  font-weight: 600;
+  color: var(--text-01);
+  width: 140px;
+}
+.cd-original {
+  color: var(--text-muted);
+  word-break: break-word;
+}
+.cd-arrow {
+  color: var(--text-muted);
+  width: 24px;
+  text-align: center;
+}
+.cd-updated {
+  color: var(--text-01);
+  font-weight: 500;
+  word-break: break-word;
+}
+.cd-note {
+  margin: var(--space-base) 0 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}

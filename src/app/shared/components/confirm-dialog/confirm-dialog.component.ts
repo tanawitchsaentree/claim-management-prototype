@@ -26,6 +26,12 @@ export interface ConfirmDialogData {
   confirmDanger?: boolean;
   // A normal "are you sure" confirm needs no warning triangle.
   hideIcon?: boolean;
+  // Opt-in: render `changes` as the Field / Original / Updated table. Team
+  // call 2026-10-15 (UI/UX open points, Edit Claim): Edit claim goes back to
+  // the table; other confirms keep the plain message.
+  showChanges?: boolean;
+  // Extra line under the table (e.g. which sections get "Review needed").
+  note?: string;
 }
 
 @Component({

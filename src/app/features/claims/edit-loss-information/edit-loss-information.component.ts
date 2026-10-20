@@ -476,15 +476,18 @@ export class EditLossInformationComponent implements OnInit {
     const impactedBefore = diffs.some(d => IMPACT_LABELS.includes(d.label));
     const fieldNames = diffs.map(d => d.label).join(', ');
     const proceed = await this.confirm({
-      title: 'Update claim details',
-      message:
-        `${diffs.length === 1 ? '1 field' : `${diffs.length} fields`} will be updated on ` +
-        `${this.claimId()}: ${fieldNames}. The change is saved to the claim straight away.` +
-        (impactedBefore
-          ? ' Sections were built from the old values, so the open ones will be marked "Review needed".'
-          : ''),
-      confirmLabel: 'Update',
-      cancelLabel: 'Keep editing'
+      // Team call 2026-10-15 (UI/UX open points, Edit Claim): back to the
+      // previous Field / Original / Updated format.
+      title: 'Confirm loss information changes',
+      message: `The following ${diffs.length === 1 ? 'field' : 'fields'} will be updated for claim ${this.claimId()}.`,
+      changes: diffs.map(d => ({ label: d.label, original: d.original, updated: d.updated })),
+      showChanges: true,
+      hideIcon: true,
+      note: impactedBefore
+        ? 'Sections were built from the old values, so the open ones will be marked "Review needed".'
+        : undefined,
+      confirmLabel: 'Confirm changes',
+      cancelLabel: 'Back to editing'
     });
     if (!proceed) return;
 
