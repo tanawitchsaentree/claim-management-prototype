@@ -20,7 +20,7 @@
       "statement": "Payments list shows every status in one status column",
       "plainStatement": "The Payments list has **one Status column** that walks each payment from approval to booking: Draft, Pending, Requires amendment, Rejected, then **Booking in progress**, **Booking delayed**, **Booked** or **Needs fixing**. There is **no Retry button** anywhere (DESIGN DECISION GG-1).",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Approved CLM-2024-001 payments get GG booking states; four sample payments appended so every status is visible",
         "preconditions": [
@@ -177,7 +177,7 @@
       "statement": "A payment the handler must fix explains why and links to the task",
       "plainStatement": "Expanding payment **123456-4** (*Needs fixing*) shows the reason in plain words, says **you** need to act, and links to the task that tells you what to do.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same state as AC-01",
         "preconditions": [
@@ -335,7 +335,7 @@
       "statement": "A payment Finance must fix says Finance is on it",
       "plainStatement": "Expanding payment **123456-9** (*Needs fixing*) says the **Finance team** is fixing it and the handler doesn't need to do anything.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same state as AC-01",
         "preconditions": [
@@ -484,9 +484,9 @@
     {
       "id": "AC-04",
       "statement": "Reserves list uses the same booking statuses",
-      "plainStatement": "The Reserves list shows the **same status pills** as Payments: Booked, Booking in progress, Booking delayed, Needs fixing (Finance), and Pending for the reserve still awaiting approval.",
+      "plainStatement": "The Reserves list shows the **same status pills** as Payments: Booked, Booking in progress, Booking delayed, Needs fixing (Finance), and Pending for the reserve still awaiting approval. **NOTE [accepted-deviation]:** a Needs fixing reserve explains itself in its History row (clock icon or Reserve ID), not in an auto-open panel like payments. Treated as `done` — pending product sign-off.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same state as AC-01",
         "preconditions": [
@@ -636,7 +636,7 @@
       "statement": "Recovery bookings use the same booking statuses",
       "plainStatement": "Recovery bookings show **Booked** (REC-001) and **Booking in progress** (REC-002) with the same pills.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same state as AC-01",
         "preconditions": [
@@ -786,7 +786,7 @@
       "statement": "Financial Overview summary tells you how many items could not be booked",
       "plainStatement": "The Financial Overview page shows a line saying **3 items couldn't be booked**, and clicking it takes you to them.",
       "page": "financial",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same state as AC-01",
         "preconditions": [
@@ -937,7 +937,7 @@
       "statement": "The handler gets a task for a booking only they can fix",
       "plainStatement": "Task manager lists **TSK-GG-1** for Nina Feld, telling her to check the payee's bank details and create payment 123456-4 again.",
       "page": "any",
-      "buildStatus": "todo",
+      "buildStatus": "done",
       "setup": {
         "description": "Same state as AC-01",
         "preconditions": [

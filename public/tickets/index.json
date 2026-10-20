@@ -143,6 +143,12 @@
       "file": "champ-financial-loss-item.json",
       "module": "Claims",
       "title": "Damaged items — capture the peril and the working behind a financial loss"
+    },
+    {
+      "id": "GG-BOOKING-STATES",
+      "file": "gg-booking-states.json",
+      "module": "Claims",
+      "title": "Global Genius booking: claim-level and item-level states"
     }
   ]
 }
