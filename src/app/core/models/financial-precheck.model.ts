@@ -6,7 +6,7 @@
 // decision register row 8), limit breach (BMPCC-20953), outstanding premium
 // (BMPCC-21754, block-vs-warn still TBC).
 
-import { GgClaimRegistration } from './gg-booking.model';
+import { CLAIM_SEND_AGAIN_LABEL, GgClaimRegistration } from './gg-claim-registration.model';
 
 export type PreCheckId =
   | 'claim-not-in-gg'
@@ -71,8 +71,8 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       id: 'claim-not-in-gg',
       level: 'block',
       title: `You can't submit this ${noun} yet`,
-      body: "This claim couldn't be set up in Global Genius, so nothing on it can be booked. Send the claim again, or wait for Finance, who have been told. We'll let you know when it's ready.",
-      action: { kind: 'send-claim-again', label: 'Send claim to Global Genius again' }
+      body: "This claim couldn't be set up in Global Genius, so nothing on it can be booked. Retry setting it up, or wait for Finance, who have been told. We'll let you know when it's ready.",
+      action: { kind: 'send-claim-again', label: CLAIM_SEND_AGAIN_LABEL }
     });
   }
   if (input.ggRegistration === 'policy-missing') {
@@ -128,7 +128,7 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
       title: `This ${noun} goes over the ${input.limitName ?? 'policy limit'}`,
       // Reason capture is payment-only (BMPCC-20953); Add reserve must not ask for one.
       body:
-        `Only ${money(input.limitRemaining, input.currency)} is left on this limit. ` +
+        `${money(input.amount, input.currency)} is ${money(input.amount - input.limitRemaining, input.currency)} more than the ${money(input.limitRemaining, input.currency)} left on this limit. ` +
         (input.journey === 'payment'
           ? 'You can still go ahead, but you need to give a reason.'
           : 'You can still go ahead.'),

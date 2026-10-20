@@ -76,7 +76,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -291,7 +291,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -506,7 +506,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -721,7 +721,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -936,7 +936,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -1151,7 +1151,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -1366,7 +1366,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",
@@ -1581,7 +1581,7 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: already paid under 123456-3, this would pay the same invoice twice."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
               },
               {
                 "paymentId": "123456-8",

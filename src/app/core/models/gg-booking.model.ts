@@ -15,8 +15,9 @@
 // - copy says when it is worth pressing: now (GG was unavailable), after you
 //   fixed it (handler-owned), or only if Finance asks (Finance-owned).
 
-/** Is the claim itself registered in GG? Absent = registered (pre-GG data). */
-export type GgClaimRegistration = 'registered' | 'registering' | 'failed' | 'policy-missing';
+// Claim level (is the claim itself in GG) lives in its own file; re-exported
+// here so existing imports keep working.
+export * from './gg-claim-registration.model';
 
 /** Booking state of one approved reserve / payment / recovery. */
 export type BookingStatus = 'booking' | 'waiting-claim' | 'delayed' | 'booked' | 'needs-fixing';
@@ -88,14 +89,66 @@ const APPROVAL_TONE: Record<string, StatusTone> = {
 /** Approval statuses after which the item belongs to GG. */
 const HANDED_TO_GG = new Set(['Approved', 'Done', 'Credit']);
 
-export function displayStatus(approvalStatus: string, booking?: BookingStatus): DisplayStatus {
-  if (booking && HANDED_TO_GG.has(approvalStatus)) return BOOKING_DISPLAY[booking];
+/**
+ * Who has to act on a failed booking, after escalation: a resend that failed
+ * again moves to Finance (review round 2: "contact Finance" next to the same
+ * Send again button contradicted itself).
+ */
+export function effectiveOwner(issue: BookingIssue | undefined): BookingFixOwner {
+  if (!issue) return 'finance';
+  if ((issue.attempts ?? 1) > 1) return 'finance';
+  if (issue.cause === 'gg-unavailable') return 'handler';
+  return issue.owner;
+}
+
+export function displayStatus(
+  approvalStatus: string,
+  booking?: BookingStatus,
+  issue?: BookingIssue
+): DisplayStatus {
+  if (booking && HANDED_TO_GG.has(approvalStatus)) {
+    if (booking === 'booking' && issue?.inFlight) return { label: 'Sent again, waiting', tone: 'waiting' };
+    // Review round 2: one "Couldn't be booked" for "you fix it" and "Finance
+    // fixes it" made the handler open every row to find out.
+    if (booking === 'needs-fixing' && effectiveOwner(issue) === 'finance') {
+      return { label: 'With Finance', tone: 'waiting' };
+    }
+    return BOOKING_DISPLAY[booking];
+  }
   return { label: approvalStatus, tone: APPROVAL_TONE[approvalStatus] ?? 'waiting' };
 }
 
-/** Is "Send again" offered on this row? */
+/**
+ * Is "Send again" offered on this row? Only when the handler is the one who
+ * can usefully press it: not while a send is in flight, not when Finance owns
+ * the fix, not after a resend already failed (review round 2: a prominent
+ * button the handler is told not to press gets pressed).
+ */
 export function canSendAgain(item: Bookable): boolean {
-  return item.bookingStatus === 'needs-fixing';
+  return (
+    item.bookingStatus === 'needs-fixing' &&
+    !item.bookingIssue?.inFlight &&
+    effectiveOwner(item.bookingIssue) === 'handler'
+  );
+}
+
+/**
+ * Does this row need the handler? One rule for the list count, the Financial
+ * Overview line and the bell, so the numbers agree everywhere (review round 2:
+ * Payments said 4, the summary said 3).
+ */
+export function needsHandler(approvalStatus: string, item: Bookable): boolean {
+  if (approvalStatus === 'Requires amendment') return true;
+  return HANDED_TO_GG.has(approvalStatus) && canSendAgain(item);
+}
+
+/** Booked/With Finance rows the handler doesn't act on but should see. */
+export function withFinance(approvalStatus: string, item: Bookable): boolean {
+  return (
+    HANDED_TO_GG.has(approvalStatus) &&
+    item.bookingStatus === 'needs-fixing' &&
+    effectiveOwner(item.bookingIssue) === 'finance'
+  );
 }
 
 /**
@@ -106,7 +159,6 @@ export function canSendAgain(item: Bookable): boolean {
 export interface StatusExplanation {
   heading: string;
   lines: string[];
-  // Who acts: 'you' | 'finance' | 'approver' | 'nobody'.
   whoActs: 'you' | 'finance' | 'approver' | 'nobody';
   // Shown under the "Send again" button when canSendAgain().
   sendAgainHint?: string;
@@ -118,6 +170,7 @@ export function statusExplanation(
   noun: 'payment' | 'reserve' | 'recovery'
 ): StatusExplanation | null {
   const handed = HANDED_TO_GG.has(approvalStatus);
+  const notOut = noun === 'payment' ? 'No money has been paid out.' : 'It is not in the books yet.';
   if (approvalStatus === 'Requires amendment') {
     return {
       heading: 'Sent back to you by the approver',
@@ -126,20 +179,33 @@ export function statusExplanation(
     };
   }
   if (approvalStatus === 'Rejected') {
+    // Review round 2: "make a new payment if still owed" on a rejected item
+    // invited exactly the double payment the approver stopped.
     return {
       heading: 'Rejected by the approver',
-      lines: [item.approvalNote ?? 'No reason was given.', `Nothing was paid. Make a new ${noun} if it is still owed.`],
+      lines: [
+        item.approvalNote ?? 'No reason was given.',
+        `Nothing was paid. If you think this is wrong, talk to the approver before doing anything else.`
+      ],
       whoActs: 'nobody'
     };
   }
   if (!handed) return null;
+  const issue = item.bookingIssue;
   switch (item.bookingStatus) {
+    case 'booking':
+      if (!issue?.inFlight) return null;
+      return {
+        heading: 'Sent again, waiting for Global Genius',
+        lines: [`The same ${noun} was sent again. ${notOut}`, "We'll tell you as soon as it's booked, or if it fails again."],
+        whoActs: 'nobody'
+      };
     case 'delayed':
       return {
         heading: 'Taking longer than usual',
         lines: [
           `Global Genius hasn't answered yet. The system keeps trying on its own.`,
-          `Nothing has gone wrong yet. If it fails, it moves to "Couldn't be booked" and we'll tell you.`
+          `Nothing has gone wrong yet. If it fails, we'll tell you.`
         ],
         whoActs: 'nobody'
       };
@@ -150,77 +216,28 @@ export function statusExplanation(
         whoActs: 'nobody'
       };
     case 'needs-fixing': {
-      const issue = item.bookingIssue;
-      const again = (issue?.attempts ?? 1) > 1;
-      const lines = [
-        issue?.reason ?? 'Global Genius did not accept it.',
-        noun === 'payment' ? 'No money has been paid out.' : 'It is not in the books yet.'
-      ];
-      if (again) lines.push('It was sent again and still couldn\'t be booked. Contact the Finance team.');
-      const hint =
-        issue?.cause === 'gg-unavailable'
-          ? 'Global Genius was unavailable. You can send it again now.'
-          : issue?.owner === 'handler'
-            ? `Once you've fixed it, send the same ${noun} again. You don't need to create a new one.`
-            : 'Finance will send it again once they have fixed it. Only send it yourself if they ask you to.';
-      return {
-        heading: "Why this couldn't be booked",
-        lines,
-        whoActs: issue?.owner === 'handler' || issue?.cause === 'gg-unavailable' ? 'you' : 'finance',
-        sendAgainHint: hint
-      };
-    }
-    default:
-      return null;
-  }
-}
-
-/** Claim-level message, shown only when something is wrong. */
-export interface ClaimRegistrationMessage {
-  title: string;
-  body: string;
-  severity: 'error' | 'info';
-  // Claim-level re-trigger (BMPCC-20232 business use case 3).
-  canSendAgain: boolean;
-}
-
-export function claimRegistrationMessage(
-  state: GgClaimRegistration | undefined,
-  // Times the handler already sent it again and it still failed.
-  resendFailures = 0
-): ClaimRegistrationMessage | null {
-  switch (state) {
-    case 'failed':
-      // Usability review: after a failed resend the banner read exactly as
-      // before, so the handler couldn't tell their attempt had happened.
-      if (resendFailures > 0) {
+      const escalated = (issue?.attempts ?? 1) > 1;
+      if (effectiveOwner(issue) === 'finance') {
         return {
-          title: "Sent again, but the claim still couldn't be set up in Global Genius",
-          body: "Payments and reserves stay on hold. Finance have been told and are looking into it. You can try once more, or wait: we'll let you know when it's ready.",
-          severity: 'error',
-          canSendAgain: true
+          heading: escalated ? 'Sent again, still not booked: now with Finance' : "With Finance: couldn't be booked",
+          lines: [
+            issue?.reason ?? 'Global Genius did not accept it.',
+            notOut,
+            "The Finance team has been told and is fixing it. You don't need to do anything. We'll let you know when it's booked."
+          ],
+          whoActs: 'finance'
         };
       }
       return {
-        title: "This claim isn't in Global Genius yet, so payments and reserves are on hold",
-        body: "The claim couldn't be set up there. You can send it again now. Finance have been told, and we'll let you know when it's ready.",
-        severity: 'error',
-        canSendAgain: true
+        heading: "Why this couldn't be booked",
+        lines: [issue?.reason ?? 'Global Genius did not accept it.', notOut],
+        whoActs: 'you',
+        sendAgainHint:
+          issue?.cause === 'gg-unavailable'
+            ? 'Global Genius was unavailable. You can send it again now.'
+            : `Once you've fixed it, send the same ${noun} again. You don't need to create a new one.`
       };
-    case 'policy-missing':
-      return {
-        title: "This claim's policy isn't in Global Genius, so payments and reserves are on hold",
-        body: "The policy team has been told and needs to add it. Once they have, the claim is sent again on its own and we'll let you know.",
-        severity: 'error',
-        canSendAgain: false
-      };
-    case 'registering':
-      return {
-        title: 'Claim is still being set up in Global Genius',
-        body: "You can carry on: anything you submit now is booked once the claim is ready. If set-up fails, we'll tell you.",
-        severity: 'info',
-        canSendAgain: false
-      };
+    }
     default:
       return null;
   }
