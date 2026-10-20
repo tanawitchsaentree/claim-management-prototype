@@ -29,9 +29,6 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
 const PAYMENT_TYPES = ['Indemnity', 'Expenses'];
 const CLAIM_LEVEL = '';
-// Opening this dialog the instant the DEV banner's own dialog closes hangs the page
-// (seen with a page already open on a bare Make payment, then Apply on AC-02).
-const CONFIRM_SETTLE_MS = 1500;
 
 @Component({
   selector: 'app-make-payment',
@@ -110,10 +107,10 @@ export class MakePaymentComponent {
   private readonly autoConfirm = effect(() => {
     if (!this.confirmRequested() || !this.finance() || !this.overview()) return;
     this.confirmRequested.set(false);
-    setTimeout(() => this.openConfirmWhenClear(), CONFIRM_SETTLE_MS);
+    this.openConfirmWhenClear();
   });
 
-  // The prefilled confirm waits for the page to settle and for any other overlay to go.
+  // The prefilled confirm waits for any other overlay to be gone first.
   private openConfirmWhenClear(tries = 0): void {
     // Any other overlay still on screen (the DEV banner's dialog is its own, still animating out)?
     const busy = this.document.querySelector('.cdk-overlay-backdrop-showing, nx-modal-container');
