@@ -12,6 +12,7 @@ import { MockStateService } from '../state/mock-state.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { AuthService } from '../../services/auth';
 import { UrgentApproval } from '../../models/approval.model';
+import { pendingApprovalPayments } from './approval-payments';
 import policiesData from '../data/policies.json';
 import lookupsData from '../data/lookups.json';
 
@@ -280,17 +281,13 @@ export class MockFinancialOverviewService extends MockBaseService {
   }
 
   private buildEmpty(claimId: string): FinancialOverview {
+    const payments = pendingApprovalPayments(claimId, todayLabel());
+    const pending = payments.reduce((sum, p) => sum + p.amount, 0);
     return {
       claimId,
-      summary: {
-        outstandingReserves: 0,
-        completedPayments: 0,
-        pendingPayments: 0,
-        recoveries: 0,
-        incurred: 0
-      },
+      summary: { outstandingReserves: 0, completedPayments: 0, pendingPayments: pending, recoveries: 0, incurred: 0 },
       details: { currency: 'EUR', ibnr: 0, rows: [] },
-      payments: [],
+      payments,
       reserves: [],
       recoveries: [],
       transactions: [],

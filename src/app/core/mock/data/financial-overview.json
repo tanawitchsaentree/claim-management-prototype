@@ -4,7 +4,7 @@
     "summary": {
       "outstandingReserves": 113000,
       "completedPayments": 144000,
-      "pendingPayments": 40000,
+      "pendingPayments": 48500,
       "recoveries": 0,
       "incurred": 993000
     },
@@ -93,6 +93,17 @@
         "amount": 30000,
         "currency": "EUR",
         "paymentDate": "24-12-2024"
+      },
+      {
+        "paymentId": "PMT-C-00063373-2026.537.1.4",
+        "reinsuranceId": "",
+        "payee": "Peter Pane",
+        "handler": "C. Wolff",
+        "sectionType": "Indemnity",
+        "status": "Pending",
+        "amount": 8500,
+        "currency": "EUR",
+        "paymentDate": "14-10-2026"
       }
     ],
     "reserves": [
