@@ -57,6 +57,13 @@ export class ClaimDevBannerComponent implements OnInit {
   readonly isFullMode = environment.devBannerMode === 'full';
 
   readonly ticketCtrl = new FormControl<string | null>(null);
+  // The closed dropdown used to show the option's whole text run together
+  // ("GG-4-PAYMENTSEpic: BMPCC-18348GG 4 · Pay..."). Title first, id after,
+  // so the selected ticket reads at a glance and the id still filters.
+  readonly ticketLabel = (id: string | null): string => {
+    const t = this.helper.tickets().find(x => x.ticketId === id);
+    return t ? `${t.title} (${t.ticketId})` : (id ?? '');
+  };
   readonly variantCtrl = new FormControl<ReferenceVariant>('none');
 
   readonly variantOptions: { value: ReferenceVariant; label: string }[] = [

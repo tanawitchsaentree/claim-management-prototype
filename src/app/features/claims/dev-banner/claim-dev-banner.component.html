@@ -10,11 +10,13 @@
       <nx-formfield class="cdb-picker">
         <nx-dropdown
           [formControl]="ticketCtrl"
+          [valueFormatter]="ticketLabel"
           placeholder="Pick a ticket to test"
           [showFilter]="true"
           filterPlaceholder="Search tickets…"
           (selectionChange)="onTicketSelectionChange($event)"
         >
+          <ng-template nxClosedLabel>{{ ticketLabel(ticketCtrl.value) }}</ng-template>
           @for (group of groupedTickets(); track group.module) {
             <nx-dropdown-group [label]="group.module">
               @for (ticket of group.tickets; track ticket.ticketId) {
