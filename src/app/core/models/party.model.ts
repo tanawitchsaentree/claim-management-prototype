@@ -1,3 +1,5 @@
+import { PayeeBankAccount } from './payee.model';
+
 export type PartyRole =
   | 'client'
   | 'broker'
@@ -34,6 +36,10 @@ export interface Party {
   // Hierarchy fields — see docs/PARTIES_ASSUMPTIONS.md (PENDING_PO_CONFIRMATION)
   claimId?: string;
   sectionId?: string;
+  // Make payment: where this party can be paid, and its Global Genius Name
+  // Code from Names Management (GG can't book a payment to a party without it).
+  bankAccounts?: PayeeBankAccount[];
+  ggNameCode?: string;
 }
 
 // View-model types — computed at render time, never persisted

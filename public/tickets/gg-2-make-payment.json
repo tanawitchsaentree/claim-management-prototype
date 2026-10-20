@@ -15,7 +15,7 @@
     {
       "id": "AC-01",
       "statement": "Make payment · Nothing wrong, ready to submit",
-      "plainStatement": "**Opens:** the Make Payment window, Payment amount open, filled in: Business Interruption, EUR 3,000 to Kaufmann Warehouse GmbH.\n\n**You see:** No warnings. **Make Payment** is enabled.\n\n**Try:** Press **Make Payment**: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
+      "plainStatement": "**Opens:** the Make Payment window, Payment amount open, filled in: Business Interruption, EUR 3,000 to Peter Pane (the insured).\n\n**You see:** No warnings. **Make Payment** is enabled.\n\n**Try:** Press **Make Payment**: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -42,7 +42,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=EUR",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR",
         "trigger": "Make payment, filled in: Business Interruption, EUR 12,000 to Kaufmann Warehouse GmbH.",
         "expectedResult": "No warnings. Submit is enabled."
       }
@@ -77,7 +77,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=EUR&confirm=1",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR&confirm=1",
         "trigger": "Make payment with the confirm dialog already open.",
         "expectedResult": "Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon."
       }
@@ -120,7 +120,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=EUR",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR",
         "trigger": "Make payment, filled in.",
         "expectedResult": "Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button."
       },
@@ -165,7 +165,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=EUR",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR",
         "trigger": "Make payment, filled in.",
         "expectedResult": "Blue note: once submitted it is booked when the claim is ready. Submit enabled."
       },
@@ -203,7 +203,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=USD",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=USD",
         "trigger": "Make payment, filled in with USD.",
         "expectedResult": "Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency)."
       }
@@ -247,7 +247,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=900000&currency=EUR",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=900000&currency=EUR",
         "trigger": "Make payment, filled in with EUR 900,000 on Business Interruption.",
         "expectedResult": "Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field."
       }
@@ -289,7 +289,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=EUR",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR",
         "trigger": "Make payment, filled in.",
         "expectedResult": "Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled."
       },
@@ -334,7 +334,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=EUR&premiumMode=warn",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR&premiumMode=warn",
         "trigger": "Make payment, filled in, premium preview set to \"Warning only\".",
         "expectedResult": "Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview."
       },
@@ -380,7 +380,7 @@
         ]
       },
       "howToTest": {
-        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Kaufmann%20Warehouse%20GmbH&amount=3000&currency=USD",
+        "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=USD",
         "trigger": "Make payment, filled in with USD, while the claim is still being set up and premium is unpaid.",
         "expectedResult": "Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter."
       },

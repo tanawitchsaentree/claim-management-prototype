@@ -30,6 +30,11 @@ export class MockPartiesService extends MockBaseService {
     return this.getPartiesForPolicy(policyNumber).pipe(map(parties => this.groupByClaim(parties)));
   }
 
+  /** Parties attached to one claim (Make payment's payee list reads these). */
+  getPartiesForClaimSync(claimId: string): Party[] {
+    return this.raw.filter(p => p.claimId === claimId);
+  }
+
   searchAll(filters: Partial<PartyFilters>): Observable<Party[]> {
     return this.respond(this.applyFilters(this.raw, filters));
   }

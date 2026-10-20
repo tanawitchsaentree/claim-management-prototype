@@ -2,7 +2,9 @@
   {
     "partyId": "AZ000000005634688",
     "legalName": "Viktor Bann GmbH",
-    "roles": ["client"],
+    "roles": [
+      "client"
+    ],
     "clearanceStatus": "cleared",
     "email": "v.bann@bann-gmbh.de",
     "phone": "+49 211 4445566",
@@ -20,7 +22,9 @@
   {
     "partyId": "AZ000000005634682",
     "legalName": "Lars Greve Brokers",
-    "roles": ["broker"],
+    "roles": [
+      "broker"
+    ],
     "clearanceStatus": "cleared",
     "email": "l.greve@greve-brokers.com",
     "phone": "+1 612 555 0100",
@@ -34,7 +38,9 @@
   {
     "partyId": "AZ000000005634681",
     "legalName": "Finn Dahl",
-    "roles": ["claimant"],
+    "roles": [
+      "claimant"
+    ],
     "clearanceStatus": "not-cleared",
     "email": "f.dahl@personal.com",
     "country": "GB",
@@ -48,7 +54,10 @@
   {
     "partyId": "AZ000000005634683",
     "legalName": "Oskar Veld",
-    "roles": ["client", "insured"],
+    "roles": [
+      "client",
+      "insured"
+    ],
     "clearanceStatus": "pending",
     "email": "o.veld@veld-co.com",
     "country": "GB",
@@ -62,7 +71,9 @@
   {
     "partyId": "AZ000000005634684",
     "legalName": "Roland Kemp",
-    "roles": ["client"],
+    "roles": [
+      "client"
+    ],
     "clearanceStatus": "pending",
     "email": "r.kemp@kemp-co.com",
     "country": "GB",
@@ -76,7 +87,9 @@
   {
     "partyId": "AZ000000005634685",
     "legalName": "Werner Baum",
-    "roles": ["expert"],
+    "roles": [
+      "expert"
+    ],
     "clearanceStatus": "cleared",
     "email": "w.baum@expert-assessors.de",
     "phone": "+49 30 5552345",
@@ -92,7 +105,9 @@
   {
     "partyId": "AZ000000005634686",
     "legalName": "Uta Gern",
-    "roles": ["witness"],
+    "roles": [
+      "witness"
+    ],
     "clearanceStatus": "not-applicable",
     "email": "u.gern@gmail.com",
     "country": "DE",
@@ -106,7 +121,9 @@
   {
     "partyId": "AZ000000005634687",
     "legalName": "Ida Rolf",
-    "roles": ["claimant"],
+    "roles": [
+      "claimant"
+    ],
     "clearanceStatus": "pending",
     "email": "i.rolf@claimant.nl",
     "country": "NL",
@@ -120,7 +137,9 @@
   {
     "partyId": "AZ000000005634689",
     "legalName": "Vera Holm",
-    "roles": ["insured"],
+    "roles": [
+      "insured"
+    ],
     "clearanceStatus": "not-cleared",
     "email": "v.holm@insured.fr",
     "country": "FR",
@@ -135,7 +154,10 @@
     "partyId": "AZ000000005634679",
     "legalName": "Taishan Insurance Brokers Limited",
     "dbaTradeName": "Taishan IB",
-    "roles": ["client", "broker"],
+    "roles": [
+      "client",
+      "broker"
+    ],
     "clearanceStatus": "cleared",
     "email": "contact@taishan-ib.de",
     "phone": "+49 40 9876543",
@@ -154,7 +176,9 @@
   {
     "partyId": "AZ000000005634680",
     "legalName": "Grete Lund",
-    "roles": ["client"],
+    "roles": [
+      "client"
+    ],
     "clearanceStatus": "cleared",
     "email": "g.lund@example.co.uk",
     "country": "GB",
@@ -168,7 +192,9 @@
     "partyId": "AZ000000005634690",
     "legalName": "AON Deutschland GmbH",
     "dbaTradeName": "AON Germany",
-    "roles": ["broker"],
+    "roles": [
+      "broker"
+    ],
     "clearanceStatus": "cleared",
     "email": "contact@aon.de",
     "phone": "+49 40 3609200",
@@ -187,7 +213,9 @@
   {
     "partyId": "AZ000000005634693",
     "legalName": "Diego Vara",
-    "roles": ["third-party"],
+    "roles": [
+      "third-party"
+    ],
     "clearanceStatus": "not-cleared",
     "email": "d.vara@thirdparty.es",
     "country": "ES",
@@ -201,7 +229,9 @@
   {
     "partyId": "AZ000000005634691",
     "legalName": "Bundesanstalt fur Arbeit",
-    "roles": ["authority"],
+    "roles": [
+      "authority"
+    ],
     "clearanceStatus": "not-applicable",
     "email": "kontakt@bfa.de",
     "phone": "+49 911 1790",
@@ -216,7 +246,10 @@
     "partyId": "AZ000000005634692",
     "legalName": "Swiss Re AG",
     "dbaTradeName": "Swiss Re",
-    "roles": ["insured", "client"],
+    "roles": [
+      "insured",
+      "client"
+    ],
     "clearanceStatus": "cleared",
     "email": "claims@swissre.com",
     "phone": "+41 43 285 21 21",
@@ -235,7 +268,9 @@
   {
     "partyId": "AZ000000005634694",
     "legalName": "Clara Pont",
-    "roles": ["witness"],
+    "roles": [
+      "witness"
+    ],
     "clearanceStatus": "not-applicable",
     "email": "c.pont@example.it",
     "country": "IT",
@@ -250,7 +285,9 @@
     "partyId": "AZ000000005634678",
     "legalName": "Kaufmann GmbH",
     "dbaTradeName": "Kaufmann Group",
-    "roles": ["client"],
+    "roles": [
+      "client"
+    ],
     "clearanceStatus": "cleared",
     "email": "info@kaufmann.de",
     "phone": "+49 89 1234567",
@@ -270,7 +307,9 @@
     "partyId": "AZ000000005634695",
     "legalName": "Marsh GmbH",
     "dbaTradeName": "Marsh Germany",
-    "roles": ["broker"],
+    "roles": [
+      "broker"
+    ],
     "clearanceStatus": "cleared",
     "email": "info@marsh.de",
     "phone": "+49 69 60550",
@@ -285,5 +324,196 @@
     "operatingEntity": "Allianz Commercial Germany",
     "claimId": "CLM-2024-005",
     "sectionId": "ABG001"
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710001",
+    "legalName": "Peter Pane",
+    "roles": [
+      "insured"
+    ],
+    "clearanceStatus": "cleared",
+    "email": "p.pane@kaufmann-warehouse.de",
+    "city": "Hamburg",
+    "postalCode": "20457",
+    "street": "Lagerstraße",
+    "streetNumber": "12",
+    "ggNameCode": "PANE0012",
+    "bankAccounts": [
+      {
+        "accountId": "BA-001",
+        "bankName": "Hamburger Sparkasse",
+        "ibanMasked": "DE89 •••• •••• 3000",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710002",
+    "legalName": "Elke Dorn",
+    "roles": [
+      "third-party"
+    ],
+    "clearanceStatus": "cleared",
+    "email": "office@dorn-bau.de",
+    "city": "Hamburg",
+    "postalCode": "20099",
+    "street": "Steindamm",
+    "streetNumber": "40",
+    "ggNameCode": "DORN0451",
+    "bankAccounts": [
+      {
+        "accountId": "BA-002",
+        "bankName": "Commerzbank",
+        "ibanMasked": "DE44 •••• •••• 7781",
+        "currency": "EUR",
+        "operational": false
+      },
+      {
+        "accountId": "BA-003",
+        "bankName": "Deutsche Bank",
+        "ibanMasked": "DE12 •••• •••• 0456",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710003",
+    "legalName": "Georg Stein",
+    "roles": [
+      "expert"
+    ],
+    "clearanceStatus": "cleared",
+    "email": "g.stein@nordsee-adjusters.de",
+    "city": "Hamburg",
+    "postalCode": "20457",
+    "street": "Am Sandtorkai",
+    "streetNumber": "5",
+    "bankAccounts": [
+      {
+        "accountId": "BA-004",
+        "bankName": "Haspa",
+        "ibanMasked": "DE33 •••• •••• 1290",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710004",
+    "legalName": "Carlo Clerk",
+    "roles": [
+      "claimant"
+    ],
+    "clearanceStatus": "pending",
+    "city": "Bremen",
+    "postalCode": "28195",
+    "street": "Obernstraße",
+    "streetNumber": "7",
+    "ggNameCode": "CLER0007",
+    "bankAccounts": [
+      {
+        "accountId": "BA-005",
+        "bankName": "Sparkasse Bremen",
+        "ibanMasked": "DE61 •••• •••• 8874",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710005",
+    "legalName": "Tobias Grau",
+    "roles": [
+      "third-party"
+    ],
+    "clearanceStatus": "cleared",
+    "city": "Hamburg",
+    "postalCode": "20095",
+    "street": "Mönckebergstraße",
+    "streetNumber": "3",
+    "ggNameCode": "GRAU0300",
+    "bankAccounts": [
+      {
+        "accountId": "BA-006",
+        "bankName": "Postbank",
+        "ibanMasked": "DE70 •••• •••• 2211",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710006",
+    "legalName": "Dirk Haas",
+    "roles": [
+      "third-party"
+    ],
+    "clearanceStatus": "cleared",
+    "city": "Lübeck",
+    "postalCode": "23552",
+    "street": "Breite Straße",
+    "streetNumber": "18",
+    "ggNameCode": "HAAS0118",
+    "bankAccounts": [
+      {
+        "accountId": "BA-007",
+        "bankName": "Volksbank",
+        "ibanMasked": "DE02 •••• •••• 5590",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
+  },
+  {
+    "lineOfBusiness": "Property",
+    "operatingEntity": "Allianz Commercial Germany",
+    "claimId": "CLM-2024-001",
+    "country": "DE",
+    "partyId": "AZ000000007710007",
+    "legalName": "Viktor Bann",
+    "roles": [
+      "third-party"
+    ],
+    "clearanceStatus": "cleared",
+    "city": "Düsseldorf",
+    "postalCode": "40213",
+    "street": "Königsallee",
+    "streetNumber": "2",
+    "ggNameCode": "BANN0002",
+    "bankAccounts": [
+      {
+        "accountId": "BA-008",
+        "bankName": "Stadtsparkasse Düsseldorf",
+        "ibanMasked": "DE55 •••• •••• 4410",
+        "currency": "EUR",
+        "operational": true
+      }
+    ]
   }
 ]

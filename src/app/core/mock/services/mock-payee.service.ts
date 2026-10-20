@@ -1,24 +1,52 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { MockBaseService } from './mock-base.service';
-import { Payee } from '../../models/payee.model';
-import payeesData from '../data/payees.json';
+import { Injectable, inject } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { Payee, PayeeClearance } from '../../models/payee.model';
+import { Party } from '../../models/party.model';
+import { MockPartiesService } from './mock-parties.service';
 
-// Make payment, accordion 1. Kept separate from parties.json (claim-level
-// party records the Parties page uses): a payee here carries what payment
-// needs (bank accounts, sanctions clearance, GG Name Code). The four seeds
-// for CLM-2024-001 cover: ready to pay (PY-001 / PY-002), no GG Name Code
-// (PY-003), sanctions clearance pending (PY-004), and a non-operational bank
-// account (PY-001 / BA-002).
+// Make payment's payee list is the claim's own parties (parties.json, the
+// same store FNOL and Litigation use), not a separate list: a payee is a
+// party plus where it can be paid (bankAccounts) and its GG Name Code.
+// CLM-2024-001's parties are the people its payments and reserves already
+// name. Test cases: Elke Dorn's Commerzbank account is no longer operational
+// (matches payment 123456-4's bank-details failure), Georg Stein has no GG
+// Name Code, Carlo Clerk's sanctions clearance is pending.
 @Injectable({ providedIn: 'root' })
-export class MockPayeeService extends MockBaseService {
-  private readonly data = payeesData as Record<string, Payee[]>;
+export class MockPayeeService {
+  private readonly partiesSvc = inject(MockPartiesService);
 
   getPayees(claimId: string): Observable<Payee[]> {
-    return this.list(this.data[claimId] ?? []);
+    return of(this.getPayeesSync(claimId)).pipe(delay(0));
   }
 
   getPayeesSync(claimId: string): Payee[] {
-    return this.data[claimId] ?? [];
+    return this.partiesSvc.getPartiesForClaimSync(claimId).map(toPayee);
   }
+}
+
+const ROLE_LABEL: Record<string, string> = {
+  insured: 'Insured',
+  client: 'Client',
+  claimant: 'Claimant',
+  'third-party': 'Third party',
+  expert: 'Expert / loss adjuster',
+  broker: 'Broker',
+  witness: 'Witness',
+  authority: 'Authority'
+};
+
+function toPayee(p: Party): Payee {
+  const clearance: PayeeClearance = p.clearanceStatus === 'cleared' ? 'cleared' : 'pending';
+  const street = [p.street, p.streetNumber].filter(Boolean).join(' ');
+  return {
+    payeeId: p.partyId,
+    name: p.legalName,
+    role: p.roles.map(r => ROLE_LABEL[r] ?? r).join(', '),
+    address: [street, [p.postalCode, p.city].filter(Boolean).join(' '), p.country].filter(Boolean).join(', '),
+    email: p.email,
+    clearance,
+    ggNameCode: p.ggNameCode,
+    bankAccounts: p.bankAccounts ?? []
+  };
 }
