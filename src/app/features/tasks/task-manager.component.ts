@@ -1,9 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect, untracked } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { scrollToRow } from '../../shared/utils/scroll-to-row';
 import { Navbar } from '../layout/navbar/navbar';
 import { MockTaskService } from '../../core/mock/services/mock-task.service';
 import { AuthService } from '../../core/services/auth';
@@ -48,7 +50,10 @@ export class TaskManagerComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   /** Task to highlight when arriving from a "Needs fixing" row. */
-  readonly highlightTaskId = this.route.snapshot.queryParamMap.get('task');
+  private readonly params = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap
+  });
+  readonly highlightTaskId = computed(() => this.params().get('task'));
 
   readonly statusOptions = STATUS_OPTIONS;
   readonly loading = signal(true);
@@ -61,7 +66,7 @@ export class TaskManagerComponent implements OnInit {
     let tasks = this.showMyTasksOnly() ? this.allTasks().filter(t => t.assignee === name) : this.allTasks();
     const status = this.statusFilter();
     if (status !== 'all') tasks = tasks.filter(t => t.status === status);
-    const pinned = this.highlightTaskId;
+    const pinned = this.highlightTaskId();
     return [...tasks].sort((a, b) => {
       // Arriving from a "Couldn't be booked" row: that task goes first.
       if (pinned && (a.taskId === pinned) !== (b.taskId === pinned)) return a.taskId === pinned ? -1 : 1;
@@ -72,22 +77,29 @@ export class TaskManagerComponent implements OnInit {
     });
   });
 
+  private readonly ready = signal(false);
+
+  constructor() {
+    // Opened (or re-opened by the DEV banner / bell) for a task: land on "my
+    // tasks" when it is the user's own, and scroll to it.
+    effect(() => {
+      const id = this.highlightTaskId();
+      if (!this.ready() || !id) return;
+      untracked(() => {
+        const target = this.allTasks().find(t => t.taskId === id);
+        if (!target) return;
+        if (target.assignee === (this.auth.user()?.name ?? '')) this.showMyTasksOnly.set(true);
+        scrollToRow(id, 'data-task-id');
+      });
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     this.loading.set(true);
     const tasks = await firstValueFrom(this.taskSvc.getAll());
     this.allTasks.set(tasks);
     this.loading.set(false);
-    const target = tasks.find(t => t.taskId === this.highlightTaskId);
-    if (target) {
-      // Land on "my tasks" so it isn't buried, when the task is the user's own.
-      if (target.assignee === (this.auth.user()?.name ?? '')) this.showMyTasksOnly.set(true);
-      setTimeout(() => {
-        const row = Array.from(document.querySelectorAll('[data-task-id]')).find(
-          el => el.getAttribute('data-task-id') === target.taskId
-        );
-        row?.scrollIntoView({ block: 'center' });
-      }, 200);
-    }
+    this.ready.set(true);
   }
 
   setStatusFilter(status: StatusFilter): void {

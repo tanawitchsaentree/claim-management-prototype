@@ -1,4 +1,4 @@
-import { Component, OnInit, input, signal } from '@angular/core';
+import { Component, input, signal, effect, untracked } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -22,7 +22,7 @@ import { statusExplanation } from '../../../../../core/models/gg-booking.model';
   templateUrl: './payments-table.component.html',
   styleUrl: '../fo-table-shared.scss'
 })
-export class PaymentsTableComponent implements OnInit {
+export class PaymentsTableComponent {
   readonly rows = input.required<FinancialPayment[]>();
   readonly currency = input('EUR');
   readonly claimId = input.required<string>();
@@ -33,9 +33,12 @@ export class PaymentsTableComponent implements OnInit {
 
   readonly expandedIds = signal<Set<string>>(new Set());
 
-  ngOnInit(): void {
-    const id = this.expandId();
-    if (id) this.expandedIds.set(new Set([id]));
+  constructor() {
+    // The DEV banner can change only the query (next AC on the same page): follow it.
+    effect(() => {
+      const id = this.expandId();
+      if (id) untracked(() => this.expandedIds.set(new Set([id])));
+    });
   }
 
   explainable(p: FinancialPayment): boolean {

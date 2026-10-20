@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -18,6 +19,7 @@ import { MockFinancialOverviewService } from '../../../core/mock/services/mock-f
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { FinancialRecovery } from '../../../core/models/financial-overview.model';
 import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
+import { scrollToRow } from '../../../shared/utils/scroll-to-row';
 import { MockRecoveryService } from '../../../core/mock/services/mock-recovery.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
@@ -110,9 +112,19 @@ export class RecoveriesComponent implements OnInit {
   // The postings (money booked against recoveries) also live under Financial >
   // Recovery bookings: same data, same Global Genius status, never two answers.
   readonly postings = signal<FinancialRecovery[]>([]);
-  readonly expandId = inject(ActivatedRoute).snapshot.queryParamMap.get('expand');
+  private readonly params = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap
+  });
+  readonly expandId = computed(() => this.params().get('expand'));
+
+  private readonly ready = signal(false);
 
   constructor() {
+    // Scroll to the expanded posting whenever the DEV banner / bell changes ?expand on this page.
+    effect(() => {
+      const id = this.expandId();
+      if (this.ready() && id) untracked(() => scrollToRow(id));
+    });
     // "Send again" answers a few seconds later, in state.
     effect(() => {
       this.stateSvc.state();
@@ -156,14 +168,7 @@ export class RecoveriesComponent implements OnInit {
       this.route.snapshot.paramMap.get('id') ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
     await this.load();
     await this.loadPostings();
-    if (this.expandId) {
-      setTimeout(() => {
-        const row = Array.from(document.querySelectorAll('[data-row-id]')).find(
-          el => el.getAttribute('data-row-id') === this.expandId
-        );
-        row?.scrollIntoView({ block: 'center' });
-      }, 200);
-    }
+    this.ready.set(true);
   }
 
   private async loadPostings(): Promise<void> {

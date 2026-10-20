@@ -63,7 +63,7 @@
               <tr
                 nxTableRow
                 [attr.data-task-id]="task.taskId"
-                [class.tm-row--highlight]="task.taskId === highlightTaskId"
+                [class.tm-row--highlight]="task.taskId === highlightTaskId()"
               >
                 <td nxCell>{{ task.taskType }}</td>
                 <td nxCell class="tm-col-desc">

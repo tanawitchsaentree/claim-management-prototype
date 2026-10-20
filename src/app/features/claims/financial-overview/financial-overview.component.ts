@@ -1,6 +1,6 @@
-import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, untracked, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -28,7 +28,8 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { GgRegistrationBannerComponent } from '../../../shared/components/gg-registration-banner/gg-registration-banner.component';
 import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
 import { ListToolbarComponent } from './components/list-toolbar/list-toolbar.component';
-import { needsYouCount, notBookedSummary, scrollToRow } from './booking-summary';
+import { needsYouCount, notBookedSummary } from './booking-summary';
+import { scrollToRow } from '../../../shared/utils/scroll-to-row';
 import { GgClaimRegistration } from '../../../core/models/gg-booking.model';
 import { ClaimSummaryComponent } from './components/claim-summary/claim-summary.component';
 import { PaymentsTableComponent } from './components/payments-table/payments-table.component';
@@ -90,14 +91,17 @@ export class FinancialOverviewComponent implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly reservesSvc = inject(MockReservesService);
   private readonly stateSvc = inject(MockStateService);
-  private loaded = false;
-
+  private readonly loaded = signal(false);
   constructor() {
-    // "Send again" answers a few seconds later, in state: keep the lists and
-    // the claim banner in step without a reload.
+    // Query changes (DEV banner, bell, task links): re-apply expand / addReserve each time.
+    effect(() => {
+      const p = this.params();
+      if (this.loaded()) untracked(() => this.landOn(p));
+    });
+    // State changes (Send again answers later): keep lists and claim banner current.
     effect(() => {
       const st = this.stateSvc.state();
-      if (!this.loaded) return;
+      if (!this.loaded()) return;
       this.ggRegistration.set(st.overviews[this.claimId]?.ggRegistration);
       void firstValueFrom(this.svc.getByClaimId(this.claimId)).then(d => this.fo.set(d));
     });
@@ -112,10 +116,8 @@ export class FinancialOverviewComponent implements OnInit {
   readonly currency = signal('EUR');
   readonly sectionId = signal('');
 
-  // BMPCC-14826: closed claim / closed section disable Make Payment and Update reserves.
   readonly claimClosed = signal(false);
   readonly sectionStatuses = signal<ClaimSection[]>([]);
-  // Why a claim has no reserve yet, written at notification (FNOL Reserves step).
   readonly noReserveReason = signal<string | null>(null);
 
   readonly activeSectionClosed = computed(() => {
@@ -153,24 +155,23 @@ export class FinancialOverviewComponent implements OnInit {
     return sections.find(s => s.sectionId === this.sectionId()) ?? sections[0];
   });
 
-  // Section level is a filter on the one claim-level list, so a reserve can
-  // never show in one view and not the other.
+  // Section level filters the one claim-level list.
   readonly reserveRows = computed<FinancialReserve[]>(() => {
     const all = this.fo()?.reserves ?? [];
     const rows = this.level() === 'claim' ? all : all.filter(r => r.sectionId === this.activeSection()?.sectionId);
     return this.needsYouOnly().reserves ? rows.filter(r => needsYouCount([r]) > 0) : rows;
   });
 
-  // Payment to show expanded when arriving from a Task manager link.
   readonly openPaymentId = toSignal(
     this.route.queryParamMap.pipe(map(p => p.get('open'))),
     { initialValue: this.route.snapshot.queryParamMap.get('open') }
   );
 
-  // URL-driven landing (DEV banner, task links, bell): open the exact row.
-  private readonly query = this.route.snapshot.queryParamMap;
-  readonly expandId = this.query.get('expand') ?? this.query.get('open');
-  readonly highlightId = this.query.get('highlight');
+  private readonly params = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap
+  });
+  readonly expandId = computed(() => this.params().get('expand') ?? this.params().get('open'));
+  readonly highlightId = computed(() => this.params().get('highlight'));
 
   readonly ggRegistration = signal<GgClaimRegistration | undefined>(undefined);
   readonly needsYouOnly = signal({ payments: false, reserves: false, recovery: false });
@@ -220,24 +221,25 @@ export class FinancialOverviewComponent implements OnInit {
       this.sectionId.set(data.sections[0].sectionId);
     }
     this.ggRegistration.set(claim.ggRegistration);
-    this.loaded = true;
+    this.loaded.set(true);
     this.loading.set(false);
-    this.landOnItem();
   }
 
-  // DEV banner / bell / task links: &expand=<id> scrolls to the row, and
-  // &addReserve=1 opens Add reserve, optionally prefilled (&amount &currency &section).
-  private landOnItem(): void {
-    const id = this.expandId ?? this.highlightId;
+  // &expand / &highlight scroll to the row; &addReserve=1 opens Add reserve
+  // (prefill: &amount &currency &section). The DEV banner closes its own modal in
+  // the same tick it navigates here; a second modal opened straight away crashed
+  // the page (focus handed back and forth), so let the first one leave.
+  private landOn(p: ParamMap): void {
+    const id = p.get('expand') ?? p.get('open') ?? p.get('highlight');
     if (id) scrollToRow(id);
-    if (this.query.get('addReserve') === '1') {
-      const amount = Number(this.query.get('amount'));
-      void this.onAddReserve({
-        amount: amount > 0 ? amount : undefined,
-        currency: this.query.get('currency') ?? undefined,
-        section: this.query.get('section') ?? undefined
-      });
-    }
+    if (p.get('addReserve') !== '1') return;
+    const amount = Number(p.get('amount'));
+    const prefill = {
+      amount: amount > 0 ? amount : undefined,
+      currency: p.get('currency') ?? undefined,
+      section: p.get('section') ?? undefined
+    };
+    setTimeout(() => void this.onAddReserve(prefill), 600);
   }
 
   private async loadNoReserveReason(claimId: string): Promise<void> {

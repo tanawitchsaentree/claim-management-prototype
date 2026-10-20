@@ -60,13 +60,3 @@ export function notBookedSummary(fo: FinancialOverview): NotBookedSummary {
   const sentBack = group(lists, r => r.status === 'Requires amendment');
   return { total: needYou.total + withFin.total, needYou, withFinance: withFin, sentBack };
 }
-
-/** Scroll a list row (tagged data-row-id) into the middle of the page, once the list has rendered. */
-export function scrollToRow(id: string): void {
-  setTimeout(() => {
-    const row = Array.from(document.querySelectorAll('[data-row-id]')).find(
-      el => el.getAttribute('data-row-id') === id
-    );
-    row?.scrollIntoView({ block: 'center' });
-  }, 200);
-}

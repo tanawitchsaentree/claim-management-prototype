@@ -1,4 +1,4 @@
-import { Component, OnInit, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, effect, untracked } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -29,7 +29,7 @@ import { statusExplanation } from '../../../../../core/models/gg-booking.model';
   templateUrl: './reserves-table.component.html',
   styleUrls: ['../fo-table-shared.scss', './reserves-table.component.scss']
 })
-export class ReservesTableComponent implements OnInit {
+export class ReservesTableComponent {
   readonly claimId = input.required<string>();
   readonly expandId = input<string | null>(null);
   readonly highlightId = input<string | null>(null);
@@ -44,9 +44,12 @@ export class ReservesTableComponent implements OnInit {
     return [r.party, r.sectionCode].filter(Boolean).join(' | ');
   }
 
-  ngOnInit(): void {
-    const id = this.expandId();
-    if (id) this.expandedIds.set(new Set([id]));
+  constructor() {
+    // The DEV banner can change only the query (next AC on the same page): follow it.
+    effect(() => {
+      const id = this.expandId();
+      if (id) untracked(() => this.expandedIds.set(new Set([id])));
+    });
   }
 
   explainable(r: FinancialReserve): boolean {

@@ -1,4 +1,4 @@
-import { Component, OnInit, input, signal } from '@angular/core';
+import { Component, input, signal, effect, untracked } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -27,7 +27,7 @@ import { BookingExplanationPanelComponent } from '../booking-explanation-panel/b
   templateUrl: './recovery-bookings-table.component.html',
   styleUrl: './recovery-bookings-table.component.scss'
 })
-export class RecoveryBookingsTableComponent implements OnInit {
+export class RecoveryBookingsTableComponent {
   readonly claimId = input.required<string>();
   readonly rows = input.required<FinancialRecovery[]>();
   readonly currency = input('EUR');
@@ -36,9 +36,12 @@ export class RecoveryBookingsTableComponent implements OnInit {
 
   readonly expandedIds = signal<Set<string>>(new Set());
 
-  ngOnInit(): void {
-    const id = this.expandId();
-    if (id) this.expandedIds.set(new Set([id]));
+  constructor() {
+    // The DEV banner can change only the query (next AC on the same page): follow it.
+    effect(() => {
+      const id = this.expandId();
+      if (id) untracked(() => this.expandedIds.set(new Set([id])));
+    });
   }
 
   explainable(r: FinancialRecovery): boolean {
