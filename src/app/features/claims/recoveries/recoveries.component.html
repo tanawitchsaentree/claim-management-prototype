@@ -62,8 +62,12 @@
 
     @if (rows().length === 0) {
       <app-empty-state
-        message="No recovery case has been set up on this claim."
-        hint="Use “Create recovery case” to record who is being pursued, on what basis, and for how much."
+        message="No recovery case has been set up yet."
+        [hint]="
+          postings().length > 0
+            ? 'Recovery postings on this claim are listed below. Use “Create recovery case” to record who is being pursued, on what basis, and for how much.'
+            : 'Use “Create recovery case” to record who is being pursued, on what basis, and for how much.'
+        "
         icon="file-arrow"
       >
       </app-empty-state>
