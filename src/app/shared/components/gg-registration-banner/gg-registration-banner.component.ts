@@ -25,11 +25,18 @@ export class GgRegistrationBannerComponent {
   readonly claimId = input('');
   readonly registration = input<GgClaimRegistration | undefined>();
   // "Send again" changes the claim's state in the background; read it live
-  // when we know the claim, else fall back to what the page passed in.
-  private readonly live = computed(() =>
-    this.claimId() ? (this.stateSvc.state().overviews[this.claimId()]?.ggRegistration ?? this.registration()) : this.registration()
+  // when we know the claim, else fall back to what the page passed in. Both the
+  // state and the failure count come from the claim, so the banner never
+  // depends on a local "busy" flag that could get stuck.
+  private readonly liveClaim = computed(() =>
+    this.claimId() ? this.stateSvc.state().overviews[this.claimId()] : undefined
   );
-  readonly message = computed(() => claimRegistrationMessage(this.live()));
+  readonly message = computed(() =>
+    claimRegistrationMessage(
+      this.liveClaim()?.ggRegistration ?? this.registration(),
+      this.liveClaim()?.ggResendFailures ?? 0
+    )
+  );
 
   sendAgain(): void {
     this.booking.sendClaimAgain(this.claimId());
