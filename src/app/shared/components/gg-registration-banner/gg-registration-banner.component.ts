@@ -4,9 +4,9 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import {
   GgClaimRegistration,
   claimRegistrationMessage
-} from '../../../../../core/models/gg-booking.model';
-import { MockStateService } from '../../../../../core/mock/state/mock-state.service';
-import { MockBookingService } from '../../../../../core/mock/services/mock-booking.service';
+} from '../../../core/models/gg-booking.model';
+import { MockStateService } from '../../../core/mock/state/mock-state.service';
+import { MockBookingService } from '../../../core/mock/services/mock-booking.service';
 
 // Claim-level Global Genius message. Shows only when something is wrong. When
 // the claim can be sent again (DESIGN DECISION GG-2) the button is here; while

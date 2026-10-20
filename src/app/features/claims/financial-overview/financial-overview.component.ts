@@ -25,7 +25,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
-import { GgRegistrationBannerComponent } from '../claim-overview/components/gg-registration-banner/gg-registration-banner.component';
+import { GgRegistrationBannerComponent } from '../../../shared/components/gg-registration-banner/gg-registration-banner.component';
 import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
 import { ListToolbarComponent } from './components/list-toolbar/list-toolbar.component';
 import { needsYouCount, notBookedGroups, scrollToRow } from './booking-summary';
