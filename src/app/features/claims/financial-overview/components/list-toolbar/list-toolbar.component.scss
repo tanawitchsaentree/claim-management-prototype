@@ -22,6 +22,15 @@
   font-size: var(--paragraph-03-font-size);
   cursor: pointer;
 
+  &:hover:not(:disabled) {
+    border-color: var(--interactive-primary);
+  }
+
+  &:disabled {
+    color: var(--text-muted);
+    cursor: default;
+  }
+
   &--on {
     background: var(--interactive-primary);
     border-color: var(--interactive-primary);
@@ -31,4 +40,10 @@
 
 .lt__action {
   margin-left: auto;
+}
+
+.lt__clear {
+  margin-left: 8px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

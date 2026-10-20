@@ -1,8 +1,7 @@
 import { FinancialOverview } from '../../../core/models/financial-overview.model';
-import { Bookable, statusExplanation } from '../../../core/models/gg-booking.model';
+import { Bookable, needsHandler, withFinance } from '../../../core/models/gg-booking.model';
 
 export type FinancialListView = 'payments' | 'reserves' | 'recovery';
-type Who = 'you' | 'finance';
 
 export interface NotBookedLink {
   view: FinancialListView;
@@ -10,7 +9,6 @@ export interface NotBookedLink {
 }
 
 export interface NotBookedGroup {
-  who: Who;
   total: number;
   links: NotBookedLink[];
 }
@@ -22,55 +20,45 @@ const WORDS: Record<FinancialListView, [string, string]> = {
   recovery: ['recovery', 'recoveries']
 };
 
-const NOUN: Record<FinancialListView, 'payment' | 'reserve' | 'recovery'> = {
-  payments: 'payment',
-  reserves: 'reserve',
-  recovery: 'recovery'
-};
+type Row = Bookable & { status: string };
 
-/** Who the row waits for, or null when it needs nobody ("you" also covers an approver send-back). */
-export function waitsFor(
-  view: FinancialListView,
-  approvalStatus: string,
-  item: Bookable
-): string | null {
-  return statusExplanation(approvalStatus, item, NOUN[view])?.whoActs ?? null;
+/** How many rows on one list wait for the handler (the "Needs you" chip). Same rule as the summary line and the bell. */
+export function needsYouCount(rows: Row[]): number {
+  return rows.filter(r => needsHandler(r.status, r)).length;
 }
 
-/** How many rows on one list wait for the handler (the "Needs you" count). */
-export function needsYouCount(
-  view: FinancialListView,
-  rows: (Bookable & { status: string })[]
-): number {
-  return rows.filter(r => waitsFor(view, r.status, r) === 'you').length;
+export interface NotBookedSummary {
+  /** Everything Global Genius couldn't book: needs you + with Finance. */
+  total: number;
+  needYou: NotBookedGroup;
+  withFinance: NotBookedGroup;
+  /** Approver send-backs: counted by "Needs you" too, but not a booking problem. */
+  sentBack: NotBookedGroup;
 }
 
-/**
- * Items Global Genius couldn't book, split by who has to act. Only
- * "Couldn't be booked" rows count here, not approver send-backs.
- */
-export function notBookedGroups(fo: FinancialOverview): NotBookedGroup[] {
-  const lists: Record<FinancialListView, (Bookable & { status: string })[]> = {
+function group(lists: Record<FinancialListView, Row[]>, keep: (r: Row) => boolean): NotBookedGroup {
+  const links: NotBookedLink[] = [];
+  let total = 0;
+  for (const view of Object.keys(lists) as FinancialListView[]) {
+    const n = lists[view].filter(keep).length;
+    if (n > 0) {
+      total += n;
+      links.push({ view, text: `${n} ${WORDS[view][n === 1 ? 0 : 1]}` });
+    }
+  }
+  return { total, links };
+}
+
+export function notBookedSummary(fo: FinancialOverview): NotBookedSummary {
+  const lists: Record<FinancialListView, Row[]> = {
     payments: fo.payments,
     reserves: fo.reserves,
     recovery: fo.recoveries
   };
-  const groups: NotBookedGroup[] = [];
-  for (const who of ['you', 'finance'] as Who[]) {
-    const links: NotBookedLink[] = [];
-    let total = 0;
-    for (const view of Object.keys(lists) as FinancialListView[]) {
-      const n = lists[view].filter(
-        r => r.bookingStatus === 'needs-fixing' && waitsFor(view, r.status, r) === who
-      ).length;
-      if (n > 0) {
-        total += n;
-        links.push({ view, text: `${n} ${WORDS[view][n === 1 ? 0 : 1]}` });
-      }
-    }
-    if (total > 0) groups.push({ who, total, links });
-  }
-  return groups;
+  const needYou = group(lists, r => r.status !== 'Requires amendment' && needsHandler(r.status, r));
+  const withFin = group(lists, r => withFinance(r.status, r));
+  const sentBack = group(lists, r => r.status === 'Requires amendment');
+  return { total: needYou.total + withFin.total, needYou, withFinance: withFin, sentBack };
 }
 
 /** Scroll a list row (tagged data-row-id) into the middle of the page, once the list has rendered. */

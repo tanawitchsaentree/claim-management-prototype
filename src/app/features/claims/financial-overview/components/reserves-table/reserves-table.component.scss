@@ -1,11 +1,20 @@
-// Wide enough that narrow screens scroll sideways, and the Section cell cuts
-// long "party | code" text with an ellipsis (full text in the tooltip).
+// Fits the page width at 1440px: the long reserve ID and the section cell wrap,
+// status and amount stay on one line so no column ends up off-screen.
 .fo-table--reserves {
-  width: auto;
-  min-width: 100%;
+  width: 100%;
 
   th,
   td {
+    white-space: normal;
+  }
+
+  .fo-cell--nowrap {
     white-space: nowrap;
+  }
+
+  .fo-cell--id {
+    min-width: 170px;
+    max-width: 190px;
+    overflow-wrap: anywhere;
   }
 }

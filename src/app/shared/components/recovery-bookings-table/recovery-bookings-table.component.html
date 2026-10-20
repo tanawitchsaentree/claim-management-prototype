@@ -45,7 +45,7 @@
         <td nxCell>
           <app-booking-status-pill
             [approvalStatus]="r.status"
-            [booking]="r.bookingStatus"
+            [booking]="r.bookingStatus" [issue]="r.bookingIssue"
           ></app-booking-status-pill>
         </td>
         <td nxCell>{{ r.party || '—' }}</td>

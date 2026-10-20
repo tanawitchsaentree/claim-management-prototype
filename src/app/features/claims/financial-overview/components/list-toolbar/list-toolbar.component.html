@@ -1,15 +1,19 @@
 <div class="lt">
   <p class="lt__count">{{ count() }} items</p>
-  @if (needsYou() > 0) {
-    <button
-      type="button"
-      class="lt__needs"
-      [class.lt__needs--on]="needsYouOnly()"
-      [attr.aria-pressed]="needsYouOnly()"
-      (click)="needsYouOnly.set(!needsYouOnly())"
-    >
-      Needs you: {{ needsYou() }}
-    </button>
-  }
+  <button
+    type="button"
+    class="lt__needs"
+    [class.lt__needs--on]="needsYouOnly()"
+    [disabled]="needsYou() === 0 && !needsYouOnly()"
+    [attr.aria-pressed]="needsYouOnly()"
+    (click)="needsYouOnly.set(!needsYouOnly())"
+  >
+    Needs you: {{ needsYou() }}
+    @if (needsYouOnly()) {
+      <span class="lt__clear">Show all</span>
+    } @else if (needsYou() > 0) {
+      <span class="lt__clear">Show only these</span>
+    }
+  </button>
   <div class="lt__action"><ng-content></ng-content></div>
 </div>

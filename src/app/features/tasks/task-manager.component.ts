@@ -1,8 +1,10 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { Navbar } from '../layout/navbar/navbar';
 import { MockTaskService } from '../../core/mock/services/mock-task.service';
 import { AuthService } from '../../core/services/auth';
 import { Task, TaskStatus } from '../../core/models/task.model';
@@ -25,6 +27,8 @@ import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
   selector: 'app-task-manager',
   standalone: true,
   imports: [
+    Navbar,
+    NxGridModule,
     ClaimNumberPipe,
     RouterLink,
     NxTableModule,

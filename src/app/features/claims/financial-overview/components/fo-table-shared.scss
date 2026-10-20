@@ -41,7 +41,7 @@
 }
 
 // Inline expand row (reserve history, booking issue)
-.fo-history-row td {
+.fo-history-row > td {
   background: var(--ui-02);
   padding: 0 !important;
 }
@@ -66,13 +66,15 @@
 
 .fo-history-table {
   width: 100%;
+  table-layout: auto;
   border-collapse: collapse;
   font-size: var(--paragraph-03-font-size);
 
   th,
   td {
-    padding: var(--space-xs) var(--space-md) var(--space-xs) 0;
+    padding: var(--space-xs) var(--space-base) var(--space-xs) 0;
     text-align: left;
+    vertical-align: top;
     color: var(--text-01);
   }
 
@@ -92,4 +94,11 @@
 .fo-table,
 .fo-table-wrap {
   margin-bottom: var(--layout-inset-base);
+}
+
+// Amount sits right-aligned next to the left-aligned reason: keep a gap.
+.fo-history-table td.fo-cell--right,
+.fo-history-table th.fo-cell--right {
+  min-width: 96px;
+  padding-right: var(--space-lg);
 }

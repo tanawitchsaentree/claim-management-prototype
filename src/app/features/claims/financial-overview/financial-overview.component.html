@@ -44,17 +44,26 @@
   <!-- ── FINANCIAL OVERVIEW ─────────────────────────────────────────────── -->
   @if (view() === 'overview') {
     @if (level() === 'claim') {
-      @if (notBookedTotal() > 0) {
-        <nx-message context="warning" class="fo-not-booked">
-          {{ notBookedTotal() }} {{ notBookedTotal() === 1 ? "item couldn't" : "items couldn't" }} be booked.
-          @for (g of notBooked(); track g.who) {
-            {{ g.total }} {{ g.who === 'you' ? 'needs you' : 'with the Finance team' }}:
-            @for (l of g.links; track l.view; let last = $last) {
-              <a class="fo-link" tabindex="0" (click)="setView(l.view)" (keydown.enter)="setView(l.view)">{{ l.text }}</a>{{ last ? '.' : ', ' }}
+      @if (notBooked(); as nb) {
+        @if (nb.total > 0 || nb.sentBack.total > 0) {
+          <nx-message context="warning" class="fo-not-booked">
+            @if (nb.total > 0) {
+              {{ nb.total }} {{ nb.total === 1 ? "item couldn't" : "items couldn't" }} be booked:
+              @if (nb.needYou.total > 0) {
+                {{ nb.needYou.total }} {{ nb.needYou.total === 1 ? 'needs' : 'need' }} you (<ng-container *ngTemplateOutlet="links; context: { g: nb.needYou }"></ng-container>)@if (nb.withFinance.total > 0) {,}
+              }
+              @if (nb.withFinance.total > 0) {
+                {{ nb.withFinance.total }} with the Finance team (<ng-container *ngTemplateOutlet="links; context: { g: nb.withFinance }"></ng-container>)}.
             }
-          }
-        </nx-message>
+            @if (nb.sentBack.total > 0) {
+              {{ nb.sentBack.total }} sent back by the approver (<ng-container *ngTemplateOutlet="links; context: { g: nb.sentBack }"></ng-container>).
+            }
+          </nx-message>
+        }
       }
+      <ng-template #links let-g="g"
+        >@for (l of g.links; track l.view; let last = $last) {<a class="fo-link" tabindex="0" (click)="setView(l.view)" (keydown.enter)="setView(l.view)">{{ l.text }}</a>{{ last ? '' : ', ' }}}</ng-template
+      >
       <app-fo-claim-summary [summary]="fo.summary" [details]="fo.details" [currency]="currency()" />
 
       <h2 class="fo-section-heading fo-section-heading--mt" data-tour-id="fo-transaction-summary">

@@ -28,7 +28,7 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { GgRegistrationBannerComponent } from '../../../shared/components/gg-registration-banner/gg-registration-banner.component';
 import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
 import { ListToolbarComponent } from './components/list-toolbar/list-toolbar.component';
-import { needsYouCount, notBookedGroups, scrollToRow } from './booking-summary';
+import { needsYouCount, notBookedSummary, scrollToRow } from './booking-summary';
 import { GgClaimRegistration } from '../../../core/models/gg-booking.model';
 import { ClaimSummaryComponent } from './components/claim-summary/claim-summary.component';
 import { PaymentsTableComponent } from './components/payments-table/payments-table.component';
@@ -158,7 +158,7 @@ export class FinancialOverviewComponent implements OnInit {
   readonly reserveRows = computed<FinancialReserve[]>(() => {
     const all = this.fo()?.reserves ?? [];
     const rows = this.level() === 'claim' ? all : all.filter(r => r.sectionId === this.activeSection()?.sectionId);
-    return this.needsYouOnly().reserves ? rows.filter(r => needsYouCount('reserves', [r]) > 0) : rows;
+    return this.needsYouOnly().reserves ? rows.filter(r => needsYouCount([r]) > 0) : rows;
   });
 
   // Payment to show expanded when arriving from a Task manager link.
@@ -177,25 +177,24 @@ export class FinancialOverviewComponent implements OnInit {
 
   readonly paymentRows = computed(() => {
     const all = this.level() === 'claim' ? (this.fo()?.payments ?? []) : (this.activeSection()?.payments ?? []);
-    return this.needsYouOnly().payments ? all.filter(p => needsYouCount('payments', [p]) > 0) : all;
+    return this.needsYouOnly().payments ? all.filter(p => needsYouCount([p]) > 0) : all;
   });
   readonly recoveryRows = computed(() => {
     const all = this.level() === 'claim' ? (this.fo()?.recoveries ?? []) : (this.activeSection()?.recoveries ?? []);
-    return this.needsYouOnly().recovery ? all.filter(r => needsYouCount('recovery', [r]) > 0) : all;
+    return this.needsYouOnly().recovery ? all.filter(r => needsYouCount([r]) > 0) : all;
   });
   readonly needsYou = computed(() => {
     const d = this.fo();
     return {
-      payments: needsYouCount('payments', d?.payments ?? []),
-      reserves: needsYouCount('reserves', d?.reserves ?? []),
-      recovery: needsYouCount('recovery', d?.recoveries ?? [])
+      payments: needsYouCount(d?.payments ?? []),
+      reserves: needsYouCount(d?.reserves ?? []),
+      recovery: needsYouCount(d?.recoveries ?? [])
     };
   });
   readonly notBooked = computed(() => {
     const d = this.fo();
-    return d ? notBookedGroups(d) : [];
+    return d ? notBookedSummary(d) : null;
   });
-  readonly notBookedTotal = computed(() => this.notBooked().reduce((n, g) => n + g.total, 0));
 
   setNeedsYouOnly(view: 'payments' | 'reserves' | 'recovery', on: boolean): void {
     this.needsYouOnly.update(v => ({ ...v, [view]: on }));

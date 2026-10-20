@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { BookingStatus, displayStatus, StatusTone } from '../../../core/models/gg-booking.model';
+import { BookingIssue, BookingStatus, displayStatus, StatusTone } from '../../../core/models/gg-booking.model';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 
 // Reuses the claim-status chip colours so no new tokens are needed:
@@ -22,7 +22,9 @@ export class BookingStatusPillComponent {
   /** Approval status of the payment / reserve / recovery (Draft, Pending, Approved, ...). */
   readonly approvalStatus = input.required<string>();
   readonly booking = input<BookingStatus | undefined>(undefined);
+  /** Needed for "With Finance" and "Sent again, waiting". */
+  readonly issue = input<BookingIssue | undefined>(undefined);
 
-  readonly shown = computed(() => displayStatus(this.approvalStatus(), this.booking()));
+  readonly shown = computed(() => displayStatus(this.approvalStatus(), this.booking(), this.issue()));
   readonly chip = computed(() => CHIP_FOR_TONE[this.shown().tone]);
 }

@@ -5,6 +5,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { Bookable, canSendAgain, statusExplanation } from '../../../core/models/gg-booking.model';
 import { BookableKind, MockBookingService } from '../../../core/mock/services/mock-booking.service';
+import { ToastService } from '../toast/toast.service';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
@@ -33,6 +34,7 @@ const WHO_LINE: Record<'finance' | 'approver' | 'nobody', string> = {
 export class BookingExplanationPanelComponent {
   private readonly dialog = inject(NxDialogService);
   private readonly booking = inject(MockBookingService);
+  private readonly toast = inject(ToastService);
 
   readonly claimId = input.required<string>();
   readonly kind = input.required<BookableKind>();
@@ -51,6 +53,11 @@ export class BookingExplanationPanelComponent {
   });
   readonly sendAgain = computed(() => canSendAgain(this.item()));
   readonly taskId = computed(() => this.item().bookingIssue?.taskId);
+  /** The handler's fix is a data correction: the claim's parties page is where it is made. */
+  readonly fixInParties = computed(() => {
+    const issue = this.item().bookingIssue;
+    return issue?.owner === 'handler' && issue.cause === 'data-mismatch';
+  });
 
   async onSendAgain(): Promise<void> {
     const noun = this.kind();
@@ -66,6 +73,7 @@ export class BookingExplanationPanelComponent {
     });
     if (await firstValueFrom(ref.afterClosed())) {
       this.booking.sendItemAgain(this.claimId(), noun, this.itemId());
+      this.toast.success('Sent again', "We'll let you know when it's booked.");
     }
   }
 }

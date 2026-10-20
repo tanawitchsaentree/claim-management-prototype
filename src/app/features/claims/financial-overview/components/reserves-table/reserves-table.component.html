@@ -33,7 +33,7 @@
               <nx-icon name="clock-o"></nx-icon>
             </button>
           </td>
-          <td nxCell class="fo-cell--nowrap">
+          <td nxCell class="fo-cell--id">
             <button
               nxPlainButton
               type="button"
@@ -49,13 +49,13 @@
           <td nxCell>{{ r.damagedItem || '—' }}</td>
           <td nxCell>{{ r.reserveType }}</td>
           <td nxCell>{{ r.reserveSubType }}</td>
-          <td nxCell>
+          <td nxCell class="fo-cell--nowrap">
             <app-booking-status-pill
               [approvalStatus]="r.status"
-              [booking]="r.bookingStatus"
+              [booking]="r.bookingStatus" [issue]="r.bookingIssue"
             ></app-booking-status-pill>
           </td>
-          <td nxCell class="fo-cell--right">
+          <td nxCell class="fo-cell--right fo-cell--nowrap">
             {{ r.reserveValue | currency: r.currency : 'symbol' : '1.0-0' }}
           </td>
           <td nxCell>{{ r.currency }}</td>
