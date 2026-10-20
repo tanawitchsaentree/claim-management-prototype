@@ -1,0 +1,40 @@
+<div [formGroup]="form()" class="ms-grid">
+  <nx-formfield label="Payment method *">
+    <nx-dropdown formControlName="method" placeholder="Select">
+      @for (m of methods; track m.value) {
+        <nx-dropdown-item [value]="m.value">{{ m.label }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+  @if (missing().includes('method')) {
+    <p class="field-error" role="alert">Choose a payment method.</p>
+  }
+  <p class="ms-hint">{{ method()?.hint }}</p>
+
+  @if (method()?.needsBankAccount) {
+    <nx-formfield label="Bank account *" class="ms-wide">
+      <nx-dropdown formControlName="bankAccountId" [placeholder]="payee() ? 'Select an account' : 'Choose the payee first'">
+        @for (a of payee()?.bankAccounts ?? []; track a.accountId) {
+          <nx-dropdown-item [value]="a.accountId">
+            {{ a.bankName }} · {{ a.ibanMasked }} · {{ a.currency }}{{ a.operational ? '' : ' · not operational' }}
+          </nx-dropdown-item>
+        }
+      </nx-dropdown>
+    </nx-formfield>
+  @if (missing().includes('bankAccountId')) {
+    <p class="field-error" role="alert">Choose the account to pay into.</p>
+  }
+  }
+
+  <nx-formfield label="Payment date *">
+    <input nxDatefield nxInput formControlName="paymentDate" [datepicker]="datePicker" />
+    <nx-datepicker-toggle nxFormfieldSuffix [for]="datePicker"></nx-datepicker-toggle>
+    <nx-datepicker #datePicker></nx-datepicker>
+  </nx-formfield>
+  @if (missing().includes('paymentDate')) {
+    <p class="field-error" role="alert">Enter the payment date.</p>
+  }
+  <nx-formfield label="Payee reference / invoice number">
+    <input nxInput formControlName="reference" />
+  </nx-formfield>
+</div>

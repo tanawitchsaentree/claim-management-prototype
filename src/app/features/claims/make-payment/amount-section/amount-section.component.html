@@ -1,0 +1,83 @@
+<div [formGroup]="form()" class="as-body">
+  <nx-formfield label="Payment currency" class="as-currency">
+    <nx-dropdown formControlName="currency">
+      @for (c of currencies(); track c) {
+        <nx-dropdown-item [value]="c">{{ c }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+
+  @if (rows().length === 0) {
+    <app-empty-state [message]="'There is no ' + currency() + ' reserve on this claim to pay from.'"></app-empty-state>
+  } @else {
+    @if (linesMissing()) {
+      <p class="as-error" role="alert">Enter an amount for at least one reserve.</p>
+    }
+    <table nxTable class="as-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell>Reserve ID</th>
+          <th nxHeaderCell>Section</th>
+          <th nxHeaderCell>Damaged item</th>
+          <th nxHeaderCell>Reserve type</th>
+          <th nxHeaderCell>Reserve sub type</th>
+          <th nxHeaderCell class="as-num">Outstanding reserves</th>
+          <th nxHeaderCell class="as-num">Payment amount</th>
+          <th nxHeaderCell class="as-num">Remaining reserves</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows(); track r.reserveId) {
+          <tr nxTableRow>
+            <td nxCell class="as-id">{{ r.reserveId }}</td>
+            <td nxCell>{{ r.party }}{{ r.sectionCode ? ' | ' + r.sectionCode : '' }}</td>
+            <td nxCell>{{ r.damagedItem || '—' }}</td>
+            <td nxCell>{{ r.reserveType }}</td>
+            <td nxCell>{{ r.reserveSubType }}</td>
+            <td nxCell class="as-num">{{ r.reserveValue | number: '1.0-2' }}</td>
+            <td nxCell class="as-num">
+              <nx-formfield class="as-amount">
+                <input nxInput type="number" min="0" [formControl]="controlFor()(r.reserveId)" [attr.aria-label]="'Payment amount for ' + r.reserveId" />
+              </nx-formfield>
+            </td>
+            <td nxCell class="as-num"><span [class.as-over]="remaining()(r) < 0">{{ remaining()(r) | number: '1.0-2' }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <div class="as-radio">
+    <p class="as-label">VAT Applicability</p>
+    <div class="as-radio-row">
+      <nx-radio name="vat" [value]="true" [checked]="vatYes()" (valueChange)="setVat(true)" labelSize="small">Yes</nx-radio>
+      <nx-radio name="vat" [value]="false" [checked]="!vatYes()" (valueChange)="setVat(false)" labelSize="small">No</nx-radio>
+    </div>
+  </div>
+
+  <div class="as-radio">
+    <p class="as-label">Co-Insurance</p>
+    <div class="as-radio-row">
+      <nx-radio name="coins" value="allianz" [checked]="coInsurance() === 'allianz'" (valueChange)="setCoInsurance('allianz')" labelSize="small">Allianz share</nx-radio>
+      <nx-radio name="coins" value="market" [checked]="coInsurance() === 'market'" (valueChange)="setCoInsurance('market')" labelSize="small">Market share</nx-radio>
+    </div>
+  </div>
+
+  <section class="as-summary" aria-label="Payment summary">
+    <h3 class="as-summary__title">Payment summary</h3>
+    <dl class="as-summary__list">
+      <div><dt>Payment amount</dt><dd>{{ total() | number: '1.2-2' }} {{ currency() }}</dd></div>
+      <!-- ASSUMPTION [MP-2]: no source for Excess in the prototype; shown as 0.00, not the deductible. -->
+      <div><dt>Excess</dt><dd>0.00 {{ currency() }}</dd></div>
+      <div><dt>Deductibles</dt><dd>{{ deductibleTotal() | number: '1.2-2' }} {{ currency() }}</dd></div>
+    </dl>
+    @if (deductibles().length) {
+      <p class="as-summary__note">
+        For information, the payment is not reduced here:
+        @for (d of deductibles(); track d.deductibleId; let last = $last) {
+          {{ d.type }} {{ d.applicationMethod === 'Fixed amount' ? (d.amount | number: '1.0-2') + ' ' + d.currency : d.amount + '%' }}{{ last ? '.' : ';' }}
+        }
+      </p>
+    }
+  </section>
+</div>

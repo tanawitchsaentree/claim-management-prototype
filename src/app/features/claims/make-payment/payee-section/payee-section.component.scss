@@ -1,0 +1,50 @@
+.ps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+  padding: var(--space-lg) 0;
+
+  nx-formfield {
+    width: 100%;
+  }
+}
+
+.ps-wide {
+  grid-column: 1 / -1;
+}
+
+.ps-details {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md) var(--space-xl);
+  margin: 0;
+
+  dt {
+    font-weight: 700;
+    color: var(--text-01);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    color: var(--text-01);
+  }
+}
+
+.ps-label {
+  margin: 0 0 var(--space-md);
+  font-weight: 700;
+  color: var(--text-01);
+}
+
+.ps-radio-row {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.field-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--danger);
+}

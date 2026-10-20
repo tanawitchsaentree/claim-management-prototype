@@ -1,40 +1,90 @@
-.mp-page {
-  max-width: 720px;
-  margin: 0;
-  padding: 0 0 48px;
-}
-
-.mp-card {
-  background: var(--ui-01);
-  border: 1px solid var(--ui-04);
-  border-radius: 4px;
+// A modal-styled sheet on a route: dimmed backdrop under the app bars (so the DEV
+// banner and the top bar stay clickable), a white panel with a margin all round.
+.mp-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
   padding: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  background: color-mix(in srgb, var(--text-01) 60%, transparent);
 }
 
-.mp-card-title {
-  margin: 0 0 var(--space-lg);
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
+.mp-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  background: var(--ui-01);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px var(--claim-overlay-shadow-heavy);
+}
+
+.mp-header {
+  position: relative;
+  padding: var(--space-lg) var(--space-xl) var(--space-md);
+}
+
+.mp-title {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 400;
   color: var(--text-01);
 }
 
-.mp-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px 24px;
-  align-items: start;
+.mp-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+}
 
-  > * {
-    min-width: 0;
-  }
-  nx-formfield {
-    width: 100%;
+.mp-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-xl) var(--space-lg);
+}
+
+.mp-accordion {
+  display: block;
+
+  // Same accordion tokens as Policy overview (verified there), at regular weight like the design.
+  nx-expansion-panel {
+    --accordion-regular-font-size: var(--paragraph-02-font-size);
+    --accordion-regular-line-height: 1.5rem;
+    --accordion-regular-font-weight: 400;
+    --accordion-regular-header-active-font-weight: 400;
+    --accordion-regular-header-padding: var(--space-md) var(--space-md);
+    --accordion-regular-body-padding: 0 var(--space-md);
+    --accordion-regular-header-top-margin: 0;
   }
 }
 
-.mp-full {
-  grid-column: 1 / -1;
+.mp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--ui-04);
+}
+
+.mp-footer__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.mp-note {
+  // No display override: nx-message is flex (icon beside the text).
+  margin-bottom: var(--space-md);
+}
+
+.mp-note__text {
+  display: block;
+  margin-top: 2px;
 }
 
 .mp-preview {
@@ -48,23 +98,7 @@
   color: var(--text-01);
 }
 
-.mp-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-md);
-}
-
 .mp-underwriter {
   display: block;
   margin-bottom: var(--space-lg);
-}
-
-.mp-note {
-  // No display override: nx-message is flex (icon beside the text).
-  margin-bottom: var(--space-md);
-}
-
-.mp-note__text {
-  display: block;
-  margin-top: 2px;
 }

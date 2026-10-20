@@ -1,53 +1,66 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, afterNextRender, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
+import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
-import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
-import { MockPaymentEditService } from '../../../core/mock/services/mock-payment-edit.service';
-import { FinancialPayment } from '../../../core/models/financial-overview.model';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { MockLimitsDeductiblesService } from '../../../core/mock/services/mock-limits-deductibles.service';
-import { financialPreChecks, preChecksBlockSubmit } from '../../../core/models/financial-precheck.model';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData
-} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { MockPayeeService } from '../../../core/mock/services/mock-payee.service';
+import { MockPaymentEditService } from '../../../core/mock/services/mock-payment-edit.service';
+import { MockSectionService } from '../../../core/mock/services/mock-section.service';
+import { FinancialPayment, FinancialReserve } from '../../../core/models/financial-overview.model';
+import { preChecksBlockSubmit } from '../../../core/models/financial-precheck.model';
+import { PAYMENT_METHODS, Payee } from '../../../core/models/payee.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FinancialWarningsComponent } from '../../../shared/components/financial-warnings/financial-warnings.component';
-import { claimHeadroom, sameSection } from '../../../shared/components/financial-warnings/limit-headroom';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { AmountSectionComponent } from './amount-section/amount-section.component';
+import { MethodSectionComponent } from './method-section/method-section.component';
+import { PayeeSectionComponent } from './payee-section/payee-section.component';
+import { buildChecks, findPayee, missingFields } from './make-payment-checks';
+import { createPaymentForm, defaultValues } from './make-payment-form';
+import { SubmitMode, confirmData, paymentRecord } from './make-payment-submit';
+import {
+  applicableDeductibles,
+  filledLines,
+  fixedDeductibleTotal,
+  outstanding,
+  payableRows,
+  prefillAmounts,
+  sectionsPaid,
+  totalOf
+} from './make-payment-lines';
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
-const PAYMENT_TYPES = ['Indemnity', 'Expenses'];
-const CLAIM_LEVEL = '';
 
+// Make Payment: a modal-style sheet on a route (the DEV banner and the Payments
+// toolbar link use the route; a real dialog would hide the banner and could not
+// follow query changes). Three accordions, the shared warning list on top.
 @Component({
   selector: 'app-make-payment',
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    NxAccordionModule,
     NxButtonModule,
     NxCheckboxModule,
-    NxDropdownModule,
-    NxFormfieldModule,
-    NxInputModule,
+    NxIconModule,
     NxMessageModule,
     NxRadioToggleModule,
-    PageHeaderComponent,
-    ClaimNumberPipe,
-    FinancialWarningsComponent
+    FinancialWarningsComponent,
+    PayeeSectionComponent,
+    MethodSectionComponent,
+    AmountSectionComponent
   ],
   templateUrl: './make-payment.component.html',
   styleUrl: './make-payment.component.scss'
@@ -63,196 +76,222 @@ export class MakePaymentComponent {
   private readonly limitsSvc = inject(MockLimitsDeductiblesService);
   private readonly stateSvc = inject(MockStateService);
   private readonly editSvc = inject(MockPaymentEditService);
+  private readonly payeeSvc = inject(MockPayeeService);
+  private readonly sectionSvc = inject(MockSectionService);
 
   readonly claimId = this.route.snapshot.paramMap.get('id') ?? '';
   readonly currencies = CURRENCIES;
-  readonly paymentTypes = PAYMENT_TYPES;
-  readonly claimLevel = CLAIM_LEVEL;
+  readonly payees = this.payeeSvc.getPayeesSync(this.claimId);
 
-  readonly form = new FormGroup({
-    section: new FormControl<string>(CLAIM_LEVEL, { nonNullable: true }),
-    paymentType: new FormControl<string | null>(null, [Validators.required]),
-    payee: new FormControl('', [Validators.required]),
-    currency: new FormControl('EUR', { nonNullable: true, validators: [Validators.required] }),
-    amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)])
-  });
-  readonly limitReason = new FormControl<string | null>('', [Validators.required]);
+  readonly form = createPaymentForm();
+  // One amount per reserve line, created on demand and kept across currency changes.
+  readonly linesForm = new FormRecord<FormControl<number | null>>({});
+  readonly limitReason = new FormControl<string | null>('');
   readonly underwriterChecked = new FormControl(false, { nonNullable: true });
   // BMPCC-21754 is undecided, so the prototype lets the team flip between both.
   readonly premiumMode = new FormControl<'block' | 'warn'>('block', { nonNullable: true });
   readonly submitted = signal(false);
-
-  // The DEV banner (and "Add reserve, then come back") land here with the form
-  // already filled in: ?section=&type=&payee=&amount=&currency=&premiumMode=&confirm=1
-  // The page can already be open when the address changes (banner AC to AC), so
-  // this follows every change of the query, not only the first one. Done in a
-  // tap, before the view is checked, so nothing changes after the page is checked.
-  private readonly confirmRequested = signal(false);
-  // ?edit=<paymentId>: changing a payment the approver sent back (same payment, no new one).
   readonly editing = signal<FinancialPayment | null>(null);
-  private readonly queryWatch = toSignal(
-    this.route.queryParamMap.pipe(tap(q => this.applyQuery(q))),
+  readonly payeeOpen = signal(false);
+  readonly methodOpen = signal(false);
+  readonly amountOpen = signal(true);
+  readonly topOffset = signal(116);
+
+  private readonly confirmRequested = signal(false);
+  private readonly values = toSignal(this.form.valueChanges.pipe(startWith(null), map(() => this.form.getRawValue())), {
+    initialValue: this.form.getRawValue()
+  });
+  readonly amounts = toSignal(this.linesForm.valueChanges.pipe(startWith(null), map(() => this.linesForm.getRawValue())), {
+    initialValue: {} as Record<string, number | null>
+  });
+  private readonly payeeWatch = toSignal(
+    this.form.controls.payeeId.valueChanges.pipe(tap(id => this.defaultBank(id))),
     { initialValue: null }
   );
 
-  private applyQuery(q: ParamMap): void {
-    const amount = q.get('amount');
-    const edit = q.get('edit') ? this.editSvc.find(this.claimId, q.get('edit')!) : undefined;
-    this.editing.set(edit?.status === 'Requires amendment' ? edit : null);
-    if (this.editing()) {
-      const p = this.editing()!;
-      this.form.reset({
-        section: CLAIM_LEVEL,
-        paymentType: p.sectionType,
-        payee: p.payee,
-        currency: p.currency,
-        amount: p.amount
-      });
-    } else {
-      this.form.reset({
-        section: q.get('section') ?? CLAIM_LEVEL,
-        paymentType: q.get('type'),
-        payee: q.get('payee') ?? '',
-        currency: q.get('currency') ?? 'EUR',
-        amount: amount ? Number(amount) : null
-      });
+  private readonly finance = toSignal(this.financeSvc.getByClaimId(this.claimId));
+  private readonly limits = toSignal(this.limitsSvc.getByClaimId(this.claimId));
+  private readonly loadedOverview = toSignal(this.overviewSvc.getOverview(this.claimId));
+  // Live: "Retry setting up this claim" flips the claim's state while this page is open.
+  readonly overview = computed(() => this.stateSvc.state().overviews[this.claimId] ?? this.loadedOverview());
+  readonly fo = computed(() => this.stateSvc.state().financialOverviews[this.claimId] ?? this.finance());
+
+  readonly selectedPayee = computed<Payee | null>(() => this.payees.find(p => p.payeeId === this.values().payeeId) ?? null);
+  readonly method = computed(() => PAYMENT_METHODS.find(m => m.value === this.values().method) ?? null);
+  readonly rows = computed(() => payableRows(this.fo(), this.values().currency));
+  readonly lines = computed(() => filledLines(this.rows(), this.amounts()));
+  readonly total = computed(() => totalOf(this.lines()));
+  readonly paidSections = computed(() => sectionsPaid(this.rows(), this.lines()));
+  readonly deductibles = computed(() =>
+    applicableDeductibles(this.limits()?.deductibles ?? [], this.paidSections(), this.values().currency)
+  );
+  readonly deductibleTotal = computed(() => fixedDeductibleTotal(this.deductibles()));
+  readonly remaining = (r: FinancialReserve): number => outstanding(r) - Number(this.amounts()[r.reserveId] ?? 0);
+  readonly controlFor = (id: string): FormControl<number | null> => {
+    let c = this.linesForm.controls[id];
+    if (!c) {
+      c = new FormControl<number | null>(null);
+      this.linesForm.addControl(id, c, { emitEvent: false });
     }
-    this.premiumMode.setValue(q.get('premiumMode') === 'warn' ? 'warn' : 'block');
-    this.limitReason.reset('');
-    this.underwriterChecked.reset(false);
-    this.submitted.set(false);
-    this.confirmRequested.set(q.get('confirm') === '1');
+    return c;
+  };
+
+  readonly checks = computed(() =>
+    buildChecks({
+      fo: this.fo(),
+      overview: this.overview(),
+      limits: this.limits()?.limits ?? [],
+      currency: this.values().currency,
+      premiumMode: this.premiumModeValue(),
+      payee: this.selectedPayee(),
+      method: this.method(),
+      bankAccountId: this.values().bankAccountId,
+      rows: this.rows(),
+      lines: this.lines(),
+      total: this.total(),
+      sectionCount: this.paidSections().length
+    })
+  );
+  private readonly premiumModeValue = toSignal(this.premiumMode.valueChanges.pipe(startWith(this.premiumMode.value)), {
+    initialValue: 'block' as const
+  });
+
+  readonly blocked = computed(() => preChecksBlockSubmit(this.checks()) || this.checks().some(c => c.holdsSubmit));
+  readonly needsLimitReason = computed(() => this.checks().some(c => c.needsReason && !c.afterOutsideBlock));
+  // Warning-only unpaid premium (BMPCC-21754 variant): paying out needs a tick.
+  readonly needsUnderwriterTick = computed(() => this.checks().some(c => c.id === 'premium-outstanding' && c.level === 'warn'));
+  private readonly underwriterTicked = toSignal(this.underwriterChecked.valueChanges, { initialValue: false });
+  readonly cannotSubmit = computed(() => this.blocked() || (this.needsUnderwriterTick() && !this.underwriterTicked()));
+
+  readonly missing = computed(() =>
+    missingFields(this.values(), this.method(), this.lines().length, !!this.editing() && !this.selectedPayee())
+  );
+
+  // Last field on purpose: filling the form uses everything declared above.
+  // Follows every change of the address, not only the first (banner AC after AC on one open page).
+  private readonly queryWatch = toSignal(this.route.queryParamMap.pipe(tap(q => this.applyQuery(q))), { initialValue: null });
+
+  constructor() {
+    afterNextRender(() => {
+      const bar = this.document.querySelector('app-navbar');
+      if (bar) this.topOffset.set(Math.round(bar.getBoundingClientRect().bottom));
+    });
   }
 
   private readonly autoConfirm = effect(() => {
-    if (!this.confirmRequested() || !this.finance() || !this.overview()) return;
+    if (!this.confirmRequested() || !this.fo() || !this.overview()) return;
     this.confirmRequested.set(false);
     this.openConfirmWhenClear();
   });
 
   // The prefilled confirm waits for any other overlay to be gone first.
   private openConfirmWhenClear(tries = 0): void {
-    // Any other overlay still on screen (the DEV banner's dialog is its own, still animating out)?
     const busy = this.document.querySelector('.cdk-overlay-backdrop-showing, nx-modal-container');
     if (!busy || tries > 25) {
-      void this.onSubmit();
+      void this.onSubmit('submit');
       return;
     }
     setTimeout(() => this.openConfirmWhenClear(tries + 1), 150);
   }
 
-  private readonly finance = toSignal(this.financeSvc.getByClaimId(this.claimId));
-  private readonly limits = toSignal(this.limitsSvc.getByClaimId(this.claimId));
-  private readonly loadedOverview = toSignal(this.overviewSvc.getOverview(this.claimId));
-  // Live: "Send claim again" flips the claim's state while this page is open.
-  readonly overview = computed(() => this.stateSvc.state().overviews[this.claimId] ?? this.loadedOverview());
-  readonly sections = computed(() => this.finance()?.sections ?? []);
+  /** Pays into the first account that works, so a fresh payee never starts on a dead one. */
+  private defaultBank(payeeId: string | null): void {
+    const p = this.payees.find(x => x.payeeId === payeeId);
+    const ok = p?.bankAccounts.find(a => a.operational) ?? p?.bankAccounts[0];
+    this.form.controls.bankAccountId.setValue(ok?.accountId ?? null, { emitEvent: false });
+    if (p?.email) this.form.controls.emailAddress.setValue(p.email, { emitEvent: false });
+    this.form.updateValueAndValidity();
+  }
 
-  private readonly inputs = toSignal(
-    combineLatest([
-      this.form.valueChanges.pipe(startWith(null)),
-      this.premiumMode.valueChanges.pipe(startWith('block' as const))
-    ]).pipe(map(() => ({ ...this.form.getRawValue(), premiumMode: this.premiumMode.value }))),
-    { initialValue: { ...this.form.getRawValue(), premiumMode: 'block' as const } }
-  );
+  private applyQuery(q: ParamMap): void {
+    const edit = q.get('edit') ? this.editSvc.find(this.claimId, q.get('edit')!) : undefined;
+    const editing = edit?.status === 'Requires amendment' ? edit : null;
+    this.editing.set(editing);
+    const payee = findPayee(this.payees, editing?.payee ?? q.get('payee'));
+    const currency = editing?.currency ?? q.get('currency') ?? 'EUR';
+    this.form.reset(defaultValues(payee, currency));
+    this.defaultBank(payee?.payeeId ?? null);
+    this.premiumMode.setValue(q.get('premiumMode') === 'warn' ? 'warn' : 'block');
+    this.limitReason.reset('');
+    this.underwriterChecked.reset(false);
+    this.submitted.set(false);
+    this.payeeOpen.set(false);
+    this.methodOpen.set(false);
+    this.amountOpen.set(true);
+    this.confirmRequested.set(q.get('confirm') === '1');
+    this.prefillLines(q, editing, currency);
+  }
 
-  readonly checks = computed(() => {
-    const v = this.inputs();
-    const fo = this.finance();
-    const ov = this.overview();
-    const section = this.sections().find(s => s.sectionId === v.section);
-    // Reserves a payment can draw on: the chosen section's, or the whole claim's.
-    const pool = (fo?.reserves ?? []).filter(
-      r => r.status !== 'Rejected' && (!section || sameSection(r.section, section.sectionName))
-    );
-    const head = claimHeadroom(fo, this.limits()?.limits ?? [], v.currency, section?.sectionName);
-    return financialPreChecks({
-      journey: 'payment',
-      ggRegistration: ov?.ggRegistration,
-      ggResendInFlight: ov?.ggResendInFlight,
-      premiumOutstanding: ov?.premiumOutstanding,
-      premiumMode: v.premiumMode,
-      currency: v.currency,
-      reserveCurrencies: [...new Set(pool.map(r => r.currency))],
-      amount: v.amount ?? undefined,
-      limitRemaining: head?.remaining,
-      limitName: head?.name
+  private prefillLines(q: ParamMap, editing: FinancialPayment | null, currency: string): void {
+    for (const c of Object.values(this.linesForm.controls)) c.setValue(null, { emitEvent: false });
+    const fo = this.stateSvc.state().financialOverviews[this.claimId];
+    const id = q.get('section');
+    const sectionName =
+      fo?.sections.find(s => s.sectionId === id)?.sectionName ??
+      this.sectionSvc.getByClaimIdSync(this.claimId).find(s => s.id === id)?.name;
+    const amounts = prefillAmounts(payableRows(fo, currency), editing, {
+      sectionName,
+      type: q.get('type'),
+      amount: q.get('amount') ? Number(q.get('amount')) : null
     });
-  });
+    for (const [reserveId, amount] of Object.entries(amounts)) this.controlFor(reserveId).setValue(amount, { emitEvent: false });
+    this.linesForm.updateValueAndValidity();
+  }
 
-  readonly blocked = computed(() => preChecksBlockSubmit(this.checks()));
-  // The reason is asked for only once nothing outside blocks the payment.
-  readonly needsLimitReason = computed(() =>
-    this.checks().some(c => c.needsReason && !c.afterOutsideBlock)
-  );
-  // Warning-only unpaid premium (BMPCC-21754 variant): paying out needs a tick.
-  readonly needsUnderwriterTick = computed(() =>
-    this.checks().some(c => c.id === 'premium-outstanding' && c.level === 'warn')
-  );
-  private readonly underwriterTicked = toSignal(this.underwriterChecked.valueChanges, {
-    initialValue: false
-  });
-  readonly cannotSubmit = computed(
-    () => this.blocked() || (this.needsUnderwriterTick() && !this.underwriterTicked())
-  );
-
-  async onSubmit(): Promise<void> {
+  async onSubmit(mode: SubmitMode): Promise<void> {
     this.submitted.set(true);
-    if (this.cannotSubmit() || this.form.invalid) return;
-    if (this.needsLimitReason() && this.limitReason.invalid) return;
+    const miss = this.missing();
+    if (miss.length) {
+      this.payeeOpen.set(miss.some(m => ['payeeId', 'beneficiaryName', 'emailAddress'].includes(m)));
+      this.methodOpen.set(miss.some(m => ['method', 'bankAccountId', 'paymentDate'].includes(m)));
+      if (miss.includes('lines')) this.amountOpen.set(true);
+      return;
+    }
+    if (mode === 'submit' && this.cannotSubmit()) return;
+    if (mode === 'submit' && this.needsLimitReason() && !this.limitReason.value?.trim()) return;
     const v = this.form.getRawValue();
     const edit = this.editing();
-    const where = this.sections().find(s => s.sectionId === v.section)?.sectionName ?? 'claim level';
+    const payee = this.selectedPayee() ?? { payeeId: '', name: edit!.payee };
+    const where = this.paidSections().map(r => r.sectionCode ?? r.section).join(' and ') || 'claim level';
+    const summary = `${this.total().toLocaleString('en-GB')} ${v.currency} to ${payee.name} (${this.lines().length} reserve line${this.lines().length === 1 ? '' : 's'}, ${where})`;
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-      data: {
-        title: edit ? `Send payment ${edit.paymentId} back to your approver?` : 'Send this payment for approval?',
-        message: edit
-          ? `This sends payment ${edit.paymentId} back to your approver. No new payment is created.`
-          : `${v.amount!.toLocaleString('en-GB')} ${v.currency} to ${v.payee}, ${v.paymentType}, ${where}. It goes to your approver. Once approved, it is booked in Global Genius automatically.`,
-        confirmLabel: edit ? 'Resubmit to approver' : 'Send for approval',
-        cancelLabel: 'Cancel',
-        hideIcon: true
-      } satisfies ConfirmDialogData,
+      data: confirmData(mode, edit?.paymentId ?? null, summary),
       width: '480px',
       maxWidth: '92vw'
     });
     if (!(await firstValueFrom(ref.afterClosed()))) return;
+    const sectionType = this.rows().find(r => r.reserveId === this.lines()[0].reserveId)?.reserveType ?? 'Indemnity';
     if (edit) {
       const ok = this.editSvc.resubmit(this.claimId, edit.paymentId, {
-        payee: v.payee!,
-        sectionType: v.paymentType!,
-        amount: v.amount!,
+        payee: payee.name,
+        sectionType,
+        amount: this.total(),
         currency: v.currency
       });
       if (ok) this.toast.success('Sent back to your approver', "We'll let you know if it can't be booked.");
       else this.toast.info("This payment can't be changed any more", 'The approver has already dealt with it.');
-      this.router.navigate(['/claims', this.claimId, 'financial'], {
-        queryParams: { view: 'payments', highlight: edit.paymentId }
-      });
+      this.goToPayments(edit.paymentId);
       return;
     }
-    const section = this.sections().find(s => s.sectionId === v.section);
+    const only = this.paidSections().length === 1 ? this.paidSections()[0].sectionId : undefined;
     const created = await firstValueFrom(
-      this.financeSvc.addPayment(this.claimId, {
-        reinsuranceId: '',
-        payee: v.payee!,
-        handler: '',
-        sectionType: v.paymentType!,
-        amount: v.amount!,
-        currency: v.currency,
-        paymentDate: ''
-      }, section?.sectionId)
+      this.financeSvc.addPayment(
+        this.claimId,
+        paymentRecord(v, payee, this.lines(), this.total(), sectionType),
+        only,
+        mode === 'draft' ? 'Draft' : 'Pending'
+      )
     );
-    this.toast.success(
-      'Sent for approval',
-      "We'll let you know if it can't be booked."
-    );
-    this.router.navigate(['/claims', this.claimId, 'financial'], {
-      queryParams: { view: 'payments', highlight: created.paymentId }
-    });
+    if (mode === 'draft') this.toast.success('Saved as a draft', 'It is not sent to your approver yet.');
+    else this.toast.success('Sent for approval', "We'll let you know if it can't be booked.");
+    this.goToPayments(created.paymentId);
+  }
+
+  private goToPayments(highlight?: string): void {
+    this.router.navigate(['/claims', this.claimId, 'financial'], { queryParams: { view: 'payments', highlight: highlight ?? null } });
   }
 
   onCancel(): void {
-    this.router.navigate(['/claims', this.claimId, 'financial'], { queryParams: { view: 'payments' } });
+    this.goToPayments();
   }
 }

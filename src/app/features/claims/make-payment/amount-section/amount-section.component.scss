@@ -1,0 +1,87 @@
+.as-body {
+  padding: var(--space-lg) 0;
+}
+
+.as-currency {
+  width: 160px;
+  margin-bottom: var(--space-lg);
+}
+
+.as-table {
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+.as-num {
+  text-align: right;
+}
+
+.as-id {
+  white-space: nowrap;
+}
+
+.as-amount {
+  width: 130px;
+  margin-left: auto;
+}
+
+// Paying more than the reserve holds: still allowed, but visible.
+.as-over {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.as-label {
+  margin: 0 0 var(--space-md);
+  font-weight: 700;
+  color: var(--text-01);
+}
+
+.as-radio {
+  margin-bottom: var(--space-lg);
+}
+
+.as-radio-row {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.as-summary {
+  max-width: 420px;
+  padding: var(--space-lg);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+}
+
+.as-summary__title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.as-summary__list {
+  margin: 0;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+
+  dt,
+  dd {
+    margin: 0;
+    color: var(--text-01);
+  }
+}
+
+.as-summary__note {
+  margin: var(--space-md) 0 0;
+  color: var(--text-muted);
+}
+
+.as-error {
+  margin: 0 0 var(--space-md);
+  color: var(--danger);
+}

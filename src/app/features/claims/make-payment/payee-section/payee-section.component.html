@@ -1,0 +1,56 @@
+<div [formGroup]="form()" class="ps-grid">
+  <nx-formfield label="Payee *" class="ps-wide">
+    <nx-dropdown formControlName="payeeId" placeholder="Select the payee">
+      @for (p of payees(); track p.payeeId) {
+        <nx-dropdown-item [value]="p.payeeId">{{ p.name }}</nx-dropdown-item>
+      }
+    </nx-dropdown>
+  </nx-formfield>
+  @if (missing().includes('payeeId')) {
+    <p class="field-error" role="alert">Choose who is being paid.</p>
+  }
+
+  @if (selected(); as p) {
+    <dl class="ps-details">
+      <div><dt>Role</dt><dd>{{ p.role }}</dd></div>
+      <div><dt>Address</dt><dd>{{ p.address }}</dd></div>
+      <div>
+        <dt>Sanctions check</dt>
+        <dd>{{ p.clearance === 'cleared' ? 'Cleared' : p.clearance === 'pending' ? 'Pending' : 'Not cleared' }}</dd>
+      </div>
+      <div><dt>Global Genius name code</dt><dd>{{ p.ggNameCode ?? 'Missing' }}</dd></div>
+    </dl>
+  }
+
+  <div class="ps-radio">
+    <p class="ps-label">Ultimate beneficiary</p>
+    <div class="ps-radio-row">
+      <nx-radio name="beneficiary" value="same" [checked]="!differentBeneficiary()" (valueChange)="setBeneficiary('same')" labelSize="small">Same as payee</nx-radio>
+      <nx-radio name="beneficiary" value="different" [checked]="differentBeneficiary()" (valueChange)="setBeneficiary('different')" labelSize="small">Different party</nx-radio>
+    </div>
+  </div>
+  @if (differentBeneficiary()) {
+    <nx-formfield label="Beneficiary name *">
+      <input nxInput formControlName="beneficiaryName" />
+    </nx-formfield>
+  @if (missing().includes('beneficiaryName')) {
+    <p class="field-error" role="alert">Enter the beneficiary's name.</p>
+  }
+  }
+
+  <div class="ps-radio">
+    <p class="ps-label">Send the payee an email confirmation</p>
+    <div class="ps-radio-row">
+      <nx-radio name="confirmEmail" [value]="true" [checked]="emailYes()" (valueChange)="setEmail(true)" labelSize="small">Yes</nx-radio>
+      <nx-radio name="confirmEmail" [value]="false" [checked]="!emailYes()" (valueChange)="setEmail(false)" labelSize="small">No</nx-radio>
+    </div>
+  </div>
+  @if (emailYes()) {
+    <nx-formfield label="Email address *">
+      <input nxInput type="email" formControlName="emailAddress" />
+    </nx-formfield>
+  @if (missing().includes('emailAddress')) {
+    <p class="field-error" role="alert">Enter an email address.</p>
+  }
+  }
+</div>
