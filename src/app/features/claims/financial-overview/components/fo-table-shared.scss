@@ -82,3 +82,14 @@
     border-bottom: 1px solid var(--ui-04);
   }
 }
+
+// Row that was just submitted / linked to
+.fo-row--highlight td {
+  background: var(--ui-02);
+}
+
+// Room under the last row so an expanded panel is never cut off
+.fo-table,
+.fo-table-wrap {
+  margin-bottom: var(--layout-inset-base);
+}

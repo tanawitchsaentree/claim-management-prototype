@@ -18,7 +18,11 @@
     </thead>
     <tbody>
       @for (r of rows(); track r.reserveId) {
-        <tr nxTableRow>
+        <tr
+          nxTableRow
+          [attr.data-row-id]="r.reserveId"
+          [class.fo-row--highlight]="r.reserveId === highlightId()"
+        >
           <td nxCell class="fo-col--history">
             <button
               nxIconButton="tertiary small"
@@ -75,8 +79,15 @@
         @if (expandedIds().has(r.reserveId)) {
           <tr nxTableRow class="fo-history-row">
             <td nxCell [attr.colspan]="10">
-              @if (r.bookingStatus === 'needs-fixing' && r.bookingIssue; as issue) {
-                <app-booking-issue-panel [issue]="issue"></app-booking-issue-panel>
+              @if (explainable(r)) {
+                <app-booking-explanation-panel
+                  [claimId]="claimId()"
+                  kind="reserve"
+                  [itemId]="r.reserveId"
+                  [approvalStatus]="r.status"
+                  [item]="r"
+                  [summary]="summary(r)"
+                ></app-booking-explanation-panel>
               }
               <div class="fo-history-panel">
                 <p class="fo-history-panel__title">Reserve history</p>

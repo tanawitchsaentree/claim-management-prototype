@@ -1,0 +1,37 @@
+<!-- audit-exempt: always has the fixed Insured / Reserve / Payments / Recoveries rows -->
+<div class="fo-kpis">
+  @for (kpi of kpis(); track kpi.label) {
+    <div class="fo-kpi-card">
+      <span class="fo-kpi-label">{{ kpi.label }}</span>
+      <span class="fo-kpi-value">{{ kpi.value | currency: currency() : 'symbol' : '1.0-0' }}</span>
+    </div>
+  }
+</div>
+
+<h2 class="fo-section-heading">Financial details</h2>
+<table nxTable class="fo-table">
+  <thead>
+    <tr nxTableRow>
+      <th nxHeaderCell></th>
+      <th nxHeaderCell class="fo-cell--right">Gross</th>
+      <th nxHeaderCell class="fo-cell--right">Gross net</th>
+      <th nxHeaderCell class="fo-cell--right">Net</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of details().rows; track row.label) {
+      <tr nxTableRow>
+        <td nxCell>{{ row.label }}</td>
+        <td nxCell class="fo-cell--right">
+          {{ row.gross | currency: currency() : 'symbol' : '1.0-0' }}
+        </td>
+        <td nxCell class="fo-cell--right">
+          {{ row.grossNet | currency: currency() : 'symbol' : '1.0-0' }}
+        </td>
+        <td nxCell class="fo-cell--right">
+          {{ row.net | currency: currency() : 'symbol' : '1.0-0' }}
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, OnInit, input, output, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -10,7 +10,8 @@ import {
   FinancialReserveWithHistory
 } from '../../../../../core/models/financial-overview.model';
 import { BookingStatusPillComponent } from '../../../../../shared/components/booking-status-pill/booking-status-pill.component';
-import { BookingIssuePanelComponent } from '../booking-issue-panel/booking-issue-panel.component';
+import { BookingExplanationPanelComponent } from '../../../../../shared/components/booking-explanation-panel/booking-explanation-panel.component';
+import { statusExplanation } from '../../../../../core/models/gg-booking.model';
 
 @Component({
   selector: 'app-fo-reserves-table',
@@ -23,12 +24,15 @@ import { BookingIssuePanelComponent } from '../booking-issue-panel/booking-issue
     NxTooltipModule,
     NxContextMenuModule,
     BookingStatusPillComponent,
-    BookingIssuePanelComponent
+    BookingExplanationPanelComponent
   ],
   templateUrl: './reserves-table.component.html',
   styleUrls: ['../fo-table-shared.scss', './reserves-table.component.scss']
 })
-export class ReservesTableComponent {
+export class ReservesTableComponent implements OnInit {
+  readonly claimId = input.required<string>();
+  readonly expandId = input<string | null>(null);
+  readonly highlightId = input<string | null>(null);
   readonly rows = input.required<FinancialReserve[]>();
   readonly actionsDisabled = input(false);
   readonly updateReserve = output<FinancialReserve>();
@@ -38,6 +42,26 @@ export class ReservesTableComponent {
   /** "Peter Pane | PD": party, then the section's short code. */
   sectionLabel(r: FinancialReserve): string {
     return [r.party, r.sectionCode].filter(Boolean).join(' | ');
+  }
+
+  ngOnInit(): void {
+    const id = this.expandId();
+    if (id) this.expandedIds.set(new Set([id]));
+  }
+
+  explainable(r: FinancialReserve): boolean {
+    return statusExplanation(r.status, r, 'reserve') !== null;
+  }
+
+  summary(r: FinancialReserve): string {
+    return [
+      `Reserve ${r.reserveId}`,
+      r.party,
+      `${r.currency} ${r.reserveValue.toLocaleString('en-US')}`,
+      r.section
+    ]
+      .filter(Boolean)
+      .join(' · ');
   }
 
   history(r: FinancialReserve): FinancialReserveWithHistory['history'] {

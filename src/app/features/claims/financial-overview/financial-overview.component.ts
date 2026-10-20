@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
@@ -15,6 +15,7 @@ import { FinancialReserve } from '../../../core/models/financial-overview.model'
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
+import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockReservesService } from '../../../core/mock/services/mock-reserves.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
@@ -24,9 +25,14 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { GgRegistrationBannerComponent } from '../claim-overview/components/gg-registration-banner/gg-registration-banner.component';
+import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
+import { ListToolbarComponent } from './components/list-toolbar/list-toolbar.component';
+import { needsYouCount, notBookedGroups, scrollToRow } from './booking-summary';
+import { GgClaimRegistration } from '../../../core/models/gg-booking.model';
+import { ClaimSummaryComponent } from './components/claim-summary/claim-summary.component';
 import { PaymentsTableComponent } from './components/payments-table/payments-table.component';
 import { ReservesTableComponent } from './components/reserves-table/reserves-table.component';
-import { RecoveriesTableComponent } from './components/recoveries-table/recoveries-table.component';
 import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';
 import { SectionSummaryTableComponent } from './components/section-summary-table/section-summary-table.component';
 import {
@@ -37,12 +43,11 @@ import {
 
 export type FinancialView = 'overview' | 'payments' | 'reserves' | 'recovery';
 type LevelToggle = 'claim' | 'section';
-type NotBookedView = 'payments' | 'reserves' | 'recovery';
-// singular, plural
-const NOT_BOOKED_WORDS: Record<NotBookedView, [string, string]> = {
-  payments: ['payment', 'payments'],
-  reserves: ['reserve', 'reserves'],
-  recovery: ['recovery', 'recoveries']
+const VIEW_TITLES: Record<FinancialView, string> = {
+  overview: 'Financial Overview',
+  payments: 'Payments',
+  reserves: 'Reserves',
+  recovery: 'Recovery bookings'
 };
 const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recovery'];
 
@@ -63,9 +68,12 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     EmptyStateComponent,
     PageHeaderComponent,
     BlockerReturnBannerComponent,
+    ClaimSummaryComponent,
     PaymentsTableComponent,
     ReservesTableComponent,
-    RecoveriesTableComponent,
+    RecoveryBookingsTableComponent,
+    ListToolbarComponent,
+    GgRegistrationBannerComponent,
     TransactionsTableComponent,
     SectionSummaryTableComponent
   ],
@@ -81,8 +89,21 @@ export class FinancialOverviewComponent implements OnInit {
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
   private readonly reservesSvc = inject(MockReservesService);
+  private readonly stateSvc = inject(MockStateService);
+  private loaded = false;
 
-  private claimId = '';
+  constructor() {
+    // "Send again" answers a few seconds later, in state: keep the lists and
+    // the claim banner in step without a reload.
+    effect(() => {
+      const st = this.stateSvc.state();
+      if (!this.loaded) return;
+      this.ggRegistration.set(st.overviews[this.claimId]?.ggRegistration);
+      void firstValueFrom(this.svc.getByClaimId(this.claimId)).then(d => this.fo.set(d));
+    });
+  }
+
+  claimId = '';
 
   readonly loading = signal(true);
   readonly fo = signal<FinancialOverview | null>(null);
@@ -91,11 +112,7 @@ export class FinancialOverviewComponent implements OnInit {
   readonly currency = signal('EUR');
   readonly sectionId = signal('');
 
-  // BMPCC-14826 — same claimClosed-gating pattern as sections.ts (claim.status
-  // fetched via MockClaimOverviewService.getOverview()); sectionStatuses is
-  // the real ClaimSection list (financial-overview's own FinancialSection
-  // model has no status field) so the active section's closed state can be
-  // looked up by sectionId.
+  // BMPCC-14826: closed claim / closed section disable Make Payment and Update reserves.
   readonly claimClosed = signal(false);
   readonly sectionStatuses = signal<ClaimSection[]>([]);
   // Why a claim has no reserve yet, written at notification (FNOL Reserves step).
@@ -126,18 +143,7 @@ export class FinancialOverviewComponent implements OnInit {
     return VALID_VIEWS.includes(v as FinancialView) ? (v as FinancialView) : 'overview';
   });
 
-  readonly viewTitle = computed<string>(() => {
-    switch (this.view()) {
-      case 'payments':
-        return 'Payments';
-      case 'reserves':
-        return 'Reserves';
-      case 'recovery':
-        return 'Recovery bookings';
-      default:
-        return 'Financial Overview';
-    }
-  });
+  readonly viewTitle = computed<string>(() => VIEW_TITLES[this.view()]);
 
   readonly sections = computed<FinancialSection[]>(() => this.fo()?.sections ?? []);
 
@@ -151,9 +157,8 @@ export class FinancialOverviewComponent implements OnInit {
   // never show in one view and not the other.
   readonly reserveRows = computed<FinancialReserve[]>(() => {
     const all = this.fo()?.reserves ?? [];
-    if (this.level() === 'claim') return all;
-    const id = this.activeSection()?.sectionId;
-    return all.filter(r => r.sectionId === id);
+    const rows = this.level() === 'claim' ? all : all.filter(r => r.sectionId === this.activeSection()?.sectionId);
+    return this.needsYouOnly().reserves ? rows.filter(r => needsYouCount('reserves', [r]) > 0) : rows;
   });
 
   // Payment to show expanded when arriving from a Task manager link.
@@ -162,37 +167,38 @@ export class FinancialOverviewComponent implements OnInit {
     { initialValue: this.route.snapshot.queryParamMap.get('open') }
   );
 
-  // Items Global Genius couldn't book and someone has to fix, per list, for
-  // the "N items couldn't be booked" line on the overview.
-  readonly notBooked = computed(() => {
-    const data = this.fo();
-    if (!data) return null;
-    const count = (rows: { bookingStatus?: string }[]) =>
-      rows.filter(r => r.bookingStatus === 'needs-fixing').length;
-    const counts: Record<NotBookedView, number> = {
-      payments: count(data.payments),
-      reserves: count(data.reserves),
-      recovery: count(data.recoveries)
-    };
-    const views = (Object.keys(counts) as NotBookedView[]).filter(v => counts[v] > 0);
-    const parts = views.map(v => ({
-      view: v as FinancialView,
-      text: `${counts[v]} ${NOT_BOOKED_WORDS[v][counts[v] === 1 ? 0 : 1]}`
-    }));
-    const total = views.reduce((sum, v) => sum + counts[v], 0);
-    return total > 0 ? { total, parts } : null;
-  });
+  // URL-driven landing (DEV banner, task links, bell): open the exact row.
+  private readonly query = this.route.snapshot.queryParamMap;
+  readonly expandId = this.query.get('expand') ?? this.query.get('open');
+  readonly highlightId = this.query.get('highlight');
 
-  get kpis() {
-    const s = this.fo()?.summary;
-    if (!s) return [];
-    return [
-      { label: 'Outstanding reserves', value: s.outstandingReserves },
-      { label: 'Completed payments', value: s.completedPayments },
-      { label: 'Pending payments', value: s.pendingPayments },
-      { label: 'Recoveries', value: s.recoveries },
-      { label: 'Incurred', value: s.incurred }
-    ];
+  readonly ggRegistration = signal<GgClaimRegistration | undefined>(undefined);
+  readonly needsYouOnly = signal({ payments: false, reserves: false, recovery: false });
+
+  readonly paymentRows = computed(() => {
+    const all = this.level() === 'claim' ? (this.fo()?.payments ?? []) : (this.activeSection()?.payments ?? []);
+    return this.needsYouOnly().payments ? all.filter(p => needsYouCount('payments', [p]) > 0) : all;
+  });
+  readonly recoveryRows = computed(() => {
+    const all = this.level() === 'claim' ? (this.fo()?.recoveries ?? []) : (this.activeSection()?.recoveries ?? []);
+    return this.needsYouOnly().recovery ? all.filter(r => needsYouCount('recovery', [r]) > 0) : all;
+  });
+  readonly needsYou = computed(() => {
+    const d = this.fo();
+    return {
+      payments: needsYouCount('payments', d?.payments ?? []),
+      reserves: needsYouCount('reserves', d?.reserves ?? []),
+      recovery: needsYouCount('recovery', d?.recoveries ?? [])
+    };
+  });
+  readonly notBooked = computed(() => {
+    const d = this.fo();
+    return d ? notBookedGroups(d) : [];
+  });
+  readonly notBookedTotal = computed(() => this.notBooked().reduce((n, g) => n + g.total, 0));
+
+  setNeedsYouOnly(view: 'payments' | 'reserves' | 'recovery', on: boolean): void {
+    this.needsYouOnly.update(v => ({ ...v, [view]: on }));
   }
 
   async ngOnInit(): Promise<void> {
@@ -214,7 +220,25 @@ export class FinancialOverviewComponent implements OnInit {
     if (data?.sections?.length) {
       this.sectionId.set(data.sections[0].sectionId);
     }
+    this.ggRegistration.set(claim.ggRegistration);
+    this.loaded = true;
     this.loading.set(false);
+    this.landOnItem();
+  }
+
+  // DEV banner / bell / task links: &expand=<id> scrolls to the row, and
+  // &addReserve=1 opens Add reserve, optionally prefilled (&amount &currency &section).
+  private landOnItem(): void {
+    const id = this.expandId ?? this.highlightId;
+    if (id) scrollToRow(id);
+    if (this.query.get('addReserve') === '1') {
+      const amount = Number(this.query.get('amount'));
+      void this.onAddReserve({
+        amount: amount > 0 ? amount : undefined,
+        currency: this.query.get('currency') ?? undefined,
+        section: this.query.get('section') ?? undefined
+      });
+    }
   }
 
   private async loadNoReserveReason(claimId: string): Promise<void> {
@@ -230,13 +254,12 @@ export class FinancialOverviewComponent implements OnInit {
     this.router.navigate([], { queryParams: { view: v }, replaceUrl: true });
   }
 
-  // The "Update reserves" button had no handler at all before this — there
-  // was no way to add a reserve on a claim outside the FNOL wizard.
-  async onAddReserve(): Promise<void> {
+  async onAddReserve(prefill?: { amount?: number; currency?: string; section?: string }): Promise<void> {
     const current = this.fo();
     if (!current) return;
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
-      data: { sections: current.sections } satisfies AddReserveModalData,
+      // `prefill` is read by the modal (Builder B); extra field until its type has it.
+      data: { sections: current.sections, claimId: this.claimId, prefill } as AddReserveModalData,
       width: '600px',
       maxWidth: '92vw'
     });
@@ -244,9 +267,6 @@ export class FinancialOverviewComponent implements OnInit {
     if (!input) return;
     await firstValueFrom(this.svc.addReserve(this.claimId, input));
     this.fo.set(await firstValueFrom(this.svc.getByClaimId(this.claimId)));
-    // Adding a section already confirms with a toast — adding a reserve (the
-    // other half of the same "needs setup" checklist, and the one moving
-    // real money) gave zero feedback at all until now.
     this.toast.success(
       'Reserve added',
       `${input.currency} ${input.reserveValue.toLocaleString()} reserve added.`

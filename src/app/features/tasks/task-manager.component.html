@@ -53,7 +53,7 @@
       </thead>
       <tbody>
         @for (task of displayedTasks(); track task.taskId) {
-          <tr nxTableRow [class.tm-row--highlight]="task.taskId === highlightTaskId">
+          <tr nxTableRow [attr.data-task-id]="task.taskId" [class.tm-row--highlight]="task.taskId === highlightTaskId">
             <td nxCell>{{ task.taskType }}</td>
             <td nxCell class="tm-col-desc">
               {{ task.description }}
@@ -61,7 +61,7 @@
                 <a
                   class="tm-payment-link"
                   [routerLink]="['/claims', task.claimId, 'financial']"
-                  [queryParams]="{ view: 'payments', open: paymentId }"
+                  [queryParams]="{ view: 'payments', expand: paymentId }"
                   >Open payment {{ paymentId }}</a
                 >
               }

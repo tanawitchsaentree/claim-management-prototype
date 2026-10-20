@@ -3,6 +3,8 @@
 <!-- ── Page header ─────────────────────────────────────────────────────── -->
 <app-page-header [title]="viewTitle()"></app-page-header>
 
+<app-gg-registration-banner [registration]="ggRegistration()"></app-gg-registration-banner>
+
 <!-- Claim/Section level: a two-state view switch, so NDBX radio-toggle. -->
 <nx-radio-toggle
   class="fo-level-toggle"
@@ -42,52 +44,18 @@
   <!-- ── FINANCIAL OVERVIEW ─────────────────────────────────────────────── -->
   @if (view() === 'overview') {
     @if (level() === 'claim') {
-      @if (notBooked(); as nb) {
+      @if (notBookedTotal() > 0) {
         <nx-message context="warning" class="fo-not-booked">
-          {{ nb.total }} {{ nb.total === 1 ? "item couldn't" : "items couldn't" }} be booked:
-          @for (part of nb.parts; track part.view; let last = $last) {
-            <a class="fo-link" tabindex="0" (click)="setView(part.view)" (keydown.enter)="setView(part.view)">{{ part.text }}</a>{{ last ? '.' : ', ' }}
+          {{ notBookedTotal() }} {{ notBookedTotal() === 1 ? "item couldn't" : "items couldn't" }} be booked.
+          @for (g of notBooked(); track g.who) {
+            {{ g.total }} {{ g.who === 'you' ? 'needs you' : 'with the Finance team' }}:
+            @for (l of g.links; track l.view; let last = $last) {
+              <a class="fo-link" tabindex="0" (click)="setView(l.view)" (keydown.enter)="setView(l.view)">{{ l.text }}</a>{{ last ? '.' : ', ' }}
+            }
           }
         </nx-message>
       }
-      <div class="fo-kpis">
-        @for (kpi of kpis; track kpi.label) {
-          <div class="fo-kpi-card">
-            <span class="fo-kpi-label">{{ kpi.label }}</span>
-            <span class="fo-kpi-value">{{
-              kpi.value | currency: currency() : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-        }
-      </div>
-
-      <h2 class="fo-section-heading">Financial details</h2>
-      <table nxTable class="fo-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell></th>
-            <th nxHeaderCell class="fo-cell--right">Gross</th>
-            <th nxHeaderCell class="fo-cell--right">Gross net</th>
-            <th nxHeaderCell class="fo-cell--right">Net</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of fo.details.rows; track row.label) {
-            <tr nxTableRow>
-              <td nxCell>{{ row.label }}</td>
-              <td nxCell class="fo-cell--right">
-                {{ row.gross | currency: currency() : 'symbol' : '1.0-0' }}
-              </td>
-              <td nxCell class="fo-cell--right">
-                {{ row.grossNet | currency: currency() : 'symbol' : '1.0-0' }}
-              </td>
-              <td nxCell class="fo-cell--right">
-                {{ row.net | currency: currency() : 'symbol' : '1.0-0' }}
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <app-fo-claim-summary [summary]="fo.summary" [details]="fo.details" [currency]="currency()" />
 
       <h2 class="fo-section-heading fo-section-heading--mt" data-tour-id="fo-transaction-summary">
         Transaction summary
@@ -117,25 +85,32 @@
 
   <!-- ── PAYMENTS ───────────────────────────────────────────────────────── -->
   @else if (view() === 'payments') {
-    @let rows = level() === 'claim' ? fo.payments : (activeSection()?.payments ?? []);
-
-    <div class="fo-toolbar">
-      <p class="fo-count">{{ rows.length }} items</p>
+    <app-fo-list-toolbar
+      [count]="paymentRows().length"
+      [needsYou]="needsYou().payments"
+      [needsYouOnly]="needsYouOnly().payments"
+      (needsYouOnlyChange)="setNeedsYouOnly('payments', $event)"
+    >
       <button
         nxButton="primary small"
-        class="fo-toolbar__action"
         [disabled]="actionsDisabled()"
         [nxTooltip]="actionsDisabledReason()"
         (click)="onMakePayment()"
       >
         Make Payment
       </button>
-    </div>
+    </app-fo-list-toolbar>
 
-    @if (rows.length === 0) {
+    @if (paymentRows().length === 0) {
       <app-empty-state message="No payments found."></app-empty-state>
     } @else {
-      <app-fo-payments-table [rows]="rows" [currency]="currency()" [openId]="openPaymentId()" />
+      <app-fo-payments-table
+        [claimId]="claimId"
+        [rows]="paymentRows()"
+        [currency]="currency()"
+        [expandId]="expandId"
+        [highlightId]="highlightId"
+      />
     }
   }
 
@@ -143,18 +118,21 @@
   @else if (view() === 'reserves') {
     @let rows = reserveRows();
 
-    <div class="fo-toolbar">
-      <p class="fo-count">{{ rows.length }} items</p>
+    <app-fo-list-toolbar
+      [count]="rows.length"
+      [needsYou]="needsYou().reserves"
+      [needsYouOnly]="needsYouOnly().reserves"
+      (needsYouOnlyChange)="setNeedsYouOnly('reserves', $event)"
+    >
       <button
         nxButton="primary small"
-        class="fo-toolbar__action"
         [disabled]="actionsDisabled()"
         [nxTooltip]="actionsDisabledReason()"
         (click)="onAddReserve()"
       >
         Update reserves
       </button>
-    </div>
+    </app-fo-list-toolbar>
 
     @if (rows.length === 0) {
       <app-empty-state message="No reserves found."></app-empty-state>
@@ -165,8 +143,11 @@
       }
     } @else {
       <app-fo-reserves-table
+        [claimId]="claimId"
         [rows]="rows"
         [actionsDisabled]="actionsDisabled()"
+        [expandId]="expandId"
+        [highlightId]="highlightId"
         (updateReserve)="onUpdateReserve($event)"
       />
     }
@@ -174,16 +155,22 @@
 
   <!-- ── RECOVERY BOOKINGS ──────────────────────────────────────────────── -->
   @else if (view() === 'recovery') {
-    @let rows = level() === 'claim' ? fo.recoveries : (activeSection()?.recoveries ?? []);
+    <app-fo-list-toolbar
+      [count]="recoveryRows().length"
+      [needsYou]="needsYou().recovery"
+      [needsYouOnly]="needsYouOnly().recovery"
+      (needsYouOnlyChange)="setNeedsYouOnly('recovery', $event)"
+    />
 
-    <div class="fo-toolbar">
-      <p class="fo-count">{{ rows.length }} items</p>
-    </div>
-
-    @if (rows.length === 0) {
+    @if (recoveryRows().length === 0) {
       <app-empty-state message="No recovery bookings found."></app-empty-state>
     } @else {
-      <app-fo-recoveries-table [rows]="rows" [currency]="currency()" />
+      <app-recovery-bookings-table
+        [claimId]="claimId"
+        [rows]="recoveryRows()"
+        [currency]="currency()"
+        [expandId]="expandId"
+      />
     }
   }
 } @else {

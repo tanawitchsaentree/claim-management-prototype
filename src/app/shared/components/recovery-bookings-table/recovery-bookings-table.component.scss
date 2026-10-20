@@ -1,0 +1,22 @@
+.rbt {
+  width: 100%;
+  margin-bottom: var(--layout-inset-base);
+}
+
+.rbt__expand {
+  width: 32px;
+  padding-right: 0 !important;
+}
+
+.rbt__right {
+  text-align: right !important;
+}
+
+.rbt__nowrap {
+  white-space: nowrap;
+}
+
+.rbt__detail td {
+  background: var(--ui-02);
+  padding: 0 !important;
+}

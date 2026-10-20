@@ -57,7 +57,10 @@ export class TaskManagerComponent implements OnInit {
     let tasks = this.showMyTasksOnly() ? this.allTasks().filter(t => t.assignee === name) : this.allTasks();
     const status = this.statusFilter();
     if (status !== 'all') tasks = tasks.filter(t => t.status === status);
+    const pinned = this.highlightTaskId;
     return [...tasks].sort((a, b) => {
+      // Arriving from a "Couldn't be booked" row: that task goes first.
+      if (pinned && (a.taskId === pinned) !== (b.taskId === pinned)) return a.taskId === pinned ? -1 : 1;
       const aDone = a.status === 'done' ? 1 : 0;
       const bDone = b.status === 'done' ? 1 : 0;
       if (aDone !== bDone) return aDone - bDone;
@@ -70,6 +73,17 @@ export class TaskManagerComponent implements OnInit {
     const tasks = await firstValueFrom(this.taskSvc.getAll());
     this.allTasks.set(tasks);
     this.loading.set(false);
+    const target = tasks.find(t => t.taskId === this.highlightTaskId);
+    if (target) {
+      // Land on "my tasks" so it isn't buried, when the task is the user's own.
+      if (target.assignee === (this.auth.user()?.name ?? '')) this.showMyTasksOnly.set(true);
+      setTimeout(() => {
+        const row = Array.from(document.querySelectorAll('[data-task-id]')).find(
+          el => el.getAttribute('data-task-id') === target.taskId
+        );
+        row?.scrollIntoView({ block: 'center' });
+      }, 200);
+    }
   }
 
   setStatusFilter(status: StatusFilter): void {

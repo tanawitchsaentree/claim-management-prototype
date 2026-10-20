@@ -1,0 +1,15 @@
+<div class="lt">
+  <p class="lt__count">{{ count() }} items</p>
+  @if (needsYou() > 0) {
+    <button
+      type="button"
+      class="lt__needs"
+      [class.lt__needs--on]="needsYouOnly()"
+      [attr.aria-pressed]="needsYouOnly()"
+      (click)="needsYouOnly.set(!needsYouOnly())"
+    >
+      Needs you: {{ needsYou() }}
+    </button>
+  }
+  <div class="lt__action"><ng-content></ng-content></div>
+</div>

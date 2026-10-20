@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -14,6 +14,10 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
+import { MockStateService } from '../../../core/mock/state/mock-state.service';
+import { FinancialRecovery } from '../../../core/models/financial-overview.model';
+import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
 import { MockRecoveryService } from '../../../core/mock/services/mock-recovery.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
@@ -79,7 +83,8 @@ interface RecoveryGuidance {
     EmptyStateComponent,
     StatusChipComponent,
     AppDatePipe,
-    BlockerReturnBannerComponent
+    BlockerReturnBannerComponent,
+    RecoveryBookingsTableComponent
   ],
   templateUrl: './recoveries.component.html',
   styleUrl: './recoveries.component.scss'
@@ -91,6 +96,8 @@ export class RecoveriesComponent implements OnInit {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
+  private readonly financialSvc = inject(MockFinancialOverviewService);
+  private readonly stateSvc = inject(MockStateService);
 
   readonly rows = signal<RecoveryCase[]>([]);
   readonly claim = signal<ClaimOverview | null>(null);
@@ -99,6 +106,19 @@ export class RecoveriesComponent implements OnInit {
   private sections: { id: string; name: string }[] = [];
 
   claimId = '';
+
+  // The postings (money booked against recoveries) also live under Financial >
+  // Recovery bookings: same data, same Global Genius status, never two answers.
+  readonly postings = signal<FinancialRecovery[]>([]);
+  readonly expandId = inject(ActivatedRoute).snapshot.queryParamMap.get('expand');
+
+  constructor() {
+    // "Send again" answers a few seconds later, in state.
+    effect(() => {
+      this.stateSvc.state();
+      if (this.claimId) void this.loadPostings();
+    });
+  }
 
   readonly state = computed<RecoveryPotentialState>(() => {
     const claim = this.claim();
@@ -135,6 +155,20 @@ export class RecoveriesComponent implements OnInit {
     this.claimId =
       this.route.snapshot.paramMap.get('id') ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
     await this.load();
+    await this.loadPostings();
+    if (this.expandId) {
+      setTimeout(() => {
+        const row = Array.from(document.querySelectorAll('[data-row-id]')).find(
+          el => el.getAttribute('data-row-id') === this.expandId
+        );
+        row?.scrollIntoView({ block: 'center' });
+      }, 200);
+    }
+  }
+
+  private async loadPostings(): Promise<void> {
+    const fo = await firstValueFrom(this.financialSvc.getByClaimId(this.claimId));
+    this.postings.set(fo.recoveries);
   }
 
   private async load(): Promise<void> {

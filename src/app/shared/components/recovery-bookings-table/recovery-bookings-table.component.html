@@ -1,0 +1,70 @@
+<!-- audit-exempt: the page shows the empty state when there are no rows -->
+<table nxTable class="rbt">
+  <thead>
+    <tr nxTableRow>
+      <th nxHeaderCell class="rbt__expand"></th>
+      <th nxHeaderCell>Recovery ID</th>
+      <th nxHeaderCell>Booking ID</th>
+      <th nxHeaderCell>Recovery type</th>
+      <th nxHeaderCell>Section</th>
+      <th nxHeaderCell class="rbt__right">Amount</th>
+      <th nxHeaderCell>Currency</th>
+      <th nxHeaderCell>Status</th>
+      <th nxHeaderCell>Party</th>
+      <th nxHeaderCell>Booking date</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (r of rows(); track r.recoveryId) {
+      <tr nxTableRow [attr.data-row-id]="r.recoveryId">
+        <td nxCell class="rbt__expand">
+          @if (explainable(r)) {
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              (click)="toggle(r.recoveryId)"
+              [attr.aria-expanded]="expandedIds().has(r.recoveryId)"
+              [attr.aria-label]="'Show details of recovery ' + r.recoveryId"
+            >
+              <nx-icon
+                [name]="
+                  expandedIds().has(r.recoveryId) ? 'chevron-down-small' : 'chevron-right-small'
+                "
+              ></nx-icon>
+            </button>
+          }
+        </td>
+        <td nxCell>{{ r.recoveryId || '—' }}</td>
+        <td nxCell>{{ r.bookingId }}</td>
+        <td nxCell>{{ r.recoveryType }}</td>
+        <td nxCell>{{ r.section }}</td>
+        <td nxCell class="rbt__right">
+          {{ r.amount | currency: currency() : 'symbol' : '1.0-0' }}
+        </td>
+        <td nxCell>{{ r.currency }}</td>
+        <td nxCell>
+          <app-booking-status-pill
+            [approvalStatus]="r.status"
+            [booking]="r.bookingStatus"
+          ></app-booking-status-pill>
+        </td>
+        <td nxCell>{{ r.party || '—' }}</td>
+        <td nxCell class="rbt__nowrap">{{ r.bookingDate }}</td>
+      </tr>
+      @if (expandedIds().has(r.recoveryId) && explainable(r)) {
+        <tr nxTableRow class="rbt__detail">
+          <td nxCell [attr.colspan]="10">
+            <app-booking-explanation-panel
+              [claimId]="claimId()"
+              kind="recovery"
+              [itemId]="r.recoveryId"
+              [approvalStatus]="r.status"
+              [item]="r"
+              [summary]="summary(r)"
+            ></app-booking-explanation-panel>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>

@@ -1,8 +1,8 @@
-.bip {
+.bep {
   padding: var(--space-md) var(--space-base) var(--space-base);
 }
 
-.bip__title {
+.bep__title {
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-muted);
@@ -11,16 +11,25 @@
   letter-spacing: 0.04em;
 }
 
-.bip__reason,
-.bip__owner {
+.bep__line,
+.bep__hint {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
   margin: 0 0 4px;
 }
 
-.bip__owner a {
+.bep__line a {
   margin-left: 4px;
   color: var(--interactive-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.bep__actions {
+  margin-top: var(--space-md);
+}
+
+.bep__hint {
+  margin-top: var(--space-sm);
+  color: var(--text-muted);
 }

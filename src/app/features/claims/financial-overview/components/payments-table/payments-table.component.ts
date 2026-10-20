@@ -5,7 +5,8 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { FinancialPayment } from '../../../../../core/models/financial-overview.model';
 import { BookingStatusPillComponent } from '../../../../../shared/components/booking-status-pill/booking-status-pill.component';
-import { BookingIssuePanelComponent } from '../booking-issue-panel/booking-issue-panel.component';
+import { BookingExplanationPanelComponent } from '../../../../../shared/components/booking-explanation-panel/booking-explanation-panel.component';
+import { statusExplanation } from '../../../../../core/models/gg-booking.model';
 
 @Component({
   selector: 'app-fo-payments-table',
@@ -16,7 +17,7 @@ import { BookingIssuePanelComponent } from '../booking-issue-panel/booking-issue
     NxIconModule,
     NxButtonModule,
     BookingStatusPillComponent,
-    BookingIssuePanelComponent
+    BookingExplanationPanelComponent
   ],
   templateUrl: './payments-table.component.html',
   styleUrl: '../fo-table-shared.scss'
@@ -24,18 +25,30 @@ import { BookingIssuePanelComponent } from '../booking-issue-panel/booking-issue
 export class PaymentsTableComponent implements OnInit {
   readonly rows = input.required<FinancialPayment[]>();
   readonly currency = input('EUR');
-  /** Payment to show expanded on first render (link from a task). */
-  readonly openId = input<string | null>(null);
+  readonly claimId = input.required<string>();
+  /** Payment to show expanded on first render (DEV banner, task link). */
+  readonly expandId = input<string | null>(null);
+  /** Payment to highlight (just submitted). */
+  readonly highlightId = input<string | null>(null);
 
   readonly expandedIds = signal<Set<string>>(new Set());
 
   ngOnInit(): void {
-    const id = this.openId();
+    const id = this.expandId();
     if (id) this.expandedIds.set(new Set([id]));
   }
 
-  needsFixing(p: FinancialPayment): boolean {
-    return p.bookingStatus === 'needs-fixing' && !!p.bookingIssue;
+  explainable(p: FinancialPayment): boolean {
+    return statusExplanation(p.status, p, 'payment') !== null;
+  }
+
+  summary(p: FinancialPayment): string {
+    return [
+      `Payment ${p.paymentId}`,
+      p.payee,
+      `${p.currency} ${p.amount.toLocaleString('en-US')}`,
+      p.sectionType
+    ].join(' · ');
   }
 
   toggle(id: string): void {

@@ -15,15 +15,19 @@
   </thead>
   <tbody>
     @for (p of rows(); track p.paymentId) {
-      <tr nxTableRow>
+      <tr
+        nxTableRow
+        [attr.data-row-id]="p.paymentId"
+        [class.fo-row--highlight]="p.paymentId === highlightId()"
+      >
         <td nxCell class="fo-col--expand">
-          @if (needsFixing(p)) {
+          @if (explainable(p)) {
             <button
               nxIconButton="tertiary small"
               type="button"
               (click)="toggle(p.paymentId)"
               [attr.aria-expanded]="expandedIds().has(p.paymentId)"
-              [attr.aria-label]="'Show why payment ' + p.paymentId + ' needs fixing'"
+              [attr.aria-label]="'Show details of payment ' + p.paymentId"
             >
               <nx-icon
                 [name]="
@@ -49,10 +53,17 @@
         <td nxCell>{{ p.currency }}</td>
         <td nxCell class="fo-cell--nowrap">{{ p.paymentDate }}</td>
       </tr>
-      @if (expandedIds().has(p.paymentId) && p.bookingIssue; as issue) {
+      @if (expandedIds().has(p.paymentId) && explainable(p)) {
         <tr nxTableRow class="fo-history-row">
           <td nxCell [attr.colspan]="9">
-            <app-booking-issue-panel [issue]="issue"></app-booking-issue-panel>
+            <app-booking-explanation-panel
+              [claimId]="claimId()"
+              kind="payment"
+              [itemId]="p.paymentId"
+              [approvalStatus]="p.status"
+              [item]="p"
+              [summary]="summary(p)"
+            ></app-booking-explanation-panel>
           </td>
         </tr>
       }

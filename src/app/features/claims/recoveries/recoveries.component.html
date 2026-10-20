@@ -146,5 +146,18 @@
         </tbody>
       </table>
     }
+
+    @if (postings().length > 0) {
+      <h2 class="rec-postings-title">Recovery postings</h2>
+      <p class="rec-postings-hint">
+        Money booked against recoveries. The same list is under Financial &gt; Recovery bookings.
+      </p>
+      <app-recovery-bookings-table
+        [claimId]="claimId"
+        [rows]="postings()"
+        [currency]="currency()"
+        [expandId]="expandId"
+      />
+    }
   }
 </div>

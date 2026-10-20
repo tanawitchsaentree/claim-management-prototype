@@ -1,0 +1,36 @@
+.fo-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: var(--layout-inset-base);
+}
+
+.fo-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-md) var(--space-md);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 4px;
+}
+
+.fo-kpi-label {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.fo-kpi-value {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  line-height: 1.3;
+}
+
+.fo-section-heading {
+  font-size: var(--heading-06-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 12px;
+}

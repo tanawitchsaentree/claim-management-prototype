@@ -1,0 +1,30 @@
+@if (explanation(); as e) {
+  <div class="bep">
+    <p class="bep__title">{{ e.heading }}</p>
+    @for (line of e.lines; track line) {
+      <p class="bep__line">{{ line }}</p>
+    }
+    @if (e.whoActs === 'you') {
+      <p class="bep__line">
+        <strong>You</strong> need to act on this.
+        @if (taskId(); as id) {
+          <a [routerLink]="['/tasks']" [queryParams]="{ task: id }"
+            >See the task that tells you what to do</a
+          >
+        }
+      </p>
+    } @else if (whoLine(); as who) {
+      <p class="bep__line">{{ who }}</p>
+    }
+    @if (sendAgain()) {
+      <div class="bep__actions">
+        <button nxButton="secondary small" type="button" (click)="onSendAgain()">
+          Send again to Global Genius
+        </button>
+        @if (e.sendAgainHint) {
+          <p class="bep__hint">{{ e.sendAgainHint }}</p>
+        }
+      </div>
+    }
+  </div>
+}
