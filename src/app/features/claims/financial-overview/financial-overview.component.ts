@@ -226,9 +226,7 @@ export class FinancialOverviewComponent implements OnInit {
   }
 
   // &expand / &highlight scroll to the row; &addReserve=1 opens Add reserve
-  // (prefill: &amount &currency &section). The DEV banner closes its own modal in
-  // the same tick it navigates here; a second modal opened straight away crashed
-  // the page (focus handed back and forth), so let the first one leave.
+  // (prefill: &amount &currency &section).
   private landOn(p: ParamMap): void {
     const id = p.get('expand') ?? p.get('open') ?? p.get('highlight');
     if (id) scrollToRow(id);
@@ -239,7 +237,7 @@ export class FinancialOverviewComponent implements OnInit {
       currency: p.get('currency') ?? undefined,
       section: p.get('section') ?? undefined
     };
-    setTimeout(() => void this.onAddReserve(prefill), 600);
+    void this.onAddReserve(prefill);
   }
 
   private async loadNoReserveReason(claimId: string): Promise<void> {
