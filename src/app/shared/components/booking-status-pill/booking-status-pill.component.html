@@ -1,1 +1,6 @@
-<app-status-chip [status]="chip()" domain="claim" [label]="shown().label"></app-status-chip>
+<span class="bsp">
+  <app-status-chip [status]="chip()" domain="claim" [label]="shown().label"></app-status-chip>
+  @if (needsYou()) {
+    <span class="bsp__needs">Needs you</span>
+  }
+</span>

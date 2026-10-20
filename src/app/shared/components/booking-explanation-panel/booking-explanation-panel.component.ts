@@ -6,10 +6,8 @@ import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { Bookable, canSendAgain, statusExplanation } from '../../../core/models/gg-booking.model';
 import { BookableKind, MockBookingService } from '../../../core/mock/services/mock-booking.service';
 import { ToastService } from '../toast/toast.service';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData
-} from '../confirm-dialog/confirm-dialog.component';
+import { BookingLandingToastService } from '../../utils/booking-landing-toast.service';
+import { SendAgainDialogComponent, SendAgainDialogData } from './send-again-dialog.component';
 
 const WHO_LINE: Record<'finance' | 'approver' | 'nobody', string> = {
   finance: 'The Finance team is fixing it. There is nothing for you to do.',
@@ -35,6 +33,7 @@ export class BookingExplanationPanelComponent {
   private readonly dialog = inject(NxDialogService);
   private readonly booking = inject(MockBookingService);
   private readonly toast = inject(ToastService);
+  private readonly landing = inject(BookingLandingToastService);
 
   readonly claimId = input.required<string>();
   readonly kind = input.required<BookableKind>();
@@ -52,23 +51,25 @@ export class BookingExplanationPanelComponent {
     return who && who !== 'you' ? WHO_LINE[who] : null;
   });
   readonly sendAgain = computed(() => canSendAgain(this.item()));
+  readonly canResubmit = computed(() => this.kind() === 'payment' && this.approvalStatus() === 'Requires amendment');
   readonly taskId = computed(() => this.item().bookingIssue?.taskId);
 
   async onSendAgain(): Promise<void> {
     const noun = this.kind();
     const outcome = noun === 'payment' ? "won't be paid twice" : "won't be booked twice";
-    const ref = this.dialog.open(ConfirmDialogComponent, {
+    const ref = this.dialog.open(SendAgainDialogComponent, {
       data: {
         title: `Send this ${noun} to Global Genius again?`,
         message: `${this.summary()}. This sends the same ${noun} again. It is not a new ${noun} and ${outcome}.`,
-        confirmLabel: 'Send again'
-      } satisfies ConfirmDialogData,
+        confirmFixed: this.explanation()?.confirmFixed
+      } satisfies SendAgainDialogData,
       width: '480px',
       maxWidth: '92vw'
     });
     if (await firstValueFrom(ref.afterClosed())) {
       this.booking.sendItemAgain(this.claimId(), noun, this.itemId());
-      this.toast.success('Sent again', "We'll let you know when it's booked.");
+      this.toast.info('Sent again', "We'll let you know when it's booked.");
+      this.landing.watch(this.claimId(), noun, this.itemId());
     }
   }
 }

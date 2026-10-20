@@ -45,7 +45,7 @@
   @if (view() === 'overview') {
     @if (level() === 'claim') {
       @if (notBooked(); as nb) {
-        @if (nb.total > 0 || nb.sentBack.total > 0) {
+        @if (nb.total > 0 || nb.sentBack.total > 0 || nb.rejected.total > 0) {
           <nx-message context="warning" class="fo-not-booked">
             @if (nb.total > 0) {
               {{ nb.total }} {{ nb.total === 1 ? "item couldn't" : "items couldn't" }} be booked:
@@ -55,8 +55,13 @@
               @if (nb.withFinance.total > 0) {
                 {{ nb.withFinance.total }} with the Finance team (<ng-container *ngTemplateOutlet="links; context: { g: nb.withFinance }"></ng-container>)}.
             }
-            @if (nb.sentBack.total > 0) {
-              {{ nb.sentBack.total }} sent back by the approver (<ng-container *ngTemplateOutlet="links; context: { g: nb.sentBack }"></ng-container>).
+            @if (nb.sentBack.total > 0 || nb.rejected.total > 0) {
+              Also needs you:
+              @if (nb.sentBack.total > 0) {
+                {{ nb.sentBack.total }} sent back by the approver (<ng-container *ngTemplateOutlet="links; context: { g: nb.sentBack }"></ng-container>)@if (nb.rejected.total > 0) {,}
+              }
+              @if (nb.rejected.total > 0) {
+                {{ nb.rejected.total }} rejected (<ng-container *ngTemplateOutlet="links; context: { g: nb.rejected }"></ng-container>)}.
             }
           </nx-message>
         }

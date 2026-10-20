@@ -1,0 +1,13 @@
+.bsp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// Small flag next to the pill: this row waits for the handler.
+.bsp__needs {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--claim-status-reopened-color);
+}

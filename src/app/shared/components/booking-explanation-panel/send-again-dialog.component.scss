@@ -1,0 +1,61 @@
+@use '../../styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.cd-header {
+  @include modal.header;
+}
+
+.cd-header-row {
+  @include modal.header-row;
+}
+
+// Warning-tinted circle behind the icon — same token pair already used for
+// warning icons in claims-list.component.scss / claim-reference-panel.component.scss,
+// not a new color introduced here.
+.cd-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--warning-01, #fef3e2);
+  color: var(--warning);
+
+  nx-icon {
+    font-size: 16px;
+  }
+}
+
+.cd-title {
+  @include modal.title;
+}
+
+.cd-body {
+  @include modal.body;
+}
+
+.cd-message {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+  line-height: 1.5;
+}
+
+.cd-footer {
+  @include modal.footer;
+}
+
+.cd-btn--danger {
+  background: var(--message-error-border-color) !important;
+  border-color: var(--message-error-border-color) !important;
+}
+
+.sad-fixed {
+  display: block;
+  margin-top: var(--space-md);
+}

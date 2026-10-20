@@ -61,16 +61,16 @@
     }
 
     @if (rows().length === 0) {
-      <app-empty-state
-        message="No recovery case has been set up yet."
-        [hint]="
-          postings().length > 0
-            ? 'Recovery postings on this claim are listed below. Use “Create recovery case” to record who is being pursued, on what basis, and for how much.'
-            : 'Use “Create recovery case” to record who is being pursued, on what basis, and for how much.'
-        "
-        icon="file-arrow"
-      >
-      </app-empty-state>
+      @if (postings().length > 0) {
+        <p class="rec-no-cases">No recovery case has been set up yet. Recovery postings on this claim are listed below.</p>
+      } @else {
+        <app-empty-state
+          message="No recovery case has been set up yet."
+          hint="Use “Create recovery case” to record who is being pursued, on what basis, and for how much."
+          icon="file-arrow"
+        >
+        </app-empty-state>
+      }
     } @else {
       <table nxTable class="rec-table" data-tour-id="rec-table">
         <thead>

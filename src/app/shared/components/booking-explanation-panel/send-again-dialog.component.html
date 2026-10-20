@@ -1,0 +1,25 @@
+<div class="cd-header">
+  <div class="cd-header-row">
+    <span class="cd-icon" aria-hidden="true">
+      <nx-icon name="exclamation-triangle-o"></nx-icon>
+    </span>
+    <h2 class="cd-title">{{ data.title }}</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+</div>
+
+<div class="cd-body" tabindex="0">
+  <p class="cd-message">{{ data.message }}</p>
+  @if (data.confirmFixed; as label) {
+    <nx-checkbox class="sad-fixed" [formControl]="fixed">{{ label }}</nx-checkbox>
+  }
+</div>
+
+<div class="cd-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="!canSend" (click)="onConfirm()">
+    Send again
+  </button>
+</div>

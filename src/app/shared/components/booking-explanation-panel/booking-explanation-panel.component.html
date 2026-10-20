@@ -16,6 +16,16 @@
     } @else if (whoLine(); as who) {
       <p class="bep__line">{{ who }}</p>
     }
+    @if (canResubmit()) {
+      <div class="bep__actions">
+        <a
+          nxButton="primary small"
+          [routerLink]="['/claims', claimId(), 'financial', 'new-payment']"
+          [queryParams]="{ edit: itemId() }"
+          >Change and resubmit</a
+        >
+      </div>
+    }
     @if (sendAgain()) {
       <div class="bep__actions">
         <button nxButton="secondary small" type="button" (click)="onSendAgain()">
