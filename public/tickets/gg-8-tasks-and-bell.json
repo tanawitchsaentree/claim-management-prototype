@@ -63,7 +63,8 @@
                 "status": "Draft",
                 "amount": 4200,
                 "currency": "EUR",
-                "paymentDate": "14-10-2026"
+                "paymentDate": "14-10-2026",
+                "sectionId": "S2"
               },
               {
                 "paymentId": "123456-7",
@@ -75,7 +76,8 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse.",
+                "sectionId": "S1"
               },
               {
                 "paymentId": "123456-8",
@@ -87,7 +89,8 @@
                 "amount": 12500,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "bookingStatus": "delayed"
+                "bookingStatus": "delayed",
+                "sectionId": "S1"
               },
               {
                 "paymentId": "123456-9",
@@ -106,7 +109,8 @@
                   "cause": "data-mismatch",
                   "attempts": 1,
                   "demoResendOutcome": "fails-again"
-                }
+                },
+                "sectionId": "S2"
               },
               {
                 "paymentId": "123456-10",
@@ -125,7 +129,8 @@
                   "cause": "gg-unavailable",
                   "attempts": 1,
                   "demoResendOutcome": "booked"
-                }
+                },
+                "sectionId": "S1"
               },
               {
                 "paymentId": "123456-11",
@@ -144,7 +149,8 @@
                   "cause": "gg-unavailable",
                   "attempts": 1,
                   "demoResendOutcome": "fails-again"
-                }
+                },
+                "sectionId": "S2"
               }
             ],
             "reserves": {
@@ -278,7 +284,8 @@
                 "status": "Draft",
                 "amount": 4200,
                 "currency": "EUR",
-                "paymentDate": "14-10-2026"
+                "paymentDate": "14-10-2026",
+                "sectionId": "S2"
               },
               {
                 "paymentId": "123456-7",
@@ -290,7 +297,8 @@
                 "amount": 18000,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse."
+                "approvalNote": "Approver: the policy doesn't cover contents stored outside the insured warehouse.",
+                "sectionId": "S1"
               },
               {
                 "paymentId": "123456-8",
@@ -302,7 +310,8 @@
                 "amount": 12500,
                 "currency": "EUR",
                 "paymentDate": "14-10-2026",
-                "bookingStatus": "delayed"
+                "bookingStatus": "delayed",
+                "sectionId": "S1"
               },
               {
                 "paymentId": "123456-9",
@@ -321,7 +330,8 @@
                   "cause": "data-mismatch",
                   "attempts": 1,
                   "demoResendOutcome": "fails-again"
-                }
+                },
+                "sectionId": "S2"
               },
               {
                 "paymentId": "123456-10",
@@ -340,7 +350,8 @@
                   "cause": "gg-unavailable",
                   "attempts": 1,
                   "demoResendOutcome": "booked"
-                }
+                },
+                "sectionId": "S1"
               },
               {
                 "paymentId": "123456-11",
@@ -359,7 +370,8 @@
                   "cause": "gg-unavailable",
                   "attempts": 1,
                   "demoResendOutcome": "fails-again"
-                }
+                },
+                "sectionId": "S2"
               }
             ],
             "reserves": {
