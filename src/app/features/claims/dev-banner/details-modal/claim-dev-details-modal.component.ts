@@ -173,7 +173,13 @@ export class ClaimDevDetailsModalComponent implements OnInit {
     await this.data.helper.applyAC(ac.id);
     console.log('[onApply] applyAC done; navigating to', ac.howToTest.route);
     this.data.helper.clearMinimized();
+    // Wait until this modal has fully closed before navigating: AC routes can
+    // open a modal of their own (?confirm=1, ?addReserve=1), and opening it
+    // while this one was still closing crashed the tab (two focus traps
+    // handing focus back and forth).
+    const closed = firstValueFrom(this.modalRef.afterClosed());
     this.modalRef.close();
+    await closed;
     const ok = await this.router.navigateByUrl(ac.howToTest.route);
     console.log('[onApply] navigate result:', ok);
     await this.data.helper.runPostLandFor(ac.id);
