@@ -4,6 +4,17 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-10-20 — GG-BOOKING-STATES (Global Genius booking, epic BMPCC-18348)
+
+- **Source:** Jira BMPCC-18348 (epic), FE stories BMPCC-19168 / 19169 / 19170 (reserve / payment / recovery status + error), BMPCC-20232 (claim-level GG acknowledgement), 19412 (skip when no GG policy), 21754 (unpaid premium), 20953 (limit breach redesign), UX story 18282; Bernd Moser's ADR "Claims Handover Domain — Booking Integration to Global Genius via BIH"; Nidhi Goel's "Payment Split - Handover Domain" (PROPOSED). Built on user instruction in conversation, split across three sessions: orchestrator (data/presets/ticket), Builder A claim-management-4f (money lists, summary line, Task manager), Builder B claim-management-ea (Make payment page, shared warning list, Add reserve, Claim Overview banner).
+- **Ticket:** `public/tickets/gg-booking-states.json`, 17 ACs, all `done`, targets CLM-2024-001. Seed data untouched: every GG state comes from `stateOverrides` (new `financialPatch` + `tasksAppend`, schema v2.3, applied in `core/mock/state/apply-financial-overrides.ts` because `mock-state.service.ts` is already over the size limit).
+- **DESIGN DECISION GG-1 (no Retry button)** is the current build. The PO has since asked for a handler re-trigger on failed postings; the user has not yet decided whether to switch. If adopted it is additive (button on Needs fixing rows + claim banner), see `gg-booking.model.ts`.
+- **Accepted deviations (in the ticket):** AC-04 reserve reason lives in the History row; AC-10 Make payment has only the fields the checks need; AC-11 "queued until the claim is ready" assumes Handover can hold items (no story confirms).
+- **Audit fix:** `audit-prototype-links.mjs` now strips `?query`/`#hash` before matching a route; verified it still flags a mistyped path.
+- **Known data quirk, left alone:** Make payment / Add reserve section lists show the seeded S1/S2 sections next to the synced real ones (Business Interruption twice). Pre-existing `syncSections` behaviour; closure checks depend on those ids.
+
+---
+
 ## 2026-09-17 — BMPCC-18353 (CBI Extension) relocated to FNOL; BMPCC-18822 (Trade Sanctions Check) built on Claim Overview
 
 - **Source:** Confluence functional design pages fetched live this session — "Claims Commercial - Baseline - CBI Extension - Functional Design (BMPCC-17927)" (v19, 2026-09-15) and "...Trade Sanctions Check - Functional Design (BMPCC-17242)" (v3, 2026-09-09) — plus "PI 2026.4 - UI/UX Alignment Open Points". BMPCC-18353 is user-assigned (Saentree, Tanawitch); user directed the build in conversation after reviewing the design plan.
