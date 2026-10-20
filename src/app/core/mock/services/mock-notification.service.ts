@@ -67,7 +67,14 @@ export class MockNotificationService {
     return out;
   });
 
-  readonly all = computed(() => [...this.live(), ...this.events()]);
+  // A "now booked" event is dropped while the same item is failing again
+  // (review round 4: the bell showed one payment as both needs-you and done).
+  readonly all = computed(() => {
+    const live = this.live();
+    const failing = new Set(live.map(n => n.id.replace(/^(item|claim)-/, '')));
+    const events = this.events().filter(e => !failing.has(e.id.replace(/^(booked|claim-ready)-/, '')));
+    return [...live, ...events];
+  });
   readonly actionCount = computed(() => this.live().filter(n => n.tone === 'action').length);
 
   push(n: AppNotification): void {

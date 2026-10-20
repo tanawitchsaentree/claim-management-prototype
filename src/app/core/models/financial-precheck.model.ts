@@ -26,6 +26,8 @@ export interface PreCheck {
   body: string;
   // Limit breach: submit allowed only with a reason, captured next to the warning.
   needsReason?: boolean;
+  // Not a problem, but Submit waits (a claim retry in flight).
+  holdsSubmit?: boolean;
   action?: { kind: PreCheckAction; label: string };
   // Usability review: with an outside block (claim not in GG, unpaid premium)
   // fixing anything else first is wasted effort. These render after the
@@ -88,9 +90,12 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
   if (input.ggRegistration === 'registering' && input.ggResendInFlight) {
     // Review round 3: after Retry the box fell back to the new-claim wording
     // and Submit came back on before anyone knew whether the retry worked.
+    // Same blue look as the Claim Overview "Retrying" banner (review round 4:
+    // red here read as "failed again"), but Submit stays held until it lands.
     out.push({
-      id: 'claim-not-in-gg',
-      level: 'block',
+      id: 'claim-registering',
+      level: 'warn',
+      holdsSubmit: true,
       title: 'Retrying: setting up this claim in Global Genius',
       body: 'This usually takes a few seconds. You can submit as soon as it works; your details are kept.'
     });
@@ -155,5 +160,5 @@ export function financialPreChecks(input: PreCheckInput): PreCheck[] {
 }
 
 export function preChecksBlockSubmit(checks: PreCheck[]): boolean {
-  return checks.some(c => c.level === 'block');
+  return checks.some(c => c.level === 'block' || c.holdsSubmit);
 }

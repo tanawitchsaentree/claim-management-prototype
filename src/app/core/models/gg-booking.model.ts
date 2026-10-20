@@ -35,6 +35,8 @@ export interface BookingIssue {
   cause?: BookingFailureCause;
   // Task created for the handler when owner === 'handler'.
   taskId?: string;
+  // What the handler has to correct, for the confirm tick ("the bank details").
+  fixWhat?: string;
   // How many times it has been sent (1 = only the original send).
   attempts?: number;
   // PROTOTYPE ONLY: what the mock does when "Send again" is pressed, so the
@@ -50,6 +52,10 @@ export interface Bookable {
   bookingIssue?: BookingIssue;
   // Approval side: why it was rejected / sent back (shown in the expand row).
   approvalNote?: string;
+  // Rejected: the handler has dealt with it (told the payee / challenged it).
+  rejectionHandled?: boolean;
+  // Handler's note to the approver when resubmitting a sent-back payment.
+  resubmitNote?: string;
 }
 
 /**
@@ -140,7 +146,8 @@ export function canSendAgain(item: Bookable): boolean {
  */
 export function needsHandler(approvalStatus: string, item: Bookable): boolean {
   // Rejected included (review round 3): final, but the handler has to close it.
-  if (approvalStatus === 'Requires amendment' || approvalStatus === 'Rejected') return true;
+  if (approvalStatus === 'Requires amendment') return true;
+  if (approvalStatus === 'Rejected') return !item.rejectionHandled;
   return HANDED_TO_GG.has(approvalStatus) && canSendAgain(item);
 }
 
@@ -177,8 +184,11 @@ export function statusExplanation(
   const notOut = noun === 'payment' ? 'No money has been paid out.' : 'It is not in the books yet.';
   if (approvalStatus === 'Requires amendment') {
     return {
-      heading: 'Requires amendment: sent back to you by the approver',
-      lines: [item.approvalNote ?? 'The approver asked for changes.', `Change the ${noun} and submit it again.`],
+      heading: 'Requires amendment',
+      lines: [
+        item.approvalNote ?? 'The approver asked for changes.',
+        `The approver sent it back to you. Change the ${noun} and resubmit it.`
+      ],
       whoActs: 'you'
     };
   }
@@ -192,9 +202,11 @@ export function statusExplanation(
       heading: 'Rejected by the approver',
       lines: [
         item.approvalNote ?? 'No reason was given.',
-        `Nothing was paid. Let the payee know, or talk to the approver if you think it's wrong.`
+        item.rejectionHandled
+          ? 'Nothing was paid. You marked this as dealt with.'
+          : `Nothing was paid. Let the payee know, or talk to the approver if you think it's wrong, then mark it as dealt with.`
       ],
-      whoActs: 'you'
+      whoActs: item.rejectionHandled ? 'nobody' : 'you'
     };
   }
   if (!handed) return null;
@@ -209,7 +221,7 @@ export function statusExplanation(
       };
     case 'delayed':
       return {
-        heading: 'Taking longer than usual',
+        heading: 'Booking delayed: taking longer than usual',
         lines: [
           `Global Genius hasn't answered yet. The system keeps trying on its own.`,
           `Nothing has gone wrong yet. If it fails, we'll tell you.`
@@ -239,7 +251,8 @@ export function statusExplanation(
         whoActs: 'you',
         // Data the handler must correct first: the confirm step asks them to
         // say they did (review round 3: Send again before fixing = a trap).
-        confirmFixed: issue?.cause === 'data-mismatch' ? "I've corrected it" : undefined,
+        confirmFixed:
+          issue?.cause === 'data-mismatch' ? `I've corrected ${issue.fixWhat ?? 'it'}` : undefined,
         sendAgainHint:
           issue?.cause === 'gg-unavailable'
             ? 'Global Genius was unavailable. You can send it again now.'
