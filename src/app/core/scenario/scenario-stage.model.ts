@@ -5,6 +5,10 @@ export type StagePage = 'overview' | 'sections' | 'fnol-loss-info';
 export type ClosureReason = 'Claim Finalised' | 'Claim Not Pursued' | 'Claim Rejected';
 
 export type PostLandHook =
+  // Lands on the AC's route and does nothing else. Stops the ticket-level
+  // tour from opening over a page that the route already put in its state
+  // (GG booking tickets: the tour covered the expanded row it described).
+  | { kind: 'none' }
   | { kind: 'tour.start'; steps: TourStep[] }
   | { kind: 'overview.openClosureModal' }
   | { kind: 'overview.confirmClosure'; reason: ClosureReason }

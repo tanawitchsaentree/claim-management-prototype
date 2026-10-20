@@ -87,6 +87,8 @@ export class ScenarioStageService {
 
   private async execute(hook: PostLandHook, claimId?: string): Promise<void> {
     switch (hook.kind) {
+      case 'none':
+        return;
       case 'tour.start': {
         // No Stage lookup needed — TourService is a root singleton, always
         // available, and the step data travels with the hook itself.

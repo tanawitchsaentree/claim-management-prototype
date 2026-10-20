@@ -204,7 +204,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Every status once: Draft, Pending, Requires amendment, Rejected, Booking in progress, Booking delayed, Booked, Couldn't be booked. A \"Needs you\" count above the list.",
@@ -414,7 +419,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Why it failed, \"No money has been paid out\", you need to act, link to the task, and **Send again to Global Genius** with \"once you've fixed it\" advice.",
@@ -624,7 +634,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Global Genius was unavailable, you can send it again now.",
@@ -834,7 +849,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Same as AC-03.",
@@ -1044,7 +1064,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Finance is fixing it. Send again is there but the advice says only press it if Finance asks you to.",
@@ -1254,7 +1279,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Taking longer than usual, the system keeps trying, nothing has gone wrong yet. No Send again (it's still in flight).",
@@ -1464,7 +1494,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "The approver's note and what to do (change it and submit again). Looks different from a booking failure.",
@@ -1674,7 +1709,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Rejected, with the approver's reason and \"Nothing was paid\".",
@@ -1743,7 +1783,12 @@
               }
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Approved payments show Waiting for claim; the blue claim banner is on top.",

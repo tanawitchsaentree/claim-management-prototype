@@ -27,7 +27,12 @@
             "hint": "Reserves with Add reserve open, EUR 900,000 on Business Interruption."
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
@@ -64,7 +69,12 @@
               "ggRegistration": "registering"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Blue note: the reserve is booked once the claim is ready.",
@@ -97,7 +107,12 @@
             "hint": "Reserves with Add reserve open in USD (what Make payment AC-05 leads to)."
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Currency already USD.",

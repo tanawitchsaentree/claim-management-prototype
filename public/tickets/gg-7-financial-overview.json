@@ -203,7 +203,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "One line: how many couldn't be booked, split into \"needs you\" and \"Finance is fixing\", each a link.",
@@ -245,7 +250,12 @@
               "ggResendOutcome": "registered"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "The same red claim banner as Claim Overview, with Send claim again.",

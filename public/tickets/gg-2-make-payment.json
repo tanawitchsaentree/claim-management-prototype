@@ -28,7 +28,12 @@
             "hint": "Press Submit: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted."
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "No warnings. Submit is enabled.",
@@ -58,7 +63,12 @@
             "hint": "Make payment with the confirm dialog already open."
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Confirm dialog: section, payee, amount, currency, \"goes to your approver, then booked in Global Genius automatically\". No warning icon.",
@@ -96,7 +106,12 @@
               "ggResendOutcome": "registered"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Red block at the top, Submit disabled, with a **Send claim to Global Genius again** button.",
@@ -136,7 +151,12 @@
               "ggRegistration": "registering"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Blue note: once submitted it is booked when the claim is ready. Submit enabled.",
@@ -169,7 +189,12 @@
             "hint": "Press Add a USD reserve: Reserves opens with Add reserve already open in USD."
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Red block: there's no USD reserve, with an **Add a USD reserve** button (or change the currency).",
@@ -199,7 +224,12 @@
             "hint": "Press Submit without a reason: the reason field shows an error."
           }
         ],
-        "stateOverrides": {}
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Amber warning inside the page (no full-screen modal) with the amount left on the limit in EUR and a reason field.",
@@ -236,7 +266,12 @@
               "premiumOutstanding": true
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Red block: unpaid premium, payments can't be made, we'll let you know when it's paid. Submit disabled.",
@@ -276,7 +311,12 @@
               "premiumOutstanding": true
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Amber warning: check with the underwriter. Submit enabled. The preview switch is labelled as a prototype preview.",
@@ -317,7 +357,12 @@
               "premiumOutstanding": true
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Unpaid premium first. The USD and set-up messages sit under **\"Once that's sorted\"**, quieter.",

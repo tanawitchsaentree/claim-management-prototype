@@ -36,7 +36,12 @@
               "ggResendOutcome": "registered"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.",
@@ -77,7 +82,12 @@
               "ggResendOutcome": "fails-again"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Same red banner as AC-01.",
@@ -117,7 +127,12 @@
               "ggRegistration": "policy-missing"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy).",
@@ -157,7 +172,12 @@
               "ggRegistration": "registering"
             }
           }
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Blue information banner: you can carry on, anything you submit is booked once the claim is ready.",

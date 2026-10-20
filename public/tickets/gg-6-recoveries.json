@@ -203,7 +203,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "REC-001 Booked, REC-002 Booking in progress, REC-003 Couldn't be booked.",
@@ -413,7 +418,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "Global Genius was unavailable, Send again.",
@@ -623,7 +633,12 @@
               "relatedItemId": "123456-4"
             }
           ]
-        }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
       },
       "expectedUI": {
         "description": "The same status and the same Send again as in Recovery bookings. Send it from one place and the other changes too.",
