@@ -185,10 +185,22 @@ export interface ClaimRegistrationMessage {
 }
 
 export function claimRegistrationMessage(
-  state: GgClaimRegistration | undefined
+  state: GgClaimRegistration | undefined,
+  // Times the handler already sent it again and it still failed.
+  resendFailures = 0
 ): ClaimRegistrationMessage | null {
   switch (state) {
     case 'failed':
+      // Usability review: after a failed resend the banner read exactly as
+      // before, so the handler couldn't tell their attempt had happened.
+      if (resendFailures > 0) {
+        return {
+          title: "Sent again, but the claim still couldn't be set up in Global Genius",
+          body: "Payments and reserves stay on hold. Finance have been told and are looking into it. You can try once more, or wait: we'll let you know when it's ready.",
+          severity: 'error',
+          canSendAgain: true
+        };
+      }
       return {
         title: "This claim isn't in Global Genius yet, so payments and reserves are on hold",
         body: "The claim couldn't be set up there. You can send it again now. Finance have been told, and we'll let you know when it's ready.",

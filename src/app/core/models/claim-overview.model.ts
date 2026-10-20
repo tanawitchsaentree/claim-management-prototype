@@ -170,6 +170,8 @@ export interface ClaimOverview {
   ggResendOutcome?: 'registered' | 'fails-again';
   // A claim "Send again" is waiting for GG's answer (lets a reload resolve it).
   ggResendInFlight?: boolean;
+  // How many times the handler has sent the claim again and it still failed.
+  ggResendFailures?: number;
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;

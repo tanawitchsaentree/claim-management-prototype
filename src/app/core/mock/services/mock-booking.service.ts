@@ -103,7 +103,8 @@ export class MockBookingService {
     const ok = (overview.ggResendOutcome ?? 'registered') === 'registered';
     this.stateSvc.patchOverview(claimId, {
       ggRegistration: ok ? 'registered' : 'failed',
-      ggResendInFlight: false
+      ggResendInFlight: false,
+      ggResendFailures: ok ? 0 : (overview.ggResendFailures ?? 0) + 1
     });
     if (ok) {
       this.notifySvc.push({

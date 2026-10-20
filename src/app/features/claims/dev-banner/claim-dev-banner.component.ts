@@ -159,7 +159,10 @@ export class ClaimDevBannerComponent implements OnInit {
 
   onReset(): void {
     this.helper.applyScenario({});
-    window.location.reload();
+    // Reload WITHOUT the query string: AC routes open dialogs from it
+    // (?confirm=1, ?addReserve=1), and a plain reload reopened them on top of
+    // this banner, so the next ticket couldn't be picked.
+    window.location.replace(window.location.pathname);
   }
 
   countByStatus(ticket: DevTicket, status: BuildStatus): number {
