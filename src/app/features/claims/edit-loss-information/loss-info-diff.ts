@@ -3,6 +3,8 @@ import {
   LossInformationFormValue
 } from '../../../core/models/loss-information.model';
 import { circumstanceLabel } from '../../fnol/config/circumstances';
+import { causeLabel } from '../../../core/models/cause-of-loss';
+import { LookupOption } from '../../../core/models/lookup.model';
 
 // Diff/impact vocabulary for the Edit claim details screen. Extracted from
 // edit-loss-information.component.ts (2026-09-02) — the component was 532
@@ -66,17 +68,32 @@ const BLANK_ORIGINAL = {
 
 type LocationsBag = { locations?: { displayName?: string }[] } | null;
 
+/** The lookups the page itself reads its labels from. */
+export interface DiffLabelSources {
+  causes: LookupOption[];
+  damages: LookupOption[];
+}
+
 export function computeLossInfoDiffs(
   original: LossInformation | null,
-  cur: LossInformationFormValue
+  cur: LossInformationFormValue,
+  labels: DiffLabelSources = { causes: [], damages: [] }
 ): LossInfoDiffField[] {
   const diffs: LossInfoDiffField[] = [];
 
-  const addIf = (label: string, o: unknown, n: unknown) => {
+  // Compared on the stored values, shown the way the page shows them: a handler
+  // reads "Material damage, Business interruption", not "material-damage, ...".
+  const addIf = (label: string, o: unknown, n: unknown, show: (v: string) => string = v => v) => {
     const os = o == null ? '' : String(o);
     const ns = n == null ? '' : String(n);
-    if (os !== ns) diffs.push({ label, original: os, updated: ns });
+    if (os !== ns) diffs.push({ label, original: show(os), updated: show(ns) });
   };
+  const showKeys = (options: LookupOption[]) => (joined: string) =>
+    joined
+      .split(', ')
+      .filter(Boolean)
+      .map(k => causeLabel(k, options))
+      .join(', ');
 
   const orig = original ?? BLANK_ORIGINAL;
 
@@ -95,11 +112,17 @@ export function computeLossInfoDiffs(
   );
 
   // General
-  addIf('Cause of loss', (orig.causeOfLoss ?? []).join(', '), (cur.causeOfLoss ?? []).join(', '));
+  addIf(
+    'Cause of loss',
+    (orig.causeOfLoss ?? []).join(', '),
+    (cur.causeOfLoss ?? []).join(', '),
+    showKeys(labels.causes)
+  );
   addIf(
     'Type of damages',
     (orig.typeOfDamage ?? []).join(', '),
-    (cur.typeOfDamage ?? []).join(', ')
+    (cur.typeOfDamage ?? []).join(', '),
+    showKeys(labels.damages)
   );
   // Deliberately NOT in IMPACT_LABELS — retyping the qualifier describes the
   // same cause more precisely, it doesn't re-point ClaimSection.damageType.

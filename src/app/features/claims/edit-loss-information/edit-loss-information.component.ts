@@ -423,7 +423,8 @@ export class EditLossInformationComponent implements OnInit {
   private computeDiffs(): LossInfoDiffField[] {
     return computeLossInfoDiffs(
       this.original(),
-      this.form.getRawValue() as unknown as LossInformationFormValue
+      this.form.getRawValue() as unknown as LossInformationFormValue,
+      { causes: this.lookupSvc.getCauseOfLossSync(), damages: this.lookupSvc.getTypeOfDamageSync() }
     );
   }
 
