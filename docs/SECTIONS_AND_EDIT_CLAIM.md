@@ -69,7 +69,7 @@ Result: after FNOL there is **no way in the UI to create a section**.
 ### What a handler can do on the Sections page
 
 - Section: rename, close (3-step modal), reopen (with a reason), make payment, instruct provider, add or view notes.
-- Entity: edit (instruction status, CBI), set or override coverage review (reason required), delete (blocked while the section has open reserves, payments, etc.), add note.
+- Entity: edit (instruction status, CBI), delete (blocked while the section has open reserves, payments, etc.), add note.
 - Cannot do: change the damage type, change the cause or location, add an entity or section.
 
 ### Closing
@@ -103,7 +103,7 @@ Fields Edit cannot change: CBI questions, events, parties. Edit has **no CBI con
 
 ### Sections to Edit (the reverse direction)
 
-Nothing on the Sections page writes to loss information or the overview. Closing, reopening, renaming, CBI edits and coverage review stay inside the section data. The only shared piece is circumstance, which Edit writes and Sections reads.
+Nothing on the Sections page writes to loss information or the overview. Closing, reopening, renaming and CBI edits stay inside the section data. Coverage review is not shown or edited on the Sections page any more (team call 2026-10-15: it will come from Promise data); the data field stays. The only shared piece is circumstance, which Edit writes and Sections reads.
 
 ---
 

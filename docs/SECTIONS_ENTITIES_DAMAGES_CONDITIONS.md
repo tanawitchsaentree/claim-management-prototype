@@ -132,7 +132,7 @@ After FNOL a handler **cannot**: add a section or entity, change a damage type, 
 ## 7. After the claim exists: every action
 
 **Section row:** Edit (opens panel), Mark as reviewed (only when flagged and Open), Make payment, Instruct provider, Add note, View notes, Simulate final payment, Close section, Reopen section (only when Closed). All disabled when the claim is Closed; payment, provider, simulate, close also disabled when the section is Closed.
-**Entity row:** View details, Edit (instruction status, CBI), Set/Override coverage review, Add note, Delete (blocked by any of the 7 section flags).
+**Entity row:** View details, Edit (instruction status, CBI), Add note, Delete (blocked by any of the 7 section flags).
 **Section panel:** rename (confirm; no activity logged; not propagated to Financial), read-only status, entity count, incident circumstance, closure/reopen details. **Entity panel:** read-only details; damaged items add/edit/delete are local and lost on navigation.
 
 **Blocker flags:** only `hasOpenReserves` is ever set by code; the other six are always false, so only reserves can block a section close. Closing needs: no open deductible, litigation, subrogation/salvage, reserves, payments, provider. Entities, damaged items and the Review-needed flag are not checked.

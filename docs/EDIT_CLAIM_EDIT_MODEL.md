@@ -24,7 +24,7 @@ Its weaknesses were real, and this change fixes them:
 
 1. **Nothing said which fields matter.** The confirm before saving now says it (fields named, open sections will be marked "Review needed"). A warning banner on the edit page and another on the Sections page were tried and removed on request: the persistent "Review needed" mark replaces both.
 2. **Confirm before saving did not say the consequence.** Now it names the fields and says the open sections will be marked.
-3. **The warning vanished.** "Stay on this page" left no trace anywhere. Now every open section gets a persistent **Review needed** mark (shown in the Coverage review column of the section row, with the changed fields in its tooltip) until a handler chooses **Mark as reviewed** (asks first, then toasts). The post-save prompt appears only when there is at least one open section to review, with "Later" / "Review sections".
+3. **The warning vanished.** "Stay on this page" left no trace anywhere. Now every open section gets a persistent **Review needed** mark (shown next to the section's status chip, with the changed fields in its tooltip; the Coverage review column is gone, 2026-10-21) until a handler chooses **Mark as reviewed** (asks first, then toasts). The post-save prompt appears only when there is at least one open section to review, with "Later" / "Review sections".
 4. **Copies of the facts went stale.** Edit now also updates the claim record (cause keys, loss date, description, location) and the overview location, and a change to the 2nd or later location now counts as a change.
 
 ## Not done, and why
