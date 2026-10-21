@@ -34,7 +34,7 @@
 .crm-badge {
   display: inline-block;
   padding: 1px var(--space-sm);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   background: var(--task-status-in-progress-bg);
   color: var(--task-status-in-progress-color);
   font-size: var(--paragraph-04-font-size);

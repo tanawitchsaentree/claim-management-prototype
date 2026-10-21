@@ -13,7 +13,7 @@
 
 .scm-recipient-badge {
   padding: 2px var(--space-sm);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   background: var(--claim-status-bound-bg);

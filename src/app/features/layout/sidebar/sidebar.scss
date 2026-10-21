@@ -189,6 +189,7 @@ $sidebar-collapsed-width: 56px;
 }
 
 .nav-item--child {
+  // theme-exempt: lines the child label up under the parent label (16 inset + 20 icon + 8 gap)
   padding-left: 44px;
   font-weight: 400;
   font-size: var(--paragraph-03-font-size);

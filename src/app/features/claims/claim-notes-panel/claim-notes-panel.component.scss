@@ -34,14 +34,14 @@
 .cnp__filter-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 
 .cnp__filter-chip {
   background: var(--ui-02);
   border: 1px solid transparent;
-  border-radius: 14px;
-  padding: var(--space-xs) 10px;
+  border-radius: var(--radius-pill);
+  padding: var(--space-xs) var(--space-ndbx-10);
   cursor: pointer;
   color: var(--text-muted);
   font-size: var(--paragraph-04-font-size);
@@ -129,7 +129,7 @@
 .cnp-add-form__field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 
 .cnp-add-form__label {
@@ -235,7 +235,7 @@
   gap: var(--space-xs);
   padding: var(--space-md) 0;
   border-bottom: 1px solid var(--ui-04);
-  border-radius: 6px;
+  border-radius: var(--radius-ndbx-6);
 
   &:last-child {
     border-bottom: none;
@@ -249,7 +249,7 @@
     left: -8px;
     right: -8px;
     bottom: -8px;
-    border-radius: 6px;
+    border-radius: var(--radius-ndbx-6);
     animation: note-flash 1.8s ease-out forwards;
     pointer-events: none;
     z-index: -1;
@@ -309,7 +309,7 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   padding: 1px var(--space-sm);
-  border-radius: 10px;
+  border-radius: var(--radius-chip);
   background: var(--ui-02);
   color: var(--text-muted);
 }

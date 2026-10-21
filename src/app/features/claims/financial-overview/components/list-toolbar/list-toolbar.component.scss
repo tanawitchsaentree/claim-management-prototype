@@ -15,7 +15,7 @@
 .lt__needs {
   padding: 2px var(--space-md);
   border: 1px solid var(--ui-04);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   background: var(--ui-01);
   color: var(--text-01);
   font: inherit;

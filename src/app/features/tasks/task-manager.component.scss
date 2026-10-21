@@ -9,7 +9,7 @@
 
 .tm-toggle {
   padding: var(--space-xs) var(--space-md);
-  border-radius: 16px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--ui-04);
   background: var(--ui-01);
   color: var(--text-01);
@@ -30,7 +30,7 @@
 
 .tm-status-tab {
   padding: var(--space-xs) var(--space-md);
-  border-radius: 16px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--ui-04);
   background: var(--ui-01);
   color: var(--text-01);

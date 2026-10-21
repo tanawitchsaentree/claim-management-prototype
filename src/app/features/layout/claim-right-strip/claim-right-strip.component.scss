@@ -45,7 +45,7 @@
   color: var(--text-02);
   font-size: var(--paragraph-04-font-size);
   font-weight: 700;
-  border-radius: 10px;
+  border-radius: var(--radius-chip);
   display: flex;
   align-items: center;
   justify-content: center;

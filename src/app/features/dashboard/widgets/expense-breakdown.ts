@@ -69,7 +69,7 @@ import { ProviderExpense } from '../../../core/models';
       .exp-list {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: var(--space-ndbx-10);
       }
       .exp-row {
         display: flex;

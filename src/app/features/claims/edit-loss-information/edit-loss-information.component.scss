@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: var(--space-ndbx-28);
 
   .eli-section-heading {
     margin-bottom: 0;
@@ -120,7 +120,7 @@
 // uncommitted while editing another one shouldn't shout for attention,
 // just quietly say it hasn't been saved yet.
 .eli-edited-tag {
-  margin-left: 6px;
+  margin-left: var(--space-ndbx-6);
   font-size: var(--paragraph-04-font-size);
   font-weight: 400;
   color: var(--text-muted);
@@ -166,7 +166,7 @@
 .eli-radio-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 .eli-radio-label {
   font-size: var(--paragraph-03-font-size);

@@ -98,7 +98,7 @@
   width: 300px;
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 6px;
+  border-radius: var(--radius-ndbx-6);
   box-shadow: 0 8px 24px var(--claim-overlay-shadow-heavy);
   overflow: hidden;
   font-size: var(--paragraph-03-font-size);

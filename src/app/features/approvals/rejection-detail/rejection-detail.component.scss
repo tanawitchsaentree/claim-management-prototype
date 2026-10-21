@@ -15,7 +15,7 @@
 }
 
 .rd-title {
-  font-size: 32px;
+  font-size: var(--display-l-font-size);
   font-weight: 400;
   color: var(--text-01);
   margin: 0 0 var(--space-lg);
@@ -48,7 +48,7 @@
 }
 
 .rd-card-title {
-  font-size: 24px;
+  font-size: var(--display-s-font-size);
   font-weight: 400;
   color: var(--text-01);
   margin: 0 0 var(--space-base);

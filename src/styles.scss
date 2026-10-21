@@ -3,6 +3,7 @@
 // Which file owns what, and how to debug "X doesn't follow the theme":
 // .claude/THEMING.md
 @use 'styles/tokens';
+@use 'styles/status-tokens';
 @use 'styles/themes/ndbx';
 @use 'styles/themes/a1';
 @use 'styles/globals';

@@ -160,7 +160,7 @@
 .me-link-status-badge {
   display: inline-block;
   padding: 2px var(--space-sm);
-  border-radius: 10px;
+  border-radius: var(--radius-chip);
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
 

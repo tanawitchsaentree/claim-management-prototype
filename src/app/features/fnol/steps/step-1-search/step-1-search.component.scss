@@ -19,7 +19,7 @@
 .step-subtitle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0 0 var(--space-2xl);
@@ -77,7 +77,7 @@
   align-items: center;
   gap: var(--space-md);
   white-space: nowrap;
-  padding-bottom: 23px;
+  padding-bottom: var(--formfield-align-bottom);
 }
 
 .form-validation-banner {
@@ -273,7 +273,7 @@ thead .col-action {
   display: inline;
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
-  margin-left: 6px;
+  margin-left: var(--space-ndbx-6);
 }
 
 .skeleton-loss-desc {

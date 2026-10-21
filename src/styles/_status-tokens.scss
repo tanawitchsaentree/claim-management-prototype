@@ -1,0 +1,100 @@
+/* ==============================================================
+ * Status chip / badge colours (claim, task, entity, damage item,
+ * clearance, recovery, skeleton, financial overview).
+ *
+ * NDBX-era defaults. themes/_a1.scss maps every pair onto an A1
+ * signal or accent pair. Components use these via
+ * var(--...) only, usually through shared/components/status-chip.
+ * ============================================================== */
+:root {
+  /* ── Claim status chip — background ─────────────────────────── */
+  /* "Open" claim = same blue family as in-progress; shown as blue chip  */
+  --claim-status-open-bg: #dce9f8;
+  --claim-status-open-color: #006192;
+  --claim-status-in-progress-bg: #dce9f8; /* claim lifecycle (blue) */
+  --claim-status-in-progress-color: #006192;
+  --claim-status-priced-bg: #e8e8e8; /* neutral — no dedicated chip color yet */
+  --claim-status-priced-color: #404040;
+  --claim-status-quoted-bg: #e8e8e8; /* neutral — no dedicated chip color yet */
+  --claim-status-quoted-color: #404040;
+  --claim-status-bound-bg: #d4edda;
+  --claim-status-bound-color: #155724;
+  --claim-status-declined-bg: #f8d7da;
+  --claim-status-declined-color: #721c24;
+  --claim-status-closed-bg: #e8e8e8;
+  --claim-status-closed-color: #767676;
+  --claim-status-reopened-bg: var(--color-subtle-orange);
+  --claim-status-reopened-color: var(--color-on-subtle-orange);
+
+  /* ── Task status chip — background ──────────────────────────── */
+  /* Task "in-progress" = amber (different from claim in-progress = blue) */
+  --task-status-open-bg: #dce9f8;
+  --task-status-open-color: #006192;
+  --task-status-in-progress-bg: #fdf3d6; /* task progress = amber */
+  --task-status-in-progress-color: #7a5200;
+  --task-status-done-bg: #d4edda;
+  --task-status-done-color: #155724;
+  /* Aliases used by sections page (task context) */
+  --task-status-pending-bg: #fdf3d6;
+  --task-status-pending-color: #7a5200;
+  --task-status-not-assigned-bg: #e8e8e8;
+  --task-status-not-assigned-color: #767676;
+  --task-status-completed-bg: #d4edda;
+  --task-status-completed-color: #155724;
+
+  /* ── Entity status chip ──────────────────────────────────────── */
+  --entity-status-promised-bg: #e8f4fd;
+  --entity-status-promised-color: #006192;
+  --entity-status-conditional-bg: #fdf3d6;
+  --entity-status-conditional-color: #7a5200;
+  --entity-status-by-extension-bg: #ede8f5;
+  --entity-status-by-extension-color: #4a2080;
+  --entity-status-not-promised-bg: #fde2e4;
+  --entity-status-not-promised-color: #b91c1c;
+
+  --damage-item-status-open-bg: #dce9f8;
+  --damage-item-status-open-color: #006192;
+  --damage-item-status-assessed-bg: #fdf3d6;
+  --damage-item-status-assessed-color: #7a5200;
+  --damage-item-status-approved-bg: #d4edda;
+  --damage-item-status-approved-color: #155724;
+  --damage-item-status-rejected-bg: #fde2e4;
+  --damage-item-status-rejected-color: #b91c1c;
+
+  /* ── Clearance status chip ──────────────────────────────────── */
+  --clearance-cleared-bg: #d4edda;
+  --clearance-cleared-color: #155724;
+  --clearance-not-cleared-bg: #fde2e4;
+  --clearance-not-cleared-color: #b91c1c;
+  --clearance-pending-bg: #fdf3d6;
+  --clearance-pending-color: #7a5200;
+  --clearance-not-applicable-bg: #e8e8e8;
+  --clearance-not-applicable-color: #767676;
+
+  /* ── Recovery potential chip (Yes/No) ─────────────────────────── */
+  --recovery-yes-bg: #e6f4ea;
+  --recovery-yes-color: #1e6b2e;
+  --recovery-no-bg: #fce8e6;
+  --recovery-no-color: #b3261e;
+
+  /* ── Skeleton claim status (text-only variant — bg unused today) ── */
+  --skeleton-claim-awaiting-bg: #fdf3d6;
+  --skeleton-claim-awaiting-color: var(--message-warning-icon-color);
+  --skeleton-claim-matched-bg: #d4edda;
+  --skeleton-claim-matched-color: var(--claim-status-bound-color);
+  --skeleton-claim-abandoned-bg: #e8e8e8;
+  --skeleton-claim-abandoned-color: var(--text-muted);
+
+
+  /* ── Financial overview badge (payment & reserve statuses) ─── */
+  --fo-badge-pending-bg: #fff3cd;
+  --fo-badge-pending-color: #856404;
+  --fo-badge-credit-bg: #d1ecf1;
+  --fo-badge-credit-color: #0c5460;
+  --fo-badge-done-bg: #d4edda;
+  --fo-badge-done-color: #155724;
+  --fo-badge-rejected-bg: #f8d7da;
+  --fo-badge-rejected-color: #721c24;
+  --fo-badge-approved-bg: #d4edda;
+  --fo-badge-approved-color: #155724;
+}

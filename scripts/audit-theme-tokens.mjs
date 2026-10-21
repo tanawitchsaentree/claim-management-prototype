@@ -13,9 +13,10 @@
  *   fallback   var(--token, #hex): fallback is dead when the token exists (fix
  *              removes it) and a hidden hardcode when it does not
  *   undefined  var(--token) that no theme file, project file or runtime setter defines
- *   spacing    px/rem literal in padding / margin / gap (fix: on-scale values -> --space-*)
- *   radius     px literal in border-radius (fix: 2/4/8px -> --radius-xs/s/m)
- *   font-size  px/rem literal font-size outside icon selectors (fix: 14/16/18px)
+ *   spacing    px/rem literal in padding / margin / gap (fix: on-scale values -> --space-*;
+ *              under 4px is an optical nudge and allowed)
+ *   radius     px literal in border-radius (fix: 2/3/4/6/8px -> --radius-*)
+ *   font-size  px/rem literal font-size outside icon selectors (fix: 12-32px steps)
  *
  * --fix only rewrites values whose NDBX result is identical, so NDBX renders
  * the same before and after (check with scripts/theme-snapshot.mjs compare).
@@ -48,9 +49,18 @@ for (const f of walk('src/app', /\.(ts|html)$/)) {
 }
 
 // ── Scales (values must equal the NDBX value, so --fix changes nothing in NDBX) ──
-const SPACE = { 4: 'xs', 8: 'sm', 12: 'md', 16: 'base', 20: 'lg', 24: 'xl', 32: '2xl', 40: '3xl', 48: '4xl', 64: '5xl' };
-const RADIUS = { 2: 'xs', 4: 's', 8: 'm' };
-const FONT = { 14: '--paragraph-03-font-size', 16: '--paragraph-01-font-size', 18: '--heading-06-font-size' };
+const SPACE = {
+  4: 'xs', 8: 'sm', 12: 'md', 16: 'base', 20: 'lg', 24: 'xl', 32: '2xl', 40: '3xl', 48: '4xl', 64: '5xl',
+  5: 'ndbx-5', 6: 'ndbx-6', 7: 'ndbx-7', 10: 'ndbx-10', 14: 'ndbx-14', 18: 'ndbx-18', 28: 'ndbx-28'
+};
+// Spacing below the smallest A1 step (4px) is an optical nudge, not layout: allowed.
+const SPACE_NUDGE_MAX = 3;
+const RADIUS = { 2: 'xs', 3: 'ndbx-3', 4: 's', 6: 'ndbx-6', 8: 'm' };
+const FONT = {
+  12: '--paragraph-05-font-size', 14: '--paragraph-03-font-size', 16: '--paragraph-01-font-size',
+  18: '--heading-06-font-size', 20: '--heading-05-font-size',
+  24: '--display-s-font-size', 28: '--display-m-font-size', 32: '--display-l-font-size'
+};
 const px = v => {
   const m = v.match(/^(-?)(\d*\.?\d+)(px|rem)$/);
   if (!m) return null;
@@ -58,13 +68,13 @@ const px = v => {
   return { neg: m[1] === '-', n };
 };
 // Rewrites each top-level px/rem word of a value; anything inside (...) is left alone.
-function rewrite(value, map) {
+function rewrite(value, map, nudgeMax = 0) {
   const left = [];
   const out = value.split(/(\s+)/).map(w => {
     if (/[()]/.test(w) || !/\d/.test(w)) return w;
     const v = px(w);
     if (!v) return w;
-    if (v.n === 0) return w;
+    if (v.n <= nudgeMax) return w;
     const token = map(v.n);
     if (!token) { left.push(w); return w; }
     return v.neg ? `calc(-1 * var(${token}))` : `var(${token})`;
@@ -117,11 +127,10 @@ function audit(file) {
         : kind === 'radius' ? n => RADIUS[n] && `--radius-${RADIUS[n]}`
         : n => FONT[n];
       const val = value.replace(/\s*!important\s*$/, '');
-      const { out, left } = rewrite(val, map);
+      const { out, left } = rewrite(val, map, kind === 'spacing' ? SPACE_NUDGE_MAX : 0);
       if (FIX && out !== val) line = line.replace(val, out);
-      const remaining = FIX ? left : rewrite(val, () => null).left;
-      if (remaining.length) report(file, i + 1, kind, `${prop}: ${value.trim()} (off-scale: ${remaining.join(' ')})`);
-      else if (!FIX && out !== val) report(file, i + 1, kind, `${prop}: ${value.trim()} -> ${out}`);
+      if (left.length) report(file, i + 1, kind, `${prop}: ${value.trim()} (off-scale: ${left.join(' ')})`);
+      else if (!FIX && out !== val) report(file, i + 1, kind, `${prop}: ${value.trim()} -> fixable: ${out}`);
     }
     if (line !== raw) { lines[i] = line; changed = true; }
   });

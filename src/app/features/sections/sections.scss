@@ -329,7 +329,7 @@ $brand-blue: var(--info);
 .side-nav-item {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-ndbx-14);
   padding: var(--space-md) var(--space-lg);
   font-size: var(--paragraph-03-font-size);
   font-weight: 400;

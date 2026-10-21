@@ -1,7 +1,7 @@
 .priority-dot-wrapper {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 
 .priority-dot {

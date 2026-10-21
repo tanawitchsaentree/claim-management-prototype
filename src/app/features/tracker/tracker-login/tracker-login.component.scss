@@ -15,7 +15,7 @@
   margin: 0 0 var(--space-xs);
 }
 .step-title {
-  font-size: 28px;
+  font-size: var(--display-m-font-size);
   font-weight: 400;
   color: var(--text-01);
   margin: 0 0 var(--space-sm);

@@ -66,14 +66,14 @@
     align-items: center;
     gap: var(--space-md);
     white-space: nowrap;
-    padding-bottom: 23px;
+    padding-bottom: var(--formfield-align-bottom);
   }
 }
 
 .csm-loading {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-ndbx-10);
   padding: var(--space-xl) 0;
   color: var(--text-muted);
   font-size: var(--paragraph-03-font-size);
@@ -129,7 +129,7 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   padding: 2px var(--space-sm);
-  border-radius: 10px;
+  border-radius: var(--radius-chip);
   background: var(--claim-status-open-bg);
   color: var(--claim-status-open-color);
 }

@@ -83,7 +83,7 @@ const SEVERITY_ICON: Record<string, string> = {
       .widget-header-left {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: var(--space-ndbx-10);
       }
       .widget-icon-wrap {
         width: 32px;
@@ -100,7 +100,7 @@ const SEVERITY_ICON: Record<string, string> = {
         font-size: 16px;
       }
       .widget-title {
-        font-size: 20px;
+        font-size: var(--heading-05-font-size);
         font-weight: 600;
         color: var(--text-01);
         line-height: 1.4;

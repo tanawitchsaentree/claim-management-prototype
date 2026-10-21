@@ -54,7 +54,7 @@ import { KpiData } from '../../../core/models';
         }
       }
       .kpi-value {
-        font-size: 32px;
+        font-size: var(--display-l-font-size);
         font-weight: 700;
         color: var(--text-01);
         line-height: 1;

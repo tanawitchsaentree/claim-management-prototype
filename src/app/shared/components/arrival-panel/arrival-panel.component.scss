@@ -22,7 +22,7 @@
   padding: var(--space-sm) var(--space-md);
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   // BLESSED: dashboard/_widget-shell.scss:14 — floating surface shadow via token.
   box-shadow: 0 2px 8px var(--claim-overlay-shadow);
   color: var(--interactive-primary);
@@ -155,8 +155,8 @@
 
 .ap-partial {
   flex: none;
-  padding: 2px 6px;
-  border-radius: 10px;
+  padding: 2px var(--space-ndbx-6);
+  border-radius: var(--radius-chip);
   background: var(--ui-02);
   color: var(--text-muted);
   font-size: var(--paragraph-03-font-size);
@@ -212,8 +212,8 @@
 }
 
 .ap-generated {
-  padding: 2px 6px;
-  border-radius: 10px;
+  padding: 2px var(--space-ndbx-6);
+  border-radius: var(--radius-chip);
   background: var(--ui-02);
   color: var(--text-muted);
   font-size: var(--paragraph-03-font-size);

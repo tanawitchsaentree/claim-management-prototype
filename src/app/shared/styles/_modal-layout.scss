@@ -51,7 +51,7 @@ $action-gap: var(--space-sm);
   // is full-width and top-spacing is just NDBX's wrapper top-padding (40px).
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   padding: 0 var(--modal-padding) $header-pb;
   margin: 0 calc(-1 * var(--modal-padding)) 0;
   border-bottom: 1px solid var(--ui-04);

@@ -72,7 +72,7 @@
   min-width: 36px;
   height: 24px;
   padding: 0 var(--space-sm);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
 
@@ -121,8 +121,8 @@
 .co-risk-status-chip {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
-  border-radius: 12px;
+  padding: 3px var(--space-ndbx-10);
+  border-radius: var(--radius-pill);
   font-size: var(--paragraph-03-font-size);
   font-weight: 500;
 

@@ -106,7 +106,7 @@
 .co-edit-loss-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--interactive-text);
@@ -139,7 +139,7 @@
 .co-description {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 
 .co-desc-label {

@@ -24,7 +24,7 @@
   &__title-row {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-ndbx-6);
     flex: 1;
     min-width: 0;
   }

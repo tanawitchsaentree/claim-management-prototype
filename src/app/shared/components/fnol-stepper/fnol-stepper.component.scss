@@ -60,6 +60,7 @@
 
 .dot-check {
   color: var(--multi-stepper-dot-checkmark-color);
+  // theme-exempt: checkmark glyph sized to the 16px stepper dot, not text
   font-size: 10px;
 }
 

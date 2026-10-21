@@ -37,7 +37,7 @@ a {
 // add their own :host padding on top of it.
 h1.page-title,
 .page-title {
-  font-size: 28px;
+  font-size: var(--display-m-font-size);
   font-weight: 400;
   color: var(--text-01);
   line-height: 1.2;
@@ -51,10 +51,11 @@ h1.page-title,
 
 code {
   font-family: monospace;
+  // theme-exempt: monospace inline code, one step under body text on purpose
   font-size: 13px;
   background: var(--ui-02);
-  padding: 1px 6px;
-  border-radius: 3px;
+  padding: 1px var(--space-ndbx-6);
+  border-radius: var(--radius-ndbx-3);
   color: var(--text-01);
 }
 

@@ -2,7 +2,7 @@
 .narrative-cta {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   margin-top: var(--space-xs);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
@@ -55,7 +55,7 @@
   &__row {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-ndbx-6);
     font-size: var(--paragraph-04-font-size);
   }
 

@@ -67,7 +67,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding-top: 22px; // align with formfield input baseline
+  padding-top: var(--formfield-align-top);
   white-space: nowrap;
 }
 

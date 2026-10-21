@@ -273,7 +273,7 @@
   align-items: center;
   margin-left: var(--space-sm);
   padding: 2px var(--space-sm);
-  border-radius: 10px;
+  border-radius: var(--radius-chip);
   background: var(--claim-status-closed-bg);
   color: var(--claim-status-closed-color);
   font-size: var(--paragraph-04-font-size);

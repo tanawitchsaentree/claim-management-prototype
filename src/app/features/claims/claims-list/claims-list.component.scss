@@ -71,7 +71,7 @@
   align-items: center;
   gap: var(--space-md);
   white-space: nowrap;
-  padding-bottom: 23px;
+  padding-bottom: var(--formfield-align-bottom);
 }
 
 // ─── Count ──────────────────────────────────────────────────────────────────
@@ -136,7 +136,7 @@
 }
 
 .cl-dormant-badge {
-  margin-left: 6px;
+  margin-left: var(--space-ndbx-6);
 }
 
 // ─── Priority pill ──────────────────────────────────────────────────────────
@@ -146,7 +146,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   padding: 2px var(--space-sm);
-  border-radius: 10px;
+  border-radius: var(--radius-chip);
 
   &--high {
     background: var(--color-subtle-red);

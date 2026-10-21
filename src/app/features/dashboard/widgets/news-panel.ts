@@ -86,7 +86,7 @@ const TYPE_ICON: Record<string, string> = {
         gap: 2px;
       }
       .news-item {
-        border-radius: 3px;
+        border-radius: var(--radius-ndbx-3);
         overflow: hidden;
         border-left: 3px solid transparent;
         &--warning {
@@ -102,9 +102,9 @@ const TYPE_ICON: Record<string, string> = {
       .news-header {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--space-ndbx-6);
         width: 100%;
-        padding: 7px 6px 7px var(--space-sm);
+        padding: var(--space-ndbx-7) var(--space-ndbx-6) var(--space-ndbx-7) var(--space-sm);
         cursor: pointer;
         background: none;
         border: none;
@@ -136,17 +136,17 @@ const TYPE_ICON: Record<string, string> = {
         line-height: 1.3;
       }
       .news-chevron {
-        font-size: 12px;
+        font-size: var(--paragraph-05-font-size);
         color: var(--text-muted);
         flex-shrink: 0;
       }
       .news-date-line {
         font-size: var(--paragraph-04-font-size);
         color: var(--text-muted);
-        padding: 0 var(--space-sm) 6px 28px;
+        padding: 0 var(--space-sm) var(--space-ndbx-6) var(--space-ndbx-28);
       }
       .news-body {
-        padding: var(--space-xs) var(--space-sm) 10px 28px;
+        padding: var(--space-xs) var(--space-sm) var(--space-ndbx-10) var(--space-ndbx-28);
       }
       .news-body-text {
         font-size: var(--paragraph-04-font-size);

@@ -13,7 +13,7 @@
 .page-header__back {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   color: var(--interactive-primary);
   font-size: var(--paragraph-03-font-size);
   font-weight: 500;

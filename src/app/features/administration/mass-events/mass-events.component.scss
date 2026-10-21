@@ -62,7 +62,7 @@
   align-items: center;
   gap: var(--space-md);
   white-space: nowrap;
-  padding-bottom: 23px;
+  padding-bottom: var(--formfield-align-bottom);
 }
 
 .form-row {

@@ -35,7 +35,7 @@ const ROLE_LABEL: Record<string, string> = {
       .ps-bar {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--space-ndbx-6);
         padding: 0 var(--space-sm) 0 var(--space-md);
         border-left: 1px solid var(--ui-04);
       }
@@ -47,8 +47,8 @@ const ROLE_LABEL: Record<string, string> = {
       }
       .ps-btn {
         font-size: var(--paragraph-04-font-size);
-        padding: 3px 10px;
-        border-radius: 12px;
+        padding: 3px var(--space-ndbx-10);
+        border-radius: var(--radius-ndbx-12);
         border: 1px solid var(--ui-04);
         background: var(--ui-01);
         color: var(--text-01);

@@ -26,6 +26,7 @@
 .admin-cards {
   display: flex;
   flex-wrap: wrap;
+  // theme-exempt: fixed Figma card row (3 x 448px + 2 gaps = 1408 content width)
   gap: 33px;
 }
 

@@ -15,7 +15,7 @@
 .cddm-header-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-ndbx-10);
   margin-bottom: var(--space-sm);
 }
 
@@ -24,9 +24,9 @@
   font-weight: 700;
   color: var(--dev-helper-badge-color);
   letter-spacing: 0.05em;
-  padding: 2px 6px;
+  padding: 2px var(--space-ndbx-6);
   border: 1px solid var(--dev-helper-border);
-  border-radius: 3px;
+  border-radius: var(--radius-ndbx-3);
   background: var(--dev-helper-bg);
   flex-shrink: 0;
 }
@@ -51,7 +51,7 @@
   color: var(--text-muted);
   background: var(--ui-03);
   border-radius: var(--radius-m);
-  padding: 1px 7px;
+  padding: 1px var(--space-ndbx-7);
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -60,7 +60,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 
@@ -120,7 +120,7 @@
 .cddm-ac-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--space-ndbx-10);
   padding: var(--space-md) var(--space-base);
   cursor: pointer;
   border-left: 3px solid transparent;
@@ -190,7 +190,7 @@
     font-family: monospace;
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
-    border-radius: 3px;
+    border-radius: var(--radius-ndbx-3);
     padding: 1px var(--space-xs);
   }
 }
@@ -198,8 +198,8 @@
 .cddm-ac-badge {
   display: inline-block;
   margin-top: 2px;
-  padding: 1px 5px;
-  border-radius: 3px;
+  padding: 1px var(--space-ndbx-5);
+  border-radius: var(--radius-ndbx-3);
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
 
@@ -241,7 +241,7 @@
 }
 
 .cddm-detail-id {
-  margin: 0 0 6px;
+  margin: 0 0 var(--space-ndbx-6);
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
   color: var(--text-01);
@@ -261,8 +261,8 @@
     font-weight: 400;
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
-    border-radius: 3px;
-    padding: 1px 5px;
+    border-radius: var(--radius-ndbx-3);
+    padding: 1px var(--space-ndbx-5);
   }
 }
 
@@ -284,8 +284,8 @@
     font-family: monospace;
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
-    border-radius: 3px;
-    padding: 1px 5px;
+    border-radius: var(--radius-ndbx-3);
+    padding: 1px var(--space-ndbx-5);
   }
 }
 
@@ -304,7 +304,7 @@
 
 .cddm-detail-list {
   margin: 0;
-  padding-left: 18px;
+  padding-left: var(--space-ndbx-18);
   color: var(--text-01);
 
   li {
@@ -317,12 +317,12 @@
 .cddm-how-to {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 
 .cddm-how-row {
   display: flex;
-  gap: 10px;
+  gap: var(--space-ndbx-10);
   align-items: baseline;
 }
 
@@ -344,8 +344,8 @@ code.cddm-how-val {
   font-family: monospace;
   background: var(--dev-helper-bg);
   border: 1px solid var(--dev-helper-border);
-  border-radius: 3px;
-  padding: 1px 5px;
+  border-radius: var(--radius-ndbx-3);
+  padding: 1px var(--space-ndbx-5);
 }
 
 // ─── Precondition extras ─────────────────────────────────────────────────────
@@ -400,7 +400,7 @@ code.cddm-how-val {
 .cddm-ac-id-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
 }
 
 .cddm-ac-verified {
@@ -419,7 +419,7 @@ code.cddm-how-val {
 .cddm-verify-confirmed {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-ndbx-10);
   padding: var(--space-sm) var(--space-md);
   background: var(--dev-helper-active-bg);
   border: 1px solid var(--dev-helper-done-color);

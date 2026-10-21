@@ -24,7 +24,7 @@
 @mixin header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-ndbx-10);
 }
 
 @mixin icon-wrap {
@@ -185,7 +185,7 @@
 @mixin scope-tab {
   font-size: var(--paragraph-04-font-size);
   padding: var(--space-xs) var(--space-md);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--ui-04);
   background: var(--ui-01);
   color: var(--text-muted);
@@ -204,7 +204,7 @@
   }
 
   &--meta {
-    padding: 2px 6px;
+    padding: 2px var(--space-ndbx-6);
     border: none;
     background: none;
     border-radius: var(--radius-m);
@@ -224,7 +224,7 @@
 @mixin dash-status-cell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   flex-wrap: nowrap;
 }
 

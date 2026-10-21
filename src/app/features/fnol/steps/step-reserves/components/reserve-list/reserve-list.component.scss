@@ -121,7 +121,7 @@
 .col-damage__inner {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   width: 100%;
   min-width: 0;
 }

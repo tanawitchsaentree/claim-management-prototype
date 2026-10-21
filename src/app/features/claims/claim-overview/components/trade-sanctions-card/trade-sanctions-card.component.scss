@@ -56,7 +56,7 @@
 
 .ts-named-parties__list {
   margin: 0;
-  padding-left: 18px;
+  padding-left: var(--space-ndbx-18);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-01);
 }
@@ -105,7 +105,7 @@
 }
 
 .ts-hint {
-  margin: 6px 0 var(--space-sm);
+  margin: var(--space-ndbx-6) 0 var(--space-sm);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 }

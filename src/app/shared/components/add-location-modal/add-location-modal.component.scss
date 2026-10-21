@@ -40,7 +40,7 @@
 .alm-fallback-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   font-weight: 600;
 
   nx-icon {
@@ -95,7 +95,7 @@
   flex-direction: row;
   align-items: center;
   gap: var(--space-sm);
-  padding-top: 22px;
+  padding-top: var(--formfield-align-top);
   white-space: nowrap;
 
   > button {
@@ -137,7 +137,7 @@
 .alm-link-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-ndbx-6);
   margin-top: var(--space-base);
   padding: 0;
   border: none;

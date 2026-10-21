@@ -33,6 +33,19 @@
   --space-4xl: var(--semantic-gap-all-static-1200);
   --space-5xl: var(--semantic-gap-all-static-1600);
   --page-content-top: var(--semantic-gap-all-static-1000);
+  // NDBX in-between values snap to the nearest A1 step (ties round up).
+  --space-ndbx-5: var(--semantic-gap-all-static-100);
+  --space-ndbx-6: var(--semantic-gap-all-static-200);
+  --space-ndbx-7: var(--semantic-gap-all-static-200);
+  --space-ndbx-10: var(--semantic-gap-all-static-300);
+  --space-ndbx-14: var(--semantic-gap-all-static-400);
+  --space-ndbx-18: var(--semantic-gap-all-static-400);
+  --space-ndbx-28: var(--semantic-gap-all-static-800);
+
+  // ── Display text: nearest A1 headline step ─────────────────────
+  --display-s-font-size: var(--semantic-font-size-headline-xl);
+  --display-m-font-size: var(--semantic-font-size-headline-xl);
+  --display-l-font-size: var(--semantic-font-size-headline-2xl);
 
   // ── Corner radius ──────────────────────────────────────────────
   // Mirrors the library's own NDBX -> A1 shift: 4px buttons/cards/tiles
@@ -40,7 +53,11 @@
   // is not mapped: the library keeps its own 2px radii in A1 too.
   --radius-s: var(--semantic-border-radius-m);
   --radius-m: var(--semantic-border-radius-m);
+  --radius-ndbx-3: var(--semantic-border-radius-s);
+  --radius-ndbx-6: var(--semantic-border-radius-m);
+  --radius-ndbx-12: var(--semantic-border-radius-l);
   --radius-pill: var(--semantic-border-radius-round);
+  --radius-chip: var(--semantic-border-radius-round);
 
   // ── Status chips: one A1 signal/accent pair per colour family ──
   // blue = info, green = positive, red = critical, amber = warning,

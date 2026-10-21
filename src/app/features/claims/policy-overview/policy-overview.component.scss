@@ -42,7 +42,7 @@
 .po-status {
   align-self: flex-start;
   padding: 2px var(--space-sm);
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   background: var(--ui-02);
