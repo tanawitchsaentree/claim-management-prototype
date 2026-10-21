@@ -568,14 +568,19 @@ export class EditLossInformationComponent implements OnInit {
       // A second prompt only when there is something to review. Its buttons say
       // what they do; neither reads as undoing the save, which is already done.
       if (flagged) {
-        const names = impactedDiffs.map(d => d.label).join(' and ');
+        // Same format as the first confirm (team call 2026-10-15): Field / Original / Updated.
+        // Per-section old values aren't stored, so the rows are the changed fields the
+        // sections were built from, and the sections are listed in the note.
         const review = await this.confirm({
           title: 'Review sections',
           message:
-            `Saved. ${names} changed, and the ${flagged} open section${flagged === 1 ? '' : 's'} ` +
-            `on this claim ${flagged === 1 ? 'was' : 'were'} built from the old values. ` +
-            `${flagged === 1 ? 'It is' : 'They are'} marked "Review needed" until you check ` +
-            `${flagged === 1 ? 'it' : 'them'}. Review now?`,
+            `${flagged === 1 ? 'This open section' : 'These open sections'} on claim ${this.claimId()} ` +
+            `${flagged === 1 ? 'was' : 'were'} built from the old values and ` +
+            `${flagged === 1 ? 'is' : 'are'} now marked "Review needed".`,
+          changes: impactedDiffs.map(d => ({ label: d.label, original: d.original, updated: d.updated })),
+          showChanges: true,
+          hideIcon: true,
+          note: `${flagged === 1 ? 'Section' : 'Sections'}: ${this.sync.reviewNeededSectionNames(this.claimId()).join(', ')}.`,
           confirmLabel: 'Review sections',
           cancelLabel: 'Later'
         });

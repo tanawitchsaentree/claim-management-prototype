@@ -76,6 +76,14 @@ export class LossInfoSyncService {
     );
   }
 
+  /** Names of the sections currently marked "Review needed". */
+  reviewNeededSectionNames(claimId: string): string[] {
+    return this.sectionSvc
+      .getByClaimIdSync(claimId)
+      .filter(s => s.status === 'Open' && s.reviewNeeded)
+      .map(s => s.name);
+  }
+
   /** Marks every open section for review. Returns how many were marked. */
   flagSectionsForReview(claimId: string, changedLabels: string[]): number {
     return this.sectionSvc.flagOpenForReview(claimId, changedLabels);
