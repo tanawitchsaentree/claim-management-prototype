@@ -8,6 +8,11 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxMultiSelectComponent } from '@allianz/ng-aquila/dropdown';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
+import { MockLossInformationService } from '../../../../core/mock/services/mock-loss-information.service';
+import { SkeletonLocationChoiceService } from '../../../services/skeleton-location-choice.service';
+import { LocationPickerComponent } from '../../location-picker/location-picker.component';
+import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
+import { firstValueFrom, tap } from 'rxjs';
 import { Claim } from '../../../../core/models/claim.model';
 import { causeLabel, normalizeCauses } from '../../../../core/models/cause-of-loss';
 import { CompletionDetails } from '../../../../core/models/claim-completion.model';
@@ -31,13 +36,17 @@ const MAX_DESCRIPTION = 500;
     NxInputModule,
     NxMessageModule,
     NxMultiSelectComponent,
-    CbiPanelComponent
+    NxRadioToggleModule,
+    CbiPanelComponent,
+    LocationPickerComponent
   ],
   templateUrl: './complete-claim-step.component.html',
   styleUrl: './complete-claim-step.component.scss'
 })
 export class CompleteClaimStepComponent {
   private readonly lookupSvc = inject(MockLookupService);
+  private readonly lossInfoSvc = inject(MockLossInformationService);
+  private readonly locationChoice = inject(SkeletonLocationChoiceService);
 
   readonly skeleton = input.required<Claim>();
   readonly policy = input.required<PolicySearchResult>();
@@ -52,9 +61,23 @@ export class CompleteClaimStepComponent {
   readonly submitAttempted = signal(false);
   readonly otherKey = OTHER_CAUSE_KEY;
 
+  // Location of loss: kept as entered on the skeleton, or changed through the
+  // existing Add location sheet. Only a change is written at conversion.
+  readonly entered = signal<LocationPickerOutput>({ locations: [] });
+  readonly changed = signal<LocationPickerOutput | null>(null);
+  readonly shownLocation = computed(() => this.changed() ?? this.entered());
+  readonly locationMode = new FormControl<'keep' | 'change'>('keep', { nonNullable: true });
+  // Choosing a mode acts at once: Keep drops any change, Change opens the Add location sheet.
+  private readonly modeWatch = toSignal(this.locationMode.valueChanges.pipe(tap(m => void this.onLocationMode(m))), {
+    initialValue: 'keep' as const
+  });
+  readonly hasEntered = computed(() => this.entered().locations.length > 0);
+
   /** Which causes the skeleton had that this policy's list can't take (set once, shown as a note). */
   private readonly start = computed(() => normalizeCauses(this.skeleton().causeOfLoss, this.causeOptions));
   readonly replaced = computed(() => this.start().replaced);
+  /** No cause at all on the skeleton, as opposed to one this policy can't take. */
+  readonly noCause = computed(() => !(this.skeleton().causeOfLoss ?? []).length);
   readonly keptLabel = computed(() => this.start().codes.map(c => causeLabel(c, this.causeOptions)).join(', '));
 
   readonly form = new FormGroup({
@@ -87,6 +110,9 @@ export class CompleteClaimStepComponent {
       causeOfLoss: this.start().codes
     });
     this.syncCbi();
+    void firstValueFrom(this.lossInfoSvc.getByClaimId(this.skeleton().claimId)).then(li =>
+      this.entered.set((li?.lossLocation as unknown as LocationPickerOutput | undefined) ?? { locations: [] })
+    );
   }
 
   syncCbi(): void {
@@ -96,6 +122,24 @@ export class CompleteClaimStepComponent {
   /** The answer controls update just after their change event, so re-sync on the next tick. */
   onAnswerChange(): void {
     queueMicrotask(() => this.syncCbi());
+  }
+
+  /** Picking "Change location" opens the Add location sheet; closing it without a pick goes back to Keep. */
+  async onLocationMode(mode: 'keep' | 'change'): Promise<void> {
+    if (mode === 'keep') {
+      this.changed.set(null);
+      return;
+    }
+    await this.pickLocation();
+  }
+
+  async pickLocation(): Promise<void> {
+    const picked = await this.locationChoice.choose(this.policy().policyNumber, this.entered().locations, {
+      claim: this.skeleton().lineOfBusiness,
+      policy: this.policy().lineOfBusiness
+    });
+    if (picked) this.changed.set(picked);
+    else if (!this.changed()) this.locationMode.setValue('keep');
   }
 
   get descriptionLength(): number {
@@ -123,6 +167,7 @@ export class CompleteClaimStepComponent {
       lossDescription: v.lossDescription.trim(),
       causeOfLoss: v.causeOfLoss,
       specifyOtherCauseOfLoss: this.showOther() ? v.specifyOtherCauseOfLoss.trim() : undefined,
+      location: this.changed() ?? undefined,
       cbi: this.askCbi()
         ? {
             cbiApplicable: v.cbiApplicable,

@@ -49,11 +49,7 @@ export class LossInfoSyncService {
     );
     // A claim with no sections (e.g. a skeleton made without a cause) gets its
     // first one the moment a cause is set: same rule as skeleton creation.
-    if (
-      changed('Cause of loss') &&
-      v.causeOfLoss?.length &&
-      this.sectionSvc.getByClaimIdSync(claimId).length === 0
-    ) {
+    if (this.willCreateFirstSection(claimId, changedLabels, v.causeOfLoss)) {
       await firstValueFrom(
         this.sectionSvc.createSectionFromCauseOfLoss(
           claimId,
@@ -69,6 +65,15 @@ export class LossInfoSyncService {
         })
       );
     }
+  }
+
+  /** True when saving these changes creates the claim's first section (a cause is set on a claim with none). */
+  willCreateFirstSection(claimId: string, changedLabels: string[], causeOfLoss?: string[] | null): boolean {
+    return (
+      changedLabels.includes('Cause of loss') &&
+      !!causeOfLoss?.length &&
+      this.sectionSvc.getByClaimIdSync(claimId).length === 0
+    );
   }
 
   /** Marks every open section for review. Returns how many were marked. */

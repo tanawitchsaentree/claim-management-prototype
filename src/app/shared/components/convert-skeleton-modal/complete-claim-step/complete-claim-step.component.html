@@ -20,7 +20,11 @@
 
   @if (replaced()) {
     <nx-message context="info" class="ccs__note">
-      The cause on the skeleton claim isn't available for this policy, so it was set to {{ keptLabel() }}. You can change it.
+      @if (noCause()) {
+        The skeleton claim has no cause of loss, so it was set to {{ keptLabel() }}. You can change it.
+      } @else {
+        The cause on the skeleton claim isn't available for this policy, so it was set to {{ keptLabel() }}. You can change it.
+      }
     </nx-message>
   }
   <nx-formfield label="Cause of loss *" class="ccs__full">
@@ -41,6 +45,26 @@
       <input nxInput formControlName="specifyOtherCauseOfLoss" maxlength="100" />
     </nx-formfield>
   }
+
+  <section class="ccs__location" aria-labelledby="ccs-loc-title">
+    <h3 id="ccs-loc-title" class="ccs__subheading">Location of loss</h3>
+    @if (hasEntered()) {
+      <p class="ccs__hint">
+        {{ changed() ? 'You changed it to this policy location.' : 'Entered on the skeleton claim before a policy was known, so it counts as a manual location. Keep it, or change it to one of this policy’s locations.' }}
+      </p>
+      <app-location-picker [readonly]="true" [value]="shownLocation()" [originalValue]="entered()"></app-location-picker>
+      <nx-radio-toggle variant="small" ariaLabel="Location of loss" [formControl]="locationMode">
+        <nx-radio-toggle-button value="keep">Keep this location</nx-radio-toggle-button>
+        <nx-radio-toggle-button value="change">Change location</nx-radio-toggle-button>
+      </nx-radio-toggle>
+    } @else {
+      <p class="ccs__hint">No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.</p>
+      @if (changed()) {
+        <app-location-picker [readonly]="true" [value]="changed()"></app-location-picker>
+      }
+      <button nxButton="secondary small" type="button" (click)="pickLocation()">{{ changed() ? 'Change location' : 'Add location' }}</button>
+    }
+  </section>
 
   @if (askCbi()) {
     <app-cbi-panel

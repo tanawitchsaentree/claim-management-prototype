@@ -340,16 +340,14 @@ export class Step1SearchComponent {
     // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (originally "Convert
     // to claim"; renamed "Link policy" — BMPCC-17927 functional review,
     // 2026-09-22, item 3 — a skeleton claim is already a claim).
-    const { locationNeedsReconfirm, claimNumber } = await this.overviewSvc.convertToRegularClaim(
+    const { claimNumber } = await this.overviewSvc.convertToRegularClaim(
       skeleton.claimId,
       policy,
       details
     );
     this.toast.success(
       `${skeleton.claimId} is now ${claimNumber}`,
-      locationNeedsReconfirm
-        ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
-        : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
+      `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
     );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);
   }

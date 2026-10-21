@@ -10,6 +10,8 @@ export interface CompletionDetails {
   lossDescription: string;
   causeOfLoss: string[];
   specifyOtherCauseOfLoss?: string;
+  /** Set only when the handler changed the loss location; absent = kept as entered. */
+  location?: LocationPickerOutput;
   cbi?: {
     cbiApplicable: 'yes' | 'no' | null;
     cbiCaseType: string | null;

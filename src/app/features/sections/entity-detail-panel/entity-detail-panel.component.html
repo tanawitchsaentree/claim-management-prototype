@@ -26,18 +26,6 @@
     <h3 class="edp-card__title">Entity details</h3>
     <div class="edp-fields">
       <div class="edp-field">
-        <span class="edp-field__label">Coverage review</span>
-        @if (entity.coverageReview) {
-          <app-status-chip
-            [status]="entity.coverageReview"
-            domain="coverage-review"
-            [label]="entity.coverageReview"
-          ></app-status-chip>
-        } @else {
-          <span class="edp-field__value">–</span>
-        }
-      </div>
-      <div class="edp-field">
         <span class="edp-field__label">Provider</span>
         <span class="edp-field__value">{{ entity.assignedProvider ?? '–' }}</span>
       </div>

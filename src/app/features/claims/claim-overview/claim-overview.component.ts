@@ -56,7 +56,6 @@ import {
   TradeSanctionsCardComponent,
   TradeSanctionsUpdated
 } from './components/trade-sanctions-card/trade-sanctions-card.component';
-import { SkeletonLocationReconfirmService } from './skeleton-location-reconfirm.service';
 import { RiskScoreFieldComponent } from './components/risk-score-field/risk-score-field.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import {
@@ -158,7 +157,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly claimNumbers = inject(ClaimNumberService);
   private readonly financialSvc = inject(MockFinancialOverviewService);
   private readonly claimSvc = inject(MockClaimService);
-  private readonly locationReconfirmSvc = inject(SkeletonLocationReconfirmService);
   private deregisterStage: (() => void) | null = null;
 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
@@ -584,10 +582,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     policy: LinkablePolicy,
     details: CompletionDetails
   ): Promise<boolean> {
-    // Load the policy's locations while the handler reads the confirm dialog, so
-    // the location sheet has them ready the instant they confirm.
-    const prepared = this.locationReconfirmSvc.prepare(policy.policyNumber);
-
     // Highest-stakes action on this page (links a real policy, flips
     // skeletonState, creates a task): confirm before committing.
     //
@@ -609,48 +603,24 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
     if (!confirmed) return false;
-    void this.completeLink(skeleton, policy, prepared, details);
+    void this.completeLink(skeleton, policy, details);
     return true;
   }
 
   private async completeLink(
     skeleton: Claim,
     policy: LinkablePolicy,
-    prepared: Promise<PolicyLocation[]>,
     details: CompletionDetails
   ): Promise<void> {
     try {
-      // Link and location step run side by side: the Confirm loss location sheet
-      // opens the moment the handler confirms (its data is already known), while
-      // the link finishes behind it. The location is only written once the link
-      // has landed. Skipping the sheet leaves the follow-up task in place.
-      const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy, details);
-      const replaced = await this.locationReconfirmSvc.run(
-        skeleton.claimId,
-        policy.policyNumber,
-        prepared,
-        linking,
-        { claim: skeleton.lineOfBusiness, policy: policy.lineOfBusiness }
-      );
-      const converted = await linking;
-      const locationNeedsReconfirm = converted.locationNeedsReconfirm && !replaced;
-    // No navigation needed — the constructor's reactivity bridge (above)
-    // reloads this same Overview automatically once mock state changes.
-    // Every other action on this page confirms with a toast — this one
-    // didn't, so the handler had no positive signal the click actually did
-    // anything beyond the status chip quietly changing. Also the only place
-    // that tells them a follow-up task landed in their queue — convertToRegularClaim
-    // creates it silently, with nothing else surfacing that in the moment.
-    // Wording now reflects BOTH possible follow-up tasks, not just reserves —
-    // the location one only fires when there's a skeleton-stage manual
-    // location to recheck, so this used to under-report it.
+      const converted = await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy, details);
+      // No navigation needed: the constructor's reactivity bridge reloads this same
+      // Overview once mock state changes. The toast is the positive signal, and the
+      // only place that tells the handler a follow-up task landed in their queue.
       this.toast.success(
         `${skeleton.claimId} is now ${converted.claimNumber}`,
-        locationNeedsReconfirm
-          ? `Policy ${policy.policyNumber} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`
-          : `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
+        `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
       );
-
     } catch {
       this.toast.error('Could not link the policy', 'Nothing was changed. Please try again.');
     }

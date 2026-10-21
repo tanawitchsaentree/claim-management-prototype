@@ -16,12 +16,6 @@ import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom, catchError, of } from 'rxjs';
 import { ClaimSection, SectionEntity } from '../../core/models/section.model';
-import { MockNotesService } from '../../core/mock/services/mock-notes.service';
-import {
-  CoverageReviewModalComponent,
-  CoverageReviewModalData,
-  CoverageReviewModalResult
-} from './coverage-review-modal/coverage-review-modal.component';
 import { MockSectionService } from '../../core/mock/services/mock-section.service';
 import { ClaimClosureService } from '../../core/services/claim-closure.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
@@ -82,7 +76,6 @@ import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
     StatusChipComponent,
     EmptyStateComponent,
     PageHeaderComponent,
-    CoverageReviewModalComponent,
     EntityDetailPanelComponent,
     SectionDetailPanelComponent,
     ConfirmDialogComponent,
@@ -101,7 +94,6 @@ export class Sections {
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
-  private readonly notesSvc = inject(MockNotesService);
   private readonly stripSvc = inject(RightStripService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
   private readonly live = inject(LiveAnnouncer);
@@ -242,6 +234,37 @@ export class Sections {
     if (!result) return;
 
     const count = result.entityNames.length;
+
+    // Same confirm as Edit claim (team call 2026-10-15): Field / Original / Updated,
+    // nothing is created until the handler confirms.
+    const target = result.mode === 'new' ? null : this.sections().find(s => s.id === result.sectionId);
+    const before = target?.entities.map(e => e.name) ?? [];
+    const sectionLabel = new DamageTypeLabelPipe().transform(
+      result.mode === 'new' ? result.damageType : (target?.damageType ?? '')
+    );
+    const confirmRef = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: result.mode === 'new' ? 'Confirm new section' : 'Confirm section changes',
+        message: `The following fields will be updated for claim ${claimId}.`,
+        changes: [
+          ...(result.mode === 'new'
+            ? [{ label: 'Section', original: '–', updated: `${sectionLabel} (new section)` }]
+            : [{ label: 'Section', original: target?.name ?? '–', updated: target?.name ?? '–' }]),
+          {
+            label: 'Entities',
+            original: before.join(', ') || '–',
+            updated: [...before, ...result.entityNames].join(', ')
+          }
+        ],
+        showChanges: true,
+        hideIcon: true,
+        confirmLabel: 'Confirm changes',
+        cancelLabel: 'Back to editing'
+      } satisfies ConfirmDialogData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    if (!(await firstValueFrom(confirmRef.afterClosed()))) return;
 
     if (result.mode === 'new') {
       const created = await firstValueFrom(
@@ -420,43 +443,6 @@ export class Sections {
       )
     );
     this.toast.success(`Entity "${entity.name}" removed`);
-  }
-
-  async onOverrideCoverageReview(section: ClaimSection, entity: SectionEntity): Promise<void> {
-    const ref = this.dialogSvc.open(CoverageReviewModalComponent, {
-      data: { entity } satisfies CoverageReviewModalData,
-      width: '480px',
-      maxWidth: '92vw'
-    });
-    const result = (await firstValueFrom(ref.afterClosed())) as
-      | CoverageReviewModalResult
-      | undefined;
-    if (!result) return;
-
-    const claimId = this.route.snapshot.params['id'];
-
-    await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
-    this.sections.update(list =>
-      list.map(s =>
-        s.id === section.id
-          ? {
-              ...s,
-              entities: s.entities.map(e => (e.id === entity.id ? { ...e, ...result } : e))
-            }
-          : s
-      )
-    );
-
-    // allNotes is a live computed off the shared notes store — addNote() already
-    // updates that store, so no separate assignment is needed here.
-    await firstValueFrom(
-      this.notesSvc.addNote(claimId, {
-        category: 'general',
-        body: `Coverage review override — ${entity.name}. Changed to "${result.coverageReview}". Reason: ${result.coverageReviewNote}`
-      })
-    );
-
-    this.toast.success(`Coverage review updated for "${entity.name}"`);
   }
 
   async onReopenSection(section: ClaimSection): Promise<void> {

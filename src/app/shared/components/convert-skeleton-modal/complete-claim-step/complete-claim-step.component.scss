@@ -49,3 +49,21 @@
 .ccs__actions {
   @include sheet.footer-actions;
 }
+
+.ccs__location {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ccs__subheading {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.ccs__hint {
+  margin: 0;
+  color: var(--text-muted);
+}

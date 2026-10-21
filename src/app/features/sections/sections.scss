@@ -508,9 +508,8 @@ $brand-blue: var(--info);
   // scales px-declared columns to fill whatever's left AFTER the % columns
   // take their exact share, so a px column's rendered width silently drifts
   // from its declared value depending on how much room the % columns leave.
-  // That's what pushed "Coverage review" (often blank) out to ~339px while
-  // "Entity" (the identifying text, sometimes long) was squeezed to ~190px
-  // and had to truncate. Same-unit columns render exactly as declared.
+  // That's what squeezed "Entity" (the identifying text, sometimes long) so it had to
+  // truncate. Same-unit columns render exactly as declared.
   .col-toggle {
     width: 5%;
     padding: 0 !important;
@@ -519,16 +518,13 @@ $brand-blue: var(--info);
     white-space: normal !important;
   }
   .col-entity {
-    width: 36%;
+    width: 40%;
   }
   .col-status {
-    width: 9%;
+    width: 22%;
   }
   .col-damage {
-    width: 20%;
-  }
-  .col-coverage {
-    width: 22%;
+    width: 25%;
   }
   .col-actions {
     width: 8%;
@@ -554,58 +550,6 @@ $brand-blue: var(--info);
     white-space: nowrap;
   }
 
-  td.col-coverage {
-    overflow: visible;
-  }
-}
-
-// ─── Coverage review column ───────────────────────────────────────
-.coverage-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  overflow: visible;
-
-  .coverage-edit-btn {
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-}
-
-.entity-row:hover .coverage-edit-btn {
-  opacity: 1;
-}
-
-.coverage-chip {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: var(--paragraph-04-font-size);
-  font-weight: 500;
-  white-space: nowrap;
-  background: var(--ui-03);
-  color: var(--text-01);
-}
-
-.coverage-chip-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  &:disabled {
-    cursor: default;
-  }
-  &:not(:disabled):hover .coverage-chip {
-    opacity: 0.8;
-  }
-}
-
-.coverage-overridden-icon {
-  color: var(--interactive-primary);
-}
-
-.coverage-empty {
-  color: var(--text-muted);
 }
 
 // ─── Right strip ──────────────────────────────────────────────────

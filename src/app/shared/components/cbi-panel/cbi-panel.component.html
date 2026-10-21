@@ -1,7 +1,7 @@
 <div class="cbi-panel" [formGroup]="form()">
   <p class="cbi-panel__label">Contingent business interruption (CBI)</p>
   <div class="radio-field" data-field="cbiApplicable">
-    <p class="radio-label">Is this Business Interruption due to Contingent Business Interruption (CBI)?</p>
+    <p class="radio-label">Is this Business Interruption due to Contingent Business Interruption (CBI)? *</p>
     <nx-radio-group class="radio-row" formControlName="cbiApplicable" (valueChange)="answerChange.emit()">
       <nx-radio labelSize="small" value="yes">Yes</nx-radio>
       <nx-radio labelSize="small" value="no">No</nx-radio>
@@ -15,7 +15,7 @@
     <h3 class="sub-heading cbi-panel__sub-heading">Contingent business interruption details</h3>
     <div class="two-col-grid">
       <div data-field="cbiCaseType">
-        <nx-formfield label="CBI case type">
+        <nx-formfield label="CBI case type *">
           <nx-dropdown formControlName="cbiCaseType" placeholder="Select case type" (selectionChange)="answerChange.emit()">
             @for (opt of caseTypeOptions(); track opt.value) {
               <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
@@ -28,7 +28,7 @@
       </div>
       @if (showName()) {
         <div data-field="cbiThirdPartyName">
-          <nx-formfield [label]="nameLabel()">
+          <nx-formfield [label]="nameLabel() + (nameRequired ? ' *' : '')">
             <input nxInput formControlName="cbiThirdPartyName" maxlength="100" />
             @if (submitAttempted() && nameRequired && !form().get('cbiThirdPartyName')?.value) {
               <nx-error nxFormfieldError>Required</nx-error>
@@ -46,7 +46,7 @@
       <app-location-picker
         [policyNumber]="null"
         [value]="cbiLocation().value"
-        [promptLabel]="'Where did the originating CBI event occur?'"
+        [promptLabel]="'Where did the originating CBI event occur? *'"
         [skipHintText]="''"
         (locationChange)="onLocationChange($event)"
       ></app-location-picker>

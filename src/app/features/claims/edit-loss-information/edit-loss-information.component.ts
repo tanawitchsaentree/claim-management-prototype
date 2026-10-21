@@ -491,9 +491,20 @@ export class EditLossInformationComponent implements OnInit {
       changes: diffs.map(d => ({ label: d.label, original: d.original, updated: d.updated })),
       showChanges: true,
       hideIcon: true,
-      note: impactedBefore
-        ? 'Sections were built from the old values, so the open ones will be marked "Review needed".'
-        : undefined,
+      note: [
+        impactedBefore
+          ? 'Sections were built from the old values, so the open ones will be marked "Review needed".'
+          : '',
+        this.sync.willCreateFirstSection(
+          this.claimId(),
+          diffs.map(d => d.label),
+          this.form.getRawValue().causeOfLoss as string[] | null
+        )
+          ? 'A first section will be created from this cause of loss.'
+          : ''
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined,
       confirmLabel: 'Confirm changes',
       cancelLabel: 'Back to editing'
     });

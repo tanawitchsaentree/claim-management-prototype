@@ -153,7 +153,7 @@ export class MockClaimOverviewService extends MockBaseService {
     claimId: string,
     policy: LinkablePolicy,
     details?: CompletionDetails
-  ): Promise<{ claim: Claim; locationNeedsReconfirm: boolean; claimNumber: string; formerNumber: string }> {
+  ): Promise<{ claim: Claim; claimNumber: string; formerNumber: string }> {
     const linked = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
     // The "Complete the claim" step is written before the section is made, so the
     // section follows the confirmed cause (never an empty one).
@@ -219,46 +219,23 @@ export class MockClaimOverviewService extends MockBaseService {
         assignee: claim.assignee ?? 'Unassigned'
       })
     );
-    // Marlene confirmed (2026-10-05) that a Location of loss captured during
-    // the skeleton stage must be RE-CONFIRMED, not silently carried forward,
-    // once a policy is linked — it was entered through the no-policy manual
-    // modal (location-picker.component.ts routes to ManualLocationEntryModal
-    // when policyNumber is null), so it was never checked against the
-    // policy's actual CWB locations. Edit Claim Details' Locations of loss
-    // section already re-points the SAME location-picker at the real,
-    // policy-aware modal the moment policyNumber is set (no picker-routing
-    // fix needed — confirmed), so re-confirming is just a normal edit there.
-    // What was missing was anything telling the handler to go do it. Same
-    // task-queue mechanism as the reserves task above, not a new pattern —
-    // and only fires when there's an existing manually-entered location to
-    // recheck; a never-filled-in location already gets its own normal
-    // "fill this in" prompt from the empty-state picker.
-    const lossInfo = this.stateSvc.state().lossInformation.find(li => li.claimId === claimId);
-    const hadManualLocation = !!(
-      lossInfo?.lossLocation as unknown as { locations?: unknown[] } | undefined
-    )?.locations?.length;
-    if (hadManualLocation) {
-      await firstValueFrom(
-        this.taskSvc.create({
-          claimId,
-          taskType: 'Review',
-          description: `Confirm loss location for ${claimNumber} — entered manually before the policy was linked`,
-          status: 'open',
-          dueDate: dueDate.toISOString().split('T')[0],
-          priority: 'high',
-          assignee: claim.assignee ?? 'Unassigned'
-        })
-      );
-    }
-    return { claim, locationNeedsReconfirm: hadManualLocation, claimNumber, formerNumber };
+    // The skeleton's location is kept or changed in the Link policy step (it was
+    // entered with no policy, so Marlene's 2026-10-05 re-confirm rule is answered
+    // there), so no "Confirm loss location" task is needed any more.
+    return { claim, claimNumber, formerNumber };
   }
 
   /** Writes the description, cause and CBI answers the handler confirmed at conversion. */
   private async applyCompletion(claim: Claim, d: CompletionDetails): Promise<Claim> {
     const opts = this.lookupSvc.getCauseOfLossSync();
     const labels = (codes: string[] | undefined): string => (codes ?? []).map(c => causeLabel(c, opts)).join(', ') || '–';
+    const first = d.location?.locations[0];
     const updated = await firstValueFrom(
-      this.claimSvc.update(claim.claimId, { description: d.lossDescription, causeOfLoss: d.causeOfLoss })
+      this.claimSvc.update(claim.claimId, {
+        description: d.lossDescription,
+        causeOfLoss: d.causeOfLoss,
+        ...(first ? { location: { city: first.city ?? '', country: first.country ?? '' } } : {})
+      })
     );
     const li = await firstValueFrom(this.lossInfoSvc.getByClaimId(claim.claimId));
     if (li) {
@@ -269,6 +246,7 @@ export class MockClaimOverviewService extends MockBaseService {
             causeOfLoss: d.causeOfLoss,
             lossDescription: d.lossDescription,
             specifyOtherCauseOfLoss: d.specifyOtherCauseOfLoss,
+            ...(d.location ? { lossLocation: d.location } : {}),
             ...(d.cbi ?? {})
           } as unknown as LossInformationFormValue,
           claim.claimId
