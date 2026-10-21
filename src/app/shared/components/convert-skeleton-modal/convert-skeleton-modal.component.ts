@@ -18,17 +18,19 @@ import { MockPolicySearchService } from '../../../core/mock/services/mock-policy
 import { ClientSearchResult, PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
 import { Claim } from '../../../core/models/claim.model';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import { CompletionDetails } from '../../../core/models/claim-completion.model';
+import { CompleteClaimStepComponent } from './complete-claim-step/complete-claim-step.component';
 
 export interface ConvertSkeletonModalData {
   skeleton: Claim;
-  // Called when a policy is picked. Resolve true to close the picker (the caller
-  // has taken over), false to stay on the list. Without it, picking just closes
-  // the picker with the policy.
-  onPick?: (policy: PolicySearchResult) => Promise<boolean>;
+  // Called when the handler confirms the "Complete the claim" step. Resolve true
+  // to close the sheet (the caller has taken over), false to stay on the step.
+  // Without it, confirming just closes the sheet with the result.
+  onPick?: (policy: PolicySearchResult, details: CompletionDetails) => Promise<boolean>;
 }
 
-// Result: the eligible policy the user picked to bind the skeleton to (or null on cancel)
-export type ConvertSkeletonModalResult = PolicySearchResult | null;
+// Result: the policy picked and the details confirmed (or null on cancel)
+export type ConvertSkeletonModalResult = { policy: PolicySearchResult; details: CompletionDetails } | null;
 
 interface PolicyRow {
   policy: PolicySearchResult;
@@ -51,7 +53,8 @@ interface PolicyRow {
     NxDropdownModule,
     NxTabsModule,
     StatusChipComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    CompleteClaimStepComponent
   ],
   templateUrl: './convert-skeleton-modal.component.html',
   styleUrl: './convert-skeleton-modal.component.scss'
@@ -63,6 +66,9 @@ export class ConvertSkeletonModalComponent implements OnInit {
   private readonly policySvc = inject(MockPolicySearchService);
 
   readonly selectedNumber = signal<string | null>(null);
+  // Step 1 picks the policy, step 2 completes the claim; one sheet, no new dialog.
+  readonly step = signal<'pick' | 'complete'>('pick');
+  readonly chosen = signal<PolicySearchResult | null>(null);
 
   // Same search as FNOL "Client and policy search": the general fields, then the
   // result tabs. Client name starts pre-filled with the skeleton's client and
@@ -168,23 +174,33 @@ export class ConvertSkeletonModalComponent implements OnInit {
 
   readonly picking = signal(false);
 
-  // Picking a policy goes straight on to the "Link policy" confirm: no separate
-  // Continue click between the two, and the list stays open underneath it.
-  async select(row: PolicyRow): Promise<void> {
+  // Picking a policy moves on to "Complete the claim" inside this sheet; the
+  // Link policy confirm comes after that step.
+  select(row: PolicyRow): void {
     if (!row.eligible || this.picking()) return;
     this.selectedNumber.set(row.policy.policyNumber);
+    this.chosen.set(row.policy);
+    this.step.set('complete');
+  }
+
+  backToPolicies(): void {
+    this.step.set('pick');
+    this.selectedNumber.set(null);
+  }
+
+  async onComplete(details: CompletionDetails): Promise<void> {
+    const policy = this.chosen();
+    if (!policy || this.picking()) return;
     if (!this.data.onPick) {
-      this.modalRef.close(row.policy);
+      this.modalRef.close({ policy, details });
       return;
     }
     this.picking.set(true);
     try {
-      if (await this.data.onPick(row.policy)) {
+      if (await this.data.onPick(policy, details)) {
         // The next sheet is taking over: leave without sliding away.
         this.modalRef.addPanelClass('bottom-sheet-modal-panel--instant');
-        this.modalRef.close(row.policy);
-      } else {
-        this.selectedNumber.set(null);
+        this.modalRef.close({ policy, details });
       }
     } finally {
       this.picking.set(false);

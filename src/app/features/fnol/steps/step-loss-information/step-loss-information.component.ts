@@ -39,6 +39,8 @@ import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
+import { cbiShowThirdPartyName, cbiThirdPartyRequired, syncCbiControls } from '../../../../shared/utils/cbi-rules';
+import { CbiPanelComponent } from '../../../../shared/components/cbi-panel/cbi-panel.component';
 import {
   DuplicateCheckService,
   DuplicateClaim
@@ -72,6 +74,7 @@ interface LossInfoVM {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    CbiPanelComponent,
     NxButtonModule,
     NxFormfieldModule,
     NxInputModule,
@@ -482,10 +485,6 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     this.lossLocation.setValue(output);
   }
 
-  onCbiLocationChange(output: LocationPickerOutput): void {
-    this.cbiLocation.setValue(output);
-  }
-
   // ── Schema helpers ─────────────────────────────────────────────────
 
   getCauseLabel(causeKey: string): string {
@@ -601,109 +600,18 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     return (this.form.get('cbiCaseType')?.value as string | null) ?? null;
   }
 
-  // 'supplier-*' / 'customer-*' case types are the only ones with an actual
-  // named counterparty — Denial of Access / Loss of Attraction / Port
-  // Blockage / Service Interruption have no third party to name.
+  // The case-type rules (who has a named third party, which is required, the
+  // labels) live in shared/utils/cbi-rules.ts, shared with the Link policy step.
   get showCbiThirdPartyName(): boolean {
-    const key = this.selectedCbiCaseType;
-    return !!key && (key.startsWith('supplier-') || key.startsWith('customer-'));
+    return cbiShowThirdPartyName(this.selectedCbiCaseType);
   }
 
-  // ASSUMPTION [CBI-FNOL-3]: the functional design's field table literally
-  // says the name is "Required for: Supplier Named/Unnamed, Customer
-  // Named/Unnamed" — read at face value that would force a name on an
-  // "Unnamed" party, which contradicts what "Unnamed" means. Only the
-  // "-named" case types require it here; "-unnamed" still offers the field
-  // (a handler may know a loose description even without a formal name)
-  // but doesn't block on it.
   get cbiThirdPartyRequired(): boolean {
-    return !!this.selectedCbiCaseType?.endsWith('-named');
-  }
-
-  // Label never says "(optional)" even when cbiThirdPartyRequired is false
-  // (reviewer feedback, 2026-10-01) — the field being non-blocking for
-  // "Unnamed" case types doesn't mean the name is unimportant: a handler
-  // may know exactly which supplier/customer caused the CBI loss even when
-  // the policy itself doesn't name one. "Optional" reads as "skip this",
-  // which is the opposite of what we want here.
-  get cbiThirdPartyLabel(): string {
-    return this.selectedCbiCaseType?.startsWith('customer-') ? 'Customer name' : 'Supplier name';
-  }
-
-  // Industry — net-new per the CBI FD's category-specific fields table (11
-  // Sep 2026 meeting). Same gating as the name field: only the Supplier/
-  // Customer category has an industry to name. Optional either way — the
-  // FD doesn't state a required/optional split the way it does for name.
-  get showCbiThirdPartyIndustry(): boolean {
-    return this.showCbiThirdPartyName;
-  }
-
-  get cbiThirdPartyIndustryLabel(): string {
-    return this.selectedCbiCaseType?.startsWith('customer-')
-      ? 'Customer industry (optional)'
-      : 'Supplier industry (optional)';
-  }
-
-  onCbiApplicableChange(): void {
-    this.syncCbi();
+    return cbiThirdPartyRequired(this.selectedCbiCaseType);
   }
 
   syncCbi(): void {
-    const applicableCtrl = this.form.get('cbiApplicable');
-    if (applicableCtrl) {
-      if (this.showCbiQuestion) {
-        applicableCtrl.setValidators([Validators.required]);
-      } else {
-        applicableCtrl.clearValidators();
-        applicableCtrl.setValue(null);
-      }
-      applicableCtrl.updateValueAndValidity({ emitEvent: false });
-    }
-
-    const caseTypeCtrl = this.form.get('cbiCaseType');
-    const thirdPartyCtrl = this.form.get('cbiThirdPartyName');
-    const showDetails = this.showCbiQuestion && this.cbiApplicable === 'yes';
-
-    if (caseTypeCtrl) {
-      if (showDetails) {
-        caseTypeCtrl.setValidators([Validators.required]);
-      } else {
-        caseTypeCtrl.clearValidators();
-        caseTypeCtrl.setValue(null);
-      }
-      caseTypeCtrl.updateValueAndValidity({ emitEvent: false });
-    }
-
-    if (thirdPartyCtrl) {
-      if (showDetails && this.showCbiThirdPartyName && this.cbiThirdPartyRequired) {
-        thirdPartyCtrl.setValidators([Validators.required, Validators.maxLength(100)]);
-      } else if (showDetails && this.showCbiThirdPartyName) {
-        thirdPartyCtrl.setValidators([Validators.maxLength(100)]);
-      } else {
-        thirdPartyCtrl.clearValidators();
-        thirdPartyCtrl.setValue('');
-      }
-      thirdPartyCtrl.updateValueAndValidity({ emitEvent: false });
-    }
-
-    const industryCtrl = this.form.get('cbiThirdPartyIndustry');
-    if (industryCtrl) {
-      if (showDetails && this.showCbiThirdPartyIndustry) {
-        industryCtrl.setValidators([Validators.maxLength(100)]);
-      } else {
-        industryCtrl.clearValidators();
-        industryCtrl.setValue('');
-      }
-      industryCtrl.updateValueAndValidity({ emitEvent: false });
-    }
-
-    // No Angular validator here — LocationPickerOutput isn't a validatable
-    // primitive the same way. "Required" is enforced manually in
-    // getValidationErrors() below (checks locations.length), same place
-    // that already hand-builds every other CBI error message.
-    if (!showDetails) {
-      this.cbiLocation.setValue({ locations: [] });
-    }
+    syncCbiControls(this.form, this.cbiLocation, this.showCbiQuestion);
   }
 
   // ── Events array ────────────────────────────────────────────────────

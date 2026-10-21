@@ -1,0 +1,61 @@
+<header class="ccs__header">
+  <h2 class="ccs__title">Complete the claim — {{ skeleton().claimId }}</h2>
+  <p class="ccs__context">
+    {{ skeleton().clientName }} &middot; Policy {{ policy().policyNumber }} &middot; Loss date {{ skeleton().lossDate }}
+  </p>
+</header>
+
+<div class="ccs__body" tabindex="0" [formGroup]="form">
+  <p class="ccs__intro">
+    A skeleton claim doesn't hold everything a regular claim needs. Check these details, then link the policy.
+  </p>
+
+  <nx-formfield label="Loss description *" class="ccs__full">
+    <textarea nxInput formControlName="lossDescription" rows="3" [maxlength]="maxDescription"></textarea>
+    <nx-hint nxFormfieldHint>{{ descriptionLength }}/{{ maxDescription }}</nx-hint>
+    @if (submitAttempted() && form.controls.lossDescription.invalid) {
+      <nx-error nxFormfieldError>Describe what happened.</nx-error>
+    }
+  </nx-formfield>
+
+  @if (replaced()) {
+    <nx-message context="info" class="ccs__note">
+      The cause on the skeleton claim isn't available for this policy, so it was set to {{ keptLabel() }}. You can change it.
+    </nx-message>
+  }
+  <nx-formfield label="Cause of loss *" class="ccs__full">
+    <nx-multi-select
+      [options]="causeOptions"
+      selectValue="value"
+      selectLabel="label"
+      placeholder="Select cause of loss"
+      formControlName="causeOfLoss"
+      (selectionChange)="onAnswerChange()"
+    ></nx-multi-select>
+    @if (submitAttempted() && form.controls.causeOfLoss.invalid) {
+      <nx-error nxFormfieldError>Select at least one cause of loss.</nx-error>
+    }
+  </nx-formfield>
+  @if (showOther()) {
+    <nx-formfield label="Specify other cause of loss (optional)" class="ccs__full">
+      <input nxInput formControlName="specifyOtherCauseOfLoss" maxlength="100" />
+    </nx-formfield>
+  }
+
+  @if (askCbi()) {
+    <app-cbi-panel
+      [form]="form"
+      [cbiLocation]="cbiLocation"
+      [caseTypeOptions]="cbiCaseTypeOptions"
+      [submitAttempted]="submitAttempted()"
+      (answerChange)="onAnswerChange()"
+    ></app-cbi-panel>
+  }
+</div>
+
+<footer class="ccs__footer">
+  <div class="ccs__actions">
+    <button nxButton="secondary small" type="button" [disabled]="busy()" (click)="back.emit()">Back to policies</button>
+    <button nxButton="primary small" type="button" [disabled]="busy()" (click)="onConfirm()">Link policy</button>
+  </div>
+</footer>

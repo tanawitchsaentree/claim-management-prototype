@@ -37,6 +37,7 @@ import {
 } from '../../../core/models/loss-information.model';
 import { ClaimActivity } from '../../../core/models/claim-overview.model';
 import { LocationPickerOutput, LookupOption, OTHER_CAUSE_KEY } from '../../../core/models';
+import { causeLabel } from '../../../core/models/cause-of-loss';
 import {
   circumstanceLabel,
   circumstanceOptionsFor,
@@ -175,7 +176,7 @@ export class EditLossInformationComponent implements OnInit {
     const opts = this.causeOfLossOptions();
     return keys
       .map(k =>
-        this.qualify(opts.find(o => o.value === k)?.label ?? k, k === OTHER_CAUSE_KEY, specify)
+        this.qualify(causeLabel(k, opts), k === OTHER_CAUSE_KEY, specify)
       )
       .join(', ');
   }

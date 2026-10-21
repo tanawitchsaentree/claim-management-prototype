@@ -2,6 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, combineLatest, firstValueFrom } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
+import { causeLabel } from '../../models/cause-of-loss';
+import { CompletionDetails } from '../../models/claim-completion.model';
+import { LossInformationFormValue } from '../../models/loss-information.model';
+import { MockLossInformationService } from './mock-loss-information.service';
 import { Claim } from '../../models/claim.model';
 import { MockBaseService } from './mock-base.service';
 import { ClaimNumberService } from '../../services/claim-number.service';
@@ -25,6 +29,7 @@ export class MockClaimOverviewService extends MockBaseService {
   private readonly taskSvc = inject(MockTaskService);
   private readonly lookupSvc = inject(MockLookupService);
   private readonly sectionSvc = inject(MockSectionService);
+  private readonly lossInfoSvc = inject(MockLossInformationService);
   private readonly numberSvc = inject(ClaimNumberService);
 
   getOverview(claimId: string): Observable<ClaimOverview> {
@@ -82,7 +87,7 @@ export class MockClaimOverviewService extends MockBaseService {
   private causeLabels(codes: string[] | undefined): string[] {
     if (!codes?.length) return [];
     const opts = this.lookupSvc.getCauseOfLossSync();
-    return codes.map(code => opts.find(o => o.value === code)?.label ?? code);
+    return codes.map(code => causeLabel(code, opts));
   }
 
   private synthesizeOverviewFromClaim(claim: Claim): ClaimOverview {
@@ -146,9 +151,13 @@ export class MockClaimOverviewService extends MockBaseService {
   // under-reported what actually landed in the handler's task queue.
   async convertToRegularClaim(
     claimId: string,
-    policy: LinkablePolicy
+    policy: LinkablePolicy,
+    details?: CompletionDetails
   ): Promise<{ claim: Claim; locationNeedsReconfirm: boolean; claimNumber: string; formerNumber: string }> {
-    const claim = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
+    const linked = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
+    // The "Complete the claim" step is written before the section is made, so the
+    // section follows the confirmed cause (never an empty one).
+    const claim = details ? await this.applyCompletion(linked, details) : linked;
     // It is a regular claim now: it gets a regular claim number. The internal id (and
     // so every record pointing at it) stays; the SK- number becomes a permanent alias.
     const { number: claimNumber, former: formerNumber } = this.numberSvc.assign(claimId);
@@ -242,6 +251,41 @@ export class MockClaimOverviewService extends MockBaseService {
       );
     }
     return { claim, locationNeedsReconfirm: hadManualLocation, claimNumber, formerNumber };
+  }
+
+  /** Writes the description, cause and CBI answers the handler confirmed at conversion. */
+  private async applyCompletion(claim: Claim, d: CompletionDetails): Promise<Claim> {
+    const opts = this.lookupSvc.getCauseOfLossSync();
+    const labels = (codes: string[] | undefined): string => (codes ?? []).map(c => causeLabel(c, opts)).join(', ') || '–';
+    const updated = await firstValueFrom(
+      this.claimSvc.update(claim.claimId, { description: d.lossDescription, causeOfLoss: d.causeOfLoss })
+    );
+    const li = await firstValueFrom(this.lossInfoSvc.getByClaimId(claim.claimId));
+    if (li) {
+      await firstValueFrom(
+        this.lossInfoSvc.save(
+          {
+            ...li,
+            causeOfLoss: d.causeOfLoss,
+            lossDescription: d.lossDescription,
+            specifyOtherCauseOfLoss: d.specifyOtherCauseOfLoss,
+            ...(d.cbi ?? {})
+          } as unknown as LossInformationFormValue,
+          claim.claimId
+        )
+      );
+    }
+    const base = { claimId: claim.claimId, user: claim.assignee ?? 'Unassigned', objectType: 'Claim' as const };
+    const stamp = (n: string): { id: string; timestamp: string } => ({ id: `act-${n}-${Date.now()}`, timestamp: new Date().toISOString() });
+    const rows: ClaimActivity[] = [];
+    if (labels(claim.causeOfLoss) !== labels(d.causeOfLoss)) {
+      rows.push({ ...base, ...stamp('cause'), attribute: 'Cause of loss', valueOld: labels(claim.causeOfLoss), valueNew: labels(d.causeOfLoss) });
+    }
+    if ((claim.description ?? '') !== d.lossDescription) {
+      rows.push({ ...base, ...stamp('desc'), attribute: 'Loss description', valueOld: claim.description || '–', valueNew: d.lossDescription });
+    }
+    if (rows.length) this.appendActivities(claim.claimId, rows);
+    return updated;
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton

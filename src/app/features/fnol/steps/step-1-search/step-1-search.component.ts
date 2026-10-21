@@ -308,8 +308,9 @@ export class Step1SearchComponent {
       panelClass: 'bottom-sheet-modal-panel',
       showCloseIcon: false
     });
-    const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
-    if (!policy) return; // cancelled
+    const picked = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
+    if (!picked) return; // cancelled
+    const { policy, details } = picked;
 
     // Same rule as every other save on Claim Overview — a diff before
     // commit, not a bare "are you sure?". This action used to skip straight
@@ -341,7 +342,8 @@ export class Step1SearchComponent {
     // 2026-09-22, item 3 — a skeleton claim is already a claim).
     const { locationNeedsReconfirm, claimNumber } = await this.overviewSvc.convertToRegularClaim(
       skeleton.claimId,
-      policy
+      policy,
+      details
     );
     this.toast.success(
       `${skeleton.claimId} is now ${claimNumber}`,

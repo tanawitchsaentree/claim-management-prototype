@@ -34,6 +34,7 @@ import {
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
 import { Claim } from '../../../core/models/claim.model';
+import { CompletionDetails } from '../../../core/models/claim-completion.model';
 import { PolicyLocation } from '../../../core/models';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
 import { MassEvent } from '../../../core/models/mass-event.model';
@@ -106,7 +107,7 @@ const EMPTY_VM: OverviewVM = {
   massEvent: null
 };
 
-type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
+type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>['policy'];
 
 @Component({
   selector: 'app-claim-overview',
@@ -569,7 +570,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
       data: {
         skeleton,
-        onPick: policy => this.confirmAndLink(skeleton, policy)
+        onPick: (policy, details) => this.confirmAndLink(skeleton, policy, details)
       } satisfies ConvertSkeletonModalData,
       panelClass: 'bottom-sheet-modal-panel',
       showCloseIcon: false
@@ -578,7 +579,11 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   }
 
   /** Returns true once the link is confirmed and under way (picker may close). */
-  private async confirmAndLink(skeleton: Claim, policy: LinkablePolicy): Promise<boolean> {
+  private async confirmAndLink(
+    skeleton: Claim,
+    policy: LinkablePolicy,
+    details: CompletionDetails
+  ): Promise<boolean> {
     // Load the policy's locations while the handler reads the confirm dialog, so
     // the location sheet has them ready the instant they confirm.
     const prepared = this.locationReconfirmSvc.prepare(policy.policyNumber);
@@ -604,21 +609,22 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
     if (!confirmed) return false;
-    void this.completeLink(skeleton, policy, prepared);
+    void this.completeLink(skeleton, policy, prepared, details);
     return true;
   }
 
   private async completeLink(
     skeleton: Claim,
     policy: LinkablePolicy,
-    prepared: Promise<PolicyLocation[]>
+    prepared: Promise<PolicyLocation[]>,
+    details: CompletionDetails
   ): Promise<void> {
     try {
       // Link and location step run side by side: the Confirm loss location sheet
       // opens the moment the handler confirms (its data is already known), while
       // the link finishes behind it. The location is only written once the link
       // has landed. Skipping the sheet leaves the follow-up task in place.
-      const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+      const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy, details);
       const replaced = await this.locationReconfirmSvc.run(
         skeleton.claimId,
         policy.policyNumber,
