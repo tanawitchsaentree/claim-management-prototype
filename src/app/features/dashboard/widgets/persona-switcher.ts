@@ -62,7 +62,7 @@ const ROLE_LABEL: Record<string, string> = {
         }
         &--active {
           background: var(--interactive-primary);
-          color: #fff;
+          color: var(--text-02);
           border-color: var(--interactive-primary);
         }
       }

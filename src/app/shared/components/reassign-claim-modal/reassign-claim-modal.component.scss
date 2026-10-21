@@ -93,7 +93,7 @@
     background: var(--ui-02);
   }
   &--active {
-    background: var(--interactive-primary-selected, var(--ui-02));
+    background: var(--action-selected-background-color);
   }
 
   &__name {

@@ -12,10 +12,10 @@
 }
 
 .rec-guidance {
-  margin-bottom: var(--space-l);
+  margin-bottom: var(--space-lg);
 
   &__link {
-    margin-left: var(--space-s);
+    margin-left: var(--space-sm);
     vertical-align: middle;
   }
 
@@ -39,8 +39,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xl);
-  padding: var(--space-m) var(--space-l);
-  margin-bottom: var(--space-l);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
   background: var(--ui-02);
   border: 1px solid var(--ui-04);
   border-radius: var(--radius-s);

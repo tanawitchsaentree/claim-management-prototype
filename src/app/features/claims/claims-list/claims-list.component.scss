@@ -149,16 +149,16 @@
   border-radius: 10px;
 
   &--high {
-    background: var(--negative-01);
-    color: var(--negative);
+    background: var(--color-subtle-red);
+    color: var(--color-on-subtle-red);
   }
   &--medium {
-    background: var(--warning-01, #fef3e2);
-    color: var(--warning);
+    background: var(--color-subtle-yellow);
+    color: var(--color-on-subtle-yellow);
   }
   &--low {
-    background: var(--positive-01, #eaf4eb);
-    color: var(--positive, #27ae60);
+    background: var(--color-subtle-green);
+    color: var(--color-on-subtle-green);
   }
 }
 

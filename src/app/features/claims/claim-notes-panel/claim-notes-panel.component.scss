@@ -217,10 +217,10 @@
 // with no display anywhere at all.
 @keyframes note-flash {
   0% {
-    background: var(--info-light, #e3f0fb);
+    background: var(--color-subtle-blue);
   }
   60% {
-    background: var(--info-light, #e3f0fb);
+    background: var(--color-subtle-blue);
   }
   100% {
     background: transparent;

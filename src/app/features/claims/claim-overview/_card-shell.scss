@@ -6,7 +6,7 @@
 // redeclaring the shell. Same pattern as shared/styles/_form-section.scss.
 
 @mixin card {
-  background: var(--general-background-color, #ffffff);
+  background: var(--ui-01);
   border: 1px solid var(--ui-04);
   border-radius: var(--radius-s);
   padding: var(--space-xl);

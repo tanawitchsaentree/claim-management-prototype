@@ -136,12 +136,12 @@
   flex-shrink: 0;
 
   &--hard {
-    background: rgba(var(--negative-rgb, 210, 53, 29), 0.1);
-    color: var(--danger);
+    background: var(--color-subtle-red);
+    color: var(--color-on-subtle-red);
   }
   &--warning {
-    background: rgba(var(--warning-rgb, 255, 165, 0), 0.12);
-    color: var(--warning);
+    background: var(--color-subtle-yellow);
+    color: var(--color-on-subtle-yellow);
   }
 }
 
@@ -210,7 +210,7 @@
   flex-shrink: 0;
   margin-top: 1px;
   &--pass {
-    color: var(--positive, #27a25e);
+    color: var(--success);
   }
   &--fail {
     color: var(--danger);

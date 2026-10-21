@@ -75,7 +75,7 @@
 }
 
 .crm-section-icon {
-  color: var(--positive-01);
+  color: var(--success);
   flex-shrink: 0;
 }
 
@@ -94,5 +94,5 @@
 .crm-selection-hint {
   margin: var(--space-xs) 0 0;
   font-size: var(--paragraph-04-font-size);
-  color: var(--message-warning-color, var(--ui-05));
+  color: var(--color-on-subtle-yellow);
 }
