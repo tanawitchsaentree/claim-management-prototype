@@ -33,6 +33,7 @@ export class ReservesStepComponent {
   readonly typeOptions = this.lookupSvc.getReserveTypesSync().filter(o => o.value !== 'recoveries');
   readonly subTypeOptions = this.lookupSvc.getReserveSubTypesSync();
   readonly attempted = signal(false);
+  readonly currency = computed(() => this.policy().currency ?? 'EUR');
 
   // A signal (not a FormArray): the app is zoneless, so only signal changes redraw.
   readonly rows = signal<FormGroup[]>([]);
@@ -53,7 +54,9 @@ export class ReservesStepComponent {
         () =>
           new FormGroup({
             reserveType: new FormControl<string | null>('indemnity'),
-            reserveSubType: new FormControl<string | null>('direct-loss'),
+            // add-reserve-modal has no per-section default for the sub-type, so none here either:
+            // the handler picks one when they enter an amount.
+            reserveSubType: new FormControl<string | null>(null),
             amount: new FormControl<number | null>(null, [Validators.min(0.01)])
           })
       )
@@ -66,12 +69,13 @@ export class ReservesStepComponent {
 
   onLink(): void {
     this.attempted.set(true);
-    if (this.rows().some(r => r.invalid)) return;
+    if (this.rows().some(r => r.invalid || (r.value.amount && !r.value.reserveSubType))) return;
     const plans: ReservePlan[] = this.rows()
       .map((r, i) => ({
         sectionIndex: i,
         reserveType: r.value.reserveType ?? 'indemnity',
-        reserveSubType: r.value.reserveSubType ?? 'direct-loss',
+        reserveSubType: r.value.reserveSubType ?? '',
+        currency: this.policy().currency,
         amount: Number(r.value.amount ?? 0)
       }))
       .filter(p => p.amount > 0);

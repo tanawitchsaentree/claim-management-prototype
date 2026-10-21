@@ -15,6 +15,7 @@ import { MockLossInformationService } from './mock-loss-information.service';
 import { MockSectionService } from './mock-section.service';
 import { MockFinancialOverviewService } from './mock-financial-overview.service';
 import { MockPartiesService } from './mock-parties.service';
+import { MockLossEventService } from './mock-loss-event.service';
 import { MockStateService } from '../state/mock-state.service';
 import policiesData from '../data/policies.json';
 
@@ -41,6 +42,7 @@ export class MockClaimConversionService {
   private readonly sectionSvc = inject(MockSectionService);
   private readonly financeSvc = inject(MockFinancialOverviewService);
   private readonly partiesSvc = inject(MockPartiesService);
+  private readonly lossEventSvc = inject(MockLossEventService);
   private readonly stateSvc = inject(MockStateService);
 
   /** Writes the description, cause, location and CBI answers the handler confirmed. */
@@ -82,6 +84,16 @@ export class MockClaimConversionService {
     }
     if (rows.length) this.stateSvc.patchActivities(items => [...rows, ...items]);
     return updated;
+  }
+
+  /** Creates the loss event for this claim and attaches it (kept if the claim already has one). */
+  async attachLossEvent(claim: Claim, d: CompletionDetails | undefined): Promise<Claim> {
+    if (claim.lossEventId) return claim;
+    const opts = this.lookupSvc.getCauseOfLossSync();
+    const labels = (claim.causeOfLoss ?? []).map(c => causeLabel(c, opts));
+    const reserve = (d?.reserves ?? []).reduce((sum, r) => sum + r.amount, 0);
+    const id = this.lossEventSvc.createForClaim(claim, labels, reserve);
+    return firstValueFrom(this.claimSvc.update(claim.claimId, { lossEventId: id }));
   }
 
   /**
@@ -142,7 +154,7 @@ export class MockClaimConversionService {
           reserveSubType: labelOf(subs, r.reserveSubType),
           status: 'Pending',
           reserveValue: r.amount,
-          currency: 'EUR'
+          currency: r.currency
         })
       );
       count++;

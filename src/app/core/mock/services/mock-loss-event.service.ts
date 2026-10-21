@@ -12,6 +12,7 @@ import {
   LossEventPartyRow,
   LossEventRelatedClaim
 } from '../../models/loss-event-overview.model';
+import { LossEventSummary } from '../../models/dashboard-extended.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 import lossEventsData from '../data/loss-events.json';
@@ -40,7 +41,8 @@ export class MockLossEventService extends MockBaseService {
    */
   getOverview(lossEventId: string): Observable<LossEventOverview | null> {
     const summary = this.stateSvc.state().lossEvents.find(e => e.lossEventId === lossEventId);
-    const raw = this.rawEvents.find(e => e.lossEventId === lossEventId);
+    // A seeded event has its detail in the JSON; one created at runtime keeps it on the state record.
+    const raw = this.rawEvents.find(e => e.lossEventId === lossEventId) ?? (summary as unknown as LossEventDetail | undefined);
     if (!summary || !raw) return this.respond(null);
 
     const claims = this.claims.filter(c => c.lossEventId === lossEventId);
@@ -53,6 +55,37 @@ export class MockLossEventService extends MockBaseService {
       financials: this.rollUp(summary.totalReserve, summary.currency, claims),
       documents: this.collectDocuments(claims)
     } satisfies LossEventOverview);
+  }
+
+  /**
+   * Link policy turns a skeleton into a regular claim, and a regular claim belongs
+   * to a loss event: create one for it (next EVT number) and return its id.
+   */
+  createForClaim(claim: Claim, causeLabels: string[], totalReserve: number): string {
+    // Next number in the EVT-0nn series (some seeded events use a different id style).
+    const used = this.stateSvc
+      .state()
+      .lossEvents.map(e => Number(/^EVT-(\d{3})$/.exec(e.lossEventId)?.[1] ?? 0));
+    const lossEventId = `EVT-${String(Math.max(0, ...used) + 1).padStart(3, '0')}`;
+    const where = [claim.location?.city, claim.location?.country].filter(Boolean).join(', ');
+    const event = {
+      lossEventId,
+      name: [causeLabels[0] ?? 'Loss event', claim.location?.city ?? claim.clientName].join(' — '),
+      eventDate: claim.lossDate,
+      oe: claim.location?.country ?? '',
+      lineOfBusiness: claim.lineOfBusiness,
+      claimCount: 1,
+      totalReserve,
+      currency: claim.currency,
+      status: 'Open' as const,
+      proximateCause: causeLabels,
+      eventOccurrenceTime: '',
+      eventLocation: where,
+      causesRelations: [] as string[],
+      damagesCaused: []
+    };
+    this.stateSvc.appendLossEvents([event as unknown as LossEventSummary]);
+    return lossEventId;
   }
 
   private toGeneralInfo(raw: LossEventDetail): LossEventGeneralInfo {
@@ -86,7 +119,8 @@ export class MockLossEventService extends MockBaseService {
   private collectParties(claims: Claim[]): LossEventPartyRow[] {
     const wanted = new Set(claims.map(c => this.normaliseClaimId(c.claimId)));
     const rows: LossEventPartyRow[] = [];
-    for (const p of this.parties) {
+    // Seeded parties plus the ones a Link policy added at runtime.
+    for (const p of [...this.parties, ...this.stateSvc.state().addedParties]) {
       if (!p.claimId || !wanted.has(this.normaliseClaimId(p.claimId))) continue;
       for (const role of p.roles) {
         rows.push({

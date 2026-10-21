@@ -17,6 +17,8 @@ export interface ReservePlan {
   sectionIndex: number;
   reserveType: string;
   reserveSubType: string;
+  /** The policy's currency. */
+  currency: string;
   amount: number;
 }
 

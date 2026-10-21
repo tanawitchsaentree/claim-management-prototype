@@ -148,6 +148,9 @@
                   <td nxCell>{{ claim.clientName }}</td>
                   <td nxCell>
                     <app-status-chip [status]="claim.status" domain="claim" />
+                    @if (claim.skeletonState === 'awaiting-policy') {
+                      <app-status-chip status="awaiting-policy" domain="claim" label="Awaiting policy" class="cl-awaiting" />
+                    }
                     @if (isDormant(claim.dateUpdated) && claim.status !== 'Closed') {
                       <nx-badge
                         type="critical"

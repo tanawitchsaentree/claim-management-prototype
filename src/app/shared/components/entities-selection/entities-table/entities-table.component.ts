@@ -53,6 +53,8 @@ export class EntitiesTableComponent {
   readonly hasLossLocation = input(false);
   /** Ticking only: no per-row action menus (the Link policy coverage step). */
   readonly selectionOnly = input(false);
+  /** Columns a group / sub-item label spreads over (name..documents, fewer in ticking-only mode). */
+  readonly span = computed(() => (this.selectionOnly() ? 4 : 5));
   readonly allExpanded = computed(() => this.groups().every(g => g.expanded));
 
   readonly toggleAll = output<boolean>();

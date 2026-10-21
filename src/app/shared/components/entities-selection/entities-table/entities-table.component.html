@@ -19,7 +19,9 @@
         <th nxHeaderCell class="col-status">Status</th>
         <th nxHeaderCell class="col-limit">Limit</th>
         <th nxHeaderCell class="col-covered">Covered by</th>
-        <th nxHeaderCell class="col-docs">Documents</th>
+        @if (!selectionOnly()) {
+          <th nxHeaderCell class="col-docs">Documents</th>
+        }
         @if (!selectionOnly()) {
           <th nxHeaderCell class="col-action">Action</th>
         }
@@ -41,7 +43,7 @@
               ></nx-icon>
             </button>
           </td>
-          <td nxCell colspan="5" class="group-row__label">{{ group.label }}</td>
+          <td nxCell [attr.colspan]="span()" class="group-row__label">{{ group.label }}</td>
           @if (!selectionOnly()) {
 <td nxCell class="col-action">
             <button
@@ -142,7 +144,9 @@
       </app-entity-limit-cell>
     </td>
     <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
-    <td nxCell class="col-docs">{{ entity.documentsCount ?? 0 }}</td>
+    @if (!selectionOnly()) {
+      <td nxCell class="col-docs">{{ entity.documentsCount ?? 0 }}</td>
+    }
     @if (!selectionOnly()) {
 <td nxCell class="col-action">
       <button
@@ -183,7 +187,7 @@
             ></nx-checkbox>
           </div>
         </td>
-        <td nxCell colspan="5">
+        <td nxCell [attr.colspan]="span()">
           <div class="entity-cell sub-item__name" [style.--lvl]="level">{{ sub.name }}</div>
         </td>
         @if (!selectionOnly()) {

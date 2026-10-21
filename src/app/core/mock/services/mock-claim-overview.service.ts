@@ -127,6 +127,7 @@ export class MockClaimOverviewService extends MockBaseService {
         totalRecoveries: 0,
         outstanding: claim.lossAmount
       },
+      lossEventId: claim.lossEventId ?? undefined,
       massEventId: claim.massEventId,
       massEventLinkStatus: claim.massEventLinkStatus,
       massEventLinkedBy: claim.massEventLinkedBy,
@@ -156,7 +157,9 @@ export class MockClaimOverviewService extends MockBaseService {
     const linked = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
     // The "Complete the claim" step is written before the section is made, so the
     // section follows the confirmed cause (never an empty one).
-    const claim = details ? await this.conversionSvc.applyDetails(linked, details) : linked;
+    const applied = details ? await this.conversionSvc.applyDetails(linked, details) : linked;
+    // A regular claim belongs to a loss event: one is created and the claim attached to it.
+    const claim = await this.conversionSvc.attachLossEvent(applied, details);
     // It is a regular claim now: it gets a regular claim number. The internal id (and
     // so every record pointing at it) stays; the SK- number becomes a permanent alias.
     const { number: claimNumber, former: formerNumber } = this.numberSvc.assign(claimId);

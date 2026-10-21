@@ -19,6 +19,7 @@ import { ClientSearchResult, PolicySearchResult } from '../../../features/fnol/m
 import { Claim } from '../../../core/models/claim.model';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { CompletionDetails, ReservePlan, SectionPlan } from '../../../core/models/claim-completion.model';
+import { FnolStep, FnolStepperComponent } from '../fnol-stepper/fnol-stepper.component';
 import { CompleteClaimStepComponent } from './complete-claim-step/complete-claim-step.component';
 import { CoverageStepComponent } from './coverage-step/coverage-step.component';
 import { ReservesStepComponent } from './reserves-step/reserves-step.component';
@@ -58,7 +59,8 @@ interface PolicyRow {
     EmptyStateComponent,
     CompleteClaimStepComponent,
     CoverageStepComponent,
-    ReservesStepComponent
+    ReservesStepComponent,
+    FnolStepperComponent
   ],
   templateUrl: './convert-skeleton-modal.component.html',
   styleUrl: './convert-skeleton-modal.component.scss'
@@ -74,6 +76,17 @@ export class ConvertSkeletonModalComponent implements OnInit {
   // optional reserves. Steps already visited stay mounted (hidden) so Back keeps what was typed.
   readonly step = signal<'pick' | 'complete' | 'coverage' | 'reserves'>('pick');
   readonly chosen = signal<PolicySearchResult | null>(null);
+  // The same progress tracker the wizards use, so the handler sees where they are.
+  readonly steps = computed<FnolStep[]>(() => {
+    const order = ['pick', 'complete', 'coverage', 'reserves'] as const;
+    const labels = ['Policy', 'Claim details', 'Coverages', 'Reserves'];
+    const at = order.indexOf(this.step());
+    return order.map((key, i) => ({
+      key,
+      label: labels[i],
+      status: i < at ? 'completed' : i === at ? 'active' : 'pending'
+    }));
+  });
   readonly draft = signal<CompletionDetails | null>(null);
   readonly plans = signal<SectionPlan[] | null>(null);
 

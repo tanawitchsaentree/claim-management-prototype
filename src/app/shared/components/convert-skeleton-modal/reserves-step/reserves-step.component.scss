@@ -60,3 +60,10 @@
 .rvs__actions {
   @include sheet.footer-actions;
 }
+
+.rvs__error {
+  grid-column: 1 / -1;
+  order: 99;
+  margin: 0;
+  color: var(--danger);
+}

@@ -278,6 +278,12 @@ export class MockStateService {
     this.persist();
   }
 
+  appendLossEvents(events: LossEventSummary[]): void {
+    const cur = this._state();
+    this._state.set({ ...cur, lossEvents: [...cur.lossEvents, ...events] });
+    this.persist();
+  }
+
   patchLossEvent(lossEventId: string, partial: Partial<LossEventSummary>): void {
     const cur = this._state();
     this._state.set({

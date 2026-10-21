@@ -34,6 +34,9 @@ import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-
 const PAGE_SIZE = 15;
 import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 
+/** The Status dropdown's extra entry for claims still waiting for a policy. */
+const AWAITING = 'Awaiting policy';
+
 @Component({
   selector: 'app-claims-list',
   standalone: true,
@@ -77,7 +80,9 @@ export class ClaimsListComponent {
 
   readonly breadcrumb: BreadcrumbItem[] = [{ label: 'Claims' }];
 
-  readonly statuses: ClaimStatus[] = ['Open', 'Closed'];
+  // "Awaiting policy" is not a status (the model only has Open / Closed); it is a claim
+  // registered before its policy was known, so it filters on that instead.
+  readonly statuses: (ClaimStatus | typeof AWAITING)[] = ['Open', 'Closed', AWAITING];
 
   readonly linesOfBusiness: LineOfBusiness[] = [
     'Property',
@@ -91,7 +96,7 @@ export class ClaimsListComponent {
 
   readonly filterForm = new FormGroup({
     search: new FormControl(''),
-    status: new FormControl<ClaimStatus | null>(null),
+    status: new FormControl<ClaimStatus | typeof AWAITING | null>(null),
     lineOfBusiness: new FormControl<LineOfBusiness | null>(null),
     priority: new FormControl<Priority | null>(null)
   });
@@ -121,14 +126,18 @@ export class ClaimsListComponent {
 
   private lastFilter?: ClaimFilter;
 
-  private async load(filter?: ClaimFilter): Promise<void> {
+  private awaitingOnly = false;
+
+  private async load(filter?: ClaimFilter, awaitingOnly = false): Promise<void> {
+    this.awaitingOnly = awaitingOnly;
     if (this.quickFilterMine()) {
       filter = { ...filter, assignee: this.auth.user()?.name };
     }
     this.lastFilter = filter;
+    this.awaitingOnly = awaitingOnly;
     this.loading.set(true);
     const data = await firstValueFrom(this.svc.getAll(filter));
-    this.all.set(data);
+    this.all.set(awaitingOnly ? data.filter(c => c.skeletonState === 'awaiting-policy') : data);
     this.loading.set(false);
     this.page.set(1);
     this.selected.set(new Set());
@@ -136,12 +145,16 @@ export class ClaimsListComponent {
 
   onFilter(): void {
     const v = this.filterForm.getRawValue();
-    this.load({
-      search: v.search || undefined,
-      status: v.status ?? undefined,
-      lineOfBusiness: v.lineOfBusiness ?? undefined,
-      priority: v.priority ?? undefined
-    });
+    const awaiting = v.status === AWAITING;
+    this.load(
+      {
+        search: v.search || undefined,
+        status: v.status && v.status !== AWAITING ? v.status : undefined,
+        lineOfBusiness: v.lineOfBusiness ?? undefined,
+        priority: v.priority ?? undefined
+      },
+      awaiting
+    );
   }
 
   onReset(): void {
@@ -211,7 +224,7 @@ export class ClaimsListComponent {
       claimIds.length === 1 ? 'Claim reassigned' : `${claimIds.length} claims reassigned`,
       `Now assigned to ${result.handlerName}`
     );
-    await this.load(this.lastFilter);
+    await this.load(this.lastFilter, this.awaitingOnly);
   }
 
   isDormant(dateUpdated: string): boolean {

@@ -19,13 +19,16 @@
         </nx-dropdown>
       </nx-formfield>
       <nx-formfield label="Reserve sub-type">
-        <nx-dropdown formControlName="reserveSubType">
+        <nx-dropdown formControlName="reserveSubType" placeholder="Select">
           @for (o of subTypeOptions; track o.value) {
             <nx-dropdown-item [value]="o.value">{{ o.label }}</nx-dropdown-item>
           }
         </nx-dropdown>
       </nx-formfield>
-      <nx-formfield label="Reserve amount (EUR)">
+      @if (attempted() && row.controls['amount'].value && !row.controls['reserveSubType'].value) {
+        <p class="rvs__error" role="alert">Choose a sub-type for this reserve.</p>
+      }
+      <nx-formfield [label]="'Reserve amount (' + currency() + ')'">
         <input nxInput type="number" min="0" formControlName="amount" />
         @if (attempted() && row.controls['amount'].invalid) {
           <nx-error nxFormfieldError>Enter an amount greater than 0, or leave it empty.</nx-error>

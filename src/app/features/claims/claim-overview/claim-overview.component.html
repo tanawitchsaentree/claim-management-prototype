@@ -80,7 +80,7 @@
         @if (claim.lossEventId) {
           <div class="co-field">
             <span class="co-label">Loss event ID</span>
-            <a class="co-value co-value--link">{{ claim.lossEventId }}</a>
+            <a class="co-value co-value--link" [routerLink]="['/loss-events', claim.lossEventId, 'overview']">{{ claim.lossEventId }}</a>
           </div>
         }
         <div class="co-field">

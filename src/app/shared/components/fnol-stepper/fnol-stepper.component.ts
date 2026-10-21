@@ -19,4 +19,6 @@ export class FnolStepperComponent {
   @Input() steps: FnolStep[] = [];
   @Input() currentStep = '';
   @Input() compact = false;
+  /** Read out by screen readers; the FNOL wizard keeps the default. */
+  @Input() ariaLabel = 'FNOL progress';
 }
