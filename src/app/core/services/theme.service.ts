@@ -9,6 +9,11 @@ export type AppTheme = 'ndbx' | 'a1';
 // <link> tags live in index.html; only one is ever enabled at a time.
 // Persisted so a reload (or the dev banner's own Reset button) keeps
 // showing whichever theme was last picked.
+//
+// sync() also stamps <html data-theme="...">: the project's own theme layers
+// (src/styles/themes/_ndbx.scss, _a1.scss) are scoped to that attribute, so
+// the library stylesheet and our overrides always switch together. See
+// .claude/THEMING.md.
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private static readonly STORAGE_KEY = 'app:theme';
@@ -21,6 +26,7 @@ export class ThemeService {
   // matches localStorage before the first paint, and again on every toggle.
   sync(): void {
     const current = this.theme();
+    document.documentElement.dataset['theme'] = current;
     this.setLinkDisabled('theme-link-ndbx', current !== 'ndbx');
     this.setLinkDisabled('theme-link-a1', current !== 'a1');
   }

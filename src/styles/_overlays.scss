@@ -1,0 +1,222 @@
+// Shared overlay surfaces that live outside component scoping (CDK overlay
+// panes, ViewEncapsulation.None popovers, fixed side sheets).
+
+// ── Bottom-sheet modal panel (shared — Mass Event edit, Notes "View all") ───
+// Overrides NDBX modal default scale animation with a slide-up animation while
+// the dialog is centered horizontally. The panelClass goes on .cdk-overlay-pane;
+// we target the inner nx-modal-container for the actual transform. Note: this
+// is NOT the same thing as NxModalConfig.fullscreen (modal.mjs's own native
+// option) — fullscreen:true goes edge-to-edge (width/height forced to 100%,
+// no gutter); this class keeps the --layout-inset-base gutter on top/left/
+// right and only the bottom edge is flush, which is the "near-fullscreen
+// sheet" look, not true fullscreen.
+.bottom-sheet-modal-panel {
+  width: min(100vw - 2 * var(--layout-inset-base), var(--bottom-sheet-max-width)) !important;
+  max-width: none !important;
+  height: calc(100vh - var(--layout-inset-base)) !important;
+  max-height: calc(100vh - var(--layout-inset-base)) !important;
+  margin-top: var(--layout-inset-base) !important;
+  padding: 0 !important;
+  align-self: flex-end;
+
+  // Override NDBX modal-container animation (modal.mjs:312):
+  //   default :host  transform: scale(1.3); opacity: 0
+  //   .nx-modal-container--entering  transform: scale(1); opacity: 1
+  //   .nx-modal-container--exiting   transform: scale(1.3); opacity: 0
+  // We replace scale(1.3) with translateY(100%) for slide behavior.
+  //
+  // IMPORTANT: NxModalContainer.getAnimationDuration() (modal.mjs) reads the
+  // --transitionDuration custom property with parseFloat() (no unit parsing)
+  // and uses that single value as the setTimeout for BOTH the enter and exit
+  // JS state machine — but only the EXIT side matters here: afterClosed()
+  // (and thus _overlayRef.dispose(), which yanks the CDK backdrop instantly,
+  // no fade) doesn't fire until this timer elapses. Several flows in this
+  // app chain a second dialogSvc.open() off of afterClosed() (e.g. "Can't
+  // find it? Create manually" closing the search modal then opening the
+  // create form) — if this timer runs any longer than the exit CSS's real
+  // duration, there's a dead window with literally no backdrop where the
+  // real page flashes through, undimmed, before the next dialog opens.
+  // So: keep --transitionDuration matched to the EXIT duration (short, so
+  // chained dialogs hand off quickly) — the ENTER side has no such
+  // disposal step to desync, so its own CSS transition can run longer than
+  // this timer for a smoother single-dialog open. Must be set directly on
+  // nx-modal-container's own selector below — custom properties are
+  // inherited, but the component's :host rule declares this SAME property
+  // directly on itself, and a directly-declared value always wins over an
+  // inherited one regardless of !important.
+  .nx-modal-container,
+  .nx-modal__container,
+  nx-modal-container {
+    --transitionDuration: 160 !important;
+    transform: translateY(100%) !important;
+    opacity: 0 !important;
+    border-radius: 8px 8px 0 0 !important;
+    box-shadow: 0 -8px 24px var(--claim-overlay-shadow) !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    transition:
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 320ms ease-out !important;
+
+    &.nx-modal-container--entering {
+      transform: translateY(0) !important;
+      opacity: 1 !important;
+    }
+    &.nx-modal-container--exiting {
+      transform: translateY(100%) !important;
+      opacity: 0 !important;
+      transition:
+        transform 160ms cubic-bezier(0.4, 0, 1, 1),
+        opacity 140ms ease-in !important;
+    }
+  }
+
+  // A sheet that hands over to / takes over from another sheet (Link policy ->
+  // Confirm loss location): no slide in, no slide out, so the swap reads as the
+  // content changing, not as one sheet leaving and another arriving.
+  &.bottom-sheet-modal-panel--instant {
+    .nx-modal-container,
+    .nx-modal__container,
+    nx-modal-container {
+      &,
+      &.nx-modal-container--entering,
+      &.nx-modal-container--exiting {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+      }
+    }
+  }
+}
+
+.instant-backdrop {
+  transition: none !important;
+}
+
+// ── Claim Preview Popover (global — ViewEncapsulation.None) ───────────────────
+.cpop {
+  width: 300px;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px var(--claim-overlay-shadow-heavy);
+  overflow: hidden;
+  font-size: var(--paragraph-03-font-size);
+}
+
+.cpop__loading,
+.cpop__not-found {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+@keyframes cpop-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.cpop__spinner {
+  animation: cpop-spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+.cpop__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.cpop__id {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 700;
+  color: var(--text-01);
+  font-family: monospace;
+}
+
+.cpop__fields {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  padding: 12px 16px;
+  margin: 0;
+
+  dt {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  dd {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-01);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.cpop__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--ui-04);
+}
+
+// ─── Entity detail side sheet (global — Angular scoping cannot apply here) ────
+
+.side-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--claim-overlay-backdrop);
+  z-index: 90;
+  animation: side-sheet-backdrop-in 0.2s ease-out;
+}
+
+@keyframes side-sheet-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.side-sheet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 600px;
+  max-width: 100vw;
+  background: var(--ui-01);
+  box-shadow: -4px 0 24px var(--claim-overlay-shadow);
+  z-index: 100;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0, 0, 0.1, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  // Entities & damages: 5-column items table needs more room than parties.
+  &--wide {
+    width: min(760px, 100vw);
+  }
+
+  @media (max-width: 768px) {
+    width: 100vw;
+  }
+}

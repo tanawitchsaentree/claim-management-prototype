@@ -56,3 +56,6 @@ supabase/.temp/
 
 # Raw Jira scrape material — research input, not source (2026-08-20 audit)
 .agents/jira-clone/
+
+# Theme refactor snapshots (scripts/theme-snapshot.mjs) - local evidence, not source
+.theme-snapshots/

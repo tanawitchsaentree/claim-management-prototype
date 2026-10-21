@@ -1,0 +1,135 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// A1 (Allianz One, standard density) theme layer. Active only when
+// <html data-theme="a1"> (ThemeService).
+//
+// allianz-one.css already defines every NDBX-named token (--text-01, --ui-04,
+// --button-*, --paragraph-*, ...) from A1's semantic palette, so nothing NDBX-
+// named is overridden here: the library's own values are the standard.
+// This file only maps the PROJECT tokens (../_tokens.scss) onto A1 semantics.
+//
+// Rule: every right-hand side is an A1 --semantic-* token, never a raw value.
+// Project tokens with no A1 role (chart fills, priority dots, avatar, dev
+// banner, navbar scrims, tree indent, z-index, sizes) are deliberately not
+// mapped and keep their _tokens.scss value. See .claude/THEMING.md.
+// ─────────────────────────────────────────────────────────────────────────────
+:root:where([data-theme='a1']) {
+  // ── App chrome + text ──────────────────────────────────────────
+  --app-background: var(--semantic-color-background-default);
+  --page-content-bg: var(--semantic-color-background-emphasis);
+  --text-muted: var(--semantic-color-on-surface-secondary-readonly);
+  --message-error-color: var(--semantic-color-on-signal-subtle-critical-resting);
+  --action-hover-background: var(--semantic-color-surface-default-hover);
+
+  // ── Spacing (A1 static gap scale, same 4px grid) ───────────────
+  --space-xs: var(--semantic-gap-all-static-100);
+  --space-sm: var(--semantic-gap-all-static-200);
+  --space-md: var(--semantic-gap-all-static-300);
+  --space-base: var(--semantic-gap-all-static-400);
+  // A1 has no 20px step; the nearest A1 step is 24px.
+  --space-lg: var(--semantic-gap-all-static-600);
+  --space-xl: var(--semantic-gap-all-static-600);
+  --space-2xl: var(--semantic-gap-all-static-800);
+  --space-3xl: var(--semantic-gap-all-static-1000);
+  --space-4xl: var(--semantic-gap-all-static-1200);
+  --space-5xl: var(--semantic-gap-all-static-1600);
+  --page-content-top: var(--semantic-gap-all-static-1000);
+
+  // ── Status chips: one A1 signal/accent pair per colour family ──
+  // blue = info, green = positive, red = critical, amber = warning,
+  // grey = neutral, purple/aqua/yellow = accent.
+  --claim-status-open-bg: var(--semantic-color-signal-subtle-info-resting);
+  --claim-status-open-color: var(--semantic-color-on-signal-subtle-info-resting);
+  --claim-status-in-progress-bg: var(--semantic-color-signal-subtle-info-resting);
+  --claim-status-in-progress-color: var(--semantic-color-on-signal-subtle-info-resting);
+  --claim-status-priced-bg: var(--semantic-color-accent-subtle-gray-resting);
+  --claim-status-priced-color: var(--semantic-color-on-accent-subtle-gray-resting);
+  --claim-status-quoted-bg: var(--semantic-color-accent-subtle-gray-resting);
+  --claim-status-quoted-color: var(--semantic-color-on-accent-subtle-gray-resting);
+  --claim-status-bound-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --claim-status-bound-color: var(--semantic-color-on-signal-subtle-positive-resting);
+  --claim-status-declined-bg: var(--semantic-color-signal-subtle-critical-resting);
+  --claim-status-declined-color: var(--semantic-color-on-signal-subtle-critical-resting);
+  --claim-status-closed-bg: var(--semantic-color-accent-subtle-gray-resting);
+  --claim-status-closed-color: var(--semantic-color-on-accent-subtle-gray-resting);
+
+  --task-status-open-bg: var(--semantic-color-signal-subtle-info-resting);
+  --task-status-open-color: var(--semantic-color-on-signal-subtle-info-resting);
+  --task-status-in-progress-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --task-status-in-progress-color: var(--semantic-color-on-signal-subtle-warning-resting);
+  --task-status-done-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --task-status-done-color: var(--semantic-color-on-signal-subtle-positive-resting);
+  --task-status-pending-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --task-status-pending-color: var(--semantic-color-on-signal-subtle-warning-resting);
+  --task-status-not-assigned-bg: var(--semantic-color-accent-subtle-gray-resting);
+  --task-status-not-assigned-color: var(--semantic-color-on-accent-subtle-gray-resting);
+  --task-status-completed-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --task-status-completed-color: var(--semantic-color-on-signal-subtle-positive-resting);
+
+  --entity-status-promised-bg: var(--semantic-color-signal-subtle-info-resting);
+  --entity-status-promised-color: var(--semantic-color-on-signal-subtle-info-resting);
+  --entity-status-conditional-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --entity-status-conditional-color: var(--semantic-color-on-signal-subtle-warning-resting);
+  --entity-status-by-extension-bg: var(--semantic-color-accent-subtle-purple-resting);
+  --entity-status-by-extension-color: var(--semantic-color-on-accent-subtle-purple-resting);
+  --entity-status-not-promised-bg: var(--semantic-color-signal-subtle-critical-resting);
+  --entity-status-not-promised-color: var(--semantic-color-on-signal-subtle-critical-resting);
+
+  --damage-item-status-open-bg: var(--semantic-color-signal-subtle-info-resting);
+  --damage-item-status-open-color: var(--semantic-color-on-signal-subtle-info-resting);
+  --damage-item-status-assessed-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --damage-item-status-assessed-color: var(--semantic-color-on-signal-subtle-warning-resting);
+  --damage-item-status-approved-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --damage-item-status-approved-color: var(--semantic-color-on-signal-subtle-positive-resting);
+  --damage-item-status-rejected-bg: var(--semantic-color-signal-subtle-critical-resting);
+  --damage-item-status-rejected-color: var(--semantic-color-on-signal-subtle-critical-resting);
+
+  --clearance-cleared-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --clearance-cleared-color: var(--semantic-color-on-signal-subtle-positive-resting);
+  --clearance-not-cleared-bg: var(--semantic-color-signal-subtle-critical-resting);
+  --clearance-not-cleared-color: var(--semantic-color-on-signal-subtle-critical-resting);
+  --clearance-pending-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --clearance-pending-color: var(--semantic-color-on-signal-subtle-warning-resting);
+  --clearance-not-applicable-bg: var(--semantic-color-accent-subtle-gray-resting);
+  --clearance-not-applicable-color: var(--semantic-color-on-accent-subtle-gray-resting);
+
+  --recovery-yes-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --recovery-yes-color: var(--semantic-color-on-signal-subtle-positive-resting);
+  --recovery-no-bg: var(--semantic-color-signal-subtle-critical-resting);
+  --recovery-no-color: var(--semantic-color-on-signal-subtle-critical-resting);
+
+  --skeleton-claim-awaiting-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --skeleton-claim-matched-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --skeleton-claim-abandoned-bg: var(--semantic-color-accent-subtle-gray-resting);
+
+  --fo-badge-pending-bg: var(--semantic-color-signal-subtle-warning-resting);
+  --fo-badge-pending-color: var(--semantic-color-on-signal-subtle-warning-resting);
+  --fo-badge-credit-bg: var(--semantic-color-accent-subtle-aqua-resting);
+  --fo-badge-credit-color: var(--semantic-color-on-accent-subtle-aqua-resting);
+  --fo-badge-done-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --fo-badge-done-color: var(--semantic-color-on-signal-subtle-positive-resting);
+  --fo-badge-rejected-bg: var(--semantic-color-signal-subtle-critical-resting);
+  --fo-badge-rejected-color: var(--semantic-color-on-signal-subtle-critical-resting);
+  --fo-badge-approved-bg: var(--semantic-color-signal-subtle-positive-resting);
+  --fo-badge-approved-color: var(--semantic-color-on-signal-subtle-positive-resting);
+
+  // ── Tinted rows and cards ──────────────────────────────────────
+  --section-not-promised-tint: var(--semantic-color-signal-subtle-critical-resting);
+  --section-not-promised-border: var(--semantic-color-signal-attention-critical-resting);
+  --row-recently-added-bg: var(--semantic-color-accent-subtle-yellow-resting);
+  --claim-info-card-border: var(--semantic-color-border-tertiary-resting);
+  --claim-info-card-bg: var(--semantic-color-signal-subtle-info-resting);
+  --claim-danger-card-border: var(--semantic-color-signal-attention-critical-resting);
+  --claim-danger-card-bg: var(--semantic-color-signal-subtle-critical-resting);
+
+  --admin-card-icon-green-bg: var(--semantic-color-accent-subtle-green-resting);
+  --admin-card-icon-green-color: var(--semantic-color-on-accent-subtle-green-resting);
+  --admin-card-icon-red-bg: var(--semantic-color-accent-subtle-red-resting);
+  --admin-card-icon-red-color: var(--semantic-color-on-accent-subtle-red-resting);
+  --admin-card-icon-purple-bg: var(--semantic-color-accent-subtle-purple-resting);
+  --admin-card-icon-purple-color: var(--semantic-color-on-accent-subtle-purple-resting);
+
+  // ── Shadows (A1 shadow colours carry their own alpha) ─────────
+  --claim-overlay-shadow: var(--semantic-color-shadow-second);
+  --claim-overlay-shadow-light: var(--semantic-color-shadow-second);
+  --claim-overlay-shadow-heavy: var(--semantic-color-shadow-first);
+}

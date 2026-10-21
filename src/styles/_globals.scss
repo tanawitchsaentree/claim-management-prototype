@@ -1,0 +1,90 @@
+// Global element rules and app-wide utility classes. Theme values come from
+// tokens only (see _tokens.scss / themes/), never raw hex or px font sizes.
+
+// Global resets
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--app-background) !important;
+  color: var(--text-01) !important;
+  font-family: var(--font-family);
+  font-size: var(--paragraph-03-font-size);
+  -webkit-font-smoothing: antialiased;
+}
+
+// nx-icon--* classes set content but not font-family on :before — body font-family
+// overrides the inherited value. Force it back on every icon class.
+[class*='nx-icon--'] {
+  font-family: 'Allianz-Icons' !important;
+}
+[class*='nx-icon--']:before {
+  font-family: 'Allianz-Icons' !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// ── Page-level title — use on every claim sub-page h1 ───────────────────────
+// Single source of truth: 28px / 400 weight / 24px bottom margin.
+// Shell .main-content owns the outer padding (24px all sides) — pages must NOT
+// add their own :host padding on top of it.
+h1.page-title,
+.page-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-01);
+  line-height: 1.2;
+  margin: 0 0 24px;
+}
+
+// Allow \n in nxTooltip strings to render as line breaks
+.nx-tooltip {
+  white-space: pre-line;
+}
+
+code {
+  font-family: monospace;
+  font-size: 13px;
+  background: var(--ui-02);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--text-01);
+}
+
+// ─── Global route transitions (View Transitions API via withViewTransitions) ───
+// Cross-fade only — keeps spatial continuity, avoids the heavy slide feeling.
+// Browsers without support fall back to instant change automatically.
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-old(root) {
+  animation-name: route-fade-out;
+}
+::view-transition-new(root) {
+  animation-name: route-fade-in;
+}
+@keyframes route-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes route-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

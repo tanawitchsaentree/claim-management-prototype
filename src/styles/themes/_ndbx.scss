@@ -1,0 +1,168 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// NDBX theme layer. Active only when <html data-theme="ndbx"> (ThemeService).
+//
+// Values here re-assert or compress ndbx.css tokens for this prototype's
+// expert density. They used to sit on plain :root, which also pinned them over
+// allianz-one.css and was why "Switch to A1" only changed a few colours.
+// :where() keeps the specificity identical to the old :root / html body rules,
+// so NDBX renders exactly as before (proved by scripts/theme-snapshot.mjs).
+//
+// Only NDBX-named tokens belong here. Project tokens live in ../_tokens.scss;
+// their A1 mapping lives in _a1.scss. See .claude/THEMING.md.
+// ─────────────────────────────────────────────────────────────────────────────
+:root:where([data-theme='ndbx']) {
+  // Base palette
+  --ui-background: #ffffff;
+  --ui-01: #ffffff;
+  --ui-02: #f2f2f2;
+  --ui-03: #e8e8e8;
+  --ui-04: #d9d9d9;
+  --ui-05: #c4c4c4;
+  --ui-06: #000000;
+
+  // Text
+  --text-01: #404040;
+  // ndbx.css defines --text-02 as #ffffff (text on brand/dark backgrounds,
+  // primary button labels). Re-asserted so primary button text stays white.
+  --text-02: #ffffff;
+
+  // Re-asserted over the expert (dark) value #27abd6.
+  --interactive-primary: #007ab3;
+  --interactive-text: #006192;
+  --hover-secondary: #f2f2f2;
+  --hover-link: #005f8a;
+
+  // Focus
+  --focus-box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #003781;
+  --focus-inset-box-shadow: inset 0 0 0 2px #003781;
+
+  // Semantic
+  --info: #003781;
+  --info-hover: #002d6e;
+  --info-active: #002360;
+  --success: #1d8348;
+  --success-hover: #176b3a;
+  --success-active: #12562f;
+  --warning: #f9b233;
+  --warning-hover: #e0a02e;
+  --warning-active: #c78d29;
+  --danger: #c0392b;
+  --danger-hover: #a93226;
+  --danger-active: #922b21;
+
+  // Disabled
+  --disabled-01: #c4c4c4;
+  --disabled-02: #e8e8e8;
+  --disabled-03: #f2f2f2;
+
+  // Negative (inverse / on-dark)
+  --negative: #ffffff;
+  --negative-01: #ffffff;
+  --negative-02: #f2f2f2;
+  --negative-accent: #003781;
+
+  // ── Button ─────────────────────────────────────────────────────
+  --button-border-radius: 4px;
+  --button-small-height: 32px;
+  --button-text-transform: none;
+  // --button-medium-height: see the html body block below.
+
+  // ── Formfield ──────────────────────────────────────────────────
+  --formfield-label-color: #404040;
+  --formfield-outline-border-color: #767676;
+  --formfield-background-color: #ffffff;
+  --formfield-hint-color: #767676;
+  // Expert sets var(--ui-03) (grey); white matches Figma.
+  --formfield-outline-background-color: #ffffff;
+
+  // ── Header ─────────────────────────────────────────────────────
+  --header-background-color: #ffffff;
+  --header-link-active-color: #003781;
+  --header-height: 60px;
+
+  // ── Table ──────────────────────────────────────────────────────
+  --table-header-cell-color: #767676;
+  --table-header-cell-background-color: #ffffff;
+  --table-header-border-top-color: transparent;
+  --table-header-border-bottom-color: #404040;
+  --table-cell-color: #404040;
+  --table-header-cell-font-size: 0.75rem;
+  --table-header-cell-font-weight: 600;
+  --table-header-cell-line-height: 1rem;
+  --table-header-cell-letter-spacing: 0.04em;
+
+  // ── Sidebar / action ───────────────────────────────────────────
+  --action-selected-background-color: #e5edfa;
+  --action-selected-color: #003781;
+  --sidebar-background-color: #ffffff;
+
+  // ── Badge ──────────────────────────────────────────────────────
+  --badge-background-color: #e8e8e8;
+  --badge-color: #404040;
+  --badge-active-background-color: #fff3cd;
+  --badge-active-color: #7a5200;
+  --badge-positive-background-color: #d4edda;
+  --badge-positive-color: #155724;
+  --badge-critical-background-color: #f8d7da;
+  --badge-critical-color: #721c24;
+
+  // ── Dropdown ───────────────────────────────────────────────────
+  --dropdown-item-hover-background-color: #f2f2f2;
+  --dropdown-item-selected-color: #003781;
+  --dropdown-panel-background-color: #ffffff;
+
+  // ── Checkbox ───────────────────────────────────────────────────
+  --checkbox-background-color: #ffffff;
+  --checkbox-border-color: #767676;
+  --checkbox-hover-border-color: #404040;
+  --checkbox-label-color: #404040;
+  --checkbox-size: 18px;
+
+  // ── Context menu ───────────────────────────────────────────────
+  --context-menu-background-color: #ffffff;
+  --context-menu-item-hover-background-color: #f2f2f2;
+
+  // ── Message ────────────────────────────────────────────────────
+  --message-info-background-color: #e5edfa;
+  --message-info-border-color: #003781;
+  --message-error-background-color: #f8d7da;
+  --message-error-border-color: #c0392b;
+
+  // ── Typography ─────────────────────────────────────────────────
+  // Scale compressed from NDBX defaults so the UI reads at a tighter density.
+  // paragraph-03 floor raised to 0.875rem (14px) to meet WCAG 2.1 AA minimum.
+  --font-family: 'Allianz Neo', 'Public Sans Latin', Arial, sans-serif !important;
+  --paragraph-01-font-size: 1rem;
+  --paragraph-01-line-height: 1.5rem;
+  --paragraph-01-font-weight: 400;
+  --paragraph-02-font-size: 0.875rem;
+  --paragraph-02-line-height: 1.25rem;
+  --paragraph-02-font-weight: 400;
+  --paragraph-03-font-size: 0.875rem;
+  --paragraph-03-line-height: 1.25rem;
+  --paragraph-03-font-weight: 400;
+  // formfield label + hint inherit paragraph-05 (12px) by default; 14px here.
+  --formfield-label-font-size: 0.875rem;
+  --formfield-hint-font-size: 0.875rem;
+  // NDBX label scale (nx-radio, nx-checkbox, ...) defaults to 1rem/1.25rem;
+  // matched to the compressed paragraph scale so labels align with body text.
+  --small-label-font-size: var(--paragraph-04-font-size); // 14px
+  --large-label-font-size: var(--paragraph-01-font-size); // 16px
+  --heading-06-font-size: 1.125rem;
+  --heading-06-font-weight: 700;
+  --heading-05-font-size: 1.25rem;
+  --heading-05-font-weight: 700;
+  --headline-secondary-color: #404040;
+}
+
+// Expert runtime styles declare some tokens at :root later in the DOM, so they
+// beat the block above; html body is more specific and wins.
+html:where([data-theme='ndbx']) body {
+  // Inputs: white background (expert sets --formfield-outline-background-color: #e8e8e8)
+  --formfield-background-color: #ffffff;
+  --formfield-outline-background-color: #ffffff;
+  --formfield-outline-focus-background-color: #ffffff;
+
+  // Buttons: 38px medium height (expert sets 48px)
+  --button-medium-height: 38px;
+}
