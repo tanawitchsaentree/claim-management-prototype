@@ -208,7 +208,7 @@ With `formControlName` for single boolean:
 
 ### CRITICAL: always add `labelSize="small"` to every `<nx-radio>`
 
-NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides it to `14px` in `styles.scss`, but the override only activates when `labelSize="small"` is explicitly set on the element. Without it, radio labels render at the wrong 16px size.
+NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides it to `14px` in `src/styles/themes/_ndbx.scss`, but the override only activates when `labelSize="small"` is explicitly set on the element. Without it, radio labels render at the wrong 16px size.
 
 `audit:radio-size` enforces this — it fails if any `<nx-radio` is missing `labelSize`.
 

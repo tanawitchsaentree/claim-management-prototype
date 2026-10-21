@@ -20,6 +20,8 @@
  *
  * --fix only rewrites values whose NDBX result is identical, so NDBX renders
  * the same before and after (check with scripts/theme-snapshot.mjs compare).
+ * Scans .scss, the styles: [...] blocks of .ts components, and static
+ * style="..." attributes in .html templates.
  * A line (or the line above it) containing `theme-exempt: <reason>` is skipped.
  */
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
@@ -85,9 +87,42 @@ function rewrite(value, map, nudgeMax = 0) {
 const findings = [];
 const report = (file, line, rule, msg) => findings.push({ file, line, rule, msg });
 
-function audit(file) {
-  const src = readFileSync(file, 'utf8');
-  const lines = src.split('\n');
+// Checks one declaration; returns `line` with any --fix rewrites applied.
+function checkDecl(file, lineNo, prop, value, where, line) {
+  // fallback + undefined
+  for (const m of value.matchAll(/var\((--[\w-]+)\s*(,\s*([^()]*(\([^()]*\))?[^()]*))?\)/g)) {
+    const [whole, name, , fb] = m;
+    if (!defined.has(name)) report(file, lineNo, 'undefined', `${name} is not defined anywhere${fb ? ` (renders the fallback ${fb.trim()})` : ''}`);
+    else if (fb !== undefined) {
+      if (FIX) line = line.replace(whole, `var(${name})`);
+      else report(file, lineNo, 'fallback', `${whole}: fallback is dead, ${name} exists`);
+    }
+  }
+  // colour
+  const bare = value.replace(/var\([^()]*(\([^()]*\))?[^()]*\)/g, '');
+  if (/#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?)\(/.test(bare)) report(file, lineNo, 'colour', `${prop}: ${value.trim()}`);
+
+  // spacing / radius / font-size
+  const isSpacingVar = prop.startsWith('$') && /(sp-|gap|pad|-p[tblr]$|margin|space)/.test(prop);
+  const kind = /^(padding|margin|gap|row-gap|column-gap)(-|$)/.test(prop) || isSpacingVar ? 'spacing'
+    : /^border(-[a-z]+)*-radius$/.test(prop) ? 'radius'
+    : prop === 'font-size' && !/icon/i.test(where) ? 'font-size' : null;
+  if (kind) {
+    const map = kind === 'spacing' ? n => SPACE[n] && `--space-${SPACE[n]}`
+      : kind === 'radius' ? n => RADIUS[n] && `--radius-${RADIUS[n]}`
+      : n => FONT[n];
+    const val = value.replace(/\s*!important\s*$/, '');
+    const { out, left } = rewrite(val, map, kind === 'spacing' ? SPACE_NUDGE_MAX : 0);
+    if (FIX && out !== val) line = line.replace(val, out);
+    if (left.length) report(file, lineNo, kind, `${prop}: ${value.trim()} (off-scale: ${left.join(' ')})`);
+    else if (!FIX && out !== val) report(file, lineNo, kind, `${prop}: ${value.trim()} -> fixable: ${out}`);
+  }
+  return line;
+}
+
+// .scss files and the styles: [\`...\`] blocks of .ts components.
+function auditStylesheet(file) {
+  const lines = readFileSync(file, 'utf8').split('\n');
   const isTs = file.endsWith('.ts');
   const selectors = [];
   let changed = false;
@@ -99,38 +134,25 @@ function audit(file) {
     const decl = code.match(/^\s*([$a-z0-9-]+)\s*:\s*(.+?);?\s*$/);
     for (let c = 0; c < closes; c++) selectors.pop();
     if (!decl || exempt || opens) return;
-    if (isTs && !/;\s*$/.test(code)) return; // TS: only CSS lines inside styles: [`...`]
-    const [, prop, value] = decl;
-    const where = selectors.join(' ');
+    if (isTs && !/;\s*$/.test(code)) return; // TS: only CSS lines inside styles: [\`...\`]
+    const line = checkDecl(file, i + 1, decl[1], decl[2], selectors.join(' ') + code, raw);
+    if (line !== raw) { lines[i] = line; changed = true; }
+  });
+  if (changed) writeFileSync(file, lines.join('\n'));
+}
+
+// Static style="..." attributes in templates (bindings like [style.x] are not parsed).
+function auditTemplate(file) {
+  const lines = readFileSync(file, 'utf8').split('\n');
+  let changed = false;
+  lines.forEach((raw, i) => {
+    if (/theme-exempt:/.test(raw) || /theme-exempt:/.test(lines[i - 1] ?? '')) return;
     let line = raw;
-
-    // fallback + undefined
-    for (const m of value.matchAll(/var\((--[\w-]+)\s*(,\s*([^()]*(\([^()]*\))?[^()]*))?\)/g)) {
-      const [whole, name, , fb] = m;
-      if (!defined.has(name)) report(file, i + 1, 'undefined', `${name} is not defined anywhere${fb ? ` (renders the fallback ${fb.trim()})` : ''}`);
-      else if (fb !== undefined) {
-        if (FIX) line = line.replace(whole, `var(${name})`);
-        else report(file, i + 1, 'fallback', `${whole}: fallback is dead, ${name} exists`);
+    for (const [, css] of raw.matchAll(/\sstyle="([^"]*)"/g)) {
+      for (const d of css.split(';')) {
+        const m = d.match(/^\s*([a-z-]+)\s*:\s*(.+?)\s*$/);
+        if (m) line = checkDecl(file, i + 1, m[1], m[2], '', line);
       }
-    }
-    // colour
-    const bare = value.replace(/var\([^()]*(\([^()]*\))?[^()]*\)/g, '');
-    if (/#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?)\(/.test(bare)) report(file, i + 1, 'colour', `${prop}: ${value.trim()}`);
-
-    // spacing / radius / font-size
-    const isSpacingVar = prop.startsWith('$') && /(sp-|gap|pad|-p[tblr]$|margin|space)/.test(prop);
-    const kind = /^(padding|margin|gap|row-gap|column-gap)(-|$)/.test(prop) || isSpacingVar ? 'spacing'
-      : /^border(-[a-z]+)*-radius$/.test(prop) ? 'radius'
-      : prop === 'font-size' && !/icon/i.test(where + code) ? 'font-size' : null;
-    if (kind) {
-      const map = kind === 'spacing' ? n => SPACE[n] && `--space-${SPACE[n]}`
-        : kind === 'radius' ? n => RADIUS[n] && `--radius-${RADIUS[n]}`
-        : n => FONT[n];
-      const val = value.replace(/\s*!important\s*$/, '');
-      const { out, left } = rewrite(val, map, kind === 'spacing' ? SPACE_NUDGE_MAX : 0);
-      if (FIX && out !== val) line = line.replace(val, out);
-      if (left.length) report(file, i + 1, kind, `${prop}: ${value.trim()} (off-scale: ${left.join(' ')})`);
-      else if (!FIX && out !== val) report(file, i + 1, kind, `${prop}: ${value.trim()} -> fixable: ${out}`);
     }
     if (line !== raw) { lines[i] = line; changed = true; }
   });
@@ -143,7 +165,8 @@ const files = [
   'src/styles/_globals.scss',
   'src/styles/_overlays.scss'
 ];
-files.forEach(audit);
+files.forEach(auditStylesheet);
+walk('src/app', /\.html$/).forEach(auditTemplate);
 
 const byRule = {};
 for (const f of findings) byRule[f.rule] = (byRule[f.rule] ?? 0) + 1;

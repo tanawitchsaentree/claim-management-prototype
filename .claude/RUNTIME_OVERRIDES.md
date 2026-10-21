@@ -65,9 +65,9 @@ It also injects DI default options:
 
 - `FORMFIELD_DEFAULT_OPTIONS = { appearance: 'outline', nxFloatLabel: 'always' }`
 
-### Workaround — re-assert in styles.scss
+### Workaround — re-assert in src/styles/themes/_ndbx.scss
 
-Both overridden tokens are re-asserted in `styles.scss :root` (and `html body` for higher specificity than runtime injection). **Do not remove these overrides.**
+Both overridden tokens are re-asserted in `src/styles/themes/_ndbx.scss` (`:root:where([data-theme='ndbx'])`, and `html:where(...) body` for higher specificity than runtime injection). NDBX only: A1 uses allianz-one.css values, see `.claude/THEMING.md`. **Do not remove these overrides.**
 
 `floatLabel: 'always'` is already global via DI — **do not add `floatLabel="always"` explicitly** on individual `<nx-formfield>` elements.
 
@@ -143,7 +143,7 @@ Apply on the parent selector, not on `nx-formfield` directly.
 
 ## `<nx-radio>` `labelSize` is required
 
-**Source:** NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides to 14px in `styles.scss`, but **only when `labelSize="small"` is explicitly set**.
+**Source:** NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides to 14px in `src/styles/themes/_ndbx.scss`, but **only when `labelSize="small"` is explicitly set**.
 
 Without `labelSize="small"` → the radio renders 16px regardless of token override.
 
@@ -296,7 +296,7 @@ Diagnostic flow:
 2. DevTools → element → Styles tab → find what overrode you
 3. Cross-reference this file
 4. If a directive is the source → wrap or use the documented workaround
-5. If runtime CSS is the source → re-assert in styles.scss :root
+5. If runtime CSS is the source → re-assert in src/styles/themes/_ndbx.scss (NDBX) — never on plain :root, that also overrides A1
 ```
 
 **Never tweak px values blindly.** If the property doesn't apply, the value isn't the problem.

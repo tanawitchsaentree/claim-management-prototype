@@ -76,6 +76,7 @@ Skipping = token waste. User has explicit permission to interrupt.
 | `.claude/PRE_BUILD.md`         | Before writing any UI/SCSS code — checklist Q1–Q5, Figma → NDBX mapping, FNOL step workflow, mock data workflow                     |
 | `.claude/POST_BUILD.md`        | Before declaring done — audits, browser checks, evidence template, `/verify-data` for mock data                                     |
 | `.claude/BLESSED.md`           | Reference implementations to copy from — filter bar, modal, FNOL footer, page-with-toolbar, tree rows, etc.                         |
+| `.claude/THEMING.md`           | Before any colour/spacing/radius/font-size change, or "X doesn't follow A1" — who owns which token, scales, audit:theme, snapshot proof |
 | `.claude/RUNTIME_OVERRIDES.md` | When CSS isn't applying / before writing layout — `[nxLayout]` inline padding trap, NxExpertModule cascade, formfield space reserve |
 | `docs/NDBX_RECIPES.md`         | Verified HTML snippets for every NDBX component — copy from here for forms, dropdowns, dates, etc.                                  |
 
@@ -97,7 +98,9 @@ Skipping = token waste. User has explicit permission to interrupt.
 ## Critical Token Traps (full detail in `.claude/CONTEXT.md`)
 
 - **`--text-02` is WHITE** (`#ffffff`) — invisible on white backgrounds. Use `--text-01` or `--text-muted`.
-- **`NxExpertModule` overrides `--interactive-primary` and `--text-02` at runtime** — re-asserted in `styles.scss :root`, do not remove.
+- **`NxExpertModule` overrides `--interactive-primary` and `--text-02` at runtime** — re-asserted in `src/styles/themes/_ndbx.scss`, do not remove.
+- **Theme switch (NDBX / A1): never write raw colour, px spacing, px radius or px font-size in a component** — `npm run audit:theme` (in pre-commit) enforces. NDBX pins go in `themes/_ndbx.scss`, project tokens in `src/styles/_tokens.scss`, their A1 mapping in `themes/_a1.scss`. See `.claude/THEMING.md`.
+- **`--negative` is WHITE** (inverse text), never red. Red text = `--danger`.
 - **`[nxLayout]` writes inline padding on its host** — wrap with outer div before adding `padding-top`. See `RUNTIME_OVERRIDES.md`.
 - **`<nx-radio>` MUST have `labelSize="small"`** — `audit:radio-size` enforces.
 - **`expert.css` is NOT loaded** — never use `appearance="outline"` on `nx-formfield`.

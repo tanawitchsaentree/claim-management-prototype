@@ -299,7 +299,7 @@ wrong or this doc is stale, not both equally valid.
 **File:** `src/app/features/fnol/steps/step-entities-damages/step-entities-damages.component.html`
 **Lines:** sub-item `@for` block inside entity `@for`
 **SCSS:** `step-entities-damages.component.scss` — `.sub-item-row`, `.sub-item__cell`, `.sub-item__name`
-**Token:** `--tree-child-indent: 32px` defined in `styles.scss`
+**Token:** `--tree-child-indent: 32px` defined in `src/styles/_tokens.scss`
 
 ### Pattern — copy exactly
 

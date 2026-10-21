@@ -75,7 +75,7 @@
         @if (loading()) {
           <tbody>
             <tr nxTableRow>
-              <td nxTableCell colspan="4" style="text-align: center; padding: 32px">
+              <td nxTableCell colspan="4" style="text-align: center; padding: var(--space-2xl)">
                 <nx-spinner size="medium"></nx-spinner>
               </td>
             </tr>
@@ -88,7 +88,7 @@
               <td
                 nxTableCell
                 colspan="4"
-                style="text-align: center; padding: 32px; color: var(--message-error-color)"
+                style="text-align: center; padding: var(--space-2xl); color: var(--message-error-color)"
               >
                 Failed to load sections. Please refresh.
               </td>

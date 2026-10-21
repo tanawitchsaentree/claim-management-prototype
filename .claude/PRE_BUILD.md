@@ -93,14 +93,14 @@ Check `RUNTIME_OVERRIDES.md` for directives that write inline styles:
 
 - `[nxLayout]` (any variant) — wrap before `padding-top`/`padding-bottom`
 - `<nx-formfield>` — reserves ~20px bottom; ~32px when stacked
-- `NxExpertModule` — re-asserted tokens in `styles.scss`
+- `NxExpertModule` — re-asserted tokens in `src/styles/themes/_ndbx.scss`
 
 If **YES** → state the override + the workaround in your checklist.
 
 ### Q5: Does the change introduce a new token, gap, or pattern?
 
 - **YES + token already exists in NDBX** → use it, cite ndbx.css:line
-- **YES + project token exists in `styles.scss`** → use it
+- **YES + project token exists in `src/styles/_tokens.scss` / `_status-tokens.scss`** → use it (new project token: add its A1 mapping in `themes/_a1.scss` too, see `.claude/THEMING.md`)
 - **YES + nothing exists** → stop and ask user. Do not invent.
 
 If you cannot answer any question → **STOP and ask user before proceeding.**

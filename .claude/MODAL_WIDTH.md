@@ -61,7 +61,7 @@ header + footer stay sticky. **This fits a 14" notebook (~800px) automatically.*
 ### B. Bottom-sheet (tall forms with many fields)
 
 For long forms (e.g. MassEventEdit) use the `me-edit-modal-panel` panelClass — full-height
-slide-up sheet anchored to the bottom, defined in `styles.scss`.
+slide-up sheet anchored to the bottom, defined in `src/styles/_overlays.scss`.
 → Open with `{ data, panelClass: 'me-edit-modal-panel' }` — **no width/maxWidth** (the panel controls size).
 
 **CRITICAL:** a component's SCSS is written for ONE strategy. If the component's styles assume

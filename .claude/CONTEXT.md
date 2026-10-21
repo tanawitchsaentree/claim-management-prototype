@@ -24,10 +24,10 @@ Companion docs:
 
 **CSS loaded in angular.json (in this order — order matters):**
 
-1. `node_modules/@allianz/ngx-brand-kit/css/allianz-base.css` — Allianz Neo font + base resets
-2. `node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.css` — NDBX light expert theme tokens
+1. `themes/ndbx.css` or `themes/allianz-one.css` — `<link>` tags in `src/index.html`, exactly one enabled by `ThemeService` (dev-banner theme switch)
+2. `node_modules/@allianz/ngx-brand-kit/css/allianz-base.css` — Allianz Neo font + base resets
 3. `node_modules/@allianz/ngx-brand-kit/css/ndbx-icons.css` — Allianz icon font glyphs
-4. `src/styles.scss` — project-level overrides only
+4. `src/styles.scss` — entry that `@use`s `src/styles/` (project tokens, NDBX pins, A1 mapping, globals). Layout in `.claude/THEMING.md`
 
 **`expert.css` is NOT loaded.** This means:
 
@@ -55,13 +55,13 @@ Companion docs:
 - `--interactive-primary`: `#007ab3` → `#27abd6` (dark theme blue)
 - `--text-02`: `#ffffff` → `#0f2a3d` (near-black — breaks primary button white text)
 
-Both are re-asserted in `styles.scss` `:root`. **Do not remove these overrides.**
+Both are re-asserted in `src/styles/themes/_ndbx.scss`. **Do not remove these overrides.**
 
 `NxExpertModule` also injects `FORMFIELD_DEFAULT_OPTIONS` → `{ appearance: 'outline', nxFloatLabel: 'always' }` via DI. `floatLabel: 'always'` is already global — **do not add `floatLabel="always"` explicitly.**
 
 ### `nx-radio` `labelSize="small"` is mandatory
 
-NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides it to `14px` in `styles.scss`, but **the override only fires when `labelSize="small"` is explicitly set**.
+NDBX defaults `--small-label-font-size` to `1rem` (16px). This project overrides it to `14px` in `src/styles/themes/_ndbx.scss` (NDBX only), but **the override only fires when `labelSize="small"` is explicitly set**.
 
 - **Every `<nx-radio>` MUST have `labelSize="small"`** — no exceptions
 - `audit:radio-size` enforces this — fails CI if any `<nx-radio>` is missing `labelSize`
@@ -106,7 +106,7 @@ grep -- '--your-token-name' node_modules/@allianz/ngx-brand-kit/css/themes/ndbx.
 
 ### NEVER override NDBX tokens at component scope without justification
 
-- `styles.scss` is the **only** place project-level token overrides are allowed
+- `src/styles/` is the **only** place token overrides are allowed: NDBX pins in `themes/_ndbx.scss`, project tokens in `_tokens.scss` / `_status-tokens.scss`, A1 mapping in `themes/_a1.scss` (see `.claude/THEMING.md`)
 - `.page-shell` style overrides are forbidden — they cascade unpredictably into child components
 - Component-scoped `--token` overrides require an explicit comment stating why
 
@@ -302,7 +302,7 @@ WCAG 2.1 AA. All readable text must meet the minimum font-size rule below. Audit
 
 ### Resolved token values in this project
 
-`styles.scss` overrides the NDBX paragraph scale. Use these actual px values when reasoning about sizes:
+`src/styles/themes/_ndbx.scss` overrides the NDBX paragraph scale (NDBX only; A1 uses the library's own scale, body 16px). Use these actual NDBX px values when reasoning about sizes:
 
 | Token                         | Resolved px | Use                                                    |
 | ----------------------------- | ----------- | ------------------------------------------------------ |
@@ -311,8 +311,8 @@ WCAG 2.1 AA. All readable text must meet the minimum font-size rule below. Audit
 | `--paragraph-03-font-size`    | **14px**    | Labels, hints, captions (raised from NDBX 12px)        |
 | `--paragraph-04-font-size`    | **14px**    | Same floor — use either 03 or 04                       |
 | `--paragraph-05-font-size`    | **12px**    | Do not use for readable text                           |
-| `--formfield-label-font-size` | **14px**    | Form field floating labels (overridden in styles.scss) |
-| `--formfield-hint-font-size`  | **14px**    | Form field hint/error text (overridden in styles.scss) |
+| `--formfield-label-font-size` | **14px**    | Form field floating labels (overridden in _ndbx.scss)  |
+| `--formfield-hint-font-size`  | **14px**    | Form field hint/error text (overridden in _ndbx.scss)  |
 
 NDBX defaults for `--paragraph-01/02/03` are 20/18/16px — our project compresses the scale intentionally for UI density. Floor is 14px.
 
@@ -448,7 +448,7 @@ Use [WebAIM contrast checker](https://webaim.org/resources/contrastchecker/) whe
 
 ## Project-level tokens
 
-NDBX provides no tokens for status colors, priority colors, overlay rgba, or page chrome→content gap. These are defined in `styles.scss` under `/* Project-level tokens */` and **must be used in all components**. Never write the raw hex/px in component `.scss` files.
+NDBX provides no tokens for status colors, priority colors, overlay rgba, or page chrome→content gap. These are defined in `src/styles/_tokens.scss` and `_status-tokens.scss` (A1 mapping in `themes/_a1.scss`) and **must be used in all components**. Never write the raw hex/px in component `.scss` files.
 
 ### Page chrome → content gap
 

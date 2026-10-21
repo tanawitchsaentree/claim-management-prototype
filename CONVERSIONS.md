@@ -1078,6 +1078,19 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
   - No underwriter exists in `policies.json` / `policy-details.json`; none is added to the claim's parties.
   - **Verification:** `ng build` clean, `audit:ac-logic` 88 passed / 0 failed, `pre-commit` 17/20 (colors, hardcoded-data, ndbx-wrapper: the baseline). Playwright over SK-004/-006/-008/-009/-010/-001/-005 for every step, Back/forward, errors, and the results on Sections, Reserves, Make Payment payees and the loss event page.
 
+## 2026-10-21 — Theme switch (NDBX / A1) only changed some colours
+
+- **Source:** verbal brief (user, after flipping the dev-banner "Switch to A1": only some colours changed, spacing did not).
+- **Module:** global styling
+- **Root cause:** `src/styles.scss` pinned ~190 NDBX values on plain `:root`, which also overrode `allianz-one.css`; the project spacing scale was fixed px no theme could move; ~1,200 raw px/hex values in components.
+- **Fix:** theme layers in `src/styles/` scoped by `<html data-theme>` (ThemeService), A1 mapping of every project token onto A1 semantic tokens, codemod + hand pass to tokens, `audit:theme` in pre-commit (0 findings). Full layout and debugging recipe: `.claude/THEMING.md`.
+- **Bugs found on the way:** `--negative` (WHITE) used as red: High priority chips, the right-strip count badge and several error texts were invisible; `--space-m/l/s` (never defined) gave Recoveries 0 gaps; nine other undefined tokens rendered hardcoded fallbacks.
+- **Notes:**
+  - Proof method: `scripts/theme-snapshot.mjs` (16 pages, PNG + computed styles per element). Every refactor commit compared NDBX against the previous capture: pixels identical; the only intended NDBX change is the priority-chip fix.
+  - 33 pinned tokens were dead (no theme file defines them, ng-aquila never reads them, nothing in src uses them): removed.
+  - A1 = `allianz-one.css` standard density. No A1 Figma exists, so this is library-standard A1, not a designed one. Button sizes (`size="small"`) are template inputs, not tokens, and were left alone.
+  - **Verification:** `ng build` clean, `pre-commit` 19/21 (hardcoded-data, ndbx-wrapper: pre-existing; audit:colors now passes).
+
 <!--
 Template — copy below the most recent entry:
 

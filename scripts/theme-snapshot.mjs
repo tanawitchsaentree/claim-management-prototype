@@ -65,7 +65,9 @@ async function capture(dir, theme) {
         const parts = [];
         for (let e = el; e && e !== document.body; e = e.parentElement) {
           const i = e.parentElement ? [...e.parentElement.children].indexOf(e) : 0;
-          parts.unshift(`${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''}[${i}]`);
+          // Skip Angular's own classes: ng-tns-c<hash> changes on every rebuild.
+          const cls = [...e.classList].find(c => !c.startsWith('ng-'));
+          parts.unshift(`${e.tagName.toLowerCase()}${cls ? '.' + cls : ''}[${i}]`);
         }
         return parts.join('>');
       };
