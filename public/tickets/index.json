@@ -145,6 +145,12 @@
       "title": "Damaged items — capture the peril and the working behind a financial loss"
     },
     {
+      "id": "BMPCC-19113",
+      "file": "bmpcc-19113.json",
+      "module": "Claims",
+      "title": "Orphan claim conversion: Link policy completes the claim"
+    },
+    {
       "id": "GG-1-CLAIM-OVERVIEW",
       "file": "gg-1-claim-overview.json",
       "module": "GG booking",

@@ -1,0 +1,261 @@
+{
+  "ticketId": "BMPCC-19113",
+  "module": "Claims",
+  "title": "Orphan claim conversion: Link policy completes the claim (details, location, coverages, reserves, parties, loss event)",
+  "targetClaim": "SK-2024-004",
+  "pages": [
+    "overview",
+    "any"
+  ],
+  "walkthroughSteps": [
+    "Every case starts on a skeleton claim's Claim Overview; the Link policy sheet is one sheet with four steps (Policy, Claim details, Coverages, Reserves).",
+    "Reset in the DEV bar puts all skeleton claims back."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Link policy · Storm skeleton keeps a cause the lookup knows",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-004 (storm damage, one policy to choose from).\n\n**You see:** Step 2 *Complete the claim*: the loss description is filled in and required; **Cause of loss = Natural Event** (storm is read as a Natural Event), no note. The progress tracker on the left shows Policy ✓, Claim details, Coverages, Reserves.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-001), then Next: *Choose the coverages*. Tick a location, Next, optionally enter a reserve (a sub-type is required once an amount is entered), then **Link policy** and confirm. The overview shows **Natural Event**, a loss event ID, and the new claim number.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Skeleton with a known cause",
+        "preconditions": [
+          {
+            "text": "Step 2 *Complete the claim*: the loss description is filled in and required; **Cause of loss = Natural Event** (storm is read as a Natural Event), no note. The progress tracker on the left shows Policy ✓, Claim details, Coverages, Reserves.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-001), then Next: *Choose the coverages*. Tick a location, Next, optionally enter a reserve (a sub-type is required once an amount is entered), then **Link policy** and confirm. The overview shows **Natural Event**, a loss event ID, and the new claim number."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Step 2 *Complete the claim*: the loss description is filled in and required; **Cause of loss = Natural Event** (storm is read as a Natural Event), no note. The progress tracker on the left shows Policy ✓, Claim details, Coverages, Reserves.",
+        "visualCues": [
+          "Step 2 *Complete the claim*: the loss description is filled in and required; **Cause of loss = Natural Event** (storm is read as a Natural Event), no note. The progress tracker on the left shows Policy ✓, Claim details, Coverages, Reserves."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-004/overview",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-001), then Next: *Choose the coverages*. Tick a location, Next, optionally enter a reserve (a sub-type is required once an amount is entered), then **Link policy** and confirm. The overview shows **Natural Event**, a loss event ID, and the new claim number.",
+        "expectedResult": "Step 2 *Complete the claim*: the loss description is filled in and required; **Cause of loss = Natural Event** (storm is read as a Natural Event), no note. The progress tracker on the left shows Policy ✓, Claim details, Coverages, Reserves."
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Link policy · Business interruption asks the CBI questions",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-008 (business interruption, supplier fire).\n\n**You see:** Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier — Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Skeleton with a business interruption cause",
+        "preconditions": [
+          {
+            "text": "Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier — Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *.",
+        "visualCues": [
+          "Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-008/overview",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier — Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building.",
+        "expectedResult": "Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *."
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Link policy · No cause on the skeleton becomes Other Event and still gets a section",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-009 (damage reported, cause still unclear).\n\n**You see:** Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other Event and one section (never 0).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Skeleton with no cause",
+        "preconditions": [
+          {
+            "text": "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other Event and one section (never 0)."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*.",
+        "visualCues": [
+          "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-009/overview",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other Event and one section (never 0).",
+        "expectedResult": "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*."
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Link policy · No location on the skeleton: adding one is optional",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-010 (storm damage, no location typed at creation).\n\n**You see:** Step 2 *Location of loss*: \"No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.\" with an optional **Add location** button.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-007). Press Add location to open the policy + manual sheet, pick one: it shows with *Change* / *Remove*. Or skip it and continue.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Skeleton without a location",
+        "preconditions": [
+          {
+            "text": "Step 2 *Location of loss*: \"No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.\" with an optional **Add location** button.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-007). Press Add location to open the policy + manual sheet, pick one: it shows with *Change* / *Remove*. Or skip it and continue."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Step 2 *Location of loss*: \"No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.\" with an optional **Add location** button.",
+        "visualCues": [
+          "Step 2 *Location of loss*: \"No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.\" with an optional **Add location** button."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-010/overview",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-007). Press Add location to open the policy + manual sheet, pick one: it shows with *Change* / *Remove*. Or skip it and continue.",
+        "expectedResult": "Step 2 *Location of loss*: \"No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.\" with an optional **Add location** button."
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Link policy · Location is kept unless the handler changes it; no nearby policy location",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-006 (water damage, typed address in Munich; the policy's locations are in Berlin and Dresden).\n\n**You see:** Step 2 shows the typed address as a manual location with **Keep this location** (selected) / **Change location**. Nothing opens by itself.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-003). Press *Change location*: the sheet says none of the policy's locations is in the same city or postal code, with nothing pre-selected. Cancel returns to Keep; picking one shows *Change again* / *Use the skeleton location*.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Skeleton whose location matches no policy location",
+        "preconditions": [
+          {
+            "text": "Step 2 shows the typed address as a manual location with **Keep this location** (selected) / **Change location**. Nothing opens by itself.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-003). Press *Change location*: the sheet says none of the policy's locations is in the same city or postal code, with nothing pre-selected. Cancel returns to Keep; picking one shows *Change again* / *Use the skeleton location*."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Step 2 shows the typed address as a manual location with **Keep this location** (selected) / **Change location**. Nothing opens by itself.",
+        "visualCues": [
+          "Step 2 shows the typed address as a manual location with **Keep this location** (selected) / **Change location**. Nothing opens by itself."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-006/overview",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-003). Press *Change location*: the sheet says none of the policy's locations is in the same city or postal code, with nothing pre-selected. Cancel returns to Keep; picking one shows *Change again* / *Use the skeleton location*.",
+        "expectedResult": "Step 2 shows the typed address as a manual location with **Keep this location** (selected) / **Change location**. Nothing opens by itself."
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Link policy · Coverages, reserves, parties and loss event are built at conversion",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-005 (fire, exact policy location match).\n\n**You see:** After Link policy: the claim number changes (the SK number stays as an alias), the sections are the ticked coverages, reserves entered in the sheet are Pending on the Reserves page, **the insured and broker are on the claim** (Make Payment's payee list), and the overview shows a **Loss event ID** that opens its own page.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-002), Next, tick one coverage, Next, enter a reserve and a sub-type, **Link policy**, confirm. Check Sections, Reserves, Make Payment's Payee dropdown and the Loss event ID link.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Full conversion",
+        "preconditions": [
+          {
+            "text": "After Link policy: the claim number changes (the SK number stays as an alias), the sections are the ticked coverages, reserves entered in the sheet are Pending on the Reserves page, **the insured and broker are on the claim** (Make Payment's payee list), and the overview shows a **Loss event ID** that opens its own page.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-002), Next, tick one coverage, Next, enter a reserve and a sub-type, **Link policy**, confirm. Check Sections, Reserves, Make Payment's Payee dropdown and the Loss event ID link."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "After Link policy: the claim number changes (the SK number stays as an alias), the sections are the ticked coverages, reserves entered in the sheet are Pending on the Reserves page, **the insured and broker are on the claim** (Make Payment's payee list), and the overview shows a **Loss event ID** that opens its own page.",
+        "visualCues": [
+          "After Link policy: the claim number changes (the SK number stays as an alias), the sections are the ticked coverages, reserves entered in the sheet are Pending on the Reserves page, **the insured and broker are on the claim** (Make Payment's payee list), and the overview shows a **Loss event ID** that opens its own page."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-005/overview",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-002), Next, tick one coverage, Next, enter a reserve and a sub-type, **Link policy**, confirm. Check Sections, Reserves, Make Payment's Payee dropdown and the Loss event ID link.",
+        "expectedResult": "After Link policy: the claim number changes (the SK number stays as an alias), the sections are the ticked coverages, reserves entered in the sheet are Pending on the Reserves page, **the insured and broker are on the claim** (Make Payment's payee list), and the overview shows a **Loss event ID** that opens its own page."
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "All claims · Skeletons are flagged and filterable",
+      "plainStatement": "**Opens:** All claims.\n\n**You see:** Skeleton rows show an **Awaiting policy** chip beside Open. The Status filter offers *Awaiting policy*, which lists only those claims.\n\n**Try:** Choose *Awaiting policy* in Status and press Filter: 8 claims, all SK-. After linking one, it leaves the list.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Skeleton claims in the list",
+        "preconditions": [
+          {
+            "text": "Skeleton rows show an **Awaiting policy** chip beside Open. The Status filter offers *Awaiting policy*, which lists only those claims.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Choose *Awaiting policy* in Status and press Filter: 8 claims, all SK-. After linking one, it leaves the list."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Skeleton rows show an **Awaiting policy** chip beside Open. The Status filter offers *Awaiting policy*, which lists only those claims.",
+        "visualCues": [
+          "Skeleton rows show an **Awaiting policy** chip beside Open. The Status filter offers *Awaiting policy*, which lists only those claims."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims",
+        "trigger": "Choose *Awaiting policy* in Status and press Filter: 8 claims, all SK-. After linking one, it leaves the list.",
+        "expectedResult": "Skeleton rows show an **Awaiting policy** chip beside Open. The Status filter offers *Awaiting policy*, which lists only those claims."
+      }
+    }
+  ]
+}

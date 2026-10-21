@@ -1061,6 +1061,23 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
   - Confirmed the "My claims" default scope hiding `SK-2024-001` (assigned to Lena Zorn, not the logged-in demo persona) is correct, working-as-designed behaviour, not part of this bug — kept it as-is. Only the sort/date issue was the actual defect.
   - **Verification:** `npx tsc --noEmit` clean. `ng test` 66/66. `pre-commit` 18/19 (same pre-existing failure). Playwright: default scope+range correctly still hides it (not this persona's claim, expected); switching scope to "All" with the _default_ "Last 30 days" range (no longer needing "All time") now shows `SK-2024-001` at the top of the list with the correct "Awaiting Policy" chip.
 
+## 2026-10-21 — BMPCC-19113 (Orphan claim conversion: Link policy completes the claim)
+
+- **Source:** verbal brief via the orchestrator session, after an audit of the prototype against the Jira card and the Confluence "UI/UX Alignment Open Points" (orphan claim conversion row, 15 Oct).
+- **Module:** Claims / FNOL (Link policy sheet)
+- **File:** `public/tickets/bmpcc-19113.json`
+- **ACs authored:** 7 (done: 7, partial: 0, todo: 0)
+- **Deviations:** (1) no "Awaiting policy" chip in the FNOL search Claims tab: BMPCC-17927 functional review item 4 says only Open/Closed there; it is on the All claims list only. (2) "storm"/"wind-storm" causes are read as Natural Event instead of adding Storm/Water to `lookups.json`: in FNOL's own model Storm is a "caused by" under Natural Event; anything else unknown becomes Other Event with a note.
+- **Schema changes:** none to tickets. State: `MockState.addedParties` (state version bumped to `financial-seeds-v5`), `appendParties`, `removeSections`, `appendLossEvents`.
+- **Files touched:** about 60. Key paths: `shared/components/convert-skeleton-modal/**` (4 steps), `shared/components/cbi-panel`, `shared/components/entities-selection/**` (moved from `features/fnol`), `shared/components/fnol-stepper` (moved), `core/mock/services/mock-claim-conversion.service.ts`, `mock-claim-overview.service.ts`, `mock-parties.service.ts`, `mock-loss-event.service.ts`, `core/models/cause-of-loss.ts`, `claim-completion.model.ts`, `core/mock/data/entities-damages.json` (entries added for the skeleton policies).
+- **Notes:**
+  - `git mv` of the shared entities pieces was swept into another session's commit (702fe52) because the working tree is shared; the final tree is correct.
+  - A required `input()` read in a field initialiser threw at runtime (`NG0950`), and a TS2322 was hidden because `ngc --noEmit` did not report it; `npx ng build --configuration development` did. Use that as the final check.
+  - Editing a watched file with `sed -i` replaces its inode and the dev server stops rebuilding it; rewrite in place instead.
+  - The app is zoneless: state changed in a microtask or on a plain array does not redraw. Use signals (the reserves rows were invisible until they became a signal).
+  - No underwriter exists in `policies.json` / `policy-details.json`; none is added to the claim's parties.
+  - **Verification:** `ng build` clean, `audit:ac-logic` 88 passed / 0 failed, `pre-commit` 17/20 (colors, hardcoded-data, ndbx-wrapper: the baseline). Playwright over SK-004/-006/-008/-009/-010/-001/-005 for every step, Back/forward, errors, and the results on Sections, Reserves, Make Payment payees and the loss event page.
+
 <!--
 Template — copy below the most recent entry:
 

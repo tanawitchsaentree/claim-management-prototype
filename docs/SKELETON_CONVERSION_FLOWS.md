@@ -1,6 +1,6 @@
 # Skeleton claim: creation and "Link policy" flows
 
-Written 2026-10-12 for team review. Every result marked **verified** was played in the running prototype on that date (browser, fresh session). Anything marked **per code** was read from the source and not played. Anything marked **not verified** is a guess and says so.
+Written 2026-10-12 for team review; sections 2, 3 and 5 updated 2026-10-21 after Link policy was extended (BMPCC-19113). The flow table in section 4 keeps its 2026-10-12 results; where the new sheet changes an outcome, the Notes below say so. Every result marked **verified** was played in the running prototype on that date (browser, fresh session). Anything marked **per code** was read from the source and not played. Anything marked **not verified** is a guess and says so.
 
 > **Claim numbers.** Only the number *shown* changes at conversion. The internal key (`claimId`, e.g. `SK-2024-005`) never changes, so sections, tasks, reserves and links keep pointing at it; the URL still carries the internal key, and a URL with the new or old number redirects to it. The number format `CLM-<year>-<seq>` is an assumption to confirm with the team. Reset in the DEV bar puts the claim back to its SK- number.
 
@@ -58,21 +58,33 @@ What creation writes:
 |---|---|
 | Claim | `SK-<timestamp>`, state `awaiting-policy`, status Open, 3-day SLA, no policy, `location` empty |
 | Section | One section, **only if a cause of loss was chosen**. Type is Business interruption if the causes include it, otherwise Material damage. The entity is named after the first location. Type of damage is ignored |
-| Loss-information record | **Not written.** The date, time and location typed in the wizard are not saved against the new claim (finding G1) |
+| Loss-information record | Written since 2026-10-21: dates, location, cause and description typed in the wizard are saved against the new claim, and the claim's `location` is set (finding G1, fixed) |
+| Parties | The parties typed in step 2 are attached to the new claim (finding G9, fixed) |
 | Reserves, tasks | None |
 
 ---
 
 ## 3. What "Link policy" does (the common part)
 
-1. Handler opens **Link policy** from the claim overview (button) or from the FNOL search results (row menu).
-2. The picker is the same search as FNOL "Client and policy search" (Client name, Policy number, Underwriting year, Search, Reset search, Show more for Broker and Line of Business), with **Clients** and **Policies** result tabs. Client name is **pre-filled with the skeleton's client** and the search runs when the picker opens. Choosing a row on the Clients tab narrows the Policies tab to that client. A policy row is selectable only if the loss date is inside the policy period (and, while the client name is left as typed, the client matches). Other rows are greyed with a reason such as "Loss date outside policy period".
-3. Picking a row shows the **Link policy** confirm over the picker.
-4. Confirm: the policy is attached, the state becomes `linked`, the claim gets a **regular claim number** (`CLM-<year>-<seq>`, next free number worked out from existing claims; the SK- number is kept as a permanent alias, shown by an info icon next to Claim ID and found by search and by URL), a "Claim number" row is added to the activity log, and two things are created: a task "Set up reserves" (due in 3 days, high priority) and, only when the skeleton has a stored location, a task "Confirm loss location".
-5. **Claim overview path only:** the **Confirm loss location** sheet opens straight away (no slide), listing the policy's active locations with the skeleton's location pinned on top. A **Line of business** column shows the skeleton claim's value on the pinned row and the policy's value on the others (bold when they differ). The handler picks one and confirms. The claim location is replaced and the "Confirm loss location" task is closed.
-6. A toast confirms. The claim overview stays on screen. Nothing else guides the handler (the old "needs setup" banner was removed in `efd4fdb`).
+Link policy is one bottom sheet with four steps and a progress tracker on the left (Policy, Claim details, Coverages, Reserves). Going Back keeps what was typed and ticked; Back to policies resets.
 
-Entry points: **A** = claim overview button (full flow above). **B** = FNOL search row menu (skips step 5, then opens the claim overview).
+1. Handler opens **Link policy** from the claim overview (button) or from the FNOL search results (row menu). Both entry points run the same sheet.
+2. **Step 1, Policy.** The same search as FNOL "Client and policy search" (Client name, Policy number, Underwriting year, Show more), with **Clients** and **Policies** result tabs. Client name is pre-filled with the skeleton's client and the search runs on open. A policy row is selectable only if the loss date is inside the policy period (and, while the client name is left as typed, the client matches). Picking a row goes straight to step 2.
+3. **Step 2, Claim details** ("Complete the claim"). What a skeleton never captured:
+   - **Loss description**, required, pre-filled from the skeleton.
+   - **Cause of loss**: kept if the cause lookup knows it ("storm" and "wind-storm" are read as Natural Event). A skeleton with no cause, or with one the lookup does not know, gets **Other Event**, with a one-line note saying which of the two it was. Conversion goes ahead either way.
+   - **CBI questions** (the same block as FNOL's Loss information step) when the cause includes Business Interruption. Required fields carry a *.
+   - **Location of loss**: the skeleton's typed location is shown as a manual location with **Keep this location** (default) / **Change location**. Only Change opens the Add location sheet for the chosen policy (compare mode, closest policy location first). After a change the choices become **Change again** / **Use the skeleton location**. A skeleton with no location offers an optional **Add location**. Nothing opens by itself, and no "Confirm loss location" task is created any more.
+4. **Step 3, Coverages.** The FNOL Entities & Damages table in ticking-only mode (no row menus, no Documents column). At least one coverage must be ticked; each ticked damage type becomes a section holding the ticked entities (CBI answers are tagged on the business interruption section). If the policy lists no entities, one section is built from the cause instead, so a converted claim never has 0 sections. The placeholder section a skeleton got from its cause at creation is replaced.
+5. **Step 4, Reserves (optional).** One row per section about to be made: reserve type, sub-type (no default, required once an amount is entered) and an amount in the policy's currency. Leaving amounts empty keeps the "Set up reserves" task.
+6. **Link policy** opens the confirm; on confirm the policy is attached, the state becomes `linked`, the claim gets a regular number (`CLM-<year>-<seq>`, the SK- number kept as an alias), and:
+   - a **loss event** (`EVT-0nn`) is created and the claim attached to it (shown on the overview, opens its own page);
+   - the **insured** (the client) and the **broker** from the policy join the claim's parties (kept across reloads; Make Payment's payee list reads them). No underwriter exists in the policy data, so none is added;
+   - sections and reserves are created as chosen; a "Set up reserves" task (due in 3 days, high) only if some section has no reserve;
+   - the activity log gets the claim number, policy, and (if changed) cause and description rows.
+7. A toast says what happened: "Policy POL-2026-005 linked, 2 sections on the claim. Reserves are set."
+
+Entry points: **A** = claim overview button, **B** = FNOL search row menu. Both now use the same steps, so G2 below is fixed.
 
 ---
 
@@ -122,15 +134,15 @@ Replay: the state of a play-through is kept in the browser tab. Press **Reset** 
 
 | # | Finding | Evidence | Why it matters |
 |---|---|---|---|
-| G1 | A skeleton made in the FNOL wizard does **not keep the location (or the times) typed there**. The claim has no location and no loss-information record | Code: creation writes none; play-through L9 | The location sheet and the "Confirm loss location" task never appear for a real wizard-made skeleton. The seeded SK-001 and SK-004 behave differently from a real one |
-| G2 | Linking from the FNOL search row menu skips the location sheet and ends on the overview; its toast mentions "sections" although no section task is made; it has no error handling | L11 | Two entry points, two behaviours |
-| G3 | Cause of loss is not enforced when creating a skeleton. Without it no section is made, and linking does not add one | L8 | A linked claim can have 0 sections and the handler is not told until closing |
-| G4 | Business interruption: the section type follows the cause, but the CBI questions (supplier or customer, utility type, trigger location) are never asked on the skeleton path or at linking | L7, code | Same gap raised in the claim-conversion discussion |
+| G1 | **Fixed 2026-10-21.** A skeleton made in the FNOL wizard did **not keep the location (or the times) typed there**. The claim has no location and no loss-information record | Code: creation writes none; play-through L9 | The location sheet and the "Confirm loss location" task never appear for a real wizard-made skeleton. The seeded SK-001 and SK-004 behave differently from a real one |
+| G2 | **Fixed 2026-10-21 (same steps on both entry points).** Linking from the FNOL search row menu skipped the location sheet and ends on the overview; its toast mentions "sections" although no section task is made; it has no error handling | L11 | Two entry points, two behaviours |
+| G3 | **Fixed at conversion 2026-10-21 (cause defaults to Other Event; a section always exists).** Cause of loss is not enforced when creating a skeleton. Without it no section is made, and linking does not add one | L8 | A linked claim can have 0 sections and the handler is not told until closing |
+| G4 | **Fixed 2026-10-21 (CBI asked in step 2).** Business interruption: the section type follows the cause, but the CBI questions (supplier or customer, utility type, trigger location) are never asked on the skeleton path or at linking | L7, code | Same gap raised in the claim-conversion discussion |
 | G5 | When no policy is eligible, the picker is a dead end. Abandon and Extend SLA exist only on FNOL search, not on the overview | L6 | Handler has no next step from the claim overview |
 | G6 | `matched` is never set by the app, and Abandon maps to status Closed (marked in code as an assumption) | Code | Needs a product answer before these can be built out |
-| G7 | After linking, nothing guides the handler. The section entity keeps the typed location's name even after the location is replaced by the policy's | Code | See open question Q1 |
+| G7 | **Fixed 2026-10-21 (sections come from the ticked coverages and replace the placeholder).** After linking, nothing guides the handler. The section entity keeps the typed location's name even after the location is replaced by the policy's | Code | See open question Q1 |
 | G8 | Cause of loss is never checked against the policy's coverage | Code | Planned as a silent check that flags a section for enhanced review |
-| G9 | Parties added during skeleton creation are stored in one shared list, not against the new claim | Code (not traced further) | **Not verified**: may mean parties are lost |
+| G9 | **Fixed 2026-10-21.** Parties added during skeleton creation were stored in one shared list, not against the new claim | Code (not traced further) | **Not verified**: may mean parties are lost |
 
 ---
 
@@ -142,3 +154,13 @@ Replay: the state of a play-through is kept in the browser tab. Press **Reset** 
 4. Which entry point is right for Link policy: both, or the overview only (G2)?
 5. When no policy location matches (L5), should the handler be allowed to keep the typed location with an "enhanced review" flag?
 6. What is `matched` for, and should the app ever set it (G6)?
+
+---
+
+## 7. Added 2026-10-21 (BMPCC-19113)
+
+- The "Awaiting policy" chip: the **All claims** list shows it beside Open on skeleton claims, and its Status filter has an **Awaiting policy** entry. The FNOL search Claims tab deliberately does **not** (BMPCC-17927 functional review, item 4, 2026-09-22: only Open/Closed there). To be confirmed with the team.
+- Open question: Circumstance (AGCS) is not asked at conversion (team: still open). The overview shows "Incident circumstance –" for a skeleton.
+- Open question: Property ID. The manual Add location form has no such field.
+- Open question: Underwriter. No underwriter exists in the policy data, so none is added to the claim's parties.
+- DEV banner ticket BMPCC-19113 has one case per scenario (storm, business interruption, no cause, no location, no nearby policy location, full conversion, list chip).
