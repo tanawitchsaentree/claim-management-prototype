@@ -67,6 +67,9 @@
               (selectionChange)="onCauseOfLossChange($event)"
             >
             </nx-multi-select>
+            @if (submitAttempted && form.get('causeOfLoss')?.errors?.['required']) {
+              <nx-error nxFormfieldError>Cause of loss is required</nx-error>
+            }
           </nx-formfield>
         </div>
         @if (showSpecifyOtherCause) {
@@ -294,6 +297,9 @@
         (locationChange)="lossLocation.setValue($event); form.markAsDirty()"
       >
       </app-location-picker>
+      @if (submitAttempted && lossLocation.errors?.['required']) {
+        <p class="eli-footer__error" role="alert">Add at least one location of loss</p>
+      }
       @if (fieldChanged('lossLocation')) {
         <div class="eli-field-actions">
           <button nxButton="tertiary small" type="button" (click)="onCancelField('lossLocation')">

@@ -527,5 +527,1393 @@
     "events": [],
     "createdAt": "2026-09-26T09:00:00Z",
     "updatedAt": "2026-09-26T09:00:00Z"
+  },
+  {
+    "id": "LI-CLM-2024-002",
+    "claimId": "CLM-2024-002",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-02-01",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-08-18",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-002",
+          "source": "policy",
+          "displayName": "Nordbyte SE — Dortmund",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Dortmund",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "business-interruption",
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Ransomware attack affecting 3 internal servers. Data encrypted, ransom demand received.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "business-interruption",
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-08-18T00:00:00Z",
+    "updatedAt": "2026-08-18T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-003",
+    "claimId": "CLM-2024-003",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-02-18",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-02-20",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-003",
+          "source": "policy",
+          "displayName": "GBF Logistics GmbH — Rotterdam",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Rotterdam",
+          "country": "Netherlands"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Cargo vessel collision in Rotterdam port. Partial loss of containerised goods.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "material-damage",
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-02-20T00:00:00Z",
+    "updatedAt": "2024-02-20T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-004",
+    "claimId": "CLM-2024-004",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-03-04",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-03-05",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-004",
+          "source": "policy",
+          "displayName": "Marvel SE — Vienna",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Vienna",
+          "country": "Austria"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Third-party bodily injury claim arising from construction site incident.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-03-05T00:00:00Z",
+    "updatedAt": "2024-03-05T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-005",
+    "claimId": "CLM-2024-005",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-03-10",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-03-12",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-005",
+          "source": "policy",
+          "displayName": "BMW Budapest Motors — Budapest",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Budapest",
+          "country": "Hungary"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "product-fault"
+    ],
+    "typeOfDamage": [
+      "machinery-breakdown",
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Major machinery breakdown at production line 4. Complete stoppage of assembly operations.",
+    "events": [
+      {
+        "eventKey": "product-fault",
+        "damages": [
+          "machinery-breakdown",
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-03-12T00:00:00Z",
+    "updatedAt": "2024-03-12T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-006",
+    "claimId": "CLM-2024-006",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-03-30",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-08-10",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-006",
+          "source": "policy",
+          "displayName": "Schäfer & Söhne AG — Zürich",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Zürich",
+          "country": "Switzerland"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "theft"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Suspected theft reported. Investigation ongoing, no confirmed loss amount yet.",
+    "events": [
+      {
+        "eventKey": "theft",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-08-10T00:00:00Z",
+    "updatedAt": "2026-08-10T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-007",
+    "claimId": "CLM-2024-007",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-04-08",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-04-10",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-007",
+          "source": "policy",
+          "displayName": "Nordic Shipping AS — Oslo",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Oslo",
+          "country": "Norway"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Storm damage to vessel hull during North Sea transit.",
+    "events": [
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "material-damage",
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-04-10T00:00:00Z",
+    "updatedAt": "2024-04-10T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-008",
+    "claimId": "CLM-2024-008",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-04-20",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-04-22",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-008",
+          "source": "policy",
+          "displayName": "TechStart Pte Ltd — Singapore",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Singapore",
+          "country": "Singapore"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Data breach exposing customer PII. Regulatory notification required.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-04-22T00:00:00Z",
+    "updatedAt": "2024-04-22T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-009",
+    "claimId": "CLM-2024-009",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-04-30",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-05-02",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-009",
+          "source": "policy",
+          "displayName": "Rhein Constructions GmbH — Cologne",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Cologne",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "machinery-breakdown",
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Crane collapse on construction site injuring two workers and damaging adjacent structure.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "machinery-breakdown",
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-05-02T00:00:00Z",
+    "updatedAt": "2024-05-02T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-010",
+    "claimId": "CLM-2024-010",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-05-13",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-05-15",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-010",
+          "source": "policy",
+          "displayName": "Pendragon Liability Corp — London",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "London",
+          "country": "United Kingdom"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "product-fault"
+    ],
+    "typeOfDamage": [
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Product liability claim — faulty component caused customer equipment failure.",
+    "events": [
+      {
+        "eventKey": "product-fault",
+        "damages": [
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-05-15T00:00:00Z",
+    "updatedAt": "2024-05-15T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-011",
+    "claimId": "CLM-2024-011",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-05-19",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-05-20",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-011",
+          "source": "policy",
+          "displayName": "Liver Tea Group — Munich",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Munich",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "machinery-breakdown",
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Burst pipe flooding ground floor storage. Stock damage.",
+    "events": [
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "material-damage",
+          "machinery-breakdown",
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-05-20T00:00:00Z",
+    "updatedAt": "2024-05-20T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-012",
+    "claimId": "CLM-2024-012",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-05-30",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-08-02",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": []
+    },
+    "causeOfLoss": [
+      "theft"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Missing container contents on arrival. Theft during transit suspected.",
+    "events": [
+      {
+        "eventKey": "theft",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-08-02T00:00:00Z",
+    "updatedAt": "2026-08-02T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-013",
+    "claimId": "CLM-2024-013",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-06-13",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-06-15",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-013",
+          "source": "policy",
+          "displayName": "Nordbyte SE — Dortmund",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Dortmund",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Phishing attack resulting in unauthorised wire transfer.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-06-15T00:00:00Z",
+    "updatedAt": "2024-06-15T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-014",
+    "claimId": "CLM-2024-014",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-07-03",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-07-04",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-014",
+          "source": "policy",
+          "displayName": "Rhein Constructions GmbH — Frankfurt",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Frankfurt",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "machinery-breakdown"
+    ],
+    "circumstance": null,
+    "lossDescription": "Minor scaffolding collapse — no injuries, minor property damage only.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "machinery-breakdown"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-07-04T00:00:00Z",
+    "updatedAt": "2024-07-04T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-015",
+    "claimId": "CLM-2024-015",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-07-08",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-07-10",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-015",
+          "source": "policy",
+          "displayName": "Marvel SE — Graz",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Graz",
+          "country": "Austria"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Public liability claim after customer slipped on wet floor in retail premises.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-07-10T00:00:00Z",
+    "updatedAt": "2024-07-10T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-016",
+    "claimId": "CLM-2024-016",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-07-30",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-08-01",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-016",
+          "source": "policy",
+          "displayName": "Schäfer & Söhne AG — Bern",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Bern",
+          "country": "Switzerland"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Landslide caused by unusually heavy rainfall destroyed warehouse perimeter wall and damaged 40% of stock. Emergency containment measures taken. Environmental remediation may be required pending soil assessment. Local authority notification issued. Loss adjuster appointed. Estimated rebuild timeline 4-6 months. Business continuity plan activated with temporary off-site storage arranged at three locations across the canton. Insurance survey team visit scheduled within 72 hours to assess full extent of structural and contents damage. Police report filed. Photos and drone survey footage attached.",
+    "events": [
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "material-damage",
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-08-01T00:00:00Z",
+    "updatedAt": "2024-08-01T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-017",
+    "claimId": "CLM-2024-017",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-08-14",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-08-15",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-017",
+          "source": "policy",
+          "displayName": "Nordic Shipping AS — Copenhagen",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Copenhagen",
+          "country": "Denmark"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Engine room fire on cargo vessel. Total loss of propulsion system.",
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-08-15T00:00:00Z",
+    "updatedAt": "2024-08-15T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-018",
+    "claimId": "CLM-2024-018",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-08-30",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-09-01",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-018",
+          "source": "policy",
+          "displayName": "TechStart Pte Ltd — Singapore",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Singapore",
+          "country": "Singapore"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "DDoS attack caused 14-hour service outage. Revenue loss and SLA penalties incurred.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-09-01T00:00:00Z",
+    "updatedAt": "2024-09-01T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-019",
+    "claimId": "CLM-2024-019",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2019-04-10",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2019-04-12",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-019",
+          "source": "policy",
+          "displayName": "Liver Tea Group — Bremen",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Bremen",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Old archived claim — storm damage to factory roof 5 years ago. Closed.",
+    "events": [
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2019-04-12T00:00:00Z",
+    "updatedAt": "2019-04-12T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-020",
+    "claimId": "CLM-2024-020",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-05-06",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-05-07",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-020",
+          "source": "policy",
+          "displayName": "Oskar Veld & \"Partners\" — Manchester",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Manchester",
+          "country": "United Kingdom"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "New claim created today — liability dispute with Müller & Söhne over contractual breach.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-05-07T00:00:00Z",
+    "updatedAt": "2026-05-07T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-021",
+    "claimId": "CLM-2024-021",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-10-04",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-10-05",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-021",
+          "source": "policy",
+          "displayName": "Rhein Constructions GmbH — Stuttgart",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Stuttgart",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "machinery-breakdown"
+    ],
+    "circumstance": null,
+    "lossDescription": "Claim with no tasks assigned — edge case for empty task list.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "machinery-breakdown"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-10-05T00:00:00Z",
+    "updatedAt": "2024-10-05T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-022",
+    "claimId": "CLM-2024-022",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-05-15",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-05-15",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-022",
+          "source": "policy",
+          "displayName": "Liver Tea Group — Munich",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Munich",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Fire in main production area. Partial loss of equipment.",
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-05-15T00:00:00Z",
+    "updatedAt": "2024-05-15T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-023",
+    "claimId": "CLM-2024-023",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-05-15",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-05-16",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-023",
+          "source": "policy",
+          "displayName": "Liver Tea Group — Munich",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Munich",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "fire",
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Secondary water damage claim from same fire event — sprinkler activation.",
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      },
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-05-16T00:00:00Z",
+    "updatedAt": "2024-05-16T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-101",
+    "claimId": "CLM-2024-101",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-06-08",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-06-10",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-101",
+          "source": "policy",
+          "displayName": "Müller GmbH — Frankfurt",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Frankfurt",
+          "country": "DE"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "fire"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Fire broke out in the main storage hall. Arson suspected. Business operations halted for 3 weeks.",
+    "events": [
+      {
+        "eventKey": "fire",
+        "damages": [
+          "material-damage",
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-06-10T00:00:00Z",
+    "updatedAt": "2024-06-10T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-102",
+    "claimId": "CLM-2024-102",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-07-20",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-07-22",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-102",
+          "source": "policy",
+          "displayName": "TechPark Berlin AG — Berlin",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Berlin",
+          "country": "DE"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "theft"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Theft of IT equipment from server room. Police report filed.",
+    "events": [
+      {
+        "eventKey": "theft",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-07-22T00:00:00Z",
+    "updatedAt": "2024-07-22T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-103",
+    "claimId": "CLM-2024-103",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-09-03",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-09-05",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-103",
+          "source": "policy",
+          "displayName": "Nordic Renewables GmbH — Hamburg",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Hamburg",
+          "country": "DE"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "machinery-breakdown",
+      "business-interruption"
+    ],
+    "circumstance": null,
+    "lossDescription": "Storm caused structural damage to wind turbine array and surrounding facility. Flooding of lower level.",
+    "events": [
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "machinery-breakdown",
+          "business-interruption"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-09-05T00:00:00Z",
+    "updatedAt": "2024-09-05T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-024",
+    "claimId": "CLM-2024-024",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2024-03-08",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2024-03-10",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-024",
+          "source": "policy",
+          "displayName": "Nordhafen Shipping GmbH — Hamburg",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Hamburg",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "material-damage",
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Cargo damage during North Sea transit. Claim initially closed after settlement; new evidence of underpayment prompted reopening.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "material-damage",
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2024-03-10T00:00:00Z",
+    "updatedAt": "2024-03-10T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-025",
+    "claimId": "CLM-2024-025",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-20",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-10-19",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-025",
+          "source": "policy",
+          "displayName": "Rheinfeld Logistics AG — Cologne",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Cologne",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Forklift collision damaged racking and stored goods in the main distribution hall.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-10-19T00:00:00Z",
+    "updatedAt": "2026-10-19T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-026",
+    "claimId": "CLM-2024-026",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-15",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-10-14",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-026",
+          "source": "policy",
+          "displayName": "Baltic Freight Partners — Bremen",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Bremen",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "liability"
+    ],
+    "circumstance": null,
+    "lossDescription": "Third-party bodily injury claim from a delivery-yard slip and fall.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "liability"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-10-14T00:00:00Z",
+    "updatedAt": "2026-10-14T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-027",
+    "claimId": "CLM-2024-027",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-08-30",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-10-06",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-027",
+          "source": "policy",
+          "displayName": "Nordsee Marine Services — Kiel",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Kiel",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "act-of-omission"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Minor hull damage from a dockside collision during loading. Settled and closed.",
+    "events": [
+      {
+        "eventKey": "act-of-omission",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-10-06T00:00:00Z",
+    "updatedAt": "2026-10-06T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-028",
+    "claimId": "CLM-2024-028",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-14",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-10-11",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-028",
+          "source": "policy",
+          "displayName": "Vantage Data Systems GmbH — Munich",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Munich",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "other-event"
+    ],
+    "typeOfDamage": [
+      "business-interruption",
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Phishing-enabled business email compromise led to a fraudulent wire transfer.",
+    "events": [
+      {
+        "eventKey": "other-event",
+        "damages": [
+          "business-interruption",
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-10-11T00:00:00Z",
+    "updatedAt": "2026-10-11T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-CLM-2024-029",
+    "claimId": "CLM-2024-029",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-01",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-09-29",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": [
+        {
+          "id": "loc-CLM-2024-029",
+          "source": "policy",
+          "displayName": "Alpenbau Engineering GmbH — Stuttgart",
+          "addressLine1": "",
+          "postalCode": "",
+          "city": "Stuttgart",
+          "country": "Germany"
+        }
+      ]
+    },
+    "causeOfLoss": [
+      "product-fault"
+    ],
+    "typeOfDamage": [
+      "machinery-breakdown"
+    ],
+    "circumstance": null,
+    "lossDescription": "Crane boom failure during a construction lift damaged adjacent scaffolding.",
+    "events": [
+      {
+        "eventKey": "product-fault",
+        "damages": [
+          "machinery-breakdown"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-09-29T00:00:00Z",
+    "updatedAt": "2026-09-29T00:00:00Z",
+    "seedSource": "seed-financial-overview"
+  },
+  {
+    "id": "LI-SK-2024-002",
+    "claimId": "SK-2024-002",
+    "dateOfLoss": {
+      "dateOfOccurrence": "2026-09-04",
+      "timeOfOccurrence": "09:00",
+      "dateOfNotification": "2026-09-05",
+      "timeOfNotification": "10:00"
+    },
+    "lossLocation": {
+      "locations": []
+    },
+    "causeOfLoss": [
+      "natural-event"
+    ],
+    "typeOfDamage": [
+      "material-damage"
+    ],
+    "circumstance": null,
+    "lossDescription": "Water damage to office floor 3",
+    "events": [
+      {
+        "eventKey": "natural-event",
+        "damages": [
+          "material-damage"
+        ],
+        "causedBy": []
+      }
+    ],
+    "createdAt": "2026-09-05T00:00:00Z",
+    "updatedAt": "2026-09-05T00:00:00Z",
+    "seedSource": "seed-financial-overview"
   }
 ]

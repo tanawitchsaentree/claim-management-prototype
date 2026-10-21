@@ -38,6 +38,9 @@ const movements = data('reserve-movements.json');
 const recoveryCases = data('recovery-cases.json');
 const overviews = data('claim-overview.json');
 const policies = data('policies.json');
+const lookups = data('lookups.json');
+const lossInfoPath = resolve(root, 'src/app/core/mock/data/loss-information.json');
+const lossInfo = JSON.parse(readFileSync(lossInfoPath, 'utf8'));
 const outPath = resolve(root, 'src/app/core/mock/data/financial-overview.json');
 const existing = JSON.parse(readFileSync(outPath, 'utf8'));
 const keep = existing.filter(f => f.claimId === 'CLM-2024-001');
@@ -542,6 +545,65 @@ function build(claim) {
   };
 }
 
+// ── loss information ──────────────────────────────────────────────────────────
+// Edit claim reads Cause of loss / Type of damage from loss-information.json. A claim with
+// sections must list their damage types (and a cause that fits), or the Edit screen
+// contradicts the Sections page. Hand-written records are never touched.
+const SEED_MARK = 'seed-financial-overview';
+const CAUSE_KEYS = lookups.causeOfLoss.map(o => o.value);
+const CAUSE_ALIASES = { storm: 'natural-event', 'wind-storm': 'natural-event', water: 'natural-event', 'water-damage': 'natural-event' };
+const CAUSE_RULES = [
+  [/fire|blaze|sprinkler/, 'fire'],
+  [/lightning/, 'lightning'],
+  [/explosion|blast/, 'explosion'],
+  [/arson/, 'arson'],
+  [/robbery/, 'robbery'],
+  [/burglar|break-in/, 'burglary'],
+  [/theft|stolen/, 'theft'],
+  [/storm|flood|hail|hurricane|typhoon|wind|water|landslide|snow/, 'natural-event'],
+  [/earthquake/, 'earthquake'],
+  [/piracy/, 'act-of-piracy'],
+  [/defect|breakdown|malfunction|failure|fault|machinery/, 'product-fault'],
+  [/collision|negligen|error|omission|injury|liability|third.party/, 'act-of-omission']
+];
+function causeFor(claim) {
+  const own = (claim.causeOfLoss ?? []).map(c => CAUSE_ALIASES[c] ?? c).filter(c => CAUSE_KEYS.includes(c));
+  if (own.length) return [...new Set(own)];
+  const text = (claim.description ?? '').toLowerCase();
+  return [CAUSE_RULES.find(([re]) => re.test(text))?.[1] ?? 'other-event'];
+}
+function lossInfoFor(claim) {
+  const types = [...new Set(sections.filter(x => x.claimId === claim.claimId).map(x => x.damageType))];
+  const causes = causeFor(claim);
+  const city = claim.location?.city ?? '';
+  const country = claim.location?.country ?? '';
+  const created = `${isoOf(claim.dateCreated)}T00:00:00Z`;
+  return {
+    id: `LI-${claim.claimId}`,
+    claimId: claim.claimId,
+    dateOfLoss: {
+      dateOfOccurrence: isoOf(claim.lossDate ?? claim.dateCreated),
+      timeOfOccurrence: '09:00',
+      dateOfNotification: isoOf(claim.dateCreated),
+      timeOfNotification: '10:00'
+    },
+    lossLocation: {
+      locations:
+        city || country
+          ? [{ id: `loc-${claim.claimId}`, source: 'policy', displayName: [claim.clientName, city].filter(Boolean).join(' — '), addressLine1: '', postalCode: '', city, country }]
+          : []
+    },
+    causeOfLoss: causes,
+    typeOfDamage: types,
+    circumstance: null,
+    lossDescription: claim.description ?? '',
+    events: causes.map(c => ({ eventKey: c, damages: types, causedBy: [] })),
+    createdAt: created,
+    updatedAt: created,
+    seedSource: SEED_MARK
+  };
+}
+
 // ── run ─────────────────────────────────────────────────────────────────────────
 const noMoney = c => c.claimId.startsWith('SK-') && ['awaiting-policy', 'abandoned'].includes(c.skeletonState);
 const targets = claims.filter(c => c.claimId !== 'CLM-2024-001' && !noMoney(c));
@@ -610,4 +672,9 @@ const out = (path, value) => writeFileSync(path, JSON.stringify(value, null, 2) 
 out(outPath, [...keep, ...seeded]);
 out(resolve(root, 'src/app/core/mock/data/sections.json'), [...sections]);
 out(resolve(root, 'src/app/core/mock/data/payment-approvals.json'), payAppr);
-console.log(`Seeded ${seeded.length} claims (${generatedSections.length} new sections): ${seeded.map(f => f.claimId).join(', ')}`);
+const handWritten = lossInfo.filter(r => r.seedSource !== SEED_MARK);
+const needLossInfo = targets.filter(
+  c => sections.some(x => x.claimId === c.claimId) && !handWritten.some(r => r.claimId === c.claimId)
+);
+out(lossInfoPath, [...handWritten, ...needLossInfo.map(lossInfoFor)]);
+console.log(`Loss information for ${needLossInfo.length} claims. Seeded ${seeded.length} claims (${generatedSections.length} new sections): ${seeded.map(f => f.claimId).join(', ')}`);

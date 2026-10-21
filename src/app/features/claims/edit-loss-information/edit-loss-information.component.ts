@@ -131,8 +131,11 @@ export class EditLossInformationComponent implements OnInit {
       },
       { validators: dateOrderValidator }
     ),
-    lossLocation: new FormControl<LocationPickerOutput>({ locations: [] }),
-    causeOfLoss: new FormControl<string[]>([], []),
+    // A claim always has a loss location and a cause: neither can be saved empty.
+    lossLocation: new FormControl<LocationPickerOutput>({ locations: [] }, [
+      c => (c.value?.locations?.length ? null : { required: true })
+    ]),
+    causeOfLoss: new FormControl<string[]>([], [Validators.required]),
     // Added 2026-08-31 (Marlene feedback) — was FNOL-only until now; the
     // LossInformation model/service already carried typeOfDamage end to end,
     // this form just never exposed it.
