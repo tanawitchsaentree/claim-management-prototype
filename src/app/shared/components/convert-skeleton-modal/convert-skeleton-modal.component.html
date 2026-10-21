@@ -5,15 +5,37 @@
   <span class="csm-modal__close-x" aria-hidden="true"></span>
 </button>
 
-@if (step() === 'complete' && chosen(); as policy) {
+@if (chosen(); as policy) {
   <app-complete-claim-step
+    [style.display]="step() === 'complete' ? null : 'none'"
     [skeleton]="skeleton"
     [policy]="policy"
-    [busy]="picking()"
     (back)="backToPolicies()"
-    (confirmed)="onComplete($event)"
+    (confirmed)="onDetails($event)"
   ></app-complete-claim-step>
-} @else {
+  @if (draft(); as d) {
+    <app-coverage-step
+      [style.display]="step() === 'coverage' ? null : 'none'"
+      [skeleton]="skeleton"
+      [policy]="policy"
+      [causes]="d.causeOfLoss"
+      (back)="step.set('complete')"
+      (confirmed)="onCoverage($event)"
+    ></app-coverage-step>
+  }
+  @if (plans(); as p) {
+    <app-reserves-step
+      [style.display]="step() === 'reserves' ? null : 'none'"
+      [skeleton]="skeleton"
+      [policy]="policy"
+      [sections]="p"
+      [busy]="picking()"
+      (back)="step.set('coverage')"
+      (confirmed)="onReserves($event)"
+    ></app-reserves-step>
+  }
+}
+@if (step() === 'pick') {
 <!-- Header -->
   <header class="csm-modal__header">
     <h2 class="csm-modal__title">Link policy — {{ skeleton.claimId }}</h2>

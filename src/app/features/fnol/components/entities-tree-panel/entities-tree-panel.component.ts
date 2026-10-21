@@ -10,7 +10,7 @@ import {
   hasAnySelection,
   isChecked,
   isIndeterminate
-} from '../../steps/step-entities-damages/entity-tree';
+} from '../../../../shared/components/entities-selection/entity-tree';
 
 /**
  * The narrow list on the left while one entity's details are open. Same

@@ -18,8 +18,10 @@ import { MockPolicySearchService } from '../../../core/mock/services/mock-policy
 import { ClientSearchResult, PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
 import { Claim } from '../../../core/models/claim.model';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { CompletionDetails } from '../../../core/models/claim-completion.model';
+import { CompletionDetails, ReservePlan, SectionPlan } from '../../../core/models/claim-completion.model';
 import { CompleteClaimStepComponent } from './complete-claim-step/complete-claim-step.component';
+import { CoverageStepComponent } from './coverage-step/coverage-step.component';
+import { ReservesStepComponent } from './reserves-step/reserves-step.component';
 
 export interface ConvertSkeletonModalData {
   skeleton: Claim;
@@ -54,7 +56,9 @@ interface PolicyRow {
     NxTabsModule,
     StatusChipComponent,
     EmptyStateComponent,
-    CompleteClaimStepComponent
+    CompleteClaimStepComponent,
+    CoverageStepComponent,
+    ReservesStepComponent
   ],
   templateUrl: './convert-skeleton-modal.component.html',
   styleUrl: './convert-skeleton-modal.component.scss'
@@ -66,9 +70,12 @@ export class ConvertSkeletonModalComponent implements OnInit {
   private readonly policySvc = inject(MockPolicySearchService);
 
   readonly selectedNumber = signal<string | null>(null);
-  // Step 1 picks the policy, step 2 completes the claim; one sheet, no new dialog.
-  readonly step = signal<'pick' | 'complete'>('pick');
+  // One sheet, four steps: pick the policy, complete the claim, choose coverages,
+  // optional reserves. Steps already visited stay mounted (hidden) so Back keeps what was typed.
+  readonly step = signal<'pick' | 'complete' | 'coverage' | 'reserves'>('pick');
   readonly chosen = signal<PolicySearchResult | null>(null);
+  readonly draft = signal<CompletionDetails | null>(null);
+  readonly plans = signal<SectionPlan[] | null>(null);
 
   // Same search as FNOL "Client and policy search": the general fields, then the
   // result tabs. Client name starts pre-filled with the skeleton's client and
@@ -186,6 +193,25 @@ export class ConvertSkeletonModalComponent implements OnInit {
   backToPolicies(): void {
     this.step.set('pick');
     this.selectedNumber.set(null);
+    this.chosen.set(null);
+    this.draft.set(null);
+    this.plans.set(null);
+  }
+
+  onDetails(details: CompletionDetails): void {
+    this.draft.set(details);
+    this.step.set('coverage');
+  }
+
+  onCoverage(plans: SectionPlan[]): void {
+    this.plans.set(plans);
+    this.step.set('reserves');
+  }
+
+  async onReserves(reserves: ReservePlan[]): Promise<void> {
+    const draft = this.draft();
+    if (!draft) return;
+    await this.onComplete({ ...draft, sections: this.plans() ?? [], reserves });
   }
 
   async onComplete(details: CompletionDetails): Promise<void> {

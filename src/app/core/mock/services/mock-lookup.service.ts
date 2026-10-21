@@ -63,6 +63,10 @@ export class MockLookupService extends MockBaseService {
   }
   // Sync — reserve-detail-panel builds a blank sub-reserve outside an
   // async/subscribe context (a plain object literal on button click).
+  getReserveTypesSync(): LookupOption[] {
+    return this.lookups.reserveTypes;
+  }
+
   getReserveSubTypesSync(): LookupOption[] {
     return this.lookups.reserveSubTypes;
   }

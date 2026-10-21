@@ -72,3 +72,10 @@ export function syncCbiControls(
   // The location has no Angular validator (it is not a primitive); callers check it by hand.
   if (!showDetails) cbiLocation.setValue({ locations: [] });
 }
+
+/** supplier-* / customer-* case types name a counterparty; the others (denial of access, service interruption...) have none. */
+export function cbiRelationshipFor(caseType: string): 'supplier' | 'customer' | 'other' {
+  if (caseType.startsWith('supplier-')) return 'supplier';
+  if (caseType.startsWith('customer-')) return 'customer';
+  return 'other';
+}

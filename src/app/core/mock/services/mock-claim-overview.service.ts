@@ -4,8 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
 import { causeLabel } from '../../models/cause-of-loss';
 import { CompletionDetails } from '../../models/claim-completion.model';
-import { LossInformationFormValue } from '../../models/loss-information.model';
-import { MockLossInformationService } from './mock-loss-information.service';
+import { MockClaimConversionService } from './mock-claim-conversion.service';
 import { Claim } from '../../models/claim.model';
 import { MockBaseService } from './mock-base.service';
 import { ClaimNumberService } from '../../services/claim-number.service';
@@ -29,7 +28,7 @@ export class MockClaimOverviewService extends MockBaseService {
   private readonly taskSvc = inject(MockTaskService);
   private readonly lookupSvc = inject(MockLookupService);
   private readonly sectionSvc = inject(MockSectionService);
-  private readonly lossInfoSvc = inject(MockLossInformationService);
+  private readonly conversionSvc = inject(MockClaimConversionService);
   private readonly numberSvc = inject(ClaimNumberService);
 
   getOverview(claimId: string): Observable<ClaimOverview> {
@@ -153,11 +152,11 @@ export class MockClaimOverviewService extends MockBaseService {
     claimId: string,
     policy: LinkablePolicy,
     details?: CompletionDetails
-  ): Promise<{ claim: Claim; claimNumber: string; formerNumber: string }> {
+  ): Promise<{ claim: Claim; claimNumber: string; formerNumber: string; sections: number; reserveTask: boolean }> {
     const linked = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
     // The "Complete the claim" step is written before the section is made, so the
     // section follows the confirmed cause (never an empty one).
-    const claim = details ? await this.applyCompletion(linked, details) : linked;
+    const claim = details ? await this.conversionSvc.applyDetails(linked, details) : linked;
     // It is a regular claim now: it gets a regular claim number. The internal id (and
     // so every record pointing at it) stays; the SK- number becomes a permanent alias.
     const { number: claimNumber, former: formerNumber } = this.numberSvc.assign(claimId);
@@ -186,84 +185,41 @@ export class MockClaimOverviewService extends MockBaseService {
         valueNew: `${policy.policyNumber} — linked`
       }
     ]);
-    // The skeleton-creation path (step-skeleton-summary.ts) already creates
-    // this claim's section from its cause of loss at creation time — this
-    // is only a fallback for claims that predate that fix (or somehow
-    // reached conversion without ever getting one), guarded so conversion
-    // never double-creates a section that already exists.
-    if (claim.causeOfLoss?.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
-      // Entity = the property/asset affected, never the claimant's own name
-      // (see step-skeleton-summary.ts's onCreate for the same rule) — this
-      // claim model only has a coarse city/country, but that still reads
-      // sane ("Material damage — Munich") where the client's name doesn't.
+    // Sections come from the coverages the handler ticked (the placeholder a skeleton
+    // got from its cause is replaced). Without a plan, the cause-based section below is
+    // the fallback, so a converted claim never ends with 0 sections.
+    let sections = await this.conversionSvc.createSections(claim, details);
+    if (!sections.length && claim.causeOfLoss?.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
+      // Entity = the property/asset affected, never the claimant's own name.
       const entityName = claim.location?.city || claim.clientName;
+      sections = [await firstValueFrom(this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, entityName))];
+    } else if (!sections.length) {
+      sections = this.sectionSvc.getByClaimIdSync(claimId);
+    }
+    const reserved = await this.conversionSvc.addReserves(claim, details, sections);
+    this.conversionSvc.addParties(claim, policy);
+    // Reserves still need setting up unless every section got one now: a real task, in the
+    // same queue as every other piece of work, carrying the skeleton's 3-day urgency.
+    const reserveTask = reserved < sections.length || sections.length === 0;
+    if (reserveTask) {
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 3);
       await firstValueFrom(
-        this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, entityName)
+        this.taskSvc.create({
+          claimId,
+          taskType: 'Review',
+          description: `Set up reserves for ${claimNumber} (converted from orphan claim ${formerNumber})`,
+          status: 'open',
+          dueDate: dueDate.toISOString().split('T')[0],
+          priority: 'high',
+          assignee: claim.assignee ?? 'Unassigned'
+        })
       );
     }
-    // Reserves still need manual setup — nothing derives a reserve amount
-    // from cause of loss the way a section's damage type can be derived.
-    // Surfaced as a real task so it's in the same queue as every other
-    // piece of work, carrying forward the urgency the skeleton had
-    // pre-conversion (3-day SLA) instead of it evaporating at conversion.
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 3);
-    await firstValueFrom(
-      this.taskSvc.create({
-        claimId,
-        taskType: 'Review',
-        description: `Set up reserves for ${claimNumber} (converted from orphan claim ${formerNumber})`,
-        status: 'open',
-        dueDate: dueDate.toISOString().split('T')[0],
-        priority: 'high',
-        assignee: claim.assignee ?? 'Unassigned'
-      })
-    );
     // The skeleton's location is kept or changed in the Link policy step (it was
     // entered with no policy, so Marlene's 2026-10-05 re-confirm rule is answered
     // there), so no "Confirm loss location" task is needed any more.
-    return { claim, claimNumber, formerNumber };
-  }
-
-  /** Writes the description, cause and CBI answers the handler confirmed at conversion. */
-  private async applyCompletion(claim: Claim, d: CompletionDetails): Promise<Claim> {
-    const opts = this.lookupSvc.getCauseOfLossSync();
-    const labels = (codes: string[] | undefined): string => (codes ?? []).map(c => causeLabel(c, opts)).join(', ') || '–';
-    const first = d.location?.locations[0];
-    const updated = await firstValueFrom(
-      this.claimSvc.update(claim.claimId, {
-        description: d.lossDescription,
-        causeOfLoss: d.causeOfLoss,
-        ...(first ? { location: { city: first.city ?? '', country: first.country ?? '' } } : {})
-      })
-    );
-    const li = await firstValueFrom(this.lossInfoSvc.getByClaimId(claim.claimId));
-    if (li) {
-      await firstValueFrom(
-        this.lossInfoSvc.save(
-          {
-            ...li,
-            causeOfLoss: d.causeOfLoss,
-            lossDescription: d.lossDescription,
-            specifyOtherCauseOfLoss: d.specifyOtherCauseOfLoss,
-            ...(d.location ? { lossLocation: d.location } : {}),
-            ...(d.cbi ?? {})
-          } as unknown as LossInformationFormValue,
-          claim.claimId
-        )
-      );
-    }
-    const base = { claimId: claim.claimId, user: claim.assignee ?? 'Unassigned', objectType: 'Claim' as const };
-    const stamp = (n: string): { id: string; timestamp: string } => ({ id: `act-${n}-${Date.now()}`, timestamp: new Date().toISOString() });
-    const rows: ClaimActivity[] = [];
-    if (labels(claim.causeOfLoss) !== labels(d.causeOfLoss)) {
-      rows.push({ ...base, ...stamp('cause'), attribute: 'Cause of loss', valueOld: labels(claim.causeOfLoss), valueNew: labels(d.causeOfLoss) });
-    }
-    if ((claim.description ?? '') !== d.lossDescription) {
-      rows.push({ ...base, ...stamp('desc'), attribute: 'Loss description', valueOld: claim.description || '–', valueNew: d.lossDescription });
-    }
-    if (rows.length) this.appendActivities(claim.claimId, rows);
-    return updated;
+    return { claim, claimNumber, formerNumber, sections: sections.length, reserveTask };
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton

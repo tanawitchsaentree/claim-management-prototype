@@ -34,6 +34,13 @@ export class MockSectionService extends MockBaseService {
     return this.cache.get(claimId)!;
   }
 
+  /** Drops sections that were only a placeholder (the one a skeleton claim was given from its cause). */
+  removeSections(claimId: string, ids: string[]): void {
+    this.stateSvc.removeSections(ids);
+    const cached = this.cache.get(claimId);
+    if (cached) this.cache.set(claimId, cached.filter(s => !ids.includes(s.id)));
+  }
+
   resetCache(): void {
     this.cache.clear();
   }

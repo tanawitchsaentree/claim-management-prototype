@@ -20,7 +20,9 @@
         <th nxHeaderCell class="col-limit">Limit</th>
         <th nxHeaderCell class="col-covered">Covered by</th>
         <th nxHeaderCell class="col-docs">Documents</th>
-        <th nxHeaderCell class="col-action">Action</th>
+        @if (!selectionOnly()) {
+          <th nxHeaderCell class="col-action">Action</th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -40,7 +42,8 @@
             </button>
           </td>
           <td nxCell colspan="5" class="group-row__label">{{ group.label }}</td>
-          <td nxCell class="col-action">
+          @if (!selectionOnly()) {
+<td nxCell class="col-action">
             <button
               nxIconButton="tertiary small"
               type="button"
@@ -57,6 +60,7 @@
               }
             </nx-context-menu>
           </td>
+}
         </tr>
         @if (group.expanded) {
           @for (row of group.rows; track row.entity.entityId) {
@@ -78,7 +82,9 @@
             <tr nxTableRow class="entity-row">
               <td nxCell colspan="2"></td>
               <td nxCell colspan="4" class="text-muted">No location selected</td>
-              <td nxCell class="col-action"></td>
+              @if (!selectionOnly()) {
+<td nxCell class="col-action"></td>
+}
             </tr>
           }
         }
@@ -137,7 +143,8 @@
     </td>
     <td nxCell class="col-covered">{{ entity.coveredBy }}</td>
     <td nxCell class="col-docs">{{ entity.documentsCount ?? 0 }}</td>
-    <td nxCell class="col-action">
+    @if (!selectionOnly()) {
+<td nxCell class="col-action">
       <button
         nxIconButton="tertiary small"
         type="button"
@@ -162,6 +169,7 @@
         }
       </nx-context-menu>
     </td>
+}
   </tr>
   @if (!entity.isRule && entity.expanded && entity.subItems?.length) {
     @for (sub of entity.subItems; track sub.itemId) {
@@ -178,7 +186,9 @@
         <td nxCell colspan="5">
           <div class="entity-cell sub-item__name" [style.--lvl]="level">{{ sub.name }}</div>
         </td>
-        <td nxCell class="col-action"></td>
+        @if (!selectionOnly()) {
+<td nxCell class="col-action"></td>
+}
       </tr>
     }
   }

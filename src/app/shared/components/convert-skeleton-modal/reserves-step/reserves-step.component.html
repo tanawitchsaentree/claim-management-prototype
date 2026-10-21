@@ -1,0 +1,43 @@
+<header class="rvs__header">
+  <h2 class="rvs__title">Reserves (optional) — {{ skeleton().claimId }}</h2>
+  <p class="rvs__context">Policy {{ policy().policyNumber }} &middot; {{ skeleton().clientName }}</p>
+</header>
+
+<div class="rvs__body" tabindex="0">
+  <p class="rvs__intro">
+    Set a first reserve for each section now, or leave the amounts empty and do it later. A "Set up reserves" task
+    stays on your list until every section has one. Reserves go to your approver, as always.
+  </p>
+  @for (row of rows(); track $index; let i = $index) {
+    <div class="rvs__row" [formGroup]="row">
+      <p class="rvs__section">{{ rowLabel(i) }}</p>
+      <nx-formfield label="Reserve type">
+        <nx-dropdown formControlName="reserveType">
+          @for (o of typeOptions; track o.value) {
+            <nx-dropdown-item [value]="o.value">{{ o.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="Reserve sub-type">
+        <nx-dropdown formControlName="reserveSubType">
+          @for (o of subTypeOptions; track o.value) {
+            <nx-dropdown-item [value]="o.value">{{ o.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+      <nx-formfield label="Reserve amount (EUR)">
+        <input nxInput type="number" min="0" formControlName="amount" />
+        @if (attempted() && row.controls['amount'].invalid) {
+          <nx-error nxFormfieldError>Enter an amount greater than 0, or leave it empty.</nx-error>
+        }
+      </nx-formfield>
+    </div>
+  }
+</div>
+
+<footer class="rvs__footer">
+  <div class="rvs__actions">
+    <button nxButton="secondary small" type="button" [disabled]="busy()" (click)="back.emit()">Back</button>
+    <button nxButton="primary small" type="button" [disabled]="busy()" (click)="onLink()">Link policy</button>
+  </div>
+</footer>

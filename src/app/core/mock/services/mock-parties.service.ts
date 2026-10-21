@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Party, PartyFilters, PartyRole, PartyClaim } from '../../models/party.model';
 import { MockBaseService } from './mock-base.service';
+import { MockStateService } from '../state/mock-state.service';
 import rawData from '../data/parties.json';
 
 @Injectable({ providedIn: 'root' })
 export class MockPartiesService extends MockBaseService {
   private readonly raw = rawData as Party[];
+  private readonly stateSvc = inject(MockStateService);
   private readonly cache = new Map<string, Party[]>();
 
   // Orphan claim (BMPCC-241) — flat party list, no claim/section hierarchy,
@@ -32,7 +34,14 @@ export class MockPartiesService extends MockBaseService {
 
   /** Parties attached to one claim (Make payment's payee list reads these). */
   getPartiesForClaimSync(claimId: string): Party[] {
-    return this.raw.filter(p => p.claimId === claimId);
+    return [...this.raw, ...this.stateSvc.state().addedParties].filter(p => p.claimId === claimId);
+  }
+
+  /** Adds parties to a claim (idempotent per party id), keeping them across reloads. */
+  addPartiesToClaim(claimId: string, parties: Party[]): void {
+    const have = new Set(this.getPartiesForClaimSync(claimId).map(p => p.partyId));
+    const fresh = parties.filter(p => !have.has(p.partyId)).map(p => ({ ...p, claimId }));
+    if (fresh.length) this.stateSvc.appendParties(fresh);
   }
 
   searchAll(filters: Partial<PartyFilters>): Observable<Party[]> {

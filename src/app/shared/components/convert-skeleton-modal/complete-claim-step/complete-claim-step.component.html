@@ -7,7 +7,7 @@
 
 <div class="ccs__body" tabindex="0" [formGroup]="form">
   <p class="ccs__intro">
-    A skeleton claim doesn't hold everything a regular claim needs. Check these details, then link the policy.
+    A skeleton claim doesn't hold everything a regular claim needs. Check these details, then choose the coverages.
   </p>
 
   <nx-formfield label="Loss description *" class="ccs__full">
@@ -53,16 +53,30 @@
         {{ changed() ? 'You changed it to this policy location.' : 'Entered on the skeleton claim before a policy was known, so it counts as a manual location. Keep it, or change it to one of this policy’s locations.' }}
       </p>
       <app-location-picker [readonly]="true" [value]="shownLocation()" [originalValue]="entered()"></app-location-picker>
-      <nx-radio-toggle variant="small" ariaLabel="Location of loss" [formControl]="locationMode">
-        <nx-radio-toggle-button value="keep">Keep this location</nx-radio-toggle-button>
-        <nx-radio-toggle-button value="change">Change location</nx-radio-toggle-button>
-      </nx-radio-toggle>
-    } @else {
-      <p class="ccs__hint">No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.</p>
       @if (changed()) {
-        <app-location-picker [readonly]="true" [value]="changed()"></app-location-picker>
+        <!-- After a change "Keep" would read as "keep the new one", so the choice becomes two plain actions. -->
+        <div class="ccs__loc-actions">
+          <button nxButton="secondary small" type="button" (click)="pickLocation()">Change again</button>
+          <button nxButton="secondary small" type="button" (click)="useSkeletonLocation()">Use the skeleton location</button>
+        </div>
+      } @else {
+        <nx-radio-toggle variant="small" ariaLabel="Location of loss" [formControl]="locationMode">
+          <nx-radio-toggle-button value="keep">Keep this location</nx-radio-toggle-button>
+          <nx-radio-toggle-button value="change">Change location</nx-radio-toggle-button>
+        </nx-radio-toggle>
       }
-      <button nxButton="secondary small" type="button" (click)="pickLocation()">{{ changed() ? 'Change location' : 'Add location' }}</button>
+    } @else {
+      @if (changed()) {
+        <p class="ccs__hint">Added from this policy.</p>
+        <app-location-picker [readonly]="true" [value]="changed()"></app-location-picker>
+        <div class="ccs__loc-actions">
+          <button nxButton="secondary small" type="button" (click)="pickLocation()">Change</button>
+          <button nxButton="secondary small" type="button" (click)="useSkeletonLocation()">Remove</button>
+        </div>
+      } @else {
+        <p class="ccs__hint">No location was entered on the skeleton claim. You can add one now, or later via Edit claim details.</p>
+        <button nxButton="secondary small" type="button" class="ccs__loc-add" (click)="pickLocation()">Add location</button>
+      }
     }
   </section>
 
@@ -80,6 +94,6 @@
 <footer class="ccs__footer">
   <div class="ccs__actions">
     <button nxButton="secondary small" type="button" [disabled]="busy()" (click)="back.emit()">Back to policies</button>
-    <button nxButton="primary small" type="button" [disabled]="busy()" (click)="onConfirm()">Link policy</button>
+    <button nxButton="primary small" type="button" [disabled]="busy()" (click)="onConfirm()">Next</button>
   </div>
 </footer>

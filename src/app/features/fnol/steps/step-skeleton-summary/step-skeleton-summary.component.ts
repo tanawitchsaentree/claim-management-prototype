@@ -11,6 +11,8 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { SkeletonReason } from '../../models/fnol-form.model';
 import { MockClaimService } from '../../../../core/mock/services/mock-claim.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
+import { MockLossInformationService } from '../../../../core/mock/services/mock-loss-information.service';
+import { LossInformationFormValue } from '../../../../core/models/loss-information.model';
 import { MockSectionService } from '../../../../core/mock/services/mock-section.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
@@ -38,6 +40,7 @@ export class StepSkeletonSummaryComponent implements OnInit {
   private partiesSvc = inject(MockPartiesService);
   private lookupSvc = inject(MockLookupService);
   private sectionSvc = inject(MockSectionService);
+  private lossInfoSvc = inject(MockLossInformationService);
   private router = inject(Router);
   private toast = inject(ToastService);
 
@@ -144,6 +147,18 @@ export class StepSkeletonSummaryComponent implements OnInit {
           'SK'
         )
       );
+      // What the wizard collected must stay with the claim: the loss information (dates,
+      // location, cause, description) and the parties typed in step 2. Both used to be
+      // dropped here, which left the claim with no location and no parties at conversion.
+      const first = this.locations()[0];
+      if (first) {
+        await firstValueFrom(
+          this.claimSvc.update(skeleton.claimId, { location: { city: first.city ?? '', country: first.country ?? '' } })
+        );
+      }
+      await firstValueFrom(this.lossInfoSvc.save(li as unknown as LossInformationFormValue, skeleton.claimId));
+      this.partiesSvc.addPartiesToClaim(skeleton.claimId, this.parties());
+      this.partiesSvc.resetOrphanParties();
       // Cause of loss is required info the wizard already collected above
       // (step-skeleton-loss-info) — the section it implies shouldn't wait
       // for a policy to get linked later.

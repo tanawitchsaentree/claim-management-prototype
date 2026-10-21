@@ -1,0 +1,52 @@
+// Same bottom-sheet layout as the other steps of this sheet.
+@use '../../../styles/bottom-sheet-layout' as sheet;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.cvs__header {
+  @include sheet.header;
+}
+
+.cvs__title {
+  @include sheet.title;
+}
+
+.cvs__context {
+  @include sheet.subtitle;
+}
+
+.cvs__body {
+  @include sheet.body;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.cvs__intro {
+  margin: 0;
+  color: var(--text-01);
+}
+
+.cvs__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.cvs__note {
+  // No display override: nx-message is flex (icon beside the text).
+  margin: 0;
+}
+
+.cvs__footer {
+  @include sheet.footer;
+}
+
+.cvs__actions {
+  @include sheet.footer-actions;
+}

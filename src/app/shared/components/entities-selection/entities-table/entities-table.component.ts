@@ -8,13 +8,13 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { ENTITY_TYPE_LABELS, EntityRow, EntityType, SubItem } from '../../../../core/models';
 import { EntityEventsInfoComponent } from '../entity-events-info/entity-events-info.component';
 import { EntityLimitCellComponent } from '../entity-limit-cell/entity-limit-cell.component';
-import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { StatusChipComponent } from '../../status-chip/status-chip.component';
 import {
   TreeGroup,
   hasAnySelection,
   isChecked,
   isIndeterminate
-} from '../../steps/step-entities-damages/entity-tree';
+} from '../entity-tree';
 
 const ENTITY_TYPES: EntityType[] = [
   'building',
@@ -51,6 +51,8 @@ const ENTITY_TYPES: EntityType[] = [
 export class EntitiesTableComponent {
   readonly groups = input.required<TreeGroup[]>();
   readonly hasLossLocation = input(false);
+  /** Ticking only: no per-row action menus (the Link policy coverage step). */
+  readonly selectionOnly = input(false);
   readonly allExpanded = computed(() => this.groups().every(g => g.expanded));
 
   readonly toggleAll = output<boolean>();

@@ -1,4 +1,4 @@
-import { EntitiesDamagesData, EntityRow } from '../../../../core/models/entity-damage.model';
+import { EntitiesDamagesData, EntityRow } from '../../../core/models/entity-damage.model';
 
 /** An entity counts as ticked when it, or any of its sub-items, is ticked. */
 export function isEntityTicked(entity: EntityRow): boolean {

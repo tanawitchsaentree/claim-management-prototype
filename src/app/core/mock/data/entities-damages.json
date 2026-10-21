@@ -504,5 +504,396 @@
         ]
       }
     ]
+  },
+  "POL-2024-021": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2024-021-1",
+                "name": "Jonas Kaufmann — Munich Warehouse",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "2,400,000 EUR",
+                "coveredBy": "Buildings (Fire and allied perils)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              },
+              {
+                "entityId": "ENT-2024-021-2",
+                "name": "Jonas Kaufmann — Berlin Office",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "2,400,000 EUR",
+                "coveredBy": "Buildings (Fire and allied perils)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              },
+              {
+                "entityId": "ENT-2024-021-C1",
+                "name": "Jonas Kaufmann — Contents",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "350,000 EUR",
+                "coveredBy": "Contents (Household contents)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "other"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2024-022": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2024-022-1",
+                "name": "Jonas Kaufmann — insured premises",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "3,000,000 EUR",
+                "coveredBy": "Private liability (Third-party bodily injury)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              },
+              {
+                "entityId": "ENT-2024-022-C1",
+                "name": "Jonas Kaufmann — Private liability",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "3,000,000 EUR",
+                "coveredBy": "Private liability (Third-party property damage)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "other"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2024-023": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2024-023-1",
+                "name": "Jonas Kaufmann — insured premises",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,900,000 EUR",
+                "coveredBy": "Machinery (Machinery breakdown)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              },
+              {
+                "entityId": "ENT-2024-023-C1",
+                "name": "Jonas Kaufmann — Production loss",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "620,000 EUR",
+                "coveredBy": "Production loss (Loss of profit (3 months))",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "other"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-001": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-001-1",
+                "name": "Rieke Vogt — Hamburg Warehouse",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,800,000 EUR",
+                "coveredBy": "Buildings (Storm and allied perils)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              },
+              {
+                "entityId": "ENT-2026-001-2",
+                "name": "Rieke Vogt — Bremen Depot",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,800,000 EUR",
+                "coveredBy": "Buildings (Storm and allied perils)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-002": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-002-1",
+                "name": "Mira Lenz — Cologne Shop",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-003": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-003-1",
+                "name": "Bruno Albers — Berlin Office",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              },
+              {
+                "entityId": "ENT-2026-003-2",
+                "name": "Bruno Albers — Dresden Depot",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-004": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-004-1",
+                "name": "Sven Brandt — Nuremberg Workshop",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-005": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-005-1",
+                "name": "Ida Falk — Frankfurt Plant",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          },
+          {
+            "damageType": "Business interruption",
+            "damageTypeKey": "business-interruption",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-005-BI",
+                "name": "Ida Falk — Business interruption",
+                "status": "by-extension",
+                "promiseStatus": "possibly-promised",
+                "limit": "—",
+                "coveredBy": "Business interruption extension",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "business-interruption",
+                "entityType": "financial"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-006": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-006-1",
+                "name": "Otto Weiss — Stuttgart Shop",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "POL-2026-007": {
+    "sections": [
+      {
+        "promiseStatus": "possibly-promised",
+        "label": "Possibly promised entities",
+        "expanded": true,
+        "damageGroups": [
+          {
+            "damageType": "Material damage",
+            "damageTypeKey": "material-damage",
+            "expanded": true,
+            "entities": [
+              {
+                "entityId": "ENT-2026-007-1",
+                "name": "Lars Nord — Hannover Warehouse",
+                "status": "promised",
+                "promiseStatus": "possibly-promised",
+                "limit": "1,200,000 EUR",
+                "coveredBy": "Buildings (Fire, storm and water)",
+                "documentsCount": 0,
+                "selected": false,
+                "damageTypeKey": "material-damage",
+                "entityType": "building"
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 }

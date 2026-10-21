@@ -133,13 +133,19 @@ export class CompleteClaimStepComponent {
     await this.pickLocation();
   }
 
+  /** Back to what the skeleton had (or to no location, when it had none). */
+  useSkeletonLocation(): void {
+    this.changed.set(null);
+    this.locationMode.setValue('keep', { emitEvent: false });
+  }
+
   async pickLocation(): Promise<void> {
     const picked = await this.locationChoice.choose(this.policy().policyNumber, this.entered().locations, {
       claim: this.skeleton().lineOfBusiness,
       policy: this.policy().lineOfBusiness
     });
     if (picked) this.changed.set(picked);
-    else if (!this.changed()) this.locationMode.setValue('keep');
+    else if (!this.changed()) this.locationMode.setValue('keep', { emitEvent: false });
   }
 
   get descriptionLength(): number {

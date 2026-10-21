@@ -1,4 +1,4 @@
-import { selectedSectionGroups } from '../step-summary/selected-section-groups';
+import { selectedSectionGroups } from '../../../../shared/components/entities-selection/selected-section-groups';
 import {
   Component,
   computed,
@@ -34,7 +34,7 @@ import {
   EntitiesFilterBarComponent,
   EntitySearchCriteria
 } from '../../components/entities-filter-bar/entities-filter-bar.component';
-import { EntitiesTableComponent } from '../../components/entities-table/entities-table.component';
+import { EntitiesTableComponent } from '../../../../shared/components/entities-selection/entities-table/entities-table.component';
 import { EntitiesTreePanelComponent } from '../../components/entities-tree-panel/entities-tree-panel.component';
 import { askMove, confirmRemove, pickEntities, warnSelectEntity } from './entity-dialogs';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
@@ -51,7 +51,7 @@ import {
   setGroupExpanded,
   toggleEntity,
   toggleSubItem
-} from './entity-tree';
+} from '../../../../shared/components/entities-selection/entity-tree';
 
 const EMPTY: EntitiesDamagesData = { sections: [] };
 

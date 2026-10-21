@@ -4,7 +4,7 @@ import {
   EntityRow,
   EntityStatus,
   SubItem
-} from '../../../../core/models';
+} from '../../../core/models';
 
 /**
  * Display model for the Entities & Damages tree.

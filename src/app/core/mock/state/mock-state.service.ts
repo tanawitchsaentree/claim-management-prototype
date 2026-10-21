@@ -9,6 +9,7 @@ import { CwbLocation } from '../../models/cwb-location.model';
 import { Note } from '../../models/note.model';
 import { FinancialOverview } from '../../models/financial-overview.model';
 import { ProviderAssignment } from '../../models/provider-assignment.model';
+import { Party } from '../../models/party.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 import { FinancialPatchOverride, applyFinancialPatch, appendTasks } from './apply-financial-overrides';
 
@@ -57,6 +58,10 @@ export interface MockState {
   // and no way to add to it at all — "Instruct provider" from a Section just
   // navigated here with zero way to actually create an assignment.
   providerAssignments: ProviderAssignment[];
+  // Parties added to a claim at runtime (the insured and broker a Link policy adds, and
+  // the ones typed during skeleton creation). Read together with parties.json by
+  // MockPartiesService, so Make payment's payee list and the claim's parties see them.
+  addedParties: Party[];
 }
 
 const STORAGE_KEY = 'champ-mock-state';
@@ -93,7 +98,8 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // flow in docs/SKELETON_CONVERSION_FLOWS.md; cached claims would not list them.
 // Bumped again: CLM-2024-001's overview cause now says Fire (it said Water damage while
 // its loss information and circumstance said Fire / hot work).
-const STATE_VERSION = 'financial-seeds-v4';
+// Bumped again: `addedParties` (parties a Link policy adds to the converted claim).
+const STATE_VERSION = 'financial-seeds-v5';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a
@@ -133,7 +139,8 @@ function defaultState(): MockState {
     financialOverviews: Object.fromEntries(
       (financialOverviewData as unknown as FinancialOverview[]).map(f => [f.claimId, f])
     ),
-    providerAssignments: providerAssignmentsData as unknown as ProviderAssignment[]
+    providerAssignments: providerAssignmentsData as unknown as ProviderAssignment[],
+    addedParties: []
   };
 }
 
@@ -212,6 +219,18 @@ export class MockStateService {
   appendSections(sections: ClaimSection[]): void {
     const cur = this._state();
     this._state.set({ ...cur, sections: [...cur.sections, ...sections] });
+    this.persist();
+  }
+
+  appendParties(parties: Party[]): void {
+    const cur = this._state();
+    this._state.set({ ...cur, addedParties: [...cur.addedParties, ...parties] });
+    this.persist();
+  }
+
+  removeSections(ids: string[]): void {
+    const cur = this._state();
+    this._state.set({ ...cur, sections: cur.sections.filter(s => !ids.includes(s.id)) });
     this.persist();
   }
 

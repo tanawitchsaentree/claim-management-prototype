@@ -35,6 +35,7 @@ import { MockClaimOverviewService } from '../../../../core/mock/services/mock-cl
 import { MockClientSearchService } from '../../../../core/mock/services/mock-client-search.service';
 import { PolicySearchResult, ClientSearchResult } from '../../models/fnol-form.model';
 import { Claim } from '../../../../core/models/claim.model';
+import { linkedMessage } from '../../../../core/models/claim-completion.model';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
@@ -340,14 +341,14 @@ export class Step1SearchComponent {
     // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (originally "Convert
     // to claim"; renamed "Link policy" — BMPCC-17927 functional review,
     // 2026-09-22, item 3 — a skeleton claim is already a claim).
-    const { claimNumber } = await this.overviewSvc.convertToRegularClaim(
+    const converted = await this.overviewSvc.convertToRegularClaim(
       skeleton.claimId,
       policy,
       details
     );
     this.toast.success(
-      `${skeleton.claimId} is now ${claimNumber}`,
-      `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
+      `${skeleton.claimId} is now ${converted.claimNumber}`,
+      linkedMessage(policy.policyNumber, converted)
     );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);
   }

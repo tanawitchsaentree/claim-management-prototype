@@ -1,4 +1,5 @@
-import { selectedSectionGroups } from './selected-section-groups';
+import { selectedSectionGroups } from '../../../../shared/components/entities-selection/selected-section-groups';
+import { cbiRelationshipFor } from '../../../../shared/utils/cbi-rules';
 import { Component, inject, signal, effect, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -690,7 +691,7 @@ export class StepSummaryComponent implements OnInit {
             isContingentBi: true,
             cbiCaseType: cbiCaseType!,
             thirdPartyName: lossInfoValue.cbiThirdPartyName || undefined,
-            thirdPartyRelationship: this.cbiRelationshipFor(cbiCaseType!),
+            thirdPartyRelationship: cbiRelationshipFor(cbiCaseType!),
             thirdPartyIndustry: lossInfoValue.cbiThirdPartyIndustry || undefined,
             cbiOriginatingLocation: cbiLocationItem ? formatLocationItem(cbiLocationItem) : undefined,
             cbiOriginatingLocationDetail: cbiLocationItem
@@ -748,16 +749,5 @@ export class StepSummaryComponent implements OnInit {
         }
       }
     }
-  }
-
-  // 'supplier-*' / 'customer-*' case types tell direction directly (FD Open
-  // Point #2 — resolved, no separate relationship field needed); everything
-  // else (denial-of-access / loss-of-attraction / port-blockage / service-
-  // interruption) has no third party to name, so 'other' is a display-only
-  // fallback, never surfaced with an actual third-party name attached.
-  private cbiRelationshipFor(cbiCaseType: string): 'supplier' | 'customer' | 'other' {
-    if (cbiCaseType.startsWith('supplier-')) return 'supplier';
-    if (cbiCaseType.startsWith('customer-')) return 'customer';
-    return 'other';
   }
 }

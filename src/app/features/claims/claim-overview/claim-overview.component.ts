@@ -34,7 +34,7 @@ import {
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
 import { Claim } from '../../../core/models/claim.model';
-import { CompletionDetails } from '../../../core/models/claim-completion.model';
+import { CompletionDetails, linkedMessage } from '../../../core/models/claim-completion.model';
 import { PolicyLocation } from '../../../core/models';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
 import { MassEvent } from '../../../core/models/mass-event.model';
@@ -619,7 +619,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       // only place that tells the handler a follow-up task landed in their queue.
       this.toast.success(
         `${skeleton.claimId} is now ${converted.claimNumber}`,
-        `Policy ${policy.policyNumber} linked. A follow-up task to set up reserves was added to your task list.`
+        linkedMessage(policy.policyNumber, converted)
       );
     } catch {
       this.toast.error('Could not link the policy', 'Nothing was changed. Please try again.');
