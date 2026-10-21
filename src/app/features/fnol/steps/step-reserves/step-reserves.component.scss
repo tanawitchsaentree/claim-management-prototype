@@ -21,14 +21,14 @@
 .step-breadcrumb {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .step-title {
   font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
-  margin: 0 0 24px;
+  margin: 0 0 var(--space-xl);
   line-height: 1.2;
 }
 
@@ -36,14 +36,14 @@
 .reserves-header {
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-lg) var(--space-xl);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-lg);
 
   &__summary {
     display: flex;
-    gap: 48px;
-    margin-bottom: 12px;
+    gap: var(--space-4xl);
+    margin-bottom: var(--space-md);
   }
 
   &__field {
@@ -66,14 +66,14 @@
 .reserves-toolbar {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 // Two-pane layout (full mode = list only; squeezed = list + detail)
 .reserves-layout {
   display: flex;
   align-items: flex-start;
-  gap: 24px;
+  gap: var(--space-xl);
   width: 100%;
 
   @media (max-width: 720px) {

@@ -5,8 +5,8 @@
 }
 
 .approvals-outer {
-  padding-top: 24px;
-  padding-bottom: 32px;
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-2xl);
 }
 
 .approvals-page {
@@ -17,7 +17,7 @@
 .filter-bar {
   display: flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: var(--space-base);
   padding: var(--space-base) 0;
   flex-wrap: wrap;
 }
@@ -31,7 +31,7 @@
 .filter-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   flex-shrink: 0;
 }
 
@@ -40,7 +40,7 @@
   display: flex;
   gap: 0;
   border-bottom: 2px solid var(--ui-04);
-  margin-top: 20px;
+  margin-top: var(--space-lg);
 }
 
 .tab-btn {

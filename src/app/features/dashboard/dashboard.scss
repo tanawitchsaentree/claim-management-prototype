@@ -11,13 +11,13 @@ $text-muted: var(--text-muted);
 $border-color: var(--ui-04);
 
 // ─── Spacing scale (see .claude/SPACING.md) ──────────────────────
-$sp-xs: 4px;
-$sp-sm: 8px;
-$sp-md: 12px;
-$sp-base: 16px;
-$sp-lg: 20px;
-$sp-xl: 24px;
-$sp-2xl: 32px;
+$sp-xs: var(--space-xs);
+$sp-sm: var(--space-sm);
+$sp-md: var(--space-md);
+$sp-base: var(--space-base);
+$sp-lg: var(--space-lg);
+$sp-xl: var(--space-xl);
+$sp-2xl: var(--space-2xl);
 
 // ─── Page shell ──────────────────────────────────────────────────
 .page-shell {
@@ -87,7 +87,7 @@ $header-bp: 1024px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-xl);
 }
 
 .page-headline {
@@ -102,24 +102,24 @@ $header-bp: 1024px;
 .headline-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 // ─── Action cards (right panel) ──────────────────────────────────
 .action-card {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-base);
   padding: var(--space-base);
   background: var(--ui-01);
   border: 1px solid $border-color;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .action-card-top {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .action-card-icon {
@@ -316,18 +316,18 @@ $header-bp: 1024px;
   padding: var(--space-xl) var(--space-base);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--space-xl);
 }
 
 .panel-card {
   background: var(--ui-01);
   border: 1px solid $border-color;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-base);
 }
 
 .panel-card-header {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .panel-card-title {
@@ -342,7 +342,7 @@ $header-bp: 1024px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .stats-month-label {
@@ -375,8 +375,8 @@ $header-bp: 1024px;
 .stats-total {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-base);
 }
 
 .stats-number {
@@ -402,7 +402,7 @@ $header-bp: 1024px;
 .stats-bar-row {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .stats-bar-label {
@@ -414,14 +414,14 @@ $header-bp: 1024px;
 .stats-bar-track {
   height: 8px;
   background: $border-color;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   overflow: hidden;
   width: 100%;
 }
 
 .stats-bar-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   transition: width 0.3s ease;
   &--opened {
     background: var(--claim-status-open-bg);
@@ -442,7 +442,7 @@ $header-bp: 1024px;
 .payments-label {
   font-size: var(--paragraph-03-font-size);
   color: $text-main;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
 }
 
 .payments-amount {
@@ -461,10 +461,10 @@ $header-bp: 1024px;
 .approval-action-btn {
   background: none;
   border: none;
-  padding: 4px 8px;
+  padding: var(--space-xs) var(--space-sm);
   cursor: pointer;
   color: $text-muted;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   &:hover {
     background: $gray-bg;
     color: $text-main;
@@ -485,14 +485,14 @@ $header-bp: 1024px;
 .quick-link-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-sm) var(--space-xs);
   font-size: var(--paragraph-03-font-size);
   color: $blue-active;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   transition: background 0.1s;
 
   &:hover {
@@ -515,7 +515,7 @@ $header-bp: 1024px;
 .widget-loading {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   padding: var(--space-2xl) var(--space-xl);
   color: var(--text-01);
 }
@@ -523,11 +523,11 @@ $header-bp: 1024px;
 .widget-error {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-base) var(--space-xl);
   color: var(--negative);
-  background: var(--negative-dimmed, #fff1f3);
-  border-radius: 4px;
+  background: var(--negative-dimmed);
+  border-radius: var(--radius-s);
   margin: var(--space-base) 0;
 
   .widget-error-icon {
@@ -540,7 +540,7 @@ $header-bp: 1024px;
 .page-role-badge {
   font-size: var(--paragraph-04-font-size);
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 2px var(--space-sm);
   border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -549,8 +549,8 @@ $header-bp: 1024px;
     color: $text-muted;
   }
   &--kcm {
-    background: var(--claim-status-in-progress-bg, #e3f2fd);
-    color: var(--claim-status-in-progress-color, #1565c0);
+    background: var(--claim-status-in-progress-bg);
+    color: var(--claim-status-in-progress-color);
   }
 }
 

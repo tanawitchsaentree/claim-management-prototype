@@ -21,10 +21,10 @@
 .cl-quick-filter {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  margin: 0 0 12px;
-  border-radius: 4px;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  margin: 0 0 var(--space-md);
+  border-radius: var(--radius-s);
   background: var(--ui-02);
   color: var(--text-01);
   font-size: var(--paragraph-04-font-size);
@@ -47,13 +47,13 @@
 
 // ─── Filter form ────────────────────────────────────────────────────────────
 .cl-form {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-sm);
 }
 
 .row1 {
   display: flex;
   align-items: flex-end;
-  gap: 24px;
+  gap: var(--space-xl);
   margin-bottom: 0;
 }
 
@@ -61,7 +61,7 @@
   flex: 0 0 80%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: start;
 }
 
@@ -69,7 +69,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   white-space: nowrap;
   padding-bottom: 23px;
 }
@@ -78,7 +78,7 @@
 .cl-count {
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
 }
 
 // ─── Bulk selection bar ─────────────────────────────────────────────────────
@@ -86,9 +86,9 @@
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 0 0 12px;
-  padding: 8px 12px;
-  border-radius: 4px;
+  margin: 0 0 var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-s);
   background: var(--ui-02);
 }
 
@@ -99,7 +99,7 @@
 }
 
 .cl-bulk-bar__select-all {
-  margin-left: 12px;
+  margin-left: var(--space-md);
   font-size: var(--paragraph-04-font-size);
 }
 
@@ -107,7 +107,7 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .cl-col--check {
@@ -145,16 +145,16 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   letter-spacing: 0.02em;
-  padding: 2px 8px;
+  padding: 2px var(--space-sm);
   border-radius: 10px;
 
   &--high {
-    background: var(--negative-01, #fde8e8);
-    color: var(--negative, #c0392b);
+    background: var(--negative-01);
+    color: var(--negative);
   }
   &--medium {
     background: var(--warning-01, #fef3e2);
-    color: var(--warning, #d35400);
+    color: var(--warning);
   }
   &--low {
     background: var(--positive-01, #eaf4eb);
@@ -167,8 +167,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-top: 8px;
+  gap: var(--space-base);
+  margin-top: var(--space-sm);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-01);
 }
@@ -176,7 +176,7 @@
 .cl-footer__count {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .cl-awaiting {

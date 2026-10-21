@@ -67,14 +67,14 @@ const TYPE_ICON: Record<string, string> = {
       .panel-card {
         background: var(--ui-01);
         border: 1px solid var(--ui-04);
-        border-radius: 4px;
-        padding: 16px;
+        border-radius: var(--radius-s);
+        padding: var(--space-base);
       }
       .panel-card-header {
-        margin-bottom: 12px;
+        margin-bottom: var(--space-md);
       }
       .panel-card-title {
-        font-size: 16px;
+        font-size: var(--paragraph-01-font-size);
         font-weight: 600;
         color: var(--text-01);
         line-height: 1.4;
@@ -90,10 +90,10 @@ const TYPE_ICON: Record<string, string> = {
         overflow: hidden;
         border-left: 3px solid transparent;
         &--warning {
-          border-left-color: var(--warning, #f9b233);
+          border-left-color: var(--warning);
         }
         &--urgent {
-          border-left-color: var(--danger, #c0392b);
+          border-left-color: var(--danger);
         }
         &--info {
           border-left-color: var(--interactive-primary);
@@ -104,7 +104,7 @@ const TYPE_ICON: Record<string, string> = {
         align-items: center;
         gap: 6px;
         width: 100%;
-        padding: 7px 6px 7px 8px;
+        padding: 7px 6px 7px var(--space-sm);
         cursor: pointer;
         background: none;
         border: none;
@@ -120,10 +120,10 @@ const TYPE_ICON: Record<string, string> = {
         flex-shrink: 0;
       }
       .news-type-icon--warning {
-        color: var(--warning, #f9b233);
+        color: var(--warning);
       }
       .news-type-icon--urgent {
-        color: var(--danger, #c0392b);
+        color: var(--danger);
       }
       .news-type-icon--info {
         color: var(--interactive-primary);
@@ -143,16 +143,16 @@ const TYPE_ICON: Record<string, string> = {
       .news-date-line {
         font-size: var(--paragraph-04-font-size);
         color: var(--text-muted);
-        padding: 0 8px 6px 28px;
+        padding: 0 var(--space-sm) 6px 28px;
       }
       .news-body {
-        padding: 4px 8px 10px 28px;
+        padding: var(--space-xs) var(--space-sm) 10px 28px;
       }
       .news-body-text {
         font-size: var(--paragraph-04-font-size);
         color: var(--text-01);
         line-height: 1.5;
-        margin: 0 0 4px;
+        margin: 0 0 var(--space-xs);
       }
       .news-date {
         font-size: var(--paragraph-04-font-size);

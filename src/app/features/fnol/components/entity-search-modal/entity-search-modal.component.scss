@@ -34,13 +34,13 @@
 // ─── Filter form ─────────────────────────────────────────────────────────────
 
 .esm-filter-form {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
 }
 
 .esm-filter-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-base);
 }
 
 .esm-field {
@@ -50,21 +50,21 @@
 .esm-filter-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding-top: 4px;
+  gap: var(--space-base);
+  padding-top: var(--space-xs);
 }
 
 .esm-filter-btns {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 20px;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
 }
 
 .esm-filter-note {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  padding-bottom: 20px;
+  padding-bottom: var(--space-lg);
 }
 
 // ─── Results ─────────────────────────────────────────────────────────────────
@@ -72,10 +72,10 @@
 .esm-loading {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   padding: var(--space-xl) 0;
   border-top: 1px solid var(--ui-04);
-  margin-top: 8px;
+  margin-top: var(--space-sm);
 }
 
 .esm-loading-label {
@@ -84,13 +84,13 @@
 }
 
 .esm-results {
-  margin-top: 8px;
+  margin-top: var(--space-sm);
   border-top: 1px solid var(--ui-04);
-  padding-top: 16px;
+  padding-top: var(--space-base);
 }
 
 .esm-results-meta {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .esm-results-count {
@@ -107,7 +107,7 @@
 
 .esm-col-check {
   width: 48px;
-  padding-left: 16px !important;
+  padding-left: var(--space-base) !important;
 }
 .esm-col-id {
   width: 160px;
@@ -148,5 +148,5 @@
 .esm-footer-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
 }

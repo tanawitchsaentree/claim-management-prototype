@@ -41,17 +41,17 @@
 }
 
 .ts-named-parties {
-  margin: 0 0 16px;
-  padding: 12px;
+  margin: 0 0 var(--space-base);
+  padding: var(--space-md);
   background: var(--ui-02);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .ts-named-parties__label {
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .ts-named-parties__list {
@@ -70,34 +70,34 @@
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
 }
 
 .ts-subquestion {
-  margin-top: 20px; // between-group gap — new question, not a sibling of the field above it
+  margin-top: var(--space-lg); // between-group gap — new question, not a sibling of the field above it
 }
 
 .ts-radio-group {
   display: flex;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: center;
 }
 
 .ts-clear {
-  margin-top: 16px;
+  margin-top: var(--space-base);
 }
 
 .ts-details {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: var(--space-base);
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-03);
 }
 
 .ts-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 24px;
-  margin-top: 16px;
+  gap: 0 var(--space-xl);
+  margin-top: var(--space-base);
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -105,19 +105,19 @@
 }
 
 .ts-hint {
-  margin: 6px 0 8px;
+  margin: 6px 0 var(--space-sm);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 }
 
 .ts-comments {
   width: 100%;
-  margin-top: 16px;
+  margin-top: var(--space-base);
 }
 
 .ts-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 20px;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
 }

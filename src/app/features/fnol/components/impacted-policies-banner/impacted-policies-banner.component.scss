@@ -3,7 +3,7 @@
 }
 
 .ipb-message {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-base);
 }
 
 .ipb-title {
@@ -11,7 +11,7 @@
 }
 
 .ipb-text {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
   line-height: 1.5;
@@ -23,7 +23,7 @@
 // because that is the affordance the handler expects inside a banner.
 // Same approach as widgets/recovery-potential-panel.ts's .rpp-more.
 .ipb-link {
-  margin-top: 8px;
+  margin-top: var(--space-sm);
   padding: 0;
   background: none;
   border: none;

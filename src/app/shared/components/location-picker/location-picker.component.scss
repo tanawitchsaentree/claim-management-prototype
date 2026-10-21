@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .lp-hint {
@@ -25,7 +25,7 @@
 .lp-selected {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .lp-counter {
@@ -37,7 +37,7 @@
 .lp-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .lp-table {
@@ -56,9 +56,9 @@
 }
 
 .lp-change-tag {
-  margin-left: 8px;
+  margin-left: var(--space-sm);
   padding: 0 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-04-font-size);
   background: var(--ui-03);
   color: var(--text-01);

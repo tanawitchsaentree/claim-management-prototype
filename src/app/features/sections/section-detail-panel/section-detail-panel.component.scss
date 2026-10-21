@@ -17,7 +17,7 @@
   &__left {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--space-xs);
     min-width: 0;
   }
 }
@@ -31,7 +31,7 @@
 
 .sdp-name-field {
   width: 220px;
-  margin-top: -16px;
+  margin-top: calc(-1 * var(--space-base));
 }
 
 .sdp-name-actions {
@@ -45,7 +45,7 @@
   padding: var(--space-base);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .sdp-card {
@@ -55,12 +55,12 @@
   padding: var(--space-base);
 
   &__label {
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-sm);
     font-size: var(--paragraph-03-font-size);
     color: var(--text-muted);
   }
   &__title {
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-md);
     font-size: var(--paragraph-01-font-size);
     font-weight: 600;
     color: var(--text-01);
@@ -70,7 +70,7 @@
 .sdp-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .sdp-field {
@@ -78,7 +78,7 @@
   flex-direction: column;
   gap: 2px;
   &__label {
-    font-size: var(--paragraph-04-font-size, 12px);
+    font-size: var(--paragraph-04-font-size);
     color: var(--text-muted);
   }
   &__value {

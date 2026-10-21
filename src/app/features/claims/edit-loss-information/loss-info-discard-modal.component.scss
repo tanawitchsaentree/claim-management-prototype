@@ -25,7 +25,7 @@
   // text, which reads as broken, not spacious. Tightened for this
   // short-message case specifically; not a signal to also shrink the
   // shared mixin used by every other (content-heavy) modal.
-  padding-bottom: 8px;
+  padding-bottom: var(--space-sm);
 }
 
 .ldm-message {
@@ -35,11 +35,11 @@
   // deliberate design. Reset to margin: 0, same as ConfirmDialogComponent's
   // .cd-message, so this dialog matches the rest instead of drifting.
   margin: 0;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
 
 .ldm-footer {
   @include modal.footer;
-  padding-top: 8px; // paired with .ldm-body's padding-bottom override above
+  padding-top: var(--space-sm); // paired with .ldm-body's padding-bottom override above
 }

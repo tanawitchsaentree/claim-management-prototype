@@ -39,7 +39,7 @@
   font-weight: 400;
   color: var(--text-muted);
   background: var(--ui-03);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: 2px var(--space-xs);
 }
 
@@ -56,8 +56,8 @@
 .ase-radio-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
+  gap: var(--space-sm);
+  padding-top: var(--space-xs);
   margin-bottom: var(--space-sm);
 }
 .ase-radio-label {
@@ -68,11 +68,11 @@
 }
 .ase-radio-row {
   display: flex;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: center;
 }
 .ase-field-error {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   font-size: var(--paragraph-03-font-size);
   color: var(--message-error-color);
 }

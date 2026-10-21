@@ -1,7 +1,7 @@
 .fo-kpis {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  gap: var(--space-md);
   margin-bottom: var(--layout-inset-base);
 }
 
@@ -12,7 +12,7 @@
   padding: var(--space-md) var(--space-md);
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .fo-kpi-label {
@@ -32,5 +32,5 @@
   font-size: var(--heading-06-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
 }

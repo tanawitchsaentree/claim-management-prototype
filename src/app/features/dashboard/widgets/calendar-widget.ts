@@ -74,14 +74,14 @@ function formatDateLabel(dateStr: string): string {
       .panel-card {
         background: var(--ui-01);
         border: 1px solid var(--ui-04);
-        border-radius: 4px;
-        padding: 16px;
+        border-radius: var(--radius-s);
+        padding: var(--space-base);
       }
       .panel-card-header {
-        margin-bottom: 12px;
+        margin-bottom: var(--space-md);
       }
       .panel-card-title {
-        font-size: 16px;
+        font-size: var(--paragraph-01-font-size);
         font-weight: 600;
         color: var(--text-01);
         line-height: 1.4;
@@ -90,10 +90,10 @@ function formatDateLabel(dateStr: string): string {
       .cal-list {
         max-height: 320px;
         overflow-y: auto;
-        padding-right: 4px;
+        padding-right: var(--space-xs);
       }
       .cal-day-group {
-        margin-bottom: 16px;
+        margin-bottom: var(--space-base);
         &:last-child {
           margin-bottom: 0;
         }
@@ -104,24 +104,24 @@ function formatDateLabel(dateStr: string): string {
         text-transform: uppercase;
         letter-spacing: 0.06em;
         color: var(--text-muted);
-        margin-bottom: 8px;
-        padding-bottom: 4px;
+        margin-bottom: var(--space-sm);
+        padding-bottom: var(--space-xs);
         border-bottom: 1px solid var(--ui-03);
       }
       .cal-event {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 0;
-        font-size: 14px;
+        gap: var(--space-sm);
+        padding: var(--space-sm) 0;
+        font-size: var(--paragraph-03-font-size);
         color: var(--text-01);
         text-decoration: none;
       }
       .cal-event--link {
         cursor: pointer;
-        border-radius: 4px;
-        margin: 0 -8px;
-        padding: 8px;
+        border-radius: var(--radius-s);
+        margin: 0 calc(-1 * var(--space-sm));
+        padding: var(--space-sm);
         &:hover {
           background: var(--ui-02);
           .cal-go {
@@ -134,20 +134,20 @@ function formatDateLabel(dateStr: string): string {
         flex-shrink: 0;
       }
       .cal-icon--deadline {
-        color: var(--danger, #c0392b);
+        color: var(--danger);
       }
       .cal-icon--meeting {
         color: var(--interactive-primary);
       }
       .cal-icon--review {
-        color: var(--warning, #f9b233);
+        color: var(--warning);
       }
       .cal-title {
         flex: 1;
         line-height: 1.4;
       }
       .cal-go {
-        font-size: 14px;
+        font-size: var(--paragraph-03-font-size);
         flex-shrink: 0;
         color: var(--text-muted);
         opacity: 0;

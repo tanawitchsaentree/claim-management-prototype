@@ -7,14 +7,14 @@
 .step-breadcrumb {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .step-title {
   font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
-  margin: 0 0 24px;
+  margin: 0 0 var(--space-xl);
   line-height: 1.2;
 }
 
@@ -22,16 +22,16 @@
   font-size: var(--paragraph-01-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-base);
 }
 
 // ── Cards ──────────────────────────────────────────────────────────────────────
 
 .ss-card {
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-xl);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-base);
   background: var(--ui-01);
 }
 
@@ -47,7 +47,7 @@
 
 .ss-row {
   display: flex;
-  gap: 16px;
+  gap: var(--space-base);
   padding: var(--space-md) 0;
   border-bottom: 1px solid var(--ui-03);
 
@@ -71,7 +71,7 @@
   color: var(--text-01);
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--space-xs);
   align-items: flex-start;
 }
 
@@ -81,8 +81,8 @@
   display: inline-block;
   background: var(--ui-02);
   color: var(--text-01);
-  border-radius: 2px;
-  padding: 1px 8px;
+  border-radius: var(--radius-xs);
+  padding: 1px var(--space-sm);
   font-size: var(--paragraph-03-font-size);
 }
 
@@ -101,8 +101,8 @@
 
 .ss-accordion {
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  margin-bottom: 8px;
+  border-radius: var(--radius-s);
+  margin-bottom: var(--space-sm);
 
   &[open] .ss-accordion-summary::after {
     transform: rotate(180deg);
@@ -141,7 +141,7 @@
 }
 
 .ss-accordion-body {
-  padding: 0 16px 12px;
+  padding: 0 var(--space-base) var(--space-md);
   border-top: 1px solid var(--ui-03);
 }
 
@@ -155,17 +155,17 @@
 // ── Restriction ───────────────────────────────────────────────────────────────
 
 .ss-restriction {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: var(--space-base);
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-03);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-base);
 }
 
 .ss-restriction-row {
   display: flex;
-  gap: 16px;
+  gap: var(--space-base);
   align-items: flex-start;
 }
 
@@ -182,7 +182,7 @@
     font-size: var(--paragraph-03-font-size);
     font-weight: 600;
     color: var(--text-01);
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-sm);
   }
 }
 
@@ -218,7 +218,7 @@
 }
 
 .ss-user-search {
-  margin-top: 8px;
+  margin-top: var(--space-sm);
   position: relative;
   width: 320px;
 
@@ -234,7 +234,7 @@
   right: 0;
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   box-shadow: 0 4px 12px var(--claim-overlay-shadow-light);
   z-index: 100;
   overflow: hidden;
@@ -272,7 +272,7 @@
 .ss-narrative {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
 
   &__icon {
     color: var(--interactive-primary);
@@ -293,21 +293,21 @@
 // ── Recovery Potential ────────────────────────────────────────────────────────
 
 .ss-config-row--top {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: var(--space-base);
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-04);
 }
 
 .ss-recovery-note {
   width: 100%;
-  margin-top: 12px;
+  margin-top: var(--space-md);
 }
 
 .ss-recovery-label {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-sm);
   &__text {
     font-size: var(--paragraph-03-font-size);
     font-weight: 600;
@@ -322,13 +322,13 @@
 .ss-recovery-radio-group {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: var(--space-xl);
 }
 
 // ── Misc ──────────────────────────────────────────────────────────────────────
 
 .submit-banner {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-base);
 }
 .ss-loading {
   color: var(--text-muted);
@@ -336,7 +336,7 @@
 }
 
 .step-submit-error {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-base);
 }
 
 // Footer styles live in WizardFooterComponent
@@ -345,7 +345,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 48px;
-  padding-top: 16px;
+  margin-top: var(--space-4xl);
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-04);
 }

@@ -1,8 +1,8 @@
 .lt {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
 }
 
 .lt__count {
@@ -13,7 +13,7 @@
 
 // Same pill-toggle look as the Task manager status tabs
 .lt__needs {
-  padding: 2px 12px;
+  padding: 2px var(--space-md);
   border: 1px solid var(--ui-04);
   border-radius: 12px;
   background: var(--ui-01);
@@ -43,7 +43,7 @@
 }
 
 .lt__clear {
-  margin-left: 8px;
+  margin-left: var(--space-sm);
   text-decoration: underline;
   text-underline-offset: 2px;
 }

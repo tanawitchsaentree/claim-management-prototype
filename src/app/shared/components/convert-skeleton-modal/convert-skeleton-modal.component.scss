@@ -39,17 +39,17 @@
 .csm-intro {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
 }
 
 // Mirrors step-1-search's .row1 / .toggle-filters-btn so both searches look alike.
 .csm-search {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 
   &__row {
     display: flex;
     align-items: flex-end;
-    gap: 24px;
+    gap: var(--space-xl);
     flex-wrap: wrap;
   }
 
@@ -57,14 +57,14 @@
     flex: 1 1 480px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 24px;
+    gap: var(--space-xl);
     align-items: start;
   }
 
   &__actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-md);
     white-space: nowrap;
     padding-bottom: 23px;
   }
@@ -112,7 +112,7 @@
 }
 
 .csm-row--selected td {
-  background: var(--action-selected-background-color, #e6f0f7);
+  background: var(--action-selected-background-color);
 }
 
 // Ineligible: greyed but still readable
@@ -128,18 +128,18 @@
   display: inline-block;
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 2px var(--space-sm);
   border-radius: 10px;
-  background: var(--claim-status-open-bg, #e8f5e9);
-  color: var(--claim-status-open-color, #2e7d32);
+  background: var(--claim-status-open-bg);
+  color: var(--claim-status-open-color);
 }
 
 .csm-reason {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   font-size: var(--paragraph-04-font-size);
-  color: var(--danger, #c0392b);
+  color: var(--danger);
 }
 
 .csm-reason-icon {
@@ -157,17 +157,17 @@
 }
 
 .csm-search__inputs--more {
-  margin-top: 8px;
+  margin-top: var(--space-sm);
 }
 
 .csm-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   background: none;
   border: none;
   padding: 0;
-  margin-top: 12px;
+  margin-top: var(--space-md);
   font-size: var(--paragraph-03-font-size);
   font-weight: 500;
   color: var(--interactive-text);
@@ -182,11 +182,11 @@
 }
 
 .csm-tabs {
-  margin-top: 16px;
+  margin-top: var(--space-base);
 }
 
 .csm-hint {
-  margin: 12px 0 0;
+  margin: var(--space-md) 0 0;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }

@@ -8,8 +8,8 @@
   right: 0;
   min-width: 16px;
   height: 16px;
-  padding: 0 4px;
-  border-radius: 8px;
+  padding: 0 var(--space-xs);
+  border-radius: var(--radius-m);
   background: var(--danger);
   color: var(--ui-01);
   font-size: var(--paragraph-03-font-size);

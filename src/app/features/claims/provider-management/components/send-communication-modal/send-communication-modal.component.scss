@@ -12,12 +12,12 @@
 }
 
 .scm-recipient-badge {
-  padding: 2px 8px;
+  padding: 2px var(--space-sm);
   border-radius: 12px;
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
-  background: var(--claim-status-bound-bg, var(--ui-03));
-  color: var(--claim-status-bound-color, var(--text-01));
+  background: var(--claim-status-bound-bg);
+  color: var(--claim-status-bound-color);
   white-space: nowrap;
 
   &--external {

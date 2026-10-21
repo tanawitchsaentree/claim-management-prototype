@@ -23,7 +23,7 @@
 .co-label-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 // Replaces the old `.co-refresh-icon` span. Sized to match the 20px label
@@ -36,7 +36,7 @@
   height: 20px;
   padding: 0;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   background: none;
   cursor: pointer;
   color: var(--text-muted);
@@ -62,7 +62,7 @@
   display: flex;
   flex-wrap: wrap; // narrow column: the link drops under the badge instead of breaking mid-word
   align-items: center;
-  gap: 4px 8px;
+  gap: var(--space-xs) var(--space-sm);
 }
 
 .co-risk-badge {
@@ -71,7 +71,7 @@
   justify-content: center;
   min-width: 36px;
   height: 24px;
-  padding: 0 8px;
+  padding: 0 var(--space-sm);
   border-radius: 12px;
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
@@ -112,7 +112,7 @@
   &:focus-visible {
     outline: 2px solid var(--interactive-primary);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: var(--radius-xs);
   }
 }
 

@@ -22,7 +22,7 @@
 .arm-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 
   nx-formfield {
     width: 100%;

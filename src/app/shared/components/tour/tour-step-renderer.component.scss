@@ -13,7 +13,7 @@
   pointer-events: none;
   outline: 3px solid var(--interactive-primary);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   transition:
     top 150ms ease,
     left 150ms ease,
@@ -42,7 +42,7 @@
   pointer-events: auto;
   width: 320px;
   padding: var(--space-lg);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   background: var(--ui-01);
   box-shadow: 0 4px 16px var(--claim-overlay-shadow);
   display: flex;

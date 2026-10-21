@@ -28,14 +28,14 @@
 }
 
 .erd-subtitle {
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
   font-size: var(--paragraph-02-font-size);
   font-weight: 500;
   color: var(--text-01);
 }
 
 .erd-hint {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-base);
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
@@ -43,7 +43,7 @@
 .erd-role-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .erd-role-item {

@@ -29,7 +29,7 @@
   // ~45px of dead air below a single short warning card. Steps 2-4 keep
   // the full mixin spacing untouched.
   &--compact {
-    padding-bottom: 8px;
+    padding-bottom: var(--space-sm);
   }
 }
 
@@ -44,12 +44,12 @@
 .ccm-blocker-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .ccm-blocker-card {
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   overflow: hidden;
   background: var(--ui-01);
 
@@ -130,8 +130,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 .ccm-item__title {
@@ -143,7 +143,7 @@
 .ccm-item__status {
   font-size: var(--paragraph-04-font-size);
   font-weight: 500;
-  padding: 2px 8px;
+  padding: 2px var(--space-sm);
   border-radius: 10px;
   flex-shrink: 0;
   &--hard {
@@ -173,7 +173,7 @@
 .ccm-item__meta-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
   nx-icon {
@@ -207,7 +207,7 @@
     color: var(--positive, #27a25e);
   }
   &--fail {
-    color: var(--danger, #d2351d);
+    color: var(--danger);
   }
 }
 
@@ -219,9 +219,9 @@
 
 .ccm-check-hint {
   width: 100%;
-  padding-left: 24px;
+  padding-left: var(--space-xl);
   font-size: var(--paragraph-03-font-size);
-  color: var(--danger, #d2351d);
+  color: var(--danger);
 }
 
 // ─── Form / Reason ────────────────────────────────────────────────────────────
@@ -278,13 +278,13 @@
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 nx-radio-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
@@ -293,6 +293,6 @@ nx-radio-group {
   @include modal.footer;
 
   &--compact {
-    padding-top: 8px; // paired with .ccm-body--compact above
+    padding-top: var(--space-sm); // paired with .ccm-body--compact above
   }
 }

@@ -46,11 +46,11 @@ import { ProviderExpense } from '../../../core/models';
       .panel-card {
         background: var(--ui-01);
         border: 1px solid var(--ui-04);
-        border-radius: 4px;
-        padding: 16px;
+        border-radius: var(--radius-s);
+        padding: var(--space-base);
       }
       .panel-card-title {
-        font-size: 16px;
+        font-size: var(--paragraph-01-font-size);
         font-weight: 600;
         color: var(--text-01);
         line-height: 1.4;
@@ -60,7 +60,7 @@ import { ProviderExpense } from '../../../core/models';
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        margin-bottom: 12px;
+        margin-bottom: var(--space-md);
       }
       .exp-period {
         font-size: var(--paragraph-04-font-size);
@@ -74,7 +74,7 @@ import { ProviderExpense } from '../../../core/models';
       .exp-row {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--space-sm);
       }
       .exp-label {
         width: 110px;
@@ -93,11 +93,11 @@ import { ProviderExpense } from '../../../core/models';
         flex-shrink: 0;
       }
       .exp-total {
-        margin-top: 12px;
+        margin-top: var(--space-md);
         font-size: var(--paragraph-04-font-size);
         color: var(--text-muted);
         border-top: 1px solid var(--ui-03);
-        padding-top: 8px;
+        padding-top: var(--space-sm);
       }
     `
   ]

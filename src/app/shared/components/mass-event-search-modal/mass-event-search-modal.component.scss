@@ -26,13 +26,13 @@
 .mesm-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .mesm-search-row__inputs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px 24px;
+  gap: var(--space-base) var(--space-xl);
   align-items: start;
 
   > * {
@@ -47,12 +47,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: var(--space-sm);
   white-space: nowrap;
 }
 
 .mesm-section {
-  padding-top: 20px;
+  padding-top: var(--space-lg);
   border-top: 1px solid var(--ui-04);
 }
 
@@ -60,8 +60,8 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
+  gap: var(--space-base);
+  margin-bottom: var(--space-md);
 }
 
 .mesm-section__title {
@@ -79,7 +79,7 @@
 .mesm-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .mesm-table {
@@ -117,5 +117,5 @@
 .mesm-footer__actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
 }

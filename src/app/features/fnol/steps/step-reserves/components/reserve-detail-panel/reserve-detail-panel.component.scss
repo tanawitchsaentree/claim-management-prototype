@@ -5,11 +5,11 @@
   min-width: 320px;
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-lg) var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-lg);
 
   @media (max-width: 720px) {
     flex: 0 0 auto;
@@ -21,8 +21,8 @@
 .reserves-detail__header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 16px;
+  gap: var(--space-md);
+  padding-bottom: var(--space-base);
   border-bottom: 1px solid var(--ui-04);
 }
 
@@ -44,27 +44,27 @@
 .reserves-detail__footer {
   display: flex;
   justify-content: flex-end;
-  padding-top: 16px;
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-04);
-  margin-top: 16px;
+  margin-top: var(--space-base);
 }
 
 .reserves-detail__summary {
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-base) var(--space-lg);
 }
 
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px 24px;
+  gap: var(--space-base) var(--space-xl);
 }
 
 .summary-cell {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .summary-label {
@@ -88,7 +88,7 @@
 // ─── Tabs ─────────────────────────────────────────────────────────────────
 .detail-tabs {
   display: flex;
-  gap: 24px;
+  gap: var(--space-xl);
   border-bottom: 1px solid var(--ui-04);
 }
 
@@ -131,13 +131,13 @@
 .damaged-items {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .damaged-item {
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-base) var(--space-lg);
   transition:
     box-shadow 200ms ease,
@@ -152,7 +152,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .damaged-item__title {
@@ -165,7 +165,7 @@
 .damaged-item__actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .damaged-item__toggle {
@@ -185,7 +185,7 @@
 }
 
 .damaged-item__amount {
-  margin-top: 12px;
+  margin-top: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -203,10 +203,10 @@
 }
 
 .damaged-item__body {
-  margin-top: 16px;
+  margin-top: var(--space-base);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .damaged-item__add-row {
@@ -220,8 +220,8 @@
 
   th,
   td {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
   }
 
   .sub-col-type {
@@ -262,11 +262,11 @@
 .reserves-detail__readonly-banner {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-md) var(--space-base);
   background: var(--claim-status-in-progress-bg);
   color: var(--claim-status-in-progress-color);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-04-font-size);
 
   strong {

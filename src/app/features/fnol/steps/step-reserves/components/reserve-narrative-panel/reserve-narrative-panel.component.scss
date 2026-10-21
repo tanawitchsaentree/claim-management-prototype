@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: var(--space-xs);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 
@@ -18,12 +18,12 @@
 
 // Narrative form (State 2)
 .narrative-form {
-  margin-top: 12px;
+  margin-top: var(--space-md);
   border-top: 1px solid var(--ui-04);
-  padding-top: 12px;
+  padding-top: var(--space-md);
 
   &__question {
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-md);
     font-size: var(--paragraph-03-font-size);
     font-weight: 600;
     color: var(--text-01);
@@ -32,8 +32,8 @@
   &__radios {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 8px;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
   }
 
   &__notes {
@@ -42,15 +42,15 @@
 
   &__actions {
     display: flex;
-    gap: 8px;
+    gap: var(--space-sm);
     justify-content: flex-end;
-    padding-top: 4px;
+    padding-top: var(--space-xs);
   }
 }
 
 // Narrative saved (State 3)
 .narrative-saved {
-  margin-top: 4px;
+  margin-top: var(--space-xs);
 
   &__row {
     display: flex;

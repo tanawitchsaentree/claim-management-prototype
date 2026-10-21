@@ -27,7 +27,7 @@
   box-shadow: 0 2px 8px var(--claim-overlay-shadow);
   color: var(--interactive-primary);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 
   &:hover {
     background: var(--ui-02);
@@ -45,7 +45,7 @@
   padding: var(--space-base);
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   // BLESSED: ticket-detail-panel.component.scss:25 — the heavier variant, since
   // this card floats over page content rather than sitting in the flow.
   box-shadow: 0 4px 16px var(--claim-overlay-shadow-heavy);
@@ -62,13 +62,13 @@
 
 .ap-eyebrow {
   display: block;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
 
 .ap-title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--paragraph-01-font-size);
   line-height: 1.35;
   color: var(--text-01);
 }
@@ -91,7 +91,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm) var(--space-md);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
 
@@ -108,7 +108,7 @@
 
 .ap-lede {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
 }
 
@@ -123,7 +123,7 @@
 
 .ap-criterion {
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 
   &--open {
     border-color: var(--interactive-primary);
@@ -140,7 +140,7 @@
   border: 0;
   text-align: left;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
 
   &:hover {
@@ -159,13 +159,13 @@
   border-radius: 10px;
   background: var(--ui-02);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 }
 
 .ap-criterion__body {
   padding: 0 var(--space-sm) var(--space-sm) var(--space-sm);
   border-top: 1px solid var(--ui-04);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
 }
 
@@ -216,5 +216,5 @@
   border-radius: 10px;
   background: var(--ui-02);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: var(--paragraph-03-font-size);
 }

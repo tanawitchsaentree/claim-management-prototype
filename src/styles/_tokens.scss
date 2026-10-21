@@ -37,6 +37,14 @@
   --space-4xl: 48px;
   --space-5xl: 64px;
 
+  /* ── Corner radius ──────────────────────────────────────────── */
+  /* NDBX values. A1 re-maps these the way the library itself     */
+  /* re-maps its own component radii (4px -> 8px, see _a1.scss).   */
+  --radius-xs: 2px;
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-pill: 999px;
+
   /* ── Claim status chip — background ─────────────────────────── */
   /* "Open" claim = same blue family as in-progress; shown as blue chip  */
   --claim-status-open-bg: #dce9f8;

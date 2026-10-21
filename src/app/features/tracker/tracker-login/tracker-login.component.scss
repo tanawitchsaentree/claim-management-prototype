@@ -12,19 +12,19 @@
 .step-breadcrumb {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 .step-title {
   font-size: 28px;
   font-weight: 400;
   color: var(--text-01);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   line-height: 1.2;
 }
 .step-subtitle {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 32px;
+  margin: 0 0 var(--space-2xl);
 }
 
 .login-form {

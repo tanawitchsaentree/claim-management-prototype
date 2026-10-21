@@ -36,7 +36,7 @@ const ROLE_LABEL: Record<string, string> = {
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 0 8px 0 12px;
+        padding: 0 var(--space-sm) 0 var(--space-md);
         border-left: 1px solid var(--ui-04);
       }
       .ps-label {

@@ -40,7 +40,7 @@
 
 .apm-col-check {
   width: 48px;
-  padding-left: 16px !important;
+  padding-left: var(--space-base) !important;
 }
 .apm-col-policy {
   min-width: 260px;

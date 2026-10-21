@@ -91,7 +91,7 @@
   letter-spacing: var(--multi-stepper-step-letter-spacing);
   color: var(--multi-stepper-step-color);
   padding-top: 0;
-  padding-bottom: 32px;
+  padding-bottom: var(--space-2xl);
 }
 
 .stepper-item--active .stepper-label {

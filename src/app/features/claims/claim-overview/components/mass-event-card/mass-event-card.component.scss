@@ -54,7 +54,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
   padding-bottom: 10px;
   border-bottom: 1px solid var(--ui-04);
 }
@@ -82,7 +82,7 @@
 
 .me-popover__row {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   align-items: baseline;
   dt {
     font-size: var(--paragraph-04-font-size);
@@ -133,7 +133,7 @@
   gap: var(--space-sm);
   margin-top: var(--space-md);
   padding: var(--space-sm);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   background: var(--task-status-not-assigned-bg);
 
   nx-icon {
@@ -163,14 +163,14 @@
   flex-direction: column;
   gap: 6px;
   align-items: flex-start;
-  margin-top: 12px;
+  margin-top: var(--space-md);
   padding-top: 10px;
   border-top: 1px solid var(--ui-04);
   font-size: var(--paragraph-04-font-size);
 }
 
 .me-popover__unlink a {
-  color: var(--danger, #d2351d) !important;
+  color: var(--danger) !important;
 }
 
 // Override action + its one-line explanation. The hint exists because "not

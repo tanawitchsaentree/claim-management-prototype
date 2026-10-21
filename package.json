@@ -33,6 +33,8 @@
     "audit:table-empty": "node scripts/audit-table-empty.mjs",
     "audit:modal-padding": "node scripts/audit-modal-padding.mjs",
     "audit:ndbx-host-display": "node scripts/audit-ndbx-host-display.mjs",
+    "audit:theme": "node scripts/audit-theme-tokens.mjs",
+    "snapshot:theme": "node scripts/theme-snapshot.mjs",
     "audit:all": "node scripts/run-audits.mjs audit:colors audit:radio-size audit:formfield-error audit:imports audit:any audit:subscribe audit:hardcoded-data audit:status-colors audit:date-format audit:button-size audit:table-empty audit:modal-padding audit:ndbx-host-display",
     "audit:file-size": "find src/app -name '*.component.html' | while read f; do lines=$(wc -l < \"$f\"); if [ $lines -gt 200 ]; then echo \"OVER LIMIT $f: $lines lines (max 200)\"; fi; done; find src/app -name '*.component.ts' | while read f; do lines=$(wc -l < \"$f\"); if [ $lines -gt 300 ]; then echo \"OVER LIMIT $f: $lines lines (max 300)\"; fi; done; find src/app -name '*.component.scss' | while read f; do lines=$(wc -l < \"$f\"); if [ $lines -gt 250 ]; then echo \"OVER LIMIT $f: $lines lines (max 250)\"; fi; done",
     "audit:ndbx-wrapper": "! grep -rn '<input\\b' src/app/features --include='*.html' | grep -v 'nxInput\\|type=\"hidden\"\\|type=\"radio\"\\|type=\"checkbox\"\\|type=\"file\"\\|nxDatefield'",

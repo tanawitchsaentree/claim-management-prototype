@@ -69,8 +69,8 @@ const SEVERITY_ICON: Record<string, string> = {
       .widget-card {
         background: var(--ui-01);
         border: 1px solid var(--ui-04);
-        border-radius: 8px;
-        margin-bottom: 24px; /* $sp-xl — same gap as sibling widgets */
+        border-radius: var(--radius-m);
+        margin-bottom: var(--space-xl); /* $sp-xl — same gap as sibling widgets */
         overflow: hidden;
         box-shadow: 0 1px 4px var(--claim-overlay-shadow);
       }
@@ -78,7 +78,7 @@ const SEVERITY_ICON: Record<string, string> = {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 24px 12px; /* $sp-lg $sp-xl $sp-md */
+        padding: var(--space-lg) var(--space-xl) var(--space-md); /* $sp-lg $sp-xl $sp-md */
       }
       .widget-header-left {
         display: flex;
@@ -107,13 +107,13 @@ const SEVERITY_ICON: Record<string, string> = {
       }
 
       .hu-list {
-        padding: 0 0 8px;
+        padding: 0 0 var(--space-sm);
       }
       .hu-row {
         display: flex;
         align-items: flex-start;
-        gap: 12px;
-        padding: 12px 24px;
+        gap: var(--space-md);
+        padding: var(--space-md) var(--space-xl);
         border-bottom: 1px solid var(--ui-03);
         &:last-child {
           border-bottom: none;
@@ -127,10 +127,10 @@ const SEVERITY_ICON: Record<string, string> = {
         flex-shrink: 0;
       }
       .hu-icon--critical {
-        color: var(--danger, #c0392b);
+        color: var(--danger);
       }
       .hu-icon--warning {
-        color: var(--warning, #f9b233);
+        color: var(--warning);
       }
       .hu-icon--info {
         color: var(--interactive-primary);
@@ -145,7 +145,7 @@ const SEVERITY_ICON: Record<string, string> = {
       .hu-claim-line {
         display: flex;
         align-items: baseline;
-        gap: 8px;
+        gap: var(--space-sm);
         flex-wrap: wrap;
       }
       .hu-claim-id {
@@ -154,7 +154,7 @@ const SEVERITY_ICON: Record<string, string> = {
         color: var(--interactive-text);
       }
       .hu-client {
-        font-size: 14px;
+        font-size: var(--paragraph-03-font-size);
         color: var(--text-01);
         font-weight: 500;
       }
@@ -171,7 +171,7 @@ const SEVERITY_ICON: Record<string, string> = {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 4px;
+        gap: var(--space-xs);
         flex-shrink: 0;
         min-width: 160px;
         text-align: right;

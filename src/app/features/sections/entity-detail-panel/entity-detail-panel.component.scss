@@ -38,7 +38,7 @@
   padding: var(--space-base);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .edp-card {
@@ -48,7 +48,7 @@
   padding: var(--space-base);
 
   &__label {
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-sm);
     font-size: var(--paragraph-03-font-size);
     color: var(--text-muted);
   }
@@ -62,7 +62,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: var(--space-md);
   }
 }
 
@@ -74,16 +74,16 @@
   font-weight: 500;
 
   &--pending {
-    background: var(--task-status-pending-bg, #fff8e1);
-    color: var(--task-status-pending-color, #e65100);
+    background: var(--task-status-pending-bg);
+    color: var(--task-status-pending-color);
   }
   &--completed {
-    background: var(--claim-status-bound-bg, #e8f5e9);
-    color: var(--claim-status-bound-color, #2e7d32);
+    background: var(--claim-status-bound-bg);
+    color: var(--claim-status-bound-color);
   }
   &--in-progress {
-    background: var(--claim-status-in-progress-bg, #e3f2fd);
-    color: var(--claim-status-in-progress-color, #1565c0);
+    background: var(--claim-status-in-progress-bg);
+    color: var(--claim-status-in-progress-color);
   }
   &--not-assigned {
     background: var(--ui-03);
@@ -94,8 +94,8 @@
 .edp-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 12px;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
 }
 
 .edp-field {
@@ -103,7 +103,7 @@
   flex-direction: column;
   gap: 2px;
   &__label {
-    font-size: var(--paragraph-04-font-size, 12px);
+    font-size: var(--paragraph-04-font-size);
     color: var(--text-muted);
   }
   &__value {
@@ -115,7 +115,7 @@
 
 .edp-table {
   width: 100%;
-  margin-top: 4px;
+  margin-top: var(--space-xs);
 }
 
 .edp-col-action {
@@ -137,10 +137,10 @@
 .sec-kebab-btn {
   background: none;
   border: none;
-  padding: 4px 8px;
+  padding: var(--space-xs) var(--space-sm);
   cursor: pointer;
   color: var(--interactive-primary);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--heading-06-font-size);
   font-weight: 700;
   line-height: 1;

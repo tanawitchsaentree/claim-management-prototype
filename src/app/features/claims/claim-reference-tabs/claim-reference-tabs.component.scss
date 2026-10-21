@@ -9,7 +9,7 @@
   align-items: stretch;
   background: var(--ui-02);
   border-bottom: 2px solid var(--ui-04);
-  padding: 0 8px;
+  padding: 0 var(--space-sm);
   min-height: 36px;
   position: relative; // popover anchor
 }
@@ -62,8 +62,8 @@
   &--primary {
     flex-shrink: 0;
     border-right: 1px solid var(--ui-04);
-    padding-right: 16px;
-    margin-right: 4px;
+    padding-right: var(--space-base);
+    margin-right: var(--space-xs);
   }
 }
 
@@ -133,7 +133,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 0 4px;
+  padding: 0 var(--space-xs);
   flex-shrink: 0;
 }
 
@@ -144,7 +144,7 @@
   width: 24px;
   height: 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   background: transparent;
   cursor: pointer;
   color: var(--text-muted);

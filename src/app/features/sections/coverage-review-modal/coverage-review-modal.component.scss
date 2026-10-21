@@ -23,17 +23,17 @@
 }
 
 .crm-current {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .crm-badge {
   display: inline-block;
-  padding: 1px 8px;
+  padding: 1px var(--space-sm);
   border-radius: 12px;
   background: var(--task-status-in-progress-bg);
   color: var(--task-status-in-progress-color);

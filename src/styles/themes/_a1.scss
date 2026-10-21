@@ -34,6 +34,14 @@
   --space-5xl: var(--semantic-gap-all-static-1600);
   --page-content-top: var(--semantic-gap-all-static-1000);
 
+  // ── Corner radius ──────────────────────────────────────────────
+  // Mirrors the library's own NDBX -> A1 shift: 4px buttons/cards/tiles
+  // become --semantic-border-radius-m (8px); 8px stays 8px. --radius-xs (2px)
+  // is not mapped: the library keeps its own 2px radii in A1 too.
+  --radius-s: var(--semantic-border-radius-m);
+  --radius-m: var(--semantic-border-radius-m);
+  --radius-pill: var(--semantic-border-radius-round);
+
   // ── Status chips: one A1 signal/accent pair per colour family ──
   // blue = info, green = positive, red = critical, amber = warning,
   // grey = neutral, purple/aqua/yellow = accent.

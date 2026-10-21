@@ -22,14 +22,14 @@
   .step-breadcrumb {
     font-size: var(--paragraph-03-font-size);
     color: var(--text-muted);
-    margin: 0 0 4px;
+    margin: 0 0 var(--space-xs);
   }
 
   .step-title {
     font-size: var(--heading-04-font-size);
     font-weight: 400;
     color: var(--text-01);
-    margin: 0 0 24px;
+    margin: 0 0 var(--space-xl);
     line-height: 1.2;
   }
 }
@@ -39,14 +39,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 48px;
-    padding-top: 16px;
+    margin-top: var(--space-4xl);
+    padding-top: var(--space-base);
     border-top: 1px solid var(--ui-04);
   }
 
   .step-footer-actions {
     display: flex;
-    gap: 12px;
+    gap: var(--space-md);
     align-items: center;
   }
 }

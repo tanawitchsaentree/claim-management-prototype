@@ -7,9 +7,9 @@
 .cdb-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   min-height: 52px;
-  padding: 0 24px;
+  padding: 0 var(--space-xl);
   background: var(--dev-banner-bg);
   border-bottom: 1px solid var(--dev-banner-border);
 }
@@ -73,7 +73,7 @@
 
 .cdb-ticket-meta {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   align-items: baseline;
 }
 
@@ -96,7 +96,7 @@
   font-weight: 600;
   color: var(--text-muted);
   background: var(--ui-03);
-  border-radius: 8px;
+  border-radius: var(--radius-m);
   padding: 1px 7px;
   white-space: nowrap;
 }
@@ -109,7 +109,7 @@
 
 .cdb-ticket-stats {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 }
@@ -152,7 +152,7 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 700;
   letter-spacing: 0.05em;
-  padding: 3px 8px;
+  padding: 3px var(--space-sm);
   border: 1px solid var(--dev-helper-border);
   border-radius: 3px;
   background: var(--dev-helper-bg);

@@ -38,9 +38,9 @@
 .portfolio-filters {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   margin-left: auto;
-  padding: 8px 0;
+  padding: var(--space-sm) 0;
 }
 
 .portfolio-filter-label {

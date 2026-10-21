@@ -1,8 +1,8 @@
 .dev-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 16px;
+  gap: var(--space-md);
+  padding: 0 var(--space-base);
   min-height: 52px;
   background: var(--dev-banner-bg);
   border-bottom: 1px solid var(--dev-banner-border);
@@ -13,7 +13,7 @@
   font-size: var(--paragraph-04-font-size);
   font-weight: 500;
   color: var(--text-muted);
-  padding-right: 4px;
+  padding-right: var(--space-xs);
 }
 
 .dev-banner__label {
@@ -58,8 +58,8 @@
 
 .dev-banner__result {
   margin-left: auto;
-  padding: 4px 12px;
-  border-radius: 4px;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-03-font-size);
   white-space: nowrap;
 

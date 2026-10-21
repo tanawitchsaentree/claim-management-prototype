@@ -38,7 +38,7 @@
 .ref-tab {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   padding: 0 10px;
   border: none;
   border-bottom: 2px solid transparent;
@@ -70,7 +70,7 @@
 .ref-tab__select {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   border: none;
   background: transparent;
   padding: 0;
@@ -124,7 +124,7 @@
   width: 24px;
   height: 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   background: transparent;
   cursor: pointer;
   color: var(--text-muted);
@@ -250,7 +250,7 @@
   background: var(--ui-02);
   border-bottom: 1px solid var(--ui-04);
   flex-shrink: 0;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .ref-claim-id {
@@ -268,13 +268,13 @@
   background: var(--ui-02);
   border-bottom: 1px solid var(--ui-04);
   flex-shrink: 0;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .ref-header__left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   min-width: 0;
   overflow: hidden;
 }
@@ -287,7 +287,7 @@
   text-transform: uppercase;
   background: var(--interactive-primary);
   color: var(--button-primary-text-color);
-  padding: 3px 8px;
+  padding: 3px var(--space-sm);
   border-radius: 11px;
   flex-shrink: 0;
 }
@@ -316,7 +316,7 @@
   height: 28px;
   background: none;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   cursor: pointer;
   color: var(--text-muted);
   text-decoration: none;
@@ -338,7 +338,7 @@
   justify-content: center;
   padding: var(--space-3xl) var(--space-xl);
   text-align: center;
-  gap: 12px;
+  gap: var(--space-md);
   color: var(--text-muted);
   font-size: var(--paragraph-04-font-size);
   flex: 1;
@@ -346,7 +346,7 @@
 
 .ref-state--loading {
   flex-direction: row;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-xl);
   justify-content: flex-start;
 }
@@ -381,12 +381,12 @@
   color: var(--text-01);
 
   &--high {
-    background: var(--negative-01, #fde8e8);
-    color: var(--negative, #c0392b);
+    background: var(--negative-01);
+    color: var(--negative);
   }
   &--medium {
     background: var(--warning-01, #fef3e2);
-    color: var(--warning, #d35400);
+    color: var(--warning);
   }
   &--low {
     background: var(--positive-01, #eaf4eb);
@@ -439,7 +439,7 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 // ─── Financials ──────────────────────────────────────────────────────────────
@@ -447,7 +447,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--space-sm);
 
   &__label {
     font-size: var(--paragraph-04-font-size);
@@ -464,14 +464,14 @@
 .ref-sections-summary {
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .ref-sec-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-xs) 0;
 
   &__name {

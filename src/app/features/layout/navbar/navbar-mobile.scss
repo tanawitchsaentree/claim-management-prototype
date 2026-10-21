@@ -58,7 +58,7 @@
 .nav-mobile-user {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
 }
 

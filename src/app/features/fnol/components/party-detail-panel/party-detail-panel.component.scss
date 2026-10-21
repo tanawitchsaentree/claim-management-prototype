@@ -16,7 +16,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--space-md);
     padding: var(--space-lg) var(--space-base) var(--space-base);
     border-bottom: 1px solid var(--ui-04);
     flex-shrink: 0;
@@ -25,7 +25,7 @@
   &__title-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-xs);
     flex: 1;
     min-width: 0;
   }
@@ -47,7 +47,7 @@
   &__summary {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px;
+    gap: var(--space-xl);
     padding: var(--space-base);
     border-bottom: 1px solid var(--ui-04);
     flex-shrink: 0;
@@ -63,10 +63,10 @@
 // ─── Info grid ───────────────────────────────────────────────────────────────
 
 .info-section {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-xl);
 
   &__title {
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-md);
     font-size: var(--paragraph-03-font-size);
     font-weight: 600;
     color: var(--text-muted);
@@ -78,7 +78,7 @@
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-base);
 }
 
 .info-field {

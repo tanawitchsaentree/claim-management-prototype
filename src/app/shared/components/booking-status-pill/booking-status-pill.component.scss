@@ -1,7 +1,7 @@
 .bsp {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 // Small flag next to the pill: this row waits for the handler.

@@ -33,16 +33,16 @@ import { KpiData } from '../../../core/models';
     `
       .kpi-row {
         display: flex;
-        gap: 16px;
-        margin-bottom: 16px;
+        gap: var(--space-base);
+        margin-bottom: var(--space-base);
       }
       .kpi-tile {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        padding: 16px 20px;
-        border-radius: 4px;
+        gap: var(--space-xs);
+        padding: var(--space-base) var(--space-lg);
+        border-radius: var(--radius-s);
         border: 1px solid var(--ui-04);
         background: var(--ui-01);
         position: relative;
@@ -50,7 +50,7 @@ import { KpiData } from '../../../core/models';
         cursor: pointer;
         transition: box-shadow 0.15s;
         &:hover {
-          box-shadow: 0 2px 8px var(--claim-overlay-shadow, rgba(0, 0, 0, 0.1));
+          box-shadow: 0 2px 8px var(--claim-overlay-shadow);
         }
       }
       .kpi-value {
@@ -76,15 +76,15 @@ import { KpiData } from '../../../core/models';
         opacity: 0.4;
       }
       .kpi-tile--open {
-        border-left: 4px solid var(--claim-status-open-color, #2e7d32);
+        border-left: 4px solid var(--claim-status-open-color);
         .kpi-icon {
-          color: var(--claim-status-open-color, #2e7d32);
+          color: var(--claim-status-open-color);
         }
       }
       .kpi-tile--pending {
-        border-left: 4px solid var(--warning, #f9b233);
+        border-left: 4px solid var(--warning);
         .kpi-icon {
-          color: var(--warning, #f9b233);
+          color: var(--warning);
         }
       }
       .kpi-tile--reserves {

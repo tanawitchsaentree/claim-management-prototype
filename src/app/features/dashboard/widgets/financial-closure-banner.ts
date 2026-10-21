@@ -28,7 +28,7 @@ import { FinancialClosurePeriod } from '../../../core/models';
         display: block;
       }
       .closure-banner {
-        margin-bottom: 16px;
+        margin-bottom: var(--space-base);
       }
     `
   ]

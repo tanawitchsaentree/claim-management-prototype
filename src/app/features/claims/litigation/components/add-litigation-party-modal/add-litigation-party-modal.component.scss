@@ -21,7 +21,7 @@
 .aplp-header__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .aplp-body {
@@ -43,7 +43,7 @@
 .aplp-pagination {
   display: flex;
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: var(--space-md);
 }
 
 .aplp-footer {

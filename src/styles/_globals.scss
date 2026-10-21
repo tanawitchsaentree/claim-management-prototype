@@ -41,7 +41,7 @@ h1.page-title,
   font-weight: 400;
   color: var(--text-01);
   line-height: 1.2;
-  margin: 0 0 24px;
+  margin: 0 0 var(--space-xl);
 }
 
 // Allow \n in nxTooltip strings to render as line breaks

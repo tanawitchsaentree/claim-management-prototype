@@ -33,13 +33,13 @@
 // ─── Filter form ─────────────────────────────────────────────────────────────
 
 .apm-filter-form {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
 }
 
 .apm-filter-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0 16px;
+  gap: 0 var(--space-base);
 
   @media (max-width: 900px) {
     grid-template-columns: repeat(2, 1fr);
@@ -53,21 +53,21 @@
 .apm-filter-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding-top: 4px;
+  gap: var(--space-base);
+  padding-top: var(--space-xs);
 }
 
 .apm-filter-btns {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 20px;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
 }
 
 .apm-filter-note {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  padding-bottom: 20px;
+  padding-bottom: var(--space-lg);
 }
 
 // ─── Loading ─────────────────────────────────────────────────────────────────
@@ -75,10 +75,10 @@
 .apm-loading {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   padding: var(--space-xl) 0;
   border-top: 1px solid var(--ui-04);
-  margin-top: 8px;
+  margin-top: var(--space-sm);
 }
 
 .apm-loading-label {
@@ -89,13 +89,13 @@
 // ─── Results ─────────────────────────────────────────────────────────────────
 
 .apm-results {
-  margin-top: 8px;
+  margin-top: var(--space-sm);
   border-top: 1px solid var(--ui-04);
-  padding-top: 16px;
+  padding-top: var(--space-base);
 }
 
 .apm-results-meta {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .apm-results-count {
@@ -112,7 +112,7 @@
 
 .apm-col-check {
   width: 48px;
-  padding-left: 16px !important;
+  padding-left: var(--space-base) !important;
 }
 .apm-col-name {
   min-width: 180px;
@@ -150,5 +150,5 @@
 .apm-footer-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
 }

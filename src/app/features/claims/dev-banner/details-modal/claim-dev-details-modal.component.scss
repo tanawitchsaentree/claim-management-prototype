@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-sm);
 }
 
 .cddm-badge {
@@ -50,7 +50,7 @@
   font-weight: 600;
   color: var(--text-muted);
   background: var(--ui-03);
-  border-radius: 8px;
+  border-radius: var(--radius-m);
   padding: 1px 7px;
   flex-shrink: 0;
   white-space: nowrap;
@@ -191,7 +191,7 @@
     background: var(--dev-helper-bg);
     border: 1px solid var(--dev-helper-border);
     border-radius: 3px;
-    padding: 1px 4px;
+    padding: 1px var(--space-xs);
   }
 }
 
@@ -230,7 +230,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 8px;
+  gap: var(--space-sm);
   color: var(--text-muted);
   font-size: var(--paragraph-04-font-size);
 }
@@ -267,7 +267,7 @@
 }
 
 .cddm-detail-plain {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-base);
   font-size: var(--paragraph-03-font-size);
   font-weight: 400;
   color: var(--text-muted);
@@ -290,11 +290,11 @@
 }
 
 .cddm-detail-section {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-lg);
 }
 
 .cddm-detail-label {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   color: var(--text-muted);
@@ -310,7 +310,7 @@
   li {
     font-size: var(--paragraph-04-font-size);
     line-height: 1.5;
-    margin-bottom: 4px;
+    margin-bottom: var(--space-xs);
   }
 }
 
@@ -381,7 +381,7 @@ code.cddm-how-val {
 
 .cddm-precon-link {
   display: inline-block;
-  margin-top: 4px;
+  margin-top: var(--space-xs);
   padding: 0;
   background: transparent;
   border: none;
@@ -411,8 +411,8 @@ code.cddm-how-val {
 }
 
 .cddm-verify-section {
-  margin-top: 20px;
-  padding-top: 16px;
+  margin-top: var(--space-lg);
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-04);
 }
 
@@ -423,7 +423,7 @@ code.cddm-how-val {
   padding: var(--space-sm) var(--space-md);
   background: var(--dev-helper-active-bg);
   border: 1px solid var(--dev-helper-done-color);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .cddm-verify-confirmed-icon {

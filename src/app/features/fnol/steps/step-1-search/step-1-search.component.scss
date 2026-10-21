@@ -5,14 +5,14 @@
 .step-breadcrumb {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .step-title {
   font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   line-height: 1.2;
 }
 
@@ -22,7 +22,7 @@
   gap: 6px;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 32px;
+  margin: 0 0 var(--space-2xl);
 }
 
 .subtitle-icon {
@@ -32,12 +32,12 @@
 
 // ─── Form grid ────────────────────────────────────────────────────
 .search-form {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-sm);
 }
 
 .form-row {
   display: grid;
-  gap: 24px;
+  gap: var(--space-xl);
   margin-bottom: 0;
   align-items: start;
   width: 80%;
@@ -59,7 +59,7 @@
 .row1 {
   display: flex;
   align-items: flex-end;
-  gap: 24px;
+  gap: var(--space-xl);
   margin-bottom: 0;
 }
 
@@ -67,7 +67,7 @@
   flex: 0 0 80%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: start;
 }
 
@@ -75,7 +75,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   white-space: nowrap;
   padding-bottom: 23px;
 }
@@ -83,13 +83,13 @@
 .form-validation-banner {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-md) var(--space-base);
-  margin-bottom: 24px;
+  margin-bottom: var(--space-xl);
   background: var(--message-error-background-color);
   color: var(--message-error-color);
   border: 1px solid var(--message-error-border-color);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-03-font-size);
 
   &__icon {
@@ -102,7 +102,7 @@
 .toggle-filters-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   background: none;
   border: none;
   padding: 0;
@@ -110,7 +110,7 @@
   font-weight: 500;
   color: var(--interactive-text);
   cursor: pointer;
-  margin-top: 12px;
+  margin-top: var(--space-md);
   margin-bottom: 0;
 
   nx-icon {
@@ -123,7 +123,7 @@
 
 // ─── Results ──────────────────────────────────────────────────────
 .search-results {
-  margin-top: 32px;
+  margin-top: var(--space-2xl);
 }
 
 .results-tabs {
@@ -133,7 +133,7 @@
 .results-loading {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   padding: var(--space-xl) 0;
   color: var(--text-01);
   font-size: var(--paragraph-03-font-size);
@@ -142,12 +142,12 @@
 .results-error {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-md) var(--space-base);
   background: var(--message-error-background-color);
   color: var(--message-error-color);
   border: 1px solid var(--message-error-border-color);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-03-font-size);
 
   nx-icon {
@@ -248,10 +248,10 @@ thead .col-action {
 .action-menu-btn {
   background: none;
   border: none;
-  padding: 4px 8px;
+  padding: var(--space-xs) var(--space-sm);
   cursor: pointer;
   color: var(--text-muted);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   &:hover {
     background: var(--ui-02);
     color: var(--text-01);
@@ -294,14 +294,14 @@ thead .col-action {
 .empty-state__you-can {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .empty-state__list {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--space-lg);
   line-height: 1.6;
 }
 
@@ -323,7 +323,7 @@ thead .col-action {
 .items-per-page {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
   nx-icon {
@@ -359,13 +359,13 @@ thead .col-action {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 48px;
-  padding-top: 16px;
+  margin-top: var(--space-4xl);
+  padding-top: var(--space-base);
   border-top: 1px solid var(--ui-04);
 }
 
 .step-footer-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--space-md);
   align-items: center;
 }

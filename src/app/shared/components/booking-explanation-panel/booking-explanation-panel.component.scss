@@ -6,7 +6,7 @@
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-muted);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -15,11 +15,11 @@
 .bep__hint {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .bep__line a {
-  margin-left: 4px;
+  margin-left: var(--space-xs);
   color: var(--interactive-primary);
   text-decoration: underline;
   text-underline-offset: 2px;

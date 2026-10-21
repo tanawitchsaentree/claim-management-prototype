@@ -24,7 +24,7 @@
 .rd-card {
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
 }
@@ -38,7 +38,7 @@
 .rd-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
   min-width: 180px;
   color: var(--text-01);
 }

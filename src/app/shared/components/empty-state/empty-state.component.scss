@@ -27,13 +27,13 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-4xl) var(--space-xl);
 
   .empty-state__icon {
     font-size: var(--heading-01-font-size);
     color: var(--text-muted);
-    margin-bottom: 4px;
+    margin-bottom: var(--space-xs);
   }
 
   .empty-state__message {
@@ -60,8 +60,8 @@
 
   ::ng-deep [action] {
     display: flex;
-    gap: 12px;
-    margin-top: 8px;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
     flex-wrap: wrap;
     justify-content: center;
   }

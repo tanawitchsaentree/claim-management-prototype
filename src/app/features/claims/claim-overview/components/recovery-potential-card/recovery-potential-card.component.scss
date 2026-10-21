@@ -24,7 +24,7 @@
 .rp-header__actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .co-icon-btn {
@@ -50,24 +50,24 @@
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
 }
 
 .rp-radio-group {
   display: flex;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: center;
 }
 
 .rp-clear {
-  margin-top: 16px;
+  margin-top: var(--space-base);
 }
 
 .rp-cta {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 16px;
+  gap: var(--space-xs);
+  margin-top: var(--space-base);
 }
 
 .rp-cta__icon {

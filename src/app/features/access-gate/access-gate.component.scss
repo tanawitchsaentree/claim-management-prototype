@@ -16,7 +16,7 @@
   width: 400px;
   padding: var(--space-3xl) var(--space-3xl) var(--space-3xl);
   border: 1px solid var(--ui-04);
-  border-radius: 8px;
+  border-radius: var(--radius-m);
   background: var(--ui-01);
   box-shadow: 0 4px 24px var(--claim-overlay-shadow);
   display: flex;
@@ -32,7 +32,7 @@
   height: 56px;
   border-radius: 50%;
   background: var(--interactive-primary);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-lg);
 }
 
 .ag-lock-icon {
@@ -41,7 +41,7 @@
 }
 
 .ag-title {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   text-align: center;
 }
 
@@ -61,12 +61,12 @@
 }
 
 .ag-error {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
   color: var(--negative);
   font-size: var(--paragraph-03-font-size);
 }
 
 .ag-btn {
   width: 100%;
-  margin-top: 8px;
+  margin-top: var(--space-sm);
 }

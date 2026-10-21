@@ -6,7 +6,7 @@
   flex-direction: column;
   height: 100%;
   background: var(--ui-01);
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
   overflow: hidden;
   position: relative;
 }
@@ -26,7 +26,7 @@
   cursor: pointer;
   color: var(--interactive-primary);
   z-index: 1;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 
   &:hover {
     color: var(--hover-link);
@@ -79,14 +79,14 @@
   padding: var(--space-2xl);
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: var(--space-4xl);
 }
 
 // ─── Section ───────────────────────────────────────────────────────────────
 .me-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-base);
 }
 
 .me-section__title {
@@ -108,7 +108,7 @@
   // 20px, not 32px — nx-formfield already reserves ~44px below each input
   // for hint/error text even when neither is present, so 32px on top of
   // that made every row look far more spread out than the visual design.
-  gap: 20px 32px;
+  gap: var(--space-lg) var(--space-2xl);
 
   &--4col {
     grid-template-columns: repeat(4, 1fr);
@@ -159,18 +159,18 @@
 
 .me-link-status-badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 2px var(--space-sm);
   border-radius: 10px;
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
 
   &--pending {
-    background: var(--task-status-pending-bg, #fff8e1);
-    color: var(--task-status-pending-color, #e65100);
+    background: var(--task-status-pending-bg);
+    color: var(--task-status-pending-color);
   }
   &--confirmed {
-    background: var(--claim-status-bound-bg, #e8f5e9);
-    color: var(--claim-status-bound-color, #2e7d32);
+    background: var(--claim-status-bound-bg);
+    color: var(--claim-status-bound-color);
   }
 }
 
@@ -200,5 +200,5 @@
 .me-modal__footer-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
+  gap: var(--space-base);
 }

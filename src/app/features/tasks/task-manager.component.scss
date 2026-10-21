@@ -67,7 +67,7 @@
 .tm-overdue-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-xs);
   margin-left: var(--space-xs);
   font-size: var(--paragraph-04-font-size);
   color: var(--danger);
@@ -75,12 +75,12 @@
 
 .tm-status-buttons {
   display: flex;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .tm-status-btn {
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-s);
   border: 1px solid var(--ui-04);
   background: var(--ui-01);
   color: var(--text-muted);
@@ -111,6 +111,6 @@
 }
 
 .tm-outer {
-  padding-top: 24px;
-  padding-bottom: 32px;
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-2xl);
 }

@@ -20,7 +20,7 @@
 }
 
 .asm-intro {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-base);
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
 }
@@ -32,7 +32,7 @@
 .asm-footer {
   @include modal.footer;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .asm-btn--danger {

@@ -3,17 +3,17 @@
 // Boxed, distinct third-party dataset (same tinted box as trade-sanctions'
 // named parties; 2026-10-01 user call), moved here from the FNOL step.
 .cbi-panel {
-  margin: 20px 0;
-  padding: 16px;
+  margin: var(--space-lg) 0;
+  padding: var(--space-base);
   background: var(--ui-02);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 .cbi-panel__label {
   font-size: var(--paragraph-04-font-size);
   font-weight: 600;
   color: var(--text-muted);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
 }
 
 .sub-heading {
@@ -21,7 +21,7 @@
 }
 
 .cbi-panel__sub-heading {
-  margin-top: 20px;
+  margin-top: var(--space-lg);
 }
 
 .two-col-grid {
@@ -31,8 +31,8 @@
 .radio-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
+  gap: var(--space-sm);
+  padding-top: var(--space-xs);
 }
 
 .radio-label {
@@ -44,7 +44,7 @@
 
 .radio-row {
   display: flex;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: center;
 }
 

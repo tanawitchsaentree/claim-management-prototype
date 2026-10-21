@@ -26,18 +26,18 @@
 .lit-summary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: var(--space-xl);
   padding: var(--space-base) var(--space-lg);
   background: var(--ui-01);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
-  margin-bottom: 4px;
+  border-radius: var(--radius-s);
+  margin-bottom: var(--space-xs);
 }
 
 .lit-summary__field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 .lit-summary__label {
   font-size: var(--paragraph-04-font-size);
@@ -81,14 +81,14 @@
   nx-expansion-panel ::ng-deep .nx-expansion-panel__body {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--space-base);
   }
 }
 
 // Reuse step-1-search blessed pattern
 .form-row {
   display: grid;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: start;
 
   &--2col {
@@ -101,13 +101,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
 }
 
 .lit-party__row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-md);
   align-items: baseline;
 }
 
@@ -126,7 +126,7 @@
 .lit-expense-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1.5fr 1.5fr 40px;
-  gap: 16px;
+  gap: var(--space-base);
   align-items: center;
   padding: var(--space-sm) 0;
 
@@ -141,7 +141,7 @@
 .lit-expense-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: var(--space-md);
 }
 
 .lit-case-actions {
@@ -154,6 +154,6 @@
 .lit-detail__footer {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  padding-top: 24px;
+  gap: var(--space-sm);
+  padding-top: var(--space-xl);
 }

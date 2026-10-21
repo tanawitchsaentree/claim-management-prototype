@@ -84,8 +84,8 @@ const PREVIEW = 5;
       .widget-card {
         background: var(--ui-01);
         border: 1px solid var(--ui-04);
-        border-radius: 8px;
-        margin-bottom: 24px; /* $sp-xl — same gap as sibling widgets */
+        border-radius: var(--radius-m);
+        margin-bottom: var(--space-xl); /* $sp-xl — same gap as sibling widgets */
         overflow: hidden;
         box-shadow: 0 1px 4px var(--claim-overlay-shadow);
       }
@@ -93,7 +93,7 @@ const PREVIEW = 5;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 24px 12px; /* $sp-lg $sp-xl $sp-md */
+        padding: var(--space-lg) var(--space-xl) var(--space-md); /* $sp-lg $sp-xl $sp-md */
       }
       .widget-header-left {
         display: flex;
@@ -128,13 +128,13 @@ const PREVIEW = 5;
       }
 
       .rpp-list {
-        padding: 0 0 8px;
+        padding: 0 0 var(--space-sm);
       }
       .rpp-row {
         display: flex;
         align-items: flex-start;
-        gap: 12px;
-        padding: 12px 24px;
+        gap: var(--space-md);
+        padding: var(--space-md) var(--space-xl);
         border-bottom: 1px solid var(--ui-03);
         &:last-child {
           border-bottom: none;
@@ -163,7 +163,7 @@ const PREVIEW = 5;
       .rpp-claim-line {
         display: flex;
         align-items: baseline;
-        gap: 8px;
+        gap: var(--space-sm);
         flex-wrap: wrap;
       }
       .rpp-claim-id {
@@ -172,7 +172,7 @@ const PREVIEW = 5;
         color: var(--interactive-text);
       }
       .rpp-client {
-        font-size: 14px;
+        font-size: var(--paragraph-03-font-size);
         color: var(--text-01);
         font-weight: 500;
       }
@@ -194,7 +194,7 @@ const PREVIEW = 5;
       .rpp-more {
         display: block;
         width: 100%;
-        padding: 12px 24px;
+        padding: var(--space-md) var(--space-xl);
         background: none;
         border: none;
         border-top: 1px solid var(--ui-03);

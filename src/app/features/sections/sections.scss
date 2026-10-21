@@ -87,7 +87,7 @@ $brand-blue: var(--info);
       max-width: 0 !important;
     }
     td.sec-tree__col-toggle {
-      padding-left: 4px !important;
+      padding-left: var(--space-xs) !important;
       max-width: none !important;
     }
     &:hover td {
@@ -106,7 +106,7 @@ $brand-blue: var(--info);
   }
 
   &__entity-name {
-    padding-left: 16px !important;
+    padding-left: var(--space-base) !important;
   }
 }
 
@@ -154,7 +154,7 @@ $brand-blue: var(--info);
 .header-first-slot {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-base);
   height: 40px;
 }
 
@@ -174,7 +174,7 @@ $brand-blue: var(--info);
   font-weight: 600;
   color: $text-main;
   white-space: nowrap;
-  padding-right: 64px; // matches Figma paddingRight:80 on Application Title
+  padding-right: var(--space-5xl); // matches Figma paddingRight:80 on Application Title
 }
 
 // Nav tabs
@@ -182,7 +182,7 @@ $brand-blue: var(--info);
   display: flex;
   align-items: flex-end;
   height: 40px;
-  gap: 32px;
+  gap: var(--space-2xl);
 }
 
 .nav-tab {
@@ -235,15 +235,15 @@ $brand-blue: var(--info);
 .header-actions {
   display: flex;
   align-items: center;
-  padding-left: 24px;
-  gap: 8px;
+  padding-left: var(--space-xl);
+  gap: var(--space-sm);
 }
 
 .search-wrapper {
   display: flex;
   align-items: center;
   border: 1px solid var(--text-muted);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   overflow: hidden;
   height: 40px;
   width: 352px;
@@ -252,7 +252,7 @@ $brand-blue: var(--info);
 .search-input {
   border: none;
   outline: none;
-  padding: 0 16px;
+  padding: 0 var(--space-base);
   font-size: var(--paragraph-01-font-size);
   font-weight: 300;
   color: $text-main;
@@ -270,7 +270,7 @@ $brand-blue: var(--info);
   min-width: 32px !important;
   background: var(--interactive-text) !important;
   border: none !important;
-  border-radius: 4px !important;
+  border-radius: var(--radius-s) !important;
   margin: var(--space-xs) var(--space-xs) var(--space-xs) 0;
   cursor: pointer;
   display: flex;
@@ -295,7 +295,7 @@ $brand-blue: var(--info);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   cursor: pointer;
-  margin-left: 24px;
+  margin-left: var(--space-xl);
   letter-spacing: 0.2px;
 }
 
@@ -409,7 +409,7 @@ $brand-blue: var(--info);
   color: $text-muted;
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-03-font-size);
 
   nx-icon {
@@ -445,12 +445,12 @@ $brand-blue: var(--info);
 .btn-add-section {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   padding: var(--space-sm) var(--space-base);
   background: transparent;
   color: var(--interactive-text);
   border: 2px solid var(--interactive-text);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   letter-spacing: 1px;
@@ -568,7 +568,7 @@ $brand-blue: var(--info);
 .strip-btn {
   width: 36px !important;
   height: 36px !important;
-  border-radius: 4px !important;
+  border-radius: var(--radius-s) !important;
   nx-icon {
     color: $text-muted !important;
   }
@@ -578,9 +578,9 @@ $brand-blue: var(--info);
 
   &--active {
     background: $brand-blue !important;
-    border-radius: 0 4px 4px 0 !important;
+    border-radius: 0 var(--radius-s) var(--radius-s) 0 !important;
     width: 44px !important;
-    margin-right: -4px !important;
+    margin-right: calc(-1 * var(--space-xs)) !important;
     nx-icon {
       color: var(--text-02) !important;
     }
@@ -630,7 +630,7 @@ button[nxButton='secondary small'] {
   background: var(--ui-01) !important;
   border: 1px solid var(--ui-04) !important;
   box-shadow: 0 4px 12px var(--claim-overlay-shadow) !important;
-  border-radius: 4px !important;
+  border-radius: var(--radius-s) !important;
   min-width: 160px !important;
 }
 
@@ -654,10 +654,10 @@ button[nxContextMenuItem] {
 .sec-kebab-btn {
   background: none;
   border: none;
-  padding: 4px 8px;
+  padding: var(--space-xs) var(--space-sm);
   cursor: pointer;
   color: var(--interactive-primary);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   font-size: var(--heading-06-font-size);
   font-weight: 700;
   line-height: 1;

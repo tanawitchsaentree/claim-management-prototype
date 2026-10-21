@@ -6,14 +6,14 @@
 .step-breadcrumb {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
 }
 
 .step-title {
   font-size: var(--heading-04-font-size);
   font-weight: 400;
   color: var(--text-01);
-  margin: 0 0 24px;
+  margin: 0 0 var(--space-xl);
   line-height: 1.2;
 }
 
@@ -22,12 +22,12 @@
 .parties-toolbar {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 
   &__left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--space-base);
   }
 
   &__right {
@@ -87,7 +87,7 @@
   &__cell {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--space-xs);
   }
 
   &__label {
@@ -105,7 +105,7 @@
   &__cell {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--space-xs);
     padding-left: var(--tree-child-indent);
   }
 
@@ -142,7 +142,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: var(--space-md);
 
   &__per-page {
     font-size: var(--paragraph-03-font-size);

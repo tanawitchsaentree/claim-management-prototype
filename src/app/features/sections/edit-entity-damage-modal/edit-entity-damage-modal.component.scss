@@ -19,28 +19,28 @@
   @include modal.body;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .eed-divider {
   border: none;
   border-top: 1px solid var(--ui-04);
-  margin: 12px 0;
+  margin: var(--space-md) 0;
 }
 
 .eed-section-label {
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: 4px 0 4px;
+  margin: var(--space-xs) 0 var(--space-xs);
 }
 
 .eed-radio-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
-  margin-bottom: 8px;
+  gap: var(--space-sm);
+  padding-top: var(--space-xs);
+  margin-bottom: var(--space-sm);
 }
 .eed-radio-label {
   font-size: var(--paragraph-03-font-size);
@@ -50,16 +50,16 @@
 }
 .eed-radio-row {
   display: flex;
-  gap: 24px;
+  gap: var(--space-xl);
   align-items: center;
 }
 
 .eed-cbi-location {
-  margin-top: 4px;
+  margin-top: var(--space-xs);
 }
 
 .eed-field-error {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
   color: var(--message-error-color);
   font-size: var(--paragraph-03-font-size);
 }
@@ -67,5 +67,5 @@
 .eed-footer {
   @include modal.footer;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--space-sm);
 }

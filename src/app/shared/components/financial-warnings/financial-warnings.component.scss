@@ -2,7 +2,7 @@
 .fw-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-sm);
   margin-bottom: var(--space-md);
 }
 

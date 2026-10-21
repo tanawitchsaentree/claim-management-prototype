@@ -20,7 +20,7 @@
   }
 
   &__icon {
-    margin-left: 4px;
+    margin-left: var(--space-xs);
     font-size: 14px;
   }
 }
@@ -43,7 +43,7 @@
   margin-bottom: var(--space-l);
   background: var(--ui-02);
   border: 1px solid var(--ui-04);
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 
   &__item {
     display: flex;
@@ -128,13 +128,13 @@
   font-size: var(--heading-06-font-size);
   font-weight: 600;
   color: var(--text-01);
-  margin: var(--layout-inset-base) 0 4px;
+  margin: var(--layout-inset-base) 0 var(--space-xs);
 }
 
 .rec-postings-hint {
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
 }
 
 .rec-no-cases {

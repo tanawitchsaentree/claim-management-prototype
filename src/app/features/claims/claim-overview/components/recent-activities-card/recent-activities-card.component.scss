@@ -44,7 +44,7 @@
 .act-table-wrap {
   overflow-x: auto;
   width: 100%;
-  margin-top: 12px;
+  margin-top: var(--space-md);
 }
 
 .act-table {
@@ -61,7 +61,7 @@
 
 .act-log-link {
   display: inline-block;
-  margin-top: 12px;
+  margin-top: var(--space-md);
   font-size: var(--paragraph-03-font-size);
   font-weight: 600;
   color: var(--interactive-primary);
