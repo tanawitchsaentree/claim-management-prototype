@@ -1,0 +1,198 @@
+{
+  "ticketId": "GG-1-CLAIM-OVERVIEW",
+  "epicId": "BMPCC-18348",
+  "module": "GG booking",
+  "title": "GG 1 · Claim Overview: claim not in Global Genius",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "overview"
+  ],
+  "walkthroughSteps": [
+    "Claim level: the banner only appears when the claim is not (yet) in Global Genius. Normal claims show nothing new.",
+    "Claim not set up: you can send the claim again yourself (PO request, DESIGN DECISION GG-2)."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Claim Overview · Claim couldn't be set up in GG",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.\n\n**Try:** Press the button: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\".",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim couldn't be set up in GG",
+        "preconditions": [
+          {
+            "text": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press the button: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\"."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggResendOutcome": "registered"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.",
+        "visualCues": [
+          "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Claim Overview · Send claim again, it fails again",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red banner as AC-01.\n\n**Try:** Press Send again: it goes blue, then comes back red after ~3 seconds.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Send claim again, it fails again",
+        "preconditions": [
+          {
+            "text": "Same red banner as AC-01.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press Send again: it goes blue, then comes back red after ~3 seconds."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggResendOutcome": "fails-again"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Same red banner as AC-01.",
+        "visualCues": [
+          "Same red banner as AC-01."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Same red banner as AC-01."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Claim Overview · Claim's policy isn't in GG",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim's policy isn't in GG",
+        "preconditions": [
+          {
+            "text": "Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy).",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of CLM-2024-001."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "policy-missing"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy).",
+        "visualCues": [
+          "Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy)."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner saying the policy team has been told. **No** Send again button (nothing you can resend until they add the policy)."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Claim Overview · Claim still being set up",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Blue information banner: you can carry on, anything you submit is booked once the claim is ready.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim still being set up",
+        "preconditions": [
+          {
+            "text": "Blue information banner: you can carry on, anything you submit is booked once the claim is ready.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of CLM-2024-001."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "registering"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Blue information banner: you can carry on, anything you submit is booked once the claim is ready.",
+        "visualCues": [
+          "Blue information banner: you can carry on, anything you submit is booked once the claim is ready."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Blue information banner: you can carry on, anything you submit is booked once the claim is ready."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    }
+  ]
+}

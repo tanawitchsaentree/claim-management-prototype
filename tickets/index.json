@@ -143,6 +143,60 @@
       "file": "champ-financial-loss-item.json",
       "module": "Claims",
       "title": "Damaged items — capture the peril and the working behind a financial loss"
+    },
+    {
+      "id": "BMPCC-19113",
+      "file": "bmpcc-19113.json",
+      "module": "Claims",
+      "title": "Orphan claim conversion: Link policy completes the claim"
+    },
+    {
+      "id": "GG-1-CLAIM-OVERVIEW",
+      "file": "gg-1-claim-overview.json",
+      "module": "GG booking",
+      "title": "GG 1 · Claim Overview: claim not in Global Genius"
+    },
+    {
+      "id": "GG-2-MAKE-PAYMENT",
+      "file": "gg-2-make-payment.json",
+      "module": "GG booking",
+      "title": "GG 2 · Make payment: checks before you submit"
+    },
+    {
+      "id": "GG-3-ADD-RESERVE",
+      "file": "gg-3-add-reserve.json",
+      "module": "GG booking",
+      "title": "GG 3 · Add reserve: same checks as Make payment"
+    },
+    {
+      "id": "GG-4-PAYMENTS",
+      "file": "gg-4-payments.json",
+      "module": "GG booking",
+      "title": "GG 4 · Payments list: booking status and Send again"
+    },
+    {
+      "id": "GG-5-RESERVES",
+      "file": "gg-5-reserves.json",
+      "module": "GG booking",
+      "title": "GG 5 · Reserves list: same booking statuses"
+    },
+    {
+      "id": "GG-6-RECOVERIES",
+      "file": "gg-6-recoveries.json",
+      "module": "GG booking",
+      "title": "GG 6 · Recoveries: same status in both places"
+    },
+    {
+      "id": "GG-7-FINANCIAL-OVERVIEW",
+      "file": "gg-7-financial-overview.json",
+      "module": "GG booking",
+      "title": "GG 7 · Financial Overview: what couldn't be booked"
+    },
+    {
+      "id": "GG-8-TASKS-BELL",
+      "file": "gg-8-tasks-and-bell.json",
+      "module": "GG booking",
+      "title": "GG 8 · Task manager and the bell: finding out"
     }
   ]
 }

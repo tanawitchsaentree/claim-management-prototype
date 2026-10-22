@@ -1,0 +1,1 @@
+import{a as t}from"./chunk-NFSNL23I.js";import{ea as i,vb as n}from"./chunk-6H5KWZQU.js";var m=class r{numbers=i(t);transform(e){return this.numbers.displayFor(e)}static \u0275fac=function(a){return new(a||r)};static \u0275pipe=n({name:"claimNumber",type:r,pure:!1})};export{m as a};

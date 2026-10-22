@@ -1,0 +1,130 @@
+{
+  "ticketId": "GG-3-ADD-RESERVE",
+  "epicId": "BMPCC-18348",
+  "module": "GG booking",
+  "title": "GG 3 · Add reserve: same checks as Make payment",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "financial"
+  ],
+  "walkthroughSteps": [
+    "Add reserve uses the same warning list as Make payment, so the two journeys look the same (BMPCC-20953)."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Add reserve · Over the limit",
+      "plainStatement": "**Opens:** Reserves with Add reserve open, EUR 900,000 on Business Interruption.\n\n**You see:** Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
+      "page": "financial",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Over the limit",
+        "preconditions": [
+          {
+            "text": "Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Reserves with Add reserve open, EUR 900,000 on Business Interruption."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
+        "visualCues": [
+          "Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one)."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial?view=reserves&addReserve=1&amount=900000&currency=EUR&section=SEC-002",
+        "trigger": "Reserves with Add reserve open, EUR 900,000 on Business Interruption.",
+        "expectedResult": "Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one)."
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Add reserve · Claim still being set up",
+      "plainStatement": "**Opens:** Reserves with Add reserve open.\n\n**You see:** Blue note: the reserve is booked once the claim is ready.",
+      "page": "financial",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim still being set up",
+        "preconditions": [
+          {
+            "text": "Blue note: the reserve is booked once the claim is ready.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Reserves with Add reserve open."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "registering"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Blue note: the reserve is booked once the claim is ready.",
+        "visualCues": [
+          "Blue note: the reserve is booked once the claim is ready."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial?view=reserves&addReserve=1",
+        "trigger": "Reserves with Add reserve open.",
+        "expectedResult": "Blue note: the reserve is booked once the claim is ready."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Add reserve · Arrived from \"Add a USD reserve\"",
+      "plainStatement": "**Opens:** Reserves with Add reserve open in USD (what Make payment AC-05 leads to).\n\n**You see:** Currency already USD.",
+      "page": "financial",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Arrived from \"Add a USD reserve\"",
+        "preconditions": [
+          {
+            "text": "Currency already USD.",
+            "page": "financial",
+            "role": "tested-visible",
+            "hint": "Reserves with Add reserve open in USD (what Make payment AC-05 leads to)."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Currency already USD.",
+        "visualCues": [
+          "Currency already USD."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial?view=reserves&addReserve=1&currency=USD",
+        "trigger": "Reserves with Add reserve open in USD (what Make payment AC-05 leads to).",
+        "expectedResult": "Currency already USD."
+      }
+    }
+  ]
+}
