@@ -1,15 +1,26 @@
-import { Component, OnInit, effect, inject, computed, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  effect,
+  inject,
+  computed,
+  signal
+} from '@angular/core';
 
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTaglistModule } from '@allianz/ng-aquila/taglist';
 import { ClaimDevHelperService, DevTicket, BuildStatus } from './claim-dev-helper.service';
 import {
   ReferenceViewService,
   ReferenceVariant
 } from '../claim-reference-panel/reference-view.service';
+import { AuthService, PERSONAS } from '../../../core/services/auth';
 import { ThemeService } from '../../../core/services/theme.service';
 import { environment } from '../../../../environments/environment';
 
@@ -21,15 +32,20 @@ import { environment } from '../../../../environments/environment';
     NxFormfieldModule,
     NxDropdownModule,
     NxButtonModule,
+    NxIconModule,
     NxTaglistModule
   ],
   templateUrl: './claim-dev-banner.component.html',
   styleUrl: './claim-dev-banner.component.scss'
 })
-export class ClaimDevBannerComponent implements OnInit {
+export class ClaimDevBannerComponent implements OnInit, OnDestroy {
   readonly helper = inject(ClaimDevHelperService);
   readonly refSvc = inject(ReferenceViewService);
   readonly themeSvc = inject(ThemeService);
+  readonly auth = inject(AuthService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly heightWatcher: ResizeObserver;
+  readonly personas = PERSONAS;
 
   readonly visible = true;
 
@@ -77,9 +93,14 @@ export class ClaimDevBannerComponent implements OnInit {
     // Toasts sit just under the app's top bar; with this banner above it they
     // covered the bell and avatar. Publish the banner's height so the toast
     // stack can move down while it's showing.
+    // The bar wraps to two rows on a narrow window, so publish the measured
+    // height instead of a fixed 52px.
+    this.heightWatcher = new ResizeObserver(() => this.publishOffset());
+    this.heightWatcher.observe(this.host.nativeElement);
     effect(() => {
-      const shown = this.helper.shouldShowBanner() && !this.collapsed();
-      document.documentElement.style.setProperty('--dev-banner-offset', shown ? '52px' : '0px');
+      this.helper.shouldShowBanner();
+      this.collapsed();
+      queueMicrotask(() => this.publishOffset());
     });
     effect(() => {
       const id = this.helper.selectedTicket()?.ticketId ?? null;
@@ -106,17 +127,35 @@ export class ClaimDevBannerComponent implements OnInit {
     return acId;
   });
 
-  // Tickets grouped by module — for dropdown's <nx-dropdown-group> headers.
+  // Tickets for the page the tester is on come first ("On this page"); the rest
+  // fall under their module headers. A ticket is listed once, never in both.
   readonly groupedTickets = computed<{ module: string; tickets: DevTicket[] }[]>(() => {
+    const page = this.helper.currentPage();
+    const here: DevTicket[] = [];
     const map = new Map<string, DevTicket[]>();
     for (const t of this.helper.tickets()) {
+      if (page && (t.pages as string[]).includes(page)) {
+        here.push(t);
+        continue;
+      }
       const key = t.module || 'Other';
       const list = map.get(key) ?? [];
       list.push(t);
       map.set(key, list);
     }
-    return Array.from(map.entries()).map(([module, tickets]) => ({ module, tickets }));
+    const groups = Array.from(map.entries()).map(([module, tickets]) => ({ module, tickets }));
+    return here.length ? [{ module: 'On this page', tickets: here }, ...groups] : groups;
   });
+
+  private publishOffset(): void {
+    const shown = this.helper.shouldShowBanner() && !this.collapsed();
+    const px = shown ? this.host.nativeElement.offsetHeight : 0;
+    document.documentElement.style.setProperty('--dev-banner-offset', `${px}px`);
+  }
+
+  ngOnDestroy(): void {
+    this.heightWatcher.disconnect();
+  }
 
   ngOnInit(): void {
     if (!this.visible) return;

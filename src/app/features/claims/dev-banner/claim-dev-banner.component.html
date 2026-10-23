@@ -22,15 +22,9 @@
               @for (ticket of group.tickets; track ticket.ticketId) {
                 <nx-dropdown-item [value]="ticket.ticketId">
                   <div class="cdb-ticket-option">
-                    <div class="cdb-ticket-meta">
-                      <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
-                      @if (ticket.epicId) {
-                        <span class="cdb-ticket-epic">Epic: {{ ticket.epicId }}</span>
-                      }
-                    </div>
                     <div class="cdb-ticket-title">{{ ticket.title }}</div>
                     <div class="cdb-ticket-stats">
-                      <span>{{ ticket.pages.join(' · ') }}</span>
+                      <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
                       <span>
                         ✅ {{ countByStatus(ticket, 'done') }}
                         @if (countByStatus(ticket, 'partial') > 0) {
@@ -53,7 +47,7 @@
       </nx-formfield>
 
       <button
-        nxButton="primary small"
+        nxButton="secondary small"
         [disabled]="!helper.selectedTicket()"
         (click)="openDetails()"
       >
@@ -84,32 +78,50 @@
         </nx-tag>
       }
 
-      @if (isFullMode) {
-        <button nxButton="tertiary small" (click)="onReset()">Reset</button>
+      <div class="cdb-spacer"></div>
 
-        <button
-          nxButton="tertiary small"
-          class="cdb-theme-toggle"
-          (click)="themeSvc.toggle()"
-        >
-          {{ themeSvc.theme() === 'ndbx' ? 'Switch to A1' : 'Switch to NDBX' }}
-        </button>
+      @if (isFullMode) {
+        <div class="cdb-group">
+          <span class="cdb-ref-label">View as</span>
+          @for (p of personas; track p.id) {
+            <button
+              [nxButton]="auth.user().id === p.id ? 'primary small' : 'secondary small'"
+              type="button"
+              (click)="auth.setActivePersona(p.id)"
+            >
+              {{ p.dashboardRole === 'kcm' ? 'KCM' : 'Handler' }}
+            </button>
+          }
+        </div>
+
+        <div class="cdb-group cdb-group--divided">
+          <button nxButton="secondary small" type="button" (click)="onReset()">Reset</button>
+          <button nxButton="secondary small" type="button" (click)="themeSvc.toggle()">
+            {{ themeSvc.theme() === 'ndbx' ? 'Switch to A1' : 'Switch to NDBX' }}
+          </button>
+        </div>
 
         @if (helper.isOverviewRoute()) {
-          <div class="cdb-spacer"></div>
-          <span class="cdb-ref-label">Reference view</span>
-          <nx-formfield class="cdb-ref-picker">
-            <nx-dropdown [formControl]="variantCtrl" (selectionChange)="onVariantChange($event)">
-              @for (opt of variantOptions; track opt.value) {
-                <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-              }
-            </nx-dropdown>
-          </nx-formfield>
+          <div class="cdb-group cdb-group--divided">
+            <span class="cdb-ref-label">Reference view</span>
+            <nx-formfield class="cdb-ref-picker">
+              <nx-dropdown [formControl]="variantCtrl" (selectionChange)="onVariantChange($event)">
+                @for (opt of variantOptions; track opt.value) {
+                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+          </div>
         }
       }
 
-      <button class="cdb-hide-btn" type="button" (click)="hide()" aria-label="Hide dev banner">
-        ✕
+      <button
+        nxIconButton="tertiary small"
+        type="button"
+        (click)="hide()"
+        aria-label="Hide dev banner"
+      >
+        <nx-icon name="close"></nx-icon>
       </button>
     </div>
   }

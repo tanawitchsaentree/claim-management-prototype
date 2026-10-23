@@ -67,6 +67,15 @@ export class ClaimDevHelperService {
 
   readonly shouldShowBanner = computed(() => this.isFeatureRoute());
   readonly shouldShowFnolHelper = computed(() => this.isFnolRoute());
+  // Ticket `pages` key for wherever the tester is now ('overview', 'sections',
+  // 'fnol-search', ...), so the picker can list this page's tickets first.
+  readonly currentPage = computed<string | null>(() => {
+    const path = this.url().split(/[?#]/)[0];
+    const claim = path.match(/^\/claims\/[^/]+\/([^/]+)/);
+    if (claim) return claim[1];
+    const fnol = path.match(/^\/fnol\/([^/]+)/);
+    return fnol ? `fnol-${fnol[1]}` : null;
+  });
   readonly isOverviewRoute = computed(() => /^\/claims\/[^/]+\/overview/.test(this.url()));
 
   // Ticket registry itself lives in PrototypeScenarioService now (core/),
