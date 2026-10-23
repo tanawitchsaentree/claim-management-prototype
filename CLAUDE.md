@@ -75,6 +75,7 @@ Skipping = token waste. User has explicit permission to interrupt.
 | `.claude/CONTEXT.md`           | Stack, tokens, traps, folder structure, NDBX gotchas, accessibility rules — foundation, read once per session                       |
 | `.claude/PRE_BUILD.md`         | Before writing any UI/SCSS code — checklist Q1–Q5, Figma → NDBX mapping, FNOL step workflow, mock data workflow                     |
 | `.claude/POST_BUILD.md`        | Before declaring done — audits, browser checks, evidence template, `/verify-data` for mock data                                     |
+| `.claude/FORM_RHYTHM.md`       | Before building any section / accordion body / modal body of form fields: the 4-level spacing hierarchy and the mixins that enforce it |
 | `.claude/BLESSED.md`           | Reference implementations to copy from — filter bar, modal, FNOL footer, page-with-toolbar, tree rows, etc.                         |
 | `.claude/THEMING.md`           | Before any colour/spacing/radius/font-size change, or "X doesn't follow A1" — who owns which token, scales, audit:theme, snapshot proof |
 | `.claude/RUNTIME_OVERRIDES.md` | When CSS isn't applying / before writing layout — `[nxLayout]` inline padding trap, NxExpertModule cascade, formfield space reserve |
@@ -92,6 +93,7 @@ Skipping = token waste. User has explicit permission to interrupt.
 | "verify" / "audit" / "check" / "is this done"                   | `POST_BUILD.md`                                                         |
 | "Figma" / "design" / "implement from design"                    | `PRE_BUILD.md` § Implementing from Figma                                |
 | "layout broken" / "spacing wrong" / "padding ignored"           | `RUNTIME_OVERRIDES.md` first (DevTools Computed before tweaking values) |
+| new section / form block / accordion body                       | `FORM_RHYTHM.md` first, then screenshot every state before "done"       |
 
 ---
 

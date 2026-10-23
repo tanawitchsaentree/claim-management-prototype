@@ -18,6 +18,12 @@
   /* Grey secondary text on white. Use this for grey labels, NOT  */
   /* --text-02 (that one is white, for text on dark fills).        */
   --text-muted: #767676;
+  /* Text roles. NDBX uses one grey for all three; A1 separates them (heading */
+  /* navy, content slate, label grey) so the page has a visible hierarchy.    */
+  --text-heading: var(--text-01);
+  --text-label: var(--text-01);
+  --font-weight-label: 600;
+  --font-weight-value: 400;
   --message-error-color: #721c24;
 
   /* ── Hover (read by ng-aquila; neither theme file defines it) ─ */

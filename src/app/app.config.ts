@@ -4,6 +4,7 @@ import {
   provideAppInitializer,
   importProvidersFrom,
   inject,
+  computed,
   LOCALE_ID
 } from '@angular/core';
 import {
@@ -15,6 +16,7 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { NxExpertModule } from '@allianz/ng-aquila/config';
+import { ALLIANZ_ONE } from '@allianz/ng-aquila/config/allianz-one/token';
 import { NX_ICON_INITIALIZER, NxIconRegistry } from '@allianz/ng-aquila/icon';
 import { NX_DATE_FORMATS, NxDateFormats } from '@allianz/ng-aquila/datefield';
 import { NX_MODAL_DEFAULT_OPTIONS, NxModalConfig } from '@allianz/ng-aquila/modal';
@@ -66,6 +68,19 @@ export const appConfig: ApplicationConfig = {
     // NX_DATE_FORMATS ('L' → US format). Forces DD-MM-YYYY app-wide.
     { provide: NX_DATE_FORMATS, useValue: APP_DATE_FORMATS },
     provideAllianzIcons(),
+    // The A1 theme is more than tokens: dropdown, datefield, timefield, message,
+    // icon, grid, pagination, popover, sidebar, tooltip and file-uploader read
+    // this flag and render/behave differently in A1 (radio indicator in
+    // dropdown options, 5 years per row in the date picker, A1 icons, ...).
+    // Without it "Switch to A1" only re-coloured NDBX components. Follows the
+    // dev banner toggle live (NxAllianzOneModule would hard-code it on).
+    {
+      provide: ALLIANZ_ONE,
+      useFactory: () => {
+        const theme = inject(ThemeService);
+        return { enabled: computed(() => theme.theme() === 'a1') };
+      }
+    },
     // CDK's dialog focus-trap defaults to autoFocus: 'first-tabbable' — in
     // every modal header here (close button, then title), the close (×)
     // button is that first tabbable element, so it shows its focus-visible

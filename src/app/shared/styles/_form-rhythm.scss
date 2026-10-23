@@ -1,0 +1,59 @@
+// ─── Form rhythm: the spacing hierarchy for any block of form fields ───────
+// Proximity law: the further up the nesting, the bigger the gap, never equal,
+// never smaller. Use these four levels instead of one flat grid `gap`.
+//
+//   field   label + its control(s)                        8   (tightest)
+//   group   items that belong together (control + error,
+//           checkbox + what it reveals)                   12
+//   stack   blocks inside one section                     24
+//   body    section to section                            32
+//   a heading sits 16 above its content (section gap) and 32 below the
+//   previous section, so it binds to what it introduces.
+//
+// Usage:
+//   @use '<path>/shared/styles/form-rhythm' as fr;
+//   .x-body    { @include fr.body; }      // wraps the sections
+//   .x-section { @include fr.section; }   // heading + .x-stack
+//   .x-stack   { @include fr.stack; }
+//   .x-group   { @include fr.group; }
+//   .x-field   { @include fr.field; }
+//
+// nx-formfield reserves ~20px under its input for hint/error text. That
+// empty zone already counts as gap: add `fr.absorb-formfield-reserve` to the
+// formfield so the next block is not pushed ~20px further than the scale says.
+// See .claude/FORM_RHYTHM.md.
+
+@mixin body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  padding: var(--space-lg) 0 var(--space-xl);
+}
+
+@mixin section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+@mixin stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+@mixin group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@mixin field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+@mixin absorb-formfield-reserve {
+  margin-bottom: calc(-1 * var(--space-base));
+}

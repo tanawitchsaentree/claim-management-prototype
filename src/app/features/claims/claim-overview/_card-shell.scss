@@ -17,7 +17,7 @@
   display: block;
   font-size: var(--paragraph-01-font-size);
   font-weight: 700;
-  color: var(--text-01);
+  color: var(--text-heading);
   margin: 0 0 var(--space-ndbx-28);
 
   &:is(h2) {
@@ -75,12 +75,13 @@
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--text-01);
+  font-weight: var(--font-weight-label);
+  color: var(--text-label);
 }
 
 @mixin field-value {
   font-size: var(--paragraph-02-font-size);
+  font-weight: var(--font-weight-value);
   color: var(--text-01);
 
   &--with-chip {

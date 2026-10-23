@@ -17,6 +17,32 @@
   --app-background: var(--semantic-color-background-default);
   --page-content-bg: var(--semantic-color-background-emphasis);
   --text-muted: var(--semantic-color-on-surface-secondary-readonly);
+  // A1 text roles. The library maps --text-01 to the interactive navy, which
+  // made headings, labels, values and links all the same colour. A1 keeps navy
+  // for what can be pressed and for headings; read-only content gets the
+  // slate "readonly" colour and labels the grey one.
+  --text-01: var(--semantic-color-on-surface-primary-readonly);
+  --text-heading: var(--semantic-color-on-surface-primary-resting);
+  --text-label: var(--semantic-color-on-surface-secondary-readonly);
+  // Label light, value semibold: with only grey vs slate to go on, labels and
+  // values were hard to tell apart. NDBX keeps bold label / regular value.
+  --font-weight-label: 400;
+  --font-weight-value: 600;
+
+  // Type scale. The library's A1 sizes (20/18/16/14, body-m 18) are a roomy
+  // marketing scale; this app is data-dense and NDBX pins 16/14/14/14 in
+  // themes/_ndbx.scss. A1 uses the same sizes so switching theme changes the
+  // look, not how much fits on a screen. (Raw rem on purpose: A1 standard
+  // density has no 14px body step; only allianz-one-compact does.)
+  --paragraph-01-font-size: 1rem;
+  --paragraph-02-font-size: 0.875rem;
+  --paragraph-03-font-size: 0.875rem;
+  --paragraph-04-font-size: 0.875rem;
+  --paragraph-01-line-height: 1.5rem;
+  --paragraph-02-line-height: 1.25rem;
+  --paragraph-03-line-height: 1.25rem;
+  --formfield-label-font-size: 0.875rem;
+  --formfield-hint-font-size: 0.875rem;
   --message-error-color: var(--semantic-color-on-signal-subtle-critical-resting);
   --action-hover-background: var(--semantic-color-surface-default-hover);
 

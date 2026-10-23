@@ -26,7 +26,7 @@
 @mixin section-heading {
   font-size: var(--paragraph-01-font-size);
   font-weight: 600;
-  color: var(--text-01);
+  color: var(--text-heading);
   margin: 0 0 var(--space-base);
   line-height: var(--paragraph-01-line-height);
 }
@@ -34,7 +34,7 @@
 @mixin sub-heading {
   font-size: var(--paragraph-02-font-size);
   font-weight: 600;
-  color: var(--text-01);
+  color: var(--text-heading);
   margin: 0 0 var(--space-base);
 }
 

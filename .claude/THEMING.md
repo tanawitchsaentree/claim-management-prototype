@@ -9,6 +9,45 @@ only changed a few colours.
 
 ---
 
+## A1 is tokens AND component behaviour
+
+Found 2026-10-22. Besides `allianz-one.css`, a switch called `ALLIANZ_ONE`
+(`@allianz/ng-aquila/config/allianz-one/token`) makes dropdown, datefield,
+timefield, message, icon, grid, pagination, popover, sidebar, tooltip and
+file-uploader render differently (dropdown options get a radio indicator, A1
+icons, 5 years per row in the date picker, ...). `app.config.ts` provides it as
+`enabled = theme is 'a1'`, so the dev-banner toggle flips it live. Do not add
+`NxAllianzOneModule` (hard-codes it on). A1 docs for each component are in
+`node_modules/@allianz/ng-aquila/mcp/generated/components/*.md` (look for the
+`docs-a1` / `docs-hide-a1` blocks); tokens are in `@allianz/a1-design-tokens`.
+
+---
+
+## Text roles (A1 hierarchy)
+
+Added 2026-10-22. The A1 library maps `--text-01` to the interactive navy, so
+headings, labels, values and links were all one colour. Project tokens
+`--text-heading`, `--text-label` and `--text-01` (content) now carry three roles.
+NDBX: all three resolve to the same grey as before (snapshot identical on 16
+pages). A1 (`themes/_a1.scss`): heading = `on-surface-primary-resting` (navy),
+content = `on-surface-primary-readonly` (slate #2F3C49), label =
+`on-surface-secondary-readonly` (grey #68727B, 4.9:1 on white). Navy therefore
+means "can be pressed, or is a heading". Use `--text-heading` for titles and
+`--text-label` for field labels in new code; the shared mixins
+(`_card-shell`, `_form-section`, `_modal-layout`, `_bottom-sheet-layout`) already do.
+Titles written directly with `--text-01` in a component stay slate in A1.
+
+Type scale and weights (2026-10-22): the library's A1 scale (paragraph 20/18/16/14)
+is far bigger than what NDBX pins in this app (16/14/14/14), so switching to A1
+made every screen look zoomed in. `themes/_a1.scss` pins the same sizes and line
+heights as NDBX. `--font-weight-label` / `--font-weight-value` are 600 / 400 in
+NDBX and 400 / 600 in A1 (light grey label, semibold slate value) so a label and
+its value are told apart by weight as well as colour. Library components still
+use their own A1 sizes. Used by the claim overview field mixins
+(`_card-shell.scss`); other pages with their own label/value styles are not on it yet.
+
+---
+
 ## How a theme switch works
 
 1. The dev banner calls `ThemeService.toggle()` (`src/app/core/services/theme.service.ts`).
