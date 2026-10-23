@@ -350,6 +350,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "040-12345678",
+    "phone": "0151-72846772",
+    "otherAddresses": [
+      "Mittelweg 14, 20148 Hamburg, DE"
     ]
   },
   {
@@ -384,6 +389,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "040-23456789",
+    "phone": "0152-34567890",
+    "otherAddresses": [
+      "Hafenstraße 8, 20359 Hamburg, DE"
     ]
   },
   {
@@ -410,6 +420,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "040-34567890",
+    "phone": "0160-45678901",
+    "otherAddresses": [
+      "Neuer Wall 21, 20354 Hamburg, DE"
     ]
   },
   {
@@ -436,6 +451,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "0421-4567890",
+    "phone": "0171-56789012",
+    "otherAddresses": [
+      "Böttcherstraße 5, 28195 Bremen, DE"
     ]
   },
   {
@@ -462,6 +482,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "040-45678901",
+    "phone": "0172-67890123",
+    "otherAddresses": [
+      "Jungfernstieg 3, 20354 Hamburg, DE"
     ]
   },
   {
@@ -488,6 +513,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "0451-5678901",
+    "phone": "0173-78901234",
+    "otherAddresses": [
+      "Holstenstraße 12, 23552 Lübeck, DE"
     ]
   },
   {
@@ -514,6 +544,11 @@
         "currency": "EUR",
         "operational": true
       }
+    ],
+    "landline": "0211-6789012",
+    "phone": "0174-89012345",
+    "otherAddresses": [
+      "Graf-Adolf-Platz 9, 40213 Düsseldorf, DE"
     ]
   }
 ]

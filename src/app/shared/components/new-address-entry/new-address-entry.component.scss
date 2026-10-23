@@ -1,0 +1,78 @@
+@use '../../styles/form-rhythm' as fr;
+
+.na-card {
+  @include fr.section;
+  padding: var(--space-lg) var(--space-xl);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+}
+
+.na-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.na-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.na-stack {
+  @include fr.stack;
+}
+
+.na-group {
+  @include fr.group;
+}
+
+.na-search {
+  position: relative;
+  max-width: 50%;
+}
+
+.na-absorb {
+  @include fr.absorb-formfield-reserve;
+  width: 100%;
+}
+
+.na-suggestions {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+}
+
+.na-suggestion {
+  display: block;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: none;
+  text-align: left;
+  color: var(--text-01);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--claim-overlay-nav-hover);
+  }
+}
+
+.na-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-base) var(--space-xl);
+  align-items: start;
+
+  nx-formfield {
+    width: 100%;
+  }
+}

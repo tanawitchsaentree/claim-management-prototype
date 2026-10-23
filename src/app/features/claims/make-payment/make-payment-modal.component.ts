@@ -190,6 +190,7 @@ export class MakePaymentModalComponent {
     const ok = p?.bankAccounts.find(a => a.operational) ?? p?.bankAccounts[0];
     this.form.controls.bankAccountId.setValue(ok?.accountId ?? null, { emitEvent: false });
     if (p?.email) this.form.controls.emailAddress.setValue(p.email, { emitEvent: false });
+    this.form.controls.letterAddress.setValue(p?.address ?? '', { emitEvent: false });
     this.form.updateValueAndValidity();
   }
 
@@ -232,7 +233,7 @@ export class MakePaymentModalComponent {
     this.submitted.set(true);
     const miss = this.missing();
     if (miss.length) {
-      this.payeeOpen.set(miss.some(m => ['payeeId', 'beneficiaryName', 'emailAddress'].includes(m)));
+      this.payeeOpen.set(miss.some(m => ['payeeId', 'beneficiaryName', 'emailAddress', 'letterAddress'].includes(m)));
       this.methodOpen.set(miss.some(m => ['method', 'bankAccountId', 'paymentDate'].includes(m)));
       if (miss.includes('lines')) this.amountOpen.set(true);
       return;

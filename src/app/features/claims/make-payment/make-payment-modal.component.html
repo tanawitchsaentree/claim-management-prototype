@@ -51,6 +51,7 @@
         [selected]="selectedPayee()"
         [differentBeneficiary]="form.controls.beneficiary.value === 'different'"
         [emailYes]="form.controls.confirmEmail.value"
+        [channel]="form.controls.confirmChannel.value"
         [missing]="submitted() ? missing() : []"
       ></app-payee-section>
     </nx-expansion-panel>

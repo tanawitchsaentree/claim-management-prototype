@@ -23,6 +23,9 @@ export interface Party {
   clearanceStatus: ClearanceStatus;
   email?: string;
   phone?: string;
+  landline?: string;
+  // Further addresses a letter can go to, besides the street/city fields above.
+  otherAddresses?: string[];
   country?: string;
   city?: string;
   postalCode?: string;

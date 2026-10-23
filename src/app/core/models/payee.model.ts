@@ -18,12 +18,23 @@ export interface PayeeBankAccount {
   operational: boolean;
 }
 
+export interface PayeeEmail {
+  address: string;
+  preferred: boolean;
+}
+
 export interface Payee {
   payeeId: string;
   name: string;
   role: string;
   address: string;
   email?: string;
+  // Contact lines shown on the payee card (`phone` is shown as Mobile).
+  phone?: string;
+  landline?: string;
+  otherAddresses?: string[];
+  // Every address a confirmation can go to; the preferred one is listed first.
+  emails?: PayeeEmail[];
   clearance: PayeeClearance;
   // GG Name Code from Names Management. Without one GG can't book a payment
   // to this party (GG/CLAWS decision register, gap 4; BMPCC-21261).

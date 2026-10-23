@@ -1,56 +1,178 @@
-<div [formGroup]="form()" class="ps-grid">
-  <nx-formfield label="Payee *" class="ps-wide">
-    <nx-dropdown formControlName="payeeId" placeholder="Select the payee">
-      @for (p of payees(); track p.payeeId) {
-        <nx-dropdown-item [value]="p.payeeId">{{ p.name }}</nx-dropdown-item>
-      }
-    </nx-dropdown>
-  </nx-formfield>
-  @if (missing().includes('payeeId')) {
-    <p class="field-error" role="alert">Choose who is being paid.</p>
-  }
-
-  @if (selected(); as p) {
-    <dl class="ps-details">
-      <div><dt>Role</dt><dd>{{ p.role }}</dd></div>
-      <div><dt>Address</dt><dd>{{ p.address }}</dd></div>
-      <div>
-        <dt>Sanctions check</dt>
-        <dd>{{ p.clearance === 'cleared' ? 'Cleared' : p.clearance === 'pending' ? 'Pending' : 'Not cleared' }}</dd>
+<div [formGroup]="form()" class="ps-body">
+  <!-- ── Payee ── -->
+  <section class="ps-section">
+    <h3 class="ps-heading">Payee</h3>
+    <div class="ps-stack">
+      <div class="ps-group">
+        <nx-formfield label="Payee *" class="ps-select">
+          <nx-dropdown formControlName="payeeId" placeholder="Select the payee">
+            @for (p of payees(); track p.payeeId) {
+              <nx-dropdown-item [value]="p.payeeId">{{ p.name }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+        @if (missing().includes('payeeId')) {
+          <p class="field-error" role="alert">Choose who is being paid.</p>
+        }
       </div>
-      <div><dt>Global Genius name code</dt><dd>{{ p.ggNameCode ?? 'Missing' }}</dd></div>
-    </dl>
-  }
 
-  <div class="ps-radio">
-    <p class="ps-label">Ultimate beneficiary</p>
-    <div class="ps-radio-row">
-      <nx-radio name="beneficiary" value="same" [checked]="!differentBeneficiary()" (valueChange)="setBeneficiary('same')" labelSize="small">Same as payee</nx-radio>
-      <nx-radio name="beneficiary" value="different" [checked]="differentBeneficiary()" (valueChange)="setBeneficiary('different')" labelSize="small">Different party</nx-radio>
-    </div>
-  </div>
-  @if (differentBeneficiary()) {
-    <nx-formfield label="Beneficiary name *">
-      <input nxInput formControlName="beneficiaryName" />
-    </nx-formfield>
-  @if (missing().includes('beneficiaryName')) {
-    <p class="field-error" role="alert">Enter the beneficiary's name.</p>
-  }
-  }
+      <dl class="ps-details">
+        <div><dt>Payee legal name</dt><dd>{{ selected()?.name ?? '–' }}</dd></div>
+        <div><dt>Payee name code</dt><dd>{{ selected() ? (selected()!.ggNameCode ?? 'Missing') : '–' }}</dd></div>
+        <div><dt>Payee address</dt><dd>{{ selected()?.address ?? '–' }}</dd></div>
+        <div><dt>Mobile phone</dt><dd>{{ selected()?.phone ?? '–' }}</dd></div>
+        <div><dt>Landline</dt><dd>{{ selected()?.landline ?? '–' }}</dd></div>
+        <div><dt>Email</dt><dd>{{ selected()?.email ?? '–' }}</dd></div>
+        <div>
+          <dt>Sanction check</dt>
+          <dd>
+            @if (selected(); as p) {
+              <app-status-chip
+                domain="clearance"
+                [status]="p.clearance === 'cleared' ? 'cleared' : p.clearance === 'pending' ? 'pending' : 'not-cleared'"
+                [label]="p.clearance === 'cleared' ? 'Verified' : p.clearance === 'pending' ? 'Pending' : 'Not cleared'"
+              ></app-status-chip>
+            } @else {
+              –
+            }
+          </dd>
+        </div>
+      </dl>
 
-  <div class="ps-radio">
-    <p class="ps-label">Send the payee an email confirmation</p>
-    <div class="ps-radio-row">
-      <nx-radio name="confirmEmail" [value]="true" [checked]="emailYes()" (valueChange)="setEmail(true)" labelSize="small">Yes</nx-radio>
-      <nx-radio name="confirmEmail" [value]="false" [checked]="!emailYes()" (valueChange)="setEmail(false)" labelSize="small">No</nx-radio>
+      <div class="ps-group">
+        <nx-checkbox formControlName="confirmEmail" labelSize="small">Send Payment Confirmation</nx-checkbox>
+
+        @if (emailYes()) {
+          <div class="ps-field">
+            <p class="ps-label">Confirmation channel</p>
+            <nx-radio-group formControlName="confirmChannel" class="ps-radio-row">
+              <nx-radio value="email" labelSize="small">Email</nx-radio>
+              <nx-radio value="letter" labelSize="small">Letter</nx-radio>
+            </nx-radio-group>
+          </div>
+
+          @if (channel() === 'letter') {
+            <div class="ps-group">
+              <div class="ps-table-block">
+                <nx-radio-group formControlName="letterAddress">
+                  <table nxTable class="ps-email-table">
+                    <thead>
+                      <tr nxTableRow>
+                        <th nxHeaderCell>Address</th>
+                        <th nxHeaderCell>Preferred</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @if (addresses().length === 0) {
+                      <tr nxTableRow>
+                        <td nxTableCell colspan="2">
+                          <app-empty-state message="No address on record for this payee."></app-empty-state>
+                        </td>
+                      </tr>
+                    }
+                    @for (a of addresses(); track a.address) {
+                        <tr nxTableRow>
+                          <td nxTableCell>
+                            <nx-radio [value]="a.address" labelSize="small">{{ a.address }}</nx-radio>
+                          </td>
+                          <td nxTableCell>{{ a.preferred ? 'Yes' : 'No' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </nx-radio-group>
+                @if (!form().controls['letterDifferent'].value) {
+                  <button nxButton="secondary small" type="button" (click)="setDifferentAddress(true)">
+                    Use a different address
+                  </button>
+                }
+              </div>
+              @if (form().controls['letterDifferent'].value) {
+                <app-new-address-entry
+                  [control]="$any(form().controls['letterCustom'])"
+                  (removed)="setDifferentAddress(false)"
+                ></app-new-address-entry>
+              }
+              @if (missing().includes('letterAddress')) {
+                <p class="field-error" role="alert">Choose or enter an address for the letter.</p>
+              }
+            </div>
+          } @else {
+            <div class="ps-table-block">
+              <nx-radio-group formControlName="emailAddress">
+                <table nxTable class="ps-email-table">
+                  <thead>
+                    <tr nxTableRow>
+                      <th nxHeaderCell>Email</th>
+                      <th nxHeaderCell>Preferred</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @if (emails().length === 0) {
+                      <tr nxTableRow>
+                        <td nxTableCell colspan="2">
+                          <app-empty-state message="No email on record for this payee."></app-empty-state>
+                        </td>
+                      </tr>
+                    }
+                    @for (e of emails(); track e.address) {
+                      <tr nxTableRow>
+                        <td nxTableCell>
+                          <nx-radio [value]="e.address" labelSize="small">{{ e.address }}</nx-radio>
+                        </td>
+                        <td nxTableCell>{{ e.preferred ? 'Yes' : 'No' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </nx-radio-group>
+              @if (missing().includes('emailAddress')) {
+                <p class="field-error" role="alert">Choose an email address.</p>
+              }
+              @if (adding()) {
+                <div class="ps-add-row">
+                  <nx-formfield label="New email address">
+                    <input nxInput type="email" [formControl]="newEmail" />
+                  </nx-formfield>
+                  <div class="ps-add-actions">
+                    <button nxButton="secondary small" type="button" (click)="addEmail()">Add</button>
+                    <button nxButton="tertiary small" type="button" (click)="adding.set(false)">Cancel</button>
+                  </div>
+                </div>
+              } @else {
+                <button nxPlainButton type="button" class="ps-add-link" (click)="adding.set(true)">
+                  <nx-icon name="plus" aria-hidden="true"></nx-icon>
+                  Add new address email
+                </button>
+              }
+            </div>
+          }
+        }
+      </div>
     </div>
-  </div>
-  @if (emailYes()) {
-    <nx-formfield label="Email address *">
-      <input nxInput type="email" formControlName="emailAddress" />
-    </nx-formfield>
-  @if (missing().includes('emailAddress')) {
-    <p class="field-error" role="alert">Enter an email address.</p>
-  }
-  }
+  </section>
+
+  <!-- ── Beneficiary ── -->
+  <section class="ps-section">
+    <h3 class="ps-heading">Beneficiary</h3>
+    <div class="ps-stack">
+      <div class="ps-field">
+        <p class="ps-label">Ultimate Beneficiary</p>
+        <div class="ps-radio-row">
+          <nx-radio name="beneficiary" value="same" [checked]="!differentBeneficiary()" (valueChange)="setBeneficiary('same')" labelSize="small">Same as payee</nx-radio>
+          <nx-radio name="beneficiary" value="different" [checked]="differentBeneficiary()" (valueChange)="setBeneficiary('different')" labelSize="small">Different or multiple parties</nx-radio>
+        </div>
+      </div>
+      @if (differentBeneficiary()) {
+        <div class="ps-group">
+          <nx-formfield label="Beneficiary name *" class="ps-select">
+            <input nxInput formControlName="beneficiaryName" />
+          </nx-formfield>
+          @if (missing().includes('beneficiaryName')) {
+            <p class="field-error" role="alert">Enter the beneficiary's name.</p>
+          }
+        </div>
+      }
+    </div>
+  </section>
 </div>

@@ -1,25 +1,55 @@
-.ps-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-base) var(--space-xl);
-  align-items: start;
-  padding: var(--space-lg) 0;
+@use '../../../../shared/styles/form-rhythm' as fr;
 
-  nx-formfield {
-    width: 100%;
-  }
+.ps-body {
+  @include fr.body;
 }
 
-.ps-wide {
-  grid-column: 1 / -1;
+.ps-section {
+  @include fr.section;
 }
 
-.ps-details {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md) var(--space-xl);
+.ps-heading {
   margin: 0;
+  font-size: var(--heading-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.ps-stack {
+  @include fr.stack;
+}
+
+.ps-group {
+  @include fr.group;
+}
+
+.ps-field {
+  @include fr.field;
+}
+
+.ps-table-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  max-width: 50%;
+}
+
+.ps-select {
+  @include fr.absorb-formfield-reserve;
+  width: 100%;
+  max-width: 360px;
+}
+
+// Payee card: four columns, label above value.
+.ps-details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-xl);
+  margin: 0;
+  padding: var(--space-lg) var(--space-xl);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
 
   dt {
     font-weight: 700;
@@ -27,13 +57,13 @@
   }
 
   dd {
-    margin: 2px 0 0;
+    margin: var(--space-xs) 0 0;
     color: var(--text-01);
   }
 }
 
 .ps-label {
-  margin: 0 0 var(--space-md);
+  margin: 0;
   font-weight: 700;
   color: var(--text-01);
 }
@@ -43,8 +73,32 @@
   gap: var(--space-xl);
 }
 
+.ps-email-table {
+  width: 100%;
+}
+
+// Buttons beside an nx-formfield: same offset the other button rows use
+// (--formfield-align-bottom) so they sit on the input box, not on the
+// formfield's reserved hint zone.
+.ps-add-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-md);
+}
+
+.ps-add-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-bottom: var(--formfield-align-bottom);
+}
+
 .field-error {
-  grid-column: 1 / -1;
   margin: 0;
   color: var(--danger);
+}
+
+// Design puts the plus before the label.
+.ps-add-link nx-icon {
+  order: -1;
 }

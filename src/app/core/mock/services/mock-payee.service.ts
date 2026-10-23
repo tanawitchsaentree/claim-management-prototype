@@ -45,6 +45,10 @@ function toPayee(p: Party): Payee {
     role: p.roles.map(r => ROLE_LABEL[r] ?? r).join(', '),
     address: [street, [p.postalCode, p.city].filter(Boolean).join(' '), p.country].filter(Boolean).join(', '),
     email: p.email,
+    phone: p.phone,
+    landline: p.landline,
+    otherAddresses: p.otherAddresses,
+    emails: p.email ? [{ address: p.email, preferred: true }] : [],
     clearance,
     ggNameCode: p.ggNameCode,
     bankAccounts: p.bankAccounts ?? []

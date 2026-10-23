@@ -63,6 +63,10 @@ export interface FormValues {
   beneficiary: 'same' | 'different';
   beneficiaryName: string;
   confirmEmail: boolean;
+  confirmChannel?: 'email' | 'letter';
+  letterAddress?: string;
+  letterDifferent?: boolean;
+  letterCustom?: string;
   emailAddress: string;
   method: string | null;
   bankAccountId: string | null;
@@ -80,7 +84,11 @@ export function missingFields(
   const out: string[] = [];
   if (!v.payeeId && !keepsOwnPayee) out.push('payeeId');
   if (v.beneficiary === 'different' && !v.beneficiaryName.trim()) out.push('beneficiaryName');
-  if (v.confirmEmail && !v.emailAddress.trim()) out.push('emailAddress');
+  if (v.confirmEmail && v.confirmChannel !== 'letter' && !v.emailAddress.trim()) out.push('emailAddress');
+  if (v.confirmEmail && v.confirmChannel === 'letter') {
+    const address = v.letterDifferent ? v.letterCustom : v.letterAddress;
+    if (!address?.trim()) out.push('letterAddress');
+  }
   if (!v.method) out.push('method');
   if (method?.needsBankAccount && !v.bankAccountId && !keepsOwnPayee) out.push('bankAccountId');
   if (!v.paymentDate) out.push('paymentDate');

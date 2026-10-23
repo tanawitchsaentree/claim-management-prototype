@@ -1,0 +1,62 @@
+<section class="na-card">
+  <div class="na-header">
+    <h4 class="na-title">New address</h4>
+    <button nxButton="tertiary small" type="button" (click)="removed.emit()">Remove</button>
+  </div>
+
+  <div class="na-stack">
+    <div class="na-group">
+      <div class="na-search">
+        <nx-formfield label="Search location" class="na-absorb">
+          <input nxInput [formControl]="gisSearch" autocomplete="off" />
+          @if (gisSearch.value) {
+            <nx-icon name="close" nxFormfieldSuffix (click)="clear()"></nx-icon>
+          } @else {
+            <nx-icon name="search" nxFormfieldSuffix></nx-icon>
+          }
+        </nx-formfield>
+        @if (gisSearch.value && gisResults().length > 0 && !picked()) {
+          <ul class="na-suggestions">
+            @for (s of gisResults(); track s.formattedAddress) {
+              <li>
+                <button type="button" class="na-suggestion" (click)="select(s)">
+                  {{ s.formattedAddress }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+      <nx-checkbox [checked]="manual()" (checkedChange)="setManual($event)" labelSize="small">
+        I want to put the address manually
+      </nx-checkbox>
+    </div>
+
+    @if (showGrid()) {
+      <form [formGroup]="form" class="na-grid">
+        <nx-formfield label="Street">
+          <input nxInput formControlName="street" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Number">
+          <input nxInput formControlName="number" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Postal code">
+          <input nxInput formControlName="postalCode" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="City">
+          <input nxInput formControlName="city" autocomplete="off" />
+        </nx-formfield>
+        <nx-formfield label="Country">
+          <nx-dropdown formControlName="country" placeholder="Select">
+            @for (c of (countries$ | async) ?? []; track c.value) {
+              <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+        </nx-formfield>
+        <nx-formfield label="Province / State">
+          <input nxInput formControlName="state" autocomplete="off" />
+        </nx-formfield>
+      </form>
+    }
+  </div>
+</section>
