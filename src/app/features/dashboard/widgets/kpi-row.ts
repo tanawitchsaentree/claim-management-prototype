@@ -1,32 +1,33 @@
 import { Component, Input } from '@angular/core';
 
+import { NxCardModule } from '@allianz/ng-aquila/card';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { KpiData } from '../../../core/models';
 
 @Component({
   selector: 'app-kpi-row',
   standalone: true,
-  imports: [NxIconModule],
+  imports: [NxCardModule, NxIconModule],
   template: `
     <div class="kpi-row">
-      <div class="kpi-tile kpi-tile--open">
+      <nx-card class="kpi-tile">
         <span class="kpi-value">{{ data.openClaims }}</span>
         <span class="kpi-label">Open claims</span>
         <nx-icon name="product-board-paper-note" class="kpi-icon"></nx-icon>
-      </div>
-      <div class="kpi-tile kpi-tile--pending">
+      </nx-card>
+      <nx-card class="kpi-tile">
         <span class="kpi-value">{{ data.pendingApprovals }}</span>
         <span class="kpi-label">Pending approvals</span>
         <nx-icon name="product-check-paper" class="kpi-icon"></nx-icon>
-      </div>
-      <div
-        class="kpi-tile kpi-tile--reserves"
+      </nx-card>
+      <nx-card
+        class="kpi-tile"
         title="Claims with reserve delta > €50k in last 7 days — ⚑ PLACEHOLDER threshold"
       >
         <span class="kpi-value">{{ data.bigReserveMovements }}</span>
         <span class="kpi-label">Big reserve movements</span>
         <nx-icon name="product-important-info" class="kpi-icon"></nx-icon>
-      </div>
+      </nx-card>
     </div>
   `,
   styles: [
@@ -38,20 +39,12 @@ import { KpiData } from '../../../core/models';
       }
       .kpi-tile {
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-xs);
-        padding: var(--space-base) var(--space-lg);
-        border-radius: var(--radius-s);
-        border: 1px solid var(--ui-04);
-        background: var(--ui-01);
         position: relative;
-        overflow: hidden;
         cursor: pointer;
-        transition: box-shadow 0.15s;
-        &:hover {
-          box-shadow: 0 2px 8px var(--claim-overlay-shadow);
-        }
+      }
+      .kpi-value,
+      .kpi-label {
+        display: block;
       }
       .kpi-value {
         font-size: var(--display-l-font-size);
@@ -65,33 +58,11 @@ import { KpiData } from '../../../core/models';
       }
       .kpi-icon {
         position: absolute;
-        right: 16px;
+        right: var(--space-base);
         top: 50%;
         transform: translateY(-50%);
         font-size: 32px;
-        // Tinted accent icon — clearly visible, not a ghost. Light hues (amber)
-        // need more presence than blue, so 0.18 was too faint on white; 0.4
-        // reads at a glance while staying secondary to the value. Each tile
-        // tints its icon to match its left-accent colour (not all primary blue).
-        opacity: 0.4;
-      }
-      .kpi-tile--open {
-        border-left: 4px solid var(--claim-status-open-color);
-        .kpi-icon {
-          color: var(--claim-status-open-color);
-        }
-      }
-      .kpi-tile--pending {
-        border-left: 4px solid var(--warning);
-        .kpi-icon {
-          color: var(--warning);
-        }
-      }
-      .kpi-tile--reserves {
-        border-left: 4px solid var(--interactive-primary);
-        .kpi-icon {
-          color: var(--interactive-primary);
-        }
+        color: var(--text-muted);
       }
 
       @media (max-width: 1024px) {
