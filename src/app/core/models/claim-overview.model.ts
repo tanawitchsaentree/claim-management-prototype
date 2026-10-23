@@ -85,10 +85,15 @@ export interface ClaimOverview {
   // section. Sections display the claim's value rather than storing their own,
   // so moving to per-section later is an additive change, not a migration.
   incidentCircumstance?: string;
-  // BMPCC-17630 — set while status is 'Pending Rejection Approval' so the
-  // Approvals > Claims tab can list who asked and when.
+  // BMPCC-17630 — the open second-level approval request for a coverage-related
+  // rejection: who asked and when. The claim stays Open meanwhile (no new
+  // status, team decision 2026-10-01); cleared when the request is approved
+  // or declined.
   rejectionRequestedAt?: string;
   rejectionRequestedBy?: string;
+  rejectionType?: 'coverage' | 'liability';
+  /** What the handler wrote when sending the rejection for approval. */
+  rejectionReason?: string;
   riskScore: number;
   riskScoreMax: number;
   riskStatus: string;

@@ -15,7 +15,7 @@
     {
       "targetId": "ccm-reason-dropdown",
       "title": "Closure reason",
-      "body": "Required before the claim can close \u2014 three reasons available (Claim Finalised / Claim Not Pursued / Claim Rejected). If the proximate loss cause is 'Other', a warning appears above this step, but it doesn't block submission.",
+      "body": "Required before the claim can close \u2014 two reasons available (Claim Finalised / Claim Not Pursued; rejection has its own Reject Claim action). If the proximate loss cause is 'Other', a warning appears above this step, but it doesn't block submission.",
       "direction": "top"
     },
     {
@@ -49,7 +49,7 @@
     {
       "id": "AC-01",
       "statement": "Close Claim action is on Claim Overview; handler must select a closure reason",
-      "plainStatement": "**Close Claim** action is *accessible on the Claim Overview page*. Handler must select one of three reasons (`Claim Finalised` / `Claim Not Pursued` / `Claim Rejected`) before the claim can be closed.",
+      "plainStatement": "**Close Claim** action is *accessible on the Claim Overview page*. Handler must select one of two reasons (`Claim Finalised` / `Claim Not Pursued`) before the claim can be closed. Rejecting a claim is a separate action (**Reject Claim**, BMPCC-17630), not a closure reason here.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -91,7 +91,7 @@
         "visualCues": [
           "Close Claim button rendered as primary action in the right-strip",
           "Modal opens to step 2 (Reason)",
-          "Three reasons available; submitting empty surfaces inline error"
+          "Two reasons available; submitting empty surfaces inline error"
         ]
       },
       "expectedOutcome": {

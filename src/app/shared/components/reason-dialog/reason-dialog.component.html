@@ -1,0 +1,34 @@
+<div class="rd-header">
+  <h2 class="rd-title">{{ data.title }}</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="rd-body" tabindex="0">
+  <p class="rd-message">{{ data.message }}</p>
+  @if (data.handlerReason) {
+    <div class="rd-context">
+      <span class="rd-context__label">Reason from the claims handler</span>
+      <span class="rd-context__text">{{ data.handlerReason }}</span>
+    </div>
+  }
+  <nx-formfield [label]="data.reasonLabel + ' *'">
+    <textarea
+      nxInput
+      [formControl]="reason"
+      rows="4"
+      [maxlength]="500"
+      placeholder="Write the reason…"
+    ></textarea>
+    <nx-hint nxFormfieldHint>Visible in the claim's activity log.</nx-hint>
+    <nx-error nxFormfieldError>A reason is required.</nx-error>
+  </nx-formfield>
+</div>
+
+<div class="rd-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="reason.invalid" (click)="onConfirm()">
+    {{ data.confirmLabel }}
+  </button>
+</div>

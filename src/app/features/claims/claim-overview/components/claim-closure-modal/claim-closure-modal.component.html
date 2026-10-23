@@ -124,18 +124,6 @@
         </nx-dropdown>
         <nx-error nxFormfieldError>Closure reason is required.</nx-error>
       </nx-formfield>
-
-      @if (isRejection()) {
-        <p class="ccm-section-label">Rejection type</p>
-        <nx-radio-group formControlName="rejectionType">
-          <nx-radio labelSize="small" value="coverage">
-            Coverage-related (needs second-level approval before closing)
-          </nx-radio>
-          <nx-radio labelSize="small" value="liability">
-            Liability-related (closes without approval)
-          </nx-radio>
-        </nx-radio-group>
-      }
     </form>
 
     <p class="ccm-section-label">Document retention period</p>
@@ -236,8 +224,6 @@
     >
       @if (saving()) {
         <nx-spinner size="small"></nx-spinner>
-      } @else if (requiresApproval()) {
-        Yes — Submit for Approval
       } @else {
         Yes — Close Claim
       }

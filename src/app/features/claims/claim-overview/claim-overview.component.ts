@@ -43,6 +43,7 @@ import {
   ClaimClosureModalComponent,
   ClaimClosureModalResult
 } from './components/claim-closure-modal/claim-closure-modal.component';
+import { ClaimRejectionModalComponent } from './components/claim-rejection-modal/claim-rejection-modal.component';
 import {
   ClaimReopenModalComponent,
   ClaimReopenModalResult
@@ -90,6 +91,7 @@ interface OverviewVM {
   tasksExpanded: boolean;
   tradeSanctionsExpanded: boolean;
   recoveryExpanded: boolean;
+  fileRestrictionExpanded: boolean;
   massEvent: MassEvent | null;
 }
 
@@ -103,6 +105,7 @@ const EMPTY_VM: OverviewVM = {
   tasksExpanded: true,
   tradeSanctionsExpanded: false,
   recoveryExpanded: false,
+  fileRestrictionExpanded: false,
   massEvent: null
 };
 
@@ -162,7 +165,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   readonly vm$ = new BehaviorSubject<OverviewVM>(EMPTY_VM);
 
   readonly closureCheck = signal<BlockerCheckResult | null>(null);
-  readonly rejectionActionInFlight = signal(false);
   readonly closedSectionsCount = signal<number>(0);
   // Drive the "needs setup" banner for a claim just converted from an orphan
   // claim — see onConvertToClaim() / the template's @if. Both signals are
@@ -229,6 +231,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         tasksExpanded: prev?.tasksExpanded ?? true,
         tradeSanctionsExpanded: prev?.tradeSanctionsExpanded ?? false,
         recoveryExpanded: prev?.recoveryExpanded ?? false,
+        fileRestrictionExpanded: prev?.fileRestrictionExpanded ?? false,
         massEvent: massEvent ?? null
       });
       if (overview.claim) {
@@ -366,25 +369,42 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
 
     const result = (await firstValueFrom(ref.afterClosed())) as ClaimClosureModalResult | undefined;
-    if (!result) return;
+    if (result) this.applyClosureResult(result);
+  }
 
+  // Reject Claim is its own trigger, not a Close Claim reason (BMPCC-17630).
+  // No closing checks: a handler can reject at any time (team, 2026-10-22).
+  async openRejectionModal(claim: ClaimOverview): Promise<void> {
+    const ref = this.dialogSvc.open(ClaimRejectionModalComponent, {
+      data: { claim },
+      width: '600px',
+      maxWidth: '92vw'
+    });
+    const result = (await firstValueFrom(ref.afterClosed())) as ClaimClosureModalResult | undefined;
+    if (result) this.applyClosureResult(result);
+  }
+
+  private applyClosureResult(result: ClaimClosureModalResult): void {
+    const extra = result.extraActivities ?? [];
     const cur = this.vm$.value;
     this.vm$.next({
       ...cur,
       claim: result.closedClaim,
-      activities: [result.activity, ...cur.activities]
+      activities: [result.activity, ...extra, ...cur.activities]
     });
+    if (extra.length) this.overviewSvc.appendActivities(result.closedClaim.claimId, extra);
     if (result.pendingApproval) {
       // Persist so the Approvals > Claims tab can see it; vm$ alone is local.
       this.stateSvc.patchOverview(result.closedClaim.claimId, {
-        status: result.closedClaim.status,
         rejectionRequestedAt: result.activity.timestamp,
-        rejectionRequestedBy: result.activity.user
+        rejectionRequestedBy: result.activity.user,
+        rejectionType: result.closedClaim.rejectionType,
+        rejectionReason: result.closedClaim.rejectionReason
       });
       this.overviewSvc.appendActivities(result.closedClaim.claimId, [result.activity]);
       this.toast.success(
         'Rejection submitted',
-        `${result.closedClaim.claimId} — awaiting second-level approval`
+        `${result.closedClaim.claimId} — awaiting approval`
       );
       return;
     }
@@ -393,69 +413,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       'Claim closed',
       `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`
     );
-  }
-
-  // BMPCC-18352 pilot — no real second-approver/notification mechanism exists
-  // in this prototype (no auth system to gate who can act here), so both
-  // actions render directly on Claim Overview for whoever opens it.
-  // rejectionActionInFlight guards against a double-click firing this twice
-  // (there's no modal/saving-state UI here to disable the buttons via, unlike
-  // claim-closure-modal's own onCloseClaim()).
-  async approveRejection(claim: ClaimOverview): Promise<void> {
-    if (this.rejectionActionInFlight()) return;
-    this.rejectionActionInFlight.set(true);
-    try {
-      const closedClaim = await firstValueFrom(
-        this.closureSvc.closeClaim(claim.claimId, {
-          reason: 'Claim Rejected',
-          retentionType: 'default',
-          confirmedBy: { userId: 'usr-current', name: claim.assignedHandler }
-        })
-      );
-      const now = new Date().toISOString();
-      const activity: ClaimActivity = {
-        id: `act-${Date.now()}`,
-        claimId: claim.claimId,
-        user: claim.assignedHandler,
-        timestamp: now,
-        objectType: 'Claim',
-        attribute: 'Status',
-        valueOld: claim.status,
-        valueNew: 'Closed'
-      };
-      const cur = this.vm$.value;
-      this.vm$.next({ ...cur, claim: closedClaim, activities: [activity, ...cur.activities] });
-      this.toast.success('Rejection approved', `${closedClaim.claimId} closed as Claim Rejected`);
-    } catch {
-      this.toast.error('Failed to approve rejection', 'Please try again.');
-    } finally {
-      this.rejectionActionInFlight.set(false);
-    }
-  }
-
-  declineRejection(claim: ClaimOverview): void {
-    if (this.rejectionActionInFlight()) return;
-    const now = new Date().toISOString();
-    const revertedClaim: ClaimOverview = {
-      ...claim,
-      status: 'Open',
-      rejectionRequestedAt: undefined,
-      rejectionRequestedBy: undefined
-    };
-    this.stateSvc.patchOverview(claim.claimId, revertedClaim);
-    const activity: ClaimActivity = {
-      id: `act-${Date.now()}`,
-      claimId: claim.claimId,
-      user: claim.assignedHandler,
-      timestamp: now,
-      objectType: 'Claim',
-      attribute: 'Status',
-      valueOld: claim.status,
-      valueNew: 'Open'
-    };
-    const cur = this.vm$.value;
-    this.vm$.next({ ...cur, claim: revertedClaim, activities: [activity, ...cur.activities] });
-    this.toast.info('Rejection declined', `${claim.claimId} reverted to Open`);
   }
 
   onRecoveryUpdated({ claim, activity }: RecoveryPotentialUpdated): void {
@@ -642,9 +599,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       user: claim.assignedHandler,
       timestamp: new Date().toISOString(),
       objectType: 'Claim',
-      attribute: 'Status',
-      valueOld: claim.status,
-      valueNew: 'Open'
+      attribute: 'Rejection approval',
+      valueOld: 'Requested',
+      valueNew: 'Declined'
     };
     this.vm$.next({
       ...cur,
@@ -699,6 +656,11 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   toggleRecovery(): void {
     const cur = this.vm$.value;
     this.vm$.next({ ...cur, recoveryExpanded: !cur.recoveryExpanded });
+  }
+
+  toggleFileRestriction(): void {
+    const cur = this.vm$.value;
+    this.vm$.next({ ...cur, fileRestrictionExpanded: !cur.fileRestrictionExpanded });
   }
 
   onMassEventChanged(event: MassEventChanged): void {

@@ -48,6 +48,10 @@ import {
 export class FileRestrictionCardComponent implements OnChanges {
   @Input({ required: true }) restriction: FileRestriction | undefined;
   @Output() restrictionChanged = new EventEmitter<FileRestriction>();
+  // `expanded` is an @Input, owned by the parent's VM, because this page's
+  // card list remounts every card after any save (same as recovery-potential-card).
+  @Input() expanded = false;
+  @Output() toggled = new EventEmitter<void>();
 
   private readonly userDir = inject(MockUserDirectoryService);
   private coUserSearchGeneration = 0;
@@ -68,6 +72,16 @@ export class FileRestrictionCardComponent implements OnChanges {
   }
   get isOtherReason(): boolean {
     return this.selectedReason === 'Other';
+  }
+  /** Shown under the title when collapsed, in place of the form. */
+  get summaryText(): string {
+    if (!this.isRestricted) return 'Not restricted';
+    const n = this.coAccessList().length;
+    const users = `${n} ${n === 1 ? 'user' : 'users'} with access`;
+    const reason = this.isOtherReason
+      ? this.restrictionForm.get('otherReason')?.value
+      : this.selectedReason;
+    return reason ? `${users} · ${reason}` : users;
   }
   get restrictionToggle(): FormControl {
     return this.restrictionForm.get('isRestricted') as FormControl;

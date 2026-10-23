@@ -1,0 +1,61 @@
+@use '../../../../../shared/styles/modal-layout' as modal;
+@use '../../../../../shared/styles/form-rhythm' as fr;
+
+:host {
+  @include modal.shell;
+}
+
+.crj-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.crj-title {
+  @include modal.title;
+}
+
+.crj-body {
+  @include modal.body;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.crj-intro {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.crj-form {
+  @include fr.stack;
+  min-width: 0;
+
+  nx-formfield {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.crj-field {
+  @include fr.field;
+}
+
+.crj-label {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-01);
+}
+
+.crj-footer {
+  @include modal.footer;
+}
+
+// nx-radio-group has no gap between stacked items by default.
+.crj-field nx-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}

@@ -43,6 +43,20 @@
   margin-top: var(--space-lg);
 }
 
+.tab-count {
+  display: inline-block;
+  min-width: var(--space-lg);
+  margin-left: var(--space-sm);
+  padding: 0 var(--space-xs);
+  border-radius: var(--radius-pill);
+  background: var(--color-subtle-blue);
+  color: var(--color-on-subtle-blue);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  line-height: var(--space-lg);
+  text-align: center;
+}
+
 .tab-btn {
   padding: var(--space-md) var(--space-lg);
   font-size: var(--paragraph-03-font-size);
@@ -80,7 +94,9 @@
 }
 
 // ── Table ─────────────────────────────────────────────────────────
+// A table wider than the card scrolls inside it instead of spilling out.
 .table-card {
+  overflow-x: auto;
   // No outer frame (matches the Finance-domain Approvals page): only a hairline above the header.
   border-top: 1px solid var(--ui-04);
 }
@@ -88,15 +104,10 @@
 .approvals-table {
   width: 100%;
 
-  .col-expand {
-    width: 40px;
-    padding: 0 !important;
-  }
-  .col-req-id {
-    width: 120px;
-  }
+  // IDs are read and copied whole: never wrap them, let the column grow to fit.
+  .col-req-id,
   .col-claim-id {
-    width: 200px;
+    white-space: nowrap;
   }
   .col-oe {
     width: 50px;
@@ -108,20 +119,34 @@
     width: 130px;
     white-space: nowrap;
   }
+  // The handler's reason under the type: one line, cut with an ellipsis so it
+  // can never push the table past its card (full text on hover and in the dialog).
+  .rj-reason {
+    display: block;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
   .col-currency {
     width: 70px;
   }
   .col-amount {
     width: 80px;
+    text-align: right !important;
+    white-space: nowrap;
   }
   .col-requester {
-    width: 200px;
+    white-space: nowrap;
   }
   .col-date {
     width: 110px;
+    white-space: nowrap;
   }
   .col-action {
-    width: 96px;
+    width: 64px;
     text-align: center !important;
     padding: 0 !important;
     border-left: 1px solid var(--ui-04);
@@ -131,13 +156,18 @@
     font-weight: 400 !important;
     font-size: var(--paragraph-03-font-size) !important;
     color: var(--text-01) !important;
-    padding: var(--space-md) var(--space-md) !important;
+    padding: var(--space-md) var(--space-sm) !important;
     white-space: nowrap;
   }
 
+  // Body size and colour come from the project tokens, not the library table
+  // default: in A1 that default is a larger size and the interactive navy, which
+  // made data and links the same colour and pushed the table past its card.
   td[nxTableCell] {
-    padding: var(--space-md) var(--space-md) !important;
+    padding: var(--space-md) var(--space-sm) !important;
     vertical-align: middle !important;
+    font-size: var(--paragraph-02-font-size);
+    color: var(--text-01);
   }
 }
 

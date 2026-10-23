@@ -14,7 +14,7 @@ export interface UrgentApproval {
   dateRequested?: string;
 }
 
-/** BMPCC-17630 — a coverage-related claim rejection waiting for second-level approval. */
+/** BMPCC-17630 — a claim rejection waiting for approval. */
 export interface RejectionApproval {
   requestId: string;
   claimId: string;
@@ -23,6 +23,10 @@ export interface RejectionApproval {
   lineOfBusiness: string;
   requester: string;
   dateRequested: string;
+  /** Seeded rows carry none and count as coverage-related. */
+  rejectionType?: 'coverage' | 'liability';
+  /** The handler's reason, shown to the approver. */
+  rejectionReason?: string;
 }
 
 /** REJ2024006 for CLM-2024-006 — stable, so the detail URL can be rebuilt from the claim. */

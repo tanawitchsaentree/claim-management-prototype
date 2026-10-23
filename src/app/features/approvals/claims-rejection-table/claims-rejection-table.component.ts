@@ -9,6 +9,10 @@ import { firstValueFrom } from 'rxjs';
 import { RejectionApproval } from '../../../core/models/approval.model';
 import { MockRejectionApprovalService } from '../../../core/mock/services/mock-rejection-approval.service';
 import { RejectionApprovalService } from '../../../core/services/rejection-approval.service';
+import { AuthService } from '../../../core/services/auth';
+import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
+import { NxDialogService } from '@allianz/ng-aquila/modal';
+import { askApproveReason, askDeclineReason } from '../approval-reason';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -31,6 +35,7 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
     NxContextMenuModule,
     ClaimPreviewDirective,
     EmptyStateComponent,
+    StatusChipComponent,
     RequesterNamePipe,
     ClaimNumberPipe,
     AppDatePipe
@@ -45,6 +50,10 @@ export class ClaimsRejectionTableComponent {
   private readonly rejectionSvc = inject(MockRejectionApprovalService);
   private readonly decisionSvc = inject(RejectionApprovalService);
   private readonly toast = inject(ToastService);
+  private readonly dialogSvc = inject(NxDialogService);
+
+  // Approvers (KCM) decide; handlers only follow their requests' status.
+  readonly isApprover = inject(AuthService).isKcm;
 
   private readonly all = signal<RejectionApproval[]>([]);
   private readonly busy = signal(false);
@@ -69,9 +78,11 @@ export class ClaimsRejectionTableComponent {
 
   async approve(item: RejectionApproval): Promise<void> {
     if (this.busy()) return;
+    const reason = await askApproveReason(this.dialogSvc, item);
+    if (!reason) return;
     this.busy.set(true);
     try {
-      await this.decisionSvc.approve(item);
+      await this.decisionSvc.approve(item, reason);
       await this.load();
       this.toast.success('Rejection approved', `${item.claimId} closed as Claim Rejected`);
     } catch {
@@ -83,8 +94,10 @@ export class ClaimsRejectionTableComponent {
 
   async decline(item: RejectionApproval): Promise<void> {
     if (this.busy()) return;
-    this.decisionSvc.decline(item);
+    const reason = await askDeclineReason(this.dialogSvc, item);
+    if (!reason) return;
+    this.decisionSvc.decline(item, reason);
     await this.load();
-    this.toast.info('Rejection declined', `${item.claimId} reverted to Open`);
+    this.toast.info('Rejection declined', `${item.claimId} stays open`);
   }
 }

@@ -8,6 +8,12 @@
   } @else if (vm.claim; as claim) {
     <app-blocker-return-banner></app-blocker-return-banner>
     <app-gg-registration-banner [claimId]="claim.claimId" [registration]="claim.ggRegistration"></app-gg-registration-banner>
+    @if (claim.rejectionRequestedAt && claim.status !== 'Closed') {
+      <nx-message context="info" class="co-rejection-banner">
+        A rejection of this claim has been submitted for approval. The claim stays open until it
+        is decided.
+      </nx-message>
+    }
 
     <!-- General Info Card -->
     <section class="co-card">
@@ -21,7 +27,7 @@
           </div>
         } @else if (
           claim.status !== 'Closed' &&
-          claim.status !== 'Pending Rejection Approval' &&
+          !claim.rejectionRequestedAt &&
           claim.skeletonState !== 'matched' &&
           claim.skeletonState !== 'abandoned'
         ) {
@@ -215,39 +221,10 @@
         <p class="co-desc-text">{{ claim.description }}</p>
       </div>
 
-      <!-- Pending rejection approval — BMPCC-18352 pilot -->
-      @if (claim.status === 'Pending Rejection Approval') {
-        <nx-message context="warning" class="co-rejection-banner">
-          This coverage-related rejection is waiting for second-level approval before the claim
-          can be closed.
-        </nx-message>
-        <div class="co-card-actions">
-          <button
-            nxButton="primary small"
-            type="button"
-            [disabled]="rejectionActionInFlight()"
-            (click)="approveRejection(claim)"
-          >
-            @if (rejectionActionInFlight()) {
-              <nx-spinner size="small"></nx-spinner>&nbsp;
-            }
-            Approve rejection
-          </button>
-          <button
-            nxButton="secondary small"
-            type="button"
-            [disabled]="rejectionActionInFlight()"
-            (click)="declineRejection(claim)"
-          >
-            Decline rejection
-          </button>
-        </div>
-      }
-
       <!-- Card actions — bottom-left -->
       @if (
         claim.status !== 'Closed' &&
-        claim.status !== 'Pending Rejection Approval' &&
+        !claim.rejectionRequestedAt &&
         claim.skeletonState !== 'awaiting-policy' &&
         claim.skeletonState !== 'matched' &&
         claim.skeletonState !== 'abandoned'
@@ -265,6 +242,14 @@
             } @else {
               Close Claim
             }
+          </button>
+          <button
+            nxButton="secondary small"
+            type="button"
+            (click)="openRejectionModal(claim)"
+            data-tour-id="co-reject-claim-button"
+          >
+            Reject Claim
           </button>
         </div>
       }
@@ -305,6 +290,8 @@
 
     <app-file-restriction-card
       [restriction]="claim.restriction"
+      [expanded]="vm.fileRestrictionExpanded"
+      (toggled)="toggleFileRestriction()"
       (restrictionChanged)="onRestrictionChanged($event)"
     ></app-file-restriction-card>
 

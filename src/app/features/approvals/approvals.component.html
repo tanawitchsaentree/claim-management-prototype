@@ -29,6 +29,9 @@
         (click)="activeTab.set('reserves')"
       >
         Reserves
+        @if (reserveCount() > 0) {
+          <span class="tab-count" [attr.aria-label]="reserveCount() + ' waiting'">{{ reserveCount() }}</span>
+        }
       </button>
       <button
         class="tab-btn"
@@ -36,6 +39,9 @@
         (click)="activeTab.set('payments')"
       >
         Payments
+        @if (paymentCount() > 0) {
+          <span class="tab-count" [attr.aria-label]="paymentCount() + ' waiting'">{{ paymentCount() }}</span>
+        }
       </button>
       <button
         class="tab-btn"
@@ -43,6 +49,9 @@
         (click)="activeTab.set('claims')"
       >
         Claims
+        @if (rejectionCount() > 0) {
+          <span class="tab-count" [attr.aria-label]="rejectionCount() + ' waiting'">{{ rejectionCount() }}</span>
+        }
       </button>
     </div>
 
@@ -69,7 +78,6 @@
         <table nxTable class="approvals-table">
           <thead>
             <tr nxTableRow>
-              <th nxHeaderCell class="col-expand"></th>
               <th nxHeaderCell class="col-req-id">Request ID</th>
               <th nxHeaderCell class="col-claim-id">Claim ID</th>
               <th nxHeaderCell class="col-oe">OE</th>
@@ -85,14 +93,13 @@
           <tbody>
             @if (filteredReserves().length === 0) {
               <tr nxTableRow>
-                <td nxTableCell colspan="11" class="empty-cell">
+                <td nxTableCell colspan="10" class="empty-cell">
                   <app-empty-state message="No approval requests found."></app-empty-state>
                 </td>
               </tr>
             }
             @for (item of filteredReserves(); track item.requestId) {
               <tr nxTableRow>
-                <td nxTableCell class="col-expand"></td>
                 <td nxTableCell class="col-req-id">
                   <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{
                     item.requestId
@@ -160,7 +167,6 @@
         <table nxTable class="approvals-table">
           <thead>
             <tr nxTableRow>
-              <th nxHeaderCell class="col-expand"></th>
               <th nxHeaderCell class="col-req-id">Payment ID</th>
               <th nxHeaderCell class="col-claim-id">Claim ID</th>
               <th nxHeaderCell class="col-oe">OE</th>
@@ -176,14 +182,13 @@
           <tbody>
             @if (filteredPayments().length === 0) {
               <tr nxTableRow>
-                <td nxTableCell colspan="11" class="empty-cell">
+                <td nxTableCell colspan="10" class="empty-cell">
                   <app-empty-state message="No payment approval requests found."></app-empty-state>
                 </td>
               </tr>
             }
             @for (item of filteredPayments(); track item.requestId) {
               <tr nxTableRow>
-                <td nxTableCell class="col-expand"></td>
                 <td nxTableCell class="col-req-id">
                   <a class="text-link" [routerLink]="['/claims', item.claimId, 'overview']">{{
                     item.paymentId

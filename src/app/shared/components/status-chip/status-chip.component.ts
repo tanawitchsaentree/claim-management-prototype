@@ -28,11 +28,6 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     closed: 'claim-status-closed',
     reopened: 'claim-status-reopened',
     monitoring: 'claim-status-in-progress',
-    // BMPCC-18352 pilot — without this, the chip fell back to
-    // claim-status-closed (grey), rendering identically to an actually
-    // closed claim. Reuses the same amber "awaiting action" token the
-    // task/mass-event domains already use for their own pending states.
-    'pending-rejection-approval': 'task-status-pending',
     // Orphan (skeleton) claim lifecycle — same tokens the old dedicated
     // 'skeleton-claim' domain used, now that those claims are just claims.
     'awaiting-policy': 'skeleton-claim-awaiting',

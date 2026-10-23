@@ -1,6 +1,26 @@
 <section class="co-card" [formGroup]="restrictionForm">
-  <h2 class="co-card-title">File restriction</h2>
+  <div class="fr-header">
+    <h2 class="co-card-title">File restriction</h2>
+    <div class="fr-header__actions">
+      <button
+        class="co-icon-btn"
+        type="button"
+        (click)="toggled.emit()"
+        [title]="expanded ? 'Collapse' : 'Expand'"
+        [attr.aria-label]="expanded ? 'Collapse' : 'Expand'"
+        [attr.aria-expanded]="expanded"
+      >
+        <nx-icon [name]="expanded ? 'chevron-up' : 'chevron-down'" size="s"></nx-icon>
+      </button>
+    </div>
+  </div>
 
+  @if (!expanded) {
+    <p class="fr-summary">{{ summaryText }}</p>
+  }
+
+  <div class="fr-collapse" [class.fr-collapse--open]="expanded">
+    <div class="fr-collapse__inner">
   <div class="co-restrict-toggle-row">
     <nx-switcher [formControl]="restrictionToggle" (checkedChange)="onToggleRestriction($event)">
       This file has restricted access
@@ -82,4 +102,6 @@
       </div>
     </div>
   }
+    </div>
+  </div>
 </section>

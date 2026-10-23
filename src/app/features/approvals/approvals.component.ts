@@ -13,6 +13,7 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { Navbar } from '../layout/navbar/navbar';
+import { MockRejectionApprovalService } from '../../core/mock/services/mock-rejection-approval.service';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
 import { MockFinancialOverviewService } from '../../core/mock/services/mock-financial-overview.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
@@ -61,6 +62,8 @@ export class ApprovalsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   readonly auth = inject(AuthService);
+  // Waiting requests per tab, so an approver can see where something needs them.
+  readonly rejectionCount = inject(MockRejectionApprovalService).pendingCount;
 
   readonly activeTab = signal<'reserves' | 'payments' | 'claims'>('reserves');
   readonly showMineOnly = signal(false);
@@ -77,6 +80,9 @@ export class ApprovalsComponent implements OnInit {
 
   private allReserves = signal<UrgentApproval[]>([]);
   private allPayments = signal<PaymentApproval[]>([]);
+
+  readonly reserveCount = computed(() => this.allReserves().length);
+  readonly paymentCount = computed(() => this.allPayments().length);
 
   readonly filteredReserves = computed(() => {
     let list = this.allReserves();

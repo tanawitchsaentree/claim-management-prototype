@@ -15,6 +15,8 @@ import { ClaimOverview } from '../../../core/models/claim-overview.model';
 import { MockRejectionApprovalService } from '../../../core/mock/services/mock-rejection-approval.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { RejectionApprovalService } from '../../../core/services/rejection-approval.service';
+import { NxDialogService } from '@allianz/ng-aquila/modal';
+import { askApproveReason, askDeclineReason } from '../approval-reason';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -57,6 +59,7 @@ export class RejectionDetailComponent {
   private readonly overviewSvc = inject(MockClaimOverviewService);
   private readonly decisionSvc = inject(RejectionApprovalService);
   private readonly toast = inject(ToastService);
+  private readonly dialogSvc = inject(NxDialogService);
 
   readonly claimId = this.route.snapshot.paramMap.get('claimId') ?? '';
   readonly requestId = rejectionRequestId(this.claimId);
@@ -88,23 +91,25 @@ export class RejectionDetailComponent {
     this.loaded.set(true);
   }
 
-  statusChip(): { status: string; label: string } {
+  statusChip(): { domain: 'claim' | 'task'; status: string; label: string } {
     switch (this.decision()) {
       case 'approved':
-        return { status: 'closed', label: 'Approved' };
+        return { domain: 'claim', status: 'closed', label: 'Approved' };
       case 'declined':
-        return { status: 'declined', label: 'Declined' };
+        return { domain: 'claim', status: 'declined', label: 'Declined' };
       default:
-        return { status: 'pending-rejection-approval', label: 'Pending approval' };
+        return { domain: 'task', status: 'pending', label: 'Pending approval' };
     }
   }
 
   async approve(): Promise<void> {
     const item = this.item();
     if (!item || !this.canDecide()) return;
+    const reason = await askApproveReason(this.dialogSvc, item);
+    if (!reason) return;
     this.busy.set(true);
     try {
-      await this.decisionSvc.approve(item);
+      await this.decisionSvc.approve(item, reason);
       this.decision.set('approved');
       this.selected.set(false);
       this.toast.success('Rejection approved', `${item.claimId} closed as Claim Rejected`);
@@ -115,13 +120,15 @@ export class RejectionDetailComponent {
     }
   }
 
-  decline(): void {
+  async decline(): Promise<void> {
     const item = this.item();
     if (!item || !this.canDecide()) return;
-    this.decisionSvc.decline(item);
+    const reason = await askDeclineReason(this.dialogSvc, item);
+    if (!reason) return;
+    this.decisionSvc.decline(item, reason);
     this.decision.set('declined');
     this.selected.set(false);
-    this.toast.info('Rejection declined', `${item.claimId} reverted to Open`);
+    this.toast.info('Rejection declined', `${item.claimId} stays open`);
   }
 
   backToApprovals(): void {

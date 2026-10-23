@@ -1106,3 +1106,14 @@ Template — copy below the most recent entry:
 - **Notes:** anything not visible from `git diff` — design rationale, alternatives considered, surprises encountered
 
 -->
+
+## 2026-10-22 — BMPCC-17630 (Claim Rejection: separate trigger, no new status)
+
+- **Source:** Confluence "Claim Rejection - Functional Design (BMPCC-17630)" v20 + team comment (Vasudha): a handler can reject at any time, no sections need closing.
+- **Module:** Claims overview, Approvals
+- **File:** `public/tickets/bmpcc-11360.json` (AC-01 now lists two closure reasons)
+- **Deviations:** (1) Approve / Decline wording kept from the ticket; an outcome-based rename was tried and reverted. (2) Both rejection types go to approval in the prototype (team direction in chat); the ticket says liability skips second-level approval. (3) One approver level; Level 1 / Level 2-3 routing and the GPG bucket are not modelled. (4) Approver reason (required on Approve and Decline) is not in the ticket.
+- **Schema changes:** `ClaimOverview.rejectionRequestedAt/By/Type/Reason` (the open request). The claim stays Open; status 'Pending Rejection Approval' removed (decided 2026-10-01, it had been built before that and kept growing after).
+- **Files touched:** ~25. Key: `claim-rejection-modal`, `reason-dialog`, `approval-reason.ts`, `rejection-approval.service.ts`, `approvals.component.*`.
+- **Notes:** The status was added for a pilot before the 2026-10-01 decision and the 16 Oct Approvals tab built on top of it without re-reading the page. Check the Confluence page before extending a feature built from an older read. Approvals tab is named 'Claims' per the ticket and shows waiting counts per tab. Still open: mandatory note wording, withdraw while pending, Finance-domain surface blocker (open point #6), post-decline path (#8).
+

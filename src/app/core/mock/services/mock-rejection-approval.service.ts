@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RejectionApproval, rejectionRequestId } from '../../models/approval.model';
 import { MockBaseService } from './mock-base.service';
@@ -6,8 +6,9 @@ import { MockStateService } from '../state/mock-state.service';
 import rejectionsData from '../data/rejection-approvals.json';
 
 // BMPCC-17630 — coverage-related rejections waiting for second-level approval.
-// Not a separate store: the claim itself carries the status, so the Claims tab
-// and Claim Overview can never disagree.
+// Not a separate store: the claim carries the open request (who and when), so
+// the Claims tab and Claim Overview can never disagree. The claim's status
+// stays Open while a request is waiting.
 @Injectable({ providedIn: 'root' })
 export class MockRejectionApprovalService extends MockBaseService {
   private readonly stateSvc = inject(MockStateService);
@@ -16,9 +17,16 @@ export class MockRejectionApprovalService extends MockBaseService {
   // only hide it for this session (same as MockApprovalService).
   private readonly decidedSeeded = signal<Set<string>>(new Set());
 
+  /** How many rejection requests are waiting; live, for the Approvals tab badge. */
+  readonly pendingCount = computed(() => this.pendingSync().length);
+
   getPending(): Observable<RejectionApproval[]> {
+    return this.list(this.pendingSync());
+  }
+
+  private pendingSync(): RejectionApproval[] {
     const pending = Object.values(this.stateSvc.state().overviews)
-      .filter(o => o.status === 'Pending Rejection Approval')
+      .filter(o => !!o.rejectionRequestedAt && o.status !== 'Closed')
       .map(o => ({
         requestId: rejectionRequestId(o.claimId),
         claimId: o.claimId,
@@ -26,12 +34,14 @@ export class MockRejectionApprovalService extends MockBaseService {
         client: o.client,
         lineOfBusiness: o.lineOfBusiness,
         requester: o.rejectionRequestedBy ?? o.assignedHandler,
-        dateRequested: (o.rejectionRequestedAt ?? '').split('T')[0]
+        dateRequested: (o.rejectionRequestedAt ?? '').split('T')[0],
+        rejectionType: o.rejectionType ?? 'coverage',
+        rejectionReason: o.rejectionReason
       }));
     const seeded = this.seeded.filter(
       r => !this.decidedSeeded().has(r.claimId) && !pending.some(p => p.claimId === r.claimId)
     );
-    return this.list([...pending, ...seeded]);
+    return [...pending, ...seeded];
   }
 
   isSeeded(claimId: string): boolean {
@@ -43,6 +53,6 @@ export class MockRejectionApprovalService extends MockBaseService {
   }
 
   private isStillSeeded(claimId: string): boolean {
-    return this.stateSvc.state().overviews[claimId]?.status !== 'Pending Rejection Approval';
+    return !this.stateSvc.state().overviews[claimId]?.rejectionRequestedAt;
   }
 }

@@ -52,7 +52,7 @@
           </div>
           <div class="rd-field">
             <span class="rd-label">Rejection type</span>
-            <span>Coverage-related</span>
+            <span>{{ req.rejectionType === 'liability' ? 'Liability-related' : 'Coverage-related' }}</span>
           </div>
           <div class="rd-field">
             <span class="rd-label">Closure reason</span>
@@ -115,9 +115,10 @@
                   ></nx-checkbox>
                 </td>
                 <td nxTableCell>{{ req.claimId | claimNumber }}</td>
-                <td nxTableCell>Coverage-related</td>
+                <td nxTableCell>{{ req.rejectionType === 'liability' ? 'Liability-related' : 'Coverage-related' }}</td>
                 <td nxTableCell>
                   <app-status-chip
+                    [domain]="statusChip().domain"
                     [status]="statusChip().status"
                     [label]="statusChip().label"
                   ></app-status-chip>

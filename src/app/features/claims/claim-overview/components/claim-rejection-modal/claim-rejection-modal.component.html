@@ -1,0 +1,43 @@
+<div class="crj-header">
+  <h2 class="crj-title">Reject Claim</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="crj-body" tabindex="0">
+  <p class="crj-intro">
+    Reject <strong>{{ claim.claimId | claimNumber }}</strong
+    >. Choose the type of rejection and give the reason.
+  </p>
+
+  <form [formGroup]="form" class="crj-form">
+    <div class="crj-field">
+      <p class="crj-label" id="crj-type-label">Rejection type</p>
+      <nx-radio-group formControlName="rejectionType" aria-labelledby="crj-type-label">
+        <nx-radio labelSize="small" value="coverage">Coverage-related</nx-radio>
+        <nx-radio labelSize="small" value="liability">Liability-related</nx-radio>
+      </nx-radio-group>
+    </div>
+
+    <nx-formfield label="Reason for rejection *">
+      <textarea
+        nxInput
+        formControlName="reason"
+        rows="4"
+        [maxlength]="500"
+        placeholder="Explain why the claim is rejected…"
+      ></textarea>
+      <nx-hint nxFormfieldHint>Visible in the claim's activity log.</nx-hint>
+      <nx-error nxFormfieldError>Reason is required.</nx-error>
+    </nx-formfield>
+  </form>
+
+</div>
+
+<div class="crj-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="!canSubmit()" (click)="onSubmit()">
+    Submit rejection
+  </button>
+</div>

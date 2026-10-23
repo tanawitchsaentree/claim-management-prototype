@@ -16,8 +16,8 @@ export class RejectionApprovalService {
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly stateSvc = inject(MockStateService);
 
-  /** Closes the claim as Claim Rejected. Throws if the closure fails. */
-  async approve(item: RejectionApproval): Promise<void> {
+  /** Closes the claim as Claim Rejected, with the approver's reason. Throws if the closure fails. */
+  async approve(item: RejectionApproval, reason: string): Promise<void> {
     if (this.rejectionSvc.isSeeded(item.claimId)) {
       this.rejectionSvc.decideSeeded(item.claimId);
       return;
@@ -29,33 +29,44 @@ export class RejectionApprovalService {
         confirmedBy: { userId: 'usr-current', name: item.requester }
       })
     );
-    this.logStatus(item, 'Closed');
+    this.stateSvc.patchOverview(item.claimId, {
+      rejectionRequestedAt: undefined,
+      rejectionRequestedBy: undefined,
+      rejectionType: undefined,
+      rejectionReason: undefined
+    });
+    this.logDecision(item, 'Approved', reason);
   }
 
-  /** Puts the claim back to Open. */
-  decline(item: RejectionApproval): void {
+  /** Closes the request with the approver's reason; the claim was Open all along and stays Open. */
+  decline(item: RejectionApproval, reason: string): void {
     if (this.rejectionSvc.isSeeded(item.claimId)) {
       this.rejectionSvc.decideSeeded(item.claimId);
       return;
     }
     this.stateSvc.patchOverview(item.claimId, {
-      status: 'Open',
       rejectionRequestedAt: undefined,
-      rejectionRequestedBy: undefined
+      rejectionRequestedBy: undefined,
+      rejectionType: undefined,
+      rejectionReason: undefined
     });
-    this.logStatus(item, 'Open');
+    this.logDecision(item, 'Declined', reason);
   }
 
-  private logStatus(item: RejectionApproval, valueNew: string): void {
+  private logDecision(
+    item: RejectionApproval,
+    valueNew: 'Approved' | 'Declined',
+    reason?: string
+  ): void {
     const activity: ClaimActivity = {
       id: `act-${Date.now()}`,
       claimId: item.claimId,
       user: item.requester,
       timestamp: new Date().toISOString(),
       objectType: 'Claim',
-      attribute: 'Status',
-      valueOld: 'Pending Rejection Approval',
-      valueNew
+      attribute: 'Rejection approval',
+      valueOld: 'Requested',
+      valueNew: reason ? `${valueNew}: ${reason}` : valueNew
     };
     this.overviewSvc.appendActivities(item.claimId, [activity]);
   }

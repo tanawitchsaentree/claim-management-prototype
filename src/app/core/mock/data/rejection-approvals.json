@@ -6,7 +6,8 @@
     "client": "Schäfer & Söhne AG",
     "lineOfBusiness": "Property",
     "requester": "Mara Mustermann",
-    "dateRequested": "2026-10-13"
+    "dateRequested": "2026-10-13",
+    "rejectionReason": "Water damage excluded under the policy wording."
   },
   {
     "requestId": "REJ2024016",
@@ -15,7 +16,8 @@
     "client": "Schäfer & Söhne AG",
     "lineOfBusiness": "Property",
     "requester": "Lena Zorn",
-    "dateRequested": "2026-10-14"
+    "dateRequested": "2026-10-14",
+    "rejectionReason": "Loss happened before the policy start date."
   },
   {
     "requestId": "REJ2024022",
@@ -24,6 +26,7 @@
     "client": "Liver Tea Group",
     "lineOfBusiness": "Property",
     "requester": "Nina Feld",
-    "dateRequested": "2026-10-15"
+    "dateRequested": "2026-10-15",
+    "rejectionReason": "Insured is not the owner of the damaged goods."
   }
 ]

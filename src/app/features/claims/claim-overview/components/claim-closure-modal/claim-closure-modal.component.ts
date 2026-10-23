@@ -6,9 +6,7 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors
+  Validators
 } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -33,24 +31,20 @@ export interface ClaimClosureModalData {
 export interface ClaimClosureModalResult {
   closedClaim: ClaimOverview;
   activity: ClaimActivity;
-  // BMPCC-18352 pilot — true when this result is a coverage-related
-  // rejection routed to second-level approval instead of an actual closure.
-  // closedClaim.status is 'Pending Rejection Approval' in that case, not
-  // 'Closed' — caller must branch on this before treating the claim as closed.
+  // True when this result is a coverage-related rejection (from the separate
+  // Reject Claim modal) routed to second-level approval instead of a closure.
+  // closedClaim is still Open in that case (it only carries the open request),
+  // not 'Closed' — caller must branch on this before treating the claim as closed.
   pendingApproval?: boolean;
+  // Further log rows to write with `activity` (the rejection reason).
+  extraActivities?: ClaimActivity[];
 }
 
 type Step = 1 | 2 | 3 | 4;
 
-const CLOSURE_REASONS: ClosureReason[] = ['Claim Finalised', 'Claim Not Pursued', 'Claim Rejected'];
-
-type RejectionType = 'coverage' | 'liability';
-
-// Functional Design BMPCC-17630: a rejection can't proceed until it's classified.
-function rejectionTypeRequired(group: AbstractControl): ValidationErrors | null {
-  const { reason, rejectionType } = group.value;
-  return reason === 'Claim Rejected' && !rejectionType ? { rejectionTypeRequired: true } : null;
-}
+// Rejection is not a closure reason picked here: it has its own trigger, the
+// Reject Claim button (team call, BMPCC-17630).
+const CLOSURE_REASONS: ClosureReason[] = ['Claim Finalised', 'Claim Not Pursued'];
 
 interface ChecklistItem {
   label: string;
@@ -159,30 +153,11 @@ export class ClaimClosureModalComponent {
 
   readonly confirmationStatements = CONFIRMATION_STATEMENTS;
 
-  readonly form: FormGroup = this.fb.group(
-    {
-      reason: [null, Validators.required],
-      retentionType: ['default', Validators.required],
-      retentionDate: [''],
-      // Only rendered (and only meaningful) when reason === 'Claim Rejected'.
-      // Per Functional Design BMPCC-17630: coverage-related needs second-level
-      // approval, liability-related never does. UW pre-notification is out of Day 1.
-      rejectionType: [null as RejectionType | null]
-    },
-    { validators: rejectionTypeRequired }
-  );
-
-  private readonly reasonSig = toSignal(this.form.get('reason')!.valueChanges, {
-    initialValue: this.form.value.reason
+  readonly form: FormGroup = this.fb.group({
+    reason: [null, Validators.required],
+    retentionType: ['default', Validators.required],
+    retentionDate: ['']
   });
-  readonly isRejection = computed(() => this.reasonSig() === 'Claim Rejected');
-
-  private readonly rejectionTypeSig = toSignal(this.form.get('rejectionType')!.valueChanges, {
-    initialValue: this.form.value.rejectionType as RejectionType | null
-  });
-  readonly requiresApproval = computed(
-    () => this.isRejection() && this.rejectionTypeSig() === 'coverage'
-  );
 
   private readonly retentionTypeSig = toSignal(this.form.get('retentionType')!.valueChanges, {
     initialValue: 'default'
@@ -305,28 +280,6 @@ export class ClaimClosureModalComponent {
 
   async onCloseClaim(): Promise<void> {
     if (this.form.invalid || this.saving()) return;
-
-    if (this.requiresApproval()) {
-      // Coverage-related rejection — send to second-level approval instead of
-      // actually closing. No real second-approver/notification mechanism
-      // exists in this prototype; approve/decline both render directly on
-      // Claim Overview for whoever is looking, same as every other
-      // role-agnostic action here (no auth system exists to gate this).
-      const now = new Date().toISOString();
-      const pendingClaim: ClaimOverview = { ...this.claim, status: 'Pending Rejection Approval' };
-      const activity: ClaimActivity = {
-        id: `act-${Date.now()}`,
-        claimId: this.claim.claimId,
-        user: this.claim.assignedHandler,
-        timestamp: now,
-        objectType: 'Claim',
-        attribute: 'Status',
-        valueOld: this.claim.status,
-        valueNew: 'Pending Rejection Approval'
-      };
-      this.modalRef.close({ closedClaim: pendingClaim, activity, pendingApproval: true });
-      return;
-    }
 
     this.saving.set(true);
     this.saveError.set(null);

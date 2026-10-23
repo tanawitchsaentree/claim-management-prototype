@@ -9,13 +9,16 @@
         <th nxHeaderCell class="col-type">Rejection type</th>
         <th nxHeaderCell class="col-requester">Requester</th>
         <th nxHeaderCell class="col-date">Date requested</th>
+        @if (!isApprover()) {
+          <th nxHeaderCell class="col-type">Status</th>
+        }
         <th nxHeaderCell class="col-action">Action</th>
       </tr>
     </thead>
     <tbody>
       @if (rows().length === 0) {
         <tr nxTableRow>
-          <td nxTableCell colspan="8" class="empty-cell">
+          <td nxTableCell [attr.colspan]="isApprover() ? 8 : 9" class="empty-cell">
             <app-empty-state message="No rejection approval requests found."></app-empty-state>
           </td>
         </tr>
@@ -37,9 +40,19 @@
           </td>
           <td nxTableCell class="col-requester">{{ item.client }}</td>
           <td nxTableCell class="col-lob">{{ item.lineOfBusiness }}</td>
-          <td nxTableCell class="col-type">Coverage-related</td>
+          <td nxTableCell class="col-type">
+            {{ item.rejectionType === 'liability' ? 'Liability-related' : 'Coverage-related' }}
+            @if (item.rejectionReason) {
+              <span class="rj-reason" [title]="item.rejectionReason">{{ item.rejectionReason }}</span>
+            }
+          </td>
           <td nxTableCell class="col-requester">{{ item.requester | requesterName }}</td>
           <td nxTableCell class="col-date">{{ item.dateRequested ? (item.dateRequested | appDate) : '–' }}</td>
+          @if (!isApprover()) {
+            <td nxTableCell class="col-type">
+              <app-status-chip domain="task" status="pending" label="Pending approval"></app-status-chip>
+            </td>
+          }
           <td nxTableCell class="col-action">
             <button
               nxIconButton="tertiary"
@@ -50,8 +63,10 @@
               <nx-icon name="ellipsis-h"></nx-icon>
             </button>
             <nx-context-menu #rejectionMenu="nxContextMenu">
-              <button nxContextMenuItem type="button" (click)="approve(item)">Approve</button>
-              <button nxContextMenuItem type="button" (click)="decline(item)">Decline</button>
+              @if (isApprover()) {
+                <button nxContextMenuItem type="button" (click)="approve(item)">Approve</button>
+                <button nxContextMenuItem type="button" (click)="decline(item)">Decline</button>
+              }
               <a nxContextMenuItem [routerLink]="['/claims', item.claimId, 'overview']"
                 >View details</a
               >
