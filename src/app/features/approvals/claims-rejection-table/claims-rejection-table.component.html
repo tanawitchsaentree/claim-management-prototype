@@ -67,9 +67,7 @@
                 <button nxContextMenuItem type="button" (click)="approve(item)">Approve</button>
                 <button nxContextMenuItem type="button" (click)="decline(item)">Decline</button>
               }
-              <a nxContextMenuItem [routerLink]="['/claims', item.claimId, 'overview']"
-                >View details</a
-              >
+              <a nxContextMenuItem [routerLink]="['/approvals/claims', item.claimId]">View details</a>
             </nx-context-menu>
           </td>
         </tr>
