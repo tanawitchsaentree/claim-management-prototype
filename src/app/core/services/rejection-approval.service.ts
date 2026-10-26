@@ -18,9 +18,9 @@ export class RejectionApprovalService {
 
   /** Closes the claim as Claim Rejected, with the approver's reason. Throws if the closure fails. */
   async approve(item: RejectionApproval, reason: string): Promise<void> {
+    // Seeded rows close their claim too; deciding only hid the row before.
     if (this.rejectionSvc.isSeeded(item.claimId)) {
       this.rejectionSvc.decideSeeded(item.claimId);
-      return;
     }
     await firstValueFrom(
       this.closureSvc.closeClaim(item.claimId, {
