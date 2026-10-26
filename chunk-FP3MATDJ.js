@@ -1,1 +1,0 @@
-var e="other-event";function i(t){return t.source==="coordinates"?`${t.latitude}, ${t.longitude}`:[[t.addressLine1,t.addressLine2].filter(Boolean).join(", "),t.postalCode,t.city,t.country].filter(Boolean).join(", ")}export{e as a,i as b};

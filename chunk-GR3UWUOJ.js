@@ -1,0 +1,1 @@
+function o(e,s){return s?`Policy ${e} linked. Follow-up tasks to set up reserves and re-confirm the loss location were added to your task list.`:`Policy ${e} linked. A follow-up task to set up reserves was added to your task list.`}export{o as a};
