@@ -1117,3 +1117,10 @@ Template — copy below the most recent entry:
 - **Files touched:** ~25. Key: `claim-rejection-modal`, `reason-dialog`, `approval-reason.ts`, `rejection-approval.service.ts`, `approvals.component.*`.
 - **Notes:** The status was added for a pilot before the 2026-10-01 decision and the 16 Oct Approvals tab built on top of it without re-reading the page. Check the Confluence page before extending a feature built from an older read. Approvals tab is named 'Claims' per the ticket and shows waiting counts per tab. Still open: mandatory note wording, withdraw while pending, Finance-domain surface blocker (open point #6), post-decline path (#8).
 
+
+## 2026-10-26 — BMPCC-19113 rolled back: Link policy is pick policy, confirm, Confirm loss location again
+
+- **Source:** user, in conversation: orphan claim conversion must be Link policy then Confirm location, not FNOL-style steps.
+- **What changed:** the 4-step sheet from 21 Oct (Policy, Claim details, Coverages, Reserves) is gone. The sheet is the 12 Oct policy picker (`convert-skeleton-modal`, restored from 20606a7, styles moved onto tokens), the confirm pops up over it, and `SkeletonLocationReconfirmService` opens Confirm loss location straight after. A skipped location keeps the "Confirm loss location" task. Removed: `complete-claim-step`, `coverage-step`, `reserves-step`, `skeleton-location-choice.service`, `CompletionDetails`.
+- **Kept from 21 Oct:** loss event created and attached on conversion, insured and broker added to parties, regular claim number (SK- becomes an alias), 'Awaiting policy' chip on All claims, the cause-based first section, cbi-panel (FNOL Loss information uses it).
+- **Note:** `public/tickets/bmpcc-19113.json` still describes the 4-step version; `audit:ac-logic` passes (88/0) but the ticket text is stale until the team confirms the direction.

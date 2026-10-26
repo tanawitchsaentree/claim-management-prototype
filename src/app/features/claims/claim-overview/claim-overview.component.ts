@@ -34,7 +34,8 @@ import {
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ClaimOverview, ClaimActivity } from '../../../core/models/claim-overview.model';
 import { Claim } from '../../../core/models/claim.model';
-import { CompletionDetails, linkedMessage } from '../../../core/models/claim-completion.model';
+import { linkedMessage } from '../../../core/models/claim-completion.model';
+import { SkeletonLocationReconfirmService } from './skeleton-location-reconfirm.service';
 import { PolicyLocation } from '../../../core/models';
 import { BlockerCheckResult } from '../../../core/models/claim-closure.model';
 import { MassEvent } from '../../../core/models/mass-event.model';
@@ -109,7 +110,7 @@ const EMPTY_VM: OverviewVM = {
   massEvent: null
 };
 
-type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>['policy'];
+type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
 
 @Component({
   selector: 'app-claim-overview',
@@ -149,6 +150,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly overviewSvc = inject(MockClaimOverviewService);
+  private readonly locationReconfirmSvc = inject(SkeletonLocationReconfirmService);
   private readonly taskSvc = inject(MockTaskService);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly stateSvc = inject(MockStateService);
@@ -525,7 +527,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const ref = this.dialogSvc.open(ConvertSkeletonModalComponent, {
       data: {
         skeleton,
-        onPick: (policy, details) => this.confirmAndLink(skeleton, policy, details)
+        onPick: policy => this.confirmAndLink(skeleton, policy)
       } satisfies ConvertSkeletonModalData,
       panelClass: 'bottom-sheet-modal-panel',
       showCloseIcon: false
@@ -534,11 +536,11 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   }
 
   /** Returns true once the link is confirmed and under way (picker may close). */
-  private async confirmAndLink(
-    skeleton: Claim,
-    policy: LinkablePolicy,
-    details: CompletionDetails
-  ): Promise<boolean> {
+  private async confirmAndLink(skeleton: Claim, policy: LinkablePolicy): Promise<boolean> {
+    // Load the policy's locations while the handler reads the confirm dialog, so
+    // the location sheet has them ready the instant they confirm.
+    const prepared = this.locationReconfirmSvc.prepare(policy.policyNumber);
+
     // Highest-stakes action on this page (links a real policy, flips
     // skeletonState, creates a task): confirm before committing.
     //
@@ -560,23 +562,35 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     });
     const confirmed = await firstValueFrom(confirmRef.afterClosed());
     if (!confirmed) return false;
-    void this.completeLink(skeleton, policy, details);
+    void this.completeLink(skeleton, policy, prepared);
     return true;
   }
 
   private async completeLink(
     skeleton: Claim,
     policy: LinkablePolicy,
-    details: CompletionDetails
+    prepared: Promise<PolicyLocation[]>
   ): Promise<void> {
     try {
-      const converted = await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy, details);
+      // Link and location step run side by side: the Confirm loss location sheet
+      // opens the moment the handler confirms (its data is already known), while
+      // the link finishes behind it. The location is only written once the link
+      // has landed. Skipping the sheet leaves the follow-up task in place.
+      const linking = this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
+      const replaced = await this.locationReconfirmSvc.run(
+        skeleton.claimId,
+        policy.policyNumber,
+        prepared,
+        linking,
+        { claim: skeleton.lineOfBusiness, policy: policy.lineOfBusiness }
+      );
+      const converted = await linking;
       // No navigation needed: the constructor's reactivity bridge reloads this same
       // Overview once mock state changes. The toast is the positive signal, and the
       // only place that tells the handler a follow-up task landed in their queue.
       this.toast.success(
         `${skeleton.claimId} is now ${converted.claimNumber}`,
-        linkedMessage(policy.policyNumber, converted)
+        linkedMessage(policy.policyNumber, converted.locationNeedsReconfirm && !replaced)
       );
     } catch {
       this.toast.error('Could not link the policy', 'Nothing was changed. Please try again.');

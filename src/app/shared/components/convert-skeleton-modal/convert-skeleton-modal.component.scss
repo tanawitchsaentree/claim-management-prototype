@@ -190,24 +190,3 @@
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
-
-// Progress tracker on the left, the current step on the right (as in the wizards).
-.csm-layout {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-}
-
-.csm-rail {
-  flex-shrink: 0;
-  width: 200px;
-  padding: var(--space-2xl) 0 0 var(--space-2xl);
-}
-
-.csm-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-}

@@ -309,9 +309,8 @@ export class Step1SearchComponent {
       panelClass: 'bottom-sheet-modal-panel',
       showCloseIcon: false
     });
-    const picked = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
-    if (!picked) return; // cancelled
-    const { policy, details } = picked;
+    const policy = (await firstValueFrom(ref.afterClosed())) as ConvertSkeletonModalResult;
+    if (!policy) return; // cancelled
 
     // Same rule as every other save on Claim Overview — a diff before
     // commit, not a bare "are you sure?". This action used to skip straight
@@ -341,14 +340,10 @@ export class Step1SearchComponent {
     // no FNOL wizard walk. See CONVERSIONS.md 2026-09-14 (originally "Convert
     // to claim"; renamed "Link policy" — BMPCC-17927 functional review,
     // 2026-09-22, item 3 — a skeleton claim is already a claim).
-    const converted = await this.overviewSvc.convertToRegularClaim(
-      skeleton.claimId,
-      policy,
-      details
-    );
+    const converted = await this.overviewSvc.convertToRegularClaim(skeleton.claimId, policy);
     this.toast.success(
       `${skeleton.claimId} is now ${converted.claimNumber}`,
-      linkedMessage(policy.policyNumber, converted)
+      linkedMessage(policy.policyNumber, converted.locationNeedsReconfirm)
     );
     this.router.navigate(['/claims', skeleton.claimId, 'overview']);
   }

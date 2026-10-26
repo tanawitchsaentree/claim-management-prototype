@@ -3,7 +3,6 @@ import { Observable, combineLatest, firstValueFrom } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ClaimOverview, ClaimActivity } from '../../models/claim-overview.model';
 import { causeLabel } from '../../models/cause-of-loss';
-import { CompletionDetails } from '../../models/claim-completion.model';
 import { MockClaimConversionService } from './mock-claim-conversion.service';
 import { Claim } from '../../models/claim.model';
 import { MockBaseService } from './mock-base.service';
@@ -151,15 +150,11 @@ export class MockClaimOverviewService extends MockBaseService {
   // under-reported what actually landed in the handler's task queue.
   async convertToRegularClaim(
     claimId: string,
-    policy: LinkablePolicy,
-    details?: CompletionDetails
-  ): Promise<{ claim: Claim; claimNumber: string; formerNumber: string; sections: number; reserveTask: boolean }> {
+    policy: LinkablePolicy
+  ): Promise<{ claim: Claim; claimNumber: string; formerNumber: string; locationNeedsReconfirm: boolean }> {
     const linked = await firstValueFrom(this.claimSvc.linkPolicy(claimId, policy));
-    // The "Complete the claim" step is written before the section is made, so the
-    // section follows the confirmed cause (never an empty one).
-    const applied = details ? await this.conversionSvc.applyDetails(linked, details) : linked;
     // A regular claim belongs to a loss event: one is created and the claim attached to it.
-    const claim = await this.conversionSvc.attachLossEvent(applied, details);
+    const claim = await this.conversionSvc.attachLossEvent(linked);
     // It is a regular claim now: it gets a regular claim number. The internal id (and
     // so every record pointing at it) stays; the SK- number becomes a permanent alias.
     const { number: claimNumber, former: formerNumber } = this.numberSvc.assign(claimId);
@@ -185,33 +180,46 @@ export class MockClaimOverviewService extends MockBaseService {
         // status is 'Open' before and after (unchanged) — skeletonState is
         // what actually transitions on conversion.
         valueOld: 'Awaiting policy',
-        valueNew: `${policy.policyNumber} — linked`
+        valueNew: `${policy.policyNumber} linked`
       }
     ]);
-    // Sections come from the coverages the handler ticked (the placeholder a skeleton
-    // got from its cause is replaced). Without a plan, the cause-based section below is
-    // the fallback, so a converted claim never ends with 0 sections.
-    let sections = await this.conversionSvc.createSections(claim, details);
-    if (!sections.length && claim.causeOfLoss?.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
+    // A converted claim never ends with 0 sections: one from the cause, as at skeleton creation.
+    if (claim.causeOfLoss?.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
       // Entity = the property/asset affected, never the claimant's own name.
       const entityName = claim.location?.city || claim.clientName;
-      sections = [await firstValueFrom(this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, entityName))];
-    } else if (!sections.length) {
-      sections = this.sectionSvc.getByClaimIdSync(claimId);
+      await firstValueFrom(this.sectionSvc.createSectionFromCauseOfLoss(claimId, claim.causeOfLoss, entityName));
     }
-    const reserved = await this.conversionSvc.addReserves(claim, details, sections);
     this.conversionSvc.addParties(claim, policy);
-    // Reserves still need setting up unless every section got one now: a real task, in the
-    // same queue as every other piece of work, carrying the skeleton's 3-day urgency.
-    const reserveTask = reserved < sections.length || sections.length === 0;
-    if (reserveTask) {
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 3);
+    // Reserves still need setting up: a real task, in the same queue as every
+    // other piece of work, carrying the skeleton's 3-day urgency.
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 3);
+    await firstValueFrom(
+      this.taskSvc.create({
+        claimId,
+        taskType: 'Review',
+        description: `Set up reserves for ${claimNumber} (converted from orphan claim ${formerNumber})`,
+        status: 'open',
+        dueDate: dueDate.toISOString().split('T')[0],
+        priority: 'high',
+        assignee: claim.assignee ?? 'Unassigned'
+      })
+    );
+    // Marlene confirmed (2026-10-05) that a Location of loss captured during the
+    // skeleton stage must be re-confirmed once a policy is linked: it was entered
+    // with no policy, so never checked against the policy's locations. The Confirm
+    // loss location sheet opens right after linking; this task covers a skip, and
+    // SkeletonLocationReconfirmService closes it when a location is picked.
+    const lossInfo = this.stateSvc.state().lossInformation.find(li => li.claimId === claimId);
+    const hadManualLocation = !!(
+      lossInfo?.lossLocation as unknown as { locations?: unknown[] } | undefined
+    )?.locations?.length;
+    if (hadManualLocation) {
       await firstValueFrom(
         this.taskSvc.create({
           claimId,
           taskType: 'Review',
-          description: `Set up reserves for ${claimNumber} (converted from orphan claim ${formerNumber})`,
+          description: `Confirm loss location for ${claimNumber}: entered manually before the policy was linked`,
           status: 'open',
           dueDate: dueDate.toISOString().split('T')[0],
           priority: 'high',
@@ -219,10 +227,7 @@ export class MockClaimOverviewService extends MockBaseService {
         })
       );
     }
-    // The skeleton's location is kept or changed in the Link policy step (it was
-    // entered with no policy, so Marlene's 2026-10-05 re-confirm rule is answered
-    // there), so no "Confirm loss location" task is needed any more.
-    return { claim, claimNumber, formerNumber, sections: sections.length, reserveTask };
+    return { claim, claimNumber, formerNumber, locationNeedsReconfirm: hadManualLocation };
   }
 
   // Same re-sync convertToRegularClaim does, exposed for the other skeleton
