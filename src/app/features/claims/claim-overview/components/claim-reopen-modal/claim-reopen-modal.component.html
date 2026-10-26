@@ -77,6 +77,11 @@
         Select which closed sections to reopen. Unselected sections remain closed and can be
         reopened later.
       </p>
+      <div class="crm-select-all">
+        <nx-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (checkedChange)="toggleAll()">
+          Select all ({{ closedSections().length }})
+        </nx-checkbox>
+      </div>
       <div class="crm-section-list">
         @for (section of closedSections(); track section.id) {
           <div class="crm-section-item">

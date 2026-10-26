@@ -97,7 +97,7 @@ export class ClaimReopenModalComponent {
   readonly selectedIds = signal<Set<string>>(new Set());
 
   readonly stepTitle = computed(() =>
-    this.step() === 1 ? 'Reopen claim — Reason' : 'Reopen claim — Select sections'
+    this.step() === 1 ? 'Reopen claim: Reason' : 'Reopen claim: Select sections'
   );
 
   readonly isSingleSection = computed(() => this.closedSections().length === 1);
@@ -137,6 +137,15 @@ export class ClaimReopenModalComponent {
   entitySummary(section: ClaimSection): string {
     if (section.entities.length === 0) return 'No linked entities';
     return section.entities.map(e => e.name).join(', ');
+  }
+
+  readonly allSelected = computed(
+    () => this.closedSections().length > 0 && this.selectedIds().size === this.closedSections().length
+  );
+  readonly someSelected = computed(() => this.selectedIds().size > 0 && !this.allSelected());
+
+  toggleAll(): void {
+    this.selectedIds.set(this.allSelected() ? new Set() : new Set(this.closedSections().map(s => s.id)));
   }
 
   toggleSection(id: string): void {

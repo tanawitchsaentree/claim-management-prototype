@@ -47,6 +47,11 @@
   padding: var(--space-xl) 0;
 }
 
+.crm-select-all {
+  margin-top: var(--space-sm);
+  padding: 0 var(--space-md);
+}
+
 .crm-section-list {
   display: flex;
   flex-direction: column;
