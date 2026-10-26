@@ -8,6 +8,7 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
+import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { SectionEntity, InstructionStatus } from '../../../core/models/section.model';
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
@@ -21,6 +22,8 @@ export interface EditEntityDamageModalData {
   // add-section-entity-modal, could get it) — found via self-review after
   // shipping cbi's search UX everywhere else, 2026-09-25.
   damageType: string;
+  /** The claim's date of loss: the starting value when the entity has no date of its own. */
+  claimDateOfLoss?: string;
 }
 
 // Damage type moved to the section (ClaimSection.damageType) in Stage 2 of
@@ -39,6 +42,7 @@ export interface EditEntityDamageModalData {
 export type EditEntityDamageModalResult = Pick<
   SectionEntity,
   | 'instructionStatus'
+  | 'dateOfOccurrence'
   | 'isContingentBi'
   | 'cbiCaseType'
   | 'thirdPartyName'
@@ -67,6 +71,7 @@ export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
     NxButtonModule,
     NxIconModule,
     NxRadioModule,
+    NxDatefieldModule,
     LocationPickerComponent
   ],
   templateUrl: './edit-entity-damage-modal.component.html',
@@ -87,8 +92,16 @@ export class EditEntityDamageModalComponent {
   readonly isBusinessInterruption = this.data.damageType === 'business-interruption';
   readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesSync();
 
+  /** No date of loss in the future (same limit as the production Date of loss field). */
+  readonly today = new Date().toISOString().split('T')[0];
+
   readonly form = this.fb.group({
     instructionStatus: [this.data.entity.instructionStatus, Validators.required],
+    // Starts from the claim's date of loss until the entity is given its own.
+    dateOfOccurrence: [
+      this.data.entity.dateOfOccurrence ?? this.data.claimDateOfLoss ?? (null as string | null),
+      Validators.required
+    ],
     // Seeded from the entity's current flag, not forced true/false — an
     // entity that was never asked starts unanswered (null), same as FNOL,
     // rather than defaulting to "No" and silently implying an answer that
@@ -187,6 +200,7 @@ export class EditEntityDamageModalComponent {
 
     if (
       this.form.get('instructionStatus')?.invalid ||
+      this.form.get('dateOfOccurrence')?.invalid ||
       missingCbiAnswer ||
       missingCaseType ||
       missingThirdParty ||
@@ -202,6 +216,7 @@ export class EditEntityDamageModalComponent {
 
     this.modalRef.close({
       instructionStatus: this.form.value.instructionStatus as InstructionStatus,
+      dateOfOccurrence: this.form.value.dateOfOccurrence ?? undefined,
       // isContingentBi is always sent explicitly (not just when true) — an
       // entity that WAS CBI and just got answered "No" needs its stale
       // case type/third-party/location actually cleared, not left behind.

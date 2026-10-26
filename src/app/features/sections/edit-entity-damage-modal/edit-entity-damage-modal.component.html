@@ -1,6 +1,6 @@
 <!-- Header -->
 <div class="eed-header">
-  <h2 class="eed-title">Edit Entity — {{ data.entity.name }}</h2>
+  <h2 class="eed-title">Edit Entity: {{ data.entity.name }}</h2>
   <button nxIconButton="tertiary small" type="button" (click)="cancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
@@ -16,6 +16,17 @@
     </nx-dropdown>
     @if (form.get('instructionStatus')?.invalid && form.get('instructionStatus')?.touched) {
       <nx-error nxFormfieldError>Please select an instruction status</nx-error>
+    }
+  </nx-formfield>
+
+  <nx-formfield label="Date of loss">
+    <input nxDatefield nxInput formControlName="dateOfOccurrence" [datepicker]="lossPicker" [max]="today" />
+    <nx-datepicker-toggle nxFormfieldSuffix [for]="lossPicker"></nx-datepicker-toggle>
+    <nx-datepicker #lossPicker></nx-datepicker>
+    @if (submitted && form.get('dateOfOccurrence')!.hasError('required')) {
+      <nx-error nxFormfieldError>Required.</nx-error>
+    } @else if (submitted && form.get('dateOfOccurrence')!.invalid) {
+      <nx-error nxFormfieldError>Date of loss cannot be in the future.</nx-error>
     }
   </nx-formfield>
 

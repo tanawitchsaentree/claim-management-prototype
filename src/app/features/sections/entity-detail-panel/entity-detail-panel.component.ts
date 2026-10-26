@@ -1,3 +1,4 @@
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { Component, Input, Output, EventEmitter, inject, signal, OnInit } from '@angular/core';
 
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -108,7 +109,8 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     EmptyStateComponent,
     StatusChipComponent,
     DamageTypeLabelPipe,
-    CbiCaseTypeLabelPipe
+    CbiCaseTypeLabelPipe,
+    AppDatePipe
   ],
   templateUrl: './entity-detail-panel.component.html',
   styleUrl: './entity-detail-panel.component.scss'

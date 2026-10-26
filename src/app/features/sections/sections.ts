@@ -1,3 +1,4 @@
+import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
 import { Component, inject, signal, computed, effect } from '@angular/core';
 
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -106,6 +107,7 @@ export class Sections {
   readonly hasDetailOpen = computed(() => !!this.selectedEntity() || !!this.selectedSection());
   readonly claimClosed = signal(false);
   readonly policyNumber = signal('');
+  private readonly claimDateOfLoss = signal<string | undefined>(undefined);
   // BMPCC-18160 — read off the claim, not the section (ASSUMPTION [CIRC-4] in
   // core/models/claim-overview.model.ts). Passed down to the section detail
   // panel so it can show the circumstance read-only.
@@ -130,6 +132,7 @@ export class Sections {
         this.sections.set(sections);
         this.claimClosed.set(claim.status === 'Closed');
         this.policyNumber.set(claim.policyNumber ?? '');
+        this.claimDateOfLoss.set(claim.dateOfLoss || undefined);
         this.incidentCircumstance.set(claim.incidentCircumstance ?? null);
       } catch {
         this.loadError.set(true);
@@ -348,9 +351,46 @@ export class Sections {
 
   // ── Entity kebab actions ───────────────────────────────────────
 
+  /** Same confirm as Add entity: Field / Original / Updated, nothing saved until confirmed. */
+  private async confirmEntityEdit(
+    section: ClaimSection,
+    entity: SectionEntity,
+    result: EditEntityDamageModalResult
+  ): Promise<boolean> {
+    const date = new AppDatePipe();
+    const fmt = (v?: string): string => (v ? date.transform(v) : '–');
+    const before = entity.dateOfOccurrence ?? this.claimDateOfLoss();
+    const changes = [
+      ...(entity.instructionStatus !== result.instructionStatus
+        ? [{ label: 'Instruction status', original: entity.instructionStatus, updated: result.instructionStatus }]
+        : []),
+      ...(before !== result.dateOfOccurrence
+        ? [{ label: 'Date of loss', original: fmt(before), updated: fmt(result.dateOfOccurrence) }]
+        : [])
+    ];
+    const ref = this.dialogSvc.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirm entity changes',
+        message: `The following fields will be updated for "${entity.name}" in ${section.name}.`,
+        changes,
+        showChanges: changes.length > 0,
+        hideIcon: true,
+        confirmLabel: 'Confirm changes',
+        cancelLabel: 'Back to editing'
+      } satisfies ConfirmDialogData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    return !!(await firstValueFrom(ref.afterClosed()));
+  }
+
   async onEditEntity(section: ClaimSection, entity: SectionEntity): Promise<void> {
     const ref = this.dialogSvc.open(EditEntityDamageModalComponent, {
-      data: { entity, damageType: section.damageType } satisfies EditEntityDamageModalData,
+      data: {
+        entity,
+        damageType: section.damageType,
+        claimDateOfLoss: this.claimDateOfLoss()
+      } satisfies EditEntityDamageModalData,
       // Wider whenever the CBI question is even askable (any
       // business-interruption entity, not just ones already marked CBI —
       // that entity might get answered "Yes" here for the first time and
@@ -363,6 +403,7 @@ export class Sections {
       | EditEntityDamageModalResult
       | undefined;
     if (!result) return;
+    if (!(await this.confirmEntityEdit(section, entity, result))) return;
 
     await firstValueFrom(this.sectionSvc.patchEntity(section.id, entity.id, result));
     this.sections.update(list =>
