@@ -10,8 +10,7 @@
     <app-gg-registration-banner [claimId]="claim.claimId" [registration]="claim.ggRegistration"></app-gg-registration-banner>
     @if (claim.rejectionRequestedAt && claim.status !== 'Closed') {
       <nx-message context="info" class="co-rejection-banner">
-        A rejection of this claim has been submitted for approval. The claim stays open until it
-        is decided.
+        The claim will stay open until the rejection is approved.
       </nx-message>
     }
 
