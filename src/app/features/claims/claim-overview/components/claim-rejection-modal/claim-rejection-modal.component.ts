@@ -81,7 +81,7 @@ export class ClaimRejectionModalComponent {
       id: `act-${Date.now()}-r`,
       attribute: 'Rejection reason',
       valueOld: '',
-      valueNew: `${rejectionType === 'coverage' ? 'Coverage-related' : 'Liability-related'}: ${reason}`
+      valueNew: `${rejectionType === 'coverage' ? 'Coverage related' : 'Liability related'}: ${reason}`
     };
 
     // Every rejection goes to approval; the claim stays Open until it is decided.

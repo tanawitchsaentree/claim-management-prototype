@@ -41,7 +41,7 @@
           <td nxTableCell class="col-requester">{{ item.client }}</td>
           <td nxTableCell class="col-lob">{{ item.lineOfBusiness }}</td>
           <td nxTableCell class="col-type">
-            {{ item.rejectionType === 'liability' ? 'Liability-related' : 'Coverage-related' }}
+            {{ item.rejectionType === 'liability' ? 'Liability related' : 'Coverage related' }}
             @if (item.rejectionReason) {
               <span class="rj-reason" [title]="item.rejectionReason">{{ item.rejectionReason }}</span>
             }
