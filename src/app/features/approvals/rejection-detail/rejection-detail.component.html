@@ -25,6 +25,14 @@
     }
 
     @if (item(); as req) {
+      <nx-message context="info" class="rd-banner">
+        @switch (decision()) {
+          @case ('approved') { This claim has been rejected. }
+          @case ('declined') { The rejection was declined. The claim stays open. }
+          @default { The claim will stay open until the rejection is approved. }
+        }
+      </nx-message>
+
       <!-- ── Claim information ── -->
       <div class="rd-card">
         <div class="rd-info">
@@ -53,10 +61,6 @@
           <div class="rd-field">
             <span class="rd-label">Rejection type</span>
             <span>{{ req.rejectionType === 'liability' ? 'Liability related' : 'Coverage related' }}</span>
-          </div>
-          <div class="rd-field">
-            <span class="rd-label">Closure reason</span>
-            <span>Claim Rejected</span>
           </div>
         </div>
       </div>

@@ -12,6 +12,8 @@
       <nx-message context="info" class="co-rejection-banner">
         The claim will stay open until the rejection is approved.
       </nx-message>
+    } @else if (claim.status === 'Closed' && claim.closureReason === 'Claim Rejected') {
+      <nx-message context="info" class="co-rejection-banner">This claim has been rejected.</nx-message>
     }
 
     <!-- General Info Card -->
@@ -154,12 +156,15 @@
               }}</span>
             </div>
             <!-- 'Closed by' removed — same person as the claim handler (redundant) -->
-            <div class="co-field">
-              <span class="co-label">Closure reason</span>
-              <span class="co-value">{{
-                claim.skeletonState === 'abandoned' ? 'Abandoned — ' + claim.abandonReason : claim.closureReason ?? '–'
-              }}</span>
-            </div>
+            <!-- A rejected claim says so in the banner instead. -->
+            @if (claim.closureReason !== 'Claim Rejected') {
+              <div class="co-field">
+                <span class="co-label">Closure reason</span>
+                <span class="co-value">{{
+                  claim.skeletonState === 'abandoned' ? 'Abandoned: ' + claim.abandonReason : claim.closureReason ?? '–'
+                }}</span>
+              </div>
+            }
             <div class="co-field">
               <span class="co-label">Retention until</span>
               <span class="co-value">

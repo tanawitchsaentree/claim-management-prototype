@@ -8,6 +8,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom } from 'rxjs';
 import { Navbar } from '../../layout/navbar/navbar';
 import { RejectionApproval, rejectionRequestId } from '../../../core/models/approval.model';
@@ -35,6 +36,7 @@ type Decision = 'pending' | 'approved' | 'declined';
   imports: [
     RouterModule,
     NxGridModule,
+    NxMessageModule,
     NxBreadcrumbModule,
     NxTableModule,
     NxCheckboxModule,
