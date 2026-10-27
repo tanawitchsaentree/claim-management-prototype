@@ -585,13 +585,20 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         { claim: skeleton.lineOfBusiness, policy: policy.lineOfBusiness }
       );
       const converted = await linking;
-      // No navigation needed: the constructor's reactivity bridge reloads this same
-      // Overview once mock state changes. The toast is the positive signal, and the
-      // only place that tells the handler a follow-up task landed in their queue.
+      // The toast is the positive signal, and the only place that tells the
+      // handler a follow-up task landed in their queue.
       this.toast.success(
         `${skeleton.claimId} is now ${converted.claimNumber}`,
         linkedMessage(policy.policyNumber, converted.locationNeedsReconfirm && !replaced)
       );
+      // Next job on a freshly linked claim is its reserves: land on Financial
+      // overview with Add reserve open on the cause-based first section.
+      const [first] = await firstValueFrom(this.sectionSvc.getByClaimId(skeleton.claimId)).catch(
+        () => []
+      );
+      void this.router.navigate(['/claims', skeleton.claimId, 'financial'], {
+        queryParams: { addReserve: 1, ...(first ? { section: first.id } : {}) }
+      });
     } catch {
       this.toast.error('Could not link the policy', 'Nothing was changed. Please try again.');
     }
