@@ -9,6 +9,12 @@
 
 .as-table {
   width: 100%;
+}
+
+// The table scrolls sideways on its own, so the page title and the rest stay put and
+// the pinned amount columns stick to this box's right edge.
+.as-scroll {
+  overflow-x: auto;
   margin-bottom: var(--space-lg);
 }
 
@@ -16,7 +22,6 @@
   text-align: right;
 }
 
-// Header row stays at the top of the visible area while the rows scroll under it.
 // The three amount columns stay pinned to the right edge on a narrow screen: the
 // descriptive columns scroll sideways underneath them. The block sits flush with the
 // scroll edge (gutter 0), otherwise the scrolled columns show through beside it.
@@ -33,10 +38,9 @@ $pin-out: 108px;
   white-space: nowrap;
 }
 
+// NDBX sets its own position on header cells; this rule is what lets the pinned headers stick.
 .as-table th {
   position: sticky;
-  top: 0;
-  z-index: 1;
   background: var(--ui-01);
 }
 

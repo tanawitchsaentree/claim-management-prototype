@@ -13,6 +13,7 @@
     @if (linesMissing()) {
       <p class="as-error" role="alert">Enter an amount for at least one reserve.</p>
     }
+    <div class="as-scroll" tabindex="0" role="region" aria-label="Reserves to pay from">
     <table nxTable class="as-table">
       <thead>
         <tr nxTableRow>
@@ -45,6 +46,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
   <div class="as-radio">
