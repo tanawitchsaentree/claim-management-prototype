@@ -16,6 +16,54 @@
   text-align: right;
 }
 
+// Header row stays at the top of the visible area while the rows scroll under it.
+// The three amount columns stay pinned to the right edge on a narrow screen: the
+// descriptive columns scroll sideways underneath them. The block sits flush with the
+// scroll edge (gutter 0), otherwise the scrolled columns show through beside it.
+.as-table {
+  --as-pin-gutter: 0px;
+  --as-pin-rem: 160px;
+  --as-pin-pay: 170px;
+  --as-pin-out: 150px;
+}
+
+.as-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--ui-01);
+}
+
+.as-pin {
+  position: sticky;
+  background: var(--ui-01);
+  box-sizing: border-box;
+}
+
+th.as-pin {
+  z-index: 2;
+}
+
+.as-pin--rem {
+  padding-right: var(--space-xl);
+  right: var(--as-pin-gutter);
+  width: var(--as-pin-rem);
+  min-width: var(--as-pin-rem);
+}
+
+.as-pin--pay {
+  right: calc(var(--as-pin-gutter) + var(--as-pin-rem));
+  width: var(--as-pin-pay);
+  min-width: var(--as-pin-pay);
+}
+
+.as-pin--out {
+  right: calc(var(--as-pin-gutter) + var(--as-pin-rem) + var(--as-pin-pay));
+  width: var(--as-pin-out);
+  min-width: var(--as-pin-out);
+  border-left: 1px solid var(--ui-04);
+}
+
 .as-id {
   white-space: nowrap;
 }

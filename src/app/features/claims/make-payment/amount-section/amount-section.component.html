@@ -21,9 +21,9 @@
           <th nxHeaderCell>Damaged item</th>
           <th nxHeaderCell>Reserve type</th>
           <th nxHeaderCell>Reserve sub type</th>
-          <th nxHeaderCell class="as-num">Outstanding reserves</th>
-          <th nxHeaderCell class="as-num">Payment amount</th>
-          <th nxHeaderCell class="as-num">Remaining reserves</th>
+          <th nxHeaderCell class="as-num as-pin as-pin--out">Outstanding reserves</th>
+          <th nxHeaderCell class="as-num as-pin as-pin--pay">Payment amount</th>
+          <th nxHeaderCell class="as-num as-pin as-pin--rem">Remaining reserves</th>
         </tr>
       </thead>
       <tbody>
@@ -34,13 +34,13 @@
             <td nxCell>{{ r.damagedItem || '—' }}</td>
             <td nxCell>{{ r.reserveType }}</td>
             <td nxCell>{{ r.reserveSubType }}</td>
-            <td nxCell class="as-num">{{ r.reserveValue | number: '1.0-2' }}</td>
-            <td nxCell class="as-num">
+            <td nxCell class="as-num as-pin as-pin--out">{{ r.reserveValue | number: '1.0-2' }}</td>
+            <td nxCell class="as-num as-pin as-pin--pay">
               <nx-formfield class="as-amount">
                 <input nxInput appAmount [formControl]="controlFor()(r.reserveId)" [attr.aria-label]="'Payment amount for ' + r.reserveId" />
               </nx-formfield>
             </td>
-            <td nxCell class="as-num"><span [class.as-over]="remaining()(r) < 0">{{ remaining()(r) | number: '1.0-2' }}</span></td>
+            <td nxCell class="as-num as-pin as-pin--rem"><span [class.as-over]="remaining()(r) < 0">{{ remaining()(r) | number: '1.0-2' }}</span></td>
           </tr>
         }
       </tbody>

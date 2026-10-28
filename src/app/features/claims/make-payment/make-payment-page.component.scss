@@ -23,14 +23,27 @@
   }
 }
 
-// Cancel and Save & Draft stay together on the left, the main action on the right.
+// Stays at the bottom edge of the visible area while the page scrolls, so the buttons
+// and the total are always on screen. Cancel and Save & Draft sit together on the left,
+// the total in the middle, the main action on the right.
 .mp-footer {
+  position: sticky;
+  // The page area has bottom padding; reach through it so nothing shows under the bar.
+  bottom: calc(var(--space-xl) * -1);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-xl);
   margin-top: var(--space-4xl);
-  padding-top: var(--space-base);
+  padding: var(--space-base) 0 var(--space-xl);
   border-top: 1px solid var(--ui-04);
+  background: var(--ui-01);
+}
+
+.mp-footer__total {
+  margin: 0 0 0 auto;
+  color: var(--text-01);
 }
 
 .mp-footer__left {

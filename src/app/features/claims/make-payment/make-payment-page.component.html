@@ -95,6 +95,10 @@
       <button nxPlainButton type="button" (click)="onSubmit('draft')">Save &amp; Draft</button>
     }
   </div>
+  <!-- Always in view, so the amount being paid is visible however far the table is scrolled. -->
+  <p class="mp-footer__total" aria-live="polite">
+    Total payment: <strong>{{ total() | number: '1.2-2' }} {{ form.controls.currency.value }}</strong>
+  </p>
   <button nxButton="primary small" type="button" [disabled]="cannotSubmit()" (click)="onSubmit('submit')">
     {{ editing() ? 'Resubmit to approver' : 'Make Payment' }}
   </button>

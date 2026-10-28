@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom, map, startWith, tap } from 'rxjs';
@@ -50,6 +51,7 @@ const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
   selector: 'app-make-payment-page',
   standalone: true,
   imports: [
+    DecimalPipe,
     ReactiveFormsModule,
     NxAccordionModule,
     NxButtonModule,
