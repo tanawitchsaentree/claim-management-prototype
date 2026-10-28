@@ -47,23 +47,36 @@
   padding: var(--space-xl) 0;
 }
 
+// Select all and the list are one block, so the modal body's own spacing between
+// blocks does not open a gap between them.
+.crm-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
 .crm-select-all {
-  margin-top: var(--space-sm);
   padding: 0 var(--space-md);
+}
+
+// nx-checkbox brings its own space below; inside these rows it would push the
+// next row away, so Select all sits close to the list it controls.
+.crm-select-all nx-checkbox,
+.crm-section-item nx-checkbox {
+  margin: 0;
 }
 
 .crm-section-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  margin-top: var(--space-sm);
 }
 
 .crm-section-item {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md) var(--space-md);
+  gap: 0;
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--ui-04);
   border-radius: var(--radius-s);
 
@@ -91,7 +104,8 @@
 
 .crm-section-entities {
   margin: 0;
-  padding-left: var(--space-xl);
+  // Lines up under the section name: checkbox (24px) + the gap before its label (12px).
+  padding-left: calc(var(--space-xl) + var(--space-md));
   font-size: var(--paragraph-04-font-size);
   color: var(--text-muted);
 }
