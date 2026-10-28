@@ -41,4 +41,9 @@ export class AmountSectionComponent {
   setCoInsurance(v: 'allianz' | 'market'): void {
     this.form().controls['coInsurance'].setValue(v);
   }
+
+  /** Drops the claim part every row shares (RES-C-00063676-2024.), keeps what tells the reserves apart. */
+  shortId(id: string): string {
+    return id.replace(/^RES-C-\d+-\d{4}\./, '');
+  }
 }

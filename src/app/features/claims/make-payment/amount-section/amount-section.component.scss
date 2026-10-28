@@ -92,6 +92,16 @@ $pin-out: 108px;
   white-space: nowrap;
 }
 
+// The full ID for screen readers; sighted users get it as a tooltip.
+.as-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .as-amount {
   width: 100%;
   min-width: 0;
