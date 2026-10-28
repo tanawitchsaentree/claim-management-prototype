@@ -7,7 +7,7 @@ import { claimHeadroom } from '../../../shared/components/financial-warnings/lim
 import { FinancialReserve } from '../../../core/models/financial-overview.model';
 import { amountBySection, looseName } from './make-payment-lines';
 
-// The pre-submit check list for the Make payment sheet, as one pure function
+// The pre-submit check list for the Make payment page, as one pure function
 // (the page just feeds it what the handler has chosen so far).
 
 export interface CheckContext {

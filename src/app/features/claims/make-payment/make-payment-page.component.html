@@ -1,13 +1,11 @@
-<!-- Close X: CSS-drawn, same bottom-sheet shape as Link policy / Add location. -->
-<button class="mp-close" type="button" aria-label="Close" (click)="onCancel()">
-  <span class="mp-close-x" aria-hidden="true"></span>
-</button>
+<app-page-header
+  [title]="editing() ? 'Change payment ' + editing()!.paymentId : 'Make Payment'"
+  [showBack]="true"
+  backLabel="Back to Payments"
+  (back)="onCancel()"
+></app-page-header>
 
-<header class="mp-header">
-  <h2 class="mp-title">{{ editing() ? 'Change payment ' + editing()!.paymentId : 'Make Payment' }}</h2>
-</header>
-
-<div class="mp-body" tabindex="0">
+<div class="mp-body">
   @if (editing(); as p) {
     <nx-message context="info" class="mp-note">
       <strong>Sent back by your approver</strong>

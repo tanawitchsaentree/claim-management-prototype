@@ -1,15 +1,14 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { ParamMap, Router, convertToParamMap } from '@angular/router';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom, map, startWith, tap } from 'rxjs';
 import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
-import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
-import { NX_MODAL_DATA, NxDialogService, NxModalModule, NxModalRef } from '@allianz/ng-aquila/modal';
+import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
@@ -21,6 +20,7 @@ import { FinancialPayment, FinancialReserve } from '../../../core/models/financi
 import { preChecksBlockSubmit } from '../../../core/models/financial-precheck.model';
 import { PAYMENT_METHODS, Payee } from '../../../core/models/payee.model';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { FinancialWarningsComponent } from '../../../shared/components/financial-warnings/financial-warnings.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { AmountSectionComponent } from './amount-section/amount-section.component';
@@ -42,38 +42,31 @@ import {
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
 
-/** What opens the sheet: the claim, plus anything pre-filled (the link's query values). */
-export interface MakePaymentModalData {
-  claimId: string;
-  prefill: Record<string, string>;
-}
-
-// Make Payment: a modal-style sheet on a route (the DEV banner and the Payments
-// toolbar link use the route; a real dialog would hide the banner and could not
-// follow query changes). Three accordions, the shared warning list on top.
+// Make Payment: a full page on /claims/:id/financial/new-payment. The link's
+// query values (?section=&type=&payee=&amount=&currency=&premiumMode=&confirm=1
+// &edit=<paymentId>) pre-fill it, and a new query on the same page refills it.
+// Three accordions, the shared warning list on top.
 @Component({
-  selector: 'app-make-payment-modal',
+  selector: 'app-make-payment-page',
   standalone: true,
   imports: [
     ReactiveFormsModule,
     NxAccordionModule,
     NxButtonModule,
     NxCheckboxModule,
-    NxModalModule,
-    NxIconModule,
     NxMessageModule,
     NxRadioToggleModule,
+    PageHeaderComponent,
     FinancialWarningsComponent,
     PayeeSectionComponent,
     MethodSectionComponent,
     AmountSectionComponent
   ],
-  templateUrl: './make-payment-modal.component.html',
-  styleUrl: './make-payment-modal.component.scss'
+  templateUrl: './make-payment-page.component.html',
+  styleUrl: './make-payment-page.component.scss'
 })
-export class MakePaymentModalComponent {
-  readonly data = inject<MakePaymentModalData>(NX_MODAL_DATA);
-  private readonly modalRef = inject<NxModalRef<MakePaymentModalComponent>>(NxModalRef);
+export class MakePaymentPageComponent {
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
@@ -85,7 +78,7 @@ export class MakePaymentModalComponent {
   private readonly payeeSvc = inject(MockPayeeService);
   private readonly sectionSvc = inject(MockSectionService);
 
-  readonly claimId = this.data.claimId;
+  readonly claimId = this.route.snapshot.paramMap.get('id') ?? '';
   readonly currencies = CURRENCIES;
   readonly payees = this.payeeSvc.getPayeesSync(this.claimId);
 
@@ -172,16 +165,18 @@ export class MakePaymentModalComponent {
     missingFields(this.values(), this.method(), this.lines().length, !!this.editing() && !this.selectedPayee())
   );
 
-  constructor() {
-    // The sheet is filled once, from the link or button that opened it.
-    this.applyQuery(convertToParamMap(this.data.prefill));
-  }
+  // Filled from the link or button that opened the page, and again whenever the query changes.
+  private readonly query = toSignal(this.route.queryParamMap, { initialValue: this.route.snapshot.queryParamMap });
+  private readonly prefill = effect(() => {
+    const q = this.query();
+    untracked(() => this.applyQuery(q));
+  });
 
   private readonly autoConfirm = effect(() => {
     if (!this.confirmRequested() || !this.fo() || !this.overview()) return;
     this.confirmRequested.set(false);
-    // Let the sheet finish sliding in before a second dialog opens over it.
-    setTimeout(() => void this.onSubmit('submit'), 600);
+    // Outside the effect, so the submit does not become something the effect watches.
+    setTimeout(() => void this.onSubmit('submit'));
   });
 
   /** Pays into the first account that works, so a fresh payee never starts on a dead one. */
@@ -278,13 +273,12 @@ export class MakePaymentModalComponent {
     this.goToPayments(created.paymentId);
   }
 
-  /** Closes the sheet and lands on the Payments list, with the changed payment highlighted. */
-  private goToPayments(highlight: string): void {
-    this.modalRef.close();
+  /** Lands on the Payments list, with the changed payment highlighted. */
+  private goToPayments(highlight?: string): void {
     this.router.navigate(['/claims', this.claimId, 'financial'], { queryParams: { view: 'payments', highlight } });
   }
 
   onCancel(): void {
-    this.modalRef.close();
+    this.goToPayments();
   }
 }

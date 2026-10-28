@@ -1,29 +1,5 @@
-// Bottom-sheet modal (same family as Link policy / Add location). The overlay
-// panel itself is styled by .bottom-sheet-modal-panel in src/styles.scss.
-@use '../../../shared/styles/bottom-sheet-layout' as sheet;
-
 :host {
-  @include sheet.shell;
-}
-
-.mp-close {
-  @include sheet.close;
-}
-
-.mp-close-x {
-  @include sheet.close-x;
-}
-
-.mp-header {
-  @include sheet.header;
-}
-
-.mp-title {
-  @include sheet.title;
-}
-
-.mp-body {
-  @include sheet.body;
+  display: block;
 }
 
 .mp-accordion {
@@ -49,10 +25,12 @@
 
 // Cancel and Save & Draft stay together on the left, the main action on the right.
 .mp-footer {
-  @include sheet.footer;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: var(--space-4xl);
+  padding-top: var(--space-base);
+  border-top: 1px solid var(--ui-04);
 }
 
 .mp-footer__left {
