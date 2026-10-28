@@ -20,12 +20,9 @@
 // The three amount columns stay pinned to the right edge on a narrow screen: the
 // descriptive columns scroll sideways underneath them. The block sits flush with the
 // scroll edge (gutter 0), otherwise the scrolled columns show through beside it.
-.as-table {
-  --as-pin-gutter: 0px;
-  --as-pin-rem: 160px;
-  --as-pin-pay: 170px;
-  --as-pin-out: 150px;
-}
+$pin-rem: 160px;
+$pin-pay: 170px;
+$pin-out: 150px;
 
 .as-table th {
   position: sticky;
@@ -46,21 +43,21 @@ th.as-pin {
 
 .as-pin--rem {
   padding-right: var(--space-xl);
-  right: var(--as-pin-gutter);
-  width: var(--as-pin-rem);
-  min-width: var(--as-pin-rem);
+  right: 0;
+  width: $pin-rem;
+  min-width: $pin-rem;
 }
 
 .as-pin--pay {
-  right: calc(var(--as-pin-gutter) + var(--as-pin-rem));
-  width: var(--as-pin-pay);
-  min-width: var(--as-pin-pay);
+  right: $pin-rem;
+  width: $pin-pay;
+  min-width: $pin-pay;
 }
 
 .as-pin--out {
-  right: calc(var(--as-pin-gutter) + var(--as-pin-rem) + var(--as-pin-pay));
-  width: var(--as-pin-out);
-  min-width: var(--as-pin-out);
+  right: $pin-rem + $pin-pay;
+  width: $pin-out;
+  min-width: $pin-out;
   border-left: 1px solid var(--ui-04);
 }
 
