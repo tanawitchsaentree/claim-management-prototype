@@ -14,6 +14,10 @@
 .main-content {
   flex: 1;
   overflow-y: auto;
+  // Keeps the scrollbar's room reserved even when a page is short. Without it, a page that
+  // grows past the screen (an accordion opening) gets a scrollbar, loses ~15px of width and
+  // everything, the right strip included, jumps sideways each time it comes and goes.
+  scrollbar-gutter: stable;
   padding: var(--space-xl);
   background-color: var(--ui-01);
 }
