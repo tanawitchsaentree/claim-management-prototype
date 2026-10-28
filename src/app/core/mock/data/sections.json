@@ -16,7 +16,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-001-0",
-        "name": "Munich Warehouse",
+        "name": "Industriestraße 8, Munich, Germany, 80333",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -39,7 +39,7 @@
     "entities": [
       {
         "id": "SE-001",
-        "name": "Kaufmann's Warehouse",
+        "name": "Lagerstraße 12, Hamburg, Germany, 20457",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -47,7 +47,7 @@
       },
       {
         "id": "SE-002",
-        "name": "Forklift",
+        "name": "Lagerstraße 14, Hamburg, Germany, 20457",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -79,7 +79,7 @@
     "entities": [
       {
         "id": "SE-003",
-        "name": "Sales of Machinery and Equipment",
+        "name": "Lagerstraße 12, Hamburg, Germany, 20457",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -132,7 +132,7 @@
     "entities": [
       {
         "id": "SE-007",
-        "name": "Schäfer Main Warehouse",
+        "name": "Lagerstraße 4, Munich, Germany",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -162,7 +162,7 @@
     "entities": [
       {
         "id": "SE-008",
-        "name": "Conveyor System",
+        "name": "Lagerstraße 4, Munich, Germany",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -194,7 +194,7 @@
     "entities": [
       {
         "id": "SE-009",
-        "name": "Production Line B",
+        "name": "Lagerstraße 4, Munich, Germany",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -224,7 +224,7 @@
     "entities": [
       {
         "id": "SE-010",
-        "name": "Final Settlement",
+        "name": "Lagerstraße 12, Hamburg, Germany, 20457",
         "instructionStatus": "Completed",
         "expandable": false,
         "assignedProvider": "Allianz Expertise Center",
@@ -255,7 +255,7 @@
     "entities": [
       {
         "id": "SE-024-1",
-        "name": "Cargo Container A",
+        "name": "Hamburg, Germany",
         "instructionStatus": "In progress",
         "expandable": false,
         "coverageReview": "Standard Review"
@@ -285,7 +285,7 @@
     "entities": [
       {
         "id": "SE-024-2",
-        "name": "Third-party Liability",
+        "name": "Hamburg, Germany",
         "instructionStatus": "Completed",
         "expandable": false,
         "coverageReview": "Standard Review"
@@ -309,7 +309,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-005-0",
-        "name": "Cologne shop",
+        "name": "Marktplatz 1, Cologne, Germany, 50667",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -332,7 +332,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-006-0",
-        "name": "Munich office",
+        "name": "Leopoldstraße 10, Munich, Germany, 80802",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -355,7 +355,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-007-0",
-        "name": "Workshop",
+        "name": "Industrieweg 3, Nuremberg, Germany, 90402",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -378,7 +378,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-008-0",
-        "name": "Frankfurt plant",
+        "name": "Mainzer Landstraße 48, Frankfurt, Germany, 60325",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -401,7 +401,7 @@
     "entities": [
       {
         "id": "SE-SK-2024-010-0",
-        "name": "Hannover warehouse",
+        "name": "No location selected",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -424,7 +424,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-002-1",
-        "name": "Nordbyte SE — System outage & recovery",
+        "name": "Dortmund, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -447,7 +447,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-002-2",
-        "name": "Nordbyte SE — Data restoration",
+        "name": "Dortmund, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -470,7 +470,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-003-1",
-        "name": "GBF Logistics GmbH — Cargo damage",
+        "name": "Rotterdam, Netherlands",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -493,7 +493,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-003-2",
-        "name": "GBF Logistics GmbH — Carrier liability",
+        "name": "Rotterdam, Netherlands",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -516,7 +516,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-004-1",
-        "name": "Marvel SE — Third-party liability",
+        "name": "Vienna, Austria",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -539,7 +539,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-005-1",
-        "name": "BMW Budapest Motors — Machinery breakdown",
+        "name": "Budapest, Hungary",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -562,7 +562,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-005-2",
-        "name": "BMW Budapest Motors — Business interruption",
+        "name": "Budapest, Hungary",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -585,7 +585,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-006-1",
-        "name": "Schäfer & Söhne AG — Property damage",
+        "name": "Zürich, Switzerland",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -613,7 +613,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-007-1",
-        "name": "Nordic Shipping AS — Cargo damage",
+        "name": "Oslo, Norway",
         "instructionStatus": "Completed",
         "expandable": false
       }
@@ -641,7 +641,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-007-2",
-        "name": "Nordic Shipping AS — Carrier liability",
+        "name": "Oslo, Norway",
         "instructionStatus": "Completed",
         "expandable": false
       }
@@ -664,7 +664,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-008-1",
-        "name": "TechStart Pte Ltd — System outage & recovery",
+        "name": "Singapore, Singapore",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -687,7 +687,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-009-1",
-        "name": "Rhein Constructions GmbH — Machinery breakdown",
+        "name": "Cologne, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -710,7 +710,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-009-2",
-        "name": "Rhein Constructions GmbH — Business interruption",
+        "name": "Cologne, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -733,7 +733,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-010-1",
-        "name": "Pendragon Liability Corp — Third-party liability",
+        "name": "London, United Kingdom",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -756,7 +756,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-012-1",
-        "name": "GBF Logistics GmbH — Cargo damage",
+        "name": "No location selected",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -779,7 +779,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-013-1",
-        "name": "Nordbyte SE — System outage & recovery",
+        "name": "Dortmund, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -802,7 +802,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-014-1",
-        "name": "Rhein Constructions GmbH — Machinery breakdown",
+        "name": "Frankfurt, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -825,7 +825,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-015-1",
-        "name": "Marvel SE — Third-party liability",
+        "name": "Graz, Austria",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -848,7 +848,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-016-1",
-        "name": "Schäfer & Söhne AG — Property damage",
+        "name": "Bern, Switzerland",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -871,7 +871,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-016-2",
-        "name": "Schäfer & Söhne AG — Business interruption",
+        "name": "Bern, Switzerland",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -894,7 +894,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-017-1",
-        "name": "Nordic Shipping AS — Cargo damage",
+        "name": "Copenhagen, Denmark",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -922,7 +922,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-018-1",
-        "name": "TechStart Pte Ltd — System outage & recovery",
+        "name": "Singapore, Singapore",
         "instructionStatus": "Completed",
         "expandable": false
       }
@@ -950,7 +950,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-019-1",
-        "name": "Liver Tea Group — Property damage",
+        "name": "Bremen, Germany",
         "instructionStatus": "Completed",
         "expandable": false
       }
@@ -973,7 +973,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-020-1",
-        "name": "Oskar Veld & \"Partners\" — Third-party liability",
+        "name": "Manchester, United Kingdom",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -996,7 +996,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-021-1",
-        "name": "Rhein Constructions GmbH — Machinery breakdown",
+        "name": "Stuttgart, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1019,7 +1019,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-022-1",
-        "name": "Liver Tea Group — Property damage",
+        "name": "Munich, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1042,7 +1042,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-023-1",
-        "name": "Liver Tea Group — Property damage",
+        "name": "Munich, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1065,7 +1065,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-101-1",
-        "name": "Müller GmbH — Property damage",
+        "name": "Frankfurt, DE",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1088,7 +1088,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-101-2",
-        "name": "Müller GmbH — Business interruption",
+        "name": "Frankfurt, DE",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1111,7 +1111,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-102-1",
-        "name": "TechPark Berlin AG — Property damage",
+        "name": "Berlin, DE",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1134,7 +1134,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-103-1",
-        "name": "Nordic Renewables GmbH — Machinery breakdown",
+        "name": "Hamburg, DE",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1157,7 +1157,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-103-2",
-        "name": "Nordic Renewables GmbH — Business interruption",
+        "name": "Hamburg, DE",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1180,7 +1180,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-025-1",
-        "name": "Rheinfeld Logistics AG — Property damage",
+        "name": "Cologne, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1203,7 +1203,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-026-1",
-        "name": "Baltic Freight Partners — Third-party liability",
+        "name": "Bremen, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1231,7 +1231,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-027-1",
-        "name": "Nordsee Marine Services — Cargo damage",
+        "name": "Kiel, Germany",
         "instructionStatus": "Completed",
         "expandable": false
       }
@@ -1254,7 +1254,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-028-1",
-        "name": "Vantage Data Systems GmbH — System outage & recovery",
+        "name": "Munich, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1277,7 +1277,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-028-2",
-        "name": "Vantage Data Systems GmbH — Data restoration",
+        "name": "Munich, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1300,7 +1300,7 @@
     "entities": [
       {
         "id": "SE-C-CLM-2024-029-1",
-        "name": "Alpenbau Engineering GmbH — Machinery breakdown",
+        "name": "Stuttgart, Germany",
         "instructionStatus": "Not assigned",
         "expandable": false
       }
@@ -1323,7 +1323,7 @@
     "entities": [
       {
         "id": "SE-C-SK-2024-002-1",
-        "name": "Jonas Kaufmann — Property damage",
+        "name": "No location selected",
         "instructionStatus": "Not assigned",
         "expandable": false
       }

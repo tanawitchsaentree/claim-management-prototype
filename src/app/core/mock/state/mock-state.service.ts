@@ -99,7 +99,9 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: CLM-2024-001's overview cause now says Fire (it said Water damage while
 // its loss information and circumstance said Fire / hot work).
 // Bumped again: `addedParties` (parties a Link policy adds to the converted claim).
-const STATE_VERSION = 'financial-seeds-v5';
+// Bumped again: section entities are now the loss location's address (as in production's
+// Entity column), not names of buildings and things; cached sections keep the old names.
+const STATE_VERSION = 'financial-seeds-v6';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a
