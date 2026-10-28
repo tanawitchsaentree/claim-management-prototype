@@ -69,6 +69,19 @@ $pin-out: 108px;
   right: $pin-rem + $pin-pay;
   width: $pin-out;
   min-width: $pin-out;
+
+  // Soft shadow on the left edge, so the pinned block reads as floating above the
+  // columns that scroll underneath it.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -8px;
+    width: 8px;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, var(--claim-overlay-shadow-light));
+  }
 }
 
 .as-id {
