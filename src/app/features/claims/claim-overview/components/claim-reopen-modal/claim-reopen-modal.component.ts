@@ -11,12 +11,10 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { MockSectionService } from '../../../../../core/mock/services/mock-section.service';
-import { MockLookupService } from '../../../../../core/mock/services/mock-lookup.service';
 import { ClaimOverview } from '../../../../../core/models/claim-overview.model';
-import { LookupOption } from '../../../../../core/models/lookup.model';
 import { ClaimSection } from '../../../../../core/models/section.model';
 import { ReopenPayload } from '../../../../../core/models/claim-closure.model';
 import { SectionReopenReason } from '../../../../../core/models/section.model';
@@ -60,10 +58,7 @@ export class ClaimReopenModalComponent {
   private readonly fb = inject(FormBuilder);
   private readonly closureSvc = inject(ClaimClosureService);
   private readonly sectionSvc = inject(MockSectionService);
-  private readonly lookupSvc = inject(MockLookupService);
   private readonly live = inject(LiveAnnouncer);
-
-  readonly reserveTypes$: Observable<LookupOption[]> = this.lookupSvc.getReserveTypes();
 
   readonly reopenReasons: string[] = [
     'New evidence received',
@@ -84,9 +79,7 @@ export class ClaimReopenModalComponent {
 
   readonly form = this.fb.group({
     reason: [null as string | null, Validators.required],
-    note: [''],
-    reserveType: [null as string | null, Validators.required],
-    reserveAmount: [null as number | null, [Validators.required, Validators.min(1)]]
+    note: ['']
   });
 
   readonly step = signal<Step>(1);
@@ -186,8 +179,6 @@ export class ClaimReopenModalComponent {
 
     const payload: ReopenPayload = {
       reason,
-      reserveAmount: v.reserveAmount!,
-      reserveType: v.reserveType!,
       reopenedBy
     };
 

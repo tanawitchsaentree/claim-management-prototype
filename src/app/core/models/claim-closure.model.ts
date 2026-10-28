@@ -91,7 +91,5 @@ export interface ClosurePayload {
 
 export interface ReopenPayload {
   reason: string;
-  reserveAmount: number;
-  reserveType: string;
   reopenedBy: { userId: string; name: string };
 }

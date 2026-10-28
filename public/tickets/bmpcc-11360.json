@@ -35,13 +35,13 @@
       "targetId": "co-reopen-claim-button",
       "title": "Reopen Claim",
       "body": "Visible once the claim is Closed.",
-      "expectedAfterClick": "Opens a modal for a reopening reason, an optional note, and a reserve to raise (type + amount, amount must be > 0 \u2014 reopening always requires a reserve). Confirming flips status to 'Reopened' and adds a reopened-date row to the closure panel.",
+      "expectedAfterClick": "Opens a modal for a reopening reason and an optional note, then a section selection step. No reserve is captured: the Reserve team is told through the claim-updated event (BMPCC-14607). Confirming flips status to 'Reopened' and adds a reopened-date row to the closure panel.",
       "direction": "top"
     },
     {
-      "targetId": "crm-reserve-amount",
-      "title": "Reserve amount",
-      "body": "Required, must be greater than 0 \u2014 this is the actual reserve gate AC-07 calls for; the reopen modal previously had no reserve field at all.",
+      "targetId": "crm-reason-dropdown",
+      "title": "Reopening reason",
+      "body": "The only claim-level input. There is no reserve field: BMPCC-14607 (Re-Open functional spec) puts reserve capture out of scope and tells the Reserve team through the claim-updated event.",
       "direction": "top"
     }
   ],
@@ -422,8 +422,8 @@
     },
     {
       "id": "AC-07",
-      "statement": "Reopen requires a reserve to be raised; status updates to Reopened with date visible",
-      "plainStatement": "A `Closed` claim can be **reopened** only if a *non-zero reserve* is raised. After reopen, status updates to `Reopened` and the **reopening date** is visible on the file.",
+      "statement": "Reopen asks for a reason, no reserve is captured; status updates to Reopened with date visible",
+      "plainStatement": "A `Closed` claim can be **reopened** with a reason and a section selection. No reserve type or amount is captured (BMPCC-14607: the Reserve team is notified by event only; this replaces the earlier reserve rule). After reopen, status updates to `Reopened` and the **reopening date** is visible on the file.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -435,7 +435,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Reopen modal blocks submit when reserveAmount < 1",
+            "text": "Reopen modal asks for a reason and has no reserve fields",
             "page": "overview",
             "role": "tested-visible"
           },
@@ -475,10 +475,10 @@
         }
       },
       "expectedUI": {
-        "description": "Reopen flow with mandatory reserve",
+        "description": "Reopen flow without a reserve",
         "visualCues": [
           "Reopen Claim button enabled in right-strip",
-          "Modal: Reason (\u2265 8 chars) + Reserve type + Reserve amount (must be > 0)",
+          "Modal: Reason (+ optional note), then section selection. No reserve fields",
           "After Reopen: status 'Reopened' + Reopened date row visible in closure panel"
         ]
       },
@@ -488,7 +488,7 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click Reopen Claim \u2192 fill reason + amount \u2192 submit",
+        "trigger": "Click Reopen Claim \u2192 pick a reason \u2192 Continue \u2192 Reopen",
         "expectedResult": "Status chip flips to Reopened; reopened date row appears"
       }
     }

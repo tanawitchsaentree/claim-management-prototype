@@ -31,21 +31,6 @@
           placeholder="Add context for the audit trail…"
         ></textarea>
       </nx-formfield>
-
-      <p class="crm-section-label">Reopening a claim requires a reserve to be raised</p>
-      <nx-formfield label="Reserve type" data-tour-id="crm-reserve-type">
-        <nx-dropdown formControlName="reserveType" placeholder="Select reserve type">
-          @for (opt of reserveTypes$ | async; track opt.value) {
-            <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
-          }
-        </nx-dropdown>
-        <nx-error nxFormfieldError>Reserve type is required.</nx-error>
-      </nx-formfield>
-
-      <nx-formfield label="Reserve amount (EUR)" data-tour-id="crm-reserve-amount">
-        <input nxInput type="number" min="1" formControlName="reserveAmount" placeholder="0" />
-        <nx-error nxFormfieldError>Reserve amount must be greater than 0.</nx-error>
-      </nx-formfield>
     </form>
   }
 
