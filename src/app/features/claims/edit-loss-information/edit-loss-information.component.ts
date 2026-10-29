@@ -487,6 +487,15 @@ export class EditLossInformationComponent implements OnInit {
     // "Keep editing" (not "Cancel") so it can't be mistaken for discarding.
     const impactedBefore = diffs.some(d => IMPACT_LABELS.includes(d.label));
     const fieldNames = diffs.map(d => d.label).join(', ');
+    // Anything that writes a NEW section is said here, before saving, not found out later.
+    const originalTypes = (this.original() as LossInformation).typeOfDamage ?? [];
+    const toCreate = this.sync.sectionsToCreate(
+      this.claimId(),
+      diffs.map(d => d.label),
+      this.form.getRawValue().causeOfLoss as string[] | null,
+      originalTypes,
+      (this.form.getRawValue().typeOfDamage as string[] | null) ?? []
+    );
     const proceed = await this.confirm({
       // Team call 2026-10-15 (UI/UX open points, Edit Claim): back to the
       // previous Field / Original / Updated format.
@@ -496,15 +505,11 @@ export class EditLossInformationComponent implements OnInit {
       showChanges: true,
       hideIcon: true,
       note: [
+        toCreate.length
+          ? `${toCreate.length === 1 ? 'A new section' : 'New sections'} will be created for ${toCreate.join(' and ')}.`
+          : '',
         impactedBefore
           ? 'Sections were built from the old values, so the open ones will be marked "Review needed".'
-          : '',
-        this.sync.willCreateFirstSection(
-          this.claimId(),
-          diffs.map(d => d.label),
-          this.form.getRawValue().causeOfLoss as string[] | null
-        )
-          ? 'A first section will be created from this cause of loss.'
           : ''
       ]
         .filter(Boolean)
@@ -559,9 +564,17 @@ export class EditLossInformationComponent implements OnInit {
             impactedDiffs.map(d => d.label)
           )
         : 0;
+      const createdSections = await this.sync.createSectionsForAddedTypes(
+        this.claimId(),
+        formValue,
+        originalTypes
+      );
       this.toast.success(
         'Claim details updated',
         `${this.claimId()}: ${fieldNames} saved.` +
+          (createdSections.length
+            ? ` ${createdSections.length === 1 ? 'New section' : 'New sections'}: ${createdSections.join(', ')}.`
+            : '') +
           (flagged
             ? ` ${flagged} open section${flagged === 1 ? '' : 's'} marked "Review needed".`
             : '')
