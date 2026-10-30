@@ -87,7 +87,7 @@ type PerFieldKey =
     NxModalModule,
     NxSpinnerModule,
     LocationPickerComponent,
-    PageHeaderComponent,
+    PageHeaderComponent
   ],
   templateUrl: './edit-loss-information.component.html',
   styleUrl: './edit-loss-information.component.scss'
@@ -178,9 +178,7 @@ export class EditLossInformationComponent implements OnInit {
     if (!keys.length) return '';
     const opts = this.causeOfLossOptions();
     return keys
-      .map(k =>
-        this.qualify(causeLabel(k, opts), k === OTHER_CAUSE_KEY, specify)
-      )
+      .map(k => this.qualify(causeLabel(k, opts), k === OTHER_CAUSE_KEY, specify))
       .join(', ');
   }
 
@@ -504,16 +502,18 @@ export class EditLossInformationComponent implements OnInit {
       changes: diffs.map(d => ({ label: d.label, original: d.original, updated: d.updated })),
       showChanges: true,
       hideIcon: true,
-      note: [
-        toCreate.length
-          ? `${toCreate.length === 1 ? 'A new section' : 'New sections'} will be created for ${toCreate.join(' and ')}.`
-          : '',
-        impactedBefore
-          ? 'Sections were built from the old values, so the open ones will be marked "Review needed".'
-          : ''
-      ]
-        .filter(Boolean)
-        .join(' ') || undefined,
+      note:
+        [
+          toCreate.length
+            ? `${toCreate.length === 1 ? 'A new section' : 'New sections'} will be created for ${toCreate.join(' and ')}.`
+            : '',
+          impactedBefore
+            ? 'Sections were built from the old values, so the open ones will be marked "Review needed".'
+            : ''
+        ]
+          .filter(Boolean)
+          .join(' ') || undefined,
+      noteContext: 'warning',
       confirmLabel: 'Confirm changes',
       cancelLabel: 'Back to editing'
     });
@@ -547,7 +547,10 @@ export class EditLossInformationComponent implements OnInit {
         diffs.map(d => d.label)
       );
 
-      this.original.set({ ...(this.original() as LossInformation), ...formValue } as LossInformation);
+      this.original.set({
+        ...(this.original() as LossInformation),
+        ...formValue
+      } as LossInformation);
       this.form.markAsPristine();
       this.submitAttempted = false;
       this.closeAllFields();
@@ -594,7 +597,11 @@ export class EditLossInformationComponent implements OnInit {
             `${flagged === 1 ? 'This open section' : 'These open sections'} on claim ${this.claimId()} ` +
             `${flagged === 1 ? 'was' : 'were'} built from the old values and ` +
             `${flagged === 1 ? 'is' : 'are'} now marked "Review needed".`,
-          changes: impactedDiffs.map(d => ({ label: d.label, original: d.original, updated: d.updated })),
+          changes: impactedDiffs.map(d => ({
+            label: d.label,
+            original: d.original,
+            updated: d.updated
+          })),
           showChanges: true,
           hideIcon: true,
           note: `${flagged === 1 ? 'Section' : 'Sections'}: ${this.sync.reviewNeededSectionNames(this.claimId()).join(', ')}.`,

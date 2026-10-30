@@ -96,6 +96,10 @@
   font-weight: 500;
   word-break: break-word;
 }
+.cd-note-message {
+  margin: var(--space-base) 0 0;
+}
+
 .cd-note {
   margin: var(--space-base) 0 0;
   font-size: var(--paragraph-03-font-size);

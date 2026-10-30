@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
 
 /** One field's before/after, rendered as a row in the dialog's change table. */
 export interface ConfirmDialogChange {
@@ -32,12 +33,16 @@ export interface ConfirmDialogData {
   showChanges?: boolean;
   // Extra line under the table (e.g. which sections get "Review needed").
   note?: string;
+  // Opt-in: show `note` as an NDBX warning message instead of plain text, for
+  // notes that tell the handler something else will change (same nx-message
+  // warning the claim closure modal uses).
+  noteContext?: 'warning';
 }
 
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [NxModalModule, NxButtonModule, NxIconModule],
+  imports: [NxModalModule, NxButtonModule, NxIconModule, NxMessageModule],
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.scss'
 })

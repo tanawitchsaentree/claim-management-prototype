@@ -37,7 +37,9 @@
       </tbody>
     </table>
   }
-  @if (data.note) {
+  @if (data.note && data.noteContext) {
+    <nx-message [context]="data.noteContext" class="cd-note-message">{{ data.note }}</nx-message>
+  } @else if (data.note) {
     <p class="cd-note">{{ data.note }}</p>
   }
 </div>
