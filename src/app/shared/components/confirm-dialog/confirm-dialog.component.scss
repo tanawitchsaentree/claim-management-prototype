@@ -6,6 +6,8 @@
 
 .cd-header {
   @include modal.header;
+  // Confirms are short: no divider lines; the message sits right under the title.
+  border-bottom: none;
 }
 
 .cd-header-row {
@@ -37,6 +39,8 @@
 
 .cd-body {
   @include modal.body;
+  // No header divider to clear, so the header's own 20px bottom is the gap.
+  padding-top: 0;
 }
 
 .cd-message {
@@ -48,6 +52,7 @@
 
 .cd-footer {
   @include modal.footer;
+  border-top: none;
 }
 
 .cd-btn--danger {
@@ -58,7 +63,6 @@
 // Restored from the pre-2026-09-24 dialog (961cdd9^), opt-in via showChanges.
 .cd-diff-table {
   width: 100%;
-  margin-top: var(--space-base);
   border-collapse: collapse;
   font-size: var(--paragraph-03-font-size);
   th {
@@ -97,11 +101,11 @@
   word-break: break-word;
 }
 .cd-note-message {
-  margin: var(--space-base) 0 0;
+  margin: 0;
 }
 
 .cd-note {
-  margin: var(--space-base) 0 0;
+  margin: 0;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
 }
