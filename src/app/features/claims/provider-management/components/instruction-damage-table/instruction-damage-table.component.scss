@@ -26,17 +26,15 @@
     width: 20%;
   }
 
+  // Font size and padding stay NDBX defaults so this table reads the same as
+  // the provider table above it on the page.
   th[nxHeaderCell] {
-    font-size: var(--paragraph-03-font-size) !important;
-    font-weight: 600 !important;
-    padding: var(--space-sm) var(--space-md) !important;
+    vertical-align: middle;
     white-space: nowrap;
   }
 
   td[nxTableCell] {
-    font-size: var(--paragraph-03-font-size) !important;
-    padding: var(--space-sm) var(--space-md) !important;
-    vertical-align: middle !important;
+    vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
