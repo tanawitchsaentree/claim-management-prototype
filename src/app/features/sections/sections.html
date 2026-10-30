@@ -88,7 +88,11 @@
               <td
                 nxTableCell
                 colspan="4"
-                style="text-align: center; padding: var(--space-2xl); color: var(--message-error-color)"
+                style="
+                  text-align: center;
+                  padding: var(--space-2xl);
+                  color: var(--message-error-color);
+                "
               >
                 Failed to load sections. Please refresh.
               </td>
@@ -127,7 +131,7 @@
                   ></app-status-chip>
                   <!-- Section level has no coverage review of its own (it comes from Promise
                        data later); this is where the "built from facts that changed" mark goes. -->
-@if (section.reviewNeeded && section.status === 'Open') {
+                  @if (section.reviewNeeded && section.status === 'Open') {
                     <nx-badge
                       type="critical"
                       class="section-review-badge"
@@ -329,6 +333,7 @@
         [entity]="sel.entity"
         [section]="sel.section"
         [claimClosed]="claimClosed()"
+        [claimDateOfLoss]="claimDateOfLoss()"
         (closed)="closeEntityDetail()"
       >
       </app-section-entity-detail>

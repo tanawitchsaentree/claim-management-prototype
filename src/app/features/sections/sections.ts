@@ -107,7 +107,7 @@ export class Sections {
   readonly hasDetailOpen = computed(() => !!this.selectedEntity() || !!this.selectedSection());
   readonly claimClosed = signal(false);
   readonly policyNumber = signal('');
-  private readonly claimDateOfLoss = signal<string | undefined>(undefined);
+  protected readonly claimDateOfLoss = signal<string | undefined>(undefined);
   // BMPCC-18160 — read off the claim, not the section (ASSUMPTION [CIRC-4] in
   // core/models/claim-overview.model.ts). Passed down to the section detail
   // panel so it can show the circumstance read-only.

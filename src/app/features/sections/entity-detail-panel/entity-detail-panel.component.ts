@@ -119,6 +119,8 @@ export class EntityDetailPanelComponent implements OnInit {
   @Input({ required: true }) entity!: SectionEntity;
   @Input({ required: true }) section!: ClaimSection;
   @Input() claimClosed = false;
+  /** Shown when the entity has no date of loss of its own (same fallback the Edit modal starts from). */
+  @Input() claimDateOfLoss?: string;
   @Output() closed = new EventEmitter<void>();
 
   private readonly dialogSvc = inject(NxDialogService);
