@@ -622,7 +622,8 @@ export class EditLossInformationComponent implements OnInit {
   private async confirm(data: ConfirmDialogData): Promise<boolean> {
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
       data,
-      width: '480px',
+      // MODAL_WIDTH.md: a Field / Original / Updated table is SM (600), a plain confirm XS (440).
+      width: data.showChanges ? '600px' : '440px',
       maxWidth: '92vw'
     });
     return !!(await firstValueFrom(ref.afterClosed()));

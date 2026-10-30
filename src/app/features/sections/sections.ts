@@ -264,7 +264,7 @@ export class Sections {
         confirmLabel: 'Confirm changes',
         cancelLabel: 'Back to editing'
       } satisfies ConfirmDialogData,
-      width: '480px',
+      width: '600px',
       maxWidth: '92vw'
     });
     if (!(await firstValueFrom(confirmRef.afterClosed()))) return;
@@ -378,7 +378,7 @@ export class Sections {
         confirmLabel: 'Confirm changes',
         cancelLabel: 'Back to editing'
       } satisfies ConfirmDialogData,
-      width: '480px',
+      width: '600px',
       maxWidth: '92vw'
     });
     return !!(await firstValueFrom(ref.afterClosed()));
