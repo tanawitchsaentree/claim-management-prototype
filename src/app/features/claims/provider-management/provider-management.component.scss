@@ -22,3 +22,13 @@
   gap: var(--space-sm);
   white-space: nowrap;
 }
+
+.pm-damages {
+  margin-top: var(--space-xl);
+}
+
+.pm-damages__title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--heading-05-font-size);
+  color: var(--text-01);
+}

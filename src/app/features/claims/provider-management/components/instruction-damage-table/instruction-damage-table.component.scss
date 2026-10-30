@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+// Same fixed-%-column approach as sections.scss .sections-table.
+.idt-table {
+  width: 100%;
+  table-layout: fixed;
+
+  .idt-col-toggle {
+    width: 5%;
+    padding: 0 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+  .idt-col-entity {
+    width: 40%;
+  }
+  .idt-col-status {
+    width: 15%;
+  }
+  .idt-col-damage {
+    width: 20%;
+  }
+  .idt-col-instruction {
+    width: 20%;
+  }
+
+  th[nxHeaderCell] {
+    font-size: var(--paragraph-03-font-size) !important;
+    font-weight: 600 !important;
+    padding: var(--space-sm) var(--space-md) !important;
+    white-space: nowrap;
+  }
+
+  td[nxTableCell] {
+    font-size: var(--paragraph-03-font-size) !important;
+    padding: var(--space-sm) var(--space-md) !important;
+    vertical-align: middle !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.idt-section-name {
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.idt-entity-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+// Read-only rows keep full text contrast; only the checkbox says "can't pick".
+.idt-entity-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-01);
+}
+
+.idt-readonly-check {
+  display: inline-flex;
+  cursor: not-allowed;
+}
+
+.idt-empty {
+  color: var(--text-muted);
+}

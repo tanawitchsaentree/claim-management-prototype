@@ -63,3 +63,10 @@
     </tbody>
   </table>
 }
+
+@if (!loading() && sections().length > 0) {
+  <section class="pm-damages" aria-labelledby="pm-damages-title">
+    <h2 id="pm-damages-title" class="pm-damages__title">Select damages to instruct</h2>
+    <app-instruction-damage-table [sections]="sections()"></app-instruction-damage-table>
+  </section>
+}

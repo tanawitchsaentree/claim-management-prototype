@@ -1,0 +1,97 @@
+<!-- audit-exempt: parent (provider-management) only renders this when the claim has sections -->
+<table nxTable class="idt-table">
+  <thead>
+    <tr nxTableRow>
+      <th nxHeaderCell class="idt-col-toggle"></th>
+      <th nxHeaderCell class="idt-col-entity">
+        <div class="idt-entity-cell">
+          <nx-checkbox
+            labelSize="small"
+            ariaLabel="Select all damages in open sections"
+            [checked]="allChecked()"
+            [indeterminate]="someChecked()"
+            (checkedChange)="toggleAll($event)"
+          ></nx-checkbox>
+          <span>Entity</span>
+        </div>
+      </th>
+      <th nxHeaderCell class="idt-col-status">Section status</th>
+      <th nxHeaderCell class="idt-col-damage">Damage</th>
+      <th nxHeaderCell class="idt-col-instruction">Instruction status</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (section of sections; track section.id) {
+      <tr nxTableRow class="idt-section-row">
+        <td nxTableCell class="idt-col-toggle">
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            (click)="toggleSection(section)"
+            [attr.aria-label]="(isExpanded(section) ? 'Collapse ' : 'Expand ') + section.name"
+            [attr.aria-expanded]="isExpanded(section)"
+          >
+            <nx-icon
+              [name]="isExpanded(section) ? 'chevron-down-small' : 'chevron-right-small'"
+            ></nx-icon>
+          </button>
+        </td>
+        <td nxTableCell class="idt-col-entity idt-section-name">{{ section.name }}</td>
+        <td nxTableCell class="idt-col-status">
+          <app-status-chip [status]="section.status.toLowerCase()" domain="claim"></app-status-chip>
+        </td>
+        <td nxTableCell class="idt-col-damage"></td>
+        <td nxTableCell class="idt-col-instruction"></td>
+      </tr>
+
+      @if (isExpanded(section)) {
+        @for (entity of section.entities; track entity.id) {
+          <tr nxTableRow class="idt-entity-row">
+            <td nxTableCell class="idt-col-toggle"></td>
+            <td nxTableCell class="idt-col-entity">
+              <div class="idt-entity-cell">
+                @if (isReadOnly(section)) {
+                  <!-- Wrapper carries the tooltip: a disabled checkbox fires no hover events. -->
+                  <span
+                    class="idt-readonly-check"
+                    [nxTooltip]="closedTooltip"
+                    nxTooltipPosition="top"
+                  >
+                    <nx-checkbox
+                      labelSize="small"
+                      [ariaLabel]="entity.name + ', ' + closedTooltip"
+                      [checked]="false"
+                      [disabled]="true"
+                    ></nx-checkbox>
+                  </span>
+                } @else {
+                  <nx-checkbox
+                    labelSize="small"
+                    [ariaLabel]="'Select ' + entity.name"
+                    [checked]="isChecked(section, entity)"
+                    (checkedChange)="toggleEntity(section, entity, $event)"
+                  ></nx-checkbox>
+                }
+                <span class="idt-entity-name" [title]="entity.name">{{ entity.name }}</span>
+              </div>
+            </td>
+            <td nxTableCell class="idt-col-status"></td>
+            <td nxTableCell class="idt-col-damage">{{ section.damageType | damageTypeLabel }}</td>
+            <td nxTableCell class="idt-col-instruction">
+              <app-status-chip
+                [status]="instructionChip(entity)"
+                domain="task"
+                [label]="entity.instructionStatus"
+              ></app-status-chip>
+            </td>
+          </tr>
+        } @empty {
+          <tr nxTableRow class="idt-entity-row">
+            <td nxTableCell class="idt-col-toggle"></td>
+            <td nxTableCell class="idt-empty" colspan="4">No entities in this section.</td>
+          </tr>
+        }
+      }
+    }
+  </tbody>
+</table>

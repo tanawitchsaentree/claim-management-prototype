@@ -33,6 +33,8 @@ import {
   AssignProviderModalData,
   AssignProviderModalResult
 } from './components/assign-provider-modal/assign-provider-modal.component';
+import { InstructionDamageTableComponent } from './components/instruction-damage-table/instruction-damage-table.component';
+import { ClaimSection } from '../../../core/models/section.model';
 
 // BMPCC-14454 — no isExternal flag exists on ProviderAssignment; assumption:
 // 'adjuster' assignments are internal (Allianz Expertise Center), everything
@@ -56,7 +58,8 @@ const TYPE_LABEL: Record<ProviderType, string> = {
     EmptyStateComponent,
     PageHeaderComponent,
     AppDatePipe,
-    BlockerReturnBannerComponent
+    BlockerReturnBannerComponent,
+    InstructionDamageTableComponent
   ],
   templateUrl: './provider-management.component.html',
   styleUrl: './provider-management.component.scss'
@@ -73,6 +76,7 @@ export class ProviderManagementComponent implements OnInit {
 
   readonly rows = signal<ProviderAssignment[]>([]);
   readonly loading = signal(true);
+  readonly sections = signal<ClaimSection[]>([]);
   // Optional ?sectionId= query param — set when arriving from a section's
   // "Instruct provider" action, so that section's assignment can be highlighted.
   readonly highlightSectionId = signal<string | null>(null);
@@ -88,6 +92,7 @@ export class ProviderManagementComponent implements OnInit {
     this.loading.set(true);
     const data = await firstValueFrom(this.svc.search({ claimId: this.claimId }));
     this.rows.set(data);
+    this.sections.set(await firstValueFrom(this.sectionSvc.getByClaimId(this.claimId)));
     this.loading.set(false);
   }
 
