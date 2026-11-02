@@ -1,6 +1,6 @@
 [
   {
-    "requestId": "REJ2024006",
+    "requestId": "REQ212751",
     "claimId": "CLM-2024-006",
     "oe": "DE",
     "client": "Schäfer & Söhne AG",
@@ -10,7 +10,7 @@
     "rejectionReason": "Water damage excluded under the policy wording."
   },
   {
-    "requestId": "REJ2024016",
+    "requestId": "REQ710418",
     "claimId": "CLM-2024-016",
     "oe": "DE",
     "client": "Schäfer & Söhne AG",
@@ -20,7 +20,7 @@
     "rejectionReason": "Loss happened before the policy start date."
   },
   {
-    "requestId": "REJ2024022",
+    "requestId": "REQ206305",
     "claimId": "CLM-2024-022",
     "oe": "DE",
     "client": "Liver Tea Group",

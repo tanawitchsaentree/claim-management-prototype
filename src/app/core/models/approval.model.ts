@@ -29,7 +29,12 @@ export interface RejectionApproval {
   rejectionReason?: string;
 }
 
-/** REJ2024006 for CLM-2024-006 — stable, so the detail URL can be rebuilt from the claim. */
+/**
+ * REQ + 6 digits, the same shape as Reserves request IDs (REQ483140).
+ * Derived from the claim ID so the detail page can rebuild it from the URL.
+ */
 export function rejectionRequestId(claimId: string): string {
-  return 'REJ' + claimId.replace(/\D/g, '');
+  let h = 0x811c9dc5;
+  for (const ch of claimId) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0;
+  return 'REQ' + String((h % 900000) + 100000);
 }

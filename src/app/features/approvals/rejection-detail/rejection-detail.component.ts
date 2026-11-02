@@ -2,12 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { NxBreadcrumbModule } from '@allianz/ng-aquila/breadcrumb';
-import { NxTableModule } from '@allianz/ng-aquila/table';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxSwitcherModule } from '@allianz/ng-aquila/switcher';
-import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom } from 'rxjs';
 import { Navbar } from '../../layout/navbar/navbar';
@@ -29,7 +24,8 @@ type Decision = 'pending' | 'approved' | 'declined';
 
 // BMPCC-17630 — what opens when a Request ID is clicked on Approvals > Claims.
 // Layout follows the Finance-domain reserve request page (breadcrumb, request
-// title, claim info card, items card with Reject/Approve).
+// title), but with one card: a rejection is always a single claim, so the
+// reserve page's items table, count and pending-only switch don't apply.
 @Component({
   selector: 'app-rejection-detail',
   standalone: true,
@@ -38,12 +34,7 @@ type Decision = 'pending' | 'approved' | 'declined';
     NxGridModule,
     NxMessageModule,
     NxBreadcrumbModule,
-    NxTableModule,
-    NxCheckboxModule,
     NxButtonModule,
-    NxIconModule,
-    NxSwitcherModule,
-    NxContextMenuModule,
     Navbar,
     StatusChipComponent,
     EmptyStateComponent,
@@ -70,14 +61,9 @@ export class RejectionDetailComponent {
   readonly item = signal<RejectionApproval | null>(null);
   readonly claim = signal<ClaimOverview | null>(null);
   readonly decision = signal<Decision>('pending');
-  readonly selected = signal(false);
-  readonly pendingOnly = signal(false);
   readonly busy = signal(false);
 
-  readonly showRow = computed(
-    () => this.item() !== null && (!this.pendingOnly() || this.decision() === 'pending')
-  );
-  readonly canDecide = computed(() => this.selected() && this.decision() === 'pending' && !this.busy());
+  readonly canDecide = computed(() => this.decision() === 'pending' && !this.busy());
 
   constructor() {
     void this.load();
@@ -113,7 +99,6 @@ export class RejectionDetailComponent {
     try {
       await this.decisionSvc.approve(item, reason);
       this.decision.set('approved');
-      this.selected.set(false);
       this.toast.success('Rejection approved', `${item.claimId} closed as Claim Rejected`);
     } catch {
       this.toast.error('Failed to approve rejection', 'Please try again.');
@@ -129,7 +114,6 @@ export class RejectionDetailComponent {
     if (!reason) return;
     this.decisionSvc.decline(item, reason);
     this.decision.set('declined');
-    this.selected.set(false);
     this.toast.info('Rejection declined', `${item.claimId} stays open`);
   }
 

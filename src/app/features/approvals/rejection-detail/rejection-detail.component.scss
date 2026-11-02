@@ -47,49 +47,49 @@
   font-weight: 700;
 }
 
+.rd-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-base);
+  margin-bottom: var(--space-lg);
+}
+
 .rd-card-title {
   font-size: var(--display-s-font-size);
   font-weight: 400;
   color: var(--text-01);
-  margin: 0 0 var(--space-base);
+  margin: 0;
 }
 
-.rd-toolbar {
+.rd-reason {
   display: flex;
-  align-items: center;
-  gap: var(--space-base);
-  padding-bottom: var(--space-base);
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--ui-04);
   color: var(--text-01);
 }
 
-.rd-divider {
-  align-self: stretch;
-  border-left: 1px solid var(--ui-04);
+.rd-reason-text {
+  margin: 0;
+  white-space: pre-line;
 }
 
-.rd-spacer {
-  flex: 1;
-}
-
-.rd-table {
-  width: 100%;
-
-  th {
-    font-weight: 700;
-    color: var(--text-01);
-  }
-
-  .rd-col-check {
-    width: 48px;
-  }
-
-  .rd-col-action {
-    width: 96px;
-    border-left: 1px solid var(--ui-04);
-    text-align: center;
-  }
+.rd-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-base);
+  margin-top: var(--space-lg);
 }
 
 .rd-banner {
   margin-bottom: var(--space-md);
+}
+
+// Same link look as the Approvals list (approvals.component.scss .text-link).
+.text-link {
+  color: var(--interactive-text);
+  text-decoration: underline;
+  font-weight: 500;
 }
