@@ -58,6 +58,8 @@ export class LocationPickerComponent implements OnInit, OnChanges {
   @Input() skipHintText = 'Skip if location is not applicable to this claim.';
   /** Edit claim, before the card's Edit is pressed: a plain table, no actions. */
   @Input() readonly = false;
+  /** BMPCC-18250: CBI originating location, manual form with Country/City/ZIP mandatory. */
+  @Input() cbiMode = false;
   /** Edit claim: the saved value, so a changed row can say "Edited" or "New". */
   @Input() originalValue: LocationPickerOutput | null = null;
   @Output() locationChange = new EventEmitter<LocationPickerOutput>();
@@ -194,7 +196,7 @@ export class LocationPickerComponent implements OnInit, OnChanges {
       ManualLocationEntryModalData,
       ManualLocationEntryModalResult
     >(ManualLocationEntryModalComponent, {
-      data: { seed },
+      data: { seed, cbiMode: this.cbiMode },
       panelClass: 'bottom-sheet-modal-panel'
     });
     const result = await firstValueFrom(ref.afterClosed());

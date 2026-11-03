@@ -121,3 +121,24 @@
   gap: var(--space-md);
   margin-top: var(--space-lg);
 }
+
+.ts-readonly {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-base) var(--space-xl);
+  margin: 0;
+  color: var(--text-01);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  dt {
+    font-weight: 700;
+  }
+
+  dd {
+    margin: var(--space-xs) 0 0;
+    white-space: pre-line;
+  }
+}

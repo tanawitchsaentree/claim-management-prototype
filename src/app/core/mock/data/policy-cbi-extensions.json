@@ -1,0 +1,11 @@
+{
+  "_note": "BMPCC-18249: CBI extensions each policy/AiP offers (stands in for getOptionsList covers/extendedBy). Policies not listed offer every case type.",
+  "POL-2024-002": [
+    "supplier-named",
+    "supplier-unnamed",
+    "customer-named",
+    "customer-unnamed",
+    "service-interruption"
+  ],
+  "POL-2024-003": []
+}

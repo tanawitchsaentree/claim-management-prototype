@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Lookups, LookupOption, LocationTypeOption } from '../../models';
 import { MockBaseService } from './mock-base.service';
 import lookupsData from '../data/lookups.json';
+import policyCbiExtensions from '../data/policy-cbi-extensions.json';
 
 @Injectable({ providedIn: 'root' })
 export class MockLookupService extends MockBaseService {
@@ -89,6 +90,13 @@ export class MockLookupService extends MockBaseService {
   // add-section-entity-modal's computed()/template without a subscription.
   getCbiCaseTypesSync(): LookupOption[] {
     return this.lookups.cbiCaseTypes;
+  }
+
+  /** BMPCC-18249 AC01/AC02: only the CBI case types the policy offers. Empty = no CBI question. */
+  getCbiCaseTypesForPolicy(policyNumber: string | null): LookupOption[] {
+    const allowed = (policyCbiExtensions as Record<string, string[] | string>)[policyNumber ?? ''];
+    if (!Array.isArray(allowed)) return this.lookups.cbiCaseTypes;
+    return this.lookups.cbiCaseTypes.filter(o => allowed.includes(o.value));
   }
   // Same reason again — read by add/edit-damaged-item-modal to populate
   // "Caused by" as a field initialiser.

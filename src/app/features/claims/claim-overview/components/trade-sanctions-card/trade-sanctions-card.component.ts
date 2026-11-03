@@ -15,6 +15,7 @@ import {
   ConfirmDialogData
 } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
+import { AppDatePipe } from '../../../../../shared/pipes/app-date.pipe';
 import {
   ClaimOverview,
   ClaimActivity,
@@ -68,6 +69,7 @@ export interface TradeSanctionsUpdated {
   selector: 'app-trade-sanctions-card',
   standalone: true,
   imports: [
+    AppDatePipe,
     ReactiveFormsModule,
     NxRadioModule,
     NxButtonModule,
@@ -191,7 +193,7 @@ export class TradeSanctionsCardComponent implements OnChanges {
     if (!this.canClear()) return;
     const data: ConfirmDialogData = {
       title: 'Clear trade sanctions check',
-      message: `${this.claim.claimId} will show as Not answered again. This does not delete the claim's history — it can be answered again at any time.`,
+      message: `${this.claim.claimId} will show as Not answered again. This does not delete the claim's history – it can be answered again at any time.`,
       confirmLabel: 'Clear answer',
       confirmDanger: true,
       cancelLabel: 'Back'
@@ -318,8 +320,8 @@ export class TradeSanctionsCardComponent implements OnChanges {
       timestamp: new Date().toISOString(),
       objectType: 'Claim',
       attribute: 'Trade sanctions check',
-      valueOld: previous?.exposure ?? 'Not answered',
-      valueNew: next?.exposure ?? 'Not answered'
+      valueOld: previous ? this.answerLabel(previous.exposure) : 'Not answered',
+      valueNew: next ? this.answerLabel(next.exposure) : 'Not answered'
     };
 
     this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });
@@ -353,8 +355,8 @@ export class TradeSanctionsCardComponent implements OnChanges {
       timestamp: new Date().toISOString(),
       objectType: 'Claim',
       attribute: 'Trade sanctions check',
-      valueOld: previous,
-      valueNew: next.exposure
+      valueOld: this.answerLabel(previous),
+      valueNew: this.answerLabel(next.exposure)
     };
 
     this.updated.emit({ claim: { ...claim, tradeSanctions: next }, activity });

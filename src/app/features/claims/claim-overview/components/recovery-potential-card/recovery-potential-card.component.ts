@@ -134,7 +134,7 @@ export class RecoveryPotentialCardComponent implements OnChanges {
     if (!this.canClear()) return;
     const data: ConfirmDialogData = {
       title: 'Clear recovery potential',
-      message: `${this.claim.claimId} will show as Not answered again. This does not delete the claim's history — it can be answered again at any time.`,
+      message: `${this.claim.claimId} will show as Not answered again. This does not delete the claim's history – it can be answered again at any time.`,
       confirmLabel: 'Clear answer',
       confirmDanger: true,
       cancelLabel: 'Back'

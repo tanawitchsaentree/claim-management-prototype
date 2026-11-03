@@ -20,11 +20,36 @@
   <div class="ts-collapse" [class.ts-collapse--open]="expanded">
     <div class="ts-collapse__inner">
       @if (isClosed()) {
-        <p class="co-value">
-          {{
-            saved()?.exposure === 'yes' ? 'Yes' : saved()?.exposure === 'no' ? 'No' : 'Not answered'
-          }}
-        </p>
+        <!-- BMPCC-18516 AC01: every stored answer, read-only. -->
+        @let s = saved();
+        <dl class="ts-readonly">
+          <div class="ts-readonly__row">
+            <dt>Exposure to trade sanctions?</dt>
+            <dd>{{ s?.exposure === 'yes' ? 'Yes' : s?.exposure === 'no' ? 'No' : 'Not answered' }}</dd>
+          </div>
+          @if (s && s.exposure === 'yes') {
+            <div class="ts-readonly__row">
+              <dt>Sanction referral applicable?</dt>
+              <dd>{{ s.referralApplicable === undefined ? '–' : s.referralApplicable ? 'Yes' : 'No' }}</dd>
+            </div>
+            <div class="ts-readonly__row">
+              <dt>Date of completion of ESRA</dt>
+              <dd>{{ s.esraCompletionDate ? (s.esraCompletionDate | appDate) : '–' }}</dd>
+            </div>
+            <div class="ts-readonly__row">
+              <dt>ESRA ID</dt>
+              <dd>{{ s.esraId || '–' }}</dd>
+            </div>
+            <div class="ts-readonly__row">
+              <dt>Sanction referral approved in ESRA?</dt>
+              <dd>{{ s.referralApproved === undefined ? '–' : s.referralApproved ? 'Yes' : 'No' }}</dd>
+            </div>
+            <div class="ts-readonly__row">
+              <dt>Additional comments</dt>
+              <dd>{{ s.comments || '–' }}</dd>
+            </div>
+          }
+        </dl>
       } @else {
         @if (namedThirdParties.length) {
           <div class="ts-named-parties">

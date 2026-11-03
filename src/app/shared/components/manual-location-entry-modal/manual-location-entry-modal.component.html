@@ -8,48 +8,54 @@
     </button>
   </div>
   <p class="mle-subtitle">
-    Search for an address, or enter the details manually / provide coordinates directly.
+    @if (cbi) {
+      Enter where the originating CBI event occurred. Fields marked * are required.
+    } @else {
+      Search for an address, or enter the details manually / provide coordinates directly.
+    }
   </p>
 </div>
 
 <div class="mle-body" tabindex="0">
-  <nx-formfield label="Search location" class="mle-gis-field">
-    <input nxInput [formControl]="gisSearch" autocomplete="off" />
-    @if (gisSearch.value) {
-      <nx-icon name="close" nxFormfieldSuffix (click)="clearGisSearch()"></nx-icon>
-    } @else {
-      <nx-icon name="search" nxFormfieldSuffix></nx-icon>
-    }
-  </nx-formfield>
-
-  @if (gisSearch.value && gisResults().length > 0 && !selectedGisSuggestion()) {
-    <ul class="mle-gis-suggestions">
-      @for (s of gisResults(); track s.formattedAddress) {
-        <li>
-          <button type="button" class="mle-gis-suggestion" (click)="selectSuggestion(s)">
-            {{ s.formattedAddress }}
-          </button>
-        </li>
+  @if (!cbi) {
+    <nx-formfield label="Search location" class="mle-gis-field">
+      <input nxInput [formControl]="gisSearch" autocomplete="off" />
+      @if (gisSearch.value) {
+        <nx-icon name="close" nxFormfieldSuffix (click)="clearGisSearch()"></nx-icon>
+      } @else {
+        <nx-icon name="search" nxFormfieldSuffix></nx-icon>
       }
-    </ul>
-  }
+    </nx-formfield>
 
-  @if (!isEdit) {
-    <nx-checkbox
-      [checked]="addAddressManually()"
-      (checkedChange)="toggleAddAddressManually($event)"
-    >
-      Add the address manually
-    </nx-checkbox>
-    <p class="mle-manual-hint">
-      If you do not know the exact address fill the additional location information field.
-    </p>
+    @if (gisSearch.value && gisResults().length > 0 && !selectedGisSuggestion()) {
+      <ul class="mle-gis-suggestions">
+        @for (s of gisResults(); track s.formattedAddress) {
+          <li>
+            <button type="button" class="mle-gis-suggestion" (click)="selectSuggestion(s)">
+              {{ s.formattedAddress }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (!isEdit) {
+      <nx-checkbox
+        [checked]="addAddressManually()"
+        (checkedChange)="toggleAddAddressManually($event)"
+      >
+        Add the address manually
+      </nx-checkbox>
+      <p class="mle-manual-hint">
+        If you do not know the exact address fill the additional location information field.
+      </p>
+    }
   }
 
   @if (showManualGrid()) {
     <form [formGroup]="form" class="mle-manual-form">
       <div class="mle-manual-grid">
-        <nx-formfield label="Country">
+        <nx-formfield [label]="cbi ? 'Country *' : 'Country'">
           <nx-dropdown formControlName="country" placeholder="Select">
             @for (c of (countries$ | async) ?? []; track c.value) {
               <nx-dropdown-item [value]="c.value">{{ c.label }}</nx-dropdown-item>
@@ -59,29 +65,37 @@
         <nx-formfield label="State / Province">
           <input nxInput formControlName="state" autocomplete="off" />
         </nx-formfield>
-        <nx-formfield label="City">
+        <nx-formfield [label]="cbi ? 'City *' : 'City'">
           <input nxInput formControlName="city" autocomplete="off" />
         </nx-formfield>
         <nx-formfield label="Street">
           <input nxInput formControlName="street" autocomplete="off" />
         </nx-formfield>
-        <nx-formfield label="Number">
+        <nx-formfield [label]="cbi ? 'House number' : 'Number'">
           <input nxInput formControlName="number" autocomplete="off" />
         </nx-formfield>
-        <nx-formfield label="ZIP / Postal code">
+        <nx-formfield [label]="cbi ? 'ZIP / Postal code *' : 'ZIP / Postal code'">
           <input nxInput formControlName="postalCode" autocomplete="off" />
         </nx-formfield>
-        <nx-formfield label="Latitude">
-          <input nxInput formControlName="latitude" autocomplete="off" />
-        </nx-formfield>
-        <nx-formfield label="Longitude">
-          <input nxInput formControlName="longitude" autocomplete="off" />
-        </nx-formfield>
+        @if (cbi) {
+          <nx-formfield label="Land record number">
+            <input nxInput formControlName="landRecordNumber" autocomplete="off" />
+          </nx-formfield>
+        } @else {
+          <nx-formfield label="Latitude">
+            <input nxInput formControlName="latitude" autocomplete="off" />
+          </nx-formfield>
+          <nx-formfield label="Longitude">
+            <input nxInput formControlName="longitude" autocomplete="off" />
+          </nx-formfield>
+        }
       </div>
-      <nx-formfield label="Additional location information" class="mle-manual-form__notes">
-        <input nxInput formControlName="additionalInfo" [maxlength]="300" autocomplete="off" />
-        <nx-hint nxFormfieldHint>{{ descLength() }}/300</nx-hint>
-      </nx-formfield>
+      @if (!cbi) {
+        <nx-formfield label="Additional location information" class="mle-manual-form__notes">
+          <input nxInput formControlName="additionalInfo" [maxlength]="300" autocomplete="off" />
+          <nx-hint nxFormfieldHint>{{ descLength() }}/300</nx-hint>
+        </nx-formfield>
+      }
     </form>
   }
 </div>

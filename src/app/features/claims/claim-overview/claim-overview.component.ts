@@ -449,6 +449,8 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.vm$.next({
       ...cur,
       claim: { ...cur.claim, tradeSanctions: claim.tradeSanctions },
+      // BMPCC-21381 AC02/AC03: a recorded answer collapses the panel.
+      tradeSanctionsExpanded: claim.tradeSanctions ? false : cur.tradeSanctionsExpanded,
       activities: [activity, ...cur.activities]
     });
   }

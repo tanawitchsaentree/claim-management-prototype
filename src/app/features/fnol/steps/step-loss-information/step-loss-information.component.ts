@@ -122,7 +122,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   readonly cbiLocation = this.fnolState.getCbiLocationControl();
   readonly eventsArray = this.fnolState.getLossEventsArray();
   readonly policyNumber = this.fnolState.selectedPolicy?.policyNumber ?? null;
-  readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesSync();
+  readonly cbiCaseTypeOptions = this.lookupSvc.getCbiCaseTypesForPolicy(this.policyNumber);
 
   readonly maxDesc = 500;
   submitAttempted = false;
@@ -411,7 +411,8 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
           message: `${this.fieldLabels['cbiThirdPartyName']}: required`
         });
       }
-      if (this.cbiLocation.value.locations.length === 0) {
+      // BMPCC-18249 AC04: the originating location is only asked for supplier/customer case types.
+      if (this.showCbiThirdPartyName && this.cbiLocation.value.locations.length === 0) {
         errors.push({
           fieldId: 'cbiLocation',
           message: `${this.fieldLabels['cbiLocation']}: required`
@@ -569,22 +570,13 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   readonly cbiFeatureEnabled = true; // LOCAL ONLY for tonight's boss walkthrough — not deployed
 
   get showCbiQuestion(): boolean {
-    // ASSUMPTION [CBI-FNOL-2]: functional design gates this on the
-    // Conclusion Engine finding ≥1 possible CBI case for the policy
-    // (covers/extendedBy). No live AiP/Conclusion Engine exists in this
-    // prototype, so the question is shown whenever Business Interruption is
-    // selected — the full 12-option list is offered rather than a
-    // policy-filtered subset. Recorded, not blocking.
-    //
-    // BMPCC-17927 ticket scope, checked 2026-09-21: "shown when Business
-    // Interruption is checked and Property Damage is not" — CBI is BI caused
-    // by damage at a third party's premises, not the insured's own, so BI +
-    // Property Damage together isn't a CBI scenario. Missing the second half
-    // of that condition let the question appear on exactly that combination.
+    // BMPCC-18249 AC01 (revised 12 Oct): asked whenever BI is ticked,
+    // regardless of Property Damage, and only if the policy offers at least
+    // one CBI extension (mocked in policy-cbi-extensions.json).
     return (
       this.cbiFeatureEnabled &&
       this.selectedDamages.includes('business-interruption') &&
-      !this.selectedDamages.includes('material-damage')
+      this.cbiCaseTypeOptions.length > 0
     );
   }
 

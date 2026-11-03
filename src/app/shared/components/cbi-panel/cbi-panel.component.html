@@ -1,7 +1,7 @@
 <div class="cbi-panel" [formGroup]="form()">
   <p class="cbi-panel__label">Contingent business interruption (CBI)</p>
   <div class="radio-field" data-field="cbiApplicable">
-    <p class="radio-label">Is this Business Interruption due to Contingent Business Interruption (CBI)? *</p>
+    <p class="radio-label">Is the Business Interruption caused by Contingent Business Interruption (CBI)? *</p>
     <nx-radio-group class="radio-row" formControlName="cbiApplicable" (valueChange)="answerChange.emit()">
       <nx-radio labelSize="small" value="yes">Yes</nx-radio>
       <nx-radio labelSize="small" value="no">No</nx-radio>
@@ -42,17 +42,21 @@
         </div>
       }
     </div>
-    <div data-field="cbiLocation">
-      <app-location-picker
-        [policyNumber]="null"
-        [value]="cbiLocation().value"
-        [promptLabel]="'Where did the originating CBI event occur? *'"
-        [skipHintText]="''"
-        (locationChange)="onLocationChange($event)"
-      ></app-location-picker>
-      @if (submitAttempted() && cbiLocation().value.locations.length === 0) {
-        <p class="field-error">Originating loss location: required</p>
-      }
-    </div>
+    <!-- BMPCC-18249 AC04: originating location only for the 4 supplier/customer types. -->
+    @if (showName()) {
+      <div data-field="cbiLocation">
+        <app-location-picker
+          [policyNumber]="null"
+          [value]="cbiLocation().value"
+          [promptLabel]="'Where did the originating CBI event occur? *'"
+          [skipHintText]="''"
+          [cbiMode]="true"
+          (locationChange)="onLocationChange($event)"
+        ></app-location-picker>
+        @if (submitAttempted() && cbiLocation().value.locations.length === 0) {
+          <p class="field-error">Originating loss location: required</p>
+        }
+      </div>
+    }
   }
 </div>

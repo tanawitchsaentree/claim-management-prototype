@@ -23,6 +23,8 @@ export interface LocationItem {
   city: string;
   country: string;
   state?: string;
+  /** CBI originating location only (BMPCC-18250, legacy ABS field set). */
+  landRecordNumber?: string;
   propertyId?: string;
   latitude?: number;
   longitude?: number;

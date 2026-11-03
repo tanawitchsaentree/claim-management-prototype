@@ -17,6 +17,8 @@ import { GisAddressSuggestion, LocationItem, LookupOption } from '../../../core/
 
 export interface ManualLocationEntryModalData {
   seed?: LocationItem;
+  /** BMPCC-18250: manual only; Country, City, ZIP mandatory; adds Land record number. */
+  cbiMode?: boolean;
 }
 
 export type ManualLocationEntryModalResult = LocationItem | null;
@@ -86,6 +88,7 @@ export class ManualLocationEntryModalComponent implements OnInit {
     street: new FormControl(''),
     number: new FormControl(''),
     postalCode: new FormControl(''),
+    landRecordNumber: new FormControl(''),
     latitude: new FormControl<number | null>(null),
     longitude: new FormControl<number | null>(null),
     additionalInfo: new FormControl('', [Validators.maxLength(300)])
@@ -113,15 +116,24 @@ export class ManualLocationEntryModalComponent implements OnInit {
   readonly showManualGrid = computed(
     () => this.selectedGisSuggestion() !== null || this.addAddressManually() || this.isEdit
   );
-  readonly canConfirm = computed(
-    () => this.selectedGisSuggestion() !== null || this.hasManualData()
-  );
+  readonly canConfirm = computed(() => {
+    if (this.cbi) {
+      const v = this.formValue();
+      return !!v.country && !!v.city?.trim() && !!v.postalCode?.trim();
+    }
+    return this.selectedGisSuggestion() !== null || this.hasManualData();
+  });
+
+  get cbi(): boolean {
+    return !!this.data.cbiMode;
+  }
 
   get isEdit(): boolean {
     return !!this.data.seed;
   }
 
   ngOnInit(): void {
+    if (this.cbi) this.addAddressManually.set(true);
     const s = this.data.seed;
     if (!s) return;
     // Can't losslessly split a single stored addressLine1 back into
@@ -142,6 +154,7 @@ export class ManualLocationEntryModalComponent implements OnInit {
       state: s.state ?? '',
       latitude: s.latitude ?? null,
       longitude: s.longitude ?? null,
+      landRecordNumber: s.landRecordNumber ?? '',
       additionalInfo: s.additionalInfo ?? ''
     });
   }
@@ -201,6 +214,7 @@ export class ManualLocationEntryModalComponent implements OnInit {
       city: v.city || '',
       country: v.country ?? '',
       state: v.state || undefined,
+      landRecordNumber: v.landRecordNumber || undefined,
       latitude: v.latitude ?? undefined,
       longitude: v.longitude ?? undefined,
       additionalInfo: v.additionalInfo || undefined
