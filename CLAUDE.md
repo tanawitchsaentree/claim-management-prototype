@@ -112,9 +112,9 @@ Skipping = token waste. User has explicit permission to interrupt.
 
 ## Stack (full detail in `.claude/CONTEXT.md`)
 
-- Angular ^21.2.0 standalone (no NgModule)
-- `@allianz/ng-aquila` ^21.8.0 (NDBX components)
-- `@allianz/ngx-brand-kit` ^21.8.0 (tokens + fonts)
+- Angular ^22.2 standalone (no NgModule); components carry `ChangeDetectionStrategy.Eager` from the 22 migration (2026-11-03)
+- `@allianz/ng-aquila` ^22.6.0 (NDBX components; production is still on 21.10)
+- `@allianz/ngx-brand-kit` ^22.6.0 (tokens + fonts)
 - Reactive Forms only (no `ngModel`)
 
 ---

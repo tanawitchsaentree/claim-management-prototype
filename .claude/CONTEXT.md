@@ -16,9 +16,9 @@ Companion docs:
 
 | Layer                 | Package                  | Version |
 | --------------------- | ------------------------ | ------- |
-| Framework             | `@angular/core`          | ^21.2.0 |
-| Component library     | `@allianz/ng-aquila`     | ^21.8.0 |
-| Design tokens / fonts | `@allianz/ngx-brand-kit` | ^21.8.0 |
+| Framework             | `@angular/core`          | ^22.2.4 |
+| Component library     | `@allianz/ng-aquila`     | ^22.6.0 |
+| Design tokens / fonts | `@allianz/ngx-brand-kit` | ^22.6.0 |
 | Reactive extensions   | `rxjs`                   | ~7.8.0  |
 | Language              | `typescript`             | ~5.9.2  |
 

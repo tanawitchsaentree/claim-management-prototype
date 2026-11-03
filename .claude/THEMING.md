@@ -133,3 +133,16 @@ names the element and property that changed. `.theme-snapshots/` is gitignored.
   decisions, not theme values).
 - `--formfield-align-top/bottom` (22/23px) line buttons up with an nx-formfield
   input. Measured aligned in both themes; re-measure if formfield geometry changes.
+
+## Library upgrade (2026-11-03)
+
+Angular 22.2 + ng-aquila / ngx-brand-kit 22.6 (from 21.8). 22.6 adds Allianz One
+behaviour to button, tabs, badge, formfield, link, modal, header, context menu and
+slider, and `allianz-one.css` grew ~33%. Visually the A1 screens barely changed:
+those additions are behaviour (e.g. tabs never fold into an accordion in A1), not
+new looks. The A1 look in meeting screenshots (capsule tabs with counts, grey page
+canvas, icon-in-a-box KPI cards) is NOT in the library. Real values for those exist
+as component tokens in `@allianz/a1-design-tokens` (`segmented-control-*`, `tag-*`,
+`indicator-*`, `icon-contained-*`, `list-*`, `button-*`, `pagination-*`), and the
+brand-kit ships official density variants `allianz-one-dense.css` /
+`allianz-one-compact.css` (we load the standard one). Production is still on 21.10.
