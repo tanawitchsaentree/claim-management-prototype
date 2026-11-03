@@ -59,6 +59,7 @@
         <div class="eli-edit-row">
           <nx-formfield label="Cause of loss" class="eli-edit-input">
             <nx-multi-select
+              filter
               [options]="causeOfLossOptions()"
               selectValue="value"
               selectLabel="label"
@@ -71,20 +72,15 @@
               <nx-error nxFormfieldError>Cause of loss is required</nx-error>
             }
           </nx-formfield>
+          <!-- "Other" puts "Other Event (please specify)" beside it, same as FNOL. -->
+          @if (showSpecifyOtherCause) {
+            <app-other-cause-field
+              class="eli-edit-input"
+              [control]="$any(form.get('specifyOtherCauseOfLoss'))"
+              [showError]="submitAttempted && !!form.get('specifyOtherCauseOfLoss')?.invalid"
+            ></app-other-cause-field>
+          }
         </div>
-        @if (showSpecifyOtherCause) {
-          <nx-formfield label="Specify other cause of loss" class="eli-full-width">
-            <input
-              nxInput
-              formControlName="specifyOtherCauseOfLoss"
-              maxlength="100"
-              data-testid="specify-other-cause-of-loss-input"
-            />
-            @if (submitAttempted && form.get('specifyOtherCauseOfLoss')?.invalid) {
-              <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
-            }
-          </nx-formfield>
-        }
       }
 
       <hr class="eli-divider" />

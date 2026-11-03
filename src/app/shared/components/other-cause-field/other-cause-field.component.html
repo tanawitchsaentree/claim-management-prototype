@@ -1,0 +1,17 @@
+<nx-formfield label="Other Event (please specify)">
+  <input
+    nxInput
+    type="text"
+    [formControl]="control()"
+    maxlength="100"
+    data-testid="specify-other-cause-of-loss-input"
+    [nxAutocomplete]="otherCauseAuto"
+    [nxAutocompleteItems]="suggestions"
+    [nxAutocompleteDebounce]="300"
+    (keyup)="onKeyUp($event)"
+  />
+  @if (showError()) {
+    <nx-error nxFormfieldError>Describe the cause of loss</nx-error>
+  }
+</nx-formfield>
+<nx-autocomplete #otherCauseAuto [valueFormatter]="keepPrefix"></nx-autocomplete>

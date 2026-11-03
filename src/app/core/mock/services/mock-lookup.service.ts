@@ -4,6 +4,7 @@ import { Lookups, LookupOption, LocationTypeOption } from '../../models';
 import { MockBaseService } from './mock-base.service';
 import lookupsData from '../data/lookups.json';
 import policyCbiExtensions from '../data/policy-cbi-extensions.json';
+import lossCauseSuggestions from '../data/loss-cause-suggestions.json';
 
 @Injectable({ providedIn: 'root' })
 export class MockLookupService extends MockBaseService {
@@ -30,6 +31,16 @@ export class MockLookupService extends MockBaseService {
   }
   getCauseOfLoss(): Observable<LookupOption[]> {
     return this.respond(this.lookups.causeOfLoss);
+  }
+  /**
+   * Suggestions for "Other Event (please specify)". Same rule as production
+   * (general-information.service.ts getLossCauseSuggestions): match on the
+   * last word typed, case-insensitive.
+   */
+  getLossCauseSuggestions(query: string): Observable<string[]> {
+    const lastWord = (query.trim().split(/\s+/).at(-1) ?? '').toLowerCase();
+    const all = lossCauseSuggestions.suggestions;
+    return this.respond(lastWord ? all.filter(s => s.toLowerCase().includes(lastWord)) : []);
   }
   getTypeOfDamage(): Observable<LookupOption[]> {
     return this.respond(this.lookups.typeOfDamage);

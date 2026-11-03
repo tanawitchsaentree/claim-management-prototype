@@ -65,6 +65,7 @@ import { FnolLossInfoStage } from '../../../../core/scenario/scenario-stage.mode
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { getErrorMessage } from '../../../../core/validators/error-messages';
+import { OtherCauseFieldComponent } from '../../../../shared/components/other-cause-field/other-cause-field.component';
 
 interface FormError {
   fieldId: string;
@@ -84,6 +85,7 @@ interface LossInfoVM {
   selector: 'app-step-loss-information',
   standalone: true,
   imports: [
+    OtherCauseFieldComponent,
     CommonModule,
     ReactiveFormsModule,
     CbiPanelComponent,

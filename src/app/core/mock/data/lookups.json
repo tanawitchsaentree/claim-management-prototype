@@ -78,7 +78,7 @@
       "label": "Event involving Kaufmann's Company or Kaufmann's Business"
     },
     { "value": "product-fault", "label": "Product Fault" },
-    { "value": "other-event", "label": "Other Event" }
+    { "value": "other-event", "label": "Other" }
   ],
   "typeOfDamage": [
     { "value": "material-damage", "label": "Material damage" },

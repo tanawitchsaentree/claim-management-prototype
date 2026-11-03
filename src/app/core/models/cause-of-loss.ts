@@ -21,7 +21,7 @@ export function causeLabel(code: string, options: LookupOption[]): string {
 
 /**
  * Codes the lookup knows (loose words mapped to their lookup cause). Anything
- * unknown is dropped; if nothing is left the result is "Other Event" and
+ * unknown is dropped; if nothing is left the result is "Other" and
  * `replaced` is true, so the screen can say why.
  */
 export function normalizeCauses(

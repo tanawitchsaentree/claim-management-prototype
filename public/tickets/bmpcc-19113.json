@@ -84,18 +84,18 @@
     },
     {
       "id": "AC-03",
-      "statement": "Link policy · No cause on the skeleton becomes Other Event and still gets a section",
-      "plainStatement": "**Opens:** Claim Overview of SK-2024-009 (damage reported, cause still unclear).\n\n**You see:** Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other Event and one section (never 0).",
+      "statement": "Link policy · No cause on the skeleton becomes Other and still gets a section",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-009 (damage reported, cause still unclear).\n\n**You see:** Step 2 shows **Cause of loss = Other** with the note \"The skeleton claim has no cause of loss, so it was set to Other. You can change it.\" and an optional *Specify other cause*.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other and one section (never 0).",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Skeleton with no cause",
         "preconditions": [
           {
-            "text": "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*.",
+            "text": "Step 2 shows **Cause of loss = Other** with the note \"The skeleton claim has no cause of loss, so it was set to Other. You can change it.\" and an optional *Specify other cause*.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other Event and one section (never 0)."
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other and one section (never 0)."
           }
         ],
         "stateOverrides": {},
@@ -106,15 +106,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*.",
+        "description": "Step 2 shows **Cause of loss = Other** with the note \"The skeleton claim has no cause of loss, so it was set to Other. You can change it.\" and an optional *Specify other cause*.",
         "visualCues": [
-          "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*."
+          "Step 2 shows **Cause of loss = Other** with the note \"The skeleton claim has no cause of loss, so it was set to Other. You can change it.\" and an optional *Specify other cause*."
         ]
       },
       "howToTest": {
         "route": "/claims/SK-2024-009/overview",
-        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other Event and one section (never 0).",
-        "expectedResult": "Step 2 shows **Cause of loss = Other Event** with the note \"The skeleton claim has no cause of loss, so it was set to Other Event. You can change it.\" and an optional *Specify other cause*."
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-006), Next, tick the coverage, Next, **Link policy**. The converted claim has the cause Other and one section (never 0).",
+        "expectedResult": "Step 2 shows **Cause of loss = Other** with the note \"The skeleton claim has no cause of loss, so it was set to Other. You can change it.\" and an optional *Specify other cause*."
       }
     },
     {

@@ -1,0 +1,26 @@
+{
+  "_note": "Mock for the loss-cause suggestion lookup behind 'Other Event (please specify)'. Production calls LOSS_CAUSE_API (claims-management-loss-events general-information.service.ts) and filters on the last typed word.",
+  "suggestions": [
+    "Fire",
+    "Lightning",
+    "Explosion",
+    "Aircraft Impact",
+    "Arson",
+    "Robbery",
+    "Burglary",
+    "Theft",
+    "Natural Event",
+    "Earthquake",
+    "Business Interruption",
+    "Act of Piracy",
+    "Act of Omission",
+    "Event involving Kaufmann's Company or Kaufmann's Business",
+    "Product Fault",
+    "Solar Flare / Solar Storm",
+    "Winterstorm",
+    "Unnamed Windstorm",
+    "Named Windstorm",
+    "Vandalism",
+    "Payment Card Industry Data Security Standards (PCIDSS)"
+  ]
+}

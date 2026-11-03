@@ -66,6 +66,7 @@ import {
   LossInfoDiffField,
   computeLossInfoDiffs
 } from './loss-info-diff';
+import { OtherCauseFieldComponent } from '../../../shared/components/other-cause-field/other-cause-field.component';
 
 type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
 type PerFieldKey =
@@ -80,6 +81,7 @@ type PerFieldKey =
   selector: 'app-edit-loss-information',
   standalone: true,
   imports: [
+    OtherCauseFieldComponent,
     ClaimNumberPipe,
     ReactiveFormsModule,
     RouterLink,
@@ -149,7 +151,7 @@ export class EditLossInformationComponent implements OnInit {
     // LossInformation model/service already carried typeOfDamage end to end,
     // this form just never exposed it.
     typeOfDamage: new FormControl<string[]>([], []),
-    // Free-text qualifier for the "Other Event" cause. The validator is
+    // Free-text qualifier for the "Other" cause. The validator is
     // attached at runtime by syncSpecifyOther() because "required" depends on
     // whether causeOfLoss currently includes that value. typeOfDamage has no
     // counterpart by design — see OTHER_CAUSE_KEY in core/models/lookup.model.ts.

@@ -185,9 +185,11 @@
       once. Circumstance and "specify other cause" stay directly under
       Cause of loss (both are filtered by/qualify it, not Type of damage). -->
       <div class="two-col-grid">
-        <div class="full-row" data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
+        <!-- "Other" puts "Other Event (please specify)" beside it, as in production. -->
+        <div [class.full-row]="!showSpecifyOtherCause" data-field="causeOfLoss" data-tour-id="li-cause-of-loss">
           <nx-formfield label="Cause of loss">
             <nx-multi-select
+              filter
               [options]="vm.causeOfLoss"
               selectValue="value"
               selectLabel="label"
@@ -204,18 +206,11 @@
         Event". There is no damage equivalent — typeOfDamage has no "Other"
         option by design, see OTHER_CAUSE_KEY in core/models/lookup.model.ts. -->
         @if (showSpecifyOtherCause) {
-          <div class="full-row" data-field="specifyOtherCauseOfLoss">
-            <nx-formfield label="Specify other cause of loss">
-              <input
-                nxInput
-                formControlName="specifyOtherCauseOfLoss"
-                maxlength="100"
-                data-testid="specify-other-cause-of-loss-input"
-              />
-              @if (showError(form.get('specifyOtherCauseOfLoss')!)) {
-                <nx-error nxFormfieldError> Describe the cause of loss </nx-error>
-              }
-            </nx-formfield>
+          <div data-field="specifyOtherCauseOfLoss">
+            <app-other-cause-field
+              [control]="$any(form.get('specifyOtherCauseOfLoss'))"
+              [showError]="showError(form.get('specifyOtherCauseOfLoss')!)"
+            ></app-other-cause-field>
           </div>
         }
         <!-- BMPCC-18160 — Incident circumstance. Single-select: one circumstance

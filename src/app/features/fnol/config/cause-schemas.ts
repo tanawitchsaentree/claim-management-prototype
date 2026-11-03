@@ -127,7 +127,7 @@ export const CAUSE_SCHEMAS: Record<string, CauseSchema> = {
   },
   'other-event': {
     causeKey: 'other-event',
-    causeLabel: 'Other Event',
+    causeLabel: 'Other',
     causedByOptions: [
       { value: 'specify', label: 'Please specify' },
       { value: 'other', label: 'Other' }
