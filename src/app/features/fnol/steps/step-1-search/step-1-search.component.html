@@ -186,7 +186,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (claim of pagedClaims(state.claims); track claim.claimId) {
+                    @for (claim of pagedClaims(state.claims); track claim.claimId + (claim.claimNumber ?? '')) {
                       <tr
                         class="results-row {{ getSkeletonRowClass(claim) }}"
                         [class.results-row--selected]="selectedClaimId === claim.claimId"
@@ -207,7 +207,7 @@
                             type="button"
                             (click)="$event.stopPropagation(); onViewClaim(claim.claimId)"
                           >
-                            {{ claim.claimId | claimNumber }}
+                            {{ claim.claimNumber || (claim.claimId | claimNumber) }}
                           </button>
                         </td>
                         <td>{{ claim.clientName }}</td>
@@ -222,6 +222,9 @@
                           ></app-status-chip>
                           @if (claim.skeletonState === 'matched' && claim.linkedClaimId) {
                             <span class="skeleton-linked">→ {{ claim.linkedClaimId }}</span>
+                          }
+                          @if (claim.status === 'Closed' && claim.closureReason) {
+                            <span class="closure-reason">{{ claim.closureReason }}</span>
                           }
                         </td>
                         <td class="skeleton-loss-desc">{{ claim.description }}</td>

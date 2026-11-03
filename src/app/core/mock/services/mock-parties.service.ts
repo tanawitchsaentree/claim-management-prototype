@@ -76,6 +76,11 @@ export class MockPartiesService extends MockBaseService {
     return this.respond(true);
   }
 
+  /** Puts back the orphan party list saved with a skeleton journey (after a reload). */
+  setOrphanParties(parties: Party[]): void {
+    this.orphanParties = [...parties];
+  }
+
   resetOrphanParties(): void {
     this.orphanParties = [];
   }

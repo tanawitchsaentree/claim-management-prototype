@@ -276,6 +276,12 @@ thead .col-action {
   margin-left: var(--space-ndbx-6);
 }
 
+.closure-reason {
+  display: block;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
 .skeleton-loss-desc {
   max-width: 200px;
   white-space: nowrap;

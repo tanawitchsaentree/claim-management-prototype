@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -34,6 +34,8 @@ import { Broker, LookupOption, LocationPickerOutput } from '../../../../core/mod
 import { LocationPickerComponent } from '../../../../shared/components/location-picker/location-picker.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
+import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { SKELETON_CLAIM_PARAM, SkeletonJourneyService } from '../../services/skeleton-journey.service';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 
 export type NotifierType = 'broker' | 'insured';
@@ -86,6 +88,10 @@ export class StepSkeletonCreateComponent implements OnInit {
   private lookupSvc = inject(MockLookupService);
   private router = inject(Router);
   private dialogSvc = inject(NxDialogService);
+  private route = inject(ActivatedRoute);
+  private journey = inject(SkeletonJourneyService);
+  private toast = inject(ToastService);
+  private saving = false;
 
   readonly reasonOptions = REASON_OPTIONS;
   readonly maxNotes = 500;
@@ -112,6 +118,8 @@ export class StepSkeletonCreateComponent implements OnInit {
   vm$!: Observable<LossInfoVM>;
 
   ngOnInit(): void {
+    // Reload: rebuild the journey from skeleton:<claimNumber> (BMPCC-18525 AC-6).
+    this.journey.restore(this.route.snapshot.queryParamMap.get(SKELETON_CLAIM_PARAM));
     this.vm$ = combineLatest({
       causeOfLoss: this.lookupSvc.getCauseOfLoss(),
       typeOfDamage: this.lookupSvc.getTypeOfDamage()
@@ -315,14 +323,22 @@ export class StepSkeletonCreateComponent implements OnInit {
     ctrl.setValue(list);
   }
   // ── Navigation ──────────────────────────────────────────────
-  onCancel(): void {
-    this.router.navigate(['/dashboard']);
+  // Cancel closes the claim already created in this journey (if any) and
+  // clears the journey (BMPCC-18525 AC-3/AC-7, BMPCC-20759 AC-4).
+  async onCancel(): Promise<void> {
+    try {
+      await this.journey.cancel();
+      this.router.navigate(['/dashboard']);
+    } catch {
+      this.toast.error('Could not cancel the claim', 'Nothing was changed. Please try again.');
+    }
   }
   onBack(): void {
     this.router.navigate(['/fnol/search']);
   }
 
-  onNext(): void {
+  async onNext(): Promise<void> {
+    if (this.saving) return;
     this.submitted = true;
     this.markAllTouched(this.form);
     this.markAllTouched(this.dateOfLoss);
@@ -346,7 +362,19 @@ export class StepSkeletonCreateComponent implements OnInit {
       this.fnolState.skeletonClaimId ?? ''
     );
     this.fnolState.path = 'orphan';
-    this.router.navigate(['/fnol/skeleton-parties']);
+    // Created once on the first Next, updated on every later one (AC-1/AC-2).
+    this.saving = true;
+    try {
+      await this.journey.upsertClaim();
+    } catch {
+      this.toast.error('Could not save the claim', 'Please try again.');
+      return;
+    } finally {
+      this.saving = false;
+    }
+    this.fnolState.markStepComplete('skeleton-create');
+    this.journey.save('skeleton-parties');
+    this.router.navigate(['/fnol/skeleton-parties'], { queryParams: this.journey.queryParams() });
   }
 
   private markAllTouched(g: AbstractControl): void {

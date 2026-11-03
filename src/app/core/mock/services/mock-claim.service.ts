@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../models';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
@@ -67,11 +67,25 @@ export class MockClaimService extends MockBaseService {
   create(payload: Omit<Claim, 'claimId' | 'dateCreated'>, idPrefix = 'CLM'): Observable<Claim> {
     const newClaim: Claim = {
       ...payload,
-      claimId: `${idPrefix}-${Date.now()}`,
+      claimId: idPrefix === 'SK' ? this.nextSkeletonId() : `${idPrefix}-${Date.now()}`,
       dateCreated: new Date().toISOString().split('T')[0]
     } as Claim;
     this.stateSvc.patchClaims(claims => [...claims, newClaim]);
     return this.respond(newClaim);
+  }
+
+  // New skeleton claims follow the seeded SK-YYYY-NNN pattern: one more than
+  // the highest SK number already used this year (as an id or a former
+  // number), so a new one never collides with a seeded or converted claim.
+  private nextSkeletonId(): string {
+    const prefix = `SK-${new Date().getFullYear()}-`;
+    const used = this.claims
+      .flatMap(c => [c.claimId, c.claimNumber ?? '', ...(c.formerClaimNumbers ?? [])])
+      .filter(n => n.startsWith(prefix))
+      .map(n => parseInt(n.slice(prefix.length), 10))
+      .filter(n => !Number.isNaN(n));
+    const seq = (used.length ? Math.max(...used) : 0) + 1;
+    return `${prefix}${String(seq).padStart(3, '0')}`;
   }
 
   // Used by the FNOL search page's Claims tab — run against every claim
@@ -109,8 +123,28 @@ export class MockClaimService extends MockBaseService {
           (c.formerClaimNumbers ?? []).some(f => f.toLowerCase().includes(q)) ||
           (c.lossEventId?.toLowerCase().includes(q) ?? false)
       );
+      results = results.flatMap(c => [...this.closedSkeletonRows(c, q), c]);
     }
     return this.list(results);
+  }
+
+  // BMPCC-18521 AC-6: once linked, the skeleton claim is closed and stays
+  // findable by its SK number. The record itself became the regular claim
+  // (same internal id, so sections/tasks/parties stay attached), so search
+  // returns a read-only Closed row for each matching former SK number. It is
+  // never stored, so dashboards and lists don't show it, and View opens the
+  // regular claim it turned into.
+  private closedSkeletonRows(c: Claim, q: string): Claim[] {
+    if (!c.claimNumber) return [];
+    return (c.formerClaimNumbers ?? [])
+      .filter(f => f.toLowerCase().includes(q))
+      .map(f => ({
+        ...c,
+        claimNumber: f,
+        formerClaimNumbers: [],
+        status: 'Closed' as ClaimStatus,
+        closureReason: `Policy linked, now ${c.claimNumber}`
+      }));
   }
 
   update(claimId: string, payload: Partial<Claim>): Observable<Claim> {
@@ -157,6 +191,29 @@ export class MockClaimService extends MockBaseService {
       skeletonState: 'abandoned',
       abandonReason: reason
     });
+  }
+
+  // BMPCC-18525 AC-3: Cancel in the skeleton journey closes the claim it
+  // already created (same as the regular FNOL rollback), reason "cancelled by
+  // user". No skeletonState: it never reached the orphan queue as a real
+  // case, so it offers no Link policy / Reopen actions.
+  closeCancelledSkeleton(claimId: string, reason: string): Observable<Claim> {
+    // Simulated failure lands before anything is written, so a failed
+    // rollback leaves the claim exactly as it was (AC-4: retry is possible).
+    return this.respond(claimId).pipe(
+      map(id => {
+        const existing = this.claims.find(c => c.claimId === id);
+        if (!existing) throw new Error(`Unknown claim ${id}`);
+        const updated: Claim = {
+          ...existing,
+          status: 'Closed',
+          closureReason: reason,
+          skeletonState: undefined
+        };
+        this.stateSvc.patchClaims(claims => claims.map(c => (c.claimId === id ? updated : c)));
+        return updated;
+      })
+    );
   }
 
   reopenSkeleton(claimId: string): Observable<Claim> {

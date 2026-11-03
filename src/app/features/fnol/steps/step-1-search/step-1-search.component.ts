@@ -64,6 +64,7 @@ type SearchState =
 const UNDERWRITING_YEARS = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
 const PAGE_SIZE = 10;
 import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
+import { SkeletonJourneyService } from '../../services/skeleton-journey.service';
 
 @Component({
   selector: 'app-step-1-search',
@@ -109,6 +110,7 @@ export class Step1SearchComponent {
   private router = inject(Router);
   private dialogSvc = inject(NxDialogService);
   private toast = inject(ToastService);
+  private skeletonJourney = inject(SkeletonJourneyService);
 
   readonly years = UNDERWRITING_YEARS;
   readonly linesOfBusiness = lookupsData.linesOfBusiness;
@@ -595,6 +597,7 @@ export class Step1SearchComponent {
   }
 
   onRegisterSkeleton(): void {
+    this.skeletonJourney.startNew();
     const clientName = (this.form.get('clientName')?.value as string)?.trim() ?? '';
     if (clientName) {
       this.fnolState.setSelectedClient({ clientId: '', clientName });

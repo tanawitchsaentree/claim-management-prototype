@@ -593,14 +593,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         `${skeleton.claimId} is now ${converted.claimNumber}`,
         linkedMessage(policy.policyNumber, converted.locationNeedsReconfirm && !replaced)
       );
-      // Next job on a freshly linked claim is its reserves: land on Financial
-      // overview with Add reserve open on the cause-based first section.
-      const [first] = await firstValueFrom(this.sectionSvc.getByClaimId(skeleton.claimId)).catch(
-        () => []
-      );
-      void this.router.navigate(['/claims', skeleton.claimId, 'financial'], {
-        queryParams: { addReserve: 1, ...(first ? { section: first.id } : {}) }
-      });
+      // BMPCC-18521 AC-6: land back on Claims Overview, which now shows the
+      // regular claim and its new number (the page reloads from mock state).
+      // The reserves follow-up is already a task in the handler's queue.
+      void this.router.navigate(['/claims', skeleton.claimId]);
     } catch {
       this.toast.error('Could not link the policy', 'Nothing was changed. Please try again.');
     }

@@ -92,4 +92,7 @@ export interface Claim {
   linkedClaimId?: string;
   slaDeadlineDays?: number;
   abandonReason?: string;
+  // Why the claim was closed when it was closed without a closure workflow,
+  // e.g. "cancelled by user" when the skeleton journey is cancelled (BMPCC-18525).
+  closureReason?: string;
 }

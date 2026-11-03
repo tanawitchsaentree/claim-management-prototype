@@ -1,8 +1,8 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, switchMap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTableModule } from '@allianz/ng-aquila/table';
@@ -28,6 +28,8 @@ import {
   EditRoleDialogData
 } from '../../components/edit-role-dialog/edit-role-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
+import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { SKELETON_CLAIM_PARAM, SkeletonJourneyService } from '../../services/skeleton-journey.service';
 
 interface PartiesVM {
   parties: Party[];
@@ -74,6 +76,9 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   private readonly fnolState = inject(FnolStateService);
   private readonly router = inject(Router);
   private readonly dialogSvc = inject(NxDialogService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly journey = inject(SkeletonJourneyService);
+  private readonly toast = inject(ToastService);
 
   // Side panel state
   selectedParty: Party | null = null;
@@ -84,7 +89,12 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   vm$!: Observable<PartiesVM>;
 
   ngOnInit(): void {
-    if (!this.fnolState.skeleton) {
+    // Reload: rebuild the journey from skeleton:<claimNumber> and stay on this
+    // step (BMPCC-18525 AC-6, BMPCC-20759 AC-2).
+    const restored = this.journey.restore(
+      this.route.snapshot.queryParamMap.get(SKELETON_CLAIM_PARAM)
+    );
+    if (!restored || !this.fnolState.skeletonClaimId) {
       this.router.navigate(['/fnol/skeleton-create']);
       return;
     }
@@ -92,6 +102,8 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
     this.vm$ = this.refresh$.pipe(
       switchMap(() =>
         this.partiesSvc.getOrphanParties().pipe(
+          // Every party change is saved with the journey so a reload keeps it.
+          tap(parties => this.journey.save('skeleton-parties', parties)),
           map(parties => ({ parties, loading: false, error: false })),
           catchError(() => of({ parties: [], loading: false, error: true }))
         )
@@ -230,13 +242,22 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    this.router.navigate(['/fnol/skeleton-create']);
+    this.journey.save('skeleton-create');
+    this.router.navigate(['/fnol/skeleton-create'], { queryParams: this.journey.queryParams() });
   }
-  onCancel(): void {
-    this.router.navigate(['/dashboard']);
+  // Closes the skeleton claim as "cancelled by user" and clears the journey;
+  // on failure the handler stays here to retry (BMPCC-18525 AC-3/AC-4).
+  async onCancel(): Promise<void> {
+    try {
+      await this.journey.cancel();
+      this.router.navigate(['/dashboard']);
+    } catch {
+      this.toast.error('Could not cancel the claim', 'Nothing was changed. Please try again.');
+    }
   }
   onNext(): void {
     this.fnolState.markStepComplete('skeleton-parties');
-    this.router.navigate(['/fnol/skeleton-summary']);
+    this.journey.save('skeleton-summary');
+    this.router.navigate(['/fnol/skeleton-summary'], { queryParams: this.journey.queryParams() });
   }
 }

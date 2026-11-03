@@ -98,24 +98,15 @@
         </dl>
       </section>
 
-      <div class="step-footer">
-        <button nxButton="tertiary" type="button" (click)="onBack()" [disabled]="saving()">
-          Back
-        </button>
-        <button
-          nxButton="primary"
-          type="button"
-          data-tour-id="sks-create-button"
-          (click)="onCreate()"
-          [disabled]="saving()"
-        >
-          @if (saving()) {
-            <nx-spinner size="small" negative></nx-spinner>
-          } @else {
-            Create
-          }
-        </button>
-      </div>
+      <app-wizard-footer
+        data-tour-id="sks-create-button"
+        [nextLabel]="saving() ? 'Creating…' : 'Create'"
+        [nextDisabled]="saving()"
+        (cancelClick)="onCancel()"
+        (back)="onBack()"
+        (next)="onCreate()"
+      >
+      </app-wizard-footer>
     }
   }
 </div>
