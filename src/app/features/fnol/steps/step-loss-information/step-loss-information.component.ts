@@ -158,7 +158,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     'dateOfLoss': 'Date of loss (group)',
     'causeOfLoss': 'Cause of loss',
     'typeOfDamage': 'Type of damage',
-    'specifyOtherCauseOfLoss': 'Specify other cause of loss',
+    'specifyOtherCauseOfLoss': 'Other Event (please specify)',
     'cbiApplicable': 'Contingent business interruption',
     'cbiCaseType': 'CBI case type',
     'cbiThirdPartyName': 'Third-party name',

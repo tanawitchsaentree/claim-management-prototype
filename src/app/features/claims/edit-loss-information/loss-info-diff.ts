@@ -34,7 +34,7 @@ export const LABEL_TO_FIELD_KEY: Record<string, string> = {
   'Type of damages': 'typeOfDamage',
   // The qualifier points at the group whose edit block contains it, so the
   // changed-field highlight lands where the user can actually see the input.
-  'Specify other cause of loss': 'causeOfLoss',
+  'Other Event (please specify)': 'causeOfLoss',
   // BMPCC-18160 — its own field group. Options are filtered by cause of loss,
   // but it gets its own Update link like every other field on this screen, and
   // its highlight has to land on its own row rather than on the cause's.
@@ -126,7 +126,7 @@ export function computeLossInfoDiffs(
   );
   // Deliberately NOT in IMPACT_LABELS — retyping the qualifier describes the
   // same cause more precisely, it doesn't re-point ClaimSection.damageType.
-  addIf('Specify other cause of loss', orig.specifyOtherCauseOfLoss, cur.specifyOtherCauseOfLoss);
+  addIf('Other Event (please specify)', orig.specifyOtherCauseOfLoss, cur.specifyOtherCauseOfLoss);
   // BMPCC-18160 — compared as labels, not keys: this diff is read by a human in
   // the confirm modal, and 'hot-work' tells them nothing. Deliberately NOT in
   // IMPACT_LABELS — a more precise circumstance doesn't re-point any section.
