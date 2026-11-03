@@ -129,11 +129,24 @@ export class ClaimDevBannerComponent implements OnInit, OnDestroy {
 
   // Tickets for the page the tester is on come first ("On this page"); the rest
   // fall under their module headers. A ticket is listed once, never in both.
+  // What's typed in the picker's search box. We filter here (not NDBX's own
+  // text filter) so a search also matches the module and every Jira key the
+  // ticket mentions (e.g. 18348 finds all 8 GG tickets), and empty groups drop out.
+  readonly ticketSearch = signal('');
+  readonly keepAll = (): boolean => true;
+
+  private matchesSearch(t: DevTicket, q: string): boolean {
+    if (!q) return true;
+    const keys = JSON.stringify(t).match(/BMPCC-\d+/g) ?? [];
+    return [t.ticketId, t.title, t.module ?? '', ...keys].join(' ').toLowerCase().includes(q);
+  }
+
   readonly groupedTickets = computed<{ module: string; tickets: DevTicket[] }[]>(() => {
     const page = this.helper.currentPage();
+    const q = this.ticketSearch().trim().toLowerCase();
     const here: DevTicket[] = [];
     const map = new Map<string, DevTicket[]>();
-    for (const t of this.helper.tickets()) {
+    for (const t of this.helper.tickets().filter(x => this.matchesSearch(x, q))) {
       if (page && (t.pages as string[]).includes(page)) {
         here.push(t);
         continue;

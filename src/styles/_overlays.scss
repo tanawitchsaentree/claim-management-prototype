@@ -220,3 +220,19 @@
     width: 100vw;
   }
 }
+
+// ── Dev banner ticket picker ────────────────────────────────────────────────
+// NDBX caps a dropdown at 6 rows. The tester's ticket list is ~35 one-line
+// rows, so let only this panel use most of the screen height.
+.nx-dropdown__panel-body:has(.cdb-ticket-option) {
+  max-height: 70vh !important;
+}
+
+// Long ticket titles end in "…" instead of running past the panel edge.
+.nx-dropdown__panel-body:has(.cdb-ticket-option) .nx-dropdown-results__option-label {
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}

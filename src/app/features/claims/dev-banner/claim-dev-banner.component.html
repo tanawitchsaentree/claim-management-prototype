@@ -13,7 +13,12 @@
           [valueFormatter]="ticketLabel"
           placeholder="Pick a ticket to test"
           [showFilter]="true"
-          filterPlaceholder="Search tickets…"
+          filterPlaceholder="Search by ticket number or title…"
+          [filterFn]="keepAll"
+          (filterInput)="ticketSearch.set($event)"
+          (openedChange)="!$event && ticketSearch.set('')"
+          [panelGrow]="true"
+          [panelMaxWidth]="720"
           (selectionChange)="onTicketSelectionChange($event)"
         >
           <ng-template nxClosedLabel>{{ ticketLabel(ticketCtrl.value) }}</ng-template>
@@ -21,23 +26,23 @@
             <nx-dropdown-group [label]="group.module">
               @for (ticket of group.tickets; track ticket.ticketId) {
                 <nx-dropdown-item [value]="ticket.ticketId">
-                  <div class="cdb-ticket-option">
-                    <div class="cdb-ticket-title">{{ ticket.title }}</div>
-                    <div class="cdb-ticket-stats">
-                      <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
-                      <span>
-                        ✅ {{ countByStatus(ticket, 'done') }}
-                        @if (countByStatus(ticket, 'partial') > 0) {
-                          · ⏳ {{ countByStatus(ticket, 'partial') }}
-                        }
-                        @if (countByStatus(ticket, 'todo') > 0) {
-                          · ⬜ {{ countByStatus(ticket, 'todo') }}
-                        }
-                        @if (verifiedCount(ticket) > 0) {
-                          · ✓ {{ verifiedCount(ticket) }} verified
-                        }
-                      </span>
-                    </div>
+                  <!-- One line per ticket so ~12 fit without scrolling; the filter
+                       matches this text, so the ID and the title are both searchable. -->
+                  <div class="cdb-ticket-option" [title]="ticket.ticketId + ' · ' + ticket.title">
+                    <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
+                    <span class="cdb-ticket-title">{{ ticket.title }}</span>
+                    <span class="cdb-ticket-stats">
+                      ✅ {{ countByStatus(ticket, 'done') }}
+                      @if (countByStatus(ticket, 'partial') > 0) {
+                        ⏳ {{ countByStatus(ticket, 'partial') }}
+                      }
+                      @if (countByStatus(ticket, 'todo') > 0) {
+                        ⬜ {{ countByStatus(ticket, 'todo') }}
+                      }
+                      @if (verifiedCount(ticket) > 0) {
+                        ✓ {{ verifiedCount(ticket) }}
+                      }
+                    </span>
                   </div>
                 </nx-dropdown-item>
               }
