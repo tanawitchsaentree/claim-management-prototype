@@ -1,0 +1,1 @@
+import{Q as Nw,Si as y}from"./chunk-C-dTujsn.js";import{d as u}from"./main-6FPLYTXL.js";var a=class r{numbers=y(u);transform(e){return this.numbers.displayFor(e)}static ɵfac=function(m){return new(m||r)};static ɵpipe=Nw({name:`claimNumber`,type:r,pure:!1})};export{a as t};

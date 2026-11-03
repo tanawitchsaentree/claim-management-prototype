@@ -1,0 +1,1 @@
+import{Q as Nw}from"./chunk-C-dTujsn.js";import{n as m}from"./chunk-cJh7gRuD.js";var n=class r{transform(e){return m(e)||`–`}static ɵfac=function(a){return new(a||r)};static ɵpipe=Nw({name:`circumstanceLabel`,type:r,pure:!0})};export{n as t};

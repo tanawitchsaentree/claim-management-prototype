@@ -1,0 +1,1 @@
+import{T as H,_r as mi}from"./chunk-C-dTujsn.js";var s=class i{claimId=mi(null);x=mi(0);y=mi(0);visible=mi(!1);show(a,t,o){this.claimId.set(a),this.x.set(t),this.y.set(o),this.visible.set(!0)}hide(){this.visible.set(!1)}static ɵfac=function(t){return new(t||i)};static ɵprov=H({token:i,factory:i.ɵfac,providedIn:`root`})};export{s as t};
