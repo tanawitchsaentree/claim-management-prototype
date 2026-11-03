@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
@@ -11,8 +11,15 @@ import { Payee, PAYMENT_METHODS, PaymentMethodOption } from '../../../../core/mo
 @Component({
   selector: 'app-method-section',
   standalone: true,
-  imports: [ReactiveFormsModule, NxDatefieldModule, NxDropdownModule, NxFormfieldModule, NxInputModule],
+  imports: [
+    ReactiveFormsModule,
+    NxDatefieldModule,
+    NxDropdownModule,
+    NxFormfieldModule,
+    NxInputModule
+  ],
   templateUrl: './method-section.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './method-section.component.scss'
 })
 export class MethodSectionComponent {

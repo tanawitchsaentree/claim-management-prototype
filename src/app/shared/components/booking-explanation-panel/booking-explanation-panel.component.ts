@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -27,6 +27,7 @@ const WHO_LINE: Record<'finance' | 'approver' | 'nobody', string> = {
   standalone: true,
   imports: [RouterLink, NxButtonModule],
   templateUrl: './booking-explanation-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './booking-explanation-panel.component.scss'
 })
 export class BookingExplanationPanelComponent {
@@ -51,7 +52,9 @@ export class BookingExplanationPanelComponent {
     return who && who !== 'you' ? WHO_LINE[who] : null;
   });
   readonly sendAgain = computed(() => canSendAgain(this.item()));
-  readonly canResubmit = computed(() => this.kind() === 'payment' && this.approvalStatus() === 'Requires amendment');
+  readonly canResubmit = computed(
+    () => this.kind() === 'payment' && this.approvalStatus() === 'Requires amendment'
+  );
   readonly taskId = computed(() => this.item().bookingIssue?.taskId);
 
   async onSendAgain(): Promise<void> {

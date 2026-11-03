@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -42,6 +49,7 @@ export interface ClaimDevDetailsModalData {
     InlineMarkdownPipe
   ],
   templateUrl: './claim-dev-details-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-dev-details-modal.component.scss'
 })
 export class ClaimDevDetailsModalComponent implements OnInit {

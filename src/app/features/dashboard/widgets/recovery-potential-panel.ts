@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -71,6 +71,7 @@ const PREVIEW = 5;
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       :host {

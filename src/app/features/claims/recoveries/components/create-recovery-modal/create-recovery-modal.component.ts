@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NX_MODAL_DATA, NxModalModule, NxModalRef } from '@allianz/ng-aquila/modal';
@@ -42,6 +42,7 @@ export interface CreateRecoveryModalResult {
     NxMessageModule
   ],
   templateUrl: './create-recovery-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-recovery-modal.component.scss'
 })
 export class CreateRecoveryModalComponent {

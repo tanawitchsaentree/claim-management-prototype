@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -28,6 +28,7 @@ export type AbandonSkeletonModalResult = string | null;
     NxIconModule
   ],
   templateUrl: './abandon-skeleton-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './abandon-skeleton-modal.component.scss'
 })
 export class AbandonSkeletonModalComponent {

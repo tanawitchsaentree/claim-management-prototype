@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NxModalModule, NX_MODAL_DATA, NxModalRef } from '@allianz/ng-aquila/modal';
@@ -36,6 +36,7 @@ export const COVERAGE_REVIEW_OPTIONS: CoverageReview[] = [
     NxInputModule
   ],
   templateUrl: './coverage-review-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './coverage-review-modal.component.scss'
 })
 export class CoverageReviewModalComponent {

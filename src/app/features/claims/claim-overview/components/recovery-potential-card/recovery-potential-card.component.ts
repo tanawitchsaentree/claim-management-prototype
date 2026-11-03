@@ -6,7 +6,8 @@ import {
   Output,
   computed,
   inject,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -74,6 +75,7 @@ export interface RecoveryPotentialUpdated {
     StatusChipComponent
   ],
   templateUrl: './recovery-potential-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recovery-potential-card.component.scss'
 })
 export class RecoveryPotentialCardComponent implements OnChanges {

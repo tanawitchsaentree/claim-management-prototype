@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
@@ -89,6 +89,7 @@ import { SkeletonJourneyService } from '../../services/skeleton-journey.service'
   ],
   templateUrl: './step-1-search.component.html',
   styleUrl: './step-1-search.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('expandCollapse', [
       transition(':enter', [
@@ -327,8 +328,14 @@ export class Step1SearchComponent {
         message: `${skeleton.claimId} will be linked to this policy, moved out of the orphan-claim queue and given a regular claim number. ${skeleton.claimId} stays searchable as its previous number. This cannot be undone.`,
         changes: [
           { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
-          { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
-          ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
+          {
+            label: 'Policy number',
+            original: skeleton.policyNumber || '–',
+            updated: policy.policyNumber
+          },
+          ...(policy.broker
+            ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }]
+            : [])
         ],
         confirmLabel: 'Link policy'
       } satisfies ConfirmDialogData,
@@ -429,7 +436,11 @@ export class Step1SearchComponent {
         title: 'Extend SLA',
         message: `Give ${claim.claimId} ${addedDays} more days before its SLA deadline.`,
         changes: [
-          { label: 'SLA deadline', original: `${current} days`, updated: `${current + addedDays} days` }
+          {
+            label: 'SLA deadline',
+            original: `${current} days`,
+            updated: `${current + addedDays} days`
+          }
         ],
         confirmLabel: 'Extend'
       } satisfies ConfirmDialogData,

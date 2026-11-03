@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -16,6 +16,7 @@ export interface EditRoleDialogData {
   standalone: true,
   imports: [ReactiveFormsModule, NxModalModule, NxCheckboxModule, NxButtonModule, NxIconModule],
   templateUrl: './edit-role-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './edit-role-dialog.component.scss'
 })
 export class EditRoleDialogComponent {

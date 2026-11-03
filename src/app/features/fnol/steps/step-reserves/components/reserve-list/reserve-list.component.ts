@@ -6,7 +6,8 @@ import {
   Output,
   SimpleChanges,
   inject,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -28,6 +29,7 @@ export type ReserveListViewMode = 'one' | 'all-flat' | 'all-grouped';
   standalone: true,
   imports: [DecimalPipe, NxIconModule, NxButtonModule, NxTableModule, NxContextMenuModule],
   templateUrl: './reserve-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reserve-list.component.scss'
 })
 export class ReserveListComponent implements OnChanges {

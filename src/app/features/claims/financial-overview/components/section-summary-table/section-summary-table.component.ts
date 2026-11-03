@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { FinancialSectionSummaryRow } from '../../../../../core/models/financial-overview.model';
@@ -8,6 +8,7 @@ import { FinancialSectionSummaryRow } from '../../../../../core/models/financial
   standalone: true,
   imports: [DecimalPipe, NxTableModule],
   templateUrl: './section-summary-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../fo-table-shared.scss', './section-summary-table.component.scss']
 })
 export class SectionSummaryTableComponent {

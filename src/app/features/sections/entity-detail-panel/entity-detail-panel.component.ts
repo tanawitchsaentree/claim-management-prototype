@@ -1,5 +1,14 @@
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { Component, Input, Output, EventEmitter, inject, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  signal,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -113,6 +122,7 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     AppDatePipe
   ],
   templateUrl: './entity-detail-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entity-detail-panel.component.scss'
 })
 export class EntityDetailPanelComponent implements OnInit {

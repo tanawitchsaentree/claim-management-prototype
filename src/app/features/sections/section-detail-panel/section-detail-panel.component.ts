@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -29,6 +37,7 @@ import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.
     CircumstanceLabelPipe
   ],
   templateUrl: './section-detail-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './section-detail-panel.component.scss'
 })
 export class SectionDetailPanelComponent {

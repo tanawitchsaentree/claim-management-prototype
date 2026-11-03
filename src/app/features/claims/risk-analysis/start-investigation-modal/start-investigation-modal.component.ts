@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -40,6 +40,7 @@ interface User {
     NxDatefieldModule
   ],
   templateUrl: './start-investigation-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './start-investigation-modal.component.scss'
 })
 export class StartInvestigationModalComponent {

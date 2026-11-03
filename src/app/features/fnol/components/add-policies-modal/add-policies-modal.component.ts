@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -34,6 +34,7 @@ export interface AddPoliciesModalData {
     AppDatePipe
   ],
   templateUrl: './add-policies-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-policies-modal.component.scss'
 })
 export class AddPoliciesModalComponent {

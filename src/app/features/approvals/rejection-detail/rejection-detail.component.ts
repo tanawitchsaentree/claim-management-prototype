@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NxGridModule } from '@allianz/ng-aquila/grid';
 import { NxBreadcrumbModule } from '@allianz/ng-aquila/breadcrumb';
@@ -43,6 +43,7 @@ type Decision = 'pending' | 'approved' | 'declined';
     RequesterNamePipe
   ],
   templateUrl: './rejection-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rejection-detail.component.scss'
 })
 export class RejectionDetailComponent {

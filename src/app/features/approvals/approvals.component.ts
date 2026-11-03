@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -52,6 +59,7 @@ import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
     ClaimsRejectionTableComponent
   ],
   templateUrl: './approvals.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './approvals.component.scss'
 })
 export class ApprovalsComponent implements OnInit {
@@ -148,7 +156,10 @@ export class ApprovalsComponent implements OnInit {
     }
     const me = this.auth.user();
     if (item.requester && item.requester.toLowerCase() === me.email.toLowerCase()) {
-      this.toast.warning('Needs another approver', 'You requested this reserve, so someone else has to approve it.');
+      this.toast.warning(
+        'Needs another approver',
+        'You requested this reserve, so someone else has to approve it.'
+      );
       return;
     }
     const decision = action === 'approve' ? 'Approved' : 'Rejected';

@@ -1,4 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, computed, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  computed,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
@@ -55,6 +63,7 @@ import {
     ReserveDetailPanelComponent
   ],
   templateUrl: './step-reserves.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-reserves.component.scss'
 })
 export class StepReservesComponent implements OnInit, OnDestroy {

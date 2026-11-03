@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -64,6 +71,7 @@ type Screen = 'policy' | 'manual';
     EmptyStateComponent
   ],
   templateUrl: './add-location-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-location-modal.component.scss'
 })
 export class AddLocationModalComponent implements OnInit {
@@ -136,7 +144,9 @@ export class AddLocationModalComponent implements OnInit {
   private readonly manualFormValue = toSignal(this.manualForm.valueChanges, {
     initialValue: this.manualForm.getRawValue()
   });
-  readonly additionalInfoLength = computed(() => this.manualFormValue().additionalInfo?.length ?? 0);
+  readonly additionalInfoLength = computed(
+    () => this.manualFormValue().additionalInfo?.length ?? 0
+  );
   readonly hasManualData = computed(() => {
     const v = this.manualFormValue();
     return Object.values(v).some(val => val !== null && val !== '');
@@ -156,7 +166,9 @@ export class AddLocationModalComponent implements OnInit {
   readonly hasAnySelection = computed(
     () => this.selectedPolicyId() !== null || this.hasManualEntry()
   );
-  readonly addCount = computed(() => (this.selectedPolicyId() ? 1 : 0) + (this.hasManualEntry() ? 1 : 0));
+  readonly addCount = computed(
+    () => (this.selectedPolicyId() ? 1 : 0) + (this.hasManualEntry() ? 1 : 0)
+  );
 
   ngOnInit(): void {
     if (this.data.reconfirm) {
@@ -171,7 +183,9 @@ export class AddLocationModalComponent implements OnInit {
   }
 
   // ── Confirm loss location: how each policy location differs from the typed one
-  private readonly countryOptions = toSignal(this.countries$, { initialValue: [] as LookupOption[] });
+  private readonly countryOptions = toSignal(this.countries$, {
+    initialValue: [] as LookupOption[]
+  });
 
   /** Differences vs the closest typed location (fewest differing fields). */
   diffsFor(loc: PolicyLocation): LocationField[] {

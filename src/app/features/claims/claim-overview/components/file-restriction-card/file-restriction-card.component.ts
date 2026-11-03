@@ -6,7 +6,8 @@ import {
   Output,
   effect,
   inject,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -43,6 +44,7 @@ import {
     EmptyStateComponent
   ],
   templateUrl: './file-restriction-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './file-restriction-card.component.scss'
 })
 export class FileRestrictionCardComponent implements OnChanges {

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { FinancialTransaction } from '../../../../../core/models/financial-overview.model';
@@ -8,6 +8,7 @@ import { FinancialTransaction } from '../../../../../core/models/financial-overv
   standalone: true,
   imports: [CurrencyPipe, NxTableModule],
   templateUrl: './transactions-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../fo-table-shared.scss', './transactions-table.component.scss']
 })
 export class TransactionsTableComponent {

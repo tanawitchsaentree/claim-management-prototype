@@ -1,4 +1,12 @@
-import { Component, HostListener, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -90,6 +98,7 @@ type PerFieldKey =
     PageHeaderComponent
   ],
   templateUrl: './edit-loss-information.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './edit-loss-information.component.scss'
 })
 export class EditLossInformationComponent implements OnInit {

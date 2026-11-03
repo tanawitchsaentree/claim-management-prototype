@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
@@ -75,6 +75,7 @@ export const INSTRUCTION_STATUS_OPTIONS: InstructionStatus[] = [
     LocationPickerComponent
   ],
   templateUrl: './edit-entity-damage-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './edit-entity-damage-modal.component.scss'
 })
 export class EditEntityDamageModalComponent {
@@ -231,7 +232,9 @@ export class EditEntityDamageModalComponent {
             thirdPartyIndustry: this.showThirdPartyIndustry
               ? (this.form.value.thirdPartyIndustry as string) || undefined
               : undefined,
-            cbiOriginatingLocation: cbiLocationItem ? formatLocationItem(cbiLocationItem) : undefined,
+            cbiOriginatingLocation: cbiLocationItem
+              ? formatLocationItem(cbiLocationItem)
+              : undefined,
             cbiOriginatingLocationDetail: cbiLocationItem
           }
         : {

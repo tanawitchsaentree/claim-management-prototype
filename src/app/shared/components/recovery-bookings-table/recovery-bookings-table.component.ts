@@ -1,4 +1,11 @@
-import { Component, input, signal, effect, untracked } from '@angular/core';
+import {
+  Component,
+  input,
+  signal,
+  effect,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -25,6 +32,7 @@ import { BookingExplanationPanelComponent } from '../booking-explanation-panel/b
     BookingExplanationPanelComponent
   ],
   templateUrl: './recovery-bookings-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recovery-bookings-table.component.scss'
 })
 export class RecoveryBookingsTableComponent {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest, map, startWith } from 'rxjs';
@@ -52,6 +52,7 @@ const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
     FinancialWarningsComponent
   ],
   templateUrl: './add-reserve-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-reserve-modal.component.scss'
 })
 export class AddReserveModalComponent {
@@ -92,7 +93,13 @@ export class AddReserveModalComponent {
       map(([overview, ld, fo]) => {
         const v = this.form.getRawValue();
         const section = this.data.sections.find(s => s.sectionId === v.section);
-        const head = claimHeadroom(fo, ld.limits, v.currency ?? 'EUR', section?.sectionName, this.editing?.reserveId);
+        const head = claimHeadroom(
+          fo,
+          ld.limits,
+          v.currency ?? 'EUR',
+          section?.sectionName,
+          this.editing?.reserveId
+        );
         return financialPreChecks({
           journey: 'reserve',
           currency: v.currency ?? 'EUR',
@@ -127,7 +134,14 @@ export class AddReserveModalComponent {
       currency: r.currency
     });
     // A reserve keeps what it is; only how much changes.
-    for (const name of ['reserveType', 'reserveSubType', 'party', 'damagedItem', 'section', 'currency'] as const) {
+    for (const name of [
+      'reserveType',
+      'reserveSubType',
+      'party',
+      'damagedItem',
+      'section',
+      'currency'
+    ] as const) {
       this.form.get(name)!.disable();
     }
   }

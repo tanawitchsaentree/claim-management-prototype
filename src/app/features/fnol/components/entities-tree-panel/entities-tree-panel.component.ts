@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
@@ -22,6 +22,7 @@ import {
   standalone: true,
   imports: [NxIconModule, NxButtonModule, NxCheckboxModule, NxSwitcherModule, NxContextMenuModule],
   templateUrl: './entities-tree-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entities-tree-panel.component.scss'
 })
 export class EntitiesTreePanelComponent {

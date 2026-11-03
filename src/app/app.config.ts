@@ -13,7 +13,7 @@ import {
   withRouterConfig,
   withViewTransitions
 } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { NxExpertModule } from '@allianz/ng-aquila/config';
 import { ALLIANZ_ONE } from '@allianz/ng-aquila/config/allianz-one/token';
@@ -60,7 +60,7 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ onSameUrlNavigation: 'reload' }),
       withViewTransitions()
     ),
-    provideHttpClient(),
+    provideHttpClient(withXhr()),
     provideAnimations(),
     { provide: LOCALE_ID, useValue: 'en' },
     importProvidersFrom(NxExpertModule, NxIsoDateModule),

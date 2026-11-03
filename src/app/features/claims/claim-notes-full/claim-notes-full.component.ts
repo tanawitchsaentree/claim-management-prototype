@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -19,6 +19,7 @@ export interface ClaimNotesFullModalData {
   standalone: true,
   imports: [NxIconModule, NxButtonModule, ClaimNotesPanelComponent],
   templateUrl: './claim-notes-full.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-notes-full.component.scss'
 })
 export class ClaimNotesFullComponent {

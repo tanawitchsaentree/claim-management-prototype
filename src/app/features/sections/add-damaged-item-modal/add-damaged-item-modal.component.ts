@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxModalModule } from '@allianz/ng-aquila/modal';
@@ -34,6 +34,7 @@ export type AddDamagedItemModalResult = DamagedItem;
     NxButtonModule
   ],
   templateUrl: './add-damaged-item-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-damaged-item-modal.component.scss'
 })
 export class AddDamagedItemModalComponent {

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 
@@ -14,6 +14,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
   standalone: true,
   imports: [NxIconModule],
   templateUrl: './page-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './page-header.component.scss'
 })
 export class PageHeaderComponent {

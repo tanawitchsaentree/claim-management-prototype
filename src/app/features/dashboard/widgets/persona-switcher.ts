@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { AuthService, PERSONAS } from '../../../core/services/auth';
@@ -27,6 +27,7 @@ const ROLE_LABEL: Record<string, string> = {
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       :host {

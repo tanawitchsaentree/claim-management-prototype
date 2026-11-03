@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -44,6 +44,7 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
   ],
   templateUrl: './claim-reference-panel.component.html',
   styleUrl: './claim-reference-panel.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('refPanelSlide', [
       transition(':enter', [

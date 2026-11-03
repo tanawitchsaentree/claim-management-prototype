@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import {
@@ -17,6 +26,7 @@ import { MockBookingService } from '../../../core/mock/services/mock-booking.ser
   standalone: true,
   imports: [NxMessageModule, NxButtonModule],
   templateUrl: './gg-registration-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './gg-registration-banner.component.scss'
 })
 export class GgRegistrationBannerComponent {
@@ -31,7 +41,9 @@ export class GgRegistrationBannerComponent {
   private readonly liveClaim = computed(() =>
     this.claimId() ? this.stateSvc.state().overviews[this.claimId()] : undefined
   );
-  private readonly current = computed(() => this.liveClaim()?.ggRegistration ?? this.registration());
+  private readonly current = computed(
+    () => this.liveClaim()?.ggRegistration ?? this.registration()
+  );
   readonly message = computed(() =>
     claimRegistrationMessage(
       this.current(),

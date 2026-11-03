@@ -1,4 +1,11 @@
-import { Component, ViewChild, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -77,6 +84,7 @@ interface TargetRect {
     NxButtonModule
   ],
   templateUrl: './tour-step-renderer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tour-step-renderer.component.scss'
 })
 export class TourStepRendererComponent {

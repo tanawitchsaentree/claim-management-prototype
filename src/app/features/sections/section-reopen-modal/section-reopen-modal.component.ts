@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -36,6 +36,7 @@ export interface SectionReopenModalResult {
     NxMessageModule
   ],
   templateUrl: './section-reopen-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './section-reopen-modal.component.scss'
 })
 export class SectionReopenModalComponent {

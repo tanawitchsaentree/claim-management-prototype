@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -15,6 +15,7 @@ const DEFAULT_LOSS_SCENARIO = 'fire';
   standalone: true,
   imports: [CommonModule, NxButtonModule, NxIconModule, NxSpinnerModule],
   templateUrl: './dev-helper-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dev-helper-banner.component.scss'
 })
 export class DevHelperBannerComponent {

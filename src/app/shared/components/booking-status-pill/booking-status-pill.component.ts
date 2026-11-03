@@ -1,5 +1,11 @@
-import { Component, computed, input } from '@angular/core';
-import { BookingIssue, BookingStatus, displayStatus, needsHandler, StatusTone } from '../../../core/models/gg-booking.model';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
+import {
+  BookingIssue,
+  BookingStatus,
+  displayStatus,
+  needsHandler,
+  StatusTone
+} from '../../../core/models/gg-booking.model';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 
 // Reuses the claim-status chip colours so no new tokens are needed:
@@ -17,6 +23,7 @@ const CHIP_FOR_TONE: Record<StatusTone, string> = {
   standalone: true,
   imports: [StatusChipComponent],
   templateUrl: './booking-status-pill.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './booking-status-pill.component.scss'
 })
 export class BookingStatusPillComponent {
@@ -26,9 +33,14 @@ export class BookingStatusPillComponent {
   /** Needed for "With Finance" and "Sent again, waiting". */
   readonly issue = input<BookingIssue | undefined>(undefined);
 
-  readonly shown = computed(() => displayStatus(this.approvalStatus(), this.booking(), this.issue()));
+  readonly shown = computed(() =>
+    displayStatus(this.approvalStatus(), this.booking(), this.issue())
+  );
   readonly needsYou = computed(() =>
-    needsHandler(this.approvalStatus(), { bookingStatus: this.booking(), bookingIssue: this.issue() })
+    needsHandler(this.approvalStatus(), {
+      bookingStatus: this.booking(),
+      bookingIssue: this.issue()
+    })
   );
   readonly chip = computed(() => CHIP_FOR_TONE[this.shown().tone]);
 }

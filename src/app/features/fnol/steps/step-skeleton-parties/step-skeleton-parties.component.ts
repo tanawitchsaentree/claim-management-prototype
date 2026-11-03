@@ -1,8 +1,17 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap
+} from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTableModule } from '@allianz/ng-aquila/table';
@@ -29,7 +38,10 @@ import {
 } from '../../components/edit-role-dialog/edit-role-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
-import { SKELETON_CLAIM_PARAM, SkeletonJourneyService } from '../../services/skeleton-journey.service';
+import {
+  SKELETON_CLAIM_PARAM,
+  SkeletonJourneyService
+} from '../../services/skeleton-journey.service';
 
 interface PartiesVM {
   parties: Party[];
@@ -69,6 +81,7 @@ const ORPHAN_TARGET_CLAIM_ID = 'ORPHAN';
     WizardFooterComponent
   ],
   templateUrl: './step-skeleton-parties.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-skeleton-parties.component.scss'
 })
 export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {

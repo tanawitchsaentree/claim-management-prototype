@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import { Component, OnInit, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -41,6 +41,7 @@ export interface ReassignClaimModalResult {
     NxIconModule
   ],
   templateUrl: './reassign-claim-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reassign-claim-modal.component.scss'
 })
 export class ReassignClaimModalComponent implements OnInit {

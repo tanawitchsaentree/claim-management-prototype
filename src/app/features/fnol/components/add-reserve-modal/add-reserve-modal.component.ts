@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, computed, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  computed,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -40,6 +47,7 @@ export interface AddReserveResult {
     NxIconModule
   ],
   templateUrl: './add-reserve-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-reserve-modal.component.scss'
 })
 export class AddReserveModalComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
@@ -34,6 +34,7 @@ import { Payee, PayeeEmail } from '../../../../core/models/payee.model';
     StatusChipComponent
   ],
   templateUrl: './payee-section.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './payee-section.component.scss'
 })
 export class PayeeSectionComponent {

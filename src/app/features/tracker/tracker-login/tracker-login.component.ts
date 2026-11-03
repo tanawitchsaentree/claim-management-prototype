@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -14,6 +14,7 @@ type LoginState = 'form' | 'sending' | 'sent' | 'error';
   standalone: true,
   imports: [ReactiveFormsModule, NxFormfieldModule, NxInputModule, NxButtonModule, NxMessageModule],
   templateUrl: './tracker-login.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tracker-login.component.scss'
 })
 export class TrackerLoginComponent {

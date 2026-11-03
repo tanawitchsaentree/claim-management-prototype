@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -27,6 +27,7 @@ const PLACEHOLDER_DESC =
   standalone: true,
   imports: [NxIconModule, NxLinkModule, PageShellComponent],
   templateUrl: './administration.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './administration.component.scss'
 })
 export class AdministrationComponent {

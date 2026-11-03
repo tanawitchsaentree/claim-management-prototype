@@ -5,7 +5,8 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -34,6 +35,7 @@ export interface BreadcrumbItem {
   standalone: true,
   imports: [CommonModule, RouterLink, Navbar, NxBreadcrumbModule, NxGridModule, NxMessageModule],
   templateUrl: './page-shell.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './page-shell.component.scss'
 })
 export class PageShellComponent implements OnChanges {

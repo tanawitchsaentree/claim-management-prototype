@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -33,6 +33,7 @@ export interface MoveEntityResult {
     NxIconModule
   ],
   templateUrl: './move-entity-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './move-entity-dialog.component.scss'
 })
 export class MoveEntityDialogComponent implements OnInit {

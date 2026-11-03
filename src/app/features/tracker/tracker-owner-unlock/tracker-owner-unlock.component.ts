@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -20,6 +20,7 @@ import { OWNER_LABEL } from '../../../core/services/tracker-visibility';
   standalone: true,
   imports: [ReactiveFormsModule, NxFormfieldModule, NxInputModule, NxButtonModule, NxIconModule],
   templateUrl: './tracker-owner-unlock.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tracker-owner-unlock.component.scss'
 })
 export class TrackerOwnerUnlockComponent {

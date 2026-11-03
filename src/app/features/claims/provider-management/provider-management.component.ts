@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -62,6 +62,7 @@ const TYPE_LABEL: Record<ProviderType, string> = {
     InstructionDamageTableComponent
   ],
   templateUrl: './provider-management.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './provider-management.component.scss'
 })
 export class ProviderManagementComponent implements OnInit {

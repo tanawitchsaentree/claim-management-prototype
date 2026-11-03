@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith, shareReplay } from 'rxjs/operators';
@@ -7,7 +7,10 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
-import { FnolStepperComponent, FnolStep } from '../../../shared/components/fnol-stepper/fnol-stepper.component';
+import {
+  FnolStepperComponent,
+  FnolStep
+} from '../../../shared/components/fnol-stepper/fnol-stepper.component';
 import { FnolStateService } from '../../../core/services/fnol-state.service';
 import { StepConfig } from '../models/fnol-form.model';
 import { Policy } from '../../../core/models';
@@ -26,6 +29,7 @@ import { Policy } from '../../../core/models';
     FnolStepperComponent
   ],
   templateUrl: './fnol-shell.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fnol-shell.component.scss'
 })
 export class FnolShellComponent {

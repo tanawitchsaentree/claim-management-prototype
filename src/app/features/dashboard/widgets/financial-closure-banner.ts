@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { FinancialClosurePeriod } from '../../../core/models';
@@ -22,6 +22,7 @@ import { FinancialClosurePeriod } from '../../../core/models';
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       :host {

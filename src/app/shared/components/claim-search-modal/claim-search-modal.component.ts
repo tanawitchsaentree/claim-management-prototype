@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -34,6 +41,7 @@ export type ClaimSearchModalResult = { claim: Claim } | null;
     EmptyStateComponent
   ],
   templateUrl: './claim-search-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-search-modal.component.scss'
 })
 export class ClaimSearchModalComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 
@@ -13,6 +13,7 @@ export interface FnolStep {
   standalone: true,
   imports: [NxIconModule],
   templateUrl: './fnol-stepper.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fnol-stepper.component.scss'
 })
 export class FnolStepperComponent {

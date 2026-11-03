@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -76,6 +76,7 @@ interface ClaimsVM {
     WizardFooterComponent
   ],
   templateUrl: './step-parties.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-parties.component.scss'
 })
 export class StepPartiesComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -34,6 +34,7 @@ export interface EntitySearchCriteria {
     NxDropdownModule
   ],
   templateUrl: './entities-filter-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entities-filter-bar.component.scss'
 })
 export class EntitiesFilterBarComponent {

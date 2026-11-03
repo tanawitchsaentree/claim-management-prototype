@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -45,6 +45,7 @@ const PAGE_SIZE = 15;
     PageHeaderComponent
   ],
   templateUrl: './loss-events-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loss-events-list.component.scss'
 })
 export class LossEventsListComponent {

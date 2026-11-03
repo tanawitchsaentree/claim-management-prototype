@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
@@ -16,6 +16,7 @@ import {
   standalone: true,
   imports: [NxButtonModule, NxContextMenuModule, NxIconModule],
   templateUrl: './notification-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './notification-panel.component.scss'
 })
 export class NotificationPanelComponent {

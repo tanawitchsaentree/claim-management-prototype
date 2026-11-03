@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 
@@ -6,6 +6,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
   selector: 'app-loss-details',
   standalone: true,
   imports: [NxButtonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div style="padding: 48px 32px">
       <h1>Loss Details (Skeleton Mode)</h1>

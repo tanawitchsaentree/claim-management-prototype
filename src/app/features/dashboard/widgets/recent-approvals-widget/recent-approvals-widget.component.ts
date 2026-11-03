@@ -1,4 +1,4 @@
-import { Component, Input, computed, inject, signal } from '@angular/core';
+import { Component, Input, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -30,6 +30,7 @@ import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
     RequesterNamePipe
   ],
   templateUrl: './recent-approvals-widget.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recent-approvals-widget.component.scss'
 })
 export class RecentApprovalsWidgetComponent {

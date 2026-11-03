@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -26,6 +26,7 @@ import { DamageTypeLabelPipe } from '../../../../../shared/pipes/damage-type-lab
     DamageTypeLabelPipe
   ],
   templateUrl: './instruction-damage-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './instruction-damage-table.component.scss'
 })
 export class InstructionDamageTableComponent {

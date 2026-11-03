@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -8,7 +8,10 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { ClaimSection } from '../../../../../core/models/section.model';
-import { ProviderAssignment, ProviderType } from '../../../../../core/models/provider-assignment.model';
+import {
+  ProviderAssignment,
+  ProviderType
+} from '../../../../../core/models/provider-assignment.model';
 
 export interface AssignProviderModalData {
   claimId: string;
@@ -38,6 +41,7 @@ const PROVIDER_TYPE_OPTIONS: { value: ProviderType; label: string }[] = [
     NxDatefieldModule
   ],
   templateUrl: './assign-provider-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './assign-provider-modal.component.scss'
 })
 export class AssignProviderModalComponent {

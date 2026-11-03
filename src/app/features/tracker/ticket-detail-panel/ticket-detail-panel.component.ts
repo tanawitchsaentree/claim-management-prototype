@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, computed, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  computed,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -50,6 +59,7 @@ const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
   ],
   templateUrl: './ticket-detail-panel.component.html',
   styleUrl: './ticket-detail-panel.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     // Same technique as ClaimRightStripComponent's `panelSlide` trigger
     // (claim-right-strip.component.ts:27-39) — width/opacity keyframes on

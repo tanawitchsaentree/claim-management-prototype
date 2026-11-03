@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
   standalone: true,
   imports: [NxMessageModule, NxButtonModule, RouterLink],
   templateUrl: './blocker-return-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blocker-return-banner.component.scss'
 })
 export class BlockerReturnBannerComponent {

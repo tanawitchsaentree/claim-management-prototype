@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { firstValueFrom } from 'rxjs';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -21,6 +30,7 @@ export interface AttachmentSelection {
   standalone: true,
   imports: [NxCheckboxModule, NxButtonModule, NxIconModule],
   templateUrl: './attachment-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './attachment-picker.component.scss'
 })
 export class AttachmentPickerComponent implements OnInit {

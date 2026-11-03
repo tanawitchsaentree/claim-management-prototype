@@ -1,4 +1,12 @@
-import { Component, input, output, signal, effect, untracked } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  effect,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -27,6 +35,7 @@ import { statusExplanation } from '../../../../../core/models/gg-booking.model';
     BookingExplanationPanelComponent
   ],
   templateUrl: './reserves-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../fo-table-shared.scss', './reserves-table.component.scss']
 })
 export class ReservesTableComponent {

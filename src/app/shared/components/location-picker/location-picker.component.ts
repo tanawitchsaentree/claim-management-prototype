@@ -1,4 +1,14 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, Observable, of, firstValueFrom } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
@@ -35,14 +45,9 @@ interface LocationPickerVM {
 @Component({
   selector: 'app-location-picker',
   standalone: true,
-  imports: [
-    CommonModule,
-    NxButtonModule,
-    NxIconModule,
-    NxMessageModule,
-    NxTableModule
-  ],
+  imports: [CommonModule, NxButtonModule, NxIconModule, NxMessageModule, NxTableModule],
   templateUrl: './location-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './location-picker.component.scss'
 })
 export class LocationPickerComponent implements OnInit, OnChanges {

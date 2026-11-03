@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -19,6 +26,7 @@ import {
   standalone: true,
   imports: [NxButtonModule, NxIconModule],
   templateUrl: './wizard-footer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './wizard-footer.component.scss'
 })
 export class WizardFooterComponent {

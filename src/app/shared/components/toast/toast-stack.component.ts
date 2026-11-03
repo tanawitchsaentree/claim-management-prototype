@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { animate, style, transition, trigger } from '@angular/animations';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -36,6 +36,7 @@ import { Toast, ToastService, ToastTone } from './toast.service';
     </div>
   `,
   styleUrl: './toast-stack.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('toastSlide', [
       transition(':enter', [

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { EntityRow } from '../../../../core/models';
@@ -31,6 +31,7 @@ import { EntityRow } from '../../../../core/models';
       </nx-popover>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .info-btn {
       display: inline-flex;

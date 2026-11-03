@@ -1,10 +1,11 @@
-import { Component, input, model } from '@angular/core';
+import { Component, input, model, ChangeDetectionStrategy } from '@angular/core';
 
 /** Count on the left, "Needs you: N" filter next to it, page action on the right. */
 @Component({
   selector: 'app-fo-list-toolbar',
   standalone: true,
   templateUrl: './list-toolbar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-toolbar.component.scss'
 })
 export class ListToolbarComponent {

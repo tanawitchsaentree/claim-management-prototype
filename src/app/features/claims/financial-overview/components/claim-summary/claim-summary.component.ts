@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import {
@@ -12,6 +12,7 @@ import {
   standalone: true,
   imports: [CurrencyPipe, NxTableModule],
   templateUrl: './claim-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../fo-table-shared.scss', './claim-summary.component.scss']
 })
 export class ClaimSummaryComponent {

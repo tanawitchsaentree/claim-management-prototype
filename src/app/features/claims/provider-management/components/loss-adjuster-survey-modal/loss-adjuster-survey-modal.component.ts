@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -26,6 +26,7 @@ export interface LossAdjusterSurveyModalData {
     NxRatingModule
   ],
   templateUrl: './loss-adjuster-survey-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loss-adjuster-survey-modal.component.scss'
 })
 export class LossAdjusterSurveyModalComponent {

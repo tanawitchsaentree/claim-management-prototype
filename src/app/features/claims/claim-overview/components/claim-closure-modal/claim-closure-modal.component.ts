@@ -1,13 +1,8 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { Router } from '@angular/router';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -76,6 +71,7 @@ const CONFIRMATION_STATEMENTS: string[] = [
     NxDatefieldModule
   ],
   templateUrl: './claim-closure-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-closure-modal.component.scss'
 })
 export class ClaimClosureModalComponent {

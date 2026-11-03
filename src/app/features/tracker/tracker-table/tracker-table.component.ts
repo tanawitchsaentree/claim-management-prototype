@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -71,6 +78,7 @@ interface EpicGroup {
     TrackerOwnerUnlockComponent
   ],
   templateUrl: './tracker-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tracker-table.component.scss'
 })
 export class TrackerTableComponent {

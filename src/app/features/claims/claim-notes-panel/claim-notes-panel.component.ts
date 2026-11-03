@@ -6,7 +6,8 @@ import {
   computed,
   inject,
   signal,
-  ElementRef
+  ElementRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
@@ -61,6 +62,7 @@ const CATEGORY_LABEL: Record<NoteCategory, string> = {
     EmptyStateComponent
   ],
   templateUrl: './claim-notes-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-notes-panel.component.scss'
 })
 export class ClaimNotesPanelComponent implements OnChanges {

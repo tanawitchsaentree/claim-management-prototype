@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -34,6 +34,7 @@ type Outcome = 'Recovered' | 'Written off';
     NxIconModule
   ],
   templateUrl: './resolve-recovery-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './resolve-recovery-modal.component.scss'
 })
 export class ResolveRecoveryModalComponent {

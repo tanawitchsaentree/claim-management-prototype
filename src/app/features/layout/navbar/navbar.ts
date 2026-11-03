@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NxAvatarModule } from '@allianz/ng-aquila/avatar';
@@ -10,8 +10,16 @@ import { NotificationPanelComponent } from '../../../shared/components/notificat
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NxAvatarModule, NxIconModule, NxButtonModule, NotificationPanelComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    NxAvatarModule,
+    NxIconModule,
+    NxButtonModule,
+    NotificationPanelComponent
+  ],
   templateUrl: './navbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./navbar.scss', './navbar-mobile.scss']
 })
 export class Navbar {

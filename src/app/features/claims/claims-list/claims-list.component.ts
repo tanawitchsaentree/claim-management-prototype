@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -62,6 +62,7 @@ const AWAITING = 'Awaiting policy';
     ClaimPreviewDirective
   ],
   templateUrl: './claims-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claims-list.component.scss'
 })
 export class ClaimsListComponent {

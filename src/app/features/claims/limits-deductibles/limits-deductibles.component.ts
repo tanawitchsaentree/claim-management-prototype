@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -23,6 +23,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
     PageHeaderComponent
   ],
   templateUrl: './limits-deductibles.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './limits-deductibles.component.scss'
 })
 export class LimitsDeductiblesComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalRef, NX_MODAL_DATA, NxDialogService } from '@allianz/ng-aquila/modal';
@@ -55,6 +55,7 @@ export interface MassEventModalResult {
     EmptyStateComponent
   ],
   templateUrl: './mass-event-edit-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mass-event-edit-modal.component.scss'
 })
 export class MassEventEditModalComponent {

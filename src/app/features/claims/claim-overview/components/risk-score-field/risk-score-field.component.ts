@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { firstValueFrom } from 'rxjs';
@@ -16,6 +24,7 @@ import { ToastService } from '../../../../../shared/components/toast/toast.servi
   standalone: true,
   imports: [NxIconModule, NxSpinnerModule],
   templateUrl: './risk-score-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './risk-score-field.component.scss'
 })
 export class RiskScoreFieldComponent implements OnInit {

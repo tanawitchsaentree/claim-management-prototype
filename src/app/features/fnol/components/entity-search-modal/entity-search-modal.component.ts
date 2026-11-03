@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -55,6 +55,7 @@ interface SearchState {
     EmptyStateComponent
   ],
   templateUrl: './entity-search-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entity-search-modal.component.scss'
 })
 export class EntitySearchModalComponent implements OnInit {

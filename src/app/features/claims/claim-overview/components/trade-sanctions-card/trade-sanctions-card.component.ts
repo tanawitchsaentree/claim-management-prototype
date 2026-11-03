@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, Output, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
@@ -80,6 +90,7 @@ export interface TradeSanctionsUpdated {
     NxModalModule
   ],
   templateUrl: './trade-sanctions-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './trade-sanctions-card.component.scss'
 })
 export class TradeSanctionsCardComponent implements OnChanges {
@@ -123,7 +134,9 @@ export class TradeSanctionsCardComponent implements OnChanges {
   });
 
   readonly isClosed = computed(() => this.claimSig()?.status === 'Closed');
-  readonly saved = computed<TradeSanctionsCheck | null>(() => this.claimSig()?.tradeSanctions ?? null);
+  readonly saved = computed<TradeSanctionsCheck | null>(
+    () => this.claimSig()?.tradeSanctions ?? null
+  );
 
   readonly showExpanded = computed(() => this.exposureSig() === 'yes');
 

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
@@ -21,6 +21,7 @@ import { StatusChipComponent } from '../../../../../shared/components/status-chi
     NxContextMenuModule,
     StatusChipComponent
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './entity-row.component.html'
 })
 export class EntityRowComponent {

@@ -30,6 +30,10 @@ module.exports = tseslint.config(
       prettier: prettierPlugin
     },
     rules: {
+      // Angular 22 upgrade (2026-11-03): the migration kept every component on
+      // ChangeDetectionStrategy.Eager (the old default) so nothing behaves
+      // differently. Moving them to OnPush is a separate, per-component change.
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
       // This codebase already used a leading-underscore convention for
       // intentional no-op params (stage/callback hooks that must match a
       // signature but don't need the value) before any lint existed here —

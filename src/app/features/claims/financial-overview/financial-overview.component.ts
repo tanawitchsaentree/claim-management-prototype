@@ -1,4 +1,13 @@
-import { Component, inject, signal, computed, effect, untracked, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  effect,
+  untracked,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
@@ -79,6 +88,7 @@ const VALID_VIEWS: FinancialView[] = ['overview', 'payments', 'reserves', 'recov
     SectionSummaryTableComponent
   ],
   templateUrl: './financial-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './financial-overview.component.scss'
 })
 export class FinancialOverviewComponent implements OnInit {
@@ -112,7 +122,9 @@ export class FinancialOverviewComponent implements OnInit {
   readonly loading = signal(true);
   readonly fo = signal<FinancialOverview | null>(null);
   readonly levelControl = new FormControl<LevelToggle>('claim', { nonNullable: true });
-  readonly level = toSignal(this.levelControl.valueChanges, { initialValue: 'claim' as LevelToggle });
+  readonly level = toSignal(this.levelControl.valueChanges, {
+    initialValue: 'claim' as LevelToggle
+  });
   readonly currency = signal('EUR');
   readonly sectionId = signal('');
   readonly claimClosed = signal(false);
@@ -155,14 +167,16 @@ export class FinancialOverviewComponent implements OnInit {
   // Section level filters the one claim-level list.
   readonly reserveRows = computed<FinancialReserve[]>(() => {
     const all = this.fo()?.reserves ?? [];
-    const rows = this.level() === 'claim' ? all : all.filter(r => r.sectionId === this.activeSection()?.sectionId);
+    const rows =
+      this.level() === 'claim'
+        ? all
+        : all.filter(r => r.sectionId === this.activeSection()?.sectionId);
     return this.needsYouOnly().reserves ? rows.filter(r => needsYouCount([r]) > 0) : rows;
   });
 
-  readonly openPaymentId = toSignal(
-    this.route.queryParamMap.pipe(map(p => p.get('open'))),
-    { initialValue: this.route.snapshot.queryParamMap.get('open') }
-  );
+  readonly openPaymentId = toSignal(this.route.queryParamMap.pipe(map(p => p.get('open'))), {
+    initialValue: this.route.snapshot.queryParamMap.get('open')
+  });
 
   private readonly params = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap
@@ -178,11 +192,17 @@ export class FinancialOverviewComponent implements OnInit {
   }
 
   readonly paymentRows = computed(() => {
-    const all = this.level() === 'claim' ? (this.fo()?.payments ?? []) : this.sectionRows(this.fo()?.payments);
+    const all =
+      this.level() === 'claim'
+        ? (this.fo()?.payments ?? [])
+        : this.sectionRows(this.fo()?.payments);
     return this.needsYouOnly().payments ? all.filter(p => needsYouCount([p]) > 0) : all;
   });
   readonly recoveryRows = computed(() => {
-    const all = this.level() === 'claim' ? (this.fo()?.recoveries ?? []) : this.sectionRows(this.fo()?.recoveries);
+    const all =
+      this.level() === 'claim'
+        ? (this.fo()?.recoveries ?? [])
+        : this.sectionRows(this.fo()?.recoveries);
     return this.needsYouOnly().recovery ? all.filter(r => needsYouCount([r]) > 0) : all;
   });
   readonly needsYou = computed(() => {
@@ -248,14 +268,18 @@ export class FinancialOverviewComponent implements OnInit {
     if (!policy) return;
     const data = await firstValueFrom(this.reservesSvc.getReservesForPolicy(policy));
     const n = data.narrative;
-    this.noReserveReason.set(n && !n.archivedAt ? (n.notes || n.reasonKey) : null);
+    this.noReserveReason.set(n && !n.archivedAt ? n.notes || n.reasonKey : null);
   }
 
   setView(v: FinancialView): void {
     this.router.navigate([], { queryParams: { view: v }, replaceUrl: true });
   }
 
-  async onAddReserve(prefill?: { amount?: number; currency?: string; section?: string }): Promise<void> {
+  async onAddReserve(prefill?: {
+    amount?: number;
+    currency?: string;
+    section?: string;
+  }): Promise<void> {
     const current = this.fo();
     if (!current) return;
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
@@ -285,7 +309,12 @@ export class FinancialOverviewComponent implements OnInit {
     const input = (await firstValueFrom(ref.afterClosed())) as AddReserveModalResult;
     if (!input) return;
     await firstValueFrom(
-      this.svc.updateReserveAmount(this.claimId, reserve.reserveId, input.reserveValue, input.reason ?? '')
+      this.svc.updateReserveAmount(
+        this.claimId,
+        reserve.reserveId,
+        input.reserveValue,
+        input.reason ?? ''
+      )
     );
     this.fo.set(await firstValueFrom(this.svc.getByClaimId(this.claimId)));
     this.toast.success(

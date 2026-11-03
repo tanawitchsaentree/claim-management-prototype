@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTableModule } from '@allianz/ng-aquila/table';
@@ -23,6 +30,7 @@ const TASKS_PAGE_SIZE = 10;
     EmptyStateComponent
   ],
   templateUrl: './pending-tasks-widget.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pending-tasks-widget.component.scss'
 })
 export class PendingTasksWidgetComponent {

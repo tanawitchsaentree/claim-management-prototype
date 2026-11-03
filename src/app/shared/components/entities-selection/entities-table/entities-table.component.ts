@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -9,12 +9,7 @@ import { ENTITY_TYPE_LABELS, EntityRow, EntityType, SubItem } from '../../../../
 import { EntityEventsInfoComponent } from '../entity-events-info/entity-events-info.component';
 import { EntityLimitCellComponent } from '../entity-limit-cell/entity-limit-cell.component';
 import { StatusChipComponent } from '../../status-chip/status-chip.component';
-import {
-  TreeGroup,
-  hasAnySelection,
-  isChecked,
-  isIndeterminate
-} from '../entity-tree';
+import { TreeGroup, hasAnySelection, isChecked, isIndeterminate } from '../entity-tree';
 
 const ENTITY_TYPES: EntityType[] = [
   'building',
@@ -46,6 +41,7 @@ const ENTITY_TYPES: EntityType[] = [
     EntityEventsInfoComponent
   ],
   templateUrl: './entities-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entities-table.component.scss'
 })
 export class EntitiesTableComponent {

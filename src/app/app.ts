@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -31,6 +31,7 @@ import { environment } from '../environments/environment';
     NxMessageModule
   ],
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (isExploration) {
       <nx-message context="warning" class="exploration-banner"

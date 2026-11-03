@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -37,6 +44,7 @@ export type MassEventSearchModalResult =
     EmptyStateComponent
   ],
   templateUrl: './mass-event-search-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mass-event-search-modal.component.scss'
 })
 export class MassEventSearchModalComponent implements OnInit {

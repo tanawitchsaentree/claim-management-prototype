@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { LossEventGeneralInfo } from '../../../core/models/loss-event-overview.model';
 
@@ -13,6 +13,7 @@ import { LossEventGeneralInfo } from '../../../core/models/loss-event-overview.m
   standalone: true,
   imports: [],
   templateUrl: './loss-event-general-info.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loss-event-general-info.component.scss'
 })
 export class LossEventGeneralInfoComponent {

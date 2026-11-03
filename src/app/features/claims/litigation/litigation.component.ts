@@ -1,4 +1,11 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 import { ActivatedRoute } from '@angular/router';
@@ -40,6 +47,7 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
   ],
   templateUrl: './litigation.component.html',
   styleUrl: './litigation.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('detailSlide', [
       transition(':enter', [
@@ -72,7 +80,9 @@ export class LitigationComponent implements OnInit {
     // Route is `claims/:id/litigation`: :id is on this route, not the parent (the parent
     // lookup alone gave '' for every claim).
     this.claimId =
-      this.route.snapshot.paramMap.get('id') ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
+      this.route.snapshot.paramMap.get('id') ??
+      this.route.parent?.snapshot.paramMap.get('id') ??
+      '';
     this.load();
   }
 

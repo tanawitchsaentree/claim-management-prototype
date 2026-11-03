@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NewsItem } from '../../../core/models';
@@ -56,6 +56,7 @@ const TYPE_ICON: Record<string, string> = {
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       :host {

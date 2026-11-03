@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -48,6 +55,7 @@ export type ManualLocationEntryModalResult = LocationItem | null;
     NxCheckboxModule
   ],
   templateUrl: './manual-location-entry-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './manual-location-entry-modal.component.scss'
 })
 export class ManualLocationEntryModalComponent implements OnInit {

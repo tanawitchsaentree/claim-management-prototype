@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,7 +19,10 @@ import { LocationItem, LookupOption } from '../../../../core/models';
 import { Party, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
-import { SKELETON_CLAIM_PARAM, SkeletonJourneyService } from '../../services/skeleton-journey.service';
+import {
+  SKELETON_CLAIM_PARAM,
+  SkeletonJourneyService
+} from '../../services/skeleton-journey.service';
 
 const REASON_LABELS: Record<SkeletonReason, string> = {
   policy_not_issued: 'Policy not yet issued',
@@ -40,6 +43,7 @@ const REASON_LABELS: Record<SkeletonReason, string> = {
     WizardFooterComponent
   ],
   templateUrl: './step-skeleton-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-skeleton-summary.component.scss'
 })
 export class StepSkeletonSummaryComponent implements OnInit {
@@ -143,7 +147,9 @@ export class StepSkeletonSummaryComponent implements OnInit {
       // What the wizard collected stays with the claim: the loss information
       // (dates, location, cause, description) and the parties from step 2.
       const li = this.lossInfo();
-      await firstValueFrom(this.lossInfoSvc.save(li as unknown as LossInformationFormValue, claimId));
+      await firstValueFrom(
+        this.lossInfoSvc.save(li as unknown as LossInformationFormValue, claimId)
+      );
       this.partiesSvc.addPartiesToClaim(claimId, this.parties());
       // The section the cause of loss implies shouldn't wait for a policy. Its
       // entity is the property/asset affected (the loss location), never the
@@ -151,7 +157,9 @@ export class StepSkeletonSummaryComponent implements OnInit {
       const causes = (li['causeOfLoss'] as string[]) ?? [];
       if (causes.length && this.sectionSvc.getByClaimIdSync(claimId).length === 0) {
         const entityName = this.locations()[0]?.displayName || draft.clientName;
-        await firstValueFrom(this.sectionSvc.createSectionFromCauseOfLoss(claimId, causes, entityName));
+        await firstValueFrom(
+          this.sectionSvc.createSectionFromCauseOfLoss(claimId, causes, entityName)
+        );
       }
       this.createdId.set(claimId);
       this.toast.success('Skeleton claim created', claimId);

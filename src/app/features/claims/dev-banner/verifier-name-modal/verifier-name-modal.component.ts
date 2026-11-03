@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxModalModule, NxModalRef } from '@allianz/ng-aquila/modal';
@@ -19,6 +19,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
     NxIconModule
   ],
   templateUrl: './verifier-name-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './verifier-name-modal.component.scss'
 })
 export class VerifierNameModalComponent {

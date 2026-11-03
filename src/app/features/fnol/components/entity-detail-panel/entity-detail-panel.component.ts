@@ -5,7 +5,8 @@ import {
   inject,
   Input,
   OnChanges,
-  Output
+  Output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -42,6 +43,7 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
     EmptyStateComponent
   ],
   templateUrl: './entity-detail-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entity-detail-panel.component.scss'
 })
 export class EntityDetailPanelComponent implements OnChanges {

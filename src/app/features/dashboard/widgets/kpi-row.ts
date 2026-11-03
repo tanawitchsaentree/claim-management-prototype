@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxCardModule } from '@allianz/ng-aquila/card';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -30,6 +30,7 @@ import { KpiData } from '../../../core/models';
       </nx-card>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .kpi-row {

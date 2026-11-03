@@ -1,4 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, signal, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  effect,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -141,6 +149,7 @@ type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
     GgRegistrationBannerComponent
   ],
   templateUrl: './claim-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-overview.component.scss'
 })
 export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage {
@@ -554,8 +563,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
         message: `${skeleton.claimId} will be linked to this policy, moved out of the orphan-claim queue and given a regular claim number. ${skeleton.claimId} stays searchable as its previous number. This cannot be undone.`,
         changes: [
           { label: 'Skeleton state', original: 'Awaiting policy', updated: 'Linked' },
-          { label: 'Policy number', original: skeleton.policyNumber || '–', updated: policy.policyNumber },
-          ...(policy.broker ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }] : [])
+          {
+            label: 'Policy number',
+            original: skeleton.policyNumber || '–',
+            updated: policy.policyNumber
+          },
+          ...(policy.broker
+            ? [{ label: 'Broker', original: skeleton.broker ?? '–', updated: policy.broker }]
+            : [])
         ],
         confirmLabel: 'Link policy'
       } satisfies ConfirmDialogData,

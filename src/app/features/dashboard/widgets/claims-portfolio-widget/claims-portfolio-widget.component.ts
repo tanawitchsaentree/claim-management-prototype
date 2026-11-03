@@ -5,7 +5,8 @@ import {
   computed,
   inject,
   input,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -40,6 +41,7 @@ import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
     ClaimPreviewDirective
   ],
   templateUrl: './claims-portfolio-widget.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claims-portfolio-widget.component.scss'
 })
 export class ClaimsPortfolioWidgetComponent {

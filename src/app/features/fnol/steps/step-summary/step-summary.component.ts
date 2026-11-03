@@ -1,6 +1,6 @@
 import { selectedSectionGroups } from '../../../../shared/components/entities-selection/selected-section-groups';
 import { cbiRelationshipFor } from '../../../../shared/utils/cbi-rules';
-import { Component, inject, signal, effect, OnInit } from '@angular/core';
+import { Component, inject, signal, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
@@ -105,6 +105,7 @@ const CREATOR: AccessListEntry = {
     EmptyStateComponent
   ],
   templateUrl: './step-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-summary.component.scss'
 })
 export class StepSummaryComponent implements OnInit {
@@ -197,7 +198,11 @@ export class StepSummaryComponent implements OnInit {
     return this.recoveryPotential.value === 'no';
   }
   get recoveryNoteInvalid(): boolean {
-    return this.needsRecoveryNote && this.recoveryPotentialNote.invalid && this.recoveryPotentialNote.touched;
+    return (
+      this.needsRecoveryNote &&
+      this.recoveryPotentialNote.invalid &&
+      this.recoveryPotentialNote.touched
+    );
   }
 
   get policyNumber(): string {
@@ -540,7 +545,8 @@ export class StepSummaryComponent implements OnInit {
       specifyOtherCauseOfLoss: formValue.specifyOtherCauseOfLoss || undefined,
       cbiApplicable: formValue.cbiApplicable ?? null,
       cbiCaseType: formValue.cbiApplicable === 'yes' ? formValue.cbiCaseType : null,
-      cbiThirdPartyName: formValue.cbiApplicable === 'yes' ? formValue.cbiThirdPartyName : undefined,
+      cbiThirdPartyName:
+        formValue.cbiApplicable === 'yes' ? formValue.cbiThirdPartyName : undefined,
       cbiThirdPartyIndustry:
         formValue.cbiApplicable === 'yes' ? formValue.cbiThirdPartyIndustry : undefined,
       cbiLocation: formValue.cbiApplicable === 'yes' ? formValue.cbiLocation : undefined,
@@ -563,7 +569,9 @@ export class StepSummaryComponent implements OnInit {
     // synthesizeOverviewFromClaim), so what the handler entered on the
     // Reserves step has to land here to survive. Cache hit — buildViewModel()
     // already loaded this policy's reserves for the Summary screen.
-    const reservesData = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+    const reservesData = await firstValueFrom(
+      this.reservesSvc.getReservesForPolicy(this.policyNumber)
+    );
 
     const claim: Claim = {
       claimId,
@@ -679,8 +687,7 @@ export class StepSummaryComponent implements OnInit {
     // see PROJECT.md build-ahead authorization.
     const lossInfoValue = this.fnolState.fnolForm.get('lossInformation')!
       .value as unknown as LossInformationFormValue;
-    const cbiCaseType =
-      lossInfoValue.cbiApplicable === 'yes' ? lossInfoValue.cbiCaseType : null;
+    const cbiCaseType = lossInfoValue.cbiApplicable === 'yes' ? lossInfoValue.cbiCaseType : null;
 
     const cbiLocationItem = lossInfoValue.cbiLocation?.locations[0];
 
@@ -693,7 +700,9 @@ export class StepSummaryComponent implements OnInit {
             thirdPartyName: lossInfoValue.cbiThirdPartyName || undefined,
             thirdPartyRelationship: cbiRelationshipFor(cbiCaseType!),
             thirdPartyIndustry: lossInfoValue.cbiThirdPartyIndustry || undefined,
-            cbiOriginatingLocation: cbiLocationItem ? formatLocationItem(cbiLocationItem) : undefined,
+            cbiOriginatingLocation: cbiLocationItem
+              ? formatLocationItem(cbiLocationItem)
+              : undefined,
             cbiOriginatingLocationDetail: cbiLocationItem
           }
         : {};
@@ -720,7 +729,9 @@ export class StepSummaryComponent implements OnInit {
   // recoveries sub-amounts are deliberately NOT seeded here. Matches
   // MockFinancialOverviewService's own reserve/recovery split.
   private async seedFinancialReservesFromFnol(claimId: string): Promise<void> {
-    const reservesData = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+    const reservesData = await firstValueFrom(
+      this.reservesSvc.getReservesForPolicy(this.policyNumber)
+    );
     if (!reservesData.reserves.length) return;
     const sections = this.sectionSvc.getByClaimIdSync(claimId);
 

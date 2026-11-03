@@ -6,7 +6,8 @@ import {
   OnChanges,
   SimpleChanges,
   signal,
-  inject
+  inject,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
@@ -67,6 +68,7 @@ const STATUS_CHIP_MAP: Record<LitigationStatus, string> = {
     EmptyStateComponent
   ],
   templateUrl: './litigation-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './litigation-detail.component.scss'
 })
 export class LitigationDetailComponent implements OnChanges {

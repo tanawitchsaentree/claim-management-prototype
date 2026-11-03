@@ -1,4 +1,13 @@
-import { Component, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -89,6 +98,7 @@ interface RecoveryGuidance {
     RecoveryBookingsTableComponent
   ],
   templateUrl: './recoveries.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recoveries.component.scss'
 })
 export class RecoveriesComponent implements OnInit {
@@ -165,7 +175,9 @@ export class RecoveriesComponent implements OnInit {
     // The route is `claims/:id/recoveries`, so :id is on THIS route. Reading it from
     // the parent gave '' for every claim and left the page on "Loading…" forever.
     this.claimId =
-      this.route.snapshot.paramMap.get('id') ?? this.route.parent?.snapshot.paramMap.get('id') ?? '';
+      this.route.snapshot.paramMap.get('id') ??
+      this.route.parent?.snapshot.paramMap.get('id') ??
+      '';
     await this.load();
     await this.loadPostings();
     this.ready.set(true);

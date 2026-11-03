@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
 type Domain =
   | 'claim'
@@ -138,6 +138,7 @@ const FALLBACK_TOKEN = 'claim-status-closed';
   standalone: true,
   imports: [],
   templateUrl: './status-chip.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './status-chip.component.scss'
 })
 export class StatusChipComponent implements OnChanges {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NxProgressbarModule } from '@allianz/ng-aquila/progressbar';
 import { ProviderExpense } from '../../../core/models';
@@ -35,6 +35,7 @@ import { ProviderExpense } from '../../../core/models';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       :host {

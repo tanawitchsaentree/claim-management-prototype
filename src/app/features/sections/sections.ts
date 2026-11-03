@@ -1,5 +1,12 @@
 import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  effect,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { animate, style, transition, trigger } from '@angular/animations';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -86,6 +93,7 @@ import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
     BlockerReturnBannerComponent
   ],
   templateUrl: './sections.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sections.scss'
 })
 export class Sections {
@@ -240,7 +248,8 @@ export class Sections {
 
     // Same confirm as Edit claim (team call 2026-10-15): Field / Original / Updated,
     // nothing is created until the handler confirms.
-    const target = result.mode === 'new' ? null : this.sections().find(s => s.id === result.sectionId);
+    const target =
+      result.mode === 'new' ? null : this.sections().find(s => s.id === result.sectionId);
     const before = target?.entities.map(e => e.name) ?? [];
     const sectionLabel = new DamageTypeLabelPipe().transform(
       result.mode === 'new' ? result.damageType : (target?.damageType ?? '')
@@ -362,7 +371,13 @@ export class Sections {
     const before = entity.dateOfOccurrence ?? this.claimDateOfLoss();
     const changes = [
       ...(entity.instructionStatus !== result.instructionStatus
-        ? [{ label: 'Instruction status', original: entity.instructionStatus, updated: result.instructionStatus }]
+        ? [
+            {
+              label: 'Instruction status',
+              original: entity.instructionStatus,
+              updated: result.instructionStatus
+            }
+          ]
         : []),
       ...(before !== result.dateOfOccurrence
         ? [{ label: 'Date of loss', original: fmt(before), updated: fmt(result.dateOfOccurrence) }]

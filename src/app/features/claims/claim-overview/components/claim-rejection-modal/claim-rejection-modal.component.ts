@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -40,6 +40,7 @@ type RejectionType = 'coverage' | 'liability';
     NxIconModule
   ],
   templateUrl: './claim-rejection-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-rejection-modal.component.scss'
 })
 export class ClaimRejectionModalComponent {

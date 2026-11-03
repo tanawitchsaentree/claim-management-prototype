@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -18,6 +18,7 @@ export interface SendAgainDialogData {
   standalone: true,
   imports: [NxModalModule, NxButtonModule, NxIconModule, NxCheckboxModule, ReactiveFormsModule],
   templateUrl: './send-again-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './send-again-dialog.component.scss'
 })
 export class SendAgainDialogComponent {

@@ -6,7 +6,8 @@ import {
   Output,
   SimpleChanges,
   inject,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { animate, style, transition, trigger, query, stagger } from '@angular/animations';
 import { DecimalPipe, LowerCasePipe } from '@angular/common';
@@ -54,6 +55,7 @@ export interface SectionMutation {
   ],
   templateUrl: './reserve-detail-panel.component.html',
   styleUrl: './reserve-detail-panel.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('detailSlide', [
       transition(':enter', [

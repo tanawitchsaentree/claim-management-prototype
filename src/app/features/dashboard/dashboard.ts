@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -91,6 +91,7 @@ const EMPTY_VM: DashboardVM = {
     RecoveryPotentialPanelComponent
   ],
   templateUrl: './dashboard.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dashboard.scss'
 })
 export class Dashboard {

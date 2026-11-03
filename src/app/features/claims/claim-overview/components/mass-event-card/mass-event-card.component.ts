@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -39,6 +46,7 @@ export interface MassEventChanged {
   standalone: true,
   imports: [NxIconModule, NxPopoverModule, NxLinkModule, StatusChipComponent, AppDatePipe],
   templateUrl: './mass-event-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mass-event-card.component.scss'
 })
 export class MassEventCardComponent {

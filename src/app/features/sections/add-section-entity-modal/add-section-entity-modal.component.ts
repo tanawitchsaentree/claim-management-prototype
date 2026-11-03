@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  effect,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -79,6 +86,7 @@ export type AddSectionEntityModalResult =
     LocationPickerComponent
   ],
   templateUrl: './add-section-entity-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-section-entity-modal.component.scss'
 })
 export class AddSectionEntityModalComponent {
@@ -247,7 +255,8 @@ export class AddSectionEntityModalComponent {
       this.showThirdPartyName() &&
       this.thirdPartyRequired() &&
       !this.form.value.cbiThirdPartyName;
-    const missingCbiLocation = this.showCbiDetails() && this.cbiLocation.value.locations.length === 0;
+    const missingCbiLocation =
+      this.showCbiDetails() && this.cbiLocation.value.locations.length === 0;
     if (
       this.form.get('damageType')!.invalid ||
       !this.hasAnySelection() ||
@@ -294,7 +303,9 @@ export class AddSectionEntityModalComponent {
             thirdPartyIndustry: this.showThirdPartyIndustry()
               ? (this.form.value.cbiThirdPartyIndustry as string) || undefined
               : undefined,
-            cbiOriginatingLocation: cbiLocationItem ? formatLocationItem(cbiLocationItem) : undefined,
+            cbiOriginatingLocation: cbiLocationItem
+              ? formatLocationItem(cbiLocationItem)
+              : undefined,
             cbiOriginatingLocationDetail: cbiLocationItem
           }
         : {})

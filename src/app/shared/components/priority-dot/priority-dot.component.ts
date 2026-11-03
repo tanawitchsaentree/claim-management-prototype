@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
 type Priority = 'high' | 'medium' | 'low';
 
@@ -13,6 +13,7 @@ const TOKEN_MAP: Record<Priority, string> = {
   standalone: true,
   imports: [],
   templateUrl: './priority-dot.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './priority-dot.component.scss'
 })
 export class PriorityDotComponent implements OnChanges {

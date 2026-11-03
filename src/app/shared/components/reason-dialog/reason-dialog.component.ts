@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -32,6 +32,7 @@ export interface ReasonDialogData {
     NxIconModule
   ],
   templateUrl: './reason-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reason-dialog.component.scss'
 })
 export class ReasonDialogComponent {

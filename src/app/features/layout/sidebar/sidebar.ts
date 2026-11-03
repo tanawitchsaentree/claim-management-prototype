@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -70,6 +70,7 @@ const CLAIM_NAV_TEMPLATE: NavEntry[] = [
   standalone: true,
   imports: [RouterLink, RouterLinkActive, NxIconModule, NxButtonModule],
   templateUrl: './sidebar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sidebar.scss'
 })
 export class Sidebar {

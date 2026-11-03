@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -54,6 +54,7 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
     LossEventGeneralInfoComponent
   ],
   templateUrl: './loss-event-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loss-event-overview.component.scss'
 })
 export class LossEventOverviewComponent {

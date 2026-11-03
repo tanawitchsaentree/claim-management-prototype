@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -63,6 +63,7 @@ const TOAST_DURATION_MS = 4000;
     PageHeaderComponent
   ],
   templateUrl: './mass-events.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mass-events.component.scss'
 })
 export class MassEventsComponent {

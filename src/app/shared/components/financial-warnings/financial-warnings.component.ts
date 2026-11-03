@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -17,8 +17,16 @@ import { MockBookingService } from '../../../core/mock/services/mock-booking.ser
 @Component({
   selector: 'app-financial-warnings',
   standalone: true,
-  imports: [NgTemplateOutlet, ReactiveFormsModule, NxMessageModule, NxFormfieldModule, NxInputModule, NxButtonModule],
+  imports: [
+    NgTemplateOutlet,
+    ReactiveFormsModule,
+    NxMessageModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxButtonModule
+  ],
   templateUrl: './financial-warnings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './financial-warnings.component.scss'
 })
 export class FinancialWarningsComponent {

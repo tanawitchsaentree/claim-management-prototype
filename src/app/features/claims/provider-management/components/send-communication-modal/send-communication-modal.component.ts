@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -30,6 +30,7 @@ export interface SendCommunicationModalData {
     AttachmentPickerComponent
   ],
   templateUrl: './send-communication-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './send-communication-modal.component.scss'
 })
 export class SendCommunicationModalComponent {

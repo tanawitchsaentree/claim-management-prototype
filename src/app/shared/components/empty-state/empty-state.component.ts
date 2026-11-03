@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 
@@ -13,6 +13,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
   standalone: true,
   imports: [NxIconModule],
   templateUrl: './empty-state.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './empty-state.component.scss'
 })
 export class EmptyStateComponent {

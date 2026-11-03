@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -6,11 +6,7 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { LocationPickerOutput, LookupOption } from '../../../core/models';
 import { LocationPickerComponent } from '../location-picker/location-picker.component';
-import {
-  cbiIndustryLabel,
-  cbiShowThirdPartyName,
-  cbiThirdPartyLabel
-} from '../../utils/cbi-rules';
+import { cbiIndustryLabel, cbiShowThirdPartyName, cbiThirdPartyLabel } from '../../utils/cbi-rules';
 
 // The CBI question block, as FNOL's Loss information step shows it: the trigger
 // question, then the case type, third party and originating location. The
@@ -29,6 +25,7 @@ import {
     LocationPickerComponent
   ],
   templateUrl: './cbi-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './cbi-panel.component.scss'
 })
 export class CbiPanelComponent {

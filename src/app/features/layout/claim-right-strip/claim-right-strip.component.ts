@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -23,6 +23,7 @@ interface StripItem {
   imports: [NxIconModule, NxTooltipModule, ClaimNotesPanelComponent, ClaimReferencePanelComponent],
   templateUrl: './claim-right-strip.component.html',
   styleUrl: './claim-right-strip.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('panelSlide', [
       transition(':enter', [

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, of, ReplaySubject, switchMap, map, catchError, startWith } from 'rxjs';
@@ -54,6 +54,7 @@ const ID_TYPES = ['IPM', 'NAIC', 'Internal ref'];
     EmptyStateComponent
   ],
   templateUrl: './broker-search-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './broker-search-modal.component.scss'
 })
 export class BrokerSearchModalComponent implements OnInit {

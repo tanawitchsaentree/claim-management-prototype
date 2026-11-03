@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
@@ -14,9 +14,9 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 @Component({
   selector: 'app-claim-reference-tabs',
   standalone: true,
-  imports: [
-    ClaimNumberPipe,FormsModule, NxIconModule],
+  imports: [ClaimNumberPipe, FormsModule, NxIconModule],
   templateUrl: './claim-reference-tabs.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-reference-tabs.component.scss'
 })
 export class ClaimReferenceTabsComponent {

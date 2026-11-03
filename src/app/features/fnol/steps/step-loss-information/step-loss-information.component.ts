@@ -1,4 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -39,7 +47,11 @@ import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
-import { cbiShowThirdPartyName, cbiThirdPartyRequired, syncCbiControls } from '../../../../shared/utils/cbi-rules';
+import {
+  cbiShowThirdPartyName,
+  cbiThirdPartyRequired,
+  syncCbiControls
+} from '../../../../shared/utils/cbi-rules';
 import { CbiPanelComponent } from '../../../../shared/components/cbi-panel/cbi-panel.component';
 import {
   DuplicateCheckService,
@@ -96,6 +108,7 @@ interface LossInfoVM {
     WizardFooterComponent
   ],
   templateUrl: './step-loss-information.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-loss-information.component.scss'
 })
 export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLossInfoStage {
@@ -399,7 +412,10 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     }
     if (this.showCbiDetails) {
       if (!this.selectedCbiCaseType) {
-        errors.push({ fieldId: 'cbiCaseType', message: `${this.fieldLabels['cbiCaseType']}: required` });
+        errors.push({
+          fieldId: 'cbiCaseType',
+          message: `${this.fieldLabels['cbiCaseType']}: required`
+        });
       }
       if (
         this.showCbiThirdPartyName &&

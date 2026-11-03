@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -35,7 +35,10 @@ import { LocationPickerComponent } from '../../../../shared/components/location-
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
-import { SKELETON_CLAIM_PARAM, SkeletonJourneyService } from '../../services/skeleton-journey.service';
+import {
+  SKELETON_CLAIM_PARAM,
+  SkeletonJourneyService
+} from '../../services/skeleton-journey.service';
 import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/cause-schemas';
 
 export type NotifierType = 'broker' | 'insured';
@@ -81,6 +84,7 @@ const REASON_OPTIONS: ReasonOption[] = [
     LocationPickerComponent
   ],
   templateUrl: './step-skeleton-create.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-skeleton-create.component.scss'
 })
 export class StepSkeletonCreateComponent implements OnInit {

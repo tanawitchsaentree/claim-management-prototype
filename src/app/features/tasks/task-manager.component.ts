@@ -1,4 +1,13 @@
-import { Component, OnInit, inject, signal, computed, effect, untracked } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  effect,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -41,6 +50,7 @@ import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
     AppDatePipe
   ],
   templateUrl: './task-manager.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-manager.component.scss'
 })
 export class TaskManagerComponent implements OnInit {
@@ -63,13 +73,16 @@ export class TaskManagerComponent implements OnInit {
 
   readonly displayedTasks = computed<Task[]>(() => {
     const name = this.auth.user()?.name ?? '';
-    let tasks = this.showMyTasksOnly() ? this.allTasks().filter(t => t.assignee === name) : this.allTasks();
+    let tasks = this.showMyTasksOnly()
+      ? this.allTasks().filter(t => t.assignee === name)
+      : this.allTasks();
     const status = this.statusFilter();
     if (status !== 'all') tasks = tasks.filter(t => t.status === status);
     const pinned = this.highlightTaskId();
     return [...tasks].sort((a, b) => {
       // Arriving from a "Couldn't be booked" row: that task goes first.
-      if (pinned && (a.taskId === pinned) !== (b.taskId === pinned)) return a.taskId === pinned ? -1 : 1;
+      if (pinned && (a.taskId === pinned) !== (b.taskId === pinned))
+        return a.taskId === pinned ? -1 : 1;
       const aDone = a.status === 'done' ? 1 : 0;
       const bDone = b.status === 'done' ? 1 : 0;
       if (aDone !== bDone) return aDone - bDone;

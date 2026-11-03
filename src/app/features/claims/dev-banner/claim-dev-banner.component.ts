@@ -6,7 +6,8 @@ import {
   effect,
   inject,
   computed,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -36,6 +37,7 @@ import { environment } from '../../../../environments/environment';
     NxTaglistModule
   ],
   templateUrl: './claim-dev-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-dev-banner.component.scss'
 })
 export class ClaimDevBannerComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -55,6 +55,7 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
     NxDropdownModule
   ],
   templateUrl: './section-closure-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './section-closure-modal.component.scss'
 })
 export class SectionClosureModalComponent {

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxPopoverModule } from '@allianz/ng-aquila/popover';
 import { EntityRow, LocationLimit } from '../../../../core/models';
@@ -15,6 +15,7 @@ const LIMIT_CAP = 3;
   standalone: true,
   imports: [NxIconModule, NxPopoverModule],
   templateUrl: './entity-limit-cell.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './entity-limit-cell.component.scss'
 })
 export class EntityLimitCellComponent {

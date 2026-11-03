@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTableModule } from '@allianz/ng-aquila/table';
 import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
@@ -10,6 +10,7 @@ import { ClaimActivity } from '../../../../../core/models/claim-overview.model';
   standalone: true,
   imports: [NxIconModule, NxTableModule, EmptyStateComponent, AppDatePipe],
   templateUrl: './recent-activities-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recent-activities-card.component.scss'
 })
 export class RecentActivitiesCardComponent {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NxTableModule } from '@allianz/ng-aquila/table';
@@ -41,6 +41,7 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
     AppDatePipe
   ],
   templateUrl: './claims-rejection-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../approvals.component.scss'
 })
 export class ClaimsRejectionTableComponent {

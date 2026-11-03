@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
@@ -16,8 +16,19 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 @Component({
   selector: 'app-amount-section',
   standalone: true,
-  imports: [DecimalPipe, ReactiveFormsModule, NxDropdownModule, NxFormfieldModule, NxInputModule, NxRadioModule, NxTableModule, EmptyStateComponent, AmountInputDirective],
+  imports: [
+    DecimalPipe,
+    ReactiveFormsModule,
+    NxDropdownModule,
+    NxFormfieldModule,
+    NxInputModule,
+    NxRadioModule,
+    NxTableModule,
+    EmptyStateComponent,
+    AmountInputDirective
+  ],
   templateUrl: './amount-section.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './amount-section.component.scss'
 })
 export class AmountSectionComponent {

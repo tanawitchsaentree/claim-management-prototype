@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  computed,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -26,6 +34,7 @@ import { StatusChipComponent } from '../status-chip/status-chip.component';
   standalone: true,
   imports: [NxButtonModule, NxIconModule, NxMessageModule, StatusChipComponent],
   templateUrl: './arrival-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './arrival-panel.component.scss'
 })
 export class ArrivalPanelComponent {

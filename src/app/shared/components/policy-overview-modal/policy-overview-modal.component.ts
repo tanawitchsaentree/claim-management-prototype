@@ -1,4 +1,11 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -35,6 +42,7 @@ export interface PolicyOverviewModalData {
     AppDatePipe
   ],
   templateUrl: './policy-overview-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './policy-overview-modal.component.scss'
 })
 export class PolicyOverviewModalComponent implements OnInit {
@@ -71,7 +79,9 @@ export class PolicyOverviewModalComponent implements OnInit {
 
   formatCauseOfLoss(causes: string[] | undefined): string {
     if (!causes?.length) return '—';
-    return causes.map(c => c.replace(/[-_]/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase())).join(', ');
+    return causes
+      .map(c => c.replace(/[-_]/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase()))
+      .join(', ');
   }
 
   openClaim(claimId: string): void {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -63,6 +63,7 @@ const PAGE_SIZE = 5;
     EmptyStateComponent
   ],
   templateUrl: './add-litigation-party-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-litigation-party-modal.component.scss'
 })
 export class AddLitigationPartyModalComponent {

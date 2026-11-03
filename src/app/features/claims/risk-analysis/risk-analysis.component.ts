@@ -1,4 +1,11 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -65,6 +72,7 @@ const SCORE_CHIP: Record<RiskScore, string> = {
     PageHeaderComponent
   ],
   templateUrl: './risk-analysis.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './risk-analysis.component.scss'
 })
 export class RiskAnalysisComponent implements OnInit {

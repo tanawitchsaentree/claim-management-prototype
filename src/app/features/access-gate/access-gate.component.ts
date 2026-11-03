@@ -1,4 +1,11 @@
-import { Component, EventEmitter, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxInputModule } from '@allianz/ng-aquila/input';
@@ -21,6 +28,7 @@ const CORRECT_HASH = 'f2f5d415c6717f712281fc66830f07329720cb06d89f034e8fad57b81a
     NxHeadlineModule
   ],
   templateUrl: './access-gate.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './access-gate.component.scss'
 })
 export class AccessGateComponent implements OnInit {

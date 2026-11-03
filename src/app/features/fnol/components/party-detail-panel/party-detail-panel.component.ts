@@ -1,4 +1,12 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  Output,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -10,6 +18,7 @@ import { Party, PARTY_ROLE_LABELS, ID_TYPE_LABELS } from '../../../../core/model
   standalone: true,
   imports: [NxButtonModule, NxIconModule, StatusChipComponent],
   templateUrl: './party-detail-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './party-detail-panel.component.scss'
 })
 export class PartyDetailPanelComponent implements OnChanges {

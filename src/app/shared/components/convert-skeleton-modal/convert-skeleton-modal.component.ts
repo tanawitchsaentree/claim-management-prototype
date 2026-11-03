@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
@@ -15,7 +22,10 @@ import lookupsData from '../../../core/mock/data/lookups.json';
 import { MockClientSearchService } from '../../../core/mock/services/mock-client-search.service';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 import { MockPolicySearchService } from '../../../core/mock/services/mock-policy-search.service';
-import { ClientSearchResult, PolicySearchResult } from '../../../features/fnol/models/fnol-form.model';
+import {
+  ClientSearchResult,
+  PolicySearchResult
+} from '../../../features/fnol/models/fnol-form.model';
 import { Claim } from '../../../core/models/claim.model';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
@@ -54,6 +64,7 @@ interface PolicyRow {
     EmptyStateComponent
   ],
   templateUrl: './convert-skeleton-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './convert-skeleton-modal.component.scss'
 })
 export class ConvertSkeletonModalComponent implements OnInit {
@@ -154,7 +165,8 @@ export class ConvertSkeletonModalComponent implements OnInit {
   // fact about the policy, not a name-matching heuristic).
   private evaluate(policy: PolicySearchResult, enforceClientMatch: boolean): PolicyRow {
     const clientMatch =
-      this.normalizeClientName(policy.clientName) === this.normalizeClientName(this.skeleton.clientName);
+      this.normalizeClientName(policy.clientName) ===
+      this.normalizeClientName(this.skeleton.clientName);
     const lossDate = this.skeleton.lossDate;
 
     if (enforceClientMatch && !clientMatch) {

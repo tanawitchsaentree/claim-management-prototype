@@ -123,17 +123,23 @@
   } @else if (vm().notFound) {
     <app-empty-state message="Claim not found" icon="info-circle-o">
       <p body>
-        <strong>{{ svc.activeRefTab()?.claimId | claimNumber }}</strong> is not in the demo data set. Try
-        CLM-2024-001 or CLM-2024-011.
+        <strong>{{ $safeNavigationMigration(svc.activeRefTab()?.claimId) | claimNumber }}</strong>
+        is not in the demo data set. Try CLM-2024-001 or CLM-2024-011.
       </p>
     </app-empty-state>
   } @else if (vm().claim; as claim) {
     <!-- Launch in full view link -->
     <div class="ref-claim-header">
-      <span class="ref-claim-id">{{ svc.activeRefTab()?.claimId | claimNumber }}</span>
+      <span class="ref-claim-id">{{
+        $safeNavigationMigration(svc.activeRefTab()?.claimId) | claimNumber
+      }}</span>
       <a
         class="ref-header__icon-btn"
-        [routerLink]="['/claims', svc.activeRefTab()?.claimId, 'overview']"
+        [routerLink]="[
+          '/claims',
+          $safeNavigationMigration(svc.activeRefTab()?.claimId),
+          'overview'
+        ]"
         title="Open in full view"
       >
         <nx-icon name="launch" size="s"></nx-icon>

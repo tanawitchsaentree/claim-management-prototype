@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -30,6 +38,7 @@ import {
     NxRadioModule
   ],
   templateUrl: './reserve-narrative-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reserve-narrative-panel.component.scss'
 })
 export class ReserveNarrativePanelComponent implements OnInit {

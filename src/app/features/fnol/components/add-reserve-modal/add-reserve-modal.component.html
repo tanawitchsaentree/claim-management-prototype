@@ -10,7 +10,7 @@
     <nx-formfield label="Section">
       <nx-dropdown
         placeholder="Select"
-        [value]="form.get('reserveId')?.value"
+        [value]="$safeNavigationMigration(form.get('reserveId')?.value)"
         (valueChange)="onSectionChange($event)"
       >
         @for (s of data.sections; track s.reserveId) {

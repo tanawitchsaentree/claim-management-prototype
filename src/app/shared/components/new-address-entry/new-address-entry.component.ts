@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -35,6 +44,7 @@ import { GisAddressSuggestion, LookupOption } from '../../../core/models';
     NxInputModule
   ],
   templateUrl: './new-address-entry.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './new-address-entry.component.scss'
 })
 export class NewAddressEntryComponent {

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   BehaviorSubject,
@@ -33,6 +42,7 @@ import {
   standalone: true,
   imports: [CommonModule, NxMessageModule],
   templateUrl: './impacted-policies-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './impacted-policies-banner.component.scss'
 })
 export class ImpactedPoliciesBannerComponent implements OnInit {

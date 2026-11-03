@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -65,6 +73,7 @@ const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'];
     AmountSectionComponent
   ],
   templateUrl: './make-payment-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './make-payment-page.component.scss'
 })
 export class MakePaymentPageComponent {
@@ -98,12 +107,24 @@ export class MakePaymentPageComponent {
   readonly amountOpen = signal(true);
 
   private readonly confirmRequested = signal(false);
-  private readonly values = toSignal(this.form.valueChanges.pipe(startWith(null), map(() => this.form.getRawValue())), {
-    initialValue: this.form.getRawValue()
-  });
-  readonly amounts = toSignal(this.linesForm.valueChanges.pipe(startWith(null), map(() => this.linesForm.getRawValue())), {
-    initialValue: {} as Record<string, number | null>
-  });
+  private readonly values = toSignal(
+    this.form.valueChanges.pipe(
+      startWith(null),
+      map(() => this.form.getRawValue())
+    ),
+    {
+      initialValue: this.form.getRawValue()
+    }
+  );
+  readonly amounts = toSignal(
+    this.linesForm.valueChanges.pipe(
+      startWith(null),
+      map(() => this.linesForm.getRawValue())
+    ),
+    {
+      initialValue: {} as Record<string, number | null>
+    }
+  );
   private readonly payeeWatch = toSignal(
     this.form.controls.payeeId.valueChanges.pipe(tap(id => this.defaultBank(id))),
     { initialValue: null }
@@ -113,20 +134,33 @@ export class MakePaymentPageComponent {
   private readonly limits = toSignal(this.limitsSvc.getByClaimId(this.claimId));
   private readonly loadedOverview = toSignal(this.overviewSvc.getOverview(this.claimId));
   // Live: "Retry setting up this claim" flips the claim's state while this page is open.
-  readonly overview = computed(() => this.stateSvc.state().overviews[this.claimId] ?? this.loadedOverview());
-  readonly fo = computed(() => this.stateSvc.state().financialOverviews[this.claimId] ?? this.finance());
+  readonly overview = computed(
+    () => this.stateSvc.state().overviews[this.claimId] ?? this.loadedOverview()
+  );
+  readonly fo = computed(
+    () => this.stateSvc.state().financialOverviews[this.claimId] ?? this.finance()
+  );
 
-  readonly selectedPayee = computed<Payee | null>(() => this.payees.find(p => p.payeeId === this.values().payeeId) ?? null);
-  readonly method = computed(() => PAYMENT_METHODS.find(m => m.value === this.values().method) ?? null);
+  readonly selectedPayee = computed<Payee | null>(
+    () => this.payees.find(p => p.payeeId === this.values().payeeId) ?? null
+  );
+  readonly method = computed(
+    () => PAYMENT_METHODS.find(m => m.value === this.values().method) ?? null
+  );
   readonly rows = computed(() => payableRows(this.fo(), this.values().currency));
   readonly lines = computed(() => filledLines(this.rows(), this.amounts()));
   readonly total = computed(() => totalOf(this.lines()));
   readonly paidSections = computed(() => sectionsPaid(this.rows(), this.lines()));
   readonly deductibles = computed(() =>
-    applicableDeductibles(this.limits()?.deductibles ?? [], this.paidSections(), this.values().currency)
+    applicableDeductibles(
+      this.limits()?.deductibles ?? [],
+      this.paidSections(),
+      this.values().currency
+    )
   );
   readonly deductibleTotal = computed(() => fixedDeductibleTotal(this.deductibles()));
-  readonly remaining = (r: FinancialReserve): number => outstanding(r) - Number(this.amounts()[r.reserveId] ?? 0);
+  readonly remaining = (r: FinancialReserve): number =>
+    outstanding(r) - Number(this.amounts()[r.reserveId] ?? 0);
   readonly controlFor = (id: string): FormControl<number | null> => {
     let c = this.linesForm.controls[id];
     if (!c) {
@@ -152,23 +186,43 @@ export class MakePaymentPageComponent {
       sectionCount: this.paidSections().length
     })
   );
-  private readonly premiumModeValue = toSignal(this.premiumMode.valueChanges.pipe(startWith(this.premiumMode.value)), {
-    initialValue: 'block' as const
-  });
+  private readonly premiumModeValue = toSignal(
+    this.premiumMode.valueChanges.pipe(startWith(this.premiumMode.value)),
+    {
+      initialValue: 'block' as const
+    }
+  );
 
-  readonly blocked = computed(() => preChecksBlockSubmit(this.checks()) || this.checks().some(c => c.holdsSubmit));
-  readonly needsLimitReason = computed(() => this.checks().some(c => c.needsReason && !c.afterOutsideBlock));
+  readonly blocked = computed(
+    () => preChecksBlockSubmit(this.checks()) || this.checks().some(c => c.holdsSubmit)
+  );
+  readonly needsLimitReason = computed(() =>
+    this.checks().some(c => c.needsReason && !c.afterOutsideBlock)
+  );
   // Warning-only unpaid premium (BMPCC-21754 variant): paying out needs a tick.
-  readonly needsUnderwriterTick = computed(() => this.checks().some(c => c.id === 'premium-outstanding' && c.level === 'warn'));
-  private readonly underwriterTicked = toSignal(this.underwriterChecked.valueChanges, { initialValue: false });
-  readonly cannotSubmit = computed(() => this.blocked() || (this.needsUnderwriterTick() && !this.underwriterTicked()));
+  readonly needsUnderwriterTick = computed(() =>
+    this.checks().some(c => c.id === 'premium-outstanding' && c.level === 'warn')
+  );
+  private readonly underwriterTicked = toSignal(this.underwriterChecked.valueChanges, {
+    initialValue: false
+  });
+  readonly cannotSubmit = computed(
+    () => this.blocked() || (this.needsUnderwriterTick() && !this.underwriterTicked())
+  );
 
   readonly missing = computed(() =>
-    missingFields(this.values(), this.method(), this.lines().length, !!this.editing() && !this.selectedPayee())
+    missingFields(
+      this.values(),
+      this.method(),
+      this.lines().length,
+      !!this.editing() && !this.selectedPayee()
+    )
   );
 
   // Filled from the link or button that opened the page, and again whenever the query changes.
-  private readonly query = toSignal(this.route.queryParamMap, { initialValue: this.route.snapshot.queryParamMap });
+  private readonly query = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap
+  });
   private readonly prefill = effect(() => {
     const q = this.query();
     untracked(() => this.applyQuery(q));
@@ -222,7 +276,8 @@ export class MakePaymentPageComponent {
       type: q.get('type'),
       amount: q.get('amount') ? Number(q.get('amount')) : null
     });
-    for (const [reserveId, amount] of Object.entries(amounts)) this.controlFor(reserveId).setValue(amount, { emitEvent: false });
+    for (const [reserveId, amount] of Object.entries(amounts))
+      this.controlFor(reserveId).setValue(amount, { emitEvent: false });
     this.linesForm.updateValueAndValidity();
   }
 
@@ -230,7 +285,9 @@ export class MakePaymentPageComponent {
     this.submitted.set(true);
     const miss = this.missing();
     if (miss.length) {
-      this.payeeOpen.set(miss.some(m => ['payeeId', 'beneficiaryName', 'emailAddress', 'letterAddress'].includes(m)));
+      this.payeeOpen.set(
+        miss.some(m => ['payeeId', 'beneficiaryName', 'emailAddress', 'letterAddress'].includes(m))
+      );
       this.methodOpen.set(miss.some(m => ['method', 'bankAccountId', 'paymentDate'].includes(m)));
       if (miss.includes('lines')) this.amountOpen.set(true);
       return;
@@ -240,7 +297,10 @@ export class MakePaymentPageComponent {
     const v = this.form.getRawValue();
     const edit = this.editing();
     const payee = this.selectedPayee() ?? { payeeId: '', name: edit!.payee };
-    const where = this.paidSections().map(r => r.sectionCode ?? r.section).join(' and ') || 'claim level';
+    const where =
+      this.paidSections()
+        .map(r => r.sectionCode ?? r.section)
+        .join(' and ') || 'claim level';
     const summary = `${this.total().toLocaleString('en-GB')} ${v.currency} to ${payee.name} (${this.lines().length} reserve line${this.lines().length === 1 ? '' : 's'}, ${where})`;
     const ref = this.dialogSvc.open(ConfirmDialogComponent, {
       data: confirmData(mode, edit?.paymentId ?? null, summary),
@@ -248,7 +308,8 @@ export class MakePaymentPageComponent {
       maxWidth: '92vw'
     });
     if (!(await firstValueFrom(ref.afterClosed()))) return;
-    const sectionType = this.rows().find(r => r.reserveId === this.lines()[0].reserveId)?.reserveType ?? 'Indemnity';
+    const sectionType =
+      this.rows().find(r => r.reserveId === this.lines()[0].reserveId)?.reserveType ?? 'Indemnity';
     if (edit) {
       const ok = this.editSvc.resubmit(this.claimId, edit.paymentId, {
         payee: payee.name,
@@ -256,8 +317,16 @@ export class MakePaymentPageComponent {
         amount: this.total(),
         currency: v.currency
       });
-      if (ok) this.toast.success('Sent back to your approver', "We'll let you know if it can't be booked.");
-      else this.toast.info("This payment can't be changed any more", 'The approver has already dealt with it.');
+      if (ok)
+        this.toast.success(
+          'Sent back to your approver',
+          "We'll let you know if it can't be booked."
+        );
+      else
+        this.toast.info(
+          "This payment can't be changed any more",
+          'The approver has already dealt with it.'
+        );
       this.goToPayments(edit.paymentId);
       return;
     }
@@ -270,14 +339,17 @@ export class MakePaymentPageComponent {
         mode === 'draft' ? 'Draft' : 'Pending'
       )
     );
-    if (mode === 'draft') this.toast.success('Saved as a draft', 'It is not sent to your approver yet.');
+    if (mode === 'draft')
+      this.toast.success('Saved as a draft', 'It is not sent to your approver yet.');
     else this.toast.success('Sent for approval', "We'll let you know if it can't be booked.");
     this.goToPayments(created.paymentId);
   }
 
   /** Lands on the Payments list, with the changed payment highlighted. */
   private goToPayments(highlight?: string): void {
-    this.router.navigate(['/claims', this.claimId, 'financial'], { queryParams: { view: 'payments', highlight } });
+    this.router.navigate(['/claims', this.claimId, 'financial'], {
+      queryParams: { view: 'payments', highlight }
+    });
   }
 
   onCancel(): void {

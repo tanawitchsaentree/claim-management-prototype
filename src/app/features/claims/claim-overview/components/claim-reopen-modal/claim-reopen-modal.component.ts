@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -49,6 +49,7 @@ import { ClaimNumberPipe } from '../../../../../shared/pipes/claim-number.pipe';
     NxCheckboxModule
   ],
   templateUrl: './claim-reopen-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-reopen-modal.component.scss'
 })
 export class ClaimReopenModalComponent {
@@ -133,12 +134,15 @@ export class ClaimReopenModalComponent {
   }
 
   readonly allSelected = computed(
-    () => this.closedSections().length > 0 && this.selectedIds().size === this.closedSections().length
+    () =>
+      this.closedSections().length > 0 && this.selectedIds().size === this.closedSections().length
   );
   readonly someSelected = computed(() => this.selectedIds().size > 0 && !this.allSelected());
 
   toggleAll(): void {
-    this.selectedIds.set(this.allSelected() ? new Set() : new Set(this.closedSections().map(s => s.id)));
+    this.selectedIds.set(
+      this.allSelected() ? new Set() : new Set(this.closedSections().map(s => s.id))
+    );
   }
 
   toggleSection(id: string): void {

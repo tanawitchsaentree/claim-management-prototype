@@ -7,7 +7,8 @@ import {
   Injector,
   OnDestroy,
   OnInit,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -75,6 +76,7 @@ const EMPTY: EntitiesDamagesData = { sections: [] };
     EmptyStateComponent
   ],
   templateUrl: './step-entities-damages.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-entities-damages.component.scss'
 })
 export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
