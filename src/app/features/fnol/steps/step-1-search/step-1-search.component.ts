@@ -63,6 +63,7 @@ type SearchState =
 
 const UNDERWRITING_YEARS = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
 const PAGE_SIZE = 10;
+import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
 import { SkeletonJourneyService } from '../../services/skeleton-journey.service';
 
@@ -70,6 +71,7 @@ import { SkeletonJourneyService } from '../../services/skeleton-journey.service'
   selector: 'app-step-1-search',
   standalone: true,
   imports: [
+    AppDatePipe,
     ClaimNumberPipe,
     CommonModule,
     ReactiveFormsModule,

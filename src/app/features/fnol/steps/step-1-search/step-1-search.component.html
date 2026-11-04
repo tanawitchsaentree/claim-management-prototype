@@ -186,7 +186,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (claim of pagedClaims(state.claims); track claim.claimId + (claim.claimNumber ?? '')) {
+                    @for (
+                      claim of pagedClaims(state.claims);
+                      track claim.claimId + (claim.claimNumber ?? '')
+                    ) {
                       <tr
                         class="results-row {{ getSkeletonRowClass(claim) }}"
                         [class.results-row--selected]="selectedClaimId === claim.claimId"
@@ -252,17 +255,29 @@
                             <nx-icon name="ellipsis-v"></nx-icon>
                           </button>
                           <nx-context-menu #claimMenu="nxContextMenu">
-                            <button nxContextMenuItem type="button" (click)="onViewClaim(claim.claimId)">
+                            <button
+                              nxContextMenuItem
+                              type="button"
+                              (click)="onViewClaim(claim.claimId)"
+                            >
                               View claim
                             </button>
                             @if (claim.skeletonState === 'awaiting-policy') {
-                              <button nxContextMenuItem type="button" (click)="onConvertSkeleton(claim)">
+                              <button
+                                nxContextMenuItem
+                                type="button"
+                                (click)="onConvertSkeleton(claim)"
+                              >
                                 Link policy
                               </button>
                               <button nxContextMenuItem type="button" (click)="onExtendSla(claim)">
                                 Extend SLA
                               </button>
-                              <button nxContextMenuItem type="button" (click)="onAbandonSkeleton(claim)">
+                              <button
+                                nxContextMenuItem
+                                type="button"
+                                (click)="onAbandonSkeleton(claim)"
+                              >
                                 Abandon claim
                               </button>
                             }
@@ -277,7 +292,11 @@
                               </button>
                             }
                             @if (claim.skeletonState === 'abandoned') {
-                              <button nxContextMenuItem type="button" (click)="onReopenSkeleton(claim)">
+                              <button
+                                nxContextMenuItem
+                                type="button"
+                                (click)="onReopenSkeleton(claim)"
+                              >
                                 Reopen
                               </button>
                             }
@@ -359,8 +378,8 @@
                         </td>
                         <td class="text-link">{{ policy.policyNumber }}</td>
                         <td>{{ policy.clientName }}</td>
-                        <td class="text-muted">{{ policy.effectiveDate }}</td>
-                        <td class="text-muted">{{ policy.expiryDate }}</td>
+                        <td class="text-muted">{{ policy.effectiveDate | appDate }}</td>
+                        <td class="text-muted">{{ policy.expiryDate | appDate }}</td>
                         <td>
                           <app-status-chip
                             [status]="policy.status"

@@ -11,7 +11,7 @@
   <p class="csm-context">
     {{ skeleton.clientName }} &middot; {{ skeleton.description }}
     @if (skeleton.lossDate) {
-      &middot; Loss date {{ skeleton.lossDate }}
+      &middot; Loss date {{ skeleton.lossDate | appDate }}
     }
   </p>
 </header>
@@ -72,7 +72,11 @@
       <span>Searching…</span>
     </div>
   } @else {
-    <nx-tab-group class="csm-tabs" [selectedIndex]="activeTab()" (selectedIndexChange)="activeTab.set($event)">
+    <nx-tab-group
+      class="csm-tabs"
+      [selectedIndex]="activeTab()"
+      (selectedIndexChange)="activeTab.set($event)"
+    >
       <nx-tab>
         <ng-template nxTabLabel>Clients ({{ clients().length }})</ng-template>
       </nx-tab>
@@ -150,8 +154,8 @@
                 <td>{{ row.policy.policyNumber }}</td>
                 <td>{{ row.policy.clientName }}</td>
                 <td>{{ row.policy.lineOfBusiness }}</td>
-                <td>{{ row.policy.effectiveDate }}</td>
-                <td>{{ row.policy.expiryDate }}</td>
+                <td>{{ row.policy.effectiveDate | appDate }}</td>
+                <td>{{ row.policy.expiryDate | appDate }}</td>
                 <td>
                   @if (row.eligible) {
                     <app-status-chip [status]="row.policy.status" domain="policy"></app-status-chip>

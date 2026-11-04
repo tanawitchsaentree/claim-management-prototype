@@ -1,3 +1,4 @@
+import { AppDatePipe } from '../../pipes/app-date.pipe';
 import {
   Component,
   inject,
@@ -61,7 +62,8 @@ interface PolicyRow {
     NxDropdownModule,
     NxTabsModule,
     StatusChipComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    AppDatePipe
   ],
   templateUrl: './convert-skeleton-modal.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
