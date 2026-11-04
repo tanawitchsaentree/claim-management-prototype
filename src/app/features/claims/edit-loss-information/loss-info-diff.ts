@@ -5,6 +5,7 @@ import {
 import { circumstanceLabel } from '../../fnol/config/circumstances';
 import { causeLabel } from '../../../core/models/cause-of-loss';
 import { LookupOption } from '../../../core/models/lookup.model';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 // Diff/impact vocabulary for the Edit claim details screen. Extracted from
 // edit-loss-information.component.ts (2026-09-02) — the component was 532
@@ -95,15 +96,25 @@ export function computeLossInfoDiffs(
       .map(k => causeLabel(k, options))
       .join(', ');
 
+  // Dates read DD-MM-YYYY like everywhere else; the compare above stays on the stored value.
+  const appDate = new AppDatePipe();
+  const showDate = (v: string) => (v ? appDate.transform(v) : v);
+
   const orig = original ?? BLANK_ORIGINAL;
 
   // Dates & times
-  addIf('Date of occurrence', orig.dateOfLoss?.dateOfOccurrence, cur.dateOfLoss?.dateOfOccurrence);
+  addIf(
+    'Date of occurrence',
+    orig.dateOfLoss?.dateOfOccurrence,
+    cur.dateOfLoss?.dateOfOccurrence,
+    showDate
+  );
   addIf('Time of occurrence', orig.dateOfLoss?.timeOfOccurrence, cur.dateOfLoss?.timeOfOccurrence);
   addIf(
     'Date of notification',
     orig.dateOfLoss?.dateOfNotification,
-    cur.dateOfLoss?.dateOfNotification
+    cur.dateOfLoss?.dateOfNotification,
+    showDate
   );
   addIf(
     'Time of notification',

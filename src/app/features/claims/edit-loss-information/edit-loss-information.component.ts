@@ -35,6 +35,7 @@ import { MockLossInformationService } from '../../../core/mock/services/mock-los
 import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 import { LossInfoSyncService } from '../../../core/services/loss-info-sync.service';
 import { LocationPickerComponent } from '../../../shared/components/location-picker/location-picker.component';
@@ -392,7 +393,8 @@ export class EditLossInformationComponent implements OnInit {
 
   private formatDateTime(date?: string | null, time?: string | null): string {
     if (!date) return 'Not provided';
-    return time ? `${date} ${time}` : date;
+    const shown = new AppDatePipe().transform(date);
+    return time ? `${shown} ${time}` : shown;
   }
 
   get dateGroupDisplay(): string {
