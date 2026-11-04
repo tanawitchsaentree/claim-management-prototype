@@ -132,6 +132,8 @@ export class EntityDetailPanelComponent implements OnInit {
   /** Shown when the entity has no date of loss of its own (same fallback the Edit modal starts from). */
   @Input() claimDateOfLoss?: string;
   @Output() closed = new EventEmitter<void>();
+  /** Opens the same Edit entity modal as the row menu, so Date of loss is changed in one place. */
+  @Output() editRequested = new EventEmitter<void>();
 
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);

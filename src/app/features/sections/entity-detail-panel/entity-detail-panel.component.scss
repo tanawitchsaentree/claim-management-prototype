@@ -106,6 +106,9 @@
     font-size: var(--paragraph-04-font-size);
     color: var(--text-muted);
   }
+  &__edit {
+    margin-left: var(--space-xs);
+  }
   &__value {
     font-size: var(--paragraph-03-font-size);
     color: var(--text-01);

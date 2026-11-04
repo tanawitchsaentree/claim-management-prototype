@@ -335,6 +335,7 @@
         [claimClosed]="claimClosed()"
         [claimDateOfLoss]="claimDateOfLoss()"
         (closed)="closeEntityDetail()"
+        (editRequested)="onEditEntity(sel.section, sel.entity)"
       >
       </app-section-entity-detail>
     </div>

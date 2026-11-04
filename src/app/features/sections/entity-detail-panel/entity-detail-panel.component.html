@@ -35,11 +35,22 @@
       </div>
       <div class="edp-field">
         <span class="edp-field__label">Date of loss</span>
-        <span class="edp-field__value">{{
-          (entity.dateOfOccurrence ?? claimDateOfLoss)
-            ? (entity.dateOfOccurrence ?? claimDateOfLoss | appDate)
-            : '–'
-        }}</span>
+        <span class="edp-field__value">
+          {{
+            (entity.dateOfOccurrence ?? claimDateOfLoss)
+              ? (entity.dateOfOccurrence ?? claimDateOfLoss | appDate)
+              : '–'
+          }}
+          <button
+            nxPlainButton
+            type="button"
+            class="edp-field__edit"
+            [disabled]="claimClosed || section.status === 'Closed'"
+            (click)="editRequested.emit()"
+          >
+            Edit
+          </button>
+        </span>
       </div>
       @if (entity.interruptionStartDate || entity.interruptionEndDate) {
         <div class="edp-field">

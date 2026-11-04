@@ -431,6 +431,14 @@ export class Sections {
           : s
       )
     );
+    // Keep the open side panel in step with the saved entity.
+    const open = this.selectedEntity();
+    if (open?.entity.id === entity.id) {
+      this.selectedEntity.set({
+        section: open.section,
+        entity: { ...open.entity, ...result }
+      });
+    }
     this.toast.success(`Entity "${entity.name}" updated`);
   }
 
