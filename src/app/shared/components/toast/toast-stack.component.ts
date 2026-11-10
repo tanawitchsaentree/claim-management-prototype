@@ -40,14 +40,14 @@ import { Toast, ToastService, ToastTone } from './toast.service';
   animations: [
     trigger('toastSlide', [
       transition(':enter', [
-        style({ opacity: 0, transform: 'translateX(24px)' }),
+        style({ opacity: 0, transform: 'translateY(24px)' }),
         animate(
           '200ms cubic-bezier(0.2, 0, 0, 1)',
-          style({ opacity: 1, transform: 'translateX(0)' })
+          style({ opacity: 1, transform: 'translateY(0)' })
         )
       ]),
       transition(':leave', [
-        animate('160ms ease-in', style({ opacity: 0, transform: 'translateX(24px)' }))
+        animate('160ms ease-in', style({ opacity: 0, transform: 'translateY(24px)' }))
       ])
     ])
   ]

@@ -1,11 +1,15 @@
 .toast-stack {
   position: fixed;
-  // --dev-banner-offset: set by the DEV banner while it shows (0 in the real app).
-  top: calc(80px + var(--dev-banner-offset));
-  right: 24px;
+  // Bottom centre, like every toast in the real app (BMPCC-18459 review,
+  // 2026-11-10). The old top-right spot was the prototype's mistake, and
+  // the Reject Claim toast on DEV copied it.
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1100;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--space-md);
   pointer-events: none;
   max-width: 380px;
