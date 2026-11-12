@@ -1,0 +1,84 @@
+<ng-template #fields>
+  <div class="ac-grid">
+    <nx-formfield label="Source of referral">
+      <input nxInput readonly value="Claims handler" />
+    </nx-formfield>
+    <nx-formfield label="Whom to refer">
+      <input nxInput readonly value="SID" />
+    </nx-formfield>
+    <nx-formfield label="Select SID name">
+      <input nxInput readonly value="Rahul Raj" />
+    </nx-formfield>
+  </div>
+  <nx-formfield label="Claims description">
+    <input nxInput readonly value="Automatically from claims and can edit if required" />
+  </nx-formfield>
+</ng-template>
+
+<div class="ac-page">
+  <section class="ac-variant">
+    <p class="ac-label">A. Current: custom blue header</p>
+    <nx-accordion class="ac-blue" [multi]="true">
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Claims handler investigation referral form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <ng-container [ngTemplateOutlet]="fields"></ng-container>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>SID review form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Social media surveillance request</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+    </nx-accordion>
+  </section>
+
+  <section class="ac-variant">
+    <p class="ac-label">B. NDBX regular, as shipped</p>
+    <nx-accordion [multi]="true">
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Claims handler investigation referral form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <ng-container [ngTemplateOutlet]="fields"></ng-container>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>SID review form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Social media surveillance request</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+    </nx-accordion>
+  </section>
+
+  <section class="ac-variant">
+    <p class="ac-label">C. NDBX light, as shipped</p>
+    <nx-accordion variant="light" [multi]="true">
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Claims handler investigation referral form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <ng-container [ngTemplateOutlet]="fields"></ng-container>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>SID review form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Social media surveillance request</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+    </nx-accordion>
+  </section>
+</div>

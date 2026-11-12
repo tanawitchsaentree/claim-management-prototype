@@ -179,5 +179,12 @@ export const routes: Routes = [
     canActivate: [trackerGuard],
     loadChildren: () => import('./features/tracker/tracker.routes').then(m => m.TRACKER_ROUTES)
   },
+  {
+    path: 'mock/accordion-compare',
+    loadComponent: () =>
+      import('./features/mock/accordion-compare/accordion-compare.component').then(
+        m => m.AccordionCompareComponent
+      )
+  },
   { path: '**', redirectTo: 'dashboard' }
 ];

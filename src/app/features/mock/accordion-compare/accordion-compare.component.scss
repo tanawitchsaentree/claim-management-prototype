@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  background: var(--ui-01);
+  min-height: 100vh;
+}
+
+.ac-page {
+  max-width: 1040px; // theme-exempt: mock canvas width, matches the Investigation details sheet
+  margin: 0 auto;
+  padding: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4xl);
+}
+
+.ac-variant {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.ac-label {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.ac-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+}
+
+nx-formfield {
+  width: 100%;
+}
+
+// A only: recreates the team's current header (light blue fill, field-size text).
+// Component-scoped override on purpose: this variant exists to show the custom look.
+.ac-blue {
+  --accordion-regular-header-background-color: var(--message-info-background-color);
+  --accordion-regular-font-size: var(--paragraph-01-font-size);
+  --accordion-regular-line-height: var(--paragraph-01-line-height);
+  --accordion-regular-font-weight: 400;
+  --accordion-regular-header-active-font-weight: 400;
+}
