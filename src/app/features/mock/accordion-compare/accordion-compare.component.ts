@@ -6,8 +6,8 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 
 /**
  * Side-by-side mock for the accordion colour discussion (Investigation details):
- * A = the team's custom blue header, B = NDBX regular as shipped,
- * C = NDBX light as shipped. B and C carry no overrides at all.
+ * A = the team's custom blue header, B = NDBX Expert regular,
+ * C = NDBX Expert light, B-D use the NDBX Expert accordion values, D = extra-light.
  */
 @Component({
   selector: 'app-accordion-compare',

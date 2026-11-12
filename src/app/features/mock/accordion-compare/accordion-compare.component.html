@@ -39,8 +39,8 @@
   </section>
 
   <section class="ac-variant">
-    <p class="ac-label">B. NDBX regular, as shipped</p>
-    <nx-accordion [multi]="true">
+    <p class="ac-label">B. NDBX Expert regular</p>
+    <nx-accordion class="ac-expert" [multi]="true">
       <nx-expansion-panel expanded>
         <nx-expansion-panel-header>
           <nx-expansion-panel-title>Claims handler investigation referral form</nx-expansion-panel-title>
@@ -61,8 +61,30 @@
   </section>
 
   <section class="ac-variant">
-    <p class="ac-label">C. NDBX light, as shipped</p>
-    <nx-accordion variant="light" [multi]="true">
+    <p class="ac-label">C. NDBX Expert light</p>
+    <nx-accordion class="ac-expert" variant="light" [multi]="true">
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Claims handler investigation referral form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        <ng-container [ngTemplateOutlet]="fields"></ng-container>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>SID review form</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+      <nx-expansion-panel>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Social media surveillance request</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+      </nx-expansion-panel>
+    </nx-accordion>
+  </section>
+
+  <section class="ac-variant">
+    <p class="ac-label">D. NDBX Expert extra-light</p>
+    <nx-accordion class="ac-expert" variant="extra-light" [multi]="true">
       <nx-expansion-panel expanded>
         <nx-expansion-panel-header>
           <nx-expansion-panel-title>Claims handler investigation referral form</nx-expansion-panel-title>

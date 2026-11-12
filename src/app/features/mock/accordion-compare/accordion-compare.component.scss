@@ -45,3 +45,21 @@ nx-formfield {
   --accordion-regular-font-weight: 400;
   --accordion-regular-header-active-font-weight: 400;
 }
+
+// B-D: the NDBX Expert accordion values (ndbx-expert.css). Expert is not loaded
+// app-wide here, so its accordion tokens are applied to these variants only.
+.ac-expert {
+  --accordion-regular-font-size: var(--paragraph-01-font-size); // expert paragraph-03 = 16px
+  --accordion-regular-line-height: var(--paragraph-01-line-height);
+  --accordion-regular-font-weight: 400;
+  --accordion-regular-header-active-font-weight: 400;
+  --accordion-regular-header-padding: var(--space-base);
+  --accordion-regular-header-background-color: var(--ui-02);
+  --accordion-regular-header-text-color: var(--text-01);
+  --accordion-light-font-size: var(--paragraph-01-font-size);
+  --accordion-light-line-height: var(--paragraph-01-line-height);
+  --accordion-light-header-padding: var(--space-base);
+  --accordion-light-header-text-color: var(--text-01);
+  --accordion-light-chevron-color: var(--text-01);
+  --accordion-extra-light-font-size: var(--paragraph-01-font-size);
+}
