@@ -80,7 +80,7 @@
   @if (loadingDetails()) {
     <div class="pom-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
   } @else if (overview(); as ov) {
-    <nx-accordion [multi]="true" class="pom-accordion">
+    <nx-accordion variant="light" [multi]="true" class="pom-accordion">
       <!-- Coverage details -->
       <nx-expansion-panel expanded>
         <nx-expansion-panel-header>

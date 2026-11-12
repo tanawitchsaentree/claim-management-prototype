@@ -92,46 +92,48 @@
       <!-- Card 2: Claims to be created -->
       <section class="ss-card">
         <h2 class="section-heading">Claims to be created</h2>
-        @for (group of vm.claimGroups; track group.policyNumber; let i = $index) {
-          <details class="ss-accordion" [attr.open]="i === 0 ? '' : null">
-            <summary class="ss-accordion-summary">
-              For policy: <strong>{{ group.policyNumber }}</strong>
-            </summary>
-            <dl class="ss-list ss-accordion-body">
-              <div class="ss-row">
-                <dt class="ss-label">Types of damage</dt>
-                <dd class="ss-value">
-                  @if (group.damageTypes.length === 0) {
-                    <span class="ss-empty">Not specified</span>
-                  }
-                  @for (d of group.damageTypes; track d) {
-                    <span class="ss-tag">{{ d }}</span>
-                  }
-                </dd>
-              </div>
-              <div class="ss-row">
-                <dt class="ss-label">Earliest section date</dt>
-                <dd class="ss-value">
-                  {{ group.earliestSectionDate }} at {{ group.earliestSectionTime }}
-                </dd>
-              </div>
-              <div class="ss-row">
-                <dt class="ss-label">No. of sections</dt>
-                <dd class="ss-value">{{ group.sectionCount }}</dd>
-              </div>
-              <div class="ss-row">
-                <dt class="ss-label">Parties</dt>
-                <dd class="ss-value">{{ group.partyCount }}</dd>
-              </div>
-              <div class="ss-row">
-                <dt class="ss-label">Total reserve</dt>
-                <dd class="ss-value">
-                  {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
-                </dd>
-              </div>
-            </dl>
-          </details>
-        }
+        <nx-accordion variant="light" [multi]="true">
+          @for (group of vm.claimGroups; track group.policyNumber; let i = $index) {
+            <nx-expansion-panel [expanded]="i === 0">
+              <nx-expansion-panel-header>
+                <nx-expansion-panel-title>For policy: {{ group.policyNumber }}</nx-expansion-panel-title>
+              </nx-expansion-panel-header>
+              <dl class="ss-list">
+                <div class="ss-row">
+                  <dt class="ss-label">Types of damage</dt>
+                  <dd class="ss-value">
+                    @if (group.damageTypes.length === 0) {
+                      <span class="ss-empty">Not specified</span>
+                    }
+                    @for (d of group.damageTypes; track d) {
+                      <span class="ss-tag">{{ d }}</span>
+                    }
+                  </dd>
+                </div>
+                <div class="ss-row">
+                  <dt class="ss-label">Earliest section date</dt>
+                  <dd class="ss-value">
+                    {{ group.earliestSectionDate }} at {{ group.earliestSectionTime }}
+                  </dd>
+                </div>
+                <div class="ss-row">
+                  <dt class="ss-label">No. of sections</dt>
+                  <dd class="ss-value">{{ group.sectionCount }}</dd>
+                </div>
+                <div class="ss-row">
+                  <dt class="ss-label">Parties</dt>
+                  <dd class="ss-value">{{ group.partyCount }}</dd>
+                </div>
+                <div class="ss-row">
+                  <dt class="ss-label">Total reserve</dt>
+                  <dd class="ss-value">
+                    {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
+                  </dd>
+                </div>
+              </dl>
+            </nx-expansion-panel>
+          }
+        </nx-accordion>
         @if (vm.claimGroups.length === 0) {
           <app-empty-state
             message="No entities selected — no claims will be created."

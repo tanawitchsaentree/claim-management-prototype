@@ -153,6 +153,17 @@
   --heading-05-font-size: 1.25rem;
   --heading-05-font-weight: 700;
   --headline-secondary-color: #404040;
+
+  // ── Accordion (2026-11-12, option C on /mock/accordion-compare) ─
+  // Every accordion in the app is <nx-accordion variant="light">: divider lines,
+  // no fill, 16px regular dark text, dark chevron. These are the NDBX Expert
+  // light values (ndbx-expert.css); Expert is not loaded app-wide, so pinned here.
+  // Do not retune per page.
+  --accordion-light-font-size: var(--paragraph-01-font-size);
+  --accordion-light-line-height: var(--paragraph-01-line-height);
+  --accordion-light-header-padding: var(--space-base);
+  --accordion-light-header-text-color: var(--text-01);
+  --accordion-light-chevron-color: var(--text-01);
 }
 
 // Expert runtime styles declare some tokens at :root later in the DOM, so they

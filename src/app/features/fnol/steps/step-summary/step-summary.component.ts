@@ -13,6 +13,7 @@ import {
   debounceTime,
   distinctUntilChanged
 } from 'rxjs';
+import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
@@ -93,6 +94,7 @@ const CREATOR: AccessListEntry = {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    NxAccordionModule,
     NxButtonModule,
     NxIconModule,
     NxMessageModule,

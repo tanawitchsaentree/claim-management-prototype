@@ -97,54 +97,6 @@
   color: var(--text-01);
 }
 
-// ── Accordion (claims to be created) ──────────────────────────────────────────
-
-.ss-accordion {
-  border: 1px solid var(--ui-04);
-  border-radius: var(--radius-s);
-  margin-bottom: var(--space-sm);
-
-  &[open] .ss-accordion-summary::after {
-    transform: rotate(180deg);
-  }
-}
-
-.ss-accordion-summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-md) var(--space-base);
-  cursor: pointer;
-  font-size: var(--paragraph-03-font-size);
-  color: var(--text-01);
-  user-select: none;
-
-  &::-webkit-details-marker {
-    display: none;
-  }
-
-  &::after {
-    content: '';
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23404040' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-size: contain;
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
-
-  &:hover {
-    background: var(--hover-secondary);
-  }
-}
-
-.ss-accordion-body {
-  padding: 0 var(--space-base) var(--space-md);
-  border-top: 1px solid var(--ui-03);
-}
-
 // ── Config row (switcher) ──────────────────────────────────────────────────────
 
 .ss-config-row {

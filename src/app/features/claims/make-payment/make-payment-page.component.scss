@@ -4,23 +4,7 @@
 
 .mp-accordion {
   display: block;
-
-  // Same accordion tokens as Policy overview (verified there), at regular weight like the design.
-  nx-expansion-panel {
-    --accordion-regular-font-size: var(--paragraph-02-font-size);
-    --accordion-regular-line-height: 1.5rem;
-    --accordion-regular-font-weight: 400;
-    --accordion-regular-header-active-font-weight: 400;
-    --accordion-regular-header-padding: var(--space-md) var(--space-md);
-    --accordion-regular-body-padding: 0 var(--space-md);
-    --accordion-regular-header-top-margin: 0;
-    // Thin divider between the bars, as in the design.
-    border-bottom: 1px solid var(--ui-04);
-  }
-
-  nx-expansion-panel:first-child {
-    border-top: 1px solid var(--ui-04);
-  }
+  // Look (dividers, text, chevron) comes from the app-wide light variant (themes/_ndbx.scss).
 }
 
 // Stays at the bottom edge of the visible area while the page scrolls, so the buttons
