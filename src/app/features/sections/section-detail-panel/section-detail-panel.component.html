@@ -60,6 +60,34 @@
         <span class="sdp-field__label">Entities</span>
         <span class="sdp-field__value">{{ section.entities.length }}</span>
       </div>
+      <div class="sdp-field">
+        <span class="sdp-field__label">Type of coverage</span>
+        <span class="sdp-field__value">{{ typeOfCoverage }}</span>
+      </div>
+      <!-- BMPCC-22328 AC03: the section's own date of loss, or the claim's -->
+      <div class="sdp-field">
+        <span class="sdp-field__label">Date of loss</span>
+        <span class="sdp-field__value sdp-dol">
+          {{ section.dateOfLoss ?? claimDateOfLoss | appDate }}
+          <span class="sdp-dol__note">
+            {{
+              section.dateOfLoss
+                ? 'Own date (claim: ' + (claimDateOfLoss | appDate) + ')'
+                : 'Same as claim'
+            }}
+          </span>
+          @if (!claimClosed && section.status === 'Open') {
+            <button
+              nxPlainButton
+              type="button"
+              class="sdp-dol__edit"
+              (click)="changeDol.emit(section)"
+            >
+              Change
+            </button>
+          }
+        </span>
+      </div>
       <!-- BMPCC-18160 — read-only, all roles. DEVIATION: the ticket asks for it
            on "Section Overview"; it goes here rather than as a 7th column on the
            sections table, which already carries 6 columns after Comments and

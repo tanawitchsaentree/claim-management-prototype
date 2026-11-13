@@ -5,6 +5,7 @@ import { MockBaseService } from './mock-base.service';
 import lookupsData from '../data/lookups.json';
 import policyCbiExtensions from '../data/policy-cbi-extensions.json';
 import lossCauseSuggestions from '../data/loss-cause-suggestions.json';
+import sectionCoverage from '../data/section-coverage.json';
 
 @Injectable({ providedIn: 'root' })
 export class MockLookupService extends MockBaseService {
@@ -41,6 +42,10 @@ export class MockLookupService extends MockBaseService {
     const lastWord = (query.trim().split(/\s+/).at(-1) ?? '').toLowerCase();
     const all = lossCauseSuggestions.suggestions;
     return this.respond(lastWord ? all.filter(s => s.toLowerCase().includes(lastWord)) : []);
+  }
+  /** BMPCC-22328 AC05 — the default cover for a damage type ("Type of coverage" on Section overview). */
+  getDefaultCoverageSync(damageType: string): string | undefined {
+    return (sectionCoverage.defaultCoverageByDamageType as Record<string, string>)[damageType];
   }
   getTypeOfDamage(): Observable<LookupOption[]> {
     return this.respond(this.lookups.typeOfDamage);

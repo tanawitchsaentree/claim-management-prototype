@@ -59,15 +59,48 @@
 
   <!-- ── Center: main table (hidden when detail open) ── -->
   <div class="sec-main" [style.display]="hasDetailOpen() ? 'none' : ''">
+    <!-- BMPCC-22328 AC01 / BMPCC-22660 AC02: one selection for close and reopen -->
+    @if (selectedIds().size > 0) {
+      <app-bulk-selection-bar
+        class="sec-bulk-bar"
+        noun="section"
+        [count]="selectedIds().size"
+        (clear)="clearSelection()"
+      >
+        @if (selectedClosed().length) {
+          <button nxButton="secondary small" type="button" (click)="onReopenSelected()">
+            Reopen {{ selectedClosed().length }}
+            {{ selectedClosed().length === 1 ? 'section' : 'sections' }}
+          </button>
+        }
+        @if (selectedOpen().length) {
+          <button nxButton="secondary small" type="button" (click)="onCloseSelected()">
+            Close {{ selectedOpen().length }}
+            {{ selectedOpen().length === 1 ? 'section' : 'sections' }}
+          </button>
+        }
+      </app-bulk-selection-bar>
+    }
     <!-- ── Sections Table ── -->
     <div class="table-card">
       <table nxTable class="sections-table">
         <thead>
           <tr nxTableRow>
+            <th nxHeaderCell class="col-select">
+              <nx-checkbox
+                [checked]="allSelected()"
+                [indeterminate]="someSelected()"
+                [disabled]="claimClosed() || sections().length === 0"
+                (checkedChange)="toggleSelectAll()"
+                aria-label="Select all sections"
+              ></nx-checkbox>
+            </th>
             <th nxHeaderCell class="col-toggle"></th>
             <th nxHeaderCell class="col-entity">Entity</th>
             <th nxHeaderCell class="col-status">Status</th>
+            <th nxHeaderCell class="col-coverage">Type of coverage</th>
             <th nxHeaderCell class="col-damage">Damage</th>
+            <th nxHeaderCell class="col-dol">Date of loss</th>
             <th nxHeaderCell class="col-actions">Action</th>
           </tr>
         </thead>
@@ -75,7 +108,7 @@
         @if (loading()) {
           <tbody>
             <tr nxTableRow>
-              <td nxTableCell colspan="4" style="text-align: center; padding: var(--space-2xl)">
+              <td nxTableCell colspan="8" style="text-align: center; padding: var(--space-2xl)">
                 <nx-spinner size="medium"></nx-spinner>
               </td>
             </tr>
@@ -87,7 +120,7 @@
             <tr nxTableRow>
               <td
                 nxTableCell
-                colspan="4"
+                colspan="8"
                 style="
                   text-align: center;
                   padding: var(--space-2xl);
@@ -109,6 +142,14 @@
                 class="section-header-row"
                 [class.section-header-row--closed]="section.status === 'Closed'"
               >
+                <td nxTableCell class="col-select">
+                  <nx-checkbox
+                    [checked]="selectedIds().has(section.id)"
+                    [disabled]="claimClosed()"
+                    (checkedChange)="toggleSelect(section.id)"
+                    [attr.aria-label]="'Select section ' + section.name"
+                  ></nx-checkbox>
+                </td>
                 <td nxTableCell class="col-toggle">
                   <button
                     nxIconButton="tertiary"
@@ -140,7 +181,14 @@
                     >
                   }
                 </td>
+                <td nxTableCell class="col-coverage">{{ bulk.coverageOf(section) }}</td>
                 <td nxTableCell class="col-damage">{{ section.damageType | damageTypeLabel }}</td>
+                <td nxTableCell class="col-dol">
+                  {{ sectionDol(section) | appDate }}
+                  @if (section.dateOfLoss && section.dateOfLoss !== claimDateOfLoss()) {
+                    <span class="dol-diff">Claim: {{ claimDateOfLoss() | appDate }}</span>
+                  }
+                </td>
                 <td nxTableCell class="col-actions">
                   <button
                     class="sec-kebab-btn"
@@ -180,6 +228,14 @@
                         Mark as reviewed
                       </button>
                     }
+                    <button
+                      nxContextMenuItem
+                      type="button"
+                      [disabled]="claimClosed() || section.status === 'Closed'"
+                      (click)="onChangeDol(section)"
+                    >
+                      Change date of loss
+                    </button>
                     <button
                       nxContextMenuItem
                       type="button"
@@ -241,6 +297,7 @@
               @if (section.expanded) {
                 @for (entity of section.entities; track entity.id) {
                   <tr nxTableRow class="entity-row" @rowExpand>
+                    <td nxTableCell class="col-select"></td>
                     <td nxTableCell class="col-toggle">
                       @if (entity.expandable) {
                         <button
@@ -264,8 +321,10 @@
                     </td>
                     <td nxTableCell class="col-entity">{{ entity.name }}</td>
                     <td nxTableCell class="col-status"></td>
+                    <td nxTableCell class="col-coverage"></td>
                     <!-- Damage type is now section-level (shown once on the section header row above) -->
                     <td nxTableCell class="col-damage"></td>
+                    <td nxTableCell class="col-dol"></td>
                     <td nxTableCell class="col-actions">
                       <button
                         class="sec-kebab-btn"
@@ -314,7 +373,7 @@
               }
             } @empty {
               <tr nxTableRow>
-                <td nxTableCell colspan="4">
+                <td nxTableCell colspan="8">
                   <app-empty-state message="No sections found."></app-empty-state>
                 </td>
               </tr>
@@ -333,7 +392,7 @@
         [entity]="sel.entity"
         [section]="sel.section"
         [claimClosed]="claimClosed()"
-        [claimDateOfLoss]="claimDateOfLoss()"
+        [claimDateOfLoss]="sectionDol(sel.section)"
         (closed)="closeEntityDetail()"
       >
       </app-section-entity-detail>
@@ -344,6 +403,9 @@
         [section]="sec"
         [claimClosed]="claimClosed()"
         [incidentCircumstance]="incidentCircumstance()"
+        [claimDateOfLoss]="claimDateOfLoss()"
+        [typeOfCoverage]="bulk.coverageOf(sec)"
+        (changeDol)="onChangeDol($event)"
         (closed)="closeSectionDetail()"
       >
       </app-section-detail>

@@ -1,0 +1,49 @@
+// BLESSED: same shell as section-reopen-modal (shared/styles/_modal-layout).
+@use '../../../shared/styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.sdm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sdm-title {
+  @include modal.title;
+}
+
+.sdm-body {
+  @include modal.body;
+}
+
+.sdm-footer {
+  @include modal.footer;
+}
+
+.sdm-intro {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.sdm-muted {
+  margin: 0;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.sdm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+
+  nx-formfield {
+    width: 100%;
+    min-width: 0;
+  }
+}

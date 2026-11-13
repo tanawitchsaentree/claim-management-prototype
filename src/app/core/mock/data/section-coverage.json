@@ -1,0 +1,12 @@
+{
+  "_comment": "BMPCC-22328 AC05: default 'Type of coverage' per damage type for the Section overview column, worded like the Entities & damages 'Type of coverage' values (entities-damages.json coveredBy). A section's own typeOfCoverage wins. In production this comes from the cover the entity was matched to.",
+  "defaultCoverageByDamageType": {
+    "material-damage": "FLExA for Building",
+    "business-interruption": "Business Interruption caused by FLExA",
+    "machinery-breakdown": "Machinery & Plant",
+    "bodily-injury": "Private liability (Third-party bodily injury)",
+    "financial-loss": "Financial loss",
+    "liability": "Private liability (Third-party property damage)",
+    "product-recall-costs": "Product recall costs"
+  }
+}

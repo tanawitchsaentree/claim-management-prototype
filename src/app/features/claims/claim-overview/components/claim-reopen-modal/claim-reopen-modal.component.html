@@ -63,32 +63,72 @@
         reopened later.
       </p>
       <div class="crm-picker">
-      <div class="crm-select-all">
-        <nx-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (checkedChange)="toggleAll()">
-          Select all ({{ closedSections().length }})
-        </nx-checkbox>
-      </div>
-      <div class="crm-section-list">
-        @for (section of closedSections(); track section.id) {
-          <div class="crm-section-item">
-            <label class="crm-section-item__row">
-              <nx-checkbox
-                [checked]="isSelected(section.id)"
-                (checkedChange)="toggleSection(section.id)"
-              >
-                {{ section.name }}
-              </nx-checkbox>
-            </label>
-            <p class="crm-section-entities">
-              {{ entitySummary(section) }}
-            </p>
-          </div>
-        }
-      </div>
+        <div class="crm-select-all">
+          <nx-checkbox
+            [checked]="allSelected()"
+            [indeterminate]="someSelected()"
+            (checkedChange)="toggleAll()"
+          >
+            Select all ({{ closedSections().length }})
+          </nx-checkbox>
+          <span class="crm-count"
+            >{{ selectedIds().size }} of {{ closedSections().length }} selected</span
+          >
+        </div>
+        <div class="crm-section-list">
+          @for (section of closedSections(); track section.id) {
+            <div class="crm-section-item">
+              <label class="crm-section-item__row">
+                <nx-checkbox
+                  [checked]="isSelected(section.id)"
+                  (checkedChange)="toggleSection(section.id)"
+                >
+                  {{ section.name }}
+                </nx-checkbox>
+              </label>
+              <p class="crm-section-entities">
+                {{ entitySummary(section) }}
+              </p>
+            </div>
+          }
+        </div>
       </div>
       @if (selectedIds().size === 0) {
         <p class="crm-selection-hint">Select at least one section to continue.</p>
       }
+    }
+  }
+
+  <!-- Step 3 — Confirm (BMPCC-22328 AC02) -->
+  @if (step() === 3) {
+    <p class="crm-intro">
+      <strong>{{ claim.claimId | claimNumber }}</strong> will be reopened. Reason:
+      {{ form.value.reason }}.
+    </p>
+    @if (toReopen().length) {
+      <div class="crm-summary">
+        <p class="crm-summary__label">
+          {{ toReopen().length }}
+          {{ toReopen().length === 1 ? 'section is' : 'sections are' }} reopened
+        </p>
+        <ul class="crm-summary__list">
+          @for (s of toReopen(); track s.id) {
+            <li>{{ s.name }}</li>
+          }
+        </ul>
+      </div>
+    } @else {
+      <p class="crm-intro">Only the claim is reopened. There are no closed sections.</p>
+    }
+    @if (staysClosed().length) {
+      <div class="crm-summary">
+        <p class="crm-summary__label">{{ staysClosed().length }} stay closed</p>
+        <ul class="crm-summary__list crm-summary__list--muted">
+          @for (s of staysClosed(); track s.id) {
+            <li>{{ s.name }}</li>
+          }
+        </ul>
+      </div>
     }
   }
 
@@ -103,6 +143,16 @@
     <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onContinue()">
       Continue
     </button>
+  } @else if (step() === 2) {
+    <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!canContinue() || loadingSecs()"
+      (click)="onContinue()"
+    >
+      Continue
+    </button>
   } @else {
     <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
     <button
@@ -114,7 +164,13 @@
       @if (saving()) {
         <nx-spinner size="small"></nx-spinner>
       } @else {
-        Reopen
+        {{
+          toReopen().length
+            ? 'Reopen claim and ' +
+              toReopen().length +
+              (toReopen().length === 1 ? ' section' : ' sections')
+            : 'Reopen claim'
+        }}
       }
     </button>
   }

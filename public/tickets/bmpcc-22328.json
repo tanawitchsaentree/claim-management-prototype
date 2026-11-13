@@ -1,0 +1,256 @@
+{
+  "ticketId": "BMPCC-22328",
+  "epicId": "BMPCC-18109",
+  "module": "Claims",
+  "title": "Select all sections (close/reopen), section date of loss, Type of coverage",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "sections",
+    "overview",
+    "fnol-entities-damages"
+  ],
+  "walkthroughSteps": [
+    "Section overview: tick sections (or select all), then Close or Reopen them in one go (AC-01). Closing several is the bulk closure of BMPCC-22660.",
+    "Claim overview, Reopen claim: select all or any section, then a confirm step (AC-02).",
+    "Section date of loss: column, change window, confirm, toast; follows the claim unless set (AC-03).",
+    "Type of coverage: renamed on Entities & damages (AC-04) and added as a Section overview column (AC-05)."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC01 · Section overview: select all or any section, then close or reopen exactly the selected ones",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001 (1 open section, 3 closed).\n\n**You see:** A checkbox on every section row and a **select all** checkbox in the table header.\n\n**Try:** Tick select all: a grey bar says **4 sections selected** with **Reopen 3 sections** and **Close 1 section**. Untick one closed section: the bar changes to **Reopen 2 sections**. Press it: the Reopen window lists exactly those 2 and asks for one reason; after **Reopen 2 sections** a toast names them. **Clear selection** empties the bar.\n\nDecision: one selection drives both actions; each button only takes the sections it applies to and says how many. One section uses the existing single windows, two or more the bulk ones (bulk closure is BMPCC-22660). Selection is off when the claim is closed.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Default CLM-2024-001: 1 open, 3 closed sections",
+        "preconditions": [
+          {
+            "text": "Select all + per-section checkbox",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Bar: Reopen 3 sections, Close 1 section",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Reopen window lists the selected sections",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Close and reopen apply to exactly the selected sections.",
+        "visualCues": [
+          "Select all + per-section checkbox",
+          "Bar: Reopen 3 sections, Close 1 section",
+          "Reopen window lists the selected sections"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Tick select all, untick one closed section, press Reopen 2 sections.",
+        "expectedResult": "Close and reopen apply to exactly the selected sections."
+      },
+      "expectedOutcome": {
+        "openSections": 1,
+        "closedSections": 3
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC02 · Reopen claim: select all or any closed section, then confirm",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, claim Closed, all 4 sections closed.\n\n**You see:** The **Reopen Claim** button.\n\n**Try:** Reopen Claim, pick a reason, **Continue**. The section step has **Select all (4)** and a checkbox per section, with **2 of 4 selected** next to it as you tick. **Continue**: the new confirm step says which sections reopen and which stay closed. **Reopen claim and 2 sections**: toast \"Claim reopened. 2 sections reopened. 2 sections remain closed.\"\n\nDecision: added a confirm step, so select all is never a blind click. At least one section must be picked when there are several (unchanged).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Closed claim, all sections closed",
+        "preconditions": [
+          {
+            "text": "Select all (4) + N of 4 selected",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Confirm step: reopened vs stays closed",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Toast with counts",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2026-11-01",
+              "closureReason": "Claim Finalised"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Select all and per-section ticks, then a confirm step with what reopens and what stays closed.",
+        "visualCues": [
+          "Select all (4) + N of 4 selected",
+          "Confirm step: reopened vs stays closed",
+          "Toast with counts"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Reopen Claim, reason, Continue, tick 2 sections, Continue, Reopen claim and 2 sections.",
+        "expectedResult": "Select all and per-section ticks, then a confirm step with what reopens and what stays closed."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Closed",
+        "closedSections": 4
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC03 · Section date of loss: shown per section, edited per section, follows the claim unless changed",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001. **Property Damage — Warehouse & Forklift** has its own date of loss (20-01-2024); the claim's is 14-01-2024.\n\n**You see:** A **Date of loss** column. That section reads 20-01-2024 with \"Claim: 14-01-2024\" under it; the others read 14-01-2024 (they follow the claim).\n\n**Try:** Section menu, **Change date of loss**: choose **Same as the claim** or **A different date for this section** (no future dates). **Continue** shows the Field / Original / Updated confirm (same as Edit claim); **Confirm changes** saves and a toast confirms. The section detail panel (menu, Edit) shows the same date with \"Same as claim\" or \"Own date\" and a **Change** link.\n\nDecision: unset means the section follows the claim, also when Edit claim changes the claim's date later; a section only keeps its own date when a handler sets one. Picking the claim's date again goes back to following it. Entities without their own date start from their section's date.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "SEC-001 has its own date of loss",
+        "preconditions": [
+          {
+            "text": "Date of loss column",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Claim: 14-01-2024 under the different date",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Change date of loss window + confirm + toast",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "sectionBlockers": {
+            "SEC-001": {
+              "dateOfLoss": "2024-01-20"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Section date shown per row, marked when different from the claim, edited with confirm.",
+        "visualCues": [
+          "Date of loss column",
+          "Claim: 14-01-2024 under the different date",
+          "Change date of loss window + confirm + toast"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Look at the Date of loss column, then section menu > Change date of loss.",
+        "expectedResult": "Section date shown per row, marked when different from the claim, edited with confirm."
+      },
+      "expectedOutcome": {
+        "openSections": 1
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC04 · Entities & damages: \"Covered by\" is now \"Type of coverage\"",
+      "plainStatement": "**Opens:** FNOL Entities & damages for POL-2024-001.\n\n**You see:** The entity table column header reads **Type of coverage** (was Covered by). Open an entity: its detail panel says **Type of coverage** too.",
+      "page": "fnol-entities-damages",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Policy selected so the step opens",
+        "preconditions": [
+          {
+            "text": "Column header: Type of coverage",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Entity detail: Type of coverage",
+            "page": "fnol-entities-damages",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Label is Type of coverage in the table and the detail panel.",
+        "visualCues": [
+          "Column header: Type of coverage",
+          "Entity detail: Type of coverage"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/entities-damages",
+        "trigger": "Look at the table header, open an entity.",
+        "expectedResult": "Label is Type of coverage in the table and the detail panel."
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC05 · Section overview: \"Type of coverage\" column",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001.\n\n**You see:** A **Type of coverage** column between Status and Damage, worded like Entities & damages (e.g. FLExA for Building, Business Interruption caused by FLExA). The section detail panel shows it too.\n\n**NOTE [accepted-deviation]:** in production the cover comes from what each entity was matched to; the prototype shows a default cover per damage type (core/mock/data/section-coverage.json) unless the section has its own. Treated as `done`, pending product sign-off.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Default CLM-2024-001",
+        "preconditions": [
+          {
+            "text": "Type of coverage column",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Type of coverage column on every section row.",
+        "visualCues": [
+          "Type of coverage column"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Look at the table.",
+        "expectedResult": "Type of coverage column on every section row."
+      },
+      "expectedOutcome": {
+        "openSections": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+<div class="sdm-header">
+  <h2 class="sdm-title">Change date of loss</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="sdm-body">
+  <p class="sdm-intro">
+    <strong>{{ data.section.name }}</strong> can keep the claim's date of loss or have its own, for
+    example when this damage happened on a different day.
+  </p>
+
+  <form [formGroup]="form" class="sdm-form">
+    <nx-radio-group formControlName="mode" name="sdm-mode">
+      <nx-radio labelSize="small" value="claim">
+        Same as the claim ({{
+          data.claimDateOfLoss ? (data.claimDateOfLoss | appDate) : 'not set'
+        }})
+      </nx-radio>
+      <nx-radio labelSize="small" value="own">A different date for this section</nx-radio>
+    </nx-radio-group>
+
+    @if (isOwn()) {
+      <nx-formfield label="Section date of loss">
+        <input nxDatefield nxInput formControlName="date" [datepicker]="dolPicker" [max]="today" />
+        <nx-datepicker-toggle nxFormfieldSuffix [for]="dolPicker"></nx-datepicker-toggle>
+        <nx-datepicker #dolPicker></nx-datepicker>
+        <nx-hint nxFormfieldHint
+          >Only this section changes. The claim's date of loss stays.</nx-hint
+        >
+        <nx-error nxFormfieldError>Enter a date that is not in the future.</nx-error>
+      </nx-formfield>
+    } @else {
+      <p class="sdm-muted">
+        The section follows the claim. If the claim's date of loss is changed later, this section
+        changes with it.
+      </p>
+    }
+  </form>
+</div>
+
+<div class="sdm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="invalid()" (click)="onSave()">
+    Continue
+  </button>
+</div>

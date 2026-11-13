@@ -197,6 +197,18 @@
       "file": "gg-8-tasks-and-bell.json",
       "module": "GG booking",
       "title": "GG 8 · Task manager and the bell: finding out"
+    },
+    {
+      "id": "BMPCC-22660",
+      "file": "bmpcc-22660.json",
+      "module": "Claims",
+      "title": "Claim closure: open tasks block closure, bulk closure"
+    },
+    {
+      "id": "BMPCC-22328",
+      "file": "bmpcc-22328.json",
+      "module": "Claims",
+      "title": "Select all sections (close/reopen), section date of loss, Type of coverage"
     }
   ]
 }
