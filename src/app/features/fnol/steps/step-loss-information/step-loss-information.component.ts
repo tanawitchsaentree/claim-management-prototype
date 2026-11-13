@@ -48,6 +48,7 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
 import {
+  cbiExtraFieldErrors,
   cbiShowThirdPartyName,
   cbiThirdPartyRequired,
   syncCbiControls
@@ -429,6 +430,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
           message: `${this.fieldLabels['cbiThirdPartyName']}: required`
         });
       }
+      errors.push(...cbiExtraFieldErrors(this.form));
       // BMPCC-18249 AC04: the originating location is only asked for supplier/customer case types.
       if (this.showCbiThirdPartyName && this.cbiLocation.value.locations.length === 0) {
         errors.push({

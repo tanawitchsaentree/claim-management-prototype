@@ -4,6 +4,18 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 · BMPCC-18492 (CBI Extension for Edit claim, epic BMPCC-17927)
+
+- **Source:** Jira BMPCC-18492 + epic, handed over by the user with the PI 2026.5 UI/UX ticket batch (Confluence 3360032687). Memory `project_cbi_field_gaps` for the branch fields.
+- **File:** `public/tickets/bmpcc-18492.json`, 9 ACs (8 done, 1 todo: Figma/German/PO review).
+- **Built:** CBI card on Edit claim details (`edit-cbi-card`), read-first, edits with the same `app-cbi-panel` FNOL uses, saves through the page's one Update and the Field / Original / Updated confirm. Adding Business interruption opens the card on the question; removing it clears the answers (shown in the confirm). CBI copies on open BI section entities are kept in step (`LossInfoSyncService.syncCbiToSections`).
+- **Decisions:** CBI-EDIT-1 own card under Loss information. CBI-EDIT-2 the 12 case types are one dropdown grouped Supplier / Customer / Denial of Access / Loss of Attraction / Other (`nx-dropdown-group`), FNOL too. CBI-EDIT-3 Denial of Access asks "Was access denied by order of an authority?" (Yes/No, required), Service Interruption asks Utility type (Power, Gas, Water, Steam, Telecom, IT; `lookups.json cbiUtilityTypes`), Loss of Attraction and (Air)Port Blockage get no extra field. CBI applies / case type count as section-impacting (Review needed).
+- **Also:** the description field on Edit claim details is now "Claim description" (label, diff label, error, sync key); FNOL keeps "Loss description" (user call 2026-11-13).
+- **Schema:** v2.4 `lossInformationPatch` (merge into one claim's loss-information record). `LossInformation.cbiAuthorityOrder / cbiUtilityType`.
+- **Found, not fixed:** 7 seeded claims with cause "Other" (CLM-2024-002/008/009/013/018/028) have no "Other Event (please specify)" text, so Edit claim details refuses Update until it is typed. The ticket's patches add a qualifier.
+
+---
+
 ## 2026-10-20 — GG booking tickets GG-1 to GG-8 (Global Genius, epic BMPCC-18348)
 
 - **Source:** Jira BMPCC-18348 (epic), FE stories 19168 / 19169 / 19170, claim-level 20232, 19412 (skip when no GG policy), 21754 (unpaid premium), 20953 (limit breach redesign), UX story 18282, DLQ reprocessing 14759; Bernd Moser's ADR "Claims Handover Domain — Booking Integration to Global Genius via BIH"; Nidhi Goel's "Payment Split - Handover Domain" (PROPOSED); PO note relayed by the user ("handlers need visibility of failed postings and the ability to manually re-trigger"). Built on user instruction across three sessions: orchestrator claim-management-96 (core models, mock services, presets, tickets, DEV banner), Builder A claim-management-4f (money lists, Recoveries page, summary line, Task manager), Builder B claim-management-ea (Make payment, shared warning list, Add reserve, claim banner, bell). Two handler-persona usability reviews (subagent, screenshots only, no code) drove round 2.

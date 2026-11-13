@@ -67,6 +67,9 @@ import {
   computeLossInfoDiffs
 } from './loss-info-diff';
 import { OtherCauseFieldComponent } from '../../../shared/components/other-cause-field/other-cause-field.component';
+import { syncCbiControls } from '../../../shared/utils/cbi-rules';
+import { EditCbiCardComponent } from './edit-cbi-card/edit-cbi-card.component';
+import { CBI_CONTROL_KEYS, CbiValues, cbiEditControls, cbiLocationMissing, cbiPatchFrom } from './cbi-edit';
 
 type SpecifyOtherKey = 'specifyOtherCauseOfLoss';
 type PerFieldKey =
@@ -75,13 +78,15 @@ type PerFieldKey =
   | 'typeOfDamage'
   | 'dateGroup'
   | 'lossDescription'
-  | 'lossLocation';
+  | 'lossLocation'
+  | 'cbi';
 
 @Component({
   selector: 'app-edit-loss-information',
   standalone: true,
   imports: [
     OtherCauseFieldComponent,
+    EditCbiCardComponent,
     ClaimNumberPipe,
     ReactiveFormsModule,
     RouterLink,
@@ -160,8 +165,33 @@ export class EditLossInformationComponent implements OnInit {
     // causeOfLoss. Not required: the peril is often confirmed long before
     // anyone can say what actually happened.
     circumstance: new FormControl<string | null>(null),
-    lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)])
+    lossDescription: new FormControl('', [Validators.required, Validators.maxLength(500)]),
+    // BMPCC-18492: CBI answers, same controls as FNOL Loss information.
+    ...cbiEditControls()
   });
+
+  get cbiLocation() {
+    return this.form.get('cbiLocation') as FormControl<LocationPickerOutput>;
+  }
+  /** CBI case types this claim's policy offers (empty = the policy has no CBI extension). */
+  readonly cbiCaseTypeOptions = computed(() =>
+    this.lookupSvc.getCbiCaseTypesForPolicy(this.policyNumber())
+  );
+  // Same trigger as FNOL (BMPCC-18249 AC01): Business Interruption is a type of
+  // damage on the claim and the policy offers at least one CBI case type.
+  get showCbi(): boolean {
+    return this.selectedDamages.includes('business-interruption') && this.cbiCaseTypeOptions().length > 0;
+  }
+  syncCbi(): void {
+    syncCbiControls(this.form, this.cbiLocation, this.showCbi);
+  }
+  // Adding Business Interruption makes the CBI question required; open its card
+  // so the handler sees the question instead of a refused Update.
+  onTypeOfDamageChange(): void {
+    this.syncCbi();
+    if (this.showCbi && !this.form.get('cbiApplicable')?.value) this.startEdit('cbi');
+    if (!this.showCbi) this.closeField('cbi');
+  }
 
   get dateOfLoss() {
     return this.form.get('dateOfLoss') as FormGroup;
@@ -284,9 +314,11 @@ export class EditLossInformationComponent implements OnInit {
     'lossLocation'
   ] as const;
   eligibleFieldKeys(): string[] {
-    return this.selectedCauses.length
-      ? [...this.PER_FIELD_KEYS, 'circumstance']
-      : [...this.PER_FIELD_KEYS];
+    return [
+      ...this.PER_FIELD_KEYS,
+      ...(this.selectedCauses.length ? ['circumstance'] : []),
+      ...(this.showCbi ? ['cbi'] : [])
+    ];
   }
   startEditAll(): void {
     this.editingFields.update(s => {
@@ -297,8 +329,9 @@ export class EditLossInformationComponent implements OnInit {
   }
   // The master button is Edit/Cancel, not Edit/"Edit the rest" — once
   // anything is open, the one action offered here is to abandon all of it.
+  // The CBI card has its own Edit/Cancel, so it alone open doesn't turn this card's into Cancel.
   anyFieldEditing(): boolean {
-    return this.editingFields().size > 0;
+    return [...this.editingFields()].some(k => k !== 'cbi');
   }
   cancelAllFields(): void {
     for (const key of [...this.editingFields()]) {
@@ -346,6 +379,8 @@ export class EditLossInformationComponent implements OnInit {
 
     firstValueFrom(this.overviewSvc.getOverview(id)).then(claim => {
       this.policyNumber.set(claim?.policyNumber ?? null);
+      // The CBI trigger needs the policy's case types, so its validators wait for the policy.
+      if (this.showCbi) this.syncCbi();
       this.clientName.set(claim?.client ?? '');
     });
   }
@@ -363,8 +398,11 @@ export class EditLossInformationComponent implements OnInit {
       specifyOtherCauseOfLoss: li.specifyOtherCauseOfLoss ?? '',
       circumstance: li.circumstance ?? null,
       lossDescription: li.lossDescription ?? '',
-      lossLocation: (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] }
+      lossLocation: (li.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] },
+      ...cbiPatchFrom(li)
     });
+    // Validators only: never clear stored CBI answers just by opening the page.
+    if (this.showCbi) this.syncCbi();
     // Reconcile the runtime validator against what was just loaded — no
     // selectionChange fires on a patchValue, so this is the only chance.
     this.syncSpecifyOther('specifyOtherCauseOfLoss', this.showSpecifyOtherCause);
@@ -436,7 +474,14 @@ export class EditLossInformationComponent implements OnInit {
     return computeLossInfoDiffs(
       this.original(),
       this.form.getRawValue() as unknown as LossInformationFormValue,
-      { causes: this.lookupSvc.getCauseOfLossSync(), damages: this.lookupSvc.getTypeOfDamageSync() }
+      {
+        causes: this.lookupSvc.getCauseOfLossSync(),
+        damages: this.lookupSvc.getTypeOfDamageSync(),
+        cbi: {
+          caseTypes: this.lookupSvc.getCbiCaseTypesSync(),
+          utilityTypes: this.lookupSvc.getCbiUtilityTypesSync()
+        }
+      }
     );
   }
 
@@ -453,7 +498,8 @@ export class EditLossInformationComponent implements OnInit {
     'typeOfDamage',
     'dateGroup',
     'lossDescription',
-    'lossLocation'
+    'lossLocation',
+    'cbi'
   ];
 
   private fieldControls(key: PerFieldKey): AbstractControl[] {
@@ -470,6 +516,8 @@ export class EditLossInformationComponent implements OnInit {
         return [this.form.get('lossDescription')!];
       case 'lossLocation':
         return [this.lossLocation];
+      case 'cbi':
+        return CBI_CONTROL_KEYS.map(k => this.form.get(k)!);
     }
   }
 
@@ -480,9 +528,11 @@ export class EditLossInformationComponent implements OnInit {
   async onUpdateAll(): Promise<void> {
     this.submitAttempted = true;
     this.saveBlocked.set(null);
-    if (this.form.invalid) {
+    this.syncCbi();
+    const cbiIncomplete = cbiLocationMissing(this.form.getRawValue() as CbiValues, this.showCbi);
+    if (this.form.invalid || cbiIncomplete) {
       this.form.markAllAsTouched();
-      const invalidKey = this.firstInvalidField();
+      const invalidKey = this.firstInvalidField() ?? (cbiIncomplete ? 'cbi' : null);
       if (invalidKey) this.startEdit(invalidKey);
       this.saveBlocked.set("Can't update yet — some details are still incomplete.");
       this.live.announce(this.saveBlocked()!, 'assertive');
@@ -557,6 +607,7 @@ export class EditLossInformationComponent implements OnInit {
         formValue,
         diffs.map(d => d.label)
       );
+      this.sync.syncCbiToSections(this.claimId(), formValue);
 
       this.original.set({
         ...(this.original() as LossInformation),
@@ -674,6 +725,10 @@ export class EditLossInformationComponent implements OnInit {
           (o?.lossLocation as unknown as LocationPickerOutput) ?? { locations: [] }
         );
         break;
+      case 'cbi':
+        this.form.patchValue(cbiPatchFrom(o));
+        if (this.showCbi) this.syncCbi();
+        break;
     }
     this.fieldControls(key).forEach(c => c.markAsPristine());
     this.closeField(key);
@@ -696,7 +751,7 @@ export class EditLossInformationComponent implements OnInit {
     // description here saved correctly (activity log shows the diff) but Overview
     // silently kept showing the pre-edit text forever. Same gap as the
     // incidentCircumstance fix below, just missed for this field.
-    if (diffs.some(d => d.label === 'Loss description')) {
+    if (diffs.some(d => d.label === 'Claim description')) {
       patch.description = formValue.lossDescription ?? undefined;
     }
 

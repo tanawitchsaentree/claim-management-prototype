@@ -2,7 +2,7 @@
 project: claim-management-prototype
 domain: insurance-claims
 modules: [Claims, FNOL]
-schema-version: v2.3
+schema-version: v2.4
 deployed: https://tanawitchsaentree.github.io/claim-management-prototype/
 
 ticket-schema:
@@ -147,6 +147,7 @@ interface ScenarioOverrides {
   cwbLocationsAppend?: CwbLocation[]; // dedupe by cwbReference
   financialPatch?: FinancialPatchOverride; // v2.3 — GG booking states, see apply-financial-overrides.ts
   tasksAppend?: Task[]; // v2.3 — dedupe by taskId
+  lossInformationPatch?: { claimId: string; patch: Partial<LossInformation> }; // v2.4 — BMPCC-18492
 }
 ```
 
@@ -170,6 +171,7 @@ interface ScenarioOverrides {
 | `cwbLocationsAppend`                             | `CwbLocation[]`                    | dedupe by `cwbReference`                                                     | bmpcc-219            | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()`                                       |
 | `financialPatch`                                 | `{ claimId, payments?, reserves?, recoveries?, paymentsAppend? }` | `financialOverviews[claimId]` rows by paymentId / reserveId / recoveryId | gg-booking-states | Partial merge (booking status / approval status); `paymentsAppend` dedupes by paymentId. Applied in `apply-financial-overrides.ts` (kept out of mock-state.service.ts, already over 300 lines). Audit: skipped (no assertion key reads it) |
 | `tasksAppend`                                    | `Task[]`                           | dedupe by `taskId`                                                           | gg-booking-states    | Mirrored in audit simulator — counts toward `pendingTasks` / `doneTasks`                                                 |
+| `lossInformationPatch` | `{ claimId, patch }` | `lossInformation[claimId]` | bmpcc-18492 | Partial merge into the claim's loss-information record (e.g. CBI answers for Edit claim details). Audit: skipped (no assertion key reads it) |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).
 

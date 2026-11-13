@@ -93,6 +93,9 @@ export class FnolStateService {
       cbiCaseType: new FormControl<string | null>(null),
       cbiThirdPartyName: new FormControl<string>(''),
       cbiThirdPartyIndustry: new FormControl<string>(''),
+      // BMPCC-18492: Denial of Access / Service Interruption branch fields (cbi-rules.ts).
+      cbiAuthorityOrder: new FormControl<'yes' | 'no' | null>(null),
+      cbiUtilityType: new FormControl<string | null>(null),
       // Reuses the exact same GIS-search-or-manual pattern as lossLocation
       // above (LocationPickerComponent, no-policy path — CBI's originating
       // location is a third party's site, never the insured's own policy

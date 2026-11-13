@@ -30,6 +30,8 @@ export interface ScenarioOverrides {
   // GG booking states (gg-booking-states.json) — see apply-financial-overrides.ts.
   financialPatch?: FinancialPatchOverride;
   tasksAppend?: Task[];
+  // v2.4 (BMPCC-18492): merge into one claim's loss-information record, e.g. CBI answers.
+  lossInformationPatch?: { claimId: string; patch: Partial<LossInformation> };
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -400,6 +402,16 @@ export class MockStateService {
       next = { ...next, financialOverviews: applyFinancialPatch(next.financialOverviews, overrides.financialPatch) };
     }
     next = { ...next, tasks: appendTasks(next.tasks, overrides.tasksAppend) };
+
+    if (overrides.lossInformationPatch) {
+      const { claimId, patch } = overrides.lossInformationPatch;
+      next = {
+        ...next,
+        lossInformation: next.lossInformation.map(li =>
+          li.claimId === claimId ? { ...li, ...patch } : li
+        )
+      };
+    }
 
     if (overrides.paymentStatuses) {
       const statuses = overrides.paymentStatuses;

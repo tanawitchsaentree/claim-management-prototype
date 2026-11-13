@@ -550,6 +550,8 @@ export class StepSummaryComponent implements OnInit {
       cbiThirdPartyIndustry:
         formValue.cbiApplicable === 'yes' ? formValue.cbiThirdPartyIndustry : undefined,
       cbiLocation: formValue.cbiApplicable === 'yes' ? formValue.cbiLocation : undefined,
+      cbiAuthorityOrder: formValue.cbiApplicable === 'yes' ? formValue.cbiAuthorityOrder : null,
+      cbiUtilityType: formValue.cbiApplicable === 'yes' ? formValue.cbiUtilityType : null,
       lossDescription: formValue.lossDescription ?? '',
       events: formValue.events ?? [],
       createdAt: now,

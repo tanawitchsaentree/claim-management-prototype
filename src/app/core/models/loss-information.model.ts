@@ -54,6 +54,10 @@ export interface LossInformationFormValue {
   // Same GIS-search-or-manual pattern as lossLocation — see
   // fnol-state.service.ts's cbiLocation control.
   cbiLocation?: LocationPickerOutput;
+  /** BMPCC-18492: Denial of Access case types only. Was access denied by order of an authority? */
+  cbiAuthorityOrder?: 'yes' | 'no' | null;
+  /** BMPCC-18492: Service Interruption only. Which utility failed (lookups.cbiUtilityTypes). */
+  cbiUtilityType?: string | null;
   lossDescription: string;
   events: LossEvent[];
 }
@@ -76,6 +80,10 @@ export interface LossInformation {
   // Same GIS-search-or-manual pattern as lossLocation — see
   // fnol-state.service.ts's cbiLocation control.
   cbiLocation?: LocationPickerOutput;
+  /** BMPCC-18492: Denial of Access case types only. Was access denied by order of an authority? */
+  cbiAuthorityOrder?: 'yes' | 'no' | null;
+  /** BMPCC-18492: Service Interruption only. Which utility failed (lookups.cbiUtilityTypes). */
+  cbiUtilityType?: string | null;
   lossDescription: string;
   events: LossEvent[];
   createdAt: string;
