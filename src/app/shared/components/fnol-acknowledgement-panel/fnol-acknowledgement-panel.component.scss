@@ -1,0 +1,85 @@
+// BLESSED: same card as Claim Overview's co-card (_card-shell.scss) and the
+// FNOL summary's ss-card, which use identical values, so the panel looks the
+// same on both screens.
+
+:host {
+  display: block;
+}
+
+.fa-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-base);
+}
+
+.fa-title {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.fa-text {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.fa-busy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  color: var(--text-01);
+}
+
+.fa-message-body {
+  display: block;
+  margin-top: var(--space-xs);
+}
+
+.fa-message-action {
+  display: block;
+  margin-top: var(--space-md);
+}
+
+.fa-doc {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.fa-doc-icon {
+  margin-top: var(--space-xs);
+  color: var(--text-muted);
+}
+
+.fa-doc-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.fa-doc-link {
+  text-align: left;
+}
+
+.fa-doc-meta,
+.fa-reason {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.fa-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}

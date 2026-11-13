@@ -1,0 +1,66 @@
+// BLESSED: modal-layout mixin (same shell as confirm-dialog / reason-dialog).
+@use '../../styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.fp-header {
+  @include modal.header;
+}
+
+.fp-header-row {
+  @include modal.header-row;
+}
+
+.fp-title {
+  @include modal.title;
+}
+
+.fp-caption {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.fp-body {
+  @include modal.body;
+}
+
+// The letter sits on a bordered sheet so it reads as a document, not as app UI.
+.fp-letter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+  color: var(--text-01);
+
+  p {
+    margin: 0;
+  }
+}
+
+.fp-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-xs) var(--space-xl);
+  margin: 0;
+}
+
+.fp-fact {
+  display: contents;
+
+  dt {
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.fp-footer {
+  @include modal.footer;
+}

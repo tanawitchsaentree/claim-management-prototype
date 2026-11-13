@@ -1,0 +1,345 @@
+{
+  "ticketId": "BMPCC-22635",
+  "epicId": "BMPCC-22600",
+  "module": "FNOL",
+  "title": "Generate the FNOL Acknowledgement: trigger and its states",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "overview",
+    "fnol-search"
+  ],
+  "walkthroughSteps": [
+    "One panel, in two places: the FNOL confirmation screen and Claim Overview.",
+    "Generate asks to confirm, runs for a few seconds (mock of AOMS), then the letter can be opened. Failures say why and offer Try again.",
+    "Not available while an orphan claim has no policy, or on closed claims; the reason is shown next to the button.",
+    "The Figma file is not part of the prototype. The letter content is a mock; the real document comes from AOMS."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC1 · Trigger on Claim Overview after FNOL registration",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**.\n\n**Try:** Press it: a confirm says the letter uses the details as they are now and nothing is sent. Press **Generate**: the button turns to \"Generating…\" with a spinner line. After about 3 seconds: a green toast, the bell lists it under Done, and the panel shows the letter's name as a link with \"Generated ... by Mara Mustermann\". Open the link: the letter with claim reference, dates, insured and policy number.\n\n**Decision (placement):** the same panel on the FNOL confirmation screen and on Claim Overview, right under the claim's main facts, so it looks and works the same in both places (DESIGN DECISION FNOL-ACK-1). **Decision (confirm):** yes, a short one: \"generate\" could be read as \"send\", and the letter freezes the details as they are now.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Trigger on Claim Overview after FNOL registration",
+        "preconditions": [
+          {
+            "text": "Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press it: a confirm says the letter uses the details as they are now and nothing is sent. Press **Generate**: the button turns to \"Generating…\" with a spinner line. After about 3 seconds: a green toast, the bell lists it under Done, and the panel shows the letter's name as a link with \"Generated ... by Mara Mustermann\". Open the link: the letter with claim reference, dates, insured and policy number."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**.",
+        "visualCues": [
+          "Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC1 · Same trigger on the FNOL confirmation screen",
+      "plainStatement": "**Opens:** FNOL search. Register any claim with a policy and press **Submit claim** on the Summary.\n\n**You see:** Under the green \"1 claim opened: CL-...\" message, the same **FNOL acknowledgement** panel with **Generate FNOL acknowledgement**. Several claims opened at once: one panel per claim, each titled with its claim number.\n\n**Try:** Generate it here, then **Go to claim**: Claim Overview shows the same letter (or still \"Generating…\").",
+      "page": "fnol-search",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same trigger on the FNOL confirmation screen",
+        "preconditions": [
+          {
+            "text": "Under the green \"1 claim opened: CL-...\" message, the same **FNOL acknowledgement** panel with **Generate FNOL acknowledgement**. Several claims opened at once: one panel per claim, each titled with its claim number.",
+            "page": "fnol-search",
+            "role": "tested-visible",
+            "hint": "Generate it here, then **Go to claim**: Claim Overview shows the same letter (or still \"Generating…\")."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Under the green \"1 claim opened: CL-...\" message, the same **FNOL acknowledgement** panel with **Generate FNOL acknowledgement**. Several claims opened at once: one panel per claim, each titled with its claim number.",
+        "visualCues": [
+          "Under the green \"1 claim opened: CL-...\" message, the same **FNOL acknowledgement** panel with **Generate FNOL acknowledgement**. Several claims opened at once: one panel per claim, each titled with its claim number."
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/search",
+        "trigger": "FNOL search. Register any claim with a policy and press **Submit claim** on the Summary.",
+        "expectedResult": "Under the green \"1 claim opened: CL-...\" message, the same **FNOL acknowledgement** panel with **Generate FNOL acknowledgement**. Several claims opened at once: one panel per claim, each titled with its claim number."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Disabled with the reason: orphan claim still waiting for its policy",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-001 (orphan claim, no policy yet).\n\n**You see:** The panel with a greyed-out **Generate FNOL acknowledgement** and, next to it, \"Link a policy first: the letter needs the policy details.\"\n\n**Decision:** the reason is shown as text beside the button, not only in a tooltip (a disabled button gets no hover or keyboard focus, so a tooltip would never be seen). Closed and abandoned claims are disabled the same way.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Disabled with the reason: orphan claim still waiting for its policy",
+        "preconditions": [
+          {
+            "text": "The panel with a greyed-out **Generate FNOL acknowledgement** and, next to it, \"Link a policy first: the letter needs the policy details.\"",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of SK-2024-001 (orphan claim, no policy yet)."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "The panel with a greyed-out **Generate FNOL acknowledgement** and, next to it, \"Link a policy first: the letter needs the policy details.\"",
+        "visualCues": [
+          "The panel with a greyed-out **Generate FNOL acknowledgement** and, next to it, \"Link a policy first: the letter needs the policy details.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/SK-2024-001/overview",
+        "trigger": "Claim Overview of SK-2024-001 (orphan claim, no policy yet).",
+        "expectedResult": "The panel with a greyed-out **Generate FNOL acknowledgement** and, next to it, \"Link a policy first: the letter needs the policy details.\""
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "In progress: generation running",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed.\n\n**Try:** Wait about 3 seconds: it turns into the ready letter, with a toast.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "In progress: generation running",
+        "preconditions": [
+          {
+            "text": "The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Wait about 3 seconds: it turns into the ready letter, with a toast."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "fnolAck": {
+                "status": "generating",
+                "version": 1,
+                "startedBy": "Mara Mustermann"
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed.",
+        "visualCues": [
+          "The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Success: the generated document, with a link to open it",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it.\n\n**Try:** Open the link: the letter opens in a dialog, filled with the claim reference, date of loss, date of notification, insured and policy number.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Success: the generated document, with a link to open it",
+        "preconditions": [
+          {
+            "text": "The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Open the link: the letter opens in a dialog, filled with the claim reference, date of loss, date of notification, insured and policy number."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "fnolAck": {
+                "status": "generated",
+                "version": 1,
+                "documentName": "FNOL acknowledgement CLM-2024-001.pdf",
+                "generatedAt": "2026-11-10T08:30:00.000Z",
+                "generatedBy": "Nina Feld",
+                "letter": {
+                  "claimId": "CLM-2024-001",
+                  "insured": "Kaufmann's Warehouse GmbH",
+                  "policyNumber": "POL-2023-010",
+                  "dateOfLoss": "2024-01-14",
+                  "dateReported": "2024-01-15",
+                  "handler": "Nina Feld"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it.",
+        "visualCues": [
+          "The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Error: generation failed, with the message and Try again",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel with **Generate FNOL acknowledgement**.\n\n**Try:** Generate it and confirm: \"Generating…\", then after about 3 seconds a red message \"The FNOL acknowledgement couldn't be generated. The document service didn't answer in time. No letter was made.\" with **Try again**, and a red toast. Try again: it works this time.\n\nTry again needs no second confirm: the handler already confirmed this letter.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Error: generation failed, with the message and Try again",
+        "preconditions": [
+          {
+            "text": "The panel with **Generate FNOL acknowledgement**.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Generate it and confirm: \"Generating…\", then after about 3 seconds a red message \"The FNOL acknowledgement couldn't be generated. The document service didn't answer in time. No letter was made.\" with **Try again**, and a red toast. Try again: it works this time."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "fnolAckDemoOutcome": "fails"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "The panel with **Generate FNOL acknowledgement**.",
+        "visualCues": [
+          "The panel with **Generate FNOL acknowledgement**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "The panel with **Generate FNOL acknowledgement**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "Already generated: when and by whom, and generating it again",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same as AC-05: the letter generated on 10-11-2026 by Nina Feld.\n\n**Try:** Press **Generate again**: the confirm says the earlier letter stays on the claim. Confirm: while it runs the panel keeps showing the earlier letter; then \"FNOL acknowledgement CLM-2024-001 v2.pdf\" generated by Mara Mustermann.\n\n**Decision (regeneration):** allowed, with its own confirm. Claim details are often corrected after FNOL, and the letter has to match what the policyholder is told. The earlier letter is kept, not replaced.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Already generated: when and by whom, and generating it again",
+        "preconditions": [
+          {
+            "text": "Same as AC-05: the letter generated on 10-11-2026 by Nina Feld.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Generate again**: the confirm says the earlier letter stays on the claim. Confirm: while it runs the panel keeps showing the earlier letter; then \"FNOL acknowledgement CLM-2024-001 v2.pdf\" generated by Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "fnolAck": {
+                "status": "generated",
+                "version": 1,
+                "documentName": "FNOL acknowledgement CLM-2024-001.pdf",
+                "generatedAt": "2026-11-10T08:30:00.000Z",
+                "generatedBy": "Nina Feld",
+                "letter": {
+                  "claimId": "CLM-2024-001",
+                  "insured": "Kaufmann's Warehouse GmbH",
+                  "policyNumber": "POL-2023-010",
+                  "dateOfLoss": "2024-01-14",
+                  "dateReported": "2024-01-15",
+                  "handler": "Nina Feld"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Same as AC-05: the letter generated on 10-11-2026 by Nina Feld.",
+        "visualCues": [
+          "Same as AC-05: the letter generated on 10-11-2026 by Nina Feld."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Same as AC-05: the letter generated on 10-11-2026 by Nina Feld."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    }
+  ]
+}

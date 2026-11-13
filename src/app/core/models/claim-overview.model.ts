@@ -2,6 +2,7 @@ import { MassEventLinkStatus, SkeletonState } from './claim.model';
 import { GgClaimRegistration } from './gg-booking.model';
 import { GgSectionBooking } from './gg-section-booking.model';
 import { LargeLossHeadsUp } from './large-loss-heads-up.model';
+import { FnolAcknowledgement } from './fnol-acknowledgement.model';
 
 export interface AccessListEntry {
   userId: string;
@@ -188,6 +189,10 @@ export interface ClaimOverview {
   // BMPCC-22350 — the claim's Large Loss Heads-Up (one per claim, draft or
   // submitted). Absent = none yet.
   headsUp?: LargeLossHeadsUp;
+  // BMPCC-22635 — the FNOL Acknowledgement letter (absent = never generated).
+  fnolAck?: FnolAcknowledgement;
+  // PROTOTYPE ONLY: 'fails' makes the next generation fail once (DEV banner).
+  fnolAckDemoOutcome?: 'fails';
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;

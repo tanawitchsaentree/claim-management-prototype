@@ -209,6 +209,12 @@
       "file": "bmpcc-22350.json",
       "module": "Claims",
       "title": "Large Loss Heads-Up: notification, manual start, form"
+    },
+    {
+      "id": "BMPCC-22635",
+      "file": "bmpcc-22635.json",
+      "module": "FNOL",
+      "title": "Generate the FNOL Acknowledgement: trigger and its states"
     }
   ]
 }

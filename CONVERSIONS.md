@@ -4,6 +4,15 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 — BMPCC-22635 FNOL Acknowledgement trigger (epic BMPCC-22600)
+
+- **Source:** Jira BMPCC-22635 + epic BMPCC-22600, handed over with the PI 2026.5 UI/UX open points. Nothing in production to copy (no acknowledgement or AOMS code in claims-management-main).
+- **Built:** shared `fnol-acknowledgement-panel`, placed on the FNOL Summary confirmation (under "claim opened", one per claim) and on Claim Overview (under General information). `MockFnolAcknowledgementService` mocks AOMS (3 s, state on the overview record so both screens agree and a reload resumes it). `fnol-acknowledgement-preview` modal shows the mock letter filled with claim and policy data (epic AC2). Model `fnol-acknowledgement.model.ts`, `ClaimOverview.fnolAck` + `fnolAckDemoOutcome`.
+- **States:** default, disabled with the reason as visible text (orphan claim without policy, abandoned, closed), generating, generated (link + when + by whom), failed (message + Try again), generated earlier + Generate again (keeps the earlier letter, v2 name).
+- **Decisions (DESIGN DECISION FNOL-ACK-1):** same panel in both places; a short confirm before generating ("generate" can read as "send", and the letter freezes today's details); regeneration allowed with its own confirm; Try again after a failure needs no second confirm; toast + bell when ready.
+- **Shared files touched:** `claim-overview.component.{html,ts}` (one panel), `step-summary.component.{html,ts}` (panel under the success message; that file belongs to the FNOL area).
+- **Ticket:** `bmpcc-22635.json`, 7 ACs all `done` (AC-02 is walked through the wizard: the success screen only exists after Submit). Figma file not covered.
+
 ## 2026-11-13 — BMPCC-22350 Large Loss Heads-Up, Features A-D (epic BMPCC-18615)
 
 - **Source:** Jira BMPCC-22350 + epic BMPCC-18615 (business decisions 2026-10-27/28), handed over with the PI 2026.5 UI/UX open points. Design story: the prototype screens are the deliverable.

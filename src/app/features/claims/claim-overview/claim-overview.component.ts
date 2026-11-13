@@ -69,6 +69,7 @@ import {
 } from './components/trade-sanctions-card/trade-sanctions-card.component';
 import { RiskScoreFieldComponent } from './components/risk-score-field/risk-score-field.component';
 import { HeadsUpCardComponent } from './components/heads-up-card/heads-up-card.component';
+import { FnolAcknowledgementPanelComponent } from '../../../shared/components/fnol-acknowledgement-panel/fnol-acknowledgement-panel.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import {
   MassEventCardComponent,
@@ -150,7 +151,8 @@ type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
     BlockerReturnBannerComponent,
     GgRegistrationBannerComponent,
     GgSectionBookingBannerComponent,
-    HeadsUpCardComponent
+    HeadsUpCardComponent,
+    FnolAcknowledgementPanelComponent
   ],
   templateUrl: './claim-overview.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
