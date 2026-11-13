@@ -105,4 +105,15 @@ export interface ClaimSection extends SectionBlockers {
   // (cause of loss, type of damage, loss location). Stays until a handler marks
   // the section reviewed, so the warning does not vanish with the page.
   reviewNeeded?: { fields: string[]; since: string };
+  // BMPCC-22328 AC03 — this section's own date of loss. Unset means the
+  // section follows the claim's date of loss (and keeps following it when
+  // Edit claim changes it). Set only when a handler records a different date.
+  dateOfLoss?: string;
+  // BMPCC-22328 AC05 — the cover this section is paid under, same wording as
+  // the "Type of coverage" column on Entities & damages. Unset falls back to
+  // the default cover for the damage type (lookups.json typeOfDamage).
+  typeOfCoverage?: string;
+  // Prototype only: makes the next close attempt fail, so the bulk closure
+  // "could not close, try again" state can be shown from the DEV banner.
+  simulateCloseError?: boolean;
 }

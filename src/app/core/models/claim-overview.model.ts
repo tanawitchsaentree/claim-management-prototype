@@ -184,6 +184,9 @@ export interface ClaimOverview {
   hasActiveProvider?: boolean;
   hasUnpaidBills?: boolean;
   hasIncompleteReports?: boolean;
+  // Prototype only (BMPCC-22660): the next close attempt fails, to show the
+  // bulk closure error state from the DEV banner.
+  simulateCloseError?: boolean;
 }
 
 export interface ClaimActivity {

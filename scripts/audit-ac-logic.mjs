@@ -97,7 +97,9 @@ function simulateState(claimId, stateOverrides) {
   // (selectedPolicy / selectedClient / path / convertFromSkeletonId all act on
   // FnolStateService at runtime and have no Node-side counterpart.)
 
-  const pendingTasks = tasks.filter(t => t.status !== 'done').length;
+  // Mirrors isTaskOpen() in task.model.ts (BMPCC-22660): a task is open unless
+  // it is done, cancelled or deferred.
+  const pendingTasks = tasks.filter(t => !['done', 'cancelled', 'deferred'].includes(t.status)).length;
   const doneTasks = tasks.filter(t => t.status === 'done').length;
   const openSections = sections.filter(s => s.status !== 'Closed').length;
   const closedSections = sections.filter(s => s.status === 'Closed').length;
@@ -198,7 +200,7 @@ function recoveryPotentialState(recoveryPotential, hasRecoveryCase, hasActiveRec
 /**
  * Assert one expectedOutcome field.
  * Supported keys:
- *   pendingTasks      — exact count of tasks where status !== 'done'
+ *   pendingTasks      — exact count of open tasks (not done, cancelled or deferred)
  *   doneTasks         — exact count of tasks where status === 'done'
  *   openSections      — exact count of sections where status !== 'Closed'
  *   closedSections    — exact count of sections where status === 'Closed'

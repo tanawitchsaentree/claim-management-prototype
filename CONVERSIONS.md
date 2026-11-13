@@ -1124,3 +1124,23 @@ Template — copy below the most recent entry:
 - **What changed:** the 4-step sheet from 21 Oct (Policy, Claim details, Coverages, Reserves) is gone. The sheet is the 12 Oct policy picker (`convert-skeleton-modal`, restored from 20606a7, styles moved onto tokens), the confirm pops up over it, and `SkeletonLocationReconfirmService` opens Confirm loss location straight after. A skipped location keeps the "Confirm loss location" task. Removed: `complete-claim-step`, `coverage-step`, `reserves-step`, `skeleton-location-choice.service`, `CompletionDetails`.
 - **Kept from 21 Oct:** loss event created and attached on conversion, insured and broker added to parties, regular claim number (SK- becomes an alias), 'Awaiting policy' chip on All claims, the cause-based first section, cbi-panel (FNOL Loss information uses it).
 - **Note:** `public/tickets/bmpcc-19113.json` still describes the 4-step version; `audit:ac-logic` passes (88/0) but the ticket text is stale until the team confirms the direction.
+
+
+## 2026-11-13 — BMPCC-22660 (Claim closure: open tasks block closure, bulk closure, epic BMPCC-21933)
+
+- **Source:** Jira BMPCC-22660 + epic BMPCC-21933 (FR2 blocked-closure display, FR4 bulk closure), handed over by the user on 2026-11-13 (PI 2026.5 UI/UX open points).
+- **File:** `public/tickets/bmpcc-22660.json`, 7 ACs, all `done`, CLM-2024-001 (claims list AC uses CLM-2024-001 + CLM-2024-002).
+- **One rule:** `isTaskOpen()` + `taskDomainOf()` in `task.model.ts` (open unless done, cancelled or deferred; TaskStatus gained `cancelled` / `deferred`). `buildOpenTasksBlocker()` in `claim-closure-blocker.builder.ts` is used by manual closure, the auto-closure after the final payment (now skipped with a warning toast while a task is open) and bulk closure. Audit mirror counts `pendingTasks` the same way.
+- **Blocked display:** the existing closure window, extended: open tasks card expanded by default, one row per task with Type, Domain, status, assignee, due date; "No open tasks" row added to the checklist.
+- **Bulk closure:** `shared/components/bulk-closure-modal` + `core/services/bulk-closure.service.ts`, one modal for sections (Section overview) and claims (Claims list): check, review (ready / stays open + why), confirm (one reason, one checklist tick, names of what closes), running, result per item, "Try again" for failures. Partial success, no override. Claims use default retention. `sectionBlockers.simulateCloseError` / `overviewPatch.simulateCloseError` fake one failure for the error state.
+- **Found on the way:** closing or reopening a claim did not update the Claims list status (list reads `state.claims`); fixed at the root in `ClaimClosureService`.
+- **Not built:** story AC05 (Figma, German text, PO/Ranger review). Epic AC10 (claim and its sections picked together) has no screen that offers both at once.
+
+## 2026-11-13 — BMPCC-22328 (Select all sections close/reopen, section date of loss, Type of coverage, epic BMPCC-18109)
+
+- **Source:** Jira BMPCC-22328 (demo feedback points 10, 11, 13 + label change), handed over by the user on 2026-11-13.
+- **File:** `public/tickets/bmpcc-22328.json`, 5 ACs, all `done`.
+- **Section overview:** checkbox column + select all, shared `app-bulk-selection-bar` (extracted from Claims list's `.cl-bulk-bar`), Close N / Reopen N buttons that only take the sections they apply to. `section-reopen-modal` takes several sections. New columns Type of coverage and Date of loss. Logic kept in `sections-bulk-actions.service.ts` (sections.ts was already over 300 lines).
+- **Reopen claim:** existing select all kept, "N of M selected" added, new confirm step (what reopens, what stays closed). A claim with no closed sections could not be reopened (Continue stayed disabled); fixed.
+- **Section date of loss:** `ClaimSection.dateOfLoss`, unset = follows the claim. Change window (`section-dol-modal`) + Field/Original/Updated confirm + toast; shown in the table and the detail panel. Entities without their own date start from their section's date. Schema v2.4: `sectionBlockers` also takes `dateOfLoss` and `simulateCloseError`.
+- **Type of coverage:** "Covered by" renamed in the E&D table and FNOL entity detail panel. Section column uses `section.typeOfCoverage` or a default per damage type (`core/mock/data/section-coverage.json`), accepted deviation.

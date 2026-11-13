@@ -1,0 +1,201 @@
+<div class="bcm-header">
+  <h2 class="bcm-title">{{ title() }}</h2>
+  <button
+    nxIconButton="tertiary small"
+    type="button"
+    aria-label="Close"
+    [disabled]="step() === 'running'"
+    (click)="onCancel()"
+  >
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="bcm-body" tabindex="0">
+  @switch (step()) {
+    @case ('checking') {
+      <div class="bcm-wait" role="status">
+        <nx-spinner size="medium"></nx-spinner>
+        <p class="bcm-intro">Checking {{ count(data.ids.length) }} against the closure rules…</p>
+      </div>
+    }
+    @case ('check-error') {
+      <nx-message context="error">
+        The selected {{ data.kind }}s could not be checked. Nothing was changed. Try again.
+      </nx-message>
+    }
+    @case ('review') {
+      @if (blocked().length === 0) {
+        <nx-message context="success">
+          All {{ count(ready().length) }} can be closed. Nothing is blocking them.
+        </nx-message>
+      } @else if (ready().length === 0) {
+        <nx-message context="error">
+          None of the selected {{ data.kind }}s can be closed yet. Resolve what is listed below,
+          then try again.
+        </nx-message>
+      } @else {
+        <nx-message context="warning">
+          {{ ready().length }} of {{ data.ids.length }} can be closed. {{ count(blocked().length) }}
+          {{ blocked().length === 1 ? 'stays' : 'stay' }} open because something is still open on
+          {{ blocked().length === 1 ? 'it' : 'them' }}.
+        </nx-message>
+      }
+      <ul class="bcm-items" aria-label="Selected items">
+        @for (c of candidates(); track c.id) {
+          <li class="bcm-item" [class.bcm-item--blocked]="c.blockers.length">
+            <div class="bcm-item__row">
+              <nx-icon
+                size="s"
+                [name]="c.blockers.length ? 'exclamation-triangle-o' : 'check-circle-o'"
+                [class]="c.blockers.length ? 'bcm-icon--warn' : 'bcm-icon--ok'"
+              ></nx-icon>
+              <span class="bcm-item__name">{{ c.name }}</span>
+              <span class="bcm-item__state">{{
+                c.blockers.length ? 'Stays open' : 'Ready to close'
+              }}</span>
+            </div>
+            @if (c.detail) {
+              <p class="bcm-item__detail">{{ c.detail }}</p>
+            }
+            @if (c.blockers.length) {
+              <app-closure-blocker-summary
+                class="bcm-item__why"
+                [blockers]="c.blockers"
+              ></app-closure-blocker-summary>
+            }
+          </li>
+        }
+      </ul>
+    }
+    @case ('confirm') {
+      <p class="bcm-intro">
+        These {{ count(ready().length) }} will be closed with one closure reason:
+      </p>
+      <ul class="bcm-names">
+        @for (c of ready(); track c.id) {
+          <li>{{ c.name }}</li>
+        }
+      </ul>
+      @if (blocked().length) {
+        <p class="bcm-muted">
+          {{ count(blocked().length) }} {{ blocked().length === 1 ? 'stays' : 'stay' }} open:
+          {{ blockedNames() }}.
+        </p>
+      }
+      <form [formGroup]="form" class="bcm-form">
+        <nx-formfield label="Closure reason">
+          <nx-dropdown formControlName="reason" placeholder="Select reason">
+            @for (r of data.reasons; track r) {
+              <nx-dropdown-item [value]="r">{{ r }}</nx-dropdown-item>
+            }
+          </nx-dropdown>
+          <nx-error nxFormfieldError>Closure reason is required.</nx-error>
+        </nx-formfield>
+        @if (data.kind === 'claim') {
+          <p class="bcm-muted">
+            Retention: the default 10 years (until {{ defaultRetention }}) for every claim. For a
+            custom date, close that claim on its own from Claim overview.
+          </p>
+        }
+        <p class="bcm-intro">Pre-closure checklist, confirmed once for all of them:</p>
+        <ul class="bcm-statements">
+          @for (s of statements; track s) {
+            <li>{{ s }}</li>
+          }
+        </ul>
+        <nx-checkbox formControlName="confirmed" labelSize="small">
+          I confirm this for all {{ count(ready().length) }}
+        </nx-checkbox>
+      </form>
+    }
+    @case ('running') {
+      <div class="bcm-wait" role="status">
+        <nx-spinner size="medium"></nx-spinner>
+        <p class="bcm-intro">Closing {{ count(ready().length) }}… Keep this window open.</p>
+      </div>
+    }
+    @case ('result') {
+      @if (notClosed().length === 0) {
+        <nx-message context="success">{{ count(closed().length) }} closed.</nx-message>
+      } @else if (closed().length === 0) {
+        <nx-message context="error">Nothing was closed. See why for each one below.</nx-message>
+      } @else {
+        <nx-message context="warning">
+          {{ count(closed().length) }} closed, {{ notClosed().length }} not closed. The ones not
+          closed are unchanged.
+        </nx-message>
+      }
+      <ul class="bcm-items" aria-label="Result per item">
+        @for (o of outcomes(); track o.id) {
+          <li class="bcm-item" [class.bcm-item--blocked]="o.status !== 'closed'">
+            <div class="bcm-item__row">
+              <nx-icon
+                size="s"
+                [name]="o.status === 'closed' ? 'check-circle' : 'exclamation-triangle-o'"
+                [class]="o.status === 'closed' ? 'bcm-icon--ok' : 'bcm-icon--warn'"
+              ></nx-icon>
+              <span class="bcm-item__name">{{ o.name }}</span>
+              <span class="bcm-item__state">
+                {{
+                  o.status === 'closed'
+                    ? 'Closed'
+                    : o.status === 'failed'
+                      ? 'Could not close'
+                      : 'Not closed'
+                }}
+              </span>
+            </div>
+            @if (o.blockers.length) {
+              <app-closure-blocker-summary
+                class="bcm-item__why"
+                [blockers]="o.blockers"
+              ></app-closure-blocker-summary>
+            }
+          </li>
+        }
+      </ul>
+    }
+  }
+</div>
+
+<div class="bcm-footer">
+  @switch (step()) {
+    @case ('check-error') {
+      <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+      <button nxButton="primary small" type="button" (click)="runCheck()">Try again</button>
+    }
+    @case ('review') {
+      <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+      @if (ready().length) {
+        <button nxButton="primary small" type="button" (click)="onContinue()">
+          Continue with {{ count(ready().length) }}
+        </button>
+      }
+    }
+    @case ('confirm') {
+      <button nxButton="secondary small" type="button" (click)="onBack()">Back</button>
+      <button nxButton="primary small" type="button" [disabled]="!formValid()" (click)="onClose()">
+        Close {{ count(ready().length) }}
+      </button>
+    }
+    @case ('result') {
+      @if (failed().length) {
+        <button nxButton="secondary small" type="button" (click)="onRetryFailed()">
+          Try again for {{ count(failed().length) }}
+        </button>
+      }
+      <button nxButton="primary small" type="button" (click)="onCancel()">Done</button>
+    }
+    @default {
+      <button
+        nxButton="secondary small"
+        type="button"
+        (click)="onCancel()"
+        [disabled]="step() === 'running'"
+      >
+        Cancel
+      </button>
+    }
+  }
+</div>

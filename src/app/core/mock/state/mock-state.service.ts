@@ -16,7 +16,12 @@ import { FinancialPatchOverride, applyFinancialPatch, appendTasks } from './appl
 export interface ScenarioOverrides {
   taskStatuses?: Record<string, TaskStatus>;
   sectionStatuses?: Record<string, SectionStatus>;
-  sectionBlockers?: Record<string, Partial<SectionBlockers>>;
+  // v2.4 (BMPCC-22328 / 22660): also takes a section's own dateOfLoss and the
+  // prototype-only simulateCloseError, merged the same way as the blocker flags.
+  sectionBlockers?: Record<
+    string,
+    Partial<SectionBlockers & Pick<ClaimSection, 'dateOfLoss' | 'simulateCloseError'>>
+  >;
   overviewPatch?: { claimId: string; patch: Partial<ClaimOverview> };
   claimsAppend?: Claim[];
   fnolStateOverride?: {

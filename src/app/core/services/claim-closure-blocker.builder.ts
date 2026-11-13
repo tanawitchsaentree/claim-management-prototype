@@ -1,5 +1,5 @@
 import { ClaimOverview } from '../models/claim-overview.model';
-import { Task } from '../models/task.model';
+import { Task, isTaskOpen, taskDomainOf, taskStatusLabel } from '../models/task.model';
 import { Litigation } from '../models/litigation.model';
 import { ReservesPolicyData } from '../models/reserve.model';
 import { ClaimPayment } from '../models/payment.model';
@@ -43,14 +43,8 @@ export function buildBlockerResult(
     });
   }
 
-  const pending = tasks.filter(t => t.status !== 'done');
-  if (pending.length > 0) {
-    blockers.push({
-      type: 'tasks',
-      label: `${pending.length} pending task(s) must be resolved before closure`,
-      count: pending.length
-    });
-  }
+  const openTasksBlocker = buildOpenTasksBlocker(tasks);
+  if (openTasksBlocker) blockers.push(openTasksBlocker);
 
   if (openSections > 0) {
     blockers.push({
@@ -170,4 +164,35 @@ export function buildBlockerResult(
   }
 
   return { canClose: blockers.length === 0, blockers };
+}
+
+/**
+ * BMPCC-22660 AC01 / epic BMPCC-21933 FR2 — every open task, from every domain,
+ * with its type and domain, so the handler can see who still has work on the
+ * claim. Shared by manual closure, the auto-closure check and bulk closure.
+ * Returns null when nothing is open.
+ */
+export function buildOpenTasksBlocker(tasks: Task[]): Blocker | null {
+  const open = tasks.filter(isTaskOpen);
+  if (open.length === 0) return null;
+  const domains = [...new Set(open.map(taskDomainOf))];
+  const noun = open.length === 1 ? 'open task' : 'open tasks';
+  return {
+    type: 'tasks',
+    label: `${open.length} ${noun} (${domains.join(', ')}) must be completed, cancelled or deferred`,
+    count: open.length,
+    link: '/tasks',
+    linkLabel: 'Go to Task manager',
+    items: open.map(t => ({
+      id: t.taskId,
+      title: t.description,
+      description: `Task ${t.taskKey}`,
+      status: taskStatusLabel(t.status),
+      lastUpdated: t.dueDate,
+      assignee: t.assignee,
+      ownerDomain: taskDomainOf(t),
+      typeLabel: t.taskType,
+      severity: 'hard' as const
+    }))
+  };
 }

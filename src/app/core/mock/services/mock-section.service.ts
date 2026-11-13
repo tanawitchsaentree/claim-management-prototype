@@ -167,7 +167,10 @@ export class MockSectionService extends MockBaseService {
   closeSection(
     sectionId: string,
     closedBy: { userId: string; name: string },
-    closureReason?: SectionClosureReason
+    closureReason?: SectionClosureReason,
+    // Bulk closure (BMPCC-22660) shows one result for the whole batch instead
+    // of a toast per section.
+    opts: { silent?: boolean } = {}
   ): Observable<ClaimSection> {
     for (const [, sections] of this.cache) {
       const target = sections.find(s => s.id === sectionId);
@@ -193,7 +196,7 @@ export class MockSectionService extends MockBaseService {
           valueNew: 'Closed'
         };
         this.stateSvc.patchActivities(items => [activity, ...items]);
-        this.toast.success(`Section ${sectionId} closed`, closureReason);
+        if (!opts.silent) this.toast.success(`Section ${sectionId} closed`, closureReason);
         return this.respond({ ...target });
       }
     }

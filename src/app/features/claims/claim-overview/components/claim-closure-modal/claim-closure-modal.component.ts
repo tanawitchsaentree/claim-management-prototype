@@ -14,9 +14,14 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom } from 'rxjs';
+import { AppDatePipe } from '../../../../../shared/pipes/app-date.pipe';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
-import { BlockerCheckResult, ClosureReason } from '../../../../../core/models/claim-closure.model';
+import {
+  BlockerCheckResult,
+  ClosureReason,
+  CLOSURE_CONFIRMATION_STATEMENTS
+} from '../../../../../core/models/claim-closure.model';
 
 export interface ClaimClosureModalData {
   claim: ClaimOverview;
@@ -47,18 +52,11 @@ interface ChecklistItem {
   failHint: string;
 }
 
-// Handler-attested only — no system/API validation exists for these against another BC.
-const CONFIRMATION_STATEMENTS: string[] = [
-  'All bills against this section/claim have been received and processed',
-  'All pending subrogation, salvage, or recovery activity has been resolved (or recovery potential confirmed as none)',
-  'All final reports are completed',
-  'Provider Management survey is completed, or rejected with a rationale provided'
-];
-
 @Component({
   selector: 'app-claim-closure-modal',
   standalone: true,
   imports: [
+    AppDatePipe,
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
@@ -86,11 +84,20 @@ export class ClaimClosureModalComponent {
   readonly step = signal<Step>(this.data.blockers.canClose ? 2 : 1);
   readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
-  readonly expanded = signal<Set<string>>(new Set());
+  // BMPCC-22660 AC01: open tasks start expanded, so every task with its type
+  // and domain is on screen without a click (epic FR2).
+  readonly expanded = signal<Set<string>>(
+    new Set(this.data.blockers.blockers.map((b, i) => (b.type === 'tasks' ? `tasks-${i}` : '')))
+  );
 
   readonly closureReasons = CLOSURE_REASONS;
 
   readonly checklistItems: ChecklistItem[] = [
+    {
+      label: 'No open tasks',
+      passed: !this.data.blockers.blockers.some(b => b.type === 'tasks'),
+      failHint: 'Every task, from every domain, must be completed, cancelled or deferred.'
+    },
     {
       label: 'All sections closed',
       passed: !this.data.blockers.blockers.some(b => b.type === 'sections'),
@@ -147,7 +154,7 @@ export class ClaimClosureModalComponent {
 
   readonly checklistAllDone = computed(() => this.checklistItems.every(i => i.passed));
 
-  readonly confirmationStatements = CONFIRMATION_STATEMENTS;
+  readonly confirmationStatements = CLOSURE_CONFIRMATION_STATEMENTS;
 
   readonly form: FormGroup = this.fb.group({
     reason: [null, Validators.required],
