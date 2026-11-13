@@ -93,6 +93,9 @@
                 <button nxButton="secondary small" type="button" (click)="openBulkReassign()">
                   Reassign {{ selectedCount() }} {{ selectedCount() === 1 ? 'claim' : 'claims' }}
                 </button>
+                <button nxButton="secondary small" type="button" (click)="openBulkClose()">
+                  Close {{ selectedCount() }} {{ selectedCount() === 1 ? 'claim' : 'claims' }}
+                </button>
               </div>
             </div>
           } @else {
