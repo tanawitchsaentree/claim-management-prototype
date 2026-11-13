@@ -4,7 +4,9 @@
   "module": "FNOL",
   "title": "Entities & Damages — Other impacted policies, and pulling their entities onto the claim",
   "targetClaim": "CLM-2024-001",
-  "pages": ["fnol-entities-damages"],
+  "pages": [
+    "fnol-entities-damages"
+  ],
   "walkthroughSteps": [
     "Apply AC-01 — selects POL-2024-001 in FNOL. Navigate to /fnol/entities-damages",
     {
@@ -20,14 +22,14 @@
       "direction": "bottom"
     },
     "In the modal: each row carries the policy number, the client, why it surfaced, the line of business, the cover period, the status chip and how many entities it would make available. Production shows an accordion whose body holds only 'Line of Business' — one click for one field.",
-    "Tick POL-2024-006 and POL-2024-009, then \"Add to claim\". 9 entities land in the tree with a 3-second recently-added highlight, and the Covered by column carries the source policy (e.g. 'Contents & Equipment · POL-2024-006') so the handler can see the limit comes from elsewhere.",
+    "Tick POL-2024-006 and POL-2024-009, then \"Add to claim\". 9 entities land in the tree with a 3-second recently-added highlight, and the Type of coverage column carries the source policy (e.g. 'Contents & Equipment · POL-2024-006') so the handler can see the limit comes from elsewhere.",
     "The banner is now gone — both policies are on the claim, so there is nothing left to offer. A page reload resets the mock state and brings it back."
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
       "statement": "Given a policy is selected in FNOL and sibling policies hold entities that may belong to this loss, when Entities & Damages loads, then an info banner names those policies and states how many extra entities they would make available.",
-      "plainStatement": "With POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted — 2 policies outside this claim hold entities that may belong to this loss — POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on — real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.",
+      "plainStatement": "With POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted — 2 policies outside this claim hold entities that may belong to this loss — POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on — real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.\n\n**NOTE (BMPCC-22665, 2026-11-13):** in the normal flow the handler now meets these suggestions earlier, on the FNOL **Policies** step after Loss information, where each selected policy gets its own claim. Once that step is answered this banner is not shown again. It still shows when Entities & Damages is opened without the step, as this ticket does; adding from here keeps the old behaviour (entities onto this one claim).",
       "page": "fnol-entities-damages",
       "buildStatus": "done",
       "setup": {
@@ -159,7 +161,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Covered by column on a new row reads like \"Contents & Equipment · POL-2024-006\"",
+            "text": "Type of coverage column on a new row reads like \"Contents & Equipment · POL-2024-006\"",
             "page": "fnol-entities-damages",
             "role": "tested-visible"
           },
@@ -179,18 +181,18 @@
         }
       },
       "expectedUI": {
-        "description": "Modal closes. The entity tree grows by 9 rows spread across the existing damage-type groups; each carries its source policy in Covered by. Highlight clears after 3 seconds.",
+        "description": "Modal closes. The entity tree grows by 9 rows spread across the existing damage-type groups; each carries its source policy in Type of coverage. Highlight clears after 3 seconds.",
         "visualCues": [
           "9 additional entity rows, added unselected",
           "Recently-added highlight for ~3 seconds, then normal styling",
-          "Covered by shows \"<cover> · POL-2024-006\" / \"· POL-2024-009\"",
+          "Type of coverage shows \"<cover> · POL-2024-006\" / \"· POL-2024-009\"",
           "Toast: 2 policies added / 9 entities are now available for selection"
         ]
       },
       "howToTest": {
         "route": "/fnol/entities-damages",
         "trigger": "Apply AC-03, navigate to /fnol/entities-damages, See details, tick both policies, Add",
-        "expectedResult": "9 entities appear in the tree with their source policy in Covered by, and a toast confirms 2 policies / 9 entities"
+        "expectedResult": "9 entities appear in the tree with their source policy in Type of coverage, and a toast confirms 2 policies / 9 entities"
       }
     },
     {

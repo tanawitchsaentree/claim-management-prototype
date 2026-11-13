@@ -197,6 +197,60 @@
       "file": "gg-8-tasks-and-bell.json",
       "module": "GG booking",
       "title": "GG 8 · Task manager and the bell: finding out"
+    },
+    {
+      "id": "BMPCC-22395",
+      "file": "bmpcc-22395.json",
+      "module": "Dashboard",
+      "title": "Claims Manager dashboard"
+    },
+    {
+      "id": "BMPCC-22666",
+      "file": "bmpcc-22666.json",
+      "module": "Claims",
+      "title": "Manual reassignment of claims"
+    },
+    {
+      "id": "BMPCC-22660",
+      "file": "bmpcc-22660.json",
+      "module": "Claims",
+      "title": "Claim closure: open tasks block closure, bulk closure"
+    },
+    {
+      "id": "BMPCC-22328",
+      "file": "bmpcc-22328.json",
+      "module": "Claims",
+      "title": "Select all sections (close/reopen), section date of loss, Type of coverage"
+    },
+    {
+      "id": "BMPCC-18492",
+      "file": "bmpcc-18492.json",
+      "module": "Claims",
+      "title": "CBI Extension for Edit claim"
+    },
+    {
+      "id": "BMPCC-22665",
+      "file": "bmpcc-22665.json",
+      "module": "FNOL",
+      "title": "Manual selection of policy from impacted policies"
+    },
+    {
+      "id": "BMPCC-22661",
+      "file": "bmpcc-22661.json",
+      "module": "GG booking",
+      "title": "GG booking failed on Claim Overview: message and retry"
+    },
+    {
+      "id": "BMPCC-22350",
+      "file": "bmpcc-22350.json",
+      "module": "Claims",
+      "title": "Large Loss Heads-Up: notification, manual start, form"
+    },
+    {
+      "id": "BMPCC-22635",
+      "file": "bmpcc-22635.json",
+      "module": "FNOL",
+      "title": "Generate the FNOL Acknowledgement: trigger and its states"
     }
   ]
 }

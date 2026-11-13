@@ -1,0 +1,581 @@
+{
+  "ticketId": "BMPCC-22660",
+  "epicId": "BMPCC-21933",
+  "module": "Claims",
+  "title": "Claim closure: open tasks block closure, bulk closure",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "overview",
+    "sections"
+  ],
+  "walkthroughSteps": [
+    "Open tasks: a claim with open tasks cannot close. The Close claim window lists every open task with its type and domain, next to the other blockers (AC-01). Done, cancelled or deferred tasks do not block (AC-02). Automatic closure after the final payment uses the same rule and says so in a toast.",
+    "Bulk closure: select sections on Section overview (or claims on Claims list), one Close action, one reason and one checklist tick, then a result per item (AC-03 to AC-07).",
+    "Not built: story AC05 (Figma file, German text length, PO and Ranger review) is outside the prototype."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC01 · Blocked claim closure lists every open task with its type and domain, together with the other blockers",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, with the Close claim window already open.\n\n**You see:** The blockers step. The open tasks card is expanded and lists both tasks one by one, each with **Type** and **Domain** (Review task from Recovery, Finance task from Reserves and payments), status, assignee and due date. The open section is listed as a second blocker in the same list.\n\n**Try:** Press **Go to Task manager** to see the tasks there.\n\nDecision: open tasks are a normal blocker card in the existing closure window (extended, not a new screen), expanded by default so no task hides behind a count. Wording: \"2 open tasks (Recovery, Reserves and payments) must be completed, cancelled or deferred\". No override (PO).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Two open tasks from two domains plus an open section",
+        "preconditions": [
+          {
+            "text": "Open tasks card lists 2 tasks with Type and Domain",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Open section blocker in the same list",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Go to Task manager link",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          },
+          "tasksAppend": [
+            {
+              "taskId": "t-22660-rec",
+              "taskKey": "TSK-901",
+              "claimId": "CLM-2024-001",
+              "taskType": "Review",
+              "description": "Confirm subrogation recovery against the forklift supplier",
+              "status": "open",
+              "dueDate": "2026-11-28",
+              "priority": "high",
+              "assignee": "Recovery team",
+              "domain": "Recovery"
+            },
+            {
+              "taskId": "t-22660-fin",
+              "taskKey": "TSK-902",
+              "claimId": "CLM-2024-001",
+              "taskType": "Finance",
+              "description": "Release the remaining repair reserve",
+              "status": "in-progress",
+              "dueDate": "2026-11-20",
+              "priority": "medium",
+              "assignee": "Georg Stein"
+            }
+          ]
+        },
+        "postLand": [
+          {
+            "kind": "overview.openClosureModal"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Every open task is listed with its type and domain, next to the open-section blocker.",
+        "visualCues": [
+          "Open tasks card lists 2 tasks with Type and Domain",
+          "Open section blocker in the same list",
+          "Go to Task manager link"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Applied automatically: the Close claim window opens on the blockers step.",
+        "expectedResult": "Every open task is listed with its type and domain, next to the open-section blocker."
+      },
+      "expectedOutcome": {
+        "pendingTasks": 2,
+        "openSections": 1,
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Completed, cancelled or deferred tasks no longer block closure",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, Close claim window open.\n\n**You see:** The pre-closure checklist straight away, with a new first row **No open tasks** ticked. The two extra tasks exist but one is **Cancelled** and one **Deferred**, so they do not count as open (epic BMPCC-21933 FR1).\n\n**Try:** Continue through reason and confirmation: the claim closes.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Same two tasks, now cancelled and deferred",
+        "preconditions": [
+          {
+            "text": "Checklist row: No open tasks (passed)",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          },
+          "tasksAppend": [
+            {
+              "taskId": "t-22660-rec",
+              "taskKey": "TSK-901",
+              "claimId": "CLM-2024-001",
+              "taskType": "Review",
+              "description": "Confirm subrogation recovery against the forklift supplier",
+              "status": "cancelled",
+              "dueDate": "2026-11-28",
+              "priority": "high",
+              "assignee": "Recovery team",
+              "domain": "Recovery"
+            },
+            {
+              "taskId": "t-22660-fin",
+              "taskKey": "TSK-902",
+              "claimId": "CLM-2024-001",
+              "taskType": "Finance",
+              "description": "Release the remaining repair reserve",
+              "status": "deferred",
+              "dueDate": "2026-11-20",
+              "priority": "medium",
+              "assignee": "Georg Stein"
+            }
+          ]
+        },
+        "postLand": [
+          {
+            "kind": "overview.openClosureModal"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Checklist shows No open tasks as passed; closure can go ahead.",
+        "visualCues": [
+          "Checklist row: No open tasks (passed)"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Applied automatically: the Close claim window opens on the checklist.",
+        "expectedResult": "Checklist shows No open tasks as passed; closure can go ahead."
+      },
+      "expectedOutcome": {
+        "pendingTasks": 0,
+        "openSections": 0
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC02 · Select several or all sections and close them in one action",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001, all four sections open and nothing blocking them.\n\n**You see:** A checkbox on every section row and a **select all** checkbox in the header.\n\n**Try:** Tick select all. A grey bar says **4 sections selected** with **Close 4 sections**. Press it: the Close 4 sections window checks every section and says **All 4 sections can be closed. Nothing is blocking them.**\n\nDecision: the screens with bulk closure are Section overview (sections) and Claims list (claims). One section selected uses the existing single Close section window; two or more use the bulk window. Same selection bar also offers Reopen for closed sections (BMPCC-22328).",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "All four sections open, no blockers",
+        "preconditions": [
+          {
+            "text": "Checkbox per section + select all",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Bar: 4 sections selected, Close 4 sections",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "All 4 sections can be closed",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Open",
+            "SEC-003": "Open",
+            "SEC-008": "Open"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Selection bar with one close action; the window lists all four as Ready to close.",
+        "visualCues": [
+          "Checkbox per section + select all",
+          "Bar: 4 sections selected, Close 4 sections",
+          "All 4 sections can be closed"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Tick the header checkbox, then press Close 4 sections.",
+        "expectedResult": "Selection bar with one close action; the window lists all four as Ready to close."
+      },
+      "expectedOutcome": {
+        "openSections": 4
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC03 · Reason and checklist confirmation once for the batch, result per item with partial success",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001. Four open sections; **Contents & Fixtures Damage** still has an open reserve.\n\n**You see:** After select all and **Close 4 sections**: a warning **3 of 4 can be closed. 1 section stays open**, and the blocked one shows why (Pending reserves must be released).\n\n**Try:** **Continue with 3 sections**. The confirm step names the 3 that will close and the 1 that stays open, asks for **one closure reason** and **one tick** for the pre-closure checklist. **Close 3 sections**: a short spinner, then the result per item: 3 **Closed**, 1 **Not closed** with its reason.\n\nDecision: partial success, the blocked section is never closed and there is no override (PO). Items are checked again at close time.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Four open sections, one with an open reserve",
+        "preconditions": [
+          {
+            "text": "3 of 4 can be closed",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "One reason + one checklist tick",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Result: 3 Closed, 1 Not closed",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Open",
+            "SEC-003": "Open",
+            "SEC-008": "Open"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false,
+              "hasOpenReserves": true
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "3 closed, 1 not closed, with the reason per item.",
+        "visualCues": [
+          "3 of 4 can be closed",
+          "One reason + one checklist tick",
+          "Result: 3 Closed, 1 Not closed"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Select all, Close 4 sections, Continue, pick a reason, tick the confirmation, Close 3 sections.",
+        "expectedResult": "3 closed, 1 not closed, with the reason per item."
+      },
+      "expectedOutcome": {
+        "openSections": 4
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC03 · Bulk claim closure: a claim with open tasks stays open and its tasks are listed",
+      "plainStatement": "**Opens:** Claims list.\n\n**You see:** The claims table with a checkbox per claim.\n\n**Try:** Tick **CLM-2024-001** and **CLM-2024-002**, press **Close 2 claims**. CLM-2024-001 is **Ready to close**; CLM-2024-002 **Stays open** and lists each open task with type and domain (Legal task from Litigation, Approval task from Claims) next to its other blockers. Continue, pick a reason, tick the checklist, close: 1 closed, 1 not closed.\n\nDecision: bulk claim closure uses the default 10 year retention for every claim; a custom date needs the single closure on Claim overview.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "CLM-2024-001 ready to close; CLM-2024-002 has open tasks",
+        "preconditions": [
+          {
+            "text": "CLM-2024-002: Stays open, open tasks with type and domain",
+            "page": "any",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Result per claim",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Closed",
+            "SEC-002": "Closed",
+            "SEC-003": "Closed",
+            "SEC-008": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "One claim closes, the other stays open with its open tasks listed.",
+        "visualCues": [
+          "CLM-2024-002: Stays open, open tasks with type and domain",
+          "Result per claim"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims",
+        "trigger": "Select CLM-2024-001 and CLM-2024-002, press Close 2 claims.",
+        "expectedResult": "One claim closes, the other stays open with its open tasks listed."
+      },
+      "expectedOutcome": {
+        "pendingTasks": 0,
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "AC04 · Error state: a close that fails can be tried again",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001, all four open, no blockers. Closing **Section 004 — Payment Demo** is set to fail once (prototype switch).\n\n**You see:** After closing all 4: **3 sections closed, 1 not closed**, Section 004 shows **Could not close: Something went wrong while closing. Nothing was changed, try again.**\n\n**Try:** **Try again for 1 section**: it closes, the result turns to 4 sections closed. Loading state: the spinner while checking and while closing.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Four open sections, one close fails once",
+        "preconditions": [
+          {
+            "text": "Could not close + Try again for 1 section",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Spinner while checking and closing",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Open",
+            "SEC-003": "Open",
+            "SEC-008": "Open"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false,
+              "simulateCloseError": true
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Failed item can be retried; nothing else changes.",
+        "visualCues": [
+          "Could not close + Try again for 1 section",
+          "Spinner while checking and closing"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Select all, Close 4 sections, Continue, reason, tick, Close 4 sections, then Try again.",
+        "expectedResult": "Failed item can be retried; nothing else changes."
+      },
+      "expectedOutcome": {
+        "openSections": 4
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "AC04 · Nothing can close: only Cancel, no override",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001. Two open sections, both with something open (reserves, payments).\n\n**You see:** After select all and **Close 2 sections**: **None of the selected sections can be closed yet**, each with its reasons. There is no Continue button, only Cancel.",
+      "page": "sections",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Two open sections, both blocked",
+        "preconditions": [
+          {
+            "text": "None of the selected sections can be closed yet",
+            "page": "sections",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Only Cancel",
+            "page": "sections",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
+          "sectionStatuses": {
+            "SEC-001": "Open",
+            "SEC-002": "Closed",
+            "SEC-003": "Open",
+            "SEC-008": "Closed"
+          },
+          "sectionBlockers": {
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false,
+              "hasOpenReserves": true
+            },
+            "SEC-002": {
+              "hasActiveLitigation": false,
+              "hasOpenReserves": false,
+              "hasOpenPayments": false
+            },
+            "SEC-003": {
+              "hasActiveProvider": false,
+              "hasOpenPayments": true
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Nothing-can-close state; no way to force it.",
+        "visualCues": [
+          "None of the selected sections can be closed yet",
+          "Only Cancel"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/sections",
+        "trigger": "Tick select all, press Close 2 sections.",
+        "expectedResult": "Nothing-can-close state; no way to force it."
+      },
+      "expectedOutcome": {
+        "openSections": 2
+      }
+    }
+  ]
+}

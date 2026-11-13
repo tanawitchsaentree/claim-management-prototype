@@ -1,0 +1,386 @@
+{
+  "ticketId": "BMPCC-22661",
+  "epicId": "BMPCC-22267",
+  "module": "GG booking",
+  "title": "GG booking failed on Claim Overview: message and retry",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "overview"
+  ],
+  "walkthroughSteps": [
+    "Claim event and section events each get their own message on Claim Overview, with the failure text from Global Genius.",
+    "Retry is on the message itself, for the claim and for each section. The row changes at once, a toast and the bell say how it went.",
+    "When the booking goes through, the message is gone. Figma file and the role question (who may retry) are not covered here: everyone with the claim open can retry, as for payments."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC01 · Claim booking failed: message with the Global Genius failure text",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.\n\n**Decision:** Global Genius's own message is shown under our plain-language line, labelled \"Message from Global Genius\", so the handler can quote it to Finance but still reads first what it means for them (DESIGN DECISION GG-MSG-1).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim booking failed: message with the Global Genius failure text",
+        "preconditions": [
+          {
+            "text": "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of CLM-2024-001."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggFailureMessage": "BKG-4102 Claim event rejected: business unit DE-PROP-HH is not mapped to a Global Genius ledger.",
+              "ggResendOutcome": "registered"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.",
+        "visualCues": [
+          "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC01 · Section booking failed: message per section with the Global Genius failure text",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button.\n\n**Decision:** sections only go to Global Genius once the claim is there, so the section message is hidden while the claim banner shows. Fix the claim first, the sections follow.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Section booking failed: message per section with the Global Genius failure text",
+        "preconditions": [
+          {
+            "text": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of CLM-2024-001."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-001",
+                  "status": "failed",
+                  "failureMessage": "BKG-5310 Section event rejected: section currency USD does not match the policy currency EUR.",
+                  "demoResendOutcome": "booked"
+                },
+                {
+                  "sectionId": "SEC-003",
+                  "status": "failed",
+                  "failureMessage": "BKG-5021 Section event rejected: line of business code is missing on the section.",
+                  "demoResendOutcome": "fails-again"
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button.",
+        "visualCues": [
+          "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC02 · Retry the claim event: feedback, then it fails again",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red claim banner as AC-01.\n\n**Try:** Press **Retry setting up this claim in Global Genius**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Retry the claim event: feedback, then it fails again",
+        "preconditions": [
+          {
+            "text": "Same red claim banner as AC-01.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Retry setting up this claim in Global Genius**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggFailureMessage": "BKG-4102 Claim event rejected: business unit DE-PROP-HH is not mapped to a Global Genius ledger.",
+              "ggResendOutcome": "fails-again"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Same red claim banner as AC-01.",
+        "visualCues": [
+          "Same red claim banner as AC-01."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Same red claim banner as AC-01."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC02 · Retry a section event: feedback, then it fails again",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner with one section, Contents & Fixtures Damage, and its Global Genius message.\n\n**Try:** Press **Retry booking**: the row shows a spinner and \"Retrying\" at once. After about 3 seconds a red toast says it still couldn't be booked, the row comes back with \"Retried, still not booked. You can retry once more\" and the bell lists it.\n\n**Decision:** Retry has no confirm dialog, same as the claim retry from GG-2: it sends the same event again and moves no money. Feedback instead: the row turns to Retrying straight away, then a toast and a bell line say how it went. Two failed retries hand it to Finance and the button goes (DESIGN DECISION GG-SEC-1).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Retry a section event: feedback, then it fails again",
+        "preconditions": [
+          {
+            "text": "Red banner with one section, Contents & Fixtures Damage, and its Global Genius message.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Retry booking**: the row shows a spinner and \"Retrying\" at once. After about 3 seconds a red toast says it still couldn't be booked, the row comes back with \"Retried, still not booked. You can retry once more\" and the bell lists it."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-003",
+                  "status": "failed",
+                  "failureMessage": "BKG-5021 Section event rejected: line of business code is missing on the section.",
+                  "demoResendOutcome": "fails-again"
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner with one section, Contents & Fixtures Damage, and its Global Genius message.",
+        "visualCues": [
+          "Red banner with one section, Contents & Fixtures Damage, and its Global Genius message."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner with one section, Contents & Fixtures Damage, and its Global Genius message."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC03 · Retry works: the failure message is removed",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner with one section, Property Damage, and its Global Genius message.\n\n**Try:** Press **Retry booking**: \"Retrying\", then after about 3 seconds the banner is gone, a green toast says the section is now booked, and the bell shows it under Done.\n\nThe claim event works the same way: apply GG 1 · AC-01 and retry, the red banner turns green.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Retry works: the failure message is removed",
+        "preconditions": [
+          {
+            "text": "Red banner with one section, Property Damage, and its Global Genius message.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press **Retry booking**: \"Retrying\", then after about 3 seconds the banner is gone, a green toast says the section is now booked, and the bell shows it under Done."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-001",
+                  "status": "failed",
+                  "failureMessage": "BKG-5310 Section event rejected: section currency USD does not match the policy currency EUR.",
+                  "demoResendOutcome": "booked"
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner with one section, Property Damage, and its Global Genius message.",
+        "visualCues": [
+          "Red banner with one section, Property Damage, and its Global Genius message."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner with one section, Property Damage, and its Global Genius message."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Repeated failures: retried twice, now with Finance",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".\n\n**Decision (epic open point: repeated failures):** after two failed retries the handler can't usefully retry again, so the button goes and Finance owns it. Same rule as the claim event (GG-2).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Repeated failures: retried twice, now with Finance",
+        "preconditions": [
+          {
+            "text": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of CLM-2024-001."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-001",
+                  "status": "failed",
+                  "failureMessage": "BKG-5310 Section event rejected: section currency USD does not match the policy currency EUR.",
+                  "retryFailures": 2
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".",
+        "visualCues": [
+          "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\"."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\"."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "Claim not in Global Genius yet: section failures wait for the claim",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Only the red claim banner. The two failed sections are **not** listed yet.\n\n**Try:** Retry the claim (it works in this setup): the claim banner turns green, and the section banner with both sections appears under it.\n\n**Decision:** sections only go to Global Genius once the claim is there, so the section message is hidden while the claim banner shows. Fix the claim first, the sections follow.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim not in Global Genius yet: section failures wait for the claim",
+        "preconditions": [
+          {
+            "text": "Only the red claim banner. The two failed sections are **not** listed yet.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Retry the claim (it works in this setup): the claim banner turns green, and the section banner with both sections appears under it."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggFailureMessage": "BKG-4102 Claim event rejected: business unit DE-PROP-HH is not mapped to a Global Genius ledger.",
+              "ggResendOutcome": "registered",
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-001",
+                  "status": "failed",
+                  "failureMessage": "BKG-5310 Section event rejected: section currency USD does not match the policy currency EUR.",
+                  "demoResendOutcome": "booked"
+                },
+                {
+                  "sectionId": "SEC-003",
+                  "status": "failed",
+                  "failureMessage": "BKG-5021 Section event rejected: line of business code is missing on the section.",
+                  "demoResendOutcome": "booked"
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Only the red claim banner. The two failed sections are **not** listed yet.",
+        "visualCues": [
+          "Only the red claim banner. The two failed sections are **not** listed yet."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001.",
+        "expectedResult": "Only the red claim banner. The two failed sections are **not** listed yet."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    }
+  ]
+}
