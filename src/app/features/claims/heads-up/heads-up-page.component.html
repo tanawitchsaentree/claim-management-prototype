@@ -78,7 +78,7 @@
       </div>
 
       @if (form(); as f) {
-        <div class="hu-body" (input)="refreshSummary()" (change)="refreshSummary()" (click)="refreshSummary()">
+        <div class="hu-body" (input)="refreshSummary()" (change)="refreshSummary()">
           <app-heads-up-prefill-section
             [values]="f.controls.values"
             [headsUp]="hu"

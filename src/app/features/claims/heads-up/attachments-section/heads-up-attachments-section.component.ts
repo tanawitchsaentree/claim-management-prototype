@@ -8,8 +8,7 @@ import {
   signal,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
