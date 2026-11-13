@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService, PERSONAS } from './auth';
 
 // Real behaviour tests for persona handling — input X (a persona id) → output Y
-// (current user + isKcm flag). Verifies the post-merge state: 2 personas only.
+// (current user + isKcm flag). Handler, KCM and (BMPCC-22395) Claims Manager.
 describe('AuthService', () => {
   let service: AuthService;
 
@@ -12,9 +12,19 @@ describe('AuthService', () => {
     service = TestBed.inject(AuthService);
   });
 
-  it('exposes exactly two personas (Aviation merged into All)', () => {
-    expect(PERSONAS.length).toBe(2);
-    expect(PERSONAS.map(p => p.dashboardRole).sort()).toEqual(['claims-handler', 'kcm']);
+  it('exposes the handler, KCM and Claims Manager personas', () => {
+    expect(PERSONAS.length).toBe(3);
+    expect(PERSONAS.map(p => p.dashboardRole).sort()).toEqual([
+      'claims-handler',
+      'claims-manager',
+      'kcm'
+    ]);
+  });
+
+  it('flags the Claims Manager persona', () => {
+    service.setActivePersona('usr-tobias');
+    expect(service.isClaimsManager()).toBe(true);
+    expect(service.isKcm()).toBe(false);
   });
 
   it('defaults to the first persona (claims-handler) when nothing is stored', () => {

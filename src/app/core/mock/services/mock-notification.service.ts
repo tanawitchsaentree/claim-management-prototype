@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { MockStateService } from '../state/mock-state.service';
+import { AuthService } from '../../services/auth';
 import { Bookable, needsHandler, withFinance } from '../../models/gg-booking.model';
 
 // Navbar bell. Usability review, top issue: booking failures happen hours or
@@ -19,11 +20,15 @@ export interface AppNotification {
   // Router link + query params to the exact row / banner.
   link: string[];
   queryParams?: Record<string, string>;
+  // BMPCC-22666: only this person sees it (claim reassigned to / away from
+  // them). Unset = everyone, as before.
+  recipient?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class MockNotificationService {
   private readonly stateSvc = inject(MockStateService);
+  private readonly auth = inject(AuthService);
   private readonly events = signal<AppNotification[]>([]);
 
   private readonly live = computed<AppNotification[]>(() => {
@@ -72,10 +77,15 @@ export class MockNotificationService {
   readonly all = computed(() => {
     const live = this.live();
     const failing = new Set(live.map(n => n.id.replace(/^(item|claim)-/, '')));
-    const events = this.events().filter(e => !failing.has(e.id.replace(/^(booked|claim-ready)-/, '')));
+    const me = this.auth.user().name;
+    const events = this.events().filter(
+      e =>
+        (!e.recipient || e.recipient === me) &&
+        !failing.has(e.id.replace(/^(booked|claim-ready)-/, ''))
+    );
     return [...live, ...events];
   });
-  readonly actionCount = computed(() => this.live().filter(n => n.tone === 'action').length);
+  readonly actionCount = computed(() => this.all().filter(n => n.tone === 'action').length);
 
   push(n: AppNotification): void {
     this.events.update(list => [n, ...list.filter(x => x.id !== n.id)]);

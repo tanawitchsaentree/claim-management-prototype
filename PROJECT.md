@@ -2,7 +2,7 @@
 project: claim-management-prototype
 domain: insurance-claims
 modules: [Claims, FNOL]
-schema-version: v2.3
+schema-version: v2.4
 deployed: https://tanawitchsaentree.github.io/claim-management-prototype/
 
 ticket-schema:
@@ -26,6 +26,8 @@ mutations:
     - claimsAppend
     - fnolStateOverride
     - cwbLocationsAppend
+    - activePersona
+    - simulate
 
 pages:
   enum:
@@ -147,6 +149,8 @@ interface ScenarioOverrides {
   cwbLocationsAppend?: CwbLocation[]; // dedupe by cwbReference
   financialPatch?: FinancialPatchOverride; // v2.3 — GG booking states, see apply-financial-overrides.ts
   tasksAppend?: Task[]; // v2.3 — dedupe by taskId
+  activePersona?: string; // v2.4 — AuthService persona id (usr-mara / usr-klaus / usr-tobias)
+  simulate?: ScenarioSimulation; // v2.4 — { managerDashboard?, assignment? } UI states, see team.model.ts
 }
 ```
 
@@ -170,6 +174,8 @@ interface ScenarioOverrides {
 | `cwbLocationsAppend`                             | `CwbLocation[]`                    | dedupe by `cwbReference`                                                     | bmpcc-219            | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()`                                       |
 | `financialPatch`                                 | `{ claimId, payments?, reserves?, recoveries?, paymentsAppend? }` | `financialOverviews[claimId]` rows by paymentId / reserveId / recoveryId | gg-booking-states | Partial merge (booking status / approval status); `paymentsAppend` dedupes by paymentId. Applied in `apply-financial-overrides.ts` (kept out of mock-state.service.ts, already over 300 lines). Audit: skipped (no assertion key reads it) |
 | `tasksAppend`                                    | `Task[]`                           | dedupe by `taskId`                                                           | gg-booking-states    | Mirrored in audit simulator — counts toward `pendingTasks` / `doneTasks`                                                 |
+| `activePersona`                                  | `string` (persona id)              | `AuthService.setActivePersona`                                               | bmpcc-22395, bmpcc-22666 | Applied in `PrototypeScenarioService.applyOverrides`; persists in localStorage like the persona switcher. Audit: skipped (runtime only) |
+| `simulate`                                       | `{ managerDashboard?, assignment? }` | `MockTeamService.setSimulation`                                            | bmpcc-22395, bmpcc-22666 | Loading / error / stale / partial / no-team / no-cases / no-permission on the Claims Manager dashboard; loading / error / empty / save-fails in the reassign dialog. Reset on every Apply (in memory, not session storage). Audit: skipped |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).
 

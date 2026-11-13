@@ -197,6 +197,18 @@
       "file": "gg-8-tasks-and-bell.json",
       "module": "GG booking",
       "title": "GG 8 · Task manager and the bell: finding out"
+    },
+    {
+      "id": "BMPCC-22395",
+      "file": "bmpcc-22395.json",
+      "module": "Dashboard",
+      "title": "Claims Manager dashboard"
+    },
+    {
+      "id": "BMPCC-22666",
+      "file": "bmpcc-22666.json",
+      "module": "Claims",
+      "title": "Manual reassignment of claims"
     }
   ]
 }

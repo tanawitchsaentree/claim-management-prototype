@@ -8,6 +8,8 @@ export interface UserDirectoryEntry {
   name: string;
   role: string;
   email: string;
+  // BMPCC-22666: shown as "Out of office until ..." in the reassign picker.
+  outOfOfficeUntil?: string;
 }
 
 const USERS = rawData as UserDirectoryEntry[];

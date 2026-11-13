@@ -1,0 +1,597 @@
+{
+  "ticketId": "BMPCC-22395",
+  "epicId": "BMPCC-22394",
+  "module": "Dashboard",
+  "title": "Claims Manager dashboard",
+  "targetClaim": "CLM-2024-016",
+  "pages": [
+    "any",
+    "overview"
+  ],
+  "walkthroughSteps": [
+    "Switch the persona to Tobias Grau (Manager). The dashboard opens on his own claims and his team's, no extra navigation.",
+    "The five numbers at the top are filters: click one to jump to the team list filtered to it.",
+    "Team workload: one row per direct team member plus the team queue, each with View claims (drill-down).",
+    "Every flagged claim shows why: Overdue (task past due), High value (250,000 or more), For review (a handler marked it).",
+    "Open a claim and press Back: you return to the same filtered view (filters live in the address).",
+    "Decisions on the open questions are in AC notes. Thresholds are placeholders until the business confirms them."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC1 · Own cases, team workload and drill-down into a member",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **Whole team** button to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Own cases, team workload and drill-down into a member",
+        "preconditions": [
+          {
+            "text": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **Whole team** button to go back."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue.",
+        "visualCues": [
+          "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau (Claims Manager).",
+        "expectedResult": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue."
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC2 · Flagged claims are highlighted, say why, and can be filtered",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip).\n\n**Try:** Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain.\n\n**NOTE [accepted-deviation]:** thresholds were open (open question 1). Implemented: Overdue = an open task past its due date; High value = loss amount 250,000 or more in the claim currency (no FX); For review = a handler marked the claim (review-flags.json). See DESIGN DECISION CM-FLAG-1. Treated as `done` pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Flagged claims are highlighted, say why, and can be filtered",
+        "preconditions": [
+          {
+            "text": "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip).",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip).",
+        "visualCues": [
+          "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip)."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau.",
+        "expectedResult": "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip)."
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC3 · Prioritisation fields, sort and filter by member, status and flag",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag).\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. Status and priority sit under the claim number, and the Handler column hides once you drill into one person, so the table fits the dashboard column without sideways scrolling.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Prioritisation fields, sort and filter by member, status and flag",
+        "preconditions": [
+          {
+            "text": "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag).",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag).",
+        "visualCues": [
+          "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag)."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau, Team workload.",
+        "expectedResult": "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag)."
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC4 · Loading state",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data still loading.\n\n**You see:** Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads.\n\n**Try:** Nothing to do; Reset or pick another AC to leave it.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Loading state",
+        "preconditions": [
+          {
+            "text": "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Nothing to do; Reset or pick another AC to leave it."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "loading"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads.",
+        "visualCues": [
+          "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau, data still loading.",
+        "expectedResult": "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads."
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC4 · Empty: no claims, and no team members",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau with no claims anywhere.\n\n**You see:** **My claims**: \"No claims are assigned to you.\" Team list per member shows 0, and the case list \"No claims match\" / \"has no open claims\" when drilled into.\n\n**Try:** Then apply AC-06 for the team with nobody in it.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Empty: no claims, and no team members",
+        "preconditions": [
+          {
+            "text": "**My claims**: \"No claims are assigned to you.\" Team list per member shows 0, and the case list \"No claims match\" / \"has no open claims\" when drilled into.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Then apply AC-06 for the team with nobody in it."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "no-cases"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "**My claims**: \"No claims are assigned to you.\" Team list per member shows 0, and the case list \"No claims match\" / \"has no open claims\" when drilled into.",
+        "visualCues": [
+          "**My claims**: \"No claims are assigned to you.\" Team list per member shows 0, and the case list \"No claims match\" / \"has no open claims\" when drilled into."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau with no claims anywhere.",
+        "expectedResult": "**My claims**: \"No claims are assigned to you.\" Team list per member shows 0, and the case list \"No claims match\" / \"has no open claims\" when drilled into."
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "AC4 · Empty: no team members",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, nobody reports to him.\n\n**You see:** Team workload: \"No one reports to you yet.\" with a hint to ask the admin. My claims still shows his own claims.\n\n**Try:** Compare with AC-01.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Empty: no team members",
+        "preconditions": [
+          {
+            "text": "Team workload: \"No one reports to you yet.\" with a hint to ask the admin. My claims still shows his own claims.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Compare with AC-01."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "no-team"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Team workload: \"No one reports to you yet.\" with a hint to ask the admin. My claims still shows his own claims.",
+        "visualCues": [
+          "Team workload: \"No one reports to you yet.\" with a hint to ask the admin. My claims still shows his own claims."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau, nobody reports to him.",
+        "expectedResult": "Team workload: \"No one reports to you yet.\" with a hint to ask the admin. My claims still shows his own claims."
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "AC4 · Stale data with last updated and refresh",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time.\n\n**Try:** Press **Refresh now**: loads for a moment, the warning goes away and the time is now.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Stale data with last updated and refresh",
+        "preconditions": [
+          {
+            "text": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Press **Refresh now**: loads for a moment, the warning goes away and the time is now."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "stale"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time.",
+        "visualCues": [
+          "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau, data two hours old.",
+        "expectedResult": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time."
+      }
+    },
+    {
+      "id": "AC-08",
+      "statement": "AC4 · Partial data",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, one member's claims didn't load.\n\n**You see:** Warning above the team table: \"We couldn't load the claims of 1 team member: Dirk Haas. Their numbers are left out of the totals below.\" Dirk's row says Couldn't load.\n\n**Try:** Refresh is the way out (in the demo the state stays until you pick another AC).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Partial data",
+        "preconditions": [
+          {
+            "text": "Warning above the team table: \"We couldn't load the claims of 1 team member: Dirk Haas. Their numbers are left out of the totals below.\" Dirk's row says Couldn't load.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Refresh is the way out (in the demo the state stays until you pick another AC)."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "partial"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Warning above the team table: \"We couldn't load the claims of 1 team member: Dirk Haas. Their numbers are left out of the totals below.\" Dirk's row says Couldn't load.",
+        "visualCues": [
+          "Warning above the team table: \"We couldn't load the claims of 1 team member: Dirk Haas. Their numbers are left out of the totals below.\" Dirk's row says Couldn't load."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau, one member's claims didn't load.",
+        "expectedResult": "Warning above the team table: \"We couldn't load the claims of 1 team member: Dirk Haas. Their numbers are left out of the totals below.\" Dirk's row says Couldn't load."
+      }
+    },
+    {
+      "id": "AC-09",
+      "statement": "AC4 · Error",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, loading failed.\n\n**You see:** Red line: \"We couldn't load your team's claims. Nothing was changed.\" with **Try again**.\n\n**Try:** Press Try again: it loads again (and fails again in this demo state).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Error",
+        "preconditions": [
+          {
+            "text": "Red line: \"We couldn't load your team's claims. Nothing was changed.\" with **Try again**.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Press Try again: it loads again (and fails again in this demo state)."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "error"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red line: \"We couldn't load your team's claims. Nothing was changed.\" with **Try again**.",
+        "visualCues": [
+          "Red line: \"We couldn't load your team's claims. Nothing was changed.\" with **Try again**."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau, loading failed.",
+        "expectedResult": "Red line: \"We couldn't load your team's claims. Nothing was changed.\" with **Try again**."
+      }
+    },
+    {
+      "id": "AC-10",
+      "statement": "AC4 · No permission",
+      "plainStatement": "**Opens:** Dashboard as a user whose Claims Manager role was removed.\n\n**You see:** \"You don't have access to the team dashboard\", why, and **Go to my claims**.\n\n**Try:** Press Go to my claims: the claims list opens filtered to your claims.\n\nScope rule (epic Scenario 5): the manager sees own claims, direct members' claims and the team queue only. Georg Stein's claims (Marine team) never appear.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "No permission",
+        "preconditions": [
+          {
+            "text": "\"You don't have access to the team dashboard\", why, and **Go to my claims**.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Press Go to my claims: the claims list opens filtered to your claims."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias",
+          "simulate": {
+            "managerDashboard": "no-permission"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "\"You don't have access to the team dashboard\", why, and **Go to my claims**.",
+        "visualCues": [
+          "\"You don't have access to the team dashboard\", why, and **Go to my claims**."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as a user whose Claims Manager role was removed.",
+        "expectedResult": "\"You don't have access to the team dashboard\", why, and **Go to my claims**."
+      }
+    },
+    {
+      "id": "AC-11",
+      "statement": "Navigation to a claim and back",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Drill into a member, set a filter, open a claim from the Claim column or the row menu.\n\n**Try:** Press the browser Back button: the dashboard comes back with the same member and filter (they are kept in the address, e.g. ?member=Lena%20Zorn&flag=any).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Navigation to a claim and back",
+        "preconditions": [
+          {
+            "text": "Drill into a member, set a filter, open a claim from the Claim column or the row menu.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Press the browser Back button: the dashboard comes back with the same member and filter (they are kept in the address, e.g. ?member=Lena%20Zorn&flag=any)."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Drill into a member, set a filter, open a claim from the Claim column or the row menu.",
+        "visualCues": [
+          "Drill into a member, set a filter, open a claim from the Claim column or the row menu."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau.",
+        "expectedResult": "Drill into a member, set a filter, open a claim from the Claim column or the row menu."
+      }
+    },
+    {
+      "id": "AC-12",
+      "statement": "AC5 · Handler dashboard unchanged, same patterns",
+      "plainStatement": "**Opens:** Dashboard as Mara Mustermann (Handler).\n\n**You see:** The handler dashboard exactly as before. The manager page reuses its page shell, cards, tables, badges and action card (dashboard.scss is shared, the handler files are not edited).\n\n**Try:** Switch between Handler and Manager in the persona bar and compare.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Handler dashboard unchanged, same patterns",
+        "preconditions": [
+          {
+            "text": "The handler dashboard exactly as before. The manager page reuses its page shell, cards, tables, badges and action card (dashboard.scss is shared, the handler files are not edited).",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Switch between Handler and Manager in the persona bar and compare."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "The handler dashboard exactly as before. The manager page reuses its page shell, cards, tables, badges and action card (dashboard.scss is shared, the handler files are not edited).",
+        "visualCues": [
+          "The handler dashboard exactly as before. The manager page reuses its page shell, cards, tables, badges and action card (dashboard.scss is shared, the handler files are not edited)."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann (Handler).",
+        "expectedResult": "The handler dashboard exactly as before. The manager page reuses its page shell, cards, tables, badges and action card (dashboard.scss is shared, the handler files are not edited)."
+      }
+    },
+    {
+      "id": "AC-13",
+      "statement": "Reassign from the dashboard (open question 4)",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Row menu (⋮) on a team claim: **Open claim** and **Reassign**.\n\n**Try:** View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > Reassign > Yes, reassign: toast, the row moves to Mara. Switch to Mara: the bell says it was assigned to her.\n\nDecision: view and open first; the only action is Reassign, because it reuses the BMPCC-22666 dialog with the same rules, confirm and notifications (DESIGN DECISION CM-ACT-1). Escalate and add note stay on the claim. Decision (open question 5): summary numbers yes, charts no (DESIGN DECISION CM-SUM-1).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Reassign from the dashboard (open question 4)",
+        "preconditions": [
+          {
+            "text": "Row menu (⋮) on a team claim: **Open claim** and **Reassign**.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > Reassign > Yes, reassign: toast, the row moves to Mara. Switch to Mara: the bell says it was assigned to her."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Row menu (⋮) on a team claim: **Open claim** and **Reassign**.",
+        "visualCues": [
+          "Row menu (⋮) on a team claim: **Open claim** and **Reassign**."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau.",
+        "expectedResult": "Row menu (⋮) on a team claim: **Open claim** and **Reassign**."
+      }
+    },
+    {
+      "id": "AC-14",
+      "statement": "AC6 · Figma, German text length, small screens",
+      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths.\n\n**Try:** Review in Figma once the file exists.",
+      "page": "any",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Figma, German text length, small screens",
+        "preconditions": [
+          {
+            "text": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Review in Figma once the file exists."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
+        "visualCues": [
+          "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Not built in the prototype.",
+        "expectedResult": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths."
+      }
+    },
+    {
+      "id": "AC-15",
+      "statement": "AC7 · Review by PO, a claims manager and a developer",
+      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Review and sign-off happen outside the prototype.\n\n**Try:** Add the Figma link to the story and the epic after review.",
+      "page": "any",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Review by PO, a claims manager and a developer",
+        "preconditions": [
+          {
+            "text": "Review and sign-off happen outside the prototype.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Add the Figma link to the story and the epic after review."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Review and sign-off happen outside the prototype.",
+        "visualCues": [
+          "Review and sign-off happen outside the prototype."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Not built in the prototype.",
+        "expectedResult": "Review and sign-off happen outside the prototype."
+      }
+    }
+  ]
+}

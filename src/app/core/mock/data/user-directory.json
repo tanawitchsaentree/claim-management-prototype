@@ -39,7 +39,8 @@
     "userId": "U007",
     "name": "Sabine Rand",
     "role": "Claims Handler",
-    "email": "sabine.rand@allianz.com"
+    "email": "sabine.rand@allianz.com",
+    "outOfOfficeUntil": "2026-11-28"
   },
   {
     "userId": "U008",
@@ -58,5 +59,29 @@
     "name": "Ralf Kern",
     "role": "Compliance Officer",
     "email": "ralf.kern@allianz.com"
+  },
+  {
+    "userId": "U011",
+    "name": "Mara Mustermann",
+    "role": "Claims Handler",
+    "email": "mara.mustermann@allianz.com"
+  },
+  {
+    "userId": "U012",
+    "name": "Elke Dorn",
+    "role": "Claims Handler",
+    "email": "elke.dorn@allianz.com"
+  },
+  {
+    "userId": "U013",
+    "name": "Dirk Haas",
+    "role": "Claims Handler",
+    "email": "dirk.haas@allianz.com"
+  },
+  {
+    "userId": "U014",
+    "name": "Georg Stein",
+    "role": "Claims Handler",
+    "email": "georg.stein@allianz.com"
   }
 ]

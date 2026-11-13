@@ -1,0 +1,101 @@
+@if (cases().length === 0) {
+  <app-empty-state [message]="emptyMessage()" [hint]="emptyHint()"></app-empty-state>
+} @else {
+  <div class="data-table-wrap" tabindex="0">
+    <table
+      nxTable
+      nxSort
+      class="dash-table"
+      [active]="sortKey()"
+      [direction]="sortDir()"
+      (sortChange)="onSort($event)"
+    >
+      <caption class="mct-caption">{{ caption() }}</caption>
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell nxSortHeaderCell="claim" class="dash-col--nowrap">Claim</th>
+          <th nxHeaderCell>Client</th>
+          @if (showOwner()) {
+            <th nxHeaderCell nxSortHeaderCell="owner" class="dash-col--nowrap">Handler</th>
+          }
+          <th nxHeaderCell nxSortHeaderCell="flags" class="mct-col--flags">Needs attention</th>
+          <th nxHeaderCell nxSortHeaderCell="updated" class="dash-col--nowrap">Last updated</th>
+          <th nxHeaderCell nxSortHeaderCell="amount" class="dash-col--nowrap">Loss amount</th>
+          <th nxHeaderCell><span class="mct-sr">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (mc of visible(); track mc.claim.claimId) {
+          <tr nxTableRow [class.mct-row--flagged]="mc.flags.length > 0">
+            <td nxCell class="dash-col--nowrap">
+              <a class="text-link" [routerLink]="['/claims', mc.claim.claimId, 'overview']">{{
+                mc.claim.claimId
+              }}</a>
+              <app-priority-dot
+                class="mct-priority"
+                [priority]="mc.claim.priority"
+                [showLabel]="true"
+              ></app-priority-dot>
+              <!-- Status and priority sit under the claim number to keep the table
+                   narrow enough for the dashboard column. Status column dropped for width: almost every row is Open, so only
+                   a closed claim carries a chip. -->
+              @if (mc.claim.status === 'Closed') {
+                <app-status-chip class="mct-closed" [status]="mc.claim.status" domain="claim"></app-status-chip>
+              }
+            </td>
+            <td nxCell>
+              <span class="mct-client">{{ mc.claim.clientName }}</span>
+              <span class="mct-sub">{{ mc.claim.lineOfBusiness }}</span>
+            </td>
+            @if (showOwner()) {
+              <td nxCell class="dash-col--nowrap" [class.text-muted]="mc.isQueue">
+                {{ mc.owner }}
+              </td>
+            }
+            <td nxCell class="mct-col--flags">
+              @for (f of mc.flags; track f.kind) {
+                <div class="mct-flag">
+                  <nx-badge [type]="badgeType(f.kind)" class="mct-flag__badge">{{ f.label }}</nx-badge>
+                  <span class="mct-flag__reason" [title]="f.reason">{{ f.reason }}</span>
+                </div>
+              } @empty {
+                <span class="text-muted">None</span>
+              }
+            </td>
+            <td nxCell class="dash-col--nowrap">{{ mc.claim.dateUpdated | appDate }}</td>
+            <td nxCell class="dash-col--nowrap">
+              {{ mc.claim.currency }} {{ mc.claim.lossAmount | number }}
+            </td>
+            <td nxCell>
+              <button
+                class="dash-kebab-btn"
+                type="button"
+                [nxContextMenuTriggerFor]="caseMenu"
+                [attr.aria-label]="'Actions for ' + mc.claim.claimId"
+              >
+                ⋮
+              </button>
+              <nx-context-menu #caseMenu="nxContextMenu">
+                <a nxContextMenuItem [routerLink]="['/claims', mc.claim.claimId, 'overview']"
+                  >Open claim</a
+                >
+                @if (mc.claim.status === 'Open') {
+                  <button nxContextMenuItem type="button" (click)="reassign.emit(mc)">
+                    Reassign
+                  </button>
+                }
+              </nx-context-menu>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (hiddenCount() > 0) {
+    <div class="mct-more">
+      <button type="button" class="widget-link mct-more__btn" (click)="showMore()">
+        Show {{ hiddenCount() > 8 ? 8 : hiddenCount() }} more of {{ hiddenCount() }}
+      </button>
+    </div>
+  }
+}

@@ -94,7 +94,7 @@
               type="button"
               (click)="auth.setActivePersona(p.id)"
             >
-              {{ p.dashboardRole === 'kcm' ? 'KCM' : 'Handler' }}
+              {{ p.dashboardRole === 'kcm' ? 'KCM' : p.dashboardRole === 'claims-manager' ? 'Manager' : 'Handler' }}
             </button>
           }
         </div>

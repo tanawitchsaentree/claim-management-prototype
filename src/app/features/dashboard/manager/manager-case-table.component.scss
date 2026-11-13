@@ -1,0 +1,102 @@
+// BLESSED: dashboard.html table pattern via _widget-shell.scss mixins (same
+// dash-table the Claims portfolio widget uses).
+@use '../widget-shell' as widget;
+
+.data-table-wrap {
+  @include widget.data-table-wrap;
+}
+.dash-table {
+  @include widget.dash-table;
+}
+.dash-col--nowrap {
+  @include widget.dash-col-nowrap;
+}
+.text-muted {
+  @include widget.text-muted;
+}
+.text-link {
+  @include widget.text-link;
+}
+.dash-kebab-btn {
+  @include widget.dash-kebab-btn;
+}
+.widget-link {
+  @include widget.link;
+}
+
+.mct-caption,
+.mct-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.mct-col--flags {
+  min-width: 280px;
+}
+
+.mct-priority {
+  display: block;
+  margin-top: var(--space-xs);
+}
+
+.mct-closed {
+  display: block;
+  margin-top: var(--space-xs);
+}
+
+.mct-client,
+.mct-sub {
+  display: block;
+}
+
+.mct-sub {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+// A flagged row gets a left rule in the warning colour so it stands out
+// while scanning, on top of the badge + reason (never colour alone).
+.mct-row--flagged ::ng-deep .nx-table-cell:first-child {
+  box-shadow: inset 3px 0 0 var(--warning);
+}
+
+.mct-flag {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+
+  & + & {
+    margin-top: var(--space-xs);
+  }
+
+  &__badge {
+    flex-shrink: 0;
+  }
+
+  // Two lines at most so one long note can't stretch the row; the full
+  // text is in the title and on the claim.
+  &__reason {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.mct-more {
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--ui-04);
+
+  &__btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+  }
+}

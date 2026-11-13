@@ -73,16 +73,9 @@
         <div class="co-field">
           <span class="co-label">Assigned Claim handler</span>
           <span class="co-value">{{ claim.assignedHandler }}</span>
-          @if (claim.status !== 'Closed') {
-            <nx-link size="small"
-              ><a
-                tabindex="0"
-                (click)="openReassignModal(claim)"
-                (keydown.enter)="openReassignModal(claim)"
-                >Reassign</a
-              ></nx-link
-            >
-          }
+          <!-- BMPCC-22666: Reassign / Take claim / why you can't (saves to mock state,
+               the overview reloads from it). -->
+          <app-claim-assignment-actions [claim]="claim"></app-claim-assignment-actions>
         </div>
         @if (claim.lossEventId) {
           <div class="co-field">

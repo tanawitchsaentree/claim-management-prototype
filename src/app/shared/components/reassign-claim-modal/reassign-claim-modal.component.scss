@@ -37,6 +37,8 @@
 }
 
 .rcm-preview {
+  // Don't let the scrolling body squash the preview to one row.
+  flex-shrink: 0;
   max-height: 160px;
   overflow-y: auto;
   border: 1px solid var(--ui-04);
@@ -68,6 +70,7 @@
 }
 
 .rcm-handler-list {
+  flex-shrink: 0;
   max-height: 180px;
   overflow-y: auto;
   border: 1px solid var(--ui-04);
@@ -95,6 +98,16 @@
   &--active {
     background: var(--action-selected-background-color);
   }
+  // Can't take the claim (out of office, above authority): stays visible
+  // with the reason (DESIGN DECISION RA-PICK-1).
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--ui-02);
+
+    .rcm-handler-option__name {
+      color: var(--text-muted);
+    }
+  }
 
   &__name {
     font-size: var(--paragraph-02-font-size);
@@ -118,5 +131,24 @@
   gap: var(--space-ndbx-6);
   font-size: var(--paragraph-02-font-size);
   color: var(--text-01);
+  margin: 0 0 var(--space-sm);
+}
+
+.rcm-kind {
+  display: flex;
+  gap: var(--space-base);
+  margin-bottom: var(--space-sm);
+}
+
+.rcm-list-state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-base) 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+}
+
+.rcm-message {
   margin: 0 0 var(--space-sm);
 }

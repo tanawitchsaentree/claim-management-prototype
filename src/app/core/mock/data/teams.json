@@ -1,0 +1,16 @@
+[
+  {
+    "teamId": "TEAM-PROP",
+    "name": "Property claims team",
+    "group": "GPG-001",
+    "managerName": "Tobias Grau",
+    "memberNames": ["Mara Mustermann", "Lena Zorn", "Nina Feld", "Elke Dorn", "Dirk Haas", "Sabine Rand"]
+  },
+  {
+    "teamId": "TEAM-MARINE",
+    "name": "Marine and liability team",
+    "group": "GPG-002",
+    "managerName": "Marcus Fehr",
+    "memberNames": ["Georg Stein"]
+  }
+]

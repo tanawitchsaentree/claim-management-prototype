@@ -1,0 +1,145 @@
+// Page shell, cards, action cards and loading / error rows come from
+// ../dashboard.scss (loaded first in styleUrls), so the manager page and the
+// handler page cannot drift. Only manager-only pieces live here.
+// BLESSED: dashboard.html "Card layout / stat panels".
+@use '../widget-shell' as widget;
+
+.page-role-badge--claims-manager {
+  background: var(--claim-status-open-bg);
+  color: var(--claim-status-open-color);
+}
+
+.mgr-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+
+  &__text {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+}
+
+.mgr-stale {
+  margin-bottom: var(--space-base);
+}
+
+// Same look as the KCM KPI row (kpi-row.ts), but each tile is a button that
+// filters the team list, so the numbers are never a dead end.
+.mgr-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-base);
+  margin-bottom: var(--space-xl);
+}
+
+.mgr-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-base);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 4px var(--claim-overlay-shadow);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+
+  &:hover {
+    background: var(--ui-02);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 2px;
+  }
+
+  &__value {
+    font-size: var(--display-l-font-size);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-01);
+  }
+
+  &__label {
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+
+  &--alert {
+    box-shadow: inset 3px 0 0 var(--warning), 0 1px 4px var(--claim-overlay-shadow);
+  }
+}
+
+.mgr-title {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.mgr-count,
+.mgr-team-name {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.mgr-blocked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+
+  &__icon {
+    color: var(--text-muted);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--paragraph-01-font-size);
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  &__text {
+    margin: 0;
+    font-size: var(--paragraph-02-font-size);
+    color: var(--text-01);
+  }
+}
+
+.mgr-rules {
+  margin: 0;
+  display: grid;
+  gap: var(--space-xs);
+
+  dt {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
+
+  dd {
+    margin: 0 0 var(--space-sm);
+    font-size: var(--paragraph-03-font-size);
+    color: var(--text-muted);
+  }
+
+  &__note {
+    margin: var(--space-sm) 0 0;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
+}
+
+@media (max-width: 1024px) {
+  .mgr-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

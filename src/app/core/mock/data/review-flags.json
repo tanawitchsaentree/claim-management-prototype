@@ -1,0 +1,26 @@
+[
+  {
+    "claimId": "CLM-2024-016",
+    "reason": "Coverage question on the business interruption extension. Check before the next reserve change.",
+    "flaggedBy": "Lena Zorn",
+    "flaggedAt": "today-3d"
+  },
+  {
+    "claimId": "CLM-2024-026",
+    "reason": "Broker complaint about slow updates. Call back within 2 days.",
+    "flaggedBy": "Mara Mustermann",
+    "flaggedAt": "today-1d"
+  },
+  {
+    "claimId": "CLM-2024-103",
+    "reason": "Possible fraud signs in the repair invoices.",
+    "flaggedBy": "Nina Feld",
+    "flaggedAt": "today-6d"
+  },
+  {
+    "claimId": "CLM-2024-102",
+    "reason": "Client asked for a second loss adjuster.",
+    "flaggedBy": "Lena Zorn",
+    "flaggedAt": "today-2d"
+  }
+]

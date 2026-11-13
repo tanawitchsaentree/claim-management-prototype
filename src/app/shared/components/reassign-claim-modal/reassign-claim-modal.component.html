@@ -1,25 +1,22 @@
 <div class="rcm-header">
-  <h2 nxModalTitle>
-    {{
-      data.claimIds.length > 1 ? 'Reassign ' + data.claimIds.length + ' claims' : 'Reassign claim'
-    }}
-  </h2>
+  <h2 nxModalTitle>{{ title }}</h2>
 </div>
 
 <div class="rcm-body" tabindex="0">
-  @if (data.claimIds.length === 1 && !data.claims?.length) {
+  @if (isRegistration) {
     <p class="rcm-current">
-      {{ data.claimIds[0] }}
-      @if (data.currentHandler) {
-        <span class="rcm-current__muted">— currently assigned to {{ data.currentHandler }}</span>
-      }
+      By default the claim goes to <strong>{{ currentOwner }}</strong>. Pick someone else, or a
+      team queue, if it needs a specialist.
     </p>
-  } @else if (data.claims?.length) {
+  } @else if (claims.length === 1) {
     <p class="rcm-current">
-      {{ data.claims!.length }} claim{{ data.claims!.length > 1 ? 's' : '' }} selected
+      {{ claims[0].claimId }}
+      <span class="rcm-current__muted">is with {{ currentOwner }}</span>
     </p>
+  } @else {
+    <p class="rcm-current">{{ claims.length }} claims selected</p>
     <div class="rcm-preview" tabindex="0">
-      <!-- audit-exempt: guarded by @else if (data.claims?.length) above — never rendered with zero rows -->
+      <!-- audit-exempt: this branch only renders with 2+ claims -->
       <table class="rcm-preview__table">
         <thead>
           <tr>
@@ -29,50 +26,93 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of data.claims; track row.claimId) {
+          @for (row of claims; track row.claimId) {
             <tr>
               <td>{{ row.claimId }}</td>
               <td>{{ row.clientName }}</td>
-              <td>{{ row.currentHandler ?? '–' }}</td>
+              <td>{{ row.owner ?? 'Team queue' }}</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
-  } @else {
-    <p class="rcm-current">{{ data.claimIds.length }} claims selected</p>
+  }
+  @if (data.skippedCount) {
+    <nx-message context="info" class="rcm-message">
+      {{ data.skippedCount }} of the selected claims {{ data.skippedCount === 1 ? 'is' : 'are' }}
+      not yours to move and will stay where {{ data.skippedCount === 1 ? 'it is' : 'they are' }}.
+    </nx-message>
   }
 
   <form [formGroup]="form" class="rcm-form">
-    <nx-formfield label="New claim handler">
-      <input
-        nxInput
-        type="text"
-        placeholder="Search handlers by name or email…"
-        [value]="handlerQuery()"
-        (input)="handlerQuery.set($any($event.target).value)"
-      />
-    </nx-formfield>
+    <nx-radio-group
+      formControlName="kind"
+      class="rcm-kind"
+      aria-label="Assign to"
+      (groupValueChange)="setKind($event.value)"
+    >
+      <nx-radio value="handler" labelSize="small">A handler</nx-radio>
+      <nx-radio value="team" labelSize="small">A team queue</nx-radio>
+    </nx-radio-group>
 
-    <div class="rcm-handler-list">
-      @for (h of visibleHandlers(); track h.userId) {
-        <button
-          type="button"
-          class="rcm-handler-option"
-          [class.rcm-handler-option--active]="form.value.handlerName === h.name"
-          (click)="selectHandler(h.name)"
-        >
-          <span class="rcm-handler-option__name">{{ h.name }}</span>
-          <span class="rcm-handler-option__email">{{ h.email }}</span>
-        </button>
-      } @empty {
-        <p class="rcm-handler-empty">No handlers match "{{ handlerQuery() }}"</p>
+    @if (kind() === 'handler') {
+      <nx-formfield label="Search handlers">
+        <input
+          nxInput
+          type="text"
+          placeholder="Name or team"
+          [value]="query()"
+          (input)="query.set($any($event.target).value)"
+        />
+      </nx-formfield>
+    }
+
+    @switch (listState()) {
+      @case ('loading') {
+        <div class="rcm-list-state" role="status">
+          <nx-spinner size="small"></nx-spinner>
+          <span>Loading who can take the claim…</span>
+        </div>
       }
-    </div>
-    @if (form.value.handlerName) {
+      @case ('error') {
+        <nx-message context="error" class="rcm-message">
+          We couldn't load the list of handlers.
+          <button nxButton="tertiary small" type="button" (click)="loadTargets()">Try again</button>
+        </nx-message>
+      }
+      @default {
+        <div class="rcm-handler-list" role="listbox" [attr.aria-label]="kind() === 'team' ? 'Team queues' : 'Handlers'">
+          @for (t of visibleTargets(); track t.name) {
+            <button
+              type="button"
+              role="option"
+              class="rcm-handler-option"
+              [class.rcm-handler-option--active]="selected()?.name === t.name"
+              [attr.aria-selected]="selected()?.name === t.name"
+              [disabled]="!!t.unavailableReason"
+              (click)="select(t)"
+            >
+              <span class="rcm-handler-option__name">{{ t.name }}</span>
+              <span class="rcm-handler-option__email">{{ t.unavailableReason ?? t.detail }}</span>
+            </button>
+          } @empty {
+            <p class="rcm-handler-empty">
+              {{
+                query()
+                  ? 'No one matches "' + query() + '".'
+                  : 'No one else can take this claim right now. Ask your team manager.'
+              }}
+            </p>
+          }
+        </div>
+      }
+    }
+
+    @if (selected(); as s) {
       <p class="rcm-selected-handler">
         <nx-icon name="check-circle" size="s"></nx-icon>
-        Reassigning to <strong>{{ form.value.handlerName }}</strong>
+        {{ isRegistration ? 'Will be assigned to' : 'Reassigning to' }}
+        <strong>{{ s.kind === 'team' ? s.name + ' queue' : s.name }}</strong>
       </p>
     }
 
@@ -81,15 +121,26 @@
         nxInput
         formControlName="reason"
         rows="2"
-        placeholder="Add context for this reassignment"
+        placeholder="For example: needs a cyber specialist"
       ></textarea>
     </nx-formfield>
   </form>
 
+  @if (saveError()) {
+    <nx-message context="error" class="rcm-message">
+      The reassignment didn't go through, so the claim is still with {{ currentOwner ?? 'its current handler' }}. Try again.
+    </nx-message>
+  }
+
   <div class="rcm-footer">
     <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
-    <button nxButton="primary small" type="button" [disabled]="form.invalid" (click)="onSubmit()">
-      Reassign
+    <button
+      nxButton="primary small"
+      type="button"
+      [disabled]="!selected() || saving()"
+      (click)="onSubmit()"
+    >
+      {{ isRegistration ? 'Choose' : saving() ? 'Reassigning…' : 'Reassign' }}
     </button>
   </div>
 </div>

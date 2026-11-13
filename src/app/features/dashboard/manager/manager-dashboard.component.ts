@@ -1,0 +1,226 @@
+import {
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
+import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
+import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { NxDialogService } from '@allianz/ng-aquila/modal';
+import { Navbar } from '../../layout/navbar/navbar';
+import { AuthService } from '../../../core/services/auth';
+import { MockStateService } from '../../../core/mock/state/mock-state.service';
+import { MockTeamService } from '../../../core/mock/services/mock-team.service';
+import { ManagedCase } from '../../../core/models/team.model';
+import { ToastService } from '../../../shared/components/toast/toast.service';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import {
+  ReassignClaimModalComponent,
+  ReassignClaimModalData,
+  ReassignClaimModalResult
+} from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
+import { buildCases, summarize, HIGH_VALUE_THRESHOLD } from './manager-cases.builder';
+import { ManagerCaseTableComponent } from './manager-case-table.component';
+import { TeamWorkloadComponent, TeamFilters } from './team-workload.component';
+
+// DESIGN DECISION CM-REFRESH-1 (open question 6): data loads when the page
+// opens and on "Refresh". No live polling, so rows don't move while the
+// manager reads them. Data older than 15 minutes is marked as possibly out
+// of date with a Refresh action.
+const STALE_AFTER_MS = 15 * 60_000;
+const LOAD_MS = 500;
+
+// BMPCC-22395: the Claims Manager dashboard. Own cases on top, the direct
+// team below. Same page shell, cards and tables as the handler dashboard
+// (dashboard.scss is shared, not copied), which itself is unchanged.
+@Component({
+  selector: 'app-manager-dashboard',
+  standalone: true,
+  imports: [
+    Navbar,
+    NxButtonModule,
+    NxIconModule,
+    NxSpinnerModule,
+    NxMessageModule,
+    AppDatePipe,
+    ManagerCaseTableComponent,
+    TeamWorkloadComponent
+  ],
+  templateUrl: './manager-dashboard.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['../dashboard.scss', './manager-dashboard.component.scss']
+})
+export class ManagerDashboardComponent {
+  readonly auth = inject(AuthService);
+  private readonly stateSvc = inject(MockStateService);
+  private readonly teamSvc = inject(MockTeamService);
+  private readonly dialogSvc = inject(NxDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly highValueThreshold = HIGH_VALUE_THRESHOLD;
+  private readonly sim = computed(() => this.teamSvc.simulation().managerDashboard);
+  readonly noPermission = computed(() => this.sim() === 'no-permission');
+
+  readonly loading = signal(true);
+  readonly loadError = signal(false);
+  readonly loadedAt = signal<Date>(new Date());
+  private readonly now = signal(Date.now());
+  private staleSimUsed = false;
+
+  readonly isStale = computed(
+    () => this.now() - this.loadedAt().getTime() > STALE_AFTER_MS
+  );
+
+  readonly team = computed(() => {
+    const t = this.teamSvc.teamManagedBy(this.auth.user().name);
+    if (!t) return null;
+    return this.sim() === 'no-team' ? { ...t, memberNames: [] } : t;
+  });
+
+  // Partial data: one member's cases didn't load.
+  readonly missing = computed(
+    () => new Set<string>(this.sim() === 'partial' ? ['Dirk Haas'] : [])
+  );
+
+  private readonly cases = computed(() => {
+    if (this.sim() === 'no-cases') return { own: [], team: [] };
+    const st = this.stateSvc.state();
+    const all = buildCases(
+      st.claims,
+      st.tasks,
+      this.teamSvc.reviewFlags(),
+      this.team(),
+      this.auth.user().name
+    );
+    const missing = this.missing();
+    return { own: all.own, team: all.team.filter(c => !missing.has(c.owner)) };
+  });
+
+  readonly ownCases = computed(() => this.cases().own);
+  readonly teamCases = computed(() => this.cases().team);
+  readonly members = computed(() => summarize(this.teamCases(), this.team(), this.missing()));
+
+  readonly counts = computed(() => {
+    const open = this.teamCases().filter(c => c.claim.status === 'Open');
+    return {
+      open: open.length,
+      flagged: open.filter(c => c.flags.length).length,
+      overdue: open.filter(c => c.flags.some(f => f.kind === 'overdue')).length,
+      highValue: open.filter(c => c.flags.some(f => f.kind === 'high-value')).length,
+      review: open.filter(c => c.flags.some(f => f.kind === 'review')).length
+    };
+  });
+
+  // Filters live in the URL so Back from a claim returns to the same view.
+  private readonly params = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap
+  });
+  readonly filters = computed<TeamFilters>(() => {
+    const p = this.params();
+    return {
+      member: p.get('member'),
+      status: (p.get('status') as TeamFilters['status']) ?? 'Open',
+      flag: (p.get('flag') as TeamFilters['flag']) ?? 'all'
+    };
+  });
+
+  constructor() {
+    const timer = setInterval(() => this.now.set(Date.now()), 60_000);
+    inject(DestroyRef).onDestroy(() => clearInterval(timer));
+    // Load on open, and again when the dev banner switches the simulated state.
+    effect(() => {
+      this.sim();
+      untracked(() => void this.load());
+    });
+  }
+
+  async load(): Promise<void> {
+    if (this.sim() !== 'stale') this.staleSimUsed = false;
+    this.loading.set(true);
+    this.loadError.set(false);
+    if (this.sim() === 'loading') return;
+    await new Promise(r => setTimeout(r, LOAD_MS));
+    this.loading.set(false);
+    if (this.sim() === 'error') {
+      this.loadError.set(true);
+      return;
+    }
+    this.now.set(Date.now());
+    // Stale demo: the first load pretends the data is two hours old;
+    // Refresh then brings it up to date like a real reload would.
+    if (this.sim() === 'stale' && !this.staleSimUsed) {
+      this.staleSimUsed = true;
+      this.loadedAt.set(new Date(Date.now() - 2 * 3600_000));
+      return;
+    }
+    this.loadedAt.set(new Date());
+  }
+
+  setFilters(f: Partial<TeamFilters>): void {
+    const next = { ...this.filters(), ...f };
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        member: next.member || null,
+        status: next.status === 'Open' ? null : next.status,
+        flag: next.flag === 'all' ? null : next.flag
+      },
+      replaceUrl: true
+    });
+  }
+
+  showFlag(flag: TeamFilters['flag']): void {
+    this.setFilters({ member: null, status: 'Open', flag });
+    document.getElementById('mgr-team')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // DESIGN DECISION CM-ACT-1 (open question 4): the dashboard is for spotting
+  // and opening claims. The one action on it is Reassign, because it reuses
+  // the BMPCC-22666 dialog (same rules, confirm and notifications as
+  // everywhere else). Escalating or adding a note happens on the claim.
+  async reassign(mc: ManagedCase): Promise<void> {
+    const c = mc.claim;
+    const ref = this.dialogSvc.open(ReassignClaimModalComponent, {
+      data: {
+        claims: [
+          {
+            claimId: c.claimId,
+            clientName: c.clientName,
+            owner: c.assignee,
+            group: c.group ?? null,
+            status: c.status,
+            lossAmount: c.lossAmount,
+            currency: c.currency
+          }
+        ]
+      } satisfies ReassignClaimModalData,
+      width: '480px',
+      maxWidth: '92vw'
+    });
+    const result = (await firstValueFrom(ref.afterClosed())) as ReassignClaimModalResult | null;
+    if (!result?.saved) return;
+    this.toast.success(
+      'Claim reassigned',
+      `${c.claimId} is now with ${result.saved.targetLabel}. Both handlers have been notified.`
+    );
+  }
+
+  goTo(path: string): void {
+    void this.router.navigate([path]);
+  }
+
+  goToClaims(): void {
+    void this.router.navigate(['/claims'], { queryParams: { assignee: 'me' } });
+  }
+}
