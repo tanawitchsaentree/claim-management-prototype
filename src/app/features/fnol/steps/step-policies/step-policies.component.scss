@@ -1,0 +1,87 @@
+@use '../../_wizard-layout' as wl;
+
+// FNOL step shell from the shared wizard partial (PRE_BUILD.md § FNOL Step).
+// Table cell styles follow add-policies-modal.component.scss (same policy rows
+// with a stacked number / client / reason). @see add-policies-modal.component.scss
+
+@include wl.step-page(1100px);
+@include wl.step-header;
+
+.sp-state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-2xl) 0;
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.sp-intro {
+  margin: 0 0 var(--space-base);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+  line-height: 1.5;
+}
+
+.sp-message {
+  margin: var(--space-base) 0;
+}
+
+.sp-error-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.sp-table {
+  width: 100%;
+}
+
+.sp-col-check {
+  width: 48px;
+  padding-left: var(--space-base) !important;
+}
+
+.sp-policy-number {
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.sp-badge {
+  margin-left: var(--space-sm);
+  vertical-align: middle;
+}
+
+.sp-sub {
+  display: block;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.sp-reason {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+.sp-nowrap {
+  white-space: nowrap;
+}
+
+.sp-row--selected {
+  background: var(--claim-overlay-hover);
+}
+
+.sp-below-table {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.sp-count {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}

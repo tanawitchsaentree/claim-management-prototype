@@ -54,6 +54,7 @@ import {
   syncCbiControls
 } from '../../../../shared/utils/cbi-rules';
 import { CbiPanelComponent } from '../../../../shared/components/cbi-panel/cbi-panel.component';
+import { PolicySelectionService } from '../../services/policy-selection.service';
 import {
   DuplicateCheckService,
   DuplicateClaim
@@ -121,6 +122,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   private lookupSvc = inject(MockLookupService);
   private duplicateCheckSvc = inject(DuplicateCheckService);
   private router = inject(Router);
+  private readonly policySelection = inject(PolicySelectionService);
   private modalService = inject(NxDialogService);
   private stageSvc = inject(ScenarioStageService);
   private readonly live = inject(LiveAnnouncer);
@@ -727,7 +729,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     this.router.navigate(['/dashboard']);
   }
 
-  onNext(): void {
+  async onNext(): Promise<void> {
     this.submitAttempted = true;
     this.markAllTouched(this.form);
 
@@ -745,6 +747,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     }
 
     this.fnolState.markStepComplete('loss-information');
-    this.router.navigate(['/fnol/entities-damages']);
+    // BMPCC-22665: the Policies step comes next when other policies are suggested.
+    this.router.navigateByUrl(await this.policySelection.routeAfterLossInformation());
   }
 }

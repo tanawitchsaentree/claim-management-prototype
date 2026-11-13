@@ -1,0 +1,83 @@
+<div class="fpm-header">
+  <div class="fpm-header-row">
+    <h2 class="fpm-title">Search for another policy</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="fpm-subtitle">The policy you add gets its own claim with the same loss information.</p>
+</div>
+
+<div class="fpm-body" tabindex="0">
+  <form class="fpm-search" [formGroup]="form" (ngSubmit)="onSearch()" novalidate>
+    <nx-formfield label="Policy number" class="fpm-field">
+      <input nxInput formControlName="policyNumber" />
+    </nx-formfield>
+    <nx-formfield label="Client name" class="fpm-field">
+      <input nxInput formControlName="clientName" />
+    </nx-formfield>
+    <button nxButton="primary small" type="submit" [disabled]="searching()">Search</button>
+  </form>
+
+  @if (searching()) {
+    <div class="fpm-state" role="status">
+      <nx-spinner size="small"></nx-spinner>
+      <span>Searching…</span>
+    </div>
+  } @else if (failed()) {
+    <app-empty-state message="The search didn't answer. Try again." icon="exclamation-circle"></app-empty-state>
+  } @else if (searched() && results().length === 0) {
+    <app-empty-state
+      message="No policies match."
+      hint="Check the policy number, or clear the client name to search all clients."
+    ></app-empty-state>
+  } @else if (results().length > 0) {
+    <table nxTable class="fpm-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell class="fpm-col-check" aria-label="Add to the list"></th>
+          <th nxHeaderCell>Policy</th>
+          <th nxHeaderCell>Product</th>
+          <th nxHeaderCell>Policy period</th>
+          <th nxHeaderCell>Currency</th>
+          <th nxHeaderCell>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of results(); track row.policyNumber) {
+          <tr nxTableRow [class.fpm-row--selected]="isPicked(row.policyNumber)">
+            <td nxCell class="fpm-col-check">
+              @if (!inList(row.policyNumber)) {
+                <nx-checkbox
+                  [checked]="isPicked(row.policyNumber)"
+                  (checkedChange)="toggle(row.policyNumber)"
+                  [attr.aria-label]="'Add ' + row.policyNumber + ' to the list'"
+                ></nx-checkbox>
+              }
+            </td>
+            <td nxCell>
+              <span class="fpm-policy-number">{{ row.policyNumber }}</span>
+              <span class="fpm-sub">
+                {{ row.clientName }}{{ inList(row.policyNumber) ? ' · already in the list' : '' }}
+              </span>
+            </td>
+            <td nxCell>{{ row.lineOfBusiness }}</td>
+            <td nxCell>{{ row.effectiveDate | appDate }} to {{ row.expiryDate | appDate }}</td>
+            <td nxCell>{{ row.currency }}</td>
+            <td nxCell><app-status-chip [status]="row.status" domain="policy"></app-status-chip></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<div class="fpm-footer">
+  @if (picked().size > 0) {
+    <span class="fpm-selected-count">{{ picked().size }} selected</span>
+  }
+  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" [disabled]="picked().size === 0" (click)="onAdd()">
+    Add to list
+  </button>
+</div>

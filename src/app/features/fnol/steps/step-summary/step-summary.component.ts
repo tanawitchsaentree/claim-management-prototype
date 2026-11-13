@@ -36,6 +36,11 @@ import {
   LossInformationFormValue
 } from '../../../../core/models/loss-information.model';
 import { Claim } from '../../../../core/models/claim.model';
+import { Policy, PolicyClaimResult } from '../../../../core/models';
+import { MockImpactedPoliciesService } from '../../../../core/mock/services/mock-impacted-policies.service';
+import { PolicySelectionService } from '../../services/policy-selection.service';
+import { ClaimCreationResultComponent } from '../../components/claim-creation-result/claim-creation-result.component';
+import { ToastService } from '../../../../shared/components/toast/toast.service';
 import {
   MockUserDirectoryService,
   UserDirectoryEntry
@@ -61,6 +66,10 @@ export interface ClaimGroup {
   currency: string;
   earliestSectionDate: string;
   earliestSectionTime: string;
+  /** BMPCC-22665: set on the per-policy groups of the Policies step. */
+  lineOfBusiness?: string;
+  /** Reserves are captured in FNOL for the first policy only (DESIGN DECISION IMP-7). */
+  reservesOnClaim?: boolean;
 }
 
 export interface SummaryViewModel {
@@ -102,7 +111,8 @@ const CREATOR: AccessListEntry = {
     NxFormfieldModule,
     NxInputModule,
     WizardFooterComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    ClaimCreationResultComponent
   ],
   templateUrl: './step-summary.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -122,6 +132,13 @@ export class StepSummaryComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly appDate = new AppDatePipe();
   private readonly live = inject(LiveAnnouncer);
+  private readonly selectionSvc = inject(PolicySelectionService);
+  private readonly impactedSvc = inject(MockImpactedPoliciesService);
+  private readonly toast = inject(ToastService);
+  /** BMPCC-22665: one row per selected policy after Submit; empty on a plain FNOL. */
+  readonly policyResults = signal<PolicyClaimResult[]>([]);
+  readonly retryingPolicy = signal<string | null>(null);
+  private idSeq = 0;
 
   readonly vm$ = new BehaviorSubject<SummaryViewModel | null>(null);
   loadError = false;
@@ -304,6 +321,13 @@ export class StepSummaryComponent implements OnInit {
       ? this.recoveryPotentialNote.value.trim()
       : null;
 
+    const selection = this.policySelection();
+    if (selection && this.fnolState.path !== 'orphan') {
+      await this.submitPerPolicy(selection);
+      this.finishSubmit();
+      return;
+    }
+
     const groupCount = Math.max(1, this.claimGroupCount);
     const base = Date.now();
     this.mockClaimIds = Array.from({ length: groupCount }, (_, i) => `CL-${base + i}`);
@@ -328,6 +352,10 @@ export class StepSummaryComponent implements OnInit {
       await this.seedFinancialReservesFromFnol(newClaimId);
     }
 
+    this.finishSubmit();
+  }
+
+  private finishSubmit(): void {
     this.fnolState.markStepComplete('summary');
     this.submitted = true;
     const count = this.mockClaimIds.length;
@@ -341,7 +369,92 @@ export class StepSummaryComponent implements OnInit {
     return this.vm$.value?.claimGroups.length ?? 0;
   }
   get startClaimDisabled(): boolean {
-    return this.claimGroupCount === 0;
+    return this.claimGroupCount === 0 || (this.policyResults().length > 0 && !this.mockClaimIds.length);
+  }
+
+  // ── BMPCC-22665: one claim per policy picked on the Policies step ──────
+  private policySelection(): string[] | null {
+    const sel = this.fnolState.policyStep?.selection;
+    return sel?.length ? sel : null;
+  }
+
+  private async submitPerPolicy(selection: string[]): Promise<void> {
+    const results: PolicyClaimResult[] = [];
+    for (const p of selection) results.push(await this.createOnPolicy(p, selection));
+    this.policyResults.set(results);
+    this.mockClaimIds = results.filter(r => r.claimId).map(r => r.claimId!);
+  }
+
+  // DESIGN DECISION IMP-8: each policy is created on its own. If one fails (in
+  // the demo: its policy data changed after it was suggested), the others still
+  // go through and the failed one can be retried from the result list.
+  private async createOnPolicy(p: string, selection: string[]): Promise<PolicyClaimResult> {
+    const pol = this.selectionSvc.policy(p);
+    const base = { policyNumber: p, lineOfBusiness: pol?.lineOfBusiness ?? '–' };
+    if (this.impactedSvc.takeCreationFailure(p)) {
+      return { ...base, status: 'failed', reason: 'The policy changed after it was suggested. Check it, then retry.' };
+    }
+    const lead = this.policyNumber;
+    const claimId = `CL-${Date.now() + this.idSeq++}`;
+    try {
+      const all = await firstValueFrom(this.entitiesSvc.getByPolicyId(lead));
+      const others = selection.filter(x => x !== lead);
+      await this.createSectionsFromEntitiesDamages(claimId, this.selectionSvc.entitiesFor(all, p, lead, others));
+      await this.writeLossInformationToClaim(claimId, p === lead ? undefined : pol);
+      if (p === lead) await this.seedFinancialReservesFromFnol(claimId);
+      return { ...base, status: 'created', claimId };
+    } catch {
+      return { ...base, status: 'failed', reason: 'Something went wrong while creating it.' };
+    }
+  }
+
+  async onRetryPolicy(p: string): Promise<void> {
+    const selection = this.policySelection();
+    if (!selection || this.retryingPolicy()) return;
+    this.retryingPolicy.set(p);
+    const result = await this.createOnPolicy(p, selection);
+    this.policyResults.update(rows => rows.map(r => (r.policyNumber === p ? result : r)));
+    this.mockClaimIds = this.policyResults().filter(r => r.claimId).map(r => r.claimId!);
+    this.retryingPolicy.set(null);
+    if (result.status === 'created') {
+      this.toast.success(`Claim ${result.claimId} created`, `On policy ${p}.`);
+    } else {
+      this.toast.error(`Claim on ${p} not created`, result.reason);
+    }
+  }
+
+  private buildPolicyGroups(
+    data: EntitiesDamagesData,
+    reserves: ReservesPolicyData,
+    partyCount: number,
+    damageLookups: LookupOption[],
+    earliest: { date: string; time: string },
+    selection: string[]
+  ): ClaimGroup[] {
+    const lead = this.policyNumber;
+    const others = selection.filter(p => p !== lead);
+    const total = reserves.reserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
+    return selection.map(p => {
+      const groups = selectedSectionGroups(
+        this.selectionSvc.entitiesFor(data, p, lead, others),
+        this.selectedTypeKeys()
+      );
+      const pol = this.selectionSvc.policy(p);
+      return {
+        policyNumber: p,
+        damageTypes: [...groups.keys()].map(k => this.label(damageLookups, k)),
+        sectionCount: groups.size,
+        // DESIGN DECISION IMP-7: parties and loss information are entered once
+        // and go onto every claim; reserves belong to the first policy only.
+        partyCount,
+        totalReserve: p === lead ? total : 0,
+        currency: p === lead ? reserves.currency : (pol?.currency ?? reserves.currency),
+        earliestSectionDate: earliest.date,
+        earliestSectionTime: earliest.time,
+        lineOfBusiness: pol?.lineOfBusiness,
+        reservesOnClaim: p !== lead
+      };
+    });
   }
   get startClaimTooltip(): string {
     if (this.claimGroupCount === 0) return 'No claim groups derived — review entities & damages.';
@@ -405,13 +518,10 @@ export class StepSummaryComponent implements OnInit {
     const damageTypes = [...sectionGroups.keys()].map(k => this.label(damageLookups, k));
     const lossDateIso = dateOfLoss.get('dateOfOccurrence')?.value as string | null;
     const earliest = this.deriveEarliestSectionDate(lossDateIso, sectionGroups.size || 3);
-    const claimGroups = this.buildClaimGroups(
-      entitiesData,
-      reservesData,
-      parties.length,
-      damageLookups,
-      earliest
-    );
+    const selection = this.policySelection();
+    const claimGroups = selection
+      ? this.buildPolicyGroups(entitiesData, reservesData, parties.length, damageLookups, earliest, selection)
+      : this.buildClaimGroups(entitiesData, reservesData, parties.length, damageLookups, earliest);
     const narrative = isNarrativeActive(reservesData.narrative) ? reservesData.narrative! : null;
     const narrativeLabel = narrativeReasonLabel(narrative, narrativeOpts);
 
@@ -421,7 +531,7 @@ export class StepSummaryComponent implements OnInit {
       timeOfOccurrence: earliest.time,
       dateOfNotification:
         this.appDate.transform(dateOfLoss.get('dateOfNotification')?.value) || '—',
-      affectedPolicies: [this.policyNumber],
+      affectedPolicies: selection ?? [this.policyNumber],
       damageTypes,
       claimGroups,
       narrative,
@@ -519,7 +629,10 @@ export class StepSummaryComponent implements OnInit {
   // record from scratch (its own numbering, tasks, financial summary, etc.)
   // is a bigger change than this stage — writing the wizard's real data onto
   // the claim it already lands on, so nothing is silently discarded.
-  private async writeLossInformationToClaim(claimId: string): Promise<void> {
+  // `other`: BMPCC-22665, a claim on another selected policy (not the one the FNOL runs on).
+  private async writeLossInformationToClaim(claimId: string, other?: Policy | null): Promise<void> {
+    const pol = other ?? this.fnolState.selectedPolicyFull ?? this.selectionSvc.policy(this.policyNumber);
+    const polNo = other?.policyNumber ?? this.policyNumber;
     // Cast through `unknown` — the live form's lossLocation control actually
     // holds LocationPickerOutput, not the LossInformationFormValue's declared
     // LossLocation shape (a pre-existing mismatch, not introduced here; see
@@ -571,14 +684,13 @@ export class StepSummaryComponent implements OnInit {
     // synthesizeOverviewFromClaim), so what the handler entered on the
     // Reserves step has to land here to survive. Cache hit — buildViewModel()
     // already loaded this policy's reserves for the Summary screen.
-    const reservesData = await firstValueFrom(
-      this.reservesSvc.getReservesForPolicy(this.policyNumber)
-    );
+    const leadReserves = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+    const reservesData = other ? { totalReserve: 0, currency: other.currency } : leadReserves;
 
     const claim: Claim = {
       claimId,
-      policyNumber: this.policyNumber || '',
-      clientName: this.fnolState.selectedPolicyFull?.clientName ?? '—',
+      policyNumber: polNo || '',
+      clientName: pol?.clientName ?? '—',
       broker: null,
       assignee: null,
       createdBy: CREATOR.name,
@@ -591,7 +703,7 @@ export class StepSummaryComponent implements OnInit {
       status: 'Open',
       priority: 'medium',
       lineOfBusiness:
-        (this.fnolState.selectedPolicyFull?.lineOfBusiness as Claim['lineOfBusiness']) ??
+        (pol?.lineOfBusiness as Claim['lineOfBusiness']) ??
         'Property',
       location: null,
       lossEventId: null,
@@ -610,8 +722,8 @@ export class StepSummaryComponent implements OnInit {
 
     await firstValueFrom(
       this.overviewSvc.updateGeneralInfo(claimId, {
-        client: this.fnolState.selectedPolicyFull?.clientName,
-        policyNumber: this.policyNumber || undefined,
+        client: pol?.clientName,
+        policyNumber: polNo || undefined,
         dateOfLoss: formValue.dateOfLoss?.dateOfOccurrence ?? undefined,
         proximateLossCause: causeLabels[0] ?? undefined,
         causeOfLoss: causeLabels.length ? causeLabels : undefined,
@@ -662,8 +774,11 @@ export class StepSummaryComponent implements OnInit {
     return (this.fnolState.fnolForm.get('lossInformation.typeOfDamage')?.value ?? []) as string[];
   }
 
-  private async createSectionsFromEntitiesDamages(claimId: string): Promise<void> {
-    const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber));
+  private async createSectionsFromEntitiesDamages(
+    claimId: string,
+    only?: EntitiesDamagesData
+  ): Promise<void> {
+    const data = only ?? (await firstValueFrom(this.entitiesSvc.getByPolicyId(this.policyNumber)));
     // Group by damageGroup, not by each entity's own damageTypeKey — hand-
     // authored seed entities don't reliably carry that field themselves
     // (only entities added at runtime via addEntityFromSearch do); the group

@@ -3,7 +3,14 @@
     <p class="step-breadcrumb">Claim notification</p>
     <h1 class="step-title">Summary</h1>
     <!-- Submission confirmation banner -->
-    @if (submitted) {
+    <!-- BMPCC-22665: per-policy result when the Policies step was used. -->
+    @if (policyResults().length) {
+      <app-claim-creation-result
+        [results]="policyResults()"
+        [retrying]="retryingPolicy()"
+        (retry)="onRetryPolicy($event)"
+      ></app-claim-creation-result>
+    } @else if (submitted) {
       <nx-message context="success" class="submit-banner">
         <strong
           >{{ mockClaimIds.length }} claim{{ mockClaimIds.length === 1 ? '' : 's' }} opened:
@@ -95,7 +102,8 @@
         @for (group of vm.claimGroups; track group.policyNumber; let i = $index) {
           <details class="ss-accordion" [attr.open]="i === 0 ? '' : null">
             <summary class="ss-accordion-summary">
-              For policy: <strong>{{ group.policyNumber }}</strong>
+              For policy:
+              <strong>{{ group.policyNumber }}{{ group.lineOfBusiness ? ' · ' + group.lineOfBusiness : '' }}</strong>
             </summary>
             <dl class="ss-list ss-accordion-body">
               <div class="ss-row">
@@ -126,7 +134,11 @@
               <div class="ss-row">
                 <dt class="ss-label">Total reserve</dt>
                 <dd class="ss-value">
-                  {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
+                  @if (group.reservesOnClaim) {
+                    <span class="ss-empty">Set on the claim once it is created ({{ group.currency }})</span>
+                  } @else {
+                    {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
+                  }
                 </dd>
               </div>
             </dl>
@@ -275,7 +287,7 @@
         (next)="onSubmit()"
       >
       </app-wizard-footer>
-    } @else {
+    } @else if (policyResults().length <= 1) {
       <div class="step-footer">
         <span></span>
         <button

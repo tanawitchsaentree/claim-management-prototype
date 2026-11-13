@@ -4,6 +4,17 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 · BMPCC-22665 (Manual selection of policy from impacted policies, epic BMPCC-22567)
+
+- **Source:** Jira BMPCC-22665 + epic open points, handed over with the PI 2026.5 batch. Production (`claims-management-main`, entities-damages MFE) only has the E&D banner, no selection step.
+- **File:** `public/tickets/bmpcc-22665.json`, 8 ACs (7 done, 1 todo: Figma / German / PO and Ranger review). `champ-impacted-policies.json` AC-01 got a note: the banner now only shows when the Policies step was not used.
+- **Built:** FNOL step **Policies** (`step-policies`, route `/fnol/policies`) between Loss information and Entities & Damages, only when `MockImpactedPoliciesService` has suggestions (same data the banner reads; new seed POL-2024-021 -> 022, 023, all Jonas Kaufmann). Policy search dialog (`find-policy-modal`, MockPolicySearchService). Selection merges the other policies' entities into the tree with the existing `addEntitiesFromPolicy`, and `removeEntitiesFromPolicy` takes them out again. Summary groups and creates one claim per selected policy and shows `claim-creation-result` (claim links, failed rows with Retry).
+- **Decisions:** IMP-1 placement + back navigation; IMP-2 only the searched policy pre-ticked; IMP-3 confirm only when the result differs from a normal FNOL; IMP-4 search is a dialog on the step; IMP-5 other client / currency / LoB allowed, with a note; IMP-6 no new group object (Loss event is the follow-up); IMP-7 loss information and parties shared, reserves on the first policy only; IMP-8 per-policy failure, others still created.
+- **Schema:** v2.4 `fnolStateOverride.policiesStep / policySelection / policyCreationFailFor / impactedPoliciesError`; page `fnol-policies`; `audit-ac-route-overrides` rule for `/fnol/policies`. Applying any fnolStateOverride now also clears entity merges and impacted-policy state, so scenarios can be re-applied without duplicates.
+- **Size note:** `step-summary.component.ts/.html` and `step-loss-information.component.ts` were already far over the size limits; the additions there are kept to the branch points, the new logic is in `PolicySelectionService` and the new components.
+
+---
+
 ## 2026-11-13 · BMPCC-18492 (CBI Extension for Edit claim, epic BMPCC-17927)
 
 - **Source:** Jira BMPCC-18492 + epic, handed over by the user with the PI 2026.5 UI/UX ticket batch (Confluence 3360032687). Memory `project_cbi_field_gaps` for the branch fields.

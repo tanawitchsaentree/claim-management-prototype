@@ -28,6 +28,14 @@ const RULES = [
       'route /fnol/loss-information requires fnolStateOverride.selectedPolicy or selectedClient (otherwise step-loss-information redirects to /fnol/search)'
   },
   {
+    route: '/fnol/policies',
+    requires: ovr =>
+      !!ovr?.fnolStateOverride?.selectedPolicy &&
+      (!!ovr.fnolStateOverride.policiesStep || !!ovr.fnolStateOverride.policySelection?.length),
+    message:
+      'route /fnol/policies requires fnolStateOverride.selectedPolicy plus policiesStep or policySelection (BMPCC-22665; otherwise the step redirects to Entities & Damages)'
+  },
+  {
     route: '/fnol/skeleton-create',
     requires: ovr => ovr?.fnolStateOverride?.path === 'orphan',
     message:

@@ -1,0 +1,116 @@
+<div class="step-page">
+  <p class="step-breadcrumb">Claim notification</p>
+  <h1 class="step-title">Policies</h1>
+
+  @if (loading()) {
+    <div class="sp-state" role="status">
+      <nx-spinner size="small"></nx-spinner>
+      <span>Checking the client's other policies…</span>
+    </div>
+  } @else {
+    @if (error()) {
+      <nx-message context="error" class="sp-message">
+        <strong>We couldn't check the client's other policies.</strong>
+        The coverage check did not answer. Try again, or continue with {{ searchedNumber }} only, as
+        in any other notification.
+      </nx-message>
+      <div class="sp-error-actions">
+        <button nxButton="secondary small" type="button" (click)="load()">Try again</button>
+        <button nxButton="tertiary small" type="button" (click)="continueSearchedOnly()">
+          Continue with {{ searchedNumber }} only
+        </button>
+      </div>
+    } @else {
+      <p class="sp-intro">
+        Other policies cover this cause of loss and type of damage too. Select every policy that
+        should get a claim. One claim is created on each, with the loss information you entered.
+      </p>
+    }
+
+    <!-- audit-exempt: never empty. The searched policy is always the first row
+         (it is what started this FNOL); the step does not exist without it. -->
+    <table nxTable class="sp-table">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell class="sp-col-check" aria-label="Create a claim"></th>
+          <th nxHeaderCell>Policy</th>
+          <th nxHeaderCell>Product</th>
+          <th nxHeaderCell>Policy period</th>
+          <th nxHeaderCell>Currency</th>
+          <th nxHeaderCell>Coverage match</th>
+          <th nxHeaderCell>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.policyNumber) {
+          <tr nxTableRow [class.sp-row--selected]="isSelected(row.policyNumber)">
+            <td nxCell class="sp-col-check">
+              <nx-checkbox
+                [checked]="isSelected(row.policyNumber)"
+                (checkedChange)="toggle(row.policyNumber)"
+                [attr.aria-label]="'Create a claim on ' + row.policyNumber"
+              ></nx-checkbox>
+            </td>
+            <td nxCell>
+              <span class="sp-policy-number">{{ row.policyNumber }}</span>
+              @if (row.source === 'searched') {
+                <nx-badge type="active" class="sp-badge">Searched policy</nx-badge>
+              } @else if (row.source === 'search') {
+                <nx-badge class="sp-badge">Added by you</nx-badge>
+              }
+              <span class="sp-sub">{{ row.clientName }}</span>
+            </td>
+            <td nxCell>{{ row.lineOfBusiness }}</td>
+            <td nxCell class="sp-nowrap">
+              {{ row.effectiveDate | appDate }} to {{ row.expiryDate | appDate }}
+            </td>
+            <td nxCell>{{ row.currency }}</td>
+            <td nxCell class="sp-reason">
+              {{ row.source === 'searched' ? 'The policy this notification started from.' : row.matchReason }}
+            </td>
+            <td nxCell><app-status-chip [status]="row.status" domain="policy"></app-status-chip></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="sp-below-table">
+      <button nxButton="tertiary small" type="button" (click)="openSearch()">
+        <nx-icon name="search" size="s" nxIconPositionStart></nx-icon>
+        Search for another policy
+      </button>
+      <span class="sp-count" aria-live="polite">
+        {{ selectedRows().length }} selected ·
+        {{ selectedRows().length }} {{ selectedRows().length === 1 ? 'claim' : 'claims' }} will be
+        created
+      </span>
+    </div>
+
+    @if (showNoneError()) {
+      <nx-message context="error" class="sp-message">Select at least one policy to continue.</nx-message>
+    }
+    <!-- DESIGN DECISION IMP-5: different currencies, clients or lines of business
+         are allowed. Each claim keeps its own policy's; the handler is told when
+         the selection mixes them, so nothing is converted or merged silently. -->
+    @if (currencies().length > 1) {
+      <nx-message context="info" class="sp-message">
+        The selected policies use different currencies ({{ currencies().join(', ') }}). Each claim
+        keeps the currency of its own policy.
+      </nx-message>
+    }
+    @if (clients().length > 1) {
+      <nx-message context="info" class="sp-message">
+        The selected policies belong to different clients ({{ clients().join(', ') }}). Check this is
+        one loss before you continue.
+      </nx-message>
+    }
+  }
+
+  <app-wizard-footer
+    [nextLabel]="saving() ? 'Saving…' : 'Next'"
+    [nextDisabled]="loading() || saving()"
+    (cancelClick)="onCancel()"
+    (back)="onBack()"
+    (next)="onNext()"
+  ></app-wizard-footer>
+</div>

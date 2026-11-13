@@ -1,0 +1,50 @@
+<nx-message [context]="context()" class="ccr-message">
+  <strong class="ccr-headline">{{ headline() }}</strong>
+  @if (failed().length) {
+    <span>
+      {{ failed().length === 1 ? 'One policy' : failed().length + ' policies' }} could not get a
+      claim. The created claims are saved; retry the rest below.
+    </span>
+  } @else {
+    <span>One claim per selected policy, all with the loss information you entered.</span>
+  }
+</nx-message>
+
+<!-- audit-exempt: never empty. Rendered only after Submit, with one row per selected policy (at least one is required to get here). -->
+<table nxTable class="ccr-table">
+  <thead>
+    <tr nxTableRow>
+      <th nxHeaderCell>Policy</th>
+      <th nxHeaderCell>Product</th>
+      <th nxHeaderCell>Claim</th>
+      <th nxHeaderCell aria-label="Action"></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (r of results(); track r.policyNumber) {
+      <tr nxTableRow>
+        <td nxCell class="ccr-policy">{{ r.policyNumber }}</td>
+        <td nxCell>{{ r.lineOfBusiness }}</td>
+        <td nxCell>
+          @if (r.status === 'created') {
+            <nx-link><a [routerLink]="['/claims', r.claimId, 'overview']">{{ r.claimId }}</a></nx-link>
+          } @else {
+            <span class="ccr-failed">Not created. {{ r.reason }}</span>
+          }
+        </td>
+        <td nxCell class="ccr-action">
+          @if (r.status === 'failed') {
+            <button
+              nxButton="secondary small"
+              type="button"
+              [disabled]="retrying() === r.policyNumber"
+              (click)="retry.emit(r.policyNumber)"
+            >
+              {{ retrying() === r.policyNumber ? 'Retrying…' : 'Retry' }}
+            </button>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -203,6 +203,12 @@
       "file": "bmpcc-18492.json",
       "module": "Claims",
       "title": "CBI Extension for Edit claim"
+    },
+    {
+      "id": "BMPCC-22665",
+      "file": "bmpcc-22665.json",
+      "module": "FNOL",
+      "title": "Manual selection of policy from impacted policies"
     }
   ]
 }

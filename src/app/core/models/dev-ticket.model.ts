@@ -14,6 +14,7 @@ export type PreconditionPage =
   | 'fnol-search'
   | 'fnol-loss-info'
   | 'fnol-entities-damages'
+  | 'fnol-policies'
   | 'fnol-skeleton'
   | 'fnol-skeleton-parties'
   | 'fnol-summary'

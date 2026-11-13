@@ -23,6 +23,14 @@ export interface ScenarioOverrides {
     selectedPolicy?: { policyId: string; policyNumber: string };
     selectedClient?: { clientId: string; clientName: string };
     path?: 'standard' | 'orphan' | null;
+    // v2.4 (BMPCC-22665), FNOL Policies step. `policiesStep`: open the step on
+    // the selected policy; `policySelection`: as if the handler confirmed these
+    // policies (first = the one the FNOL runs on); `policyCreationFailFor`:
+    // these fail once at Submit; `impactedPoliciesError`: the coverage check fails.
+    policiesStep?: boolean;
+    policySelection?: string[];
+    policyCreationFailFor?: string[];
+    impactedPoliciesError?: boolean;
   };
   cwbLocationsAppend?: CwbLocation[];
   notesAppend?: { claimId: string; notes: Note[] };

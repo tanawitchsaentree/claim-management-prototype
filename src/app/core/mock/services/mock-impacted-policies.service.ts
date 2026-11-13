@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, delay, throwError } from 'rxjs';
 import { MockBaseService } from './mock-base.service';
-import { ImpactedPolicy } from '../../models/impacted-policy.model';
+import { ImpactedPolicy, PolicyChoice } from '../../models/impacted-policy.model';
 import { Policy } from '../../models/policy.model';
 import { EntitiesDamagesData } from '../../models/entity-damage.model';
 import rawImpacted from '../data/impacted-policies.json';
@@ -56,6 +56,62 @@ export class MockImpactedPoliciesService extends MockBaseService {
     return this.list(result);
   }
 
+  // ── BMPCC-22665: FNOL "Policies" step ────────────────────────────────
+  /** Scenario switches, set from the DEV banner (fnolStateOverride). */
+  simulateSuggestionError = false;
+  private readonly failCreation = new Set<string>();
+
+  /**
+   * Every policy the coverage check suggests for this loss, whether or not it
+   * was pulled in already: the step shows the full decision, not what is left.
+   */
+  getSuggestions(searchedPolicyId: string): Observable<PolicyChoice[]> {
+    if (this.simulateSuggestionError) {
+      // One-shot, so the demo's Try again shows the check answering.
+      this.simulateSuggestionError = false;
+      return throwError(() => new Error('Coverage check unavailable')).pipe(delay(400));
+    }
+    const rows = (this.matches[searchedPolicyId] ?? [])
+      .map(m => this.toChoice(m.policyNumber, 'suggested', m.matchReason))
+      .filter((c): c is PolicyChoice => !!c);
+    return this.respond(rows);
+  }
+
+  toChoice(policyNumber: string, source: PolicyChoice['source'], matchReason = ''): PolicyChoice | null {
+    const p = this.policies.find(x => x.policyNumber === policyNumber);
+    if (!p) return null;
+    return {
+      policyNumber: p.policyNumber,
+      clientName: p.clientName,
+      lineOfBusiness: p.lineOfBusiness,
+      effectiveDate: p.effectiveDate,
+      expiryDate: p.expiryDate,
+      currency: p.currency,
+      status: p.status,
+      matchReason,
+      source
+    };
+  }
+
+  /** Policies already merged into a base policy's entity tree. */
+  addedFor(basePolicyId: string): string[] {
+    return [...(this.added.get(basePolicyId) ?? [])];
+  }
+
+  unmarkAdded(basePolicyId: string, policyNumbers: string[]): void {
+    policyNumbers.forEach(p => this.added.get(basePolicyId)?.delete(p));
+  }
+
+  setCreationFailures(policyNumbers: string[]): void {
+    this.failCreation.clear();
+    policyNumbers.forEach(p => this.failCreation.add(p));
+  }
+
+  /** True once per policy: the demo failure clears itself, so Retry succeeds. */
+  takeCreationFailure(policyNumber: string): boolean {
+    return this.failCreation.delete(policyNumber);
+  }
+
   markAdded(basePolicyId: string, policyNumbers: string[]): void {
     const set = this.added.get(basePolicyId) ?? new Set<string>();
     policyNumbers.forEach(p => set.add(p));
@@ -65,6 +121,8 @@ export class MockImpactedPoliciesService extends MockBaseService {
   resetState(basePolicyId?: string): void {
     if (basePolicyId) this.added.delete(basePolicyId);
     else this.added.clear();
+    this.simulateSuggestionError = false;
+    this.failCreation.clear();
   }
 
   private countEntities(policyId: string): number {
