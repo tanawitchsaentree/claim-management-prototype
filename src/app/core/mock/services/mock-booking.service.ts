@@ -3,6 +3,8 @@ import { MockStateService } from '../state/mock-state.service';
 import { FinancialOverview } from '../../models/financial-overview.model';
 import { Bookable } from '../../models/gg-booking.model';
 import { MockNotificationService } from './mock-notification.service';
+import { GgSectionBooking, sectionCanRetry } from '../../models/gg-section-booking.model';
+import { ToastService } from '../../../shared/components/toast/toast.service';
 
 // DESIGN DECISION GG-2 — "Send again" for a failed booking, and for a failed
 // claim set-up in Global Genius. Re-sends the SAME item (no new payment, no
@@ -29,6 +31,7 @@ function idOf(kind: BookableKind, row: object): string {
 export class MockBookingService {
   private readonly stateSvc = inject(MockStateService);
   private readonly notifySvc = inject(MockNotificationService);
+  private readonly toast = inject(ToastService);
 
   // A resend in flight is saved with an `inFlight` marker, so a page reload
   // during the wait (the timer is lost) resolves it on the next start
@@ -46,7 +49,57 @@ export class MockBookingService {
     }
     for (const o of Object.values(st.overviews)) {
       if (o.ggRegistration === 'registering' && o.ggResendInFlight) this.resolveClaim(o.claimId);
+      for (const b of o.ggSectionBookings ?? []) {
+        if (b.status === 'retrying') this.resolveSection(o.claimId, b.sectionId);
+      }
     }
+  }
+
+  /** Section event re-trigger (BMPCC-22661 AC02). Only from a retryable 'failed'. */
+  sendSectionAgain(claimId: string, sectionId: string): void {
+    const b = this.sectionBooking(claimId, sectionId);
+    if (!b || !sectionCanRetry(b)) return;
+    this.patchSection(claimId, sectionId, { status: 'retrying' });
+    setTimeout(() => this.resolveSection(claimId, sectionId), ANSWER_MS);
+  }
+
+  private resolveSection(claimId: string, sectionId: string): void {
+    const b = this.sectionBooking(claimId, sectionId);
+    if (b?.status !== 'retrying') return;
+    const ok = (b.demoResendOutcome ?? 'booked') === 'booked';
+    const name = this.sectionName(sectionId);
+    this.patchSection(
+      claimId,
+      sectionId,
+      ok ? { status: 'booked', failureMessage: undefined } : { status: 'failed', retryFailures: (b.retryFailures ?? 0) + 1 }
+    );
+    if (ok) {
+      this.toast.success(`${name} is now booked in Global Genius`);
+      this.notifySvc.push({
+        id: `section-booked-${sectionId}`,
+        claimId,
+        tone: 'done',
+        title: `${claimId}: section ${name} is now booked in Global Genius`,
+        link: ['/claims', claimId, 'overview']
+      });
+    } else {
+      this.toast.error(`${name} still couldn't be booked`, 'The message from Global Genius is on Claim Overview.');
+    }
+  }
+
+  private sectionBooking(claimId: string, sectionId: string): GgSectionBooking | undefined {
+    return this.stateSvc.state().overviews[claimId]?.ggSectionBookings?.find(b => b.sectionId === sectionId);
+  }
+
+  private sectionName(sectionId: string): string {
+    return this.stateSvc.state().sections.find(s => s.id === sectionId)?.name ?? sectionId;
+  }
+
+  private patchSection(claimId: string, sectionId: string, patch: Partial<GgSectionBooking>): void {
+    const list = this.stateSvc.state().overviews[claimId]?.ggSectionBookings ?? [];
+    this.stateSvc.patchOverview(claimId, {
+      ggSectionBookings: list.map(b => (b.sectionId === sectionId ? { ...b, ...patch } : b))
+    });
   }
 
   /** Only valid on a 'needs-fixing' row; anything else is ignored. */
@@ -104,7 +157,9 @@ export class MockBookingService {
     this.stateSvc.patchOverview(claimId, {
       ggRegistration: ok ? 'registered' : 'failed',
       ggResendInFlight: false,
-      ggResendFailures: ok ? 0 : (overview.ggResendFailures ?? 0) + 1
+      ggResendFailures: ok ? 0 : (overview.ggResendFailures ?? 0) + 1,
+      // AC03 (BMPCC-22661): a successful outcome clears the failure message.
+      ...(ok ? { ggFailureMessage: undefined } : {})
     });
     if (ok) {
       this.notifySvc.push({

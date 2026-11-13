@@ -8,6 +8,7 @@
   } @else if (vm.claim; as claim) {
     <app-blocker-return-banner></app-blocker-return-banner>
     <app-gg-registration-banner [claimId]="claim.claimId" [registration]="claim.ggRegistration"></app-gg-registration-banner>
+    <app-gg-section-booking-banner [claimId]="claim.claimId"></app-gg-section-booking-banner>
     @if (claim.rejectionRequestedAt && claim.status !== 'Closed') {
       <nx-message context="info" class="co-rejection-banner">
         The claim will stay open until the rejection is approved.

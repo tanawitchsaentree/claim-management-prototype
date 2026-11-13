@@ -52,6 +52,17 @@ export class GgRegistrationBannerComponent {
     )
   );
 
+  // BMPCC-22661 AC01: the failure message from the booking outcome, shown as
+  // GG wrote it under the plain-language text. DESIGN DECISION GG-MSG-1: GG-2
+  // kept GG's raw text away from the handler; the story now asks for it, so it
+  // is shown, but second and labelled as GG's words, so the plain line still
+  // says what it means for the handler. Not while a retry is running (it is
+  // the old answer then).
+  readonly failureMessage = computed(() => {
+    const m = this.message();
+    return m?.severity === 'error' ? this.liveClaim()?.ggFailureMessage : undefined;
+  });
+
   // True once, right after a retry this handler started has worked.
   readonly justReady = signal(false);
   private wasRetrying = false;

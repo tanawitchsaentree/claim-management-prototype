@@ -12,3 +12,14 @@
   display: block;
   margin-top: var(--space-md);
 }
+
+// GG's own words, kept apart from our plain-language line (BMPCC-22661 AC01).
+.ggb-gg-message {
+  display: block;
+  margin-top: var(--space-xs);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.ggb-gg-label {
+  font-weight: 600;
+}

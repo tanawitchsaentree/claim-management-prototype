@@ -1,0 +1,32 @@
+@if (rows().length) {
+  <nx-message [context]="context()" class="gsb-banner">
+    <strong>{{ title() }}</strong>
+    <span class="gsb-body">Payments and reserves on these sections are not in the books until the booking goes through.</span>
+    <ul class="gsb-list">
+      @for (r of rows(); track r.booking.sectionId) {
+        <li class="gsb-row">
+          <div class="gsb-text">
+            <span class="gsb-name">{{ r.name }}</span>
+            @if (r.booking.failureMessage && !r.retrying) {
+              <span class="gsb-gg"><span class="gsb-gg-label">Message from Global Genius:</span> {{ r.booking.failureMessage }}</span>
+            }
+            <span class="gsb-hint">{{ r.hint }}</span>
+          </div>
+          @if (r.retrying) {
+            <span class="gsb-busy" role="status"><nx-spinner size="small"></nx-spinner> Retrying</span>
+          } @else if (r.canRetry) {
+            <button
+              nxButton="secondary small"
+              type="button"
+              class="gsb-action"
+              [attr.aria-label]="'Retry booking for ' + r.name"
+              (click)="retry(r.booking.sectionId)"
+            >
+              Retry booking
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  </nx-message>
+}

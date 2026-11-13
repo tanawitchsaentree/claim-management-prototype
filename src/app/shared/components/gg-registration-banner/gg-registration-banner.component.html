@@ -2,6 +2,9 @@
   <nx-message [context]="m.severity === 'error' ? 'error' : 'info'" class="ggb-banner">
     <strong>{{ m.title }}</strong>
     <span class="ggb-body">{{ m.body }}</span>
+    @if (failureMessage(); as gg) {
+      <span class="ggb-gg-message"><span class="ggb-gg-label">Message from Global Genius:</span> {{ gg }}</span>
+    }
     @if (m.canSendAgain) {
       <button nxButton="secondary small" type="button" class="ggb-action" (click)="sendAgain()">
         {{ m.sendAgainLabel }}

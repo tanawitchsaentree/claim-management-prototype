@@ -197,6 +197,12 @@
       "file": "gg-8-tasks-and-bell.json",
       "module": "GG booking",
       "title": "GG 8 · Task manager and the bell: finding out"
+    },
+    {
+      "id": "BMPCC-22661",
+      "file": "bmpcc-22661.json",
+      "module": "GG booking",
+      "title": "GG booking failed on Claim Overview: message and retry"
     }
   ]
 }

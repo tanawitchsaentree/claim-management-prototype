@@ -4,6 +4,14 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 — BMPCC-22661 GG booking failed on Claim Overview (epic BMPCC-22267)
+
+- **Source:** Jira BMPCC-22661 + epic BMPCC-22267, handed over by the user with the PI 2026.5 UI/UX open points (Confluence 3360032687). Builds on GG-1..GG-8 (2026-10-20 entry below).
+- **Audit of what was already there:** claim event failed banner + retry + "retried, fails again" + green "now set up" (GG-1, `gg-registration-banner`, `MockBookingService.sendClaimAgain`). Gaps: no Global Genius failure text anywhere (GG-2 deliberately hid it), and no section events at all (item-level booking covers payments/reserves/recoveries, not sections).
+- **Built:** `ggFailureMessage` on the claim banner, labelled "Message from Global Genius" under the plain line (DESIGN DECISION GG-MSG-1). New `gg-section-booking-banner` (shared, under the claim banner): one message for all failed sections, per row the section name, GG's text, what to do, Retry booking. `MockBookingService.sendSectionAgain` mirrors the claim retry (3 s, preset outcome, survives reload); toast + bell on the outcome; bell live lines for failed sections. Model: `gg-section-booking.model.ts`, `ClaimOverview.ggSectionBookings`. No new ScenarioOverrides key (overviewPatch).
+- **Decisions (DESIGN DECISION GG-SEC-1):** no confirm on Retry (same event again, no money moves, same as claim retry); two failed retries hand it to Finance and the button goes; sections are hidden while the claim itself isn't in GG. Role restriction on retry (epic open point) not modelled: anyone with the claim open can retry.
+- **Ticket:** `bmpcc-22661.json`, 7 ACs all `done` on CLM-2024-001 (SEC-001, SEC-003).
+
 ## 2026-10-20 — GG booking tickets GG-1 to GG-8 (Global Genius, epic BMPCC-18348)
 
 - **Source:** Jira BMPCC-18348 (epic), FE stories 19168 / 19169 / 19170, claim-level 20232, 19412 (skip when no GG policy), 21754 (unpaid premium), 20953 (limit breach redesign), UX story 18282, DLQ reprocessing 14759; Bernd Moser's ADR "Claims Handover Domain — Booking Integration to Global Genius via BIH"; Nidhi Goel's "Payment Split - Handover Domain" (PROPOSED); PO note relayed by the user ("handlers need visibility of failed postings and the ability to manually re-trigger"). Built on user instruction across three sessions: orchestrator claim-management-96 (core models, mock services, presets, tickets, DEV banner), Builder A claim-management-4f (money lists, Recoveries page, summary line, Task manager), Builder B claim-management-ea (Make payment, shared warning list, Add reserve, claim banner, bell). Two handler-persona usability reviews (subagent, screenshots only, no code) drove round 2.
