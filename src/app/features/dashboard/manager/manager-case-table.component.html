@@ -5,6 +5,7 @@
     <table
       nxTable
       nxSort
+      sticky="last"
       class="dash-table"
       [active]="sortKey()"
       [direction]="sortDir()"
@@ -18,7 +19,7 @@
           @if (showOwner()) {
             <th nxHeaderCell nxSortHeaderCell="owner" class="dash-col--nowrap">Handler</th>
           }
-          <th nxHeaderCell nxSortHeaderCell="flags" class="mct-col--flags">Needs attention</th>
+          <th nxHeaderCell nxSortHeaderCell="flags">Needs attention</th>
           <th nxHeaderCell nxSortHeaderCell="updated" class="dash-col--nowrap">Last updated</th>
           <th nxHeaderCell nxSortHeaderCell="amount" class="dash-col--nowrap">Loss amount</th>
           <th nxHeaderCell><span class="mct-sr">Actions</span></th>
@@ -26,38 +27,30 @@
       </thead>
       <tbody>
         @for (mc of visible(); track mc.claim.claimId) {
-          <tr nxTableRow [class.mct-row--flagged]="mc.flags.length > 0">
+          <tr nxTableRow>
             <td nxCell class="dash-col--nowrap">
               <a class="text-link" [routerLink]="['/claims', mc.claim.claimId, 'overview']">{{
                 mc.claim.claimId
               }}</a>
-              <app-priority-dot
-                class="mct-priority"
-                [priority]="mc.claim.priority"
-                [showLabel]="true"
-              ></app-priority-dot>
-              <!-- Status and priority sit under the claim number to keep the table
-                   narrow enough for the dashboard column. Status column dropped for width: almost every row is Open, so only
+              <!-- Status column dropped for width: almost every row is Open, so only
                    a closed claim carries a chip. -->
               @if (mc.claim.status === 'Closed') {
                 <app-status-chip class="mct-closed" [status]="mc.claim.status" domain="claim"></app-status-chip>
               }
             </td>
-            <td nxCell>
-              <span class="mct-client">{{ mc.claim.clientName }}</span>
-              <span class="mct-sub">{{ mc.claim.lineOfBusiness }}</span>
-            </td>
+            <td nxCell>{{ mc.claim.clientName }}</td>
             @if (showOwner()) {
               <td nxCell class="dash-col--nowrap" [class.text-muted]="mc.isQueue">
                 {{ mc.owner }}
               </td>
             }
-            <td nxCell class="mct-col--flags">
+            <td nxCell>
+              <!-- Same as the Sections "Review needed" badge: the label is the
+                   flag, the reason is in the tooltip. -->
               @for (f of mc.flags; track f.kind) {
-                <div class="mct-flag">
-                  <nx-badge [type]="badgeType(f.kind)" class="mct-flag__badge">{{ f.label }}</nx-badge>
-                  <span class="mct-flag__reason" [title]="f.reason">{{ f.reason }}</span>
-                </div>
+                <nx-badge [type]="badgeType(f.kind)" class="mct-flag" [nxTooltip]="f.reason">{{
+                  f.label
+                }}</nx-badge>
               } @empty {
                 <span class="text-muted">None</span>
               }
@@ -91,11 +84,4 @@
       </tbody>
     </table>
   </div>
-  @if (hiddenCount() > 0) {
-    <div class="mct-more">
-      <button type="button" class="widget-link mct-more__btn" (click)="showMore()">
-        Show {{ hiddenCount() > 8 ? 8 : hiddenCount() }} more of {{ hiddenCount() }}
-      </button>
-    </div>
-  }
 }

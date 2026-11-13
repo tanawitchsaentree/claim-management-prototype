@@ -15,6 +15,8 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { NxCardModule } from '@allianz/ng-aquila/card';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { Navbar } from '../../layout/navbar/navbar';
 import { AuthService } from '../../../core/services/auth';
@@ -28,7 +30,7 @@ import {
   ReassignClaimModalData,
   ReassignClaimModalResult
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
-import { buildCases, summarize, HIGH_VALUE_THRESHOLD } from './manager-cases.builder';
+import { buildCases, summarize } from './manager-cases.builder';
 import { ManagerCaseTableComponent } from './manager-case-table.component';
 import { TeamWorkloadComponent, TeamFilters } from './team-workload.component';
 
@@ -51,6 +53,8 @@ const LOAD_MS = 500;
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
+    NxCardModule,
+    EmptyStateComponent,
     AppDatePipe,
     ManagerCaseTableComponent,
     TeamWorkloadComponent
@@ -68,7 +72,6 @@ export class ManagerDashboardComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly highValueThreshold = HIGH_VALUE_THRESHOLD;
   private readonly sim = computed(() => this.teamSvc.simulation().managerDashboard);
   readonly noPermission = computed(() => this.sim() === 'no-permission');
 

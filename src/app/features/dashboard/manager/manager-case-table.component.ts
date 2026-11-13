@@ -12,10 +12,10 @@ import { RouterLink } from '@angular/router';
 import { NxTableModule, SortEvent } from '@allianz/ng-aquila/table';
 import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
 import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
-import { PriorityDotComponent } from '../../../shared/components/priority-dot/priority-dot.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CaseFlagKind, ManagedCase } from '../../../core/models/team.model';
 import { CaseSortKey, sortCases } from './manager-cases.builder';
@@ -26,6 +26,8 @@ const BADGE_TYPE: Record<CaseFlagKind, string> = {
   review: 'info'
 };
 
+// Top rows only, like the handler dashboard's widgets; "View all" in the
+// card header opens the full list.
 const PAGE = 8;
 
 // BMPCC-22395 AC2 / AC3: one case table for "My cases" and the team view.
@@ -43,9 +45,9 @@ const PAGE = 8;
     NxBadgeModule,
     NxIconModule,
     NxContextMenuModule,
+    NxTooltipModule,
     StatusChipComponent,
     EmptyStateComponent,
-    PriorityDotComponent,
     AppDatePipe
   ],
   templateUrl: './manager-case-table.component.html',
@@ -63,11 +65,9 @@ export class ManagerCaseTableComponent {
 
   readonly sortKey = signal<CaseSortKey>('flags');
   readonly sortDir = signal<'asc' | 'desc'>('desc');
-  readonly limit = signal(PAGE);
 
   readonly sorted = computed(() => sortCases(this.cases(), this.sortKey(), this.sortDir()));
-  readonly visible = computed(() => this.sorted().slice(0, this.limit()));
-  readonly hiddenCount = computed(() => Math.max(0, this.sorted().length - this.limit()));
+  readonly visible = computed(() => this.sorted().slice(0, PAGE));
 
   badgeType(kind: CaseFlagKind): string {
     return BADGE_TYPE[kind];
@@ -79,7 +79,4 @@ export class ManagerCaseTableComponent {
     this.sortDir.set(e.direction);
   }
 
-  showMore(): void {
-    this.limit.update(n => n + PAGE);
-  }
 }

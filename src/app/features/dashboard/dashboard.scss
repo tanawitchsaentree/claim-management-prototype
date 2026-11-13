@@ -544,7 +544,8 @@ $header-bp: 1024px;
   border-radius: var(--radius-chip);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  &--claims-handler {
+  &--claims-handler,
+  &--claims-manager {
     background: var(--ui-03);
     color: $text-muted;
   }
