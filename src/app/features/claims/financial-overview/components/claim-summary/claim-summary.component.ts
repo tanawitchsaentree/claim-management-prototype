@@ -1,23 +1,18 @@
 import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { NxTableModule } from '@allianz/ng-aquila/table';
-import {
-  FinancialDetails,
-  FinancialSummary
-} from '../../../../../core/models/financial-overview.model';
+import { FinancialSummary } from '../../../../../core/models/financial-overview.model';
 
-/** The five KPI cards and the "Financial details" table of the claim-level overview. */
+/** The five KPI cards of the claim-level overview. The "Financial details" table is app-fo-financial-details-table. */
 @Component({
   selector: 'app-fo-claim-summary',
   standalone: true,
-  imports: [CurrencyPipe, NxTableModule],
+  imports: [CurrencyPipe],
   templateUrl: './claim-summary.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['../fo-table-shared.scss', './claim-summary.component.scss']
+  styleUrl: './claim-summary.component.scss'
 })
 export class ClaimSummaryComponent {
   readonly summary = input.required<FinancialSummary>();
-  readonly details = input.required<FinancialDetails>();
   readonly currency = input('EUR');
 
   readonly kpis = computed(() => {

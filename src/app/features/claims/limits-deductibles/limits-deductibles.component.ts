@@ -1,3 +1,4 @@
+import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -17,6 +18,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
     CommonModule,
     CurrencyPipe,
     NxTableModule,
+    NxAccordionModule,
     NxButtonModule,
     NxSpinnerModule,
     EmptyStateComponent,

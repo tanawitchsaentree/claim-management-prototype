@@ -69,13 +69,23 @@
       <ng-template #links let-g="g"
         >@for (l of g.links; track l.view; let last = $last) {<a class="fo-link" tabindex="0" (click)="setView(l.view)" (keydown.enter)="setView(l.view)">{{ l.text }}</a>{{ last ? '' : ', ' }}}</ng-template
       >
-      <app-fo-claim-summary [summary]="fo.summary" [details]="fo.details" [currency]="currency()" />
+      <app-fo-claim-summary [summary]="fo.summary" [currency]="currency()" />
 
-      <h2 class="fo-section-heading fo-section-heading--mt" data-tour-id="fo-transaction-summary">
-        Transaction summary
-      </h2>
-      <p class="fo-count">{{ fo.transactions.length }} {{ fo.transactions.length === 1 ? 'item' : 'items' }}</p>
-      <app-fo-transactions-table [rows]="fo.transactions" [currency]="currency()" />
+      <nx-accordion variant="light" [multi]="true">
+        <nx-expansion-panel expanded>
+          <nx-expansion-panel-header>
+            <nx-expansion-panel-title>Financial details</nx-expansion-panel-title>
+          </nx-expansion-panel-header>
+          <app-fo-financial-details-table [rows]="fo.details.rows" [currency]="currency()" />
+        </nx-expansion-panel>
+        <nx-expansion-panel expanded data-tour-id="fo-transaction-summary">
+          <nx-expansion-panel-header>
+            <nx-expansion-panel-title>Transaction summary</nx-expansion-panel-title>
+          </nx-expansion-panel-header>
+          <p class="fo-count">{{ fo.transactions.length }} {{ fo.transactions.length === 1 ? 'item' : 'items' }}</p>
+          <app-fo-transactions-table [rows]="fo.transactions" [currency]="currency()" />
+        </nx-expansion-panel>
+      </nx-accordion>
     } @else if (activeSection(); as sec) {
       <div class="fo-section-meta">
         <div class="fo-section-meta__item">
@@ -92,8 +102,14 @@
         </div>
       </div>
 
-      <h2 class="fo-section-heading">Financial summary</h2>
-      <app-fo-section-summary-table [rows]="sec.summaryRows" />
+      <nx-accordion variant="light" [multi]="true">
+        <nx-expansion-panel expanded>
+          <nx-expansion-panel-header>
+            <nx-expansion-panel-title>Financial summary</nx-expansion-panel-title>
+          </nx-expansion-panel-header>
+          <app-fo-section-summary-table [rows]="sec.summaryRows" />
+        </nx-expansion-panel>
+      </nx-accordion>
     }
   }
 

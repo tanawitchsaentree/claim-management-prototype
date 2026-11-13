@@ -71,97 +71,109 @@
         >
         </app-empty-state>
       }
-    } @else {
-      <table nxTable class="rec-table" data-tour-id="rec-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Case</th>
-            <th nxHeaderCell>Route</th>
-            <th nxHeaderCell>Counterparty</th>
-            <th nxHeaderCell class="rec-col-amount">Expected</th>
-            <th nxHeaderCell class="rec-col-amount">Recovered</th>
-            <th nxHeaderCell>Expected by</th>
-            <th nxHeaderCell>Status</th>
-            <th nxHeaderCell class="rec-col-action">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track row.id) {
-            <tr nxTableRow>
-              <td nxCell>
-                <span class="rec-id">{{ row.id }}</span>
-                <span class="rec-opened">Opened {{ row.openedDate | appDate }}</span>
-              </td>
-              <td nxCell>{{ row.route }}</td>
-              <td nxCell>
-                <span class="rec-counterparty">{{ row.counterparty }}</span>
-                @if (row.sectionRef) {
-                  <span class="rec-section">{{ row.sectionRef }}</span>
-                }
-              </td>
-              <td nxCell class="rec-col-amount">
-                {{ row.currency }} {{ row.estimatedAmount | number: '1.0-0' }}
-              </td>
-              <td nxCell class="rec-col-amount">
-                @if (row.recoveredAmount > 0) {
-                  {{ row.currency }} {{ row.recoveredAmount | number: '1.0-0' }}
-                } @else {
-                  —
-                }
-              </td>
-              <td nxCell>{{ (row.expectedDate | appDate) || '—' }}</td>
-              <td nxCell>
-                <app-status-chip
-                  [status]="chipStatus(row.status)"
-                  domain="claim"
-                  [label]="row.status"
-                ></app-status-chip>
-              </td>
-              <td nxCell class="rec-col-action">
-                @if (isOpen(row) && !isClosedClaim()) {
-                  <button
-                    nxIconButton="tertiary small"
-                    type="button"
-                    [nxContextMenuTriggerFor]="rowMenu"
-                    aria-label="Recovery case actions"
-                  >
-                    <span class="rec-kebab__dots" aria-hidden="true">
-                      <span></span><span></span><span></span>
-                    </span>
-                  </button>
-                  <nx-context-menu #rowMenu="nxContextMenu">
-                    <button nxContextMenuItem type="button" (click)="resolve(row)">
-                      Resolve case
-                    </button>
-                  </nx-context-menu>
-                } @else {
-                  <span class="rec-resolved">
-                    {{ row.resolvedDate ? (row.resolvedDate | appDate) : '—' }}
-                  </span>
-                }
-              </td>
-            </tr>
-            @if (row.outcomeNote) {
-              <tr nxTableRow class="rec-outcome-row">
-                <td nxCell colspan="8" class="rec-outcome">{{ row.outcomeNote }}</td>
-              </tr>
-            }
-          }
-        </tbody>
-      </table>
     }
 
-    @if (postings().length > 0) {
-      <h2 class="rec-postings-title">Recovery postings</h2>
-      <p class="rec-postings-hint">
-        Money booked against recoveries. The same list is under Financial &gt; Recovery bookings.
-      </p>
-      <app-recovery-bookings-table
-        [claimId]="claimId"
-        [rows]="postings()"
-        [currency]="currency()"
-        [expandId]="expandId()"
-      />
-    }
+    <nx-accordion variant="light" [multi]="true">
+      @if (rows().length > 0) {
+        <nx-expansion-panel expanded>
+          <nx-expansion-panel-header>
+            <nx-expansion-panel-title>Recovery cases</nx-expansion-panel-title>
+          </nx-expansion-panel-header>
+          <table nxTable class="rec-table" data-tour-id="rec-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Case</th>
+                <th nxHeaderCell>Route</th>
+                <th nxHeaderCell>Counterparty</th>
+                <th nxHeaderCell class="rec-col-amount">Expected</th>
+                <th nxHeaderCell class="rec-col-amount">Recovered</th>
+                <th nxHeaderCell>Expected by</th>
+                <th nxHeaderCell>Status</th>
+                <th nxHeaderCell class="rec-col-action">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.id) {
+                <tr nxTableRow>
+                  <td nxCell>
+                    <span class="rec-id">{{ row.id }}</span>
+                    <span class="rec-opened">Opened {{ row.openedDate | appDate }}</span>
+                  </td>
+                  <td nxCell>{{ row.route }}</td>
+                  <td nxCell>
+                    <span class="rec-counterparty">{{ row.counterparty }}</span>
+                    @if (row.sectionRef) {
+                      <span class="rec-section">{{ row.sectionRef }}</span>
+                    }
+                  </td>
+                  <td nxCell class="rec-col-amount">
+                    {{ row.currency }} {{ row.estimatedAmount | number: '1.0-0' }}
+                  </td>
+                  <td nxCell class="rec-col-amount">
+                    @if (row.recoveredAmount > 0) {
+                      {{ row.currency }} {{ row.recoveredAmount | number: '1.0-0' }}
+                    } @else {
+                      —
+                    }
+                  </td>
+                  <td nxCell>{{ (row.expectedDate | appDate) || '—' }}</td>
+                  <td nxCell>
+                    <app-status-chip
+                      [status]="chipStatus(row.status)"
+                      domain="claim"
+                      [label]="row.status"
+                    ></app-status-chip>
+                  </td>
+                  <td nxCell class="rec-col-action">
+                    @if (isOpen(row) && !isClosedClaim()) {
+                      <button
+                        nxIconButton="tertiary small"
+                        type="button"
+                        [nxContextMenuTriggerFor]="rowMenu"
+                        aria-label="Recovery case actions"
+                      >
+                        <span class="rec-kebab__dots" aria-hidden="true">
+                          <span></span><span></span><span></span>
+                        </span>
+                      </button>
+                      <nx-context-menu #rowMenu="nxContextMenu">
+                        <button nxContextMenuItem type="button" (click)="resolve(row)">
+                          Resolve case
+                        </button>
+                      </nx-context-menu>
+                    } @else {
+                      <span class="rec-resolved">
+                        {{ row.resolvedDate ? (row.resolvedDate | appDate) : '—' }}
+                      </span>
+                    }
+                  </td>
+                </tr>
+                @if (row.outcomeNote) {
+                  <tr nxTableRow class="rec-outcome-row">
+                    <td nxCell colspan="8" class="rec-outcome">{{ row.outcomeNote }}</td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </nx-expansion-panel>
+      }
+      @if (postings().length > 0) {
+        <nx-expansion-panel expanded>
+          <nx-expansion-panel-header>
+            <nx-expansion-panel-title>Recovery postings</nx-expansion-panel-title>
+          </nx-expansion-panel-header>
+          <p class="rec-postings-hint">
+            Money booked against recoveries. The same list is under Financial &gt; Recovery bookings.
+          </p>
+          <app-recovery-bookings-table
+            [claimId]="claimId"
+            [rows]="postings()"
+            [currency]="currency()"
+            [expandId]="expandId()"
+          />
+        </nx-expansion-panel>
+      }
+    </nx-accordion>
   }
 </div>

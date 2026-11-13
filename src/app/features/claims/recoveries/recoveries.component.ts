@@ -1,3 +1,4 @@
+import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
 import {
   Component,
   OnInit,
@@ -83,6 +84,7 @@ interface RecoveryGuidance {
   selector: 'app-recoveries',
   standalone: true,
   imports: [
+    NxAccordionModule,
     CommonModule,
     RouterLink,
     NxButtonModule,

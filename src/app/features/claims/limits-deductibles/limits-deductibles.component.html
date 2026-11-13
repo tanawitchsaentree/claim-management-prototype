@@ -21,107 +21,125 @@
   <div class="ld-loading"><nx-spinner nxSize="medium"></nx-spinner></div>
 } @else if (data(); as d) {
   @if (level() === 'claim') {
-    <h2 class="ld-section-heading" data-tour-id="ld-policy-limits">Policy limits</h2>
-    @if (d.limits.length) {
-      <table nxTable class="ld-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Type</th>
-            <th nxHeaderCell>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (l of d.limits; track l.limitId) {
-            <tr nxTableRow>
-              <td nxTableCell>{{ l.type }}</td>
-              <td nxTableCell>{{ l.amount | currency: l.currency : 'symbol' : '1.0-0' }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    } @else {
-      <app-empty-state message="No policy limits found for this claim."></app-empty-state>
-    }
-
-    <h2 class="ld-section-heading">Deductibles</h2>
-    @if (d.deductibles.length) {
-      <table nxTable class="ld-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Type</th>
-            <th nxHeaderCell>Amount</th>
-            <th nxHeaderCell>Application method</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (dd of d.deductibles; track dd.deductibleId) {
-            <tr nxTableRow>
-              <td nxTableCell>{{ dd.type }}</td>
-              <td nxTableCell>{{ dd.amount | currency: dd.currency : 'symbol' : '1.0-0' }}</td>
-              <td nxTableCell>{{ dd.applicationMethod }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    } @else {
-      <app-empty-state message="No deductibles found for this claim."></app-empty-state>
-    }
+    <nx-accordion variant="light" [multi]="true">
+      <nx-expansion-panel expanded data-tour-id="ld-policy-limits">
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Policy limits</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        @if (d.limits.length) {
+          <table nxTable class="ld-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Type</th>
+                <th nxHeaderCell>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (l of d.limits; track l.limitId) {
+                <tr nxTableRow>
+                  <td nxTableCell>{{ l.type }}</td>
+                  <td nxTableCell>{{ l.amount | currency: l.currency : 'symbol' : '1.0-0' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <app-empty-state message="No policy limits found for this claim."></app-empty-state>
+        }
+      </nx-expansion-panel>
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Deductibles</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        @if (d.deductibles.length) {
+          <table nxTable class="ld-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Type</th>
+                <th nxHeaderCell>Amount</th>
+                <th nxHeaderCell>Application method</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (dd of d.deductibles; track dd.deductibleId) {
+                <tr nxTableRow>
+                  <td nxTableCell>{{ dd.type }}</td>
+                  <td nxTableCell>{{ dd.amount | currency: dd.currency : 'symbol' : '1.0-0' }}</td>
+                  <td nxTableCell>{{ dd.applicationMethod }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <app-empty-state message="No deductibles found for this claim."></app-empty-state>
+        }
+      </nx-expansion-panel>
+    </nx-accordion>
   }
 
   @if (level() === 'section') {
     @let sectionLimits = d.limits.filter(l => l.level === 'section');
     @let sectionDeductibles = d.deductibles.filter(dd => dd.level === 'section');
 
-    <h2 class="ld-section-heading">Section-level limits</h2>
-    @if (sectionLimits.length) {
-      <table nxTable class="ld-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Section</th>
-            <th nxHeaderCell>Type</th>
-            <th nxHeaderCell>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (l of sectionLimits; track l.limitId) {
-            <tr nxTableRow>
-              <td nxTableCell>{{ l.sectionName }}</td>
-              <td nxTableCell>{{ l.type }}</td>
-              <td nxTableCell>{{ l.amount | currency: l.currency : 'symbol' : '1.0-0' }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    } @else {
-      <app-empty-state message="No section-level limits found for this claim."></app-empty-state>
-    }
-
-    <h2 class="ld-section-heading">Section-level deductibles</h2>
-    @if (sectionDeductibles.length) {
-      <table nxTable class="ld-table">
-        <thead>
-          <tr nxTableRow>
-            <th nxHeaderCell>Section</th>
-            <th nxHeaderCell>Type</th>
-            <th nxHeaderCell>Amount</th>
-            <th nxHeaderCell>Application method</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (dd of sectionDeductibles; track dd.deductibleId) {
-            <tr nxTableRow>
-              <td nxTableCell>{{ dd.sectionName }}</td>
-              <td nxTableCell>{{ dd.type }}</td>
-              <td nxTableCell>{{ dd.amount | currency: dd.currency : 'symbol' : '1.0-0' }}</td>
-              <td nxTableCell>{{ dd.applicationMethod }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    } @else {
-      <app-empty-state
-        message="No section-level deductibles found for this claim."
-      ></app-empty-state>
-    }
+    <nx-accordion variant="light" [multi]="true">
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Section-level limits</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        @if (sectionLimits.length) {
+          <table nxTable class="ld-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Section</th>
+                <th nxHeaderCell>Type</th>
+                <th nxHeaderCell>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (l of sectionLimits; track l.limitId) {
+                <tr nxTableRow>
+                  <td nxTableCell>{{ l.sectionName }}</td>
+                  <td nxTableCell>{{ l.type }}</td>
+                  <td nxTableCell>{{ l.amount | currency: l.currency : 'symbol' : '1.0-0' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <app-empty-state message="No section-level limits found for this claim."></app-empty-state>
+        }
+      </nx-expansion-panel>
+      <nx-expansion-panel expanded>
+        <nx-expansion-panel-header>
+          <nx-expansion-panel-title>Section-level deductibles</nx-expansion-panel-title>
+        </nx-expansion-panel-header>
+        @if (sectionDeductibles.length) {
+          <table nxTable class="ld-table">
+            <thead>
+              <tr nxTableRow>
+                <th nxHeaderCell>Section</th>
+                <th nxHeaderCell>Type</th>
+                <th nxHeaderCell>Amount</th>
+                <th nxHeaderCell>Application method</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (dd of sectionDeductibles; track dd.deductibleId) {
+                <tr nxTableRow>
+                  <td nxTableCell>{{ dd.sectionName }}</td>
+                  <td nxTableCell>{{ dd.type }}</td>
+                  <td nxTableCell>{{ dd.amount | currency: dd.currency : 'symbol' : '1.0-0' }}</td>
+                  <td nxTableCell>{{ dd.applicationMethod }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <app-empty-state
+            message="No section-level deductibles found for this claim."
+          ></app-empty-state>
+        }
+      </nx-expansion-panel>
+    </nx-accordion>
   }
 }
