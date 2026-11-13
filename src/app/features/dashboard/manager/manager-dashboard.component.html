@@ -1,0 +1,160 @@
+<div class="page-shell">
+  <app-navbar></app-navbar>
+  <div class="body-layout">
+    <main class="main-content" tabindex="0">
+      <div class="page-headline-row">
+        <h1 class="page-headline">Welcome {{ auth.user().name }}</h1>
+        @if (!noPermission()) {
+          <span class="page-role-badge page-role-badge--claims-manager">Claims Manager</span>
+        }
+      </div>
+
+      @if (noPermission()) {
+        <div class="widget-card">
+          <div class="mgr-blocked">
+            <nx-icon name="lock-o" size="m" class="mgr-blocked__icon" aria-hidden="true"></nx-icon>
+            <h2 class="mgr-blocked__title">You don't have access to the team dashboard</h2>
+            <p class="mgr-blocked__text">
+              It shows claims of the people who report to you, so it needs the Claims Manager
+              role. Your own claims are still on the claims list.
+            </p>
+            <button nxButton="secondary small" type="button" (click)="goToClaims()">
+              Go to my claims
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="mgr-status-row">
+          <span class="mgr-status-row__text" aria-live="polite">
+            @if (loading()) {
+              Updating…
+            } @else {
+              Updated {{ loadedAt().toISOString() | appDate: 'withTime' }}
+            }
+          </span>
+          <button nxButton="tertiary small" type="button" [disabled]="loading()" (click)="load()">
+            <nx-icon name="refresh" nxIconPositionStart aria-hidden="true"></nx-icon>Refresh
+          </button>
+        </div>
+
+        @if (loading()) {
+          <div class="widget-loading" role="status">
+            <nx-spinner size="medium"></nx-spinner>
+            <span class="text-muted">Loading your team's claims…</span>
+          </div>
+        } @else if (loadError()) {
+          <div class="widget-error" role="alert">
+            <nx-icon name="exclamation-triangle-o" class="widget-error-icon"></nx-icon>
+            <span>We couldn't load your team's claims. Nothing was changed.</span>
+            <button nxButton="tertiary small" type="button" (click)="load()">Try again</button>
+          </div>
+        } @else {
+          @if (isStale()) {
+            <nx-message context="warning" class="mgr-stale">
+              This data is from {{ loadedAt().toISOString() | appDate: 'withTime' }} and may be out
+              of date.
+              <button nxButton="tertiary small" type="button" (click)="load()">Refresh now</button>
+            </nx-message>
+          }
+
+          <div class="mgr-tiles" role="group" aria-label="Team summary">
+            <button type="button" class="mgr-tile" (click)="showFlag('all')">
+              <span class="mgr-tile__value">{{ counts().open }}</span>
+              <span class="mgr-tile__label">Open team claims</span>
+            </button>
+            <button type="button" class="mgr-tile mgr-tile--alert" (click)="showFlag('any')">
+              <span class="mgr-tile__value">{{ counts().flagged }}</span>
+              <span class="mgr-tile__label">Need attention</span>
+            </button>
+            <button type="button" class="mgr-tile" (click)="showFlag('overdue')">
+              <span class="mgr-tile__value">{{ counts().overdue }}</span>
+              <span class="mgr-tile__label">Overdue</span>
+            </button>
+            <button type="button" class="mgr-tile" (click)="showFlag('high-value')">
+              <span class="mgr-tile__value">{{ counts().highValue }}</span>
+              <span class="mgr-tile__label">High value</span>
+            </button>
+            <button type="button" class="mgr-tile" (click)="showFlag('review')">
+              <span class="mgr-tile__value">{{ counts().review }}</span>
+              <span class="mgr-tile__label">For review</span>
+            </button>
+          </div>
+
+          <section class="widget-card" aria-labelledby="mgr-own-title">
+            <div class="widget-header">
+              <div class="widget-header-left">
+                <div class="widget-icon-wrap">
+                  <nx-icon name="product-board-paper-note" class="widget-icon"></nx-icon>
+                </div>
+                <h2 class="widget-title mgr-title" id="mgr-own-title">
+                  My claims <span class="mgr-count">{{ ownCases().length }}</span>
+                </h2>
+              </div>
+              <a class="widget-link" (click)="goToClaims()" (keydown.enter)="goToClaims()" tabindex="0"
+                >View all my claims</a
+              >
+            </div>
+            <app-manager-case-table
+              [cases]="ownCases()"
+              caption="My claims"
+              emptyMessage="No claims are assigned to you."
+              emptyHint="Claims you take or that are assigned to you will show here."
+              (reassign)="reassign($event)"
+            ></app-manager-case-table>
+          </section>
+
+          <section class="widget-card" id="mgr-team" aria-labelledby="mgr-team-title">
+            <div class="widget-header">
+              <div class="widget-header-left">
+                <div class="widget-icon-wrap">
+                  <nx-icon name="user-o" class="widget-icon"></nx-icon>
+                </div>
+                <h2 class="widget-title mgr-title" id="mgr-team-title">
+                  Team workload
+                  @if (team(); as t) {
+                    <span class="mgr-team-name">{{ t.name }}</span>
+                  }
+                </h2>
+              </div>
+            </div>
+            <app-team-workload
+              [members]="members()"
+              [cases]="teamCases()"
+              [filters]="filters()"
+              (filtersChange)="setFilters($event)"
+              (reassign)="reassign($event)"
+            ></app-team-workload>
+          </section>
+        }
+      }
+    </main>
+
+    <aside class="right-panel" tabindex="0">
+      <div class="action-card">
+        <div class="action-card-top">
+          <div class="action-card-icon"><nx-icon name="product-important-info"></nx-icon></div>
+          <span class="action-card-title">Register a new claim</span>
+        </div>
+        <button nxButton="primary small" type="button" class="action-card-btn" (click)="goTo('/fnol/search')">
+          <nx-icon name="launch" nxIconPositionStart></nx-icon>New claim
+        </button>
+      </div>
+      @if (!noPermission()) {
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <span class="panel-card-title">When a claim needs attention</span>
+        </div>
+        <dl class="mgr-rules">
+          <dt>Overdue</dt>
+          <dd>An open task on the claim is past its due date.</dd>
+          <dt>High value</dt>
+          <dd>Loss amount of {{ highValueThreshold.toLocaleString('en-GB') }} or more.</dd>
+          <dt>For review</dt>
+          <dd>A handler marked the claim for you to look at.</dd>
+        </dl>
+        <p class="mgr-rules__note">You see your own claims and those of the people who report to you.</p>
+      </div>
+      }
+    </aside>
+  </div>
+</div>

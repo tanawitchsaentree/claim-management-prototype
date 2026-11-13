@@ -1,0 +1,123 @@
+@if (people().length === 0) {
+  <app-empty-state
+    icon="user-o"
+    message="No one reports to you yet."
+    hint="Team members come from the organisation data. Ask your admin if this looks wrong."
+  ></app-empty-state>
+} @else {
+  @if (missing().length) {
+    <div class="tw-message">
+      <nx-message context="warning">
+        We couldn't load the claims of {{ missing().length }} team member{{
+          missing().length > 1 ? 's' : ''
+        }}: {{ missing()[0].name }}. Their numbers are left out of the totals below.
+      </nx-message>
+    </div>
+  }
+
+  <div class="data-table-wrap" tabindex="0">
+    <table nxTable class="dash-table">
+      <caption class="tw-sr">Claims per team member</caption>
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell>Team member</th>
+          <th nxHeaderCell class="dash-col--nowrap">Open claims</th>
+          <th nxHeaderCell class="dash-col--nowrap">Needs attention</th>
+          <th nxHeaderCell class="dash-col--nowrap">Overdue</th>
+          <th nxHeaderCell class="dash-col--nowrap">High value</th>
+          <th nxHeaderCell><span class="tw-sr">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of members(); track m.name) {
+          <tr nxTableRow [class.tw-row--active]="filters().member === m.name">
+            <td nxCell [class.text-muted]="m.isQueue">
+              {{ m.isQueue ? 'Team queue (no handler yet)' : m.name }}
+            </td>
+            @if (m.missing) {
+              <td nxCell colspan="4" class="text-muted">Couldn't load</td>
+              <td nxCell></td>
+            } @else {
+              <td nxCell>{{ m.open }}</td>
+              <td nxCell [class.tw-count--alert]="m.flagged > 0">{{ m.flagged }}</td>
+              <td nxCell>{{ m.overdue }}</td>
+              <td nxCell>{{ m.highValue }}</td>
+              <td nxCell class="dash-col--nowrap">
+                <button
+                  nxButton="tertiary small"
+                  type="button"
+                  [attr.aria-label]="'View claims of ' + (m.isQueue ? 'the team queue' : m.name)"
+                  (click)="drillDown(m.name)"
+                >
+                  View claims
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw-cases" id="mgr-team-cases" tabindex="-1">
+    <div class="tw-toolbar">
+      <div class="tw-toolbar__left">
+        <h3 class="tw-heading">{{ heading() }}</h3>
+        @if (filters().member) {
+          <button
+            nxButton="tertiary small"
+            type="button"
+            (click)="filtersChange.emit({ member: null })"
+          >
+            <nx-icon name="arrow-left" nxIconPositionStart aria-hidden="true"></nx-icon>
+            Whole team
+          </button>
+        }
+      </div>
+      <div class="tw-toolbar__filters">
+        <span class="tw-filter-label" id="tw-f-member">Team member</span>
+        <nx-dropdown
+          class="tw-filter"
+          ariaLabelledBy="tw-f-member"
+          [value]="filters().member ?? ''"
+          (selectionChange)="filtersChange.emit({ member: $event.value || null })"
+        >
+          <nx-dropdown-item value="">All members</nx-dropdown-item>
+          @for (m of members(); track m.name) {
+            <nx-dropdown-item [value]="m.name">{{ m.name }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <span class="tw-filter-label" id="tw-f-status">Status</span>
+        <nx-dropdown
+          class="tw-filter"
+          ariaLabelledBy="tw-f-status"
+          [value]="filters().status"
+          (selectionChange)="filtersChange.emit({ status: $event.value })"
+        >
+          @for (o of statusOptions; track o.value) {
+            <nx-dropdown-item [value]="o.value">{{ o.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+        <span class="tw-filter-label" id="tw-f-flag">Show</span>
+        <nx-dropdown
+          class="tw-filter"
+          ariaLabelledBy="tw-f-flag"
+          [value]="filters().flag"
+          (selectionChange)="filtersChange.emit({ flag: $event.value })"
+        >
+          @for (o of flagOptions; track o.value) {
+            <nx-dropdown-item [value]="o.value">{{ o.label }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </div>
+    </div>
+    <app-manager-case-table
+      [cases]="filtered()"
+      [showOwner]="!filters().member"
+      [caption]="heading()"
+      [emptyMessage]="emptyMessage()"
+      emptyHint="Try another filter, or show the whole team."
+      (reassign)="reassign.emit($event)"
+    ></app-manager-case-table>
+  </div>
+}

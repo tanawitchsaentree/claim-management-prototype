@@ -8,7 +8,9 @@ export const routes: Routes = [
   // Full-page standalone layouts (own header + sidebar — no Shell wrapper)
   {
     path: 'dashboard',
-    loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
+    // BMPCC-22395: picks the Claims Manager or the (unchanged) handler dashboard by role.
+    loadComponent: () =>
+      import('./features/dashboard/dashboard-home').then(m => m.DashboardHomeComponent)
   },
   {
     path: 'tasks',

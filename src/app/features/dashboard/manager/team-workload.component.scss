@@ -1,0 +1,82 @@
+// BLESSED: dashboard table via _widget-shell.scss; filter row copies the
+// Claims portfolio widget's inline dropdown filters (split toolbar, BLESSED.md).
+@use '../widget-shell' as widget;
+
+.data-table-wrap {
+  @include widget.data-table-wrap;
+}
+.dash-table {
+  @include widget.dash-table;
+}
+.dash-col--nowrap {
+  @include widget.dash-col-nowrap;
+}
+.text-muted {
+  @include widget.text-muted;
+}
+
+.tw-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.tw-message {
+  padding: 0 var(--space-xl) var(--space-md);
+}
+
+.tw-row--active ::ng-deep .nx-table-cell {
+  background: var(--action-selected-background-color);
+}
+
+.tw-count--alert {
+  font-weight: 700;
+}
+
+.tw-cases {
+  border-top: 1px solid var(--ui-04);
+  margin-top: var(--space-base);
+  outline: none;
+}
+
+.tw-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-base);
+  padding: var(--space-md) var(--space-xl);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  &__filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-left: auto;
+  }
+}
+
+.tw-heading {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.tw-filter-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tw-filter {
+  width: 140px;
+}

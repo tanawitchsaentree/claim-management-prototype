@@ -4,6 +4,17 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 — BMPCC-22666 (Manual reassignment of claims, epic BMPCC-13925) and BMPCC-22395 (Claims Manager dashboard, epic BMPCC-22394)
+
+- **Source:** Jira text of both stories and epics (PI 2026.5 UI/UX hand-over, 2026-11-13). Design stories: the prototype screen is the deliverable.
+- **Tickets:** `bmpcc-22666.json` (12 ACs, 11 done, 1 todo = Figma/review), `bmpcc-22395.json` (15 ACs, 13 done, 2 todo = Figma/German/review). Schema v2.4: `activePersona` (view as Handler / KCM / Manager) and `simulate` (dashboard and reassign dialog states real data can't reach), applied in `PrototypeScenarioService`, reset on every Apply, not mirrored in the audit (runtime only).
+- **Data:** `teams.json` (Property claims team managed by Tobias Grau, Marine and liability team managed by Marcus Fehr; team queue = claims with no handler in the team's group), `review-flags.json` ("For review" marks, `today-Nd` dates), user-directory gains Mara / Elke / Dirk / Georg and Sabine Rand's out-of-office date. claims.json: CLM-2024-021 and CLM-2024-102 moved from Lena Zorn to Tobias Grau so the manager has own claims. STATE_VERSION bumped (`teams-assignment-v1`).
+- **One reassign path:** `MockAssignmentService` holds the rules (RA-AUTH-1..3), writes claim + overview + activity log, and notifies both handlers (bell, `recipient` on `AppNotification`, one line per person for bulk). Every entry point uses the same `ReassignClaimModalComponent` (claim overview via `app-claim-assignment-actions`, claims list bulk, manager dashboard row menu, FNOL Summary via `app-fnol-handler-picker` in 'registration' mode). The old overview-only reassign only repainted the screen and never reached the claims list; fixed by saving to mock state.
+- **Handler dashboard untouched:** `/dashboard` now loads `DashboardHomeComponent`, which shows the manager page for the `claims-manager` role and the unchanged `Dashboard` otherwise. The manager page loads `dashboard.scss` itself so both share one shell.
+- **Decisions:** CM-TEAM-1, CM-FLAG-1, CM-FIELDS-1, CM-SUM-1, CM-ACT-1, CM-REFRESH-1, RA-PICK-1/2, RA-AUTH-1/2/3, RA-FNOL-1, RA-BULK-1 (comments in code, notes in the ticket ACs).
+
+---
+
 ## 2026-10-20 — GG booking tickets GG-1 to GG-8 (Global Genius, epic BMPCC-18348)
 
 - **Source:** Jira BMPCC-18348 (epic), FE stories 19168 / 19169 / 19170, claim-level 20232, 19412 (skip when no GG policy), 21754 (unpaid premium), 20953 (limit breach redesign), UX story 18282, DLQ reprocessing 14759; Bernd Moser's ADR "Claims Handover Domain — Booking Integration to Global Genius via BIH"; Nidhi Goel's "Payment Split - Handover Domain" (PROPOSED); PO note relayed by the user ("handlers need visibility of failed postings and the ability to manually re-trigger"). Built on user instruction across three sessions: orchestrator claim-management-96 (core models, mock services, presets, tickets, DEV banner), Builder A claim-management-4f (money lists, Recoveries page, summary line, Task manager), Builder B claim-management-ea (Make payment, shared warning list, Add reserve, claim banner, bell). Two handler-persona usability reviews (subagent, screenshots only, no code) drove round 2.
