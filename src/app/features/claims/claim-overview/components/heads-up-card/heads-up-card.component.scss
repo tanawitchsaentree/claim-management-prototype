@@ -1,0 +1,60 @@
+// BLESSED: card-shell (same co-card + title row as recovery-potential-card).
+@use '../../card-shell' as shell;
+@use '../../../../../shared/styles/form-rhythm' as fr;
+
+.co-card {
+  @include shell.card;
+}
+
+.co-card-title {
+  @include shell.card-title;
+}
+
+.hc-header {
+  @include shell.card-title-row;
+
+  .co-card-title {
+    margin-bottom: 0;
+  }
+}
+
+.hc-stack {
+  @include fr.group;
+}
+
+.hc-notice-body {
+  display: block;
+  margin-top: var(--space-xs);
+}
+
+.hc-text {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.hc-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl) var(--space-3xl);
+  margin: 0;
+}
+
+.hc-fact {
+  @include shell.field;
+
+  dt {
+    @include shell.field-label;
+  }
+
+  dd {
+    @include shell.field-value;
+    margin: 0;
+  }
+}
+
+.hc-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}

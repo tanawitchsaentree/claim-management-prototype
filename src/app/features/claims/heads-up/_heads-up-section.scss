@@ -1,0 +1,29 @@
+// Shared type for the Heads-Up page sections (pre-fill, assessment,
+// attachments). Component styles don't cross component boundaries, so each
+// section @use's this instead of repeating it. Same heading as payee-section.
+
+@mixin heading {
+  margin: 0;
+  font-size: var(--heading-05-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+@mixin subheading {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+@mixin caption {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+@mixin error {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--danger);
+}

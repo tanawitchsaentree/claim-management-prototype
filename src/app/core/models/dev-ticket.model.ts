@@ -19,6 +19,8 @@ export type PreconditionPage =
   | 'fnol-summary'
   // /claims/:id/financial — GG booking ticket (pageRoute's default branch).
   | 'financial'
+  // /claims/:id/heads-up — BMPCC-22350 Large Loss Heads-Up (default branch too).
+  | 'heads-up'
   | 'any';
 
 export interface PreconditionItem {

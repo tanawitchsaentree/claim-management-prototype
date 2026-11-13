@@ -1,0 +1,126 @@
+<app-page-header
+  title="Large loss Heads-Up"
+  [eyebrow]="claimId() + (claim()?.client ? ' · ' + claim()!.client : '')"
+  [showBack]="true"
+  backLabel="Back to claim overview"
+  (back)="onCancel()"
+></app-page-header>
+
+@switch (status()) {
+  @case ('loading') {
+    <div class="hu-loading" role="status">
+      <nx-spinner size="medium"></nx-spinner>
+      <span>Loading the Heads-Up…</span>
+    </div>
+  }
+  @case ('error') {
+    <nx-message context="error" class="hu-banner">
+      <strong>Couldn't load this claim.</strong>
+      <span class="hu-banner-body">Check your connection and try again.</span>
+      <button nxButton="secondary small" type="button" class="hu-banner-action" (click)="retryLoad()">Try again</button>
+    </nx-message>
+  }
+  @case ('ready') {
+    @if (headsUp(); as hu) {
+      <div class="hu-status">
+        <app-status-chip
+          domain="task"
+          [status]="hu.status === 'submitted' ? 'done' : 'in-progress'"
+          [label]="hu.status === 'submitted' ? 'Submitted' : 'Draft'"
+        ></app-status-chip>
+        <span class="hu-status-text">
+          @if (hu.status === 'submitted') {
+            Submitted {{ hu.submittedAt | appDate: 'withTime' }} by {{ hu.submittedBy }}
+          } @else if (hu.updatedAt) {
+            Last saved {{ hu.updatedAt | appDate: 'withTime' }} by {{ hu.updatedBy }}
+          } @else {
+            Started {{ hu.createdAt | appDate: 'withTime' }} by {{ hu.createdBy }}, not saved yet
+          }
+        </span>
+        <span class="hu-status-text">Why: {{ reasonText() }}</span>
+      </div>
+
+      <div class="hu-banners">
+        @if (hu.status === 'submitted') {
+          <nx-message context="success">
+            <strong>Key Case Management has this Heads-Up.</strong>
+            <span class="hu-banner-body">It can't be changed here any more. Send later news to Key Case Management.</span>
+          </nx-message>
+        }
+        @if (hu.threshold; as t) {
+          <nx-message context="info">
+            <strong>Incurred reached {{ t.incurred | number: '1.0-0' }} {{ t.currency }} on {{ t.reachedAt | appDate }}.</strong>
+            <span class="hu-banner-body">
+              @if (t.notice === 'new-draft') {
+                That is over the {{ threshold | number: '1.0-0' }} large loss limit, so this draft was made for you.
+              } @else {
+                This claim already had this Heads-Up, so no second one was made. Check it is still up to date.
+              }
+            </span>
+          </nx-message>
+        }
+        @if (saveFailed()) {
+          <nx-message context="error">
+            <strong>Couldn't save the Heads-Up.</strong>
+            <span class="hu-banner-body">Your changes are still here. Try again.</span>
+          </nx-message>
+        }
+        @if (formatProblems().length) {
+          <nx-message context="error" role="alert">
+            <strong>Check the format of: {{ formatProblems().join(', ') }}.</strong>
+          </nx-message>
+        } @else if (missing().length) {
+          <nx-message context="error" role="alert">
+            <strong>Fill in {{ missing().length }} {{ missing().length === 1 ? 'field' : 'fields' }} before you submit:</strong>
+            <span class="hu-banner-body">{{ missing().join(', ') }}.</span>
+          </nx-message>
+        }
+      </div>
+
+      @if (form(); as f) {
+        <div class="hu-body" (input)="refreshSummary()" (change)="refreshSummary()" (click)="refreshSummary()">
+          <app-heads-up-prefill-section
+            [values]="f.controls.values"
+            [headsUp]="hu"
+            [readonly]="readonly()"
+          ></app-heads-up-prefill-section>
+          <app-heads-up-assessment-section
+            [cat]="f.controls.cat"
+            [multipleLobs]="f.controls.multipleLobs"
+            [texts]="f.controls.texts"
+            [readonly]="readonly()"
+          ></app-heads-up-assessment-section>
+          <app-heads-up-attachments-section
+            [claimId]="claimId()"
+            [readonly]="readonly()"
+            [(attachments)]="attachments"
+          ></app-heads-up-attachments-section>
+        </div>
+      }
+
+      @if (!readonly()) {
+        <footer class="hu-footer">
+          <div class="hu-footer-left">
+            <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
+            <button nxPlainButton type="button" [disabled]="!!saving()" (click)="onSave('draft')">
+              {{ saving() === 'draft' ? 'Saving…' : 'Save draft' }}
+            </button>
+          </div>
+          <button nxButton="primary small" type="button" [disabled]="!!saving()" (click)="onSave('submit')">
+            {{ saving() === 'submit' ? 'Submitting…' : 'Submit Heads-Up' }}
+          </button>
+        </footer>
+      }
+    } @else {
+      <div class="hu-empty">
+        <p class="hu-empty-text">
+          This claim has no Heads-Up yet. Incurred is {{ incurred() | number: '1.0-0' }}
+          {{ claim()?.financialSummary?.currency }}.
+        </p>
+        @if (claim()?.status !== 'Closed') {
+          <button nxButton="primary small" type="button" (click)="onCreate()">Create Heads-Up</button>
+        }
+      </div>
+    }
+  }
+}

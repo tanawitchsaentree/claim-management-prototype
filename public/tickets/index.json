@@ -203,6 +203,12 @@
       "file": "bmpcc-22661.json",
       "module": "GG booking",
       "title": "GG booking failed on Claim Overview: message and retry"
+    },
+    {
+      "id": "BMPCC-22350",
+      "file": "bmpcc-22350.json",
+      "module": "Claims",
+      "title": "Large Loss Heads-Up: notification, manual start, form"
     }
   ]
 }

@@ -1,0 +1,79 @@
+<section class="co-card" data-tour-id="co-heads-up-card">
+  <div class="hc-header">
+    <h2 class="co-card-title">Large loss Heads-Up</h2>
+    @if (headsUp(); as hu) {
+      <app-status-chip
+        domain="task"
+        [status]="hu.status === 'submitted' ? 'done' : 'in-progress'"
+        [label]="hu.status === 'submitted' ? 'Submitted' : 'Draft'"
+      ></app-status-chip>
+    }
+  </div>
+
+  @if (headsUp(); as hu) {
+    <div class="hc-stack">
+      @if (hu.threshold; as t) {
+        <nx-message context="info" class="hc-notice">
+          <strong>Incurred reached {{ t.incurred | number: '1.0-0' }} {{ t.currency }} on {{ t.reachedAt | appDate }}.</strong>
+          <span class="hc-notice-body">
+            @if (t.notice === 'new-draft') {
+              That is over the {{ threshold | number: '1.0-0' }} large loss limit, so a draft Heads-Up was made for you.
+              Complete it and submit it to Key Case Management.
+            } @else if (hu.status === 'submitted') {
+              This claim already had a Heads-Up, so no second one was made. If the figures changed, tell Key Case
+              Management.
+            } @else {
+              This claim already had a Heads-Up, so no second one was made. Check it is up to date and submit it.
+            }
+          </span>
+        </nx-message>
+      }
+
+      <dl class="hc-facts">
+        <div class="hc-fact">
+          <dt>Why</dt>
+          <dd>{{ reasonText() }}</dd>
+        </div>
+        <div class="hc-fact">
+          <dt>{{ hu.status === 'submitted' ? 'Submitted' : 'Started' }}</dt>
+          <dd>
+            @if (hu.status === 'submitted') {
+              {{ hu.submittedAt | appDate: 'withTime' }} by {{ hu.submittedBy }}
+            } @else {
+              {{ hu.createdAt | appDate: 'withTime' }} by {{ hu.createdBy }}
+            }
+          </dd>
+        </div>
+        @if (hu.status === 'draft' && hu.updatedAt) {
+          <div class="hc-fact">
+            <dt>Last saved</dt>
+            <dd>{{ hu.updatedAt | appDate: 'withTime' }} by {{ hu.updatedBy }}</dd>
+          </div>
+        }
+      </dl>
+
+      <div class="hc-actions">
+        @if (hu.status === 'draft') {
+          <button nxButton="primary small" type="button" (click)="open()">Continue Heads-Up</button>
+        } @else {
+          <button nxButton="secondary small" type="button" (click)="open()">View Heads-Up</button>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="hc-stack">
+      <p class="hc-text">
+        No Heads-Up for this claim. Incurred is {{ incurred() | number: '1.0-0' }} {{ currency() }}.
+        @if (canCreate()) {
+          A draft is made for you when it reaches {{ threshold | number: '1.0-0' }}. Create one yourself if you expect
+          it to get there, or for a reason like high publicity.
+        }
+      </p>
+      @if (canCreate()) {
+        <div class="hc-actions">
+          <button nxButton="secondary small" type="button" (click)="create()">Create Heads-Up</button>
+        </div>
+      }
+    </div>
+  }
+</section>

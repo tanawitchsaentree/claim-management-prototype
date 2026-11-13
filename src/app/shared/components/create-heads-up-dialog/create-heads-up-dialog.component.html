@@ -1,0 +1,43 @@
+<div class="ch-header">
+  <h2 class="ch-title">Create a Heads-Up</h2>
+  <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+    <nx-icon name="close"></nx-icon>
+  </button>
+</div>
+
+<div class="ch-body" tabindex="0">
+  <p class="ch-message">
+    A Heads-Up refers this loss to Key Case Management. The form opens with what the claim already knows; you check it,
+    add your assessment and submit it.
+    @if (belowThreshold) {
+      Incurred is {{ data.incurred | number: '1.0-0' }} {{ data.currency }}, below
+      {{ threshold | number: '1.0-0' }}. You can still create one now.
+    }
+  </p>
+
+  <fieldset class="ch-reasons" aria-describedby="ch-reasons-error">
+    <legend class="ch-legend">Why does this claim need a Heads-Up? *</legend>
+    <p class="ch-legend-hint">Tick all that apply.</p>
+    @for (r of reasons; track r.value) {
+      <div class="ch-reason">
+        <nx-checkbox labelSize="small" [checked]="isPicked(r.value)" (checkedChange)="toggle(r.value, $event)">
+          {{ r.label }}
+        </nx-checkbox>
+        <span class="ch-reason-hint">{{ r.hint }}</span>
+      </div>
+    }
+    @if (showError()) {
+      <p class="ch-error" id="ch-reasons-error" role="alert">Tick at least one reason.</p>
+    }
+  </fieldset>
+
+  <nx-formfield label="Anything KCM should know (optional)">
+    <textarea nxInput [formControl]="note" rows="3" [maxlength]="500"></textarea>
+    <nx-hint nxFormfieldHint>{{ note.value.length }}/500</nx-hint>
+  </nx-formfield>
+</div>
+
+<div class="ch-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="onCreate()">Create draft Heads-Up</button>
+</div>

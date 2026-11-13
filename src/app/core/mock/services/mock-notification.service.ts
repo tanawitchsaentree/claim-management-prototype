@@ -41,6 +41,21 @@ export class MockNotificationService {
           link: ['/claims', o.claimId, 'overview']
         });
       }
+      // BMPCC-22350: the large loss threshold was reached. Shown until the
+      // handler opens the Heads-Up (notified once, never repeated).
+      const t = o.headsUp?.threshold;
+      if (t && !t.seen) {
+        out.push({
+          id: `heads-up-${o.claimId}`,
+          claimId: o.claimId,
+          tone: 'action',
+          title:
+            t.notice === 'new-draft'
+              ? `${o.claimId}: incurred reached 1M, a draft Heads-Up is ready for you to complete`
+              : `${o.claimId}: incurred reached 1M, check the Heads-Up that already exists`,
+          link: ['/claims', o.claimId, 'heads-up']
+        });
+      }
       // BMPCC-22661: failed section events (only once the claim is in GG,
       // same rule as the Claim Overview section banner).
       if (!o.ggRegistration || o.ggRegistration === 'registered') {

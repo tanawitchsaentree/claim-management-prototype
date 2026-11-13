@@ -1,0 +1,76 @@
+<section class="hps-section" aria-labelledby="hps-heading">
+  <div class="hps-intro">
+    <h2 class="hps-heading" id="hps-heading">From the claim</h2>
+    <p class="hps-caption">
+      Copied from the claim when this Heads-Up was made. Later changes to the claim don't change it.
+      @if (!readonly()) {
+        Change any value; "Use the claim value" puts it back.
+      }
+    </p>
+  </div>
+
+  @for (g of groups; track g.group) {
+    <div class="hps-group">
+      <h3 class="hps-subheading">{{ g.heading }}</h3>
+      @if (groupPending(g.group)) {
+        <nx-message context="info" class="hps-pending">
+          <strong>Financial figures haven't come from Finance yet.</strong>
+          <span class="hps-pending-body">
+            You can save the draft now and fill them in later, or enter them yourself.
+          </span>
+        </nx-message>
+      }
+
+      @if (readonly()) {
+        <dl class="hps-grid">
+          @for (f of g.fields; track f.key) {
+            <div class="hps-read">
+              <dt>{{ f.label }}</dt>
+              <dd>{{ display(f, ctrl(f).value) }}</dd>
+              @if (changed(f) && claimValue(f)) {
+                <dd class="hps-read-note">Changed. Claim value: {{ display(f, claimValue(f)) }}</dd>
+              }
+            </div>
+          }
+        </dl>
+      } @else {
+        <div class="hps-grid">
+          @for (f of g.fields; track f.key) {
+            <div class="hps-field">
+              @if (f.kind === 'date') {
+                <nx-formfield [label]="f.label + (f.required ? ' *' : '')" class="hps-formfield">
+                  <input nxDatefield nxInput [formControl]="ctrl(f)" [datepicker]="picker" />
+                  <nx-datepicker-toggle nxFormfieldSuffix [for]="picker"></nx-datepicker-toggle>
+                  <nx-datepicker #picker></nx-datepicker>
+                  <span nxFormfieldHint>{{ hint(f) }}</span>
+                  @if (ctrl(f).hasError('required')) {
+                    <nx-error nxFormfieldError>Needed before you submit.</nx-error>
+                  }
+                </nx-formfield>
+              } @else {
+                <nx-formfield [label]="f.label + (f.required ? ' *' : '')" class="hps-formfield">
+                  <input nxInput [formControl]="ctrl(f)" [attr.inputmode]="f.kind === 'text' ? null : 'decimal'" />
+                  @if (f.kind === 'percent') {
+                    <span nxFormfieldSuffix>%</span>
+                  }
+                  <span nxFormfieldHint>{{ hint(f) }}</span>
+                  @if (ctrl(f).hasError('required')) {
+                    <nx-error nxFormfieldError>Needed before you submit.</nx-error>
+                  } @else if (ctrl(f).hasError('pattern')) {
+                    <nx-error nxFormfieldError>{{ patternError(f) }}</nx-error>
+                  }
+                </nx-formfield>
+              }
+              @if (changed(f) && claimValue(f)) {
+                <button nxPlainButton type="button" class="hps-reset" (click)="reset(f)">
+                  <nx-icon name="refresh" size="s" aria-hidden="true"></nx-icon>
+                  Use the claim value
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</section>

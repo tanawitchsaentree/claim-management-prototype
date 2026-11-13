@@ -4,6 +4,16 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 — BMPCC-22350 Large Loss Heads-Up, Features A-D (epic BMPCC-18615)
+
+- **Source:** Jira BMPCC-22350 + epic BMPCC-18615 (business decisions 2026-10-27/28), handed over with the PI 2026.5 UI/UX open points. Design story: the prototype screens are the deliverable.
+- **Not the dashboard widget:** `features/dashboard/widgets/heads-up-panel.ts` ("Heads-up: Monitored Claims", KCM persona, `heads-up.json`) is the KCM monitoring list, i.e. Features E-F, out of scope. Left untouched (dashboard belongs to another worker); its rows already open Claim Overview, where the new card is.
+- **Built:** `LargeLossHeadsUp` on the claim's overview record (`large-loss-heads-up.model.ts`, `ClaimOverview.headsUp`), `MockLargeLossHeadsUpService` (create, pre-fill snapshot, save draft / submit with a mock 700 ms, one-time demo save failure), Finance stand-in data `heads-up-finance.json`. Claim Overview card `heads-up-card` (create / continue / view + threshold notice). Shared `create-heads-up-dialog` (reasons, multi-select, optional note). Full page `/claims/:id/heads-up` (`features/claims/heads-up/`): pre-fill section (every value editable, hint says where it came from, "Use the claim value"), assessment (Cat, Multiple LOBs, four 4000-char texts with counter), attachments (claim documents or mock upload, failed upload + Try again), sticky Cancel / Save draft / Submit, confirm before every save, toast after, leave-without-saving confirm, read-only once submitted. Bell line "incurred reached 1M" until the Heads-Up is opened.
+- **Decisions (DESIGN DECISION HU-1, all 8 open questions):** required fields; several reasons allowed with hints; read-only after submit; 4000 is the limit; attachment types/25 MB/10 files; missing pre-fill shown as "Not on the claim yet" or "Waiting for Finance"; abbreviations kept; entry point = Claim Overview card + full page (Make payment shape, not a bottom sheet: long form with draft state and a bell link). Threshold detection is the backend's: the DEV banner seeds the result (`[accepted-deviation]` in AC-01).
+- **Gotcha found:** NDBX adds `has-hint` / `has-*` classes to `nx-formfield`'s host, so a project class named `has-hint` styled the formfield itself (it turned into a flex row and the textarea shrank). Prefix project classes with something else.
+- **Shared files touched:** `app.routes.ts` (route), `dev-ticket.model.ts` + PROJECT.md (page `heads-up`), `mock-notification.service.ts` (bell line), `claim-overview.component.{html,ts}` (one card). No new ScenarioOverrides key (overviewPatch).
+- **Ticket:** `bmpcc-22350.json`, 11 ACs: 10 `done`, AC7 `partial` (German text length and a real mobile layout not reviewed). AC8 (PO / developer review, Figma link) left out.
+
 ## 2026-11-13 — BMPCC-22661 GG booking failed on Claim Overview (epic BMPCC-22267)
 
 - **Source:** Jira BMPCC-22661 + epic BMPCC-22267, handed over by the user with the PI 2026.5 UI/UX open points (Confluence 3360032687). Builds on GG-1..GG-8 (2026-10-20 entry below).

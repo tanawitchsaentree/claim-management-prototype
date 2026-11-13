@@ -1,0 +1,707 @@
+{
+  "ticketId": "BMPCC-22350",
+  "epicId": "BMPCC-18615",
+  "module": "Claims",
+  "title": "Large Loss Heads-Up: notification, manual start, form",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "overview",
+    "heads-up"
+  ],
+  "walkthroughSteps": [
+    "Claim Overview has a Large loss Heads-Up card: create one (any amount), continue a draft, or view the submitted one.",
+    "When incurred reaches 1M the system makes a draft and the bell says so, once. If a Heads-Up already exists, only a notice.",
+    "The form is a full page: values from the claim (editable, resettable, marked), your assessment, attachments, Save draft and Submit with a confirm.",
+    "The dashboard's \"Heads-up: Monitored Claims\" widget is the KCM monitoring list (Features E-F), not this form; its rows already open Claim Overview, where this card is."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC2 · Incurred reaches 1M: a draft is made and the handler is told once",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, incurred now 1,050,000 EUR.\n\n**You see:** Bell badge with \"incurred reached 1M, a draft Heads-Up is ready\". On the page, the **Large loss Heads-Up** card: Draft chip, a blue note \"Incurred reached 1,050,000 EUR on 12-11-2026 ... a draft Heads-Up was made for you\", **Continue Heads-Up**.\n\n**Try:** Open the bell line: the Heads-Up form opens with the same note, and the bell line is gone (told once). Back on the claim the card keeps the note.\n\n**NOTE [accepted-deviation]:** detecting the threshold is the backend's job (a Finance event). The prototype shows the result: the draft the system made and the bell line. Treated as `done`, pending product sign-off.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Incurred reaches 1M: a draft is made and the handler is told once",
+        "preconditions": [
+          {
+            "text": "Bell badge with \"incurred reached 1M, a draft Heads-Up is ready\". On the page, the **Large loss Heads-Up** card: Draft chip, a blue note \"Incurred reached 1,050,000 EUR on 12-11-2026 ... a draft Heads-Up was made for you\", **Continue Heads-Up**.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Open the bell line: the Heads-Up form opens with the same note, and the bell line is gone (told once). Back on the claim the card keeps the note."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "financialSummary": {
+                "currency": "EUR",
+                "totalReserve": 960000,
+                "totalPayments": 90000,
+                "totalRecoveries": 50000,
+                "outstanding": 960000
+              },
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "threshold",
+                "reasons": [],
+                "status": "draft",
+                "createdAt": "2026-11-12T08:00:00.000Z",
+                "createdBy": "Large loss check (system)",
+                "values": {},
+                "texts": {},
+                "attachments": [],
+                "threshold": {
+                  "reachedAt": "2026-11-12",
+                  "incurred": 1050000,
+                  "currency": "EUR",
+                  "notice": "new-draft"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Bell badge with \"incurred reached 1M, a draft Heads-Up is ready\". On the page, the **Large loss Heads-Up** card: Draft chip, a blue note \"Incurred reached 1,050,000 EUR on 12-11-2026 ... a draft Heads-Up was made for you\", **Continue Heads-Up**.",
+        "visualCues": [
+          "Bell badge with \"incurred reached 1M, a draft Heads-Up is ready\". On the page, the **Large loss Heads-Up** card: Draft chip, a blue note \"Incurred reached 1,050,000 EUR on 12-11-2026 ... a draft Heads-Up was made for you\", **Continue Heads-Up**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001, incurred now 1,050,000 EUR.",
+        "expectedResult": "Bell badge with \"incurred reached 1M, a draft Heads-Up is ready\". On the page, the **Large loss Heads-Up** card: Draft chip, a blue note \"Incurred reached 1,050,000 EUR on 12-11-2026 ... a draft Heads-Up was made for you\", **Continue Heads-Up**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC2 · A Heads-Up already exists: no second one, only a notice",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, incurred now 1,050,000 EUR.\n\n**You see:** Card shows the Heads-Up the handler started on 10-11-2026 (reason High publicity), with the note \"This claim already had a Heads-Up, so no second one was made. Check it is up to date and submit it.\" Bell: \"check the Heads-Up that already exists\".\n\n**Try:** Open it from the bell or **Continue Heads-Up**: the same draft, nothing new was made.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "A Heads-Up already exists: no second one, only a notice",
+        "preconditions": [
+          {
+            "text": "Card shows the Heads-Up the handler started on 10-11-2026 (reason High publicity), with the note \"This claim already had a Heads-Up, so no second one was made. Check it is up to date and submit it.\" Bell: \"check the Heads-Up that already exists\".",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Open it from the bell or **Continue Heads-Up**: the same draft, nothing new was made."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "financialSummary": {
+                "currency": "EUR",
+                "totalReserve": 960000,
+                "totalPayments": 90000,
+                "totalRecoveries": 50000,
+                "outstanding": 960000
+              },
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {
+                  "loss": "Fire in warehouse section B on 14 January, started by hot work on the roof. The sprinkler system ran for 40 minutes and flooded the stock on the ground floor. Racking, two forklifts and most of the stored goods are lost."
+                },
+                "attachments": [],
+                "updatedAt": "2026-11-11T15:40:00.000Z",
+                "updatedBy": "Mara Mustermann",
+                "threshold": {
+                  "reachedAt": "2026-11-12",
+                  "incurred": 1050000,
+                  "currency": "EUR",
+                  "notice": "existing"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Card shows the Heads-Up the handler started on 10-11-2026 (reason High publicity), with the note \"This claim already had a Heads-Up, so no second one was made. Check it is up to date and submit it.\" Bell: \"check the Heads-Up that already exists\".",
+        "visualCues": [
+          "Card shows the Heads-Up the handler started on 10-11-2026 (reason High publicity), with the note \"This claim already had a Heads-Up, so no second one was made. Check it is up to date and submit it.\" Bell: \"check the Heads-Up that already exists\"."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001, incurred now 1,050,000 EUR.",
+        "expectedResult": "Card shows the Heads-Up the handler started on 10-11-2026 (reason High publicity), with the note \"This claim already had a Heads-Up, so no second one was made. Check it is up to date and submit it.\" Bell: \"check the Heads-Up that already exists\"."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC5 · Below 1M: create a Heads-Up by hand, no amount check",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, incurred 125,000 EUR.\n\n**You see:** Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**.\n\n**Try:** Press it: a dialog asks why (tick one or more: May reach 1M, Public interest, High publicity, ...) with an optional note. Nothing ticked + Create shows \"Tick at least one reason\". Tick one, **Create draft Heads-Up**: a green toast and the form opens, filled in from the claim.\n\n**Decision (open questions 2 and 8):** the way in is a card on Claim Overview; the handler can tick several reasons, each with a one-line hint so the boundaries are clear (DESIGN DECISION HU-1).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Below 1M: create a Heads-Up by hand, no amount check",
+        "preconditions": [
+          {
+            "text": "Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press it: a dialog asks why (tick one or more: May reach 1M, Public interest, High publicity, ...) with an optional note. Nothing ticked + Create shows \"Tick at least one reason\". Tick one, **Create draft Heads-Up**: a green toast and the form opens, filled in from the claim."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**.",
+        "visualCues": [
+          "Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Claim Overview of CLM-2024-001, incurred 125,000 EUR.",
+        "expectedResult": "Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC3 · Pre-filled values: shown, editable, clear where they came from",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** \"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**.\n\n**Try:** Change any value: its hint turns to \"Changed by you\" and the button appears. Press **Use the claim value**: it goes back.\n\n**Decision:** the pre-fill is a snapshot from when the Heads-Up was made; later claim changes don't touch it (story rule). Labels OE / LOE / IIP / ART share / AZRe kept as the business wrote them until KCM says what to spell out.",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Pre-filled values: shown, editable, clear where they came from",
+        "preconditions": [
+          {
+            "text": "\"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**.",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Change any value: its hint turns to \"Changed by you\" and the button appears. Press **Use the claim value**: it goes back."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {
+                  "causeOfLoss": "Fire and explosion"
+                },
+                "texts": {},
+                "attachments": []
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "\"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**.",
+        "visualCues": [
+          "\"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001.",
+        "expectedResult": "\"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC4 · Your assessment: Yes/No, four texts with counter, validation",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001 (a fresh draft).\n\n**You see:** \"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\"\n\n**Try:** Press **Submit Heads-Up** without filling anything: a red message at the top lists the fields to fill (Cat event, Multiple LOBs affected, Loss, Rationale, Strategy), each field shows its own error. Fill them and submit again: a confirm, then the green toast.\n\n**Decision (open questions 1 and 4):** needed before submit: Cat, Multiple LOBs, Loss, Rationale, Strategy and the main claim facts; Policy structure is optional. 4000 characters is the limit, plain text. **Save draft** works with gaps. Same rules for every LoB until KCM says otherwise.",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Your assessment: Yes/No, four texts with counter, validation",
+        "preconditions": [
+          {
+            "text": "\"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\"",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Press **Submit Heads-Up** without filling anything: a red message at the top lists the fields to fill (Cat event, Multiple LOBs affected, Loss, Rationale, Strategy), each field shows its own error. Fill them and submit again: a confirm, then the green toast."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {},
+                "attachments": []
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "\"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\"",
+        "visualCues": [
+          "\"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001 (a fresh draft).",
+        "expectedResult": "\"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\""
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "AC6 · Financial data still pending from Finance",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** Under Financial data a blue note: \"Financial figures haven't come from Finance yet. You can save the draft now and fill them in later, or enter them yourself.\" The financial inputs are empty, each saying \"Waiting for Finance\".\n\n**Try:** Save draft works. Submit asks for Currency and Current gross incurred.",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Financial data still pending from Finance",
+        "preconditions": [
+          {
+            "text": "Under Financial data a blue note: \"Financial figures haven't come from Finance yet. You can save the draft now and fill them in later, or enter them yourself.\" The financial inputs are empty, each saying \"Waiting for Finance\".",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Save draft works. Submit asks for Currency and Current gross incurred."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {},
+                "attachments": [],
+                "financialPending": true
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Under Financial data a blue note: \"Financial figures haven't come from Finance yet. You can save the draft now and fill them in later, or enter them yourself.\" The financial inputs are empty, each saying \"Waiting for Finance\".",
+        "visualCues": [
+          "Under Financial data a blue note: \"Financial figures haven't come from Finance yet. You can save the draft now and fill them in later, or enter them yourself.\" The financial inputs are empty, each saying \"Waiting for Finance\"."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001.",
+        "expectedResult": "Under Financial data a blue note: \"Financial figures haven't come from Finance yet. You can save the draft now and fill them in later, or enter them yourself.\" The financial inputs are empty, each saying \"Waiting for Finance\"."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "AC6 · Partial pre-fill: some values not on the claim",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-003 (marine cargo claim, USD).\n\n**You see:** Most values filled from the claim; ART share and AZRe exposure are empty with \"Not on the claim yet. Enter it yourself.\"\n\n**Try:** Type a value into ART share: the hint changes to \"Entered by you\".",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Partial pre-fill: some values not on the claim",
+        "preconditions": [
+          {
+            "text": "Most values filled from the claim; ART share and AZRe exposure are empty with \"Not on the claim yet. Enter it yourself.\"",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Type a value into ART share: the hint changes to \"Entered by you\"."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-003",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-003",
+                "origin": "manual",
+                "reasons": [
+                  "potential-large-loss"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {},
+                "attachments": []
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Most values filled from the claim; ART share and AZRe exposure are empty with \"Not on the claim yet. Enter it yourself.\"",
+        "visualCues": [
+          "Most values filled from the claim; ART share and AZRe exposure are empty with \"Not on the claim yet. Enter it yourself.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-003/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-003 (marine cargo claim, USD).",
+        "expectedResult": "Most values filled from the claim; ART share and AZRe exposure are empty with \"Not on the claim yet. Enter it yourself.\""
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-08",
+      "statement": "AC6 · Save fails: error, nothing lost, try again",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001 with the texts filled in.\n\n**You see:** A draft with all four texts written.\n\n**Try:** Press **Save draft**, confirm: a red message \"Couldn't save the Heads-Up. Your changes are still here.\" and a red toast. Press **Save draft** again: it saves, green toast \"Draft saved\", and the line under the title says \"Last saved ...\".",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Save fails: error, nothing lost, try again",
+        "preconditions": [
+          {
+            "text": "A draft with all four texts written.",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Press **Save draft**, confirm: a red message \"Couldn't save the Heads-Up. Your changes are still here.\" and a red toast. Press **Save draft** again: it saves, green toast \"Draft saved\", and the line under the title says \"Last saved ...\"."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {
+                  "loss": "Fire in warehouse section B on 14 January, started by hot work on the roof. The sprinkler system ran for 40 minutes and flooded the stock on the ground floor. Racking, two forklifts and most of the stored goods are lost.",
+                  "policyStructure": "Primary layer 100% Allianz, no co-insurance.",
+                  "rationale": "Adjuster's first estimate: building 420k, stock 510k, business interruption 120k for three months.",
+                  "strategy": "Appoint a forensic engineer for the cause. Review the BI period with the adjuster at the end of the month."
+                },
+                "attachments": [],
+                "demoSaveFails": true
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "A draft with all four texts written.",
+        "visualCues": [
+          "A draft with all four texts written."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001 with the texts filled in.",
+        "expectedResult": "A draft with all four texts written."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-09",
+      "statement": "AC4 · Attachments: list, mock upload, failed upload",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**.\n\n**Try:** Try again: \"Uploading\" with a spinner, then done. Upload a PDF: it shows Uploading, then is listed. A file over 25 MB or of another type is refused with a message. Remove with the x.\n\n**Decision (open question 5):** PDF, Word, Excel, Outlook mail, JPG, PNG; up to 25 MB each, 10 files at most. Placeholders until the Document service sets the real limits.",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Attachments: list, mock upload, failed upload",
+        "preconditions": [
+          {
+            "text": "Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**.",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Try again: \"Uploading\" with a spinner, then done. Upload a PDF: it shows Uploading, then is listed. A file over 25 MB or of another type is refused with a message. Remove with the x."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {},
+                "attachments": [
+                  {
+                    "id": "DOC-001",
+                    "fileName": "Loss adjuster report - initial.pdf",
+                    "size": 482304,
+                    "source": "claim",
+                    "status": "uploaded"
+                  },
+                  {
+                    "id": "UP-1",
+                    "fileName": "Fire brigade report.pdf",
+                    "size": 913408,
+                    "source": "upload",
+                    "status": "failed"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**.",
+        "visualCues": [
+          "Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001.",
+        "expectedResult": "Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-10",
+      "statement": "AC1 · After submission: read-only view",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001, submitted.\n\n**You see:** Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**.\n\n**Decision (open question 3):** read-only after submit. Later news goes to Key Case Management rather than into a referral they have already read.",
+      "page": "heads-up",
+      "buildStatus": "done",
+      "setup": {
+        "description": "After submission: read-only view",
+        "preconditions": [
+          {
+            "text": "Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**.",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Heads-Up form of CLM-2024-001, submitted."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "financialSummary": {
+                "currency": "EUR",
+                "totalReserve": 960000,
+                "totalPayments": 90000,
+                "totalRecoveries": 50000,
+                "outstanding": 960000
+              },
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "submitted",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {
+                  "causeOfLoss": "Fire and explosion"
+                },
+                "texts": {
+                  "loss": "Fire in warehouse section B on 14 January, started by hot work on the roof. The sprinkler system ran for 40 minutes and flooded the stock on the ground floor. Racking, two forklifts and most of the stored goods are lost.",
+                  "policyStructure": "Primary layer 100% Allianz, no co-insurance.",
+                  "rationale": "Adjuster's first estimate: building 420k, stock 510k, business interruption 120k for three months.",
+                  "strategy": "Appoint a forensic engineer for the cause. Review the BI period with the adjuster at the end of the month."
+                },
+                "attachments": [
+                  {
+                    "id": "DOC-001",
+                    "fileName": "Loss adjuster report - initial.pdf",
+                    "size": 482304,
+                    "source": "claim",
+                    "status": "uploaded"
+                  }
+                ],
+                "cat": "no",
+                "multipleLobs": "no",
+                "updatedAt": "2026-11-12T16:02:00.000Z",
+                "updatedBy": "Mara Mustermann",
+                "submittedAt": "2026-11-12T16:02:00.000Z",
+                "submittedBy": "Mara Mustermann"
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**.",
+        "visualCues": [
+          "Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001, submitted.",
+        "expectedResult": "Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    },
+    {
+      "id": "AC-11",
+      "statement": "AC7 · Aquila components, accessibility, smaller screens, German text",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** Only Aquila components and project tokens; every input has a label, errors are announced, the whole form works with the keyboard; the field grid goes from three columns to two and one on narrower windows.\n\n**Try:** Make the window narrow.\n\nNot done: German text length has not been reviewed, and there is no mobile layout beyond the narrower grid. AC8 (Product Owner and developer review, Figma link) happens outside the prototype and is left out of this ticket.",
+      "page": "heads-up",
+      "buildStatus": "partial",
+      "setup": {
+        "description": "Aquila components, accessibility, smaller screens, German text",
+        "preconditions": [
+          {
+            "text": "Only Aquila components and project tokens; every input has a label, errors are announced, the whole form works with the keyboard; the field grid goes from three columns to two and one on narrower windows.",
+            "page": "heads-up",
+            "role": "tested-visible",
+            "hint": "Make the window narrow."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "headsUp": {
+                "id": "HU-CLM-2024-001",
+                "origin": "manual",
+                "reasons": [
+                  "high-publicity"
+                ],
+                "status": "draft",
+                "createdAt": "2026-11-10T09:12:00.000Z",
+                "createdBy": "Mara Mustermann",
+                "values": {},
+                "texts": {},
+                "attachments": []
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Only Aquila components and project tokens; every input has a label, errors are announced, the whole form works with the keyboard; the field grid goes from three columns to two and one on narrower windows.",
+        "visualCues": [
+          "Only Aquila components and project tokens; every input has a label, errors are announced, the whole form works with the keyboard; the field grid goes from three columns to two and one on narrower windows."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/heads-up",
+        "trigger": "Heads-Up form of CLM-2024-001.",
+        "expectedResult": "Only Aquila components and project tokens; every input has a label, errors are announced, the whole form works with the keyboard; the field grid goes from three columns to two and one on narrower windows."
+      },
+      "expectedOutcome": {
+        "overviewStatus": "Open"
+      }
+    }
+  ]
+}

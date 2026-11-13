@@ -1,6 +1,7 @@
 import { MassEventLinkStatus, SkeletonState } from './claim.model';
 import { GgClaimRegistration } from './gg-booking.model';
 import { GgSectionBooking } from './gg-section-booking.model';
+import { LargeLossHeadsUp } from './large-loss-heads-up.model';
 
 export interface AccessListEntry {
   userId: string;
@@ -184,6 +185,9 @@ export interface ClaimOverview {
   // BMPCC-22661 — booking outcome per section event (only failed / retrying /
   // just booked ones are listed; absent = every section booked).
   ggSectionBookings?: GgSectionBooking[];
+  // BMPCC-22350 — the claim's Large Loss Heads-Up (one per claim, draft or
+  // submitted). Absent = none yet.
+  headsUp?: LargeLossHeadsUp;
   /** At least one recovery case is still Draft/In progress. Derived by MockRecoveryService. */
   hasActiveRecovery?: boolean;
   hasOpenDeductible?: boolean;
