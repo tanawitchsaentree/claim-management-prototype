@@ -1,0 +1,38 @@
+<div class="fp-header">
+  <div class="fp-header-row">
+    <h2 class="fp-title">{{ data.documentName }}</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="close()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
+  <p class="fp-caption">
+    Generated {{ data.generatedAt | appDate: 'withTime' }}. Preview of the prototype letter; the real PDF comes from the
+    document service.
+  </p>
+</div>
+
+<div class="fp-body" tabindex="0">
+  <article class="fp-letter">
+    <p>Dear {{ data.letter.insured }},</p>
+    <p>
+      We confirm that we received your claim on {{ data.letter.dateReported | appDate }}. We are looking into it and
+      will contact you about the next steps.
+    </p>
+    <dl class="fp-facts">
+      <div class="fp-fact"><dt>Claim reference</dt><dd>{{ data.letter.claimId }}</dd></div>
+      <div class="fp-fact"><dt>Date of loss</dt><dd>{{ data.letter.dateOfLoss | appDate }}</dd></div>
+      <div class="fp-fact"><dt>Date of notification</dt><dd>{{ data.letter.dateReported | appDate }}</dd></div>
+      <div class="fp-fact"><dt>Insured</dt><dd>{{ data.letter.insured }}</dd></div>
+      <div class="fp-fact"><dt>Policy number</dt><dd>{{ data.letter.policyNumber }}</dd></div>
+    </dl>
+    <p>Please quote the claim reference in all letters and emails about this claim.</p>
+    <p>
+      Kind regards,<br />
+      {{ data.letter.handler }}, Allianz Commercial
+    </p>
+  </article>
+</div>
+
+<div class="fp-footer">
+  <button nxButton="primary small" type="button" (click)="close()">Close</button>
+</div>

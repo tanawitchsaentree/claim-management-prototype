@@ -26,6 +26,7 @@ import { MockFinancialOverviewService } from '../../../core/mock/services/mock-f
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { BlockerReturnBannerComponent } from '../../../shared/components/blocker-return-banner/blocker-return-banner.component';
 import { GgRegistrationBannerComponent } from '../../../shared/components/gg-registration-banner/gg-registration-banner.component';
+import { GgSectionBookingBannerComponent } from '../../../shared/components/gg-section-booking-banner/gg-section-booking-banner.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.pipe';
 import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
@@ -67,6 +68,8 @@ import {
   TradeSanctionsUpdated
 } from './components/trade-sanctions-card/trade-sanctions-card.component';
 import { RiskScoreFieldComponent } from './components/risk-score-field/risk-score-field.component';
+import { HeadsUpCardComponent } from './components/heads-up-card/heads-up-card.component';
+import { FnolAcknowledgementPanelComponent } from '../../../shared/components/fnol-acknowledgement-panel/fnol-acknowledgement-panel.component';
 import { FileRestrictionCardComponent } from './components/file-restriction-card/file-restriction-card.component';
 import {
   MassEventCardComponent,
@@ -143,7 +146,10 @@ type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
     RecentActivitiesCardComponent,
     RiskScoreFieldComponent,
     BlockerReturnBannerComponent,
-    GgRegistrationBannerComponent
+    GgRegistrationBannerComponent,
+    GgSectionBookingBannerComponent,
+    HeadsUpCardComponent,
+    FnolAcknowledgementPanelComponent
   ],
   templateUrl: './claim-overview.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

@@ -1,0 +1,74 @@
+<section class="hat-section" aria-labelledby="hat-heading">
+  <div class="hat-intro">
+    <h2 class="hat-heading" id="hat-heading">Attachments</h2>
+    @if (!readonly()) {
+      <p class="hat-caption">
+        Reports, photos or emails that back up your assessment. PDF, Word, Excel, Outlook mail, JPG or PNG, up to
+        {{ maxMb }} MB each, {{ maxFiles }} files at most.
+      </p>
+    }
+  </div>
+
+  @if (attachments().length) {
+    <ul class="hat-list">
+      @for (a of attachments(); track a.id) {
+        <li class="hat-row">
+          <nx-icon name="paperclip" size="s" class="hat-icon" aria-hidden="true"></nx-icon>
+          <span class="hat-name">{{ a.fileName }}</span>
+          <span class="hat-meta">{{ size(a.size) }} · {{ a.source === 'claim' ? 'From the claim' : 'From your device' }}</span>
+          <span class="hat-end">
+            @if (a.status === 'uploading') {
+              <span class="hat-status" role="status"><nx-spinner size="small"></nx-spinner> Uploading</span>
+            } @else if (a.status === 'failed') {
+              <span class="hat-status hat-status--failed">Upload failed</span>
+              @if (!readonly()) {
+                <button nxPlainButton type="button" (click)="retry(a)">Try again</button>
+              }
+            }
+            @if (!readonly() && a.status !== 'uploading') {
+              <button
+                nxIconButton="tertiary small"
+                type="button"
+                class="hat-remove"
+                [attr.aria-label]="'Remove ' + a.fileName"
+                (click)="remove(a)"
+              >
+                <nx-icon name="close" size="s"></nx-icon>
+              </button>
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="hat-empty">No attachments yet.</p>
+  }
+
+  @if (!readonly()) {
+    <div class="hat-add">
+      <button nxButton="secondary small" type="button" class="hat-upload" [disabled]="full()" (click)="fileInput.click()">
+        Upload files
+      </button>
+      <input #fileInput type="file" multiple class="hat-file" tabindex="-1" aria-hidden="true" [accept]="accept" (change)="onFiles($event)" />
+      @if (available().length && !full()) {
+        <div class="hat-claim-docs">
+          <p class="hat-sub">Or add one of the claim's documents</p>
+          <ul class="hat-doc-list">
+            @for (d of available(); track d.documentId) {
+              <li class="hat-doc">
+                <span class="hat-name">{{ d.fileName }}</span>
+                <span class="hat-meta">{{ size(d.fileSize) }}</span>
+                <button nxPlainButton type="button" (click)="addFromClaim(d.documentId, d.fileName, d.fileSize)">
+                  Add
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+    @if (error(); as e) {
+      <p class="hat-error" role="alert">{{ e }}</p>
+    }
+  }
+</section>

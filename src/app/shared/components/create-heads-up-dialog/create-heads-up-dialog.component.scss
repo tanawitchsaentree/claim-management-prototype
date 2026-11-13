@@ -1,0 +1,78 @@
+// BLESSED: modal-layout mixin, same shell as reason-dialog.
+@use '../../styles/modal-layout' as modal;
+@use '../../styles/form-rhythm' as fr;
+
+:host {
+  @include modal.shell;
+}
+
+.ch-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ch-title {
+  @include modal.title;
+}
+
+.ch-body {
+  @include modal.body;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+
+  nx-formfield {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.ch-message {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.ch-reasons {
+  @include fr.group;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.ch-legend {
+  padding: 0;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.ch-legend-hint {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.ch-reason {
+  @include fr.field;
+  gap: var(--space-xs);
+}
+
+.ch-reason-hint {
+  // Lines up with the checkbox label, not the box.
+  padding-left: var(--space-2xl);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.ch-error {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--danger);
+}
+
+.ch-footer {
+  @include modal.footer;
+}

@@ -1,0 +1,15 @@
+{
+  "_comment": "BMPCC-22350: what Finance would send for a Large Loss Heads-Up, per claim. Finance is not consumed by Claims yet, so this stands in for it. Current gross is the claim's own incurred (payments + outstanding reserve); current net = current gross x netShare %. A missing key = Finance has not got that figure yet (partial pre-fill). Amounts in the claim currency.",
+  "CLM-2024-001": {
+    "priorGross": "100000",
+    "priorNet": "80000",
+    "netShare": 80,
+    "artShare": "20",
+    "azreExposure": "210000"
+  },
+  "CLM-2024-003": {
+    "priorGross": "250000",
+    "priorNet": "200000",
+    "netShare": 80
+  }
+}

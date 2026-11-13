@@ -38,6 +38,35 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 — BMPCC-22635 FNOL Acknowledgement trigger (epic BMPCC-22600)
+
+- **Source:** Jira BMPCC-22635 + epic BMPCC-22600, handed over with the PI 2026.5 UI/UX open points. Nothing in production to copy (no acknowledgement or AOMS code in claims-management-main).
+- **Built:** shared `fnol-acknowledgement-panel`, placed on the FNOL Summary confirmation (under "claim opened", one per claim) and on Claim Overview (under General information). `MockFnolAcknowledgementService` mocks AOMS (3 s, state on the overview record so both screens agree and a reload resumes it). `fnol-acknowledgement-preview` modal shows the mock letter filled with claim and policy data (epic AC2). Model `fnol-acknowledgement.model.ts`, `ClaimOverview.fnolAck` + `fnolAckDemoOutcome`.
+- **States:** default, disabled with the reason as visible text (orphan claim without policy, abandoned, closed), generating, generated (link + when + by whom), failed (message + Try again), generated earlier + Generate again (keeps the earlier letter, v2 name).
+- **Decisions (DESIGN DECISION FNOL-ACK-1):** same panel in both places; a short confirm before generating ("generate" can read as "send", and the letter freezes today's details); regeneration allowed with its own confirm; Try again after a failure needs no second confirm; toast + bell when ready.
+- **Shared files touched:** `claim-overview.component.{html,ts}` (one panel), `step-summary.component.{html,ts}` (panel under the success message; that file belongs to the FNOL area).
+- **Ticket:** `bmpcc-22635.json`, 7 ACs all `done` (AC-02 is walked through the wizard: the success screen only exists after Submit). Figma file not covered.
+
+## 2026-11-13 — BMPCC-22350 Large Loss Heads-Up, Features A-D (epic BMPCC-18615)
+
+- **Source:** Jira BMPCC-22350 + epic BMPCC-18615 (business decisions 2026-10-27/28), handed over with the PI 2026.5 UI/UX open points. Design story: the prototype screens are the deliverable.
+- **Not the dashboard widget:** `features/dashboard/widgets/heads-up-panel.ts` ("Heads-up: Monitored Claims", KCM persona, `heads-up.json`) is the KCM monitoring list, i.e. Features E-F, out of scope. Left untouched (dashboard belongs to another worker); its rows already open Claim Overview, where the new card is.
+- **Built:** `LargeLossHeadsUp` on the claim's overview record (`large-loss-heads-up.model.ts`, `ClaimOverview.headsUp`), `MockLargeLossHeadsUpService` (create, pre-fill snapshot, save draft / submit with a mock 700 ms, one-time demo save failure), Finance stand-in data `heads-up-finance.json`. Claim Overview card `heads-up-card` (create / continue / view + threshold notice). Shared `create-heads-up-dialog` (reasons, multi-select, optional note). Full page `/claims/:id/heads-up` (`features/claims/heads-up/`): pre-fill section (every value editable, hint says where it came from, "Use the claim value"), assessment (Cat, Multiple LOBs, four 4000-char texts with counter), attachments (claim documents or mock upload, failed upload + Try again), sticky Cancel / Save draft / Submit, confirm before every save, toast after, leave-without-saving confirm, read-only once submitted. Bell line "incurred reached 1M" until the Heads-Up is opened.
+- **Decisions (DESIGN DECISION HU-1, all 8 open questions):** required fields; several reasons allowed with hints; read-only after submit; 4000 is the limit; attachment types/25 MB/10 files; missing pre-fill shown as "Not on the claim yet" or "Waiting for Finance"; abbreviations kept; entry point = Claim Overview card + full page (Make payment shape, not a bottom sheet: long form with draft state and a bell link). Threshold detection is the backend's: the DEV banner seeds the result (`[accepted-deviation]` in AC-01).
+- **Gotcha found:** NDBX adds `has-hint` / `has-*` classes to `nx-formfield`'s host, so a project class named `has-hint` styled the formfield itself (it turned into a flex row and the textarea shrank). Prefix project classes with something else.
+- **Shared files touched:** `app.routes.ts` (route), `dev-ticket.model.ts` + PROJECT.md (page `heads-up`), `mock-notification.service.ts` (bell line), `claim-overview.component.{html,ts}` (one card). No new ScenarioOverrides key (overviewPatch).
+- **Ticket:** `bmpcc-22350.json`, 11 ACs: 10 `done`, AC7 `partial` (German text length and a real mobile layout not reviewed). AC8 (PO / developer review, Figma link) left out.
+
+## 2026-11-13 — BMPCC-22661 GG booking failed on Claim Overview (epic BMPCC-22267)
+
+- **Source:** Jira BMPCC-22661 + epic BMPCC-22267, handed over by the user with the PI 2026.5 UI/UX open points (Confluence 3360032687). Builds on GG-1..GG-8 (2026-10-20 entry below).
+- **Audit of what was already there:** claim event failed banner + retry + "retried, fails again" + green "now set up" (GG-1, `gg-registration-banner`, `MockBookingService.sendClaimAgain`). Gaps: no Global Genius failure text anywhere (GG-2 deliberately hid it), and no section events at all (item-level booking covers payments/reserves/recoveries, not sections).
+- **Built:** `ggFailureMessage` on the claim banner, labelled "Message from Global Genius" under the plain line (DESIGN DECISION GG-MSG-1). New `gg-section-booking-banner` (shared, under the claim banner): one message for all failed sections, per row the section name, GG's text, what to do, Retry booking. `MockBookingService.sendSectionAgain` mirrors the claim retry (3 s, preset outcome, survives reload); toast + bell on the outcome; bell live lines for failed sections. Model: `gg-section-booking.model.ts`, `ClaimOverview.ggSectionBookings`. No new ScenarioOverrides key (overviewPatch).
+- **Decisions (DESIGN DECISION GG-SEC-1):** no confirm on Retry (same event again, no money moves, same as claim retry); two failed retries hand it to Finance and the button goes; sections are hidden while the claim itself isn't in GG. Role restriction on retry (epic open point) not modelled: anyone with the claim open can retry.
+- **Ticket:** `bmpcc-22661.json`, 7 ACs all `done` on CLM-2024-001 (SEC-001, SEC-003).
+
+---
+
 ## 2026-10-20 — GG booking tickets GG-1 to GG-8 (Global Genius, epic BMPCC-18348)
 
 - **Source:** Jira BMPCC-18348 (epic), FE stories 19168 / 19169 / 19170, claim-level 20232, 19412 (skip when no GG policy), 21754 (unpaid premium), 20953 (limit breach redesign), UX story 18282, DLQ reprocessing 14759; Bernd Moser's ADR "Claims Handover Domain — Booking Integration to Global Genius via BIH"; Nidhi Goel's "Payment Split - Handover Domain" (PROPOSED); PO note relayed by the user ("handlers need visibility of failed postings and the ability to manually re-trigger"). Built on user instruction across three sessions: orchestrator claim-management-96 (core models, mock services, presets, tickets, DEV banner), Builder A claim-management-4f (money lists, Recoveries page, summary line, Task manager), Builder B claim-management-ea (Make payment, shared warning list, Add reserve, claim banner, bell). Two handler-persona usability reviews (subagent, screenshots only, no code) drove round 2.

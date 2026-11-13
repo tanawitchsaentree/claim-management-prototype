@@ -233,6 +233,24 @@
       "file": "bmpcc-22665.json",
       "module": "FNOL",
       "title": "Manual selection of policy from impacted policies"
+    },
+    {
+      "id": "BMPCC-22661",
+      "file": "bmpcc-22661.json",
+      "module": "GG booking",
+      "title": "GG booking failed on Claim Overview: message and retry"
+    },
+    {
+      "id": "BMPCC-22350",
+      "file": "bmpcc-22350.json",
+      "module": "Claims",
+      "title": "Large Loss Heads-Up: notification, manual start, form"
+    },
+    {
+      "id": "BMPCC-22635",
+      "file": "bmpcc-22635.json",
+      "module": "FNOL",
+      "title": "Generate the FNOL Acknowledgement: trigger and its states"
     }
   ]
 }

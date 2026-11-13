@@ -17,6 +17,10 @@
           {{ mockClaimIds.join(', ') }}</strong
         >
       </nx-message>
+      <!-- BMPCC-22635: generate the FNOL Acknowledgement right here, same panel as Claim Overview. -->
+      @for (id of mockClaimIds; track id) {
+        <app-fnol-acknowledgement-panel [claimId]="id" [showClaimId]="mockClaimIds.length > 1"></app-fnol-acknowledgement-panel>
+      }
     }
     @if (loadError) {
       <nx-message context="error">

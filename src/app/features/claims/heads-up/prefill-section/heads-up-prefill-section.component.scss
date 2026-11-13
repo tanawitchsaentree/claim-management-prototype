@@ -1,0 +1,88 @@
+// BLESSED: form-rhythm (make-payment/payee-section is the reference).
+@use '../../../../shared/styles/form-rhythm' as fr;
+@use '../heads-up-section' as hs;
+
+.hps-section {
+  @include fr.section;
+}
+
+.hps-intro {
+  @include fr.field;
+}
+
+.hps-heading {
+  @include hs.heading;
+}
+
+.hps-caption {
+  @include hs.caption;
+}
+
+.hps-group {
+  @include fr.group;
+  margin-top: var(--space-md);
+}
+
+.hps-subheading {
+  @include hs.subheading;
+}
+
+.hps-pending-body {
+  display: block;
+  margin-top: var(--space-xs);
+}
+
+// Three columns of fields; the hint under each says where the value came from.
+.hps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md) var(--space-xl);
+  margin: 0;
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.hps-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.hps-formfield {
+  width: 100%;
+}
+
+.hps-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: calc(-1 * var(--space-sm));
+}
+
+.hps-read {
+  @include fr.field;
+  gap: var(--space-xs);
+
+  dt {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: var(--font-weight-label);
+    color: var(--text-label);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text-01);
+  }
+}
+
+.hps-read-note {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}

@@ -1,0 +1,109 @@
+// BLESSED: form-rhythm; list rows follow provider-management attachment-picker.
+@use '../../../../shared/styles/form-rhythm' as fr;
+@use '../heads-up-section' as hs;
+
+.hat-section {
+  @include fr.section;
+}
+
+.hat-intro {
+  @include fr.field;
+}
+
+.hat-heading {
+  @include hs.heading;
+}
+
+.hat-caption,
+.hat-empty {
+  @include hs.caption;
+}
+
+.hat-list,
+.hat-doc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 960px;
+}
+
+.hat-row,
+.hat-doc {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-height: var(--space-3xl);
+  border-bottom: 1px solid var(--ui-03);
+}
+
+.hat-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.hat-name {
+  color: var(--text-01);
+  overflow-wrap: anywhere;
+}
+
+.hat-meta {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.hat-end {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.hat-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+
+  &--failed {
+    color: var(--danger);
+  }
+}
+
+.hat-doc button {
+  margin-left: auto;
+}
+
+.hat-add {
+  @include fr.group;
+  align-items: flex-start;
+}
+
+.hat-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+// The native picker is opened by the Upload files button; it is never drawn.
+.hat-file {
+  display: none;
+}
+
+.hat-claim-docs {
+  @include fr.field;
+  width: 100%;
+}
+
+.hat-sub {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.hat-error {
+  @include hs.error;
+}

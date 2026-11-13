@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { MockStateService } from '../state/mock-state.service';
 import { AuthService } from '../../services/auth';
 import { Bookable, needsHandler, withFinance } from '../../models/gg-booking.model';
+import { sectionCanRetry, sectionWithFinance } from '../../models/gg-section-booking.model';
 
 // Navbar bell. Usability review, top issue: booking failures happen hours or
 // days after Submit, while the handler is on another claim, so a status on a
@@ -45,6 +46,39 @@ export class MockNotificationService {
           link: ['/claims', o.claimId, 'overview']
         });
       }
+      // BMPCC-22350: the large loss threshold was reached. Shown until the
+      // handler opens the Heads-Up (notified once, never repeated).
+      const t = o.headsUp?.threshold;
+      if (t && !t.seen) {
+        out.push({
+          id: `heads-up-${o.claimId}`,
+          claimId: o.claimId,
+          tone: 'action',
+          title:
+            t.notice === 'new-draft'
+              ? `${o.claimId}: incurred reached 1M, a draft Heads-Up is ready for you to complete`
+              : `${o.claimId}: incurred reached 1M, check the Heads-Up that already exists`,
+          link: ['/claims', o.claimId, 'heads-up']
+        });
+      }
+      // BMPCC-22661: failed section events (only once the claim is in GG,
+      // same rule as the Claim Overview section banner).
+      if (!o.ggRegistration || o.ggRegistration === 'registered') {
+        for (const b of o.ggSectionBookings ?? []) {
+          const name = st.sections.find(s => s.id === b.sectionId)?.name ?? b.sectionId;
+          if (sectionCanRetry(b) || sectionWithFinance(b)) {
+            out.push({
+              id: `section-${b.sectionId}`,
+              claimId: o.claimId,
+              tone: sectionCanRetry(b) ? 'action' : 'info',
+              title: sectionCanRetry(b)
+                ? `${o.claimId}: section ${name} couldn't be booked in Global Genius`
+                : `${o.claimId}: section ${name} couldn't be booked, the Finance team is fixing it`,
+              link: ['/claims', o.claimId, 'overview']
+            });
+          }
+        }
+      }
     }
     // Same rules as the list counts and the Financial Overview line
     // (needsHandler / withFinance), so the bell never disagrees with them.
@@ -76,12 +110,12 @@ export class MockNotificationService {
   // (review round 4: the bell showed one payment as both needs-you and done).
   readonly all = computed(() => {
     const live = this.live();
-    const failing = new Set(live.map(n => n.id.replace(/^(item|claim)-/, '')));
+    const failing = new Set(live.map(n => n.id.replace(/^(item|claim|section)-/, '')));
     const me = this.auth.user().name;
     const events = this.events().filter(
       e =>
         (!e.recipient || e.recipient === me) &&
-        !failing.has(e.id.replace(/^(booked|claim-ready)-/, ''))
+        !failing.has(e.id.replace(/^(booked|claim-ready|section-booked)-/, ''))
     );
     return [...live, ...events];
   });

@@ -122,7 +122,7 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: `addedParties` (parties a Link policy adds to the converted claim).
 // Bumped again: section entities are now the loss location's address (as in production's
 // Entity column), not names of buildings and things; cached sections keep the old names.
-const STATE_VERSION = 'pi5-teams-sections-fnol-v1';
+const STATE_VERSION = 'pi5-all-v1';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a

@@ -60,6 +60,7 @@ import {
   isNarrativeActive,
   narrativeReasonLabel
 } from '../../../../shared/utils/reserve-narrative.util';
+import { FnolAcknowledgementPanelComponent } from '../../../../shared/components/fnol-acknowledgement-panel/fnol-acknowledgement-panel.component';
 
 export interface ClaimGroup {
   policyNumber: string;
@@ -104,6 +105,7 @@ const CREATOR: AccessListEntry = {
   selector: 'app-step-summary',
   standalone: true,
   imports: [
+    FnolAcknowledgementPanelComponent,
     CommonModule,
     ReactiveFormsModule,
     NxAccordionModule,

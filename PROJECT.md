@@ -39,6 +39,8 @@ pages:
       fnol-entities-damages,
       fnol-skeleton,
       fnol-summary,
+      financial,
+      heads-up,
       any
     ]
   defined-in: src/app/features/claims/dev-banner/claim-dev-helper.service.ts:12
@@ -273,6 +275,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 | `fnol-summary`           | `/fnol/summary`             | Wizard summary (step-summary)                                           |
 | `fnol-policies`          | `/fnol/policies`            | BMPCC-22665 Policies step (only when other policies are suggested)       |
 | `financial`              | `/claims/:claimId/financial` | GG booking ticket; `howToTest.route` adds `?view=payments\|reserves\|recovery` |
+| `heads-up`               | `/claims/:claimId/heads-up` | BMPCC-22350 Large Loss Heads-Up form (pageRoute's default branch)       |
 | `any`                    | (empty string)              | Metadata-only preconditions; no link rendered                           |
 
 `pageRoute(page, claimId)` mapping: `claim-dev-helper.service.ts:273-277`. Adding a page = update mapping + add row above + update `isFeatureRoute` regex if it lives outside `/claims/:id/...` and `/fnol/...`.

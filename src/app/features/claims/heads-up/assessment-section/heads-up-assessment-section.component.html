@@ -1,0 +1,60 @@
+<section class="hua-section" aria-labelledby="hua-heading">
+  <div class="hua-intro">
+    <h2 class="hua-heading" id="hua-heading">Your assessment</h2>
+    @if (!readonly()) {
+      <p class="hua-caption">Fields with * are needed before you submit. A draft can be saved without them.</p>
+    }
+  </div>
+
+  <div class="hua-stack">
+    @if (readonly()) {
+      <dl class="hua-pair">
+        <div class="hua-read"><dt>Cat event</dt><dd>{{ yesNo(cat().value) }}</dd></div>
+        <div class="hua-read"><dt>Multiple LOBs affected</dt><dd>{{ yesNo(multipleLobs().value) }}</dd></div>
+      </dl>
+    } @else {
+      <div class="hua-pair">
+        <div class="hua-group" role="group" aria-labelledby="hua-cat-label">
+          <p class="hua-label" id="hua-cat-label">Cat event *</p>
+          <nx-radio-group [formControl]="cat()" class="hua-radios">
+            <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+            <nx-radio value="no" labelSize="small">No</nx-radio>
+          </nx-radio-group>
+          @if (cat().touched && cat().hasError('required')) {
+            <p class="hua-error" role="alert">Choose Yes or No.</p>
+          }
+        </div>
+        <div class="hua-group" role="group" aria-labelledby="hua-lobs-label">
+          <p class="hua-label" id="hua-lobs-label">Multiple LOBs affected *</p>
+          <nx-radio-group [formControl]="multipleLobs()" class="hua-radios">
+            <nx-radio value="yes" labelSize="small">Yes</nx-radio>
+            <nx-radio value="no" labelSize="small">No</nx-radio>
+          </nx-radio-group>
+          @if (multipleLobs().touched && multipleLobs().hasError('required')) {
+            <p class="hua-error" role="alert">Choose Yes or No.</p>
+          }
+        </div>
+      </div>
+    }
+
+    @for (t of textFields; track t.key) {
+      @if (readonly()) {
+        <dl class="hua-read">
+          <dt>{{ t.label }}</dt>
+          <dd class="hua-read-text">{{ text(t.key).value || '–' }}</dd>
+        </dl>
+      } @else {
+        <nx-formfield [label]="t.label + (t.required ? ' *' : '')" class="hua-text">
+          <textarea nxInput [formControl]="text(t.key)" rows="5" [maxlength]="max"></textarea>
+          <span nxFormfieldHint class="hua-hint">
+            <span>{{ t.hint }}</span>
+            <span aria-live="polite">{{ text(t.key).value.length }}/{{ max }}</span>
+          </span>
+          @if (text(t.key).hasError('required')) {
+            <nx-error nxFormfieldError>Needed before you submit.</nx-error>
+          }
+        </nx-formfield>
+      }
+    }
+  </div>
+</section>

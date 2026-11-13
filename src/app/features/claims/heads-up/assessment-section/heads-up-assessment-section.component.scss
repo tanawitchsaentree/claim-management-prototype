@@ -1,0 +1,92 @@
+// BLESSED: form-rhythm (make-payment/payee-section is the reference).
+@use '../../../../shared/styles/form-rhythm' as fr;
+@use '../heads-up-section' as hs;
+
+.hua-section {
+  @include fr.section;
+}
+
+.hua-intro {
+  @include fr.field;
+}
+
+.hua-heading {
+  @include hs.heading;
+}
+
+.hua-caption {
+  @include hs.caption;
+}
+
+.hua-stack {
+  @include fr.stack;
+}
+
+.hua-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl) var(--space-4xl);
+  margin: 0;
+}
+
+.hua-group {
+  @include fr.field;
+}
+
+.hua-label {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.hua-radios {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.hua-error {
+  @include hs.error;
+}
+
+.hua-text {
+  @include fr.absorb-formfield-reserve;
+  width: 100%;
+  max-width: 960px;
+
+  // NDBX sizes a textarea by its cols, not the field: make it fill the field.
+  textarea {
+    width: 100%;
+    resize: vertical;
+  }
+}
+
+// Hint on the left, counter on the right.
+.hua-hint {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.hua-read {
+  @include fr.field;
+  gap: var(--space-xs);
+  margin: 0;
+
+  dt {
+    font-size: var(--paragraph-03-font-size);
+    font-weight: var(--font-weight-label);
+    color: var(--text-label);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text-01);
+  }
+}
+
+.hua-read-text {
+  white-space: pre-wrap;
+  max-width: 960px;
+}

@@ -130,6 +130,13 @@ export const routes: Routes = [
             m => m.MakePaymentPageComponent
           )
       },
+      // BMPCC-22350 Large Loss Heads-Up: a full page like Make payment (long form, draft + submit).
+      {
+        path: 'claims/:id/heads-up',
+        canActivate: [claimAliasGuard],
+        loadComponent: () =>
+          import('./features/claims/heads-up/heads-up-page.component').then(m => m.HeadsUpPageComponent)
+      },
       // "View all notes" is a bottom-sheet dialog now (claim-notes-panel opens it);
       // the component needs dialog data, so rendering it as a page threw NG0201.
       // Old links and typed URLs land on the claim overview instead.
