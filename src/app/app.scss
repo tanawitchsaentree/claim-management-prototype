@@ -19,8 +19,10 @@
 }
 
 .dev-banner-row {
+  // One full-width strip per helper, stacked: the FNOL helper sits under the
+  // DEV bar instead of squeezing it into two rows (DEV-BAR-1).
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   width: 100%;
 }
 
@@ -31,7 +33,6 @@
 
 .dev-banner-row > app-dev-helper-banner {
   flex: 0 0 auto;
-  border-left: 1px solid var(--dev-banner-border);
 }
 
 .exploration-banner {

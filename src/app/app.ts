@@ -9,7 +9,6 @@ import { DevHelperBannerComponent } from './features/fnol/components/dev-helper-
 import { AccessGateComponent } from './features/access-gate/access-gate.component';
 import { ToastStackComponent } from './shared/components/toast/toast-stack.component';
 import { TourStepRendererComponent } from './shared/components/tour/tour-step-renderer.component';
-import { PersonaSwitcherComponent } from './features/dashboard/widgets/persona-switcher';
 import { PrototypeEntryService } from './core/services/prototype-entry.service';
 import { TourService } from './core/services/tour.service';
 import { ArrivalPanelComponent } from './shared/components/arrival-panel/arrival-panel.component';
@@ -27,7 +26,6 @@ import { environment } from '../environments/environment';
     ToastStackComponent,
     TourStepRendererComponent,
     ArrivalPanelComponent,
-    PersonaSwitcherComponent,
     NxMessageModule
   ],
   styleUrl: './app.scss',
@@ -42,9 +40,6 @@ import { environment } from '../environments/environment';
       <div class="dev-banner-row">
         @if (devBannerMode !== 'off') {
           <app-claim-dev-banner />
-        }
-        @if (isDashboard()) {
-          <app-persona-switcher />
         }
         @if (helper.shouldShowFnolHelper() && devBannerMode === 'full') {
           <app-dev-helper-banner />
@@ -88,14 +83,6 @@ export class App implements OnInit {
       map((e): string | null => (e as NavigationEnd).urlAfterRedirects.split('?')[0])
     ),
     { initialValue: null }
-  );
-
-  readonly isDashboard = toSignal(
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      map(e => (e as NavigationEnd).urlAfterRedirects === '/dashboard')
-    ),
-    { initialValue: false }
   );
 
   ngOnInit(): void {

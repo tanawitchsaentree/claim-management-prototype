@@ -16,13 +16,14 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxTaglistModule } from '@allianz/ng-aquila/taglist';
+import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { ClaimDevHelperService, DevTicket, BuildStatus } from './claim-dev-helper.service';
 import {
   ReferenceViewService,
   ReferenceVariant
 } from '../claim-reference-panel/reference-view.service';
-import { AuthService, PERSONAS } from '../../../core/services/auth';
-import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService, PERSONAS, User } from '../../../core/services/auth';
+import { APP_THEMES, ThemeService } from '../../../core/services/theme.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -34,7 +35,8 @@ import { environment } from '../../../../environments/environment';
     NxDropdownModule,
     NxButtonModule,
     NxIconModule,
-    NxTaglistModule
+    NxTaglistModule,
+    NxContextMenuModule
   ],
   templateUrl: './claim-dev-banner.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -48,6 +50,12 @@ export class ClaimDevBannerComponent implements OnInit, OnDestroy {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly heightWatcher: ResizeObserver;
   readonly personas = PERSONAS;
+  readonly themes = APP_THEMES;
+
+  personaLabel(p: User): string {
+    const role = p.dashboardRole === 'kcm' ? 'KCM' : p.dashboardRole === 'claims-manager' ? 'Manager' : 'Handler';
+    return `${role} · ${p.name}`;
+  }
 
   readonly visible = true;
 
@@ -86,9 +94,9 @@ export class ClaimDevBannerComponent implements OnInit, OnDestroy {
 
   readonly variantOptions: { value: ReferenceVariant; label: string }[] = [
     { value: 'none', label: 'Off' },
-    { value: 'panel', label: 'Variant 1 — Side panel' },
-    { value: 'tabs', label: 'Variant 2 — Tab bar' },
-    { value: 'popover', label: 'Variant 3 — Hover preview' }
+    { value: 'panel', label: 'Variant 1: Side panel' },
+    { value: 'tabs', label: 'Variant 2: Tab bar' },
+    { value: 'popover', label: 'Variant 3: Hover preview' }
   ];
 
   constructor() {

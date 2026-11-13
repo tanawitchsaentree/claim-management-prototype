@@ -2,6 +2,12 @@ import { Injectable, signal } from '@angular/core';
 
 export type AppTheme = 'ndbx' | 'a1';
 
+/** Theme choices as shown in the DEV banner's settings menu. */
+export const APP_THEMES: readonly { value: AppTheme; label: string }[] = [
+  { value: 'ndbx', label: 'NDBX' },
+  { value: 'a1', label: 'A1' }
+];
+
 // Dev-only visual A/B toggle between the current NDBX theme and the new
 // Allianz One (A1) theme — both CSS files already ship inside
 // @allianz/ngx-brand-kit, so this is a stylesheet swap, not a package
