@@ -221,6 +221,18 @@
       "file": "bmpcc-22328.json",
       "module": "Claims",
       "title": "Select all sections (close/reopen), section date of loss, Type of coverage"
+    },
+    {
+      "id": "BMPCC-18492",
+      "file": "bmpcc-18492.json",
+      "module": "Claims",
+      "title": "CBI Extension for Edit claim"
+    },
+    {
+      "id": "BMPCC-22665",
+      "file": "bmpcc-22665.json",
+      "module": "FNOL",
+      "title": "Manual selection of policy from impacted policies"
     }
   ]
 }

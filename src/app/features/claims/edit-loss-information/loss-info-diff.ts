@@ -6,6 +6,7 @@ import { circumstanceLabel } from '../../fnol/config/circumstances';
 import { causeLabel } from '../../../core/models/cause-of-loss';
 import { LookupOption } from '../../../core/models/lookup.model';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CBI_LABEL_TO_FIELD_KEY, CbiLabelSources, CbiValues, cbiDisplayRows } from './cbi-edit';
 
 // Diff/impact vocabulary for the Edit claim details screen. Extracted from
 // edit-loss-information.component.ts (2026-09-02) — the component was 532
@@ -24,7 +25,16 @@ export interface LossInfoDiffField {
 // that field, unlike Cause of loss / Loss location, which stay best-effort
 // proxies: nothing on ClaimSection or SectionEntity points back at a
 // cause-of-loss or location key.
-export const IMPACT_LABELS = ['Cause of loss', 'Type of damages', 'Loss location'];
+// BMPCC-18492: whether CBI applies and its case type decide how the Business
+// Interruption section is set up, so changing either marks open sections for
+// review too. The CBI details (name, industry, location...) don't.
+export const IMPACT_LABELS = [
+  'Cause of loss',
+  'Type of damages',
+  'Loss location',
+  'Contingent business interruption',
+  'CBI case type'
+];
 
 // Diff label -> which read/edit field group an update belongs to. Used by
 // fieldChanged() to highlight the right field group; no longer used for
@@ -44,8 +54,12 @@ export const LABEL_TO_FIELD_KEY: Record<string, string> = {
   'Time of occurrence': 'dateGroup',
   'Date of notification': 'dateGroup',
   'Time of notification': 'dateGroup',
-  'Loss description': 'lossDescription',
-  'Loss location': 'lossLocation'
+  // User call 2026-11-13: on Edit claim details this field reads "Claim
+  // description" (FNOL keeps "Loss description"). The diff label is also the
+  // key LossInfoSyncService.syncClaimCopies() matches on.
+  'Claim description': 'lossDescription',
+  'Loss location': 'lossLocation',
+  ...CBI_LABEL_TO_FIELD_KEY
 };
 
 // Diff baseline for a claim with no LossInformation record at all — an unknown
@@ -73,6 +87,7 @@ type LocationsBag = { locations?: { displayName?: string }[] } | null;
 export interface DiffLabelSources {
   causes: LookupOption[];
   damages: LookupOption[];
+  cbi?: CbiLabelSources;
 }
 
 export function computeLossInfoDiffs(
@@ -146,7 +161,13 @@ export function computeLossInfoDiffs(
     circumstanceLabel(orig.circumstance),
     circumstanceLabel(cur.circumstance)
   );
-  addIf('Loss description', orig.lossDescription, cur.lossDescription);
+  addIf('Claim description', orig.lossDescription, cur.lossDescription);
+
+  // BMPCC-18492: every CBI answer, compared as the label the card shows.
+  const cbiLabels = labels.cbi ?? { caseTypes: [], utilityTypes: [] };
+  const cbiBefore = cbiDisplayRows(orig as CbiValues, cbiLabels);
+  const cbiAfter = cbiDisplayRows(cur as CbiValues, cbiLabels);
+  cbiBefore.forEach((row, i) => addIf(row.label, row.value, cbiAfter[i].value));
 
   // Loss location: every location, by display name. (Comparing only the first
   // one meant adding, removing or changing a 2nd+ location was no change at all.)

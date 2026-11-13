@@ -96,6 +96,8 @@ function simulateState(claimId, stateOverrides) {
   // activePersona / simulate (v2.4, BMPCC-22395 / BMPCC-22666): persona and
   // simulated UI states, applied by PrototypeScenarioService at runtime — no
   // Node-side counterpart; skipped here.
+  // lossInformationPatch (v2.4, BMPCC-18492): patches loss-information.json
+  // records; no supported assertion key reads them — skipped here.
   // fnolStateOverride: runtime UI behavior — not derivable; skipped here.
   // (selectedPolicy / selectedClient / path / convertFromSkeletonId all act on
   // FnolStateService at runtime and have no Node-side counterpart.)

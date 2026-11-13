@@ -98,6 +98,11 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   ];
   readonly entityTypeLabels = ENTITY_TYPE_LABELS;
 
+  /** BMPCC-22665: the Policies step already asked about the other policies; don't ask again. */
+  get policiesDecided(): boolean {
+    return !!this.fnolState.policyStep?.selection;
+  }
+
   get hasLossLocation(): boolean {
     return (this.fnolState.getLossLocationControl().value?.locations?.length ?? 0) > 0;
   }
@@ -280,7 +285,7 @@ export class StepEntitiesDamagesComponent implements OnInit, OnDestroy {
   // ── Navigation ─────────────────────────────────────────────────────────────
 
   onBack(): void {
-    this.router.navigate(['/fnol/loss-information']);
+    this.router.navigate([this.fnolState.policyStep ? '/fnol/policies' : '/fnol/loss-information']);
   }
 
   onCancel(): void {

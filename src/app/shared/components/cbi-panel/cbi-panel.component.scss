@@ -26,6 +26,12 @@
 
 .two-col-grid {
   @include fs.two-col-grid;
+
+  // A long case type ("Denial of Access, Without PD Trigger (Weather
+  // Condition)") must not stretch its column and push the neighbour out.
+  > * {
+    min-width: 0;
+  }
 }
 
 .radio-field {

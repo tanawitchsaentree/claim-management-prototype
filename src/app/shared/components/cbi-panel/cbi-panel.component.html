@@ -1,5 +1,7 @@
 <div class="cbi-panel" [formGroup]="form()">
-  <p class="cbi-panel__label">Contingent business interruption (CBI)</p>
+  @if (showTitle()) {
+    <p class="cbi-panel__label">Contingent business interruption (CBI)</p>
+  }
   <div class="radio-field" data-field="cbiApplicable">
     <p class="radio-label">Is the Business Interruption caused by Contingent Business Interruption (CBI)? *</p>
     <nx-radio-group class="radio-row" formControlName="cbiApplicable" (valueChange)="answerChange.emit()">
@@ -17,8 +19,13 @@
       <div data-field="cbiCaseType">
         <nx-formfield label="CBI case type *">
           <nx-dropdown formControlName="cbiCaseType" placeholder="Select case type" (selectionChange)="answerChange.emit()">
-            @for (opt of caseTypeOptions(); track opt.value) {
-              <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+            <!-- DESIGN DECISION CBI-EDIT-2: grouped, see cbiCaseTypeGroups(). -->
+            @for (group of caseTypeGroups(); track group.label) {
+              <nx-dropdown-group [label]="group.label">
+                @for (opt of group.options; track opt.value) {
+                  <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+                }
+              </nx-dropdown-group>
             }
           </nx-dropdown>
           @if (submitAttempted() && !caseType) {
@@ -41,7 +48,34 @@
           </nx-formfield>
         </div>
       }
+      @if (showUtilityType()) {
+        <div data-field="cbiUtilityType">
+          <nx-formfield label="Utility type *">
+            <nx-dropdown formControlName="cbiUtilityType" placeholder="Select utility">
+              @for (opt of utilityTypes; track opt.value) {
+                <nx-dropdown-item [value]="opt.value">{{ opt.label }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+            @if (submitAttempted() && !form().get('cbiUtilityType')?.value) {
+              <nx-error nxFormfieldError>Select a utility type</nx-error>
+            }
+          </nx-formfield>
+        </div>
+      }
     </div>
+    <!-- BMPCC-18492: Denial of Access branch of the CBI functional-design diagram. -->
+    @if (showAuthorityOrder()) {
+      <div class="radio-field" data-field="cbiAuthorityOrder">
+        <p class="radio-label">Was access denied by order of an authority? *</p>
+        <nx-radio-group class="radio-row" formControlName="cbiAuthorityOrder">
+          <nx-radio labelSize="small" value="yes">Yes</nx-radio>
+          <nx-radio labelSize="small" value="no">No</nx-radio>
+        </nx-radio-group>
+        @if (submitAttempted() && !form().get('cbiAuthorityOrder')?.value) {
+          <p class="field-error">Answer required</p>
+        }
+      </div>
+    }
     <!-- BMPCC-18249 AC04: originating location only for the 4 supplier/customer types. -->
     @if (showName()) {
       <div data-field="cbiLocation">

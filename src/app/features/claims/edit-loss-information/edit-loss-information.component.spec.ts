@@ -116,7 +116,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
       const [, options] = fakeDialogOpen.mock.calls[0];
       expect(options.data.impacted).toBe(false);
       expect(options.data.diffs).toEqual([
-        expect.objectContaining({ label: 'Loss description' })
+        expect.objectContaining({ label: 'Claim description' })
       ]);
     });
 

@@ -29,6 +29,14 @@ export interface ScenarioOverrides {
     selectedPolicy?: { policyId: string; policyNumber: string };
     selectedClient?: { clientId: string; clientName: string };
     path?: 'standard' | 'orphan' | null;
+    // v2.4 (BMPCC-22665), FNOL Policies step. `policiesStep`: open the step on
+    // the selected policy; `policySelection`: as if the handler confirmed these
+    // policies (first = the one the FNOL runs on); `policyCreationFailFor`:
+    // these fail once at Submit; `impactedPoliciesError`: the coverage check fails.
+    policiesStep?: boolean;
+    policySelection?: string[];
+    policyCreationFailFor?: string[];
+    impactedPoliciesError?: boolean;
   };
   cwbLocationsAppend?: CwbLocation[];
   notesAppend?: { claimId: string; notes: Note[] };
@@ -41,6 +49,8 @@ export interface ScenarioOverrides {
   // states that real data can't reach (loading, error, stale, ...).
   activePersona?: string;
   simulate?: ScenarioSimulation;
+  // v2.4 (BMPCC-18492): merge into one claim's loss-information record, e.g. CBI answers.
+  lossInformationPatch?: { claimId: string; patch: Partial<LossInformation> };
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -112,7 +122,7 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: `addedParties` (parties a Link policy adds to the converted claim).
 // Bumped again: section entities are now the loss location's address (as in production's
 // Entity column), not names of buildings and things; cached sections keep the old names.
-const STATE_VERSION = 'pi5-teams-sections-v1';
+const STATE_VERSION = 'pi5-teams-sections-fnol-v1';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a
@@ -411,6 +421,16 @@ export class MockStateService {
       next = { ...next, financialOverviews: applyFinancialPatch(next.financialOverviews, overrides.financialPatch) };
     }
     next = { ...next, tasks: appendTasks(next.tasks, overrides.tasksAppend) };
+
+    if (overrides.lossInformationPatch) {
+      const { claimId, patch } = overrides.lossInformationPatch;
+      next = {
+        ...next,
+        lossInformation: next.lossInformation.map(li =>
+          li.claimId === claimId ? { ...li, ...patch } : li
+        )
+      };
+    }
 
     if (overrides.paymentStatuses) {
       const statuses = overrides.paymentStatuses;

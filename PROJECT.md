@@ -152,6 +152,7 @@ interface ScenarioOverrides {
   activePersona?: string; // v2.4 — AuthService persona id (usr-mara / usr-klaus / usr-tobias)
   simulate?: ScenarioSimulation; // v2.4 — { managerDashboard?, assignment? } UI states, see team.model.ts
   sectionBlockers?: Record<string, Partial<SectionBlockers & Pick<ClaimSection, 'dateOfLoss' | 'simulateCloseError'>>>; // v2.4 widened
+  lossInformationPatch?: { claimId: string; patch: Partial<LossInformation> }; // v2.4 — BMPCC-18492
 }
 ```
 
@@ -170,6 +171,7 @@ interface ScenarioOverrides {
 | `fnolStateOverride.selectedPolicy`               | `{ policyId, policyNumber }`       | sets `FnolStateService.selectedPolicy`                                       | bmpcc-216, bmpcc-219 | Avoids redirect-to-search on FNOL routes                                                                                |
 | `fnolStateOverride.selectedClient`               | `{ clientId, clientName }`         | sets `FnolStateService.selectedClient`                                       | (none yet)           | Mutually exclusive with selectedPolicy at service level                                                                 |
 | `fnolStateOverride.path`                         | `'standard' \| 'orphan' \| null`   | sets `FnolStateService.path`                                                 | bmpcc-241            | Drives stepper variant (orphan → 2-step Loss/Summary)                                                                   |
+| `fnolStateOverride.policiesStep / policySelection / policyCreationFailFor / impactedPoliciesError` | `boolean / string[] / string[] / boolean` | FnolStateService.policyStep + MockImpactedPoliciesService | bmpcc-22665 | v2.4. FNOL Policies step: open it, pre-confirm a selection (first = policy the FNOL runs on, entities of the others merged in), fail creation once per listed policy, fail the coverage check once. Applied in prototype-scenario.service.ts applyPolicyStepOverride(). Runtime only, audit skips it |
 | `fnolStateOverride.convertFromSkeletonId`        | `string`                           | resolves via `MockSkeletonClaimService` then calls `prefillFullFromSkeleton` | bmpcc-11006          | Demo prefill — populates the **search**, **loss-info**, and downstream forms; user still navigates each step themselves |
 | `fnolStateOverride.convertSuggestedPolicyNumber` | `string`                           | passed as `opts.policyNumber` to `prefillFullFromSkeleton`                   | bmpcc-11006          | Hints the policy to drop into the search form so the user only needs one click to find the right row                    |
 | `cwbLocationsAppend`                             | `CwbLocation[]`                    | dedupe by `cwbReference`                                                     | bmpcc-219            | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()`                                       |
@@ -178,6 +180,7 @@ interface ScenarioOverrides {
 | `activePersona`                                  | `string` (persona id)              | `AuthService.setActivePersona`                                               | bmpcc-22395, bmpcc-22666 | Applied in `PrototypeScenarioService.applyOverrides`; persists in localStorage like the persona switcher. Audit: skipped (runtime only) |
 | `simulate`                                       | `{ managerDashboard?, assignment? }` | `MockTeamService.setSimulation`                                            | bmpcc-22395, bmpcc-22666 | Loading / error / stale / partial / no-team / no-cases / no-permission on the Claims Manager dashboard; loading / error / empty / save-fails in the reassign dialog. Reset on every Apply (in memory, not session storage). Audit: skipped |
 | `sectionBlockers`                                | `Record<sectionId, Partial<SectionBlockers & {dateOfLoss, simulateCloseError}>>` | `section.id`                                     | close-section, bmpcc-22328, bmpcc-22660 | Merged into the section. v2.4 added `dateOfLoss` (section's own date of loss) and the prototype-only `simulateCloseError` (bulk closure error state) |
+| `lossInformationPatch` | `{ claimId, patch }` | `lossInformation[claimId]` | bmpcc-18492 | Partial merge into the claim's loss-information record (e.g. CBI answers for Edit claim details). Audit: skipped (no assertion key reads it) |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).
 
@@ -268,6 +271,7 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 | `fnol-skeleton-parties`  | `/fnol/skeleton-parties`    | BMPCC-241 (orphan parties — no policy, starts empty)                    |
 | `fnol-skeleton-location` | `/fnol/skeleton-location`   | BMPCC-241 (orphan location — manual entry, no contract-location option) |
 | `fnol-summary`           | `/fnol/summary`             | Wizard summary (step-summary)                                           |
+| `fnol-policies`          | `/fnol/policies`            | BMPCC-22665 Policies step (only when other policies are suggested)       |
 | `financial`              | `/claims/:claimId/financial` | GG booking ticket; `howToTest.route` adds `?view=payments\|reserves\|recovery` |
 | `any`                    | (empty string)              | Metadata-only preconditions; no link rendered                           |
 

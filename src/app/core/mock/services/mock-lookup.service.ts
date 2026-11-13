@@ -108,6 +108,11 @@ export class MockLookupService extends MockBaseService {
     return this.lookups.cbiCaseTypes;
   }
 
+  /** Utility types for the CBI Service Interruption case type. */
+  getCbiUtilityTypesSync(): LookupOption[] {
+    return this.lookups.cbiUtilityTypes;
+  }
+
   /** BMPCC-18249 AC01/AC02: only the CBI case types the policy offers. Empty = no CBI question. */
   getCbiCaseTypesForPolicy(policyNumber: string | null): LookupOption[] {
     const allowed = (policyCbiExtensions as Record<string, string[] | string>)[policyNumber ?? ''];

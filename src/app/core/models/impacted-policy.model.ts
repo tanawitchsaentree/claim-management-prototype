@@ -28,6 +28,32 @@ export interface ImpactedPolicy {
   availableEntityCount: number;
 }
 
+/**
+ * BMPCC-22665: one row of the FNOL "Policies" step. The searched policy, each
+ * policy the coverage check suggested, and any the handler added from search.
+ */
+export interface PolicyChoice {
+  policyNumber: string;
+  clientName: string;
+  lineOfBusiness: string;
+  effectiveDate: string;
+  expiryDate: string;
+  currency: string;
+  status: PolicyStatus;
+  /** Why it is in the list; empty for the searched policy. */
+  matchReason: string;
+  source: 'searched' | 'suggested' | 'search';
+}
+
+/** BMPCC-22665: outcome of creating the claim on one selected policy. */
+export interface PolicyClaimResult {
+  policyNumber: string;
+  lineOfBusiness: string;
+  status: 'created' | 'failed';
+  claimId?: string;
+  reason?: string;
+}
+
 /** Result of pulling one or more impacted policies onto the claim. */
 export interface AddedPolicyEntities {
   policyNumbers: string[];

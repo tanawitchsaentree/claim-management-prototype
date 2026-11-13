@@ -1,0 +1,325 @@
+{
+  "ticketId": "BMPCC-22665",
+  "epicId": "BMPCC-22567",
+  "module": "FNOL",
+  "title": "Manual selection of policy from impacted policies",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "fnol-policies",
+    "fnol-loss-info",
+    "fnol-summary"
+  ],
+  "walkthroughSteps": [
+    "Apply AC-01: the Policies step for Jonas Kaufmann (searched POL-2024-021, suggested POL-2024-022 and POL-2024-023).",
+    "Tick the policies that get a claim, confirm, and Entities & Damages lists all their entities, each tagged with its policy.",
+    "AC-05: Submit creates one claim per policy; a failure stays on its own row with Retry."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC01 · Impacted policies listed, searched policy marked and includable",
+      "plainStatement": "**Opens:** FNOL step **Policies** for Jonas Kaufmann, started from POL-2024-021 (Property). The stepper shows Policies between Loss information and Entities & Damages.\n\n**You see:** A short spinner (\"Checking the client's other policies\"), then one table: POL-2024-021 marked **Searched policy** and ticked, then the two suggested policies POL-2024-022 (Liability) and POL-2024-023 (Engineering), not ticked. Columns: Policy, Product, Policy period, Currency, Coverage match (why it was suggested), Status.\n\n**Try:** Untick the searched policy: it can be left out. The counter under the table says how many claims will be created.\n\nDecision IMP-1: the step sits after Loss information (the coverage check needs the cause of loss and damage type) and before Entities & Damages (the choice decides whose entities are listed). The handler can come back to it from any later step until Submit; Entities & Damages' Back goes here.\nDecision IMP-2: only the searched policy starts ticked; each suggestion is opted into with its reason in view, because every tick is a claim with its own reserves.",
+      "page": "fnol-policies",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC01 · Impacted policies listed, searched policy marked and includable",
+        "preconditions": [
+          {
+            "text": "Policies table: searched POL-2024-021 ticked with a 'Searched policy' badge, POL-2024-022 and POL-2024-023 unticked with their coverage match",
+            "page": "fnol-policies",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policiesStep": true
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Policies table: searched POL-2024-021 ticked with a 'Searched policy' badge, POL-2024-022 and POL-2024-023 unticked with their coverage match",
+        "visualCues": [
+          "Policies table: searched POL-2024-021 ticked with a 'Searched policy' badge, POL-2024-022 and POL-2024-023 unticked with their coverage match"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/policies",
+        "trigger": "Apply, then look at /fnol/policies",
+        "expectedResult": "Policies table: searched POL-2024-021 ticked with a 'Searched policy' badge, POL-2024-022 and POL-2024-023 unticked with their coverage match"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC02 · Select one or many, at least one required, then confirm",
+      "plainStatement": "**Opens:** Same Policies step.\n\n**You see:** Untick everything and press Next: \"Select at least one policy to continue.\" Nothing moves on.\n\n**Try:** Tick POL-2024-022 too and press Next: a confirm \"Create a claim on each of 2 policies?\" names both policies and says they share the loss information. **Continue with 2 policies** goes to Entities & Damages with a toast; the entities of POL-2024-022 are listed with \"· POL-2024-022\" in Covered by, and the old \"Other policies may be impacted\" banner is not shown again. Going back and unticking it takes those entities out again.\n\nDecision IMP-3: the confirm only appears when the result differs from a normal FNOL (more than one claim, or not on the searched policy). Ticking only the searched policy goes straight on.\nDecision IMP-7 (epic open point 1): loss information is entered once and copied onto every claim; after creation each claim's loss information is edited on its own Edit claim details. Entities come from each policy's own cover. Parties go onto every claim; FNOL reserves belong to the first selected policy, the others get theirs on the claim.",
+      "page": "fnol-policies",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC02 · Select one or many, at least one required, then confirm",
+        "preconditions": [
+          {
+            "text": "Error when nothing is ticked; confirm naming both policies when two are ticked",
+            "page": "fnol-policies",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policiesStep": true
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Error when nothing is ticked; confirm naming both policies when two are ticked",
+        "visualCues": [
+          "Error when nothing is ticked; confirm naming both policies when two are ticked"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/policies",
+        "trigger": "Apply, then look at /fnol/policies",
+        "expectedResult": "Error when nothing is ticked; confirm naming both policies when two are ticked"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC03 · No suggestions, no step",
+      "plainStatement": "**Opens:** FNOL Loss information on POL-2024-002 (Nordbyte SE). The coverage check has nothing to suggest for this policy.\n\n**You see:** The stepper has no Policies step.\n\n**Try:** Fill in Loss information and press Next: you land on Entities & Damages directly, the same as before this story. The claim is created on the searched policy only.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC03 · No suggestions, no step",
+        "preconditions": [
+          {
+            "text": "No Policies step in the stepper; Next goes to Entities & Damages",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-002",
+              "policyNumber": "POL-2024-002"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "No Policies step in the stepper; Next goes to Entities & Damages",
+        "visualCues": [
+          "No Policies step in the stepper; Next goes to Entities & Damages"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Apply, then look at /fnol/loss-information",
+        "expectedResult": "No Policies step in the stepper; Next goes to Entities & Damages"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC04 · The right policy is not in the list: search for it",
+      "plainStatement": "**Opens:** Same Policies step.\n\n**You see:** **Search for another policy** under the table.\n\n**Try:** It opens a search with the client name filled in (Jonas Kaufmann). Search: the client's policies are listed, the ones already on the step say \"already in the list\" and can't be ticked twice. Clear the client name and search POL-2024-009 to find any policy. **Add to list** puts it in the table, ticked, badged **Added by you**, with a toast.\n\nDecision IMP-4: the search is a dialog on this step, not a jump back to Search, so the loss information stays and the found policy sits next to the suggestions.\nDecision IMP-5 (open point 4): policies of another client, currency or line of business are allowed; each claim keeps its own policy's currency and line of business. When the selection mixes currencies or clients, a note says so under the table.",
+      "page": "fnol-policies",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC04 · The right policy is not in the list: search for it",
+        "preconditions": [
+          {
+            "text": "Search dialog prefilled with the client; picked policy appears ticked with 'Added by you'",
+            "page": "fnol-policies",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policiesStep": true
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Search dialog prefilled with the client; picked policy appears ticked with 'Added by you'",
+        "visualCues": [
+          "Search dialog prefilled with the client; picked policy appears ticked with 'Added by you'"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/policies",
+        "trigger": "Apply, then look at /fnol/policies",
+        "expectedResult": "Search dialog prefilled with the client; picked policy appears ticked with 'Added by you'"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC05 · One claim number per policy, failures shown without hiding the rest",
+      "plainStatement": "**Opens:** FNOL Summary after POL-2024-021, POL-2024-022 and POL-2024-023 were selected. \"Claims to be created\" has one entry per policy with its product; reserves for the two extra policies read \"Set on the claim once it is created\".\n\n**Try:** Tick some entities first if you want sections, or submit as is. Press **Submit claim**: an amber message \"2 of 3 claims created\", then one row per policy: POL-2024-021 and POL-2024-022 with their claim numbers as links, POL-2024-023 \"Not created. The policy changed after it was suggested.\" with **Retry**. Retry creates it and a toast gives the new claim number.\n\nDecision IMP-8 (open point 5): if a policy changed between suggestion and creation, that policy fails on its own and the others still go through.\nDecision IMP-6 (open point 2): the claims are listed together here and share the loss information; a lasting group link is left to the Loss event, the app's existing way to group claims of one event.",
+      "page": "fnol-summary",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC05 · One claim number per policy, failures shown without hiding the rest",
+        "preconditions": [
+          {
+            "text": "After Submit: '2 of 3 claims created', two claim links and one failed row with Retry",
+            "page": "fnol-summary",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": [
+              "POL-2024-021",
+              "POL-2024-022",
+              "POL-2024-023"
+            ],
+            "policyCreationFailFor": [
+              "POL-2024-023"
+            ]
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "After Submit: '2 of 3 claims created', two claim links and one failed row with Retry",
+        "visualCues": [
+          "After Submit: '2 of 3 claims created', two claim links and one failed row with Retry"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/summary",
+        "trigger": "Apply, then look at /fnol/summary",
+        "expectedResult": "After Submit: '2 of 3 claims created', two claim links and one failed row with Retry"
+      }
+    },
+    {
+      "id": "AC-05b",
+      "statement": "AC05b · All selected policies get their claim",
+      "plainStatement": "**Opens:** FNOL Summary after POL-2024-021 and POL-2024-022 were selected.\n\n**Try:** Submit claim: a green \"2 claims created\" with both claim numbers as links. Each opens its own Claim overview with the same loss information and its own policy, client and line of business.",
+      "page": "fnol-summary",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC05b · All selected policies get their claim",
+        "preconditions": [
+          {
+            "text": "After Submit: '2 claims created' with two claim links",
+            "page": "fnol-summary",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": [
+              "POL-2024-021",
+              "POL-2024-022"
+            ]
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "After Submit: '2 claims created' with two claim links",
+        "visualCues": [
+          "After Submit: '2 claims created' with two claim links"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/summary",
+        "trigger": "Apply, then look at /fnol/summary",
+        "expectedResult": "After Submit: '2 claims created' with two claim links"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "AC06 · Loading, error and empty",
+      "plainStatement": "**Opens:** Policies step while the coverage check is down.\n\n**You see:** A red message \"We couldn't check the client's other policies.\" with **Try again** and **Continue with POL-2024-021 only**. The searched policy is still listed and ticked, so Next also carries on as a normal FNOL. **Try again**: this time the check answers and the suggestions appear.\n\n**Loading:** every visit starts with the \"Checking the client's other policies\" spinner (AC-01). **Empty:** no suggestions means no step at all (AC-03); the policy search dialog has its own \"No policies match\" and \"The search didn't answer\" states.",
+      "page": "fnol-policies",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC06 · Loading, error and empty",
+        "preconditions": [
+          {
+            "text": "Error message with Try again and Continue with the searched policy only",
+            "page": "fnol-policies",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policiesStep": true,
+            "impactedPoliciesError": true
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Error message with Try again and Continue with the searched policy only",
+        "visualCues": [
+          "Error message with Try again and Continue with the searched policy only"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/policies",
+        "trigger": "Apply, then look at /fnol/policies",
+        "expectedResult": "Error message with Try again and Continue with the searched policy only"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "AC07 · Figma file, German text length, accessibility review, PO and Ranger review",
+      "plainStatement": "Not done here: there is no Figma file; the working step above is the design deliverable. Keyboard and labels are in place (checkbox labels per policy, live counter, announced errors), German length, smaller-screen layout and the PO / Ranger review are still to do.",
+      "page": "fnol-policies",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "AC07 · Figma file, German text length, accessibility review, PO and Ranger review",
+        "preconditions": [
+          {
+            "text": "Figma link added to the story and the epic",
+            "page": "fnol-policies",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policiesStep": true
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Figma link added to the story and the epic",
+        "visualCues": [
+          "Figma link added to the story and the epic"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/policies",
+        "trigger": "Apply, then look at /fnol/policies",
+        "expectedResult": "Figma link added to the story and the epic"
+      }
+    }
+  ]
+}

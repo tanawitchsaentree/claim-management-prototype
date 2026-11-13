@@ -44,5 +44,7 @@ export interface Lookups {
   reserveSubTypes: LookupOption[];
   narrativeOptions: LookupOption[];
   cbiCaseTypes: LookupOption[];
+  /** CBI Service Interruption: which utility failed (CBI functional design diagram). */
+  cbiUtilityTypes: LookupOption[];
   operatingEntities: LookupOption[];
 }

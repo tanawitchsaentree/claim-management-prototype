@@ -1,0 +1,66 @@
+@use '../../../../shared/styles/form-section' as fs;
+
+// Same card, title row and label/value styles as the Loss information card on
+// this page (edit-loss-information.component.scss .eli-*), so the CBI card
+// reads as one more card of the same page. @see edit-loss-information.component.scss
+
+:host {
+  display: block;
+}
+
+.cbi-card {
+  @include fs.card;
+}
+
+.cbi-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-ndbx-28);
+}
+
+.cbi-card__heading {
+  @include fs.section-heading;
+  margin-bottom: 0;
+}
+
+.cbi-card__edited {
+  margin-left: var(--space-ndbx-6);
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 400;
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+
+.cbi-card__divider {
+  @include fs.divider;
+}
+
+.cbi-card__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-base);
+}
+
+.cbi-card__label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cbi-card__value {
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+}
+
+.cbi-card__hint {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.cbi-card__was {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}

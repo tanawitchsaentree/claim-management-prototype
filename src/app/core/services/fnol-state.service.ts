@@ -20,6 +20,10 @@ import { LossInformation } from '../models/loss-information.model';
 import { FileRestriction } from '../models/claim-overview.model';
 import { futureDateValidator, dateOrderValidator } from '../../shared/validators/date.validators';
 
+// BMPCC-22665: shown between Loss information and Entities & Damages only when
+// the coverage check suggests other policies (see PolicySelectionService).
+const POLICIES_STEP: StepConfig = { key: 'policies', route: '/fnol/policies', label: 'Policies' };
+
 const HAPPY_PATH_STEPS: StepConfig[] = [
   { key: 'loss-information', route: '/fnol/loss-information', label: 'Loss information' },
   { key: 'entities-damages', route: '/fnol/entities-damages', label: 'Entities & Damages' },
@@ -93,6 +97,9 @@ export class FnolStateService {
       cbiCaseType: new FormControl<string | null>(null),
       cbiThirdPartyName: new FormControl<string>(''),
       cbiThirdPartyIndustry: new FormControl<string>(''),
+      // BMPCC-18492: Denial of Access / Service Interruption branch fields (cbi-rules.ts).
+      cbiAuthorityOrder: new FormControl<'yes' | 'no' | null>(null),
+      cbiUtilityType: new FormControl<string | null>(null),
       // Reuses the exact same GIS-search-or-manual pattern as lossLocation
       // above (LocationPickerComponent, no-policy path — CBI's originating
       // location is a third party's site, never the insured's own policy
@@ -132,6 +139,13 @@ export class FnolStateService {
   // the unaudited answer the rule exists to prevent.
   recoveryPotentialNote: string | null = null;
   selectedPolicyFull: Policy | null = null;
+  /**
+   * BMPCC-22665: null = no Policies step in this FNOL. `searched` is the policy
+   * picked on Search; `selection` the policies that get a claim (null until
+   * the handler confirms the step); `added` those found via policy search.
+   */
+  policyStep: { searched: FnolSelectedPolicy; selection: string[] | null; added: string[] } | null =
+    null;
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;
   skeletonClaimId: string | null = null;
@@ -139,12 +153,13 @@ export class FnolStateService {
   // ── Step config ────────────────────────────────────────────────────
 
   getStepsForPath(wizardPath: 'happy' | 'skeleton'): StepConfig[] {
-    return wizardPath === 'happy' ? HAPPY_PATH_STEPS : SKELETON_PATH_STEPS;
+    if (wizardPath !== 'happy') return SKELETON_PATH_STEPS;
+    return this.policyStep ? [HAPPY_PATH_STEPS[0], POLICIES_STEP, ...HAPPY_PATH_STEPS.slice(1)] : HAPPY_PATH_STEPS;
   }
 
   isWizardRoute(url: string): boolean {
     return (
-      HAPPY_PATH_STEPS.some(s => url.includes(s.route)) ||
+      [...HAPPY_PATH_STEPS, POLICIES_STEP].some(s => url.includes(s.route)) ||
       SKELETON_PATH_STEPS.some(s => url.includes(s.route))
     );
   }
@@ -203,6 +218,13 @@ export class FnolStateService {
     this.selectedPolicy = policy;
     this.selectedPolicyFull = full ?? null;
     this.selectedClient = null;
+    this.policyStep = null;
+  }
+
+  /** BMPCC-22665: the claim-carrying policy changes, the searched one and the step stay. */
+  setLeadPolicy(policy: FnolSelectedPolicy, full: Policy | null): void {
+    this.selectedPolicy = policy;
+    this.selectedPolicyFull = full;
   }
 
   setSkeleton(value: SkeletonFormValue, claimId: string): void {
@@ -257,6 +279,7 @@ export class FnolStateService {
     this.selectedClient = null;
     this.selectedPolicy = null;
     this.selectedPolicyFull = null;
+    this.policyStep = null;
     this.path = null;
     this.skeleton = null;
     this.skeletonClaimId = null;

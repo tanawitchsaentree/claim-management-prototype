@@ -1,0 +1,59 @@
+<section class="cbi-card" data-tour-id="eli-cbi-card">
+  <div class="cbi-card__title-row">
+    <h2 class="cbi-card__heading">
+      Contingent business interruption (CBI)
+      @if (changed()) {
+        <span class="cbi-card__edited">Edited</span>
+      }
+    </h2>
+    @if (!editing()) {
+      <button
+        nxButton="tertiary small"
+        type="button"
+        aria-label="Edit contingent business interruption"
+        (click)="edit.emit()"
+      >
+        <nx-icon name="edit" size="s" nxIconPositionStart></nx-icon>
+        {{ answered ? 'Edit' : 'Answer' }}
+      </button>
+    } @else {
+      <button nxButton="tertiary small" type="button" (click)="cancelEdit.emit()">Cancel</button>
+    }
+  </div>
+
+  @if (!editing()) {
+    @if (!answered) {
+      <div class="cbi-card__row">
+        <span class="cbi-card__label">Caused by CBI</span>
+        <span class="cbi-card__value">Not answered yet</span>
+        <span class="cbi-card__hint">
+          This claim has Business Interruption. Say whether it comes from damage at a supplier,
+          customer or other third party.
+        </span>
+      </div>
+    }
+    @for (row of rows; track row.label; let first = $first) {
+      @if (answered || row.was) {
+        @if (!first || !answered) {
+          <hr class="cbi-card__divider" />
+        }
+        <div class="cbi-card__row">
+          <span class="cbi-card__label">{{ row.label }}</span>
+          <span class="cbi-card__value">{{ row.value || 'Not provided' }}</span>
+          @if (row.was) {
+            <span class="cbi-card__was">was: {{ row.was }}</span>
+          }
+        </div>
+      }
+    }
+  } @else {
+    <app-cbi-panel
+      [form]="form()"
+      [cbiLocation]="cbiLocation()"
+      [caseTypeOptions]="caseTypeOptions()"
+      [submitAttempted]="submitAttempted()"
+      [showTitle]="false"
+      (answerChange)="answerChange.emit()"
+    ></app-cbi-panel>
+  }
+</section>

@@ -1,4 +1,6 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
+import { MockImpactedPoliciesService } from '../mock/services/mock-impacted-policies.service';
+import { MockEntitiesDamagesService } from '../mock/services/mock-entities-damages.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { MockStateService, ScenarioOverrides } from '../mock/state/mock-state.service';
@@ -43,6 +45,7 @@ export class PrototypeScenarioService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
   private readonly teamSvc = inject(MockTeamService);
+  private readonly injector = inject(Injector);
 
   // Ticket-JSON registry (public/tickets/*.json) — same data
   // ClaimDevHelperService.loadTickets() loads, moved here so the tracker
@@ -189,5 +192,26 @@ export class PrototypeScenarioService {
     if (seed.selectedClient) this.fnolStateSvc.setSelectedClient(seed.selectedClient);
     if (seed.selectedPolicy) this.fnolStateSvc.setSelectedPolicy(seed.selectedPolicy);
     if (seed.path !== undefined) this.fnolStateSvc.path = seed.path;
+    await this.applyPolicyStepOverride(seed);
+  }
+
+  // BMPCC-22665: FNOL Policies step scenarios. Also clears entity merges left
+  // by an earlier scenario, so re-applying never duplicates pulled-in entities.
+  private async applyPolicyStepOverride(
+    seed: NonNullable<ScenarioOverrides['fnolStateOverride']>
+  ): Promise<void> {
+    const impacted = this.injector.get(MockImpactedPoliciesService);
+    impacted.resetState();
+    this.injector.get(MockEntitiesDamagesService).resetState();
+    impacted.simulateSuggestionError = !!seed.impactedPoliciesError;
+    impacted.setCreationFailures(seed.policyCreationFailFor ?? []);
+    const searched = this.fnolStateSvc.selectedPolicy;
+    if (!searched || !(seed.policiesStep || seed.policySelection?.length)) return;
+    this.fnolStateSvc.policyStep = { searched, selection: null, added: [] };
+    if (seed.policySelection?.length) {
+      // Lazy, like MockStateService's own cross-service resets: core does not load features eagerly.
+      const m = await import('../../features/fnol/services/policy-selection.service');
+      await this.injector.get(m.PolicySelectionService).applySelection(seed.policySelection);
+    }
   }
 }

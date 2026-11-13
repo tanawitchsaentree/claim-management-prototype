@@ -15,6 +15,29 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-13 · BMPCC-22665 (Manual selection of policy from impacted policies, epic BMPCC-22567)
+
+- **Source:** Jira BMPCC-22665 + epic open points, handed over with the PI 2026.5 batch. Production (`claims-management-main`, entities-damages MFE) only has the E&D banner, no selection step.
+- **File:** `public/tickets/bmpcc-22665.json`, 8 ACs (7 done, 1 todo: Figma / German / PO and Ranger review). `champ-impacted-policies.json` AC-01 got a note: the banner now only shows when the Policies step was not used.
+- **Built:** FNOL step **Policies** (`step-policies`, route `/fnol/policies`) between Loss information and Entities & Damages, only when `MockImpactedPoliciesService` has suggestions (same data the banner reads; new seed POL-2024-021 -> 022, 023, all Jonas Kaufmann). Policy search dialog (`find-policy-modal`, MockPolicySearchService). Selection merges the other policies' entities into the tree with the existing `addEntitiesFromPolicy`, and `removeEntitiesFromPolicy` takes them out again. Summary groups and creates one claim per selected policy and shows `claim-creation-result` (claim links, failed rows with Retry).
+- **Decisions:** IMP-1 placement + back navigation; IMP-2 only the searched policy pre-ticked; IMP-3 confirm only when the result differs from a normal FNOL; IMP-4 search is a dialog on the step; IMP-5 other client / currency / LoB allowed, with a note; IMP-6 no new group object (Loss event is the follow-up); IMP-7 loss information and parties shared, reserves on the first policy only; IMP-8 per-policy failure, others still created.
+- **Schema:** v2.4 `fnolStateOverride.policiesStep / policySelection / policyCreationFailFor / impactedPoliciesError`; page `fnol-policies`; `audit-ac-route-overrides` rule for `/fnol/policies`. Applying any fnolStateOverride now also clears entity merges and impacted-policy state, so scenarios can be re-applied without duplicates.
+- **Size note:** `step-summary.component.ts/.html` and `step-loss-information.component.ts` were already far over the size limits; the additions there are kept to the branch points, the new logic is in `PolicySelectionService` and the new components.
+
+---
+
+## 2026-11-13 · BMPCC-18492 (CBI Extension for Edit claim, epic BMPCC-17927)
+
+- **Source:** Jira BMPCC-18492 + epic, handed over by the user with the PI 2026.5 UI/UX ticket batch (Confluence 3360032687). Memory `project_cbi_field_gaps` for the branch fields.
+- **File:** `public/tickets/bmpcc-18492.json`, 9 ACs (8 done, 1 todo: Figma/German/PO review).
+- **Built:** CBI card on Edit claim details (`edit-cbi-card`), read-first, edits with the same `app-cbi-panel` FNOL uses, saves through the page's one Update and the Field / Original / Updated confirm. Adding Business interruption opens the card on the question; removing it clears the answers (shown in the confirm). CBI copies on open BI section entities are kept in step (`LossInfoSyncService.syncCbiToSections`).
+- **Decisions:** CBI-EDIT-1 own card under Loss information. CBI-EDIT-2 the 12 case types are one dropdown grouped Supplier / Customer / Denial of Access / Loss of Attraction / Other (`nx-dropdown-group`), FNOL too. CBI-EDIT-3 Denial of Access asks "Was access denied by order of an authority?" (Yes/No, required), Service Interruption asks Utility type (Power, Gas, Water, Steam, Telecom, IT; `lookups.json cbiUtilityTypes`), Loss of Attraction and (Air)Port Blockage get no extra field. CBI applies / case type count as section-impacting (Review needed).
+- **Also:** the description field on Edit claim details is now "Claim description" (label, diff label, error, sync key); FNOL keeps "Loss description" (user call 2026-11-13).
+- **Schema:** v2.4 `lossInformationPatch` (merge into one claim's loss-information record). `LossInformation.cbiAuthorityOrder / cbiUtilityType`.
+- **Found, not fixed:** 7 seeded claims with cause "Other" (CLM-2024-002/008/009/013/018/028) have no "Other Event (please specify)" text, so Edit claim details refuses Update until it is typed. The ticket's patches add a qualifier.
+
+---
+
 ## 2026-10-20 — GG booking tickets GG-1 to GG-8 (Global Genius, epic BMPCC-18348)
 
 - **Source:** Jira BMPCC-18348 (epic), FE stories 19168 / 19169 / 19170, claim-level 20232, 19412 (skip when no GG policy), 21754 (unpaid premium), 20953 (limit breach redesign), UX story 18282, DLQ reprocessing 14759; Bernd Moser's ADR "Claims Handover Domain — Booking Integration to Global Genius via BIH"; Nidhi Goel's "Payment Split - Handover Domain" (PROPOSED); PO note relayed by the user ("handlers need visibility of failed postings and the ability to manually re-trigger"). Built on user instruction across three sessions: orchestrator claim-management-96 (core models, mock services, presets, tickets, DEV banner), Builder A claim-management-4f (money lists, Recoveries page, summary line, Task manager), Builder B claim-management-ea (Make payment, shared warning list, Add reserve, claim banner, bell). Two handler-persona usability reviews (subagent, screenshots only, no code) drove round 2.

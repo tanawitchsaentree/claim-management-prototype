@@ -70,10 +70,12 @@
         </nx-context-menu>
       </div>
 
-      <app-impacted-policies-banner
-        [policyNumber]="policyNumber"
-        (policiesAdded)="onPoliciesAdded()"
-      ></app-impacted-policies-banner>
+      @if (!policiesDecided) {
+        <app-impacted-policies-banner
+          [policyNumber]="policyNumber"
+          (policiesAdded)="onPoliciesAdded()"
+        ></app-impacted-policies-banner>
+      }
       @if (!hasLossLocation) {
         <nx-message context="info" class="ed-no-location-banner">
           No location of loss was added — limits are shown per policy coverage instead of per

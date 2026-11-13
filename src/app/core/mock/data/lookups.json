@@ -191,5 +191,13 @@
     { "value": "loss-of-attraction-without-pd", "label": "Loss of Attraction — Without PD Trigger" },
     { "value": "port-blockage", "label": "(Air)Port Blockage" },
     { "value": "service-interruption", "label": "Service Interruption (Public or Private Utilities)" }
+  ],
+  "cbiUtilityTypes": [
+    { "value": "power", "label": "Power" },
+    { "value": "gas", "label": "Gas" },
+    { "value": "water", "label": "Water" },
+    { "value": "steam", "label": "Steam" },
+    { "value": "telecom", "label": "Telecom" },
+    { "value": "it", "label": "IT" }
   ]
 }

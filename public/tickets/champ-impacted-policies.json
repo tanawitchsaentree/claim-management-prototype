@@ -4,7 +4,9 @@
   "module": "FNOL",
   "title": "Entities & Damages — Other impacted policies, and pulling their entities onto the claim",
   "targetClaim": "CLM-2024-001",
-  "pages": ["fnol-entities-damages"],
+  "pages": [
+    "fnol-entities-damages"
+  ],
   "walkthroughSteps": [
     "Apply AC-01 — selects POL-2024-001 in FNOL. Navigate to /fnol/entities-damages",
     {
@@ -27,7 +29,7 @@
     {
       "id": "AC-01",
       "statement": "Given a policy is selected in FNOL and sibling policies hold entities that may belong to this loss, when Entities & Damages loads, then an info banner names those policies and states how many extra entities they would make available.",
-      "plainStatement": "With POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted — 2 policies outside this claim hold entities that may belong to this loss — POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on — real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.",
+      "plainStatement": "With POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted — 2 policies outside this claim hold entities that may belong to this loss — POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on — real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.\n\n**NOTE (BMPCC-22665, 2026-11-13):** in the normal flow the handler now meets these suggestions earlier, on the FNOL **Policies** step after Loss information, where each selected policy gets its own claim. Once that step is answered this banner is not shown again. It still shows when Entities & Damages is opened without the step, as this ticket does; adding from here keeps the old behaviour (entities onto this one claim).",
       "page": "fnol-entities-damages",
       "buildStatus": "done",
       "setup": {

@@ -46,6 +46,12 @@ export const FNOL_ROUTES: Routes = [
           import('./steps/loss-details/loss-details.component').then(m => m.LossDetailsComponent)
       },
       {
+        // BMPCC-22665: only reachable when the coverage check suggests other policies.
+        path: 'policies',
+        loadComponent: () =>
+          import('./steps/step-policies/step-policies.component').then(m => m.StepPoliciesComponent)
+      },
+      {
         path: 'entities-damages',
         loadComponent: () =>
           import('./steps/step-entities-damages/step-entities-damages.component').then(

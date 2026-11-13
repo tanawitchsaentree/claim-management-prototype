@@ -1,0 +1,365 @@
+{
+  "ticketId": "BMPCC-18492",
+  "epicId": "BMPCC-17927",
+  "module": "Claims",
+  "title": "CBI Extension for Edit claim",
+  "targetClaim": "CLM-2024-008",
+  "pages": [
+    "overview",
+    "fnol-loss-info"
+  ],
+  "walkthroughSteps": [
+    "Apply AC-01: Edit claim details of CLM-2024-008 shows a CBI card under Loss information, read-first.",
+    "Press Edit on the card: the same CBI questions as FNOL Loss information. Change something and press Update: the Field / Original / Updated confirm, then a toast.",
+    "AC-02 to AC-05 cover the empty, grouped picker, branch-field and add/remove-BI cases. AC-06 is the Claim description label."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC01 · Edit claim details shows the CBI answers read-first",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008 (TechStart Pte Ltd, Business Interruption).\n\n**You see:** A card **Contingent business interruption (CBI)** right under Loss information: Caused by CBI Yes, case type Supplier, Named, Supplier name Kestrel Semiconductors Pte Ltd, Supplier industry, Originating loss location. Nothing is an open field until you press **Edit**.\n\n**Try:** Edit, change the supplier name, press **Update (1)**. The confirm table shows CBI third party with its original and updated value. **Confirm changes** gives the toast \"Claim details updated\". The CBI entities of the open Business Interruption section get the new name too.\n\nDecision: CBI is its own card under Loss information (it refines that card's Type of damage) and above Locations of loss. DESIGN DECISION CBI-EDIT-1 in edit-cbi-card.component.ts.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC01 · Edit claim details shows the CBI answers read-first",
+        "preconditions": [
+          {
+            "text": "CBI card under Loss information with the supplier answers as read-only rows and an Edit button",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "lossInformationPatch": {
+            "claimId": "CLM-2024-008",
+            "patch": {
+              "specifyOtherCauseOfLoss": "Data breach",
+              "cbiApplicable": "yes",
+              "cbiCaseType": "supplier-named",
+              "cbiThirdPartyName": "Kestrel Semiconductors Pte Ltd",
+              "cbiThirdPartyIndustry": "Semiconductor manufacturing",
+              "cbiLocation": {
+                "locations": [
+                  {
+                    "id": "cbi-loc-demo",
+                    "source": "manual",
+                    "displayName": "Kestrel Semiconductors, Jurong West, Singapore",
+                    "addressLine1": "Jurong West Street 41",
+                    "postalCode": "649414",
+                    "city": "Singapore",
+                    "country": "Singapore"
+                  }
+                ]
+              },
+              "cbiAuthorityOrder": null,
+              "cbiUtilityType": null
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "CBI card under Loss information with the supplier answers as read-only rows and an Edit button",
+        "visualCues": [
+          "CBI card under Loss information with the supplier answers as read-only rows and an Edit button"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-008/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-008/loss-information/edit",
+        "expectedResult": "CBI card under Loss information with the supplier answers as read-only rows and an Edit button"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC02 · A Business Interruption claim with no CBI answer asks for it",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008 as seeded: Business Interruption, CBI never answered.\n\n**You see:** The CBI card says **Not answered yet** with a short reason and an **Answer** button.\n\n**Try:** Answer, pick Yes, pick a Supplier case type and press Update without a name or location: Update is refused and the missing fields are marked. Fill them in and Update: the confirm table lists every CBI row that changed.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC02 · A Business Interruption claim with no CBI answer asks for it",
+        "preconditions": [
+          {
+            "text": "CBI card with 'Not answered yet' and an Answer button",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "lossInformationPatch": {
+            "claimId": "CLM-2024-008",
+            "patch": {
+              "specifyOtherCauseOfLoss": "Data breach"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "CBI card with 'Not answered yet' and an Answer button",
+        "visualCues": [
+          "CBI card with 'Not answered yet' and an Answer button"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-008/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-008/loss-information/edit",
+        "expectedResult": "CBI card with 'Not answered yet' and an Answer button"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC03 · The 12 CBI case types in one grouped list (open question 2)",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008, CBI card in edit mode (press Answer, then Yes).\n\n**You see:** **CBI case type** opens one list with group headings: Supplier, Customer, Denial of Access, Loss of Attraction, Other. Each option keeps its full name so the closed field reads on its own.\n\n**Try:** Apply AC-04b to see a policy that offers only 5 case types: empty groups disappear.\n\nDecision: grouped dropdown, not a radio grid or a two-step picker. One field, the headings do the scanning. DESIGN DECISION CBI-EDIT-2 in shared/utils/cbi-rules.ts. Same list on FNOL Loss information.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC03 · The 12 CBI case types in one grouped list (open question 2)",
+        "preconditions": [
+          {
+            "text": "Case type list split into 5 headed groups",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "lossInformationPatch": {
+            "claimId": "CLM-2024-008",
+            "patch": {
+              "specifyOtherCauseOfLoss": "Data breach"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Case type list split into 5 headed groups",
+        "visualCues": [
+          "Case type list split into 5 headed groups"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-008/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-008/loss-information/edit",
+        "expectedResult": "Case type list split into 5 headed groups"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC04 · Denial of Access asks whether an authority ordered it",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008 with CBI case type Denial of Access, Without PD Trigger (Weather Condition).\n\n**You see:** Read rows include **Access denied by order of an authority: Yes**.\n\n**Try:** Edit and switch to a Supplier type: the authority question goes and the supplier name and location appear. Update: the confirm shows the authority answer being cleared.\n\nDecision: the four Denial of Access types get a required Yes/No \"Was access denied by order of an authority?\" (the CBI functional-design diagram). Loss of Attraction and (Air)Port Blockage get no extra field: the diagram gives none for Loss of Attraction and leaves Port Blockage open. DESIGN DECISION CBI-EDIT-3.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC04 · Denial of Access asks whether an authority ordered it",
+        "preconditions": [
+          {
+            "text": "CBI rows show the Denial of Access case type and 'Access denied by order of an authority: Yes'",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "lossInformationPatch": {
+            "claimId": "CLM-2024-008",
+            "patch": {
+              "specifyOtherCauseOfLoss": "Data breach",
+              "cbiApplicable": "yes",
+              "cbiCaseType": "denial-of-access-without-pd-weather",
+              "cbiAuthorityOrder": "yes",
+              "cbiThirdPartyName": "",
+              "cbiThirdPartyIndustry": "",
+              "cbiLocation": {
+                "locations": []
+              },
+              "cbiUtilityType": null
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "CBI rows show the Denial of Access case type and 'Access denied by order of an authority: Yes'",
+        "visualCues": [
+          "CBI rows show the Denial of Access case type and 'Access denied by order of an authority: Yes'"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-008/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-008/loss-information/edit",
+        "expectedResult": "CBI rows show the Denial of Access case type and 'Access denied by order of an authority: Yes'"
+      }
+    },
+    {
+      "id": "AC-04b",
+      "statement": "AC04b · Service Interruption asks which utility failed",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-013 (Nordbyte SE, policy offers 5 CBI case types).\n\n**You see:** Case type Service Interruption (Public or Private Utilities), **Utility type: Power**.\n\n**Try:** Edit and open the utility list: Power, Gas, Water, Steam, Telecom, IT. Open the case type list: only Supplier, Customer and Other groups, because this policy offers nothing else.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC04b · Service Interruption asks which utility failed",
+        "preconditions": [
+          {
+            "text": "CBI rows show Service Interruption and Utility type Power",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "lossInformationPatch": {
+            "claimId": "CLM-2024-013",
+            "patch": {
+              "specifyOtherCauseOfLoss": "Phishing attack",
+              "cbiApplicable": "yes",
+              "cbiCaseType": "service-interruption",
+              "cbiUtilityType": "power",
+              "cbiThirdPartyName": "",
+              "cbiThirdPartyIndustry": "",
+              "cbiLocation": {
+                "locations": []
+              },
+              "cbiAuthorityOrder": null
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "CBI rows show Service Interruption and Utility type Power",
+        "visualCues": [
+          "CBI rows show Service Interruption and Utility type Power"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-013/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-013/loss-information/edit",
+        "expectedResult": "CBI rows show Service Interruption and Utility type Power"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC05 · Adding or removing Business Interruption brings CBI along",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-001 (Material damage, Financial loss, no CBI).\n\n**You see:** No CBI card.\n\n**Try:** Edit, add **Business interruption** to Type of damage: the CBI card appears already open on the question, since it is now required. Remove Business interruption again: the card goes. On AC-01's claim, removing Business interruption shows the CBI rows being cleared in the confirm table, and the open sections are marked Review needed.\n\nDecision: whether CBI applies and its case type count as section-impacting changes (Review needed); the details (name, industry, location, authority, utility) do not.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC05 · Adding or removing Business Interruption brings CBI along",
+        "preconditions": [
+          {
+            "text": "No CBI card until Business interruption is added; then it opens on the question",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "No CBI card until Business interruption is added; then it opens on the question",
+        "visualCues": [
+          "No CBI card until Business interruption is added; then it opens on the question"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-001/loss-information/edit",
+        "expectedResult": "No CBI card until Business interruption is added; then it opens on the question"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "AC06 · The description field on Edit claim details is called Claim description",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008.\n\n**You see:** The last row of Loss information reads **Claim description**, in read view, in edit view and in the required-field error. The confirm table and the toast also say Claim description.\n\n**Try:** FNOL Loss information still says **Loss description**, as decided (user call 2026-11-13).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC06 · The description field on Edit claim details is called Claim description",
+        "preconditions": [
+          {
+            "text": "Field label 'Claim description' on Edit claim details",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "lossInformationPatch": {
+            "claimId": "CLM-2024-008",
+            "patch": {
+              "specifyOtherCauseOfLoss": "Data breach"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Field label 'Claim description' on Edit claim details",
+        "visualCues": [
+          "Field label 'Claim description' on Edit claim details"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-008/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-008/loss-information/edit",
+        "expectedResult": "Field label 'Claim description' on Edit claim details"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "AC07 · FNOL Loss information asks the same CBI questions",
+      "plainStatement": "**Opens:** FNOL Loss information on POL-2024-001.\n\n**You see:** Tick Business interruption, answer Yes: the same grouped case type list. Denial of Access types add the authority question, Service Interruption adds Utility type; both are in the error summary if left empty.\n\n**Try:** Submit the FNOL: the answers land on the new claim and show on its Edit claim details CBI card.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "AC07 · FNOL Loss information asks the same CBI questions",
+        "preconditions": [
+          {
+            "text": "FNOL CBI block with grouped case types and the branch questions",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "FNOL CBI block with grouped case types and the branch questions",
+        "visualCues": [
+          "FNOL CBI block with grouped case types and the branch questions"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Apply, then look at /fnol/loss-information",
+        "expectedResult": "FNOL CBI block with grouped case types and the branch questions"
+      }
+    },
+    {
+      "id": "AC-08",
+      "statement": "AC08 · Figma file, German text length and PO review",
+      "plainStatement": "Not done here: there is no Figma file. The working screens above are the design deliverable. German text length and PO sign-off are still to do.",
+      "page": "overview",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "AC08 · Figma file, German text length and PO review",
+        "preconditions": [
+          {
+            "text": "Figma link added to the story",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Figma link added to the story",
+        "visualCues": [
+          "Figma link added to the story"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-008/loss-information/edit",
+        "trigger": "Apply, then look at /claims/CLM-2024-008/loss-information/edit",
+        "expectedResult": "Figma link added to the story"
+      }
+    }
+  ]
+}

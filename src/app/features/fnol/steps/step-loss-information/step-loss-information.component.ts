@@ -48,11 +48,13 @@ import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import { LookupOption, LocationPickerOutput, OTHER_CAUSE_KEY } from '../../../../core/models';
 import {
+  cbiExtraFieldErrors,
   cbiShowThirdPartyName,
   cbiThirdPartyRequired,
   syncCbiControls
 } from '../../../../shared/utils/cbi-rules';
 import { CbiPanelComponent } from '../../../../shared/components/cbi-panel/cbi-panel.component';
+import { PolicySelectionService } from '../../services/policy-selection.service';
 import {
   DuplicateCheckService,
   DuplicateClaim
@@ -120,6 +122,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
   private lookupSvc = inject(MockLookupService);
   private duplicateCheckSvc = inject(DuplicateCheckService);
   private router = inject(Router);
+  private readonly policySelection = inject(PolicySelectionService);
   private modalService = inject(NxDialogService);
   private stageSvc = inject(ScenarioStageService);
   private readonly live = inject(LiveAnnouncer);
@@ -429,6 +432,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
           message: `${this.fieldLabels['cbiThirdPartyName']}: required`
         });
       }
+      errors.push(...cbiExtraFieldErrors(this.form));
       // BMPCC-18249 AC04: the originating location is only asked for supplier/customer case types.
       if (this.showCbiThirdPartyName && this.cbiLocation.value.locations.length === 0) {
         errors.push({
@@ -725,7 +729,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     this.router.navigate(['/dashboard']);
   }
 
-  onNext(): void {
+  async onNext(): Promise<void> {
     this.submitAttempted = true;
     this.markAllTouched(this.form);
 
@@ -743,6 +747,7 @@ export class StepLossInformationComponent implements OnInit, OnDestroy, FnolLoss
     }
 
     this.fnolState.markStepComplete('loss-information');
-    this.router.navigate(['/fnol/entities-damages']);
+    // BMPCC-22665: the Policies step comes next when other policies are suggested.
+    this.router.navigateByUrl(await this.policySelection.routeAfterLossInformation());
   }
 }

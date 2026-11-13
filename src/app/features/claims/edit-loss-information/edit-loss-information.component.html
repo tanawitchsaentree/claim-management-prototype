@@ -18,7 +18,7 @@
     </app-page-header>
 
     <!-- Card: Loss information — Claim description card removed entirely
-    (Marlene feedback, 2026-08-31): users update Loss description instead,
+    (Marlene feedback, 2026-08-31): users update the description here instead (labelled "Claim description" since 2026-11-13),
     so a separate Claim-level description field was redundant. -->
     <section class="eli-card">
       <div class="eli-card-title-row">
@@ -151,6 +151,7 @@
               selectLabel="label"
               placeholder="Select type of damage"
               formControlName="typeOfDamage"
+              (selectionChange)="onTypeOfDamageChange()"
             >
             </nx-multi-select>
             <nx-hint nxFormfieldHint
@@ -234,7 +235,8 @@
       @if (!isEditing('lossDescription')) {
         <div class="eli-field">
           <div class="eli-field__info">
-            <span class="eli-label">Loss description</span>
+            <!-- User call 2026-11-13: "Claim description" here; FNOL keeps "Loss description". -->
+            <span class="eli-label">Claim description</span>
             <span class="eli-value"
               >{{ form.get('lossDescription')?.value || 'Not provided' }}
               @if (fieldChanged('lossDescription')) {
@@ -248,7 +250,7 @@
         </div>
       } @else {
         <div class="eli-edit-row">
-          <nx-formfield label="Loss description" class="eli-edit-input">
+          <nx-formfield label="Claim description" class="eli-edit-input">
             <textarea
               nxInput
               formControlName="lossDescription"
@@ -260,12 +262,29 @@
               {{ form.get('lossDescription')?.value?.length ?? 0 }}/{{ maxDesc }}</nx-hint
             >
             @if (submitAttempted && form.get('lossDescription')?.errors?.['required']) {
-              <nx-error nxFormfieldError>Loss description is required</nx-error>
+              <nx-error nxFormfieldError>Claim description is required</nx-error>
             }
           </nx-formfield>
         </div>
       }
     </section>
+
+    <!-- BMPCC-18492: CBI card, only while the claim has Business Interruption
+    and the policy offers a CBI extension. DESIGN DECISION CBI-EDIT-1. -->
+    @if (showCbi) {
+      <app-edit-cbi-card
+        [form]="form"
+        [cbiLocation]="cbiLocation"
+        [caseTypeOptions]="cbiCaseTypeOptions()"
+        [original]="original()"
+        [editing]="isEditing('cbi')"
+        [changed]="fieldChanged('cbi')"
+        [submitAttempted]="submitAttempted"
+        (edit)="startEdit('cbi')"
+        (cancelEdit)="onCancelField('cbi')"
+        (answerChange)="syncCbi()"
+      ></app-edit-cbi-card>
+    }
 
     <!-- Card: Location (CWB Location Picker) — already read-first by its own
     nature (a table of current locations with an Edit action per row, not

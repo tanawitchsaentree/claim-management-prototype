@@ -5,7 +5,8 @@ import { MockSectionService } from '../mock/services/mock-section.service';
 import { MockClaimOverviewService } from '../mock/services/mock-claim-overview.service';
 import { MockLookupService } from '../mock/services/mock-lookup.service';
 import { LossInformationFormValue } from '../models/loss-information.model';
-import { LocationPickerOutput } from '../models/location-picker.model';
+import { LocationPickerOutput, formatLocationItem } from '../models/location-picker.model';
+import { cbiRelationshipFor } from '../../shared/utils/cbi-rules';
 import lookupsData from '../mock/data/lookups.json';
 
 /**
@@ -44,7 +45,7 @@ export class LossInfoSyncService {
               ...(changed('Date of occurrence') && v.dateOfLoss?.dateOfOccurrence
                 ? { lossDate: v.dateOfLoss.dateOfOccurrence }
                 : {}),
-              ...(changed('Loss description') ? { description: v.lossDescription ?? '' } : {}),
+              ...(changed('Claim description') ? { description: v.lossDescription ?? '' } : {}),
               ...(changed('Loss location') ? { location } : {})
             }
       )
@@ -63,6 +64,31 @@ export class LossInfoSyncService {
           location: { street: first.addressLine1, ...location! }
         })
       );
+    }
+  }
+
+  /**
+   * BMPCC-18492: the CBI details also sit on the CBI entities of the claim's
+   * open Business Interruption sections (copied there at FNOL submit). Keep
+   * those copies in step while CBI still applies; when it no longer applies,
+   * the sections are left alone and marked "Review needed" by the caller.
+   */
+  syncCbiToSections(claimId: string, v: LossInformationFormValue): void {
+    if (v.cbiApplicable !== 'yes' || !v.cbiCaseType) return;
+    const loc = v.cbiLocation?.locations?.[0];
+    const patch = {
+      cbiCaseType: v.cbiCaseType,
+      thirdPartyName: v.cbiThirdPartyName || undefined,
+      thirdPartyIndustry: v.cbiThirdPartyIndustry || undefined,
+      thirdPartyRelationship: cbiRelationshipFor(v.cbiCaseType),
+      cbiOriginatingLocation: loc ? formatLocationItem(loc) : undefined,
+      cbiOriginatingLocationDetail: loc
+    };
+    for (const s of this.sectionSvc.getByClaimIdSync(claimId)) {
+      if (s.status !== 'Open' || s.damageType !== 'business-interruption') continue;
+      for (const e of s.entities.filter(x => x.isContingentBi)) {
+        this.sectionSvc.patchEntity(s.id, e.id, patch);
+      }
     }
   }
 

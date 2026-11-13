@@ -1,0 +1,83 @@
+@use '../../../../shared/styles/modal-layout' as modal;
+
+// Same shell and table look as add-policies-modal (BLESSED.md § Modal dialog,
+// shared _modal-layout mixin). @see add-policies-modal.component.scss
+
+:host {
+  @include modal.shell;
+}
+
+.fpm-header {
+  @include modal.header;
+}
+.fpm-header-row {
+  @include modal.header-row;
+}
+.fpm-title {
+  @include modal.title;
+}
+.fpm-subtitle {
+  @include modal.subtitle;
+}
+
+.fpm-body {
+  @include modal.body;
+}
+
+.fpm-search {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-base);
+}
+
+.fpm-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.fpm-search button {
+  margin-top: var(--space-xl);
+}
+
+.fpm-state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.fpm-table {
+  width: 100%;
+}
+
+.fpm-col-check {
+  width: 48px;
+  padding-left: var(--space-base) !important;
+}
+
+.fpm-policy-number {
+  display: block;
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.fpm-sub {
+  display: block;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.fpm-row--selected {
+  background: var(--claim-overlay-hover);
+}
+
+.fpm-footer {
+  @include modal.footer;
+}
+
+.fpm-selected-count {
+  margin-right: auto;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}

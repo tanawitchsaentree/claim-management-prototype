@@ -148,6 +148,27 @@ export class MockEntitiesDamagesService extends MockBaseService {
     );
   }
 
+  /**
+   * BMPCC-22665: undo addEntitiesFromPolicy() when the handler deselects that
+   * policy on the FNOL Policies step. Copies are recognised by the source
+   * policy suffix addEntitiesFromPolicy() writes onto coveredBy.
+   */
+  removeEntitiesFromPolicy(basePolicyId: string, sourcePolicyId: string): Observable<number> {
+    const suffix = ` · ${sourcePolicyId}`;
+    return this.getByPolicyId(basePolicyId).pipe(
+      take(1),
+      map(data => {
+        let removed = 0;
+        for (const group of data.sections.flatMap(s => s.damageGroups)) {
+          const keep = group.entities.filter(e => !e.coveredBy?.endsWith(suffix));
+          removed += group.entities.length - keep.length;
+          group.entities = keep;
+        }
+        return removed;
+      })
+    );
+  }
+
   moveEntity(
     policyId: string,
     entityId: string,

@@ -1,0 +1,33 @@
+// Summary card body: message on top, then the per-policy table, like the
+// impacted-policies table in add-policies-modal. @see add-policies-modal.component.scss
+
+:host {
+  display: block;
+  margin-bottom: var(--space-xl);
+}
+
+.ccr-message {
+  margin-bottom: var(--space-base);
+}
+
+.ccr-headline {
+  display: block;
+}
+
+.ccr-table {
+  width: 100%;
+}
+
+.ccr-policy.ccr-policy {
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.ccr-failed {
+  color: var(--danger);
+  font-size: var(--paragraph-03-font-size);
+}
+
+.ccr-action {
+  text-align: right;
+}

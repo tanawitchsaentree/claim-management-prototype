@@ -14,5 +14,15 @@
       "policyNumber": "POL-2024-009",
       "matchReason": "Adjoining site on the same risk address, insured separately under Machinery & Plant."
     }
+  ],
+  "POL-2024-021": [
+    {
+      "policyNumber": "POL-2024-022",
+      "matchReason": "Liability cover for third-party damage from the same cause of loss."
+    },
+    {
+      "policyNumber": "POL-2024-023",
+      "matchReason": "Machinery at the same insured location, same cause of loss and damage type."
+    }
   ]
 }
