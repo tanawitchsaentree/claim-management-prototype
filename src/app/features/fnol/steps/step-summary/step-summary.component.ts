@@ -40,6 +40,9 @@ import {
   MockUserDirectoryService,
   UserDirectoryEntry
 } from '../../../../core/mock/services/mock-user-directory.service';
+// BMPCC-22666 AC01: pick a different handler before Submit.
+import { FnolHandlerPickerComponent } from '../../../../shared/components/reassign-claim-modal/fnol-handler-picker.component';
+import { FnolHandlerChoiceService } from '../../../../shared/components/reassign-claim-modal/fnol-handler-choice.service';
 import { EntitiesDamagesData, EntityRow, formatLocationItem } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
 import { LookupOption, OTHER_CAUSE_KEY } from '../../../../core/models/lookup.model';
@@ -102,7 +105,8 @@ const CREATOR: AccessListEntry = {
     NxFormfieldModule,
     NxInputModule,
     WizardFooterComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    FnolHandlerPickerComponent
   ],
   templateUrl: './step-summary.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -119,6 +123,7 @@ export class StepSummaryComponent implements OnInit {
   private readonly overviewSvc = inject(MockClaimOverviewService);
   private readonly financialSvc = inject(MockFinancialOverviewService);
   private readonly userDir = inject(MockUserDirectoryService);
+  private readonly handlerChoice = inject(FnolHandlerChoiceService);
   private readonly router = inject(Router);
   private readonly appDate = new AppDatePipe();
   private readonly live = inject(LiveAnnouncer);
@@ -595,7 +600,10 @@ export class StepSummaryComponent implements OnInit {
       lossEventId: null,
       causeOfLoss: formValue.causeOfLoss ?? []
     };
-    this.stateSvc.patchClaims(claims => [...claims.filter(c => c.claimId !== claimId), claim]);
+    this.stateSvc.patchClaims(claims => [
+      ...claims.filter(c => c.claimId !== claimId),
+      this.handlerChoice.applyTo(claim)
+    ]);
 
     // patchOverview() (called inside updateGeneralInfo below) silently no-ops for a
     // claimId with no existing overview cache entry — see its own guard comment in
@@ -605,6 +613,7 @@ export class StepSummaryComponent implements OnInit {
     // dropped and incidentCircumstance/restriction/recoveryPotential would never
     // reach the new claim's Overview.
     await firstValueFrom(this.overviewSvc.getOverview(claimId));
+    this.handlerChoice.announce(claimId);
 
     await firstValueFrom(
       this.overviewSvc.updateGeneralInfo(claimId, {

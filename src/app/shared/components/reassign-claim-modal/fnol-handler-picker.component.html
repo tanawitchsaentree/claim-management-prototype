@@ -1,0 +1,15 @@
+<div class="fhp-row">
+  <div class="fhp-text">
+    <span class="fhp-label">Claim handler</span>
+    <span class="fhp-value">{{ label() }}</span>
+    @if (choiceSvc.choice()) {
+      <span class="fhp-hint">They will be notified when you submit.</span>
+    }
+  </div>
+  <div class="fhp-actions">
+    @if (choiceSvc.choice()) {
+      <button nxButton="tertiary small" type="button" (click)="reset()">Keep it myself</button>
+    }
+    <button nxButton="secondary small" type="button" (click)="change()">Change handler</button>
+  </div>
+</div>

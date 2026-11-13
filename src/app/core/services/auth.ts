@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 
-export type DashboardRole = 'claims-handler' | 'kcm';
+// 'claims-manager' (BMPCC-22395): sees own cases plus the direct team's.
+export type DashboardRole = 'claims-handler' | 'kcm' | 'claims-manager';
 
 export interface User {
   id: string;
@@ -27,6 +28,14 @@ export const PERSONAS: User[] = [
     role: 'admin',
     dashboardRole: 'kcm',
     group: 'GPG-001'
+  },
+  {
+    id: 'usr-tobias',
+    name: 'Tobias Grau',
+    email: 'tobias.grau@allianz.com',
+    role: 'adjuster',
+    dashboardRole: 'claims-manager',
+    group: 'GPG-001'
   }
 ];
 
@@ -47,6 +56,9 @@ export class AuthService {
 
   readonly user = this.currentUser.asReadonly();
   readonly isKcm = computed(() => this.currentUser().dashboardRole === 'kcm');
+  readonly isClaimsManager = computed(
+    () => this.currentUser().dashboardRole === 'claims-manager'
+  );
 
   readonly personas = PERSONAS;
 

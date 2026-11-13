@@ -1,0 +1,39 @@
+// Split row (BLESSED.md "Split toolbar"): info left, actions right.
+.fhp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-base);
+  padding-bottom: var(--space-base);
+  margin-bottom: var(--space-base);
+  border-bottom: 1px solid var(--ui-04);
+}
+
+.fhp-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.fhp-label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: var(--font-weight-label);
+  color: var(--text-label);
+}
+
+.fhp-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: var(--font-weight-value);
+  color: var(--text-01);
+}
+
+.fhp-hint {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.fhp-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}

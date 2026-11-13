@@ -74,11 +74,7 @@ import {
 } from './components/mass-event-card/mass-event-card.component';
 import { PendingTasksWidgetComponent } from './components/pending-tasks-widget/pending-tasks-widget.component';
 import { RecentActivitiesCardComponent } from './components/recent-activities-card/recent-activities-card.component';
-import {
-  ReassignClaimModalComponent,
-  ReassignClaimModalData,
-  ReassignClaimModalResult
-} from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
+import { ClaimAssignmentActionsComponent } from '../../../shared/components/reassign-claim-modal/claim-assignment-actions.component';
 import {
   ConvertSkeletonModalComponent,
   ConvertSkeletonModalData,
@@ -132,6 +128,7 @@ type LinkablePolicy = NonNullable<ConvertSkeletonModalResult>;
     NxSpinnerModule,
     NxTooltipModule,
     NxLinkModule,
+    ClaimAssignmentActionsComponent,
     NxMessageModule,
     NxModalModule,
     StatusChipComponent,
@@ -468,50 +465,6 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const cur = this.vm$.value;
     if (!cur.claim) return;
     this.vm$.next({ ...cur, claim: { ...cur.claim, restriction } });
-  }
-
-  async openReassignModal(claim: ClaimOverview): Promise<void> {
-    const ref = this.dialogSvc.open(ReassignClaimModalComponent, {
-      data: {
-        claimIds: [claim.claimId],
-        currentHandler: claim.assignedHandler,
-        claims: [
-          {
-            claimId: claim.claimId,
-            clientName: claim.client,
-            currentHandler: claim.assignedHandler
-          }
-        ]
-      } satisfies ReassignClaimModalData,
-      width: '480px',
-      maxWidth: '92vw'
-    });
-    const result = (await firstValueFrom(ref.afterClosed())) as
-      | ReassignClaimModalResult
-      | null
-      | undefined;
-    if (!result) return;
-    const cur = this.vm$.value;
-    if (!cur.claim) return;
-    const activity: ClaimActivity = {
-      id: `act-${Date.now()}`,
-      claimId: claim.claimId,
-      user: claim.assignedHandler,
-      timestamp: new Date().toISOString(),
-      objectType: 'Claim',
-      attribute: 'Assigned Claim handler',
-      valueOld: claim.assignedHandler,
-      valueNew: result.reason ? `${result.handlerName} — ${result.reason}` : result.handlerName
-    };
-    this.vm$.next({
-      ...cur,
-      claim: { ...cur.claim, assignedHandler: result.handlerName },
-      activities: [activity, ...cur.activities]
-    });
-    this.toast.success(
-      'Claim reassigned',
-      `${claim.claimId} is now assigned to ${result.handlerName}`
-    );
   }
 
   // Same modal + hand-off used by the FNOL search page's kebab menu

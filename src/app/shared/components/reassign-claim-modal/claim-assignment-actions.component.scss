@@ -1,0 +1,8 @@
+// Same muted helper-text look as the overview field captions.
+.caa-blocked {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}

@@ -93,6 +93,9 @@ function simulateState(claimId, stateOverrides) {
       if (!existingRefs.has(c.cwbReference)) cwbLocs.push({ ...c });
     }
   }
+  // activePersona / simulate (v2.4, BMPCC-22395 / BMPCC-22666): persona and
+  // simulated UI states, applied by PrototypeScenarioService at runtime — no
+  // Node-side counterpart; skipped here.
   // fnolStateOverride: runtime UI behavior — not derivable; skipped here.
   // (selectedPolicy / selectedClient / path / convertFromSkeletonId all act on
   // FnolStateService at runtime and have no Node-side counterpart.)

@@ -26,8 +26,10 @@ import { AuthService } from '../../../core/services/auth';
 import {
   ReassignClaimModalComponent,
   ReassignClaimModalData,
-  ReassignClaimModalResult
+  ReassignClaimModalResult,
+  ReassignClaimRow
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
+import { MockAssignmentService } from '../../../core/mock/services/mock-assignment.service';
 import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/models';
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
 
@@ -70,6 +72,7 @@ export class ClaimsListComponent {
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
   private readonly auth = inject(AuthService);
+  private readonly assignSvc = inject(MockAssignmentService);
   private readonly route = inject(ActivatedRoute);
   protected readonly router = inject(Router);
 
@@ -200,16 +203,40 @@ export class ClaimsListComponent {
     this.selected.set(new Set(this.all().map(c => c.claimId)));
   }
 
+  // BMPCC-22666 bulk (the "before I go on leave" case). DESIGN DECISION
+  // RA-BULK-1: bulk reassignment stays in scope here, on the claims list.
+  // Only claims the user may move go into the dialog; the rest are counted
+  // and stay where they are, so one foreign claim doesn't block the batch.
   async openBulkReassign(): Promise<void> {
-    const claimIds = Array.from(this.selected());
-    if (claimIds.length === 0) return;
+    const ids = Array.from(this.selected());
+    if (ids.length === 0) return;
     const byId = new Map(this.all().map(c => [c.claimId, c]));
-    const claims = claimIds.map(id => {
-      const c = byId.get(id);
-      return { claimId: id, clientName: c?.clientName ?? '–', currentHandler: c?.assignee };
-    });
+    const user = this.auth.user();
+    const rows: ReassignClaimRow[] = ids
+      .map(id => byId.get(id))
+      .filter((c): c is Claim => !!c)
+      .map(c => ({
+        claimId: c.claimId,
+        clientName: c.clientName,
+        owner: c.assignee,
+        group: c.group ?? null,
+        status: c.status,
+        lossAmount: c.lossAmount,
+        currency: c.currency
+      }));
+    const movable = rows.filter(r => this.assignSvc.canReassign(r, user).allowed);
+    if (movable.length === 0) {
+      this.toast.info(
+        'Nothing to reassign',
+        'None of the selected claims are yours to move. Their handler or team manager can move them.'
+      );
+      return;
+    }
     const ref = this.dialogSvc.open(ReassignClaimModalComponent, {
-      data: { claimIds, claims } satisfies ReassignClaimModalData,
+      data: {
+        claims: movable,
+        skippedCount: rows.length - movable.length
+      } satisfies ReassignClaimModalData,
       width: '480px',
       maxWidth: '92vw'
     });
@@ -217,13 +244,11 @@ export class ClaimsListComponent {
       | ReassignClaimModalResult
       | null
       | undefined;
-    if (!result) return;
-    await Promise.all(
-      claimIds.map(id => firstValueFrom(this.svc.update(id, { assignee: result.handlerName })))
-    );
+    if (!result?.saved) return;
+    const n = result.saved.moved.length;
     this.toast.success(
-      claimIds.length === 1 ? 'Claim reassigned' : `${claimIds.length} claims reassigned`,
-      `Now assigned to ${result.handlerName}`
+      n === 1 ? 'Claim reassigned' : `${n} claims reassigned`,
+      `Now with ${result.saved.targetLabel}. Everyone involved has been notified.`
     );
     await this.load(this.lastFilter, this.awaitingOnly);
   }

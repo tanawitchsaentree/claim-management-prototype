@@ -12,6 +12,7 @@ import { ProviderAssignment } from '../../models/provider-assignment.model';
 import { Party } from '../../models/party.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 import { FinancialPatchOverride, applyFinancialPatch, appendTasks } from './apply-financial-overrides';
+import { ScenarioSimulation } from '../../models/team.model';
 
 export interface ScenarioOverrides {
   taskStatuses?: Record<string, TaskStatus>;
@@ -30,6 +31,11 @@ export interface ScenarioOverrides {
   // GG booking states (gg-booking-states.json) — see apply-financial-overrides.ts.
   financialPatch?: FinancialPatchOverride;
   tasksAppend?: Task[];
+  // v2.4 (BMPCC-22395 / BMPCC-22666), applied in PrototypeScenarioService:
+  // persona to view as (AuthService id), and dashboard / reassign dialog
+  // states that real data can't reach (loading, error, stale, ...).
+  activePersona?: string;
+  simulate?: ScenarioSimulation;
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -101,7 +107,7 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: `addedParties` (parties a Link policy adds to the converted claim).
 // Bumped again: section entities are now the loss location's address (as in production's
 // Entity column), not names of buildings and things; cached sections keep the old names.
-const STATE_VERSION = 'financial-seeds-v6';
+const STATE_VERSION = 'teams-assignment-v1';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a

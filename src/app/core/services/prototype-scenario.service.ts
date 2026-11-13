@@ -6,6 +6,8 @@ import { FnolStateService } from './fnol-state.service';
 import { ScenarioStageService } from '../scenario/scenario-stage.service';
 import { DevTicket, TicketIndex } from '../models/dev-ticket.model';
 import { resolveTourSteps } from './arrival-context.builder';
+import { AuthService } from './auth';
+import { MockTeamService } from '../mock/services/mock-team.service';
 
 // Tracker rows carry hand-typed routes copied straight out of app.routes.ts,
 // param name and all — "/claims/:id/sections". Navigating to that literally
@@ -39,6 +41,8 @@ export class PrototypeScenarioService {
   private readonly fnolStateSvc = inject(FnolStateService);
   private readonly stageSvc = inject(ScenarioStageService);
   private readonly http = inject(HttpClient);
+  private readonly auth = inject(AuthService);
+  private readonly teamSvc = inject(MockTeamService);
 
   // Ticket-JSON registry (public/tickets/*.json) — same data
   // ClaimDevHelperService.loadTickets() loads, moved here so the tracker
@@ -169,6 +173,10 @@ export class PrototypeScenarioService {
   async applyOverrides(overrides: ScenarioOverrides): Promise<void> {
     await this.stateSvc.resetAsync();
     this.stateSvc.loadStatePreset(overrides);
+    // v2.4: always reset the simulated states, so one AC's "error" never
+    // leaks into the next.
+    this.teamSvc.setSimulation(overrides.simulate);
+    if (overrides.activePersona) this.auth.setActivePersona(overrides.activePersona);
     await this.applyFnolStateOverride(overrides);
     // Let the reset/preset signal writes flush before anything reads state.
     await new Promise(resolve => setTimeout(resolve, 0));

@@ -1,0 +1,483 @@
+{
+  "ticketId": "BMPCC-22666",
+  "epicId": "BMPCC-13925",
+  "module": "Claims",
+  "title": "Manual reassignment of claims",
+  "targetClaim": "CLM-2024-025",
+  "pages": [
+    "overview",
+    "fnol-summary",
+    "any"
+  ],
+  "walkthroughSteps": [
+    "Your own claim: Reassign beside Assigned Claim handler. Pick a handler or a team queue, confirm, toast.",
+    "A colleague's claim in your team: Take claim. Another team's claim, or one above your authority: the line says why and who can move it.",
+    "Both handlers hear about it in the bell, and both claims lists change straight away.",
+    "Registering a claim: the Summary step shows who gets it, with Change handler.",
+    "Several claims at once (before leave): claims list, tick them, Reassign."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "AC01 · Reassign during registration, before completing",
+      "plainStatement": "**Opens:** FNOL Summary step as Mara Mustermann.\n\n**You see:** In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.\n\n**Try:** Press Change handler, pick Lena Zorn (or A team queue), Choose: the line shows Lena with \"They will be notified when you submit\" and **Keep it myself** to undo. Submit: the new claim is Lena's.\n\nDecision: by default a new claim goes to the handler registering it (rule-based routing comes with a later epic). No confirm here: nothing is saved before Submit, and Submit is the commit (DESIGN DECISION RA-FNOL-1).",
+      "page": "fnol-summary",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Reassign during registration, before completing",
+        "preconditions": [
+          {
+            "text": "In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.",
+            "page": "fnol-summary",
+            "role": "tested-visible",
+            "hint": "Press Change handler, pick Lena Zorn (or A team queue), Choose: the line shows Lena with \"They will be notified when you submit\" and **Keep it myself** to undo. Submit: the new claim is Lena's."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara",
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.",
+        "visualCues": [
+          "In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**."
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/summary",
+        "trigger": "FNOL Summary step as Mara Mustermann.",
+        "expectedResult": "In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**."
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "AC02 · Reassign your own claim to an eligible handler or team, with confirm",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara Mustermann (her claim).\n\n**You see:** **Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\".\n\n**Try:** Pick Lena Zorn, add a reason, press Reassign: a confirm pops up over the dialog, Yes, reassign: toast, the handler field and activity log update.\n\nDecision: handler or team is one radio choice above one list; people who can't take the claim stay visible with the reason (DESIGN DECISION RA-PICK-1). Eligible = any handler in a team, or any team queue. Over 500,000, handlers without the authority are greyed out \"Above their handling authority\".",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Reassign your own claim to an eligible handler or team, with confirm",
+        "preconditions": [
+          {
+            "text": "**Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\".",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Pick Lena Zorn, add a reason, press Reassign: a confirm pops up over the dialog, Yes, reassign: toast, the handler field and activity log update."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "**Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\".",
+        "visualCues": [
+          "**Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\"."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-025/overview",
+        "trigger": "Claim Overview of CLM-2024-025 as Mara Mustermann (her claim).",
+        "expectedResult": "**Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\"."
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "AC03 · Take a claim from a colleague",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-022 (Nina Feld's) as Mara Mustermann, same team.\n\n**You see:** **Take claim** instead of Reassign.\n\n**Try:** Press Take claim, confirm \"will move from Nina Feld to you\": toast \"Claim taken\", handler is now Mara, and the claim is in Mara's claims. Nina gets \"was moved to Mara Mustermann\".",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Take a claim from a colleague",
+        "preconditions": [
+          {
+            "text": "**Take claim** instead of Reassign.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Press Take claim, confirm \"will move from Nina Feld to you\": toast \"Claim taken\", handler is now Mara, and the claim is in Mara's claims. Nina gets \"was moved to Mara Mustermann\"."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "**Take claim** instead of Reassign.",
+        "visualCues": [
+          "**Take claim** instead of Reassign."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-022/overview",
+        "trigger": "Claim Overview of CLM-2024-022 (Nina Feld's) as Mara Mustermann, same team.",
+        "expectedResult": "**Take claim** instead of Reassign."
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "AC03 · Not allowed: another team's claim",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-009 (Georg Stein, Marine team) as Mara Mustermann.\n\n**You see:** No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\"\n\n**Try:** Compare with AC-05 (authority).\n\nDecision: you can reassign your own claims; a Claims Manager also anything their team holds; KCM anything open. A handler can take a claim held by their own team, within their authority (DESIGN DECISION RA-AUTH-2 / RA-AUTH-3).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Not allowed: another team's claim",
+        "preconditions": [
+          {
+            "text": "No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\"",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Compare with AC-05 (authority)."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\"",
+        "visualCues": [
+          "No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-009/overview",
+        "trigger": "Claim Overview of CLM-2024-009 (Georg Stein, Marine team) as Mara Mustermann.",
+        "expectedResult": "No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\""
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "AC03 · Not allowed: above your authority",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-005 (Property team queue, EUR 999,999,999) as Mara Mustermann.\n\n**You see:** \"Above your handling authority (up to EUR 500,000). Ask Tobias Grau (team manager) to assign it.\"\n\n**Try:** Switch to Tobias Grau (Manager): he gets Reassign on the same claim.\n\n**NOTE [accepted-deviation]:** the authority model is not defined in the ticket. Implemented as a loss amount ceiling: handlers up to 500,000, managers and KCM no ceiling, no currency conversion (DESIGN DECISION RA-AUTH-1). Treated as `done` pending product sign-off.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Not allowed: above your authority",
+        "preconditions": [
+          {
+            "text": "\"Above your handling authority (up to EUR 500,000). Ask Tobias Grau (team manager) to assign it.\"",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Switch to Tobias Grau (Manager): he gets Reassign on the same claim."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "\"Above your handling authority (up to EUR 500,000). Ask Tobias Grau (team manager) to assign it.\"",
+        "visualCues": [
+          "\"Above your handling authority (up to EUR 500,000). Ask Tobias Grau (team manager) to assign it.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-005/overview",
+        "trigger": "Claim Overview of CLM-2024-005 (Property team queue, EUR 999,999,999) as Mara Mustermann.",
+        "expectedResult": "\"Above your handling authority (up to EUR 500,000). Ask Tobias Grau (team manager) to assign it.\""
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "AC04 · Previous and new handler are notified, both worklists update",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Manager).\n\n**You see:** Team workload with Nina Feld's claims.\n\n**Try:** View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > confirm (\"will move from Nina Feld to Mara Mustermann. Mara Mustermann and Nina Feld will be notified\"). Switch to Mara: the bell has \"CLM-2024-022 was assigned to you by Tobias Grau\" under Needs you, and Claims portfolio (My claims) lists it at the top. Switch back to Tobias: Nina's count is one lower, Mara's one higher. The handler who loses a claim gets \"CLM-... was moved to ... by ...\" under Someone else is on it.\n\nBulk moves send one notification per person (\"3 claims were assigned to you\"), not one per claim. A team queue target notifies the team manager. Notifications live for the browser session only (prototype).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Previous and new handler are notified, both worklists update",
+        "preconditions": [
+          {
+            "text": "Team workload with Nina Feld's claims.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > confirm (\"will move from Nina Feld to Mara Mustermann. Mara Mustermann and Nina Feld will be notified\"). Switch to Mara: the bell has \"CLM-2024-022 was assigned to you by Tobias Grau\" under Needs you, and Claims portfolio (My claims) lists it at the top. Switch back to Tobias: Nina's count is one lower, Mara's one higher. The handler who loses a claim gets \"CLM-... was moved to ... by ...\" under Someone else is on it."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-tobias"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Team workload with Nina Feld's claims.",
+        "visualCues": [
+          "Team workload with Nina Feld's claims."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Tobias Grau (Manager).",
+        "expectedResult": "Team workload with Nina Feld's claims."
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "AC05 · Loading the list of handlers",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara, handler list slow.\n\n**You see:** Press Reassign: \"Loading who can take the claim…\" with a spinner, Reassign stays disabled.\n\n**Try:** Cancel closes it.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Loading the list of handlers",
+        "preconditions": [
+          {
+            "text": "Press Reassign: \"Loading who can take the claim…\" with a spinner, Reassign stays disabled.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Cancel closes it."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara",
+          "simulate": {
+            "assignment": "loading"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Press Reassign: \"Loading who can take the claim…\" with a spinner, Reassign stays disabled.",
+        "visualCues": [
+          "Press Reassign: \"Loading who can take the claim…\" with a spinner, Reassign stays disabled."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-025/overview",
+        "trigger": "Claim Overview of CLM-2024-025 as Mara, handler list slow.",
+        "expectedResult": "Press Reassign: \"Loading who can take the claim…\" with a spinner, Reassign stays disabled."
+      }
+    },
+    {
+      "id": "AC-08",
+      "statement": "AC05 · Error loading handlers, and a save that fails",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara.\n\n**You see:** Press Reassign: \"We couldn't load the list of handlers.\" with **Try again**.\n\n**Try:** Then apply AC-09 to see a save that fails.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Error loading handlers, and a save that fails",
+        "preconditions": [
+          {
+            "text": "Press Reassign: \"We couldn't load the list of handlers.\" with **Try again**.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Then apply AC-09 to see a save that fails."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara",
+          "simulate": {
+            "assignment": "error"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Press Reassign: \"We couldn't load the list of handlers.\" with **Try again**.",
+        "visualCues": [
+          "Press Reassign: \"We couldn't load the list of handlers.\" with **Try again**."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-025/overview",
+        "trigger": "Claim Overview of CLM-2024-025 as Mara.",
+        "expectedResult": "Press Reassign: \"We couldn't load the list of handlers.\" with **Try again**."
+      }
+    },
+    {
+      "id": "AC-09",
+      "statement": "AC05 · Save fails",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara, saving fails.\n\n**You see:** Pick a handler, Reassign, confirm: the dialog stays open with \"The reassignment didn't go through, so the claim is still with Mara Mustermann. Try again.\"\n\n**Try:** Your pick and reason are kept; press Reassign again.\n\nDecision: the confirm pops up over the dialog; a failed save keeps the dialog and the choice (DESIGN DECISION RA-PICK-2).",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Save fails",
+        "preconditions": [
+          {
+            "text": "Pick a handler, Reassign, confirm: the dialog stays open with \"The reassignment didn't go through, so the claim is still with Mara Mustermann. Try again.\"",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Your pick and reason are kept; press Reassign again."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara",
+          "simulate": {
+            "assignment": "save-fails"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Pick a handler, Reassign, confirm: the dialog stays open with \"The reassignment didn't go through, so the claim is still with Mara Mustermann. Try again.\"",
+        "visualCues": [
+          "Pick a handler, Reassign, confirm: the dialog stays open with \"The reassignment didn't go through, so the claim is still with Mara Mustermann. Try again.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-025/overview",
+        "trigger": "Claim Overview of CLM-2024-025 as Mara, saving fails.",
+        "expectedResult": "Pick a handler, Reassign, confirm: the dialog stays open with \"The reassignment didn't go through, so the claim is still with Mara Mustermann. Try again.\""
+      }
+    },
+    {
+      "id": "AC-10",
+      "statement": "AC05 · Empty: nobody can take it",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara, no eligible handlers.\n\n**You see:** Press Reassign: \"No one else can take this claim right now. Ask your team manager.\"\n\n**Try:** Switch to A team queue: same message.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Empty: nobody can take it",
+        "preconditions": [
+          {
+            "text": "Press Reassign: \"No one else can take this claim right now. Ask your team manager.\"",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Switch to A team queue: same message."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara",
+          "simulate": {
+            "assignment": "empty"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Press Reassign: \"No one else can take this claim right now. Ask your team manager.\"",
+        "visualCues": [
+          "Press Reassign: \"No one else can take this claim right now. Ask your team manager.\""
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-025/overview",
+        "trigger": "Claim Overview of CLM-2024-025 as Mara, no eligible handlers.",
+        "expectedResult": "Press Reassign: \"No one else can take this claim right now. Ask your team manager.\""
+      }
+    },
+    {
+      "id": "AC-11",
+      "statement": "Bulk reassignment before leave (open question)",
+      "plainStatement": "**Opens:** Claims list filtered to your claims, as Mara.\n\n**You see:** Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note.\n\n**Try:** Reassign to Lena: toast \"5 claims reassigned\", the list refreshes, Lena gets one notification.\n\nDecision: bulk reassignment is in scope on the claims list, using the same dialog and rules; a foreign claim in the selection is skipped, not a blocker (DESIGN DECISION RA-BULK-1).",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Bulk reassignment before leave (open question)",
+        "preconditions": [
+          {
+            "text": "Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Reassign to Lena: toast \"5 claims reassigned\", the list refreshes, Lena gets one notification."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note.",
+        "visualCues": [
+          "Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims?assignee=me",
+        "trigger": "Claims list filtered to your claims, as Mara.",
+        "expectedResult": "Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note."
+      }
+    },
+    {
+      "id": "AC-12",
+      "statement": "AC05 · Figma, German text length, small screens, review",
+      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Figma file, German copy review and PO / developer review happen outside the prototype.\n\n**Try:** Add the Figma link to the story and to BMPCC-13925 after review.",
+      "page": "any",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Figma, German text length, small screens, review",
+        "preconditions": [
+          {
+            "text": "Figma file, German copy review and PO / developer review happen outside the prototype.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Add the Figma link to the story and to BMPCC-13925 after review."
+          }
+        ],
+        "stateOverrides": {
+          "activePersona": "usr-mara"
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Figma file, German copy review and PO / developer review happen outside the prototype.",
+        "visualCues": [
+          "Figma file, German copy review and PO / developer review happen outside the prototype."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims",
+        "trigger": "Not built in the prototype.",
+        "expectedResult": "Figma file, German copy review and PO / developer review happen outside the prototype."
+      }
+    }
+  ]
+}
