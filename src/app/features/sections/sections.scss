@@ -497,6 +497,10 @@ $brand-blue: var(--info);
 }
 
 // ─── Sections table ───────────────────────────────────────────────
+.sec-bulk-bar {
+  margin-bottom: var(--space-md);
+}
+
 .sections-table {
   width: 100%;
   table-layout: fixed;
@@ -510,24 +514,52 @@ $brand-blue: var(--info);
   // from its declared value depending on how much room the % columns leave.
   // That's what squeezed "Entity" (the identifying text, sometimes long) so it had to
   // truncate. Same-unit columns render exactly as declared.
+  // BMPCC-22328: select + Type of coverage + Date of loss columns.
+  .col-select {
+    width: 4%;
+    padding: 0 var(--space-sm) !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+
+    nx-checkbox {
+      margin: 0;
+    }
+  }
+  .col-coverage,
+  .col-damage,
+  .col-dol {
+    white-space: normal !important;
+  }
+  .col-coverage {
+    width: 16%;
+  }
+  .col-dol {
+    width: 14%;
+  }
+  .dol-diff {
+    display: block;
+    white-space: nowrap;
+    font-size: var(--paragraph-04-font-size);
+    color: var(--text-muted);
+  }
   .col-toggle {
-    width: 5%;
+    width: 4%;
     padding: 0 !important;
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: normal !important;
   }
   .col-entity {
-    width: 40%;
+    width: 28%;
   }
   .col-status {
-    width: 22%;
+    width: 14%;
   }
   .col-damage {
-    width: 25%;
+    width: 13%;
   }
   .col-actions {
-    width: 8%;
+    width: 7%;
     text-align: center !important;
     padding: 0 !important;
   }

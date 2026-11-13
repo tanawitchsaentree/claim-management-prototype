@@ -23,6 +23,7 @@ import {
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.pipe';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 @Component({
   selector: 'app-section-detail',
@@ -34,7 +35,8 @@ import { CircumstanceLabelPipe } from '../../../shared/pipes/circumstance-label.
     NxInputModule,
     NxModalModule,
     StatusChipComponent,
-    CircumstanceLabelPipe
+    CircumstanceLabelPipe,
+    AppDatePipe
   ],
   templateUrl: './section-detail-panel.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -50,7 +52,12 @@ export class SectionDetailPanelComponent {
    * the input goes away — no other caller depends on it.
    */
   @Input() incidentCircumstance: string | null = null;
+  /** BMPCC-22328 AC03 — the claim's date of loss, which the section follows unless it has its own. */
+  @Input() claimDateOfLoss: string | undefined;
+  /** BMPCC-22328 AC05 — same value as the Section overview "Type of coverage" column. */
+  @Input() typeOfCoverage = '–';
   @Output() closed = new EventEmitter<void>();
+  @Output() changeDol = new EventEmitter<ClaimSection>();
 
   private readonly sectionSvc = inject(MockSectionService);
   private readonly toast = inject(ToastService);

@@ -20,7 +20,7 @@
       "direction": "bottom"
     },
     "In the modal: each row carries the policy number, the client, why it surfaced, the line of business, the cover period, the status chip and how many entities it would make available. Production shows an accordion whose body holds only 'Line of Business' — one click for one field.",
-    "Tick POL-2024-006 and POL-2024-009, then \"Add to claim\". 9 entities land in the tree with a 3-second recently-added highlight, and the Covered by column carries the source policy (e.g. 'Contents & Equipment · POL-2024-006') so the handler can see the limit comes from elsewhere.",
+    "Tick POL-2024-006 and POL-2024-009, then \"Add to claim\". 9 entities land in the tree with a 3-second recently-added highlight, and the Type of coverage column carries the source policy (e.g. 'Contents & Equipment · POL-2024-006') so the handler can see the limit comes from elsewhere.",
     "The banner is now gone — both policies are on the claim, so there is nothing left to offer. A page reload resets the mock state and brings it back."
   ],
   "acceptanceCriteria": [
@@ -159,7 +159,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Covered by column on a new row reads like \"Contents & Equipment · POL-2024-006\"",
+            "text": "Type of coverage column on a new row reads like \"Contents & Equipment · POL-2024-006\"",
             "page": "fnol-entities-damages",
             "role": "tested-visible"
           },
@@ -179,18 +179,18 @@
         }
       },
       "expectedUI": {
-        "description": "Modal closes. The entity tree grows by 9 rows spread across the existing damage-type groups; each carries its source policy in Covered by. Highlight clears after 3 seconds.",
+        "description": "Modal closes. The entity tree grows by 9 rows spread across the existing damage-type groups; each carries its source policy in Type of coverage. Highlight clears after 3 seconds.",
         "visualCues": [
           "9 additional entity rows, added unselected",
           "Recently-added highlight for ~3 seconds, then normal styling",
-          "Covered by shows \"<cover> · POL-2024-006\" / \"· POL-2024-009\"",
+          "Type of coverage shows \"<cover> · POL-2024-006\" / \"· POL-2024-009\"",
           "Toast: 2 policies added / 9 entities are now available for selection"
         ]
       },
       "howToTest": {
         "route": "/fnol/entities-damages",
         "trigger": "Apply AC-03, navigate to /fnol/entities-damages, See details, tick both policies, Add",
-        "expectedResult": "9 entities appear in the tree with their source policy in Covered by, and a toast confirms 2 policies / 9 entities"
+        "expectedResult": "9 entities appear in the tree with their source policy in Type of coverage, and a toast confirms 2 policies / 9 entities"
       }
     },
     {

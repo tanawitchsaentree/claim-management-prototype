@@ -35,7 +35,7 @@
       "targetId": "co-reopen-claim-button",
       "title": "Reopen Claim",
       "body": "Visible once the claim is Closed.",
-      "expectedAfterClick": "Opens a modal for a reopening reason and an optional note, then a section selection step. No reserve is captured: the Reserve team is told through the claim-updated event (BMPCC-14607). Confirming flips status to 'Reopened' and adds a reopened-date row to the closure panel.",
+      "expectedAfterClick": "Opens a modal for a reopening reason and an optional note, then a section selection step and a confirm step. No reserve is captured: the Reserve team is told through the claim-updated event (BMPCC-14607). Confirming flips status to 'Reopened' and adds a reopened-date row to the closure panel.",
       "direction": "top"
     },
     {
@@ -488,7 +488,7 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click Reopen Claim \u2192 pick a reason \u2192 Continue \u2192 Reopen",
+        "trigger": "Click Reopen Claim \u2192 pick a reason \u2192 Continue \u2192 pick sections \u2192 Continue \u2192 Reopen claim (confirm step, BMPCC-22328)",
         "expectedResult": "Status chip flips to Reopened; reopened date row appears"
       }
     }

@@ -50,7 +50,9 @@ export type BlockerType =
   // was never actually set up. Separate from 'sections'/'reserves' above,
   // which fire on OPEN sections/reserves that exist — this fires on having
   // NONE at all yet.
-  | 'needs-setup';
+  | 'needs-setup'
+  // Bulk closure only: the close call itself failed (not a business rule).
+  | 'close-failed';
 
 export type ClosureReason = 'Claim Finalised' | 'Claim Not Pursued' | 'Claim Rejected';
 
@@ -62,6 +64,9 @@ export interface BlockerItem {
   lastUpdated: string;
   assignee?: string;
   ownerDomain: string;
+  // Open-task blockers only (BMPCC-22660): the task type, shown next to the
+  // domain so the handler can tell an Approval task from a Legal one.
+  typeLabel?: string;
   link?: string;
   severity: 'hard' | 'warning';
 }
@@ -92,4 +97,35 @@ export interface ClosurePayload {
 export interface ReopenPayload {
   reason: string;
   reopenedBy: { userId: string; name: string };
+}
+
+// Handler-attested statements, asked once before a claim closes, and once for a
+// whole batch in bulk closure (BMPCC-22660 AC03). No system check exists for these.
+export const CLOSURE_CONFIRMATION_STATEMENTS: readonly string[] = [
+  'All bills against this section/claim have been received and processed',
+  'All pending subrogation, salvage, or recovery activity has been resolved (or recovery potential confirmed as none)',
+  'All final reports are completed',
+  'Provider Management survey is completed, or rejected with a rationale provided'
+];
+
+// ─── Bulk closure (BMPCC-22660, epic BMPCC-21933 FR4) ──────────────────────
+
+export type BulkClosureKind = 'section' | 'claim';
+
+/** One selected item, checked against every closure rule before the handler confirms. */
+export interface BulkClosureCandidate {
+  id: string;
+  name: string;
+  detail: string;
+  blockers: Blocker[];
+}
+
+export type BulkClosureOutcomeStatus = 'closed' | 'blocked' | 'failed';
+
+/** What happened to one item when the batch ran. Items are validated again at close time. */
+export interface BulkClosureOutcome {
+  id: string;
+  name: string;
+  status: BulkClosureOutcomeStatus;
+  blockers: Blocker[];
 }

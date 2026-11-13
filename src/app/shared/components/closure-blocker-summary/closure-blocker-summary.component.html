@@ -1,0 +1,23 @@
+<ul class="cbs-list">
+  @for (b of blockers; track b.type + b.label) {
+    <li class="cbs-blocker">
+      <span class="cbs-blocker__label">{{ b.label }}</span>
+      @if (isTasks(b)) {
+        <ul class="cbs-tasks" [attr.aria-label]="'Open tasks: ' + b.items!.length">
+          @for (t of b.items; track t.id) {
+            <li class="cbs-task">
+              <span class="cbs-task__title">{{ t.title }}</span>
+              <span class="cbs-task__meta">
+                {{ t.typeLabel }} task · {{ t.ownerDomain }} · {{ t.status }}
+                @if (t.assignee) {
+                  · {{ t.assignee }}
+                }
+                · due {{ t.lastUpdated | appDate }}
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </li>
+  }
+</ul>

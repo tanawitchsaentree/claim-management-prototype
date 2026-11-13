@@ -1,15 +1,28 @@
 <div class="srm-header">
-  <h2 class="srm-title">Reopen section</h2>
+  <h2 class="srm-title">
+    {{ isBulk ? 'Reopen ' + targets.length + ' sections' : 'Reopen section' }}
+  </h2>
   <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
 </div>
 
 <div class="srm-body">
-  <p class="srm-intro">
-    Reopen <strong>{{ section.name }}</strong
-    >. Select a mandatory reason for the audit trail.
-  </p>
+  @if (isBulk) {
+    <p class="srm-intro">
+      These {{ targets.length }} sections will be reopened with one reason for the audit trail:
+    </p>
+    <ul class="srm-names">
+      @for (s of targets; track s.id) {
+        <li>{{ s.name }}</li>
+      }
+    </ul>
+  } @else {
+    <p class="srm-intro">
+      Reopen <strong>{{ section.name }}</strong
+      >. Select a mandatory reason for the audit trail.
+    </p>
+  }
 
   <form [formGroup]="form" class="srm-form">
     <nx-formfield label="Reopening reason">
@@ -38,7 +51,7 @@
     @if (saving) {
       <nx-spinner size="small"></nx-spinner>
     } @else {
-      Reopen
+      {{ isBulk ? 'Reopen ' + targets.length + ' sections' : 'Reopen' }}
     }
   </button>
 </div>

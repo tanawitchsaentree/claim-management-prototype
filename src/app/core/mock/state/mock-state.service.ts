@@ -17,7 +17,12 @@ import { ScenarioSimulation } from '../../models/team.model';
 export interface ScenarioOverrides {
   taskStatuses?: Record<string, TaskStatus>;
   sectionStatuses?: Record<string, SectionStatus>;
-  sectionBlockers?: Record<string, Partial<SectionBlockers>>;
+  // v2.4 (BMPCC-22328 / 22660): also takes a section's own dateOfLoss and the
+  // prototype-only simulateCloseError, merged the same way as the blocker flags.
+  sectionBlockers?: Record<
+    string,
+    Partial<SectionBlockers & Pick<ClaimSection, 'dateOfLoss' | 'simulateCloseError'>>
+  >;
   overviewPatch?: { claimId: string; patch: Partial<ClaimOverview> };
   claimsAppend?: Claim[];
   fnolStateOverride?: {
@@ -107,7 +112,7 @@ const STORAGE_VERSION_KEY = 'champ-mock-version';
 // Bumped again: `addedParties` (parties a Link policy adds to the converted claim).
 // Bumped again: section entities are now the loss location's address (as in production's
 // Entity column), not names of buildings and things; cached sections keep the old names.
-const STATE_VERSION = 'teams-assignment-v1';
+const STATE_VERSION = 'pi5-teams-sections-v1';
 
 // Seed dates written as literal ISO strings silently rot: the dashboard's
 // "Last 30 days" filter compares against real wall-clock Date.now(), so a

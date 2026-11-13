@@ -1,0 +1,132 @@
+// BLESSED: modal shell from shared/styles/_modal-layout (BLESSED.md "Mandatory
+// modal SCSS pattern"); item cards copy claim-reopen-modal's .crm-section-item.
+@use '../../styles/modal-layout' as modal;
+
+:host {
+  @include modal.shell;
+}
+
+.bcm-header {
+  @include modal.header;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bcm-title {
+  @include modal.title;
+}
+
+.bcm-body {
+  @include modal.body;
+}
+
+.bcm-footer {
+  @include modal.footer;
+}
+
+.bcm-intro,
+.bcm-muted {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.bcm-muted {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.bcm-wait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl) 0;
+}
+
+.bcm-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.bcm-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+
+  &--blocked {
+    background: var(--ui-02);
+  }
+}
+
+.bcm-item__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.bcm-item__name {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.bcm-item__state {
+  margin-left: auto;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+// Lines up under the name: icon (16px) + row gap (8px).
+.bcm-item__detail,
+.bcm-item__why {
+  margin: 0;
+  padding-left: var(--space-xl);
+}
+
+.bcm-item__detail {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.bcm-icon--ok {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.bcm-icon--warn {
+  color: var(--danger);
+  flex-shrink: 0;
+}
+
+.bcm-names,
+.bcm-statements {
+  margin: 0;
+  padding-left: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+}
+
+.bcm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+
+  nx-formfield {
+    width: 100%;
+    min-width: 0;
+  }
+}

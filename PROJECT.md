@@ -151,6 +151,7 @@ interface ScenarioOverrides {
   tasksAppend?: Task[]; // v2.3 — dedupe by taskId
   activePersona?: string; // v2.4 — AuthService persona id (usr-mara / usr-klaus / usr-tobias)
   simulate?: ScenarioSimulation; // v2.4 — { managerDashboard?, assignment? } UI states, see team.model.ts
+  sectionBlockers?: Record<string, Partial<SectionBlockers & Pick<ClaimSection, 'dateOfLoss' | 'simulateCloseError'>>>; // v2.4 widened
 }
 ```
 
@@ -176,6 +177,7 @@ interface ScenarioOverrides {
 | `tasksAppend`                                    | `Task[]`                           | dedupe by `taskId`                                                           | gg-booking-states    | Mirrored in audit simulator — counts toward `pendingTasks` / `doneTasks`                                                 |
 | `activePersona`                                  | `string` (persona id)              | `AuthService.setActivePersona`                                               | bmpcc-22395, bmpcc-22666 | Applied in `PrototypeScenarioService.applyOverrides`; persists in localStorage like the persona switcher. Audit: skipped (runtime only) |
 | `simulate`                                       | `{ managerDashboard?, assignment? }` | `MockTeamService.setSimulation`                                            | bmpcc-22395, bmpcc-22666 | Loading / error / stale / partial / no-team / no-cases / no-permission on the Claims Manager dashboard; loading / error / empty / save-fails in the reassign dialog. Reset on every Apply (in memory, not session storage). Audit: skipped |
+| `sectionBlockers`                                | `Record<sectionId, Partial<SectionBlockers & {dateOfLoss, simulateCloseError}>>` | `section.id`                                     | close-section, bmpcc-22328, bmpcc-22660 | Merged into the section. v2.4 added `dateOfLoss` (section's own date of loss) and the prototype-only `simulateCloseError` (bulk closure error state) |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).
 

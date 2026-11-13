@@ -52,12 +52,10 @@ import {
   AddSectionEntityModalData,
   AddSectionEntityModalResult
 } from './add-section-entity-modal/add-section-entity-modal.component';
-import {
-  SectionReopenModalComponent,
-  SectionReopenModalData,
-  SectionReopenModalResult
-} from './section-reopen-modal/section-reopen-modal.component';
 import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
+import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import { BulkSelectionBarComponent } from '../../shared/components/bulk-selection-bar/bulk-selection-bar.component';
+import { SectionsBulkActionsService } from './sections-bulk-actions.service';
 
 @Component({
   selector: 'app-sections',
@@ -90,8 +88,12 @@ import { DamageTypeLabelPipe } from '../../shared/pipes/damage-type-label.pipe';
     AddSectionEntityModalComponent,
     DamageTypeLabelPipe,
     NxMessageModule,
-    BlockerReturnBannerComponent
+    BlockerReturnBannerComponent,
+    NxCheckboxModule,
+    BulkSelectionBarComponent,
+    AppDatePipe
   ],
+  providers: [SectionsBulkActionsService],
   templateUrl: './sections.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sections.scss'
@@ -106,6 +108,7 @@ export class Sections {
   private readonly stripSvc = inject(RightStripService);
   private readonly overviewSvc = inject(MockClaimOverviewService);
   private readonly live = inject(LiveAnnouncer);
+  protected readonly bulk = inject(SectionsBulkActionsService);
 
   readonly sections = signal<ClaimSection[]>([]);
   readonly loading = signal(true);
@@ -125,6 +128,91 @@ export class Sections {
   // has an actual account of what happened to work from, not a blank form.
 
   readonly devMode = true;
+
+  // ── Selection (BMPCC-22328 AC01, BMPCC-22660 AC02) ──────────────────
+  // DESIGN DECISION BMPCC-22328-1: one selection drives both Close and
+  // Reopen. Open and closed sections can be selected together; each action
+  // only takes the sections it applies to and says how many in its label.
+  readonly selectedIds = signal<Set<string>>(new Set());
+  readonly selectedOpen = computed(() =>
+    this.sections().filter(s => this.selectedIds().has(s.id) && s.status === 'Open')
+  );
+  readonly selectedClosed = computed(() =>
+    this.sections().filter(s => this.selectedIds().has(s.id) && s.status === 'Closed')
+  );
+  readonly allSelected = computed(
+    () => this.sections().length > 0 && this.sections().every(s => this.selectedIds().has(s.id))
+  );
+  readonly someSelected = computed(() => this.selectedIds().size > 0 && !this.allSelected());
+
+  toggleSelectAll(): void {
+    this.selectedIds.set(this.allSelected() ? new Set() : new Set(this.sections().map(s => s.id)));
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  toggleSelect(id: string): void {
+    this.selectedIds.update(set => {
+      const next = new Set(set);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  /** "Date of loss" column: the section's own date, else the claim's. */
+  sectionDol(section: ClaimSection): string | undefined {
+    return section.dateOfLoss ?? this.claimDateOfLoss();
+  }
+
+  async onCloseSelected(): Promise<void> {
+    const open = this.selectedOpen();
+    if (open.length === 1) {
+      if (await this.onCloseSection(open[0])) this.selectedIds.set(new Set());
+      return;
+    }
+    if (!(await this.bulk.closeSections(open))) return;
+    await this.reloadSections();
+    this.selectedIds.set(new Set());
+    if (this.sections().every(s => s.status === 'Closed')) {
+      this.toast.success(
+        'All sections closed',
+        'The claim can now be closed here on Claim overview.'
+      );
+      this.router.navigate(['/claims', this.route.snapshot.params['id'], 'overview']);
+    }
+  }
+
+  async onReopenSelected(): Promise<void> {
+    const reopened = await this.bulk.reopenSections(this.selectedClosed());
+    if (!reopened.length) return;
+    this.mergeSections(reopened);
+    this.selectedIds.set(new Set());
+  }
+
+  async onChangeDol(section: ClaimSection): Promise<void> {
+    const updated = await this.bulk.changeDateOfLoss(section, this.claimDateOfLoss());
+    if (!updated) return;
+    this.mergeSections([updated]);
+    if (this.selectedSection()?.id === section.id)
+      this.selectedSection.set({ ...section, ...updated });
+  }
+
+  private mergeSections(changed: ClaimSection[]): void {
+    const byId = new Map(changed.map(c => [c.id, c]));
+    this.sections.update(list =>
+      list.map(s => (byId.has(s.id) ? { ...s, ...byId.get(s.id), expanded: s.expanded } : s))
+    );
+  }
+
+  private async reloadSections(): Promise<void> {
+    const fresh = await firstValueFrom(
+      this.sectionSvc.getByClaimId(this.route.snapshot.params['id'])
+    );
+    this.mergeSections(fresh);
+  }
 
   constructor() {
     effect(async () => {
@@ -201,7 +289,7 @@ export class Sections {
     });
   }
 
-  async onCloseSection(section: ClaimSection): Promise<void> {
+  async onCloseSection(section: ClaimSection): Promise<boolean> {
     const { canClose, blockers } = this.closureSvc.validateSectionBlockers(section);
 
     const ref = this.dialogSvc.open(SectionClosureModalComponent, {
@@ -213,7 +301,7 @@ export class Sections {
     const result = (await firstValueFrom(ref.afterClosed())) as
       | SectionClosureModalResult
       | undefined;
-    if (!result) return;
+    if (!result) return false;
 
     const updated = this.sections().map(s => (s.id === section.id ? result : s));
     this.sections.set(updated);
@@ -223,6 +311,7 @@ export class Sections {
       const claimId = this.route.snapshot.params['id'];
       this.router.navigate(['/claims', claimId, 'overview']);
     }
+    return true;
   }
 
   async onAddSection(): Promise<void> {
@@ -368,7 +457,7 @@ export class Sections {
   ): Promise<boolean> {
     const date = new AppDatePipe();
     const fmt = (v?: string): string => (v ? date.transform(v) : '–');
-    const before = entity.dateOfOccurrence ?? this.claimDateOfLoss();
+    const before = entity.dateOfOccurrence ?? this.sectionDol(section);
     const changes = [
       ...(entity.instructionStatus !== result.instructionStatus
         ? [
@@ -404,7 +493,8 @@ export class Sections {
       data: {
         entity,
         damageType: section.damageType,
-        claimDateOfLoss: this.claimDateOfLoss()
+        // An entity without its own date starts from its section's date of loss.
+        claimDateOfLoss: this.sectionDol(section)
       } satisfies EditEntityDamageModalData,
       // Wider whenever the CBI question is even askable (any
       // business-interruption entity, not just ones already marked CBI —
@@ -510,23 +600,7 @@ export class Sections {
   }
 
   async onReopenSection(section: ClaimSection): Promise<void> {
-    const ref = this.dialogSvc.open(SectionReopenModalComponent, {
-      data: {
-        section,
-        reopenedByName: 'Leonie Fischer'
-      } satisfies SectionReopenModalData,
-      width: '480px',
-      maxWidth: '92vw'
-    });
-    const result = (await firstValueFrom(ref.afterClosed())) as
-      | SectionReopenModalResult
-      | undefined;
-    if (!result) return;
-
-    this.sections.update(list =>
-      list.map(s => (s.id === section.id ? { ...s, ...result.reopenedSection } : s))
-    );
-    this.toast.success(`Section "${result.reopenedSection.name}" reopened`);
+    this.mergeSections(await this.bulk.reopenSections([section]));
   }
 
   async onSimulateFinalPayment(section: ClaimSection): Promise<void> {

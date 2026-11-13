@@ -20,7 +20,7 @@ import {
 } from '../models/claim-closure.model';
 import { ClaimSection } from '../models/section.model';
 import { ToastService } from '../../shared/components/toast/toast.service';
-import { buildBlockerResult } from './claim-closure-blocker.builder';
+import { buildBlockerResult, buildOpenTasksBlocker } from './claim-closure-blocker.builder';
 import { MOCK_BLOCKER_ITEMS } from '../mock/data/blocker-items.mock';
 
 const MOCK_DELAY_MS = 300;
@@ -168,6 +168,7 @@ export class ClaimClosureService {
           delay(MOCK_DELAY_MS),
           tap(result => {
             this.mockState.patchOverview(claimId, result);
+            this.syncListStatus(claimId, 'Closed');
             // BMPCC-11360 AC4 — loss event auto-closes when all linked claims are closed.
             this.maybeCloseLossEvent(result.lossEventId);
           })
@@ -252,6 +253,14 @@ export class ClaimClosureService {
     const overview = state.overviews[claimId];
     if (!overview || overview.status === 'Closed') return;
 
+    // BMPCC-22660 / epic FR3 — same open-task rule as manual closure. No retry
+    // later: completing the task does not re-trigger auto-closure (PO).
+    const openTasks = buildOpenTasksBlocker(state.tasks.filter(t => t.claimId === claimId));
+    if (openTasks) {
+      this.toast.warning('Claim not closed automatically', `${openTasks.label}.`);
+      return;
+    }
+
     // Apply closure directly on mock state to avoid subscribing inside a service.
     // This mirrors the side-effects in closeClaim() without needing an Observable subscription.
     const systemUser = { userId: 'system', name: 'System' };
@@ -267,6 +276,7 @@ export class ClaimClosureService {
       retentionDate
     };
     this.mockState.patchOverview(claimId, closed);
+    this.syncListStatus(claimId, 'Closed');
     this.maybeCloseLossEvent(closed.lossEventId);
   }
 
@@ -295,6 +305,7 @@ export class ClaimClosureService {
           delay(MOCK_DELAY_MS),
           tap(result => {
             this.mockState.patchOverview(claimId, result);
+            this.syncListStatus(claimId, 'Open');
             const activity: ClaimActivity = {
               id: `act-claim-reopen-${Date.now()}`,
               claimId,
@@ -310,6 +321,13 @@ export class ClaimClosureService {
         );
       })
     );
+  }
+
+  // Claims list reads state.claims, not the overview: keep the two statuses in
+  // step, or a claim closed here still reads Open on the list (found with bulk
+  // closure, BMPCC-22660; single closure had the same gap).
+  private syncListStatus(claimId: string, status: 'Open' | 'Closed'): void {
+    this.mockState.patchClaims(cs => cs.map(c => (c.claimId === claimId ? { ...c, status } : c)));
   }
 
   private defaultRetentionDate(fromDate: string): string {

@@ -13,13 +13,19 @@ import { firstValueFrom } from 'rxjs';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { ClaimSection, SectionReopenReason } from '../../../core/models/section.model';
 
+// BMPCC-22328 AC01 — the same modal reopens one section (kebab) or every
+// selected closed section at once (Section overview selection bar): one
+// reason for all of them, and the modal lists exactly which ones reopen.
 export interface SectionReopenModalData {
   section: ClaimSection;
+  /** Bulk reopen. When set, `section` is ignored. */
+  sections?: ClaimSection[];
   reopenedByName: string;
 }
 
 export interface SectionReopenModalResult {
   reopenedSection: ClaimSection;
+  reopenedSections: ClaimSection[];
 }
 
 @Component({
@@ -66,6 +72,11 @@ export class SectionReopenModalComponent {
     return this.data.section;
   }
 
+  readonly targets: ClaimSection[] = this.data.sections?.length
+    ? this.data.sections
+    : [this.data.section];
+  readonly isBulk = this.targets.length > 1;
+
   onCancel(): void {
     this.modalRef.close(undefined as unknown as SectionReopenModalResult);
   }
@@ -79,10 +90,15 @@ export class SectionReopenModalComponent {
     this.saveError = null;
     const reopenedBy = { userId: 'usr-current', name: this.data.reopenedByName };
     try {
-      const reopened = await firstValueFrom(
-        this.sectionSvc.reopenSection(this.section.id, reopenedBy, this.form.value.reason!)
-      );
-      this.modalRef.close({ reopenedSection: reopened });
+      const reopenedSections: ClaimSection[] = [];
+      for (const s of this.targets) {
+        reopenedSections.push(
+          await firstValueFrom(
+            this.sectionSvc.reopenSection(s.id, reopenedBy, this.form.value.reason!)
+          )
+        );
+      }
+      this.modalRef.close({ reopenedSection: reopenedSections[0], reopenedSections });
     } catch {
       this.saveError = 'Failed to reopen section. Please try again.';
       this.live.announce(this.saveError, 'assertive');

@@ -77,12 +77,7 @@
             <div class="cl-bulk-bar">
               <span class="cl-bulk-bar__count">{{ selectedCount() }} selected</span>
               @if (isAllPageSelected() && selectedCount() < total()) {
-                <button
-                  nxPlainButton
-                  type="button"
-                  class="cl-bulk-bar__select-all"
-                  (click)="selectAllMatching()"
-                >
+                <button nxPlainButton type="button" class="cl-bulk-bar__select-all" (click)="selectAllMatching()">
                   Select all {{ total() }} claims matching this filter
                 </button>
               }
@@ -92,6 +87,9 @@
                 </button>
                 <button nxButton="secondary small" type="button" (click)="openBulkReassign()">
                   Reassign {{ selectedCount() }} {{ selectedCount() === 1 ? 'claim' : 'claims' }}
+                </button>
+                <button nxButton="secondary small" type="button" (click)="openBulkClose()">
+                  Close {{ selectedCount() }} {{ selectedCount() === 1 ? 'claim' : 'claims' }}
                 </button>
               </div>
             </div>

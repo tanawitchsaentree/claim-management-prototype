@@ -56,7 +56,39 @@
 }
 
 .crm-select-all {
+  display: flex;
+  align-items: center;
   padding: 0 var(--space-md);
+}
+
+.crm-count {
+  margin-left: auto;
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.crm-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.crm-summary__label {
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.crm-summary__list {
+  margin: 0;
+  padding-left: var(--space-lg);
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-01);
+
+  &--muted {
+    color: var(--text-muted);
+  }
 }
 
 // nx-checkbox brings its own space below; inside these rows it would push the

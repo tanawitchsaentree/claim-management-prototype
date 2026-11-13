@@ -1,0 +1,42 @@
+// BLESSED: list rhythm follows claim-reopen-modal's .crm-section-list (gap
+// --space-xs between lines, muted secondary line).
+:host {
+  display: block;
+}
+
+.cbs-list,
+.cbs-tasks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.cbs-blocker__label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-01);
+}
+
+.cbs-tasks {
+  margin-top: var(--space-xs);
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--ui-04);
+}
+
+.cbs-task {
+  display: flex;
+  flex-direction: column;
+}
+
+.cbs-task__title {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.cbs-task__meta {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}

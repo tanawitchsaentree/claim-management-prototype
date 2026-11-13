@@ -30,6 +30,11 @@ import {
   ReassignClaimRow
 } from '../../../shared/components/reassign-claim-modal/reassign-claim-modal.component';
 import { MockAssignmentService } from '../../../core/mock/services/mock-assignment.service';
+import {
+  BulkClosureModalComponent,
+  BulkClosureModalData,
+  BulkClosureModalResult
+} from '../../../shared/components/bulk-closure-modal/bulk-closure-modal.component';
 import { Claim, ClaimStatus, LineOfBusiness, Priority } from '../../../core/models';
 import { MockClaimService, ClaimFilter } from '../../../core/mock/services/mock-claim.service';
 
@@ -250,6 +255,27 @@ export class ClaimsListComponent {
       n === 1 ? 'Claim reassigned' : `${n} claims reassigned`,
       `Now with ${result.saved.targetLabel}. Everyone involved has been notified.`
     );
+    await this.load(this.lastFilter, this.awaitingOnly);
+  }
+
+  // BMPCC-22660 AC02: bulk closure from the list. Same modal as Section
+  // overview; each claim is checked on its own (open tasks included).
+  async openBulkClose(): Promise<void> {
+    const ids = Array.from(this.selected());
+    if (ids.length === 0) return;
+    const ref = this.dialogSvc.open(BulkClosureModalComponent, {
+      data: {
+        kind: 'claim',
+        ids,
+        reasons: ['Claim Finalised', 'Claim Not Pursued'],
+        actor: { userId: 'usr-current', name: this.auth.user()?.name ?? 'Mara Mustermann' }
+      } satisfies BulkClosureModalData,
+      width: '640px',
+      maxWidth: '92vw'
+    });
+    const result = (await firstValueFrom(ref.afterClosed())) as BulkClosureModalResult;
+    if (!result?.length) return;
+    this.clearSelection();
     await this.load(this.lastFilter, this.awaitingOnly);
   }
 

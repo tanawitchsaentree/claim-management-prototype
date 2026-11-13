@@ -1,0 +1,27 @@
+// BLESSED: copied from claims-list.component.scss .cl-bulk-bar (split toolbar,
+// BLESSED.md "Split toolbar": margin-left auto on the right group).
+:host {
+  display: block;
+}
+
+.bsb {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-s);
+  background: var(--ui-02);
+}
+
+.bsb__count {
+  font-size: var(--paragraph-04-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.bsb__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}

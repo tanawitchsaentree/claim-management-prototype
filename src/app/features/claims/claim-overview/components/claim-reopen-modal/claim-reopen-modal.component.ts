@@ -28,7 +28,7 @@ export interface ClaimReopenModalResult {
   reopenedSectionIds: string[];
 }
 
-type Step = 1 | 2;
+type Step = 1 | 2 | 3;
 import { ClaimNumberPipe } from '../../../../../shared/pipes/claim-number.pipe';
 
 @Component({
@@ -91,14 +91,23 @@ export class ClaimReopenModalComponent {
   readonly selectedIds = signal<Set<string>>(new Set());
 
   readonly stepTitle = computed(() =>
-    this.step() === 1 ? 'Reopen claim: Reason' : 'Reopen claim: Select sections'
+    this.step() === 1
+      ? 'Reopen claim: Reason'
+      : this.step() === 2
+        ? 'Reopen claim: Select sections'
+        : 'Reopen claim: Confirm'
   );
+
+  // BMPCC-22328 AC02: the confirm step names exactly what reopens and what
+  // stays closed, so a select-all is never a blind click.
+  readonly toReopen = computed(() => this.closedSections().filter(s => this.isSelected(s.id)));
+  readonly staysClosed = computed(() => this.closedSections().filter(s => !this.isSelected(s.id)));
 
   readonly isSingleSection = computed(() => this.closedSections().length === 1);
 
   readonly canContinue = computed(() => {
     if (this.step() === 1) return this.form.valid;
-    if (this.isSingleSection()) return true;
+    if (this.isSingleSection() || this.closedSections().length === 0) return true;
     return this.selectedIds().size > 0;
   });
 
@@ -159,7 +168,8 @@ export class ClaimReopenModalComponent {
   }
 
   onBack(): void {
-    if (this.step() === 2) this.step.set(1);
+    if (this.step() === 3) this.step.set(2);
+    else if (this.step() === 2) this.step.set(1);
   }
 
   onContinue(): void {
@@ -169,6 +179,8 @@ export class ClaimReopenModalComponent {
         return;
       }
       this.step.set(2);
+    } else if (this.step() === 2 && this.canContinue()) {
+      this.step.set(3);
     }
   }
 

@@ -61,13 +61,18 @@
                     </div>
                     <p class="ccm-item__desc">{{ item.description }}</p>
                     <div class="ccm-item__meta">
+                      @if (item.typeLabel) {
+                        <span class="ccm-item__meta-chip">Type: {{ item.typeLabel }}</span>
+                        <span class="ccm-item__meta-chip">Domain: {{ item.ownerDomain }}</span>
+                      }
                       @if (item.assignee) {
                         <span class="ccm-item__meta-chip">
                           <nx-icon name="user-o" size="s"></nx-icon> {{ item.assignee }}
                         </span>
                       }
                       <span class="ccm-item__meta-chip">
-                        <nx-icon name="calendar-o" size="s"></nx-icon> {{ item.lastUpdated }}
+                        <nx-icon name="calendar-o" size="s"></nx-icon>
+                        {{ item.typeLabel ? 'Due ' : '' }}{{ item.lastUpdated | appDate }}
                       </span>
                     </div>
                   </div>

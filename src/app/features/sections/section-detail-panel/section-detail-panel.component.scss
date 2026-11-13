@@ -87,3 +87,15 @@
     font-weight: 500;
   }
 }
+
+.sdp-dol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.sdp-dol__note {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
