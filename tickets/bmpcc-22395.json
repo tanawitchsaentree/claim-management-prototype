@@ -57,14 +57,14 @@
     {
       "id": "AC-02",
       "statement": "AC2 · Flagged claims are highlighted, say why, and can be filtered",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip).\n\n**Try:** Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain.\n\n**NOTE [accepted-deviation]:** thresholds were open (open question 1). Implemented: Overdue = an open task past its due date; High value = loss amount 250,000 or more in the claim currency (no FX); For review = a handler marked the claim (review-flags.json). See DESIGN DECISION CM-FLAG-1. Treated as `done` pending product sign-off.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\".\n\n**Try:** Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain.\n\n**NOTE [accepted-deviation]:** thresholds were open (open question 1). Implemented: Overdue = an open task past its due date; High value = loss amount 250,000 or more in the claim currency (no FX); For review = a handler marked the claim (review-flags.json). See DESIGN DECISION CM-FLAG-1. Treated as `done` pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Flagged claims are highlighted, say why, and can be filtered",
         "preconditions": [
           {
-            "text": "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip).",
+            "text": "Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\".",
             "page": "any",
             "role": "tested-visible",
             "hint": "Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain."
@@ -80,28 +80,28 @@
         ]
       },
       "expectedUI": {
-        "description": "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip).",
+        "description": "Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\".",
         "visualCues": [
-          "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip)."
+          "Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\"."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau.",
-        "expectedResult": "Flagged rows have a warning rule on the left and a badge per flag with the reason next to it, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\" (long notes stop after two lines, the full text is in the tooltip)."
+        "expectedResult": "Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\"."
       }
     },
     {
       "id": "AC-03",
       "statement": "AC3 · Prioritisation fields, sort and filter by member, status and flag",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag).\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. Status and priority sit under the claim number, and the Handler column hides once you drill into one person, so the table fits the dashboard column without sideways scrolling.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list.\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. The Handler column hides once you drill into one person.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Prioritisation fields, sort and filter by member, status and flag",
         "preconditions": [
           {
-            "text": "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag).",
+            "text": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list.",
             "page": "any",
             "role": "tested-visible",
             "hint": "Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip."
@@ -117,28 +117,28 @@
         ]
       },
       "expectedUI": {
-        "description": "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag).",
+        "description": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list.",
         "visualCues": [
-          "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag)."
+          "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau, Team workload.",
-        "expectedResult": "Columns: Claim (with priority, and a Closed chip if closed), Client (with line of business), Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag)."
+        "expectedResult": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list."
       }
     },
     {
       "id": "AC-04",
       "statement": "AC4 · Loading state",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data still loading.\n\n**You see:** Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads.\n\n**Try:** Nothing to do; Reset or pick another AC to leave it.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data still loading.\n\n**You see:** Spinner with \"Loading your team's claims…\".\n\n**Try:** Nothing to do; Reset or pick another AC to leave it.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Loading state",
         "preconditions": [
           {
-            "text": "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads.",
+            "text": "Spinner with \"Loading your team's claims…\".",
             "page": "any",
             "role": "tested-visible",
             "hint": "Nothing to do; Reset or pick another AC to leave it."
@@ -157,15 +157,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads.",
+        "description": "Spinner with \"Loading your team's claims…\".",
         "visualCues": [
-          "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads."
+          "Spinner with \"Loading your team's claims…\"."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau, data still loading.",
-        "expectedResult": "Spinner with \"Loading your team's claims…\" and the status line \"Updating…\". Refresh is disabled while it loads."
+        "expectedResult": "Spinner with \"Loading your team's claims…\"."
       }
     },
     {
@@ -251,14 +251,14 @@
     {
       "id": "AC-07",
       "statement": "AC4 · Stale data with last updated and refresh",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time.\n\n**Try:** Press **Refresh now**: loads for a moment, the warning goes away and the time is now.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.\n\n**Try:** Press **Refresh now**: loads for a moment, the warning goes away and the time is now.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Stale data with last updated and refresh",
         "preconditions": [
           {
-            "text": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time.",
+            "text": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.",
             "page": "any",
             "role": "tested-visible",
             "hint": "Press **Refresh now**: loads for a moment, the warning goes away and the time is now."
@@ -277,15 +277,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time.",
+        "description": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.",
         "visualCues": [
-          "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time."
+          "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau, data two hours old.",
-        "expectedResult": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the status line top right shows the same time."
+        "expectedResult": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**."
       }
     },
     {
@@ -371,14 +371,14 @@
     {
       "id": "AC-10",
       "statement": "AC4 · No permission",
-      "plainStatement": "**Opens:** Dashboard as a user whose Claims Manager role was removed.\n\n**You see:** \"You don't have access to the team dashboard\", why, and **Go to my claims**.\n\n**Try:** Press Go to my claims: the claims list opens filtered to your claims.\n\nScope rule (epic Scenario 5): the manager sees own claims, direct members' claims and the team queue only. Georg Stein's claims (Marine team) never appear.",
+      "plainStatement": "**Opens:** Dashboard as a user whose Claims Manager role was removed.\n\n**You see:** \"You don't have access to the team dashboard\" and why, in the same empty state the rest of the app uses.\n\n**Try:** Nothing to do; Reset or pick another AC to leave it.\n\nScope rule (epic Scenario 5): the manager sees own claims, direct members' claims and the team queue only. Georg Stein's claims (Marine team) never appear.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "No permission",
         "preconditions": [
           {
-            "text": "\"You don't have access to the team dashboard\", why, and **Go to my claims**.",
+            "text": "\"You don't have access to the team dashboard\" and why, in the same empty state the rest of the app uses.",
             "page": "any",
             "role": "tested-visible",
             "hint": "Press Go to my claims: the claims list opens filtered to your claims."
@@ -397,15 +397,15 @@
         ]
       },
       "expectedUI": {
-        "description": "\"You don't have access to the team dashboard\", why, and **Go to my claims**.",
+        "description": "\"You don't have access to the team dashboard\" and why, in the same empty state the rest of the app uses.",
         "visualCues": [
-          "\"You don't have access to the team dashboard\", why, and **Go to my claims**."
+          "\"You don't have access to the team dashboard\" and why, in the same empty state the rest of the app uses."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as a user whose Claims Manager role was removed.",
-        "expectedResult": "\"You don't have access to the team dashboard\", why, and **Go to my claims**."
+        "expectedResult": "\"You don't have access to the team dashboard\" and why, in the same empty state the rest of the app uses."
       }
     },
     {
@@ -522,14 +522,14 @@
     {
       "id": "AC-14",
       "statement": "AC6 · Figma, German text length, small screens",
-      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths.\n\n**Try:** Review in Figma once the file exists.",
+      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths.\n\n**Try:** Review in Figma once the file exists.",
       "page": "any",
       "buildStatus": "todo",
       "setup": {
         "description": "Figma, German text length, small screens",
         "preconditions": [
           {
-            "text": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
+            "text": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
             "page": "any",
             "role": "tested-visible",
             "hint": "Review in Figma once the file exists."
@@ -545,15 +545,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
+        "description": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
         "visualCues": [
-          "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths."
+          "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Not built in the prototype.",
-        "expectedResult": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles 2 per row below 1024px, tables scroll sideways) but was not reviewed for German lengths."
+        "expectedResult": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths."
       }
     },
     {
