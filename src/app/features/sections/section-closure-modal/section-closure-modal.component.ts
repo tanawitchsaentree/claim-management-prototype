@@ -13,7 +13,7 @@ import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { firstValueFrom } from 'rxjs';
 import { ClaimSection, SectionClosureReason } from '../../../core/models/section.model';
 import { Blocker } from '../../../core/models/claim-closure.model';
-import { RouterModule } from '@angular/router';
+import { ClosureBlockerSummaryComponent } from '../../../shared/components/closure-blocker-summary/closure-blocker-summary.component';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 
 export interface SectionClosureModalData {
@@ -45,14 +45,14 @@ const CURRENT_USER = { userId: 'MM001', name: 'Mara Mustermann' };
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterModule,
     NxModalModule,
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
     NxFormfieldModule,
-    NxDropdownModule
+    NxDropdownModule,
+    ClosureBlockerSummaryComponent
   ],
   templateUrl: './section-closure-modal.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -69,7 +69,6 @@ export class SectionClosureModalComponent {
   readonly step = signal<Step>(this.data.canClose ? 2 : 1);
   readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
-  readonly expanded = signal<Set<string>>(new Set());
 
   readonly closureReasons = CLOSURE_REASONS;
 
@@ -136,18 +135,6 @@ export class SectionClosureModalComponent {
 
   readonly reasonInvalid = computed(() => this.reasonStatus() !== 'VALID');
 
-  toggleBlocker(key: string): void {
-    this.expanded.update(set => {
-      const next = new Set(set);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
-
-  isExpanded(key: string): boolean {
-    return this.expanded().has(key);
-  }
 
   onCancel(): void {
     this.modalRef.close(undefined);

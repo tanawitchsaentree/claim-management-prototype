@@ -1,23 +1,83 @@
-<ul class="cbs-list">
-  @for (b of blockers; track b.type + b.label) {
-    <li class="cbs-blocker">
-      <span class="cbs-blocker__label">{{ b.label }}</span>
-      @if (isTasks(b)) {
-        <ul class="cbs-tasks" [attr.aria-label]="'Open tasks: ' + b.items!.length">
-          @for (t of b.items; track t.id) {
-            <li class="cbs-task">
-              <span class="cbs-task__title">{{ t.title }}</span>
-              <span class="cbs-task__meta">
-                {{ t.typeLabel }} task · {{ t.ownerDomain }} · {{ t.status }}
-                @if (t.assignee) {
-                  · {{ t.assignee }}
-                }
-                · due {{ t.lastUpdated | appDate }}
-              </span>
-            </li>
-          }
-        </ul>
+<!-- Markup moved as-is from claim-closure-modal (step 1) + section-closure-modal
+     (step 1), so all three closure modals show the same blocker cards. -->
+<div class="cbs-blocker-list">
+  @for (b of blockers(); track b.type + b.label; let i = $index) {
+    @let blockerId = b.type + '-' + i;
+    @let hasItems = b.items && b.items.length > 0;
+    <div class="cbs-blocker-card" [class.cbs-blocker-card--expanded]="isExpanded(b, blockerId)">
+      <div
+        class="cbs-blocker-card__header"
+        [class.cbs-blocker-card__header--clickable]="hasItems"
+        [attr.role]="hasItems ? 'button' : null"
+        [attr.tabindex]="hasItems ? 0 : null"
+        [attr.aria-expanded]="hasItems ? isExpanded(b, blockerId) : null"
+        (click)="hasItems ? toggle(blockerId) : null"
+        (keydown.enter)="hasItems ? toggle(blockerId) : null"
+        (keydown.space)="hasItems ? toggle(blockerId) : null"
+      >
+        <nx-icon name="exclamation-triangle-o" size="s" class="cbs-blocker-icon"></nx-icon>
+        <span class="cbs-blocker-label">{{ b.label }}</span>
+        @if (hasItems) {
+          <span class="cbs-blocker-count">{{ b.items!.length }}</span>
+          <nx-icon
+            [name]="isExpanded(b, blockerId) ? 'chevron-up-small' : 'chevron-down-small'"
+            size="s"
+            class="cbs-blocker-chevron"
+          >
+          </nx-icon>
+        }
+      </div>
+      @if (b.link) {
+        <button
+          nxPlainButton
+          type="button"
+          class="cbs-blocker-link"
+          [attr.data-tour-id]="
+            tourPrefix() && b.type === 'litigation' ? tourPrefix() + '-go-to-litigation' : null
+          "
+          (click)="blockerLink.emit(b)"
+        >
+          {{ b.linkLabel ?? 'Go to details' }}
+        </button>
       }
-    </li>
+      @if (hasItems && isExpanded(b, blockerId)) {
+        <div class="cbs-blocker-items">
+          @for (item of b.items; track item.id) {
+            <div class="cbs-item">
+              <div class="cbs-item__main">
+                <div class="cbs-item__top">
+                  <span class="cbs-item__title">{{ item.title }}</span>
+                  <span class="cbs-item__status cbs-item__status--{{ item.severity }}">{{
+                    item.status
+                  }}</span>
+                </div>
+                <p class="cbs-item__desc">{{ item.description }}</p>
+                <div class="cbs-item__meta">
+                  @if (item.typeLabel) {
+                    <span class="cbs-item__meta-chip">Type: {{ item.typeLabel }}</span>
+                    <span class="cbs-item__meta-chip">Domain: {{ item.ownerDomain }}</span>
+                  }
+                  @if (item.assignee) {
+                    <span class="cbs-item__meta-chip">
+                      <nx-icon name="user-o" size="s"></nx-icon> {{ item.assignee }}
+                    </span>
+                  }
+                  <span class="cbs-item__meta-chip">
+                    <nx-icon name="calendar-o" size="s"></nx-icon>
+                    {{ item.typeLabel ? 'Due ' : '' }}{{ item.lastUpdated | appDate }}
+                  </span>
+                  @if (item.link) {
+                    <a class="cbs-item__link" [routerLink]="item.link" (click)="leave.emit()">
+                      <span class="cbs-item__link-label">Go to {{ item.ownerDomain }}</span>
+                      <nx-icon name="arrow-right-o" size="s"></nx-icon>
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
   }
-</ul>
+</div>

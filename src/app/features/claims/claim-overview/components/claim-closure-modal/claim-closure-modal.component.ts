@@ -14,7 +14,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { firstValueFrom } from 'rxjs';
-import { AppDatePipe } from '../../../../../shared/pipes/app-date.pipe';
+import { ClosureBlockerSummaryComponent } from '../../../../../shared/components/closure-blocker-summary/closure-blocker-summary.component';
 import { ClaimClosureService } from '../../../../../core/services/claim-closure.service';
 import { ClaimOverview, ClaimActivity } from '../../../../../core/models/claim-overview.model';
 import {
@@ -56,7 +56,6 @@ interface ChecklistItem {
   selector: 'app-claim-closure-modal',
   standalone: true,
   imports: [
-    AppDatePipe,
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
@@ -66,7 +65,8 @@ interface ChecklistItem {
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    NxDatefieldModule
+    NxDatefieldModule,
+    ClosureBlockerSummaryComponent
   ],
   templateUrl: './claim-closure-modal.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -84,11 +84,6 @@ export class ClaimClosureModalComponent {
   readonly step = signal<Step>(this.data.blockers.canClose ? 2 : 1);
   readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
-  // BMPCC-22660 AC01: open tasks start expanded, so every task with its type
-  // and domain is on screen without a click (epic FR2).
-  readonly expanded = signal<Set<string>>(
-    new Set(this.data.blockers.blockers.map((b, i) => (b.type === 'tasks' ? `tasks-${i}` : '')))
-  );
 
   readonly closureReasons = CLOSURE_REASONS;
 
@@ -228,18 +223,6 @@ export class ClaimClosureModalComponent {
   // it a hard blocker, so step 3 is unreachable in that state and the warning
   // could never render.
 
-  toggleBlocker(key: string): void {
-    this.expanded.update(set => {
-      const next = new Set(set);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
-
-  isExpanded(key: string): boolean {
-    return this.expanded().has(key);
-  }
 
   onCancel(): void {
     this.modalRef.close(undefined);

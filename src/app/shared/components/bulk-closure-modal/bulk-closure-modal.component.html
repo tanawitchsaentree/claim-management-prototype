@@ -43,7 +43,7 @@
       }
       <ul class="bcm-items" aria-label="Selected items">
         @for (c of candidates(); track c.id) {
-          <li class="bcm-item" [class.bcm-item--blocked]="c.blockers.length">
+          <li class="bcm-item">
             <div class="bcm-item__row">
               <nx-icon
                 size="s"
@@ -51,17 +51,18 @@
                 [class]="c.blockers.length ? 'bcm-icon--warn' : 'bcm-icon--ok'"
               ></nx-icon>
               <span class="bcm-item__name">{{ c.name }}</span>
-              <span class="bcm-item__state">{{
+              <nx-badge [type]="c.blockers.length ? 'critical' : 'positive'" class="bcm-item__state">{{
                 c.blockers.length ? 'Stays open' : 'Ready to close'
-              }}</span>
+              }}</nx-badge>
             </div>
             @if (c.detail) {
               <p class="bcm-item__detail">{{ c.detail }}</p>
             }
             @if (c.blockers.length) {
               <app-closure-blocker-summary
-                class="bcm-item__why"
                 [blockers]="c.blockers"
+                (blockerLink)="goToBlocker($event)"
+                (leave)="onCancel()"
               ></app-closure-blocker-summary>
             }
           </li>
@@ -98,15 +99,12 @@
             custom date, close that claim on its own from Claim overview.
           </p>
         }
-        <p class="bcm-intro">Pre-closure checklist, confirmed once for all of them:</p>
+        <p class="bcm-intro">Please confirm before closing:</p>
         <ul class="bcm-statements">
           @for (s of statements; track s) {
             <li>{{ s }}</li>
           }
         </ul>
-        <nx-checkbox formControlName="confirmed" labelSize="small">
-          I confirm this for all {{ count(ready().length) }}
-        </nx-checkbox>
       </form>
     }
     @case ('running') {
@@ -128,7 +126,7 @@
       }
       <ul class="bcm-items" aria-label="Result per item">
         @for (o of outcomes(); track o.id) {
-          <li class="bcm-item" [class.bcm-item--blocked]="o.status !== 'closed'">
+          <li class="bcm-item">
             <div class="bcm-item__row">
               <nx-icon
                 size="s"
@@ -136,20 +134,15 @@
                 [class]="o.status === 'closed' ? 'bcm-icon--ok' : 'bcm-icon--warn'"
               ></nx-icon>
               <span class="bcm-item__name">{{ o.name }}</span>
-              <span class="bcm-item__state">
-                {{
-                  o.status === 'closed'
-                    ? 'Closed'
-                    : o.status === 'failed'
-                      ? 'Could not close'
-                      : 'Not closed'
-                }}
-              </span>
+              <nx-badge [type]="outcomeBadge(o).type" class="bcm-item__state">{{
+                outcomeBadge(o).label
+              }}</nx-badge>
             </div>
             @if (o.blockers.length) {
               <app-closure-blocker-summary
-                class="bcm-item__why"
                 [blockers]="o.blockers"
+                (blockerLink)="goToBlocker($event)"
+                (leave)="onCancel()"
               ></app-closure-blocker-summary>
             }
           </li>

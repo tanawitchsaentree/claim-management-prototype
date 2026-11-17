@@ -1,5 +1,10 @@
 <div class="rcm-header">
-  <h2 nxModalTitle>{{ title }}</h2>
+  <div class="rcm-header-row">
+    <h2 class="rcm-title">{{ title }}</h2>
+    <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
+      <nx-icon name="close"></nx-icon>
+    </button>
+  </div>
 </div>
 
 <div class="rcm-body" tabindex="0">
@@ -15,27 +20,25 @@
     </p>
   } @else {
     <p class="rcm-current">{{ claims.length }} claims selected</p>
-    <div class="rcm-preview" tabindex="0">
-      <!-- audit-exempt: this branch only renders with 2+ claims -->
-      <table class="rcm-preview__table">
-        <thead>
-          <tr>
-            <th>Claim</th>
-            <th>Client</th>
-            <th>Current handler</th>
+    <!-- audit-exempt: this branch only renders with 2+ claims -->
+    <table nxTable class="rcm-preview">
+      <thead>
+        <tr nxTableRow>
+          <th nxHeaderCell class="rcm-col--nowrap">Claim</th>
+          <th nxHeaderCell>Client</th>
+          <th nxHeaderCell>Current handler</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of claims; track row.claimId) {
+          <tr nxTableRow>
+            <td nxCell class="rcm-col--nowrap">{{ row.claimId }}</td>
+            <td nxCell>{{ row.clientName }}</td>
+            <td nxCell>{{ row.owner ?? 'Team queue' }}</td>
           </tr>
-        </thead>
-        <tbody>
-          @for (row of claims; track row.claimId) {
-            <tr>
-              <td>{{ row.claimId }}</td>
-              <td>{{ row.clientName }}</td>
-              <td>{{ row.owner ?? 'Team queue' }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+        }
+      </tbody>
+    </table>
   }
   @if (data.skippedCount) {
     <nx-message context="info" class="rcm-message">
@@ -81,30 +84,22 @@
         </nx-message>
       }
       @default {
-        <div class="rcm-handler-list" role="listbox" [attr.aria-label]="kind() === 'team' ? 'Team queues' : 'Handlers'">
-          @for (t of visibleTargets(); track t.name) {
-            <button
-              type="button"
-              role="option"
-              class="rcm-handler-option"
-              [class.rcm-handler-option--active]="selected()?.name === t.name"
-              [attr.aria-selected]="selected()?.name === t.name"
-              [disabled]="!!t.unavailableReason"
-              (click)="select(t)"
-            >
-              <span class="rcm-handler-option__name">{{ t.name }}</span>
-              <span class="rcm-handler-option__email">{{ t.unavailableReason ?? t.detail }}</span>
-            </button>
-          } @empty {
-            <p class="rcm-handler-empty">
-              {{
-                query()
-                  ? 'No one matches "' + query() + '".'
-                  : 'No one else can take this claim right now. Ask your team manager.'
-              }}
-            </p>
-          }
-        </div>
+        @if (visibleTargets().length) {
+          <nx-radio-group
+            formControlName="target"
+            class="rcm-targets"
+            [attr.aria-label]="kind() === 'team' ? 'Team queues' : 'Handlers'"
+            (groupValueChange)="selectByName($event.value)"
+          >
+            @for (t of visibleTargets(); track t.name) {
+              <nx-radio [value]="t.name" labelSize="small" [disabled]="!!t.unavailableReason">
+                {{ t.name }} ({{ t.unavailableReason ?? t.detail }})
+              </nx-radio>
+            }
+          </nx-radio-group>
+        } @else {
+          <app-empty-state [message]="emptyMessage()"></app-empty-state>
+        }
       }
     }
 
@@ -131,16 +126,16 @@
       The reassignment didn't go through, so the claim is still with {{ currentOwner ?? 'its current handler' }}. Try again.
     </nx-message>
   }
+</div>
 
-  <div class="rcm-footer">
-    <button nxButton="tertiary small" type="button" (click)="onCancel()">Cancel</button>
-    <button
-      nxButton="primary small"
-      type="button"
-      [disabled]="!selected() || saving()"
-      (click)="onSubmit()"
-    >
-      {{ isRegistration ? 'Choose' : saving() ? 'Reassigning…' : 'Reassign' }}
-    </button>
-  </div>
+<div class="rcm-footer">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button
+    nxButton="primary small"
+    type="button"
+    [disabled]="!selected() || saving()"
+    (click)="onSubmit()"
+  >
+    {{ isRegistration ? 'Choose' : saving() ? 'Reassigning…' : 'Reassign' }}
+  </button>
 </div>

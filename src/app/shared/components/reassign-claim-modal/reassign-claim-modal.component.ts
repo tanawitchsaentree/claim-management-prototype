@@ -15,6 +15,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxRadioModule } from '@allianz/ng-aquila/radio-button';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
+import { NxTableModule } from '@allianz/ng-aquila/table';
 import { AuthService } from '../../../core/services/auth';
 import {
   AssignableClaim,
@@ -26,6 +27,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../confirm-dialog/confirm-dialog.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 export interface ReassignClaimRow extends AssignableClaim {
   clientName: string;
@@ -71,7 +73,9 @@ type ListState = 'loading' | 'error' | 'ready';
     NxIconModule,
     NxRadioModule,
     NxMessageModule,
-    NxSpinnerModule
+    NxSpinnerModule,
+    NxTableModule,
+    EmptyStateComponent
   ],
   templateUrl: './reassign-claim-modal.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -99,6 +103,8 @@ export class ReassignClaimModalComponent {
 
   readonly form = new FormGroup({
     kind: new FormControl<'handler' | 'team'>('handler', { nonNullable: true }),
+    // Name of the picked handler / team queue; mirrors `selected` for the radio group.
+    target: new FormControl<string | null>(null),
     reason: new FormControl<string>('', { nonNullable: true })
   });
   readonly kind = signal<'handler' | 'team'>('handler');
@@ -112,6 +118,12 @@ export class ReassignClaimModalComponent {
         (!q || t.name.toLowerCase().includes(q) || t.detail.toLowerCase().includes(q))
     );
   });
+
+  readonly emptyMessage = computed(() =>
+    this.query()
+      ? `No one matches "${this.query()}".`
+      : 'No one else can take this claim right now. Ask your team manager.'
+  );
 
   readonly title = this.isRegistration
     ? 'Choose who handles this claim'
@@ -137,11 +149,15 @@ export class ReassignClaimModalComponent {
   setKind(kind: 'handler' | 'team'): void {
     this.kind.set(kind);
     this.query.set('');
-    if (this.selected()?.kind !== kind) this.selected.set(null);
+    if (this.selected()?.kind !== kind) {
+      this.selected.set(null);
+      this.form.controls.target.setValue(null);
+    }
   }
 
-  select(t: AssignmentTarget): void {
-    if (t.unavailableReason) return;
+  selectByName(name: string): void {
+    const t = this.targets().find(x => x.name === name && x.kind === this.kind());
+    if (!t || t.unavailableReason) return;
     this.selected.set(t);
   }
 

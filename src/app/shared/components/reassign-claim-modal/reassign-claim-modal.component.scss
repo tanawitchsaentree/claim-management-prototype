@@ -8,6 +8,14 @@
   @include modal.header;
 }
 
+.rcm-header-row {
+  @include modal.header-row;
+}
+
+.rcm-title {
+  @include modal.title;
+}
+
 .rcm-body {
   @include modal.body;
 }
@@ -36,93 +44,18 @@
   @include modal.footer;
 }
 
-.rcm-preview {
-  // Don't let the scrolling body squash the preview to one row.
-  flex-shrink: 0;
-  max-height: 160px;
-  overflow-y: auto;
-  border: 1px solid var(--ui-04);
-  border-radius: var(--radius-s);
-  margin-bottom: var(--space-base);
-
-  &__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--paragraph-02-font-size);
-
-    th {
-      position: sticky;
-      top: 0;
-      background: var(--ui-01);
-      text-align: left;
-      padding: var(--space-ndbx-6) var(--space-ndbx-10);
-      color: var(--text-muted);
-      font-weight: 600;
-      border-bottom: 1px solid var(--ui-04);
-    }
-
-    td {
-      padding: var(--space-ndbx-6) var(--space-ndbx-10);
-      color: var(--text-01);
-      border-bottom: 1px solid var(--ui-04);
-    }
-  }
+// Claim ID on one line, as claims-list's .cl-col--nowrap.
+.rcm-col--nowrap {
+  white-space: nowrap;
 }
 
-.rcm-handler-list {
-  flex-shrink: 0;
-  max-height: 180px;
-  overflow-y: auto;
-  border: 1px solid var(--ui-04);
-  border-radius: var(--radius-s);
-  margin: var(--space-xs) 0 var(--space-sm);
-}
-
-.rcm-handler-option {
+// Handler / team list: stacked radios, same as claim-closure-modal's
+// retention nx-radio-group (claim-closure-modal.component.scss nx-radio-group).
+.rcm-targets {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  text-align: left;
-  padding: var(--space-sm) var(--space-ndbx-10);
-  background: none;
-  border: none;
-  border-bottom: 1px solid var(--ui-04);
-  cursor: pointer;
-
-  &:last-child {
-    border-bottom: none;
-  }
-  &:hover {
-    background: var(--ui-02);
-  }
-  &--active {
-    background: var(--action-selected-background-color);
-  }
-  // Can't take the claim (out of office, above authority): stays visible
-  // with the reason (DESIGN DECISION RA-PICK-1).
-  &:disabled {
-    cursor: not-allowed;
-    background: var(--ui-02);
-
-    .rcm-handler-option__name {
-      color: var(--text-muted);
-    }
-  }
-
-  &__name {
-    font-size: var(--paragraph-02-font-size);
-    color: var(--text-01);
-  }
-  &__email {
-    font-size: var(--paragraph-03-font-size);
-    color: var(--text-muted);
-  }
-}
-
-.rcm-handler-empty {
-  padding: var(--space-ndbx-10);
-  font-size: var(--paragraph-02-font-size);
-  color: var(--text-muted);
+  gap: var(--space-sm);
+  margin: var(--space-xs) 0 var(--space-sm);
 }
 
 .rcm-selected-handler {

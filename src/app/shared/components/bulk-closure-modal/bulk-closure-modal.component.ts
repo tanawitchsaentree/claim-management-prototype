@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -9,11 +10,12 @@ import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
-import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
+import { NxBadgeModule } from '@allianz/ng-aquila/badge';
 import { BulkClosureService } from '../../../core/services/bulk-closure.service';
 import {
   BulkClosureCandidate,
   BulkClosureKind,
+  Blocker,
   BulkClosureOutcome,
   CLOSURE_CONFIRMATION_STATEMENTS
 } from '../../../core/models/claim-closure.model';
@@ -48,7 +50,7 @@ type Step = 'checking' | 'check-error' | 'review' | 'confirm' | 'running' | 'res
     NxMessageModule,
     NxFormfieldModule,
     NxDropdownModule,
-    NxCheckboxModule,
+    NxBadgeModule,
     ClosureBlockerSummaryComponent
   ],
   templateUrl: './bulk-closure-modal.component.html',
@@ -62,6 +64,7 @@ export class BulkClosureModalComponent {
   private readonly bulkSvc = inject(BulkClosureService);
   private readonly live = inject(LiveAnnouncer);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   readonly step = signal<Step>('checking');
   readonly candidates = signal<BulkClosureCandidate[]>([]);
@@ -69,8 +72,7 @@ export class BulkClosureModalComponent {
   readonly statements = CLOSURE_CONFIRMATION_STATEMENTS;
 
   readonly form = this.fb.group({
-    reason: [null as string | null, Validators.required],
-    confirmed: [false, Validators.requiredTrue]
+    reason: [null as string | null, Validators.required]
   });
   private readonly formStatus = toSignal(this.form.statusChanges, {
     initialValue: this.form.status
@@ -152,6 +154,20 @@ export class BulkClosureModalComponent {
 
   onRetryFailed(): void {
     void this.onClose(this.failed().map(o => o.id));
+  }
+
+  outcomeBadge(o: BulkClosureOutcome): { type: 'positive' | 'critical' | 'negative'; label: string } {
+    if (o.status === 'closed') return { type: 'positive', label: 'Closed' };
+    if (o.status === 'failed') return { type: 'negative', label: 'Could not close' };
+    return { type: 'critical', label: 'Not closed' };
+  }
+
+  /** A blocker card's "Go to X": leave the dialog and open that page, same as single closure. */
+  goToBlocker(b: Blocker): void {
+    if (!b.link) return;
+    const returnTo = this.router.url;
+    this.onCancel();
+    void this.router.navigate([b.link], { queryParams: { resolveBlocker: b.label, returnTo } });
   }
 
   onCancel(): void {

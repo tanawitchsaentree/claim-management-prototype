@@ -1,15 +1,19 @@
-<div class="fhp-row">
-  <div class="fhp-text">
-    <span class="fhp-label">Claim handler</span>
-    <span class="fhp-value">{{ label() }}</span>
-    @if (choiceSvc.choice()) {
-      <span class="fhp-hint">They will be notified when you submit.</span>
-    }
+<!-- Same label-left / value-right row as the Summary step's data lists
+     (step-summary .ss-list / .ss-row / .ss-label / .ss-value). -->
+<dl class="fhp-list">
+  <div class="fhp-row">
+    <dt class="fhp-label">Claim handler</dt>
+    <dd class="fhp-value">
+      <span>{{ label() }}</span>
+      @if (choiceSvc.choice()) {
+        <span class="fhp-hint">They will be notified when you submit.</span>
+      }
+      <span class="fhp-actions">
+        @if (choiceSvc.choice()) {
+          <button nxButton="tertiary small" type="button" (click)="reset()">Keep it myself</button>
+        }
+        <button nxButton="secondary small" type="button" (click)="change()">Change handler</button>
+      </span>
+    </dd>
   </div>
-  <div class="fhp-actions">
-    @if (choiceSvc.choice()) {
-      <button nxButton="tertiary small" type="button" (click)="reset()">Keep it myself</button>
-    }
-    <button nxButton="secondary small" type="button" (click)="change()">Change handler</button>
-  </div>
-</div>
+</dl>

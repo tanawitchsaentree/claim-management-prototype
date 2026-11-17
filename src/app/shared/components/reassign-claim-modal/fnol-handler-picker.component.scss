@@ -1,38 +1,46 @@
-// Split row (BLESSED.md "Split toolbar"): info left, actions right.
-.fhp-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-base);
-  padding-bottom: var(--space-base);
-  margin-bottom: var(--space-base);
-  border-bottom: 1px solid var(--ui-04);
+// Copied from step-summary.component.scss (.ss-list, .ss-row, .ss-label,
+// .ss-value, .ss-empty) so this row lines up with the rest of the Summary
+// card. Those rules are scoped to step-summary, so they can't reach here.
+.fhp-list {
+  margin: 0 0 var(--space-base);
+  padding: 0;
 }
 
-.fhp-text {
+.fhp-row {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-base);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--ui-03);
 }
 
 .fhp-label {
+  width: 200px;
+  flex-shrink: 0;
   font-size: var(--paragraph-03-font-size);
-  font-weight: var(--font-weight-label);
-  color: var(--text-label);
+  color: var(--text-muted);
+  font-weight: 400;
+  padding-top: 2px;
 }
 
 .fhp-value {
-  font-size: var(--paragraph-02-font-size);
-  font-weight: var(--font-weight-value);
+  flex: 1;
+  margin: 0;
+  font-size: var(--paragraph-03-font-size);
   color: var(--text-01);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  align-items: flex-start;
 }
 
 .fhp-hint {
-  font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
 
+// BLESSED.md "Split toolbar": the action group is pushed right with
+// margin-left: auto, never justify-content: space-between.
 .fhp-actions {
+  margin-left: auto;
   display: flex;
   gap: var(--space-sm);
   flex-shrink: 0;
