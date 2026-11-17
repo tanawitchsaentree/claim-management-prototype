@@ -27,10 +27,10 @@
           (back)="router.navigate(['/dashboard'])"
         ></app-page-header>
 
-        @if (quickFilterMine()) {
+        @if (quickFilterAssignee(); as who) {
           <div class="cl-quick-filter">
             <nx-icon name="filter" size="s"></nx-icon>
-            Showing only claims assigned to you
+            Showing only claims assigned to {{ quickFilterMine() ? 'you' : who }}
             <button nxPlainButton type="button" (click)="clearQuickFilter()">
               Show all claims
             </button>

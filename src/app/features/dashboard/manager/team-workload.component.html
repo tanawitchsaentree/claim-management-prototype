@@ -33,6 +33,11 @@
           <tr nxTableRow [class.tw-row--active]="filters().member === m.name">
             <td nxCell [class.text-muted]="m.isQueue">
               {{ m.isQueue ? 'Team queue (no handler yet)' : m.name }}
+              <!-- Same "(Out of office until …)" bracket as the reassign dialog,
+                   reassign-claim-modal.component.html:96. -->
+              @if (away().get(m.name); as until) {
+                <span class="text-muted">(Out of office until {{ until | appDate }})</span>
+              }
             </td>
             @if (m.missing) {
               <td nxCell colspan="4" class="text-muted">Couldn't load</td>

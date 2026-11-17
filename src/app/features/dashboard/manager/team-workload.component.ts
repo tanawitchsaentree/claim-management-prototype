@@ -12,6 +12,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CaseFlagKind, ManagedCase, TeamMemberSummary } from '../../../core/models/team.model';
 import { ManagerCaseTableComponent } from './manager-case-table.component';
 
@@ -36,6 +37,7 @@ export interface TeamFilters {
     NxButtonModule,
     NxMessageModule,
     EmptyStateComponent,
+    AppDatePipe,
     ManagerCaseTableComponent
   ],
   templateUrl: './team-workload.component.html',
@@ -46,6 +48,8 @@ export class TeamWorkloadComponent {
   readonly members = input.required<TeamMemberSummary[]>();
   readonly cases = input.required<ManagedCase[]>();
   readonly filters = input.required<TeamFilters>();
+  // Member name -> out-of-office-until date (user directory, as in the reassign dialog).
+  readonly away = input<Map<string, string>>(new Map());
   @Output() filtersChange = new EventEmitter<Partial<TeamFilters>>();
   @Output() reassign = new EventEmitter<ManagedCase>();
 
@@ -79,10 +83,18 @@ export class TeamWorkloadComponent {
     );
   });
 
+  // The heading says what the list holds, in the words of the tiles and the
+  // filters: who, which status, and the Show filter after a colon.
   readonly heading = computed(() => {
-    const m = this.filters().member;
-    if (!m) return 'All team claims';
-    return m === 'Team queue' ? 'Claims in the team queue' : `${m}'s claims`;
+    const f = this.filters();
+    const status = f.status === 'all' ? '' : f.status.toLowerCase() + ' ';
+    let who: string;
+    if (!f.member) who = f.status === 'all' ? 'All team claims' : `${status}team claims`;
+    else if (f.member === 'Team queue') who = `${status}claims in the team queue`;
+    else who = `${f.member}'s ${status}claims`;
+    who = who.charAt(0).toUpperCase() + who.slice(1);
+    const flag = this.flagOptions.find(o => o.value === f.flag);
+    return f.flag === 'all' || !flag ? who : `${who}: ${flag.label}`;
   });
 
   readonly emptyMessage = computed(() => {

@@ -8,7 +8,7 @@ import {
   untracked,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -21,6 +21,7 @@ import { Navbar } from '../../layout/navbar/navbar';
 import { AuthService } from '../../../core/services/auth';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockTeamService } from '../../../core/mock/services/mock-team.service';
+import { MockUserDirectoryService } from '../../../core/mock/services/mock-user-directory.service';
 import { ManagedCase } from '../../../core/models/team.model';
 import { KpiTile } from '../../../core/models';
 import { KpiRowComponent } from '../widgets/kpi-row';
@@ -50,6 +51,7 @@ const LOAD_MS = 500;
   standalone: true,
   imports: [
     Navbar,
+    RouterLink,
     NxButtonModule,
     NxIconModule,
     NxSpinnerModule,
@@ -77,6 +79,9 @@ export class ManagerDashboardComponent {
   readonly noPermission = computed(() => this.sim() === 'no-permission');
 
   readonly loading = signal(true);
+  // CM-REFRESH-1: Refresh keeps the rows on screen; only the Refresh link
+  // turns into a spinner (same as "Sync now", tracker-table.component.html:13-17).
+  readonly refreshing = signal(false);
   readonly loadError = signal(false);
   readonly loadedAt = signal<Date>(new Date());
   private readonly now = signal(Date.now());
@@ -114,6 +119,20 @@ export class ManagerDashboardComponent {
   readonly ownCases = computed(() => this.cases().own);
   readonly teamCases = computed(() => this.cases().team);
   readonly members = computed(() => summarize(this.teamCases(), this.team(), this.missing()));
+
+  // Who is away, from the same user directory the reassign dialog reads
+  // (mock-assignment.service.ts targets(): outOfOfficeUntil).
+  private readonly directory = toSignal(inject(MockUserDirectoryService).getAll(), {
+    initialValue: []
+  });
+  readonly away = computed(
+    () =>
+      new Map(
+        this.directory()
+          .filter(u => !!u.outOfOfficeUntil)
+          .map(u => [u.name, u.outOfOfficeUntil as string])
+      )
+  );
 
   readonly counts = computed(() => {
     const open = this.teamCases().filter(c => c.claim.status === 'Open');
@@ -160,13 +179,26 @@ export class ManagerDashboardComponent {
     });
   }
 
+  /** First load (and Try again) shows the page spinner. */
   async load(): Promise<void> {
     if (this.sim() !== 'stale') this.staleSimUsed = false;
     this.loading.set(true);
     this.loadError.set(false);
     if (this.sim() === 'loading') return;
+    await this.fetch();
+  }
+
+  /** Refresh / Refresh now: the page stays as it is, only the numbers update. */
+  async refresh(): Promise<void> {
+    if (this.refreshing()) return;
+    this.refreshing.set(true);
+    await this.fetch();
+  }
+
+  private async fetch(): Promise<void> {
     await new Promise(r => setTimeout(r, LOAD_MS));
     this.loading.set(false);
+    this.refreshing.set(false);
     if (this.sim() === 'error') {
       this.loadError.set(true);
       return;
@@ -195,10 +227,26 @@ export class ManagerDashboardComponent {
     });
   }
 
+  // A summary number filters the team list and brings that list (not the
+  // card above it) into view, so the result of the click is on screen.
   showFlag(key: string): void {
     this.setFilters({ member: null, status: 'Open', flag: key as TeamFilters['flag'] });
-    document.getElementById('mgr-team')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const list = document.getElementById('mgr-team-cases');
+    list?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    list?.focus({ preventScroll: true });
   }
+
+  // "View all claims" carries the list's filters onto the claims list, like the
+  // Claims portfolio widget's viewAllClaimsParams (claims-portfolio-widget.component.ts:144).
+  // The claims list filters by one handler and one status; it has no team or
+  // flag filter, so those are not carried.
+  readonly viewAllParams = computed<Record<string, string>>(() => {
+    const f = this.filters();
+    const params: Record<string, string> = {};
+    if (f.member && f.member !== 'Team queue') params['assignee'] = f.member;
+    if (f.status !== 'all') params['status'] = f.status;
+    return params;
+  });
 
   // DESIGN DECISION CM-ACT-1 (open question 4): the dashboard is for spotting
   // and opening claims. The one action on it is Reassign, because it reuses

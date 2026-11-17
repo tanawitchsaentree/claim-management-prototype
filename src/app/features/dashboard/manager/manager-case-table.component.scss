@@ -42,3 +42,12 @@
 .mct-flag {
   margin: 0 var(--space-xs) var(--space-xs) 0;
 }
+
+// Same as the claims list's result count (claims-list.component.scss:78-82),
+// inset like the card's other rows (_widget-shell.scss toggle-row).
+.mct-count {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  margin: 0;
+  padding: var(--space-sm) var(--space-xl);
+}

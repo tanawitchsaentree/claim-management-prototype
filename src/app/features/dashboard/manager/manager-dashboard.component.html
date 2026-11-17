@@ -33,7 +33,13 @@
             <nx-message context="warning" class="mgr-stale">
               This data is from {{ loadedAt().toISOString() | appDate: 'withTime' }} and may be out
               of date.
-              <button nxButton="tertiary small" type="button" (click)="load()">Refresh now</button>
+              <button nxButton="tertiary small" type="button" [disabled]="refreshing()" (click)="refresh()">
+                @if (refreshing()) {
+                  <nx-spinner size="small"></nx-spinner>
+                } @else {
+                  Refresh now
+                }
+              </button>
             </nx-message>
           }
 
@@ -85,14 +91,19 @@
                 <span class="text-muted mgr-updated" aria-live="polite"
                   >Updated {{ loadedAt().toISOString() | appDate: 'withTime' }}</span
                 >
-                <a class="widget-link" (click)="load()" (keydown.enter)="load()" tabindex="0">Refresh</a>
-                <a class="widget-link" (click)="goTo('/claims')" (keydown.enter)="goTo('/claims')" tabindex="0"
-                  >View all claims</a
-                >
+                <!-- Refresh in place (CM-REFRESH-1): the link becomes a spinner, the rows stay.
+                     Same swap as "Sync now", tracker-table.component.html:13-17. -->
+                @if (refreshing()) {
+                  <nx-spinner size="small" aria-label="Refreshing"></nx-spinner>
+                } @else {
+                  <a class="widget-link" (click)="refresh()" (keydown.enter)="refresh()" tabindex="0">Refresh</a>
+                }
+                <a routerLink="/claims" [queryParams]="viewAllParams()" class="widget-link">View all claims</a>
               </div>
             </div>
             <app-team-workload
               [members]="members()"
+              [away]="away()"
               [cases]="teamCases()"
               [filters]="filters()"
               (filtersChange)="setFilters($event)"

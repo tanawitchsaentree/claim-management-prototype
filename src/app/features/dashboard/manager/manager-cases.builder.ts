@@ -143,7 +143,13 @@ export function sortCases(cases: ManagedCase[], key: CaseSortKey, dir: 'asc' | '
       case 'priority':
         return (PRIORITY_RANK[a.claim.priority] ?? 9) - (PRIORITY_RANK[b.claim.priority] ?? 9);
       case 'amount':
-        return a.claim.lossAmount - b.claim.lossAmount;
+        // No FX rates in the prototype (see HANDLER_AUTHORITY_LIMIT in
+        // mock-assignment.service.ts), so amounts in different currencies
+        // are never compared: currency first, then amount.
+        return (
+          a.claim.currency.localeCompare(b.claim.currency) ||
+          a.claim.lossAmount - b.claim.lossAmount
+        );
       case 'flags':
         return a.flags.length - b.flags.length;
       default:

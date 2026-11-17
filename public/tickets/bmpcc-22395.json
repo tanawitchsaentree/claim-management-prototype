@@ -20,17 +20,17 @@
     {
       "id": "AC-01",
       "statement": "AC1 · Own cases, team workload and drill-down into a member",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **Whole team** button to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Own cases, team workload and drill-down into a member",
         "preconditions": [
           {
-            "text": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue.",
+            "text": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.",
             "page": "any",
             "role": "tested-visible",
-            "hint": "Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **Whole team** button to go back."
+            "hint": "Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back."
           }
         ],
         "stateOverrides": {
@@ -43,21 +43,21 @@
         ]
       },
       "expectedUI": {
-        "description": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue.",
+        "description": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.",
         "visualCues": [
-          "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue."
+          "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau (Claims Manager).",
-        "expectedResult": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue."
+        "expectedResult": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog."
       }
     },
     {
       "id": "AC-02",
       "statement": "AC2 · Flagged claims are highlighted, say why, and can be filtered",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\".\n\n**Try:** Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain.\n\n**NOTE [accepted-deviation]:** thresholds were open (open question 1). Implemented: Overdue = an open task past its due date; High value = loss amount 250,000 or more in the claim currency (no FX); For review = a handler marked the claim (review-flags.json). See DESIGN DECISION CM-FLAG-1. Treated as `done` pending product sign-off.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\".\n\n**Try:** Click the **Need attention** number (the list comes into view, headed \"Open team claims: Needs attention\" with \"Showing 8 of 10 claims\"), or set **Show** to Overdue / High value / For review: only those claims remain.\n\n**NOTE [accepted-deviation]:** thresholds were open (open question 1). Implemented: Overdue = an open task past its due date; High value = loss amount 250,000 or more in the claim currency (no FX); For review = a handler marked the claim (review-flags.json). See DESIGN DECISION CM-FLAG-1. Treated as `done` pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -67,7 +67,7 @@
             "text": "Each flag is a badge in the **Needs attention** column (same badge + tooltip as \"Review needed\" on Sections). Hover a badge for the reason, e.g. on CLM-2024-016 **Overdue** \"2 tasks late, oldest due 11-06-2026\", **High value** \"CHF 250,000 or more\", **For review** \"Lena Zorn: Coverage question...\".",
             "page": "any",
             "role": "tested-visible",
-            "hint": "Click the **Need attention** number, or set **Show** to Overdue / High value / For review: only those claims remain."
+            "hint": "Click the **Need attention** number (the list comes into view, headed \"Open team claims: Needs attention\" with \"Showing 8 of 10 claims\"), or set **Show** to Overdue / High value / For review: only those claims remain."
           }
         ],
         "stateOverrides": {
@@ -94,17 +94,17 @@
     {
       "id": "AC-03",
       "statement": "AC3 · Prioritisation fields, sort and filter by member, status and flag",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list.\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. The Handler column hides once you drill into one person.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried.\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Amounts are not converted (no exchange rates in the prototype), so claims are grouped by currency and sorted within it; the header tooltip says so. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. The Handler column hides once you drill into one person.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Prioritisation fields, sort and filter by member, status and flag",
         "preconditions": [
           {
-            "text": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list.",
+            "text": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried.",
             "page": "any",
             "role": "tested-visible",
-            "hint": "Click the **Loss amount** header to sort, again to reverse. Set Status to All statuses: closed claims show with a Closed chip."
+            "hint": "Click the **Loss amount** header to sort, again to reverse. Amounts are not converted (no exchange rates in the prototype), so claims are grouped by currency and sorted within it; the header tooltip says so. Set Status to All statuses: closed claims show with a Closed chip."
           }
         ],
         "stateOverrides": {
@@ -117,15 +117,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list.",
+        "description": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried.",
         "visualCues": [
-          "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list."
+          "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau, Team workload.",
-        "expectedResult": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows; **View all claims** in the card header opens the full claims list."
+        "expectedResult": "Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried."
       }
     },
     {
@@ -251,7 +251,7 @@
     {
       "id": "AC-07",
       "statement": "AC4 · Stale data with last updated and refresh",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.\n\n**Try:** Press **Refresh now**: loads for a moment, the warning goes away and the time is now.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.\n\n**Try:** Press **Refresh now**: the button shows a small spinner for a moment while the page stays where it is, then the warning goes away and the time is now. **Refresh** in the Team workload header works the same way.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -261,7 +261,7 @@
             "text": "Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.",
             "page": "any",
             "role": "tested-visible",
-            "hint": "Press **Refresh now**: loads for a moment, the warning goes away and the time is now."
+            "hint": "Press **Refresh now**: the button shows a small spinner for a moment while the page stays where it is, then the warning goes away and the time is now. **Refresh** in the Team workload header works the same way."
           }
         ],
         "stateOverrides": {

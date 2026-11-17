@@ -1,6 +1,7 @@
 @if (cases().length === 0) {
   <app-empty-state [message]="emptyMessage()" [hint]="emptyHint()"></app-empty-state>
 } @else {
+  <p class="mct-count">{{ countText() }}</p>
   <div class="data-table-wrap" tabindex="0">
     <table
       nxTable
@@ -21,7 +22,16 @@
           }
           <th nxHeaderCell nxSortHeaderCell="flags">Needs attention</th>
           <th nxHeaderCell nxSortHeaderCell="updated" class="dash-col--nowrap">Last updated</th>
-          <th nxHeaderCell nxSortHeaderCell="amount" class="dash-col--nowrap">Loss amount</th>
+          <!-- No exchange rates in the prototype: amounts stay in the claim's
+               currency and sorting keeps each currency together. -->
+          <th
+            nxHeaderCell
+            nxSortHeaderCell="amount"
+            class="dash-col--nowrap"
+            nxTooltip="In the claim's currency, not converted. Sorting groups claims by currency."
+          >
+            Loss amount
+          </th>
           <th nxHeaderCell><span class="mct-sr">Actions</span></th>
         </tr>
       </thead>

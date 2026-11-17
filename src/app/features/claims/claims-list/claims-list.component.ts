@@ -122,15 +122,18 @@ export class ClaimsListComponent {
     return rows.length > 0 && rows.every(c => this.selected().has(c.claimId));
   });
 
-  // Set when the page is opened via "?assignee=me" (e.g. from the dashboard's "My claims" widget)
-  // so the list lands pre-filtered to the same scope instead of the generic unfiltered list.
-  readonly quickFilterMine = signal(false);
+  // "?assignee=me" (dashboard "My claims") or "?assignee=<name>&status=Open" (Claims Manager
+  // dashboard "View all claims"): the list lands on the same scope as the widget it came from.
+  readonly quickFilterAssignee = signal<string | null>(null);
+  readonly quickFilterMine = computed(() => this.quickFilterAssignee() === this.auth.user()?.name);
 
   constructor() {
-    if (this.route.snapshot.queryParamMap.get('assignee') === 'me') {
-      this.quickFilterMine.set(true);
-    }
-    this.load();
+    const q = this.route.snapshot.queryParamMap;
+    const a = q.get('assignee');
+    this.quickFilterAssignee.set(a === 'me' ? (this.auth.user()?.name ?? null) : a);
+    const s = q.get('status');
+    if (s === 'Open' || s === 'Closed') this.filterForm.controls.status.setValue(s);
+    this.onFilter();
   }
 
   private lastFilter?: ClaimFilter;
@@ -139,9 +142,8 @@ export class ClaimsListComponent {
 
   private async load(filter?: ClaimFilter, awaitingOnly = false): Promise<void> {
     this.awaitingOnly = awaitingOnly;
-    if (this.quickFilterMine()) {
-      filter = { ...filter, assignee: this.auth.user()?.name };
-    }
+    const who = this.quickFilterAssignee();
+    if (who) filter = { ...filter, assignee: who };
     this.lastFilter = filter;
     this.awaitingOnly = awaitingOnly;
     this.loading.set(true);
@@ -172,8 +174,8 @@ export class ClaimsListComponent {
   }
 
   clearQuickFilter(): void {
-    this.quickFilterMine.set(false);
-    this.load();
+    this.quickFilterAssignee.set(null);
+    this.onFilter();
   }
 
   // ── Bulk reassignment (single claim = select 1; multiple = select several) ──

@@ -73,6 +73,15 @@ export class ManagerCaseTableComponent {
   readonly sorted = computed(() => sortCases(this.cases(), this.sortKey(), this.sortDir()));
   readonly visible = computed(() => this.sorted().slice(0, PAGE));
 
+  // Count above the table so it can be checked against the summary number
+  // ("{{ total }} claims found", claims-list.component.html:97, and the
+  // "x of y" of bulk-closure-modal.component.html:39).
+  readonly countText = computed(() => {
+    const total = this.cases().length;
+    const noun = total === 1 ? 'claim' : 'claims';
+    return total > PAGE ? `Showing ${PAGE} of ${total} ${noun}` : `${total} ${noun}`;
+  });
+
   badgeType(kind: CaseFlagKind): string {
     return BADGE_TYPE[kind];
   }
