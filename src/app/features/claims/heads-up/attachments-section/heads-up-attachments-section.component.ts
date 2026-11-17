@@ -12,9 +12,11 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxCheckboxModule } from '@allianz/ng-aquila/checkbox';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { MockClaimDocumentsService } from '../../../../core/mock/services/mock-claim-documents.service';
+import { ClaimDocument } from '../../../../core/models/provider-communication.model';
 import {
   HEADS_UP_ATTACHMENT_MAX_FILES,
   HEADS_UP_ATTACHMENT_MAX_MB,
@@ -24,15 +26,15 @@ import {
 
 const UPLOAD_MS = 1500;
 
-// BMPCC-22350: supporting attachments. Same two ways in as the provider
-// attachment-picker (features/claims/provider-management): pick a document the
-// claim already has, or upload from the device. The upload is mocked (a short
+// BMPCC-22350: supporting attachments. Same two blocks, rows and controls as the
+// provider attachment-picker (features/claims/provider-management): tick a
+// document the claim already has, or upload from the device. The upload is mocked (a short
 // "Uploading" then done); limits are DESIGN DECISION HU-1 Q5. The list is the
 // page's form state: it is kept when the draft is saved.
 @Component({
   selector: 'app-heads-up-attachments-section',
   standalone: true,
-  imports: [NxButtonModule, NxIconModule, NxSpinnerModule],
+  imports: [NxButtonModule, NxCheckboxModule, NxIconModule, NxSpinnerModule],
   templateUrl: './heads-up-attachments-section.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './heads-up-attachments-section.component.scss'
@@ -51,21 +53,29 @@ export class HeadsUpAttachmentsSectionComponent implements OnDestroy {
   readonly error = signal<string | null>(null);
   private readonly timers: ReturnType<typeof setTimeout>[] = [];
 
-  private readonly claimDocs = toSignal(
+  readonly claimDocs = toSignal(
     toObservable(this.claimId).pipe(switchMap(id => this.docsSvc.getByClaimId(id))),
     { initialValue: [] }
   );
-  /** Claim documents not attached yet. */
-  readonly available = computed(() => {
-    const taken = new Set(this.attachments().map(a => a.id));
-    return this.claimDocs().filter(d => !taken.has(d.documentId));
-  });
+  /** Files added from the device (claim documents show as ticked rows instead). */
+  readonly uploads = computed(() => this.attachments().filter(a => a.source === 'upload'));
   readonly full = computed(() => this.attachments().length >= HEADS_UP_ATTACHMENT_MAX_FILES);
 
-  addFromClaim(id: string, fileName: string, size: number): void {
+  isAttached(id: string): boolean {
+    return this.attachments().some(a => a.id === id);
+  }
+
+  toggleClaimDoc(d: ClaimDocument): void {
+    if (this.isAttached(d.documentId)) {
+      this.attachments.update(list => list.filter(a => a.id !== d.documentId));
+      return;
+    }
     if (this.full()) return this.fail(`You can attach up to ${HEADS_UP_ATTACHMENT_MAX_FILES} files.`);
     this.error.set(null);
-    this.attachments.update(list => [...list, { id, fileName, size, source: 'claim', status: 'uploaded' }]);
+    this.attachments.update(list => [
+      ...list,
+      { id: d.documentId, fileName: d.fileName, size: d.fileSize, source: 'claim', status: 'uploaded' }
+    ]);
   }
 
   onFiles(event: Event): void {

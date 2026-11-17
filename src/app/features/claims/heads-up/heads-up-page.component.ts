@@ -39,6 +39,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { HeadsUpAssessmentSectionComponent } from './assessment-section/heads-up-assessment-section.component';
 import { HeadsUpAttachmentsSectionComponent } from './attachments-section/heads-up-attachments-section.component';
 import { HeadsUpPrefillSectionComponent } from './prefill-section/heads-up-prefill-section.component';
@@ -67,6 +68,7 @@ import { confirmLeave, confirmSave } from './heads-up-confirm';
     NxSpinnerModule,
     PageHeaderComponent,
     StatusChipComponent,
+    EmptyStateComponent,
     AppDatePipe,
     HeadsUpPrefillSectionComponent,
     HeadsUpAssessmentSectionComponent,

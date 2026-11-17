@@ -2,74 +2,104 @@
   <h2 class="fa-title" [id]="'fa-title-' + claimId()">
     FNOL acknowledgement{{ showClaimId() ? ' for ' + claimId() : '' }}
   </h2>
-  <p class="fa-text">
-    The letter that confirms to the policyholder or broker that we received the claim. Generating it doesn't send it.
-  </p>
+  <div class="fa-stack">
+    <p class="fa-text">
+      The letter that confirms to the policyholder or broker that we received the claim. Generating
+      it doesn't send it.
+    </p>
 
-  @if (ack(); as a) {
-    @if (a.status === 'generating') {
-      <p class="fa-busy" role="status">
-        <nx-spinner size="small"></nx-spinner>
-        Generating the letter. This takes a few seconds; you can leave this page and the bell tells you when it's ready.
-      </p>
-    }
+    @if (ack(); as a) {
+      @if (a.status === 'generating') {
+        <p class="fa-busy" role="status">
+          <nx-spinner size="small"></nx-spinner>
+          Generating the letter. This takes a few seconds; you can leave this page and the bell
+          tells you when it's ready.
+        </p>
+      }
 
-    @if (a.status === 'failed') {
-      <nx-message context="error" class="fa-message">
-        <strong>The FNOL acknowledgement couldn't be generated.</strong>
-        <span class="fa-message-body">{{ a.error }}</span>
-        <button nxButton="secondary small" type="button" class="fa-message-action" (click)="retry()">Try again</button>
-      </nx-message>
-    }
-
-    @if (a.status === 'generated' && a.documentName && a.generatedAt) {
-      <div class="fa-doc">
-        <nx-icon name="file-text" size="s" class="fa-doc-icon" aria-hidden="true"></nx-icon>
-        <div class="fa-doc-text">
-          <button nxPlainButton type="button" class="fa-doc-link" (click)="open(a.documentName, a.generatedAt, a.letter)">
-            {{ a.documentName }}
+      @if (a.status === 'failed') {
+        <nx-message context="error" class="fa-message">
+          <strong>The FNOL acknowledgement couldn't be generated.</strong>
+          <span class="fa-message-body">{{ a.error }}</span>
+          <button
+            nxButton="secondary small"
+            type="button"
+            class="fa-message-action"
+            (click)="retry()"
+          >
+            Try again
           </button>
-          <span class="fa-doc-meta">Generated {{ a.generatedAt | appDate: 'withTime' }} by {{ a.generatedBy }}</span>
-          @if (a.previous; as p) {
-            <span class="fa-doc-meta">The earlier letter from {{ p.generatedAt | appDate }} stays on the claim.</span>
+        </nx-message>
+      }
+
+      @if ((a.status === 'generated' && a.documentName && a.generatedAt) || a.previous) {
+        <!-- Same row as attachment-picker.component.html (name + muted meta) -->
+        <ul class="fa-doc-list">
+          @if (a.status === 'generated' && a.documentName && a.generatedAt) {
+            <li class="fa-doc-row">
+              <span class="fa-doc-name">
+                <button
+                  nxPlainButton
+                  type="button"
+                  (click)="open(a.documentName, a.generatedAt, a.letter)"
+                >
+                  {{ a.documentName }}
+                </button>
+              </span>
+              <span class="fa-doc-meta"
+                >Generated {{ a.generatedAt | appDate: 'withTime' }} by {{ a.generatedBy }}</span
+              >
+            </li>
           }
-        </div>
-      </div>
-    } @else if (a.previous; as p) {
-      <div class="fa-doc">
-        <nx-icon name="file-text" size="s" class="fa-doc-icon" aria-hidden="true"></nx-icon>
-        <div class="fa-doc-text">
-          <button nxPlainButton type="button" class="fa-doc-link" (click)="open(p.documentName, p.generatedAt, p.letter)">
-            {{ p.documentName }}
+          @if (a.previous; as p) {
+            <li class="fa-doc-row">
+              <span class="fa-doc-name">
+                <button
+                  nxPlainButton
+                  type="button"
+                  (click)="open(p.documentName, p.generatedAt, p.letter)"
+                >
+                  {{ p.documentName }}
+                </button>
+              </span>
+              <span class="fa-doc-meta"
+                >Earlier letter, generated {{ p.generatedAt | appDate: 'withTime' }} by
+                {{ p.generatedBy }}</span
+              >
+            </li>
+          }
+        </ul>
+      }
+    }
+
+    @if (ack()?.status !== 'failed') {
+      <div class="fa-actions">
+        @if (ack()?.status === 'generating') {
+          <button nxButton="primary small" type="button" disabled>Generating…</button>
+        } @else if (ack()?.status === 'generated') {
+          <button
+            nxButton="secondary small"
+            type="button"
+            [disabled]="!availability().available"
+            (click)="generate()"
+          >
+            Generate again
           </button>
-          <span class="fa-doc-meta">Earlier letter, generated {{ p.generatedAt | appDate: 'withTime' }} by {{ p.generatedBy }}</span>
-        </div>
+        } @else {
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="!availability().available"
+            [attr.aria-describedby]="availability().available ? null : reasonId()"
+            (click)="generate()"
+          >
+            Generate FNOL acknowledgement
+          </button>
+        }
+        @if (!availability().available) {
+          <span class="fa-reason" [id]="reasonId()">{{ availability().reason }}</span>
+        }
       </div>
     }
-  }
-
-  @if (ack()?.status !== 'failed') {
-    <div class="fa-actions">
-      @if (ack()?.status === 'generating') {
-        <button nxButton="primary small" type="button" disabled>Generating…</button>
-      } @else if (ack()?.status === 'generated') {
-        <button nxButton="secondary small" type="button" [disabled]="!availability().available" (click)="generate()">
-          Generate again
-        </button>
-      } @else {
-        <button
-          nxButton="primary small"
-          type="button"
-          [disabled]="!availability().available"
-          [attr.aria-describedby]="availability().available ? null : reasonId()"
-          (click)="generate()"
-        >
-          Generate FNOL acknowledgement
-        </button>
-      }
-      @if (!availability().available) {
-        <span class="fa-reason" [id]="reasonId()">{{ availability().reason }}</span>
-      }
-    </div>
-  }
+  </div>
 </section>

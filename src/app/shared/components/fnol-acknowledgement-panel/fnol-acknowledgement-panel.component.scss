@@ -1,27 +1,24 @@
-// BLESSED: same card as Claim Overview's co-card (_card-shell.scss) and the
-// FNOL summary's ss-card, which use identical values, so the panel looks the
-// same on both screens.
+// BLESSED: card from shared/styles/_form-section.scss (fs.card) and title from
+// Claim Overview's _card-shell.scss (card-title), like the sibling co-cards.
+// Document rows are the attachment-picker rows (provider-management).
+@use '../../styles/form-section' as fs;
+@use '../../styles/form-rhythm' as fr;
+@use '../../../features/claims/claim-overview/card-shell' as shell;
 
 :host {
   display: block;
 }
 
 .fa-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  background: var(--ui-01);
-  border: 1px solid var(--ui-04);
-  border-radius: var(--radius-s);
-  padding: var(--space-xl);
-  margin-bottom: var(--space-base);
+  @include fs.card;
 }
 
 .fa-title {
-  margin: 0 0 var(--space-xs);
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 700;
-  color: var(--text-heading);
+  @include shell.card-title;
+}
+
+.fa-stack {
+  @include fr.group;
 }
 
 .fa-text {
@@ -48,26 +45,25 @@
   margin-top: var(--space-md);
 }
 
-.fa-doc {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-sm);
-}
-
-.fa-doc-icon {
-  margin-top: var(--space-xs);
-  color: var(--text-muted);
-}
-
-.fa-doc-text {
+.fa-doc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: var(--space-xs);
 }
 
-.fa-doc-link {
-  text-align: left;
+.fa-doc-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) 0;
+}
+
+.fa-doc-name {
+  color: var(--text-01);
+  flex: 1;
 }
 
 .fa-doc-meta,
@@ -76,10 +72,13 @@
   color: var(--text-muted);
 }
 
+.fa-doc-meta {
+  white-space: nowrap;
+}
+
 .fa-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-md);
-  margin-top: var(--space-xs);
 }

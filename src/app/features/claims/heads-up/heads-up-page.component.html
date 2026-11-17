@@ -17,7 +17,14 @@
     <nx-message context="error" class="hu-banner">
       <strong>Couldn't load this claim.</strong>
       <span class="hu-banner-body">Check your connection and try again.</span>
-      <button nxButton="secondary small" type="button" class="hu-banner-action" (click)="retryLoad()">Try again</button>
+      <button
+        nxButton="secondary small"
+        type="button"
+        class="hu-banner-action"
+        (click)="retryLoad()"
+      >
+        Try again
+      </button>
     </nx-message>
   }
   @case ('ready') {
@@ -44,17 +51,24 @@
         @if (hu.status === 'submitted') {
           <nx-message context="success">
             <strong>Key Case Management has this Heads-Up.</strong>
-            <span class="hu-banner-body">It can't be changed here any more. Send later news to Key Case Management.</span>
+            <span class="hu-banner-body"
+              >It can't be changed here any more. Send later news to Key Case Management.</span
+            >
           </nx-message>
         }
         @if (hu.threshold; as t) {
           <nx-message context="info">
-            <strong>Incurred reached {{ t.incurred | number: '1.0-0' }} {{ t.currency }} on {{ t.reachedAt | appDate }}.</strong>
+            <strong
+              >Incurred reached {{ t.incurred | number: '1.0-0' }} {{ t.currency }} on
+              {{ t.reachedAt | appDate }}.</strong
+            >
             <span class="hu-banner-body">
               @if (t.notice === 'new-draft') {
-                That is over the {{ threshold | number: '1.0-0' }} large loss limit, so this draft was made for you.
+                That is over the {{ threshold | number: '1.0-0' }} large loss limit, so this draft
+                was made for you.
               } @else {
-                This claim already had this Heads-Up, so no second one was made. Check it is still up to date.
+                This claim already had this Heads-Up, so no second one was made. Check it is still
+                up to date.
               }
             </span>
           </nx-message>
@@ -71,7 +85,10 @@
           </nx-message>
         } @else if (missing().length) {
           <nx-message context="error" role="alert">
-            <strong>Fill in {{ missing().length }} {{ missing().length === 1 ? 'field' : 'fields' }} before you submit:</strong>
+            <strong
+              >Fill in {{ missing().length }}
+              {{ missing().length === 1 ? 'field' : 'fields' }} before you submit:</strong
+            >
             <span class="hu-banner-body">{{ missing().join(', ') }}.</span>
           </nx-message>
         }
@@ -106,21 +123,30 @@
               {{ saving() === 'draft' ? 'Saving…' : 'Save draft' }}
             </button>
           </div>
-          <button nxButton="primary small" type="button" [disabled]="!!saving()" (click)="onSave('submit')">
+          <button
+            nxButton="primary small"
+            type="button"
+            [disabled]="!!saving()"
+            (click)="onSave('submit')"
+          >
             {{ saving() === 'submit' ? 'Submitting…' : 'Submit Heads-Up' }}
           </button>
         </footer>
       }
     } @else {
-      <div class="hu-empty">
-        <p class="hu-empty-text">
-          This claim has no Heads-Up yet. Incurred is {{ incurred() | number: '1.0-0' }}
-          {{ claim()?.financialSummary?.currency }}.
-        </p>
+      <app-empty-state
+        message="This claim has no Heads-Up yet."
+        icon="info-circle-o"
+        hint="Incurred is {{ incurred() | number: '1.0-0' }} {{
+          claim()?.financialSummary?.currency
+        }}."
+      >
         @if (claim()?.status !== 'Closed') {
-          <button nxButton="primary small" type="button" (click)="onCreate()">Create Heads-Up</button>
+          <button action nxButton="primary small" type="button" (click)="onCreate()">
+            Create Heads-Up
+          </button>
         }
-      </div>
+      </app-empty-state>
     }
   }
 }

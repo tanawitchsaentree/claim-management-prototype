@@ -1,4 +1,5 @@
-// BLESSED: form-rhythm; list rows follow provider-management attachment-picker.
+// BLESSED: blocks, rows and upload button copied from provider-management
+// attachment-picker.component.scss so the app has one document-row look.
 @use '../../../../shared/styles/form-rhythm' as fr;
 @use '../heads-up-section' as hs;
 
@@ -14,50 +15,56 @@
   @include hs.heading;
 }
 
-.hat-caption,
-.hat-empty {
+.hat-caption {
   @include hs.caption;
 }
 
-.hat-list,
+.hat-block {
+  margin-bottom: var(--space-md);
+}
+
+.hat-label {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+  margin: 0 0 var(--space-sm);
+}
+
 .hat-doc-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
-.hat-row,
-.hat-doc {
+.hat-doc-row {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  min-height: var(--space-3xl);
-  border-bottom: 1px solid var(--ui-03);
+  gap: var(--space-sm);
+  padding: var(--space-xs) 0;
 }
 
-.hat-icon {
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.hat-name {
+.hat-doc-name {
   color: var(--text-01);
-  overflow-wrap: anywhere;
+  flex: 1;
 }
 
-.hat-meta {
-  font-size: var(--paragraph-03-font-size);
+.hat-doc-size {
   color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
   white-space: nowrap;
 }
 
-.hat-end {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-md);
-  margin-left: auto;
-  flex-shrink: 0;
+.hat-empty {
+  color: var(--text-muted);
+  font-size: var(--paragraph-03-font-size);
+}
+
+// The native picker is opened by the Choose files button; it is never drawn.
+.hat-file-input {
+  display: none;
 }
 
 .hat-status {
@@ -72,38 +79,8 @@
   }
 }
 
-.hat-doc button {
-  margin-left: auto;
-}
-
-.hat-add {
-  @include fr.group;
-  align-items: flex-start;
-}
-
-.hat-upload {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-// The native picker is opened by the Upload files button; it is never drawn.
-.hat-file {
-  display: none;
-}
-
-.hat-claim-docs {
-  @include fr.field;
-  width: 100%;
-}
-
-.hat-sub {
-  margin: 0;
-  font-size: var(--paragraph-03-font-size);
-  font-weight: 600;
-  color: var(--text-01);
-}
-
 .hat-error {
-  @include hs.error;
+  color: var(--danger);
+  font-size: var(--paragraph-03-font-size);
+  margin: var(--space-xs) 0 0;
 }

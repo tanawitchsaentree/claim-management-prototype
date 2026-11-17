@@ -1,7 +1,6 @@
 import { Component, computed, effect, inject, input, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
@@ -22,7 +21,7 @@ import {
 @Component({
   selector: 'app-fnol-acknowledgement-panel',
   standalone: true,
-  imports: [NxButtonModule, NxIconModule, NxMessageModule, NxSpinnerModule, AppDatePipe],
+  imports: [NxButtonModule, NxMessageModule, NxSpinnerModule, AppDatePipe],
   templateUrl: './fnol-acknowledgement-panel.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fnol-acknowledgement-panel.component.scss'
