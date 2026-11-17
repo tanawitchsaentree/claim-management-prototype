@@ -2,14 +2,6 @@
   <div class="rp-header">
     <h2 class="co-card-title">Recovery potential</h2>
     <div class="rp-header__actions">
-      @if (savedChoice()) {
-        <app-status-chip
-          [status]="savedChoice() === 'yes' ? 'yes' : 'no'"
-          domain="recovery"
-          [label]="savedChoice() === 'yes' ? 'Yes' : 'No'"
-        >
-        </app-status-chip>
-      }
       <button
         class="co-icon-btn"
         type="button"

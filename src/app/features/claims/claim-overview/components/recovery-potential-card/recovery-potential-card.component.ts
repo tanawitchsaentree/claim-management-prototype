@@ -17,7 +17,6 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { firstValueFrom } from 'rxjs';
-import { StatusChipComponent } from '../../../../../shared/components/status-chip/status-chip.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
@@ -71,8 +70,7 @@ export interface RecoveryPotentialUpdated {
     NxRadioModule,
     NxButtonModule,
     NxIconModule,
-    NxModalModule,
-    StatusChipComponent
+    NxModalModule
   ],
   templateUrl: './recovery-potential-card.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

@@ -17,7 +17,7 @@
       "targetId": "co-recovery-potential-save",
       "title": "Save is a deliberate second click",
       "body": "The radios do not commit on selection. This field gates claim closure, so a misclick should be recoverable before it is written to the activity log.",
-      "expectedAfterClick": "The chip in the card header updates and the activity log records the old and new value.",
+      "expectedAfterClick": "The summary line under the card title shows the new answer in bold, and the activity log records the old and new value.",
       "direction": "top"
     },
     "Answering Yes used to be the end of the trail, the Set up recovery case link pointed at /recoveries, which redirected straight back to Claim Overview. The next three steps are the page that link now opens.",
@@ -75,7 +75,7 @@
           "Question \"Is recovery possible on this claim?\" above the radios",
           "Yes / No radios side by side",
           "Save is disabled until the selection differs from what is on record",
-          "Chip in the card header reflects the saved answer"
+          "The summary line under the card title shows the saved answer in bold"
         ]
       },
       "expectedOutcome": {
