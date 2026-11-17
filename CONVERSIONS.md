@@ -1207,3 +1207,16 @@ Template — copy below the most recent entry:
 - **Reopen claim:** existing select all kept, "N of M selected" added, new confirm step (what reopens, what stays closed). A claim with no closed sections could not be reopened (Continue stayed disabled); fixed.
 - **Section date of loss:** `ClaimSection.dateOfLoss`, unset = follows the claim. Change window (`section-dol-modal`) + Field/Original/Updated confirm + toast; shown in the table and the detail panel. Entities without their own date start from their section's date. Schema v2.4: `sectionBlockers` also takes `dateOfLoss` and `simulateCloseError`.
 - **Type of coverage:** "Covered by" renamed in the E&D table and FNOL entity detail panel. Section column uses `section.typeOfCoverage` or a default per damage type (`core/mock/data/section-coverage.json`), accepted deviation.
+
+## 2026-11-17 — Recoveries resolve + Financial Overview totals (UX audit fixes, docs/ux/financial-pages.md R-02, F-01)
+
+- **Recurring bug:** a `computed()` that reads `form.controls.x.invalid` never re-runs, because form state is not a signal. Resolve case stayed disabled after typing. Fix: read the form through `toSignal(form.valueChanges)` (as `section-dol-modal.component.ts:60`) and let the computed depend on it. Check any other `computed()` that reads control validity directly.
+- **Resolve case:** shared `ConfirmDialogComponent` opened from inside the resolve modal (as Reassign does), Back keeps the typed values, existing toast after. `bmpcc-17779.json` AC-10 text updated.
+- **Financial Overview:** tiles, Financial details and Transaction summary are derived on read from payments / reserves / recovery bookings (`core/mock/services/financial-totals.ts`, same rules as the seed's `summarize()`). The stored `summary` / `details` / `transactions` in `financial-overview.json` are no longer read as-is. Transaction table pins first and last column (`sticky="both"`).
+
+## 2026-11-17 — FNOL Policies step + FNOL reassignment (UX audit fixes, docs/ux/bmpcc-22665.md, bmpcc-22666.md)
+
+- **Recurring bug:** FNOL state that lives in a component (picker `ngOnDestroy` reset, Summary's `submitted` flag) is lost on Back / browser Back. Keep it in `FnolStateService` (`handlerChoice`, `submission`) and clear it when a new notification starts (`setSelectedPolicy` / `setSelectedClient` / `reset`).
+- **Policies step:** `PolicySelectionService.entitiesLostBy()` names the entities a new selection would remove; warning note in the selection confirm, or a red Remove confirm, then a toast. `bmpcc-22665.json` AC-02 and AC-05 text updated.
+- **Summary:** result scrolled into view, toast built from the same headline as the result banner (`creationHeadline()`, `submit-outcome.ts`), Submit never runs twice, config locked after Submit.
+- **Handler choice:** applied to every claim of a multi-policy notification, reason logged in the activity log, read-only line after Submit. `bmpcc-22666.json` AC-01 text updated.

@@ -6,6 +6,15 @@ import { NxTableModule } from '@allianz/ng-aquila/table';
 import { NxLinkModule } from '@allianz/ng-aquila/link';
 import { PolicyClaimResult } from '../../../../core/models';
 
+/** AC05 / AC05b wording: "2 claims created", "2 of 3 claims created", "No claims created". */
+export function creationHeadline(results: PolicyClaimResult[]): string {
+  const total = results.length;
+  const ok = results.filter(r => r.status === 'created').length;
+  if (ok === total) return `${ok} ${ok === 1 ? 'claim' : 'claims'} created`;
+  if (ok === 0) return 'No claims created';
+  return `${ok} of ${total} claims created`;
+}
+
 /**
  * BMPCC-22665 AC05: what came out of Submit, per policy. One message says
  * the overall outcome (all created / some failed / none created), then a row
@@ -37,12 +46,5 @@ export class ClaimCreationResultComponent {
     !this.failed().length ? 'success' : this.created().length ? 'warning' : 'error'
   );
 
-  readonly headline = computed(() => {
-    const total = this.results().length;
-    const ok = this.created().length;
-    const word = (n: number) => (n === 1 ? 'claim' : 'claims');
-    if (ok === total) return `${ok} ${word(ok)} created`;
-    if (ok === 0) return `No claims created`;
-    return `${ok} of ${total} claims created`;
-  });
+  readonly headline = computed(() => creationHeadline(this.results()));
 }

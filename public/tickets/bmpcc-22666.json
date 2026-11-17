@@ -20,7 +20,7 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Reassign during registration, before completing",
-      "plainStatement": "**Opens:** FNOL Summary step as Mara Mustermann.\n\n**You see:** In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.\n\n**Try:** Press Change handler, pick Lena Zorn (or A team queue), Choose: the line shows Lena with \"They will be notified when you submit\" and **Keep it myself** to undo. Submit: the new claim is Lena's.\n\nDecision: by default a new claim goes to the handler registering it (rule-based routing comes with a later epic). No confirm here: nothing is saved before Submit, and Submit is the commit (DESIGN DECISION RA-FNOL-1).",
+      "plainStatement": "**Opens:** FNOL Summary step as Mara Mustermann.\n\n**You see:** In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.\n\n**Try:** Press Change handler, pick Lena Zorn (or A team queue), Choose: the line shows Lena with \"They will be notified when you submit\" and **Keep it myself** to undo. Going Back a step and returning keeps the pick; a new notification starts from you again. Submit: every claim the notification creates is Lena's, the reason is in its activity log, the toast says \"Assigned to Lena Zorn. They have been notified.\" and the line reads **Lena Zorn** \"They have been notified.\" without Change handler.\n\nDecision: by default a new claim goes to the handler registering it (rule-based routing comes with a later epic). No confirm here: nothing is saved before Submit, and Submit is the commit (DESIGN DECISION RA-FNOL-1).",
       "page": "fnol-summary",
       "buildStatus": "done",
       "setup": {

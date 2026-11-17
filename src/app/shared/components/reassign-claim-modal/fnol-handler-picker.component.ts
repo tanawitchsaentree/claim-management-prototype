@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
@@ -21,16 +21,14 @@ import {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fnol-handler-picker.component.scss'
 })
-export class FnolHandlerPickerComponent implements OnDestroy {
+export class FnolHandlerPickerComponent {
   private readonly auth = inject(AuthService);
   private readonly dialogSvc = inject(NxDialogService);
   readonly choiceSvc = inject(FnolHandlerChoiceService);
 
-  readonly label = computed(() => {
-    const c = this.choiceSvc.choice();
-    if (!c) return `${this.auth.user().name} (you)`;
-    return c.kind === 'team' ? `${c.name} queue` : c.name;
-  });
+  /** After Submit the claim is saved: the line only says who has it. */
+  readonly submitted = input(false);
+  readonly label = this.choiceSvc.label;
 
   async change(): Promise<void> {
     const ref = this.dialogSvc.open(ReassignClaimModalComponent, {
@@ -48,11 +46,5 @@ export class FnolHandlerPickerComponent implements OnDestroy {
 
   reset(): void {
     this.choiceSvc.set(null);
-  }
-
-  // Leaving the Summary step without submitting drops the pick, so the next
-  // registration starts from the default again.
-  ngOnDestroy(): void {
-    this.reset();
   }
 }

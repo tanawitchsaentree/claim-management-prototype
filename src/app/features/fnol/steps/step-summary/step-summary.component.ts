@@ -42,6 +42,7 @@ import { MockImpactedPoliciesService } from '../../../../core/mock/services/mock
 import { PolicySelectionService } from '../../services/policy-selection.service';
 import { ClaimCreationResultComponent } from '../../components/claim-creation-result/claim-creation-result.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { submitOutcome } from './submit-outcome';
 import {
   MockUserDirectoryService,
   UserDirectoryEntry
@@ -243,6 +244,15 @@ export class StepSummaryComponent implements OnInit {
       this.router.navigate(['/fnol/search']);
       return;
     }
+    // Browser Back from a created claim lands here again: show the result,
+    // never a second Submit (that created duplicate claims).
+    const done = this.fnolState.submission;
+    if (done) {
+      this.mockClaimIds = [...done.claimIds];
+      this.policyResults.set(done.policyResults);
+      this.submitted = true;
+      this.restoreSubmittedConfig();
+    }
 
     try {
       const vm = await this.buildViewModel();
@@ -288,7 +298,7 @@ export class StepSummaryComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.submitting()) return;
+    if (this.submitting() || this.submitted) return;
     if (this.needsRecoveryNote && !this.recoveryPotentialNote.value.trim()) {
       this.recoveryPotentialNote.markAsTouched();
       this.submitError = 'Enter a reason before submitting — recovery potential is set to No.';
@@ -367,18 +377,52 @@ export class StepSummaryComponent implements OnInit {
   private finishSubmit(): void {
     this.fnolState.markStepComplete('summary');
     this.submitted = true;
-    const count = this.mockClaimIds.length;
-    this.live.announce(
-      `${count} claim${count === 1 ? '' : 's'} opened: ${this.mockClaimIds.join(', ')}`,
-      'polite'
-    );
+    this.fnolState.submission = {
+      claimIds: [...this.mockClaimIds],
+      policyResults: this.policyResults()
+    };
+    this.lockSubmittedConfig();
+    this.reportOutcome();
+  }
+
+  /** Toast with the real outcome (failures too), and the result scrolled into view. */
+  private reportOutcome(): void {
+    const c = this.handlerChoice.choice();
+    const handlerLine = c
+      ? `Assigned to ${c.kind === 'team' ? 'the ' : ''}${this.handlerChoice.label()}. ${c.kind === 'team' ? 'The team manager has' : 'They have'} been notified.`
+      : '';
+    const o = submitOutcome(this.policyResults(), this.mockClaimIds, handlerLine);
+    this.toast[o.tone](o.title, o.description);
+    // Same scroll as Loss information's error summary (step-loss-information.component.ts:457-462).
+    setTimeout(() => {
+      document.querySelector('.ss-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+
+  /** What was submitted shows as it was sent, and can no longer be edited. */
+  private restoreSubmittedConfig(): void {
+    const r = this.fnolState.restriction;
+    this.restrictionForm.patchValue({ isRestricted: r.isRestricted, reason: r.reason ?? '' });
+    if (r.accessList.length) this.accessList.set(r.accessList);
+    this.recoveryPotential.setValue(this.fnolState.recoveryPotential);
+    this.recoveryPotentialNote.setValue(this.fnolState.recoveryPotentialNote ?? '');
+    this.lockSubmittedConfig();
+  }
+
+  private lockSubmittedConfig(): void {
+    this.restrictionForm.disable();
+    this.recoveryPotential.disable();
+    this.recoveryPotentialNote.disable();
+    this.userSearchControl.disable();
   }
 
   get claimGroupCount(): number {
     return this.vm$.value?.claimGroups.length ?? 0;
   }
   get startClaimDisabled(): boolean {
-    return this.claimGroupCount === 0 || (this.policyResults().length > 0 && !this.mockClaimIds.length);
+    return (
+      this.claimGroupCount === 0 || (this.policyResults().length > 0 && !this.mockClaimIds.length)
+    );
   }
 
   // ── BMPCC-22665: one claim per policy picked on the Policies step ──────
@@ -401,14 +445,21 @@ export class StepSummaryComponent implements OnInit {
     const pol = this.selectionSvc.policy(p);
     const base = { policyNumber: p, lineOfBusiness: pol?.lineOfBusiness ?? '–' };
     if (this.impactedSvc.takeCreationFailure(p)) {
-      return { ...base, status: 'failed', reason: 'The policy changed after it was suggested. Check it, then retry.' };
+      return {
+        ...base,
+        status: 'failed',
+        reason: 'The policy changed after it was suggested. Check it, then retry.'
+      };
     }
     const lead = this.policyNumber;
     const claimId = `CL-${Date.now() + this.idSeq++}`;
     try {
       const all = await firstValueFrom(this.entitiesSvc.getByPolicyId(lead));
       const others = selection.filter(x => x !== lead);
-      await this.createSectionsFromEntitiesDamages(claimId, this.selectionSvc.entitiesFor(all, p, lead, others));
+      await this.createSectionsFromEntitiesDamages(
+        claimId,
+        this.selectionSvc.entitiesFor(all, p, lead, others)
+      );
       await this.writeLossInformationToClaim(claimId, p === lead ? undefined : pol);
       if (p === lead) await this.seedFinancialReservesFromFnol(claimId);
       return { ...base, status: 'created', claimId };
@@ -423,8 +474,14 @@ export class StepSummaryComponent implements OnInit {
     this.retryingPolicy.set(p);
     const result = await this.createOnPolicy(p, selection);
     this.policyResults.update(rows => rows.map(r => (r.policyNumber === p ? result : r)));
-    this.mockClaimIds = this.policyResults().filter(r => r.claimId).map(r => r.claimId!);
+    this.mockClaimIds = this.policyResults()
+      .filter(r => r.claimId)
+      .map(r => r.claimId!);
     this.retryingPolicy.set(null);
+    this.fnolState.submission = {
+      claimIds: [...this.mockClaimIds],
+      policyResults: this.policyResults()
+    };
     if (result.status === 'created') {
       this.toast.success(`Claim ${result.claimId} created`, `On policy ${p}.`);
     } else {
@@ -529,7 +586,14 @@ export class StepSummaryComponent implements OnInit {
     const earliest = this.deriveEarliestSectionDate(lossDateIso, sectionGroups.size || 3);
     const selection = this.policySelection();
     const claimGroups = selection
-      ? this.buildPolicyGroups(entitiesData, reservesData, parties.length, damageLookups, earliest, selection)
+      ? this.buildPolicyGroups(
+          entitiesData,
+          reservesData,
+          parties.length,
+          damageLookups,
+          earliest,
+          selection
+        )
       : this.buildClaimGroups(entitiesData, reservesData, parties.length, damageLookups, earliest);
     const narrative = isNarrativeActive(reservesData.narrative) ? reservesData.narrative! : null;
     const narrativeLabel = narrativeReasonLabel(narrative, narrativeOpts);
@@ -640,7 +704,8 @@ export class StepSummaryComponent implements OnInit {
   // the claim it already lands on, so nothing is silently discarded.
   // `other`: BMPCC-22665, a claim on another selected policy (not the one the FNOL runs on).
   private async writeLossInformationToClaim(claimId: string, other?: Policy | null): Promise<void> {
-    const pol = other ?? this.fnolState.selectedPolicyFull ?? this.selectionSvc.policy(this.policyNumber);
+    const pol =
+      other ?? this.fnolState.selectedPolicyFull ?? this.selectionSvc.policy(this.policyNumber);
     const polNo = other?.policyNumber ?? this.policyNumber;
     // Cast through `unknown` — the live form's lossLocation control actually
     // holds LocationPickerOutput, not the LossInformationFormValue's declared
@@ -693,7 +758,9 @@ export class StepSummaryComponent implements OnInit {
     // synthesizeOverviewFromClaim), so what the handler entered on the
     // Reserves step has to land here to survive. Cache hit — buildViewModel()
     // already loaded this policy's reserves for the Summary screen.
-    const leadReserves = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
+    const leadReserves = await firstValueFrom(
+      this.reservesSvc.getReservesForPolicy(this.policyNumber)
+    );
     const reservesData = other ? { totalReserve: 0, currency: other.currency } : leadReserves;
 
     const claim: Claim = {
@@ -711,9 +778,7 @@ export class StepSummaryComponent implements OnInit {
       description: formValue.lossDescription ?? '',
       status: 'Open',
       priority: 'medium',
-      lineOfBusiness:
-        (pol?.lineOfBusiness as Claim['lineOfBusiness']) ??
-        'Property',
+      lineOfBusiness: (pol?.lineOfBusiness as Claim['lineOfBusiness']) ?? 'Property',
       location: null,
       lossEventId: null,
       causeOfLoss: formValue.causeOfLoss ?? []

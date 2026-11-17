@@ -1,4 +1,11 @@
-import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { firstValueFrom } from 'rxjs';
@@ -68,7 +75,9 @@ export class StepPoliciesComponent implements OnInit {
   readonly selected = signal<ReadonlySet<string>>(new Set());
   readonly showNoneError = signal(false);
 
-  readonly selectedRows = computed(() => this.rows().filter(r => this.selected().has(r.policyNumber)));
+  readonly selectedRows = computed(() =>
+    this.rows().filter(r => this.selected().has(r.policyNumber))
+  );
   readonly currencies = computed(() => [...new Set(this.selectedRows().map(r => r.currency))]);
   readonly clients = computed(() => [...new Set(this.selectedRows().map(r => r.clientName))]);
 
@@ -79,7 +88,9 @@ export class StepPoliciesComponent implements OnInit {
   ngOnInit(): void {
     if (!this.fnolState.policyStep) {
       // Reached without Loss information deciding there is a step: nothing to choose.
-      this.router.navigate([this.fnolState.selectedPolicy ? '/fnol/entities-damages' : '/fnol/search']);
+      this.router.navigate([
+        this.fnolState.selectedPolicy ? '/fnol/entities-damages' : '/fnol/search'
+      ]);
       return;
     }
     void this.load();
@@ -91,10 +102,18 @@ export class StepPoliciesComponent implements OnInit {
     this.error.set(false);
     const searched = this.impactedSvc.toChoice(step.searched.policyNumber, 'searched');
     const added = step.added
-      .map(p => this.impactedSvc.toChoice(p, 'search', 'Added from policy search. Not checked by the coverage check.'))
+      .map(p =>
+        this.impactedSvc.toChoice(
+          p,
+          'search',
+          'Added from policy search. Not checked by the coverage check.'
+        )
+      )
       .filter((c): c is PolicyChoice => !!c);
     try {
-      const suggested = await firstValueFrom(this.impactedSvc.getSuggestions(step.searched.policyNumber));
+      const suggested = await firstValueFrom(
+        this.impactedSvc.getSuggestions(step.searched.policyNumber)
+      );
       this.rows.set([...(searched ? [searched] : []), ...suggested, ...added]);
       // DESIGN DECISION IMP-2: only the searched policy starts ticked. A claim
       // is a commitment (reserves, reporting), so suggestions are opted into,
@@ -136,7 +155,13 @@ export class StepPoliciesComponent implements OnInit {
     if (!picked.length) return;
     step.added = [...step.added, ...picked];
     const choices = picked
-      .map(p => this.impactedSvc.toChoice(p, 'search', 'Added from policy search. Not checked by the coverage check.'))
+      .map(p =>
+        this.impactedSvc.toChoice(
+          p,
+          'search',
+          'Added from policy search. Not checked by the coverage check.'
+        )
+      )
       .filter((c): c is PolicyChoice => !!c);
     this.rows.update(r => [...r, ...choices]);
     this.selected.update(s => new Set([...s, ...picked]));
@@ -164,16 +189,26 @@ export class StepPoliciesComponent implements OnInit {
     // FNOL (more than one claim, or not on the searched policy). Ticking just
     // the searched policy is what happens without this step, nothing to confirm.
     const asToday = chosen.length === 1 && chosen[0] === this.searchedNumber;
-    if (!asToday && !(await this.confirm(chosen))) return;
+    // AC-02: unticking a policy (or changing the first one) takes the entities
+    // already chosen for it off Entities & Damages. Say so before it happens.
+    const lost = await this.selectionSvc.entitiesLostBy(chosen);
+    const lostText = lost.length ? this.lostSentence(lost) : '';
+    if (!asToday && !(await this.confirm(chosen, lostText))) return;
+    if (asToday && lost.length && !(await this.confirmRemoval(lostText))) return;
     this.saving.set(true);
     await this.selectionSvc.applySelection(chosen);
     this.saving.set(false);
     this.fnolState.markStepComplete('policies');
+    const removed = lost.length
+      ? `Entities of ${lost.map(l => l.policyNumber).join(' and ')} removed`
+      : '';
     if (!asToday) {
       this.toast.success(
         `${chosen.length} ${chosen.length === 1 ? 'policy' : 'policies'} selected`,
-        'Entities & Damages now lists the entities of every selected policy.'
+        `${removed ? `${removed}. ` : ''}Entities & Damages now lists the entities of every selected policy.`
       );
+    } else if (removed) {
+      this.toast.success(removed, `${lost.flatMap(l => l.names).join(', ')}.`);
     }
     this.router.navigate(['/fnol/entities-damages']);
   }
@@ -184,20 +219,52 @@ export class StepPoliciesComponent implements OnInit {
     await this.onNext();
   }
 
-  private async confirm(chosen: string[]): Promise<boolean> {
+  private lostSentence(lost: { policyNumber: string; names: string[] }[]): string {
+    const n = lost.reduce((sum, l) => sum + l.names.length, 0);
+    const parts = lost.map(l => `${l.policyNumber}: ${l.names.join(', ')}`).join('; ');
+    return `${n === 1 ? 'The entity' : `The ${n} entities`} you chose on Entities & Damages will be removed (${parts}).`;
+  }
+
+  private async confirm(chosen: string[], lostText: string): Promise<boolean> {
     const list = this.selectedRows()
       .map(r => `${r.policyNumber} (${r.lineOfBusiness})`)
       .join(', ');
     const n = chosen.length;
     const data: ConfirmDialogData = {
-      title: n === 1 ? 'Create the claim on this policy?' : `Create a claim on each of ${n} policies?`,
+      title:
+        n === 1 ? 'Create the claim on this policy?' : `Create a claim on each of ${n} policies?`,
       message:
         `${n === 1 ? 'One claim' : `${n} claims`} will be created when you submit this notification: ${list}. ` +
         `${n === 1 ? 'It gets' : 'They all get'} the loss information you entered. You can come back and change this until you submit.`,
+      // Same warning note the Edit loss information confirm uses for "something
+      // else will change" (edit-loss-information.component.ts:568-579).
+      note: lostText || undefined,
+      noteContext: lostText ? 'warning' : undefined,
       confirmLabel: n === 1 ? 'Continue with this policy' : `Continue with ${n} policies`,
       cancelLabel: 'Back to selection'
     };
-    const ref = this.dialog.open(ConfirmDialogComponent, { data, width: '440px', maxWidth: '92vw' });
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data,
+      width: '440px',
+      maxWidth: '92vw'
+    });
+    return !!(await firstValueFrom(ref.afterClosed()));
+  }
+
+  /** Back to the searched policy only, but entities were chosen: same remove confirm as Entities & Damages (entity-dialogs.ts confirmRemove). */
+  private async confirmRemoval(lostText: string): Promise<boolean> {
+    const data: ConfirmDialogData = {
+      title: 'Remove the chosen entities?',
+      message: lostText,
+      confirmLabel: 'Remove',
+      cancelLabel: 'Back to selection',
+      confirmDanger: true
+    };
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data,
+      width: '440px',
+      maxWidth: '92vw'
+    });
     return !!(await firstValueFrom(ref.afterClosed()));
   }
 }

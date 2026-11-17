@@ -3,25 +3,31 @@
     <p class="step-breadcrumb">Claim notification</p>
     <h1 class="step-title">Summary</h1>
     <!-- Submission confirmation banner -->
-    <!-- BMPCC-22665: per-policy result when the Policies step was used. -->
-    @if (policyResults().length) {
-      <app-claim-creation-result
-        [results]="policyResults()"
-        [retrying]="retryingPolicy()"
-        (retry)="onRetryPolicy($event)"
-      ></app-claim-creation-result>
-    } @else if (submitted) {
-      <nx-message context="success" class="submit-banner">
-        <strong
-          >{{ mockClaimIds.length }} claim{{ mockClaimIds.length === 1 ? '' : 's' }} opened:
-          {{ mockClaimIds.join(', ') }}</strong
-        >
-      </nx-message>
-      <!-- BMPCC-22635: generate the FNOL Acknowledgement right here, same panel as Claim Overview. -->
-      @for (id of mockClaimIds; track id) {
-        <app-fnol-acknowledgement-panel [claimId]="id" [showClaimId]="mockClaimIds.length > 1"></app-fnol-acknowledgement-panel>
+    <!-- BMPCC-22665: per-policy result when the Policies step was used.
+         .ss-result is scrolled into view after Submit (reportOutcome()). -->
+    <div class="ss-result">
+      @if (policyResults().length) {
+        <app-claim-creation-result
+          [results]="policyResults()"
+          [retrying]="retryingPolicy()"
+          (retry)="onRetryPolicy($event)"
+        ></app-claim-creation-result>
+      } @else if (submitted) {
+        <nx-message context="success" class="submit-banner">
+          <strong
+            >{{ mockClaimIds.length }} claim{{ mockClaimIds.length === 1 ? '' : 's' }} opened:
+            {{ mockClaimIds.join(', ') }}</strong
+          >
+        </nx-message>
+        <!-- BMPCC-22635: generate the FNOL Acknowledgement right here, same panel as Claim Overview. -->
+        @for (id of mockClaimIds; track id) {
+          <app-fnol-acknowledgement-panel
+            [claimId]="id"
+            [showClaimId]="mockClaimIds.length > 1"
+          ></app-fnol-acknowledgement-panel>
+        }
       }
-    }
+    </div>
     @if (loadError) {
       <nx-message context="error">
         Failed to load summary data. Please go back and try again.
@@ -107,7 +113,12 @@
           @for (group of vm.claimGroups; track group.policyNumber; let i = $index) {
             <nx-expansion-panel [expanded]="i === 0">
               <nx-expansion-panel-header>
-                <nx-expansion-panel-title>For policy: {{ group.policyNumber }}{{ group.lineOfBusiness ? ' · ' + group.lineOfBusiness : '' }}</nx-expansion-panel-title>
+                <nx-expansion-panel-title
+                  >For policy: {{ group.policyNumber
+                  }}{{
+                    group.lineOfBusiness ? ' · ' + group.lineOfBusiness : ''
+                  }}</nx-expansion-panel-title
+                >
               </nx-expansion-panel-header>
               <dl class="ss-list">
                 <div class="ss-row">
@@ -139,7 +150,9 @@
                   <dt class="ss-label">Total reserve</dt>
                   <dd class="ss-value">
                     @if (group.reservesOnClaim) {
-                      <span class="ss-empty">Set on the claim once it is created ({{ group.currency }})</span>
+                      <span class="ss-empty"
+                        >Set on the claim once it is created ({{ group.currency }})</span
+                      >
                     } @else {
                       {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
                     }
@@ -158,7 +171,7 @@
       <!-- Card 3: General configurations -->
       <section class="ss-card">
         <h2 class="section-heading">General configurations</h2>
-        <app-fnol-handler-picker></app-fnol-handler-picker>
+        <app-fnol-handler-picker [submitted]="submitted"></app-fnol-handler-picker>
         <div class="ss-config-row">
           <nx-switcher
             [formControl]="accessRestricted"
@@ -202,7 +215,7 @@
                   </div>
                   @if (i === 0) {
                     <span class="ss-access-entry__creator">Creator</span>
-                  } @else {
+                  } @else if (!submitted) {
                     <button
                       nxIconButton="tertiary small"
                       type="button"
@@ -215,26 +228,28 @@
                 </div>
               }
               <!-- User search -->
-              <div class="ss-user-search">
-                <nx-formfield class="ss-user-search__field">
-                  <input
-                    nxInput
-                    [formControl]="userSearchControl"
-                    placeholder="Search by name or email"
-                  />
-                  <nx-icon nxFormfieldSuffix name="search"></nx-icon>
-                </nx-formfield>
-                @if (userSearchResults().length > 0) {
-                  <div class="ss-user-results">
-                    @for (user of userSearchResults(); track user.userId) {
-                      <button type="button" class="ss-user-result" (click)="addUserToList(user)">
-                        <span class="ss-user-result__name">{{ user.name }}</span>
-                        <span class="ss-user-result__role">{{ user.role }}</span>
-                      </button>
-                    }
-                  </div>
-                }
-              </div>
+              @if (!submitted) {
+                <div class="ss-user-search">
+                  <nx-formfield class="ss-user-search__field">
+                    <input
+                      nxInput
+                      [formControl]="userSearchControl"
+                      placeholder="Search by name or email"
+                    />
+                    <nx-icon nxFormfieldSuffix name="search"></nx-icon>
+                  </nx-formfield>
+                  @if (userSearchResults().length > 0) {
+                    <div class="ss-user-results">
+                      @for (user of userSearchResults(); track user.userId) {
+                        <button type="button" class="ss-user-result" (click)="addUserToList(user)">
+                          <span class="ss-user-result__name">{{ user.name }}</span>
+                          <span class="ss-user-result__role">{{ user.role }}</span>
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         }
@@ -261,7 +276,9 @@
               placeholder="e.g. no identifiable third party at fault"
             ></textarea>
             @if (recoveryNoteInvalid) {
-              <nx-error nxFormfieldError>A reason is required when recovery potential is No.</nx-error>
+              <nx-error nxFormfieldError
+                >A reason is required when recovery potential is No.</nx-error
+              >
             }
           </nx-formfield>
         }

@@ -76,6 +76,33 @@ export class PolicySelectionService {
     }
   }
 
+  /**
+   * BMPCC-22665 AC-02: the entities already ticked on Entities & Damages that
+   * applySelection(selection) would throw away, grouped by the policy they
+   * belong to. A policy that is unticked loses its entities; if the first
+   * selected policy changes, the whole tree is rebuilt on the new one, so
+   * every chosen entity goes. Empty before the step was ever confirmed.
+   */
+  async entitiesLostBy(selection: string[]): Promise<{ policyNumber: string; names: string[] }[]> {
+    const lead = this.fnolState.selectedPolicy?.policyNumber;
+    if (!this.fnolState.policyStep?.selection || !lead || !selection.length) return [];
+    const data = await firstValueFrom(this.entitiesSvc.getByPolicyId(lead));
+    const merged = this.impactedSvc.addedFor(lead);
+    const leadChanges = selection[0] !== lead;
+    const lost = new Map<string, string[]>();
+    for (const e of data.sections.flatMap(s => s.damageGroups).flatMap(g => g.entities)) {
+      const names = [
+        ...(e.selected ? [e.name] : []),
+        ...(e.subItems ?? []).filter(si => si.selected).map(si => si.name)
+      ];
+      if (!names.length) continue;
+      const owner = merged.find(m => e.coveredBy?.endsWith(` · ${m}`)) ?? lead;
+      if (!leadChanges && selection.includes(owner)) continue;
+      lost.set(owner, [...(lost.get(owner) ?? []), ...names]);
+    }
+    return [...lost].map(([policyNumber, names]) => ({ policyNumber, names }));
+  }
+
   /** The part of the lead policy's tree that belongs to one selected policy. */
   entitiesFor(data: EntitiesDamagesData, policyNumber: string, lead: string, others: string[]) {
     const ownedBy = (coveredBy: string | undefined): string => {

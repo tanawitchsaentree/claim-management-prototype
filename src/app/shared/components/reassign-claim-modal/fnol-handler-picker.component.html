@@ -5,15 +5,28 @@
     <dt class="fhp-label">Claim handler</dt>
     <dd class="fhp-value">
       <span>{{ label() }}</span>
-      @if (choiceSvc.choice()) {
-        <span class="fhp-hint">They will be notified when you submit.</span>
-      }
-      <span class="fhp-actions">
+      @if (submitted()) {
         @if (choiceSvc.choice()) {
-          <button nxButton="tertiary small" type="button" (click)="reset()">Keep it myself</button>
+          <span class="fhp-hint"
+            >{{ choiceSvc.choice()?.kind === 'team' ? 'The team manager has' : 'They have' }} been
+            notified.</span
+          >
         }
-        <button nxButton="secondary small" type="button" (click)="change()">Change handler</button>
-      </span>
+      } @else {
+        @if (choiceSvc.choice()) {
+          <span class="fhp-hint">They will be notified when you submit.</span>
+        }
+        <span class="fhp-actions">
+          @if (choiceSvc.choice()) {
+            <button nxButton="tertiary small" type="button" (click)="reset()">
+              Keep it myself
+            </button>
+          }
+          <button nxButton="secondary small" type="button" (click)="change()">
+            Change handler
+          </button>
+        </span>
+      }
     </dd>
   </div>
 </dl>

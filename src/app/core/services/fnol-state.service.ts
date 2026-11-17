@@ -15,7 +15,8 @@ import {
   SkeletonFormValue,
   StepConfig
 } from '../../features/fnol/models/fnol-form.model';
-import { Policy } from '../models';
+import { Policy, PolicyClaimResult } from '../models';
+import { AssignmentTarget } from '../models/team.model';
 import { LossInformation } from '../models/loss-information.model';
 import { FileRestriction } from '../models/claim-overview.model';
 import { futureDateValidator, dateOrderValidator } from '../../shared/validators/date.validators';
@@ -146,6 +147,18 @@ export class FnolStateService {
    */
   policyStep: { searched: FnolSelectedPolicy; selection: string[] | null; added: string[] } | null =
     null;
+  /**
+   * BMPCC-22666 AC-01: the handler (or team queue) picked on Summary, and the
+   * reason typed with it. Lives as long as the rest of this FNOL, so going
+   * Back a step and returning keeps it; a new FNOL starts from "you" again.
+   */
+  readonly handlerChoice = signal<{ target: AssignmentTarget; reason?: string } | null>(null);
+  /**
+   * Set once Submit has created the claim(s). Summary shows this result again
+   * instead of a second Submit (browser Back from a created claim), the same
+   * way the skeleton Summary never creates a second claim (BMPCC-18525).
+   */
+  submission: { claimIds: string[]; policyResults: PolicyClaimResult[] } | null = null;
   path: 'standard' | 'orphan' | null = null;
   skeleton: SkeletonFormValue | null = null;
   skeletonClaimId: string | null = null;
@@ -154,7 +167,9 @@ export class FnolStateService {
 
   getStepsForPath(wizardPath: 'happy' | 'skeleton'): StepConfig[] {
     if (wizardPath !== 'happy') return SKELETON_PATH_STEPS;
-    return this.policyStep ? [HAPPY_PATH_STEPS[0], POLICIES_STEP, ...HAPPY_PATH_STEPS.slice(1)] : HAPPY_PATH_STEPS;
+    return this.policyStep
+      ? [HAPPY_PATH_STEPS[0], POLICIES_STEP, ...HAPPY_PATH_STEPS.slice(1)]
+      : HAPPY_PATH_STEPS;
   }
 
   isWizardRoute(url: string): boolean {
@@ -212,6 +227,7 @@ export class FnolStateService {
   setSelectedClient(client: FnolSelectedClient): void {
     this.selectedClient = client;
     this.selectedPolicy = null;
+    this.startNewNotification();
   }
 
   setSelectedPolicy(policy: FnolSelectedPolicy, full?: Policy): void {
@@ -219,6 +235,13 @@ export class FnolStateService {
     this.selectedPolicyFull = full ?? null;
     this.selectedClient = null;
     this.policyStep = null;
+    this.startNewNotification();
+  }
+
+  /** Picking a client or policy on Search starts a new notification. */
+  private startNewNotification(): void {
+    this.handlerChoice.set(null);
+    this.submission = null;
   }
 
   /** BMPCC-22665: the claim-carrying policy changes, the searched one and the step stay. */
@@ -280,6 +303,7 @@ export class FnolStateService {
     this.selectedPolicy = null;
     this.selectedPolicyFull = null;
     this.policyStep = null;
+    this.startNewNotification();
     this.path = null;
     this.skeleton = null;
     this.skeletonClaimId = null;
