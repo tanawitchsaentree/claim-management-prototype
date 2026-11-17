@@ -163,11 +163,9 @@ export class TradeSanctionsCardComponent implements OnChanges {
   readonly canClear = computed(() => !this.isClosed() && this.saved() !== null);
 
   /** Shown in the header when collapsed, in place of the question/radios. */
-  readonly summaryText = computed(() => {
+  readonly summaryAnswer = computed(() => {
     const exposure = this.saved()?.exposure;
-    if (exposure === 'yes') return 'Exposure to trade sanctions: Yes';
-    if (exposure === 'no') return 'Exposure to trade sanctions: No';
-    return 'Exposure to trade sanctions: Not answered';
+    return exposure === 'yes' ? 'Yes' : exposure === 'no' ? 'No' : null;
   });
 
   ngOnChanges(): void {

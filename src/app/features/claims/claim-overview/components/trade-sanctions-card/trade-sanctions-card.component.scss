@@ -38,6 +38,10 @@
   font-size: var(--paragraph-02-font-size);
   color: var(--text-muted);
   margin: 0;
+
+  &--answered {
+    @include shell.summary-answered;
+  }
 }
 
 .ts-named-parties {

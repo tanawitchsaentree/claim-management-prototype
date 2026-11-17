@@ -14,7 +14,14 @@
   </div>
 
   @if (!expanded) {
-    <p class="ts-summary">{{ summaryText() }}</p>
+    <p class="ts-summary" [class.ts-summary--answered]="summaryAnswer()">
+      Exposure to trade sanctions:
+      @if (summaryAnswer(); as a) {
+        <strong>{{ a }}</strong>
+      } @else {
+        Not answered
+      }
+    </p>
   }
 
   <div class="ts-collapse" [class.ts-collapse--open]="expanded">

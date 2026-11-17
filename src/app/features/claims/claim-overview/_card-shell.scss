@@ -64,6 +64,17 @@
 // `.co-field` inside the General Information card's `.co-grid` (e.g.
 // mass-event-card, which is a grid item nested one level down from the
 // parent's grid; its host needs `display: contents` to not break the grid).
+// Collapsed-card summary line. Muted while nothing is answered; once the
+// handler has answered, the line turns dark and the answer itself is bold so
+// it reads at a glance (trade sanctions, recovery potential, file restriction).
+@mixin summary-answered {
+  color: var(--text-01);
+
+  strong {
+    font-weight: 700;
+  }
+}
+
 @mixin field {
   display: flex;
   flex-direction: column;

@@ -24,7 +24,14 @@
   </div>
 
   @if (!expanded) {
-    <p class="rp-summary">{{ summaryText() }}</p>
+    <p class="rp-summary" [class.rp-summary--answered]="savedChoice()">
+      @if (savedChoice(); as c) {
+        Recovery expected: <strong>{{ c === 'yes' ? 'Yes' : 'No' }}</strong>.
+        {{ summaryDetail() }}
+      } @else {
+        {{ summaryText() }}
+      }
+    </p>
   }
 
   <div class="rp-collapse" [class.rp-collapse--open]="expanded">

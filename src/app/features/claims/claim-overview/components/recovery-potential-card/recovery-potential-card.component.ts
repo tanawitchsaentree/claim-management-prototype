@@ -111,6 +111,16 @@ export class RecoveryPotentialCardComponent implements OnChanges {
   /** Shown in the header when collapsed, in place of the question/radios. */
   readonly summaryText = computed(() => RECOVERY_STATE_MESSAGE[this.state()]);
 
+  /** After "Recovery expected: Yes/No.", what that means right now, without repeating the answer. */
+  readonly summaryDetail = computed(() => {
+    switch (this.state()) {
+      case 'yes-pending': return 'No recovery case has been set up yet.';
+      case 'yes-active': return 'A recovery case is active.';
+      case 'yes-settled': return 'Every recovery case is resolved.';
+      default: return '';
+    }
+  });
+
   ngOnChanges(): void {
     this.claimSig.set(this.claim);
     // The radios mirror what is on record. Written without emitting so that

@@ -16,7 +16,13 @@
   </div>
 
   @if (!expanded) {
-    <p class="fr-summary">{{ summaryText }}</p>
+    <p class="fr-summary" [class.fr-summary--answered]="isRestricted">
+      @if (isRestricted) {
+        <strong>Restricted</strong> · {{ summaryText }}
+      } @else {
+        {{ summaryText }}
+      }
+    </p>
   }
 
   <div class="fr-collapse" [class.fr-collapse--open]="expanded">
