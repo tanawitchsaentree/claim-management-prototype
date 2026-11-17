@@ -1,42 +1,42 @@
 {
   "ticketId": "BMPCC-14435",
   "module": "Claims",
-  "title": "Cross-domain closure validations \u2014 Litigation & Reserves deep check",
+  "title": "Cross-domain closure validations: Litigation, Reserves & Provider deep check",
   "targetClaim": "CL-2025-001",
   "pages": ["overview"],
   "walkthroughSteps": [
-    "Apply AC-01 \u2014 seeds 2 active litigation cases on CLM-2024-001, opens the closure modal directly",
+    "Apply AC-01: seeds 2 active litigation cases on CLM-2024-001, opens the closure modal directly",
     {
       "targetId": "co-close-claim-button",
       "title": "Blockers from three domains, one card style",
-      "body": "Litigation, reserves, and provider all feed the same generic blocker card list below \u2014 each shows a count-derived label; expand a card to see the individual items behind it.",
+      "body": "Litigation, reserves, and provider all feed the same generic blocker card list below: each shows a count-derived label; expand a card to see the individual items behind it.",
       "direction": "top"
     },
     {
       "targetId": "ccm-go-to-litigation",
       "title": "Go to Litigation",
-      "body": "'2 active litigation case(s) must be resolved' \u2014 click the card to expand and see each case, or use this link.",
+      "body": "'2 active litigation case(s) must be resolved': click the card to expand and see each case, or use this link.",
       "expectedAfterClick": "Closes the modal and navigates to /claims/CLM-2024-001/litigation.",
       "direction": "top"
     },
-    "Apply AC-02 \u2014 seeds open reserve lines + a provider flag on CLM-2024-001 instead",
+    "Apply AC-02: seeds open reserve lines + a provider flag on CLM-2024-001 instead",
     {
       "targetId": "ccm-blocker-list",
       "title": "Reserves & provider blockers",
-      "body": "Reserves shows '<n> open reserve line(s) must be released \u2014 \u20ac<total>' (the amount was already computed but never rendered \u2014 fixed). Provider shows 'Provider instructions must be finalised' with a 'Go to Provider Management' link \u2014 the Provider Management page didn't exist when this ticket was written; now that it does, provider gets a real deep link too, same as litigation.",
+      "body": "Reserves shows '<n> open reserve line(s) must be released: €<total>' (the amount was already computed but never rendered: fixed). Provider shows 'Provider instructions must be finalised' with a 'Go to Provider Management' link: the Provider Management page didn't exist when this ticket was written; now that it does, provider gets a real deep link too, same as litigation.",
       "direction": "top"
     },
-    "Apply AC-03 \u2014 all three blockers present at once: litigation + reserves + provider, all in the same card list"
+    "Apply AC-03: all three blockers present at once: litigation + reserves + provider, all in the same card list"
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
       "statement": "Litigation blocker shows case count + Go to Litigation link",
-      "plainStatement": "When 2 active litigation cases exist, the closure modal shows a blocker with the count and a Go to Litigation link that navigates on click.",
+      "plainStatement": "When 2 active litigation cases exist, the closure modal shows a blocker with the count and a Go to Litigation link that navigates on click.\n\n**NOTE [accepted-deviation]:** Jira AC2 says: \"Any BC responds blocked, closure halted; handler shown domain-specific blocking reason(s)\". Jira says nothing about links. The \"Go to Litigation\" (and Go to Provider Management) links are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "CLM-2024-001 already has 2 'In progress' litigation entries in mock data \u2014 no flag override needed. Tasks + sections must be clear so only litigation blocks closure.",
+        "description": "CLM-2024-001 already has 2 'In progress' litigation entries in mock data: no flag override needed. Tasks + sections must be clear so only litigation blocks closure.",
         "preconditions": [
           {
             "text": "Close Claim shows litigation blocker with count '2'",
@@ -77,7 +77,7 @@
       "expectedUI": {
         "description": "Litigation blocker with real count from service query",
         "visualCues": [
-          "Modal step 1 \u2014 blocker label: '2 active litigation case(s) must be resolved'",
+          "Modal step 1: blocker label: '2 active litigation case(s) must be resolved'",
           "'Go to Litigation' link rendered as an underlined blue button",
           "Clicking link: modal closes, browser routes to /claims/CLM-2024-001/litigation"
         ]
@@ -95,19 +95,19 @@
     {
       "id": "AC-02",
       "statement": "Reserves blocker shows line count + EUR total",
-      "plainStatement": "When open reserve lines exist, the closure modal shows a blocker with the count and total EUR amount. Provider flag shows as a flag-only blocker (no link).",
+      "plainStatement": "When open reserve lines exist, the closure popup shows a blocker with the count and the total in euro, e.g. *2 open reserve line(s) must be released, €45,000*. The reserves blocker has no link. The provider blocker reads *Provider instructions must be finalised* and now has a **Go to Provider Management** link (the Provider Management page exists now).\n\n**NOTE [accepted-deviation]:** Jira AC3 says only: \"Reserves: confirms no pending reserves/payments; marks reserves to zero at their end\". The line count and euro total in the label are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "CLM-2024-001 is linked to POL-2023-010 which has seeded reserve lines in MockReservesService. Tasks + sections cleared, litigation cleared via flag override. Provider flag set to demonstrate a flag-only blocker alongside a deep blocker.",
         "preconditions": [
           {
-            "text": "Reserves blocker shows count and EUR total",
+            "text": "Reserves blocker shows count and euro total",
             "page": "overview",
             "role": "tested-visible"
           },
           {
-            "text": "Provider blocker shows with 'Feature not available' text (no link)",
+            "text": "Provider blocker shows a 'Go to Provider Management' link",
             "page": "overview",
             "role": "tested-visible"
           }
@@ -139,11 +139,11 @@
         ]
       },
       "expectedUI": {
-        "description": "Reserves blocker with count + amount; provider with generic label",
+        "description": "Reserves blocker with count and euro total; provider blocker with a Go to Provider Management link",
         "visualCues": [
-          "Modal step 1 \u2014 reserves blocker: 'X open reserve line(s) must be released \u2014 EUR YY,YYY'",
-          "'Go to Reserves' rendered but visually muted/disabled (no route yet)",
-          "Provider blocker: 'Provider instructions must be finalised \u2014 Feature not available' (italic muted)"
+          "Popup step 1, reserves blocker: 'X open reserve line(s) must be released, €YY,YYY'",
+          "Reserves blocker has no link",
+          "Provider blocker: 'Provider instructions must be finalised' with a 'Go to Provider Management' link"
         ]
       },
       "expectedOutcome": {
@@ -153,20 +153,20 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Click Close Claim",
-        "expectedResult": "Modal step 1 shows reserves blocker with line count and total EUR amount"
+        "expectedResult": "Popup step 1 shows the reserves blocker with line count and euro total, and the provider blocker with a Go to Provider Management link"
       }
     },
     {
       "id": "AC-03",
-      "statement": "All three blockers visible at once \u2014 deep + flag-only",
-      "plainStatement": "Litigation (count 2), reserves (count + amount), and provider (flag-only) all appear simultaneously in the same modal step.",
+      "statement": "All three blockers visible at once: deep + flag-only",
+      "plainStatement": "Litigation (count 2, Go to Litigation), reserves (count and euro total, no link) and provider (Go to Provider Management) all appear at the same time in the same popup step.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Tasks + sections cleared. CLM-2024-001 already has 2 active litigation records in mock data. Reserves are seeded for POL-2023-010. Provider flag set. No hasActiveLitigation override needed \u2014 the real service query fires.",
+        "description": "Tasks + sections cleared. CLM-2024-001 already has 2 active litigation records in mock data. Reserves are seeded for POL-2023-010. Provider flag set. No hasActiveLitigation override needed: the real service query fires.",
         "preconditions": [
           {
-            "text": "Modal shows 3 blockers: litigation (count 2), reserves (count + amount), provider (flag-only)",
+            "text": "Popup shows 3 blockers: litigation (count 2), reserves (count and amount), provider (with link)",
             "page": "overview",
             "role": "tested-visible"
           }
@@ -200,9 +200,9 @@
       "expectedUI": {
         "description": "All three blockers shown; litigation and reserves are enriched with detail",
         "visualCues": [
-          "Litigation: '2 active litigation case(s) must be resolved \u2014 Go to Litigation'",
-          "Reserves: 'X open reserve line(s) must be released \u2014 EUR YYY,YYY'",
-          "Provider: 'Provider instructions must be finalised \u2014 Feature not available'"
+          "Litigation: '2 active litigation case(s) must be resolved' with Go to Litigation",
+          "Reserves: 'X open reserve line(s) must be released, €YYY,YYY'",
+          "Provider: 'Provider instructions must be finalised' with Go to Provider Management"
         ]
       },
       "expectedOutcome": {
@@ -212,7 +212,7 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Click Close Claim after applying AC-03 setup",
-        "expectedResult": "3 blockers visible; 2 deep (with count/amount), 1 flag-only (no link)"
+        "expectedResult": "3 blockers visible in one step; litigation and provider have Go to links, reserves has none"
       }
     }
   ]

@@ -4,10 +4,7 @@
   "module": "Claims",
   "title": "CBI Extension for Edit claim",
   "targetClaim": "CLM-2024-008",
-  "pages": [
-    "overview",
-    "fnol-loss-info"
-  ],
+  "pages": ["overview", "fnol-loss-info"],
   "walkthroughSteps": [
     "Apply AC-01: Edit claim details of CLM-2024-008 shows a CBI card under Loss information, read-first.",
     "Press Edit on the card: the same CBI questions as FNOL Loss information. Change something and press Update: the Field / Original / Updated confirm, then a toast.",
@@ -95,9 +92,7 @@
       },
       "expectedUI": {
         "description": "CBI card with 'Not answered yet' and an Answer button",
-        "visualCues": [
-          "CBI card with 'Not answered yet' and an Answer button"
-        ]
+        "visualCues": ["CBI card with 'Not answered yet' and an Answer button"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-008/loss-information/edit",
@@ -131,9 +126,7 @@
       },
       "expectedUI": {
         "description": "Case type list split into 5 headed groups",
-        "visualCues": [
-          "Case type list split into 5 headed groups"
-        ]
+        "visualCues": ["Case type list split into 5 headed groups"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-008/loss-information/edit",
@@ -189,7 +182,7 @@
     {
       "id": "AC-04b",
       "statement": "AC04b · Service Interruption asks which utility failed",
-      "plainStatement": "**Opens:** Edit claim details of CLM-2024-013 (Nordbyte SE, policy offers 5 CBI case types).\n\n**You see:** Case type Service Interruption (Public or Private Utilities), **Utility type: Power**.\n\n**Try:** Edit and open the utility list: Power, Gas, Water, Steam, Telecom, IT. Open the case type list: only Supplier, Customer and Other groups, because this policy offers nothing else.",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-013 (Nordbyte SE, policy offers 5 CBI case types).\n\n**You see:** Case type Service Interruption (Public or Private Utilities), **Utility type: Power**.\n\n**Try:** Edit and open the utility list: Power, Gas, Water, Steam, Telecom, IT. Open the case type list: only Supplier, Customer and Other groups, because this policy offers nothing else.\n\n**NOTE [accepted-deviation]:** Jira only lists the case type \"CBI - Service Interruption (Public or Private Utilities) BI\". The Utility type question and its list (Power, Gas, Water, Steam, Telecom, IT) are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -221,9 +214,7 @@
       },
       "expectedUI": {
         "description": "CBI rows show Service Interruption and Utility type Power",
-        "visualCues": [
-          "CBI rows show Service Interruption and Utility type Power"
-        ]
+        "visualCues": ["CBI rows show Service Interruption and Utility type Power"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-013/loss-information/edit",
@@ -234,7 +225,7 @@
     {
       "id": "AC-05",
       "statement": "AC05 · Adding or removing Business Interruption brings CBI along",
-      "plainStatement": "**Opens:** Edit claim details of CLM-2024-001 (Material damage, Financial loss, no CBI).\n\n**You see:** No CBI card.\n\n**Try:** Edit, add **Business interruption** to Type of damage: the CBI card appears already open on the question, since it is now required. Remove Business interruption again: the card goes. On AC-01's claim, removing Business interruption shows the CBI rows being cleared in the confirm table, and the open sections are marked Review needed.\n\nDecision: whether CBI applies and its case type count as section-impacting changes (Review needed); the details (name, industry, location, authority, utility) do not.",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-001 (Material damage, Financial loss, no CBI).\n\n**You see:** No CBI card.\n\n**Try:** Edit, add **Business interruption** to Type of damage: the CBI card appears already open on the question, since it is now required. Remove Business interruption again: the card goes. On AC-01's claim, removing Business interruption shows the CBI rows being cleared in the confirm table, and the open sections are marked Review needed.\n\nDecision: whether CBI applies and its case type count as section-impacting changes (Review needed); the details (name, industry, location, authority, utility) do not.\n\n**NOTE [accepted-deviation]:** Jira says nothing about sections when CBI changes. Marking open sections \"Review needed\" when CBI or its case type changes is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -263,7 +254,7 @@
     {
       "id": "AC-06",
       "statement": "AC06 · The description field on Edit claim details is called Claim description",
-      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008.\n\n**You see:** The last row of Loss information reads **Claim description**, in read view, in edit view and in the required-field error. The confirm table and the toast also say Claim description.\n\n**Try:** FNOL Loss information still says **Loss description**, as decided (user call 2026-11-13).",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-008.\n\n**You see:** The last row of Loss information reads **Claim description**, in read view, in edit view and in the required-field error. The confirm table and the toast also say Claim description.\n\n**Try:** FNOL Loss information still says **Loss description**, as decided (user call 2026-11-13).\n\n**NOTE [accepted-deviation]:** Jira says nothing about the field name. Renaming \"Loss description\" to \"Claim description\" on Edit claim details is decided by the prototype (user call 2026-11-13). Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -286,9 +277,7 @@
       },
       "expectedUI": {
         "description": "Field label 'Claim description' on Edit claim details",
-        "visualCues": [
-          "Field label 'Claim description' on Edit claim details"
-        ]
+        "visualCues": ["Field label 'Claim description' on Edit claim details"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-008/loss-information/edit",
@@ -322,9 +311,7 @@
       },
       "expectedUI": {
         "description": "FNOL CBI block with grouped case types and the branch questions",
-        "visualCues": [
-          "FNOL CBI block with grouped case types and the branch questions"
-        ]
+        "visualCues": ["FNOL CBI block with grouped case types and the branch questions"]
       },
       "howToTest": {
         "route": "/fnol/loss-information",
@@ -335,7 +322,7 @@
     {
       "id": "AC-08",
       "statement": "AC08 · Figma file, German text length and PO review",
-      "plainStatement": "Not done here: there is no Figma file. The working screens above are the design deliverable. German text length and PO sign-off are still to do.",
+      "plainStatement": "Not done here: there is no Figma file. The working screens above are the design deliverable. German text length and PO sign-off are still to do.\n\n**NOTE [accepted-deviation]:** Jira asks for a Figma design. There is no Figma file: the working screens are used as the design. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "todo",
       "setup": {
@@ -351,9 +338,7 @@
       },
       "expectedUI": {
         "description": "Figma link added to the story",
-        "visualCues": [
-          "Figma link added to the story"
-        ]
+        "visualCues": ["Figma link added to the story"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-008/loss-information/edit",

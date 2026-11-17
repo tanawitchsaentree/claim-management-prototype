@@ -10,7 +10,7 @@
       "id": "CHAMP-READY-CLOSE",
       "file": "ready-to-close.json",
       "module": "Claims",
-      "title": "Claim ready to close: all tasks done, all sections resolved"
+      "title": "Claim ready to close: all tasks done, all sections resolved (prototype demo preset, no Jira source)"
     },
     {
       "id": "CHAMP-CLOSE-SECTION",
@@ -40,7 +40,7 @@
       "id": "BMPCC-14435",
       "file": "bmpcc-14435.json",
       "module": "Claims",
-      "title": "Cross-domain closure validations: Litigation & Reserves deep check"
+      "title": "Cross-domain closure validations: Litigation, Reserves & Provider deep check"
     },
     {
       "id": "BMPCC-14437",
@@ -58,7 +58,7 @@
       "id": "BMPCC-219",
       "file": "bmpcc-219.json",
       "module": "FNOL",
-      "title": "Loss Location via CWB MFE"
+      "title": "Date attribute: Date of Loss, Date of Notification (plus CWB location, not from this ticket)"
     },
     {
       "id": "BMPCC-241",
@@ -70,7 +70,7 @@
       "id": "BMPCC-11006",
       "file": "bmpcc-11006.json",
       "module": "FNOL",
-      "title": "Orphan Claim: Convert to Regular (one-click prefill, full walkthrough)"
+      "title": "Orphan Claim: Link policy to make it a regular claim"
     },
     {
       "id": "CHAMP-NO-LOSS-LOC",
@@ -94,7 +94,7 @@
       "id": "BMPCC-17779",
       "file": "bmpcc-17779.json",
       "module": "Claims",
-      "title": "[UI/UX] Recovery Potential Flag: Dependency"
+      "title": "[UI/UX] Recovery Potential Flag (Descoped in Jira, prototype proposal)"
     },
     {
       "id": "BMPCC-14452",
@@ -106,7 +106,7 @@
       "id": "BMPCC-14453",
       "file": "bmpcc-14453.json",
       "module": "Claims",
-      "title": "[UX/UI] Provider Communication: Document Attachment / Send Communication via Email"
+      "title": "[UX/UI] Provider Communication: Document Attachment Design for Instruction Template"
     },
     {
       "id": "BMPCC-14831",
@@ -124,7 +124,7 @@
       "id": "BMPCC-17678",
       "file": "bmpcc-17678.json",
       "module": "Claims",
-      "title": "[FE] UI/UX QA Fixes: Approvals Widget & Approvals Journey"
+      "title": "[FE] UI/UX QA Fixes: Approvals Widget & Approvals Journey (items A to G)"
     },
     {
       "id": "BMPCC-12160",

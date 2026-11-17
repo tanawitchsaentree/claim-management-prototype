@@ -4,10 +4,7 @@
   "module": "FNOL",
   "title": "Generate the FNOL Acknowledgement: trigger and its states",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "overview",
-    "fnol-search"
-  ],
+  "pages": ["overview", "fnol-search"],
   "walkthroughSteps": [
     "One panel, in two places: the FNOL confirmation screen and Claim Overview.",
     "Generate asks to confirm, runs for a few seconds (mock of AOMS), then the letter can be opened. Failures say why and offer Try again.",
@@ -18,7 +15,7 @@
     {
       "id": "AC-01",
       "statement": "AC1 · Trigger on Claim Overview after FNOL registration",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**.\n\n**Try:** Press it: a confirm says the letter uses the details as they are now and nothing is sent. Press **Generate**: the button turns to \"Generating…\" with a spinner line. After about 3 seconds: a green toast, the bell lists it under Done, and the panel shows the letter's name as a link with \"Generated ... by Mara Mustermann\". Open the link: the letter with claim reference, dates, insured and policy number.\n\n**Decision (placement):** the same panel on the FNOL confirmation screen and on Claim Overview, right under the claim's main facts, so it looks and works the same in both places (DESIGN DECISION FNOL-ACK-1). **Decision (confirm):** yes, a short one: \"generate\" could be read as \"send\", and the letter freezes the details as they are now.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Under General information, the **FNOL acknowledgement** panel: one line on what the letter is (and that generating it doesn't send it) and **Generate FNOL acknowledgement**.\n\n**Try:** Press it: a confirm says the letter uses the details as they are now and nothing is sent. Press **Generate**: the button turns to \"Generating…\" with a spinner line. After about 3 seconds: a green toast, the bell lists it under Done, and the panel shows the letter's name as a link with \"Generated ... by Mara Mustermann\". Open the link: the letter with claim reference, dates, insured and policy number.\n\n**Decision (placement):** the same panel on the FNOL confirmation screen and on Claim Overview, right under the claim's main facts, so it looks and works the same in both places (DESIGN DECISION FNOL-ACK-1). **Decision (confirm):** yes, a short one: \"generate\" could be read as \"send\", and the letter freezes the details as they are now.\n\n**NOTE [accepted-deviation]:** Confluence 2940829713 lists \"Delivery Channel: Email\" for the FNOL acknowledgement. The prototype says generating the letter sends nothing. This may differ from the source, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -132,7 +129,7 @@
     {
       "id": "AC-04",
       "statement": "In progress: generation running",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed.\n\n**Try:** Wait about 3 seconds: it turns into the ready letter, with a toast.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel says \"Generating the letter ... you can leave this page and the bell tells you when it's ready\", the button reads \"Generating…\" and can't be pressed.\n\n**Try:** Wait about 3 seconds: it turns into the ready letter, with a toast.\n\n**NOTE [accepted-deviation]:** Jira says nothing about the bell. The bell line telling the handler the letter is ready is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -181,7 +178,7 @@
     {
       "id": "AC-05",
       "statement": "Success: the generated document, with a link to open it",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it.\n\n**Try:** Open the link: the letter opens in a dialog, filled with the claim reference, date of loss, date of notification, insured and policy number.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** The panel shows \"FNOL acknowledgement CLM-2024-001.pdf\" as a link and \"Generated 10-11-2026 ... by Nina Feld\". **Generate again** next to it.\n\n**Try:** Open the link: the letter opens in a dialog, filled with the claim reference, date of loss, date of notification, insured and policy number.\n\n**NOTE [accepted-deviation]:** Jira says nothing about previewing the letter. Opening the letter in a preview dialog is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -269,9 +266,7 @@
       },
       "expectedUI": {
         "description": "The panel with **Generate FNOL acknowledgement**.",
-        "visualCues": [
-          "The panel with **Generate FNOL acknowledgement**."
-        ]
+        "visualCues": ["The panel with **Generate FNOL acknowledgement**."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -328,9 +323,7 @@
       },
       "expectedUI": {
         "description": "Same as AC-05: the letter generated on 10-11-2026 by Nina Feld.",
-        "visualCues": [
-          "Same as AC-05: the letter generated on 10-11-2026 by Nina Feld."
-        ]
+        "visualCues": ["Same as AC-05: the letter generated on 10-11-2026 by Nina Feld."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

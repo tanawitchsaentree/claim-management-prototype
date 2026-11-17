@@ -28,7 +28,7 @@
     {
       "id": "AC-01",
       "statement": "Notifier section uses a Broker / Insured radio, Internal is not offered",
-      "plainStatement": "On the **Loss information** page of the orphan flow, a *radio toggle* picks the notifier type (`Broker` / `Insured`): only the relevant input renders below. Picking **Broker** opens the *Search broker* modal (Name management, IPM-backed). Picking **Insured** shows a single free-text input. **Internal is intentionally excluded**: internal staff (adjuster/colleague) can register the claim but are never the notifier, the actual notifying party is always external.",
+      "plainStatement": "On the **Loss information** page of the orphan flow, a *radio toggle* picks the notifier type (`Broker` / `Insured`): only the relevant input renders below. Picking **Broker** opens the *Search broker* modal (Name management, IPM-backed). Picking **Insured** shows a single free-text input. **Internal is intentionally excluded**: internal staff (adjuster/colleague) can register the claim but are never the notifier, the actual notifying party is always external.\n\n**NOTE [accepted-deviation]:** Jira BMPCC-241 has no description, only the title \"Figma Design - Claims Commercial - Baseline - Orphan/ Skeleton Claim Creation\". The Broker / Insured notifier choice, with Internal left out, is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -71,7 +71,7 @@
     {
       "id": "AC-02",
       "statement": "Left navigation shows Loss / Parties / Summary for orphan flow",
-      "plainStatement": "The FNOL **left navigation** shows three steps for the orphan path: `Loss` (/fnol/skeleton-create), `Parties` (/fnol/skeleton-parties), and `Summary` (/fnol/skeleton-summary). Re-uses the existing FnolStepperComponent. Location capture is NOT its own step, see AC-06, it lives on the Loss page, same placement as the regular happy-path flow.",
+      "plainStatement": "The FNOL **left navigation** shows three steps for the orphan path: `Loss` (/fnol/skeleton-create), `Parties` (/fnol/skeleton-parties), and `Summary` (/fnol/skeleton-summary). Re-uses the existing FnolStepperComponent. Location capture is NOT its own step, see AC-06, it lives on the Loss page, same placement as the regular happy-path flow.\n\n**NOTE [accepted-deviation]:** Jira BMPCC-241 has no description, only the title \"Figma Design - Claims Commercial - Baseline - Orphan/ Skeleton Claim Creation\". The three-step Loss / Parties / Summary navigation is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -112,7 +112,7 @@
     {
       "id": "AC-03",
       "statement": "Loss page button reads 'Next' (was 'Create skeleton claim')",
-      "plainStatement": "The footer button on the Loss page is **Next**, it does *not* submit the claim, only navigates to the Parties page. Submission happens on Summary, at the end of the chain.",
+      "plainStatement": "The footer button on the Loss page is **Next**, it does *not* submit the claim, only navigates to the Parties page. Submission happens on Summary, at the end of the chain.\n\n**NOTE [accepted-deviation]:** Jira BMPCC-241 has no description, only the title \"Figma Design - Claims Commercial - Baseline - Orphan/ Skeleton Claim Creation\". The Next button on the Loss page is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -153,7 +153,7 @@
     {
       "id": "AC-04",
       "statement": "Summary page reviews Loss + Locations + Parties + Notifier and creates on Confirm",
-      "plainStatement": "The Summary page shows read-only review blocks, `Loss`, `Locations of loss`, `Parties`, and `Notifier`, and a **Create** button that submits the skeleton claim. Success state shows a banner with the new claim ID and a 'Go to dashboard' action.",
+      "plainStatement": "The Summary page shows read-only review blocks, `Loss`, `Locations of loss`, `Parties`, and `Notifier`, and a **Create** button that submits the skeleton claim. Success state shows a banner with the new claim ID and a 'Go to dashboard' action.\n\n**NOTE [accepted-deviation]:** Jira BMPCC-241 has no description, only the title \"Figma Design - Claims Commercial - Baseline - Orphan/ Skeleton Claim Creation\". The Summary review blocks, the Create button and the \"Go to dashboard\" success action are decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -207,7 +207,7 @@
     {
       "id": "AC-05",
       "statement": "Parties page starts empty, carries over the notifier broker, and supports adding another party, never mandatory",
-      "plainStatement": "The **Parties** page does *not* pre-populate from a policy, there is none for an orphan claim, so it starts empty except for the broker carried over from the notifier screen (if one was selected there). The user can **Add party** to cover cases like a different insurer reaching out about the claim. Parties are **not mandatory**: Next always works, same rule as the regular claim flow.",
+      "plainStatement": "The **Parties** page does *not* pre-populate from a policy, there is none for an orphan claim, so it starts empty except for the broker carried over from the notifier screen (if one was selected there). The user can **Add party** to cover cases like a different insurer reaching out about the claim. Parties are **not mandatory**: Next always works, same rule as the regular claim flow.\n\n**NOTE [accepted-deviation]:** Jira BMPCC-241 has no description, only the title \"Figma Design - Claims Commercial - Baseline - Orphan/ Skeleton Claim Creation\". Parties starting empty, carrying over the broker and being optional is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-skeleton-parties",
       "buildStatus": "done",
       "setup": {
@@ -255,7 +255,7 @@
     {
       "id": "AC-06",
       "statement": "Location capture lives on the Loss page, GIS search + manual entry only, no 'select from contract location' option",
-      "plainStatement": "Location capture is **not a separate step** (superseded 2026-09-11, Vasudha feedback, 'this does not require a separate page and can be captured on the Loss Information page itself, consistent with the regular FNOL flow'). It's a 'Locations of loss' card on the Loss page, same placement as the regular happy-path flow. 'Add location' opens a modal offering a GIS address search (type-ahead, independent of any policy, selecting a suggestion prefills the address fields) plus manual Address/Coordinates entry as a fallback. It cannot use the standard Location Manager MFE's contract-location search, because that depends on a linked policy, which does not exist for an orphan claim.",
+      "plainStatement": "Location capture is **not a separate step** (superseded 2026-09-11, Vasudha feedback, 'this does not require a separate page and can be captured on the Loss Information page itself, consistent with the regular FNOL flow'). It's a 'Locations of loss' card on the Loss page, same placement as the regular happy-path flow. 'Add location' opens a modal offering a GIS address search (type-ahead, independent of any policy, selecting a suggestion prefills the address fields) plus manual Address/Coordinates entry as a fallback. It cannot use the standard Location Manager MFE's contract-location search, because that depends on a linked policy, which does not exist for an orphan claim.\n\n**NOTE [accepted-deviation]:** Jira BMPCC-241 has no description, only the title \"Figma Design - Claims Commercial - Baseline - Orphan/ Skeleton Claim Creation\". Location on the Loss page with GIS search and manual entry only is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {

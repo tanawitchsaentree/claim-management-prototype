@@ -18,7 +18,7 @@
     {
       "id": "AC-01",
       "statement": "Policy limits and deductibles are shown at both claim and section level",
-      "plainStatement": "The Limits & Deductibles page shows **Policy limits** and **Deductibles** as separate sections, with a level toggle to switch between claim-level and section-level values.",
+      "plainStatement": "The Limits & Deductibles page shows **Policy limits** and **Deductibles** as separate sections, with a level toggle to switch between claim-level and section-level values.\n\n**NOTE [accepted-deviation]:** Jira says the original claim-level columns must be kept: \"Party, Damage, Limit / Deductibles, Applicable to, Amount, Recoverable\". The Party, Damage, Applicable to and Recoverable columns are missing. The screen differs from Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {

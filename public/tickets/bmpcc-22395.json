@@ -4,10 +4,7 @@
   "module": "Dashboard",
   "title": "Claims Manager dashboard",
   "targetClaim": "CLM-2024-016",
-  "pages": [
-    "any",
-    "overview"
-  ],
+  "pages": ["any", "overview"],
   "walkthroughSteps": [
     "Switch the persona to Tobias Grau (Manager). The dashboard opens on his own claims and his team's, no extra navigation.",
     "The five numbers at the top are filters: click one to jump to the team list filtered to it.",
@@ -20,7 +17,7 @@
     {
       "id": "AC-01",
       "statement": "AC1 · Own cases, team workload and drill-down into a member",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.\n\n**NOTE [accepted-deviation]:** Jira open question 3 asks: \"How is a team defined (direct team members only, or also indirect reports)?\" The prototype decides direct reports only. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about a team queue. The Team queue row for claims with no handler is made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about out-of-office. The \"(Out of office until ...)\" text after a member name is made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira open question 5 asks: \"Should the dashboard show a summary (counts, charts) in addition to case lists?\" The prototype decides one line of counts (open, need attention, overdue, high value, for review). Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -94,7 +91,7 @@
     {
       "id": "AC-03",
       "statement": "AC3 · Prioritisation fields, sort and filter by member, status and flag",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried.\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Amounts are not converted (no exchange rates in the prototype), so claims are grouped by currency and sorted within it; the header tooltip says so. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. The Handler column hides once you drill into one person.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, Team workload.\n\n**You see:** Columns: Claim (with a Closed chip if closed), Client, Handler, Needs attention, Last updated, Loss amount. Filters: Team member, Status, Show (flag). Each list shows its top 8 rows with the count above it (\"Showing 8 of 18 claims\"), and the heading says which claims they are (e.g. \"Open team claims: Overdue\", \"Lena Zorn's open claims\"). **View all claims** in the card header opens the claims list with the same handler and status; the claims list has no team or flag filter, so those are not carried.\n\n**Try:** Click the **Loss amount** header to sort, again to reverse. Amounts are not converted (no exchange rates in the prototype), so claims are grouped by currency and sorted within it; the header tooltip says so. Set Status to All statuses: closed claims show with a Closed chip.\n\nDecision (open question 2): the fields above (DESIGN DECISION CM-FIELDS-1). Default sort: most flags first, so what needs the manager is on top. The Handler column hides once you drill into one person.\n\n**NOTE [accepted-deviation]:** Jira open question 2 asks: \"Which fields, groupings and filters does a Claims Manager need?\" The prototype decides the row fields above. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about default order or list length. Sorting most flags first and showing only the top 8 rows per list are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -158,9 +155,7 @@
       },
       "expectedUI": {
         "description": "Spinner with \"Loading your team's claims…\".",
-        "visualCues": [
-          "Spinner with \"Loading your team's claims…\"."
-        ]
+        "visualCues": ["Spinner with \"Loading your team's claims…\"."]
       },
       "howToTest": {
         "route": "/dashboard",
@@ -251,7 +246,7 @@
     {
       "id": "AC-07",
       "statement": "AC4 · Stale data with last updated and refresh",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.\n\n**Try:** Press **Refresh now**: the button shows a small spinner for a moment while the page stays where it is, then the warning goes away and the time is now. **Refresh** in the Team workload header works the same way.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau, data two hours old.\n\n**You see:** Warning: \"This data is from <time> and may be out of date.\" with **Refresh now**; the Team workload header shows the same time next to **Refresh**.\n\n**Try:** Press **Refresh now**: the button shows a small spinner for a moment while the page stays where it is, then the warning goes away and the time is now. **Refresh** in the Team workload header works the same way.\n\nDecision (open question 6): data loads when the page opens and on Refresh, no live polling, so rows don't jump while the manager reads. Older than 15 minutes = marked out of date (DESIGN DECISION CM-REFRESH-1).\n\n**NOTE [accepted-deviation]:** Jira says: \"the refresh behaviour is agreed during solutioning\". The prototype decides load on open plus manual Refresh, and marks data older than 15 minutes as out of date. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -509,9 +504,7 @@
       },
       "expectedUI": {
         "description": "Row menu (⋮) on a team claim: **Open claim** and **Reassign**.",
-        "visualCues": [
-          "Row menu (⋮) on a team claim: **Open claim** and **Reassign**."
-        ]
+        "visualCues": ["Row menu (⋮) on a team claim: **Open claim** and **Reassign**."]
       },
       "howToTest": {
         "route": "/dashboard",
@@ -583,9 +576,7 @@
       },
       "expectedUI": {
         "description": "Review and sign-off happen outside the prototype.",
-        "visualCues": [
-          "Review and sign-off happen outside the prototype."
-        ]
+        "visualCues": ["Review and sign-off happen outside the prototype."]
       },
       "howToTest": {
         "route": "/dashboard",

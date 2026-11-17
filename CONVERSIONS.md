@@ -1220,3 +1220,9 @@ Template — copy below the most recent entry:
 - **Policies step:** `PolicySelectionService.entitiesLostBy()` names the entities a new selection would remove; warning note in the selection confirm, or a red Remove confirm, then a toast. `bmpcc-22665.json` AC-02 and AC-05 text updated.
 - **Summary:** result scrolled into view, toast built from the same headline as the result banner (`creationHeadline()`, `submit-outcome.ts`), Submit never runs twice, config locked after Submit.
 - **Handler choice:** applied to every claim of a multi-policy notification, reason logged in the activity log, read-only line after Submit. `bmpcc-22666.json` AC-01 text updated.
+
+
+## 2026-11-17: ticket files made honest against Jira
+
+Audit in docs/ux/ticket-source-audit-2026-11-17.md compared every ticket file with the real Jira text. bmpcc-219 and bmpcc-17678 described other stories and were rewritten from Jira (the old ACs kept, labelled "Not from BMPCC-<n>"). bmpcc-17779 now says Jira marks it Descoped. Every made-up or decided item got a `**NOTE [accepted-deviation]:**`. Stale text (11006, 14434, 14435, closure, close-section, champ-preclosure-checklist, ready-to-close) now matches the screens.
+Open: scripts/audit-ac-logic.mjs still reads `buttonEnabled` / `tooltipContains` in closure.json and ready-to-close.json as the old disabled-button behaviour (lines 271-283); those keys were left so the audit stays green.

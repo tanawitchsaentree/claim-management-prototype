@@ -1,10 +1,11 @@
 {
   "ticketId": "BMPCC-17779",
   "module": "Claims",
-  "title": "[UI/UX] Recovery Potential Flag: Dependency",
+  "title": "[UI/UX] Recovery Potential Flag: Dependency (Descoped in Jira, kept as a prototype proposal)",
   "targetClaim": "CLM-2024-001",
   "pages": ["overview", "any"],
   "walkthroughSteps": [
+    "Jira marks BMPCC-17779 as Descoped (\"handled by Claims Management team\"). Everything below is a prototype proposal, not a committed requirement.",
     "Navigate to /claims/CLM-2024-001/overview: the Recovery potential card now asks the Yes/No question directly on the card, no modal",
     {
       "targetId": "co-recovery-potential-choice",
@@ -49,8 +50,8 @@
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Yes/No radios are on the Claim Overview card, not behind a modal",
-      "plainStatement": "The **Recovery potential** card renders **Yes/No radios directly on screen** with a **Save** action. The old Set/Update modal is gone.",
+      "statement": "Descoped in Jira. Yes/No radios are on the Claim Overview card, not behind a modal",
+      "plainStatement": "**Jira status: Descoped** (\"handled by Claims Management team\"). Nothing in this ticket is a committed requirement. The prototype keeps the screens below as a **proposal** only.\n\nThe **Recovery potential** card renders **Yes/No radios directly on screen** with a **Save** action. The old Set/Update modal is gone.\n\nJira AC4: *It must be possible to set the flag as Yes or No in the UI.*",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -91,13 +92,17 @@
     {
       "id": "AC-02",
       "statement": "An unanswered claim says so on the card",
-      "plainStatement": "With no answer on record the card shows a **warning message** and a **left accent border**, not the silent `–` it used to render.",
+      "plainStatement": "With no answer on record the card shows a **warning message** and a **left accent border**, not the silent `–` it used to render.\n\n**NOTE [accepted-deviation]:** Jira says nothing about how an unanswered flag looks. The prototype adds a warning message and a left accent border on the card. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Blank the seeded answer on CLM-2024-001 to reach the unanswered state",
         "preconditions": [
-          { "text": "Recovery potential is unanswered", "page": "overview", "role": "setup" },
+          {
+            "text": "Recovery potential is unanswered",
+            "page": "overview",
+            "role": "setup"
+          },
           {
             "text": "Warning message on the Recovery potential card",
             "page": "overview",
@@ -107,7 +112,10 @@
         "stateOverrides": {
           "overviewPatch": {
             "claimId": "CLM-2024-001",
-            "patch": { "recoveryPotential": null, "recoveryPotentialNote": "" }
+            "patch": {
+              "recoveryPotential": null,
+              "recoveryPotentialNote": ""
+            }
           }
         }
       },
@@ -134,13 +142,17 @@
     {
       "id": "AC-03",
       "statement": "An unanswered claim cannot be closed",
-      "plainStatement": "The pre-closure checklist has a **Recovery potential answered** row that fails while the question is unanswered, so **Continue stays disabled**.",
+      "plainStatement": "The pre-closure checklist has a **Recovery potential answered** row that fails while the question is unanswered, so the claim cannot be closed: the Close claim popup opens on the list of blockers and shows *Recovery potential has not been answered (Yes/No)*.\n\n**NOTE [accepted-deviation]:** Jira AC1 says: \"If the flag remains not set for X+ days, a task is required from the Claims Mgt side. Claim cannot be closed.\" The prototype blocks closure straight away and creates no task after X+ days. The task rule is not built. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Same unanswered state as AC-02, on a claim whose other blockers are all clear",
         "preconditions": [
-          { "text": "Recovery potential is unanswered", "page": "overview", "role": "setup" },
+          {
+            "text": "Recovery potential is unanswered",
+            "page": "overview",
+            "role": "setup"
+          },
           {
             "text": "Close Claim opens the modal at Step 1 with a recovery-potential blocker",
             "page": "overview",
@@ -148,7 +160,13 @@
           }
         ],
         "stateOverrides": {
-          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
           "sectionStatuses": {
             "SEC-001": "Closed",
             "SEC-002": "Closed",
@@ -156,18 +174,28 @@
             "SEC-008": "Closed"
           },
           "sectionBlockers": {
-            "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
             "SEC-002": {
               "hasActiveLitigation": false,
               "hasOpenReserves": false,
               "hasOpenPayments": false
             },
-            "SEC-003": { "hasActiveProvider": false },
-            "SEC-008": { "hasOpenPayments": false }
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
           },
           "overviewPatch": {
             "claimId": "CLM-2024-001",
-            "patch": { "recoveryPotential": null, "recoveryPotentialNote": "" }
+            "patch": {
+              "recoveryPotential": null,
+              "recoveryPotentialNote": ""
+            }
           }
         }
       },
@@ -176,8 +204,7 @@
         "visualCues": [
           "Blocker \"Recovery potential has not been answered (Yes/No)\"",
           "\"Answer on Claim Overview\" deep-link on the blocker row",
-          "Checklist row \"Recovery potential answered\" is not ticked",
-          "Continue is disabled"
+          "Only Cancel in the footer: the checklist step is not reached while a blocker exists"
         ]
       },
       "expectedOutcome": {
@@ -189,13 +216,13 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Click Close Claim",
-        "expectedResult": "Modal opens at Step 1 listing the recovery-potential blocker; Continue is disabled"
+        "expectedResult": "Popup opens at Step 1 listing the recovery-potential blocker; only Cancel is offered"
       }
     },
     {
       "id": "AC-04",
       "statement": "Answering No requires a reason, and then closure is no longer held up",
-      "plainStatement": "Selecting **No** reveals a **required** reason field. Once saved, the closure blocker clears, *\"if they select no, the pressure is off\"*.",
+      "plainStatement": "Selecting **No** reveals a **required** reason field. Once saved, the closure blocker clears, *\"if they select no, the pressure is off\"*.\n\n**NOTE [accepted-deviation]:** Jira AC2 says: \"Flag = No: No task is required. Claim can be closed.\" Jira asks for no reason. The prototype makes a reason required when No is picked. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -213,7 +240,13 @@
           }
         ],
         "stateOverrides": {
-          "taskStatuses": { "t1": "done", "t2": "done", "t3": "done", "t4": "done", "t5": "done" },
+          "taskStatuses": {
+            "t1": "done",
+            "t2": "done",
+            "t3": "done",
+            "t4": "done",
+            "t5": "done"
+          },
           "sectionStatuses": {
             "SEC-001": "Closed",
             "SEC-002": "Closed",
@@ -221,14 +254,21 @@
             "SEC-008": "Closed"
           },
           "sectionBlockers": {
-            "SEC-001": { "hasOpenDeductible": false, "hasActiveSalvage": false },
+            "SEC-001": {
+              "hasOpenDeductible": false,
+              "hasActiveSalvage": false
+            },
             "SEC-002": {
               "hasActiveLitigation": false,
               "hasOpenReserves": false,
               "hasOpenPayments": false
             },
-            "SEC-003": { "hasActiveProvider": false },
-            "SEC-008": { "hasOpenPayments": false }
+            "SEC-003": {
+              "hasActiveProvider": false
+            },
+            "SEC-008": {
+              "hasOpenPayments": false
+            }
           }
         }
       },
@@ -255,7 +295,7 @@
     {
       "id": "AC-05",
       "statement": "Yes with no recovery case routes the handler to the recovery domain",
-      "plainStatement": "**Yes** on its own is not enough, the card surfaces a **Set up recovery case** link, the link now lands on the real Recoveries page, and the closure checklist fails a **Recovery case set up** row until a case exists. Phase B promoted this from a soft warning to a hard blocker: the fix-it link no longer dead-ends, so blocking on it is resolvable.",
+      "plainStatement": "**Yes** on its own is not enough, the card surfaces a **Set up recovery case** link, the link now lands on the real Recoveries page, and the closure checklist fails a **Recovery case set up** row until a case exists. Phase B promoted this from a soft warning to a hard blocker: the fix-it link no longer dead-ends, so blocking on it is resolvable.\n\n**NOTE [accepted-deviation]:** Jira AC3 says: \"If no recovery case has been created, after X+ days a task must be created from the Recovery side ... Claim cannot be closed if flag is Yes and no recovery case exists.\" The prototype hard-blocks closure at once and creates no task after X+ days. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -307,7 +347,7 @@
     {
       "id": "AC-06",
       "statement": "The dashboard chases the decision without task management",
-      "plainStatement": "A **Recovery potential: decision needed** panel on the dashboard lists open claims with no answer, plus claims answered Yes that have no recovery case, *\"maybe we do it from dashboard even\"*.",
+      "plainStatement": "A **Recovery potential: decision needed** panel on the dashboard lists open claims with no answer, plus claims answered Yes that have no recovery case, *\"maybe we do it from dashboard even\"*.\n\n**NOTE [accepted-deviation]:** Jira says nothing about the dashboard. The \"Recovery potential: decision needed\" panel is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -345,7 +385,7 @@
     {
       "id": "AC-07",
       "statement": "The recovery domain is a real page, not a redirect",
-      "plainStatement": "`/claims/:id/recoveries` renders a **Recoveries** page listing the claim's recovery cases. Until phase B it was a `redirectTo` stub in `app.routes.ts`, so the **Recoveries** item in the claim side menu and the **Set up recovery case** link both bounced the handler silently back to Claim Overview.",
+      "plainStatement": "`/claims/:id/recoveries` renders a **Recoveries** page listing the claim's recovery cases. Until phase B it was a `redirectTo` stub in `app.routes.ts`, so the **Recoveries** item in the claim side menu and the **Set up recovery case** link both bounced the handler silently back to Claim Overview.\n\n**NOTE [accepted-deviation]:** Jira says nothing about a Recoveries page. The whole Recoveries page (case list, create case, Recovered / Written off) is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-003",
@@ -390,7 +430,7 @@
     {
       "id": "AC-08",
       "statement": "A claim answered Yes with no case says why the handler was sent here",
-      "plainStatement": "Landing on Recoveries from the **Set up recovery case** link shows the same sentence the card showed, *\"Recovery is expected but no recovery case has been set up yet\"*: plus an empty state that names the next action. An empty table with no explanation would leave the handler where the redirect stub did: on a page with nothing to do and no reason given.",
+      "plainStatement": "Landing on Recoveries from the **Set up recovery case** link shows the same sentence the card showed, *\"Recovery is expected but no recovery case has been set up yet\"*: plus an empty state that names the next action. An empty table with no explanation would leave the handler where the redirect stub did: on a page with nothing to do and no reason given.\n\n**NOTE [accepted-deviation]:** Jira says nothing about a Recoveries page. The whole Recoveries page (case list, create case, Recovered / Written off) is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-024",
@@ -439,7 +479,7 @@
     {
       "id": "AC-09",
       "statement": "Creating a case clears the closure blocker",
-      "plainStatement": "**Create recovery case** captures the route, counterparty, section, expected amount and basis. Saving it writes `hasRecoveryCase` and `hasActiveRecovery` back onto the claim, so the state moves `yes-pending` → `yes-active`: the **Recovery case set up** checklist row passes and the **Recoveries & deductibles cleared** row takes over. That hand-off is the point, one unresolved thing replaces another rather than the claim quietly becoming closable while a recovery is still running.",
+      "plainStatement": "**Create recovery case** captures the route, counterparty, section, expected amount and basis. Saving it writes `hasRecoveryCase` and `hasActiveRecovery` back onto the claim, so the state moves `yes-pending` → `yes-active`: the **Recovery case set up** checklist row passes and the **Recoveries & deductibles cleared** row takes over. That hand-off is the point, one unresolved thing replaces another rather than the claim quietly becoming closable while a recovery is still running.\n\n**NOTE [accepted-deviation]:** Jira says nothing about a Recoveries page. The whole Recoveries page (case list, create case, Recovered / Written off) is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-024",
@@ -451,7 +491,11 @@
             "page": "any",
             "role": "setup"
           },
-          { "text": "Create recovery case modal", "page": "any", "role": "tested-visible" }
+          {
+            "text": "Create recovery case modal",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },
@@ -479,15 +523,23 @@
     {
       "id": "AC-10",
       "statement": "Resolving every case releases the claim",
-      "plainStatement": "A case is resolved as **Recovered** (with the amount that actually came back) or **Written off** (with a reason). **Resolve case** turns on as soon as the outcome and its details are filled in. Resolving is final (a resolved case has no row menu), so a confirm step comes first (\"Write off REC-C-001?\" / \"Resolve REC-C-001 as recovered?\", **Back** returns to the form with what was typed), then a toast. Once no case is still running, the claim reaches `yes-settled` and nothing recovery-related holds closure any more. **Without this state the loop was unclosable:** resolving the last case flips `hasActiveRecovery` back to false, which under the phase-A two-flag derivation read as `yes-pending`, \"no recovery case has been set up\", a blocker demanding work that had already been finished.",
+      "plainStatement": "A case is resolved as **Recovered** (with the amount that actually came back) or **Written off** (with a reason). **Resolve case** turns on as soon as the outcome and its details are filled in. Resolving is final (a resolved case has no row menu), so a confirm step comes first (\"Write off REC-C-001?\" / \"Resolve REC-C-001 as recovered?\", **Back** returns to the form with what was typed), then a toast. Once no case is still running, the claim reaches `yes-settled` and nothing recovery-related holds closure any more. **Without this state the loop was unclosable:** resolving the last case flips `hasActiveRecovery` back to false, which under the phase-A two-flag derivation read as `yes-pending`, \"no recovery case has been set up\", a blocker demanding work that had already been finished.\n\n**NOTE [accepted-deviation]:** Jira says nothing about a Recoveries page. The whole Recoveries page (case list, create case, Recovered / Written off) is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-003",
       "setup": {
         "description": "CLM-2024-003 carries one open and one already-resolved case; resolving REC-C-001 leaves the claim with cases but none running",
         "preconditions": [
-          { "text": "One recovery case is still In progress", "page": "any", "role": "setup" },
-          { "text": "Resolve case action on the open row", "page": "any", "role": "tested-visible" }
+          {
+            "text": "One recovery case is still In progress",
+            "page": "any",
+            "role": "setup"
+          },
+          {
+            "text": "Resolve case action on the open row",
+            "page": "any",
+            "role": "tested-visible"
+          }
         ],
         "stateOverrides": {}
       },

@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG 2 · Make payment: checks before you submit",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "financial"
-  ],
+  "pages": ["financial"],
   "walkthroughSteps": [
     "Make payment opens with the form already filled for each case, so the warning is visible straight away.",
     "One warning list for every source. Outside blocks (claim not in GG, unpaid premium) come first; anything else waits under \"Once that's sorted\"."
@@ -15,7 +13,7 @@
     {
       "id": "AC-01",
       "statement": "Make payment · Nothing wrong, ready to submit",
-      "plainStatement": "**Opens:** the Make Payment window, Payment amount open, filled in: Business Interruption, EUR 3,000 to Peter Pane (the insured).\n\n**You see:** No warnings. **Make Payment** is enabled.\n\n**Try:** Press **Make Payment**: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** the Make Payment window, Payment amount open, filled in: Business Interruption, EUR 3,000 to Peter Pane (the insured).\n\n**You see:** No warnings. **Make Payment** is enabled.\n\n**Try:** Press **Make Payment**: confirm shows section, amount and who approves; after sending you land on Payments with the new row highlighted.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -37,9 +35,7 @@
       },
       "expectedUI": {
         "description": "No warnings. Submit is enabled.",
-        "visualCues": [
-          "No warnings. Submit is enabled."
-        ]
+        "visualCues": ["No warnings. Submit is enabled."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial/new-payment?section=SEC-002&type=Indemnity&payee=Peter%20Pane&amount=3000&currency=EUR",
@@ -300,7 +296,7 @@
     {
       "id": "AC-08",
       "statement": "Make payment · Unpaid premium, warning only (alternative)",
-      "plainStatement": "**Opens:** the Make Payment window, filled in, premium preview set to \"Warning only\".\n\n**You see:** Amber warning: check with the underwriter. **Make Payment** enabled. The preview switch is labelled as a prototype preview.",
+      "plainStatement": "**Opens:** the Make Payment window, filled in, premium preview set to \"Warning only\".\n\n**You see:** Amber warning: check with the underwriter. **Make Payment** enabled. The preview switch is labelled as a prototype preview.\n\n**NOTE [accepted-deviation]:** BMPCC-21754 says an unpaid premium should prevent the payment. The \"Warning only\" option lets the handler pay anyway. The screen differs from Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -391,7 +387,7 @@
     {
       "id": "AC-10",
       "statement": "Make payment · Changing a payment the approver sent back",
-      "plainStatement": "**Opens:** Make payment in edit mode for payment 123456-5 (sent back by the approver), already filled in.\n\n**You see:** The approver's note at the top, the payment's own number, and **Resubmit to approver** instead of Submit.\n\n**Try:** change the amount and resubmit: you land on Payments with 123456-5 highlighted, now Pending. No new payment is created.",
+      "plainStatement": "**Opens:** Make payment in edit mode for payment 123456-5 (sent back by the approver), already filled in.\n\n**You see:** The approver's note at the top, the payment's own number, and **Resubmit to approver** instead of Submit.\n\n**Try:** change the amount and resubmit: you land on Payments with 123456-5 highlighted, now Pending. No new payment is created.\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about an approver sending a payment back. The sent-back note and Resubmit to approver are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -595,11 +591,7 @@
       },
       "expectedUI": {
         "description": "Edit mode with approver note",
-        "visualCues": [
-          "Approver note at top",
-          "Same payment number",
-          "Resubmit to approver"
-        ]
+        "visualCues": ["Approver note at top", "Same payment number", "Resubmit to approver"]
       },
       "expectedOutcome": {
         "pendingTasks": 1,

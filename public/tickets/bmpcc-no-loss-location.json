@@ -19,7 +19,7 @@
     {
       "id": "AC-01",
       "statement": "Given no loss location was selected, when Entities & Damages loads, then no location group or limits section is shown and no error occurs.",
-      "plainStatement": "When `lossLocation.locations` is empty, the Entities & Damages page loads without error. The Limit column shows the plain string value (`entity.limit`) rather than the per-location multi-limit list. No location group header or limit breakdown section is rendered.",
+      "plainStatement": "Source: BMPCC-16270 AC3.\n\nWhen `lossLocation.locations` is empty, the Entities & Damages page loads without error. The Limit column shows the plain string value (`entity.limit`) rather than the per-location multi-limit list. No location group header or limit breakdown section is rendered.",
       "page": "fnol-entities-damages",
       "buildStatus": "done",
       "setup": {

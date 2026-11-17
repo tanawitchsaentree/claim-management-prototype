@@ -21,7 +21,7 @@
     {
       "id": "AC-01",
       "statement": "Given the handler is adding a damaged item, when they set Damage type to Financial loss, then a cause-of-loss field and a free-text details field appear; for every other damage type they stay hidden.",
-      "plainStatement": "The Add damaged item modal reveals \"Financial loss caused by\" (a dropdown of the cause-of-loss lookup) and \"Financial loss details\" (textarea) only while Damage type is `Financial loss`. The gate is a `computed()` over the damage control's value; the matched string lives in `features/sections/damaged-item.config.ts` as `FINANCIAL_LOSS_DAMAGE`, shared by the add and edit modals so the two cannot drift.",
+      "plainStatement": "Source: BMPCC-3212 and the production damaged-item form.\n\nThe Add damaged item modal reveals \"Financial loss caused by\" (a dropdown of the cause-of-loss lookup) and \"Financial loss details\" (textarea) only while Damage type is `Financial loss`. The gate is a `computed()` over the damage control's value; the matched string lives in `features/sections/damaged-item.config.ts` as `FINANCIAL_LOSS_DAMAGE`, shared by the add and edit modals so the two cannot drift.\n\n**NOTE [accepted-deviation]:** The source puts this on the FNOL Entities & Damages step. The prototype built it in the damaged-item popups on the Sections page. The screen differs from the source, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -77,7 +77,7 @@
     {
       "id": "AC-02",
       "statement": "Given Damage type is Financial loss, when the handler tries to save without a cause, then the item is not added and the error sits on the cause field.",
-      "plainStatement": "\"Financial loss caused by\" is required, but only while it is on screen. The `required` validator is declared on the control and the required-ness is hand-checked in `confirm()` rather than being always-on: an always-required validator would block saving a material-damage item whose cause field the handler never saw. Details free text stays optional.",
+      "plainStatement": "\"Financial loss caused by\" is required, but only while it is on screen. The `required` validator is declared on the control and the required-ness is hand-checked in `confirm()` rather than being always-on: an always-required validator would block saving a material-damage item whose cause field the handler never saw. Details free text stays optional.\n\n**NOTE [accepted-deviation]:** The source does not say the cause is mandatory. Making \"Financial loss caused by\" required is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {

@@ -284,7 +284,7 @@
     {
       "id": "AC-04",
       "statement": "Clicking a duplicate claim link opens it in a new tab",
-      "plainStatement": "The duplicate claim ID is a *deep-link*, clicking opens **/claims/:id** in a `new tab` (`target='_blank'` with `rel='noopener'`).",
+      "plainStatement": "The duplicate claim ID is a *deep-link*, clicking opens **/claims/:id** in a `new tab` (`target='_blank'` with `rel='noopener'`).\n\n**NOTE [accepted-deviation]:** Jira says: \"User should be able to branch out to the specific claim from the duplicate claim list.\" Opening it in a new tab is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
@@ -441,7 +441,7 @@
     {
       "id": "AC-06",
       "statement": "When more than 3 duplicates match, 'Show all' opens a modal listing them",
-      "plainStatement": "If **>3 duplicates** match, the banner shows the *first 3* and a `Show all N duplicates` button: clicking it opens a modal with a *sortable table* listing every duplicate.",
+      "plainStatement": "If **>3 duplicates** match, the banner shows the *first 3* and a `Show all N duplicates` button: clicking it opens a modal with a *sortable table* listing every duplicate.\n\n**NOTE [accepted-deviation]:** Jira says the notification should \"include a list of all existing claims\". The \"Show all N duplicates\" button and modal for more than 3 matches are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {

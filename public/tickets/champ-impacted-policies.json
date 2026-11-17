@@ -4,9 +4,7 @@
   "module": "FNOL",
   "title": "Entities & Damages: Other impacted policies, and pulling their entities onto the claim",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "fnol-entities-damages"
-  ],
+  "pages": ["fnol-entities-damages"],
   "walkthroughSteps": [
     "Apply AC-01: selects POL-2024-001 in FNOL. Navigate to /fnol/entities-damages",
     {
@@ -29,7 +27,7 @@
     {
       "id": "AC-01",
       "statement": "Given a policy is selected in FNOL and sibling policies hold entities that may belong to this loss, when Entities & Damages loads, then an info banner names those policies and states how many extra entities they would make available.",
-      "plainStatement": "With POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted, 2 policies outside this claim hold entities that may belong to this loss, POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on, real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.\n\n**NOTE (BMPCC-22665, 2026-11-13):** in the normal flow the handler now meets these suggestions earlier, on the FNOL **Policies** step after Loss information, where each selected policy gets its own claim. Once that step is answered this banner is not shown again. It still shows when Entities & Damages is opened without the step, as this ticket does; adding from here keeps the old behaviour (entities onto this one claim).",
+      "plainStatement": "Source: the production Entities & Damages page and epic BMPCC-22567.\n\nWith POL-2024-001 selected, the page shows an info `nx-message` above the entity tree: \"Other policies may be impacted, 2 policies outside this claim hold entities that may belong to this loss, POL-2024-006, POL-2024-009. Adding them makes 9 more entities available for selection below.\" The counts are derived live from `policies.json` + `entities-damages.json`, so they cannot go stale.\n\n**NOTE [accepted-deviation]:** which policies match is authored per base policy in `core/mock/data/impacted-policies.json`, not derived. The entity model carries no site or address field, so there is nothing in this data to match on, real matching happens in the policy system upstream of this screen. Recorded on `ImpactedPolicy.matchReason` in `core/models/impacted-policy.model.ts`.\n\n**NOTE (BMPCC-22665, 2026-11-13):** in the normal flow the handler now meets these suggestions earlier, on the FNOL **Policies** step after Loss information, where each selected policy gets its own claim. Once that step is answered this banner is not shown again. It still shows when Entities & Damages is opened without the step, as this ticket does; adding from here keeps the old behaviour (entities onto this one claim).",
       "page": "fnol-entities-damages",
       "buildStatus": "done",
       "setup": {
@@ -83,7 +81,7 @@
     {
       "id": "AC-02",
       "statement": "Given the impacted-policies banner is shown, when the handler selects See details, then a modal lists each policy with the reason it surfaced, its cover details and how many entities it would contribute.",
-      "plainStatement": "\"See details\" opens the \"Possibly impacted policies\" modal, subtitled \"2 found alongside POL-2024-001\". One table row per policy: a checkbox, the policy number with the client name and the match reason stacked under it, line of business, cover period (dd-MM-yyyy via the appDate pipe), a status chip, and the entity count. An intro line states the limit of what adding does, it makes entities available for selection, nothing else about the claim changes. \"Add to claim\" is disabled until at least one row is ticked; once something is ticked the footer also reads back \"N selected: M entities become available\".",
+      "plainStatement": "\"See details\" opens the \"Possibly impacted policies\" modal, subtitled \"2 found alongside POL-2024-001\". One table row per policy: a checkbox, the policy number with the client name and the match reason stacked under it, line of business, cover period (dd-MM-yyyy via the appDate pipe), a status chip, and the entity count. An intro line states the limit of what adding does, it makes entities available for selection, nothing else about the claim changes. \"Add to claim\" is disabled until at least one row is ticked; once something is ticked the footer also reads back \"N selected: M entities become available\".\n\n**NOTE [accepted-deviation]:** Neither production nor epic BMPCC-22567 has the \"why it surfaced\" match reason, the Status column or the Entities count column in this modal. They are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-entities-damages",
       "buildStatus": "done",
       "setup": {

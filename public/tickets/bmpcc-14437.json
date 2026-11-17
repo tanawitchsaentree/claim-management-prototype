@@ -5,26 +5,26 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["sections"],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/sections \u2014 'Section 004 \u2014 Payment Demo' (SEC-008) is Open with a single blocker: hasOpenPayments=true",
+    "Navigate to /claims/CLM-2024-001/sections: 'Section 004: Payment Demo' (SEC-008) is Open with a single blocker: hasOpenPayments=true",
     {
       "targetId": "sections-sec008-kebab",
       "title": "Simulate final payment",
-      "body": "Added as a menu action so this flow (onSimulateFinalPayment \u2192 triggerFinalPaymentAndClose) is actually reachable \u2014 previously the logic existed but nothing in the UI called it.",
-      "expectedAfterClick": "Auto-closes SEC-008 and fires a toast \u2014 'Section auto-closed \u2014 final payment received'. If it was the last open section, the claim itself auto-closes too, with retention date = closureDate + 10 years.",
+      "body": "Added as a menu action so this flow (onSimulateFinalPayment → triggerFinalPaymentAndClose) is actually reachable: previously the logic existed but nothing in the UI called it.",
+      "expectedAfterClick": "Auto-closes SEC-008 and fires a toast: 'Section auto-closed: final payment received'. If it was the last open section, the claim itself auto-closes too, with retention date = closureDate + 10 years.",
       "direction": "right"
     },
     "Overview then shows Claim status = Closed, closedBy.userId = 'system', and an activity-log entry with user='System'",
-    "Blocked case: on a section with non-payment blockers too (e.g. SEC-002 \u2014 litigation + reserves + payments), the same trigger throws instead \u2014 error toast 'Simulate Final Payment failed' with the remaining blocker names, and the section stays Open"
+    "Blocked case: on a section with non-payment blockers too (e.g. SEC-002: litigation + reserves + payments), the same trigger throws instead: error toast 'Simulate Final Payment failed' with the remaining blocker names, and the section stays Open"
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-14437-1",
-      "statement": "Final payment auto-closes section \u2014 cascades to claim if last",
-      "plainStatement": "Triggering 'Simulate Final Payment' on a section with only a payment blocker auto-closes it. If it's the last open section, the claim also auto-closes with retention date = closure + 10 years.",
+      "statement": "Final payment auto-closes section: cascades to claim if last",
+      "plainStatement": "Triggering 'Simulate Final Payment' on a section with only a payment blocker auto-closes it. If it's the last open section, the claim also auto-closes with retention date = closure + 10 years.\n\n**NOTE [accepted-deviation]:** Jira says the trigger is a final payment event from the Reserves/Payment BC (\"event name TBC\"). The \"Simulate Final Payment\" item sits in the real section menu, which a handler would see. It is made up by the prototype as a demo trigger. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says: \"If any activity/dependency is pending, no section/claim closure initiated\". When the last section closes, the automatic claim closure only checks open tasks, not the other claim blockers. The screen differs from Jira, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
-        "description": "SEC-008 ('Section 004 \u2014 Payment Demo') has hasOpenPayments=true and all other 6 blocker flags false. PAY-005 is a Pending, non-final payment linked to SEC-008. Close other open sections (SEC-001, SEC-002, SEC-003) first so that SEC-008 becomes the last open section, allowing the claim cascade to fire.",
+        "description": "SEC-008 ('Section 004: Payment Demo') has hasOpenPayments=true and all other 6 blocker flags false. PAY-005 is a Pending, non-final payment linked to SEC-008. Close other open sections (SEC-001, SEC-002, SEC-003) first so that SEC-008 becomes the last open section, allowing the claim cascade to fire.",
         "preconditions": [
           {
             "text": "SEC-008 status is Open with only hasOpenPayments=true, all other blocker flags false",
@@ -67,8 +67,8 @@
       "expectedUI": {
         "description": "SEC-008 row updates to Closed chip; toast fires; claim status on Overview = Closed",
         "visualCues": [
-          "SEC-008 row status chip \u2192 'Closed'",
-          "Toast: 'Section Section 004 \u2014 Payment Demo auto-closed \u2014 final payment received'",
+          "SEC-008 row status chip → 'Closed'",
+          "Toast: 'Section Section 004: Payment Demo auto-closed: final payment received'",
           "Overview page: Claim status = 'Closed', closedBy.userId = 'system'",
           "Activity log entry: user='System', objectType='Section', attribute='Status', valueOld='Open', valueNew='Closed'",
           "Retention date = closureDate + 10 years (e.g. 2036-06-23)"
@@ -96,10 +96,10 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 'Simulate Final Payment' on 'Section 004 \u2014 Payment Demo' (SEC-008). Close other open sections first via \u22ee \u2192 Close Section if they are not already Closed.",
-        "expectedResult": "SEC-008 \u2192 Closed; toast fires; navigate to Overview \u2192 Claim = Closed with retention date"
+        "action": "Click ⋮ → 'Simulate Final Payment' on 'Section 004: Payment Demo' (SEC-008). Close other open sections first via ⋮ → Close Section if they are not already Closed.",
+        "expectedResult": "SEC-008 → Closed; toast fires; navigate to Overview → Claim = Closed with retention date"
       },
-      "devNotes": "Trigger chain: onSimulateFinalPayment() \u2192 triggerFinalPaymentAndClose() \u2192 triggerFinalPayment() marks PAY-005 isFinalPayment=true + status=Final \u2192 autoCloseSection() filters out payments blocker, calls closeSection(systemUser='system', 'Section Finalised') \u2192 toast \u2192 maybeAutoCloseClaim() \u2192 defaultRetentionDate() \u2192 patchOverview \u2192 maybeCloseLossEvent('LE98765432')."
+      "devNotes": "Trigger chain: onSimulateFinalPayment() → triggerFinalPaymentAndClose() → triggerFinalPayment() marks PAY-005 isFinalPayment=true + status=Final → autoCloseSection() filters out payments blocker, calls closeSection(systemUser='system', 'Section Finalised') → toast → maybeAutoCloseClaim() → defaultRetentionDate() → patchOverview → maybeCloseLossEvent('LE98765432')."
     },
     {
       "id": "AC-14437-2",
@@ -163,10 +163,10 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "action": "Click \u22ee \u2192 'Simulate Final Payment' on 'Business Interruption \u2014 Machinery Sales' (SEC-002) without clearing blockers.",
+        "action": "Click ⋮ → 'Simulate Final Payment' on 'Business Interruption: Machinery Sales' (SEC-002) without clearing blockers.",
         "expectedResult": "Error toast fires with blocker details; SEC-002 remains Open"
       },
-      "devNotes": "autoCloseSection() filters blockers excluding 'payments' type \u2192 finds litigation + reserves blockers still present \u2192 returns throwError() with blocker labels \u2192 catchError in onSimulateFinalPayment() fires toast.error('Simulate Final Payment failed', err.message). closeSection() is never called."
+      "devNotes": "autoCloseSection() filters blockers excluding 'payments' type → finds litigation + reserves blockers still present → returns throwError() with blocker labels → catchError in onSimulateFinalPayment() fires toast.error('Simulate Final Payment failed', err.message). closeSection() is never called."
     }
   ],
   "deviations": [],
@@ -179,5 +179,5 @@
     "src/app/core/mock/data/sections.json",
     "src/app/core/mock/data/payments.json"
   ],
-  "notes": "PaymentEventListenerService (external BC event subscription) is out of prototype scope. The full auto-close chain is implemented and testable via dev context menu ('Simulate Final Payment'). Retention date formula: closureDate + 10 years, implemented in defaultRetentionDate() in claim-closure.service.ts. Demo section: SEC-008 ('Section 004 \u2014 Payment Demo'), demo payment: PAY-005. Loss event LE98765432 auto-closes if all linked claims are Closed."
+  "notes": "PaymentEventListenerService (external BC event subscription) is out of prototype scope. The full auto-close chain is implemented and testable via dev context menu ('Simulate Final Payment'). Retention date formula: closureDate + 10 years, implemented in defaultRetentionDate() in claim-closure.service.ts. Demo section: SEC-008 ('Section 004: Payment Demo'), demo payment: PAY-005. Loss event LE98765432 auto-closes if all linked claims are Closed."
 }

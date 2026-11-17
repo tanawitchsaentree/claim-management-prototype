@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG booking failed on Claim Overview: message and retry",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "overview"
-  ],
+  "pages": ["overview"],
   "walkthroughSteps": [
     "Claim event and section events each get their own message on Claim Overview, with the failure text from Global Genius.",
     "Retry is on the message itself, for the claim and for each section. The row changes at once, a toast and the bell say how it went.",
@@ -16,7 +14,7 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Claim booking failed: message with the Global Genius failure text",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.\n\n**Decision:** Global Genius's own message is shown under our plain-language line, labelled \"Message from Global Genius\", so the handler can quote it to Finance but still reads first what it means for them (DESIGN DECISION GG-MSG-1).",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.\n\n**Decision:** Global Genius's own message is shown under our plain-language line, labelled \"Message from Global Genius\", so the handler can quote it to Finance but still reads first what it means for them (DESIGN DECISION GG-MSG-1).\n\n**NOTE [accepted-deviation]:** Jira says nothing about the banner wording. Saying payments and reserves are \"on hold\" is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -121,7 +119,7 @@
     {
       "id": "AC-03",
       "statement": "AC02 · Retry the claim event: feedback, then it fails again",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red claim banner as AC-01.\n\n**Try:** Press **Retry setting up this claim in Global Genius**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red claim banner as AC-01.\n\n**Try:** Press **Retry setting up this claim in Global Genius**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again.\n\n**NOTE [accepted-deviation]:** Jira does not say who may retry. The prototype lets anyone who opens the claim press Retry. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -152,9 +150,7 @@
       },
       "expectedUI": {
         "description": "Same red claim banner as AC-01.",
-        "visualCues": [
-          "Same red claim banner as AC-01."
-        ]
+        "visualCues": ["Same red claim banner as AC-01."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -272,7 +268,7 @@
     {
       "id": "AC-06",
       "statement": "Repeated failures: retried twice, now with Finance",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".\n\n**Decision (epic open point: repeated failures):** after two failed retries the handler can't usefully retry again, so the button goes and Finance owns it. Same rule as the claim event (GG-2).",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".\n\n**Decision (epic open point: repeated failures):** after two failed retries the handler can't usefully retry again, so the button goes and Finance owns it. Same rule as the claim event (GG-2).\n\n**NOTE [accepted-deviation]:** The epic leaves repeated failures as an open point. The prototype decides two retries, then the item goes to Finance with no Retry button. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -369,9 +365,7 @@
       },
       "expectedUI": {
         "description": "Only the red claim banner. The two failed sections are **not** listed yet.",
-        "visualCues": [
-          "Only the red claim banner. The two failed sections are **not** listed yet."
-        ]
+        "visualCues": ["Only the red claim banner. The two failed sections are **not** listed yet."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",

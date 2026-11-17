@@ -5,7 +5,7 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["sections"],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/sections",
+    "Source: BMPCC-14629. Navigate to /claims/CLM-2024-001/sections",
     {
       "targetId": "sections-sec001-kebab",
       "title": "Close Section",
@@ -21,7 +21,7 @@
     {
       "targetId": "scm-checklist",
       "title": "Pre-closure Checklist",
-      "body": "With no blockers, the modal skips straight here, 6 system-validated conditions. Continue stays disabled until every one shows green.",
+      "body": "With no blockers, the popup skips straight here: 6 system-validated conditions, all green. Nothing is ticked by hand; Continue is enabled.",
       "direction": "top"
     },
     {
@@ -37,7 +37,7 @@
     {
       "id": "AC-01",
       "statement": "Close Section button is present on the Section page",
-      "plainStatement": "A **Close Section** action is present in the section context menu (⋮). It is `disabled`, with tooltip: when the section is already `Closed`; enabled when `Open`.",
+      "plainStatement": "Source: BMPCC-14629.\n\nA **Close section** action is in the section menu (⋮). It is enabled when the section is `Open` and greyed out (no tooltip) when the section is already `Closed` or the claim is closed; a closed section shows **Reopen section** instead.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -49,7 +49,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Any Closed section shows 'Close Section' disabled with tooltip 'Section already closed'",
+            "text": "Any Closed section shows 'Close section' greyed out and offers 'Reopen section'",
             "page": "sections",
             "role": "tested-visible"
           }
@@ -59,8 +59,8 @@
       "expectedUI": {
         "description": "Close Section is accessible on the context menu of every Open section",
         "visualCues": [
-          "SEC-001 row: ⋮ menu → 'Close Section' is clickable",
-          "SEC-002 row (Closed): ⋮ menu → 'Close Section' is greyed out with tooltip 'Section already closed'"
+          "SEC-001 row: ⋮ menu, 'Close section' is clickable",
+          "Closed section row: ⋮ menu, 'Close section' is greyed out and 'Reopen section' is offered"
         ]
       },
       "expectedOutcome": {
@@ -71,13 +71,13 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
         "trigger": "Click ⋮ on 'Property Damage: Warehouse & Forklift' (SEC-001) and 'Business Interruption: Machinery Sales' (SEC-002)",
-        "expectedResult": "SEC-001: Close Section enabled. SEC-002 (Closed): Close Section disabled with tooltip."
+        "expectedResult": "SEC-001: Close section enabled. Closed section: Close section greyed out, Reopen section offered."
       }
     },
     {
       "id": "AC-02",
       "statement": "Hard blockers prevent closure: all items listed in modal step 1",
-      "plainStatement": "Clicking **Close Section** on a section with hard blockers opens the modal at **Step 1, Blockers**. All blocking items are listed. The handler cannot proceed: only Cancel is available in the footer.",
+      "plainStatement": "Clicking **Close Section** on a section with hard blockers opens the modal at **Step 1, Blockers**. All blocking items are listed. The handler cannot proceed: only Cancel is available in the footer.\n\n**NOTE [accepted-deviation]:** BMPCC-14629 says Close section stays disabled until the blockers are resolved, and the attempt is logged. The screen differs from Jira: Close section is always clickable, opens the popup on the blocker list, and nothing is logged. Pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -144,7 +144,7 @@
     {
       "id": "AC-03",
       "statement": "All 7 hard blockers are individually recognised",
-      "plainStatement": "Each of the 7 hard blocker types produces a distinct row in the modal when set. All 7 flags together produce 7 rows.",
+      "plainStatement": "Each of the 7 hard blocker types produces a distinct row in the modal when set. All 7 flags together produce 7 rows.\n\n**NOTE [accepted-deviation]:** The blocker list in BMPCC-14629 differs from the 7 blockers built here. The screen differs from Jira, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -213,7 +213,7 @@
     {
       "id": "AC-04",
       "statement": "No blockers: modal proceeds to pre-closure checklist then reason",
-      "plainStatement": "When **no blockers** exist the modal **skips step 1** and opens at **Step 2, Pre-closure Checklist**. The handler must tick all 5 items to enable Continue, then select a mandatory closure reason on step 3.",
+      "plainStatement": "When **no blockers** exist the popup **skips step 1** and opens at **Step 2, Close Section: Pre-closure Checklist**: 6 system-checked rows, all green. Nothing is ticked by hand. **Continue** leads to step 3, where a closure reason is required.\n\n**NOTE [accepted-deviation]:** Jira lists closure reasons only for the claim. The section reasons Section Finalised, Section Not Pursued and Section Rejected are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -225,7 +225,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Continue is disabled until all 5 checkboxes are ticked",
+            "text": "All 6 checklist rows are green and Continue is enabled",
             "page": "sections",
             "role": "tested-visible"
           },
@@ -252,11 +252,11 @@
       "expectedUI": {
         "description": "Step 2 checklist, then step 3 reason dropdown; no blocker step shown",
         "visualCues": [
-          "Modal title: 'Close Section: Pre-closure Checklist'",
-          "5 checkboxes: all pre-checked by default",
-          "Untick any item → Continue becomes disabled",
+          "Popup title: 'Close Section: Pre-closure Checklist'",
+          "6 system-checked rows with green icons, no checkboxes",
+          "Continue enabled",
           "Step 3: 'Closure reason' dropdown required (Section Finalised / Section Not Pursued / Section Rejected)",
-          "Close Section button disabled until reason selected"
+          "Close Section button disabled until a reason is picked"
         ]
       },
       "expectedOutcome": {
@@ -278,7 +278,7 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
         "trigger": "Click ⋮ → Close Section on 'Property Damage: Warehouse & Forklift' (SEC-001)",
-        "expectedResult": "Modal opens at checklist (step 2); Continue disabled if any checkbox unticked; step 3 requires reason"
+        "expectedResult": "Popup opens at the checklist (step 2) with all rows green; step 3 requires a reason"
       }
     },
     {
@@ -325,7 +325,7 @@
         "visualCues": [
           "SEC-001 row status chip → 'Closed' (grey)",
           "Toast success: 'Section SEC-001 closed' with closure reason subtitle",
-          "Close Section context menu item now disabled with tooltip 'Section already closed'",
+          "Close section menu item now greyed out; Reopen section offered",
           "If last open section → app navigates to /claims/CLM-2024-001/overview"
         ]
       },
@@ -347,7 +347,7 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",
-        "trigger": "Complete the 3-step modal (no blockers → checklist all ticked → reason 'Section Finalised') and click Close Section",
+        "trigger": "Complete the popup (no blockers, checklist all green, reason 'Section Finalised') and click Close Section",
         "expectedResult": "SEC-001 chip → Closed; toast fires; closureDate set to today; if last open section, nav to overview"
       }
     }

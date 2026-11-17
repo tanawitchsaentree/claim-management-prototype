@@ -304,7 +304,8 @@ This keeps the ticket testable while documenting the gap. Search for `[accepted-
 
 ### `bmpcc-219.json` — FNOL with CWB MFE
 
-- 5 ACs, all `done`
+- Rewritten 2026-11-17 to the real Jira BMPCC-219 ("Date attribute"): AC-01 partial, AC-02 and AC-06 todo, AC-07 done
+- The 5 CWB ACs stay as CWB-01 to CWB-05, labelled "Not from BMPCC-219" (no Jira source for the CWB lookup)
 - Uses `cwbLocationsAppend` + `fnolStateOverride.selectedPolicy`
 - Demonstrates: external-system simulation as a modal styled with "External system" badge — no real iframe / MFE / module-federation
 - Modal: `src/app/shared/components/cwb-location-search-modal/`

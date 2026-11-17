@@ -4,10 +4,7 @@
   "module": "Claims",
   "title": "Large Loss Heads-Up: notification, manual start, form",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "overview",
-    "heads-up"
-  ],
+  "pages": ["overview", "heads-up"],
   "walkthroughSteps": [
     "Claim Overview has a Large loss Heads-Up card: create one (any amount), continue a draft, or view the submitted one.",
     "When incurred reaches 1M the system makes a draft and the bell says so, once. If a Heads-Up already exists, only a notice.",
@@ -113,9 +110,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -160,7 +155,7 @@
     {
       "id": "AC-03",
       "statement": "AC5 · Below 1M: create a Heads-Up by hand, no amount check",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, incurred 125,000 EUR.\n\n**You see:** Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**.\n\n**Try:** Press it: a dialog asks why (tick one or more: May reach 1M, Public interest, High publicity, ...) with an optional note. Nothing ticked + Create shows \"Tick at least one reason\". Tick one, **Create draft Heads-Up**: a green toast and the form opens, filled in from the claim.\n\n**Decision (open questions 2 and 8):** the way in is a card on Claim Overview; the handler can tick several reasons, each with a one-line hint so the boundaries are clear (DESIGN DECISION HU-1).",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, incurred 125,000 EUR.\n\n**You see:** Card: \"No Heads-Up for this claim. Incurred is 125,000 EUR.\" and **Create Heads-Up**.\n\n**Try:** Press it: a dialog asks why (tick one or more: May reach 1M, Public interest, High publicity, ...) with an optional note. Nothing ticked + Create shows \"Tick at least one reason\". Tick one, **Create draft Heads-Up**: a green toast and the form opens, filled in from the claim.\n\n**Decision (open questions 2 and 8):** the way in is a card on Claim Overview; the handler can tick several reasons, each with a one-line hint so the boundaries are clear (DESIGN DECISION HU-1).\n\n**NOTE [accepted-deviation]:** Jira open question 2 asks: \"Does the handler pick one non-financial category or several ...? Are the category boundaries shown to the handler (help text)?\" and question 8 asks where the entry point lives. The prototype decides several reasons, each with its own one-line definition, and a card on Claim Overview (HU-1). Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -198,7 +193,7 @@
     {
       "id": "AC-04",
       "statement": "AC3 · Pre-filled values: shown, editable, clear where they came from",
-      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** \"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**.\n\n**Try:** Change any value: its hint turns to \"Changed by you\" and the button appears. Press **Use the claim value**: it goes back.\n\n**Decision:** the pre-fill is a snapshot from when the Heads-Up was made; later claim changes don't touch it (story rule). Labels OE / LOE / IIP / ART share / AZRe kept as the business wrote them until KCM says what to spell out.",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** \"From the claim\" section in three groups (Loss, Policy, Financial data). Every value is in an input. Under each: \"From the claim\". Cause of loss says \"Changed by you. Claim value: Fire\" with **Use the claim value**.\n\n**Try:** Change any value: its hint turns to \"Changed by you\" and the button appears. Press **Use the claim value**: it goes back.\n\n**Decision:** the pre-fill is a snapshot from when the Heads-Up was made; later claim changes don't touch it (story rule). Labels OE / LOE / IIP / ART share / AZRe kept as the business wrote them until KCM says what to spell out.\n\n**NOTE [accepted-deviation]:** Jira open questions 6 and 7 ask which pre-filled values can be missing and what OE, LOE, IIP, ART share, AZRe, Cat mean. The prototype decides the pre-fill is a snapshot and keeps the labels as written. Not in Jira, pending product sign-off.",
       "page": "heads-up",
       "buildStatus": "done",
       "setup": {
@@ -218,9 +213,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -257,7 +250,7 @@
     {
       "id": "AC-05",
       "statement": "AC4 · Your assessment: Yes/No, four texts with counter, validation",
-      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001 (a fresh draft).\n\n**You see:** \"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\"\n\n**Try:** Press **Submit Heads-Up** without filling anything: a red message at the top lists the fields to fill (Cat event, Multiple LOBs affected, Loss, Rationale, Strategy), each field shows its own error. Fill them and submit again: a confirm, then the green toast.\n\n**Decision (open questions 1 and 4):** needed before submit: Cat, Multiple LOBs, Loss, Rationale, Strategy and the main claim facts; Policy structure is optional. 4000 characters is the limit, plain text. **Save draft** works with gaps. Same rules for every LoB until KCM says otherwise.",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001 (a fresh draft).\n\n**You see:** \"Your assessment\": Cat event and Multiple LOBs affected as Yes/No (nothing ticked), then Loss, Policy structure, Rationale for loss estimation, Strategy / next steps, each with a hint and a 0/4000 counter. Attachments: \"No attachments yet.\"\n\n**Try:** Press **Submit Heads-Up** without filling anything: a red message at the top lists the fields to fill (Cat event, Multiple LOBs affected, Loss, Rationale, Strategy), each field shows its own error. Fill them and submit again: a confirm, then the green toast.\n\n**Decision (open questions 1 and 4):** needed before submit: Cat, Multiple LOBs, Loss, Rationale, Strategy and the main claim facts; Policy structure is optional. 4000 characters is the limit, plain text. **Save draft** works with gaps. Same rules for every LoB until KCM says otherwise.\n\n**NOTE [accepted-deviation]:** Jira open questions 1 and 4 ask which fields are required and whether 4000 characters is a minimum or a limit. The prototype decides the required fields and a 4000 character limit, the same for every LoB. Not in Jira, pending product sign-off.",
       "page": "heads-up",
       "buildStatus": "done",
       "setup": {
@@ -277,9 +270,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -334,9 +325,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -392,9 +381,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-003",
                 "origin": "manual",
-                "reasons": [
-                  "potential-large-loss"
-                ],
+                "reasons": ["potential-large-loss"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -429,7 +416,7 @@
     {
       "id": "AC-08",
       "statement": "AC6 · Save fails: error, nothing lost, try again",
-      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001 with the texts filled in.\n\n**You see:** A draft with all four texts written.\n\n**Try:** Press **Save draft**, confirm: a red message \"Couldn't save the Heads-Up. Your changes are still here.\" and a red toast. Press **Save draft** again: it saves, green toast \"Draft saved\", and the line under the title says \"Last saved ...\".",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001 with the texts filled in.\n\n**You see:** A draft with all four texts written.\n\n**Try:** Press **Save draft**, confirm: a red message \"Couldn't save the Heads-Up. Your changes are still here.\" and a red toast. Press **Save draft** again: it saves, green toast \"Draft saved\", and the line under the title says \"Last saved ...\".\n\n**NOTE [accepted-deviation]:** Jira says nothing about confirming a save. The confirm step before Save draft is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "heads-up",
       "buildStatus": "done",
       "setup": {
@@ -449,9 +436,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -476,9 +461,7 @@
       },
       "expectedUI": {
         "description": "A draft with all four texts written.",
-        "visualCues": [
-          "A draft with all four texts written."
-        ]
+        "visualCues": ["A draft with all four texts written."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/heads-up",
@@ -492,7 +475,7 @@
     {
       "id": "AC-09",
       "statement": "AC4 · Attachments: list, mock upload, failed upload",
-      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**.\n\n**Try:** Try again: \"Uploading\" with a spinner, then done. Upload a PDF: it shows Uploading, then is listed. A file over 25 MB or of another type is refused with a message. Remove with the x.\n\n**Decision (open question 5):** PDF, Word, Excel, Outlook mail, JPG, PNG; up to 25 MB each, 10 files at most. Placeholders until the Document service sets the real limits.",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001.\n\n**You see:** Attachments list: \"Loss adjuster report - initial.pdf\" (from the claim) and \"Fire brigade report.pdf\" marked **Upload failed** with **Try again**. Below: **Upload files** and the claim's other documents with **Add**.\n\n**Try:** Try again: \"Uploading\" with a spinner, then done. Upload a PDF: it shows Uploading, then is listed. A file over 25 MB or of another type is refused with a message. Remove with the x.\n\n**Decision (open question 5):** PDF, Word, Excel, Outlook mail, JPG, PNG; up to 25 MB each, 10 files at most. Placeholders until the Document service sets the real limits.\n\n**NOTE [accepted-deviation]:** Jira open question 5 asks for \"allowed file types, size and number limits\". The prototype decides PDF, Word, Excel, Outlook mail, JPG, PNG, 25 MB each, 10 files at most. Not in Jira, pending product sign-off.",
       "page": "heads-up",
       "buildStatus": "done",
       "setup": {
@@ -512,9 +495,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -564,7 +545,7 @@
     {
       "id": "AC-10",
       "statement": "AC1 · After submission: read-only view",
-      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001, submitted.\n\n**You see:** Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**.\n\n**Decision (open question 3):** read-only after submit. Later news goes to Key Case Management rather than into a referral they have already read.",
+      "plainStatement": "**Opens:** Heads-Up form of CLM-2024-001, submitted.\n\n**You see:** Green \"Key Case Management has this Heads-Up. It can't be changed here any more.\" Every value is shown as text (no inputs, no footer buttons); a changed value says \"Changed. Claim value: ...\". On Claim Overview the card says Submitted with **View Heads-Up**.\n\n**Decision (open question 3):** read-only after submit. Later news goes to Key Case Management rather than into a referral they have already read.\n\n**NOTE [accepted-deviation]:** Jira open question 3 asks: \"Can a Heads-Up be edited after submission, by whom, and which fields lock?\" The prototype decides it is read-only after submit. Not in Jira, pending product sign-off.",
       "page": "heads-up",
       "buildStatus": "done",
       "setup": {
@@ -591,9 +572,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "submitted",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
@@ -669,9 +648,7 @@
               "headsUp": {
                 "id": "HU-CLM-2024-001",
                 "origin": "manual",
-                "reasons": [
-                  "high-publicity"
-                ],
+                "reasons": ["high-publicity"],
                 "status": "draft",
                 "createdAt": "2026-11-10T09:12:00.000Z",
                 "createdBy": "Mara Mustermann",
