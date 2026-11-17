@@ -17,6 +17,8 @@ import { NxContextMenuModule } from '@allianz/ng-aquila/context-menu';
 import { StatusChipComponent } from '../../../shared/components/status-chip/status-chip.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
+import { ClaimPreviewDirective } from '../../../shared/directives/claim-preview.directive';
 import { CaseFlagKind, ManagedCase } from '../../../core/models/team.model';
 import { CaseSortKey, sortCases } from './manager-cases.builder';
 
@@ -48,7 +50,9 @@ const PAGE = 8;
     NxTooltipModule,
     StatusChipComponent,
     EmptyStateComponent,
-    AppDatePipe
+    AppDatePipe,
+    ClaimNumberPipe,
+    ClaimPreviewDirective
   ],
   templateUrl: './manager-case-table.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

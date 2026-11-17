@@ -1,6 +1,10 @@
-// BLESSED: list layout inside the same nx-message banner as gg-registration-banner.
-// Same spacing as the claim-level GG banner directly above it.
-.gsb-banner {
+// BLESSED: one nx-message per item, stacked like financial-warnings.component.scss
+// (.fw-list); inner layout copies gg-registration-banner.component.scss (.ggb-*),
+// the claim-level GG banner directly above it.
+.gsb-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
   margin-bottom: var(--space-lg);
 }
 
@@ -9,51 +13,18 @@
   margin-top: var(--space-xs);
 }
 
-.gsb-list {
-  list-style: none;
-  margin: var(--space-md) 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
+.gsb-action {
+  display: block;
+  margin-top: var(--space-md);
 }
 
-.gsb-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-xl);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--ui-04);
-}
-
-.gsb-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  min-width: 0;
-}
-
-.gsb-name {
-  font-weight: 600;
-}
-
-.gsb-gg,
-.gsb-hint {
+// GG's own words, kept apart from our plain-language line (BMPCC-22661 AC01).
+.gsb-gg-message {
+  display: block;
+  margin-top: var(--space-xs);
   font-size: var(--paragraph-03-font-size);
 }
 
 .gsb-gg-label {
   font-weight: 600;
-}
-
-.gsb-action,
-.gsb-busy {
-  flex-shrink: 0;
-}
-
-.gsb-busy {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-sm);
 }

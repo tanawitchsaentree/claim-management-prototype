@@ -8,40 +8,6 @@
   margin-bottom: var(--space-base);
 }
 
-// Copied from the KCM KPI row (widgets/kpi-row.ts) so the tiles look the same.
-.kpi-row {
-  display: flex;
-  gap: var(--space-base);
-  margin-bottom: var(--space-base);
-}
-
-.kpi-tile {
-  flex: 1;
-  cursor: pointer;
-
-  &:focus-visible {
-    outline: 2px solid var(--interactive-primary);
-    outline-offset: 2px;
-  }
-}
-
-.kpi-value,
-.kpi-label {
-  display: block;
-}
-
-.kpi-value {
-  font-size: var(--display-l-font-size);
-  font-weight: 700;
-  color: var(--text-01);
-  line-height: 1;
-}
-
-.kpi-label {
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-}
-
 .mgr-title {
   margin: 0;
   display: flex;
@@ -64,10 +30,4 @@
 
 .mgr-updated {
   font-size: var(--paragraph-04-font-size);
-}
-
-@media (max-width: 1024px) {
-  .kpi-row {
-    flex-direction: column;
-  }
 }

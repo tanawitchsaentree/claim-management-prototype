@@ -22,6 +22,13 @@ export interface FinancialSummary {
   incurred: number;
 }
 
+/** One card of app-fo-claim-summary. `count` shows the value as a plain number, not money. */
+export interface SummaryKpi {
+  label: string;
+  value: number;
+  count?: boolean;
+}
+
 export interface FinancialDetailRow {
   label: string;
   gross: number;

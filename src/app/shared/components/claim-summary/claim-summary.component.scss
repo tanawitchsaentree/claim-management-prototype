@@ -1,0 +1,26 @@
+// Cards are nx-card (own padding, border, radius); only the row layout and
+// the label / value type live here.
+.fo-kpis {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.fo-kpi-label,
+.fo-kpi-value {
+  display: block;
+  line-height: 1.3;
+}
+
+.fo-kpi-label {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.fo-kpi-value {
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}

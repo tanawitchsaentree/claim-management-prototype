@@ -1,7 +1,6 @@
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockBookingService } from '../../../core/mock/services/mock-booking.service';
 import {
@@ -14,22 +13,42 @@ import {
 interface SectionRow {
   booking: GgSectionBooking;
   name: string;
+  title: string;
+  body: string;
   hint: string;
   canRetry: boolean;
   retrying: boolean;
 }
 
-// BMPCC-22661: failed section bookings on Claim Overview, one message for all
-// of them (a stack of banners per section would push the claim off screen).
-// Sits right under the claim-level GG banner and uses the same nx-message, so
-// "something is wrong in Global Genius" always looks the same on this page.
+const ON_HOLD = 'Payments and reserves on this section are not in the books until the booking goes through.';
+
+// Same wording rules as the claim-level banner (gg-claim-registration.model.ts).
+function messageFor(b: GgSectionBooking, name: string): Pick<SectionRow, 'title' | 'body' | 'hint'> {
+  if (b.status === 'retrying') {
+    return {
+      title: `Retrying: booking ${name} in Global Genius`,
+      body: "Your retry has been sent. This usually takes a few seconds. We'll tell you if it works or not.",
+      hint: ''
+    };
+  }
+  const title = sectionWithFinance(b)
+    ? `${name} still couldn't be booked in Global Genius: now with Finance`
+    : `${name} couldn't be booked in Global Genius`;
+  return { title, body: ON_HOLD, hint: sectionBookingHint(b) };
+}
+
+// BMPCC-22661: failed section bookings on Claim Overview, one nx-message per
+// section (the financial-warnings pattern). Sits right under the claim-level
+// GG banner and uses the same nx-message layout, and a retry in flight reads
+// the claim-level way (info message titled "Retrying: ..."), so "something is
+// wrong in Global Genius" always looks the same on this page.
 // Reads the claim's live state (not the page's view model) so a retry in
 // flight survives the Claim Overview reload. See DESIGN DECISION GG-SEC-1 in
 // gg-section-booking.model.ts.
 @Component({
   selector: 'app-gg-section-booking-banner',
   standalone: true,
-  imports: [NxMessageModule, NxButtonModule, NxSpinnerModule],
+  imports: [NxMessageModule, NxButtonModule],
   templateUrl: './gg-section-booking-banner.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './gg-section-booking-banner.component.scss'
@@ -50,28 +69,10 @@ export class GgSectionBookingBannerComponent {
     const sections = this.stateSvc.state().sections;
     return (claim.ggSectionBookings ?? [])
       .filter(b => b.status !== 'booked')
-      .map(b => ({
-        booking: b,
-        name: sections.find(s => s.id === b.sectionId)?.name ?? b.sectionId,
-        hint: sectionBookingHint(b),
-        canRetry: sectionCanRetry(b),
-        retrying: b.status === 'retrying'
-      }));
-  });
-
-  // Error while any section still needs the handler or Finance; info while
-  // every remaining one is only retrying.
-  readonly context = computed(() => (this.rows().some(r => !r.retrying) ? 'error' : 'info'));
-
-  readonly title = computed(() => {
-    const rows = this.rows();
-    const n = rows.length;
-    const count = n === 1 ? '1 section' : `${n} sections`;
-    if (rows.every(r => r.retrying)) return `Retrying ${count} in Global Genius`;
-    if (rows.every(r => sectionWithFinance(r.booking))) {
-      return `${count} still couldn't be booked in Global Genius: now with Finance`;
-    }
-    return `${count} couldn't be booked in Global Genius`;
+      .map(b => {
+        const name = sections.find(s => s.id === b.sectionId)?.name ?? b.sectionId;
+        return { booking: b, name, ...messageFor(b, name), canRetry: sectionCanRetry(b), retrying: b.status === 'retrying' };
+      });
   });
 
   retry(sectionId: string): void {

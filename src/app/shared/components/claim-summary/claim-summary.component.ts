@@ -1,22 +1,31 @@
 import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { FinancialSummary } from '../../../../../core/models/financial-overview.model';
+import { NxCardModule } from '@allianz/ng-aquila/card';
+import { FinancialSummary, SummaryKpi } from '../../../core/models/financial-overview.model';
 
-/** The five KPI cards of the claim-level overview. The "Financial details" table is app-fo-financial-details-table. */
+/**
+ * Row of summary cards. Financial overview passes `summary` (its five claim-level
+ * figures); other pages (Recoveries) pass their own `items`.
+ * The "Financial details" table is app-fo-financial-details-table.
+ */
 @Component({
   selector: 'app-fo-claim-summary',
   standalone: true,
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, NxCardModule],
   templateUrl: './claim-summary.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-summary.component.scss'
 })
 export class ClaimSummaryComponent {
-  readonly summary = input.required<FinancialSummary>();
+  readonly summary = input<FinancialSummary>();
+  readonly items = input<SummaryKpi[]>();
   readonly currency = input('EUR');
 
-  readonly kpis = computed(() => {
+  readonly kpis = computed<SummaryKpi[]>(() => {
+    const items = this.items();
+    if (items) return items;
     const s = this.summary();
+    if (!s) return [];
     return [
       { label: 'Outstanding reserves', value: s.outstandingReserves },
       { label: 'Completed payments', value: s.completedPayments },

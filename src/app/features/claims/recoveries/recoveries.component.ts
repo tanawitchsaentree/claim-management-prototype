@@ -27,7 +27,8 @@ import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { MockFinancialOverviewService } from '../../../core/mock/services/mock-financial-overview.service';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
-import { FinancialRecovery } from '../../../core/models/financial-overview.model';
+import { FinancialRecovery, SummaryKpi } from '../../../core/models/financial-overview.model';
+import { ClaimSummaryComponent } from '../../../shared/components/claim-summary/claim-summary.component';
 import { RecoveryBookingsTableComponent } from '../../../shared/components/recovery-bookings-table/recovery-bookings-table.component';
 import { scrollToRow } from '../../../shared/utils/scroll-to-row';
 import { MockRecoveryService } from '../../../core/mock/services/mock-recovery.service';
@@ -97,7 +98,8 @@ interface RecoveryGuidance {
     StatusChipComponent,
     AppDatePipe,
     BlockerReturnBannerComponent,
-    RecoveryBookingsTableComponent
+    RecoveryBookingsTableComponent,
+    ClaimSummaryComponent
   ],
   templateUrl: './recoveries.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -172,6 +174,11 @@ export class RecoveriesComponent implements OnInit {
   readonly recoveredTotal = computed(() =>
     this.rows().reduce((sum, c) => sum + c.recoveredAmount, 0)
   );
+  readonly summaryItems = computed<SummaryKpi[]>(() => [
+    { label: 'Open cases', value: this.openCount(), count: true },
+    { label: 'Expected from open cases', value: this.expectedTotal() },
+    { label: 'Recovered to date', value: this.recoveredTotal() }
+  ]);
 
   async ngOnInit(): Promise<void> {
     // The route is `claims/:id/recoveries`, so :id is on THIS route. Reading it from

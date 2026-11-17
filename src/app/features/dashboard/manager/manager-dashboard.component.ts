@@ -15,7 +15,6 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxCardModule } from '@allianz/ng-aquila/card';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { Navbar } from '../../layout/navbar/navbar';
@@ -23,6 +22,8 @@ import { AuthService } from '../../../core/services/auth';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
 import { MockTeamService } from '../../../core/mock/services/mock-team.service';
 import { ManagedCase } from '../../../core/models/team.model';
+import { KpiTile } from '../../../core/models';
+import { KpiRowComponent } from '../widgets/kpi-row';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import {
@@ -53,7 +54,7 @@ const LOAD_MS = 500;
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    NxCardModule,
+    KpiRowComponent,
     EmptyStateComponent,
     AppDatePipe,
     ManagerCaseTableComponent,
@@ -125,6 +126,17 @@ export class ManagerDashboardComponent {
     };
   });
 
+  readonly kpiTiles = computed<KpiTile[]>(() => {
+    const c = this.counts();
+    return [
+      { key: 'all', value: c.open, label: 'Open team claims', icon: 'product-board-paper-note' },
+      { key: 'any', value: c.flagged, label: 'Need attention', icon: 'product-important-info' },
+      { key: 'overdue', value: c.overdue, label: 'Overdue', icon: 'product-clock' },
+      { key: 'high-value', value: c.highValue, label: 'High value', icon: 'product-coins-money' },
+      { key: 'review', value: c.review, label: 'For review', icon: 'product-check-paper' }
+    ];
+  });
+
   // Filters live in the URL so Back from a claim returns to the same view.
   private readonly params = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap
@@ -183,8 +195,8 @@ export class ManagerDashboardComponent {
     });
   }
 
-  showFlag(flag: TeamFilters['flag']): void {
-    this.setFilters({ member: null, status: 'Open', flag });
+  showFlag(key: string): void {
+    this.setFilters({ member: null, status: 'Open', flag: key as TeamFilters['flag'] });
     document.getElementById('mgr-team')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 

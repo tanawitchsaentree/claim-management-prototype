@@ -1,32 +1,30 @@
 @if (rows().length) {
-  <nx-message [context]="context()" class="gsb-banner">
-    <strong>{{ title() }}</strong>
-    <span class="gsb-body">Payments and reserves on these sections are not in the books until the booking goes through.</span>
-    <ul class="gsb-list">
-      @for (r of rows(); track r.booking.sectionId) {
-        <li class="gsb-row">
-          <div class="gsb-text">
-            <span class="gsb-name">{{ r.name }}</span>
-            @if (r.booking.failureMessage && !r.retrying) {
-              <span class="gsb-gg"><span class="gsb-gg-label">Message from Global Genius:</span> {{ r.booking.failureMessage }}</span>
-            }
-            <span class="gsb-hint">{{ r.hint }}</span>
-          </div>
-          @if (r.retrying) {
-            <span class="gsb-busy" role="status"><nx-spinner size="small"></nx-spinner> Retrying</span>
-          } @else if (r.canRetry) {
-            <button
-              nxButton="secondary small"
-              type="button"
-              class="gsb-action"
-              [attr.aria-label]="'Retry booking for ' + r.name"
-              (click)="retry(r.booking.sectionId)"
-            >
-              Retry booking
-            </button>
-          }
-        </li>
-      }
-    </ul>
-  </nx-message>
+  <!-- One nx-message per section, laid out like the claim-level banner
+       (gg-registration-banner.component.html) and stacked like
+       financial-warnings.component.html. -->
+  <div class="gsb-list" role="region" aria-label="Section bookings in Global Genius">
+    @for (r of rows(); track r.booking.sectionId) {
+      <nx-message [context]="r.retrying ? 'info' : 'error'">
+        <strong>{{ r.title }}</strong>
+        <span class="gsb-body">{{ r.body }}</span>
+        @if (r.booking.failureMessage && !r.retrying) {
+          <span class="gsb-gg-message"><span class="gsb-gg-label">Message from Global Genius:</span> {{ r.booking.failureMessage }}</span>
+        }
+        @if (r.hint) {
+          <span class="gsb-body">{{ r.hint }}</span>
+        }
+        @if (r.canRetry) {
+          <button
+            nxButton="secondary small"
+            type="button"
+            class="gsb-action"
+            [attr.aria-label]="'Retry booking for ' + r.name"
+            (click)="retry(r.booking.sectionId)"
+          >
+            Retry booking
+          </button>
+        }
+      </nx-message>
+    }
+  </div>
 }

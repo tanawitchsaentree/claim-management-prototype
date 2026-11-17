@@ -1,9 +1,0 @@
-<!-- audit-exempt: always has the fixed Insured / Reserve / Payments / Recoveries rows -->
-<div class="fo-kpis">
-  @for (kpi of kpis(); track kpi.label) {
-    <div class="fo-kpi-card">
-      <span class="fo-kpi-label">{{ kpi.label }}</span>
-      <span class="fo-kpi-value">{{ kpi.value | currency: currency() : 'symbol' : '1.0-0' }}</span>
-    </div>
-  }
-</div>

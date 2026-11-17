@@ -1,0 +1,12 @@
+<!-- audit-exempt: always has fixed KPI cards (Financial overview: 5, Recoveries: 3) -->
+<!-- nx-card tiles, same as the KCM KPI row (features/dashboard/widgets/kpi-row.ts). -->
+<div class="fo-kpis">
+  @for (kpi of kpis(); track kpi.label) {
+    <nx-card class="fo-kpi-card">
+      <span class="fo-kpi-label">{{ kpi.label }}</span>
+      <span class="fo-kpi-value">{{
+        kpi.count ? kpi.value : (kpi.value | currency: currency() : 'symbol' : '1.0-0')
+      }}</span>
+    </nx-card>
+  }
+</div>

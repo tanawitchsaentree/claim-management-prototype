@@ -42,7 +42,7 @@ import { scrollToRow } from '../../../shared/utils/scroll-to-row';
 import { GgClaimRegistration } from '../../../core/models/gg-booking.model';
 import { FinancialDetailsTableComponent } from './components/financial-details-table/financial-details-table.component';
 import { NxAccordionModule } from '@allianz/ng-aquila/accordion';
-import { ClaimSummaryComponent } from './components/claim-summary/claim-summary.component';
+import { ClaimSummaryComponent } from '../../../shared/components/claim-summary/claim-summary.component';
 import { PaymentsTableComponent } from './components/payments-table/payments-table.component';
 import { ReservesTableComponent } from './components/reserves-table/reserves-table.component';
 import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';

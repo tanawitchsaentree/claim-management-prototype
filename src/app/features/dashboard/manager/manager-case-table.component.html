@@ -29,9 +29,12 @@
         @for (mc of visible(); track mc.claim.claimId) {
           <tr nxTableRow>
             <td nxCell class="dash-col--nowrap">
-              <a class="text-link" [routerLink]="['/claims', mc.claim.claimId, 'overview']">{{
-                mc.claim.claimId
-              }}</a>
+              <a
+                class="text-link"
+                [routerLink]="['/claims', mc.claim.claimId, 'overview']"
+                [appClaimPreview]="mc.claim.claimId"
+                >{{ mc.claim.claimId | claimNumber }}</a
+              >
               <!-- Status column dropped for width: almost every row is Open, so only
                    a closed claim carries a chip. -->
               @if (mc.claim.status === 'Closed') {

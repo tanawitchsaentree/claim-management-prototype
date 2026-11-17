@@ -59,25 +59,31 @@
     </table>
   </div>
 
+  <!-- Same header + filter row as the Claims portfolio widget
+       (claims-portfolio-widget.component.html:2-57). -->
   <div class="tw-cases" id="mgr-team-cases" tabindex="-1">
-    <div class="tw-toolbar">
-      <div class="tw-toolbar__left">
-        <h3 class="tw-heading">{{ heading() }}</h3>
-        @if (filters().member) {
-          <button
-            nxButton="tertiary small"
-            type="button"
-            (click)="filtersChange.emit({ member: null })"
-          >
-            <nx-icon name="arrow-left" nxIconPositionStart aria-hidden="true"></nx-icon>
-            Whole team
-          </button>
-        }
+    <div class="widget-header">
+      <div class="widget-header-left">
+        <div class="widget-icon-wrap">
+          <nx-icon name="product-board-paper-note" class="widget-icon"></nx-icon>
+        </div>
+        <h3 class="widget-title">{{ heading() }}</h3>
       </div>
-      <div class="tw-toolbar__filters">
-        <span class="tw-filter-label" id="tw-f-member">Team member</span>
+      @if (filters().member) {
+        <a
+          class="widget-link"
+          tabindex="0"
+          (click)="filtersChange.emit({ member: null })"
+          (keydown.enter)="filtersChange.emit({ member: null })"
+          >View whole team</a
+        >
+      }
+    </div>
+    <div class="portfolio-tabs">
+      <div class="portfolio-filters">
+        <span class="portfolio-filter-label" id="tw-f-member">Team member</span>
         <nx-dropdown
-          class="tw-filter"
+          class="portfolio-filter-dropdown"
           ariaLabelledBy="tw-f-member"
           [value]="filters().member ?? ''"
           (selectionChange)="filtersChange.emit({ member: $event.value || null })"
@@ -87,9 +93,9 @@
             <nx-dropdown-item [value]="m.name">{{ m.name }}</nx-dropdown-item>
           }
         </nx-dropdown>
-        <span class="tw-filter-label" id="tw-f-status">Status</span>
+        <span class="portfolio-filter-label" id="tw-f-status">Status</span>
         <nx-dropdown
-          class="tw-filter"
+          class="portfolio-filter-dropdown"
           ariaLabelledBy="tw-f-status"
           [value]="filters().status"
           (selectionChange)="filtersChange.emit({ status: $event.value })"
@@ -98,9 +104,9 @@
             <nx-dropdown-item [value]="o.value">{{ o.label }}</nx-dropdown-item>
           }
         </nx-dropdown>
-        <span class="tw-filter-label" id="tw-f-flag">Show</span>
+        <span class="portfolio-filter-label" id="tw-f-flag">Show</span>
         <nx-dropdown
-          class="tw-filter"
+          class="portfolio-filter-dropdown"
           ariaLabelledBy="tw-f-flag"
           [value]="filters().flag"
           (selectionChange)="filtersChange.emit({ flag: $event.value })"
@@ -111,6 +117,7 @@
         </nx-dropdown>
       </div>
     </div>
+    <div class="portfolio-tabs-spacer"></div>
     <app-manager-case-table
       [cases]="filtered()"
       [showOwner]="!filters().member"

@@ -40,24 +40,8 @@
     <p class="rec-loading">Loading…</p>
   } @else {
     @if (rows().length > 0) {
-      <div class="rec-summary">
-        <div class="rec-summary__item">
-          <span class="rec-summary__label">Open cases</span>
-          <span class="rec-summary__value">{{ openCount() }}</span>
-        </div>
-        <div class="rec-summary__item">
-          <span class="rec-summary__label">Expected from open cases</span>
-          <span class="rec-summary__value"
-            >{{ currency() }} {{ expectedTotal() | number: '1.0-0' }}</span
-          >
-        </div>
-        <div class="rec-summary__item">
-          <span class="rec-summary__label">Recovered to date</span>
-          <span class="rec-summary__value"
-            >{{ currency() }} {{ recoveredTotal() | number: '1.0-0' }}</span
-          >
-        </div>
-      </div>
+      <!-- Same summary cards as Financial overview (app-fo-claim-summary). -->
+      <app-fo-claim-summary [items]="summaryItems()" [currency]="currency()" />
     }
 
     @if (rows().length === 0) {
@@ -107,11 +91,11 @@
                     }
                   </td>
                   <td nxCell class="rec-col-amount">
-                    {{ row.currency }} {{ row.estimatedAmount | number: '1.0-0' }}
+                    {{ row.estimatedAmount | currency: row.currency : 'symbol' : '1.0-0' }}
                   </td>
                   <td nxCell class="rec-col-amount">
                     @if (row.recoveredAmount > 0) {
-                      {{ row.currency }} {{ row.recoveredAmount | number: '1.0-0' }}
+                      {{ row.recoveredAmount | currency: row.currency : 'symbol' : '1.0-0' }}
                     } @else {
                       —
                     }

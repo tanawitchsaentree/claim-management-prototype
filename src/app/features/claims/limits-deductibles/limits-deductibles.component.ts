@@ -4,7 +4,9 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { NxTableModule } from '@allianz/ng-aquila/table';
-import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxRadioToggleModule } from '@allianz/ng-aquila/radio-toggle';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NxSpinnerModule } from '@allianz/ng-aquila/spinner';
 import { MockLimitsDeductiblesService } from '../../../core/mock/services/mock-limits-deductibles.service';
 import { ClaimLimitsDeductibles, FinancialLevel } from '../../../core/models/deductible.model';
@@ -19,7 +21,8 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
     CurrencyPipe,
     NxTableModule,
     NxAccordionModule,
-    NxButtonModule,
+    ReactiveFormsModule,
+    NxRadioToggleModule,
     NxSpinnerModule,
     EmptyStateComponent,
     PageHeaderComponent
@@ -34,7 +37,8 @@ export class LimitsDeductiblesComponent implements OnInit {
 
   readonly loading = signal(true);
   readonly data = signal<ClaimLimitsDeductibles | null>(null);
-  readonly level = signal<FinancialLevel>('claim');
+  readonly levelControl = new FormControl<FinancialLevel>('claim', { nonNullable: true });
+  readonly level = toSignal(this.levelControl.valueChanges, { initialValue: this.levelControl.value });
   readonly currency = signal('EUR');
 
   async ngOnInit(): Promise<void> {
@@ -46,9 +50,5 @@ export class LimitsDeductiblesComponent implements OnInit {
     const data = await firstValueFrom(this.svc.getByClaimId(claimId));
     this.data.set(data);
     this.loading.set(false);
-  }
-
-  setLevel(l: FinancialLevel): void {
-    this.level.set(l);
   }
 }

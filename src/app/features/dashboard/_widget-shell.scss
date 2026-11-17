@@ -84,6 +84,26 @@
   height: 8px;
 }
 
+// Dropdown filters pushed to the far right of the portfolio-tabs row
+// (split toolbar, BLESSED.md). Claims portfolio + manager Team workload.
+@mixin portfolio-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto;
+  padding: var(--space-sm) 0;
+}
+
+@mixin portfolio-filter-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+@mixin portfolio-filter-dropdown {
+  width: 140px;
+}
+
 @mixin portfolio-tab {
   background: none;
   border: none;

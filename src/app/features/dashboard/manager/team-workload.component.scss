@@ -1,5 +1,5 @@
-// BLESSED: dashboard table via _widget-shell.scss; filter row copies the
-// Claims portfolio widget's inline dropdown filters (split toolbar, BLESSED.md).
+// BLESSED: dashboard table, header and filter row via _widget-shell.scss, the
+// same mixins as the Claims portfolio widget.
 @use '../widget-shell' as widget;
 
 .data-table-wrap {
@@ -37,46 +37,40 @@
 }
 
 .tw-cases {
-  border-top: 1px solid var(--ui-04);
-  margin-top: var(--space-base);
   outline: none;
 }
 
-.tw-toolbar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-sm) var(--space-base);
-  padding: var(--space-md) var(--space-xl);
-
-  &__left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-  }
-
-  &__filters {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    margin-left: auto;
-  }
+.widget-header {
+  @include widget.header;
 }
-
-.tw-heading {
+.widget-header-left {
+  @include widget.header-left;
+}
+.widget-icon-wrap {
+  @include widget.icon-wrap;
+}
+.widget-icon {
+  @include widget.icon;
+}
+.widget-title {
+  @include widget.title;
   margin: 0;
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
-  color: var(--text-heading);
 }
-
-.tw-filter-label {
-  font-size: var(--paragraph-04-font-size);
-  color: var(--text-muted);
-  white-space: nowrap;
+.widget-link {
+  @include widget.link;
 }
-
-.tw-filter {
-  width: 140px;
+.portfolio-tabs {
+  @include widget.portfolio-tabs;
+}
+.portfolio-tabs-spacer {
+  @include widget.portfolio-tabs-spacer;
+}
+.portfolio-filters {
+  @include widget.portfolio-filters;
+}
+.portfolio-filter-label {
+  @include widget.portfolio-filter-label;
+}
+.portfolio-filter-dropdown {
+  @include widget.portfolio-filter-dropdown;
 }

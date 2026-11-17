@@ -1,13 +1,7 @@
+// Same as .fo-level-toggle (financial-overview.component.scss).
 .ld-level-toggle {
-  display: flex;
-  gap: 0;
-
-  button:first-child {
-    border-radius: var(--radius-s) 0 0 var(--radius-s);
-  }
-  button:last-child {
-    border-radius: 0 var(--radius-s) var(--radius-s) 0;
-  }
+  display: block;
+  margin-bottom: var(--layout-inset-base);
 }
 
 .ld-loading {
@@ -18,4 +12,9 @@
 
 .ld-table {
   width: 100%;
+}
+
+// Amounts right-aligned like .fo-cell--right (fo-table-shared.scss).
+.ld-cell--right {
+  text-align: right !important;
 }

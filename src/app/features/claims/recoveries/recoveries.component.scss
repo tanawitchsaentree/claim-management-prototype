@@ -33,36 +33,6 @@
   font-style: italic;
 }
 
-// Summary strip — three read-only figures, same rhythm as the financial
-// overview's KPI row: label above value, muted label, plain value.
-.rec-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xl);
-  padding: var(--space-md) var(--space-lg);
-  margin-bottom: var(--space-lg);
-  background: var(--ui-02);
-  border: 1px solid var(--ui-04);
-  border-radius: var(--radius-s);
-
-  &__item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-
-  &__label {
-    font-size: var(--paragraph-04-font-size);
-    color: var(--text-muted);
-  }
-
-  &__value {
-    font-size: var(--paragraph-02-font-size);
-    color: var(--text-01);
-  }
-}
-
 .rec-table {
   width: 100%;
 }

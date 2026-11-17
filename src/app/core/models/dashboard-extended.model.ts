@@ -60,6 +60,15 @@ export interface KpiData {
   bigReserveMovements: number;
 }
 
+// One tile of app-kpi-row. `key` is emitted on click when the row is clickable.
+export interface KpiTile {
+  key: string;
+  value: number;
+  label: string;
+  icon: string;
+  hint?: string;
+}
+
 // Loss events — groups of claims arising from one event (e.g. a storm).
 // Shown in the Claims portfolio "Loss events" tab.
 // (Named *Summary to avoid colliding with LossEvent in loss-information.model.)
