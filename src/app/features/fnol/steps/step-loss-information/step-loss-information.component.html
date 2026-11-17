@@ -100,7 +100,7 @@
             />
             <nx-datepicker-toggle nxFormfieldSuffix [for]="occurrencePicker"></nx-datepicker-toggle>
             <nx-datepicker #occurrencePicker></nx-datepicker>
-            <nx-hint nxFormfieldHint>DD-MM-YYYY — used to check for duplicate claims</nx-hint>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY: used to check for duplicate claims</nx-hint>
             @if (
               showError(dateOfLoss.get('dateOfOccurrence')!) &&
               dateOfLoss.get('dateOfOccurrence')?.errors?.['required']
@@ -137,7 +137,7 @@
               [for]="notificationPicker"
             ></nx-datepicker-toggle>
             <nx-datepicker #notificationPicker></nx-datepicker>
-            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY: must be on or after date of occurrence</nx-hint>
             @if (
               showError(dateOfLoss.get('dateOfNotification')!) &&
               dateOfLoss.get('dateOfNotification')?.errors?.['required']

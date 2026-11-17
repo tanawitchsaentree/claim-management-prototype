@@ -33,11 +33,11 @@
     { "value": "Allianz Commercial Spain", "label": "Allianz Commercial Spain" }
   ],
   "currencies": [
-    { "value": "EUR", "label": "EUR — Euro" },
-    { "value": "USD", "label": "USD — US Dollar" },
-    { "value": "GBP", "label": "GBP — British Pound" },
-    { "value": "CHF", "label": "CHF — Swiss Franc" },
-    { "value": "SGD", "label": "SGD — Singapore Dollar" }
+    { "value": "EUR", "label": "EUR: Euro" },
+    { "value": "USD", "label": "USD: US Dollar" },
+    { "value": "GBP", "label": "GBP: British Pound" },
+    { "value": "CHF", "label": "CHF: Swiss Franc" },
+    { "value": "SGD", "label": "SGD: Singapore Dollar" }
   ],
   "countries": [
     { "value": "DE", "label": "Germany" },
@@ -170,25 +170,25 @@
     { "value": "Notification", "label": "Notification" }
   ],
   "cbiCaseTypes": [
-    { "value": "supplier-named", "label": "Supplier — Named" },
-    { "value": "supplier-unnamed", "label": "Supplier — Unnamed" },
-    { "value": "customer-named", "label": "Customer — Named" },
-    { "value": "customer-unnamed", "label": "Customer — Unnamed" },
-    { "value": "denial-of-access-with-pd", "label": "Denial of Access — With PD Trigger" },
+    { "value": "supplier-named", "label": "Supplier: Named" },
+    { "value": "supplier-unnamed", "label": "Supplier: Unnamed" },
+    { "value": "customer-named", "label": "Customer: Named" },
+    { "value": "customer-unnamed", "label": "Customer: Unnamed" },
+    { "value": "denial-of-access-with-pd", "label": "Denial of Access: With PD Trigger" },
     {
       "value": "denial-of-access-without-pd-emergency",
-      "label": "Denial of Access — Without PD Trigger (Emergency Incident)"
+      "label": "Denial of Access: Without PD Trigger (Emergency Incident)"
     },
     {
       "value": "denial-of-access-without-pd-disease",
-      "label": "Denial of Access — Without PD Trigger (Disease)"
+      "label": "Denial of Access: Without PD Trigger (Disease)"
     },
     {
       "value": "denial-of-access-without-pd-weather",
-      "label": "Denial of Access — Without PD Trigger (Weather Condition)"
+      "label": "Denial of Access: Without PD Trigger (Weather Condition)"
     },
-    { "value": "loss-of-attraction-with-pd", "label": "Loss of Attraction — With PD Trigger" },
-    { "value": "loss-of-attraction-without-pd", "label": "Loss of Attraction — Without PD Trigger" },
+    { "value": "loss-of-attraction-with-pd", "label": "Loss of Attraction: With PD Trigger" },
+    { "value": "loss-of-attraction-without-pd", "label": "Loss of Attraction: Without PD Trigger" },
     { "value": "port-blockage", "label": "(Air)Port Blockage" },
     { "value": "service-interruption", "label": "Service Interruption (Public or Private Utilities)" }
   ],

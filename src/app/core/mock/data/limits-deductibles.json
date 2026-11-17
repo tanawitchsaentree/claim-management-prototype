@@ -16,7 +16,7 @@
         "amount": 2000000,
         "currency": "EUR",
         "sectionId": "SEC-001",
-        "sectionName": "Property Damage — Warehouse & Forklift"
+        "sectionName": "Property Damage: Warehouse & Forklift"
       },
       {
         "limitId": "LIM-003",
@@ -45,7 +45,7 @@
         "currency": "EUR",
         "applicationMethod": "Fixed amount",
         "sectionId": "SEC-001",
-        "sectionName": "Property Damage — Warehouse & Forklift"
+        "sectionName": "Property Damage: Warehouse & Forklift"
       },
       {
         "deductibleId": "DED-003",

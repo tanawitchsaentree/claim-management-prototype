@@ -51,7 +51,7 @@
         "description": "SEC-001 mock data has hasOpenDeductible=true and hasActiveSalvage=true. No state overrides needed \u2014 blockers come from section flags.",
         "preconditions": [
           {
-            "text": "'Property Damage — Warehouse & Forklift' (SEC-001) status is Open",
+            "text": "'Property Damage: Warehouse & Forklift' (SEC-001) status is Open",
             "page": "sections",
             "role": "tested-visible"
           },
@@ -89,14 +89,14 @@
     {
       "id": "AC-02",
       "statement": "Litigation + reserves + payments block section close",
-      "plainStatement": "'Business Interruption — Machinery Sales' (SEC-002) has three active blockers (litigation, reserves, payments). Modal shows all three.",
+      "plainStatement": "'Business Interruption: Machinery Sales' (SEC-002) has three active blockers (litigation, reserves, payments). Modal shows all three.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
         "description": "SEC-002 mock data has hasActiveLitigation=true, hasOpenReserves=true, hasOpenPayments=true.",
         "preconditions": [
           {
-            "text": "'Business Interruption — Machinery Sales' (SEC-002) status is Open",
+            "text": "'Business Interruption: Machinery Sales' (SEC-002) status is Open",
             "page": "sections",
             "role": "tested-visible"
           },
@@ -172,7 +172,7 @@
         "description": "All section blocker flags set to false so modal skips step 1.",
         "preconditions": [
           {
-            "text": "'Property Damage — Warehouse & Forklift' (SEC-001) has no blockers",
+            "text": "'Property Damage: Warehouse & Forklift' (SEC-001) has no blockers",
             "page": "sections",
             "role": "tested-visible"
           },

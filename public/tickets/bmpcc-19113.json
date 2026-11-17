@@ -50,7 +50,7 @@
     {
       "id": "AC-02",
       "statement": "Link policy · Business interruption asks the CBI questions",
-      "plainStatement": "**Opens:** Claim Overview of SK-2024-008 (business interruption, supplier fire).\n\n**You see:** Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier — Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building.",
+      "plainStatement": "**Opens:** Claim Overview of SK-2024-008 (business interruption, supplier fire).\n\n**You see:** Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *.\n\n**Try:** Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier: Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -60,7 +60,7 @@
             "text": "Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier — Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building."
+            "hint": "Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier: Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building."
           }
         ],
         "stateOverrides": {},
@@ -78,7 +78,7 @@
       },
       "howToTest": {
         "route": "/claims/SK-2024-008/overview",
-        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier — Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building.",
+        "trigger": "Press **Link policy**, choose the policy on the list (POL-2026-005). Press Next with *Yes* and nothing else: it is blocked. Choose *Supplier: Named*, enter a name and a location, or answer *No*, then continue; coverages offer a Business interruption entity as well as the building.",
         "expectedResult": "Step 2 shows **Cause of loss = Business Interruption** and the CBI box (the same one FNOL shows): the question, then case type, supplier name and originating location. Required fields carry a *."
       }
     },

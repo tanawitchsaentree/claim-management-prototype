@@ -3,7 +3,7 @@
     "coverages": [
       {
         "coverageId": "CVG-001-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire and allied perils",
         "sumInsured": 4500000,
         "deductible": 25000,
@@ -11,7 +11,7 @@
       },
       {
         "coverageId": "CVG-001-2",
-        "policySection": "Section 2 — Contents",
+        "policySection": "Section 2: Contents",
         "coverage": "Stock and equipment",
         "sumInsured": 1200000,
         "deductible": 10000,
@@ -19,7 +19,7 @@
       },
       {
         "coverageId": "CVG-001-3",
-        "policySection": "Section 3 — Business interruption",
+        "policySection": "Section 3: Business interruption",
         "coverage": "Gross profit (12 months)",
         "sumInsured": 800000,
         "deductible": 0,
@@ -32,7 +32,7 @@
     "coverages": [
       {
         "coverageId": "CVG-002-1",
-        "policySection": "Section 1 — Cyber first party",
+        "policySection": "Section 1: Cyber first party",
         "coverage": "Data restoration costs",
         "sumInsured": 1000000,
         "deductible": 50000,
@@ -40,7 +40,7 @@
       },
       {
         "coverageId": "CVG-002-2",
-        "policySection": "Section 1 — Cyber first party",
+        "policySection": "Section 1: Cyber first party",
         "coverage": "Business interruption",
         "sumInsured": 750000,
         "deductible": 50000,
@@ -48,7 +48,7 @@
       },
       {
         "coverageId": "CVG-002-3",
-        "policySection": "Section 2 — Cyber third party",
+        "policySection": "Section 2: Cyber third party",
         "coverage": "Privacy liability",
         "sumInsured": 2000000,
         "deductible": 100000,
@@ -61,7 +61,7 @@
     "coverages": [
       {
         "coverageId": "CVG-003-1",
-        "policySection": "Section 1 — Cargo",
+        "policySection": "Section 1: Cargo",
         "coverage": "Institute Cargo Clauses (A)",
         "sumInsured": 8000000,
         "deductible": 50000,
@@ -69,7 +69,7 @@
       },
       {
         "coverageId": "CVG-003-2",
-        "policySection": "Section 2 — Hull",
+        "policySection": "Section 2: Hull",
         "coverage": "Hull and machinery",
         "sumInsured": 12000000,
         "deductible": 250000,
@@ -77,7 +77,7 @@
       },
       {
         "coverageId": "CVG-003-3",
-        "policySection": "Section 3 — Transit",
+        "policySection": "Section 3: Transit",
         "coverage": "Inland transit extension",
         "sumInsured": 1500000,
         "deductible": 25000,
@@ -109,7 +109,7 @@
     "coverages": [
       {
         "coverageId": "CVG-004-1",
-        "policySection": "Section 1 — Public liability",
+        "policySection": "Section 1: Public liability",
         "coverage": "Third-party bodily injury",
         "sumInsured": 5000000,
         "deductible": 10000,
@@ -117,7 +117,7 @@
       },
       {
         "coverageId": "CVG-004-2",
-        "policySection": "Section 1 — Public liability",
+        "policySection": "Section 1: Public liability",
         "coverage": "Third-party property damage",
         "sumInsured": 5000000,
         "deductible": 10000,
@@ -125,7 +125,7 @@
       },
       {
         "coverageId": "CVG-004-3",
-        "policySection": "Section 2 — Products liability",
+        "policySection": "Section 2: Products liability",
         "coverage": "Product recall costs",
         "sumInsured": 1000000,
         "deductible": 25000,
@@ -138,7 +138,7 @@
     "coverages": [
       {
         "coverageId": "CVG-005-1",
-        "policySection": "Section 1 — Machinery",
+        "policySection": "Section 1: Machinery",
         "coverage": "Machinery breakdown",
         "sumInsured": 15000000,
         "deductible": 100000,
@@ -146,7 +146,7 @@
       },
       {
         "coverageId": "CVG-005-2",
-        "policySection": "Section 2 — Production loss",
+        "policySection": "Section 2: Production loss",
         "coverage": "Loss of profit (6 months)",
         "sumInsured": 6000000,
         "deductible": 250000,
@@ -154,7 +154,7 @@
       },
       {
         "coverageId": "CVG-005-3",
-        "policySection": "Section 3 — Spare parts",
+        "policySection": "Section 3: Spare parts",
         "coverage": "Expediting expenses",
         "sumInsured": 500000,
         "deductible": 0,
@@ -180,7 +180,7 @@
     "coverages": [
       {
         "coverageId": "CVG-010-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire and allied perils",
         "sumInsured": 3200000,
         "deductible": 20000,
@@ -188,7 +188,7 @@
       },
       {
         "coverageId": "CVG-010-2",
-        "policySection": "Section 2 — Contents",
+        "policySection": "Section 2: Contents",
         "coverage": "Stock in storage",
         "sumInsured": 950000,
         "deductible": 15000,
@@ -196,7 +196,7 @@
       },
       {
         "coverageId": "CVG-010-3",
-        "policySection": "Section 3 — Business interruption",
+        "policySection": "Section 3: Business interruption",
         "coverage": "Gross profit (8 weeks)",
         "sumInsured": 600000,
         "deductible": 0,
@@ -204,7 +204,7 @@
       },
       {
         "coverageId": "CVG-010-4",
-        "policySection": "Section 4 — Machinery",
+        "policySection": "Section 4: Machinery",
         "coverage": "Racking and forklifts",
         "sumInsured": 280000,
         "deductible": 5000,
@@ -230,7 +230,7 @@
     "coverages": [
       {
         "coverageId": "CVG-006-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "All risks of physical loss",
         "sumInsured": 7500000,
         "deductible": 50000,
@@ -238,7 +238,7 @@
       },
       {
         "coverageId": "CVG-006-2",
-        "policySection": "Section 2 — Contents",
+        "policySection": "Section 2: Contents",
         "coverage": "Theft and burglary",
         "sumInsured": 1800000,
         "deductible": 25000,
@@ -246,7 +246,7 @@
       },
       {
         "coverageId": "CVG-006-3",
-        "policySection": "Section 3 — Natural perils",
+        "policySection": "Section 3: Natural perils",
         "coverage": "Flood, landslide, storm",
         "sumInsured": 4000000,
         "deductible": 100000,
@@ -259,7 +259,7 @@
     "coverages": [
       {
         "coverageId": "CVG-007-1",
-        "policySection": "Section 1 — Hull",
+        "policySection": "Section 1: Hull",
         "coverage": "Hull and machinery",
         "sumInsured": 45000000,
         "deductible": 500000,
@@ -267,7 +267,7 @@
       },
       {
         "coverageId": "CVG-007-2",
-        "policySection": "Section 2 — P&I",
+        "policySection": "Section 2: P&I",
         "coverage": "Protection and indemnity",
         "sumInsured": 20000000,
         "deductible": 100000,
@@ -275,7 +275,7 @@
       },
       {
         "coverageId": "CVG-007-3",
-        "policySection": "Section 3 — Loss of hire",
+        "policySection": "Section 3: Loss of hire",
         "coverage": "Daily indemnity (90 days)",
         "sumInsured": 2700000,
         "deductible": 0,
@@ -307,7 +307,7 @@
     "coverages": [
       {
         "coverageId": "CVG-008-1",
-        "policySection": "Section 1 — Cyber first party",
+        "policySection": "Section 1: Cyber first party",
         "coverage": "Incident response costs",
         "sumInsured": 800000,
         "deductible": 20000,
@@ -315,7 +315,7 @@
       },
       {
         "coverageId": "CVG-008-2",
-        "policySection": "Section 2 — Cyber third party",
+        "policySection": "Section 2: Cyber third party",
         "coverage": "Network security liability",
         "sumInsured": 1500000,
         "deductible": 50000,
@@ -328,7 +328,7 @@
     "coverages": [
       {
         "coverageId": "CVG-009-1",
-        "policySection": "Section 1 — Works",
+        "policySection": "Section 1: Works",
         "coverage": "Contract works all risks",
         "sumInsured": 28000000,
         "deductible": 150000,
@@ -336,7 +336,7 @@
       },
       {
         "coverageId": "CVG-009-2",
-        "policySection": "Section 2 — Plant and equipment",
+        "policySection": "Section 2: Plant and equipment",
         "coverage": "Construction plant",
         "sumInsured": 4500000,
         "deductible": 50000,
@@ -344,7 +344,7 @@
       },
       {
         "coverageId": "CVG-009-3",
-        "policySection": "Section 3 — Third-party liability",
+        "policySection": "Section 3: Third-party liability",
         "coverage": "Liability during works",
         "sumInsured": 10000000,
         "deductible": 25000,
@@ -352,7 +352,7 @@
       },
       {
         "coverageId": "CVG-009-4",
-        "policySection": "Section 4 — Delay in start-up",
+        "policySection": "Section 4: Delay in start-up",
         "coverage": "Advance loss of profit",
         "sumInsured": 3000000,
         "deductible": 0,
@@ -384,7 +384,7 @@
     "coverages": [
       {
         "coverageId": "CVG-011-1",
-        "policySection": "Section 1 — General liability",
+        "policySection": "Section 1: General liability",
         "coverage": "Bodily injury and property damage",
         "sumInsured": 6000000,
         "deductible": 15000,
@@ -392,7 +392,7 @@
       },
       {
         "coverageId": "CVG-011-2",
-        "policySection": "Section 2 — Employers liability",
+        "policySection": "Section 2: Employers liability",
         "coverage": "Employee bodily injury",
         "sumInsured": 10000000,
         "deductible": 0,
@@ -405,7 +405,7 @@
     "coverages": [
       {
         "coverageId": "CVG-021-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire and allied perils",
         "sumInsured": 2400000,
         "deductible": 10000,
@@ -413,7 +413,7 @@
       },
       {
         "coverageId": "CVG-021-2",
-        "policySection": "Section 2 — Contents",
+        "policySection": "Section 2: Contents",
         "coverage": "Household contents",
         "sumInsured": 350000,
         "deductible": 2500,
@@ -426,7 +426,7 @@
     "coverages": [
       {
         "coverageId": "CVG-022-1",
-        "policySection": "Section 1 — Private liability",
+        "policySection": "Section 1: Private liability",
         "coverage": "Third-party bodily injury",
         "sumInsured": 3000000,
         "deductible": 500,
@@ -434,7 +434,7 @@
       },
       {
         "coverageId": "CVG-022-2",
-        "policySection": "Section 1 — Private liability",
+        "policySection": "Section 1: Private liability",
         "coverage": "Third-party property damage",
         "sumInsured": 3000000,
         "deductible": 500,
@@ -447,7 +447,7 @@
     "coverages": [
       {
         "coverageId": "CVG-023-1",
-        "policySection": "Section 1 — Machinery",
+        "policySection": "Section 1: Machinery",
         "coverage": "Machinery breakdown",
         "sumInsured": 1900000,
         "deductible": 25000,
@@ -455,7 +455,7 @@
       },
       {
         "coverageId": "CVG-023-2",
-        "policySection": "Section 2 — Production loss",
+        "policySection": "Section 2: Production loss",
         "coverage": "Loss of profit (3 months)",
         "sumInsured": 620000,
         "deductible": 50000,
@@ -468,7 +468,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2601-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Storm and allied perils",
         "sumInsured": 1800000,
         "deductible": 7500,
@@ -481,7 +481,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2026-002-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire, storm and water",
         "sumInsured": 1200000,
         "deductible": 5000,
@@ -494,7 +494,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2026-003-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire, storm and water",
         "sumInsured": 1200000,
         "deductible": 5000,
@@ -507,7 +507,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2026-004-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire, storm and water",
         "sumInsured": 1200000,
         "deductible": 5000,
@@ -520,7 +520,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2026-005-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire, storm and water",
         "sumInsured": 1200000,
         "deductible": 5000,
@@ -533,7 +533,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2026-006-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire, storm and water",
         "sumInsured": 1200000,
         "deductible": 5000,
@@ -546,7 +546,7 @@
     "coverages": [
       {
         "coverageId": "CVG-2026-007-1",
-        "policySection": "Section 1 — Buildings",
+        "policySection": "Section 1: Buildings",
         "coverage": "Fire, storm and water",
         "sumInsured": 1200000,
         "deductible": 5000,

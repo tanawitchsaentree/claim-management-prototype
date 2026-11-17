@@ -36,8 +36,8 @@
                 <button class="lit-id-link" type="button" (click)="open(row)">{{ row.id }}</button>
               </td>
               @if (!isSqueezed()) {
-                <td nxCell>{{ row.type || '—' }}</td>
-                <td nxCell>{{ (row.startDate | appDate) || '—' }}</td>
+                <td nxCell>{{ row.type || '-' }}</td>
+                <td nxCell>{{ (row.startDate | appDate) || '-' }}</td>
               }
               <td nxCell>
                 <app-status-chip

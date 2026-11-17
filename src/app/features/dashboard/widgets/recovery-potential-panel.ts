@@ -78,7 +78,7 @@ const PREVIEW = 5;
         display: block;
       }
 
-      /* Widget shell — ported from dashboard.scss so this standalone component
+      /* Widget shell: ported from dashboard.scss so this standalone component
        matches its inline sibling widgets (encapsulation blocks dashboard.scss
        from reaching here). Keep values in sync with .widget-* there.
        BLESSED: widgets/heads-up-panel.ts */
@@ -86,7 +86,7 @@ const PREVIEW = 5;
         background: var(--ui-01);
         border: 1px solid var(--ui-04);
         border-radius: var(--radius-m);
-        margin-bottom: var(--space-xl); /* $sp-xl — same gap as sibling widgets */
+        margin-bottom: var(--space-xl); /* $sp-xl, same gap as sibling widgets */
         overflow: hidden;
         box-shadow: 0 1px 4px var(--claim-overlay-shadow);
       }
@@ -140,7 +140,7 @@ const PREVIEW = 5;
         &:last-child {
           border-bottom: none;
         }
-        /* No row tint — the icon colour already signals which of the two states
+        /* No row tint: the icon colour already signals which of the two states
          this is. (No-row-tint rule: state goes on the badge/icon.) */
       }
       .rpp-icon {

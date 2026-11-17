@@ -15,7 +15,7 @@ import { editLossInformationCanDeactivate } from './edit-loss-information.guard'
 // NxDialogService is overridden at the DI level (not spied on the real
 // singleton) — the real .open() attaches a live NDBX modal/overlay that never
 // settles in a headless test DOM, which reads as a hang, not a failure.
-describe('EditLossInformationComponent — Gate Proof', () => {
+describe('EditLossInformationComponent: Gate Proof', () => {
   let component: EditLossInformationComponent;
   let fakeDialogOpen: ReturnType<typeof vi.fn>;
 
@@ -57,7 +57,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     await mount('CLM-2024-001');
   });
 
-  describe('Gate 1 — pendingChanges reacts to any field edit', () => {
+  describe('Gate 1: pendingChanges reacts to any field edit', () => {
     it('has zero pending changes right after load', () => {
       expect(component.pendingChanges().length).toBe(0);
     });
@@ -68,7 +68,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
     });
   });
 
-  describe('Gate 2 — leaving mid-edit is intercepted', () => {
+  describe('Gate 2: leaving mid-edit is intercepted', () => {
     it('confirmLeaveIfDirty allows leaving immediately with no pending changes (no dialog opened)', async () => {
       const canLeave = await component.confirmLeaveIfDirty();
       expect(fakeDialogOpen).not.toHaveBeenCalled();
@@ -107,9 +107,9 @@ describe('EditLossInformationComponent — Gate Proof', () => {
   // choice only offered when something in IMPACT_LABELS actually changed.
   // Previous shapes of this gate asserted no modal opens; that assertion
   // is gone because the modal is now deliberate, not a regression.
-  describe('Gate 3 — Update commits every pending field, then offers a destination', () => {
+  describe('Gate 3: Update commits every pending field, then offers a destination', () => {
     it('opens the destination modal with the diffs and impacted=false for a non-impacting change', async () => {
-      component.form.get('lossDescription')!.setValue('changed value — modal data check');
+      component.form.get('lossDescription')!.setValue('changed value: modal data check');
       fakeDialogOpen.mockReturnValue({ afterClosed: () => of('stay') });
       await component.onUpdateAll();
       expect(fakeDialogOpen).toHaveBeenCalledTimes(1);
@@ -156,7 +156,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
 
     it('routes to the claim overview when the modal result is "overview"', async () => {
       const navigateSpy = vi.spyOn(component['router'], 'navigate');
-      component.form.get('lossDescription')!.setValue('changed value — route to overview');
+      component.form.get('lossDescription')!.setValue('changed value: route to overview');
       fakeDialogOpen.mockReturnValue({ afterClosed: () => of('overview') });
       await component.onUpdateAll();
       expect(navigateSpy).toHaveBeenCalledWith(['/claims', 'CLM-2024-001', 'overview']);
@@ -164,7 +164,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
 
     it('stays on the page with no navigation when the modal result is "stay" (or dismissed)', async () => {
       const navigateSpy = vi.spyOn(component['router'], 'navigate');
-      component.form.get('lossDescription')!.setValue('changed value — stay on page');
+      component.form.get('lossDescription')!.setValue('changed value: stay on page');
       fakeDialogOpen.mockReturnValue({ afterClosed: () => of(null) });
       await component.onUpdateAll();
       expect(navigateSpy).not.toHaveBeenCalled();
@@ -202,7 +202,7 @@ describe('EditLossInformationComponent — Gate Proof', () => {
   // record. Before MockLossInformationService synthesized one, the screen loaded
   // with `original` null, every field read "Not provided", computeDiffs()
   // returned [] no matter what was typed, and Save stayed disabled forever.
-  describe('Gate 4 — a claim with no hand-authored record is still editable', () => {
+  describe('Gate 4: a claim with no hand-authored record is still editable', () => {
     beforeEach(async () => {
       await mount('CLM-2024-003');
     });

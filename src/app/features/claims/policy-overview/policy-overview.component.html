@@ -132,7 +132,7 @@
       @if (p.coinsurance.length) {
         @if (coinsuranceMismatch()) {
           <nx-message context="warning" class="po-message">
-            Participant shares total {{ coinsuranceTotal() }}%, not 100% — check the policy record
+            Participant shares total {{ coinsuranceTotal() }}%, not 100%: check the policy record
             before settling.
           </nx-message>
         }
@@ -235,7 +235,7 @@
                   <td nxTableCell class="po-cell--desc">{{ lc.lossDescription }}</td>
                   <td nxTableCell>{{ lc.clientName }}</td>
                   <td nxTableCell>{{ lc.status }}</td>
-                  <td nxTableCell>{{ lc.claimHandler ?? '—' }}</td>
+                  <td nxTableCell>{{ lc.claimHandler ?? '-' }}</td>
                   <td nxTableCell>{{ formatCauseOfLoss(lc.causeOfLoss) }}</td>
                   <td nxTableCell>{{ lc.createdDate | appDate }}</td>
                   <td nxTableCell>{{ lc.dateOfLoss | appDate }}</td>

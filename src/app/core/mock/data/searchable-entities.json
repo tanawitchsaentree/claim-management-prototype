@@ -42,7 +42,7 @@
       {
         "propertyId": "DEU9876543210",
         "locationName": "Fleet Vehicle Group A",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Munich",
         "country": "Germany",
         "entityType": "vehicle"
@@ -50,7 +50,7 @@
       {
         "propertyId": "DEU9876543211",
         "locationName": "Delivery Trucks",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Munich",
         "country": "Germany",
         "entityType": "vehicle"
@@ -88,7 +88,7 @@
       {
         "propertyId": "DEU-FIN-0001",
         "locationName": "Q1 Sales Revenue Stream",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Munich",
         "country": "Germany",
         "entityType": "financial"
@@ -96,14 +96,14 @@
       {
         "propertyId": "DEU-FIN-0002",
         "locationName": "Annual Service Contracts",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Munich",
         "country": "Germany",
         "entityType": "financial"
       },
       {
         "propertyId": "DEU-FIN-0003",
-        "locationName": "Inventory — Munich Warehouse",
+        "locationName": "Inventory: Munich Warehouse",
         "streetAndNumber": "55 Dieselstrasse",
         "city": "Munich",
         "country": "Germany",
@@ -114,7 +114,7 @@
       {
         "propertyId": "DEU-OTH-0001",
         "locationName": "Trade Secrets & IP Assets",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Munich",
         "country": "Germany",
         "entityType": "other"
@@ -122,7 +122,7 @@
       {
         "propertyId": "DEU-OTH-0002",
         "locationName": "Brand Reputation Coverage",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Munich",
         "country": "Germany",
         "entityType": "other"
@@ -157,7 +157,7 @@
       {
         "propertyId": "MSE-FIN-0001",
         "locationName": "Marvel SE Liability Exposure",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Düsseldorf",
         "country": "Germany",
         "entityType": "financial"
@@ -202,7 +202,7 @@
       {
         "propertyId": "DEU-FIN-0010",
         "locationName": "Müller Sales Revenue",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Stuttgart",
         "country": "Germany",
         "entityType": "financial"
@@ -212,7 +212,7 @@
       {
         "propertyId": "DEU-OTH-0010",
         "locationName": "Müller IP Portfolio",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Stuttgart",
         "country": "Germany",
         "entityType": "other"
@@ -235,7 +235,7 @@
       {
         "propertyId": "DEU3333333334",
         "locationName": "Company Fleet B",
-        "streetAndNumber": "—",
+        "streetAndNumber": "-",
         "city": "Frankfurt",
         "country": "Germany",
         "entityType": "vehicle"

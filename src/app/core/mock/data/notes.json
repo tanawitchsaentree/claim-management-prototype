@@ -93,7 +93,7 @@
         "accent": "blue"
       },
       "timestamp": "2026-07-16T13:40:00Z",
-      "body": "Client confirmed the forklift was added to the fleet policy via endorsement two weeks after purchase — gap explained, no coverage issue.",
+      "body": "Client confirmed the forklift was added to the fleet policy via endorsement two weeks after purchase, gap explained, no coverage issue.",
       "category": "general",
       "pinned": false,
       "attachedTo": "Forklift"
@@ -120,7 +120,7 @@
         "accent": "blue"
       },
       "timestamp": "2026-05-20T15:42:00Z",
-      "body": "Confirmed no third-party injuries — police report attached. Closing out subrogation track.",
+      "body": "Confirmed no third-party injuries: police report attached. Closing out subrogation track.",
       "category": "litigation",
       "pinned": true
     },
@@ -159,7 +159,7 @@
         "accent": "blue"
       },
       "timestamp": "2026-05-18T09:33:00Z",
-      "body": "Spoke with broker (Marsh DE) — they will coordinate the inventory list with the insured. ETA Monday.",
+      "body": "Spoke with broker (Marsh DE), they will coordinate the inventory list with the insured. ETA Monday.",
       "category": "general",
       "pinned": false
     },
@@ -172,7 +172,7 @@
         "accent": "purple"
       },
       "timestamp": "2026-05-15T11:48:00Z",
-      "body": "Litigation hold flagged by legal — preserve all email correspondence with the policyholder until further notice.",
+      "body": "Litigation hold flagged by legal, preserve all email correspondence with the policyholder until further notice.",
       "category": "litigation",
       "pinned": false
     },
@@ -200,7 +200,7 @@
         "accent": "orange"
       },
       "timestamp": "2026-05-24T10:12:00Z",
-      "body": "Schäfer Main Warehouse structural survey booked for next week — roof section flagged as priority in the initial walkthrough.",
+      "body": "Schäfer Main Warehouse structural survey booked for next week, roof section flagged as priority in the initial walkthrough.",
       "category": "general",
       "pinned": true,
       "attachedTo": "Schäfer Main Warehouse"
@@ -214,7 +214,7 @@
         "accent": "aqua"
       },
       "timestamp": "2026-05-25T15:47:00Z",
-      "body": "Maintenance records for the conveyor system are disputed by the insured's broker — requesting full service log from the manufacturer before enhanced review can close.",
+      "body": "Maintenance records for the conveyor system are disputed by the insured's broker: requesting full service log from the manufacturer before enhanced review can close.",
       "category": "litigation",
       "pinned": false,
       "attachedTo": "Conveyor System"
@@ -242,7 +242,7 @@
         "accent": "aqua"
       },
       "timestamp": "2026-05-27T13:30:00Z",
-      "body": "Client confirmed insurance cover for the leased conveyor unit is separate from the main policy — no double recovery risk.",
+      "body": "Client confirmed insurance cover for the leased conveyor unit is separate from the main policy, no double recovery risk.",
       "category": "general",
       "pinned": false,
       "attachedTo": "Conveyor System"
@@ -256,7 +256,7 @@
         "accent": "orange"
       },
       "timestamp": "2026-05-28T16:50:00Z",
-      "body": "Both sections now closed — retention timer started per standard 10-year policy.",
+      "body": "Both sections now closed: retention timer started per standard 10-year policy.",
       "category": "general",
       "pinned": false
     }

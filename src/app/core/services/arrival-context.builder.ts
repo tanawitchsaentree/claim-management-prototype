@@ -86,7 +86,7 @@ export function buildFallbackTour(ticket: DevTicket): TourStep[] {
     title: ticket.title,
     body:
       `${criteria.length} acceptance ${criteria.length === 1 ? 'criterion' : 'criteria'} to check on this screen. ` +
-      `This walkthrough is generated from them — nobody wrote it by hand, so it describes what the criteria assert, not every detail of the screen.`
+      `This walkthrough is generated from them, nobody wrote it by hand, so it describes what the criteria assert, not every detail of the screen.`
   };
 
   const steps = criteria.map((ac, i): TourStep => {

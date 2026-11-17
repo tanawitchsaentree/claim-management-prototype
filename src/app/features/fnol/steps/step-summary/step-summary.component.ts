@@ -301,7 +301,7 @@ export class StepSummaryComponent implements OnInit {
     if (this.submitting() || this.submitted) return;
     if (this.needsRecoveryNote && !this.recoveryPotentialNote.value.trim()) {
       this.recoveryPotentialNote.markAsTouched();
-      this.submitError = 'Enter a reason before submitting — recovery potential is set to No.';
+      this.submitError = 'Enter a reason before submitting, recovery potential is set to No.';
       this.live.announce(this.submitError, 'assertive');
       return;
     }
@@ -523,9 +523,9 @@ export class StepSummaryComponent implements OnInit {
     });
   }
   get startClaimTooltip(): string {
-    if (this.claimGroupCount === 0) return 'No claim groups derived — review entities & damages.';
+    if (this.claimGroupCount === 0) return 'No claim groups derived: review entities & damages.';
     if (this.claimGroupCount > 1)
-      return 'Multiple claims detected — opens the Loss Event Overview.';
+      return 'Multiple claims detected: opens the Loss Event Overview.';
     return '';
   }
 
@@ -545,17 +545,17 @@ export class StepSummaryComponent implements OnInit {
       const skeleton = this.fnolState.skeleton;
       return {
         causesOfLoss: [],
-        dateOfOccurrence: '—',
-        timeOfOccurrence: '—',
-        dateOfNotification: '—',
+        dateOfOccurrence: '-',
+        timeOfOccurrence: '-',
+        dateOfNotification: '-',
         affectedPolicies: [],
         damageTypes: [],
         claimGroups: [],
         narrative: null,
         narrativeReasonLabel: '',
         isSkeletonPath: true,
-        skeletonClientName: skeleton?.clientName ?? '—',
-        skeletonReason: skeleton?.reason ?? '—'
+        skeletonClientName: skeleton?.clientName ?? '-',
+        skeletonReason: skeleton?.reason ?? '-'
       };
     }
 
@@ -603,15 +603,15 @@ export class StepSummaryComponent implements OnInit {
       dateOfOccurrence: earliest.date,
       timeOfOccurrence: earliest.time,
       dateOfNotification:
-        this.appDate.transform(dateOfLoss.get('dateOfNotification')?.value) || '—',
+        this.appDate.transform(dateOfLoss.get('dateOfNotification')?.value) || '-',
       affectedPolicies: selection ?? [this.policyNumber],
       damageTypes,
       claimGroups,
       narrative,
       narrativeReasonLabel: narrativeLabel,
       isSkeletonPath: false,
-      skeletonClientName: '—',
-      skeletonReason: '—'
+      skeletonClientName: '-',
+      skeletonReason: '-'
     };
   }
 
@@ -626,7 +626,7 @@ export class StepSummaryComponent implements OnInit {
     const damageTypeKeys = [...sectionGroups.keys()];
     const total = reserves.reserves.reduce((s, r) => s + (r.amount ?? 0), 0);
     const baseGroup: ClaimGroup = {
-      policyNumber: this.policyNumber || '—',
+      policyNumber: this.policyNumber || '-',
       damageTypes: damageTypeKeys.map(k => this.label(damageLookups, k)),
       sectionCount: sectionGroups.size,
       partyCount,
@@ -658,9 +658,9 @@ export class StepSummaryComponent implements OnInit {
     lossDateIso: string | null,
     sectionHint: number
   ): { date: string; time: string } {
-    if (!lossDateIso) return { date: '—', time: '—' };
+    if (!lossDateIso) return { date: '-', time: '-' };
     const base = new Date(`${lossDateIso}T00:00:00`);
-    if (Number.isNaN(base.getTime())) return { date: '—', time: '—' };
+    if (Number.isNaN(base.getTime())) return { date: '-', time: '-' };
     const count = Math.min(5, Math.max(3, sectionHint));
     let minOffset = Number.POSITIVE_INFINITY;
     for (let i = 0; i < count; i++) {
@@ -676,7 +676,7 @@ export class StepSummaryComponent implements OnInit {
   }
 
   private label(opts: LookupOption[], key: string | undefined): string {
-    if (!key) return '—';
+    if (!key) return '-';
     return lookupLabel(opts, key);
   }
 
@@ -691,7 +691,7 @@ export class StepSummaryComponent implements OnInit {
   ): string {
     const label = this.label(opts, key);
     const typed = text.trim();
-    return key === otherKey && typed ? `${label} — ${typed}` : label;
+    return key === otherKey && typed ? `${label}, ${typed}` : label;
   }
 
   // Stage 5 (FNOL/claim-file model fix): loss information captured at step 1
@@ -766,7 +766,7 @@ export class StepSummaryComponent implements OnInit {
     const claim: Claim = {
       claimId,
       policyNumber: polNo || '',
-      clientName: pol?.clientName ?? '—',
+      clientName: pol?.clientName ?? '-',
       broker: null,
       assignee: null,
       createdBy: CREATOR.name,

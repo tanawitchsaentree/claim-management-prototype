@@ -232,7 +232,7 @@ export class EditLossInformationComponent implements OnInit {
 
   private qualify(label: string, isOther: boolean, specify: string): string {
     const typed = specify.trim();
-    return isOther && typed ? `${label} — ${typed}` : label;
+    return isOther && typed ? `${label}, ${typed}` : label;
   }
 
   private specifyValue(key: SpecifyOtherKey): string {
@@ -536,7 +536,7 @@ export class EditLossInformationComponent implements OnInit {
       this.form.markAllAsTouched();
       const invalidKey = this.firstInvalidField() ?? (cbiIncomplete ? 'cbi' : null);
       if (invalidKey) this.startEdit(invalidKey);
-      this.saveBlocked.set("Can't update yet — some details are still incomplete.");
+      this.saveBlocked.set("Can't update yet: some details are still incomplete.");
       this.live.announce(this.saveBlocked()!, 'assertive');
       return;
     }

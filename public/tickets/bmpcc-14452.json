@@ -22,7 +22,7 @@
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
+        "description": "Uses CLM-2024-001's existing provider assignments: no override needed",
         "preconditions": [
           {
             "text": "At least one provider row shows Rate this adjuster",

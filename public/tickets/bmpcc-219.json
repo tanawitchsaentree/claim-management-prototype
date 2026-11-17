@@ -6,7 +6,7 @@
   "pages": ["fnol-loss-info"],
   "walkthroughSteps": [
     "Land on /fnol/loss-information; the wizard must already be past the search step",
-    "Open the 'Locations of loss' card → 'Add location' — a chooser now opens with Find in policy / Retrieve from CWB / Enter manually (LocationSourceModalComponent, added so the already-built CWB modal is actually reachable)",
+    "Open the 'Locations of loss' card → 'Add location', a chooser now opens with Find in policy / Retrieve from CWB / Enter manually (LocationSourceModalComponent, added so the already-built CWB modal is actually reachable)",
     {
       "targetId": "lsm-cwb-option",
       "title": "Retrieve from CWB",
@@ -20,7 +20,7 @@
       "expectedAfterClick": "Opens the CWB search modal (7 fields, multi-select results, plus a manual-entry fallback section).",
       "direction": "top"
     },
-    "Pick a country → Search → select a result → Confirm — the location picker's table now shows the address with a 'From CWB' tag under it"
+    "Pick a country → Search → select a result → Confirm, the location picker's table now shows the address with a 'From CWB' tag under it"
   ],
   "acceptanceCriteria": [
     {
@@ -33,7 +33,7 @@
         "description": "Seed FNOL policy so the user lands directly on Loss Information",
         "preconditions": [
           {
-            "text": "FNOL is past search — selected policy POL-2024-001",
+            "text": "FNOL is past search: selected policy POL-2024-001",
             "page": "fnol-loss-info",
             "role": "setup",
             "hint": "fnolStateOverride pre-selects the policy"
@@ -75,20 +75,20 @@
       "howToTest": {
         "route": "/fnol/loss-information",
         "trigger": "Click 'Add location' in the Locations of loss card",
-        "expectedResult": "Three radio modes visible — including 'Retrieve from CWB'"
+        "expectedResult": "Three radio modes visible: including 'Retrieve from CWB'"
       }
     },
     {
       "id": "AC-02",
       "statement": "Clicking 'Retrieve from CWB' opens the external-system modal (MFE)",
-      "plainStatement": "Selecting **Retrieve from CWB** + clicking *Search in CWB* opens a modal labelled *Commercial Work Bench (CWB)* with an `External system` badge — visually signalling an external lookup.",
+      "plainStatement": "Selecting **Retrieve from CWB** + clicking *Search in CWB* opens a modal labelled *Commercial Work Bench (CWB)* with an `External system` badge: visually signalling an external lookup.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
-        "description": "Same as AC-01 — seed CWB has 6 records under POL-2024-001 already",
+        "description": "Same as AC-01: seed CWB has 6 records under POL-2024-001 already",
         "preconditions": [
           {
-            "text": "Modal opens with header 'Commercial Work Bench (CWB) — Location search'",
+            "text": "Modal opens with header 'Commercial Work Bench (CWB): Location search'",
             "page": "fnol-loss-info",
             "role": "tested-visible"
           },
@@ -115,7 +115,7 @@
       "expectedUI": {
         "description": "Modal styled to indicate external system",
         "visualCues": [
-          "Header reads 'Commercial Work Bench (CWB) — Location search'",
+          "Header reads 'Commercial Work Bench (CWB): Location search'",
           "External system badge with link icon visible",
           "Subtitle: 'Retrieve a property record from CWB and link it to the loss.'"
         ]
@@ -139,7 +139,7 @@
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
-        "description": "Same setup as AC-01 — opens modal with pre-filled values",
+        "description": "Same setup as AC-01: opens modal with pre-filled values",
         "preconditions": [
           {
             "text": "Policy number = POL-2024-001 (read-only)",
@@ -196,7 +196,7 @@
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
-        "description": "Open modal — Country is the only blank required field",
+        "description": "Open modal: Country is the only blank required field",
         "preconditions": [
           {
             "text": "On modal open, Search button is disabled (Country empty)",
@@ -251,7 +251,7 @@
     {
       "id": "AC-05",
       "statement": "Selection persists into the Loss Location form",
-      "plainStatement": "Picking a CWB result and clicking **Confirm selection** *closes* the modal and adds the result as a *Loss Location* card in the picker — labelled **From CWB** with the address, postal code, city and country mapped from the CWB row.",
+      "plainStatement": "Picking a CWB result and clicking **Confirm selection** *closes* the modal and adds the result as a *Loss Location* card in the picker, labelled **From CWB** with the address, postal code, city and country mapped from the CWB row.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
@@ -297,7 +297,7 @@
       "expectedUI": {
         "description": "After confirm, picker enters 'selected' state with one CWB-sourced card",
         "visualCues": [
-          "Card shows location name (e.g. 'Liver Tea Group — Munich HQ')",
+          "Card shows location name (e.g. 'Liver Tea Group: Munich HQ')",
           "Card shows full address line + postal + city + country",
           "Meta line shows 'CWB-LOC-XXX • From CWB'"
         ]
@@ -308,7 +308,7 @@
       "howToTest": {
         "route": "/fnol/loss-information",
         "trigger": "Open CWB modal → Country=DE → Search → pick CWB-LOC-001 → Confirm",
-        "expectedResult": "Modal closes; 'Liver Tea Group — Munich HQ' card appears with 'From CWB' label"
+        "expectedResult": "Modal closes; 'Liver Tea Group: Munich HQ' card appears with 'From CWB' label"
       }
     }
   ]

@@ -114,7 +114,7 @@ export class ClaimDevDetailsModalComponent implements OnInit {
     const openTasks = tasks.filter(t => t.status !== 'done').length;
     const openSections = sections.filter(s => s.status !== 'Closed').length;
     return {
-      status: overview?.status ?? '—',
+      status: overview?.status ?? '-',
       tasks: `${openTasks} pending · ${tasks.length - openTasks} done`,
       sections: `${openSections} open · ${sections.length - openSections} closed`,
       canClose: openTasks === 0 && openSections === 0 && overview?.status !== 'Closed'

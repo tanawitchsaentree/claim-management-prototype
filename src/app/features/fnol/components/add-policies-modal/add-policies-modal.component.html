@@ -11,7 +11,7 @@
 <div class="apm-body" tabindex="0">
   <p class="apm-intro">
     These policies are not on the claim. Adding one makes its entities available for selection on
-    Entities &amp; damages — nothing else about the claim changes.
+    Entities &amp; damages: nothing else about the claim changes.
   </p>
 
   <!-- audit-exempt: this table cannot be empty. The banner that opens this modal
@@ -62,7 +62,7 @@
 <div class="apm-footer">
   @if (selectedCount > 0) {
     <span class="apm-selected-count">
-      {{ selectedCount }} selected — {{ selectedEntityCount }} entities become available
+      {{ selectedCount }} selected: {{ selectedEntityCount }} entities become available
     </span>
   }
   <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>

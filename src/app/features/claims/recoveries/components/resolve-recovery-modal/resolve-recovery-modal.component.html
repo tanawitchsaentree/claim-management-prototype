@@ -6,7 +6,7 @@
     </button>
   </div>
   <p class="rrc-subtitle">
-    {{ recovery.route }} against {{ recovery.counterparty }} — expected {{ recovery.currency }}
+    {{ recovery.route }} against {{ recovery.counterparty }}, expected {{ recovery.currency }}
     {{ recovery.estimatedAmount | number: '1.0-0' }}
   </p>
 </div>
@@ -19,9 +19,9 @@
       class="rrc-radio-group"
       aria-labelledby="rrc-question"
     >
-      <nx-radio value="Recovered" labelSize="small">Recovered — money came back</nx-radio>
+      <nx-radio value="Recovered" labelSize="small">Recovered: money came back</nx-radio>
       <nx-radio value="Written off" labelSize="small"
-        >Written off — no money will be recovered</nx-radio
+        >Written off: no money will be recovered</nx-radio
       >
     </nx-radio-group>
 
@@ -29,8 +29,7 @@
       <nx-formfield [label]="'Amount recovered (' + recovery.currency + ')'">
         <input nxInput type="number" min="1" formControlName="recoveredAmount" placeholder="0" />
         <nx-hint nxFormfieldHint>
-          Expected was {{ recovery.currency }} {{ recovery.estimatedAmount | number: '1.0-0' }} —
-          record what actually came back, net of costs.
+          Expected was {{ recovery.currency }} {{ recovery.estimatedAmount | number: '1.0-0' }}, record what actually came back, net of costs.
         </nx-hint>
         <nx-error nxFormfieldError>An amount greater than 0 is required.</nx-error>
       </nx-formfield>

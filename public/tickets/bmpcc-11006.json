@@ -1,28 +1,28 @@
 {
   "ticketId": "BMPCC-11006",
   "module": "FNOL",
-  "title": "Orphan Claim — Convert to Regular (link policy in place, land on Overview)",
+  "title": "Orphan Claim: Convert to Regular (link policy in place, land on Overview)",
   "targetClaim": "SK-2024-001",
   "pages": ["fnol-search"],
   "walkthroughSteps": [
-    "Apply AC-01 — lands on /fnol/search with a blank form. Type 'Jonas Kaufmann' into Client name and click Search — no state override is needed to find SK-2024-001, since the Claims-tab search already runs against every claim including orphans/skeletons.",
-    "On the Claims tab, open SK-2024-001's kebab menu and click 'Convert to claim' — this is the real button, same one available directly on the claim's own Overview page.",
+    "Apply AC-01: lands on /fnol/search with a blank form. Type 'Jonas Kaufmann' into Client name and click Search, no state override is needed to find SK-2024-001, since the Claims-tab search already runs against every claim including orphans/skeletons.",
+    "On the Claims tab, open SK-2024-001's kebab menu and click 'Convert to claim', this is the real button, same one available directly on the claim's own Overview page.",
     "A modal opens showing policies matching Jonas Kaufmann, flagged eligible/ineligible (client match + loss date inside coverage). Select the eligible one (POL-2024-021) and click 'Continue conversion'.",
-    "Lands directly on /claims/SK-2024-001/overview (2026-09-14 change — no FNOL wizard walk anymore). Same claimId, same history: status is now 'Open', policy number is set, line of business updated from the policy.",
-    "A 'This claim needs setup' banner is visible (claimType is still 'skeleton' and it has zero sections) with links to Sections and Financial — this is what tells the handler what's left, since Entities & Damages / Parties / Reserves were never collected through a wizard for this claim.",
-    "Add a section from the Sections page — the banner disappears permanently once one exists.",
-    "Use 'Update reserves' on the Financial Overview page (Reserves view) to set a reserve — this button had no handler at all before 2026-09-14; it's real now.",
-    "Alternate entry point: the same 'Convert to claim' button also lives directly on the claim's Overview page (for a handler who reached it via the Dashboard's Claim Portfolio widget, not Search) — both paths call the same code and end at the same place."
+    "Lands directly on /claims/SK-2024-001/overview (2026-09-14 change, no FNOL wizard walk anymore). Same claimId, same history: status is now 'Open', policy number is set, line of business updated from the policy.",
+    "A 'This claim needs setup' banner is visible (claimType is still 'skeleton' and it has zero sections) with links to Sections and Financial, this is what tells the handler what's left, since Entities & Damages / Parties / Reserves were never collected through a wizard for this claim.",
+    "Add a section from the Sections page, the banner disappears permanently once one exists.",
+    "Use 'Update reserves' on the Financial Overview page (Reserves view) to set a reserve, this button had no handler at all before 2026-09-14; it's real now.",
+    "Alternate entry point: the same 'Convert to claim' button also lives directly on the claim's Overview page (for a handler who reached it via the Dashboard's Claim Portfolio widget, not Search), both paths call the same code and end at the same place."
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Convert to claim links the policy onto the same claim record and lands on its Overview — no FNOL wizard",
-      "plainStatement": "Clicking **Convert to claim** (from the Claims-tab kebab, or the button on the claim's own Overview page) opens a policy-picker modal. Selecting an eligible policy **updates the same claim record in place** — `policyNumber`, `lineOfBusiness`, and `status` ('Awaiting policy' → 'Open') — and lands on `/claims/:id/overview`. No new claim is created; the claim keeps its original ID. The FNOL wizard is never opened for this flow.",
+      "statement": "Convert to claim links the policy onto the same claim record and lands on its Overview, no FNOL wizard",
+      "plainStatement": "Clicking **Convert to claim** (from the Claims-tab kebab, or the button on the claim's own Overview page) opens a policy-picker modal. Selecting an eligible policy **updates the same claim record in place**, `policyNumber`, `lineOfBusiness`, and `status` ('Awaiting policy' → 'Open'): and lands on `/claims/:id/overview`. No new claim is created; the claim keeps its original ID. The FNOL wizard is never opened for this flow.",
       "page": "fnol-search",
       "buildStatus": "done",
       "setup": {
-        "description": "SK-2024-001 is static seed data (claims.json) with status 'Awaiting policy' — no state override needed. Search 'Jonas Kaufmann' manually, then use the real kebab action.",
+        "description": "SK-2024-001 is static seed data (claims.json) with status 'Awaiting policy', no state override needed. Search 'Jonas Kaufmann' manually, then use the real kebab action.",
         "preconditions": [
           {
             "text": "Claims tab shows SK-2024-001, status 'Awaiting Policy', with a kebab menu offering 'Convert to claim'",
@@ -38,7 +38,7 @@
         ]
       },
       "expectedUI": {
-        "description": "Convert to claim lands directly on Overview, already updated — no FNOL wizard involved",
+        "description": "Convert to claim lands directly on Overview, already updated, no FNOL wizard involved",
         "visualCues": [
           "Claims tab row for SK-2024-001 with a working kebab 'Convert to claim' item",
           "Convert modal: policy list with eligible/ineligible reasons, 'Continue conversion' button",
@@ -49,7 +49,7 @@
       "howToTest": {
         "route": "/fnol/search",
         "trigger": "Search 'Jonas Kaufmann' → click the Claims tab → open SK-2024-001's kebab → Convert to claim → select POL-2024-021 → Continue conversion",
-        "expectedResult": "Lands on /claims/SK-2024-001/overview with status 'Open', policy set, and the setup banner visible — no FNOL step ever opened"
+        "expectedResult": "Lands on /claims/SK-2024-001/overview with status 'Open', policy set, and the setup banner visible, no FNOL step ever opened"
       }
     }
   ]

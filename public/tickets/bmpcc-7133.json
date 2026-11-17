@@ -10,7 +10,7 @@
       "targetId": "ld-policy-limits",
       "title": "Policy limits",
       "body": "Policy limits are shown per type and amount here, with Deductibles listed separately below.",
-      "expectedAfterClick": "No interaction here — this step is pointing at the section itself. A claim/section level toggle above switches which level's limits and deductibles are shown.",
+      "expectedAfterClick": "No interaction here: this step is pointing at the section itself. A claim/section level toggle above switches which level's limits and deductibles are shown.",
       "direction": "bottom"
     }
   ],
@@ -22,7 +22,7 @@
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses CLM-2024-001's existing limits/deductibles data — no override needed",
+        "description": "Uses CLM-2024-001's existing limits/deductibles data: no override needed",
         "preconditions": [
           {
             "text": "Policy limits section visible with a level toggle",

@@ -232,7 +232,7 @@ export class ClaimClosureService {
     const systemUser = { userId: 'system', name: 'System' };
     return this.sectionSvc.closeSection(sectionId, systemUser, 'Section Finalised').pipe(
       tap(closed => {
-        this.toast.success(`Section ${closed.name} auto-closed — final payment received`);
+        this.toast.success(`Section ${closed.name} auto-closed: final payment received`);
         this.maybeAutoCloseClaim(claimId);
       })
     );

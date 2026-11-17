@@ -98,7 +98,7 @@ export class ReserveListComponent implements OnChanges {
   }
 
   reserveTypeLabel(type?: ReserveType): string {
-    return type ? RESERVE_TYPE_LABELS[type] : '—';
+    return type ? RESERVE_TYPE_LABELS[type] : '-';
   }
 
   trackByReserve(_: number, r: Reserve): string {

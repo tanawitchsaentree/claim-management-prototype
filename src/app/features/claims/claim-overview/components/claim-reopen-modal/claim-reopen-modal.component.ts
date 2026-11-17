@@ -190,7 +190,7 @@ export class ClaimReopenModalComponent {
     this.saveError.set(null);
 
     const v = this.form.value;
-    const reason = v.note?.trim() ? `${v.reason} — ${v.note!.trim()}` : v.reason!;
+    const reason = v.note?.trim() ? `${v.reason}, ${v.note!.trim()}` : v.reason!;
     const reopenedBy = { userId: 'usr-current', name: this.claim.assignedHandler };
 
     const payload: ReopenPayload = {

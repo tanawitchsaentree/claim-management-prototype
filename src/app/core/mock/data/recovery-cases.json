@@ -4,7 +4,7 @@
     "claimId": "CLM-2024-003",
     "route": "Subrogation",
     "counterparty": "Rheinbogen Carriers GmbH",
-    "sectionRef": "Section 1 — Cargo damage",
+    "sectionRef": "Section 1: Cargo damage",
     "currency": "USD",
     "estimatedAmount": 120000,
     "recoveredAmount": 0,
@@ -19,7 +19,7 @@
     "claimId": "CLM-2024-003",
     "route": "Salvage",
     "counterparty": "Nordwerk Salvage Auctions",
-    "sectionRef": "Section 1 — Cargo damage",
+    "sectionRef": "Section 1: Cargo damage",
     "currency": "USD",
     "estimatedAmount": 18000,
     "recoveredAmount": 16400,
@@ -29,6 +29,6 @@
     "resolvedDate": "2024-04-11",
     "owner": "Elke Dorn",
     "note": "Water-damaged pallets released for salvage auction with the insured's written consent.",
-    "outcomeNote": "Auction settled at USD 16,400 — below estimate after disposal costs were deducted."
+    "outcomeNote": "Auction settled at USD 16,400, below estimate after disposal costs were deducted."
   }
 ]

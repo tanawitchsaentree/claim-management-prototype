@@ -35,7 +35,7 @@
               <span class="as-sr-only">{{ r.reserveId }}</span>
             </td>
             <td nxCell>{{ r.party }}{{ r.sectionCode ? ' | ' + r.sectionCode : '' }}</td>
-            <td nxCell>{{ r.damagedItem || '—' }}</td>
+            <td nxCell>{{ r.damagedItem || '-' }}</td>
             <td nxCell>{{ r.reserveType }}</td>
             <td nxCell>{{ r.reserveSubType }}</td>
             <td nxCell class="as-num as-pin as-pin--out">{{ r.reserveValue | number: '1.0-2' }}</td>

@@ -3,7 +3,7 @@
     <p class="step-breadcrumb">Claim notification</p>
     <h1 class="step-title">Parties</h1>
     <p class="step-subtitle">
-      This claim has no linked policy yet, so parties start empty. Add anyone involved — for
+      This claim has no linked policy yet, so parties start empty. Add anyone involved: for
       example, another insurer that has reached out about this loss.
     </p>
     <!-- Toolbar -->
@@ -26,7 +26,7 @@
       @if (vm.parties.length === 0) {
         <app-empty-state
           message="No parties yet."
-          hint='Use "Add party" to get started — this step is optional.'
+          hint='Use "Add party" to get started: this step is optional.'
         ></app-empty-state>
       } @else {
         <table nxTable class="parties-table">

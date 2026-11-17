@@ -138,7 +138,7 @@ export class RiskAnalysisComponent implements OnInit {
     const updated = await firstValueFrom(this.svc.markNoRisk(this.claimId));
     if (updated) {
       this.model.set(updated);
-      this.toast.success('Marked as No risk', 'Risk score set to 1/5 — Low risk');
+      this.toast.success('Marked as No risk', 'Risk score set to 1/5, Low risk');
     }
     this.markingNoRisk.set(false);
   }

@@ -562,7 +562,7 @@ export class Sections {
     if (blockers.length) {
       this.toast.error(
         `Can't remove "${entity.name}"`,
-        `${section.name} has ${blockers.join(', ')} — resolve that first.`
+        `${section.name} has ${blockers.join(', ')}, resolve that first.`
       );
       return;
     }

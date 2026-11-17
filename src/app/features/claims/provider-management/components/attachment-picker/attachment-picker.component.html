@@ -34,7 +34,7 @@
       [attr.aria-describedby]="fileError() ? fileErrorId : null"
     />
   </label>
-  <p class="ap-hint">PDF, DOC, DOCX, JPG, PNG — up to 10 MB per file.</p>
+  <p class="ap-hint">PDF, DOC, DOCX, JPG, PNG, up to 10 MB per file.</p>
   @if (fileError()) {
     <p class="ap-error" [id]="fileErrorId" role="alert">{{ fileError() }}</p>
   }

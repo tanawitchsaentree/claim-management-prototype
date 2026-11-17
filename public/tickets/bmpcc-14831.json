@@ -10,7 +10,7 @@
       "targetId": "fo-transaction-summary",
       "title": "Transaction summary",
       "body": "This is the Transaction Summary section this ticket's layout redesign covers.",
-      "expectedAfterClick": "No interaction here — this step is pointing at the section itself. Note: this build shows a plain item count, not the paginated view the design calls for; pagination isn't implemented yet.",
+      "expectedAfterClick": "No interaction here: this step is pointing at the section itself. Note: this build shows a plain item count, not the paginated view the design calls for; pagination isn't implemented yet.",
       "direction": "bottom"
     }
   ],
@@ -18,11 +18,11 @@
     {
       "id": "AC-01",
       "statement": "Financial Overview shows a Transaction Summary section with an item count",
-      "plainStatement": "Financial Overview's **Transaction Summary** section lists transactions with a running item count. **NOTE [accepted-deviation]:** the ticket calls for pagination on this table; the current build shows a plain count instead, no page controls. Treated as `done` for the layout — pending product sign-off on whether pagination ships.",
+      "plainStatement": "Financial Overview's **Transaction Summary** section lists transactions with a running item count. **NOTE [accepted-deviation]:** the ticket calls for pagination on this table; the current build shows a plain count instead, no page controls. Treated as `done` for the layout: pending product sign-off on whether pagination ships.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses CLM-2024-001's existing financial data — no override needed",
+        "description": "Uses CLM-2024-001's existing financial data: no override needed",
         "preconditions": [
           {
             "text": "Transaction Summary section visible with item count",

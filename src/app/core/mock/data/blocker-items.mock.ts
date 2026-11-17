@@ -16,7 +16,7 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
     {
       id: 'CLM-LIT-002',
       title: 'CLM-LIT-002',
-      description: 'Liability allocation — contributory negligence',
+      description: 'Liability allocation: contributory negligence',
       status: 'Pending review',
       lastUpdated: '2026-06-15',
       assignee: 'External counsel',
@@ -29,7 +29,7 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
     {
       id: 'RSV-001',
       title: 'RSV-001',
-      description: 'Property repair reserve — EUR 50,000',
+      description: 'Property repair reserve: EUR 50,000',
       status: 'Open',
       lastUpdated: '2026-06-01',
       assignee: 'John Smith',
@@ -40,7 +40,7 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
     {
       id: 'RSV-002',
       title: 'RSV-002',
-      description: 'Legal cost reserve — EUR 25,000',
+      description: 'Legal cost reserve: EUR 25,000',
       status: 'Open',
       lastUpdated: '2026-06-08',
       assignee: 'Legal Team',
@@ -53,7 +53,7 @@ export const MOCK_BLOCKER_ITEMS: Record<string, BlockerItem[]> = {
     {
       id: 'PAY-001',
       title: 'PAY-001',
-      description: 'Indemnity payment — EUR 15,000',
+      description: 'Indemnity payment: EUR 15,000',
       status: 'Pending settlement',
       lastUpdated: '2026-06-18',
       assignee: 'Finance Team',

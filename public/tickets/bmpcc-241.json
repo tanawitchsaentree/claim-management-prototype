@@ -1,21 +1,21 @@
 {
   "ticketId": "BMPCC-241",
   "module": "FNOL",
-  "title": "Orphan Claim — Notifier (no Internal) + Parties + Location (Loss → Parties → Location → Summary)",
+  "title": "Orphan Claim: Notifier (no Internal) + Parties + Location (Loss → Parties → Location → Summary)",
   "targetClaim": "CL-2025-001",
   "pages": ["fnol-skeleton"],
   "walkthroughSteps": [
-    "Apply an AC — pushes FNOL state into the orphan path. Land on /fnol/skeleton-create — left nav shows 3 steps (Loss / Parties / Summary)",
+    "Apply an AC: pushes FNOL state into the orphan path. Land on /fnol/skeleton-create: left nav shows 3 steps (Loss / Parties / Summary)",
     "Fill Client + Reason on the Loss page",
     {
       "targetId": "skc-notifier-type",
       "title": "Notifier type",
-      "body": "Only Broker or Insured — Internal is deliberately not offered, since internal staff register the claim but are never the notifier themselves. Picking Broker opens the Search broker modal; Insured shows a single free-text input.",
+      "body": "Only Broker or Insured: Internal is deliberately not offered, since internal staff register the claim but are never the notifier themselves. Picking Broker opens the Search broker modal; Insured shows a single free-text input.",
       "direction": "bottom"
     },
-    "Location capture lives on the Loss page itself (2026-09-11, Vasudha feedback — same placement as the regular happy-path flow, not a separate step): 'Add location' opens the manual-entry modal directly — location-picker.component.ts's addLocation() skips the policy-search branch entirely when there's no linked policy, so there's no 'select from contract location' option here. The modal now also offers a GIS address search (type-ahead, independent of any policy) that prefills the manual fields on selection.",
-    "Click 'Next' (this page never submits — creation happens on Summary) → /fnol/skeleton-parties, starting empty except for the broker carried over from the notifier screen if one was picked",
-    "Optionally 'Add party' (e.g. a different insurer) — parties are never mandatory, Next always works",
+    "Location capture lives on the Loss page itself (2026-09-11, Vasudha feedback, same placement as the regular happy-path flow, not a separate step): 'Add location' opens the manual-entry modal directly, location-picker.component.ts's addLocation() skips the policy-search branch entirely when there's no linked policy, so there's no 'select from contract location' option here. The modal now also offers a GIS address search (type-ahead, independent of any policy) that prefills the manual fields on selection.",
+    "Click 'Next' (this page never submits: creation happens on Summary) → /fnol/skeleton-parties, starting empty except for the broker carried over from the notifier screen if one was picked",
+    "Optionally 'Add party' (e.g. a different insurer): parties are never mandatory, Next always works",
     {
       "targetId": "sks-create-button",
       "title": "Create",
@@ -27,8 +27,8 @@
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Notifier section uses a Broker / Insured radio — Internal is not offered",
-      "plainStatement": "On the **Loss information** page of the orphan flow, a *radio toggle* picks the notifier type (`Broker` / `Insured`) — only the relevant input renders below. Picking **Broker** opens the *Search broker* modal (Name management — IPM-backed). Picking **Insured** shows a single free-text input. **Internal is intentionally excluded**: internal staff (adjuster/colleague) can register the claim but are never the notifier — the actual notifying party is always external.",
+      "statement": "Notifier section uses a Broker / Insured radio, Internal is not offered",
+      "plainStatement": "On the **Loss information** page of the orphan flow, a *radio toggle* picks the notifier type (`Broker` / `Insured`): only the relevant input renders below. Picking **Broker** opens the *Search broker* modal (Name management, IPM-backed). Picking **Insured** shows a single free-text input. **Internal is intentionally excluded**: internal staff (adjuster/colleague) can register the claim but are never the notifier, the actual notifying party is always external.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -52,10 +52,10 @@
         }
       },
       "expectedUI": {
-        "description": "Loss information page with Notifier radio + dynamic field — no Internal option",
+        "description": "Loss information page with Notifier radio + dynamic field, no Internal option",
         "visualCues": [
           "Section heading 'Notifier' between Reason and Notes",
-          "Radio group: Broker / Insured only (Broker default) — no third 'Internal' option",
+          "Radio group: Broker / Insured only (Broker default), no third 'Internal' option",
           "Broker selected: 'Search broker' button opens the Name management modal (filters + table + Add Selected)",
           "Insured selected: single labelled free-text input",
           "Selected broker shows as a card with Legal name + IPM id + Change/Remove actions"
@@ -65,17 +65,17 @@
       "howToTest": {
         "route": "/fnol/skeleton-create",
         "trigger": "Scroll the Loss form, observe the Notifier section",
-        "expectedResult": "Exactly two radio options render (Broker, Insured) — no Internal"
+        "expectedResult": "Exactly two radio options render (Broker, Insured), no Internal"
       }
     },
     {
       "id": "AC-02",
       "statement": "Left navigation shows Loss / Parties / Summary for orphan flow",
-      "plainStatement": "The FNOL **left navigation** shows three steps for the orphan path: `Loss` (/fnol/skeleton-create), `Parties` (/fnol/skeleton-parties), and `Summary` (/fnol/skeleton-summary). Re-uses the existing FnolStepperComponent. Location capture is NOT its own step — see AC-06 — it lives on the Loss page, same placement as the regular happy-path flow.",
+      "plainStatement": "The FNOL **left navigation** shows three steps for the orphan path: `Loss` (/fnol/skeleton-create), `Parties` (/fnol/skeleton-parties), and `Summary` (/fnol/skeleton-summary). Re-uses the existing FnolStepperComponent. Location capture is NOT its own step, see AC-06, it lives on the Loss page, same placement as the regular happy-path flow.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
-        "description": "Same as AC-01 — orphan path active",
+        "description": "Same as AC-01: orphan path active",
         "preconditions": [
           {
             "text": "Sidebar stepper shows 'Loss' active, 'Parties'/'Summary' pending",
@@ -106,13 +106,13 @@
       "howToTest": {
         "route": "/fnol/skeleton-create",
         "trigger": "Observe the FNOL shell sidebar",
-        "expectedResult": "Three steps render — Loss, Parties, Summary"
+        "expectedResult": "Three steps render: Loss, Parties, Summary"
       }
     },
     {
       "id": "AC-03",
       "statement": "Loss page button reads 'Next' (was 'Create skeleton claim')",
-      "plainStatement": "The footer button on the Loss page is **Next** — it does *not* submit the claim, only navigates to the Parties page. Submission happens on Summary, at the end of the chain.",
+      "plainStatement": "The footer button on the Loss page is **Next**, it does *not* submit the claim, only navigates to the Parties page. Submission happens on Summary, at the end of the chain.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
@@ -124,7 +124,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Clicking Next does not create the claim — it navigates to Parties",
+            "text": "Clicking Next does not create the claim, it navigates to Parties",
             "page": "fnol-skeleton",
             "role": "tested-visible"
           }
@@ -140,7 +140,7 @@
         "visualCues": [
           "Back button (tertiary) on the left",
           "Next button (primary) on the right",
-          "No spinner on Next — pure navigation"
+          "No spinner on Next: pure navigation"
         ]
       },
       "expectedOutcome": {},
@@ -153,11 +153,11 @@
     {
       "id": "AC-04",
       "statement": "Summary page reviews Loss + Locations + Parties + Notifier and creates on Confirm",
-      "plainStatement": "The Summary page shows read-only review blocks — `Loss`, `Locations of loss`, `Parties`, and `Notifier` — and a **Create** button that submits the skeleton claim. Success state shows a banner with the new claim ID and a 'Go to dashboard' action.",
+      "plainStatement": "The Summary page shows read-only review blocks, `Loss`, `Locations of loss`, `Parties`, and `Notifier`, and a **Create** button that submits the skeleton claim. Success state shows a banner with the new claim ID and a 'Go to dashboard' action.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
-        "description": "Same setup — orphan path",
+        "description": "Same setup: orphan path",
         "preconditions": [
           {
             "text": "Summary page shows 'Loss' card with Client / Reason / Notes",
@@ -165,7 +165,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "Summary page shows 'Parties' card — empty state if none added, or a list of legal name + roles",
+            "text": "Summary page shows 'Parties' card: empty state if none added, or a list of legal name + roles",
             "page": "fnol-skeleton",
             "role": "tested-visible"
           },
@@ -191,8 +191,8 @@
         "visualCues": [
           "Info banner: 'Review the details below. Click Create to register…'",
           "Loss card with 3 fields (Client / Reason / Notes)",
-          "Locations of loss card — list or 'No locations selected.'",
-          "Parties card — list of 'Legal name · Roles' or 'No parties added.'",
+          "Locations of loss card: list or 'No locations selected.'",
+          "Parties card: list of 'Legal name · Roles' or 'No parties added.'",
           "Notifier card with Broker or Insured (never Internal)",
           "Footer: Back + Create"
         ]
@@ -206,8 +206,8 @@
     },
     {
       "id": "AC-05",
-      "statement": "Parties page starts empty, carries over the notifier broker, and supports adding another party — never mandatory",
-      "plainStatement": "The **Parties** page does *not* pre-populate from a policy — there is none for an orphan claim, so it starts empty except for the broker carried over from the notifier screen (if one was selected there). The user can **Add party** to cover cases like a different insurer reaching out about the claim. Parties are **not mandatory** — Next always works, same rule as the regular claim flow.",
+      "statement": "Parties page starts empty, carries over the notifier broker, and supports adding another party, never mandatory",
+      "plainStatement": "The **Parties** page does *not* pre-populate from a policy, there is none for an orphan claim, so it starts empty except for the broker carried over from the notifier screen (if one was selected there). The user can **Add party** to cover cases like a different insurer reaching out about the claim. Parties are **not mandatory**: Next always works, same rule as the regular claim flow.",
       "page": "fnol-skeleton-parties",
       "buildStatus": "done",
       "setup": {
@@ -219,7 +219,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "'Add party' opens the party search modal — same modal used by the regular claim flow",
+            "text": "'Add party' opens the party search modal, same modal used by the regular claim flow",
             "page": "fnol-skeleton-parties",
             "role": "tested-visible"
           },
@@ -236,11 +236,11 @@
         }
       },
       "expectedUI": {
-        "description": "Flat party list (no claim/section tree — there is no claim hierarchy without a policy)",
+        "description": "Flat party list (no claim/section tree, there is no claim hierarchy without a policy)",
         "visualCues": [
           "Toolbar: 'Number of parties: N' + 'Add party' button",
           "Broker from the notifier screen appears as the first row, role 'Broker'",
-          "Empty state reads 'No parties yet.' + 'Use \"Add party\" to get started — this step is optional.'",
+          "Empty state reads 'No parties yet.' + 'Use \"Add party\" to get started: this step is optional.'",
           "Row kebab: View details / Edit role / Remove",
           "Footer Next is never disabled by party count"
         ]
@@ -254,15 +254,15 @@
     },
     {
       "id": "AC-06",
-      "statement": "Location capture lives on the Loss page, GIS search + manual entry only — no 'select from contract location' option",
-      "plainStatement": "Location capture is **not a separate step** (superseded 2026-09-11, Vasudha feedback — 'this does not require a separate page and can be captured on the Loss Information page itself, consistent with the regular FNOL flow'). It's a 'Locations of loss' card on the Loss page, same placement as the regular happy-path flow. 'Add location' opens a modal offering a GIS address search (type-ahead, independent of any policy — selecting a suggestion prefills the address fields) plus manual Address/Coordinates entry as a fallback. It cannot use the standard Location Manager MFE's contract-location search, because that depends on a linked policy, which does not exist for an orphan claim.",
+      "statement": "Location capture lives on the Loss page, GIS search + manual entry only, no 'select from contract location' option",
+      "plainStatement": "Location capture is **not a separate step** (superseded 2026-09-11, Vasudha feedback, 'this does not require a separate page and can be captured on the Loss Information page itself, consistent with the regular FNOL flow'). It's a 'Locations of loss' card on the Loss page, same placement as the regular happy-path flow. 'Add location' opens a modal offering a GIS address search (type-ahead, independent of any policy, selecting a suggestion prefills the address fields) plus manual Address/Coordinates entry as a fallback. It cannot use the standard Location Manager MFE's contract-location search, because that depends on a linked policy, which does not exist for an orphan claim.",
       "page": "fnol-skeleton",
       "buildStatus": "done",
       "setup": {
-        "description": "Orphan path — Location card is on the Loss page, no separate step",
+        "description": "Orphan path: Location card is on the Loss page, no separate step",
         "preconditions": [
           {
-            "text": "'Add location' opens the manual-entry modal directly — no intermediate policy-location search step",
+            "text": "'Add location' opens the manual-entry modal directly, no intermediate policy-location search step",
             "page": "fnol-skeleton",
             "role": "tested-visible"
           },
@@ -284,7 +284,7 @@
           "Section heading 'Locations of loss' on the Loss page, below General information",
           "Empty state: 'Where did the loss occur?' + 'Add location' button",
           "'Add location' → modal titled 'Add location manually' with a 'Search location' box at the top (GIS type-ahead) above the Address/Coordinates form (address line 1/2, postal code, city, country, province) and an 'Optional details' section for property ID + latitude/longitude",
-          "Selecting a GIS suggestion fills the address fields — the fields stay editable afterward",
+          "Selecting a GIS suggestion fills the address fields, the fields stay editable afterward",
           "No policy-location search modal or 'select from contract' affordance anywhere on this card",
           "Added location renders as a table row with Edit / Remove via kebab"
         ]

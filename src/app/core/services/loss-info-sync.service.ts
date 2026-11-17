@@ -157,9 +157,9 @@ export class LossInfoSyncService {
     loc: LocationPickerOutput['locations'][number] | undefined
   ): Promise<string> {
     const where = loc?.city || loc?.addressLine1;
-    const label = section.name.split(' — ')[0];
+    const label = section.name.split(': ')[0];
     if (!where) return section.name;
-    const name = `${label} — ${where}`;
+    const name = `${label}: ${where}`;
     await firstValueFrom(this.sectionSvc.patchSection(section.id, { name }));
     return name;
   }

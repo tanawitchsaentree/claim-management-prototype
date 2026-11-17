@@ -22,9 +22,13 @@ import { KpiData, KpiTile } from '../../../core/models';
           (click)="select(t.key)"
           (keydown.enter)="select(t.key)"
         >
-          <span class="kpi-value">{{ t.value }}</span>
-          <span class="kpi-label">{{ t.label }}</span>
-          <nx-icon [name]="t.icon" class="kpi-icon"></nx-icon>
+          <div class="kpi-body">
+            <div class="kpi-text">
+              <span class="kpi-value">{{ t.value }}</span>
+              <span class="kpi-label">{{ t.label }}</span>
+            </div>
+            <nx-icon [name]="t.icon" class="kpi-icon"></nx-icon>
+          </div>
         </nx-card>
       }
     </div>
@@ -39,8 +43,13 @@ import { KpiData, KpiTile } from '../../../core/models';
       }
       .kpi-tile {
         flex: 1;
-        position: relative;
+        min-width: 0;
         cursor: pointer;
+      }
+      .kpi-body {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
       }
       .kpi-tile:focus-visible {
         outline: 2px solid var(--interactive-primary);
@@ -60,11 +69,12 @@ import { KpiData, KpiTile } from '../../../core/models';
         font-size: var(--paragraph-04-font-size);
         color: var(--text-muted);
       }
+      .kpi-text {
+        flex: 1;
+        min-width: 0;
+      }
       .kpi-icon {
-        position: absolute;
-        right: var(--space-base);
-        top: 50%;
-        transform: translateY(-50%);
+        flex-shrink: 0;
         font-size: 32px;
         color: var(--text-muted);
       }
@@ -96,7 +106,7 @@ export class KpiRowComponent {
         value: d.bigReserveMovements,
         label: 'Big reserve movements',
         icon: 'product-important-info',
-        hint: 'Claims with reserve delta > €50k in last 7 days — ⚑ PLACEHOLDER threshold'
+        hint: 'Claims with reserve delta > €50k in last 7 days, ⚑ PLACEHOLDER threshold'
       }
     ];
   }

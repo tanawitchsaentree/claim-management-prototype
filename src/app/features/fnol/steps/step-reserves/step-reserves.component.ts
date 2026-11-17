@@ -293,7 +293,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
       if (items.length === 0) {
         items.push({
           damagedItemId: `${section.reserveId}-DI-1`,
-          itemName: `${section.partyName} — ${section.damageType}`,
+          itemName: `${section.partyName}, ${section.damageType}`,
           expanded: true,
           subReserves: { [tab]: [blank] }
         });
@@ -370,7 +370,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   async onRemoveReserve(reserve: Reserve): Promise<void> {
     const data: ConfirmDialogData = {
       title: 'Remove reserve',
-      message: `Remove reserve for "${reserve.partyName} — ${reserve.damageType}"?`,
+      message: `Remove reserve for "${reserve.partyName}, ${reserve.damageType}"?`,
       confirmLabel: 'Remove',
       confirmDanger: true
     };
@@ -389,7 +389,7 @@ export class StepReservesComponent implements OnInit, OnDestroy {
     }
     await this.autoArchiveNarrativeIfNeeded();
     this.loadReserves();
-    this.toast.info('Reserve removed', `${reserve.partyName} — ${reserve.damageType}`);
+    this.toast.info('Reserve removed', `${reserve.partyName}, ${reserve.damageType}`);
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────

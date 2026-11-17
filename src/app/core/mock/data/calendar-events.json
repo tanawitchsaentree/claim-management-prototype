@@ -1,7 +1,7 @@
 [
   {
     "id": "cal-001",
-    "title": "Reserve review — BMW Budapest Motors",
+    "title": "Reserve review: BMW Budapest Motors",
     "date": "2026-06-09",
     "type": "review",
     "claimId": "CLM-2024-005"
@@ -15,20 +15,20 @@
   },
   {
     "id": "cal-003",
-    "title": "Litigation team call — Rhein Constructions",
+    "title": "Litigation team call: Rhein Constructions",
     "date": "2026-06-10",
     "type": "meeting",
     "claimId": "CLM-2024-009"
   },
   {
     "id": "cal-004",
-    "title": "AML check deadline — 12 claims",
+    "title": "AML check deadline: 12 claims",
     "date": "2026-06-11",
     "type": "deadline"
   },
   {
     "id": "cal-005",
-    "title": "Cyber disclosure filing — Nordbyte SE",
+    "title": "Cyber disclosure filing: Nordbyte SE",
     "date": "2026-06-11",
     "type": "deadline",
     "claimId": "CLM-2024-013"
@@ -62,7 +62,7 @@
   { "id": "cal-010", "title": "Q2 closure prep meeting", "date": "2026-06-18", "type": "meeting" },
   {
     "id": "cal-011",
-    "title": "Reserve submission deadline — Q2",
+    "title": "Reserve submission deadline: Q2",
     "date": "2026-06-24",
     "type": "deadline"
   },

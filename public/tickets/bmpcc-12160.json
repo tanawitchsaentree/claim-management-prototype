@@ -5,12 +5,12 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["any"],
   "walkthroughSteps": [
-    "Navigate to /fnol/parties — a policy is pre-selected so the step doesn't redirect to search",
+    "Navigate to /fnol/parties: a policy is pre-selected so the step doesn't redirect to search",
     {
       "targetId": "fnol-party-actions",
       "title": "Party role",
       "body": "Every party row has an actions menu with View details, Edit role, and Remove.",
-      "expectedAfterClick": "Opens the row's action menu — Edit role is where a party's role assignment changes.",
+      "expectedAfterClick": "Opens the row's action menu: Edit role is where a party's role assignment changes.",
       "direction": "left"
     }
   ],

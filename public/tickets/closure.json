@@ -5,17 +5,17 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["overview", "sections"],
   "walkthroughSteps": [
-    "Land on /claims/CLM-2024-001/overview — status chip reads 'Open'",
+    "Land on /claims/CLM-2024-001/overview: status chip reads 'Open'",
     {
       "targetId": "co-close-claim-button",
       "title": "Close Claim",
-      "body": "Always clickable (superseded the older disabled/tooltip behavior — see CHAMP-PRECLOSURE-CHECKLIST). With blockers present it opens on a Blockers step; with none, it skips straight to the checklist.",
+      "body": "Always clickable (superseded the older disabled/tooltip behavior, see CHAMP-PRECLOSURE-CHECKLIST). With blockers present it opens on a Blockers step; with none, it skips straight to the checklist.",
       "direction": "top"
     },
     {
       "targetId": "ccm-checklist",
       "title": "Pre-closure Checklist",
-      "body": "7 system-validated conditions must all pass — sections, payments, bills, recoveries & deductibles, reserves, litigation, reports.",
+      "body": "7 system-validated conditions must all pass, sections, payments, bills, recoveries & deductibles, reserves, litigation, reports.",
       "direction": "top"
     },
     {
@@ -24,8 +24,8 @@
       "body": "Required. Submitting the modal without picking one surfaces an inline validation error right here.",
       "direction": "top"
     },
-    "Continue through Retention → Confirmation → 'Yes — Close Claim': the overview status chip updates to 'Closed', a closure panel appears below the header with date/reason/handler, and the Close Claim button disappears from the right-strip",
-    "Reload the page — closed state persists via sessionStorage hydration, no flash of 'Open' before it settles"
+    "Continue through Retention → Confirmation → 'Yes: Close Claim': the overview status chip updates to 'Closed', a closure panel appears below the header with date/reason/handler, and the Close Claim button disappears from the right-strip",
+    "Reload the page: closed state persists via sessionStorage hydration, no flash of 'Open' before it settles"
   ],
   "acceptanceCriteria": [
     {
@@ -80,7 +80,7 @@
         "visualCues": [
           "Close Claim button appears greyed out",
           "Tooltip on hover: 'Cannot close: 5 pending task(s)'",
-          "Clicking button does nothing — no modal opens"
+          "Clicking button does nothing: no modal opens"
         ]
       },
       "expectedOutcome": {
@@ -103,7 +103,7 @@
     {
       "id": "AC-02",
       "statement": "Closure button disabled when open sections remain",
-      "plainStatement": "**Close Claim** button is `disabled` *when any section is still open* — even if all tasks are done.",
+      "plainStatement": "**Close Claim** button is `disabled` *when any section is still open*, even if all tasks are done.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -154,7 +154,7 @@
         "visualCues": [
           "Close Claim button appears greyed out",
           "Tooltip on hover: 'Cannot close: 3 open section(s)'",
-          "Clicking button does nothing — no modal opens"
+          "Clicking button does nothing: no modal opens"
         ]
       },
       "expectedOutcome": {
@@ -184,7 +184,7 @@
     {
       "id": "AC-03",
       "statement": "Closure button disabled when both tasks and sections are open",
-      "plainStatement": "**Close Claim** is `disabled` *when both tasks and sections are open* — tooltip lists both blockers.",
+      "plainStatement": "**Close Claim** is `disabled` *when both tasks and sections are open*, tooltip lists both blockers.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -203,7 +203,7 @@
             "hint": "Visible in Sections widget on overview"
           },
           {
-            "text": "Close Claim button is disabled — tooltip shows both blockers",
+            "text": "Close Claim button is disabled, tooltip shows both blockers",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Hover tooltip: 'Cannot close: 5 pending task(s), 3 open section(s)'"
@@ -257,17 +257,17 @@
     {
       "id": "AC-04",
       "statement": "Closure modal opens when all blockers resolved; form validates required fields",
-      "plainStatement": "When all blockers are resolved, **Close Claim** becomes `enabled` and the modal opens — *empty form submit shows validation errors*.",
+      "plainStatement": "When all blockers are resolved, **Close Claim** becomes `enabled` and the modal opens: *empty form submit shows validation errors*.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "All tasks done, all sections closed — claim ready for closure",
+        "description": "All tasks done, all sections closed, claim ready for closure",
         "preconditions": [
           {
             "text": "Close Claim button is enabled (not greyed out)",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "No tooltip appears — button is active"
+            "hint": "No tooltip appears: button is active"
           },
           {
             "text": "Clicking button opens the closure modal",
@@ -313,7 +313,7 @@
         "visualCues": [
           "Close Claim button is enabled",
           "Clicking button opens a multi-step modal",
-          "Step 1 skipped (no blockers) — lands on step 2 (reason)",
+          "Step 1 skipped (no blockers), lands on step 2 (reason)",
           "Submitting with no reason selected shows inline error",
           "Error clears when a reason is selected"
         ]
@@ -348,13 +348,13 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "All tasks done, all sections closed — claim ready for closure",
+        "description": "All tasks done, all sections closed, claim ready for closure",
         "preconditions": [
           {
             "text": "Close Claim button is enabled",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Button is active — click to open closure modal"
+            "hint": "Button is active: click to open closure modal"
           },
           {
             "text": "After Confirm: status chip changes to 'Closed'",
@@ -423,7 +423,7 @@
     {
       "id": "AC-06",
       "statement": "Closed claim shows read-only closure panel; no closure button visible",
-      "plainStatement": "A `Closed` claim shows a *read-only closure panel* — **no Close Claim button** is rendered.",
+      "plainStatement": "A `Closed` claim shows a *read-only closure panel*, **no Close Claim button** is rendered.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -511,14 +511,14 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Observe the overview page — no action needed",
+        "trigger": "Observe the overview page: no action needed",
         "expectedResult": "Closure panel visible with all 3 fields; no close button"
       }
     },
     {
       "id": "AC-07",
       "statement": "Closed state persists on page reload via sessionStorage",
-      "plainStatement": "`Closed` state *persists after page reload* via `sessionStorage` — no flash of open state.",
+      "plainStatement": "`Closed` state *persists after page reload* via `sessionStorage`, no flash of open state.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -572,7 +572,7 @@
         }
       },
       "expectedUI": {
-        "description": "After F5 reload, page still shows Closed state — no data loss",
+        "description": "After F5 reload, page still shows Closed state, no data loss",
         "visualCues": [
           "Closure panel still visible after reload",
           "Status chip still reads 'Closed'",
@@ -594,7 +594,7 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Apply this setup, then press F5 to reload the page",
-        "expectedResult": "Closed state persists — no revert to Open"
+        "expectedResult": "Closed state persists: no revert to Open"
       }
     }
   ]

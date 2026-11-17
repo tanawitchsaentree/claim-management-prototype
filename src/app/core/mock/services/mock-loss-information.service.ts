@@ -112,7 +112,7 @@ export class MockLossInformationService extends MockBaseService {
               {
                 id: `loc-${claim.claimId}`,
                 source: 'policy',
-                displayName: [claim.clientName, city].filter(Boolean).join(' — '),
+                displayName: [claim.clientName, city].filter(Boolean).join(': '),
                 addressLine1: '',
                 postalCode: '',
                 city,

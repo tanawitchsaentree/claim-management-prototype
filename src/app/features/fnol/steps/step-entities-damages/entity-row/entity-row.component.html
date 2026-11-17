@@ -29,7 +29,7 @@
     <app-status-chip [status]="entity.status" domain="entity"></app-status-chip>
   </td>
   @if (showCoveredForEvents) {
-    <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '—' }}</td>
+    <td nxCell class="col-events">{{ entity.coveredForEvents?.join(', ') || '-' }}</td>
   }
   <td nxCell class="col-limit" data-tour-id="ed-limit-column">
     @if (entity.limits?.length) {
@@ -43,7 +43,7 @@
       </ul>
     } @else {
       {{ entity.limit }}
-      @if (entity.limit !== '—') {
+      @if (entity.limit !== '-') {
         <nx-icon
           name="info-circle-o"
           class="limit-info-icon"

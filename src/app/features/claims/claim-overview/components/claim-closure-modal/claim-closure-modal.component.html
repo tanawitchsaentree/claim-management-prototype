@@ -22,7 +22,7 @@
   <!-- STEP 2 — Pre-closure checklist -->
   @if (step() === 2) {
     <p class="ccm-intro">
-      System validation — all checks must pass before the claim can be closed:
+      System validation: all checks must pass before the claim can be closed:
     </p>
     <ul class="ccm-checklist" data-tour-id="ccm-checklist">
       @for (item of checklistItems; track item.label) {
@@ -49,7 +49,7 @@
     @if (showOtherWarning) {
       <nx-message context="warning" class="ccm-warning">
         <ul class="ccm-warning-list">
-          <li>Proximate loss cause is set to "Other" — verify this is correct.</li>
+          <li>Proximate loss cause is set to "Other", verify this is correct.</li>
         </ul>
       </nx-message>
     }
@@ -164,7 +164,7 @@
       @if (saving()) {
         <nx-spinner size="small"></nx-spinner>
       } @else {
-        Yes — Close Claim
+        Yes: Close Claim
       }
     </button>
   }

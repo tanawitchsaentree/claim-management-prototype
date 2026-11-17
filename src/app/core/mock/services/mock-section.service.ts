@@ -98,7 +98,7 @@ export class MockSectionService extends MockBaseService {
     const newSection: ClaimSection = {
       id: `SEC-${now}`,
       claimId,
-      name: entities[0]?.name ? `${label} — ${entities[0].name}` : label,
+      name: entities[0]?.name ? `${label}: ${entities[0].name}` : label,
       damageType,
       status: 'Open',
       expanded: true,

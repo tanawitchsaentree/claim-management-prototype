@@ -5,7 +5,7 @@
       <!-- ─── SEARCH PAGE ─── -->
       @case ('search') {
         <span class="dev-banner__hint"
-          >Skip the search — pre-fill a sample client &amp; policy.</span
+          >Skip the search: pre-fill a sample client &amp; policy.</span
         >
         <button
           nxButton="secondary small"
@@ -92,8 +92,7 @@
       >
         {{ lastResult.message }}
         @if (lastResult.warnings?.length) {
-          <span class="dev-banner__result-warn">
-            — {{ lastResult.warnings!.length }} warning(s)
+          <span class="dev-banner__result-warn">, {{ lastResult.warnings!.length }} warning(s)
           </span>
         }
       </div>

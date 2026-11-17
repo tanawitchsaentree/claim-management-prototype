@@ -252,8 +252,8 @@ export class TrackerTableComponent {
       this.prototypeScenarioSvc.getTicketById(id ?? '')?.acceptanceCriteria ?? []
     ).filter(ac => ac.buildStatus !== 'todo').length;
     if (!built)
-      return 'Opens the screen in a new tab — no acceptance criteria recorded, so there is nothing specific to check';
-    return `Opens in a new tab with the scenario applied — ${built} acceptance ${built === 1 ? 'criterion' : 'criteria'} explained on arrival`;
+      return 'Opens the screen in a new tab, no acceptance criteria recorded, so there is nothing specific to check';
+    return `Opens in a new tab with the scenario applied, ${built} acceptance ${built === 1 ? 'criterion' : 'criteria'} explained on arrival`;
   }
 
   // Same auto-match PrototypeScenarioService.resolveTicketId() applies elsewhere — a ticket

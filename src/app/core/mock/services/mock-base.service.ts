@@ -66,7 +66,7 @@ export abstract class MockBaseService {
 
     const err = new HttpErrorResponse({ status, statusText, url: '/mock' });
     console.warn(
-      `[MockService] Simulated ${status} (${statusText}) — scenario: ${this.scenario.name}`
+      `[MockService] Simulated ${status} (${statusText}): scenario: ${this.scenario.name}`
     );
     return err;
   }

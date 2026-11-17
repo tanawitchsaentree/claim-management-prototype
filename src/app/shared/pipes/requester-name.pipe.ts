@@ -17,7 +17,7 @@ const KNOWN_NAMES: Record<string, string> = {
 })
 export class RequesterNamePipe implements PipeTransform {
   transform(email: string | null | undefined): string {
-    if (!email) return '—';
+    if (!email) return '-';
     const known = KNOWN_NAMES[email.toLowerCase()];
     if (known) return known;
 

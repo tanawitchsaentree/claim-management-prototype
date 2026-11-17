@@ -140,7 +140,7 @@ export class LitigationDetailComponent implements OnChanges {
   }
 
   notImplemented(label: string): void {
-    this.toast.info(`${label} — coming soon`);
+    this.toast.info(`${label}, coming soon`);
   }
 
   async openAddParty(kind: LitigationPartyKind): Promise<void> {
@@ -217,7 +217,7 @@ export class LitigationDetailComponent implements OnChanges {
 
     const changes = this.diffAgainstModel(next);
     if (!changes.length) {
-      this.toast.info('Nothing to save — no fields were changed');
+      this.toast.info('Nothing to save: no fields were changed');
       return;
     }
 

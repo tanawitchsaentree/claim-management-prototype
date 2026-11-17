@@ -62,8 +62,8 @@ export class LossEventOverviewComponent {
   private readonly router = inject(Router);
   private readonly lossEventSvc = inject(MockLossEventService);
 
-  readonly lossEventId = toSignal(this.route.paramMap.pipe(map(p => p.get('id') ?? '—')), {
-    initialValue: '—'
+  readonly lossEventId = toSignal(this.route.paramMap.pipe(map(p => p.get('id') ?? '-')), {
+    initialValue: '-'
   });
 
   /** undefined = still loading, null = no such loss event. */

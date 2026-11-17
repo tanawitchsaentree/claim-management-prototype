@@ -96,11 +96,9 @@
                   <td nxCell class="rec-col-amount">
                     @if (row.recoveredAmount > 0) {
                       {{ row.recoveredAmount | currency: row.currency : 'symbol' : '1.0-0' }}
-                    } @else {
-                      —
-                    }
+                    } @else {, }
                   </td>
-                  <td nxCell>{{ (row.expectedDate | appDate) || '—' }}</td>
+                  <td nxCell>{{ (row.expectedDate | appDate) || '-' }}</td>
                   <td nxCell>
                     <app-status-chip
                       [status]="chipStatus(row.status)"
@@ -127,7 +125,7 @@
                       </nx-context-menu>
                     } @else {
                       <span class="rec-resolved">
-                        {{ row.resolvedDate ? (row.resolvedDate | appDate) : '—' }}
+                        {{ row.resolvedDate ? (row.resolvedDate | appDate) : '-' }}
                       </span>
                     }
                   </td>

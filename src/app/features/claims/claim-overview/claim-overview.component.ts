@@ -330,7 +330,7 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   async openClosureModalAuto(): Promise<void> {
     const claim = await this.waitForClaim();
     if (!claim) {
-      console.warn('[stage] openClosureModalAuto — claim not loaded within timeout');
+      console.warn('[stage] openClosureModalAuto: claim not loaded within timeout');
       return;
     }
     // Also make sure closureCheck has resolved (validateBlockers async)
@@ -418,14 +418,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       this.overviewSvc.appendActivities(result.closedClaim.claimId, [result.activity]);
       this.toast.success(
         'Rejection submitted',
-        `${result.closedClaim.claimId} — awaiting approval`
+        `${result.closedClaim.claimId}, awaiting approval`
       );
       return;
     }
     this.closureCheck.set({ canClose: false, blockers: [] });
     this.toast.success(
       'Claim closed',
-      `${result.closedClaim.claimId} — ${result.closedClaim.closureReason}`
+      `${result.closedClaim.claimId}, ${result.closedClaim.closureReason}`
     );
   }
 

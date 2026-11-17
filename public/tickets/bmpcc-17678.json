@@ -1,7 +1,7 @@
 {
   "ticketId": "BMPCC-17678",
   "module": "Claims",
-  "title": "[FE] UI/UX QA Fixes — Approvals Widget & Approvals Journey",
+  "title": "[FE] UI/UX QA Fixes: Approvals Widget & Approvals Journey",
   "targetClaim": "CLM-2024-001",
   "pages": ["any"],
   "walkthroughSteps": [
@@ -10,7 +10,7 @@
       "targetId": "ap-row-actions",
       "title": "Approvals journey",
       "body": "Each pending request has an actions menu with Approve, Reject, and View details.",
-      "expectedAfterClick": "Opens the row's action menu — Approve/Reject drive the request's status, View details opens the full request.",
+      "expectedAfterClick": "Opens the row's action menu: Approve/Reject drive the request's status, View details opens the full request.",
       "direction": "left"
     }
   ],
@@ -22,7 +22,7 @@
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses the Approvals page's existing seeded requests — no override needed",
+        "description": "Uses the Approvals page's existing seeded requests: no override needed",
         "preconditions": [
           {
             "text": "At least one approval row with an actions menu is visible",

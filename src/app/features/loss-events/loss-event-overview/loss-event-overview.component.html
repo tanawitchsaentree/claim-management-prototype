@@ -15,7 +15,7 @@
   } @else if (overview(); as ov) {
     <p class="leo-id-label">Loss event</p>
     <div class="leo-title-row">
-      <h1 class="leo-title">{{ ov.summary.lossEventId }} — {{ ov.summary.name }}</h1>
+      <h1 class="leo-title">{{ ov.summary.lossEventId }}, {{ ov.summary.name }}</h1>
       <app-status-chip [status]="ov.summary.status" domain="claim" />
     </div>
     <p class="leo-subtitle">
@@ -66,7 +66,7 @@
                       @if (c.lossAmount > 0) {
                         {{ c.currency }} {{ c.lossAmount | number }}
                       } @else {
-                        <span class="leo-muted">—</span>
+                        <span class="leo-muted">-</span>
                       }
                     </td>
                     <td nxCell class="leo-col-action">

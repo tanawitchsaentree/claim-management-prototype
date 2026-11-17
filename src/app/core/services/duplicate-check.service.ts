@@ -68,7 +68,7 @@ export class DuplicateCheckService {
       // TODO [FNOL-DUP-2]: Replace with real API call when backend endpoint is available.
       // Silent fail is intentional — duplicate warning is advisory, not blocking.
       catchError(err => {
-        console.warn('[DuplicateCheckService] Check failed — skipping warning', err);
+        console.warn('[DuplicateCheckService] Check failed: skipping warning', err);
         return of({ hasDuplicates: false, duplicates: [] });
       })
     );

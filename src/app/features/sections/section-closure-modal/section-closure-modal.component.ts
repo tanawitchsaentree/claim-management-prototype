@@ -114,11 +114,11 @@ export class SectionClosureModalComponent {
   readonly stepTitle = computed(() => {
     switch (this.step()) {
       case 1:
-        return `Close Section — Blockers`;
+        return `Close Section: Blockers`;
       case 2:
-        return `Close Section — Pre-closure Checklist`;
+        return `Close Section: Pre-closure Checklist`;
       case 3:
-        return `Close Section — Reason`;
+        return `Close Section: Reason`;
     }
   });
 

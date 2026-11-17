@@ -172,7 +172,7 @@
                     <span class="tt-archived-badge">Archived</span>
                   }
                 </td>
-                <td nxCell class="col-epic">{{ ticket.epic?.title ?? '—' }}</td>
+                <td nxCell class="col-epic">{{ ticket.epic?.title ?? '-' }}</td>
                 <td nxCell class="col-jira-status">
                   @if (ticket.jiraStatus) {
                     <app-status-chip
@@ -181,7 +181,7 @@
                       variant="text"
                     ></app-status-chip>
                   } @else {
-                    <span class="tt-muted">—</span>
+                    <span class="tt-muted">-</span>
                   }
                 </td>
                 <td nxCell class="col-stage col-stage--ours-start">
@@ -203,11 +203,11 @@
                       domain="tracker"
                     ></app-status-chip>
                   } @else {
-                    <span class="tt-muted">—</span>
+                    <span class="tt-muted">-</span>
                   }
                 </td>
                 <td nxCell class="col-days">
-                  {{ ticket.state.blockedSince ? daysBlocked(ticket) : '—' }}
+                  {{ ticket.state.blockedSince ? daysBlocked(ticket) : '-' }}
                 </td>
                 <td nxCell class="col-indicator">
                   @if (hasPrototypeRoute(ticket)) {
@@ -222,7 +222,7 @@
                       <nx-icon name="launch" size="s"></nx-icon>
                     </button>
                   } @else {
-                    <span class="tt-muted" aria-label="No prototype route">—</span>
+                    <span class="tt-muted" aria-label="No prototype route">-</span>
                   }
                 </td>
                 <td nxCell class="col-indicator">
@@ -234,7 +234,7 @@
                       aria-label="Has a tour"
                     ></nx-icon>
                   } @else {
-                    <span class="tt-muted" aria-label="No tour">—</span>
+                    <span class="tt-muted" aria-label="No tour">-</span>
                   }
                 </td>
                 <td nxCell class="col-links">

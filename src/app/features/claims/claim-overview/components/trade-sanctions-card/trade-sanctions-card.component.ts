@@ -285,8 +285,8 @@ export class TradeSanctionsCardComponent implements OnChanges {
     if ((saved?.esraCompletionDate ?? '') !== (next.esraCompletionDate ?? '')) {
       rows.push({
         label: 'Date of completion of ESRA',
-        original: saved?.esraCompletionDate ?? '—',
-        updated: next.esraCompletionDate ?? '—'
+        original: saved?.esraCompletionDate ?? '-',
+        updated: next.esraCompletionDate ?? '-'
       });
     }
     if (this.boolToYesNo(saved?.referralApproved) !== this.boolToYesNo(next.referralApproved)) {
@@ -297,13 +297,13 @@ export class TradeSanctionsCardComponent implements OnChanges {
       });
     }
     if ((saved?.esraId ?? '') !== (next.esraId ?? '')) {
-      rows.push({ label: 'ESRA ID', original: saved?.esraId ?? '—', updated: next.esraId ?? '—' });
+      rows.push({ label: 'ESRA ID', original: saved?.esraId ?? '-', updated: next.esraId ?? '-' });
     }
     if ((saved?.comments ?? '') !== (next.comments ?? '')) {
       rows.push({
         label: 'Additional comments',
-        original: saved?.comments ?? '—',
-        updated: next.comments ?? '—'
+        original: saved?.comments ?? '-',
+        updated: next.comments ?? '-'
       });
     }
     return rows;
@@ -346,7 +346,7 @@ export class TradeSanctionsCardComponent implements OnChanges {
       return ['Trade sanctions check saved', 'Recorded with exposure.'];
     }
     if (next?.exposure === 'no') {
-      return ['Trade sanctions check saved', 'Recorded — no exposure.'];
+      return ['Trade sanctions check saved', 'Recorded: no exposure.'];
     }
     return ['Trade sanctions check cleared', 'This claim shows as Not answered again.'];
   }

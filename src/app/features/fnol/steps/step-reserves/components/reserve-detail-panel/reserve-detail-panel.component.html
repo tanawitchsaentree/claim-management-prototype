@@ -27,7 +27,7 @@
     <div class="reserves-detail__readonly-banner">
       <nx-icon name="info-circle-o" size="s"></nx-icon>
       <span>
-        Read-only — this section belongs to
+        Read-only: this section belongs to
         <strong>{{ crossPolicyLabel(reserve.reserveId) }}</strong
         >. Switch policy at the search step to edit.
       </span>
@@ -43,7 +43,7 @@
       <div class="summary-cell">
         <span class="summary-label">Limit</span>
         <span class="summary-value">{{
-          reserve.limit ? (reserve.limit | number: '1.0-0') : '—'
+          reserve.limit ? (reserve.limit | number: '1.0-0') : '-'
         }}</span>
       </div>
       <div class="summary-cell">

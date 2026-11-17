@@ -47,7 +47,7 @@
     "paymentId": "PAY-005",
     "claimId": "CLM-2024-001",
     "sectionId": "SEC-008",
-    "payee": "Kaufmann's Warehouse — Final Settlement",
+    "payee": "Kaufmann's Warehouse: Final Settlement",
     "amount": 22000,
     "currency": "EUR",
     "status": "Processed",

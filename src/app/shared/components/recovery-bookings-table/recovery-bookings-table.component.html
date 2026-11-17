@@ -34,7 +34,7 @@
             </button>
           }
         </td>
-        <td nxCell class="rbt__nowrap">{{ r.recoveryId || '—' }}</td>
+        <td nxCell class="rbt__nowrap">{{ r.recoveryId || '-' }}</td>
         <td nxCell class="rbt__nowrap">{{ r.bookingId }}</td>
         <td nxCell>{{ r.recoveryType }}</td>
         <td nxCell>{{ r.section }}</td>
@@ -48,7 +48,7 @@
             [booking]="r.bookingStatus" [issue]="r.bookingIssue"
           ></app-booking-status-pill>
         </td>
-        <td nxCell>{{ r.party || '—' }}</td>
+        <td nxCell>{{ r.party || '-' }}</td>
         <td nxCell class="rbt__nowrap">{{ r.bookingDate }}</td>
       </tr>
       @if (expandedIds().has(r.recoveryId) && explainable(r)) {

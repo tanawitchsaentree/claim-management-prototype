@@ -121,7 +121,7 @@ export class MassEventCardComponent {
       this.massEventSvc.linkClaim(claim.claimId, event.id, { userId: user.id, name: user.name })
     );
     await this.refreshMassEvent(claim.claimId, event.id, 'pending');
-    this.toast.success('Mass event linked', `${event.id} — pending confirmation`);
+    this.toast.success('Mass event linked', `${event.id}, pending confirmation`);
   }
 
   /** Opens the full create form; the new event is persisted (findable everywhere) but never auto-linked here. */

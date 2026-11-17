@@ -5,7 +5,7 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["overview"],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/overview — the claim is already linked to a mass event by default",
+    "Navigate to /claims/CLM-2024-001/overview: the claim is already linked to a mass event by default",
     {
       "targetId": "co-mass-event-info",
       "title": "Mass Event linkage",
@@ -22,7 +22,7 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "CLM-2024-001 already has a mass event linked by default — no override needed",
+        "description": "CLM-2024-001 already has a mass event linked by default, no override needed",
         "preconditions": [
           {
             "text": "Mass Event field is visible with a linked event id",

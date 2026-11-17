@@ -70,7 +70,7 @@ export class MockLossEventService extends MockBaseService {
     const where = [claim.location?.city, claim.location?.country].filter(Boolean).join(', ');
     const event = {
       lossEventId,
-      name: [causeLabels[0] ?? 'Loss event', claim.location?.city ?? claim.clientName].join(' — '),
+      name: [causeLabels[0] ?? 'Loss event', claim.location?.city ?? claim.clientName].join(': '),
       eventDate: claim.lossDate,
       oe: claim.location?.country ?? '',
       lineOfBusiness: claim.lineOfBusiness,

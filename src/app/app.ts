@@ -33,7 +33,7 @@ import { environment } from '../environments/environment';
   template: `
     @if (isExploration) {
       <nx-message context="warning" class="exploration-banner"
-        >EXPLORATION BUILD — work in progress, not final</nx-message
+        >EXPLORATION BUILD: work in progress, not final</nx-message
       >
     }
     @if (unlocked()) {

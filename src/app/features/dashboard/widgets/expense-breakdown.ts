@@ -42,7 +42,7 @@ import { ProviderExpense } from '../../../core/models';
         display: block;
       }
 
-      /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
+      /* Panel-card shell: ported from dashboard.scss (encapsulation blocks it
        from reaching this standalone component). Keep in sync with .panel-card. */
       .panel-card {
         background: var(--ui-01);

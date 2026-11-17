@@ -57,8 +57,8 @@
               <tbody>
                 <tr nxTableRow>
                   <td nxCell>{{ b.legalName }}</td>
-                  <td nxCell>{{ b.tradeName || '—' }}</td>
-                  <td nxCell>{{ b.address || '—' }}</td>
+                  <td nxCell>{{ b.tradeName || '-' }}</td>
+                  <td nxCell>{{ b.address || '-' }}</td>
                   <td nxCell>
                     <code class="broker-row__id">{{ b.ipmId }}</code>
                   </td>
@@ -229,7 +229,7 @@
               [for]="notificationPicker"
             ></nx-datepicker-toggle>
             <nx-datepicker #notificationPicker></nx-datepicker>
-            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY: must be on or after date of occurrence</nx-hint>
             @if (
               showError(dateOfLoss.get('dateOfNotification')!) &&
               dateOfLoss.get('dateOfNotification')?.errors?.['required']
@@ -285,7 +285,7 @@
       ></app-location-picker>
       @if (submitted && !hasLocation) {
         <nx-message context="error" class="location-error">
-          Add at least one location before continuing — this is what the section will be named
+          Add at least one location before continuing, this is what the section will be named
           after.
         </nx-message>
       }
@@ -294,7 +294,7 @@
     <section class="li-card">
       <h2 class="section-heading">Events details</h2>
       <p class="section-desc">
-        Optional at this stage — you can complete details once the policy is matched.
+        Optional at this stage: you can complete details once the policy is matched.
       </p>
       @if (eventsArray.length === 0) {
         <p class="section-empty">Select Cause of loss to see event details.</p>

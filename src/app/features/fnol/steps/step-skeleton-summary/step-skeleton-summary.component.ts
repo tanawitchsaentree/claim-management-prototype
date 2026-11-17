@@ -77,7 +77,7 @@ export class StepSkeletonSummaryComponent implements OnInit {
   }
 
   reasonLabel(key: SkeletonReason | undefined): string {
-    return key ? REASON_LABELS[key] : '—';
+    return key ? REASON_LABELS[key] : '-';
   }
 
   ngOnInit(): void {

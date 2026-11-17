@@ -24,7 +24,7 @@ export interface PolicySeed {
 const POLICY_SEEDS: PolicySeed[] = [
   {
     policyNumber: 'POL-2024-001',
-    policyLabel: 'Property — POL-2024-001 — Liver Tea Group',
+    policyLabel: 'Property: POL-2024-001: Liver Tea Group',
     parties: [
       { partyId: 'P-LTG-1', partyName: 'Otto Kaufmann' },
       { partyId: 'P-LTG-2', partyName: 'Martha Nielsen' }
@@ -39,7 +39,7 @@ const POLICY_SEEDS: PolicySeed[] = [
   },
   {
     policyNumber: 'POL-2024-002',
-    policyLabel: 'Cyber — POL-2024-002 — adesso SE',
+    policyLabel: 'Cyber: POL-2024-002: adesso SE',
     parties: [{ partyId: 'P-ADS-1', partyName: 'Björn Ö’Brien' }],
     damageTypes: [
       { key: 'cyber', label: 'Cyber incident' },
@@ -50,7 +50,7 @@ const POLICY_SEEDS: PolicySeed[] = [
   },
   {
     policyNumber: 'POL-2024-003',
-    policyLabel: 'Marine — POL-2024-003 — GBF Logistics',
+    policyLabel: 'Marine: POL-2024-003: GBF Logistics',
     parties: [
       { partyId: 'P-GBF-1', partyName: 'Captain Vogel' },
       { partyId: 'P-GBF-2', partyName: 'Hapag Crew Ltd.' }
@@ -64,7 +64,7 @@ const POLICY_SEEDS: PolicySeed[] = [
   },
   {
     policyNumber: 'POL-2024-006',
-    policyLabel: 'Property — POL-2024-006 — Schäfer & Söhne',
+    policyLabel: 'Property: POL-2024-006: Schäfer & Söhne',
     parties: [{ partyId: 'P-SCH-1', partyName: 'Lukas Schäfer' }],
     damageTypes: [{ key: 'material-damage', label: 'Material damage' }],
     allianzShare: 40,
@@ -72,7 +72,7 @@ const POLICY_SEEDS: PolicySeed[] = [
   },
   {
     policyNumber: 'POL-2023-010',
-    policyLabel: "Property — POL-2023-010 — Kaufmann's Warehouse GmbH",
+    policyLabel: "Property: POL-2023-010: Kaufmann's Warehouse GmbH",
     parties: [{ partyId: 'P-KWG-1', partyName: 'Otto Kaufmann' }],
     damageTypes: [{ key: 'material-damage', label: 'Material damage' }],
     allianzShare: 50,
@@ -186,7 +186,7 @@ export class MockReservesService {
               sectionNo: sectionNo++,
               partyId: party.partyId,
               partyName: party.legalName,
-              damageType: '—',
+              damageType: '-',
               damageTypeKey: 'unknown',
               currency: 'EUR',
               amount: 0,

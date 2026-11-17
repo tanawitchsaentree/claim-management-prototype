@@ -44,7 +44,7 @@ export class SendCommunicationModalComponent {
 
   readonly form = new FormGroup({
     subject: new FormControl(
-      `Instruction — ${this.data.claimId} — ${this.data.assignment.providerName}`,
+      `Instruction: ${this.data.claimId}, ${this.data.assignment.providerName}`,
       { nonNullable: true, validators: [Validators.required] }
     ),
     body: new FormControl(

@@ -26,7 +26,7 @@ export class PriorityDotComponent implements OnChanges {
   ngOnChanges(): void {
     const token = TOKEN_MAP[this.priority];
     if (!token) {
-      console.warn(`[PriorityDot] Unknown priority "${this.priority}" — using low fallback.`);
+      console.warn(`[PriorityDot] Unknown priority "${this.priority}", using low fallback.`);
     }
     this.colorVar = `var(${token ?? TOKEN_MAP.low})`;
     this.displayLabel = this.priority

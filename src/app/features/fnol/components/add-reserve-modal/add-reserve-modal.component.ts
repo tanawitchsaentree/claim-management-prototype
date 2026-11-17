@@ -90,7 +90,7 @@ export class AddReserveModalComponent implements OnInit {
   }
 
   sectionLabel(r: Reserve): string {
-    return `Section ${r.sectionNo}: ${r.partyName} — ${r.damageType}`;
+    return `Section ${r.sectionNo}: ${r.partyName}, ${r.damageType}`;
   }
 
   async ngOnInit(): Promise<void> {

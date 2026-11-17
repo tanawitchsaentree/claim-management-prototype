@@ -38,7 +38,7 @@ function formatDateLabel(dateStr: string): string {
                   <a
                     class="cal-event cal-event--link"
                     [routerLink]="['/claims', ev.claimId, 'overview']"
-                    [title]="ev.title + ' — open claim ' + ev.claimId"
+                    [title]="ev.title + ', open claim ' + ev.claimId"
                   >
                     <nx-icon
                       [name]="typeIcon(ev.type)"
@@ -70,7 +70,7 @@ function formatDateLabel(dateStr: string): string {
         display: block;
       }
 
-      /* Panel-card shell — ported from dashboard.scss (encapsulation blocks it
+      /* Panel-card shell: ported from dashboard.scss (encapsulation blocks it
        from reaching this standalone component). Keep in sync with .panel-card. */
       .panel-card {
         background: var(--ui-01);

@@ -3,7 +3,7 @@
     "id": "hu-001",
     "claimId": "CLM-2024-005",
     "clientName": "BMW Budapest Motors",
-    "reason": "Reserve exceeds €900k — senior sign-off required within 5 days",
+    "reason": "Reserve exceeds €900k: senior sign-off required within 5 days",
     "severity": "critical",
     "status": "Awaiting escalation",
     "lastUpdate": "2026-06-07"
@@ -12,7 +12,7 @@
     "id": "hu-002",
     "claimId": "CLM-2024-016",
     "clientName": "Schäfer & Söhne AG",
-    "reason": "Environmental contamination risk flagged by loss adjuster — legal review pending",
+    "reason": "Environmental contamination risk flagged by loss adjuster, legal review pending",
     "severity": "warning",
     "status": "Legal review in progress",
     "lastUpdate": "2026-06-06"
@@ -21,7 +21,7 @@
     "id": "hu-003",
     "claimId": "CLM-2024-009",
     "clientName": "Rhein Constructions GmbH",
-    "reason": "Injured worker claim — litigation risk elevated, media interest reported",
+    "reason": "Injured worker claim: litigation risk elevated, media interest reported",
     "severity": "critical",
     "status": "Litigation team assigned",
     "lastUpdate": "2026-06-05"
@@ -30,7 +30,7 @@
     "id": "hu-004",
     "claimId": "CLM-2024-003",
     "clientName": "GBF Logistics GmbH",
-    "reason": "Subrogation opportunity identified — potential recovery of USD 120k from carrier",
+    "reason": "Subrogation opportunity identified: potential recovery of USD 120k from carrier",
     "severity": "info",
     "status": "Subrogation assessment open",
     "lastUpdate": "2026-06-04"
@@ -39,7 +39,7 @@
     "id": "hu-005",
     "claimId": "CLM-2024-017",
     "clientName": "Nordic Shipping AS",
-    "reason": "Claim re-opened — new survey shows underpayment of USD 42k",
+    "reason": "Claim re-opened: new survey shows underpayment of USD 42k",
     "severity": "warning",
     "status": "Re-assessment in progress",
     "lastUpdate": "2026-06-03"

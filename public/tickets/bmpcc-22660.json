@@ -439,7 +439,7 @@
     {
       "id": "AC-06",
       "statement": "AC04 · Error state: a close that fails can be tried again",
-      "plainStatement": "**Opens:** Sections of CLM-2024-001, all four open, no blockers. Closing **Section 004 — Payment Demo** is set to fail once (prototype switch).\n\n**You see:** After closing all 4: **3 sections closed, 1 not closed**, Section 004 shows **Could not close: Something went wrong while closing. Nothing was changed, try again.**\n\n**Try:** **Try again for 1 section**: it closes, the result turns to 4 sections closed. Loading state: the spinner while checking and while closing.",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001, all four open, no blockers. Closing **Section 004: Payment Demo** is set to fail once (prototype switch).\n\n**You see:** After closing all 4: **3 sections closed, 1 not closed**, Section 004 shows **Could not close: Something went wrong while closing. Nothing was changed, try again.**\n\n**Try:** **Try again for 1 section**: it closes, the result turns to 4 sections closed. Loading state: the spinner while checking and while closing.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {

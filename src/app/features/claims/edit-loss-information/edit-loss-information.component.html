@@ -213,7 +213,7 @@
             />
             <nx-datepicker-toggle nxFormfieldSuffix [for]="notifPicker"></nx-datepicker-toggle>
             <nx-datepicker #notifPicker></nx-datepicker>
-            <nx-hint nxFormfieldHint>DD-MM-YYYY — must be on or after date of occurrence</nx-hint>
+            <nx-hint nxFormfieldHint>DD-MM-YYYY: must be on or after date of occurrence</nx-hint>
             @if (submitAttempted && dateOfLoss.get('dateOfNotification')?.errors?.['required']) {
               <nx-error nxFormfieldError>Date of notification is required</nx-error>
             }

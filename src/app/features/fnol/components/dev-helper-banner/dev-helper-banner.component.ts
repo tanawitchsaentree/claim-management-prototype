@@ -59,7 +59,7 @@ export class DevHelperBannerComponent {
       if (this.lastResult) {
         const warnCount = this.lastResult.warnings?.length ?? 0;
         const msg = warnCount
-          ? `${this.lastResult.message} — ${warnCount} warning(s)`
+          ? `${this.lastResult.message}, ${warnCount} warning(s)`
           : this.lastResult.message;
         this.live.announce(msg, 'polite');
       }

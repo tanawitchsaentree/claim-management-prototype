@@ -384,7 +384,7 @@ export class Step1SearchComponent {
         objectType: 'Claim',
         attribute: 'Status',
         valueOld: skeleton.status,
-        valueNew: `Closed — abandoned: ${reason}`
+        valueNew: `Closed: abandoned: ${reason}`
       }
     ]);
     this.toast.success(`${skeleton.claimId} abandoned`, reason);
@@ -421,7 +421,7 @@ export class Step1SearchComponent {
         objectType: 'Claim',
         attribute: 'Status',
         valueOld: 'Closed',
-        valueNew: 'Open — reopened to Awaiting policy'
+        valueNew: 'Open: reopened to Awaiting policy'
       }
     ]);
     this.toast.success(`${claim.claimId} reopened`, 'Back in the Awaiting policy queue.');

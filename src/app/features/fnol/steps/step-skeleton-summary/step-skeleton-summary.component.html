@@ -20,11 +20,11 @@
         <h2 class="review-card__title">Loss details</h2>
         <dl class="review-grid">
           <dt>Client</dt>
-          <dd>{{ d.clientName || '—' }}</dd>
+          <dd>{{ d.clientName || '-' }}</dd>
           <dt>Reason</dt>
           <dd>{{ reasonLabel(d.reason) }}</dd>
           <dt>Notes</dt>
-          <dd>{{ d.notes || '—' }}</dd>
+          <dd>{{ d.notes || '-' }}</dd>
         </dl>
       </section>
 
@@ -32,19 +32,19 @@
         <h2 class="review-card__title">General information</h2>
         <dl class="review-grid">
           <dt>Cause of loss</dt>
-          <dd>{{ causeLabels() || '—' }}</dd>
+          <dd>{{ causeLabels() || '-' }}</dd>
           <dt>Type of damage</dt>
-          <dd>{{ damageLabels() || '—' }}</dd>
+          <dd>{{ damageLabels() || '-' }}</dd>
           <dt>Date of occurrence</dt>
-          <dd>{{ dateValue('dateOfOccurrence') || '—' }}</dd>
+          <dd>{{ dateValue('dateOfOccurrence') || '-' }}</dd>
           <dt>Time of occurrence</dt>
-          <dd>{{ dateValue('timeOfOccurrence') || '—' }}</dd>
+          <dd>{{ dateValue('timeOfOccurrence') || '-' }}</dd>
           <dt>Date of notification</dt>
-          <dd>{{ dateValue('dateOfNotification') || '—' }}</dd>
+          <dd>{{ dateValue('dateOfNotification') || '-' }}</dd>
           <dt>Time of notification</dt>
-          <dd>{{ dateValue('timeOfNotification') || '—' }}</dd>
+          <dd>{{ dateValue('timeOfNotification') || '-' }}</dd>
           <dt>Loss description</dt>
-          <dd>{{ lossDescription() || '—' }}</dd>
+          <dd>{{ lossDescription() || '-' }}</dd>
         </dl>
       </section>
 
@@ -93,7 +93,7 @@
             <dd>{{ d.insuredName }}</dd>
           } @else {
             <dt>Notifier</dt>
-            <dd>—</dd>
+            <dd>-</dd>
           }
         </dl>
       </section>

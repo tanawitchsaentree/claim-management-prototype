@@ -97,7 +97,7 @@
   <div class="cddm-right" tabindex="0">
     @if (selectedAc(); as ac) {
       <div class="cddm-detail">
-        <p class="cddm-detail-id" [innerHTML]="ac.id + ' — ' + ac.statement | inlineMarkdown"></p>
+        <p class="cddm-detail-id" [innerHTML]="ac.id + ', ' + ac.statement | inlineMarkdown"></p>
         @if (ac.plainStatement) {
           <p class="cddm-detail-plain" [innerHTML]="ac.plainStatement | inlineMarkdown"></p>
         }
@@ -152,7 +152,7 @@
 
         <div class="cddm-verify-section">
           @if (ac.buildStatus !== 'done') {
-            <p class="cddm-verify-disabled">Cannot verify — build status: {{ ac.buildStatus }}</p>
+            <p class="cddm-verify-disabled">Cannot verify: build status: {{ ac.buildStatus }}</p>
           } @else if (isSelectedAcVerified()) {
             <div class="cddm-verify-confirmed">
               <nx-icon name="check-circle" class="cddm-verify-confirmed-icon"></nx-icon>

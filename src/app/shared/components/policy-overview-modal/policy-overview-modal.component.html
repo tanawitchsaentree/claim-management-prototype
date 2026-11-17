@@ -138,7 +138,7 @@
         @if (ov.coinsurance.length) {
           @if (coinsuranceMismatch()) {
             <nx-message context="warning" class="pom-message">
-              Participant shares total {{ coinsuranceTotal() }}%, not 100% — check the policy
+              Participant shares total {{ coinsuranceTotal() }}%, not 100%: check the policy
               record before settling.
             </nx-message>
           }
@@ -159,13 +159,13 @@
               @for (cp of ov.coinsurance; track cp.participantCode) {
                 <tr nxTableRow>
                   <td nxTableCell class="pom-col--num">{{ cp.sharePercent | number: '1.0-2' }}%</td>
-                  <td nxTableCell class="pom-muted">—</td>
+                  <td nxTableCell class="pom-muted">-</td>
                   <td nxTableCell>{{ cp.participant }}</td>
                   <td nxTableCell>{{ cp.participantCode }}</td>
                   <td nxTableCell>{{ cp.role }}</td>
-                  <td nxTableCell class="pom-muted">—</td>
-                  <td nxTableCell class="pom-muted">—</td>
-                  <td nxTableCell class="pom-muted">—</td>
+                  <td nxTableCell class="pom-muted">-</td>
+                  <td nxTableCell class="pom-muted">-</td>
+                  <td nxTableCell class="pom-muted">-</td>
                 </tr>
               }
             </tbody>
@@ -242,7 +242,7 @@
                     <td nxTableCell class="pom-cell--desc">{{ lc.lossDescription }}</td>
                     <td nxTableCell>{{ lc.clientName }}</td>
                     <td nxTableCell>{{ lc.status }}</td>
-                    <td nxTableCell>{{ lc.claimHandler ?? '—' }}</td>
+                    <td nxTableCell>{{ lc.claimHandler ?? '-' }}</td>
                     <td nxTableCell>{{ formatCauseOfLoss(lc.causeOfLoss) }}</td>
                     <td nxTableCell>{{ lc.createdDate | appDate }}</td>
                     <td nxTableCell>{{ lc.dateOfLoss | appDate }}</td>

@@ -2,7 +2,7 @@
   {
     "id": "LOC-001",
     "policyNumber": "POL-2024-001",
-    "name": "Liver Tea Group — Main Factory",
+    "name": "Liver Tea Group: Main Factory",
     "addressLine1": "Industriestraße 12",
     "postalCode": "80331",
     "city": "Munich",
@@ -14,7 +14,7 @@
   {
     "id": "LOC-002",
     "policyNumber": "POL-2024-001",
-    "name": "Liver Tea Group — Warehouse A",
+    "name": "Liver Tea Group: Warehouse A",
     "addressLine1": "Lagerstraße 5",
     "postalCode": "22045",
     "city": "Hamburg",
@@ -26,7 +26,7 @@
   {
     "id": "LOC-003",
     "policyNumber": "POL-2024-001",
-    "name": "Liver Tea Group — Office HQ",
+    "name": "Liver Tea Group: Office HQ",
     "addressLine1": "Bahnhofstraße 3",
     "postalCode": "10115",
     "city": "Berlin",
@@ -38,7 +38,7 @@
   {
     "id": "LOC-004",
     "policyNumber": "POL-2024-001",
-    "name": "Liver Tea Group — Warehouse B (inactive)",
+    "name": "Liver Tea Group: Warehouse B (inactive)",
     "addressLine1": "Hafenstraße 20",
     "postalCode": "28195",
     "city": "Bremen",
@@ -50,7 +50,7 @@
   {
     "id": "LOC-005",
     "policyNumber": "POL-2024-006",
-    "name": "Schäfer & Söhne — Zurich Office",
+    "name": "Schäfer & Söhne: Zurich Office",
     "addressLine1": "Bahnhofplatz 1",
     "postalCode": "8001",
     "city": "Zurich",
@@ -62,7 +62,7 @@
   {
     "id": "LOC-006",
     "policyNumber": "POL-2024-006",
-    "name": "Schäfer & Söhne — Bern Warehouse",
+    "name": "Schäfer & Söhne: Bern Warehouse",
     "addressLine1": "Industriequartier 7",
     "postalCode": "3007",
     "city": "Bern",
@@ -74,7 +74,7 @@
   {
     "id": "LOC-007",
     "policyNumber": "POL-2024-006",
-    "name": "Schäfer & Söhne — Basel Plant",
+    "name": "Schäfer & Söhne: Basel Plant",
     "addressLine1": "Werksstraße 44",
     "postalCode": "4052",
     "city": "Basel",
@@ -86,7 +86,7 @@
   {
     "id": "LOC-008",
     "policyNumber": "POL-2024-009",
-    "name": "Rhein Constructions — Stuttgart Site",
+    "name": "Rhein Constructions: Stuttgart Site",
     "addressLine1": "Baustraße 88",
     "postalCode": "70173",
     "city": "Stuttgart",
@@ -98,7 +98,7 @@
   {
     "id": "LOC-009",
     "policyNumber": "POL-2024-009",
-    "name": "Rhein Constructions — Cologne Depot",
+    "name": "Rhein Constructions: Cologne Depot",
     "addressLine1": "Depotstraße 12",
     "postalCode": "50667",
     "city": "Cologne",
@@ -110,7 +110,7 @@
   {
     "id": "LOC-010",
     "policyNumber": "POL-2023-010",
-    "name": "Kaufmann's Warehouse — Section A",
+    "name": "Kaufmann's Warehouse: Section A",
     "addressLine1": "Speicherstraße 1",
     "postalCode": "20457",
     "city": "Hamburg",
@@ -122,7 +122,7 @@
   {
     "id": "LOC-011",
     "policyNumber": "POL-2023-010",
-    "name": "Kaufmann's Warehouse — Section B",
+    "name": "Kaufmann's Warehouse: Section B",
     "addressLine1": "Speicherstraße 1B",
     "postalCode": "20457",
     "city": "Hamburg",
@@ -134,7 +134,7 @@
   {
     "id": "LOC-012",
     "policyNumber": "POL-2024-021",
-    "name": "Jonas Kaufmann — Munich Warehouse",
+    "name": "Jonas Kaufmann: Munich Warehouse",
     "addressLine1": "Industriestraße 12",
     "postalCode": "80807",
     "city": "Munich",
@@ -146,7 +146,7 @@
   {
     "id": "LOC-013",
     "policyNumber": "POL-2024-021",
-    "name": "Jonas Kaufmann — Berlin Office",
+    "name": "Jonas Kaufmann: Berlin Office",
     "addressLine1": "Friedrichstraße 88",
     "postalCode": "10117",
     "city": "Berlin",
@@ -158,7 +158,7 @@
   {
     "id": "LOC-030",
     "policyNumber": "POL-2026-001",
-    "name": "Rieke Vogt — Hamburg Warehouse",
+    "name": "Rieke Vogt: Hamburg Warehouse",
     "addressLine1": "Speicherstraße 4",
     "postalCode": "20457",
     "city": "Hamburg",
@@ -170,7 +170,7 @@
   {
     "id": "LOC-031",
     "policyNumber": "POL-2026-001",
-    "name": "Rieke Vogt — Bremen Depot",
+    "name": "Rieke Vogt: Bremen Depot",
     "addressLine1": "Hafenstraße 9",
     "postalCode": "28195",
     "city": "Bremen",
@@ -182,7 +182,7 @@
   {
     "id": "LOC-032",
     "policyNumber": "POL-2026-002",
-    "name": "Mira Lenz — Cologne Shop",
+    "name": "Mira Lenz: Cologne Shop",
     "addressLine1": "Marktplatz 1",
     "postalCode": "50667",
     "city": "Cologne",
@@ -194,7 +194,7 @@
   {
     "id": "LOC-033",
     "policyNumber": "POL-2026-003",
-    "name": "Bruno Albers — Berlin Office",
+    "name": "Bruno Albers: Berlin Office",
     "addressLine1": "Torstraße 5",
     "postalCode": "10119",
     "city": "Berlin",
@@ -206,7 +206,7 @@
   {
     "id": "LOC-034",
     "policyNumber": "POL-2026-003",
-    "name": "Bruno Albers — Dresden Depot",
+    "name": "Bruno Albers: Dresden Depot",
     "addressLine1": "Prager Straße 2",
     "postalCode": "01069",
     "city": "Dresden",
@@ -218,7 +218,7 @@
   {
     "id": "LOC-035",
     "policyNumber": "POL-2026-004",
-    "name": "Sven Brandt — Nuremberg Workshop",
+    "name": "Sven Brandt: Nuremberg Workshop",
     "addressLine1": "Industrieweg 3",
     "postalCode": "90402",
     "city": "Nuremberg",
@@ -230,7 +230,7 @@
   {
     "id": "LOC-036",
     "policyNumber": "POL-2026-005",
-    "name": "Ida Falk — Frankfurt Plant",
+    "name": "Ida Falk: Frankfurt Plant",
     "addressLine1": "Mainzer Landstraße 50",
     "postalCode": "60325",
     "city": "Frankfurt",
@@ -242,7 +242,7 @@
   {
     "id": "LOC-037",
     "policyNumber": "POL-2026-006",
-    "name": "Otto Weiss — Stuttgart Shop",
+    "name": "Otto Weiss: Stuttgart Shop",
     "addressLine1": "Königstraße 20",
     "postalCode": "70173",
     "city": "Stuttgart",
@@ -254,7 +254,7 @@
   {
     "id": "LOC-038",
     "policyNumber": "POL-2026-007",
-    "name": "Lars Nord — Hannover Warehouse",
+    "name": "Lars Nord: Hannover Warehouse",
     "addressLine1": "Georgstraße 8",
     "postalCode": "30159",
     "city": "Hannover",

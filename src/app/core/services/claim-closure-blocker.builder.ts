@@ -30,14 +30,14 @@ export function buildBlockerResult(
   if (wasConverted && totalSectionsCount === 0) {
     blockers.push({
       type: 'needs-setup',
-      label: 'Converted orphan claim has no sections yet — add at least one before closing',
+      label: 'Converted orphan claim has no sections yet, add at least one before closing',
       link: `/claims/${claim.claimId}/sections`,
       linkLabel: 'Go to Sections'
     });
   } else if (wasConverted && !hasAnyReserveOnClaim) {
     blockers.push({
       type: 'needs-setup',
-      label: 'Converted orphan claim has no reserves set — set at least one before closing',
+      label: 'Converted orphan claim has no reserves set, set at least one before closing',
       link: `/claims/${claim.claimId}/financial`,
       linkLabel: 'Go to Financial'
     });
@@ -80,7 +80,7 @@ export function buildBlockerResult(
     const total = openReserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
     blockers.push({
       type: 'reserves',
-      label: `${openReserves.length} open reserve line(s) must be released — €${total.toLocaleString()}`,
+      label: `${openReserves.length} open reserve line(s) must be released, €${total.toLocaleString()}`,
       count: openReserves.length,
       amount: total
     });

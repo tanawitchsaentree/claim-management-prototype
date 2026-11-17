@@ -75,7 +75,7 @@ export class FnolDevHelperService {
   async fillLossInfo(scenarioKey: string): Promise<FillResult> {
     const hasContext = !!(this.fnolState.selectedPolicy || this.fnolState.selectedClient);
     if (!hasContext) {
-      return { success: false, message: 'No client or policy selected — go to Search first' };
+      return { success: false, message: 'No client or policy selected, go to Search first' };
     }
 
     const scenario: DevScenario | undefined = SCENARIOS[scenarioKey] ?? SCENARIOS['fire'];
@@ -124,7 +124,7 @@ export class FnolDevHelperService {
         };
         this.fnolState.getLossLocationControl().setValue({ locations: [item] });
       } else {
-        warnings.push(`Policy ${policyNumber} has no listed locations — used manual address`);
+        warnings.push(`Policy ${policyNumber} has no listed locations: used manual address`);
         this.fnolState.getLossLocationControl().setValue({
           locations: [
             {
@@ -140,7 +140,7 @@ export class FnolDevHelperService {
         });
       }
     } catch {
-      warnings.push('Failed to fetch policy locations — used manual address');
+      warnings.push('Failed to fetch policy locations, used manual address');
       this.fnolState.getLossLocationControl().setValue({ locations: [] });
     }
 

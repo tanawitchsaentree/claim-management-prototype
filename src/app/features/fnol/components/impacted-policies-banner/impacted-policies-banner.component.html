@@ -10,8 +10,7 @@
       <strong class="ipb-title">Other policies may be impacted</strong>
       <p class="ipb-text">
         {{ policies.length === 1 ? 'One policy' : policies.length + ' policies' }} outside this
-        claim {{ policies.length === 1 ? 'holds' : 'hold' }} entities that may belong to this loss —
-        {{ policyList(policies) }}. Adding {{ policies.length === 1 ? 'it' : 'them' }} makes
+        claim {{ policies.length === 1 ? 'holds' : 'hold' }} entities that may belong to this loss, {{ policyList(policies) }}. Adding {{ policies.length === 1 ? 'it' : 'them' }} makes
         {{ entityTotal(policies) }} more entities available for selection below.
       </p>
       <button

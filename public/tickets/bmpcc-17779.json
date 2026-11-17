@@ -1,15 +1,15 @@
 {
   "ticketId": "BMPCC-17779",
   "module": "Claims",
-  "title": "[UI/UX] Recovery Potential Flag — Dependency",
+  "title": "[UI/UX] Recovery Potential Flag: Dependency",
   "targetClaim": "CLM-2024-001",
   "pages": ["overview", "any"],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/overview — the Recovery potential card now asks the Yes/No question directly on the card, no modal",
+    "Navigate to /claims/CLM-2024-001/overview: the Recovery potential card now asks the Yes/No question directly on the card, no modal",
     {
       "targetId": "co-recovery-potential-choice",
       "title": "Recovery potential",
-      "body": "Yes/No radios sit on the card itself. Before the Recoveries call this was a modal behind a link labelled \"Set\", and handlers read it as optional — so it went unanswered and recoverable money left with the closed claim.",
+      "body": "Yes/No radios sit on the card itself. Before the Recoveries call this was a modal behind a link labelled \"Set\", and handlers read it as optional, so it went unanswered and recoverable money left with the closed claim.",
       "expectedAfterClick": "Picking No reveals a required reason field; picking Yes enables Save and, once saved, surfaces a Set up recovery case link.",
       "direction": "right"
     },
@@ -20,13 +20,13 @@
       "expectedAfterClick": "The chip in the card header updates and the activity log records the old and new value.",
       "direction": "top"
     },
-    "Answering Yes used to be the end of the trail — the Set up recovery case link pointed at /recoveries, which redirected straight back to Claim Overview. The next three steps are the page that link now opens.",
+    "Answering Yes used to be the end of the trail, the Set up recovery case link pointed at /recoveries, which redirected straight back to Claim Overview. The next three steps are the page that link now opens.",
     {
       "targetId": "rec-guidance",
       "title": "The page says why you were sent here",
       "route": "/claims/CLM-2024-024/recoveries",
       "body": "CLM-2024-024 is answered Yes with no case on it. Rather than an unexplained empty table, the page repeats the sentence from the overview card and names what to do about it.",
-      "expectedAfterClick": "Nothing to click — the message disappears on its own once a case exists.",
+      "expectedAfterClick": "Nothing to click: the message disappears on its own once a case exists.",
       "direction": "bottom"
     },
     {
@@ -34,7 +34,7 @@
       "title": "Create recovery case",
       "route": "/claims/CLM-2024-024/recoveries",
       "body": "Who is being pursued, on what basis, for how much. Saving it writes the two claim-level flags, so the closure checklist row \"Recovery case set up\" starts passing.",
-      "expectedAfterClick": "The case appears as In progress and the closure blocker moves on to \"Recoveries & deductibles cleared\" — one unresolved thing replaces another rather than the claim quietly becoming closable.",
+      "expectedAfterClick": "The case appears as In progress and the closure blocker moves on to \"Recoveries & deductibles cleared\", one unresolved thing replaces another rather than the claim quietly becoming closable.",
       "direction": "left"
     },
     {
@@ -42,7 +42,7 @@
       "title": "A claim with recovery under way",
       "route": "/claims/CLM-2024-003/recoveries",
       "body": "CLM-2024-003 carries a running subrogation case against the carrier and an already-settled salvage case. Resolving a case as Recovered or Written off is the row menu on the open row.",
-      "expectedAfterClick": "Once no case is still running the claim reads as settled, not as \"no case set up\" — the state the two-flag version of this got wrong.",
+      "expectedAfterClick": "Once no case is still running the claim reads as settled, not as \"no case set up\", the state the two-flag version of this got wrong.",
       "direction": "top"
     }
   ],
@@ -54,7 +54,7 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "CLM-2024-001 carries a decided No by default — no override needed",
+        "description": "CLM-2024-001 carries a decided No by default, no override needed",
         "preconditions": [
           {
             "text": "Recovery potential card shows Yes/No radios inline",
@@ -91,7 +91,7 @@
     {
       "id": "AC-02",
       "statement": "An unanswered claim says so on the card",
-      "plainStatement": "With no answer on record the card shows a **warning message** and a **left accent border** — not the silent `–` it used to render.",
+      "plainStatement": "With no answer on record the card shows a **warning message** and a **left accent border**, not the silent `–` it used to render.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -195,11 +195,11 @@
     {
       "id": "AC-04",
       "statement": "Answering No requires a reason, and then closure is no longer held up",
-      "plainStatement": "Selecting **No** reveals a **required** reason field. Once saved, the closure blocker clears — *\"if they select no, the pressure is off\"*.",
+      "plainStatement": "Selecting **No** reveals a **required** reason field. Once saved, the closure blocker clears, *\"if they select no, the pressure is off\"*.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Identical to AC-03 except the seeded No is left on record — the only difference between the two is the answer, so canClose flipping to true isolates this blocker",
+        "description": "Identical to AC-03 except the seeded No is left on record, the only difference between the two is the answer, so canClose flipping to true isolates this blocker",
         "preconditions": [
           {
             "text": "Reason field is required when No is selected",
@@ -255,7 +255,7 @@
     {
       "id": "AC-05",
       "statement": "Yes with no recovery case routes the handler to the recovery domain",
-      "plainStatement": "**Yes** on its own is not enough — the card surfaces a **Set up recovery case** link, the link now lands on the real Recoveries page, and the closure checklist fails a **Recovery case set up** row until a case exists. Phase B promoted this from a soft warning to a hard blocker: the fix-it link no longer dead-ends, so blocking on it is resolvable.",
+      "plainStatement": "**Yes** on its own is not enough, the card surfaces a **Set up recovery case** link, the link now lands on the real Recoveries page, and the closure checklist fails a **Recovery case set up** row until a case exists. Phase B promoted this from a soft warning to a hard blocker: the fix-it link no longer dead-ends, so blocking on it is resolvable.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -307,11 +307,11 @@
     {
       "id": "AC-06",
       "statement": "The dashboard chases the decision without task management",
-      "plainStatement": "A **Recovery potential: decision needed** panel on the dashboard lists open claims with no answer, plus claims answered Yes that have no recovery case — *\"maybe we do it from dashboard even\"*.",
+      "plainStatement": "A **Recovery potential: decision needed** panel on the dashboard lists open claims with no answer, plus claims answered Yes that have no recovery case, *\"maybe we do it from dashboard even\"*.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Default state — most claims in claims.json have never been answered",
+        "description": "Default state: most claims in claims.json have never been answered",
         "preconditions": [
           {
             "text": "Recovery potential panel on the dashboard",
@@ -350,7 +350,7 @@
       "buildStatus": "done",
       "targetClaim": "CLM-2024-003",
       "setup": {
-        "description": "CLM-2024-003 is the seeded recovery-domain claim — a running subrogation case against the carrier plus a settled salvage case, per the heads-up already on record for it",
+        "description": "CLM-2024-003 is the seeded recovery-domain claim, a running subrogation case against the carrier plus a settled salvage case, per the heads-up already on record for it",
         "preconditions": [
           {
             "text": "Recoveries page renders a table of recovery cases",
@@ -370,8 +370,8 @@
         "visualCues": [
           "Page title \"Recoveries\" with a \"Create recovery case\" primary action",
           "Open cases 1 · Expected from open cases USD 120,000 · Recovered to date USD 16,400",
-          "REC-C-001 Subrogation against Rheinbogen Carriers GmbH — In progress",
-          "REC-C-002 Salvage against Nordwerk Salvage Auctions — Recovered, with its outcome note on the row below",
+          "REC-C-001 Subrogation against Rheinbogen Carriers GmbH, In progress",
+          "REC-C-002 Salvage against Nordwerk Salvage Auctions, Recovered, with its outcome note on the row below",
           "Resolved cases show their resolution date instead of a row menu"
         ]
       },
@@ -390,12 +390,12 @@
     {
       "id": "AC-08",
       "statement": "A claim answered Yes with no case says why the handler was sent here",
-      "plainStatement": "Landing on Recoveries from the **Set up recovery case** link shows the same sentence the card showed — *\"Recovery is expected but no recovery case has been set up yet\"* — plus an empty state that names the next action. An empty table with no explanation would leave the handler where the redirect stub did: on a page with nothing to do and no reason given.",
+      "plainStatement": "Landing on Recoveries from the **Set up recovery case** link shows the same sentence the card showed, *\"Recovery is expected but no recovery case has been set up yet\"*: plus an empty state that names the next action. An empty table with no explanation would leave the handler where the redirect stub did: on a page with nothing to do and no reason given.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-024",
       "setup": {
-        "description": "CLM-2024-024 is seeded Yes with no recovery case — the same record the dashboard prompt in AC-06 lists",
+        "description": "CLM-2024-024 is seeded Yes with no recovery case, the same record the dashboard prompt in AC-06 lists",
         "preconditions": [
           {
             "text": "Recovery potential is Yes with no recovery case",
@@ -421,7 +421,7 @@
           "\"Recovery is expected but no recovery case has been set up yet.\"",
           "\"No recovery case has been set up on this claim.\"",
           "Hint naming who is being pursued, on what basis, and for how much",
-          "No summary strip — there is nothing to total"
+          "No summary strip: there is nothing to total"
         ]
       },
       "expectedOutcome": {
@@ -439,12 +439,12 @@
     {
       "id": "AC-09",
       "statement": "Creating a case clears the closure blocker",
-      "plainStatement": "**Create recovery case** captures the route, counterparty, section, expected amount and basis. Saving it writes `hasRecoveryCase` and `hasActiveRecovery` back onto the claim, so the state moves `yes-pending` → `yes-active`: the **Recovery case set up** checklist row passes and the **Recoveries & deductibles cleared** row takes over. That hand-off is the point — one unresolved thing replaces another rather than the claim quietly becoming closable while a recovery is still running.",
+      "plainStatement": "**Create recovery case** captures the route, counterparty, section, expected amount and basis. Saving it writes `hasRecoveryCase` and `hasActiveRecovery` back onto the claim, so the state moves `yes-pending` → `yes-active`: the **Recovery case set up** checklist row passes and the **Recoveries & deductibles cleared** row takes over. That hand-off is the point, one unresolved thing replaces another rather than the claim quietly becoming closable while a recovery is still running.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-024",
       "setup": {
-        "description": "Runtime flow on the Yes-with-no-case claim from AC-08 — the assertion here is the starting state, the transition is verified in the browser",
+        "description": "Runtime flow on the Yes-with-no-case claim from AC-08, the assertion here is the starting state, the transition is verified in the browser",
         "preconditions": [
           {
             "text": "Recovery potential is Yes with no recovery case",
@@ -479,7 +479,7 @@
     {
       "id": "AC-10",
       "statement": "Resolving every case releases the claim",
-      "plainStatement": "A case is resolved as **Recovered** (with the amount that actually came back) or **Written off** (with a reason). **Resolve case** turns on as soon as the outcome and its details are filled in. Resolving is final (a resolved case has no row menu), so a confirm step comes first (\"Write off REC-C-001?\" / \"Resolve REC-C-001 as recovered?\", **Back** returns to the form with what was typed), then a toast. Once no case is still running, the claim reaches `yes-settled` and nothing recovery-related holds closure any more. **Without this state the loop was unclosable:** resolving the last case flips `hasActiveRecovery` back to false, which under the phase-A two-flag derivation read as `yes-pending` — \"no recovery case has been set up\" — a blocker demanding work that had already been finished.",
+      "plainStatement": "A case is resolved as **Recovered** (with the amount that actually came back) or **Written off** (with a reason). **Resolve case** turns on as soon as the outcome and its details are filled in. Resolving is final (a resolved case has no row menu), so a confirm step comes first (\"Write off REC-C-001?\" / \"Resolve REC-C-001 as recovered?\", **Back** returns to the form with what was typed), then a toast. Once no case is still running, the claim reaches `yes-settled` and nothing recovery-related holds closure any more. **Without this state the loop was unclosable:** resolving the last case flips `hasActiveRecovery` back to false, which under the phase-A two-flag derivation read as `yes-pending`, \"no recovery case has been set up\", a blocker demanding work that had already been finished.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-003",
@@ -494,7 +494,7 @@
       "expectedUI": {
         "description": "Resolve modal with a branching amount field, then a settled table",
         "visualCues": [
-          "Radios \"Recovered — money came back\" / \"Written off — no money will be recovered\"",
+          "Radios \"Recovered: money came back\" / \"Written off: no money will be recovered\"",
           "Amount recovered field appears only on the Recovered branch, with the expected figure as a hint",
           "Reason textarea relabels to \"Why is it being written off?\" on the Written off branch",
           "Resolved rows lose their row menu and show the resolution date",

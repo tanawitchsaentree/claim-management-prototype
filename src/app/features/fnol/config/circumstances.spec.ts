@@ -52,7 +52,7 @@ describe('isCircumstanceValidFor', () => {
     expect(isCircumstanceValidFor('direct-strike', ['burglary'])).toBe(false);
   });
 
-  it('treats an empty pick as valid — nothing to clear', () => {
+  it('treats an empty pick as valid, nothing to clear', () => {
     expect(isCircumstanceValidFor(null, ['burglary'])).toBe(true);
   });
 

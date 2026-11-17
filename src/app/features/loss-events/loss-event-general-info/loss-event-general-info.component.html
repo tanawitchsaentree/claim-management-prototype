@@ -5,20 +5,20 @@
     <div class="legi-field">
       <span class="legi-label">Proximate cause</span>
       <span class="legi-value">{{
-        info.proximateCause.length ? info.proximateCause.join(', ') : '—'
+        info.proximateCause.length ? info.proximateCause.join(', ') : '-'
       }}</span>
     </div>
     <div class="legi-field">
       <span class="legi-label">Event occurrence date</span>
-      <span class="legi-value">{{ eventDate || '—' }}</span>
+      <span class="legi-value">{{ eventDate || '-' }}</span>
     </div>
     <div class="legi-field">
       <span class="legi-label">Event occurrence time</span>
-      <span class="legi-value">{{ info.eventOccurrenceTime || '—' }}</span>
+      <span class="legi-value">{{ info.eventOccurrenceTime || '-' }}</span>
     </div>
     <div class="legi-field">
       <span class="legi-label">Event location</span>
-      <span class="legi-value">{{ info.eventLocation || '—' }}</span>
+      <span class="legi-value">{{ info.eventLocation || '-' }}</span>
     </div>
   </div>
 
@@ -31,7 +31,7 @@
         }
       </ul>
     } @else {
-      <span class="legi-value">—</span>
+      <span class="legi-value">-</span>
     }
   </div>
 
@@ -42,12 +42,12 @@
         @for (d of info.damagesCaused; track d.type) {
           <div class="legi-damage">
             <span class="legi-damage-type">{{ d.type }}</span>
-            <span class="legi-damage-items">{{ d.damages.join(', ') || '—' }}</span>
+            <span class="legi-damage-items">{{ d.damages.join(', ') || '-' }}</span>
           </div>
         }
       </div>
     } @else {
-      <span class="legi-value">—</span>
+      <span class="legi-value">-</span>
     }
   </div>
 </section>

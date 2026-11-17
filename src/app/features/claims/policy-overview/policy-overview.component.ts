@@ -85,7 +85,7 @@ export class PolicyOverviewComponent implements OnInit {
   }
 
   formatCauseOfLoss(causes: string[] | undefined): string {
-    if (!causes?.length) return '—';
+    if (!causes?.length) return '-';
     return causes
       .map(c => c.replace(/[-_]/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase()))
       .join(', ');

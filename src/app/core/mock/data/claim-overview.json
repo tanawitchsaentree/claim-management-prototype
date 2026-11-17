@@ -36,7 +36,7 @@
       "outstanding": 885000
     },
     "recoveryPotential": "no",
-    "recoveryPotentialNote": "Sole-cause fire with no identifiable third party — no recovery route."
+    "recoveryPotentialNote": "Sole-cause fire with no identifiable third party, no recovery route."
   },
   "CLM-2024-011": {
     "claimId": "CLM-2024-011",
@@ -78,7 +78,7 @@
     "retentionDate": "2034-06-01",
     "retentionType": "default",
     "recoveryPotential": "no",
-    "recoveryPotentialNote": "Closed claim — recovery ruled out at the time of settlement."
+    "recoveryPotentialNote": "Closed claim: recovery ruled out at the time of settlement."
   },
   "CLM-2024-001": {
     "claimId": "CLM-2024-001",

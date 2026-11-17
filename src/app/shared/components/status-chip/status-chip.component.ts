@@ -161,7 +161,7 @@ export class StatusChipComponent implements OnChanges {
 
     if (!token) {
       console.warn(
-        `[StatusChip] Unknown status "${this.status}" for domain "${this.domain}" — using fallback style.`
+        `[StatusChip] Unknown status "${this.status}" for domain "${this.domain}", using fallback style.`
       );
     }
 

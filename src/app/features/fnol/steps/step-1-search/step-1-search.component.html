@@ -234,7 +234,7 @@
                         <td [class.sla-urgent]="isDaySlaUrgent(claim)">
                           {{ getDaysSinceLabel(claim) }}
                         </td>
-                        <td>{{ claim.assignee ?? '—' }}</td>
+                        <td>{{ claim.assignee ?? '-' }}</td>
                         <td class="col-action">
                           <!-- Menu declared per-row (inside @for), same
                              pattern as step-entities-damages's blessed kebab —

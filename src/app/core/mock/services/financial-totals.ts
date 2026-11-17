@@ -66,7 +66,7 @@ export function withDerivedTotals(o: FinancialOverview): FinancialOverview {
   const moves = [
     ...completed.map(p => ({
       date: p.paymentDate,
-      description: `Payment: ${p.payee} — ${fx}`,
+      description: `Payment: ${p.payee}, ${fx}`,
       type: p.sectionType,
       payment: p.amount,
       reserve: 0,
@@ -76,7 +76,7 @@ export function withDerivedTotals(o: FinancialOverview): FinancialOverview {
       .filter(r => r.reserveValue > 0)
       .map(r => ({
         date: (r as { history?: { date: string }[] }).history?.[0]?.date ?? '',
-        description: `Reserve: ${r.reserveSubType} — ${fx}`,
+        description: `Reserve: ${r.reserveSubType}, ${fx}`,
         type: r.reserveType,
         payment: 0,
         reserve: r.reserveValue,
@@ -88,7 +88,7 @@ export function withDerivedTotals(o: FinancialOverview): FinancialOverview {
       .filter(r => own(r) && r.status === 'Approved')
       .map(r => ({
         date: r.bookingDate,
-        description: `Recovery: ${r.party} — ${fx}`,
+        description: `Recovery: ${r.party}, ${fx}`,
         type: '',
         payment: 0,
         reserve: 0,

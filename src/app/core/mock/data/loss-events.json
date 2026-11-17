@@ -1,7 +1,7 @@
 [
   {
     "lossEventId": "EVT-022",
-    "name": "Storm Bernd — Rhineland",
+    "name": "Storm Bernd: Rhineland",
     "eventDate": "2024-07-14",
     "oe": "Germany",
     "lineOfBusiness": "Property",
@@ -30,7 +30,7 @@
   },
   {
     "lossEventId": "EVT-023",
-    "name": "North Sea Gale — Marine Fleet",
+    "name": "North Sea Gale: Marine Fleet",
     "eventDate": "2024-09-02",
     "oe": "Norway",
     "lineOfBusiness": "Marine",
@@ -59,7 +59,7 @@
   },
   {
     "lossEventId": "123456",
-    "name": "Warehouse Fire Cluster — Bavaria",
+    "name": "Warehouse Fire Cluster: Bavaria",
     "eventDate": "2024-03-12",
     "oe": "Germany",
     "lineOfBusiness": "Property",
@@ -88,7 +88,7 @@
   },
   {
     "lossEventId": "345678",
-    "name": "Alpine Flood — Tyrol Region",
+    "name": "Alpine Flood: Tyrol Region",
     "eventDate": "2024-05-20",
     "oe": "Austria",
     "lineOfBusiness": "Engineering",
@@ -117,7 +117,7 @@
   },
   {
     "lossEventId": "910111",
-    "name": "Cyber Outage — Nordbyte Supply Chain",
+    "name": "Cyber Outage: Nordbyte Supply Chain",
     "eventDate": "2024-06-08",
     "oe": "Germany",
     "lineOfBusiness": "Cyber",
@@ -146,7 +146,7 @@
   },
   {
     "lossEventId": "101112",
-    "name": "Hail Damage — Lower Saxony",
+    "name": "Hail Damage: Lower Saxony",
     "eventDate": "2023-11-30",
     "oe": "Germany",
     "lineOfBusiness": "Property",
@@ -171,7 +171,7 @@
   },
   {
     "lossEventId": "111213",
-    "name": "Machinery Breakdown — BMW Budapest Motors",
+    "name": "Machinery Breakdown: BMW Budapest Motors",
     "eventDate": "2024-03-10",
     "oe": "Hungary",
     "lineOfBusiness": "Engineering",

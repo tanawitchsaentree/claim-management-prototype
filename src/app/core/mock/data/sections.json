@@ -2,7 +2,7 @@
   {
     "id": "SEC-SK-2024-001",
     "claimId": "SK-2024-001",
-    "name": "Material damage — Munich Warehouse",
+    "name": "Material damage: Munich Warehouse",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -25,7 +25,7 @@
   {
     "id": "SEC-001",
     "claimId": "CLM-2024-001",
-    "name": "Property Damage — Warehouse & Forklift",
+    "name": "Property Damage: Warehouse & Forklift",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -60,7 +60,7 @@
   {
     "id": "SEC-002",
     "claimId": "CLM-2024-001",
-    "name": "Business Interruption — Machinery Sales",
+    "name": "Business Interruption: Machinery Sales",
     "damageType": "business-interruption",
     "status": "Closed",
     "expanded": true,
@@ -113,7 +113,7 @@
   {
     "id": "SEC-006",
     "claimId": "CLM-2024-011",
-    "name": "Property Damage — Main Warehouse",
+    "name": "Property Damage: Main Warehouse",
     "damageType": "material-damage",
     "status": "Closed",
     "expanded": true,
@@ -143,7 +143,7 @@
   {
     "id": "SEC-006-B",
     "claimId": "CLM-2024-011",
-    "name": "Machinery Breakdown — Conveyor System",
+    "name": "Machinery Breakdown: Conveyor System",
     "damageType": "machinery-breakdown",
     "status": "Closed",
     "expanded": true,
@@ -175,7 +175,7 @@
   {
     "id": "SEC-007",
     "claimId": "CLM-2024-011",
-    "name": "Business Interruption — Production Line B",
+    "name": "Business Interruption: Production Line B",
     "damageType": "business-interruption",
     "status": "Closed",
     "expanded": false,
@@ -205,7 +205,7 @@
   {
     "id": "SEC-008",
     "claimId": "CLM-2024-001",
-    "name": "Section 004 — Payment Demo",
+    "name": "Section 004: Payment Demo",
     "damageType": "material-damage",
     "status": "Closed",
     "expanded": false,
@@ -235,7 +235,7 @@
   {
     "id": "SEC-024-A",
     "claimId": "CLM-2024-024",
-    "name": "Cargo — Hull",
+    "name": "Cargo: Hull",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -265,7 +265,7 @@
   {
     "id": "SEC-024-B",
     "claimId": "CLM-2024-024",
-    "name": "Cargo — Liability",
+    "name": "Cargo: Liability",
     "damageType": "liability",
     "status": "Closed",
     "expanded": false,
@@ -295,7 +295,7 @@
   {
     "id": "SEC-SK-2024-005",
     "claimId": "SK-2024-005",
-    "name": "Material damage — Cologne shop",
+    "name": "Material damage: Cologne shop",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -318,7 +318,7 @@
   {
     "id": "SEC-SK-2024-006",
     "claimId": "SK-2024-006",
-    "name": "Material damage — Munich office",
+    "name": "Material damage: Munich office",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -341,7 +341,7 @@
   {
     "id": "SEC-SK-2024-007",
     "claimId": "SK-2024-007",
-    "name": "Material damage — Workshop",
+    "name": "Material damage: Workshop",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -364,7 +364,7 @@
   {
     "id": "SEC-SK-2024-008",
     "claimId": "SK-2024-008",
-    "name": "Business interruption — Frankfurt plant",
+    "name": "Business interruption: Frankfurt plant",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -387,7 +387,7 @@
   {
     "id": "SEC-SK-2024-010",
     "claimId": "SK-2024-010",
-    "name": "Material damage — Hannover warehouse",
+    "name": "Material damage: Hannover warehouse",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -410,7 +410,7 @@
   {
     "id": "SEC-C-CLM-2024-002-1",
     "claimId": "CLM-2024-002",
-    "name": "System outage & recovery — Dortmund",
+    "name": "System outage & recovery: Dortmund",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -433,7 +433,7 @@
   {
     "id": "SEC-C-CLM-2024-002-2",
     "claimId": "CLM-2024-002",
-    "name": "Data restoration — Dortmund",
+    "name": "Data restoration: Dortmund",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -456,7 +456,7 @@
   {
     "id": "SEC-C-CLM-2024-003-1",
     "claimId": "CLM-2024-003",
-    "name": "Cargo damage — Rotterdam",
+    "name": "Cargo damage: Rotterdam",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -479,7 +479,7 @@
   {
     "id": "SEC-C-CLM-2024-003-2",
     "claimId": "CLM-2024-003",
-    "name": "Carrier liability — Rotterdam",
+    "name": "Carrier liability: Rotterdam",
     "damageType": "liability",
     "status": "Open",
     "expanded": true,
@@ -502,7 +502,7 @@
   {
     "id": "SEC-C-CLM-2024-004-1",
     "claimId": "CLM-2024-004",
-    "name": "Third-party liability — Vienna",
+    "name": "Third-party liability: Vienna",
     "damageType": "liability",
     "status": "Open",
     "expanded": true,
@@ -525,7 +525,7 @@
   {
     "id": "SEC-C-CLM-2024-005-1",
     "claimId": "CLM-2024-005",
-    "name": "Machinery breakdown — Budapest",
+    "name": "Machinery breakdown: Budapest",
     "damageType": "machinery-breakdown",
     "status": "Open",
     "expanded": true,
@@ -548,7 +548,7 @@
   {
     "id": "SEC-C-CLM-2024-005-2",
     "claimId": "CLM-2024-005",
-    "name": "Business interruption — Budapest",
+    "name": "Business interruption: Budapest",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -571,7 +571,7 @@
   {
     "id": "SEC-C-CLM-2024-006-1",
     "claimId": "CLM-2024-006",
-    "name": "Property damage — Zürich",
+    "name": "Property damage: Zürich",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -594,7 +594,7 @@
   {
     "id": "SEC-C-CLM-2024-007-1",
     "claimId": "CLM-2024-007",
-    "name": "Cargo damage — Oslo",
+    "name": "Cargo damage: Oslo",
     "damageType": "material-damage",
     "status": "Closed",
     "expanded": true,
@@ -622,7 +622,7 @@
   {
     "id": "SEC-C-CLM-2024-007-2",
     "claimId": "CLM-2024-007",
-    "name": "Carrier liability — Oslo",
+    "name": "Carrier liability: Oslo",
     "damageType": "liability",
     "status": "Closed",
     "expanded": true,
@@ -650,7 +650,7 @@
   {
     "id": "SEC-C-CLM-2024-008-1",
     "claimId": "CLM-2024-008",
-    "name": "System outage & recovery — Singapore",
+    "name": "System outage & recovery: Singapore",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -673,7 +673,7 @@
   {
     "id": "SEC-C-CLM-2024-009-1",
     "claimId": "CLM-2024-009",
-    "name": "Machinery breakdown — Cologne",
+    "name": "Machinery breakdown: Cologne",
     "damageType": "machinery-breakdown",
     "status": "Open",
     "expanded": true,
@@ -696,7 +696,7 @@
   {
     "id": "SEC-C-CLM-2024-009-2",
     "claimId": "CLM-2024-009",
-    "name": "Business interruption — Cologne",
+    "name": "Business interruption: Cologne",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -719,7 +719,7 @@
   {
     "id": "SEC-C-CLM-2024-010-1",
     "claimId": "CLM-2024-010",
-    "name": "Third-party liability — London",
+    "name": "Third-party liability: London",
     "damageType": "liability",
     "status": "Open",
     "expanded": true,
@@ -765,7 +765,7 @@
   {
     "id": "SEC-C-CLM-2024-013-1",
     "claimId": "CLM-2024-013",
-    "name": "System outage & recovery — Dortmund",
+    "name": "System outage & recovery: Dortmund",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -788,7 +788,7 @@
   {
     "id": "SEC-C-CLM-2024-014-1",
     "claimId": "CLM-2024-014",
-    "name": "Machinery breakdown — Frankfurt",
+    "name": "Machinery breakdown: Frankfurt",
     "damageType": "machinery-breakdown",
     "status": "Open",
     "expanded": true,
@@ -811,7 +811,7 @@
   {
     "id": "SEC-C-CLM-2024-015-1",
     "claimId": "CLM-2024-015",
-    "name": "Third-party liability — Graz",
+    "name": "Third-party liability: Graz",
     "damageType": "liability",
     "status": "Open",
     "expanded": true,
@@ -834,7 +834,7 @@
   {
     "id": "SEC-C-CLM-2024-016-1",
     "claimId": "CLM-2024-016",
-    "name": "Property damage — Bern",
+    "name": "Property damage: Bern",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -857,7 +857,7 @@
   {
     "id": "SEC-C-CLM-2024-016-2",
     "claimId": "CLM-2024-016",
-    "name": "Business interruption — Bern",
+    "name": "Business interruption: Bern",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -880,7 +880,7 @@
   {
     "id": "SEC-C-CLM-2024-017-1",
     "claimId": "CLM-2024-017",
-    "name": "Cargo damage — Copenhagen",
+    "name": "Cargo damage: Copenhagen",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -903,7 +903,7 @@
   {
     "id": "SEC-C-CLM-2024-018-1",
     "claimId": "CLM-2024-018",
-    "name": "System outage & recovery — Singapore",
+    "name": "System outage & recovery: Singapore",
     "damageType": "business-interruption",
     "status": "Closed",
     "expanded": true,
@@ -931,7 +931,7 @@
   {
     "id": "SEC-C-CLM-2024-019-1",
     "claimId": "CLM-2024-019",
-    "name": "Property damage — Bremen",
+    "name": "Property damage: Bremen",
     "damageType": "material-damage",
     "status": "Closed",
     "expanded": true,
@@ -959,7 +959,7 @@
   {
     "id": "SEC-C-CLM-2024-020-1",
     "claimId": "CLM-2024-020",
-    "name": "Third-party liability — Manchester",
+    "name": "Third-party liability: Manchester",
     "damageType": "liability",
     "status": "Open",
     "expanded": true,
@@ -982,7 +982,7 @@
   {
     "id": "SEC-C-CLM-2024-021-1",
     "claimId": "CLM-2024-021",
-    "name": "Machinery breakdown — Stuttgart",
+    "name": "Machinery breakdown: Stuttgart",
     "damageType": "machinery-breakdown",
     "status": "Open",
     "expanded": true,
@@ -1005,7 +1005,7 @@
   {
     "id": "SEC-C-CLM-2024-022-1",
     "claimId": "CLM-2024-022",
-    "name": "Property damage — Munich",
+    "name": "Property damage: Munich",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -1028,7 +1028,7 @@
   {
     "id": "SEC-C-CLM-2024-023-1",
     "claimId": "CLM-2024-023",
-    "name": "Property damage — Munich",
+    "name": "Property damage: Munich",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -1051,7 +1051,7 @@
   {
     "id": "SEC-C-CLM-2024-101-1",
     "claimId": "CLM-2024-101",
-    "name": "Property damage — Frankfurt",
+    "name": "Property damage: Frankfurt",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -1074,7 +1074,7 @@
   {
     "id": "SEC-C-CLM-2024-101-2",
     "claimId": "CLM-2024-101",
-    "name": "Business interruption — Frankfurt",
+    "name": "Business interruption: Frankfurt",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -1097,7 +1097,7 @@
   {
     "id": "SEC-C-CLM-2024-102-1",
     "claimId": "CLM-2024-102",
-    "name": "Property damage — Berlin",
+    "name": "Property damage: Berlin",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -1120,7 +1120,7 @@
   {
     "id": "SEC-C-CLM-2024-103-1",
     "claimId": "CLM-2024-103",
-    "name": "Machinery breakdown — Hamburg",
+    "name": "Machinery breakdown: Hamburg",
     "damageType": "machinery-breakdown",
     "status": "Open",
     "expanded": true,
@@ -1143,7 +1143,7 @@
   {
     "id": "SEC-C-CLM-2024-103-2",
     "claimId": "CLM-2024-103",
-    "name": "Business interruption — Hamburg",
+    "name": "Business interruption: Hamburg",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -1166,7 +1166,7 @@
   {
     "id": "SEC-C-CLM-2024-025-1",
     "claimId": "CLM-2024-025",
-    "name": "Property damage — Cologne",
+    "name": "Property damage: Cologne",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -1189,7 +1189,7 @@
   {
     "id": "SEC-C-CLM-2024-026-1",
     "claimId": "CLM-2024-026",
-    "name": "Third-party liability — Bremen",
+    "name": "Third-party liability: Bremen",
     "damageType": "liability",
     "status": "Open",
     "expanded": true,
@@ -1212,7 +1212,7 @@
   {
     "id": "SEC-C-CLM-2024-027-1",
     "claimId": "CLM-2024-027",
-    "name": "Cargo damage — Kiel",
+    "name": "Cargo damage: Kiel",
     "damageType": "material-damage",
     "status": "Closed",
     "expanded": true,
@@ -1240,7 +1240,7 @@
   {
     "id": "SEC-C-CLM-2024-028-1",
     "claimId": "CLM-2024-028",
-    "name": "System outage & recovery — Munich",
+    "name": "System outage & recovery: Munich",
     "damageType": "business-interruption",
     "status": "Open",
     "expanded": true,
@@ -1263,7 +1263,7 @@
   {
     "id": "SEC-C-CLM-2024-028-2",
     "claimId": "CLM-2024-028",
-    "name": "Data restoration — Munich",
+    "name": "Data restoration: Munich",
     "damageType": "material-damage",
     "status": "Open",
     "expanded": true,
@@ -1286,7 +1286,7 @@
   {
     "id": "SEC-C-CLM-2024-029-1",
     "claimId": "CLM-2024-029",
-    "name": "Machinery breakdown — Stuttgart",
+    "name": "Machinery breakdown: Stuttgart",
     "damageType": "machinery-breakdown",
     "status": "Open",
     "expanded": true,

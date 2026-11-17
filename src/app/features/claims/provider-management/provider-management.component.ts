@@ -155,7 +155,7 @@ export class ProviderManagementComponent implements OnInit {
     if (!result) return;
     this.toast.success(
       'Communication sent',
-      `${row.providerName} — ${result.attachmentCount} attachment(s)`
+      `${row.providerName}, ${result.attachmentCount} attachment(s)`
     );
   }
 

@@ -52,7 +52,7 @@
 
     @if (context.blockedBy) {
       <nx-message context="warning" class="ap-blocked">
-        Blocked — {{ context.blockedBy.replace('_', ' ') }}.
+        Blocked: {{ context.blockedBy.replace('_', ' ') }}.
         @if (context.blockedNote) {
           {{ context.blockedNote }}
         }

@@ -123,7 +123,7 @@ export class ClaimClosureModalComponent {
     {
       label: 'Recovery case set up',
       passed: !this.data.blockers.blockers.some(b => b.type === 'recovery-not-set-up'),
-      failHint: 'Recovery potential is Yes — create the recovery case on the Recoveries page.'
+      failHint: 'Recovery potential is Yes: create the recovery case on the Recoveries page.'
     },
     {
       label: 'Recoveries & deductibles cleared',
@@ -185,13 +185,13 @@ export class ClaimClosureModalComponent {
   readonly stepTitle = computed(() => {
     switch (this.step()) {
       case 1:
-        return 'Close Claim — Blockers';
+        return 'Close Claim: Blockers';
       case 2:
-        return 'Close Claim — Pre-closure Checklist';
+        return 'Close Claim: Pre-closure Checklist';
       case 3:
-        return 'Close Claim — Reason & Retention';
+        return 'Close Claim: Reason & Retention';
       case 4:
-        return 'Close Claim — Confirmation';
+        return 'Close Claim: Confirmation';
     }
   });
 
@@ -299,7 +299,7 @@ export class ClaimClosureModalComponent {
   }
 
   retentionTypeLabel(type: string): string {
-    if (type === 'default') return `Default (10 years — until ${this.defaultRetentionDate()})`;
+    if (type === 'default') return `Default (10 years: until ${this.defaultRetentionDate()})`;
     if (type === 'custom') return 'Custom date';
     return 'Indefinite';
   }

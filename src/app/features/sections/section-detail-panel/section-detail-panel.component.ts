@@ -88,7 +88,7 @@ export class SectionDetailPanelComponent {
     const data: ConfirmDialogData = {
       title: 'Rename section',
       message:
-        'The new name is used everywhere this section is referenced — reserves, the entity tree and the closure checklist.',
+        'The new name is used everywhere this section is referenced, reserves, the entity tree and the closure checklist.',
       changes: [{ label: 'Section name', original: this.section.name, updated: name }],
       confirmLabel: 'Rename',
       cancelLabel: 'Keep editing'
