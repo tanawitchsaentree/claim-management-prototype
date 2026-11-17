@@ -16,6 +16,17 @@
     } @else if (claim.status === 'Closed' && claim.closureReason === 'Claim Rejected') {
       <nx-message context="info" class="co-rejection-banner">This claim has been rejected.</nx-message>
     }
+    <!-- Spec 3055659701 §4.1 step 5: after a partial reopen, sections left
+         closed are reopened one by one from the Sections page. Link styled like
+         blocker-return-banner.component.html:5. -->
+    @if (claim.reopenedDate && claim.status !== 'Closed' && closedSectionsCount() > 0) {
+      <nx-message context="info" class="co-rejection-banner" data-tour-id="co-reopen-closed-sections-banner">
+        This claim has {{ closedSectionsCount() }} closed
+        {{ closedSectionsCount() === 1 ? 'section' : 'sections' }}. You can reopen
+        {{ closedSectionsCount() === 1 ? 'it' : 'them' }} individually from the
+        <a class="co-banner-link" [routerLink]="['/claims', claim.claimId, 'sections']">Sections page</a>.
+      </nx-message>
+    }
 
     <!-- General Info Card -->
     <section class="co-card">
@@ -143,15 +154,20 @@
                 claim.dateOfLoss ? (claim.dateOfLoss | appDate) : '–'
               }}</span>
             </div>
-            <div class="co-field">
-              <span class="co-label">Closure date</span>
-              <span class="co-value">{{
-                claim.closureDate ? (claim.closureDate | appDate) : '–'
-              }}</span>
-            </div>
+            <!-- Spec 3055659701 §4.1 step 5 and §12: once reopened, Closure date
+                 and Closure reason are hidden; Reopened date and reason show instead.
+                 A claim closed again shows them again. -->
+            @if (claim.status === 'Closed' || !claim.reopenedDate) {
+              <div class="co-field">
+                <span class="co-label">Closure date</span>
+                <span class="co-value">{{
+                  claim.closureDate ? (claim.closureDate | appDate) : '–'
+                }}</span>
+              </div>
+            }
             <!-- 'Closed by' removed — same person as the claim handler (redundant) -->
             <!-- A rejected claim says so in the banner instead. -->
-            @if (claim.closureReason !== 'Claim Rejected') {
+            @if ((claim.status === 'Closed' || !claim.reopenedDate) && claim.closureReason !== 'Claim Rejected') {
               <div class="co-field">
                 <span class="co-label">Closure reason</span>
                 <span class="co-value">{{

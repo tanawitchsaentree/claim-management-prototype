@@ -5,17 +5,17 @@
   "targetClaim": "CL-2025-001",
   "pages": ["overview"],
   "walkthroughSteps": [
-    "Apply an AC \u2014 seeds blockers / retention state on CLM-2024-001",
+    "Apply an AC: it seeds blockers or retention state on CLM-2024-001",
     {
       "targetId": "co-close-claim-button",
       "title": "Close Claim",
-      "body": "Always clickable \u2014 it's only disabled during the brief loading check, never because of blockers. Payments, litigation, bills, or open sections show up as blocker cards inside the modal instead of a disabled-button tooltip.",
+      "body": "Always clickable: it's only disabled during the brief loading check, never because of blockers. Payments, litigation, bills, or open sections show up as blocker cards inside the modal instead of a disabled-button tooltip.",
       "direction": "top"
     },
     {
       "targetId": "ccm-reason-dropdown",
       "title": "Closure reason",
-      "body": "Required before the claim can close \u2014 two reasons available (Claim Finalised / Claim Not Pursued; rejection has its own Reject Claim action). If the proximate loss cause is 'Other', a warning appears above this step, but it doesn't block submission.",
+      "body": "Required before the claim can close. Two reasons available (Claim Finalised / Claim Not Pursued; rejection has its own Reject Claim action). If the proximate loss cause is 'Other', a warning appears above this step, but it doesn't block submission.",
       "direction": "top"
     },
     {
@@ -27,15 +27,15 @@
     {
       "targetId": "ccm-retention-custom-date",
       "title": "Custom retention date",
-      "body": "Only shown when Custom is selected \u2014 must be strictly after the default 10-year date, enforced live (not just on submit).",
+      "body": "Only shown when Custom is selected. It must be strictly after the default 10-year date, enforced live (not just on submit).",
       "direction": "top"
     },
-    "Confirm \u2192 status chip updates to 'Closed'; closure panel shows date, reason, closed-by, and retention until (or 'Indefinite')",
+    "Confirm → status chip updates to 'Closed'; closure panel shows date, reason, closed-by, and retention until (or 'Indefinite')",
     {
       "targetId": "co-reopen-claim-button",
       "title": "Reopen Claim",
       "body": "Visible once the claim is Closed.",
-      "expectedAfterClick": "Opens a modal for a reopening reason and an optional note, then a section selection step and a confirm step. No reserve is captured: the Reserve team is told through the claim-updated event (BMPCC-14607). Confirming flips status to 'Reopened' and adds a reopened-date row to the closure panel.",
+      "expectedAfterClick": "Opens a modal for a reopening reason (no note field), then a section selection step and a confirm step. No reserve is captured: the Reserve team is told through the claim-updated event (BMPCC-14607). Confirming sets the status to Open, shows Reopened date and Reopening reason, and hides Closure date and Closure reason.",
       "direction": "top"
     },
     {
@@ -100,14 +100,14 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click Close Claim \u2192 click Continue without selecting a reason",
+        "trigger": "Click Close Claim → click Continue without selecting a reason",
         "expectedResult": "Validation error appears below reason dropdown"
       }
     },
     {
       "id": "AC-02",
       "statement": "Closure blocked when payments / recoveries / litigation / provider / bills / reports are outstanding",
-      "plainStatement": "Closure is **blocked** when *any* of the listed activities are outstanding. The blocker tooltip lists which activity needs resolution. (BMPCC-11360 AC2 \u2014 activity flags driven by mock claim data.)",
+      "plainStatement": "Closure is **blocked** when *any* of the listed activities are outstanding. The blocker tooltip lists which activity needs resolution. (BMPCC-11360 AC2: activity flags driven by mock claim data.)",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -214,7 +214,7 @@
       "expectedUI": {
         "description": "Warning banner inside modal step 2",
         "visualCues": [
-          "nx-message warning banner: 'The proximate loss cause is set to \"Other\"\u2026'",
+          "nx-message warning banner: 'The proximate loss cause is set to \"Other\"…'",
           "Continue button still enabled (warning is non-blocking)"
         ]
       },
@@ -223,14 +223,14 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Open closure modal \u2014 observe step 2",
+        "trigger": "Open closure modal, observe step 2",
         "expectedResult": "Warning visible above Reason dropdown; user can proceed"
       }
     },
     {
       "id": "AC-04",
       "statement": "Retention date defaults to 10 years; handler can override to Custom or Indefinite",
-      "plainStatement": "On step 3 of the closure modal, three retention options are available: **Default (10 years)**, **Custom** (must extend beyond default), and **Indefinite**. Default is auto-applied; Custom unlocks a date picker pinned to \u2265 default + 10y; Indefinite stores no date.",
+      "plainStatement": "On step 3 of the closure modal, three retention options are available: **Default (10 years)**, **Custom** (must extend beyond default), and **Indefinite**. Default is auto-applied; Custom unlocks a date picker pinned to ≥ default + 10y; Indefinite stores no date.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -275,7 +275,7 @@
       "expectedUI": {
         "description": "Retention radio group with calendar picker for Custom",
         "visualCues": [
-          "'Default (10 years \u2014 until \u2026)' radio with computed date label",
+          "'Default (10 years, until …)' radio with computed date label",
           "'Custom date' radio reveals a datefield with calendar toggle",
           "Datefield hint: 'Must extend beyond the default 10-year period.'",
           "'Indefinite' radio stores no date"
@@ -286,18 +286,18 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Open modal \u2192 Reason \u2192 Continue \u2192 step 3",
+        "trigger": "Open modal → Reason → Continue → step 3",
         "expectedResult": "Retention options visible; Custom unlocks calendar"
       }
     },
     {
       "id": "AC-05",
       "statement": "Closed claim shows closure date and retention info on the file",
-      "plainStatement": "After closure, the **claim file** shows: `Closure date`, `Closed by`, `Closure reason`, and `Retention until` (Indefinite or formatted date). All read-only.",
+      "plainStatement": "After closure, the **claim file** shows: `Closure date`, `Closure reason`, and `Retention until` (Indefinite or formatted date). All read-only. `Closed by` is not shown: it is the same person as the claim handler. Once the claim is reopened, Closure date and Closure reason are hidden (spec 3055659701), see AC-07.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Claim already closed via overviewPatch \u2014 Default 10-year retention",
+        "description": "Claim already closed via overviewPatch, Default 10-year retention",
         "preconditions": [
           {
             "text": "Status chip reads 'Closed'",
@@ -405,10 +405,7 @@
       },
       "expectedUI": {
         "description": "Closure panel with indefinite retention",
-        "visualCues": [
-          "Status: Closed",
-          "Retention until: Indefinite (literal text \u2014 no date)"
-        ]
+        "visualCues": ["Status: Closed", "Retention until: Indefinite (literal text, no date)"]
       },
       "expectedOutcome": {
         "overviewStatus": "Closed",
@@ -422,10 +419,10 @@
     },
     {
       "id": "AC-07",
-      "statement": "Reopen asks for a reason, no reserve is captured; status updates to Reopened with date visible",
-      "plainStatement": "A `Closed` claim can be **reopened** with a reason and a section selection. No reserve type or amount is captured (BMPCC-14607: the Reserve team is notified by event only; this replaces the earlier reserve rule). After reopen, status updates to `Reopened` and the **reopening date** is visible on the file.",
+      "statement": "Reopen asks for a reason, no reserve is captured; the reopening date is visible and the closure fields are hidden",
+      "plainStatement": "A `Closed` claim can be **reopened** with a reason and a section selection. No reserve type or amount is captured (BMPCC-14607: the Reserve team is notified by event only; this replaces the earlier reserve rule). After reopen, the **Reopened date** and **Reopening reason** are visible on the file and Closure date and Closure reason are hidden (spec 3055659701). **NOTE:** the status chip reads `Open`; this story and the spec both say `Reopened`, so this AC stays partial until the status label is decided.",
       "page": "overview",
-      "buildStatus": "done",
+      "buildStatus": "partial",
       "setup": {
         "description": "Pre-closed claim ready to reopen",
         "preconditions": [
@@ -440,7 +437,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "After reopen: status chip shows Reopened + reopened date in panel",
+            "text": "After reopen: status chip shows Open, Reopened date in the panel, no Closure date",
             "page": "overview",
             "role": "tested-visible"
           }
@@ -478,8 +475,8 @@
         "description": "Reopen flow without a reserve",
         "visualCues": [
           "Reopen Claim button enabled in right-strip",
-          "Modal: Reason (+ optional note), then section selection. No reserve fields",
-          "After Reopen: status 'Reopened' + Reopened date row visible in closure panel"
+          "Modal: Reason only (no note), then section selection. No reserve fields",
+          "After Reopen: status Open, Reopened date and Reopening reason visible, Closure date and Closure reason hidden"
         ]
       },
       "expectedOutcome": {
@@ -488,8 +485,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click Reopen Claim \u2192 pick a reason \u2192 Continue \u2192 pick sections \u2192 Continue \u2192 Reopen claim (confirm step, BMPCC-22328)",
-        "expectedResult": "Status chip flips to Reopened; reopened date row appears"
+        "trigger": "Click Reopen Claim, pick a reason, Continue, pick sections, Continue, Reopen claim (confirm step, BMPCC-22328)",
+        "expectedResult": "Status chip flips to Open; Reopened date row appears; Closure date and Closure reason disappear"
       }
     }
   ]

@@ -585,6 +585,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     const result = (await firstValueFrom(ref.afterClosed())) as ClaimReopenModalResult | undefined;
     if (!result) return;
 
+    // Same entry ClaimClosureService.reopenClaim() writes to mock state, so
+    // the list matches what a reload shows (it used to say "Rejection
+    // approval: Requested to Declined", copied from the rejection flow).
     const cur = this.vm$.value;
     const activity: ClaimActivity = {
       id: `act-${Date.now()}`,
@@ -592,9 +595,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       user: claim.assignedHandler,
       timestamp: new Date().toISOString(),
       objectType: 'Claim',
-      attribute: 'Rejection approval',
-      valueOld: 'Requested',
-      valueNew: 'Declined'
+      attribute: 'Status',
+      valueOld: 'Closed',
+      valueNew: 'Open'
     };
     this.vm$.next({
       ...cur,
@@ -602,26 +605,14 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
       activities: [activity, ...cur.activities]
     });
 
-    const allSections = await firstValueFrom(this.sectionSvc.getByClaimId(claim.claimId)).catch(
-      () => []
-    );
-    const remainingAfter = allSections.filter(s => s.status === 'Closed').length;
+    // Sections still closed are told by the info banner on the page
+    // (spec 3055659701 §4.1 step 5), so the toast only acknowledges the reopen.
     const reopened = result.reopenedSectionIds.length;
-
-    let subtitle = result.reopenedClaim.claimId;
-    if (reopened > 0 && remainingAfter > 0) {
-      subtitle = `${reopened} section${reopened > 1 ? 's' : ''} reopened. ${remainingAfter} section${remainingAfter > 1 ? 's' : ''} remain closed.`;
-    } else if (reopened > 0) {
-      subtitle = `${reopened} section${reopened > 1 ? 's' : ''} reopened.`;
-    }
-    const action =
+    const subtitle =
       reopened > 0
-        ? {
-            label: 'View sections',
-            onClick: () => this.router.navigate(['/claims', claim.claimId, 'sections'])
-          }
-        : undefined;
-    this.toast.success('Claim reopened', subtitle, action);
+        ? `${reopened} section${reopened > 1 ? 's' : ''} reopened.`
+        : result.reopenedClaim.claimId;
+    this.toast.success('Claim reopened', subtitle);
     this.refreshClosedSectionsCount(claim.claimId);
   }
 

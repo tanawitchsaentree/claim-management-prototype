@@ -10,8 +10,21 @@
       "targetId": "co-reopen-claim-button",
       "title": "Reopen Claim",
       "body": "A closed claim shows Reopen Claim in place of Close Claim.",
-      "expectedAfterClick": "Opens the reopen confirmation: confirming sets the claim back to an active status.",
+      "expectedAfterClick": "Opens the reopen modal. Step 1 asks for a reopening reason only: there is no note box (spec 3055659701 section 12).",
       "direction": "top"
+    },
+    {
+      "targetId": "crm-reason-dropdown",
+      "title": "Reopening reason",
+      "body": "The only input on step 1. It is required, as the Jira story says. The spec says optional for now, because the reason list has not been received.",
+      "direction": "top"
+    },
+    "Continue: pick the sections to reopen (one section is picked automatically), then confirm",
+    {
+      "targetId": "co-reopen-closed-sections-banner",
+      "title": "Sections still closed",
+      "body": "After a partial reopen, this info banner says how many sections are still closed and links to the Sections page, where each one is reopened on its own. Closure date and Closure reason are no longer shown; Reopened date and Reopening reason are.",
+      "direction": "bottom"
     }
   ],
   "acceptanceCriteria": [
@@ -24,7 +37,11 @@
       "setup": {
         "description": "Seed CLM-2024-001 as Closed so the Reopen affordance is visible",
         "preconditions": [
-          { "text": "Claim status is Closed", "page": "overview", "role": "setup" },
+          {
+            "text": "Claim status is Closed",
+            "page": "overview",
+            "role": "setup"
+          },
           {
             "text": "Reopen Claim button is visible in the card actions",
             "page": "overview",
@@ -38,7 +55,10 @@
               "status": "Closed",
               "closureDate": "2024-02-28",
               "closureReason": "Claim Finalised",
-              "closedBy": { "userId": "u1", "name": "Leonie Fischer" }
+              "closedBy": {
+                "userId": "u1",
+                "name": "Leonie Fischer"
+              }
             }
           }
         }
@@ -55,6 +75,191 @@
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Load the overview with the claim closed",
         "expectedResult": "Reopen Claim button is visible"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Step 1 of the reopen modal asks for a reopening reason and nothing else",
+      "plainStatement": "Step 1 of the reopen modal has one field: **Reopening reason**, required. There is no Note box: spec 3055659701 section 12 says the note field in the Figma should not be built. **NOTE [accepted-deviation]:** the reason is required because the Jira story says mandatory; the spec says optional until the reason list is received. The six reasons in the list are placeholders: the spec (Q3) says no list has been received yet.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed CLM-2024-001 as Closed so Reopen Claim is visible",
+        "preconditions": [
+          {
+            "text": "Claim status is Closed",
+            "page": "overview",
+            "role": "setup"
+          },
+          {
+            "text": "Reopen modal step 1 shows only the Reopening reason dropdown",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": {
+                "userId": "u1",
+                "name": "Leonie Fischer"
+              }
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Reopen modal, step 1",
+        "visualCues": [
+          "Title: Reopen claim: Reason",
+          "Reopening reason dropdown",
+          "No Note field",
+          "Continue disabled until a reason is picked"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Reopen Claim",
+        "expectedResult": "Modal opens with only the reason dropdown; Continue stays disabled until a reason is picked"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "The handler picks which closed sections reopen with the claim",
+      "plainStatement": "Step 2 lists the claim's closed sections. With one closed section it is picked automatically; with more, at least one must be picked before Continue works. **NOTE:** the modal then shows a third step that lists what reopens and what stays closed (from BMPCC-22328). The spec describes a 2-step modal, so this extra step is not signed off.",
+      "page": "overview",
+      "buildStatus": "partial",
+      "setup": {
+        "description": "Seed CLM-2024-001 as Closed; it has 3 closed sections",
+        "preconditions": [
+          {
+            "text": "Claim status is Closed",
+            "page": "overview",
+            "role": "setup"
+          },
+          {
+            "text": "Step 2 lists the closed sections with checkboxes",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Closed",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": {
+                "userId": "u1",
+                "name": "Leonie Fischer"
+              }
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Reopen modal, step 2 and the confirm step",
+        "visualCues": [
+          "Select all checkbox with a count",
+          "One checkbox per closed section",
+          "Continue disabled until one section is picked",
+          "Confirm step lists sections that reopen and sections that stay closed"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Click Reopen Claim, pick a reason, Continue",
+        "expectedResult": "Closed sections are listed; Continue needs at least one picked"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "After a partial reopen, Claim Overview shows the reopen fields and an info banner about the sections still closed",
+      "plainStatement": "After reopening, the claim shows **Reopened date** and **Reopening reason**. **Closure date** and **Closure reason** are hidden (spec 3055659701 section 4.1 step 5 and section 12). If sections are still closed, an info banner says: \"This claim has N closed sections. You can reopen them individually from the Sections page.\", with a link to the Sections page. A short toast only confirms the reopen. The activity list logs \"Status: Closed to Open\". **NOTE:** the status chip reads Open; the spec says the badge should read \"Reopened\".",
+      "page": "overview",
+      "buildStatus": "partial",
+      "setup": {
+        "description": "Seed CLM-2024-001 as already reopened, with its 3 seeded closed sections still closed",
+        "preconditions": [
+          {
+            "text": "Claim is Open with a reopened date",
+            "page": "overview",
+            "role": "setup"
+          },
+          {
+            "text": "Info banner about the closed sections is visible",
+            "page": "overview",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Closure date and Closure reason are not shown",
+            "page": "overview",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "status": "Open",
+              "closureDate": "2024-02-28",
+              "closureReason": "Claim Finalised",
+              "closedBy": {
+                "userId": "u1",
+                "name": "Leonie Fischer"
+              },
+              "reopenedDate": "2024-03-15",
+              "reopeningReason": "New evidence received"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Claim Overview after a partial reopen",
+        "visualCues": [
+          "Blue info banner at the top: This claim has 3 closed sections...",
+          "Sections page link in the banner",
+          "Reopened date and Reopening reason in General information",
+          "No Closure date or Closure reason field",
+          "Status chip: Open"
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Load the page",
+        "expectedResult": "Banner shows the closed section count; closure fields are hidden"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "If the linked Loss Event was closed, a banner says it has been reopened",
+      "plainStatement": "Spec 3055659701 section 4.1 step 5: if the linked Loss Event was Closed, reopening the claim reopens it and the claim page shows \"Loss Event LE-XXXX has been reopened.\" Not built: no closed claim in the mock data is linked to a closed Loss Event, and the prototype does not cascade the Loss Event status.",
+      "page": "overview",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "No setup possible yet",
+        "preconditions": [
+          {
+            "text": "A closed claim linked to a closed Loss Event",
+            "page": "overview",
+            "role": "setup"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Banner after reopen",
+        "visualCues": ["Info banner: Loss Event LE-XXXX has been reopened."]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/overview",
+        "trigger": "Reopen a claim whose Loss Event is Closed",
+        "expectedResult": "Not built"
       }
     }
   ]

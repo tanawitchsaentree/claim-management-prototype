@@ -10,7 +10,7 @@
   @if (step() === 1) {
     <p class="crm-intro">
       Reopen <strong>{{ claim.claimId | claimNumber }}</strong
-      >. Pick a reason and add an optional note for context.
+      >. Pick a reason.
     </p>
 
     <form [formGroup]="form" class="crm-form">
@@ -23,14 +23,6 @@
         <nx-error nxFormfieldError>Reason is required.</nx-error>
       </nx-formfield>
 
-      <nx-formfield label="Note (optional)">
-        <textarea
-          nxInput
-          formControlName="note"
-          rows="3"
-          placeholder="Add context for the audit trail…"
-        ></textarea>
-      </nx-formfield>
     </form>
   }
 

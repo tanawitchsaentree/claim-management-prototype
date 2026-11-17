@@ -184,3 +184,15 @@
     color: var(--text-01);
   }
 }
+
+// Inline link inside an nx-message banner: weight from blocker-return-banner's
+// back link, colour and hover from .co-value--link above (Loss event ID, Policy).
+.co-banner-link {
+  font-weight: 600;
+  color: var(--interactive-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

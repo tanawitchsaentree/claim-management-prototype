@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NxModalModule, NxModalRef, NX_MODAL_DATA } from '@allianz/ng-aquila/modal';
 import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
-import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
@@ -40,7 +39,6 @@ import { ClaimNumberPipe } from '../../../../../shared/pipes/claim-number.pipe';
     ReactiveFormsModule,
     NxModalModule,
     NxFormfieldModule,
-    NxInputModule,
     NxDropdownModule,
     NxButtonModule,
     NxIconModule,
@@ -79,8 +77,7 @@ export class ClaimReopenModalComponent {
   ];
 
   readonly form = this.fb.group({
-    reason: [null as string | null, Validators.required],
-    note: ['']
+    reason: [null as string | null, Validators.required]
   });
 
   readonly step = signal<Step>(1);
@@ -189,8 +186,8 @@ export class ClaimReopenModalComponent {
     this.saving.set(true);
     this.saveError.set(null);
 
-    const v = this.form.value;
-    const reason = v.note?.trim() ? `${v.reason}, ${v.note!.trim()}` : v.reason!;
+    // Spec 3055659701 §12: no note/context field, the reason is all that is stored.
+    const reason = this.form.value.reason!;
     const reopenedBy = { userId: 'usr-current', name: this.claim.assignedHandler };
 
     const payload: ReopenPayload = {
