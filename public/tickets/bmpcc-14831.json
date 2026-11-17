@@ -9,23 +9,34 @@
     {
       "targetId": "fo-transaction-summary",
       "title": "Transaction summary",
-      "body": "This is the Transaction Summary section this ticket's layout redesign covers.",
-      "expectedAfterClick": "No interaction here: this step is pointing at the section itself. Note: this build shows a plain item count, not the paginated view the design calls for; pagination isn't implemented yet.",
+      "body": "Transaction summary is the first panel and is open on load, so it is visible without scrolling. Every other table below it sits in a collapsed panel.",
+      "expectedAfterClick": "No interaction here: this step points at the section itself. Pagination is not built yet: the table shows a plain item count.",
       "direction": "bottom"
+    },
+    {
+      "targetId": "fo-financial-details",
+      "title": "Financial details",
+      "body": "Collapsed by default, as the Jira story asks. Click the header to open it.",
+      "direction": "top"
     }
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Financial Overview shows a Transaction Summary section with an item count",
-      "plainStatement": "Financial Overview's **Transaction Summary** section lists transactions with a running item count. **NOTE [accepted-deviation]:** the ticket calls for pagination on this table; the current build shows a plain count instead, no page controls. Treated as `done` for the layout: pending product sign-off on whether pagination ships.",
+      "statement": "Financial Overview opens with the Transaction Summary at the top and the other panels collapsed",
+      "plainStatement": "Financial Overview's **Transaction Summary** is the first panel, open on page load, so it is visible without scrolling. **Financial details** below it is collapsed by default and opens on click. The summary tiles stay above both. **NOTE [accepted-deviation]:** the ticket calls for pagination on this table; the current build shows a plain count instead, no page controls. **NOTE:** Payments, Reserves and Recovery bookings are separate views in the Financial menu, not panels on this page.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Uses CLM-2024-001's existing financial data: no override needed",
         "preconditions": [
           {
-            "text": "Transaction Summary section visible with item count",
+            "text": "Transaction Summary panel open at the top",
+            "page": "any",
+            "role": "tested-visible"
+          },
+          {
+            "text": "Financial details panel collapsed",
             "page": "any",
             "role": "tested-visible"
           }
@@ -33,17 +44,18 @@
         "stateOverrides": {}
       },
       "expectedUI": {
-        "description": "Transaction Summary table with item count, no pagination controls",
+        "description": "Transaction Summary open at the top, Financial details collapsed",
         "visualCues": [
-          "Transaction Summary heading",
-          "Item count below heading",
+          "Summary tiles row",
+          "Transaction summary panel open, with item count",
+          "Financial details panel collapsed below it",
           "No pagination controls present"
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial",
-        "trigger": "Scroll to Transaction Summary",
-        "expectedResult": "Section visible with item count; no pagination"
+        "trigger": "Load the page, then click Financial details",
+        "expectedResult": "Transaction summary is visible on load; Financial details opens on click"
       }
     }
   ]

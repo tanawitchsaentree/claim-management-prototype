@@ -71,19 +71,21 @@
       >
       <app-fo-claim-summary [summary]="fo.summary" [currency]="currency()" />
 
+      <!-- BMPCC-14831: Transaction summary first and open on load; every other
+           table below it sits in a collapsed panel. -->
       <nx-accordion variant="light" [multi]="true">
-        <nx-expansion-panel expanded>
-          <nx-expansion-panel-header>
-            <nx-expansion-panel-title>Financial details</nx-expansion-panel-title>
-          </nx-expansion-panel-header>
-          <app-fo-financial-details-table [rows]="fo.details.rows" [currency]="currency()" />
-        </nx-expansion-panel>
         <nx-expansion-panel expanded data-tour-id="fo-transaction-summary">
           <nx-expansion-panel-header>
             <nx-expansion-panel-title>Transaction summary</nx-expansion-panel-title>
           </nx-expansion-panel-header>
           <p class="fo-count">{{ fo.transactions.length }} {{ fo.transactions.length === 1 ? 'item' : 'items' }}</p>
           <app-fo-transactions-table [rows]="fo.transactions" [currency]="currency()" />
+        </nx-expansion-panel>
+        <nx-expansion-panel data-tour-id="fo-financial-details">
+          <nx-expansion-panel-header>
+            <nx-expansion-panel-title>Financial details</nx-expansion-panel-title>
+          </nx-expansion-panel-header>
+          <app-fo-financial-details-table [rows]="fo.details.rows" [currency]="currency()" />
         </nx-expansion-panel>
       </nx-accordion>
     } @else if (activeSection(); as sec) {
