@@ -479,7 +479,7 @@
     {
       "id": "AC-10",
       "statement": "Resolving every case releases the claim",
-      "plainStatement": "A case is resolved as **Recovered** (with the amount that actually came back) or **Written off** (with a reason). Once no case is still running, the claim reaches `yes-settled` and nothing recovery-related holds closure any more. **Without this state the loop was unclosable:** resolving the last case flips `hasActiveRecovery` back to false, which under the phase-A two-flag derivation read as `yes-pending` — \"no recovery case has been set up\" — a blocker demanding work that had already been finished.",
+      "plainStatement": "A case is resolved as **Recovered** (with the amount that actually came back) or **Written off** (with a reason). **Resolve case** turns on as soon as the outcome and its details are filled in. Resolving is final (a resolved case has no row menu), so a confirm step comes first (\"Write off REC-C-001?\" / \"Resolve REC-C-001 as recovered?\", **Back** returns to the form with what was typed), then a toast. Once no case is still running, the claim reaches `yes-settled` and nothing recovery-related holds closure any more. **Without this state the loop was unclosable:** resolving the last case flips `hasActiveRecovery` back to false, which under the phase-A two-flag derivation read as `yes-pending` — \"no recovery case has been set up\" — a blocker demanding work that had already been finished.",
       "page": "any",
       "buildStatus": "done",
       "targetClaim": "CLM-2024-003",
@@ -498,6 +498,8 @@
           "Amount recovered field appears only on the Recovered branch, with the expected figure as a hint",
           "Reason textarea relabels to \"Why is it being written off?\" on the Written off branch",
           "Resolved rows lose their row menu and show the resolution date",
+          "Resolve case is enabled once an outcome is picked and the note (and, for Recovered, the amount) is filled in",
+          "Confirm dialog before the case is resolved: Back / Yes, resolve (Recovered) or Back / Yes, write off (Written off)",
           "Toast \"No recovery case is holding this claim open any more.\" once the last case is resolved"
         ]
       },
@@ -507,7 +509,7 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-003/recoveries",
-        "trigger": "Open the row menu on REC-C-001, choose Resolve case, pick Recovered, enter an amount and a note",
+        "trigger": "Open the row menu on REC-C-001, choose Resolve case, pick Recovered, enter an amount and a note, click Resolve case, then Yes, resolve in the confirm",
         "expectedResult": "The row becomes Recovered with its resolution date and outcome note; open cases drops to 0 and the recovery closure blocker is gone"
       }
     }

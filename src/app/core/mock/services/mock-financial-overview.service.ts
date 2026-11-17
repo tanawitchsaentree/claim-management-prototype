@@ -13,6 +13,7 @@ import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { AuthService } from '../../services/auth';
 import { UrgentApproval } from '../../models/approval.model';
 import { pendingApprovalPayments } from './approval-payments';
+import { withDerivedTotals } from './financial-totals';
 import policiesData from '../data/policies.json';
 import lookupsData from '../data/lookups.json';
 
@@ -80,7 +81,6 @@ export class MockFinancialOverviewService extends MockBaseService {
       ]
     };
     overview.reserves = [...overview.reserves, reserve];
-    overview.summary.outstandingReserves += input.reserveValue;
     if (section) {
       // Close Section's "Reserves released to zero" checklist item reads
       // ClaimSection.hasOpenReserves directly — a reserve attached here
@@ -121,7 +121,6 @@ export class MockFinancialOverviewService extends MockBaseService {
       status
     };
     overview.payments = [...overview.payments, payment];
-    if (status === 'Pending') overview.summary.pendingPayments += input.amount;
     this.stateSvc.patchFinancialOverview(claimId, overview);
     return this.respond(payment);
   }
@@ -156,8 +155,7 @@ export class MockFinancialOverviewService extends MockBaseService {
     reserveId: string,
     decision: 'Approved' | 'Rejected'
   ): Observable<FinancialReserve | null> {
-    return this.changeReserve(claimId, reserveId, (r, overview) => {
-      if (decision === 'Rejected') overview.summary.outstandingReserves -= r.reserveValue;
+    return this.changeReserve(claimId, reserveId, r => {
       r.status = decision;
       return decision;
     });
@@ -170,8 +168,7 @@ export class MockFinancialOverviewService extends MockBaseService {
     reserveValue: number,
     reason: string
   ): Observable<FinancialReserve | null> {
-    return this.changeReserve(claimId, reserveId, (r, overview) => {
-      overview.summary.outstandingReserves += reserveValue - r.reserveValue;
+    return this.changeReserve(claimId, reserveId, r => {
       r.reserveValue = reserveValue;
       r.status = 'Pending';
       r.requestedBy = this.auth.user().email;
@@ -182,14 +179,14 @@ export class MockFinancialOverviewService extends MockBaseService {
   private changeReserve(
     claimId: string,
     reserveId: string,
-    apply: (r: FinancialReserveWithHistory, overview: FinancialOverview) => string
+    apply: (r: FinancialReserveWithHistory) => string
   ): Observable<FinancialReserve | null> {
     const overview = structuredClone(this.getOrCreate(claimId));
     const reserve = (overview.reserves as FinancialReserveWithHistory[]).find(
       r => r.reserveId === reserveId
     );
     if (!reserve) return this.respond(null);
-    const reason = apply(reserve, overview);
+    const reason = apply(reserve);
     reserve.history = [
       ...(reserve.history ?? []),
       {
@@ -240,9 +237,14 @@ export class MockFinancialOverviewService extends MockBaseService {
       this.stateSvc.ensureFinancialOverview(claimId, overview);
     }
     const synced = structuredClone(overview);
-    const changed = this.syncSections(synced, claimId);
-    if (changed) this.stateSvc.patchFinancialOverview(claimId, synced);
-    return synced;
+    const sectionsChanged = this.syncSections(synced, claimId);
+    // Tiles, details and transactions from one list of movements (financial-totals.ts).
+    const derived = withDerivedTotals(synced);
+    const totals = (o: FinancialOverview) => JSON.stringify([o.summary, o.details, o.transactions]);
+    if (sectionsChanged || totals(derived) !== totals(overview)) {
+      this.stateSvc.patchFinancialOverview(claimId, derived);
+    }
+    return derived;
   }
 
   // The claim file's real sections (MockSectionService) are the source of

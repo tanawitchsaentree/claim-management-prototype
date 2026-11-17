@@ -160,10 +160,13 @@ Screenshots: /tmp/ux-audit/financial-pages-<scenario>-<step>.png (fo-*, ld-*, re
 
 Result: 25 scenarios, 13 pass, 12 fail.
 
-### F-01 Happy landing: fail
+Re-walk after fixes (2026-11-17, same setup, screenshots /tmp/ux-fix/fin-<scenario>.png): 25 scenarios, 15 pass, 10 fail. F-01 and R-02 now pass; every other result below is unchanged.
+
+### F-01 Happy landing: pass (fixed 2026-11-17, was fail)
 - What the user sees: tiles say Incurred €125,000. The Transaction summary rows say Total incurred €100,000, €400,000 and €10,240,000. A row named "Reserve: Business Interruption" has €1,000,000 under Indemnity payment. The last three columns, including Total incurred, are off to the right and need sideways scroll (fo-happy-01-landed, fo-happy-02-full).
 - Why it hurts: the numbers contradict each other on one screen. Pain point "numbers that do not add up". Need "most important column visible".
 - Fix: correct the mock rows in src/app/core/mock/data/financial-overview.json for CLM-2024-001 so the running Total incurred ends at the tile value (run npm run audit:ac-logic after). Pin the Transaction and Total incurred columns with the nxTable sticky option already used in src/app/features/dashboard/manager/manager-case-table.component.html (sticky="last").
+- Re-walk: tiles, Financial details and Transaction summary are now all worked out from the one list of payments, reserves and recovery bookings (src/app/core/mock/services/financial-totals.ts, same rules as scripts/seed-financial-overview.mjs summarize()). CLM-2024-001 shows 9 rows, oldest first; the running Total incurred ends at €125,000, the same as the Incurred tile, and Total recoveries received shows the €50,000 of the Recoveries tile. The old hand-made rows (€1,000,000 under Indemnity payment on a reserve) are gone. Transaction and Total incurred are pinned (nxTable sticky="both"), so Total incurred is visible without sideways scroll (fin-F-01-landed, fin-F-01-transactions). Under GG-7 the tiles now follow the patched rows too (fin-F-02-notbooked).
 
 ### F-02 Items that couldn't be booked: fail
 - What the user sees: the line "6 items couldn't be booked: 4 need you (3 payments, 1 recovery) …" is clear. Clicking "3 payments" opens Payments with all 12 payments; the toolbar says "Needs you: 5" with "Show only these" off (fo-gg-01-notbooked, fo-gg-02-link-to-list).
@@ -227,12 +230,13 @@ Read-only page, same as open (ld-closed-01).
 Tiles Open cases 1, Expected $120,000, Recovered $16,400; Recovery cases and Recovery postings tables (rec-happy-01, rec-happy-02-full).
 Note: the column called "Action" shows a date for finished cases (recoveries.component.html:76 and 111). Rename it or move the date into Status as "Recovered 11-04-2024".
 
-### R-02 Resolve as Written off: fail
+### R-02 Resolve as Written off: pass (fixed 2026-11-17, was fail)
 - What the user sees: ⋮ > Resolve case > Written off > types the reason. "Resolve case" stays disabled. It only turns on after clicking Recovered and then Written off again (rec-resolve-03, rec-resolve-03b-reason-typed-still-disabled, rec-resolve-03c-after-retoggle).
 - Why it hurts: the handler thinks the form is broken and cannot resolve the case, so the claim cannot close. Check "button that did nothing".
 - Root cause: canConfirm() is a computed() in resolve-recovery-modal.component.ts:68-73 that reads form validity, which is not a signal, so typing never re-runs it. Recovered has the same problem with the amount field.
 - Second issue: Written off is final (2899716834: closed allows no edits) and goes straight through, no confirm.
 - Fix: read the note and amount through toSignal(valueChanges) like outcomeSig already does at line 58, and add the shared confirm step used by Reassign (src/app/shared/components/confirm-dialog/confirm-dialog.component.ts, called in reassign-claim-modal.component.ts:206-212).
+- Re-walk: Written off + typing the reason turns Resolve case on straight away (fin-R-02-reason-typed-enabled). Resolve case opens the shared confirm "Write off REC-C-001? No money will be recovered from Rheinbogen Carriers GmbH. After this the case can't be changed." with Back / Yes, write off (fin-R-02-confirm). Back returns to the form with the reason still typed (fin-R-02-back-kept). Yes, write off: row shows Written off with today's date, tiles update, toast "REC-C-001 marked as Written off. No recovery case is holding this claim open any more." (fin-R-02-done-toast). Recovered works the same: stays off until the amount is typed, then "Resolve REC-C-001 as recovered? USD 110,000 came back from Rheinbogen Carriers GmbH. …" with Back / Yes, resolve (fin-R-02b-*).
 
 ### R-03 Create a recovery case: fail
 - What the user sees: form with clear hints; Create case disabled until valid; then a new row REC-C-003 and the toast "Recovery case REC-C-003 created. Claim closure no longer waits on a recovery case being set up." (rec-create-01 to 03).

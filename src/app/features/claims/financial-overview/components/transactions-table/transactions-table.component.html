@@ -1,6 +1,8 @@
 <!-- audit-exempt: the page shows the empty state when there are no rows -->
 <div class="fo-table-wrap" tabindex="0">
-  <table nxTable class="fo-table fo-table--transactions">
+  <!-- First and last column pinned (NDBX sticky, as the dashboard tables use sticky="last"):
+       the transaction name and Total incurred stay in view while the amounts scroll. -->
+  <table nxTable sticky="both" class="fo-table fo-table--transactions">
     <thead>
       <tr nxTableRow>
         <th nxHeaderCell>Transaction</th>
