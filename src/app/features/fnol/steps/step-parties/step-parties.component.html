@@ -38,7 +38,9 @@
               <th nxHeaderCell class="col-expand"></th>
               <th nxHeaderCell class="col-check"></th>
               <th nxHeaderCell class="col-name">Party</th>
-              <th nxHeaderCell class="col-roles">Roles</th>
+              <th nxHeaderCell class="col-roles">Party role</th>
+              <!-- BMPCC-12160: Reference number sits right after the party role. -->
+              <th nxHeaderCell class="col-reference">Reference number</th>
               <th nxHeaderCell class="col-clearance">Clearance status</th>
               <th nxHeaderCell class="col-action"></th>
             </tr>
@@ -68,7 +70,7 @@
                     </nx-checkbox>
                   </div>
                 </td>
-                <td nxCell colspan="3" class="claim-row__label">
+                <td nxCell colspan="4" class="claim-row__label">
                   <strong>Claim ID: {{ claim.claimId }}</strong>
                 </td>
                 <td nxCell class="col-action">
@@ -107,6 +109,7 @@
                       <div class="tree-l2">{{ party.legalName }}</div>
                     </td>
                     <td nxCell class="col-roles">{{ rolesDisplay(party) }}</td>
+                    <td nxCell class="col-reference">{{ party.referenceNumber || '–' }}</td>
                     <td nxCell class="col-clearance">
                       <app-status-chip
                         [status]="party.clearanceStatus"
@@ -128,7 +131,7 @@
                           View details
                         </button>
                         <button nxContextMenuItem type="button" (click)="onEditRole(party)">
-                          Edit role
+                          {{ isDefaultParty(party) ? 'Edit reference number' : 'Edit role' }}
                         </button>
                         <button nxContextMenuItem type="button" (click)="onRemoveParty(party)">
                           Remove
@@ -163,7 +166,7 @@
                         </nx-checkbox>
                       </div>
                     </td>
-                    <td nxCell colspan="3" class="section-row__label">
+                    <td nxCell colspan="4" class="section-row__label">
                       Section ID: {{ section.sectionId }}
                     </td>
                     <td nxCell class="col-action">
@@ -202,6 +205,7 @@
                           <div class="tree-l3">{{ party.legalName }}</div>
                         </td>
                         <td nxCell class="col-roles">{{ rolesDisplay(party) }}</td>
+                        <td nxCell class="col-reference">{{ party.referenceNumber || '–' }}</td>
                         <td nxCell class="col-clearance">
                           <app-status-chip
                             [status]="party.clearanceStatus"
@@ -222,7 +226,7 @@
                               View details
                             </button>
                             <button nxContextMenuItem type="button" (click)="onEditRole(party)">
-                              Edit role
+                              {{ isDefaultParty(party) ? 'Edit reference number' : 'Edit role' }}
                             </button>
                             <button nxContextMenuItem type="button" (click)="onRemoveParty(party)">
                               Remove

@@ -26,8 +26,13 @@
       <app-status-chip [status]="party.clearanceStatus" domain="clearance"></app-status-chip>
     </div>
     <div class="info-field info-field--full">
-      <span class="info-field__label">Roles</span>
+      <span class="info-field__label">Party role</span>
       <span class="info-field__value">{{ rolesDisplay() }}</span>
+    </div>
+    <!-- BMPCC-12160 -->
+    <div class="info-field info-field--full">
+      <span class="info-field__label">Reference number</span>
+      <span class="info-field__value">{{ party.referenceNumber || '–' }}</span>
     </div>
   </div>
 

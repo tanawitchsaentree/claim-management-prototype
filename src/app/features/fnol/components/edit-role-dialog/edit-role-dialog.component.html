@@ -1,5 +1,5 @@
 <div class="erd-header">
-  <h2 class="erd-title">Edit role</h2>
+  <h2 class="erd-title">{{ title }}</h2>
   <button nxIconButton="tertiary small" type="button" (click)="onCancel()" aria-label="Close">
     <nx-icon name="close"></nx-icon>
   </button>
@@ -7,20 +7,43 @@
 
 <div class="erd-body" tabindex="0">
   <p class="erd-subtitle">{{ data.party.legalName }}</p>
-  <p class="erd-hint">Select one or more roles for this party.</p>
 
-  <div class="erd-role-list" [formGroup]="form">
-    @for (role of roleKeys; track role) {
-      <div class="erd-role-item">
-        <nx-checkbox [formControlName]="role">{{ roleLabels[role] }}</nx-checkbox>
+  <form [formGroup]="form" class="erd-form">
+    @if (isDefault) {
+      <!-- BMPCC-12160: default parties come from the policy; their role can't change. -->
+      <div class="erd-readonly">
+        <span class="erd-label">Party role</span>
+        <span class="erd-value">{{ defaultRoles }}</span>
+        <p class="erd-hint">This party comes from the policy, so its role can't be changed.</p>
+      </div>
+    } @else {
+      <!-- One role per party. Radio list as in section-dol-modal.component.html:15. -->
+      <div class="erd-field">
+        <p class="erd-hint" id="erd-role-label">Select the role for this party.</p>
+        <nx-radio-group
+          formControlName="role"
+          name="erd-role"
+          class="erd-role-list"
+          aria-labelledby="erd-role-label"
+        >
+          @for (role of roleKeys; track role) {
+            <nx-radio labelSize="small" [value]="role">{{ roleLabels[role] }}</nx-radio>
+          }
+        </nx-radio-group>
       </div>
     }
-  </div>
+
+    <nx-formfield label="Reference number (optional)">
+      <input nxInput formControlName="referenceNumber" autocomplete="off" />
+      <nx-hint nxFormfieldHint>Letters and numbers only. You can change it at any time.</nx-hint>
+      <nx-error nxFormfieldError>Use letters and numbers only, up to 35 characters.</nx-error>
+    </nx-formfield>
+  </form>
 </div>
 
 <div class="erd-footer">
-  <button nxPlainButton type="button" (click)="onCancel()">Cancel</button>
-  <button nxButton="primary small" type="button" [disabled]="!canSave" (click)="onSave()">
+  <button nxButton="secondary small" type="button" (click)="onCancel()">Cancel</button>
+  <button nxButton="primary small" type="button" (click)="onSave()">
     Save
   </button>
 </div>

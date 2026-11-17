@@ -26,7 +26,7 @@ import {
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockPartiesService } from '../../../../core/mock/services/mock-parties.service';
-import { Party, PartyRole, PARTY_ROLE_LABELS } from '../../../../core/models/party.model';
+import { Party, PARTY_ROLE_LABELS, isDefaultParty } from '../../../../core/models/party.model';
 import {
   AddPartyModalComponent,
   AddPartyModalData
@@ -34,7 +34,8 @@ import {
 import { PartyDetailPanelComponent } from '../../components/party-detail-panel/party-detail-panel.component';
 import {
   EditRoleDialogComponent,
-  EditRoleDialogData
+  EditRoleDialogData,
+  EditRoleDialogResult
 } from '../../components/edit-role-dialog/edit-role-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
@@ -208,9 +209,13 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
       width: '600px',
       maxWidth: '92vw'
     });
-    const newRoles = (await firstValueFrom(ref.afterClosed())) as PartyRole[] | null | undefined;
-    if (!newRoles || newRoles.length === 0) return;
-    await firstValueFrom(this.partiesSvc.updateOrphanParty(party.partyId, { roles: newRoles }));
+    const result = (await firstValueFrom(ref.afterClosed())) as EditRoleDialogResult | null | undefined;
+    if (!result) return;
+    // A default party's role never changes (BMPCC-12160), only its reference number.
+    const patch: Partial<Party> = result.role
+      ? { roles: [result.role], referenceNumber: result.referenceNumber }
+      : { referenceNumber: result.referenceNumber };
+    await firstValueFrom(this.partiesSvc.updateOrphanParty(party.partyId, patch));
     this.refresh$.next();
   }
 
@@ -237,6 +242,10 @@ export class StepSkeletonPartiesComponent implements OnInit, OnDestroy {
   rolesDisplay(party: Party): string {
     return party.roles.map(r => PARTY_ROLE_LABELS[r]).join(', ');
   }
+
+  // BMPCC-12160: a default party (from the policy) keeps its role; only the
+  // reference number can be edited.
+  readonly isDefaultParty = isDefaultParty;
 
   private lockScroll(): void {
     if (this.scrollLocked) return;

@@ -88,7 +88,7 @@
     "partyId": "AZ000000005634685",
     "legalName": "Werner Baum",
     "roles": [
-      "expert"
+      "loss-adjuster"
     ],
     "clearanceStatus": "cleared",
     "email": "w.baum@expert-assessors.de",
@@ -106,7 +106,7 @@
     "partyId": "AZ000000005634686",
     "legalName": "Uta Gern",
     "roles": [
-      "witness"
+      "other"
     ],
     "clearanceStatus": "not-applicable",
     "email": "u.gern@gmail.com",
@@ -214,7 +214,7 @@
     "partyId": "AZ000000005634693",
     "legalName": "Diego Vara",
     "roles": [
-      "third-party"
+      "claims-third-party"
     ],
     "clearanceStatus": "not-cleared",
     "email": "d.vara@thirdparty.es",
@@ -230,7 +230,7 @@
     "partyId": "AZ000000005634691",
     "legalName": "Bundesanstalt fur Arbeit",
     "roles": [
-      "authority"
+      "other"
     ],
     "clearanceStatus": "not-applicable",
     "email": "kontakt@bfa.de",
@@ -269,7 +269,7 @@
     "partyId": "AZ000000005634694",
     "legalName": "Clara Pont",
     "roles": [
-      "witness"
+      "other"
     ],
     "clearanceStatus": "not-applicable",
     "email": "c.pont@example.it",
@@ -365,7 +365,7 @@
     "partyId": "AZ000000007710002",
     "legalName": "Elke Dorn",
     "roles": [
-      "third-party"
+      "claims-third-party"
     ],
     "clearanceStatus": "cleared",
     "email": "office@dorn-bau.de",
@@ -404,7 +404,7 @@
     "partyId": "AZ000000007710003",
     "legalName": "Georg Stein",
     "roles": [
-      "expert"
+      "lawyer"
     ],
     "clearanceStatus": "cleared",
     "email": "g.stein@nordsee-adjusters.de",
@@ -466,7 +466,7 @@
     "partyId": "AZ000000007710005",
     "legalName": "Tobias Grau",
     "roles": [
-      "third-party"
+      "claims-third-party"
     ],
     "clearanceStatus": "cleared",
     "city": "Hamburg",
@@ -497,7 +497,7 @@
     "partyId": "AZ000000007710006",
     "legalName": "Dirk Haas",
     "roles": [
-      "third-party"
+      "claims-third-party"
     ],
     "clearanceStatus": "cleared",
     "city": "Lübeck",
@@ -528,7 +528,7 @@
     "partyId": "AZ000000007710007",
     "legalName": "Viktor Bann",
     "roles": [
-      "third-party"
+      "claims-third-party"
     ],
     "clearanceStatus": "cleared",
     "city": "Düsseldorf",

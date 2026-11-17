@@ -1,4 +1,5 @@
 @use '../../../../shared/styles/modal-layout' as modal;
+@use '../../../../shared/styles/form-rhythm' as rhythm;
 
 :host {
   @include modal.shell;
@@ -8,17 +9,16 @@
 // ─── Header ──────────────────────────────────────────────────────────────────
 
 .erd-header {
+  // Same as section-dol-modal.component.scss:8: modal.header stacks in a
+  // column, so the title and close button need row direction here.
   @include modal.header;
-  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
 
 .erd-title {
-  margin: 0;
-  font-size: var(--paragraph-01-font-size);
-  font-weight: 600;
-  color: var(--text-01);
+  @include modal.title;
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
@@ -35,19 +35,37 @@
 }
 
 .erd-hint {
-  margin: 0 0 var(--space-base);
+  margin: 0;
   font-size: var(--paragraph-03-font-size);
   color: var(--text-muted);
 }
 
+.erd-form {
+  @include rhythm.group;
+}
+
+.erd-field,
+.erd-readonly {
+  @include rhythm.field;
+}
+
+.erd-label {
+  font-size: var(--paragraph-03-font-size);
+  font-weight: var(--font-weight-label);
+  color: var(--text-label);
+}
+
+.erd-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: var(--font-weight-value);
+  color: var(--text-01);
+}
+
+// Vertical radio list, same as reserve-narrative-panel.component.scss:32.
 .erd-role-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-}
-
-.erd-role-item {
-  padding: var(--space-xs) 0;
+  gap: var(--space-xs);
 }
 
 // ─── Footer ──────────────────────────────────────────────────────────────────

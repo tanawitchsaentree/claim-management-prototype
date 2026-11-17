@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Claim } from '../../models/claim.model';
-import { Party } from '../../models/party.model';
+import { Party, PARTY_ROLE_LABELS } from '../../models/party.model';
 import {
   LossEventCurrencyTotal,
   LossEventDetail,
@@ -126,7 +126,7 @@ export class MockLossEventService extends MockBaseService {
         rows.push({
           partyId: p.partyId,
           partyName: p.legalName,
-          role,
+          role: PARTY_ROLE_LABELS[role] ?? role,
           clearanceStatus: p.clearanceStatus,
           claimId: p.claimId
         });

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Payee, PayeeClearance } from '../../models/payee.model';
-import { Party } from '../../models/party.model';
+import { Party, PARTY_ROLE_LABELS } from '../../models/party.model';
 import { MockPartiesService } from './mock-parties.service';
 
 // Make payment's payee list is the claim's own parties (parties.json, the
@@ -25,24 +25,13 @@ export class MockPayeeService {
   }
 }
 
-const ROLE_LABEL: Record<string, string> = {
-  insured: 'Insured',
-  client: 'Client',
-  claimant: 'Claimant',
-  'third-party': 'Third party',
-  expert: 'Expert / loss adjuster',
-  broker: 'Broker',
-  witness: 'Witness',
-  authority: 'Authority'
-};
-
 function toPayee(p: Party): Payee {
   const clearance: PayeeClearance = p.clearanceStatus === 'cleared' ? 'cleared' : 'pending';
   const street = [p.street, p.streetNumber].filter(Boolean).join(' ');
   return {
     payeeId: p.partyId,
     name: p.legalName,
-    role: p.roles.map(r => ROLE_LABEL[r] ?? r).join(', '),
+    role: p.roles.map(r => PARTY_ROLE_LABELS[r] ?? r).join(', '),
     address: [street, [p.postalCode, p.city].filter(Boolean).join(' '), p.country].filter(Boolean).join(', '),
     email: p.email,
     phone: p.phone,

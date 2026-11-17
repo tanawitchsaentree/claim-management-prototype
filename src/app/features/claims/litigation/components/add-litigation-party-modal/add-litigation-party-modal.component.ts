@@ -35,9 +35,9 @@ const KIND_TITLE: Record<LitigationPartyKind, string> = {
 // so we only show realistic candidates per kind.
 const KIND_ROLES: Record<LitigationPartyKind, PartyRole[]> = {
   plaintiff: ['client', 'insured', 'claimant'],
-  defendant: ['third-party', 'claimant'],
-  attorney: ['expert'],
-  'opposing-lawyer': ['expert', 'third-party']
+  defendant: ['claims-third-party', 'claimant'],
+  attorney: ['lawyer'],
+  'opposing-lawyer': ['lawyer', 'claims-third-party']
 };
 
 const CLEARANCE_CHIP: Record<ClearanceStatus, string> = {

@@ -1,14 +1,12 @@
 import { PayeeBankAccount } from './payee.model';
 
-export type PartyRole =
-  | 'client'
-  | 'broker'
-  | 'insured'
-  | 'claimant'
-  | 'third-party'
-  | 'witness'
-  | 'expert'
-  | 'authority';
+// BMPCC-12160: parties that come from the policy (client, broker, insured) are
+// "default parties". IPM receives them as they are and the handler can't change
+// their role. Every other party gets exactly one claim role, from the list in
+// the Jira story (Names Management "Role" dropdown).
+export type DefaultPartyRole = 'client' | 'broker' | 'insured';
+export type ClaimPartyRole = 'claimant' | 'claims-third-party' | 'lawyer' | 'loss-adjuster' | 'other';
+export type PartyRole = DefaultPartyRole | ClaimPartyRole;
 
 export type ClearanceStatus = 'cleared' | 'not-cleared' | 'pending' | 'not-applicable';
 
@@ -18,7 +16,11 @@ export interface Party {
   partyId: string;
   legalName: string;
   dbaTradeName?: string;
+  // A default party can hold several policy roles (e.g. client and insured);
+  // any other party holds exactly one claim role (BMPCC-12160).
   roles: PartyRole[];
+  // BMPCC-12160: free alphanumeric value the handler can add or change at any time.
+  referenceNumber?: string;
   recentlyAdded?: boolean;
   clearanceStatus: ClearanceStatus;
   email?: string;
@@ -76,16 +78,26 @@ export interface PartyFilters {
   clearanceStatus: string;
 }
 
+export const CLAIM_PARTY_ROLE_LABELS: Record<ClaimPartyRole, string> = {
+  'claimant': 'Claimant',
+  'claims-third-party': 'Claims Third Party',
+  'lawyer': 'Lawyer',
+  'loss-adjuster': 'Loss Adjuster',
+  'other': 'Other'
+};
+
 export const PARTY_ROLE_LABELS: Record<PartyRole, string> = {
   'client': 'Client',
   'broker': 'Broker',
   'insured': 'Insured',
-  'claimant': 'Claimant',
-  'third-party': 'Third party',
-  'witness': 'Witness',
-  'expert': 'Expert',
-  'authority': 'Authority'
+  ...CLAIM_PARTY_ROLE_LABELS
 };
+
+const DEFAULT_PARTY_ROLES: readonly PartyRole[] = ['client', 'broker', 'insured'];
+
+export function isDefaultParty(party: Pick<Party, 'roles'>): boolean {
+  return party.roles.some(r => DEFAULT_PARTY_ROLES.includes(r));
+}
 
 export const CLEARANCE_STATUS_LABELS: Record<ClearanceStatus, string> = {
   'cleared': 'Cleared',
