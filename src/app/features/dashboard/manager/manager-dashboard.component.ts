@@ -24,7 +24,6 @@ import { MockTeamService } from '../../../core/mock/services/mock-team.service';
 import { MockUserDirectoryService } from '../../../core/mock/services/mock-user-directory.service';
 import { ManagedCase } from '../../../core/models/team.model';
 import { KpiTile } from '../../../core/models';
-import { KpiRowComponent } from '../widgets/kpi-row';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import {
@@ -56,7 +55,6 @@ const LOAD_MS = 500;
     NxIconModule,
     NxSpinnerModule,
     NxMessageModule,
-    KpiRowComponent,
     EmptyStateComponent,
     AppDatePipe,
     ManagerCaseTableComponent,
@@ -148,11 +146,11 @@ export class ManagerDashboardComponent {
   readonly kpiTiles = computed<KpiTile[]>(() => {
     const c = this.counts();
     return [
-      { key: 'all', value: c.open, label: 'Open team claims', icon: 'product-board-paper-note' },
-      { key: 'any', value: c.flagged, label: 'Need attention', icon: 'product-important-info' },
-      { key: 'overdue', value: c.overdue, label: 'Overdue', icon: 'product-clock' },
-      { key: 'high-value', value: c.highValue, label: 'High value', icon: 'product-coins-money' },
-      { key: 'review', value: c.review, label: 'For review', icon: 'product-check-paper' }
+      { key: 'all', value: c.open, label: 'open team claims', icon: 'product-board-paper-note' },
+      { key: 'any', value: c.flagged, label: 'need attention', icon: 'product-important-info' },
+      { key: 'overdue', value: c.overdue, label: 'overdue', icon: 'product-clock' },
+      { key: 'high-value', value: c.highValue, label: 'high value', icon: 'product-coins-money' },
+      { key: 'review', value: c.review, label: 'for review', icon: 'product-check-paper' }
     ];
   });
 

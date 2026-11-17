@@ -43,13 +43,6 @@
             </nx-message>
           }
 
-          <!-- The KCM KPI row (widgets/kpi-row.ts); each tile filters the team list. -->
-          <app-kpi-row
-            [tiles]="kpiTiles()"
-            [clickable]="true"
-            ariaLabel="Team summary"
-            (tileClick)="showFlag($event)"
-          ></app-kpi-row>
 
           <section class="widget-card" aria-labelledby="mgr-own-title">
             <div class="widget-header">
@@ -100,6 +93,19 @@
                 }
                 <a routerLink="/claims" [queryParams]="viewAllParams()" class="widget-link">View all claims</a>
               </div>
+            </div>
+            <!-- Team summary: one line of counts, each one filters the team list.
+                 Links use the header's own widget-link (Refresh, View all claims above);
+                 the "·" separator follows step-policies ("1 selected · 1 claim will be created"). -->
+            <div class="mgr-summary" role="group" aria-label="Team summary">
+              @for (t of kpiTiles(); track t.key; let last = $last) {
+                <a class="widget-link" tabindex="0" (click)="showFlag(t.key)" (keydown.enter)="showFlag(t.key)"
+                  ><strong>{{ t.value }}</strong>&nbsp;{{ t.label }}</a
+                >
+                @if (!last) {
+                  <span class="text-muted" aria-hidden="true">·</span>
+                }
+              }
             </div>
             <app-team-workload
               [members]="members()"

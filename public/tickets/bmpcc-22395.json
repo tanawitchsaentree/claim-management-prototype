@@ -20,14 +20,14 @@
     {
       "id": "AC-01",
       "statement": "AC1 · Own cases, team workload and drill-down into a member",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Claims Manager).\n\n**You see:** Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.\n\n**Try:** Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back.\n\nDecision (open question 3): a team is the manager's direct reports only, one manager per handler (DESIGN DECISION CM-TEAM-1). Claims with no handler in the team's group show as the **Team queue** row. Team size in the mock: 6 people; the member table has no paging, rows stay one line each so 20 to 30 people stay scannable.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
         "description": "Own cases, team workload and drill-down into a member",
         "preconditions": [
           {
-            "text": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.",
+            "text": "Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.",
             "page": "any",
             "role": "tested-visible",
             "hint": "Press **View claims** on Lena Zorn: the list below shows only Lena's claims with a **View whole team** link to go back."
@@ -43,15 +43,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.",
+        "description": "Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog.",
         "visualCues": [
-          "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog."
+          "Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Dashboard as Tobias Grau (Claims Manager).",
-        "expectedResult": "Role badge Claims Manager, five summary numbers, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog."
+        "expectedResult": "Role badge Claims Manager, **My claims** (CLM-2024-021, CLM-2024-102), and **Team workload** for the Property claims team: one row per member (Mara, Lena, Nina, Elke, Dirk, Sabine) plus the team queue, with one line of team counts under the Team workload heading (18 open team claims · 10 need attention · 8 overdue · 4 high value · 3 for review); each count filters the team list. Sabine shows \"(Out of office until 28-11-2026)\" after her name, from the same user directory as the reassign dialog."
       }
     },
     {
@@ -485,7 +485,7 @@
     {
       "id": "AC-13",
       "statement": "Reassign from the dashboard (open question 4)",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Row menu (⋮) on a team claim: **Open claim** and **Reassign**.\n\n**Try:** View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > Reassign > Yes, reassign: toast, the row moves to Mara. Switch to Mara: the bell says it was assigned to her.\n\nDecision: view and open first; the only action is Reassign, because it reuses the BMPCC-22666 dialog with the same rules, confirm and notifications (DESIGN DECISION CM-ACT-1). Escalate and add note stay on the claim. Decision (open question 5): summary numbers yes, charts no (DESIGN DECISION CM-SUM-1).",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau.\n\n**You see:** Row menu (⋮) on a team claim: **Open claim** and **Reassign**.\n\n**Try:** View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > Reassign > Yes, reassign: toast, the row moves to Mara. Switch to Mara: the bell says it was assigned to her.\n\nDecision: view and open first; the only action is Reassign, because it reuses the BMPCC-22666 dialog with the same rules, confirm and notifications (DESIGN DECISION CM-ACT-1). Escalate and add note stay on the claim. Decision (open question 5): one line of summary counts, no tiles, no charts (DESIGN DECISION CM-SUM-1).\n\n**NOTE [accepted-deviation]:** the Jira story lists reassigning from the dashboard as out of scope unless the business confirms it (open question 4). Kept so the business can see it in review; pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -522,14 +522,14 @@
     {
       "id": "AC-14",
       "statement": "AC6 · Figma, German text length, small screens",
-      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths.\n\n**Try:** Review in Figma once the file exists.",
+      "plainStatement": "**Opens:** Not built in the prototype.\n\n**You see:** Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (the summary line wraps, tables scroll sideways) but was not reviewed for German lengths.\n\n**Try:** Review in Figma once the file exists.",
       "page": "any",
       "buildStatus": "todo",
       "setup": {
         "description": "Figma, German text length, small screens",
         "preconditions": [
           {
-            "text": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
+            "text": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (the summary line wraps, tables scroll sideways) but was not reviewed for German lengths.",
             "page": "any",
             "role": "tested-visible",
             "hint": "Review in Figma once the file exists."
@@ -545,15 +545,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths.",
+        "description": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (the summary line wraps, tables scroll sideways) but was not reviewed for German lengths.",
         "visualCues": [
-          "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths."
+          "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (the summary line wraps, tables scroll sideways) but was not reviewed for German lengths."
         ]
       },
       "howToTest": {
         "route": "/dashboard",
         "trigger": "Not built in the prototype.",
-        "expectedResult": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (tiles stack below 1024px, tables scroll sideways) but was not reviewed for German lengths."
+        "expectedResult": "Figma file, German copy review and a dedicated small-screen layout are design-file work. The page reflows (the summary line wraps, tables scroll sideways) but was not reviewed for German lengths."
       }
     },
     {
