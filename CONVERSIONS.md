@@ -1226,3 +1226,12 @@ Template — copy below the most recent entry:
 
 Audit in docs/ux/ticket-source-audit-2026-11-17.md compared every ticket file with the real Jira text. bmpcc-219 and bmpcc-17678 described other stories and were rewritten from Jira (the old ACs kept, labelled "Not from BMPCC-<n>"). bmpcc-17779 now says Jira marks it Descoped. Every made-up or decided item got a `**NOTE [accepted-deviation]:**`. Stale text (11006, 14434, 14435, closure, close-section, champ-preclosure-checklist, ready-to-close) now matches the screens.
 Open: scripts/audit-ac-logic.mjs still reads `buttonEnabled` / `tooltipContains` in closure.json and ready-to-close.json as the old disabled-button behaviour (lines 271-283); those keys were left so the audit stays green.
+
+## 2026-11-18: GG 9, Global Genius on the handler dashboard (docs/ux/gg-dashboard.md)
+
+- **Source:** review call questions (James) and PO / BO answers, email 2026-11-18; build asked for by the user on 2026-11-18.
+- **File:** `public/tickets/gg-9-dashboard.json`, 9 ACs (GGD-01 to GGD-09), all `done`. 4 accepted deviations (one row per item, no pagination, no red flag on waiting items, Finance-owned left out).
+- **Widget:** `widgets/gg-attention-panel.ts`, copied from `recovery-potential-panel.ts`. Data: `MockGgAttentionService` (signals over state, same rules as the bell: `needsHandler` / `canSendAgain` / `sectionCanRetry`).
+- **Deep link:** reuses the bell's `?view=payments|reserves|recovery&expand=<id>` on Financial Overview (opens and scrolls to the row with its reason). No new query param.
+- **Banner:** `widgets/gg-downtime-banner.ts`, copied from `financial-closure-banner.ts`, same spot.
+- **Schema v2.5:** `ggDowntime` (new), `financialPatch` also takes a list (several claims). Both runtime only, audit skips them.

@@ -199,6 +199,12 @@
       "title": "GG 8 · Task manager and the bell: finding out"
     },
     {
+      "id": "GG-9-DASHBOARD",
+      "file": "gg-9-dashboard.json",
+      "module": "GG booking",
+      "title": "GG 9 · Dashboard: Global Genius needs your action, and downtime"
+    },
+    {
       "id": "BMPCC-22395",
       "file": "bmpcc-22395.json",
       "module": "Dashboard",

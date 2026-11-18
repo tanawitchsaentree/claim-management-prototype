@@ -1,0 +1,627 @@
+{
+  "ticketId": "GG-9-DASHBOARD",
+  "epicId": "BMPCC-18348",
+  "module": "GG booking",
+  "title": "GG 9 · Dashboard: Global Genius needs your action, and downtime",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "any",
+    "financial",
+    "overview"
+  ],
+  "walkthroughSteps": [
+    "The dashboard lists only the Global Genius problems you have to fix: one row per broken item, each saying what broke and linking to its own fix.",
+    "Finance-owned failures and items waiting for Global Genius are not red rows. Waiting items are counted in the downtime banner.",
+    "Before planned downtime and while Global Genius is down, one banner in the financial closure banner's spot says there is nothing to do."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "GGD-01",
+      "statement": "Dashboard · Two failures on two claims",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** Global Genius: needs your action, count 2. Row 1: CLM-2024-001, \"Payment to Dirk Haas not booked: the payee's bank details don't match what Global Genius has for them.\", link Fix payment. Row 2: CLM-2024-003, \"Indemnity reserve for GBF Logistics GmbH not booked: ...\", link Fix reserve.\n\n**Try:** Press Fix payment: the Payments list of CLM-2024-001 opens with payment 123456-3 open, scrolled to, and Global Genius's reason shown under it. Go back and press Fix reserve: the Reserves list of CLM-2024-003 opens with that reserve open.\n\n**NOTE [accepted-deviation]:** The PO / BO answers talk about a red triangle on the claim. The prototype lists one row per broken item, not per claim, so every row links straight to its own fix and a claim with two failures gets two rows (critique 4 in docs/ux/gg-dashboard.md). DESIGN DECISION GG-DASH-1 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Two failures on two claims",
+        "preconditions": [
+          {
+            "text": "Global Genius: needs your action, count 2. Row 1: CLM-2024-001, \"Payment to Dirk Haas not booked: the payee's bank details don't match what Global Genius has for them.\", link Fix payment. Row 2: CLM-2024-003, \"Indemnity reserve for GBF Logistics GmbH not booked: ...\", link Fix reserve.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": [
+            {
+              "claimId": "CLM-2024-001",
+              "payments": {
+                "123456-3": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's bank details don't match what Global Genius has for them.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the bank details"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-003",
+              "reserves": {
+                "RES-C-00063673-2024.003.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The reserve's party isn't on the claim in Global Genius.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the party"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Global Genius: needs your action, count 2. Row 1: CLM-2024-001, \"Payment to Dirk Haas not booked: the payee's bank details don't match what Global Genius has for them.\", link Fix payment. Row 2: CLM-2024-003, \"Indemnity reserve for GBF Logistics GmbH not booked: ...\", link Fix reserve.",
+        "visualCues": [
+          "Global Genius: needs your action, count 2. Row 1: CLM-2024-001, \"Payment to Dirk Haas not booked: the payee's bank details don't match what Global Genius has for them.\", link Fix payment. Row 2: CLM-2024-003, \"Indemnity reserve for GBF Logistics GmbH not booked: ...\", link Fix reserve."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Fix payment: the Payments list of CLM-2024-001 opens with payment 123456-3 open, scrolled to, and Global Genius's reason shown under it. Go back and press Fix reserve: the Reserves list of CLM-2024-003 opens with that reserve open.",
+        "expectedResult": "Global Genius: needs your action, count 2. Row 1: CLM-2024-001, \"Payment to Dirk Haas not booked: the payee's bank details don't match what Global Genius has for them.\", link Fix payment. Row 2: CLM-2024-003, \"Indemnity reserve for GBF Logistics GmbH not booked: ...\", link Fix reserve."
+      }
+    },
+    {
+      "id": "GGD-02",
+      "statement": "Dashboard · One claim, payment and reserve both failed",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** Two rows for CLM-2024-001: \"Payment to Dirk Haas not booked: ...\" with Fix payment, and \"Indemnity reserve for Peter Pane not booked: ...\" with Fix reserve. Each link goes to its own item.\n\n**Try:** Press Fix reserve: the Reserves list opens with that reserve open and the reason shown.\n\n**NOTE [accepted-deviation]:** The PO / BO answers talk about a red triangle on the claim. The prototype lists one row per broken item, not per claim, so every row links straight to its own fix and a claim with two failures gets two rows (critique 4 in docs/ux/gg-dashboard.md). DESIGN DECISION GG-DASH-1 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "One claim, payment and reserve both failed",
+        "preconditions": [
+          {
+            "text": "Two rows for CLM-2024-001: \"Payment to Dirk Haas not booked: ...\" with Fix payment, and \"Indemnity reserve for Peter Pane not booked: ...\" with Fix reserve. Each link goes to its own item.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "payments": {
+              "123456-3": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "fixWhat": "the bank details"
+                }
+              }
+            },
+            "reserves": {
+              "RES-C-00063676-2024.001.1.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The reserve's sub-type doesn't match the section in Global Genius.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "fixWhat": "the reserve sub-type"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Two rows for CLM-2024-001: \"Payment to Dirk Haas not booked: ...\" with Fix payment, and \"Indemnity reserve for Peter Pane not booked: ...\" with Fix reserve. Each link goes to its own item.",
+        "visualCues": [
+          "Two rows for CLM-2024-001: \"Payment to Dirk Haas not booked: ...\" with Fix payment, and \"Indemnity reserve for Peter Pane not booked: ...\" with Fix reserve. Each link goes to its own item."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Fix reserve: the Reserves list opens with that reserve open and the reason shown.",
+        "expectedResult": "Two rows for CLM-2024-001: \"Payment to Dirk Haas not booked: ...\" with Fix payment, and \"Indemnity reserve for Peter Pane not booked: ...\" with Fix reserve. Each link goes to its own item."
+      }
+    },
+    {
+      "id": "GGD-03",
+      "statement": "Dashboard · Claim not set up in Global Genius",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** One row: CLM-2024-003, \"Claim not set up in Global Genius: payments and reserves are on hold.\", link Retry on claim.\n\n**Try:** Press Retry on claim: Claim Overview of CLM-2024-003 opens with the red claim banner and its Retry button.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim not set up in Global Genius",
+        "preconditions": [
+          {
+            "text": "One row: CLM-2024-003, \"Claim not set up in Global Genius: payments and reserves are on hold.\", link Retry on claim.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-003",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggResendOutcome": "registered"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "One row: CLM-2024-003, \"Claim not set up in Global Genius: payments and reserves are on hold.\", link Retry on claim.",
+        "visualCues": [
+          "One row: CLM-2024-003, \"Claim not set up in Global Genius: payments and reserves are on hold.\", link Retry on claim."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Retry on claim: Claim Overview of CLM-2024-003 opens with the red claim banner and its Retry button.",
+        "expectedResult": "One row: CLM-2024-003, \"Claim not set up in Global Genius: payments and reserves are on hold.\", link Retry on claim."
+      }
+    },
+    {
+      "id": "GGD-04",
+      "statement": "Dashboard · More than 5 items",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** Count 8. The first 5 rows, then \"Show 3 more\". Rows cover payments, reserves, a recovery (Fix recovery) and a section (\"Section ... not booked: BKG-5021 ...\", Retry on claim).\n\n**Try:** Press Show 3 more: all 8 rows show.\n\n**NOTE [accepted-deviation]:** The PO / BO answers ask for pagination in the widget. The prototype shows the first 5 rows and \"Show N more\", the dashboard's own pattern (recovery-potential-panel.ts). Downtime items no longer go in the list, so it stays short (critique 2). DESIGN DECISION GG-DASH-1. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "More than 5 items",
+        "preconditions": [
+          {
+            "text": "Count 8. The first 5 rows, then \"Show 3 more\". Rows cover payments, reserves, a recovery (Fix recovery) and a section (\"Section ... not booked: BKG-5021 ...\", Retry on claim).",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": [
+            {
+              "claimId": "CLM-2024-001",
+              "payments": {
+                "123456-3": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's bank details don't match what Global Genius has for them.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the bank details"
+                  }
+                },
+                "123456-4": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's tax number is missing in Parties.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the tax number"
+                  }
+                },
+                "123456-2": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's address is incomplete in Parties.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the address"
+                  }
+                }
+              },
+              "reserves": {
+                "RES-C-00063676-2024.001.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The reserve's sub-type doesn't match the section in Global Genius.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the reserve sub-type"
+                  }
+                },
+                "RES-C-00063676-2024.001.1.1.2": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The reserve currency doesn't match the section currency.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the currency"
+                  }
+                }
+              },
+              "recoveries": {
+                "REC-001": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The recovery's party has no bank details in Parties.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the bank details"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-003",
+              "reserves": {
+                "RES-C-00063673-2024.003.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The reserve's party isn't on the claim in Global Genius.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the party"
+                  }
+                }
+              }
+            }
+          ],
+          "overviewPatch": {
+            "claimId": "CLM-2024-001",
+            "patch": {
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-001",
+                  "status": "failed",
+                  "failureMessage": "BKG-5021 Section event rejected: line of business code is missing on the section.",
+                  "retryFailures": 0,
+                  "demoResendOutcome": "booked"
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Count 8. The first 5 rows, then \"Show 3 more\". Rows cover payments, reserves, a recovery (Fix recovery) and a section (\"Section ... not booked: BKG-5021 ...\", Retry on claim).",
+        "visualCues": [
+          "Count 8. The first 5 rows, then \"Show 3 more\". Rows cover payments, reserves, a recovery (Fix recovery) and a section (\"Section ... not booked: BKG-5021 ...\", Retry on claim)."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Show 3 more: all 8 rows show.",
+        "expectedResult": "Count 8. The first 5 rows, then \"Show 3 more\". Rows cover payments, reserves, a recovery (Fix recovery) and a section (\"Section ... not booked: BKG-5021 ...\", Retry on claim)."
+      }
+    },
+    {
+      "id": "GGD-05",
+      "statement": "Dashboard · Global Genius is down",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann, while Global Genius is unavailable.\n\n**You see:** Yellow banner at the top: \"Global Genius is unavailable. 3 items are waiting and will be sent automatically when it's back. Nothing to do.\" The 3 waiting items are not in the list. The list shows only the 1 item you have to fix (Payment to Elke Dorn).\n\n**NOTE [accepted-deviation]:** The PO / BO answers keep the waiting claims flagged as well as the banner. The prototype does not show waiting items as red rows: they are only counted in the banner, because red on every claim during downtime looks like 50 problems and is really zero actions (critique 1). Not built yet: the \"Waiting for Global Genius\" (not red) status on the claim's own lists; the Payments list still says \"Couldn't be booked\" for these items. DESIGN DECISION GG-DASH-1. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Global Genius is down",
+        "preconditions": [
+          {
+            "text": "Yellow banner at the top: \"Global Genius is unavailable. 3 items are waiting and will be sent automatically when it's back. Nothing to do.\" The 3 waiting items are not in the list. The list shows only the 1 item you have to fix (Payment to Elke Dorn).",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann, while Global Genius is unavailable."
+          }
+        ],
+        "stateOverrides": {
+          "ggDowntime": {
+            "phase": "during"
+          },
+          "financialPatch": [
+            {
+              "claimId": "CLM-2024-001",
+              "payments": {
+                "123456-3": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "Global Genius was unavailable when this was sent.",
+                    "owner": "handler",
+                    "cause": "gg-unavailable",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked"
+                  }
+                },
+                "123456-4": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's tax number is missing in Parties.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the tax number"
+                  }
+                }
+              },
+              "reserves": {
+                "RES-C-00063676-2024.001.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "Global Genius was unavailable when this was sent.",
+                    "owner": "handler",
+                    "cause": "gg-unavailable",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-003",
+              "reserves": {
+                "RES-C-00063673-2024.003.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "Global Genius was unavailable when this was sent.",
+                    "owner": "handler",
+                    "cause": "gg-unavailable",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Yellow banner at the top: \"Global Genius is unavailable. 3 items are waiting and will be sent automatically when it's back. Nothing to do.\" The 3 waiting items are not in the list. The list shows only the 1 item you have to fix (Payment to Elke Dorn).",
+        "visualCues": [
+          "Yellow banner at the top: \"Global Genius is unavailable. 3 items are waiting and will be sent automatically when it's back. Nothing to do.\" The 3 waiting items are not in the list. The list shows only the 1 item you have to fix (Payment to Elke Dorn)."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann, while Global Genius is unavailable.",
+        "expectedResult": "Yellow banner at the top: \"Global Genius is unavailable. 3 items are waiting and will be sent automatically when it's back. Nothing to do.\" The 3 waiting items are not in the list. The list shows only the 1 item you have to fix (Payment to Elke Dorn)."
+      }
+    },
+    {
+      "id": "GGD-06",
+      "statement": "Dashboard · Planned downtime in 3 days",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann, 3 days before planned downtime.\n\n**You see:** Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" The list shows its empty state.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Planned downtime in 3 days",
+        "preconditions": [
+          {
+            "text": "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" The list shows its empty state.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann, 3 days before planned downtime."
+          }
+        ],
+        "stateOverrides": {
+          "ggDowntime": {
+            "phase": "planned",
+            "inDays": 3,
+            "from": "18:00",
+            "to": "22:00"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" The list shows its empty state.",
+        "visualCues": [
+          "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" The list shows its empty state."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann, 3 days before planned downtime.",
+        "expectedResult": "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" The list shows its empty state."
+      }
+    },
+    {
+      "id": "GGD-07",
+      "statement": "Dashboard · Finance-owned failures only",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** No rows: \"Everything is booked in Global Genius.\" The payment Finance is fixing and the reserve that already failed a second time are not listed. On the claim's Payments and Reserves lists they say \"With Finance\".\n\n**NOTE [accepted-deviation]:** The prototype leaves Finance-owned failures out of the handler's list, because the handler can't fix them (critique 6). The claim still shows \"With Finance\". A failure that was already sent again and failed again counts as Finance's (effectiveOwner in gg-booking.model.ts). DESIGN DECISION GG-DASH-1. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Finance-owned failures only",
+        "preconditions": [
+          {
+            "text": "No rows: \"Everything is booked in Global Genius.\" The payment Finance is fixing and the reserve that already failed a second time are not listed. On the claim's Payments and Reserves lists they say \"With Finance\".",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "payments": {
+              "123456-3": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius couldn't match the payment type to a booking code. The Finance team is fixing the setup.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              }
+            },
+            "reserves": {
+              "RES-C-00063676-2024.001.1.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The reserve's sub-type doesn't match the section in Global Genius.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 2,
+                  "demoResendOutcome": "fails-again",
+                  "fixWhat": "the reserve sub-type"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "No rows: \"Everything is booked in Global Genius.\" The payment Finance is fixing and the reserve that already failed a second time are not listed. On the claim's Payments and Reserves lists they say \"With Finance\".",
+        "visualCues": [
+          "No rows: \"Everything is booked in Global Genius.\" The payment Finance is fixing and the reserve that already failed a second time are not listed. On the claim's Payments and Reserves lists they say \"With Finance\"."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann.",
+        "expectedResult": "No rows: \"Everything is booked in Global Genius.\" The payment Finance is fixing and the reserve that already failed a second time are not listed. On the claim's Payments and Reserves lists they say \"With Finance\"."
+      }
+    },
+    {
+      "id": "GGD-08",
+      "statement": "Dashboard · Nothing broken",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** Global Genius: needs your action shows \"Everything is booked in Global Genius.\" No count, no banner.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Nothing broken",
+        "preconditions": [
+          {
+            "text": "Global Genius: needs your action shows \"Everything is booked in Global Genius.\" No count, no banner.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Global Genius: needs your action shows \"Everything is booked in Global Genius.\" No count, no banner.",
+        "visualCues": [
+          "Global Genius: needs your action shows \"Everything is booked in Global Genius.\" No count, no banner."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann.",
+        "expectedResult": "Global Genius: needs your action shows \"Everything is booked in Global Genius.\" No count, no banner."
+      }
+    },
+    {
+      "id": "GGD-09",
+      "statement": "Dashboard · After fixing: row gone",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** One row: \"Payment to Dirk Haas not booked: ...\". After Send again: a toast, and back on the dashboard the row is gone (empty state).\n\n**Try:** Press Fix payment. In the open row tick \"I've corrected the bank details\" and press Send again, confirm. Wait for the toast, then go back to the dashboard.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "After fixing: row gone",
+        "preconditions": [
+          {
+            "text": "One row: \"Payment to Dirk Haas not booked: ...\". After Send again: a toast, and back on the dashboard the row is gone (empty state).",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-001",
+            "payments": {
+              "123456-3": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "fixWhat": "the bank details"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "One row: \"Payment to Dirk Haas not booked: ...\". After Send again: a toast, and back on the dashboard the row is gone (empty state).",
+        "visualCues": [
+          "One row: \"Payment to Dirk Haas not booked: ...\". After Send again: a toast, and back on the dashboard the row is gone (empty state)."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Fix payment. In the open row tick \"I've corrected the bank details\" and press Send again, confirm. Wait for the toast, then go back to the dashboard.",
+        "expectedResult": "One row: \"Payment to Dirk Haas not booked: ...\". After Send again: a toast, and back on the dashboard the row is gone (empty state)."
+      }
+    }
+  ]
+}

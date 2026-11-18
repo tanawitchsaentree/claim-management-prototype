@@ -2,7 +2,7 @@
 project: claim-management-prototype
 domain: insurance-claims
 modules: [Claims, FNOL]
-schema-version: v2.4
+schema-version: v2.5
 deployed: https://tanawitchsaentree.github.io/claim-management-prototype/
 
 ticket-schema:
@@ -28,6 +28,7 @@ mutations:
     - cwbLocationsAppend
     - activePersona
     - simulate
+    - ggDowntime
 
 pages:
   enum:
@@ -149,12 +150,13 @@ interface ScenarioOverrides {
     convertFromSkeletonId?: string; // BMPCC-11006: prefill loss-info from a skeleton
   };
   cwbLocationsAppend?: CwbLocation[]; // dedupe by cwbReference
-  financialPatch?: FinancialPatchOverride; // v2.3 — GG booking states, see apply-financial-overrides.ts
+  financialPatch?: FinancialPatchOverride | FinancialPatchOverride[]; // v2.3 GG booking states, see apply-financial-overrides.ts; v2.5 also takes a list (several claims)
   tasksAppend?: Task[]; // v2.3 — dedupe by taskId
   activePersona?: string; // v2.4 — AuthService persona id (usr-mara / usr-klaus / usr-tobias)
   simulate?: ScenarioSimulation; // v2.4 — { managerDashboard?, assignment? } UI states, see team.model.ts
   sectionBlockers?: Record<string, Partial<SectionBlockers & Pick<ClaimSection, 'dateOfLoss' | 'simulateCloseError'>>>; // v2.4 widened
   lossInformationPatch?: { claimId: string; patch: Partial<LossInformation> }; // v2.4 — BMPCC-18492
+  ggDowntime?: GgDowntime; // v2.5 gg-9-dashboard: { phase: 'planned', inDays, from, to } | { phase: 'during' }
 }
 ```
 
@@ -177,11 +179,12 @@ interface ScenarioOverrides {
 | `fnolStateOverride.convertFromSkeletonId`        | `string`                           | resolves via `MockSkeletonClaimService` then calls `prefillFullFromSkeleton` | bmpcc-11006          | Demo prefill — populates the **search**, **loss-info**, and downstream forms; user still navigates each step themselves |
 | `fnolStateOverride.convertSuggestedPolicyNumber` | `string`                           | passed as `opts.policyNumber` to `prefillFullFromSkeleton`                   | bmpcc-11006          | Hints the policy to drop into the search form so the user only needs one click to find the right row                    |
 | `cwbLocationsAppend`                             | `CwbLocation[]`                    | dedupe by `cwbReference`                                                     | bmpcc-219            | Pushed into `MockCwbService` runtime cache; cleared on `MockStateService.reset()`                                       |
-| `financialPatch`                                 | `{ claimId, payments?, reserves?, recoveries?, paymentsAppend? }` | `financialOverviews[claimId]` rows by paymentId / reserveId / recoveryId | gg-booking-states | Partial merge (booking status / approval status); `paymentsAppend` dedupes by paymentId. Applied in `apply-financial-overrides.ts` (kept out of mock-state.service.ts, already over 300 lines). Audit: skipped (no assertion key reads it) |
+| `financialPatch`                                 | `{ claimId, payments?, reserves?, recoveries?, paymentsAppend? }` | `financialOverviews[claimId]` rows by paymentId / reserveId / recoveryId | gg-booking-states | Partial merge (booking status / approval status); `paymentsAppend` dedupes by paymentId. Applied in `apply-financial-overrides.ts` (kept out of mock-state.service.ts, already over 300 lines). v2.5: also a list of these, one per claim (gg-9-dashboard). Audit: skipped (no assertion key reads it) |
 | `tasksAppend`                                    | `Task[]`                           | dedupe by `taskId`                                                           | gg-booking-states    | Mirrored in audit simulator — counts toward `pendingTasks` / `doneTasks`                                                 |
 | `activePersona`                                  | `string` (persona id)              | `AuthService.setActivePersona`                                               | bmpcc-22395, bmpcc-22666 | Applied in `PrototypeScenarioService.applyOverrides`; persists in localStorage like the persona switcher. Audit: skipped (runtime only) |
 | `simulate`                                       | `{ managerDashboard?, assignment? }` | `MockTeamService.setSimulation`                                            | bmpcc-22395, bmpcc-22666 | Loading / error / stale / partial / no-team / no-cases / no-permission on the Claims Manager dashboard; loading / error / empty / save-fails in the reassign dialog. Reset on every Apply (in memory, not session storage). Audit: skipped |
 | `sectionBlockers`                                | `Record<sectionId, Partial<SectionBlockers & {dateOfLoss, simulateCloseError}>>` | `section.id`                                     | close-section, bmpcc-22328, bmpcc-22660 | Merged into the section. v2.4 added `dateOfLoss` (section's own date of loss) and the prototype-only `simulateCloseError` (bulk closure error state) |
+| `ggDowntime` | `{ phase: 'planned', inDays, from, to } \| { phase: 'during' }` | `MockState.ggDowntime` | gg-9-dashboard | v2.5. Planned / ongoing Global Genius downtime for the dashboard banner (`MockGgAttentionService.banner`). Absent = GG up, no banner. Cleared by reset. Audit: skipped (runtime only) |
 | `lossInformationPatch` | `{ claimId, patch }` | `lossInformation[claimId]` | bmpcc-18492 | Partial merge into the claim's loss-information record (e.g. CBI answers for Edit claim details). Audit: skipped (no assertion key reads it) |
 
 Reset semantics: `MockStateService.resetAsync()` (called before every `applyAC`) wipes session-storage state, restores mock data defaults, and clears the section + CWB caches via lazy injection (`mock-state.service.ts:103-110`).

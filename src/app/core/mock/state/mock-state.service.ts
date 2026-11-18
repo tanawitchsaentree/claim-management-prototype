@@ -13,6 +13,7 @@ import { Party } from '../../models/party.model';
 import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 import { FinancialPatchOverride, applyFinancialPatch, appendTasks } from './apply-financial-overrides';
 import { ScenarioSimulation } from '../../models/team.model';
+import { GgDowntime } from '../../models/gg-dashboard.model';
 
 export interface ScenarioOverrides {
   taskStatuses?: Record<string, TaskStatus>;
@@ -42,7 +43,8 @@ export interface ScenarioOverrides {
   notesAppend?: { claimId: string; notes: Note[] };
   paymentStatuses?: Record<string, 'Pending' | 'Processed' | 'Final'>;
   // GG booking states (gg-booking-states.json) — see apply-financial-overrides.ts.
-  financialPatch?: FinancialPatchOverride;
+  // v2.5 (gg-9-dashboard): a list patches several claims at once.
+  financialPatch?: FinancialPatchOverride | FinancialPatchOverride[];
   tasksAppend?: Task[];
   // v2.4 (BMPCC-22395 / BMPCC-22666), applied in PrototypeScenarioService:
   // persona to view as (AuthService id), and dashboard / reassign dialog
@@ -51,6 +53,8 @@ export interface ScenarioOverrides {
   simulate?: ScenarioSimulation;
   // v2.4 (BMPCC-18492): merge into one claim's loss-information record, e.g. CBI answers.
   lossInformationPatch?: { claimId: string; patch: Partial<LossInformation> };
+  // v2.5 (gg-9-dashboard): planned / ongoing Global Genius downtime.
+  ggDowntime?: GgDowntime;
 }
 import overviewData from '../data/claim-overview.json';
 import activitiesData from '../data/claim-activities.json';
@@ -83,6 +87,8 @@ export interface MockState {
   // the ones typed during skeleton creation). Read together with parties.json by
   // MockPartiesService, so Make payment's payee list and the claim's parties see them.
   addedParties: Party[];
+  // Planned / ongoing GG downtime (dashboard banner). Absent = GG is up.
+  ggDowntime?: GgDowntime;
 }
 
 const STORAGE_KEY = 'champ-mock-state';
@@ -417,9 +423,10 @@ export class MockStateService {
       );
     }
 
-    if (overrides.financialPatch) {
-      next = { ...next, financialOverviews: applyFinancialPatch(next.financialOverviews, overrides.financialPatch) };
+    for (const fp of [overrides.financialPatch ?? []].flat()) {
+      next = { ...next, financialOverviews: applyFinancialPatch(next.financialOverviews, fp) };
     }
+    if (overrides.ggDowntime) next = { ...next, ggDowntime: overrides.ggDowntime };
     next = { ...next, tasks: appendTasks(next.tasks, overrides.tasksAppend) };
 
     if (overrides.lossInformationPatch) {

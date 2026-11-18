@@ -98,6 +98,8 @@ function simulateState(claimId, stateOverrides) {
   // Node-side counterpart; skipped here.
   // lossInformationPatch (v2.4, BMPCC-18492): patches loss-information.json
   // records; no supported assertion key reads them — skipped here.
+  // ggDowntime (v2.5, gg-9-dashboard): dashboard downtime banner state, runtime
+  // only; skipped here. financialPatch may now be a list (several claims), still skipped.
   // fnolStateOverride: runtime UI behavior — not derivable; skipped here.
   // (selectedPolicy / selectedClient / path / convertFromSkeletonId all act on
   // FnolStateService at runtime and have no Node-side counterpart.)

@@ -16,6 +16,7 @@ import { MockClaimService } from '../../core/mock/services/mock-claim.service';
 import { MockApprovalService } from '../../core/mock/services/mock-approval.service';
 import { MockDashboardExtendedService } from '../../core/mock/services/mock-dashboard-extended.service';
 import { MockRecoveryAttentionService } from '../../core/mock/services/mock-recovery-attention.service';
+import { MockGgAttentionService } from '../../core/mock/services/mock-gg-attention.service';
 import { AuthService } from '../../core/services/auth';
 import {
   Claim,
@@ -44,6 +45,8 @@ import {
 } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
 import { RecentApprovalsWidgetComponent } from './widgets/recent-approvals-widget/recent-approvals-widget.component';
 import { RecoveryPotentialPanelComponent } from './widgets/recovery-potential-panel';
+import { GgAttentionPanelComponent } from './widgets/gg-attention-panel';
+import { GgDowntimeBannerComponent } from './widgets/gg-downtime-banner';
 
 const QUICK_LINKS: QuickLink[] = [
   {
@@ -88,7 +91,9 @@ const EMPTY_VM: DashboardVM = {
     ExpenseBreakdownComponent,
     ClaimsPortfolioWidgetComponent,
     RecentApprovalsWidgetComponent,
-    RecoveryPotentialPanelComponent
+    RecoveryPotentialPanelComponent,
+    GgAttentionPanelComponent,
+    GgDowntimeBannerComponent
   ],
   templateUrl: './dashboard.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -100,6 +105,7 @@ export class Dashboard {
   private approvalSvc = inject(MockApprovalService);
   private extSvc = inject(MockDashboardExtendedService);
   private recoverySvc = inject(MockRecoveryAttentionService);
+  private ggSvc = inject(MockGgAttentionService);
   readonly auth = inject(AuthService);
   private router = inject(Router);
 
@@ -168,6 +174,8 @@ export class Dashboard {
   readonly paymentApprovals = toSignal(this.paymentApprovals$, {
     initialValue: [] as PaymentApproval[]
   });
+  readonly ggAttention = this.ggSvc.items;
+  readonly ggBanner = this.ggSvc.banner;
   readonly recoveryAttention = toSignal(this.recoveryAttention$, {
     initialValue: [] as RecoveryAttentionItem[]
   });

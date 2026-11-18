@@ -25,7 +25,7 @@ const PREVIEW = 5;
       <div class="widget-header">
         <div class="widget-header-left">
           <div class="widget-icon-wrap">
-            <nx-icon name="product-refresh" class="widget-icon"></nx-icon>
+            <nx-icon name="refresh" class="widget-icon"></nx-icon>
           </div>
           <span class="widget-title">Recovery potential: decision needed</span>
         </div>
