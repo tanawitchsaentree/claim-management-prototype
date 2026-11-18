@@ -2,51 +2,51 @@
   "ticketId": "CHAMP-PRECLOSURE-CHECKLIST",
   "epicId": "BMPCC-14434",
   "module": "Claims",
-  "title": "Pre-closure Checklist — Always-clickable Close Claim button with status checklist",
+  "title": "Pre-closure Checklist: Always-clickable Close Claim button with status checklist",
   "targetClaim": "CLM-2024-001",
   "pages": ["overview"],
   "walkthroughSteps": [
-    "Apply AC-01 — CLM-2024-001 has open tasks + open sections (blockers present)",
+    "Source: BMPCC-16284. Apply AC-01: CLM-2024-001 has open tasks + open sections (blockers present)",
     {
       "targetId": "co-close-claim-button",
       "title": "Close Claim",
-      "body": "Always clickable, primary style — never disabled or tooltipped because of blockers. With active blockers it opens on step 1 (Blockers); with none, it skips straight to the checklist.",
+      "body": "Always clickable, primary style: never disabled or tooltipped because of blockers. With active blockers it opens on step 1 (Blockers); with none, it skips straight to the checklist.",
       "direction": "top"
     },
-    "With blockers present, step 1 shows the deep blocker cards (litigation / reserves / provider) — Cancel is the only footer action here",
+    "With blockers present, step 1 shows the deep blocker cards (litigation / reserves / provider), Cancel is the only footer action here",
     {
       "targetId": "ccm-checklist",
       "title": "Pre-closure Checklist",
-      "body": "7 system-validated conditions (sections, payments, bills, recoveries & deductibles, reserves, litigation, reports). Failing rows show a red exclamation icon plus a hint of what's outstanding; passing rows show a green check.",
-      "expectedAfterClick": "Continue stays disabled until every row passes.",
+      "body": "10 system-validated rows: open tasks, sections, payments, bills, recovery potential answered, recovery case set up, recoveries & deductibles, reserves, litigation, final reports. Passing rows show a green check; a failing row would show a red icon and a hint.",
+      "expectedAfterClick": "The checklist is only reached when nothing blocks, so every row is green and Continue is enabled.",
       "direction": "top"
     },
-    "Apply AC-02 — all tasks done, all sections closed, no other blockers — the modal now opens directly on the checklist with all 7 rows green and Continue enabled",
+    "Apply AC-02: all tasks done, all sections closed, no other blockers. The popup now opens directly on the checklist with all 10 rows green and Continue enabled",
     "Continue → Reason & Retention (pick a reason, retention default/indefinite) → Continue",
     {
       "targetId": "ccm-confirm-list",
       "title": "Confirmation",
-      "body": "One combined, handler-attested list (not system-validated) — pending bills, recoveries & deductibles, final reports, Provider Management survey.",
+      "body": "One combined, handler-attested list (not system-validated), pending bills, recoveries & deductibles, final reports, Provider Management survey.",
       "direction": "top"
     },
     {
       "targetId": "ccm-confirm-no",
       "title": "No",
-      "body": "Declining here returns to the Pre-closure Checklist step (step 2) — not back to Reason & Retention.",
+      "body": "Declining here returns to the Pre-closure Checklist step (step 2), not back to Reason & Retention.",
       "direction": "top"
     },
     {
       "targetId": "ccm-confirm-yes",
-      "title": "Yes — Close Claim",
-      "body": "Confirms closure — status chip updates to Closed and the closure panel appears.",
+      "title": "Yes: Close Claim",
+      "body": "Confirms closure: status chip updates to Closed and the closure panel appears.",
       "direction": "top"
     }
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Given blockers exist, Close Claim is always clickable; modal opens and shows blocked conditions with Continue disabled.",
-      "plainStatement": "The **Close Claim** button is always rendered as an enabled primary button (never disabled with a tooltip). When clicked with active blockers, the modal opens at the **Pre-closure Checklist** step — each condition row shows a **Blocked** badge (red) or **Clear** badge (green). The **Continue** button is disabled while any condition is blocked.",
+      "statement": "Given blockers exist, Close Claim is always clickable; the popup opens on the Blockers step with only Cancel.",
+      "plainStatement": "Source: BMPCC-16284.\n\nThe **Close Claim** button is always an enabled primary button (never disabled with a tooltip). When clicked with active blockers, the popup opens at **Close Claim: Blockers**: one card per blocker (e.g. open tasks, open sections), each expandable, with a Go to link where there is one. The footer has only **Cancel**. The checklist step is not shown until nothing blocks.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -58,17 +58,17 @@
             "role": "tested-visible"
           },
           {
-            "text": "Clicking 'Close Claim' opens modal — title 'Close Claim — Pre-closure Checklist'",
+            "text": "Clicking 'Close Claim' opens the popup titled 'Close Claim: Blockers'",
             "page": "overview",
             "role": "tested-visible"
           },
           {
-            "text": "'All sections closed' row shows Blocked badge (red icon)",
+            "text": "Blocker cards list the open tasks and open sections",
             "page": "overview",
             "role": "tested-visible"
           },
           {
-            "text": "'Continue' button in modal footer is disabled",
+            "text": "Only Cancel in the popup footer",
             "page": "overview",
             "role": "tested-visible"
           }
@@ -85,32 +85,31 @@
         }
       },
       "expectedUI": {
-        "description": "Close Claim button is primary (enabled). Modal checklist shows conditions with blocked rows for tasks and sections. Continue is disabled.",
+        "description": "Close Claim button is primary (enabled). The popup opens on the Blockers step listing tasks and sections; only Cancel.",
         "visualCues": [
           "Close Claim button: primary style, not greyed out, no tooltip",
-          "Modal title: 'Close Claim — Pre-closure Checklist'",
-          "Blocked rows: red exclamation icon, red 'Blocked' badge, detail text from blocker label",
-          "Clear rows: green check icon, green 'Clear' badge",
-          "Continue footer button is disabled"
+          "Popup title: 'Close Claim: Blockers'",
+          "Blocker cards for open tasks and open sections, each expandable",
+          "Footer: only Cancel"
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Click 'Close Claim' button",
-        "expectedResult": "Modal opens at checklist, blocked rows visible, Continue disabled"
+        "expectedResult": "Popup opens at the Blockers step with task and section blockers; only Cancel"
       }
     },
     {
       "id": "AC-02",
       "statement": "Given all conditions are clear, the checklist shows all green and Continue is enabled.",
-      "plainStatement": "When all closure conditions are met (tasks done, sections closed, no other blockers), all 7 checklist rows show a **Clear** badge (green check icon) and the **Continue** button is enabled. Proceeding leads to Reason → Confirmation → successful claim closure.",
+      "plainStatement": "When all closure conditions are met (tasks done, sections closed, no other blockers), the popup opens at **Close Claim: Pre-closure Checklist** and all **10** rows show a green check icon. **Continue** is enabled. Proceeding leads to Reason & Retention, then Confirmation, then the claim closes.\n\n**NOTE [accepted-deviation]:** BMPCC-16284 says the checklist rows are driven by the configured domains. The prototype shows a fixed list of 10 rows. The screen differs from Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** The rows \"Recovery potential answered\" and \"Recovery case set up\" come from BMPCC-17779, which Jira marks Descoped. They have no source for this checklist. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "All tasks done, all sections closed, no litigation/reserves/payments/provider blockers on CLM-2024-001.",
         "preconditions": [
           {
-            "text": "All 7 checklist rows show 'Clear' badge",
+            "text": "All 10 checklist rows show a green check",
             "page": "overview",
             "role": "tested-visible"
           },
@@ -141,43 +140,43 @@
         }
       },
       "expectedUI": {
-        "description": "All 7 condition rows show green check icon + 'Clear' badge. Continue is enabled. Flow: checklist → reason & retention → confirmation warning → closed.",
+        "description": "All 10 condition rows show a green check icon. Continue is enabled. Flow: checklist, reason & retention, confirmation, closed.",
         "visualCues": [
-          "All rows: green check icon (check-circle-o), green 'Clear' badge",
+          "All rows: green check icon",
           "No red rows",
           "Continue button enabled",
-          "After Continue: modal title changes to 'Close Claim — Reason & Retention'",
-          "After selecting reason + Continue: modal title changes to 'Close Claim — Confirmation'",
+          "After Continue: modal title changes to 'Close Claim: Reason & Retention'",
+          "After selecting reason + Continue: modal title changes to 'Close Claim: Confirmation'",
           "After Close Claim: status chip updates to Closed"
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click 'Close Claim', then Continue, select reason, Continue, Yes — Close Claim",
+        "trigger": "Click 'Close Claim', then Continue, select reason, Continue, Yes, Close Claim",
         "expectedResult": "Claim status changes to Closed, closure panel visible"
       }
     },
     {
       "id": "AC-03",
       "statement": "After the Reason & Retention step, a single combined confirmation warning gates the final Close Claim action; clicking No returns the handler to the checklist.",
-      "plainStatement": "Clicking **Continue** on the Reason & Retention step opens **Close Claim — Confirmation** — a single combined list covering 4 handler-attested items: no pending bills, recoveries & deductibles resolved, final reports completed, and Provider Management survey completed/rejected-with-rationale. These are **not** system-validated. Default state is unconfirmed. Clicking **Yes — Close Claim** proceeds to closure processing. Clicking **No** blocks closure and returns the handler to the **Pre-closure Checklist** step (not just Back to Reason).",
+      "plainStatement": "Clicking **Continue** on the Reason & Retention step opens **Close Claim, Confirmation**, a single combined list covering 4 handler-attested items: no pending bills, recoveries & deductibles resolved, final reports completed, and Provider Management survey completed/rejected-with-rationale. These are **not** system-validated. Default state is unconfirmed. Clicking **Yes: Close Claim** proceeds to closure processing. Clicking **No** blocks closure and returns the handler to the **Pre-closure Checklist** step (not just Back to Reason).",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "Same all-clear setup as AC-02 — reach the Reason & Retention step, then Continue into the Confirmation step.",
+        "description": "Same all-clear setup as AC-02, reach the Reason & Retention step, then Continue into the Confirmation step.",
         "preconditions": [
           {
-            "text": "Modal title reads 'Close Claim — Confirmation' after Continue from Reason & Retention",
+            "text": "Modal title reads 'Close Claim: Confirmation' after Continue from Reason & Retention",
             "page": "overview",
             "role": "tested-visible"
           },
           {
-            "text": "A single plain-text intro lists all 4 confirmation items — not 4 separate pop-ups",
+            "text": "A single plain-text intro lists all 4 confirmation items, not 4 separate pop-ups",
             "page": "overview",
             "role": "tested-visible"
           },
           {
-            "text": "Footer shows 'No' and 'Yes — Close Claim' buttons",
+            "text": "Footer shows 'No' and 'Yes: Close Claim' buttons",
             "page": "overview",
             "role": "tested-visible"
           },
@@ -205,12 +204,12 @@
       "expectedUI": {
         "description": "One combined intro line listing the 4 handler-attested items as a bullet list, followed by No/Yes footer buttons.",
         "visualCues": [
-          "Modal title: 'Close Claim — Confirmation'",
+          "Modal title: 'Close Claim: Confirmation'",
           "Single intro line ('Please confirm before closing:'), not four separate dialogs",
           "4 bullet items: bills received/processed, recoveries & deductibles, final reports, Provider Management survey",
-          "Footer: 'No' (secondary) and 'Yes — Close Claim' (primary)",
+          "Footer: 'No' (secondary) and 'Yes: Close Claim' (primary)",
           "Clicking 'No' navigates back to the Pre-closure Checklist step (step 2), not the Reason step",
-          "Clicking 'Yes — Close Claim' proceeds to closure processing — claim status becomes Closed"
+          "Clicking 'Yes: Close Claim' proceeds to closure processing: claim status becomes Closed"
         ]
       },
       "howToTest": {

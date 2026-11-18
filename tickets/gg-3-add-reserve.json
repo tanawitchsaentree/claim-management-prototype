@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG 3 · Add reserve: same checks as Make payment",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "financial"
-  ],
+  "pages": ["financial"],
   "walkthroughSteps": [
     "Add reserve uses the same warning list as Make payment, so the two journeys look the same (BMPCC-20953)."
   ],
@@ -14,7 +12,7 @@
     {
       "id": "AC-01",
       "statement": "Add reserve · Over the limit",
-      "plainStatement": "**Opens:** Reserves with Add reserve open, EUR 900,000 on Business Interruption.\n\n**You see:** Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Reserves with Add reserve open, EUR 900,000 on Business Interruption.\n\n**You see:** Same amber warning as Make payment, same amount left on the limit. No reason field (reserves don't need one).",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -78,9 +76,7 @@
       },
       "expectedUI": {
         "description": "Blue note: the reserve is booked once the claim is ready.",
-        "visualCues": [
-          "Blue note: the reserve is booked once the claim is ready."
-        ]
+        "visualCues": ["Blue note: the reserve is booked once the claim is ready."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=reserves&addReserve=1",
@@ -116,9 +112,7 @@
       },
       "expectedUI": {
         "description": "Currency already USD.",
-        "visualCues": [
-          "Currency already USD."
-        ]
+        "visualCues": ["Currency already USD."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=reserves&addReserve=1&currency=USD",

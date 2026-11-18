@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG 5 · Reserves list: same booking statuses",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "financial"
-  ],
+  "pages": ["financial"],
   "walkthroughSteps": [
     "Reserves use the same status pills, explanations and Send again as Payments."
   ],
@@ -14,7 +12,7 @@
     {
       "id": "AC-01",
       "statement": "Reserves · Every booking status",
-      "plainStatement": "**Opens:** Reserves list of CLM-2024-001.\n\n**You see:** Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval).",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Reserves list of CLM-2024-001.\n\n**You see:** Booked, Booking in progress, Booking delayed, Couldn't be booked, and Pending (still awaiting approval).",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -235,7 +233,7 @@
     {
       "id": "AC-02",
       "statement": "Reserves · Couldn't be booked, Finance is fixing it",
-      "plainStatement": "**Opens:** Reserves, row RES-C-00063676-2024.001.2.0.1 already open.\n\n**You see:** Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\".",
+      "plainStatement": "**Opens:** Reserves, row RES-C-00063676-2024.001.2.0.1 already open.\n\n**You see:** Why (expense sub-type unknown in Global Genius), Finance is fixing it, \"It is not in the books yet\".\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about a \"With Finance\" hand-off. \"Finance is fixing it\" is made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** BMPCC-19169 AC-2 says the Global Genius error text should be shown. The reserve row explains the failure in our own words and hides the Global Genius text. The screen differs from Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -660,9 +658,7 @@
       },
       "expectedUI": {
         "description": "Same \"taking longer than usual\" explanation as Payments.",
-        "visualCues": [
-          "Same \"taking longer than usual\" explanation as Payments."
-        ]
+        "visualCues": ["Same \"taking longer than usual\" explanation as Payments."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=reserves&expand=RES-C-00063676-2024.001.1.1.3",

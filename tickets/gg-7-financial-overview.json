@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG 7 · Financial Overview: what couldn't be booked",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "financial"
-  ],
+  "pages": ["financial"],
   "walkthroughSteps": [
     "The summary says how many items couldn't be booked and who acts, and carries the claim banner too."
   ],
@@ -14,7 +12,7 @@
     {
       "id": "AC-01",
       "statement": "Financial Overview · Items that couldn't be booked",
-      "plainStatement": "**Opens:** Financial Overview of CLM-2024-001.\n\n**You see:** One line: how many couldn't be booked, split into \"needs you\" and \"Finance is fixing\", each a link.",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Financial Overview of CLM-2024-001.\n\n**You see:** One line: how many couldn't be booked, split into \"needs you\" and \"Finance is fixing\", each a link.\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about a \"With Finance\" hand-off. The \"Finance is fixing\" count is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -265,9 +263,7 @@
       },
       "expectedUI": {
         "description": "The same red claim banner as Claim Overview, with Send claim again.",
-        "visualCues": [
-          "The same red claim banner as Claim Overview, with Send claim again."
-        ]
+        "visualCues": ["The same red claim banner as Claim Overview, with Send claim again."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial",

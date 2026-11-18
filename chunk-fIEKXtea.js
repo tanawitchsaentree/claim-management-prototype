@@ -1,0 +1,1 @@
+import{bi as xw}from"./chunk-Bzwlp4yb.js";import{t as r}from"./chunk-Bd36Myg1.js";var i=r;var n=class e{transform(r){return r?i.typeOfDamage.find(o=>o.value===r)?.label??r:`–`}static ɵfac=function(o){return new(o||e)};static ɵpipe=xw({name:`damageTypeLabel`,type:e,pure:!0})};export{n as t};

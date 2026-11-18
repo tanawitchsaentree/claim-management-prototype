@@ -5,7 +5,7 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["overview"],
   "walkthroughSteps": [
-    "Navigate to /claims/CLM-2024-001/overview — the claim is already linked to a mass event by default",
+    "Navigate to /claims/CLM-2024-001/overview: the claim is already linked to a mass event by default",
     {
       "targetId": "co-mass-event-info",
       "title": "Mass Event linkage",
@@ -18,11 +18,11 @@
     {
       "id": "AC-01",
       "statement": "Mass event linkage details and manual edit actions are reachable from the overview",
-      "plainStatement": "Clicking the info icon next to **Mass Event** opens a popover with the linked event's details and manual link/unlink actions.",
+      "plainStatement": "Clicking the info icon next to **Mass Event** opens a popover with the linked event's details and manual link/unlink actions.\n\n**NOTE [accepted-deviation]:** Jira asks for a \"Manual override control (claim handler removing/changing the mass event)\". The \"Confirm link\" action is made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira design scope asks for the \"Placement and interaction for viewing the auto-allocated Mass Event tag\" but does not say where. The prototype decides on an info-icon popover next to Mass Event on Claim Overview. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "CLM-2024-001 already has a mass event linked by default — no override needed",
+        "description": "CLM-2024-001 already has a mass event linked by default, no override needed",
         "preconditions": [
           {
             "text": "Mass Event field is visible with a linked event id",

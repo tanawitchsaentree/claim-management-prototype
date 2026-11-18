@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG 4 · Payments list: booking status and Send again",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "financial"
-  ],
+  "pages": ["financial"],
   "walkthroughSteps": [
     "One status column walks each payment from approval to booking.",
     "\"Send again\" only on \"Couldn't be booked\" rows, re-sends the SAME payment (no new payment, no re-approval, no double pay-out)."
@@ -15,7 +13,7 @@
     {
       "id": "AC-01",
       "statement": "Payments · Every status at a glance",
-      "plainStatement": "**Opens:** Payments list of CLM-2024-001.\n\n**You see:** Every status once: Draft, Pending, Requires amendment, Rejected, Booking in progress, Booking delayed, Booked, Couldn't be booked. A \"Needs you\" count above the list.",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Payments list of CLM-2024-001.\n\n**You see:** Every status once: Draft, Pending, Requires amendment, Rejected, Booking in progress, Booking delayed, Booked, Couldn't be booked. A \"Needs you\" count above the list.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -236,7 +234,7 @@
     {
       "id": "AC-02",
       "statement": "Payments · Couldn't be booked, you fix it (bank details)",
-      "plainStatement": "**Opens:** Payments, row 123456-4 already open.\n\n**You see:** Why it failed, \"No money has been paid out\", you need to act, link to the task, and **Send again to Global Genius** with \"once you've fixed it\" advice.\n\n**Try:** Press Send again: confirm shows the same payment (\"not a new payment, won't be paid twice\"); it goes to Booking in progress, then Booked after ~3 seconds.",
+      "plainStatement": "**Opens:** Payments, row 123456-4 already open.\n\n**You see:** Why it failed, \"No money has been paid out\", you need to act, link to the task, and **Send again to Global Genius** with \"once you've fixed it\" advice.\n\n**Try:** Press Send again: confirm shows the same payment (\"not a new payment, won't be paid twice\"); it goes to Booking in progress, then Booked after ~3 seconds.\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about fix tasks. Creating a task for the handler to fix the bank details is made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** BMPCC-19169 AC-2 says the Global Genius error text should be shown. The payment row explains the failure in our own words and hides the Global Genius text. The screen differs from Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -457,7 +455,7 @@
     {
       "id": "AC-03",
       "statement": "Payments · Global Genius was down: send again works",
-      "plainStatement": "**Opens:** Payments, row 123456-10 already open.\n\n**You see:** Global Genius was unavailable, you can send it again now.\n\n**Try:** Press Send again: Booking in progress, then Booked; the bell shows \"now booked\".",
+      "plainStatement": "**Opens:** Payments, row 123456-10 already open.\n\n**You see:** Global Genius was unavailable, you can send it again now.\n\n**Try:** Press Send again: Booking in progress, then Booked; the bell shows \"now booked\".\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about the bell. The \"now booked\" bell line is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -661,9 +659,7 @@
       },
       "expectedUI": {
         "description": "Global Genius was unavailable, you can send it again now.",
-        "visualCues": [
-          "Global Genius was unavailable, you can send it again now."
-        ]
+        "visualCues": ["Global Genius was unavailable, you can send it again now."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=payments&expand=123456-10",
@@ -678,7 +674,7 @@
     {
       "id": "AC-04",
       "statement": "Payments · Send again, still fails",
-      "plainStatement": "**Opens:** Payments, row 123456-11 already open.\n\n**You see:** Same as AC-03.\n\n**Try:** Press Send again: after ~3 seconds it is back to Couldn't be booked, now saying it was sent again and to contact Finance.",
+      "plainStatement": "**Opens:** Payments, row 123456-11 already open.\n\n**You see:** Same as AC-03.\n\n**Try:** Press Send again: after ~3 seconds it is back to Couldn't be booked, now saying it was sent again and to contact Finance.\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about handing over to Finance. \"Contact Finance\" after a failed resend is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -882,9 +878,7 @@
       },
       "expectedUI": {
         "description": "Same as AC-03.",
-        "visualCues": [
-          "Same as AC-03."
-        ]
+        "visualCues": ["Same as AC-03."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=payments&expand=123456-11",
@@ -899,7 +893,7 @@
     {
       "id": "AC-05",
       "statement": "Payments · Couldn't be booked, Finance is fixing it",
-      "plainStatement": "**Opens:** Payments, row 123456-9 already open.\n\n**You see:** Finance is fixing it. Send again is there but the advice says only press it if Finance asks you to.",
+      "plainStatement": "**Opens:** Payments, row 123456-9 already open.\n\n**You see:** Finance is fixing it. Send again is there but the advice says only press it if Finance asks you to.\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about a \"With Finance\" hand-off. \"Finance is fixing it\" is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -1341,7 +1335,7 @@
     {
       "id": "AC-07",
       "statement": "Payments · Sent back by the approver",
-      "plainStatement": "**Opens:** Payments, row 123456-5 already open.\n\n**You see:** The approver's note and what to do (change it and submit again). Looks different from a booking failure.\n\n**Try:** press **Change and resubmit**: Make payment opens with this payment filled in; submitting sends the same payment (same number) back to the approver as Pending.",
+      "plainStatement": "**Opens:** Payments, row 123456-5 already open.\n\n**You see:** The approver's note and what to do (change it and submit again). Looks different from a booking failure.\n\n**Try:** press **Change and resubmit**: Make payment opens with this payment filled in; submitting sends the same payment (same number) back to the approver as Pending.\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about an approver sending a payment back. The sent-back state and Change and resubmit are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -1766,9 +1760,7 @@
       },
       "expectedUI": {
         "description": "Rejected, with the approver's reason and \"Nothing was paid\".",
-        "visualCues": [
-          "Rejected, with the approver's reason and \"Nothing was paid\"."
-        ]
+        "visualCues": ["Rejected, with the approver's reason and \"Nothing was paid\"."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=payments&expand=123456-7",
@@ -1840,9 +1832,7 @@
       },
       "expectedUI": {
         "description": "Approved payments show Waiting for claim; the blue claim banner is on top.",
-        "visualCues": [
-          "Approved payments show Waiting for claim; the blue claim banner is on top."
-        ]
+        "visualCues": ["Approved payments show Waiting for claim; the blue claim banner is on top."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=payments",

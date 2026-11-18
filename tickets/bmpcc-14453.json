@@ -1,7 +1,7 @@
 {
   "ticketId": "BMPCC-14453",
   "module": "Claims",
-  "title": "[UX/UI] Provider Communication — Document Attachment / Send Communication via Email",
+  "title": "[UX/UI] Provider Communication: Document Attachment Design for Instruction Template",
   "targetClaim": "CLM-2024-001",
   "pages": ["any"],
   "walkthroughSteps": [
@@ -10,7 +10,7 @@
       "targetId": "pm-send-communication",
       "title": "Send communication",
       "body": "Every provider assignment has a Send communication action for reaching out with instructions or requests.",
-      "expectedAfterClick": "Opens the send-communication flow — this is where the instruction template and document attachment (BMPCC-14453) and email send (BMPCC-14454) designs apply.",
+      "expectedAfterClick": "Opens the send-communication flow: this is where the instruction template and document attachment (BMPCC-14453) and email send (BMPCC-14454) designs apply.",
       "direction": "top"
     }
   ],
@@ -18,11 +18,11 @@
     {
       "id": "AC-01",
       "statement": "Every provider assignment has a Send communication action",
-      "plainStatement": "Every row in Provider Management has a **Send communication** action, independent of assignment status.",
+      "plainStatement": "**Jira status: To Do, unassigned.** This was built anyway (commit e21c7a4), which breaks RULE -2. Treat it as a proposal until the ticket is picked up.\n\nEvery row in Provider Management has a **Send communication** action, independent of assignment status.\n\n**NOTE [accepted-deviation]:** Jira asks to \"Design the review/preview state: how attached documents are displayed before the send action is triggered\". The prototype has no review step before sending. The screen differs from Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about the \"Internal provider\" / \"External provider\" badge, the \"Additional instructions\" field, or sending via email (the old title said \"Send Communication via Email\"). These are made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says: \"Supported file types and size limits to be defined as part of solutioning (BMPCC-14448)\". The prototype decides PDF, DOC, DOCX, JPG, PNG up to 10 MB per file. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
+        "description": "Uses CLM-2024-001's existing provider assignments: no override needed",
         "preconditions": [
           {
             "text": "Send communication button visible on every provider row",

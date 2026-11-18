@@ -4,11 +4,7 @@
   "module": "FNOL",
   "title": "Manual selection of policy from impacted policies",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "fnol-policies",
-    "fnol-loss-info",
-    "fnol-summary"
-  ],
+  "pages": ["fnol-policies", "fnol-loss-info", "fnol-summary"],
   "walkthroughSteps": [
     "Apply AC-01: the Policies step for Jonas Kaufmann (searched POL-2024-021, suggested POL-2024-022 and POL-2024-023).",
     "Tick the policies that get a claim, confirm, and Entities & Damages lists all their entities, each tagged with its policy.",
@@ -18,7 +14,7 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Impacted policies listed, searched policy marked and includable",
-      "plainStatement": "**Opens:** FNOL step **Policies** for Jonas Kaufmann, started from POL-2024-021 (Property). The stepper shows Policies between Loss information and Entities & Damages.\n\n**You see:** A short spinner (\"Checking the client's other policies\"), then one table: POL-2024-021 marked **Searched policy** and ticked, then the two suggested policies POL-2024-022 (Liability) and POL-2024-023 (Engineering), not ticked. Columns: Policy, Product, Policy period, Currency, Coverage match (why it was suggested), Status.\n\n**Try:** Untick the searched policy: it can be left out. The counter under the table says how many claims will be created.\n\nDecision IMP-1: the step sits after Loss information (the coverage check needs the cause of loss and damage type) and before Entities & Damages (the choice decides whose entities are listed). The handler can come back to it from any later step until Submit; Entities & Damages' Back goes here.\nDecision IMP-2: only the searched policy starts ticked; each suggestion is opted into with its reason in view, because every tick is a claim with its own reserves.",
+      "plainStatement": "**Opens:** FNOL step **Policies** for Jonas Kaufmann, started from POL-2024-021 (Property). The stepper shows Policies between Loss information and Entities & Damages.\n\n**You see:** A short spinner (\"Checking the client's other policies\"), then one table: POL-2024-021 marked **Searched policy** and ticked, then the two suggested policies POL-2024-022 (Liability) and POL-2024-023 (Engineering), not ticked. Columns: Policy, Product, Policy period, Currency, Coverage match (why it was suggested), Status.\n\n**Try:** Untick the searched policy: it can be left out. The counter under the table says how many claims will be created.\n\nDecision IMP-1: the step sits after Loss information (the coverage check needs the cause of loss and damage type) and before Entities & Damages (the choice decides whose entities are listed). The handler can come back to it from any later step until Submit; Entities & Damages' Back goes here.\nDecision IMP-2: only the searched policy starts ticked; each suggestion is opted into with its reason in view, because every tick is a claim with its own reserves.\n\n**NOTE [accepted-deviation]:** Jira (soft dependencies) leaves open \"whether the selection step comes before or after the loss information is complete\". The prototype decides the step sits after Loss information and before Entities & Damages (IMP-1). Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira AC01 says the searched policy \"can be included or excluded\" but not which policies start ticked. The prototype decides only the searched policy starts ticked (IMP-2). Not in Jira, pending product sign-off.",
       "page": "fnol-policies",
       "buildStatus": "done",
       "setup": {
@@ -55,7 +51,7 @@
     {
       "id": "AC-02",
       "statement": "AC02 · Select one or many, at least one required, then confirm",
-      "plainStatement": "**Opens:** Same Policies step.\n\n**You see:** Untick everything and press Next: \"Select at least one policy to continue.\" Nothing moves on.\n\n**Try:** Tick POL-2024-022 too and press Next: a confirm \"Create a claim on each of 2 policies?\" names both policies and says they share the loss information. **Continue with 2 policies** goes to Entities & Damages with a toast; the entities of POL-2024-022 are listed with \"· POL-2024-022\" in Covered by, and the old \"Other policies may be impacted\" banner is not shown again. Going back and unticking it takes those entities out again.\n\nDecision IMP-3: the confirm only appears when the result differs from a normal FNOL (more than one claim, or not on the searched policy). Ticking only the searched policy goes straight on.\nDecision IMP-7 (epic open point 1): loss information is entered once and copied onto every claim; after creation each claim's loss information is edited on its own Edit claim details. Entities come from each policy's own cover. Parties go onto every claim; FNOL reserves belong to the first selected policy, the others get theirs on the claim.",
+      "plainStatement": "**Opens:** Same Policies step.\n\n**You see:** Untick everything and press Next: \"Select at least one policy to continue.\" Nothing moves on.\n\n**Try:** Tick POL-2024-022 too and press Next: a confirm \"Create a claim on each of 2 policies?\" names both policies and says they share the loss information. **Continue with 2 policies** goes to Entities & Damages with a toast; the entities of POL-2024-022 are listed with \"· POL-2024-022\" in Covered by, and the old \"Other policies may be impacted\" banner is not shown again. Going back and unticking it takes those entities out again. If any of them were already ticked on Entities & Damages, Next first names them (\"The entity you chose on Entities & Damages will be removed (POL-2024-022: ...)\"): as a warning inside the confirm, or as a **Remove the chosen entities?** confirm when only the searched policy is left. After that a toast \"Entities of POL-2024-022 removed\".\n\nDecision IMP-3: the confirm only appears when the result differs from a normal FNOL (more than one claim, or not on the searched policy). Ticking only the searched policy goes straight on.\nDecision IMP-7 (epic open point 1): loss information is entered once and copied onto every claim; after creation each claim's loss information is edited on its own Edit claim details. Entities come from each policy's own cover. Parties go onto every claim; FNOL reserves belong to the first selected policy, the others get theirs on the claim.\n\n**NOTE [accepted-deviation]:** Jira leaves open \"whether loss information is shared across the created claims or can differ per policy\". The prototype decides it is entered once and copied onto every claim (IMP-7). Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about reserves across policies. Putting FNOL reserves only on the first selected policy is made up by the prototype (IMP-7). Not in Jira, pending product sign-off.",
       "page": "fnol-policies",
       "buildStatus": "done",
       "setup": {
@@ -115,9 +111,7 @@
       },
       "expectedUI": {
         "description": "No Policies step in the stepper; Next goes to Entities & Damages",
-        "visualCues": [
-          "No Policies step in the stepper; Next goes to Entities & Damages"
-        ]
+        "visualCues": ["No Policies step in the stepper; Next goes to Entities & Damages"]
       },
       "howToTest": {
         "route": "/fnol/loss-information",
@@ -128,7 +122,7 @@
     {
       "id": "AC-04",
       "statement": "AC04 · The right policy is not in the list: search for it",
-      "plainStatement": "**Opens:** Same Policies step.\n\n**You see:** **Search for another policy** under the table.\n\n**Try:** It opens a search with the client name filled in (Jonas Kaufmann). Search: the client's policies are listed, the ones already on the step say \"already in the list\" and can't be ticked twice. Clear the client name and search POL-2024-009 to find any policy. **Add to list** puts it in the table, ticked, badged **Added by you**, with a toast.\n\nDecision IMP-4: the search is a dialog on this step, not a jump back to Search, so the loss information stays and the found policy sits next to the suggestions.\nDecision IMP-5 (open point 4): policies of another client, currency or line of business are allowed; each claim keeps its own policy's currency and line of business. When the selection mixes currencies or clients, a note says so under the table.",
+      "plainStatement": "**Opens:** Same Policies step.\n\n**You see:** **Search for another policy** under the table.\n\n**Try:** It opens a search with the client name filled in (Jonas Kaufmann). Search: the client's policies are listed, the ones already on the step say \"already in the list\" and can't be ticked twice. Clear the client name and search POL-2024-009 to find any policy. **Add to list** puts it in the table, ticked, badged **Added by you**, with a toast.\n\nDecision IMP-4: the search is a dialog on this step, not a jump back to Search, so the loss information stays and the found policy sits next to the suggestions.\nDecision IMP-5 (open point 4): policies of another client, currency or line of business are allowed; each claim keeps its own policy's currency and line of business. When the selection mixes currencies or clients, a note says so under the table.\n\n**NOTE [accepted-deviation]:** Confluence 3341441184 section 2.2 says impacted policies come from the same customer. The prototype allows policies of another client (IMP-5). The screen differs from the source, pending product sign-off.",
       "page": "fnol-policies",
       "buildStatus": "done",
       "setup": {
@@ -165,7 +159,7 @@
     {
       "id": "AC-05",
       "statement": "AC05 · One claim number per policy, failures shown without hiding the rest",
-      "plainStatement": "**Opens:** FNOL Summary after POL-2024-021, POL-2024-022 and POL-2024-023 were selected. \"Claims to be created\" has one entry per policy with its product; reserves for the two extra policies read \"Set on the claim once it is created\".\n\n**Try:** Tick some entities first if you want sections, or submit as is. Press **Submit claim**: an amber message \"2 of 3 claims created\", then one row per policy: POL-2024-021 and POL-2024-022 with their claim numbers as links, POL-2024-023 \"Not created. The policy changed after it was suggested.\" with **Retry**. Retry creates it and a toast gives the new claim number.\n\nDecision IMP-8 (open point 5): if a policy changed between suggestion and creation, that policy fails on its own and the others still go through.\nDecision IMP-6 (open point 2): the claims are listed together here and share the loss information; a lasting group link is left to the Loss event, the app's existing way to group claims of one event.",
+      "plainStatement": "**Opens:** FNOL Summary after POL-2024-021, POL-2024-022 and POL-2024-023 were selected. \"Claims to be created\" has one entry per policy with its product; reserves for the two extra policies read \"Set on the claim once it is created\".\n\n**Try:** Tick some entities first if you want sections, or submit as is. Press **Submit claim**: an amber message \"2 of 3 claims created\", then one row per policy: POL-2024-021 and POL-2024-022 with their claim numbers as links, POL-2024-023 \"Not created. The policy changed after it was suggested.\" with **Retry**. The result is scrolled into view, and a toast says the same as the message, failures included (\"2 of 3 claims created\", \"Not created on POL-2024-023\"). Retry creates it and a toast gives the new claim number. Coming back to Summary later (browser Back from a claim) shows this result again, never a second Submit.\n\nDecision IMP-8 (open point 5): if a policy changed between suggestion and creation, that policy fails on its own and the others still go through.\nDecision IMP-6 (open point 2): the claims are listed together here and share the loss information; a lasting group link is left to the Loss event, the app's existing way to group claims of one event.\n\n**NOTE [accepted-deviation]:** Confluence 3341441184 section 2.4 creates the claims on Next of Entities & Damages. The prototype creates them on Summary Submit. The screen differs from the source, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira leaves open the \"behaviour if policy data changes between suggestion and creation\". The prototype decides that policy fails on its own and the others still go through (IMP-8). Not in Jira, pending product sign-off.",
       "page": "fnol-summary",
       "buildStatus": "done",
       "setup": {
@@ -183,14 +177,8 @@
               "policyId": "POL-2024-021",
               "policyNumber": "POL-2024-021"
             },
-            "policySelection": [
-              "POL-2024-021",
-              "POL-2024-022",
-              "POL-2024-023"
-            ],
-            "policyCreationFailFor": [
-              "POL-2024-023"
-            ]
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "policyCreationFailFor": ["POL-2024-023"]
           }
         }
       },
@@ -227,18 +215,13 @@
               "policyId": "POL-2024-021",
               "policyNumber": "POL-2024-021"
             },
-            "policySelection": [
-              "POL-2024-021",
-              "POL-2024-022"
-            ]
+            "policySelection": ["POL-2024-021", "POL-2024-022"]
           }
         }
       },
       "expectedUI": {
         "description": "After Submit: '2 claims created' with two claim links",
-        "visualCues": [
-          "After Submit: '2 claims created' with two claim links"
-        ]
+        "visualCues": ["After Submit: '2 claims created' with two claim links"]
       },
       "howToTest": {
         "route": "/fnol/summary",
@@ -274,9 +257,7 @@
       },
       "expectedUI": {
         "description": "Error message with Try again and Continue with the searched policy only",
-        "visualCues": [
-          "Error message with Try again and Continue with the searched policy only"
-        ]
+        "visualCues": ["Error message with Try again and Continue with the searched policy only"]
       },
       "howToTest": {
         "route": "/fnol/policies",
@@ -311,9 +292,7 @@
       },
       "expectedUI": {
         "description": "Figma link added to the story and the epic",
-        "visualCues": [
-          "Figma link added to the story and the epic"
-        ]
+        "visualCues": ["Figma link added to the story and the epic"]
       },
       "howToTest": {
         "route": "/fnol/policies",

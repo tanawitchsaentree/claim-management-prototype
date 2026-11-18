@@ -1,1 +1,0 @@
-import{bi as xw,xi as y}from"./chunk-Bzwlp4yb.js";import{_ as u}from"./main-B6IJRHFV.js";var a=class r{numbers=y(u);transform(e){return this.numbers.displayFor(e)}static ɵfac=function(m){return new(m||r)};static ɵpipe=xw({name:`claimNumber`,type:r,pure:!1})};export{a as t};

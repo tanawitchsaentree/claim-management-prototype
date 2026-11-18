@@ -5,12 +5,12 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["any"],
   "walkthroughSteps": [
-    "Navigate to /fnol/parties — a policy is pre-selected so the step doesn't redirect to search",
+    "Navigate to /fnol/parties: a policy is pre-selected so the step doesn't redirect to search. Add parties with Add additional parties if the list is empty",
     {
       "targetId": "fnol-party-actions",
       "title": "Party role",
-      "body": "Every party row has an actions menu with View details, Edit role, and Remove.",
-      "expectedAfterClick": "Opens the row's action menu — Edit role is where a party's role assignment changes.",
+      "body": "Every party row has an actions menu with View details, Edit role, and Remove. For a default party (client, broker or insured from the policy) the middle item is Edit reference number instead, because its role can't be changed.",
+      "expectedAfterClick": "Opens the row's action menu. Edit role opens a single-choice list of claim roles and the Reference number field.",
       "direction": "left"
     }
   ],
@@ -18,7 +18,7 @@
     {
       "id": "AC-01",
       "statement": "Every party row has an Edit role action",
-      "plainStatement": "Each party on the FNOL Parties step has an actions menu including **Edit role**, for assigning or changing that party's role.",
+      "plainStatement": "Each party on the FNOL Parties step has an actions menu including **Edit role**, for assigning or changing that party's role. Default parties show **Edit reference number** instead (see AC-03).",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -32,7 +32,10 @@
         ],
         "stateOverrides": {
           "fnolStateOverride": {
-            "selectedPolicy": { "policyId": "POL-2024-001", "policyNumber": "POL-2024-001" }
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
           }
         }
       },
@@ -40,13 +43,138 @@
         "description": "Party row actions menu with Edit role",
         "visualCues": [
           "Kebab action button per party row",
-          "Menu includes View details, Edit role, Remove"
+          "Menu includes View details, Edit role (or Edit reference number for a default party), Remove"
         ]
       },
       "howToTest": {
         "route": "/fnol/parties",
         "trigger": "Click a party row's actions kebab",
         "expectedResult": "Menu opens with Edit role available"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "A party has exactly one claim role, picked from the Jira list",
+      "plainStatement": "**Edit role** shows the claim roles as a single-choice list (radio buttons): **Claimant, Claims Third Party, Lawyer, Loss Adjuster, Other**. Only one can be picked, as the Jira story says (\"only single Claim role for a specific party\"). The table column is called **Party role**.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed a selected policy so /fnol/parties doesn't redirect to /fnol/search",
+        "preconditions": [
+          {
+            "text": "A non-default party row (for example a claimant) is visible",
+            "page": "any",
+            "role": "setup"
+          },
+          {
+            "text": "Edit role dialog shows five radio options",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Edit role dialog",
+        "visualCues": [
+          "Title: Edit role",
+          "Five radio options in Jira order",
+          "One option selected",
+          "Reference number field below"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/parties",
+        "trigger": "Open a claimant's row menu, click Edit role, pick Lawyer, Save",
+        "expectedResult": "The row's Party role reads Lawyer"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "The role of a default party can't be changed",
+      "plainStatement": "Default parties come from the policy (Client, Broker, Insured). Their role is shown as read-only text with the line \"This party comes from the policy, so its role can't be changed.\" Only the reference number can be edited.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed a selected policy so /fnol/parties doesn't redirect to /fnol/search",
+        "preconditions": [
+          {
+            "text": "A default party row (for example the client) is visible",
+            "page": "any",
+            "role": "setup"
+          },
+          {
+            "text": "Dialog shows the role as text, not as options",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Edit reference number dialog for a default party",
+        "visualCues": [
+          "Menu item: Edit reference number",
+          "Party role shown as plain text",
+          "No role options"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/parties",
+        "trigger": "Open the client's row menu, click Edit reference number",
+        "expectedResult": "Role is read-only; only Reference number can be changed"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "A Reference number column sits after the Party role column",
+      "plainStatement": "The parties table has a **Reference number** column right after **Party role**. The handler can add or change it at any time from the row menu. Letters and numbers only, up to 35 characters. An empty value shows a dash. **NOTE:** the 35-character limit is a prototype choice; Jira gives no length.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Seed a selected policy so /fnol/parties doesn't redirect to /fnol/search",
+        "preconditions": [
+          {
+            "text": "Parties table visible",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Parties table and dialog",
+        "visualCues": [
+          "Columns: Party, Party role, Reference number, Clearance status",
+          "Reference number field in the dialog",
+          "Error 'Use letters and numbers only' for REF-1"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/parties",
+        "trigger": "Open a row's menu, Edit role or Edit reference number, type REF123, Save",
+        "expectedResult": "Reference number column shows REF123"
       }
     }
   ]

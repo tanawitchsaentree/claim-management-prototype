@@ -18,11 +18,11 @@
     {
       "id": "AC-01",
       "statement": "Eligible provider assignments show a Rate this adjuster action",
-      "plainStatement": "When a provider assignment is eligible for review, **Rate this adjuster** appears next to Send communication on that row.",
+      "plainStatement": "When a provider assignment is eligible for review, **Rate this adjuster** appears next to Send communication on that row.\n\n**NOTE [accepted-deviation]:** Jira says: \"Design the survey form layout, mapping fields from the existing Loss Adjuster Rating (Lead) (FINAL) reference form\". The prototype has one star rating and a comment box instead of that form. The screen differs from Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says: \"The survey should not be intrusive but must be visible enough to ensure completion by the claims handler\". The prototype decides on a quiet tertiary \"Rate this adjuster\" button on the row. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says: \"Target: medium & large losses (claims >100k, preferably all claims)\". The prototype drops the >100k target and shows the action on every eligible assignment. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses CLM-2024-001's existing provider assignments — no override needed",
+        "description": "Uses CLM-2024-001's existing provider assignments: no override needed",
         "preconditions": [
           {
             "text": "At least one provider row shows Rate this adjuster",

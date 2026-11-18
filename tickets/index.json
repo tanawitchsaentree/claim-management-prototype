@@ -10,19 +10,19 @@
       "id": "CHAMP-READY-CLOSE",
       "file": "ready-to-close.json",
       "module": "Claims",
-      "title": "Claim ready to close — all tasks done, all sections resolved"
+      "title": "Claim ready to close: all tasks done, all sections resolved (prototype demo preset, no Jira source)"
     },
     {
       "id": "CHAMP-CLOSE-SECTION",
       "file": "close-section.json",
       "module": "Claims",
-      "title": "Close Section — Pre-condition Validation & Lifecycle"
+      "title": "Close Section: Pre-condition Validation & Lifecycle"
     },
     {
       "id": "CHAMP-PRECLOSURE-CHECKLIST",
       "file": "champ-preclosure-checklist.json",
       "module": "Claims",
-      "title": "Pre-closure Checklist — Always-clickable Close Claim with status checklist"
+      "title": "Pre-closure Checklist: Always-clickable Close Claim with status checklist"
     },
     {
       "id": "BMPCC-11360",
@@ -40,7 +40,7 @@
       "id": "BMPCC-14435",
       "file": "bmpcc-14435.json",
       "module": "Claims",
-      "title": "Cross-domain closure validations — Litigation & Reserves deep check"
+      "title": "Cross-domain closure validations: Litigation, Reserves & Provider deep check"
     },
     {
       "id": "BMPCC-14437",
@@ -58,25 +58,25 @@
       "id": "BMPCC-219",
       "file": "bmpcc-219.json",
       "module": "FNOL",
-      "title": "Loss Location via CWB MFE"
+      "title": "Date attribute: Date of Loss, Date of Notification (plus CWB location, not from this ticket)"
     },
     {
       "id": "BMPCC-241",
       "file": "bmpcc-241.json",
       "module": "FNOL",
-      "title": "Orphan Claim — Notifier + Left-nav"
+      "title": "Orphan Claim: Notifier + Left-nav"
     },
     {
       "id": "BMPCC-11006",
       "file": "bmpcc-11006.json",
       "module": "FNOL",
-      "title": "Orphan Claim — Convert to Regular (one-click prefill, full walkthrough)"
+      "title": "Orphan Claim: Link policy to make it a regular claim"
     },
     {
       "id": "CHAMP-NO-LOSS-LOC",
       "file": "bmpcc-no-loss-location.json",
       "module": "FNOL",
-      "title": "Entities & Damages — Handling No Loss Location Selected"
+      "title": "Entities & Damages: Handling No Loss Location Selected"
     },
     {
       "id": "BMPCC-16104",
@@ -94,7 +94,7 @@
       "id": "BMPCC-17779",
       "file": "bmpcc-17779.json",
       "module": "Claims",
-      "title": "[UI/UX] Recovery Potential Flag — Dependency"
+      "title": "[UI/UX] Recovery Potential Flag (Descoped in Jira, prototype proposal)"
     },
     {
       "id": "BMPCC-14452",
@@ -106,7 +106,7 @@
       "id": "BMPCC-14453",
       "file": "bmpcc-14453.json",
       "module": "Claims",
-      "title": "[UX/UI] Provider Communication — Document Attachment / Send Communication via Email"
+      "title": "[UX/UI] Provider Communication: Document Attachment Design for Instruction Template"
     },
     {
       "id": "BMPCC-14831",
@@ -124,7 +124,7 @@
       "id": "BMPCC-17678",
       "file": "bmpcc-17678.json",
       "module": "Claims",
-      "title": "[FE] UI/UX QA Fixes — Approvals Widget & Approvals Journey"
+      "title": "[FE] UI/UX QA Fixes: Approvals Widget & Approvals Journey (items A to G)"
     },
     {
       "id": "BMPCC-12160",
@@ -136,13 +136,13 @@
       "id": "CHAMP-IMPACTED-POLICIES",
       "file": "champ-impacted-policies.json",
       "module": "FNOL",
-      "title": "Entities & Damages — Other impacted policies, and pulling their entities onto the claim"
+      "title": "Entities & Damages: Other impacted policies, and pulling their entities onto the claim"
     },
     {
       "id": "CHAMP-FINANCIAL-LOSS-ITEM",
       "file": "champ-financial-loss-item.json",
       "module": "Claims",
-      "title": "Damaged items — capture the peril and the working behind a financial loss"
+      "title": "Damaged items: capture the peril and the working behind a financial loss"
     },
     {
       "id": "BMPCC-19113",
@@ -197,6 +197,12 @@
       "file": "gg-8-tasks-and-bell.json",
       "module": "GG booking",
       "title": "GG 8 · Task manager and the bell: finding out"
+    },
+    {
+      "id": "GG-9-DASHBOARD",
+      "file": "gg-9-dashboard.json",
+      "module": "GG booking",
+      "title": "GG 9 · Dashboard: Global Genius problems on the Claims portfolio, and downtime"
     },
     {
       "id": "BMPCC-22395",

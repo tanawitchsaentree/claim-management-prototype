@@ -4,10 +4,7 @@
   "module": "Claims",
   "title": "Claim closure: open tasks block closure, bulk closure",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "overview",
-    "sections"
-  ],
+  "pages": ["overview", "sections"],
   "walkthroughSteps": [
     "Open tasks: a claim with open tasks cannot close. The Close claim window lists every open task with its type and domain, next to the other blockers (AC-01). Done, cancelled or deferred tasks do not block (AC-02). Automatic closure after the final payment uses the same rule and says so in a toast.",
     "Bulk closure: select sections on Section overview (or claims on Claims list), one Close action, one reason and one checklist tick, then a result per item (AC-03 to AC-07).",
@@ -17,7 +14,7 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Blocked claim closure lists every open task with its type and domain, together with the other blockers",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, with the Close claim window already open.\n\n**You see:** The blockers step. The open tasks card is expanded and lists both tasks one by one, each with **Type** and **Domain** (Review task from Recovery, Finance task from Reserves and payments), status, assignee and due date. The open section is listed as a second blocker in the same list.\n\n**Try:** Press **Go to Task manager** to see the tasks there.\n\nDecision: open tasks are a normal blocker card in the existing closure window (extended, not a new screen), expanded by default so no task hides behind a count. Wording: \"2 open tasks (Recovery, Reserves and payments) must be completed, cancelled or deferred\". No override (PO).",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, with the Close claim window already open.\n\n**You see:** The blockers step. The open tasks card is expanded and lists both tasks one by one, each with **Type** and **Domain** (Review task from Recovery, Finance task from Reserves and payments), status, assignee and due date. The open section is listed as a second blocker in the same list.\n\n**Try:** Press **Go to Task manager** to see the tasks there.\n\nDecision: open tasks are a normal blocker card in the existing closure window (extended, not a new screen), expanded by default so no task hides behind a count. Wording: \"2 open tasks (Recovery, Reserves and payments) must be completed, cancelled or deferred\". No override (PO).\n\n**NOTE [accepted-deviation]:** Jira scopes this story to manual closure (FR2) and bulk closure (FR4). The prototype also adds the open-task check to the automatic claim closure after the last section closes, which is outside this story. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -124,7 +121,7 @@
     {
       "id": "AC-02",
       "statement": "Completed, cancelled or deferred tasks no longer block closure",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, Close claim window open.\n\n**You see:** The pre-closure checklist straight away, with a new first row **No open tasks** ticked. The two extra tasks exist but one is **Cancelled** and one **Deferred**, so they do not count as open (epic BMPCC-21933 FR1).\n\n**Try:** Continue through reason and confirmation: the claim closes.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001, Close claim window open.\n\n**You see:** The pre-closure checklist straight away, with a new first row **No open tasks** ticked. The two extra tasks exist but one is **Cancelled** and one **Deferred**, so they do not count as open (epic BMPCC-21933 FR1).\n\n**Try:** Continue through reason and confirmation: the claim closes.\n\n**NOTE [accepted-deviation]:** Jira says open tasks block closure but says nothing about the checklist. The \"No open tasks\" first row in the pre-closure checklist is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -201,9 +198,7 @@
       },
       "expectedUI": {
         "description": "Checklist shows No open tasks as passed; closure can go ahead.",
-        "visualCues": [
-          "Checklist row: No open tasks (passed)"
-        ]
+        "visualCues": ["Checklist row: No open tasks (passed)"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
@@ -439,7 +434,7 @@
     {
       "id": "AC-06",
       "statement": "AC04 · Error state: a close that fails can be tried again",
-      "plainStatement": "**Opens:** Sections of CLM-2024-001, all four open, no blockers. Closing **Section 004 — Payment Demo** is set to fail once (prototype switch).\n\n**You see:** After closing all 4: **3 sections closed, 1 not closed**, Section 004 shows **Could not close: Something went wrong while closing. Nothing was changed, try again.**\n\n**Try:** **Try again for 1 section**: it closes, the result turns to 4 sections closed. Loading state: the spinner while checking and while closing.",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001, all four open, no blockers. Closing **Section 004: Payment Demo** is set to fail once (prototype switch).\n\n**You see:** After closing all 4: **3 sections closed, 1 not closed**, Section 004 shows **Could not close: Something went wrong while closing. Nothing was changed, try again.**\n\n**Try:** **Try again for 1 section**: it closes, the result turns to 4 sections closed. Loading state: the spinner while checking and while closing.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -563,10 +558,7 @@
       },
       "expectedUI": {
         "description": "Nothing-can-close state; no way to force it.",
-        "visualCues": [
-          "None of the selected sections can be closed yet",
-          "Only Cancel"
-        ]
+        "visualCues": ["None of the selected sections can be closed yet", "Only Cancel"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",

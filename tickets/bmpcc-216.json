@@ -5,23 +5,23 @@
   "targetClaim": "CL-2025-001",
   "pages": ["fnol-loss-info"],
   "walkthroughSteps": [
-    "Apply an AC — injects matching claims and lands on /fnol/loss-information already past the search step",
+    "Apply an AC: injects matching claims and lands on /fnol/loss-information already past the search step",
     {
       "targetId": "li-cause-of-loss",
       "title": "Cause of loss",
-      "body": "Together with Date of occurrence, this drives the duplicate check below — matching happens on policy + date + cause.",
+      "body": "Together with Date of occurrence, this drives the duplicate check below, matching happens on policy + date + cause.",
       "direction": "bottom"
     },
     {
       "targetId": "li-date-of-occurrence",
       "title": "Date of occurrence",
-      "body": "Changing this (or the cause above) re-fires the duplicate check on a ~1s debounce — a brief 'Checking for duplicate claims…' spinner shows first.",
+      "body": "Changing this (or the cause above) re-fires the duplicate check on a ~1s debounce, a brief 'Checking for duplicate claims…' spinner shows first.",
       "direction": "bottom"
     },
     {
       "targetId": "li-duplicate-banner",
       "title": "Duplicate warning",
-      "body": "Lists up to 3 matches — each claim ID is a real deep link (opens /claims/:id in a new tab, FNOL state stays intact on return). Past 3 matches, a 'Show all N duplicates' button opens a sortable table with every match. The banner is dismissible and never blocks the wizard's Next button.",
+      "body": "Lists up to 3 matches, each claim ID is a real deep link (opens /claims/:id in a new tab, FNOL state stays intact on return). Past 3 matches, a 'Show all N duplicates' button opens a sortable table with every match. The banner is dismissible and never blocks the wizard's Next button.",
       "direction": "bottom"
     }
   ],
@@ -36,7 +36,7 @@
         "description": "Inject CLM-DUP-001 matching POL-2024-001 + 2024-06-01 + cause 'fire'; seed FNOL policy",
         "preconditions": [
           {
-            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "text": "FNOL is past the search step, selected policy POL-2024-001",
             "page": "fnol-loss-info",
             "role": "setup",
             "hint": "Banner pre-selects the policy so the user lands on loss-information"
@@ -68,7 +68,7 @@
               "lossDate": "2024-06-01",
               "lossAmount": 25000,
               "currency": "EUR",
-              "description": "Seeded duplicate-test claim — fire damage at warehouse.",
+              "description": "Seeded duplicate-test claim: fire damage at warehouse.",
               "status": "Open",
               "priority": "medium",
               "lineOfBusiness": "Property",
@@ -121,14 +121,14 @@
     {
       "id": "AC-02",
       "statement": "Duplicate check fires automatically on cause + date change (debounced)",
-      "plainStatement": "The duplicate check *fires automatically* when **cause of loss** or **date of occurrence** changes, with a `1s debounce`. **NOTE [accepted-deviation]:** literal AC-02 said *date-only* trigger; implementation uses *cause+date* per DESIGN DECISION FNOL-DUP-4 (cause-aware narrowing avoids false positives). Treated as `done` — pending product sign-off.",
+      "plainStatement": "The duplicate check *fires automatically* when **cause of loss** or **date of occurrence** changes, with a `1s debounce`. **NOTE [accepted-deviation]:** literal AC-02 said *date-only* trigger; implementation uses *cause+date* per DESIGN DECISION FNOL-DUP-4 (cause-aware narrowing avoids false positives). Treated as `done`, pending product sign-off.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
-        "description": "Same as AC-01 — single duplicate seeded",
+        "description": "Same as AC-01: single duplicate seeded",
         "preconditions": [
           {
-            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "text": "FNOL is past the search step, selected policy POL-2024-001",
             "page": "fnol-loss-info",
             "role": "setup"
           },
@@ -186,7 +186,7 @@
         ]
       },
       "expectedUI": {
-        "description": "Loading indicator appears, then banner — no manual submit required",
+        "description": "Loading indicator appears, then banner, no manual submit required",
         "visualCues": [
           "While typing/changing fields, no banner is shown",
           "After ~1s debounce, 'Checking for duplicate claims…' appears briefly",
@@ -205,7 +205,7 @@
     {
       "id": "AC-03",
       "statement": "Each duplicate row shows claim ID, loss date, client name, status",
-      "plainStatement": "Each row in the duplicate list shows the **claim ID** (link), **loss date**, **client name**, and **status**. **NOTE [accepted-deviation]:** literal AC-03 also called for separate `claimNumber` and policy number columns; current preview row shows only the four fields above (`step-loss-information.component.html:42–43`). Treated as `done` — pending product sign-off on whether to add the extra columns.",
+      "plainStatement": "Each row in the duplicate list shows the **claim ID** (link), **loss date**, **client name**, and **status**. **NOTE [accepted-deviation]:** literal AC-03 also called for separate `claimNumber` and policy number columns; current preview row shows only the four fields above (`step-loss-information.component.html:42–43`). Treated as `done`, pending product sign-off on whether to add the extra columns.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
@@ -217,7 +217,7 @@
             "role": "tested-visible"
           },
           {
-            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "text": "FNOL is past the search step, selected policy POL-2024-001",
             "page": "fnol-loss-info",
             "role": "setup"
           }
@@ -284,19 +284,19 @@
     {
       "id": "AC-04",
       "statement": "Clicking a duplicate claim link opens it in a new tab",
-      "plainStatement": "The duplicate claim ID is a *deep-link* — clicking opens **/claims/:id** in a `new tab` (`target='_blank'` with `rel='noopener'`).",
+      "plainStatement": "The duplicate claim ID is a *deep-link*, clicking opens **/claims/:id** in a `new tab` (`target='_blank'` with `rel='noopener'`).\n\n**NOTE [accepted-deviation]:** Jira says: \"User should be able to branch out to the specific claim from the duplicate claim list.\" Opening it in a new tab is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
         "description": "Single duplicate to click",
         "preconditions": [
           {
-            "text": "Click CLM-DUP-001 in the banner — the existing claim opens in a new tab",
+            "text": "Click CLM-DUP-001 in the banner, the existing claim opens in a new tab",
             "page": "fnol-loss-info",
             "role": "tested-visible"
           },
           {
-            "text": "FNOL state still intact when returning — banner still visible",
+            "text": "FNOL state still intact when returning, banner still visible",
             "page": "fnol-loss-info",
             "role": "tested-visible"
           }
@@ -362,14 +362,14 @@
     {
       "id": "AC-05",
       "statement": "Banner is dismissible and the user can proceed",
-      "plainStatement": "The banner has a **close (×)** button — dismissing it lets the user *continue the FNOL flow* without resolving the duplicate. (Proceed is implicit via the wizard's Next/Continue button.)",
+      "plainStatement": "The banner has a **close (×)** button, dismissing it lets the user *continue the FNOL flow* without resolving the duplicate. (Proceed is implicit via the wizard's Next/Continue button.)",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
         "description": "Single duplicate so banner appears and can be dismissed",
         "preconditions": [
           {
-            "text": "Click × on the banner — banner disappears",
+            "text": "Click × on the banner, banner disappears",
             "page": "fnol-loss-info",
             "role": "tested-visible"
           },
@@ -441,7 +441,7 @@
     {
       "id": "AC-06",
       "statement": "When more than 3 duplicates match, 'Show all' opens a modal listing them",
-      "plainStatement": "If **>3 duplicates** match, the banner shows the *first 3* and a `Show all N duplicates` button — clicking it opens a modal with a *sortable table* listing every duplicate.",
+      "plainStatement": "If **>3 duplicates** match, the banner shows the *first 3* and a `Show all N duplicates` button: clicking it opens a modal with a *sortable table* listing every duplicate.\n\n**NOTE [accepted-deviation]:** Jira says the notification should \"include a list of all existing claims\". The \"Show all N duplicates\" button and modal for more than 3 matches are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-loss-info",
       "buildStatus": "done",
       "setup": {
@@ -453,13 +453,13 @@
             "role": "tested-visible"
           },
           {
-            "text": "Click 'Show all' — modal lists CLM-DUP-001 through CLM-DUP-004",
+            "text": "Click 'Show all', modal lists CLM-DUP-001 through CLM-DUP-004",
             "page": "fnol-loss-info",
             "role": "tested-visible",
             "hint": "Modal table is sortable on each column header"
           },
           {
-            "text": "FNOL is past the search step — selected policy POL-2024-001",
+            "text": "FNOL is past the search step, selected policy POL-2024-001",
             "page": "fnol-loss-info",
             "role": "setup"
           }

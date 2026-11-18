@@ -4,11 +4,7 @@
   "module": "Claims",
   "title": "Manual reassignment of claims",
   "targetClaim": "CLM-2024-025",
-  "pages": [
-    "overview",
-    "fnol-summary",
-    "any"
-  ],
+  "pages": ["overview", "fnol-summary", "any"],
   "walkthroughSteps": [
     "Your own claim: Reassign beside Assigned Claim handler. Pick a handler or a team queue, confirm, toast.",
     "A colleague's claim in your team: Take claim. Another team's claim, or one above your authority: the line says why and who can move it.",
@@ -20,7 +16,7 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Reassign during registration, before completing",
-      "plainStatement": "**Opens:** FNOL Summary step as Mara Mustermann.\n\n**You see:** In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.\n\n**Try:** Press Change handler, pick Lena Zorn (or A team queue), Choose: the line shows Lena with \"They will be notified when you submit\" and **Keep it myself** to undo. Submit: the new claim is Lena's.\n\nDecision: by default a new claim goes to the handler registering it (rule-based routing comes with a later epic). No confirm here: nothing is saved before Submit, and Submit is the commit (DESIGN DECISION RA-FNOL-1).",
+      "plainStatement": "**Opens:** FNOL Summary step as Mara Mustermann.\n\n**You see:** In General configurations: **Claim handler: Mara Mustermann (you)** with **Change handler**.\n\n**Try:** Press Change handler, pick Lena Zorn (or A team queue), Choose: the line shows Lena with \"They will be notified when you submit\" and **Keep it myself** to undo. Going Back a step and returning keeps the pick; a new notification starts from you again. Submit: every claim the notification creates is Lena's, the reason is in its activity log, the toast says \"Assigned to Lena Zorn. They have been notified.\" and the line reads **Lena Zorn** \"They have been notified.\" without Change handler.\n\nDecision: by default a new claim goes to the handler registering it (rule-based routing comes with a later epic). No confirm here: nothing is saved before Submit, and Submit is the commit (DESIGN DECISION RA-FNOL-1).\n\n**NOTE [accepted-deviation]:** Jira AC01 only asks how the handler selects a different handler or team before completing registration. The \"Keep it myself\" undo link is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "fnol-summary",
       "buildStatus": "done",
       "setup": {
@@ -63,7 +59,7 @@
     {
       "id": "AC-02",
       "statement": "AC02 · Reassign your own claim to an eligible handler or team, with confirm",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara Mustermann (her claim).\n\n**You see:** **Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\".\n\n**Try:** Pick Lena Zorn, add a reason, press Reassign: a confirm pops up over the dialog, Yes, reassign: toast, the handler field and activity log update.\n\nDecision: handler or team is one radio choice above one list; people who can't take the claim stay visible with the reason (DESIGN DECISION RA-PICK-1). Eligible = any handler in a team, or any team queue. Over 500,000, handlers without the authority are greyed out \"Above their handling authority\".",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-025 as Mara Mustermann (her claim).\n\n**You see:** **Reassign** beside Assigned Claim handler. The dialog has **A handler / A team queue**, a search, and the list. Sabine Rand is greyed out: \"Out of office until 28-11-2026\".\n\n**Try:** Pick Lena Zorn, add a reason, press Reassign: a confirm pops up over the dialog, Yes, reassign: toast, the handler field and activity log update.\n\nDecision: handler or team is one radio choice above one list; people who can't take the claim stay visible with the reason (DESIGN DECISION RA-PICK-1). Eligible = any handler in a team, or any team queue. Over 500,000, handlers without the authority are greyed out \"Above their handling authority\".\n\n**NOTE [accepted-deviation]:** Jira says \"which handlers and teams are eligible, need to be confirmed with the Product Owner\". The prototype decides: any handler in a team, or any team queue. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about out-of-office or a reason. Greying out out-of-office handlers, and the reason field that is written to the activity log, are made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -100,7 +96,7 @@
     {
       "id": "AC-03",
       "statement": "AC03 · Take a claim from a colleague",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-022 (Nina Feld's) as Mara Mustermann, same team.\n\n**You see:** **Take claim** instead of Reassign.\n\n**Try:** Press Take claim, confirm \"will move from Nina Feld to you\": toast \"Claim taken\", handler is now Mara, and the claim is in Mara's claims. Nina gets \"was moved to Mara Mustermann\".",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-022 (Nina Feld's) as Mara Mustermann, same team.\n\n**You see:** **Take claim** instead of Reassign.\n\n**Try:** Press Take claim, confirm \"will move from Nina Feld to you\": toast \"Claim taken\", handler is now Mara, and the claim is in Mara's claims. Nina gets \"was moved to Mara Mustermann\".\n\n**NOTE [accepted-deviation]:** Jira AC03 asks for \"the case where it is not allowed for their authority or role\" but does not say who may take what. The prototype decides a handler can only take a claim held by their own team. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -124,9 +120,7 @@
       },
       "expectedUI": {
         "description": "**Take claim** instead of Reassign.",
-        "visualCues": [
-          "**Take claim** instead of Reassign."
-        ]
+        "visualCues": ["**Take claim** instead of Reassign."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-022/overview",
@@ -137,7 +131,7 @@
     {
       "id": "AC-04",
       "statement": "AC03 · Not allowed: another team's claim",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-009 (Georg Stein, Marine team) as Mara Mustermann.\n\n**You see:** No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\"\n\n**Try:** Compare with AC-05 (authority).\n\nDecision: you can reassign your own claims; a Claims Manager also anything their team holds; KCM anything open. A handler can take a claim held by their own team, within their authority (DESIGN DECISION RA-AUTH-2 / RA-AUTH-3).",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-009 (Georg Stein, Marine team) as Mara Mustermann.\n\n**You see:** No Take claim. Instead, under the handler: \"Held by the Marine and liability team. Ask Marcus Fehr (team manager) to move it to you.\"\n\n**Try:** Compare with AC-05 (authority).\n\nDecision: you can reassign your own claims; a Claims Manager also anything their team holds; KCM anything open. A handler can take a claim held by their own team, within their authority (DESIGN DECISION RA-AUTH-2 / RA-AUTH-3).\n\n**NOTE [accepted-deviation]:** Jira does not say who may reassign what. The prototype decides own claims for a handler, anything the team holds for a Claims Manager, and anything open for KCM. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -211,7 +205,7 @@
     {
       "id": "AC-06",
       "statement": "AC04 · Previous and new handler are notified, both worklists update",
-      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Manager).\n\n**You see:** Team workload with Nina Feld's claims.\n\n**Try:** View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > confirm (\"will move from Nina Feld to Mara Mustermann. Mara Mustermann and Nina Feld will be notified\"). Switch to Mara: the bell has \"CLM-2024-022 was assigned to you by Tobias Grau\" under Needs you, and Claims portfolio (My claims) lists it at the top. Switch back to Tobias: Nina's count is one lower, Mara's one higher. The handler who loses a claim gets \"CLM-... was moved to ... by ...\" under Someone else is on it.\n\nBulk moves send one notification per person (\"3 claims were assigned to you\"), not one per claim. A team queue target notifies the team manager. Notifications live for the browser session only (prototype).",
+      "plainStatement": "**Opens:** Dashboard as Tobias Grau (Manager).\n\n**You see:** Team workload with Nina Feld's claims.\n\n**Try:** View claims of Nina Feld, row menu on CLM-2024-022 > Reassign > Mara Mustermann > confirm (\"will move from Nina Feld to Mara Mustermann. Mara Mustermann and Nina Feld will be notified\"). Switch to Mara: the bell has \"CLM-2024-022 was assigned to you by Tobias Grau\" under Needs you, and Claims portfolio (My claims) lists it at the top. Switch back to Tobias: Nina's count is one lower, Mara's one higher. The handler who loses a claim gets \"CLM-... was moved to ... by ...\" under Someone else is on it.\n\nBulk moves send one notification per person (\"3 claims were assigned to you\"), not one per claim. A team queue target notifies the team manager. Notifications live for the browser session only (prototype).\n\n**NOTE [accepted-deviation]:** Jira AC04 asks to notify the previous and the new handler. Notifying the team manager when a claim moves to a team queue is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -235,9 +229,7 @@
       },
       "expectedUI": {
         "description": "Team workload with Nina Feld's claims.",
-        "visualCues": [
-          "Team workload with Nina Feld's claims."
-        ]
+        "visualCues": ["Team workload with Nina Feld's claims."]
       },
       "howToTest": {
         "route": "/dashboard",
@@ -408,7 +400,7 @@
     {
       "id": "AC-11",
       "statement": "Bulk reassignment before leave (open question)",
-      "plainStatement": "**Opens:** Claims list filtered to your claims, as Mara.\n\n**You see:** Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note.\n\n**Try:** Reassign to Lena: toast \"5 claims reassigned\", the list refreshes, Lena gets one notification.\n\nDecision: bulk reassignment is in scope on the claims list, using the same dialog and rules; a foreign claim in the selection is skipped, not a blocker (DESIGN DECISION RA-BULK-1).",
+      "plainStatement": "**Opens:** Claims list filtered to your claims, as Mara.\n\n**You see:** Tick claims (or Select all), press Reassign: the dialog lists them in a table. Selected claims that aren't yours are left out with a note.\n\n**Try:** Reassign to Lena: toast \"5 claims reassigned\", the list refreshes, Lena gets one notification.\n\nDecision: bulk reassignment is in scope on the claims list, using the same dialog and rules; a foreign claim in the selection is skipped, not a blocker (DESIGN DECISION RA-BULK-1).\n\n**NOTE [accepted-deviation]:** Jira says: \"Whether bulk reassignment is in scope ... need to be confirmed with the Product Owner\". The prototype decides bulk reassignment is in scope on the claims list. Not in Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {

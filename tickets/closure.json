@@ -5,33 +5,33 @@
   "targetClaim": "CLM-2024-001",
   "pages": ["overview", "sections"],
   "walkthroughSteps": [
-    "Land on /claims/CLM-2024-001/overview — status chip reads 'Open'",
+    "Source: partly epic BMPCC-14434 (Close Claim behaviour follows BMPCC-16284). Land on /claims/CLM-2024-001/overview: status chip reads 'Open'",
     {
       "targetId": "co-close-claim-button",
       "title": "Close Claim",
-      "body": "Always clickable (superseded the older disabled/tooltip behavior — see CHAMP-PRECLOSURE-CHECKLIST). With blockers present it opens on a Blockers step; with none, it skips straight to the checklist.",
+      "body": "Always clickable (superseded the older disabled/tooltip behavior, see CHAMP-PRECLOSURE-CHECKLIST). With blockers present it opens on a Blockers step; with none, it skips straight to the checklist.",
       "direction": "top"
     },
     {
       "targetId": "ccm-checklist",
       "title": "Pre-closure Checklist",
-      "body": "7 system-validated conditions must all pass — sections, payments, bills, recoveries & deductibles, reserves, litigation, reports.",
+      "body": "10 system-validated rows must all pass: open tasks, sections, payments, bills, recovery potential, recovery case, recoveries & deductibles, reserves, litigation, reports.",
       "direction": "top"
     },
     {
       "targetId": "ccm-reason-dropdown",
       "title": "Closure reason",
-      "body": "Required. Submitting the modal without picking one surfaces an inline validation error right here.",
+      "body": "Required. Continue stays disabled until a reason is picked; leaving the field empty shows 'Closure reason is required.'",
       "direction": "top"
     },
-    "Continue through Retention → Confirmation → 'Yes — Close Claim': the overview status chip updates to 'Closed', a closure panel appears below the header with date/reason/handler, and the Close Claim button disappears from the right-strip",
-    "Reload the page — closed state persists via sessionStorage hydration, no flash of 'Open' before it settles"
+    "Continue through Retention → Confirmation → 'Yes: Close Claim': the overview status chip updates to 'Closed', a closure panel appears below the header with date/reason/handler, and the Close Claim button disappears from the right-strip",
+    "Reload the page: closed state persists via sessionStorage hydration, no flash of 'Open' before it settles"
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Closure button disabled when open tasks remain",
-      "plainStatement": "**Close Claim** button is `disabled` *when any task is still open* on this claim.",
+      "statement": "Close Claim opens the Blockers step when any task is still open",
+      "plainStatement": "Source: partly epic BMPCC-14434, Close Claim behaviour from BMPCC-16284.\n\n**Close Claim** is always clickable. When any task is still open, the popup opens at **Close Claim: Blockers** and lists *5 open tasks (...) must be completed, cancelled or deferred*. The footer has only **Cancel**, so the claim cannot be closed from here.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -44,7 +44,7 @@
             "hint": "Visible in Pending tasks widget on overview"
           },
           {
-            "text": "Close Claim button is greyed out and disabled",
+            "text": "Close Claim opens the popup at the Blockers step",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Hover to see tooltip: 'Cannot close: 5 pending task(s)'"
@@ -76,11 +76,12 @@
         }
       },
       "expectedUI": {
-        "description": "Close Claim button is disabled; tooltip shows pending task count",
+        "description": "Close Claim opens the popup at the Blockers step",
         "visualCues": [
-          "Close Claim button appears greyed out",
-          "Tooltip on hover: 'Cannot close: 5 pending task(s)'",
-          "Clicking button does nothing — no modal opens"
+          "Close Claim button is enabled",
+          "Popup title 'Close Claim: Blockers'",
+          "Blocker card: *5 open tasks (...) must be completed, cancelled or deferred*",
+          "Only Cancel in the footer"
         ]
       },
       "expectedOutcome": {
@@ -96,14 +97,14 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Hover over the Close Claim button in the right-strip",
-        "expectedResult": "Button is disabled and tooltip shows open task count"
+        "trigger": "Click the Close Claim button",
+        "expectedResult": "Popup opens at the Blockers step listing *5 open tasks (...) must be completed, cancelled or deferred*; only Cancel"
       }
     },
     {
       "id": "AC-02",
-      "statement": "Closure button disabled when open sections remain",
-      "plainStatement": "**Close Claim** button is `disabled` *when any section is still open* — even if all tasks are done.",
+      "statement": "Close Claim opens the Blockers step when any section is still open, even if all tasks are done",
+      "plainStatement": "**Close Claim** is always clickable. When any section is still open, even if all tasks are done, the popup opens at **Close Claim: Blockers** and lists *3 open section(s) must be closed before claim closure*. The footer has only **Cancel**, so the claim cannot be closed from here.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -116,7 +117,7 @@
             "hint": "Visible in Sections widget on overview"
           },
           {
-            "text": "Close Claim button is greyed out and disabled",
+            "text": "Close Claim opens the popup at the Blockers step",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Hover to see tooltip: 'Cannot close: 3 open section(s)'"
@@ -150,11 +151,12 @@
         }
       },
       "expectedUI": {
-        "description": "Close Claim button is disabled; tooltip shows open section count",
+        "description": "Close Claim opens the popup at the Blockers step",
         "visualCues": [
-          "Close Claim button appears greyed out",
-          "Tooltip on hover: 'Cannot close: 3 open section(s)'",
-          "Clicking button does nothing — no modal opens"
+          "Close Claim button is enabled",
+          "Popup title 'Close Claim: Blockers'",
+          "Blocker card: *3 open section(s) must be closed before claim closure*",
+          "Only Cancel in the footer"
         ]
       },
       "expectedOutcome": {
@@ -177,14 +179,14 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Hover over the Close Claim button in the right-strip",
-        "expectedResult": "Button is disabled and tooltip shows open section count"
+        "trigger": "Click the Close Claim button",
+        "expectedResult": "Popup opens at the Blockers step listing *3 open section(s) must be closed before claim closure*; only Cancel"
       }
     },
     {
       "id": "AC-03",
-      "statement": "Closure button disabled when both tasks and sections are open",
-      "plainStatement": "**Close Claim** is `disabled` *when both tasks and sections are open* — tooltip lists both blockers.",
+      "statement": "Close Claim opens the Blockers step when both tasks and sections are open",
+      "plainStatement": "**Close Claim** is always clickable. When both tasks and sections are open, the popup opens at **Close Claim: Blockers** and lists both the open tasks and the open sections blockers. The footer has only **Cancel**, so the claim cannot be closed from here.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -203,7 +205,7 @@
             "hint": "Visible in Sections widget on overview"
           },
           {
-            "text": "Close Claim button is disabled — tooltip shows both blockers",
+            "text": "Close Claim opens the popup at the Blockers step",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Hover tooltip: 'Cannot close: 5 pending task(s), 3 open section(s)'"
@@ -230,11 +232,12 @@
         }
       },
       "expectedUI": {
-        "description": "Close Claim button disabled; tooltip lists both task and section blockers",
+        "description": "Close Claim opens the popup at the Blockers step",
         "visualCues": [
-          "Close Claim button appears greyed out",
-          "Tooltip shows both task and section blocker counts",
-          "No modal opens on click"
+          "Close Claim button is enabled",
+          "Popup title 'Close Claim: Blockers'",
+          "Blocker card: both the open tasks and the open sections blockers",
+          "Only Cancel in the footer"
         ]
       },
       "expectedOutcome": {
@@ -250,24 +253,24 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Hover over the Close Claim button",
-        "expectedResult": "Tooltip shows combined blocker summary"
+        "trigger": "Click the Close Claim button",
+        "expectedResult": "Popup opens at the Blockers step listing both the open tasks and the open sections blockers; only Cancel"
       }
     },
     {
       "id": "AC-04",
-      "statement": "Closure modal opens when all blockers resolved; form validates required fields",
-      "plainStatement": "When all blockers are resolved, **Close Claim** becomes `enabled` and the modal opens — *empty form submit shows validation errors*.",
+      "statement": "With no blockers the popup opens at the checklist; the reason is required",
+      "plainStatement": "When nothing blocks, **Close Claim** opens the popup at **Close Claim: Pre-closure Checklist** with every row green. **Continue** leads to **Close Claim: Reason & Retention**, where Continue stays disabled until a **Closure reason** is picked; leaving it empty shows *Closure reason is required.*\n\n**NOTE [accepted-deviation]:** BMPCC-14434 lists 3 closure reasons: \"Claim Finalised / Claim Not Pursued / Claim Rejected (OE-configurable)\". The dropdown offers only Claim Finalised and Claim Not Pursued. The screen differs from Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "All tasks done, all sections closed — claim ready for closure",
+        "description": "All tasks done, all sections closed, claim ready for closure",
         "preconditions": [
           {
             "text": "Close Claim button is enabled (not greyed out)",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "No tooltip appears — button is active"
+            "hint": "No tooltip appears: button is active"
           },
           {
             "text": "Clicking button opens the closure modal",
@@ -306,16 +309,19 @@
             "SEC-001": "Closed"
           }
         },
-        "postLand": [{ "kind": "overview.openClosureModal" }]
+        "postLand": [
+          {
+            "kind": "overview.openClosureModal"
+          }
+        ]
       },
       "expectedUI": {
-        "description": "Closure modal opens; submitting with empty fields shows validation errors",
+        "description": "Popup opens at the checklist; the reason step needs a reason",
         "visualCues": [
           "Close Claim button is enabled",
-          "Clicking button opens a multi-step modal",
-          "Step 1 skipped (no blockers) — lands on step 2 (reason)",
-          "Submitting with no reason selected shows inline error",
-          "Error clears when a reason is selected"
+          "Step 1 skipped (no blockers), lands on Step 2, the Pre-closure Checklist",
+          "Step 3 Continue disabled until a reason is picked",
+          "'Closure reason is required.' when the field is left empty"
         ]
       },
       "expectedOutcome": {
@@ -337,8 +343,8 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Click the Close Claim button, then click Confirm without selecting a reason",
-        "expectedResult": "Validation error appears below the reason dropdown"
+        "trigger": "Click Close Claim, Continue on the checklist, then touch and leave the Closure reason empty",
+        "expectedResult": "Continue stays disabled and 'Closure reason is required.' shows under the dropdown"
       }
     },
     {
@@ -348,13 +354,13 @@
       "page": "overview",
       "buildStatus": "done",
       "setup": {
-        "description": "All tasks done, all sections closed — claim ready for closure",
+        "description": "All tasks done, all sections closed, claim ready for closure",
         "preconditions": [
           {
             "text": "Close Claim button is enabled",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Button is active — click to open closure modal"
+            "hint": "Button is active: click to open closure modal"
           },
           {
             "text": "After Confirm: status chip changes to 'Closed'",
@@ -393,7 +399,12 @@
             "SEC-001": "Closed"
           }
         },
-        "postLand": [{ "kind": "overview.confirmClosure", "reason": "Claim Finalised" }]
+        "postLand": [
+          {
+            "kind": "overview.confirmClosure",
+            "reason": "Claim Finalised"
+          }
+        ]
       },
       "expectedUI": {
         "description": "After confirmation: status chip shows Closed, closure panel appears",
@@ -423,7 +434,7 @@
     {
       "id": "AC-06",
       "statement": "Closed claim shows read-only closure panel; no closure button visible",
-      "plainStatement": "A `Closed` claim shows a *read-only closure panel* — **no Close Claim button** is rendered.",
+      "plainStatement": "A `Closed` claim shows a *read-only closure panel*, **no Close Claim button** is rendered.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -483,7 +494,10 @@
               "status": "Closed",
               "closureDate": "2024-02-28",
               "closureReason": "Claim Finalised",
-              "closedBy": { "userId": "u1", "name": "Leonie Fischer" }
+              "closedBy": {
+                "userId": "u1",
+                "name": "Leonie Fischer"
+              }
             }
           }
         }
@@ -511,14 +525,14 @@
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
-        "trigger": "Observe the overview page — no action needed",
+        "trigger": "Observe the overview page: no action needed",
         "expectedResult": "Closure panel visible with all 3 fields; no close button"
       }
     },
     {
       "id": "AC-07",
       "statement": "Closed state persists on page reload via sessionStorage",
-      "plainStatement": "`Closed` state *persists after page reload* via `sessionStorage` — no flash of open state.",
+      "plainStatement": "`Closed` state *persists after page reload* via `sessionStorage`, no flash of open state.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
@@ -566,13 +580,16 @@
               "status": "Closed",
               "closureDate": "2024-02-28",
               "closureReason": "Claim Finalised",
-              "closedBy": { "userId": "u1", "name": "Leonie Fischer" }
+              "closedBy": {
+                "userId": "u1",
+                "name": "Leonie Fischer"
+              }
             }
           }
         }
       },
       "expectedUI": {
-        "description": "After F5 reload, page still shows Closed state — no data loss",
+        "description": "After F5 reload, page still shows Closed state, no data loss",
         "visualCues": [
           "Closure panel still visible after reload",
           "Status chip still reads 'Closed'",
@@ -594,7 +611,7 @@
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Apply this setup, then press F5 to reload the page",
-        "expectedResult": "Closed state persists — no revert to Open"
+        "expectedResult": "Closed state persists: no revert to Open"
       }
     }
   ]

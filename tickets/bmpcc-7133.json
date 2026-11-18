@@ -10,7 +10,7 @@
       "targetId": "ld-policy-limits",
       "title": "Policy limits",
       "body": "Policy limits are shown per type and amount here, with Deductibles listed separately below.",
-      "expectedAfterClick": "No interaction here — this step is pointing at the section itself. A claim/section level toggle above switches which level's limits and deductibles are shown.",
+      "expectedAfterClick": "No interaction here: this step is pointing at the section itself. A claim/section level toggle above switches which level's limits and deductibles are shown.",
       "direction": "bottom"
     }
   ],
@@ -18,11 +18,11 @@
     {
       "id": "AC-01",
       "statement": "Policy limits and deductibles are shown at both claim and section level",
-      "plainStatement": "The Limits & Deductibles page shows **Policy limits** and **Deductibles** as separate sections, with a level toggle to switch between claim-level and section-level values.",
+      "plainStatement": "The Limits & Deductibles page shows **Policy limits** and **Deductibles** as separate sections, with a level toggle to switch between claim-level and section-level values.\n\n**NOTE [accepted-deviation]:** Jira says the original claim-level columns must be kept: \"Party, Damage, Limit / Deductibles, Applicable to, Amount, Recoverable\". The Party, Damage, Applicable to and Recoverable columns are missing. The screen differs from Jira, pending product sign-off.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses CLM-2024-001's existing limits/deductibles data — no override needed",
+        "description": "Uses CLM-2024-001's existing limits/deductibles data: no override needed",
         "preconditions": [
           {
             "text": "Policy limits section visible with a level toggle",

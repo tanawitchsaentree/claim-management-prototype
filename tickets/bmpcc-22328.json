@@ -4,11 +4,7 @@
   "module": "Claims",
   "title": "Select all sections (close/reopen), section date of loss, Type of coverage",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "sections",
-    "overview",
-    "fnol-entities-damages"
-  ],
+  "pages": ["sections", "overview", "fnol-entities-damages"],
   "walkthroughSteps": [
     "Section overview: tick sections (or select all), then Close or Reopen them in one go (AC-01). Closing several is the bulk closure of BMPCC-22660.",
     "Claim overview, Reopen claim: select all or any section, then a confirm step (AC-02).",
@@ -19,7 +15,7 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Section overview: select all or any section, then close or reopen exactly the selected ones",
-      "plainStatement": "**Opens:** Sections of CLM-2024-001 (1 open section, 3 closed).\n\n**You see:** A checkbox on every section row and a **select all** checkbox in the table header.\n\n**Try:** Tick select all: a grey bar says **4 sections selected** with **Reopen 3 sections** and **Close 1 section**. Untick one closed section: the bar changes to **Reopen 2 sections**. Press it: the Reopen window lists exactly those 2 and asks for one reason; after **Reopen 2 sections** a toast names them. **Clear selection** empties the bar.\n\nDecision: one selection drives both actions; each button only takes the sections it applies to and says how many. One section uses the existing single windows, two or more the bulk ones (bulk closure is BMPCC-22660). Selection is off when the claim is closed.",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001 (1 open section, 3 closed).\n\n**You see:** A checkbox on every section row and a **select all** checkbox in the table header.\n\n**Try:** Tick select all: a grey bar says **4 sections selected** with **Reopen 3 sections** and **Close 1 section**. Untick one closed section: the bar changes to **Reopen 2 sections**. Press it: the Reopen window lists exactly those 2 and asks for one reason; after **Reopen 2 sections** a toast names them. **Clear selection** empties the bar.\n\nDecision: one selection drives both actions; each button only takes the sections it applies to and says how many. One section uses the existing single windows, two or more the bulk ones (bulk closure is BMPCC-22660). Selection is off when the claim is closed.\n\n**NOTE [accepted-deviation]:** Jira AC01 asks for a select-all control and close/reopen of exactly the selected sections. The prototype decides one shared Close/Reopen bar for the selection, and turns selection off when the claim is closed. Not in Jira, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -131,7 +127,7 @@
     {
       "id": "AC-03",
       "statement": "AC03 · Section date of loss: shown per section, edited per section, follows the claim unless changed",
-      "plainStatement": "**Opens:** Sections of CLM-2024-001. **Property Damage — Warehouse & Forklift** has its own date of loss (20-01-2024); the claim's is 14-01-2024.\n\n**You see:** A **Date of loss** column. That section reads 20-01-2024 with \"Claim: 14-01-2024\" under it; the others read 14-01-2024 (they follow the claim).\n\n**Try:** Section menu, **Change date of loss**: choose **Same as the claim** or **A different date for this section** (no future dates). **Continue** shows the Field / Original / Updated confirm (same as Edit claim); **Confirm changes** saves and a toast confirms. The section detail panel (menu, Edit) shows the same date with \"Same as claim\" or \"Own date\" and a **Change** link.\n\nDecision: unset means the section follows the claim, also when Edit claim changes the claim's date later; a section only keeps its own date when a handler sets one. Picking the claim's date again goes back to following it. Entities without their own date start from their section's date.",
+      "plainStatement": "**Opens:** Sections of CLM-2024-001. **Property Damage: Warehouse & Forklift** has its own date of loss (20-01-2024); the claim's is 14-01-2024.\n\n**You see:** A **Date of loss** column. That section reads 20-01-2024 with \"Claim: 14-01-2024\" under it; the others read 14-01-2024 (they follow the claim).\n\n**Try:** Section menu, **Change date of loss**: choose **Same as the claim** or **A different date for this section** (no future dates). **Continue** shows the Field / Original / Updated confirm (same as Edit claim); **Confirm changes** saves and a toast confirms. The section detail panel (menu, Edit) shows the same date with \"Same as claim\" or \"Own date\" and a **Change** link.\n\nDecision: unset means the section follows the claim, also when Edit claim changes the claim's date later; a section only keeps its own date when a handler sets one. Picking the claim's date again goes back to following it. Entities without their own date start from their section's date.\n\n**NOTE [accepted-deviation]:** Jira AC03 asks to show \"how it relates to the claim-level DOL\" but does not say how. The prototype decides \"Same as claim\" / \"Own date\": a section follows the claim unless a handler sets its own date. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about entity dates. Entities without their own date starting from their section date is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "sections",
       "buildStatus": "done",
       "setup": {
@@ -209,10 +205,7 @@
       },
       "expectedUI": {
         "description": "Label is Type of coverage in the table and the detail panel.",
-        "visualCues": [
-          "Column header: Type of coverage",
-          "Entity detail: Type of coverage"
-        ]
+        "visualCues": ["Column header: Type of coverage", "Entity detail: Type of coverage"]
       },
       "howToTest": {
         "route": "/fnol/entities-damages",
@@ -239,9 +232,7 @@
       },
       "expectedUI": {
         "description": "Type of coverage column on every section row.",
-        "visualCues": [
-          "Type of coverage column"
-        ]
+        "visualCues": ["Type of coverage column"]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/sections",

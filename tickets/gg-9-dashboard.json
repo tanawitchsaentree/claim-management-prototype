@@ -1,0 +1,648 @@
+{
+  "ticketId": "GG-9-DASHBOARD",
+  "epicId": "BMPCC-18348",
+  "module": "GG booking",
+  "title": "GG 9 · Dashboard: Global Genius problems on the Claims portfolio, and downtime",
+  "targetClaim": "CLM-2024-028",
+  "pages": [
+    "any",
+    "financial",
+    "overview"
+  ],
+  "walkthroughSteps": [
+    "A red triangle after the Claim ID in the Claims portfolio marks a claim with a Global Genius problem. Click it to see what broke and what to do.",
+    "Status reads Failed only when the claim itself couldn't be set up in Global Genius. A failed payment, reserve, recovery or section keeps Open.",
+    "Claims with a problem sort first, and the \"Global Genius issues\" chip shows only them.",
+    "While Global Genius is down there are no triangles for items waiting on it; one banner says there is nothing to do."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "GGD-01",
+      "statement": "Dashboard · Claim not set up in Global Genius: Failed",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann, Claims portfolio (My claims, last 30 days).\n\n**You see:** CLM-2024-028 is the first row. A red triangle right after the Claim ID, and the status reads **Failed**. The chip above the table says \"Global Genius issues: 1\". Click the triangle: a popover with a close X: **Global Genius processing failed.** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.\" \"Retry to process it again.\" and a **Retry** link.\n\n**Try:** Press Retry: the popover closes, a toast says it is retrying, the triangle goes and the status reads Open. After about 3 seconds the bell says the claim is now set up.\n\n**NOTE [accepted-deviation]:** The colleague's design shows Failed on any claim with a Global Genius problem. Agreed change 1: Failed only when the claim itself couldn't be set up; a failed payment, reserve, recovery or section keeps Open. DESIGN DECISION GG-DASH-2 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Claim not set up in Global Genius: Failed",
+        "preconditions": [
+          {
+            "text": "CLM-2024-028 is the first row. A red triangle right after the Claim ID, and the status reads **Failed**. The chip above the table says \"Global Genius issues: 1\". Click the triangle: a popover with a close X: **Global Genius processing failed.** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.\" \"Retry to process it again.\" and a **Retry** link.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann, Claims portfolio (My claims, last 30 days)."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-028",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggFailureMessage": "BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.",
+              "ggResendOutcome": "registered"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "CLM-2024-028 is the first row. A red triangle right after the Claim ID, and the status reads **Failed**. The chip above the table says \"Global Genius issues: 1\". Click the triangle: a popover with a close X: **Global Genius processing failed.** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.\" \"Retry to process it again.\" and a **Retry** link.",
+        "visualCues": [
+          "CLM-2024-028 is the first row. A red triangle right after the Claim ID, and the status reads **Failed**. The chip above the table says \"Global Genius issues: 1\". Click the triangle: a popover with a close X: **Global Genius processing failed.** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.\" \"Retry to process it again.\" and a **Retry** link."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Retry: the popover closes, a toast says it is retrying, the triangle goes and the status reads Open. After about 3 seconds the bell says the claim is now set up.",
+        "expectedResult": "CLM-2024-028 is the first row. A red triangle right after the Claim ID, and the status reads **Failed**. The chip above the table says \"Global Genius issues: 1\". Click the triangle: a popover with a close X: **Global Genius processing failed.** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.\" \"Retry to process it again.\" and a **Retry** link."
+      }
+    },
+    {
+      "id": "GGD-02",
+      "statement": "Claim Overview · Global Genius processing failed banner",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Claim Overview of CLM-2024-028.\n\n**You see:** Red banner at the top with the triangle: **Global Genius processing failed** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link.\n\n**Try:** Press Retry: the banner turns blue (\"Retrying\"), then green \"This claim is now set up in Global Genius.\" after about 3 seconds.",
+      "page": "overview",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Global Genius processing failed banner",
+        "preconditions": [
+          {
+            "text": "Red banner at the top with the triangle: **Global Genius processing failed** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link.",
+            "page": "overview",
+            "role": "tested-visible",
+            "hint": "Claim Overview of CLM-2024-028."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-028",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggFailureMessage": "BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.",
+              "ggResendOutcome": "registered"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Red banner at the top with the triangle: **Global Genius processing failed** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link.",
+        "visualCues": [
+          "Red banner at the top with the triangle: **Global Genius processing failed** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link."
+        ]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-028/overview",
+        "trigger": "Press Retry: the banner turns blue (\"Retrying\"), then green \"This claim is now set up in Global Genius.\" after about 3 seconds.",
+        "expectedResult": "Red banner at the top with the triangle: **Global Genius processing failed** \"Claim couldn't be processed in Global Genius: BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link."
+      }
+    },
+    {
+      "id": "GGD-03",
+      "statement": "Dashboard · Bank details wrong: Fix payment",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** CLM-2024-025: red triangle after the Claim ID, status stays **Open**. Popover: **Global Genius processing failed.** \"Payment to Rheinfeld Logistics AG not booked: the payee's bank details don't match what Global Genius has for them.\" and a **Fix payment** link. No Retry: the handler has to fix the data first.\n\n**Try:** Press Fix payment: the Payments list of CLM-2024-025 opens with that payment open and the reason shown. Tick \"I've corrected the bank details\", Send again, confirm. After the toast, back on the dashboard the triangle is gone.\n\n**NOTE [accepted-deviation]:** The colleague's design always offers Retry. Agreed change 2: when the handler has to fix data, the popover lists each broken item with a link straight to it, because a retry would fail again. DESIGN DECISION GG-DASH-2 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Bank details wrong: Fix payment",
+        "preconditions": [
+          {
+            "text": "CLM-2024-025: red triangle after the Claim ID, status stays **Open**. Popover: **Global Genius processing failed.** \"Payment to Rheinfeld Logistics AG not booked: the payee's bank details don't match what Global Genius has for them.\" and a **Fix payment** link. No Retry: the handler has to fix the data first.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-025",
+            "payments": {
+              "PMT-C-00000000-2026.025.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "fixWhat": "the bank details"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "CLM-2024-025: red triangle after the Claim ID, status stays **Open**. Popover: **Global Genius processing failed.** \"Payment to Rheinfeld Logistics AG not booked: the payee's bank details don't match what Global Genius has for them.\" and a **Fix payment** link. No Retry: the handler has to fix the data first.",
+        "visualCues": [
+          "CLM-2024-025: red triangle after the Claim ID, status stays **Open**. Popover: **Global Genius processing failed.** \"Payment to Rheinfeld Logistics AG not booked: the payee's bank details don't match what Global Genius has for them.\" and a **Fix payment** link. No Retry: the handler has to fix the data first."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Fix payment: the Payments list of CLM-2024-025 opens with that payment open and the reason shown. Tick \"I've corrected the bank details\", Send again, confirm. After the toast, back on the dashboard the triangle is gone.",
+        "expectedResult": "CLM-2024-025: red triangle after the Claim ID, status stays **Open**. Popover: **Global Genius processing failed.** \"Payment to Rheinfeld Logistics AG not booked: the payee's bank details don't match what Global Genius has for them.\" and a **Fix payment** link. No Retry: the handler has to fix the data first."
+      }
+    },
+    {
+      "id": "GGD-04",
+      "statement": "Dashboard · One claim, payment and reserve both failed",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** One triangle on CLM-2024-025. The popover has two lines: \"Payment to Rheinfeld Logistics AG not booked: ...\" with **Fix payment**, and \"Indemnity reserve for Rheinfeld Logistics AG not booked: the reserve's sub-type doesn't match the section in Global Genius.\" with **Fix reserve**.\n\n**Try:** Press Fix reserve: the Reserves list opens with that reserve open.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "One claim, payment and reserve both failed",
+        "preconditions": [
+          {
+            "text": "One triangle on CLM-2024-025. The popover has two lines: \"Payment to Rheinfeld Logistics AG not booked: ...\" with **Fix payment**, and \"Indemnity reserve for Rheinfeld Logistics AG not booked: the reserve's sub-type doesn't match the section in Global Genius.\" with **Fix reserve**.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-025",
+            "payments": {
+              "PMT-C-00000000-2026.025.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The payee's bank details don't match what Global Genius has for them.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "fixWhat": "the bank details"
+                }
+              }
+            },
+            "reserves": {
+              "RES-C-00000000-2026.025.1.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The reserve's sub-type doesn't match the section in Global Genius.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked",
+                  "fixWhat": "the reserve sub-type"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "One triangle on CLM-2024-025. The popover has two lines: \"Payment to Rheinfeld Logistics AG not booked: ...\" with **Fix payment**, and \"Indemnity reserve for Rheinfeld Logistics AG not booked: the reserve's sub-type doesn't match the section in Global Genius.\" with **Fix reserve**.",
+        "visualCues": [
+          "One triangle on CLM-2024-025. The popover has two lines: \"Payment to Rheinfeld Logistics AG not booked: ...\" with **Fix payment**, and \"Indemnity reserve for Rheinfeld Logistics AG not booked: the reserve's sub-type doesn't match the section in Global Genius.\" with **Fix reserve**."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Fix reserve: the Reserves list opens with that reserve open.",
+        "expectedResult": "One triangle on CLM-2024-025. The popover has two lines: \"Payment to Rheinfeld Logistics AG not booked: ...\" with **Fix payment**, and \"Indemnity reserve for Rheinfeld Logistics AG not booked: the reserve's sub-type doesn't match the section in Global Genius.\" with **Fix reserve**."
+      }
+    },
+    {
+      "id": "GGD-05",
+      "statement": "Dashboard · Global Genius was unavailable, retries ran out: Retry",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann, Global Genius is back up.\n\n**You see:** CLM-2024-029 sorts to the top with a triangle, status Open. Popover: \"Indemnity reserve for Alpenbau Engineering GmbH not booked: Global Genius was unavailable when this was sent.\" and a **Retry** link.\n\n**Try:** Press Retry: the same \"Send this reserve to Global Genius again?\" confirm as on the Reserves list. Confirm: toast \"Sent again\", the triangle goes, and a toast says when it is booked.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Global Genius was unavailable, retries ran out: Retry",
+        "preconditions": [
+          {
+            "text": "CLM-2024-029 sorts to the top with a triangle, status Open. Popover: \"Indemnity reserve for Alpenbau Engineering GmbH not booked: Global Genius was unavailable when this was sent.\" and a **Retry** link.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann, Global Genius is back up."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-029",
+            "reserves": {
+              "RES-C-00000000-2026.029.1.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius was unavailable when this was sent.",
+                  "owner": "handler",
+                  "cause": "gg-unavailable",
+                  "attempts": 1,
+                  "demoResendOutcome": "booked"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "CLM-2024-029 sorts to the top with a triangle, status Open. Popover: \"Indemnity reserve for Alpenbau Engineering GmbH not booked: Global Genius was unavailable when this was sent.\" and a **Retry** link.",
+        "visualCues": [
+          "CLM-2024-029 sorts to the top with a triangle, status Open. Popover: \"Indemnity reserve for Alpenbau Engineering GmbH not booked: Global Genius was unavailable when this was sent.\" and a **Retry** link."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Retry: the same \"Send this reserve to Global Genius again?\" confirm as on the Reserves list. Confirm: toast \"Sent again\", the triangle goes, and a toast says when it is booked.",
+        "expectedResult": "CLM-2024-029 sorts to the top with a triangle, status Open. Popover: \"Indemnity reserve for Alpenbau Engineering GmbH not booked: Global Genius was unavailable when this was sent.\" and a **Retry** link."
+      }
+    },
+    {
+      "id": "GGD-06",
+      "statement": "Dashboard · Section booking failed: Retry on claim",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** CLM-2024-028: triangle, status Open. Popover: \"Section \"System outage & recovery: Munich\" not booked: BKG-5021 Section event rejected: line of business code is missing on the section.\" and a **Retry on claim** link.\n\n**Try:** Press Retry on claim: Claim Overview of CLM-2024-028 opens with the section banner and its Retry booking button.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Section booking failed: Retry on claim",
+        "preconditions": [
+          {
+            "text": "CLM-2024-028: triangle, status Open. Popover: \"Section \"System outage & recovery: Munich\" not booked: BKG-5021 Section event rejected: line of business code is missing on the section.\" and a **Retry on claim** link.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-028",
+            "patch": {
+              "ggSectionBookings": [
+                {
+                  "sectionId": "SEC-C-CLM-2024-028-1",
+                  "status": "failed",
+                  "failureMessage": "BKG-5021 Section event rejected: line of business code is missing on the section.",
+                  "retryFailures": 0,
+                  "demoResendOutcome": "booked"
+                }
+              ]
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "CLM-2024-028: triangle, status Open. Popover: \"Section \"System outage & recovery: Munich\" not booked: BKG-5021 Section event rejected: line of business code is missing on the section.\" and a **Retry on claim** link.",
+        "visualCues": [
+          "CLM-2024-028: triangle, status Open. Popover: \"Section \"System outage & recovery: Munich\" not booked: BKG-5021 Section event rejected: line of business code is missing on the section.\" and a **Retry on claim** link."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press Retry on claim: Claim Overview of CLM-2024-028 opens with the section banner and its Retry booking button.",
+        "expectedResult": "CLM-2024-028: triangle, status Open. Popover: \"Section \"System outage & recovery: Munich\" not booked: BKG-5021 Section event rejected: line of business code is missing on the section.\" and a **Retry on claim** link."
+      }
+    },
+    {
+      "id": "GGD-07",
+      "statement": "Dashboard · Finance-owned failures: nothing to do",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** CLM-2024-025: triangle, status Open. Popover lines: \"Payment to Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" and \"Indemnity reserve for Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" No links.\n\n**NOTE [accepted-deviation]:** The first build left Finance-owned failures off the dashboard. With the triangle on the claim they show, but say there is nothing to do and offer no action. A failure that was already sent again and failed again counts as Finance's (effectiveOwner in gg-booking.model.ts). DESIGN DECISION GG-DASH-2 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Finance-owned failures: nothing to do",
+        "preconditions": [
+          {
+            "text": "CLM-2024-025: triangle, status Open. Popover lines: \"Payment to Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" and \"Indemnity reserve for Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" No links.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "financialPatch": {
+            "claimId": "CLM-2024-025",
+            "payments": {
+              "PMT-C-00000000-2026.025.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "Global Genius couldn't match the payment type to a booking code. The Finance team is fixing the setup.",
+                  "owner": "finance",
+                  "cause": "data-mismatch",
+                  "attempts": 1,
+                  "demoResendOutcome": "fails-again"
+                }
+              }
+            },
+            "reserves": {
+              "RES-C-00000000-2026.025.1.1.1": {
+                "bookingStatus": "needs-fixing",
+                "bookingIssue": {
+                  "reason": "The reserve's sub-type doesn't match the section in Global Genius.",
+                  "owner": "handler",
+                  "cause": "data-mismatch",
+                  "attempts": 2,
+                  "demoResendOutcome": "fails-again",
+                  "fixWhat": "the reserve sub-type"
+                }
+              }
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "CLM-2024-025: triangle, status Open. Popover lines: \"Payment to Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" and \"Indemnity reserve for Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" No links.",
+        "visualCues": [
+          "CLM-2024-025: triangle, status Open. Popover lines: \"Payment to Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" and \"Indemnity reserve for Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" No links."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann.",
+        "expectedResult": "CLM-2024-025: triangle, status Open. Popover lines: \"Payment to Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" and \"Indemnity reserve for Rheinfeld Logistics AG not booked: with Finance, nothing for you to do.\" No links."
+      }
+    },
+    {
+      "id": "GGD-08",
+      "statement": "Dashboard · Problems past row 5: sorted first, filter chip",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** CLM-2024-025, CLM-2024-028 (Failed), CLM-2024-029 and CLM-2024-026 are the first 4 rows, each with a triangle. Without problems, 026 and 029 sit below row 5 and don't show. Above the table: **Global Genius issues: 4** with **Show only these**.\n\n**Try:** Press the chip: it turns blue, only the 4 claims show, and it says Show all. Press it again: back to the normal top 5.\n\n**NOTE [accepted-deviation]:** The colleague's design has no sort or filter. Agreed change 3: claims with a problem sort first and the chip shows only them, so none hide past row 5. View all claims does not carry the filter: the Claims list file is at its size limit. DESIGN DECISION GG-DASH-2 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Problems past row 5: sorted first, filter chip",
+        "preconditions": [
+          {
+            "text": "CLM-2024-025, CLM-2024-028 (Failed), CLM-2024-029 and CLM-2024-026 are the first 4 rows, each with a triangle. Without problems, 026 and 029 sit below row 5 and don't show. Above the table: **Global Genius issues: 4** with **Show only these**.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {
+          "overviewPatch": {
+            "claimId": "CLM-2024-028",
+            "patch": {
+              "ggRegistration": "failed",
+              "ggFailureMessage": "BKG-4102 Claim event rejected: business unit DE-CYB-01 is not mapped to a Global Genius ledger.",
+              "ggResendOutcome": "registered"
+            }
+          },
+          "financialPatch": [
+            {
+              "claimId": "CLM-2024-025",
+              "reserves": {
+                "RES-C-00000000-2026.025.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The reserve's sub-type doesn't match the section in Global Genius.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the reserve sub-type"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-026",
+              "payments": {
+                "PMT-C-00000000-2026.026.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's bank details don't match what Global Genius has for them.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the bank details"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-029",
+              "recoveries": {
+                "REC-029-01": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The recovery's party has no bank details in Parties.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the bank details"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "CLM-2024-025, CLM-2024-028 (Failed), CLM-2024-029 and CLM-2024-026 are the first 4 rows, each with a triangle. Without problems, 026 and 029 sit below row 5 and don't show. Above the table: **Global Genius issues: 4** with **Show only these**.",
+        "visualCues": [
+          "CLM-2024-025, CLM-2024-028 (Failed), CLM-2024-029 and CLM-2024-026 are the first 4 rows, each with a triangle. Without problems, 026 and 029 sit below row 5 and don't show. Above the table: **Global Genius issues: 4** with **Show only these**."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Press the chip: it turns blue, only the 4 claims show, and it says Show all. Press it again: back to the normal top 5.",
+        "expectedResult": "CLM-2024-025, CLM-2024-028 (Failed), CLM-2024-029 and CLM-2024-026 are the first 4 rows, each with a triangle. Without problems, 026 and 029 sit below row 5 and don't show. Above the table: **Global Genius issues: 4** with **Show only these**."
+      }
+    },
+    {
+      "id": "GGD-09",
+      "statement": "Dashboard · Global Genius is down: no triangles",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann, while Global Genius is unavailable.\n\n**You see:** Yellow banner at the top: \"Global Genius is unavailable. 2 items are waiting and will be sent automatically when it's back. Nothing to do.\" No triangle on CLM-2024-025 or CLM-2024-026 (their items wait for Global Genius). CLM-2024-029 still has a triangle: its payment has wrong bank details, which you have to fix.\n\n**NOTE [accepted-deviation]:** Agreed change 4: while Global Genius is down, items it couldn't take get no triangle; the banner counts them. Red on every claim during downtime looks like many problems and is really zero actions. DESIGN DECISION GG-DASH-2 in src/app/core/models/gg-dashboard.model.ts. Treated as `done`, pending product sign-off.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Global Genius is down: no triangles",
+        "preconditions": [
+          {
+            "text": "Yellow banner at the top: \"Global Genius is unavailable. 2 items are waiting and will be sent automatically when it's back. Nothing to do.\" No triangle on CLM-2024-025 or CLM-2024-026 (their items wait for Global Genius). CLM-2024-029 still has a triangle: its payment has wrong bank details, which you have to fix.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann, while Global Genius is unavailable."
+          }
+        ],
+        "stateOverrides": {
+          "ggDowntime": {
+            "phase": "during"
+          },
+          "financialPatch": [
+            {
+              "claimId": "CLM-2024-025",
+              "payments": {
+                "PMT-C-00000000-2026.025.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "Global Genius was unavailable when this was sent.",
+                    "owner": "handler",
+                    "cause": "gg-unavailable",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-026",
+              "reserves": {
+                "RES-C-00000000-2026.026.1.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "Global Genius was unavailable when this was sent.",
+                    "owner": "handler",
+                    "cause": "gg-unavailable",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked"
+                  }
+                }
+              }
+            },
+            {
+              "claimId": "CLM-2024-029",
+              "payments": {
+                "PMT-C-00000000-2026.029.1.1": {
+                  "bookingStatus": "needs-fixing",
+                  "bookingIssue": {
+                    "reason": "The payee's bank details don't match what Global Genius has for them.",
+                    "owner": "handler",
+                    "cause": "data-mismatch",
+                    "attempts": 1,
+                    "demoResendOutcome": "booked",
+                    "fixWhat": "the bank details"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Yellow banner at the top: \"Global Genius is unavailable. 2 items are waiting and will be sent automatically when it's back. Nothing to do.\" No triangle on CLM-2024-025 or CLM-2024-026 (their items wait for Global Genius). CLM-2024-029 still has a triangle: its payment has wrong bank details, which you have to fix.",
+        "visualCues": [
+          "Yellow banner at the top: \"Global Genius is unavailable. 2 items are waiting and will be sent automatically when it's back. Nothing to do.\" No triangle on CLM-2024-025 or CLM-2024-026 (their items wait for Global Genius). CLM-2024-029 still has a triangle: its payment has wrong bank details, which you have to fix."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann, while Global Genius is unavailable.",
+        "expectedResult": "Yellow banner at the top: \"Global Genius is unavailable. 2 items are waiting and will be sent automatically when it's back. Nothing to do.\" No triangle on CLM-2024-025 or CLM-2024-026 (their items wait for Global Genius). CLM-2024-029 still has a triangle: its payment has wrong bank details, which you have to fix."
+      }
+    },
+    {
+      "id": "GGD-10",
+      "statement": "Dashboard · Planned downtime in 3 days",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann, 3 days before planned downtime.\n\n**You see:** Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" No triangles, no chip.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Planned downtime in 3 days",
+        "preconditions": [
+          {
+            "text": "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" No triangles, no chip.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann, 3 days before planned downtime."
+          }
+        ],
+        "stateOverrides": {
+          "ggDowntime": {
+            "phase": "planned",
+            "inDays": 3,
+            "from": "18:00",
+            "to": "22:00"
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" No triangles, no chip.",
+        "visualCues": [
+          "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" No triangles, no chip."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann, 3 days before planned downtime.",
+        "expectedResult": "Yellow banner at the top: \"Global Genius will be unavailable on <date in 3 days> from 18:00 to 22:00. Payments and reserves you approve then will be sent automatically afterwards. Nothing to do.\" No triangles, no chip."
+      }
+    },
+    {
+      "id": "GGD-11",
+      "statement": "Dashboard · Nothing broken",
+      "plainStatement": "Source: Review call questions (James) and PO / BO answers, email 2026-11-18; colleague Figma design (claims portfolio triangle + popover, Claim Overview banner); UX basis docs/ux/gg-dashboard.md.\n\n**Opens:** Dashboard as Mara Mustermann.\n\n**You see:** No triangles, no \"Global Genius issues\" chip, no banner. Statuses as usual.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Nothing broken",
+        "preconditions": [
+          {
+            "text": "No triangles, no \"Global Genius issues\" chip, no banner. Statuses as usual.",
+            "page": "any",
+            "role": "tested-visible",
+            "hint": "Dashboard as Mara Mustermann."
+          }
+        ],
+        "stateOverrides": {},
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "No triangles, no \"Global Genius issues\" chip, no banner. Statuses as usual.",
+        "visualCues": [
+          "No triangles, no \"Global Genius issues\" chip, no banner. Statuses as usual."
+        ]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Dashboard as Mara Mustermann.",
+        "expectedResult": "No triangles, no \"Global Genius issues\" chip, no banner. Statuses as usual."
+      }
+    }
+  ]
+}

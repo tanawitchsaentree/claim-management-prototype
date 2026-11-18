@@ -1,28 +1,220 @@
 {
   "ticketId": "BMPCC-17678",
   "module": "Claims",
-  "title": "[FE] UI/UX QA Fixes — Approvals Widget & Approvals Journey",
+  "title": "[FE] UI/UX QA Fixes: Approvals Widget & Approvals Journey (spacing and alignment items A to G)",
   "targetClaim": "CLM-2024-001",
-  "pages": ["any"],
+  "pages": ["any", "financial"],
   "walkthroughSteps": [
-    "Navigate to /approvals",
+    "BMPCC-17678 is a UI/UX QA list (items A to G): spacing, capitalisation, header bar, alignment and currency fixes on the Approvals widget and Approvals journey. Each AC below is one Jira item.",
+    "Navigate to /dashboard and look at the Recent approval requests widget (items A, B, C)",
+    "The Approvals journey header and Indemnity/Expenses tables (items D, E, F) are not in the prototype",
+    "Not from BMPCC-17678: /approvals row menu below has no Jira source in this ticket",
     {
       "targetId": "ap-row-actions",
-      "title": "Approvals journey",
+      "title": "Not from BMPCC-17678: Approvals journey",
       "body": "Each pending request has an actions menu with Approve, Reject, and View details.",
-      "expectedAfterClick": "Opens the row's action menu — Approve/Reject drive the request's status, View details opens the full request.",
+      "expectedAfterClick": "Opens the row's action menu: Approve/Reject drive the request's status, View details opens the full request.",
       "direction": "left"
     }
   ],
   "acceptanceCriteria": [
     {
-      "id": "AC-01",
-      "statement": "Each approval request row has Approve, Reject, and View details actions",
-      "plainStatement": "Every row in the Approvals list has a row-actions menu with **Approve**, **Reject**, and **View details**.",
+      "id": "AC-A",
+      "statement": "Approvals widget: spacing above the title matches Figma",
+      "plainStatement": "Jira item A: *Spacing above \"Recent Approval Requests\" title matches Figma reference.*\n\n**What the screen does:** the dashboard has the *Recent approval requests* widget. Its header spacing comes from the shared widget shell and has not been checked against the Figma node in this ticket. Marked `partial`.",
+      "page": "any",
+      "buildStatus": "partial",
+      "setup": {
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "Recent approval requests widget header",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Approvals widget: spacing above the title matches Figma",
+        "visualCues": ["Recent approval requests widget header"]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Open the dashboard, look at the Recent approval requests widget",
+        "expectedResult": "Header spacing (not yet checked against Figma)"
+      }
+    },
+    {
+      "id": "AC-B",
+      "statement": "Approvals widget: gap between Reserves/Payments tabs and the table is 32px",
+      "plainStatement": "Jira item B: *Gap between tabs and table below is reduced to 32px, applied consistently across all widgets with this spacing pattern.*\n\n**What the screen does:** the gap under the tabs is a small 8px spacer (`portfolio-tabs-spacer` in `_widget-shell.scss`), not 32px. Marked `partial`.",
+      "page": "any",
+      "buildStatus": "partial",
+      "setup": {
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "Reserves / Payments tabs above the table",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Approvals widget: gap between Reserves/Payments tabs and the table is 32px",
+        "visualCues": ["Reserves / Payments tabs above the table"]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Look at the gap under the Reserves / Payments tabs",
+        "expectedResult": "Gap is 8px, Jira asks for 32px"
+      }
+    },
+    {
+      "id": "AC-C",
+      "statement": "Approvals widget: Line of Business text is capitalised the same as in the approvals journey",
+      "plainStatement": "Jira item C: *Text (e.g. \"Property\") is capitalized consistently with how it appears in the approvals journey itself.*\n\n**What the screen does:** the Line of Business column reads *Property* in the widget and on `/approvals`.",
       "page": "any",
       "buildStatus": "done",
       "setup": {
-        "description": "Uses the Approvals page's existing seeded requests — no override needed",
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "Line of Business column reads 'Property'",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Approvals widget: Line of Business text is capitalised the same as in the approvals journey",
+        "visualCues": ["Line of Business column reads 'Property'"]
+      },
+      "howToTest": {
+        "route": "/dashboard",
+        "trigger": "Look at the Line of Business column",
+        "expectedResult": "Reads 'Property' in both places"
+      }
+    },
+    {
+      "id": "AC-D",
+      "statement": "Approvals journey header: the extra grey bar above the breadcrumb bar is removed",
+      "plainStatement": "Jira item D: *The extra grey bar above the breadcrumb bar is removed; only the bar holding the breadcrumbs remains.*\n\n**What the screen does:** the prototype has no approvals journey with this header. `/approvals` is a list page. Marked `todo`.",
+      "page": "any",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "No approvals journey header in the prototype",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Approvals journey header: the extra grey bar above the breadcrumb bar is removed",
+        "visualCues": ["No approvals journey header in the prototype"]
+      },
+      "howToTest": {
+        "route": "/approvals",
+        "trigger": "None",
+        "expectedResult": "Not built"
+      }
+    },
+    {
+      "id": "AC-E",
+      "statement": "Approvals journey: Indemnity/Expenses tables spacing matches the top card and Figma",
+      "plainStatement": "Jira item E: *Left-side spacing and title-to-card-top spacing matches the top card and Figma reference.*\n\n**What the screen does:** there are no Indemnity/Expenses approval tables in the prototype. Marked `todo`.",
+      "page": "any",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "No Indemnity/Expenses approval tables in the prototype",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Approvals journey: Indemnity/Expenses tables spacing matches the top card and Figma",
+        "visualCues": ["No Indemnity/Expenses approval tables in the prototype"]
+      },
+      "howToTest": {
+        "route": "/approvals",
+        "trigger": "None",
+        "expectedResult": "Not built"
+      }
+    },
+    {
+      "id": "AC-F",
+      "statement": "Approvals journey: all text is left-aligned",
+      "plainStatement": "Jira item F: *All text is left-aligned (not middle-aligned).*\n\n**What the screen does:** the approvals journey is not built, so this cannot be checked. Marked `todo`.",
+      "page": "any",
+      "buildStatus": "todo",
+      "setup": {
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "No approvals journey in the prototype",
+            "page": "any",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Approvals journey: all text is left-aligned",
+        "visualCues": ["No approvals journey in the prototype"]
+      },
+      "howToTest": {
+        "route": "/approvals",
+        "trigger": "None",
+        "expectedResult": "Not built"
+      }
+    },
+    {
+      "id": "AC-G",
+      "statement": "Financial Summary table: no policy currency in the header column",
+      "plainStatement": "Jira item G: *Remove policy currency in the header column of the Financial Summary table.*\n\n**What the screen does:** the Financial summary table on Financial overview has headers *Movement type, Outstanding reserves, Completed payments, Pending payment, Recoveries, Incurred* with no policy currency.",
+      "page": "financial",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses the seeded dashboard and approvals data: no override needed",
+        "preconditions": [
+          {
+            "text": "Financial summary headers carry no currency",
+            "page": "financial",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {}
+      },
+      "expectedUI": {
+        "description": "Financial Summary table: no policy currency in the header column",
+        "visualCues": ["Financial summary headers carry no currency"]
+      },
+      "howToTest": {
+        "route": "/claims/CLM-2024-001/financial",
+        "trigger": "Open Financial overview and expand Financial summary",
+        "expectedResult": "No policy currency in the header row"
+      }
+    },
+    {
+      "id": "EXTRA-01",
+      "statement": "Not from BMPCC-17678: built for the Approvals page row menu, no Jira source in this ticket. Each approval request row has Approve, Reject, and View details actions",
+      "plainStatement": "**Not from BMPCC-17678: built for the Approvals page row menu, no Jira source in this ticket.** Every row in the Approvals list has a row-actions menu with **Approve**, **Reject**, and **View details**.",
+      "page": "any",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Uses the Approvals page's existing seeded requests: no override needed",
         "preconditions": [
           {
             "text": "At least one approval row with an actions menu is visible",

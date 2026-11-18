@@ -1,36 +1,34 @@
 {
   "ticketId": "BMPCC-11006",
   "module": "FNOL",
-  "title": "Orphan Claim — Convert to Regular (link policy in place, land on Overview)",
+  "title": "Orphan Claim: Link policy to make it a regular claim (same record, land on Overview)",
   "targetClaim": "SK-2024-001",
   "pages": ["fnol-search"],
   "walkthroughSteps": [
-    "Apply AC-01 — lands on /fnol/search with a blank form. Type 'Jonas Kaufmann' into Client name and click Search — no state override is needed to find SK-2024-001, since the Claims-tab search already runs against every claim including orphans/skeletons.",
-    "On the Claims tab, open SK-2024-001's kebab menu and click 'Convert to claim' — this is the real button, same one available directly on the claim's own Overview page.",
-    "A modal opens showing policies matching Jonas Kaufmann, flagged eligible/ineligible (client match + loss date inside coverage). Select the eligible one (POL-2024-021) and click 'Continue conversion'.",
-    "Lands directly on /claims/SK-2024-001/overview (2026-09-14 change — no FNOL wizard walk anymore). Same claimId, same history: status is now 'Open', policy number is set, line of business updated from the policy.",
-    "A 'This claim needs setup' banner is visible (claimType is still 'skeleton' and it has zero sections) with links to Sections and Financial — this is what tells the handler what's left, since Entities & Damages / Parties / Reserves were never collected through a wizard for this claim.",
-    "Add a section from the Sections page — the banner disappears permanently once one exists.",
-    "Use 'Update reserves' on the Financial Overview page (Reserves view) to set a reserve — this button had no handler at all before 2026-09-14; it's real now.",
-    "Alternate entry point: the same 'Convert to claim' button also lives directly on the claim's Overview page (for a handler who reached it via the Dashboard's Claim Portfolio widget, not Search) — both paths call the same code and end at the same place."
+    "Apply AC-01: lands on /fnol/search with a blank form. Type 'Jonas Kaufmann' into Client name and click Search. SK-2024-001 shows on the Claims tab without any state override.",
+    "On the Claims tab, open SK-2024-001's kebab menu and click 'Link policy' (renamed from 'Convert to claim' on 2026-09-22). The same 'Link policy' button sits on the claim's own Overview page.",
+    "The Link policy sheet lists policies for Jonas Kaufmann, each eligible or not ('Different client', 'Loss date outside policy period'). Click the eligible one (POL-2024-021).",
+    "A 'Link policy' confirm shows what changes (Skeleton state, Policy number, Broker). Confirm, then the 'Confirm loss location' sheet opens.",
+    "Lands on /claims/SK-2024-001 Overview. A toast says 'SK-2024-001 is now <new claim number>'. Same record, new regular claim number, the SK- number stays searchable.",
+    "There is no 'needs setup' banner any more. Instead a follow-up task lands in the handler's queue, and Close claim lists 'Converted orphan claim has no sections yet' and 'has no reserves set' as blockers until a section and a reserve exist."
   ],
   "acceptanceCriteria": [
     {
       "id": "AC-01",
-      "statement": "Convert to claim links the policy onto the same claim record and lands on its Overview — no FNOL wizard",
-      "plainStatement": "Clicking **Convert to claim** (from the Claims-tab kebab, or the button on the claim's own Overview page) opens a policy-picker modal. Selecting an eligible policy **updates the same claim record in place** — `policyNumber`, `lineOfBusiness`, and `status` ('Awaiting policy' → 'Open') — and lands on `/claims/:id/overview`. No new claim is created; the claim keeps its original ID. The FNOL wizard is never opened for this flow.",
+      "statement": "Link policy links the policy onto the same claim record and lands on its Overview, no FNOL wizard",
+      "plainStatement": "Clicking **Link policy** (from the Claims-tab kebab, or the button on the claim's own Overview page) opens a policy-picker sheet. Picking an eligible policy and confirming **updates the same claim record in place** (policy number, line of business, skeleton state *Awaiting policy* to *Linked*), gives it a regular claim number, opens *Confirm loss location*, then lands on `/claims/:id` Overview with a toast. No new claim is created and the FNOL wizard is never opened.\n\nJira (Feature / Requirement 9): *User should be able to convert an Orphan/ Skeleton claim into a regular claim.*\n\n**NOTE [accepted-deviation]:** Confluence 3008228060 says conversion creates an incident record, completes the FNOL flow and calls CloseSkeletonClaim. The prototype updates the same record and skips FNOL. The screen differs from the source, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Confluence says an orphan can be linked to a customer or a policy. The prototype only links a policy. The screen differs from the source, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says: \"Only mandatory fields to create should be Date of Loss and Time of Loss\". The orphan create form also requires Client name and Reason. The screen differs from Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about which policies are eligible. The prototype decides the rules \"Different client\" and \"Loss date outside policy period\". Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about SLA handling. The \"Days since\" SLA column and the \"Extend SLA\" and \"Abandon claim\" menu items on the orphan list are made up by the prototype. Not in Jira, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Jira says nothing about closing a converted claim. The prototype blocks closure of a converted orphan until it has a section and a reserve (claim-closure-blocker.builder.ts). Not in Jira, pending product sign-off.",
       "page": "fnol-search",
       "buildStatus": "done",
       "setup": {
-        "description": "SK-2024-001 is static seed data (claims.json) with status 'Awaiting policy' — no state override needed. Search 'Jonas Kaufmann' manually, then use the real kebab action.",
+        "description": "SK-2024-001 is static seed data (claims.json) with status 'Awaiting policy', no state override needed. Search 'Jonas Kaufmann' manually, then use the real kebab action.",
         "preconditions": [
           {
-            "text": "Claims tab shows SK-2024-001, status 'Awaiting Policy', with a kebab menu offering 'Convert to claim'",
+            "text": "Claims tab shows SK-2024-001, status 'Awaiting Policy', with a kebab menu offering 'Link policy'",
             "page": "fnol-search",
             "role": "tested-visible"
           },
           {
-            "text": "Selecting POL-2024-021 in the Convert modal and confirming lands on /claims/SK-2024-001/overview with status 'Open', the policy number set, and the 'needs setup' banner visible",
+            "text": "Picking POL-2024-021 in the Link policy sheet and confirming lands on /claims/SK-2024-001 Overview with the policy number set and a toast naming the new claim number",
             "page": "fnol-loss-info",
             "role": "tested-visible",
             "hint": "Despite the 'fnol-loss-info' page tag (kept for the dev-banner's page-route mapping), the actual destination is the claim's Overview page, not FNOL"
@@ -38,18 +36,19 @@
         ]
       },
       "expectedUI": {
-        "description": "Convert to claim lands directly on Overview, already updated — no FNOL wizard involved",
+        "description": "Link policy lands directly on Overview, already updated, no FNOL wizard involved",
         "visualCues": [
-          "Claims tab row for SK-2024-001 with a working kebab 'Convert to claim' item",
-          "Convert modal: policy list with eligible/ineligible reasons, 'Continue conversion' button",
-          "After confirming: Claim Overview for the same claimId, status chip 'Open', policy number populated, 'This claim needs setup' info banner with links to Sections and Financial"
+          "Claims tab row for SK-2024-001 with a kebab 'Link policy' item",
+          "Link policy sheet: policy list with eligible/ineligible reasons",
+          "Link policy confirm dialog, then Confirm loss location sheet",
+          "After confirming: Claim Overview for the same record, policy number set, toast 'SK-2024-001 is now ...'"
         ]
       },
       "expectedOutcome": {},
       "howToTest": {
         "route": "/fnol/search",
-        "trigger": "Search 'Jonas Kaufmann' → click the Claims tab → open SK-2024-001's kebab → Convert to claim → select POL-2024-021 → Continue conversion",
-        "expectedResult": "Lands on /claims/SK-2024-001/overview with status 'Open', policy set, and the setup banner visible — no FNOL step ever opened"
+        "trigger": "Search 'Jonas Kaufmann' → Claims tab → SK-2024-001 kebab → Link policy → click POL-2024-021 → Link policy → confirm loss location",
+        "expectedResult": "Lands on /claims/SK-2024-001 Overview with the policy set and a toast naming the new claim number, no FNOL step ever opened"
       }
     }
   ]

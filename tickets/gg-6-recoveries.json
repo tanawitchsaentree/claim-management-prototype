@@ -4,9 +4,7 @@
   "module": "GG booking",
   "title": "GG 6 · Recoveries: same status in both places",
   "targetClaim": "CLM-2024-001",
-  "pages": [
-    "financial"
-  ],
+  "pages": ["financial"],
   "walkthroughSteps": [
     "Recoveries has its own journey, and recovery postings also show in Financial Overview. One status, two places, never different."
   ],
@@ -14,7 +12,7 @@
     {
       "id": "AC-01",
       "statement": "Recovery bookings · Booking statuses",
-      "plainStatement": "**Opens:** Financial > Recovery bookings.\n\n**You see:** REC-001 Booked, REC-002 Booking in progress, REC-003 Couldn't be booked.",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Financial > Recovery bookings.\n\n**You see:** REC-001 Booked, REC-002 Booking in progress, REC-003 Couldn't be booked.",
       "page": "financial",
       "buildStatus": "done",
       "setup": {
@@ -218,9 +216,7 @@
       },
       "expectedUI": {
         "description": "REC-001 Booked, REC-002 Booking in progress, REC-003 Couldn't be booked.",
-        "visualCues": [
-          "REC-001 Booked, REC-002 Booking in progress, REC-003 Couldn't be booked."
-        ]
+        "visualCues": ["REC-001 Booked, REC-002 Booking in progress, REC-003 Couldn't be booked."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=recovery",
@@ -439,9 +435,7 @@
       },
       "expectedUI": {
         "description": "Global Genius was unavailable, Send again.",
-        "visualCues": [
-          "Global Genius was unavailable, Send again."
-        ]
+        "visualCues": ["Global Genius was unavailable, Send again."]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/financial?view=recovery&expand=REC-003",
