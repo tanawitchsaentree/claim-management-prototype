@@ -76,6 +76,10 @@ $header-bp: 1024px;
 // ─── Main content (left) ─────────────────────────────────────────
 .main-content {
   flex: 1;
+  // Positioned so screen-reader-only text (absolute, e.g. table captions)
+  // stays inside this scroll area instead of stretching the whole page and
+  // leaving an empty grey strip under the dashboard.
+  position: relative;
   overflow-y: auto;
   padding: var(--space-2xl);
   background: var(--ui-01);
