@@ -1,16 +1,20 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { MockStateService } from '../state/mock-state.service';
 import { Bookable, canSendAgain, needsHandler, withFinance } from '../../models/gg-booking.model';
-import { sectionCanRetry } from '../../models/gg-section-booking.model';
-import { GgAttentionItem, GgDowntimeBanner } from '../../models/gg-dashboard.model';
+import { sectionCanRetry, sectionWithFinance } from '../../models/gg-section-booking.model';
+import {
+  GgClaimProblem,
+  GgDowntimeBanner,
+  GgProblemLine
+} from '../../models/gg-dashboard.model';
 
-// Dashboard "Global Genius: needs your action" list and the downtime banner
-// (docs/ux/gg-dashboard.md, DESIGN DECISION GG-DASH-1 in gg-dashboard.model.ts).
-// Same shape as MockRecoveryAttentionService (one list for the dashboard), but
-// signals over state, as MockNotificationService, so a DEV banner Apply or a
-// "Send again" elsewhere updates the list without a reload. Uses the same
-// rules as the bell and the Financial Overview count (needsHandler /
-// canSendAgain / sectionCanRetry), so the numbers never disagree.
+// Global Genius problems per claim for the Claims portfolio triangle + popover,
+// and the downtime banner (docs/ux/gg-dashboard.md, DESIGN DECISION GG-DASH-2
+// in gg-dashboard.model.ts). Signals over state, as MockNotificationService,
+// so a DEV banner Apply or a "Send again" elsewhere updates the dashboard
+// without a reload. Same rules as the bell and the Financial Overview count
+// (needsHandler / canSendAgain / withFinance / sectionCanRetry), so the
+// numbers never disagree.
 
 interface Row {
   kind: 'payment' | 'reserve' | 'recovery';
@@ -27,26 +31,49 @@ const FIX_LABEL: Record<Row['kind'], string> = {
   recovery: 'Fix recovery'
 };
 
-/** GG's reason reads as the second half of the row sentence. */
+const FINANCE_LINE = 'with Finance, nothing for you to do.';
+
+/** GG's reason reads as the second half of the line. */
 function afterColon(reason: string): string {
   if (reason.startsWith('Global Genius')) return reason;
   return reason.charAt(0).toLowerCase() + reason.slice(1);
 }
 
+function ggUnavailable(r: Row): boolean {
+  return r.item.bookingStatus === 'needs-fixing' && r.item.bookingIssue?.cause === 'gg-unavailable';
+}
+
 function waitingForGg(r: Row): boolean {
   return (
-    r.item.bookingStatus === 'needs-fixing' &&
-    r.item.bookingIssue?.cause === 'gg-unavailable' &&
-    !r.item.bookingIssue.inFlight &&
+    ggUnavailable(r) &&
+    !r.item.bookingIssue?.inFlight &&
     (needsHandler(r.status, r.item) || withFinance(r.status, r.item))
   );
+}
+
+/** One popover line for a payment / reserve / recovery, or null if it is fine. */
+function itemLine(claimId: string, r: Row): GgProblemLine | null {
+  const key = `${r.kind}-${r.id}`;
+  if (withFinance(r.status, r.item)) {
+    return { key, text: `${r.what} not booked: ${FINANCE_LINE}`, action: { kind: 'none' } };
+  }
+  if (!needsHandler(r.status, r.item) || !canSendAgain(r.item)) return null;
+  const text = `${r.what} not booked: ${afterColon(r.item.bookingIssue?.reason ?? 'Global Genius did not accept it.')}`;
+  if (ggUnavailable(r)) {
+    return { key, text, action: { kind: 'retry-item', item: r.kind, id: r.id, summary: r.what } };
+  }
+  return {
+    key,
+    text,
+    action: { kind: 'link', label: FIX_LABEL[r.kind], link: ['/claims', claimId, 'financial'], queryParams: { view: r.view, expand: r.id } }
+  };
 }
 
 @Injectable({ providedIn: 'root' })
 export class MockGgAttentionService {
   private readonly stateSvc = inject(MockStateService);
 
-  /** Approved items on every open claim, with the words the row needs. */
+  /** Approved items on every open claim, with the words the line needs. */
   private readonly rows = computed(() => {
     const st = this.stateSvc.state();
     const open = new Map(st.claims.filter(c => c.status !== 'Closed').map(c => [c.claimId, c]));
@@ -62,33 +89,43 @@ export class MockGgAttentionService {
       }));
   });
 
-  readonly items = computed<GgAttentionItem[]>(() => {
+  /** Claims with a GG problem, by claim id. Claims without one are absent. */
+  readonly problems = computed<Record<string, GgClaimProblem>>(() => {
     const st = this.stateSvc.state();
-    const out: GgAttentionItem[] = [];
+    // Change 4: while GG is down, items it couldn't take wait for it: no triangle.
+    const ggDown = st.ggDowntime?.phase === 'during';
+    const out: Record<string, GgClaimProblem> = {};
     for (const claim of st.claims) {
       if (claim.status === 'Closed') continue;
-      const base = { claimId: claim.claimId, clientName: claim.clientName };
-      const overviewLink = ['/claims', claim.claimId, 'overview'];
       const o = st.overviews[claim.claimId];
-      // Claim not set up: the retry is on Claim Overview (critique 5). After
-      // two failed retries Finance owns it, so it leaves the list.
-      if (o?.ggRegistration === 'failed' && (o.ggResendFailures ?? 0) < 2) {
-        out.push({ ...base, key: `claim-${claim.claimId}`, reason: 'Claim not set up in Global Genius: payments and reserves are on hold.', linkLabel: 'Retry on claim', link: overviewLink });
-      }
+      const setupFailed = o?.ggRegistration === 'failed';
+      const lines: GgProblemLine[] = [];
       for (const r of this.rows().find(x => x.claimId === claim.claimId)?.rows ?? []) {
-        if (!needsHandler(r.status, r.item) || !canSendAgain(r.item)) continue;
-        if (r.item.bookingIssue?.cause === 'gg-unavailable') continue;
-        const reason = afterColon(r.item.bookingIssue?.reason ?? 'Global Genius did not accept it.');
-        out.push({ ...base, key: `${r.kind}-${r.id}`, reason: `${r.what} not booked: ${reason}`, linkLabel: FIX_LABEL[r.kind], link: ['/claims', claim.claimId, 'financial'], queryParams: { view: r.view, expand: r.id } });
+        if (ggDown && ggUnavailable(r)) continue;
+        const line = itemLine(claim.claimId, r);
+        if (line) lines.push(line);
       }
       // Section events only go to GG once the claim is in GG (as the bell).
       if (o && (!o.ggRegistration || o.ggRegistration === 'registered')) {
-        for (const b of (o.ggSectionBookings ?? []).filter(sectionCanRetry)) {
+        for (const b of o.ggSectionBookings ?? []) {
           const name = st.sections.find(s => s.id === b.sectionId)?.name ?? b.sectionId;
-          const reason = b.failureMessage ?? 'Global Genius did not accept it.';
-          out.push({ ...base, key: `section-${b.sectionId}`, reason: `Section "${name}" not booked: ${reason}`, linkLabel: 'Retry on claim', link: overviewLink });
+          const key = `section-${b.sectionId}`;
+          if (sectionWithFinance(b)) {
+            lines.push({ key, text: `Section "${name}" not booked: ${FINANCE_LINE}`, action: { kind: 'none' } });
+          } else if (sectionCanRetry(b)) {
+            const reason = b.failureMessage ?? 'Global Genius did not accept it.';
+            lines.push({ key, text: `Section "${name}" not booked: ${reason}`, action: { kind: 'link', label: 'Retry on claim', link: ['/claims', claim.claimId, 'overview'] } });
+          }
         }
       }
+      if (!setupFailed && !lines.length) continue;
+      out[claim.claimId] = {
+        claimId: claim.claimId,
+        setupFailed,
+        rootCause: setupFailed ? o?.ggFailureMessage?.trim().replace(/\.$/, '') : undefined,
+        setupWithFinance: setupFailed && (o?.ggResendFailures ?? 0) >= 2,
+        lines
+      };
     }
     return out;
   });

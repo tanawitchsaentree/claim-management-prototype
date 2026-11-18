@@ -65,3 +65,49 @@
 .dormant-nx-badge {
   @include widget.dash-badge-small;
 }
+
+// Triangle right after the Claim ID (GG-DASH-2): same gap as the status cell's
+// chip + badge (dash-status-cell, _widget-shell.scss).
+.dash-gg-flag {
+  margin-left: var(--space-ndbx-6);
+}
+
+// "Global Genius issues: N" filter. Row spacing as list-toolbar's .lt, inset
+// to the table's cell padding (_widget-shell.scss dash-table).
+.gg-filter {
+  padding: 0 var(--space-xl) var(--space-sm);
+}
+
+// Copied exactly from financial-overview/components/list-toolbar/list-toolbar.component.scss:16-53.
+// Same pill-toggle look as the Task manager status tabs
+.lt__needs {
+  padding: 2px var(--space-md);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-pill);
+  background: var(--ui-01);
+  color: var(--text-01);
+  font: inherit;
+  font-size: var(--paragraph-03-font-size);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--interactive-primary);
+  }
+
+  &:disabled {
+    color: var(--text-muted);
+    cursor: default;
+  }
+
+  &--on {
+    background: var(--interactive-primary);
+    border-color: var(--interactive-primary);
+    color: var(--ui-01);
+  }
+}
+
+.lt__clear {
+  margin-left: var(--space-sm);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

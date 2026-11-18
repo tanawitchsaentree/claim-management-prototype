@@ -99,6 +99,25 @@
       </div>
     }
   } @else {
+    <!-- Copied from financial-overview/components/list-toolbar/list-toolbar.component.html:3-18 -->
+    @if (ggCount() > 0 || ggOnly()) {
+      <div class="gg-filter">
+        <button
+          type="button"
+          class="lt__needs"
+          [class.lt__needs--on]="ggOnly()"
+          [attr.aria-pressed]="ggOnly()"
+          (click)="ggOnly.set(!ggOnly())"
+        >
+          Global Genius issues: {{ ggCount() }}
+          @if (ggOnly()) {
+            <span class="lt__clear">Show all</span>
+          } @else {
+            <span class="lt__clear">Show only these</span>
+          }
+        </button>
+      </div>
+    }
     @if (displayedClaims().length === 0) {
       <app-empty-state
         message="No claims found for this view."
@@ -129,12 +148,18 @@
                     [appClaimPreview]="claim.claimId"
                     >{{ claim.claimId | claimNumber }}</a
                   >
+                  @if (ggProblems()[claim.claimId]; as gg) {
+                    <app-gg-claim-flag class="dash-gg-flag" [problem]="gg"></app-gg-claim-flag>
+                  }
                 </td>
                 <td nxCell class="dash-col--nowrap">{{ claim.policyNumber || '–' }}</td>
                 <td nxCell>{{ claim.clientName }}</td>
                 <td nxCell>
                   <div class="dash-status-cell">
-                    <app-status-chip [status]="claim.status" domain="claim"></app-status-chip>
+                    <app-status-chip
+                      [status]="ggProblems()[claim.claimId]?.setupFailed ? 'Failed' : claim.status"
+                      domain="claim"
+                    ></app-status-chip>
                     @if (isDormant(claim.dateUpdated) && claim.status !== 'Closed') {
                       <nx-badge
                         type="critical"

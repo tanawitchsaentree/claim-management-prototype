@@ -14,14 +14,14 @@
     {
       "id": "AC-01",
       "statement": "AC01 · Claim booking failed: message with the Global Genius failure text",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.\n\n**Decision:** Global Genius's own message is shown under our plain-language line, labelled \"Message from Global Genius\", so the handler can quote it to Finance but still reads first what it means for them (DESIGN DECISION GG-MSG-1).\n\n**NOTE [accepted-deviation]:** Jira says nothing about the banner wording. Saying payments and reserves are \"on hold\" is decided by the prototype. Not in Jira, pending product sign-off.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner **Global Genius processing failed**: \"Claim couldn't be processed in Global Genius: BKG-4102 ... not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link.\n\n**Decision:** Global Genius's own message is shown in the banner text, as the colleague's Figma design has it (GG-DASH-2 in gg-dashboard.model.ts). After a retry that failed, it is shown under the text again, labelled \"Message from Global Genius\" (DESIGN DECISION GG-MSG-1).\n\n**NOTE [accepted-deviation]:** Jira says nothing about the banner wording. The first-failure wording comes from the colleague's Figma design; the retried and Finance wording (\"on hold\") is decided by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Claim booking failed: message with the Global Genius failure text",
         "preconditions": [
           {
-            "text": "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.",
+            "text": "Red banner **Global Genius processing failed**: \"Claim couldn't be processed in Global Genius: BKG-4102 ... not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link.",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Claim Overview of CLM-2024-001."
@@ -44,15 +44,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**.",
+        "description": "Red banner **Global Genius processing failed**: \"Claim couldn't be processed in Global Genius: BKG-4102 ... not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link.",
         "visualCues": [
-          "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**."
+          "Red banner **Global Genius processing failed**: \"Claim couldn't be processed in Global Genius: BKG-4102 ... not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link."
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Claim Overview of CLM-2024-001.",
-        "expectedResult": "Red banner: the claim isn't in Global Genius, payments and reserves are on hold. Under it: **Message from Global Genius:** BKG-4102 ... not mapped to a Global Genius ledger. Button **Retry setting up this claim in Global Genius**."
+        "expectedResult": "Red banner **Global Genius processing failed**: \"Claim couldn't be processed in Global Genius: BKG-4102 ... not mapped to a Global Genius ledger. Retry to process it again.\" Then a **Retry** link."
       },
       "expectedOutcome": {
         "overviewStatus": "Open"
@@ -119,7 +119,7 @@
     {
       "id": "AC-03",
       "statement": "AC02 · Retry the claim event: feedback, then it fails again",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red claim banner as AC-01.\n\n**Try:** Press **Retry setting up this claim in Global Genius**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again.\n\n**NOTE [accepted-deviation]:** Jira does not say who may retry. The prototype lets anyone who opens the claim press Retry. Not in Jira, pending product sign-off.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red claim banner as AC-01.\n\n**Try:** Press **Retry**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again.\n\n**NOTE [accepted-deviation]:** Jira does not say who may retry. The prototype lets anyone who opens the claim press Retry. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -129,7 +129,7 @@
             "text": "Same red claim banner as AC-01.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press **Retry setting up this claim in Global Genius**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again."
+            "hint": "Press **Retry**: the banner turns blue (\"Retrying\") at once, then comes back red after about 3 seconds saying the retry failed, with one more retry left. The Global Genius message is shown again."
           }
         ],
         "stateOverrides": {

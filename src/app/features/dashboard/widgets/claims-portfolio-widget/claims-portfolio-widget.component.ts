@@ -19,6 +19,8 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { ClaimPreviewDirective } from '../../../../shared/directives/claim-preview.directive';
 import { AuthService } from '../../../../core/services/auth';
 import { Claim, LossEventSummary } from '../../../../core/models';
+import { MockGgAttentionService } from '../../../../core/mock/services/mock-gg-attention.service';
+import { GgClaimFlagComponent } from '../gg-claim-flag/gg-claim-flag.component';
 
 const DORMANT_DAYS = 30; // ⚑ PLACEHOLDER — confirm threshold with business
 
@@ -38,7 +40,8 @@ import { ClaimNumberPipe } from '../../../../shared/pipes/claim-number.pipe';
     NxDropdownModule,
     StatusChipComponent,
     EmptyStateComponent,
-    ClaimPreviewDirective
+    ClaimPreviewDirective,
+    GgClaimFlagComponent
   ],
   templateUrl: './claims-portfolio-widget.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -62,6 +65,11 @@ export class ClaimsPortfolioWidgetComponent {
   @Output() dateRangeChanged = new EventEmitter<ClaimsDateRange>();
 
   readonly auth = inject(AuthService);
+  // Global Genius problems per claim (DESIGN DECISION GG-DASH-2, gg-dashboard.model.ts).
+  readonly ggProblems = inject(MockGgAttentionService).problems;
+  // "Global Genius issues: N · Show only these" (copied from the Payments
+  // list's "Needs you" chip, financial-overview/components/list-toolbar).
+  readonly ggOnly = signal(false);
 
   portfolioTab: 'claims' | 'loss-events' = 'claims';
   setPortfolioTab(tab: 'claims' | 'loss-events'): void {
@@ -102,7 +110,8 @@ export class ClaimsPortfolioWidgetComponent {
     { value: 'all', label: 'All claims' }
   ];
 
-  readonly displayedClaims = computed<Claim[]>(() => {
+  // Claims in the chosen scope, before the top-5 cut.
+  private readonly scopedClaims = computed<Claim[]>(() => {
     const scope = this.claimsScope();
     const user = this.auth.user();
     // skeletonState 'matched'/'abandoned' are terminal skeleton-only
@@ -119,12 +128,29 @@ export class ClaimsPortfolioWidgetComponent {
       if (scope === 'mine') filtered = filtered.filter(c => c.assignee === user.name);
       else if (scope === 'group') filtered = filtered.filter(c => c.group === user.group);
     }
+    return filtered;
+  });
+
+  /** Claims in this view with a Global Genius problem (the chip's N). */
+  readonly ggCount = computed(
+    () => this.scopedClaims().filter(c => this.ggProblems()[c.claimId]).length
+  );
+
+  readonly displayedClaims = computed<Claim[]>(() => {
+    const problems = this.ggProblems();
     // No fallback to unfiltered claims when a scope yields zero rows — an empty
     // result is real and must render the empty state, not someone else's claims.
     // Most-recently-touched first — without this, claims.json's raw array order decided
     // what showed, so anything appended to the end of that file (e.g. orphan claims) was
     // structurally invisible in a "top 5" no matter which scope was picked.
-    const sorted = [...filtered].sort((a, b) => b.dateUpdated.localeCompare(a.dateUpdated));
+    // Claims with a Global Genius problem go first so none hide past row 5 (GG-DASH-2).
+    const sorted = [...this.scopedClaims()].sort(
+      (a, b) =>
+        Number(!!problems[b.claimId]) - Number(!!problems[a.claimId]) ||
+        b.dateUpdated.localeCompare(a.dateUpdated)
+    );
+    // "Show only these" lists every claim with a problem, not just 5.
+    if (this.ggOnly()) return sorted.filter(c => problems[c.claimId]);
     return sorted.slice(0, 5);
   });
 

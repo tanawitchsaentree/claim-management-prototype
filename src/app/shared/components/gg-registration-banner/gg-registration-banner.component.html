@@ -6,9 +6,13 @@
       <span class="ggb-gg-message"><span class="ggb-gg-label">Message from Global Genius:</span> {{ gg }}</span>
     }
     @if (m.canSendAgain) {
-      <button nxButton="secondary small" type="button" class="ggb-action" (click)="sendAgain()">
-        {{ m.sendAgainLabel }}
-      </button>
+      <!-- "Retry" link (colleague Figma design). nx-link + <a tabindex> as
+           mass-event-card.component.html:99-106. -->
+      <nx-link class="ggb-action"
+        ><a tabindex="0" (click)="sendAgain()" (keydown.enter)="sendAgain()">{{
+          m.sendAgainLabel
+        }}</a></nx-link
+      >
     }
   </nx-message>
 } @else if (justReady()) {

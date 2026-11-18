@@ -227,5 +227,37 @@
     "recoveryPotentialNote": "",
     "hasRecoveryCase": true,
     "hasActiveRecovery": true
+  },
+  "CLM-2024-028": {
+    "claimId": "CLM-2024-028",
+    "client": "Vantage Data Systems GmbH",
+    "assignedHandler": "Mara Mustermann",
+    "status": "Open",
+    "proximateLossCause": "–",
+    "riskScore": 0,
+    "riskScoreMax": 5,
+    "riskStatus": "Not assessed",
+    "policyNumber": "POL-2024-028",
+    "policyHolder": "Vantage Data Systems GmbH",
+    "broker": "Petra Krause",
+    "handler": "Mara Mustermann",
+    "supervisor": "",
+    "priority": "high",
+    "lineOfBusiness": "Cyber",
+    "dateOfLoss": "2026-09-14",
+    "dateCreated": "2026-11-09",
+    "description": "Phishing-enabled business email compromise led to a fraudulent wire transfer.",
+    "location": {
+      "street": "",
+      "city": "Munich",
+      "country": "Germany"
+    },
+    "financialSummary": {
+      "currency": "EUR",
+      "totalReserve": 86000,
+      "totalPayments": 46000,
+      "totalRecoveries": 5300,
+      "outstanding": 86000
+    }
   }
 }

@@ -27,6 +27,9 @@ const TOKEN_MAP: Record<Domain, Record<string, string>> = {
     declined: 'claim-status-declined',
     closed: 'claim-status-closed',
     reopened: 'claim-status-reopened',
+    // Claims portfolio: the claim couldn't be set up in Global Genius
+    // (GG-DASH-2). Same red as Declined, no new colour.
+    failed: 'claim-status-declined',
     monitoring: 'claim-status-in-progress',
     // Orphan (skeleton) claim lifecycle — same tokens the old dedicated
     // 'skeleton-claim' domain used, now that those claims are just claims.

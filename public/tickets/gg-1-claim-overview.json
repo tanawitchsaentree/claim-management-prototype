@@ -13,17 +13,17 @@
     {
       "id": "AC-01",
       "statement": "Claim Overview · Claim couldn't be set up in GG",
-      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.\n\n**Try:** Press the button: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\".\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about the bell. The bell line after the claim is set up is made up by the prototype. Not in Jira, pending product sign-off.",
+      "plainStatement": "Source: epic BMPCC-18348 and its stories (partly).\n\n**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner **Global Genius processing failed**: the claim couldn't be processed in Global Genius, with a **Retry** link.\n\n**Try:** Press Retry: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\".\n\n**NOTE [accepted-deviation]:** The epic and stories say nothing about the bell. The bell line after the claim is set up is made up by the prototype. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Claim couldn't be set up in GG",
         "preconditions": [
           {
-            "text": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.",
+            "text": "Red banner **Global Genius processing failed**: the claim couldn't be processed in Global Genius, with a **Retry** link.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press the button: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\"."
+            "hint": "Press Retry: banner turns blue (\"still being set up\"), then disappears after ~3 seconds and the bell shows \"now set up\"."
           }
         ],
         "stateOverrides": {
@@ -42,15 +42,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button.",
+        "description": "Red banner **Global Genius processing failed**: the claim couldn't be processed in Global Genius, with a **Retry** link.",
         "visualCues": [
-          "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button."
+          "Red banner **Global Genius processing failed**: the claim couldn't be processed in Global Genius, with a **Retry** link."
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Claim Overview of CLM-2024-001.",
-        "expectedResult": "Red banner: payments and reserves are on hold, with a **Send claim to Global Genius again** button."
+        "expectedResult": "Red banner **Global Genius processing failed**: the claim couldn't be processed in Global Genius, with a **Retry** link."
       },
       "expectedOutcome": {
         "overviewStatus": "Open"
@@ -59,7 +59,7 @@
     {
       "id": "AC-02",
       "statement": "Claim Overview · Send claim again, it fails again",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red banner as AC-01.\n\n**Try:** Press Send again: it goes blue, then comes back red after ~3 seconds.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Same red banner as AC-01.\n\n**Try:** Press Retry: it goes blue, then comes back red after ~3 seconds.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -69,7 +69,7 @@
             "text": "Same red banner as AC-01.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press Send again: it goes blue, then comes back red after ~3 seconds."
+            "hint": "Press Retry: it goes blue, then comes back red after ~3 seconds."
           }
         ],
         "stateOverrides": {

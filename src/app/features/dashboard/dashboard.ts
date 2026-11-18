@@ -45,7 +45,6 @@ import {
 } from './widgets/claims-portfolio-widget/claims-portfolio-widget.component';
 import { RecentApprovalsWidgetComponent } from './widgets/recent-approvals-widget/recent-approvals-widget.component';
 import { RecoveryPotentialPanelComponent } from './widgets/recovery-potential-panel';
-import { GgAttentionPanelComponent } from './widgets/gg-attention-panel';
 import { GgDowntimeBannerComponent } from './widgets/gg-downtime-banner';
 
 const QUICK_LINKS: QuickLink[] = [
@@ -92,7 +91,6 @@ const EMPTY_VM: DashboardVM = {
     ClaimsPortfolioWidgetComponent,
     RecentApprovalsWidgetComponent,
     RecoveryPotentialPanelComponent,
-    GgAttentionPanelComponent,
     GgDowntimeBannerComponent
   ],
   templateUrl: './dashboard.html',
@@ -174,7 +172,6 @@ export class Dashboard {
   readonly paymentApprovals = toSignal(this.paymentApprovals$, {
     initialValue: [] as PaymentApproval[]
   });
-  readonly ggAttention = this.ggSvc.items;
   readonly ggBanner = this.ggSvc.banner;
   readonly recoveryAttention = toSignal(this.recoveryAttention$, {
     initialValue: [] as RecoveryAttentionItem[]

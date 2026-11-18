@@ -1235,3 +1235,12 @@ Open: scripts/audit-ac-logic.mjs still reads `buttonEnabled` / `tooltipContains`
 - **Deep link:** reuses the bell's `?view=payments|reserves|recovery&expand=<id>` on Financial Overview (opens and scrolls to the row with its reason). No new query param.
 - **Banner:** `widgets/gg-downtime-banner.ts`, copied from `financial-closure-banner.ts`, same spot.
 - **Schema v2.5:** `ggDowntime` (new), `financialPatch` also takes a list (several claims). Both runtime only, audit skips them.
+
+## 2026-11-18: GG 9 rebuilt on the colleague's Figma design (docs/ux/gg-dashboard.md)
+
+- **Source:** colleague Figma design (claims portfolio triangle + popover, Claim Overview banner), with 4 changes agreed with the user on 2026-11-18.
+- **File:** `public/tickets/gg-9-dashboard.json`, now 11 ACs (GGD-01 to GGD-11), all `done`. Scenarios moved to Mara's own recent claims (CLM-2024-025 / 026 / 028 / 029) so they show in her default "My claims, last 30 days" portfolio.
+- **Removed:** `widgets/gg-attention-panel.ts`. `MockGgAttentionService.items` became `problems` (per claim, DESIGN DECISION GG-DASH-2 in gg-dashboard.model.ts).
+- **New:** `widgets/gg-claim-flag/` (triangle + nx-popover, copied from entity-limit-cell and mass-event-card). Portfolio sorts GG claims first and has the "Global Genius issues" chip copied from list-toolbar.
+- **Mock data:** CLM-2024-028 got a seeded overview in claim-overview.json (overviewPatch only patches existing overviews); STATE_VERSION pi5-all-v2.
+- **Claim banner:** first failure uses the design wording with GG's root cause inline and a "Retry" link. bmpcc-22661 AC-01 / AC-03 and gg-1 AC-01 / AC-02 text updated to match.

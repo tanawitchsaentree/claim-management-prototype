@@ -9,7 +9,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { NxMessageModule } from '@allianz/ng-aquila/message';
-import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxLinkModule } from '@allianz/ng-aquila/link';
 import {
   GgClaimRegistration,
   claimRegistrationMessage
@@ -24,7 +24,7 @@ import { MockBookingService } from '../../../core/mock/services/mock-booking.ser
 @Component({
   selector: 'app-gg-registration-banner',
   standalone: true,
-  imports: [NxMessageModule, NxButtonModule],
+  imports: [NxMessageModule, NxLinkModule],
   templateUrl: './gg-registration-banner.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './gg-registration-banner.component.scss'
@@ -48,7 +48,8 @@ export class GgRegistrationBannerComponent {
     claimRegistrationMessage(
       this.current(),
       this.liveClaim()?.ggResendFailures ?? 0,
-      this.liveClaim()?.ggResendInFlight ?? false
+      this.liveClaim()?.ggResendInFlight ?? false,
+      this.liveClaim()?.ggFailureMessage
     )
   );
 
@@ -60,7 +61,7 @@ export class GgRegistrationBannerComponent {
   // the old answer then).
   readonly failureMessage = computed(() => {
     const m = this.message();
-    return m?.severity === 'error' ? this.liveClaim()?.ggFailureMessage : undefined;
+    return m?.severity === 'error' && !m.causeInBody ? this.liveClaim()?.ggFailureMessage : undefined;
   });
 
   // True once, right after a retry this handler started has worked.

@@ -150,9 +150,8 @@
             (dateRangeChanged)="setClaimsDateRange($event)"
           >
           </app-claims-portfolio-widget>
-          <!-- GG failures the handler must fix (docs/ux/gg-dashboard.md), then the
-          recovery potential prompt (BMPCC-17779). -->
-          <app-gg-attention-panel [items]="ggAttention()"></app-gg-attention-panel>
+          <!-- Recovery potential prompt (BMPCC-17779). Global Genius problems show on
+          the portfolio rows above (docs/ux/gg-dashboard.md, GG-DASH-2). -->
           <app-recovery-potential-panel
             [items]="recoveryAttention()"
           ></app-recovery-potential-panel>

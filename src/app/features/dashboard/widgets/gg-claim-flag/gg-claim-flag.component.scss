@@ -1,0 +1,42 @@
+// Icon button: copied from mass-event-card.component.scss:20-29 (.co-info-btn).
+.ggf-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+// Red triangle: same token and size as the dashboard's overdue triangle
+// (dashboard.scss:290-294 .overdue-icon).
+.ggf-icon {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--danger);
+  flex-shrink: 0;
+}
+
+// Popover body: width and type size from mass-event-card.component.scss:47-51
+// (.me-popover); title / text spacing from entity-limit-cell.component.scss:63-70.
+.ggf-pop {
+  min-width: 260px;
+  max-width: 320px;
+  font-size: var(--paragraph-03-font-size);
+  white-space: normal;
+}
+
+.ggf-pop__title {
+  margin: 0 0 var(--space-sm);
+}
+
+.ggf-pop__text {
+  margin: 0;
+}
+
+// One block per broken item, spaced like the popover footer
+// (mass-event-card.component.scss:161-168).
+.ggf-pop__line {
+  margin-top: var(--space-md);
+}

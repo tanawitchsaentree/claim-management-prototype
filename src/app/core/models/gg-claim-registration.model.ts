@@ -12,17 +12,24 @@ export interface ClaimRegistrationMessage {
   // Claim-level re-trigger (BMPCC-20232 business use case 3).
   canSendAgain: boolean;
   sendAgainLabel?: string;
+  // GG's message is already in the body: don't repeat it underneath.
+  causeInBody?: boolean;
 }
 
 // Review round 2: "Send claim again" could read as creating a second claim.
+// Used by the payment / reserve pre-checks; the Claim Overview banner says
+// "Retry" (colleague Figma design, GG-DASH-2 in gg-dashboard.model.ts).
 export const CLAIM_SEND_AGAIN_LABEL = 'Retry setting up this claim in Global Genius';
+const BANNER_RETRY_LABEL = 'Retry';
 
 export function claimRegistrationMessage(
   state: GgClaimRegistration | undefined,
   // Times the handler already sent it again and it still failed.
   resendFailures = 0,
   // A handler-triggered retry is waiting for GG's answer.
-  resendInFlight = false
+  resendInFlight = false,
+  // GG's own failure message (ClaimOverview.ggFailureMessage).
+  rootCause?: string
 ): ClaimRegistrationMessage | null {
   switch (state) {
     case 'failed':
@@ -40,16 +47,21 @@ export function claimRegistrationMessage(
           body: "Payments and reserves stay on hold. Finance have been told. You can retry once more, or wait: we'll let you know when it's ready.",
           severity: 'error',
           canSendAgain: true,
-          sendAgainLabel: CLAIM_SEND_AGAIN_LABEL
+          sendAgainLabel: BANNER_RETRY_LABEL
         };
       }
-      return {
-        title: "This claim isn't in Global Genius yet, so payments and reserves are on hold",
-        body: "The claim couldn't be set up there. You can retry now. Finance have been told, and we'll let you know when it's ready.",
-        severity: 'error',
-        canSendAgain: true,
-        sendAgainLabel: CLAIM_SEND_AGAIN_LABEL
-      };
+      {
+        // Colleague Figma design: GG's root cause inline, then "Retry".
+        const cause = rootCause?.trim().replace(/\.$/, '');
+        return {
+          title: 'Global Genius processing failed',
+          body: `Claim couldn't be processed in Global Genius${cause ? ': ' + cause : ''}. Retry to process it again.`,
+          severity: 'error',
+          canSendAgain: true,
+          sendAgainLabel: BANNER_RETRY_LABEL,
+          causeInBody: !!cause
+        };
+      }
     case 'policy-missing':
       return {
         title: "This claim's policy isn't in Global Genius, so payments and reserves are on hold",

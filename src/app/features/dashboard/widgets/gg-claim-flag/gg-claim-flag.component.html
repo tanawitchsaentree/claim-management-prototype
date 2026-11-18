@@ -1,0 +1,61 @@
+<!-- Trigger + closeable popover copied from entity-limit-cell.component.html:37-53
+     (click, bottom, [nxPopoverCloseable]); actions in the popover as
+     mass-event-card.component.html:98-110 (nx-link, close the trigger first). -->
+<button
+  type="button"
+  class="ggf-btn"
+  [attr.aria-label]="'Global Genius problem on ' + (problem().claimId | claimNumber)"
+  #ggTrigger="nxPopoverTrigger"
+  [nxPopoverTriggerFor]="ggPopover"
+  nxPopoverTrigger="click"
+  nxPopoverDirection="bottom"
+  [nxPopoverCloseable]="true"
+>
+  <nx-icon name="exclamation-triangle-o" class="ggf-icon"></nx-icon>
+</button>
+<nx-popover #ggPopover>
+  <div class="ggf-pop">
+    <p class="ggf-pop__title"><strong>Global Genius processing failed.</strong></p>
+    @if (problem().setupFailed) {
+      <p class="ggf-pop__text">
+        Claim couldn't be processed in Global Genius{{ problem().rootCause ? ': ' + problem().rootCause : '' }}.
+      </p>
+      @if (problem().setupWithFinance) {
+        <p class="ggf-pop__text">With Finance, nothing for you to do.</p>
+      } @else {
+        <p class="ggf-pop__text">Retry to process it again.</p>
+        <nx-link
+          ><a tabindex="0" (click)="retryClaim(ggTrigger)" (keydown.enter)="retryClaim(ggTrigger)"
+            >Retry</a
+          ></nx-link
+        >
+      }
+    }
+    @for (line of problem().lines; track line.key) {
+      <div class="ggf-pop__line">
+        <p class="ggf-pop__text">{{ line.text }}</p>
+        @switch (line.action.kind) {
+          @case ('link') {
+            @if (asLink(line.action); as a) {
+              <nx-link
+                ><a [routerLink]="a.link" [queryParams]="a.queryParams" (click)="ggTrigger.close()">{{
+                  a.label
+                }}</a></nx-link
+              >
+            }
+          }
+          @case ('retry-item') {
+            <nx-link
+              ><a
+                tabindex="0"
+                (click)="retryItem(line, ggTrigger)"
+                (keydown.enter)="retryItem(line, ggTrigger)"
+                >Retry</a
+              ></nx-link
+            >
+          }
+        }
+      </div>
+    }
+  </div>
+</nx-popover>
