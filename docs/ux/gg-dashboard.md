@@ -19,12 +19,12 @@ The design replaces the first build's separate "Global Genius: needs your action
 ## The 4 agreed changes, and why
 1. "Failed" only when the claim itself couldn't be set up in GG. If a payment, reserve, recovery or section failed, the claim is still Open; only the triangle shows. Why: the PO / BO answer was "status stays Open", and Failed on a claim that is fine would read as the whole claim being broken.
 2. The popover action fits the cause. Claim set-up failed, or GG was unavailable and the automatic retries ran out: "Retry". Data the handler must fix (bank details, party, sub-type): no Retry, one line per broken item saying what broke, with "Fix payment" / "Fix reserve" / "Fix recovery" straight to it. Section not booked: "Retry on claim" to Claim Overview, where its Retry is. Finance-owned: "with Finance, nothing for you to do", no action. Why: a Retry on bad data fails again, and one claim can have two failures that need two different screens.
-3. Claims with a GG problem sort to the top of the portfolio, and a "Global Genius issues: N · Show only these" chip (copied from the Payments list's "Needs you" chip) shows only them. Why: the widget shows 5 rows, so a problem on an older claim would be hidden.
+3. Claims with a GG problem sort to the top of the portfolio. Why: the widget shows 5 rows, so a problem on an older claim would be hidden. (A "Global Genius issues: N · Show only these" chip was tried and removed 2026-11-19 at the designer's request: sorting first is enough.)
 4. While GG is down, no triangle on items that failed because GG was unavailable. The downtime banner stays and counts them. Why: red on every claim during downtime looks like many problems and is really zero actions.
 
 ## Journey
 1. Opens the dashboard. Sees: claims with a GG problem at the top of Claims portfolio, each with a red triangle. Knows: which claims.
-2. Clicks a triangle. Reads what broke, in plain words, and the one action that fits.
+2. Hovers (or clicks) a triangle. Reads what broke, in plain words, and the one action that fits.
 3. Retry, or Fix payment / reserve / recovery (lands on that item, open, with GG's reason), or Retry on claim.
 4. After a fix: a toast, and the triangle is gone.
 5. When GG is down: one banner, "nothing to do", a count of waiting items, no triangles for those.
@@ -44,10 +44,10 @@ The design replaces the first build's separate "Global Genius: needs your action
 - GGD-05 GG was unavailable, retries ran out: popover line with Retry (same confirm as the Reserves list).
 - GGD-06 Section not booked: popover line with Retry on claim.
 - GGD-07 Finance-owned only: lines "with Finance, nothing for you to do", no action.
-- GGD-08 Problems past row 5: sorted first, chip "Global Genius issues: 4", Show only these / Show all.
+- GGD-08 Problems past row 5: sorted first.
 - GGD-09 GG down: banner counts 2 waiting items, no triangle on those claims, the data problem still has one.
 - GGD-10 Planned downtime in 3 days: banner, no triangles.
-- GGD-11 Nothing broken: no triangles, no chip, no banner.
+- GGD-11 Nothing broken: no triangles, no banner.
 
 ## Open for the operational process (not design)
 - Who announces planned downtime, and from where (admin screen or system feed)?
@@ -77,3 +77,10 @@ Not built:
 - A claim whose policy is missing in GG (policy-missing) gets no triangle: the policy team fixes it.
 - While GG is down, a claim set-up failure still shows its triangle and Retry.
 - On the claim itself, items waiting for GG still read "Couldn't be booked", not "Waiting for Global Genius" (from the first build).
+
+## Changes 2026-11-19 (designer review before the team demo)
+- Claims portfolio is the first widget on the dashboard.
+- Triangle is solid (filled), and its popover opens on hover; it stays open while the mouse is on it so Retry / Fix links can be clicked.
+- "Global Genius issues" chip removed.
+- Q2 Financial Closure banner switched off so only the GG banner shows.
+- Claim Overview: failed sections in ONE banner with one row per section and a Retry link, never one banner each.
