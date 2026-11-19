@@ -1,12 +1,14 @@
-@if (rows().length) {
-  <!-- One nx-message per section, laid out like the claim-level banner
-       (gg-registration-banner.component.html) and stacked like
-       financial-warnings.component.html. -->
-  <div class="gsb-list" role="region" aria-label="Section bookings in Global Genius">
-    @for (r of rows(); track r.booking.sectionId) {
-      <nx-message [context]="r.retrying ? 'info' : 'error'">
-        <strong>{{ r.title }}</strong>
-        <span class="gsb-body">{{ r.body }}</span>
+@if (banner(); as b) {
+  <!-- One nx-message for every failed section (never one banner each), laid
+       out like the claim-level banner (gg-registration-banner.component.html):
+       bold title, plain line, then one row per section with GG's own words
+       and a "Retry" nx-link as in the claim banner. -->
+  <nx-message [context]="b.context" class="gsb-banner" role="region" aria-label="Section bookings in Global Genius">
+    <strong>{{ b.title }}</strong>
+    <span class="gsb-body">{{ b.body }}</span>
+    @for (r of b.rows; track r.booking.sectionId) {
+      <div class="gsb-row">
+        <span class="gsb-name">{{ r.name }}</span>
         @if (r.booking.failureMessage && !r.retrying) {
           <span class="gsb-gg-message"><span class="gsb-gg-label">Message from Global Genius:</span> {{ r.booking.failureMessage }}</span>
         }
@@ -14,17 +16,17 @@
           <span class="gsb-body">{{ r.hint }}</span>
         }
         @if (r.canRetry) {
-          <button
-            nxButton="secondary small"
-            type="button"
-            class="gsb-action"
-            [attr.aria-label]="'Retry booking for ' + r.name"
-            (click)="retry(r.booking.sectionId)"
+          <nx-link class="gsb-action"
+            ><a
+              tabindex="0"
+              [attr.aria-label]="'Retry booking for ' + r.name"
+              (click)="retry(r.booking.sectionId)"
+              (keydown.enter)="retry(r.booking.sectionId)"
+              >Retry</a
+            ></nx-link
           >
-            Retry booking
-          </button>
         }
-      </nx-message>
+      </div>
     }
-  </div>
+  </nx-message>
 }

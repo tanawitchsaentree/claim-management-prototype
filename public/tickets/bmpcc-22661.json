@@ -61,14 +61,14 @@
     {
       "id": "AC-02",
       "statement": "AC01 · Section booking failed: message per section with the Global Genius failure text",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button.\n\n**Decision:** sections only go to Global Genius once the claim is there, so the section message is hidden while the claim banner shows. Fix the claim first, the sections follow.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry** link.\n\n**Decision:** sections only go to Global Genius once the claim is there, so the section message is hidden while the claim banner shows. Fix the claim first, the sections follow.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Section booking failed: message per section with the Global Genius failure text",
         "preconditions": [
           {
-            "text": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button.",
+            "text": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry** link.",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Claim Overview of CLM-2024-001."
@@ -102,15 +102,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button.",
+        "description": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry** link.",
         "visualCues": [
-          "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button."
+          "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry** link."
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Claim Overview of CLM-2024-001.",
-        "expectedResult": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry booking** button."
+        "expectedResult": "Red banner \"2 sections couldn't be booked in Global Genius\". One row per section: the section name, its **Message from Global Genius**, a short line on what to do, and a **Retry** link."
       },
       "expectedOutcome": {
         "overviewStatus": "Open"
@@ -164,7 +164,7 @@
     {
       "id": "AC-04",
       "statement": "AC02 · Retry a section event: feedback, then it fails again",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner with one section, Contents & Fixtures Damage, and its Global Genius message.\n\n**Try:** Press **Retry booking**: the row shows a spinner and \"Retrying\" at once. After about 3 seconds a red toast says it still couldn't be booked, the row comes back with \"Retried, still not booked. You can retry once more\" and the bell lists it.\n\n**Decision:** Retry has no confirm dialog, same as the claim retry from GG-2: it sends the same event again and moves no money. Feedback instead: the row turns to Retrying straight away, then a toast and a bell line say how it went. Two failed retries hand it to Finance and the button goes (DESIGN DECISION GG-SEC-1).",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner with one section, Contents & Fixtures Damage, and its Global Genius message.\n\n**Try:** Press **Retry**: the row shows a spinner and \"Retrying\" at once. After about 3 seconds a red toast says it still couldn't be booked, the row comes back with \"Retried, still not booked. You can retry once more\" and the bell lists it.\n\n**Decision:** Retry has no confirm dialog, same as the claim retry from GG-2: it sends the same event again and moves no money. Feedback instead: the row turns to Retrying straight away, then a toast and a bell line say how it went. Two failed retries hand it to Finance and the Retry link goes (DESIGN DECISION GG-SEC-1).",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -174,7 +174,7 @@
             "text": "Red banner with one section, Contents & Fixtures Damage, and its Global Genius message.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press **Retry booking**: the row shows a spinner and \"Retrying\" at once. After about 3 seconds a red toast says it still couldn't be booked, the row comes back with \"Retried, still not booked. You can retry once more\" and the bell lists it."
+            "hint": "Press **Retry**: the row shows a spinner and \"Retrying\" at once. After about 3 seconds a red toast says it still couldn't be booked, the row comes back with \"Retried, still not booked. You can retry once more\" and the bell lists it."
           }
         ],
         "stateOverrides": {
@@ -216,7 +216,7 @@
     {
       "id": "AC-05",
       "statement": "AC03 · Retry works: the failure message is removed",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner with one section, Property Damage, and its Global Genius message.\n\n**Try:** Press **Retry booking**: \"Retrying\", then after about 3 seconds the banner is gone, a green toast says the section is now booked, and the bell shows it under Done.\n\nThe claim event works the same way: apply GG 1 · AC-01 and retry, the red banner turns green.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner with one section, Property Damage, and its Global Genius message.\n\n**Try:** Press **Retry**: \"Retrying\", then after about 3 seconds the banner is gone, a green toast says the section is now booked, and the bell shows it under Done.\n\nThe claim event works the same way: apply GG 1 · AC-01 and retry, the red banner turns green.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
@@ -226,7 +226,7 @@
             "text": "Red banner with one section, Property Damage, and its Global Genius message.",
             "page": "overview",
             "role": "tested-visible",
-            "hint": "Press **Retry booking**: \"Retrying\", then after about 3 seconds the banner is gone, a green toast says the section is now booked, and the bell shows it under Done."
+            "hint": "Press **Retry**: \"Retrying\", then after about 3 seconds the banner is gone, a green toast says the section is now booked, and the bell shows it under Done."
           }
         ],
         "stateOverrides": {
@@ -268,14 +268,14 @@
     {
       "id": "AC-06",
       "statement": "Repeated failures: retried twice, now with Finance",
-      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".\n\n**Decision (epic open point: repeated failures):** after two failed retries the handler can't usefully retry again, so the button goes and Finance owns it. Same rule as the claim event (GG-2).\n\n**NOTE [accepted-deviation]:** The epic leaves repeated failures as an open point. The prototype decides two retries, then the item goes to Finance with no Retry button. Not in Jira, pending product sign-off.",
+      "plainStatement": "**Opens:** Claim Overview of CLM-2024-001.\n\n**You see:** Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry link. The bell lists it under \"Someone else is on it\".\n\n**Decision (epic open point: repeated failures):** after two failed retries the handler can't usefully retry again, so the Retry link goes and Finance owns it. Same rule as the claim event (GG-2).\n\n**NOTE [accepted-deviation]:** The epic leaves repeated failures as an open point. The prototype decides two retries, then the item goes to Finance with no Retry link. Not in Jira, pending product sign-off.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {
         "description": "Repeated failures: retried twice, now with Finance",
         "preconditions": [
           {
-            "text": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".",
+            "text": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry link. The bell lists it under \"Someone else is on it\".",
             "page": "overview",
             "role": "tested-visible",
             "hint": "Claim Overview of CLM-2024-001."
@@ -303,15 +303,15 @@
         ]
       },
       "expectedUI": {
-        "description": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\".",
+        "description": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry link. The bell lists it under \"Someone else is on it\".",
         "visualCues": [
-          "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\"."
+          "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry link. The bell lists it under \"Someone else is on it\"."
         ]
       },
       "howToTest": {
         "route": "/claims/CLM-2024-001/overview",
         "trigger": "Claim Overview of CLM-2024-001.",
-        "expectedResult": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry button. The bell lists it under \"Someone else is on it\"."
+        "expectedResult": "Red banner \"1 section still couldn't be booked in Global Genius: now with Finance\". The row keeps the Global Genius message and says Finance is fixing it. **No** Retry link. The bell lists it under \"Someone else is on it\"."
       },
       "expectedOutcome": {
         "overviewStatus": "Open"

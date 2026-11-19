@@ -1,10 +1,7 @@
-// BLESSED: one nx-message per item, stacked like financial-warnings.component.scss
-// (.fw-list); inner layout copies gg-registration-banner.component.scss (.ggb-*),
-// the claim-level GG banner directly above it.
-.gsb-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+// One banner for all failed sections. Inner layout copies
+// gg-registration-banner.component.scss (.ggb-*), the claim-level GG banner
+// directly above it; rows spaced like gg-claim-flag.component.scss .ggf-pop__line.
+.gsb-banner {
   margin-bottom: var(--space-lg);
 }
 
@@ -13,9 +10,18 @@
   margin-top: var(--space-xs);
 }
 
+.gsb-row {
+  margin-top: var(--space-md);
+}
+
+.gsb-name {
+  display: block;
+  font-weight: 600;
+}
+
 .gsb-action {
   display: block;
-  margin-top: var(--space-md);
+  margin-top: var(--space-xs);
 }
 
 // GG's own words, kept apart from our plain-language line (BMPCC-22661 AC01).

@@ -6,7 +6,7 @@
 //
 // DESIGN DECISION GG-SEC-1: same retry rules as the claim event (GG-2), so the
 // two never behave differently on one page:
-// - "Retry booking" re-publishes the SAME section event; it moves no money, so
+// - "Retry" re-publishes the SAME section event; it moves no money, so
 //   there is no confirm dialog (as the claim retry). Feedback: the row turns to
 //   "Retrying", then a toast + a bell line say how it went.
 // - one handler retry that fails again leaves one more try; after the second
