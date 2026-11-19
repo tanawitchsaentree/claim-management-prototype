@@ -99,25 +99,6 @@
       </div>
     }
   } @else {
-    <!-- Copied from financial-overview/components/list-toolbar/list-toolbar.component.html:3-18 -->
-    @if (ggCount() > 0 || ggOnly()) {
-      <div class="gg-filter">
-        <button
-          type="button"
-          class="lt__needs"
-          [class.lt__needs--on]="ggOnly()"
-          [attr.aria-pressed]="ggOnly()"
-          (click)="ggOnly.set(!ggOnly())"
-        >
-          Global Genius issues: {{ ggCount() }}
-          @if (ggOnly()) {
-            <span class="lt__clear">Show all</span>
-          } @else {
-            <span class="lt__clear">Show only these</span>
-          }
-        </button>
-      </div>
-    }
     @if (displayedClaims().length === 0) {
       <app-empty-state
         message="No claims found for this view."

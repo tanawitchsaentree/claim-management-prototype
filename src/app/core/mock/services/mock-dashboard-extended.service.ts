@@ -52,7 +52,7 @@ export class MockDashboardExtendedService {
 
   getFinancialClosurePeriod(): Observable<FinancialClosurePeriod> {
     return of({
-      active: true,
+      active: false,
       start: '2026-06-25',
       end: '2026-07-02',
       message:

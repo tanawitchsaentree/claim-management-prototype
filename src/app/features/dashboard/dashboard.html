@@ -32,6 +32,14 @@
           </div>
         }
         @if (!vm.loading && !vm.error) {
+          <!-- Claims portfolio -->
+          <app-claims-portfolio-widget
+            [claims]="dateRangedClaims()"
+            [lossEvents]="lossEvents()"
+            [dateRange]="claimsDateRange()"
+            (dateRangeChanged)="setClaimsDateRange($event)"
+          >
+          </app-claims-portfolio-widget>
           <!-- Recent approvals -->
           <app-recent-approvals-widget
             [approvals]="vm.urgentApprovals"
@@ -142,14 +150,6 @@
               </a>
             </div>
           </div>
-          <!-- Claims portfolio -->
-          <app-claims-portfolio-widget
-            [claims]="dateRangedClaims()"
-            [lossEvents]="lossEvents()"
-            [dateRange]="claimsDateRange()"
-            (dateRangeChanged)="setClaimsDateRange($event)"
-          >
-          </app-claims-portfolio-widget>
           <!-- Recovery potential prompt (BMPCC-17779). Global Genius problems show on
           the portfolio rows above (docs/ux/gg-dashboard.md, GG-DASH-2). -->
           <app-recovery-potential-panel
