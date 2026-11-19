@@ -1,20 +1,26 @@
-<!-- Trigger + closeable popover copied from entity-limit-cell.component.html:37-53
-     (click, bottom, [nxPopoverCloseable]); actions in the popover as
-     mass-event-card.component.html:98-110 (nx-link, close the trigger first). -->
+<!-- Closeable popover as entity-limit-cell.component.html:37-53 (bottom,
+     [nxPopoverCloseable]), opened by hover or click (manual trigger, see
+     gg-claim-flag.component.ts); actions as mass-event-card.component.html:98-110. -->
 <button
+  #ggBtn
   type="button"
   class="ggf-btn"
   [attr.aria-label]="'Global Genius problem on ' + (problem().claimId | claimNumber)"
-  #ggTrigger="nxPopoverTrigger"
   [nxPopoverTriggerFor]="ggPopover"
-  nxPopoverTrigger="click"
+  nxPopoverTrigger="manual"
+  [nxPopoverShow]="show()"
+  (nxPopoverShowChange)="onShowChange($event)"
   nxPopoverDirection="bottom"
   [nxPopoverCloseable]="true"
+  [attr.aria-expanded]="show()"
+  (mouseenter)="hoverOpen()"
+  (click)="pinOpen()"
+  (keydown.enter)="pinOpen()"
 >
   <nx-icon name="exclamation-triangle" class="ggf-icon"></nx-icon>
 </button>
 <nx-popover #ggPopover>
-  <div class="ggf-pop">
+  <div class="ggf-pop" #ggPop>
     <p class="ggf-pop__title"><strong>Global Genius processing failed.</strong></p>
     @if (problem().setupFailed) {
       <p class="ggf-pop__text">
@@ -25,7 +31,7 @@
       } @else {
         <p class="ggf-pop__text">Retry to process it again.</p>
         <nx-link
-          ><a tabindex="0" (click)="retryClaim(ggTrigger)" (keydown.enter)="retryClaim(ggTrigger)"
+          ><a tabindex="0" (click)="retryClaim()" (keydown.enter)="retryClaim()"
             >Retry</a
           ></nx-link
         >
@@ -38,7 +44,7 @@
           @case ('link') {
             @if (asLink(line.action); as a) {
               <nx-link
-                ><a [routerLink]="a.link" [queryParams]="a.queryParams" (click)="ggTrigger.close()">{{
+                ><a [routerLink]="a.link" [queryParams]="a.queryParams" (click)="hide()">{{
                   a.label
                 }}</a></nx-link
               >
@@ -48,8 +54,8 @@
             <nx-link
               ><a
                 tabindex="0"
-                (click)="retryItem(line, ggTrigger)"
-                (keydown.enter)="retryItem(line, ggTrigger)"
+                (click)="retryItem(line)"
+                (keydown.enter)="retryItem(line)"
                 >Retry</a
               ></nx-link
             >
