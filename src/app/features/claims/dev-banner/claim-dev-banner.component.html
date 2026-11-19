@@ -29,7 +29,9 @@
                   <!-- One line per ticket so ~12 fit without scrolling; the filter
                        matches this text, so the ID and the title are both searchable. -->
                   <div class="cdb-ticket-option" [title]="ticket.ticketId + ' · ' + ticket.title">
-                    <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
+                    @if (isJiraKey(ticket.ticketId)) {
+                      <span class="cdb-ticket-id">{{ ticket.ticketId }}</span>
+                    }
                     <span class="cdb-ticket-title">{{ ticket.title }}</span>
                     <span class="cdb-ticket-stats">
                       ✅ {{ countByStatus(ticket, 'done') }}

@@ -88,8 +88,12 @@ export class ClaimDevBannerComponent implements OnInit, OnDestroy {
   // so the selected ticket reads at a glance and the id still filters.
   readonly ticketLabel = (id: string | null): string => {
     const t = this.helper.tickets().find(x => x.ticketId === id);
-    return t ? `${t.title} (${t.ticketId})` : (id ?? '');
+    if (!t) return id ?? '';
+    return this.isJiraKey(t.ticketId) ? `${t.title} (${t.ticketId})` : t.title;
   };
+  // Prototype-only tickets (GG-1-CLAIM-OVERVIEW...) already carry a readable
+  // name in their title, so their slug ID is hidden; real Jira keys stay.
+  readonly isJiraKey = (id: string): boolean => /^[A-Z]+-\d+$/.test(id);
   readonly variantCtrl = new FormControl<ReferenceVariant>('none');
 
   readonly variantOptions: { value: ReferenceVariant; label: string }[] = [
