@@ -182,7 +182,7 @@
     {
       "id": "AC-04b",
       "statement": "AC04b · Service Interruption asks which utility failed",
-      "plainStatement": "**Opens:** Edit claim details of CLM-2024-013 (Nordbyte SE, policy offers 5 CBI case types).\n\n**You see:** Case type Service Interruption (Public or Private Utilities), **Utility type: Power**.\n\n**Try:** Edit and open the utility list: Power, Gas, Water, Steam, Telecom, IT. Open the case type list: only Supplier, Customer and Other groups, because this policy offers nothing else.\n\n**NOTE [accepted-deviation]:** Jira only lists the case type \"CBI - Service Interruption (Public or Private Utilities) BI\". The Utility type question and its list (Power, Gas, Water, Steam, Telecom, IT) are made up by the prototype. Not in Jira, pending product sign-off.",
+      "plainStatement": "**Opens:** Edit claim details of CLM-2024-013 (Nordbyte SE, policy offers 5 CBI case types).\n\n**You see:** Case type Service Interruption (Public or Private Utilities), **Utility type: Power**.\n\n**Try:** Edit and open the utility list: Power, Gas, Water, Steam, Telecommunications, IT. Open the case type list: only Supplier, Customer and Other groups, because this policy offers nothing else.\n\nSource: the Utility type question and its list (Power, Gas, Water, Steam, Telecommunications, IT) come from the CBI functional design (Confluence 3163290837, Category-specific fields), not from this Jira ticket.",
       "page": "overview",
       "buildStatus": "done",
       "setup": {

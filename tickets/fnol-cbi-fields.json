@@ -1,0 +1,340 @@
+{
+  "ticketId": "FNOL-CBI-FIELDS",
+  "epicId": "BMPCC-17927",
+  "module": "FNOL",
+  "title": "CBI questions per case type on Loss information",
+  "targetClaim": "CLM-2024-001",
+  "pages": [
+    "fnol-loss-info"
+  ],
+  "walkthroughSteps": [
+    "Apply any AC: lands on FNOL Loss information with policy POL-2024-001 selected.",
+    "Tick Business interruption under Type of damage, answer Yes to the CBI question, then pick the case type the AC names.",
+    "AC-01 to AC-05 are one per CBI branch, AC-06 is switching case type, AC-07 is what the created section shows after submit.",
+    "Prototype ticket, no Jira of its own. Source: CBI functional design, Confluence 3163290837."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "Supplier or Customer asks for the third party and where it happened",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** **Supplier: Named** (or any Supplier / Customer type).\n\n**Try:** Press **Next** with the new fields empty: **Supplier name** and the originating location are required, **Supplier industry (optional)** is not. Pick a Customer type: the labels read Customer name / Customer industry. Unnamed types make the name optional.\n\nSource: CBI functional design (Confluence 3163290837), Data Captured table. Industry stays a typed field: the design says manual entry only in baseline, no WB/AOC code list.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Supplier or Customer asks for the third party and where it happened",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Supplier name, Supplier industry (optional) and 'Where did the originating CBI event occur?' with Add location",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Supplier name, Supplier industry (optional) and 'Where did the originating CBI event occur?' with Add location",
+        "visualCues": [
+          "Supplier name, Supplier industry (optional) and 'Where did the originating CBI event occur?' with Add location"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick Supplier: Named (or any Supplier / Customer type).",
+        "expectedResult": "Supplier name, Supplier industry (optional) and 'Where did the originating CBI event occur?' with Add location"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Denial of Access asks whether an authority ordered it",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** any of the 4 **Denial of Access** types.\n\n**Try:** Only one extra question shows: **Was access denied by order of an authority?** Yes / No. Press **Next** without answering: **Answer required**, and the error summary names it.\n\nSource: functional design, Category-specific fields (Authority order Y/N), and the UI/UX alignment page (3157631012), which lists all 4 Denial of Access types. The design still calls the mapping a hypothesis (Open Point 13).",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Denial of Access asks whether an authority ordered it",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Yes / No question 'Was access denied by order of an authority?', required",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Yes / No question 'Was access denied by order of an authority?', required",
+        "visualCues": [
+          "Yes / No question 'Was access denied by order of an authority?', required"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick any of the 4 Denial of Access types.",
+        "expectedResult": "Yes / No question 'Was access denied by order of an authority?', required"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Loss of Attraction has no extra field yet",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** **Loss of Attraction: With PD Trigger** or **Without PD Trigger**.\n\n**Try:** No extra field appears. CBI does not block Next once the case type is picked.\n\nOpen in the design: the functional design names a \"Trigger event location\" for Loss of Attraction but says it may be the same as the originating loss location and needs reconciling; the diagram asks \"is this the Loss location captured? need use case\". Nothing is built until that is decided.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Loss of Attraction has no extra field yet",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Only the CBI case type, no extra field",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Only the CBI case type, no extra field",
+        "visualCues": [
+          "Only the CBI case type, no extra field"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick Loss of Attraction: With PD Trigger or Without PD Trigger.",
+        "expectedResult": "Only the CBI case type, no extra field"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "Service Interruption asks which utility failed",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** **Service Interruption (Public or Private Utilities)**.\n\n**Try:** **Utility type** appears next to the case type. Open it: Power, Gas, Water, Steam, Telecommunications, IT. Press **Next** without one: **Select a utility type**.\n\nSource: functional design, Category-specific fields (Utility type dropdown with these six options).",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Service Interruption asks which utility failed",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Utility type dropdown with Power, Gas, Water, Steam, Telecommunications, IT, required",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Utility type dropdown with Power, Gas, Water, Steam, Telecommunications, IT, required",
+        "visualCues": [
+          "Utility type dropdown with Power, Gas, Water, Steam, Telecommunications, IT, required"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick Service Interruption (Public or Private Utilities).",
+        "expectedResult": "Utility type dropdown with Power, Gas, Water, Steam, Telecommunications, IT, required"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "(Air)Port Blockage has no extra field yet",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** **(Air)Port Blockage** (under Other).\n\n**Try:** No extra field appears. CBI does not block Next once the case type is picked.\n\nOpen in the design: the diagram leaves this branch as \"?\" and Open Point 14 asks whether it reuses the authority question or needs its own field. Nothing is built until that is decided.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "(Air)Port Blockage has no extra field yet",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Only the CBI case type, no extra field",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Only the CBI case type, no extra field",
+        "visualCues": [
+          "Only the CBI case type, no extra field"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick (Air)Port Blockage (under Other).",
+        "expectedResult": "Only the CBI case type, no extra field"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Changing the case type clears the answers that no longer apply",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** a **Denial of Access** type and answer **Yes**.\n\n**Try:** Switch to **Service Interruption**: the authority question goes and Utility type appears. Switch back to Denial of Access: the authority question is empty again.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Changing the case type clears the answers that no longer apply",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Fields swap with the case type and come back empty",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Fields swap with the case type and come back empty",
+        "visualCues": [
+          "Fields swap with the case type and come back empty"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick a Denial of Access type and answer Yes.",
+        "expectedResult": "Fields swap with the case type and come back empty"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "After submit, the Business interruption section shows the same answers",
+      "plainStatement": "**Opens:** FNOL Loss information on policy POL-2024-001 (offers all 12 CBI case types). Tick **Business interruption** under Type of damage, answer **Yes** to the CBI question.\n\n**Pick:** any case type and answer its fields. Then walk the wizard: on Entities & Damages tick an entity under Business interruption, and Submit claim.\n\n**Try:** Open the new claim's **Sections**, the entity's menu, **View details**. Entity details shows the CBI case type, plus Supplier/Customer name, industry and Originating loss location (Supplier/Customer), or **Access denied by order of an authority** (Denial of Access), or **Utility type** (Service Interruption). Rows a case type does not ask for are not shown.\n\nNot built: the diagram says the CBI section \"includes Extension Limits\". The design takes those limits from the policy per case type (Open Point 10) and gives no values, so the section shows none.",
+      "page": "fnol-loss-info",
+      "buildStatus": "done",
+      "setup": {
+        "description": "After submit, the Business interruption section shows the same answers",
+        "preconditions": [
+          {
+            "text": "FNOL is past the search step, policy POL-2024-001 selected",
+            "page": "fnol-loss-info",
+            "role": "setup"
+          },
+          {
+            "text": "Entity details on Sections lists the CBI answers for that case type",
+            "page": "fnol-loss-info",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            }
+          }
+        },
+        "postLand": [
+          {
+            "kind": "none"
+          }
+        ]
+      },
+      "expectedUI": {
+        "description": "Entity details on Sections lists the CBI answers for that case type",
+        "visualCues": [
+          "Entity details on Sections lists the CBI answers for that case type"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/loss-information",
+        "trigger": "Tick Business interruption, answer Yes, open CBI case type. Pick any case type and answer its fields. Then walk the wizard: on Entities & Damages tick an entity under Business interruption, and Submit claim.",
+        "expectedResult": "Entity details on Sections lists the CBI answers for that case type"
+      }
+    }
+  ]
+}

@@ -235,6 +235,12 @@
       "title": "CBI Extension for Edit claim"
     },
     {
+      "id": "FNOL-CBI-FIELDS",
+      "file": "fnol-cbi-fields.json",
+      "module": "FNOL",
+      "title": "CBI questions per case type on Loss information"
+    },
+    {
       "id": "BMPCC-22665",
       "file": "bmpcc-22665.json",
       "module": "FNOL",
@@ -257,6 +263,12 @@
       "file": "bmpcc-22635.json",
       "module": "FNOL",
       "title": "Generate the FNOL Acknowledgement: trigger and its states"
+    },
+    {
+      "id": "FNOL-RESERVES-MULTI",
+      "file": "fnol-reserves-multi.json",
+      "module": "FNOL",
+      "title": "Reserves for every claim of one notification, with the Add reserve steps"
     }
   ]
 }

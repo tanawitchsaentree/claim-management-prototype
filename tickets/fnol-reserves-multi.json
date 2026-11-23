@@ -1,0 +1,409 @@
+{
+  "ticketId": "FNOL-RESERVES-MULTI",
+  "module": "FNOL",
+  "title": "Reserves for every claim of one notification, with the Add reserve steps",
+  "targetClaim": "CLM-2024-001",
+  "pages": ["fnol-reserves", "fnol-summary"],
+  "walkthroughSteps": [
+    "Prototype ticket, no Jira source: closes two gaps against production's Reserves step (claims-management-main ReservesPage.ts). UX basis: docs/ux/fnol-reserves-multi-claim.md.",
+    "AC-01: one card per claim. AC-02 and AC-03: Add reserve (Section, Party, Damage, Reserve type), then the tabbed editor.",
+    "AC-06: Next names every claim that still needs a reserve or an explanation. AC-08: each claim's reserves land on its own claim."
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "statement": "One card per claim, each starting with no reserve",
+      "plainStatement": "**Opens:** FNOL step **Reserves** for Jonas Kaufmann. On the Policies step POL-2024-021 (Property), POL-2024-022 (Liability) and POL-2024-023 (Engineering) were chosen, so this notification creates three claims. Entities are ticked and two parties (Finn Dahl, Oskar Veld) are on the Parties step.\n\n**You see:** A line \"This notification creates 3 claims, one for each policy.\" Then three stacked cards, **Claim 1** Property, **Claim 2** Liability, **Claim 3** Engineering. Each card: Policy ID, Total reserve EUR 0.00, Allianz share 100%, Allianz reserves, \"No indemnity reserve yet.\" with **Add explanation**, an **Add reserve** button and \"No reserves on this claim yet.\"\n\nSource: production's Reserves page object (claims-management-main testing/src/pages/ReservesPage.ts) reads a claim card with Policy ID, Total reserve and Allianz share, and says one FNOL event may create several claims, each needing a reserve or a narrative.\n\n**NOTE [accepted-deviation]:** Production heads each card with the claim number, because its claims exist from the Parties step on. This prototype creates claims at Submit, so the cards say Claim 1, Claim 2, Claim 3 (RES-D1). Allianz share comes from the policy's co-insurance, 100% when there is none (RES-D7). Not settled by production or a ticket. Treated as `done`, pending product sign-off.\n\n**NOTE [accepted-deviation]:** Before this change only the first policy had reserves in FNOL (BMPCC-22665 IMP-7). Now every claim gets its own reserves here, because production asks each claim for one (RES-D6). Not settled by production or a ticket. Treated as `done`, pending product sign-off.",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "One card per claim, each starting with no reserve",
+        "preconditions": [
+          {
+            "text": "Three claim cards (Claim 1 POL-2024-021, Claim 2 POL-2024-022, Claim 3 POL-2024-023), each with Total reserve EUR 0.00, Add explanation and Add reserve",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Three claim cards (Claim 1 POL-2024-021, Claim 2 POL-2024-022, Claim 3 POL-2024-023), each with Total reserve EUR 0.00, Add explanation and Add reserve",
+        "visualCues": [
+          "Three claim cards (Claim 1 POL-2024-021, Claim 2 POL-2024-022, Claim 3 POL-2024-023), each with Total reserve EUR 0.00, Add explanation and Add reserve"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, then look at /fnol/reserves",
+        "expectedResult": "Three claim cards (Claim 1 POL-2024-021, Claim 2 POL-2024-022, Claim 3 POL-2024-023), each with Total reserve EUR 0.00, Add explanation and Add reserve"
+      }
+    },
+    {
+      "id": "AC-02",
+      "statement": "Add reserve asks Section, Party, Damage, Reserve type in order",
+      "plainStatement": "**Opens:** Same three claims, nothing entered.\n\n**Try:** On **Claim 1** press **Add reserve**. The dialog says which claim it is for (\"Claim 1: POL-2024-021 (Property)\"). Section has one choice, \"Section 1: Material damage\", so it is already picked. Party opens up: pick **Finn Dahl**. Damage opens up with the three ticked entities of this policy (Munich Warehouse, Berlin Office, Contents): pick one. Reserve type opens up last (Indemnity, Expenses, Recoveries). **Proceed to add** stays off until all four are set. Change Party again: Damage and Reserve type are cleared and closed again.\n\nSource: production's Add reserve dialog has Section, Party, Damage and Reserve type dropdowns, each enabled after the one before, then Proceed to add (ReservesPage.ts).\n\n**NOTE [accepted-deviation]:** Section = one claim section per damage type with ticked entities (the same rule Submit uses), Damage = a ticked entity in it, Party = the parties from the Parties step (RES-D2). A list with only one choice is picked for you, so with one section and one party you go straight to Damage or Reserve type, like production's newer flow that skips Party (RES-D3). Not settled by production or a ticket. Treated as `done`, pending product sign-off.",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Add reserve asks Section, Party, Damage, Reserve type in order",
+        "preconditions": [
+          {
+            "text": "Add reserve dialog for Claim 1: Section pre-picked, Party, Damage and Reserve type open up one after the other, Proceed to add enabled only when all four are set",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Add reserve dialog for Claim 1: Section pre-picked, Party, Damage and Reserve type open up one after the other, Proceed to add enabled only when all four are set",
+        "visualCues": [
+          "Add reserve dialog for Claim 1: Section pre-picked, Party, Damage and Reserve type open up one after the other, Proceed to add enabled only when all four are set"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, then press Add reserve on Claim 1",
+        "expectedResult": "Add reserve dialog for Claim 1: Section pre-picked, Party, Damage and Reserve type open up one after the other, Proceed to add enabled only when all four are set"
+      }
+    },
+    {
+      "id": "AC-03",
+      "statement": "Reserve editor with tabs, sub-type and amount, net total",
+      "plainStatement": "**Opens:** Same three claims, nothing entered.\n\n**Try:** On Claim 1 run Add reserve (Finn Dahl, Jonas Kaufmann: Munich Warehouse, Indemnity) and press **Proceed to add**. A near full-screen sheet opens titled **Material damage**, under it \"Claim 1: POL-2024-021 (Property)\", then Section, Party and Damage. Tabs **Indemnity / Expenses / Recoveries**, open on Indemnity with one empty line (Sub-type \"Select\", Amount). Enter Property damage 250000. Switch to Expenses, Add expenses reserve, Loss adjuster fees 12000. Recoveries, Salvage 5000. The totals strip shows Indemnity 250,000.00, Expenses 12,000.00, Recoveries -5,000.00, Total reserve 257,000.00. Type an amount without a sub-type and press Done: the sheet stays open on that tab with \"Choose a sub-type for this amount, or remove the line.\" Press **Done** (or the X): a toast \"Reserve saved on Claim 1\", and the card shows Total reserve EUR 257,000.00 and a table: the line's Total row first, then Indemnity, Expenses and Recoveries rows.\n\nSource: production's editor is titled with the damage, has Indemnity / Expenses / Recoveries tabs with a sub-type dropdown and an Amount per tab, and a close icon that goes back with the values kept; total = indemnity + expenses - recoveries (5,000 + 3,000 - 250 = 7,750, ReservesPage.ts).\n\n**NOTE [accepted-deviation]:** The editor is the app's bottom sheet, not a separate page. Done and X both keep what was typed, there is no Cancel (RES-D4). Lines without an amount are dropped when it closes. Sub-types per tab are made up for the prototype (RES-D8); the co-insurance column of the old editor is gone (RES-D10). Not settled by production or a ticket. Treated as `done`, pending product sign-off.",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Reserve editor with tabs, sub-type and amount, net total",
+        "preconditions": [
+          {
+            "text": "Editor titled Material damage, tabs Indemnity / Expenses / Recoveries, totals strip with recoveries as minus; after Done the card shows the line with Total, Indemnity, Expenses, Recoveries rows",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Editor titled Material damage, tabs Indemnity / Expenses / Recoveries, totals strip with recoveries as minus; after Done the card shows the line with Total, Indemnity, Expenses, Recoveries rows",
+        "visualCues": [
+          "Editor titled Material damage, tabs Indemnity / Expenses / Recoveries, totals strip with recoveries as minus; after Done the card shows the line with Total, Indemnity, Expenses, Recoveries rows"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, Add reserve on Claim 1, Proceed to add",
+        "expectedResult": "Editor titled Material damage, tabs Indemnity / Expenses / Recoveries, totals strip with recoveries as minus; after Done the card shows the line with Total, Indemnity, Expenses, Recoveries rows"
+      }
+    },
+    {
+      "id": "AC-04",
+      "statement": "The same section, party and damage opens the existing line",
+      "plainStatement": "**Opens:** Claim 1 already has an indemnity reserve of EUR 250,000.00 for Finn Dahl on Jonas Kaufmann: Munich Warehouse.\n\n**Try:** Add reserve on Claim 1 with the same choices (Finn Dahl, Munich Warehouse) and Reserve type **Expenses**. The editor opens that line on the Expenses tab, with the 250,000 indemnity still on the Indemnity tab. Add Legal fees 8000, Done: the card still has one line, now total EUR 258,000.00. Pick a different damaged entity instead and you get a second line.\n\n**NOTE [accepted-deviation]:** One section + party + damage is one reserve line; adding it again opens it instead of creating a duplicate (RES-D5). Not settled by production or a ticket. Treated as `done`, pending product sign-off.",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "The same section, party and damage opens the existing line",
+        "preconditions": [
+          {
+            "text": "Re-adding Finn Dahl / Munich Warehouse on Claim 1 opens the existing line on the chosen tab; the card keeps one line",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"],
+              "seed": [
+                {
+                  "policyNumber": "POL-2024-021",
+                  "indemnity": 250000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Re-adding Finn Dahl / Munich Warehouse on Claim 1 opens the existing line on the chosen tab; the card keeps one line",
+        "visualCues": [
+          "Re-adding Finn Dahl / Munich Warehouse on Claim 1 opens the existing line on the chosen tab; the card keeps one line"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, Add reserve on Claim 1 with the same choices",
+        "expectedResult": "Re-adding Finn Dahl / Munich Warehouse on Claim 1 opens the existing line on the chosen tab; the card keeps one line"
+      }
+    },
+    {
+      "id": "AC-05",
+      "statement": "Edit details and Remove from the row menu",
+      "plainStatement": "**Opens:** Claim 1 has a line for Finn Dahl on Munich Warehouse: indemnity 250,000, expenses 12,000, recoveries 5,000, total EUR 257,000.00.\n\n**Try:** The row's menu (three dots) has **Edit details** and **Remove**. Edit details opens the editor on that line; change the indemnity to 300000, Done: total EUR 307,000.00 and a toast. Remove asks \"Remove the reserve for Finn Dahl, Jonas Kaufmann: Munich Warehouse from Claim 1?\"; Remove takes the line away and the card is back to \"No reserves on this claim yet.\" Clearing every amount in the editor removes the line too, with a toast saying so.\n\nSource: production's row menu \"Open menu\" has Edit Details (ReservesPage.ts).",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Edit details and Remove from the row menu",
+        "preconditions": [
+          {
+            "text": "Row menu with Edit details and Remove; edits update the total, Remove asks first and empties the card",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"],
+              "seed": [
+                {
+                  "policyNumber": "POL-2024-021",
+                  "indemnity": 250000,
+                  "expenses": 12000,
+                  "recoveries": 5000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Row menu with Edit details and Remove; edits update the total, Remove asks first and empties the card",
+        "visualCues": [
+          "Row menu with Edit details and Remove; edits update the total, Remove asks first and empties the card"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, open the row menu on Claim 1",
+        "expectedResult": "Row menu with Edit details and Remove; edits update the total, Remove asks first and empties the card"
+      }
+    },
+    {
+      "id": "AC-06",
+      "statement": "Next checks every claim and names the ones missing a reserve",
+      "plainStatement": "**Opens:** Claim 1 has an indemnity reserve of EUR 250,000.00. Claims 2 and 3 have nothing.\n\n**Try:** Press **Next**. A dialog **Reserve required**: \"Claim 2 (POL-2024-022) and Claim 3 (POL-2024-023) have no indemnity reserve and no explanation. Add a reserve, or explain why there is none yet, on each of them before you continue.\" Close it: the page scrolls to Claim 2, and Claims 2 and 3 get a red border and the message \"This claim needs an indemnity reserve, or an explanation why there is none yet.\" On Claim 2 press **Add explanation**, pick a reason, Save: its mark goes. Add an indemnity reserve on Claim 3: its mark goes. Next now goes to Summary.\n\nSource: production blocks Next while any claim has no reserve and no narrative (\"Please add a indemnity reserve or a narrative before proceeding\"), and the tester fills the narrative for each affected claim (ReservesPage.ts clickNextAndContinue).\n\n**NOTE [accepted-deviation]:** Only an indemnity amount counts as a reserve for this check, following production's wording; an expenses-only claim still needs an explanation (RES-D11). Not settled by production or a ticket. Treated as `done`, pending product sign-off.",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Next checks every claim and names the ones missing a reserve",
+        "preconditions": [
+          {
+            "text": "Reserve required dialog names Claim 2 and Claim 3; after closing, both cards are marked until each has a reserve or an explanation; then Next goes to Summary",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"],
+              "seed": [
+                {
+                  "policyNumber": "POL-2024-021",
+                  "indemnity": 250000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Reserve required dialog names Claim 2 and Claim 3; after closing, both cards are marked until each has a reserve or an explanation; then Next goes to Summary",
+        "visualCues": [
+          "Reserve required dialog names Claim 2 and Claim 3; after closing, both cards are marked until each has a reserve or an explanation; then Next goes to Summary"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, press Next",
+        "expectedResult": "Reserve required dialog names Claim 2 and Claim 3; after closing, both cards are marked until each has a reserve or an explanation; then Next goes to Summary"
+      }
+    },
+    {
+      "id": "AC-07",
+      "statement": "A normal FNOL on one policy shows one card",
+      "plainStatement": "**Opens:** FNOL Reserves for Liver Tea Group on POL-2024-001, no Policies step. Entities are ticked and two parties are on the Parties step.\n\n**You see:** One card, **Claim 1** Property, no \"creates N claims\" line. Add reserve offers five sections (Material damage, Business interruption, Financial loss, Bodily injury, Liability), so Section is not pre-picked here. Next with nothing entered: \"Add an indemnity reserve, or explain why there is none yet, before you continue.\"",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "A normal FNOL on one policy shows one card",
+        "preconditions": [
+          {
+            "text": "One Claim 1 card for POL-2024-001; Add reserve lists five sections; the Next check works the same",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-001",
+              "policyNumber": "POL-2024-001"
+            },
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "One Claim 1 card for POL-2024-001; Add reserve lists five sections; the Next check works the same",
+        "visualCues": [
+          "One Claim 1 card for POL-2024-001; Add reserve lists five sections; the Next check works the same"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, then look at /fnol/reserves",
+        "expectedResult": "One Claim 1 card for POL-2024-001; Add reserve lists five sections; the Next check works the same"
+      }
+    },
+    {
+      "id": "AC-08",
+      "statement": "Each claim's reserves land on its own claim at Submit",
+      "plainStatement": "**Opens:** All three claims have a reserve: Claim 1 indemnity 250,000, expenses 12,000, recoveries 5,000 (total 257,000); Claim 2 indemnity 40,000; Claim 3 indemnity 180,000.\n\n**Try:** Next goes to Summary. \"Claims to be created\" shows each policy with its own Total reserve (EUR 257,000.00, 40,000.00, 180,000.00). Submit claim, then open each new claim: Claim Overview shows that claim's total reserve, and its Financial tab lists its indemnity and expenses reserves as Pending (recoveries are not copied there, as before).",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Each claim's reserves land on its own claim at Submit",
+        "preconditions": [
+          {
+            "text": "Summary shows each policy's own total; after Submit each claim's Overview and Financial tab show its own reserves",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": ["AZ000000005634681", "AZ000000005634683"],
+              "seed": [
+                {
+                  "policyNumber": "POL-2024-021",
+                  "indemnity": 250000,
+                  "expenses": 12000,
+                  "recoveries": 5000
+                },
+                {
+                  "policyNumber": "POL-2024-022",
+                  "indemnity": 40000
+                },
+                {
+                  "policyNumber": "POL-2024-023",
+                  "indemnity": 180000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Summary shows each policy's own total; after Submit each claim's Overview and Financial tab show its own reserves",
+        "visualCues": [
+          "Summary shows each policy's own total; after Submit each claim's Overview and Financial tab show its own reserves"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, press Next, then Submit claim on Summary",
+        "expectedResult": "Summary shows each policy's own total; after Submit each claim's Overview and Financial tab show its own reserves"
+      }
+    },
+    {
+      "id": "AC-09",
+      "statement": "Add reserve says what is missing when there is nothing to pick",
+      "plainStatement": "**Opens:** Same three claims, entities ticked, but no parties were added on the Parties step.\n\n**Try:** Add reserve on any claim: Section is pre-picked, and a note says \"No parties yet. Add the parties on the Parties step first.\" Party, Damage and Reserve type stay closed and Proceed to add stays off. The handler can still use Add explanation on the card. (With no entities ticked on Entities & Damages the note says to tick them first.)",
+      "page": "fnol-reserves",
+      "buildStatus": "done",
+      "setup": {
+        "description": "Add reserve says what is missing when there is nothing to pick",
+        "preconditions": [
+          {
+            "text": "Add reserve with no parties: info note pointing to the Parties step, the rest of the dialog stays closed",
+            "page": "fnol-reserves",
+            "role": "tested-visible"
+          }
+        ],
+        "stateOverrides": {
+          "fnolStateOverride": {
+            "selectedPolicy": {
+              "policyId": "POL-2024-021",
+              "policyNumber": "POL-2024-021"
+            },
+            "policySelection": ["POL-2024-021", "POL-2024-022", "POL-2024-023"],
+            "reservesStep": {
+              "partyIds": []
+            }
+          }
+        }
+      },
+      "expectedUI": {
+        "description": "Add reserve with no parties: info note pointing to the Parties step, the rest of the dialog stays closed",
+        "visualCues": [
+          "Add reserve with no parties: info note pointing to the Parties step, the rest of the dialog stays closed"
+        ]
+      },
+      "howToTest": {
+        "route": "/fnol/reserves",
+        "trigger": "Apply, then press Add reserve on Claim 2",
+        "expectedResult": "Add reserve with no parties: info note pointing to the Parties step, the rest of the dialog stays closed"
+      }
+    }
+  ]
+}
