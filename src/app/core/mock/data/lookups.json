@@ -197,7 +197,7 @@
     { "value": "gas", "label": "Gas" },
     { "value": "water", "label": "Water" },
     { "value": "steam", "label": "Steam" },
-    { "value": "telecom", "label": "Telecom" },
+    { "value": "telecom", "label": "Telecommunications" },
     { "value": "it", "label": "IT" }
   ]
 }

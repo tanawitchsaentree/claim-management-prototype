@@ -235,6 +235,12 @@
       "title": "CBI Extension for Edit claim"
     },
     {
+      "id": "FNOL-CBI-FIELDS",
+      "file": "fnol-cbi-fields.json",
+      "module": "FNOL",
+      "title": "CBI questions per case type on Loss information"
+    },
+    {
       "id": "BMPCC-22665",
       "file": "bmpcc-22665.json",
       "module": "FNOL",

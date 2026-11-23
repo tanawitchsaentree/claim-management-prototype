@@ -37,7 +37,8 @@ import {
 } from '../edit-damaged-item-modal/edit-damaged-item-modal.component';
 import { DamagedItem } from '../damaged-item.config';
 import { DamageTypeLabelPipe } from '../../../shared/pipes/damage-type-label.pipe';
-import { CbiCaseTypeLabelPipe } from '../../../shared/pipes/cbi-case-type-label.pipe';
+import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
+import { cbiEntityRows } from '../../../shared/utils/cbi-rules';
 
 // `causedBy` is set on every item, not just the financial-loss one — the field
 // stopped being financial-loss-only on 2026-09-03 (see damaged-item.config.ts),
@@ -118,7 +119,6 @@ const MOCK_ITEMS: Record<string, DamagedItem[]> = {
     EmptyStateComponent,
     StatusChipComponent,
     DamageTypeLabelPipe,
-    CbiCaseTypeLabelPipe,
     AppDatePipe
   ],
   templateUrl: './entity-detail-panel.component.html',
@@ -140,16 +140,20 @@ export class EntityDetailPanelComponent implements OnInit {
 
   readonly items = signal<DamagedItem[]>([]);
 
-  // Was held back pending CBI (BMPCC-17927) sign-off from Sarah/UW — signed
-  // off 2026-09-25, turned on.
-  readonly showCbiLocation = true;
+  private readonly lookupSvc = inject(MockLookupService);
 
   ngOnInit(): void {
     this.items.set([...(MOCK_ITEMS[this.entity.id] ?? [])]);
   }
 
-  cbiLocationLine(): string {
-    return this.entity.cbiOriginatingLocation || '–';
+  // CBI answers copied from FNOL Loss information / Edit claim details. The
+  // originating location was held back pending CBI (BMPCC-17927) sign-off
+  // from Sarah/UW; signed off 2026-09-25, so it is always shown now.
+  cbiRows(): { label: string; value: string }[] {
+    return cbiEntityRows(this.entity, {
+      caseTypes: this.lookupSvc.getCbiCaseTypesSync(),
+      utilityTypes: this.lookupSvc.getCbiUtilityTypesSync()
+    });
   }
 
   async onAddItem(): Promise<void> {

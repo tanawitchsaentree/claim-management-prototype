@@ -1,5 +1,5 @@
 import { selectedSectionGroups } from '../../../../shared/components/entities-selection/selected-section-groups';
-import { cbiRelationshipFor } from '../../../../shared/utils/cbi-rules';
+import { cbiEntityFields } from '../../../../shared/utils/cbi-rules';
 import { Component, inject, signal, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -50,7 +50,7 @@ import {
 // BMPCC-22666 AC01: pick a different handler before Submit.
 import { FnolHandlerPickerComponent } from '../../../../shared/components/reassign-claim-modal/fnol-handler-picker.component';
 import { FnolHandlerChoiceService } from '../../../../shared/components/reassign-claim-modal/fnol-handler-choice.service';
-import { EntitiesDamagesData, EntityRow, formatLocationItem } from '../../../../core/models';
+import { EntitiesDamagesData, EntityRow } from '../../../../core/models';
 import { ReserveNarrative, ReservesPolicyData } from '../../../../core/models/reserve.model';
 import { LookupOption, OTHER_CAUSE_KEY } from '../../../../core/models/lookup.model';
 import { AccessListEntry, RESTRICTION_REASONS } from '../../../../core/models/claim-overview.model';
@@ -884,23 +884,9 @@ export class StepSummaryComponent implements OnInit {
       .value as unknown as LossInformationFormValue;
     const cbiCaseType = lossInfoValue.cbiApplicable === 'yes' ? lossInfoValue.cbiCaseType : null;
 
-    const cbiLocationItem = lossInfoValue.cbiLocation?.locations[0];
-
     for (const [damageType, entities] of byDamageType) {
       const isCbi = damageType === 'business-interruption' && !!cbiCaseType;
-      const cbiExtras = isCbi
-        ? {
-            isContingentBi: true,
-            cbiCaseType: cbiCaseType!,
-            thirdPartyName: lossInfoValue.cbiThirdPartyName || undefined,
-            thirdPartyRelationship: cbiRelationshipFor(cbiCaseType!),
-            thirdPartyIndustry: lossInfoValue.cbiThirdPartyIndustry || undefined,
-            cbiOriginatingLocation: cbiLocationItem
-              ? formatLocationItem(cbiLocationItem)
-              : undefined,
-            cbiOriginatingLocationDetail: cbiLocationItem
-          }
-        : {};
+      const cbiExtras = isCbi ? cbiEntityFields(lossInfoValue) : {};
 
       await firstValueFrom(
         this.sectionSvc.createSection(
