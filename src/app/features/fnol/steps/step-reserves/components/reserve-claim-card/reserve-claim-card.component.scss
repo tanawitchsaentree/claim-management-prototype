@@ -1,0 +1,62 @@
+// BLESSED: card and summary fields moved from the step's own header card
+// (step-reserves.component.scss .reserves-header, the pre-multi-claim
+// version). Header = BLESSED.md "Split toolbar": title left, Add reserve
+// pushed right with margin-left: auto.
+.rcc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+  padding: var(--space-lg) var(--space-xl);
+
+  &--flagged {
+    border-color: var(--danger);
+  }
+}
+
+.rcc-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+
+  &__action {
+    margin-left: auto;
+  }
+}
+
+.rcc-title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.rcc-lob {
+  font-size: var(--paragraph-03-font-size);
+  color: var(--text-muted);
+}
+
+.rcc-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-base) var(--space-4xl);
+}
+
+.rcc-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.rcc-label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.rcc-value {
+  font-size: var(--paragraph-02-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}

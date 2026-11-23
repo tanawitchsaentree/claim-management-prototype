@@ -1,0 +1,73 @@
+<button class="res-sheet__close close-icon" type="button" aria-label="Close" (click)="done()">
+  <span class="res-sheet__close-x" aria-hidden="true"></span>
+</button>
+
+<header class="res-sheet__header">
+  <h1 class="res-sheet__title">{{ line.damageType }}</h1>
+  <p class="res-sheet__subtitle">
+    Claim {{ data.claim.index }}: {{ data.claim.policyNumber }} ({{ data.claim.lineOfBusiness }})
+  </p>
+</header>
+
+<div class="res-sheet__body" tabindex="0">
+  <dl class="res-facts">
+    <div class="res-fact">
+      <dt class="res-fact__label">Section</dt>
+      <dd class="res-fact__value">Section {{ line.sectionNo }}: {{ line.damageType }}</dd>
+    </div>
+    <div class="res-fact">
+      <dt class="res-fact__label">Party</dt>
+      <dd class="res-fact__value">{{ line.partyName }}</dd>
+    </div>
+    <div class="res-fact">
+      <dt class="res-fact__label">Damage</dt>
+      <dd class="res-fact__value">{{ item.itemName }}</dd>
+    </div>
+  </dl>
+
+  <dl class="res-totals" aria-live="polite">
+    @for (t of types; track t) {
+      <div class="res-fact">
+        <dt class="res-fact__label">{{ labels[t] }}</dt>
+        <dd class="res-fact__value res-fact__value--amount">
+          {{ line.currency }} {{ (t === 'recoveries' ? -total(t) : total(t)) | number: '1.2-2' }}
+        </dd>
+      </div>
+    }
+    <div class="res-fact res-fact--total">
+      <dt class="res-fact__label">Total reserve</dt>
+      <dd class="res-fact__value res-fact__value--amount">
+        {{ line.currency }} {{ netTotal | number: '1.2-2' }}
+      </dd>
+    </div>
+  </dl>
+
+  <nx-tab-group
+    class="res-tabs"
+    [selectedIndex]="tabIndex()"
+    (selectedIndexChange)="tabIndex.set($event)"
+  >
+    @for (t of types; track t) {
+      <nx-tab [label]="labels[t]">
+        <div class="res-tab-body">
+          <app-reserve-lines
+            [lines]="lines(t)"
+            [subTypes]="subTypes(t)"
+            [currency]="line.currency"
+            [typeLabel]="labels[t]"
+            [showErrors]="showErrors()"
+            (added)="add(t)"
+            (removed)="remove(t, $event)"
+            (changed)="change(t, $event)"
+          ></app-reserve-lines>
+        </div>
+      </nx-tab>
+    }
+  </nx-tab-group>
+</div>
+
+<footer class="res-sheet__footer">
+  <div class="res-sheet__footer-actions">
+    <button nxButton="primary small" type="button" (click)="done()">Done</button>
+  </div>
+</footer>

@@ -1,0 +1,34 @@
+// BLESSED: spacing from FORM_RHYTHM.md (stack between lines, group for a
+// line and its error, absorb-formfield-reserve on each nx-formfield).
+@use '../../../../../../shared/styles/form-rhythm' as fr;
+
+.rl-list {
+  @include fr.stack;
+}
+
+.rl-group {
+  @include fr.group;
+}
+
+.rl-fields {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-xl);
+}
+
+.rl-field {
+  @include fr.absorb-formfield-reserve;
+
+  &--type {
+    flex: 1 1 280px;
+    max-width: 360px;
+  }
+  &--amount {
+    flex: 0 1 220px;
+  }
+}
+
+// Sits on the input's baseline, not on the label.
+.rl-remove {
+  margin-bottom: var(--space-sm);
+}

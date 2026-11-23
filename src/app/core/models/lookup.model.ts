@@ -42,6 +42,8 @@ export interface Lookups {
   idTypes: LookupOption[];
   reserveTypes: LookupOption[];
   reserveSubTypes: LookupOption[];
+  // FNOL Reserves editor: sub-types offered on each tab (Indemnity / Expenses / Recoveries).
+  reserveSubTypesByType: Record<'indemnity' | 'expenses' | 'recoveries', LookupOption[]>;
   narrativeOptions: LookupOption[];
   cbiCaseTypes: LookupOption[];
   /** CBI Service Interruption: which utility failed (CBI functional design diagram). */

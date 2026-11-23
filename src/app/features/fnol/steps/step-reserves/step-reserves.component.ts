@@ -1,32 +1,20 @@
-import {
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-  computed,
-  signal,
-  ChangeDetectionStrategy
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { NxButtonModule } from '@allianz/ng-aquila/button';
-import { NxIconModule } from '@allianz/ng-aquila/icon';
-import { NxMessageModule } from '@allianz/ng-aquila/message';
+import { firstValueFrom } from 'rxjs';
 import { NxDialogService, NxModalModule } from '@allianz/ng-aquila/modal';
 import { FnolStateService } from '../../../../core/services/fnol-state.service';
 import { MockReservesService } from '../../../../core/mock/services/mock-reserves.service';
-import { MockLookupService } from '../../../../core/mock/services/mock-lookup.service';
 import {
+  applyReserveTotals,
+  hasIndemnityReserve,
   Reserve,
-  ReserveNarrative,
+  RESERVE_TYPES,
   ReservesPolicyData,
-  ReserveType,
-  RESERVE_TYPE_LABELS,
-  SubReserve
+  ReserveType
 } from '../../../../core/models/reserve.model';
 import {
   AddReserveModalComponent,
+  AddReserveModalData,
   AddReserveResult
 } from '../../components/add-reserve-modal/add-reserve-modal.component';
 import {
@@ -35,342 +23,135 @@ import {
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WizardFooterComponent } from '../../../../shared/components/wizard-footer/wizard-footer.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
-import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { ReserveNarrativePanelComponent } from './components/reserve-narrative-panel/reserve-narrative-panel.component';
+import { isNarrativeActive } from '../../../../shared/utils/reserve-narrative.util';
+import { ReserveClaim, ReserveClaimsService } from '../../services/reserve-claims.service';
+import { ReserveClaimCardComponent } from './components/reserve-claim-card/reserve-claim-card.component';
 import {
-  ReserveListComponent,
-  ReserveListViewMode
-} from './components/reserve-list/reserve-list.component';
-import {
-  ReserveDetailPanelComponent,
-  SectionMutation
-} from './components/reserve-detail-panel/reserve-detail-panel.component';
+  ReserveEditorData,
+  ReserveEditorSheetComponent
+} from './components/reserve-editor-sheet/reserve-editor-sheet.component';
 
+interface ClaimCard {
+  claim: ReserveClaim;
+  data: ReservesPolicyData;
+}
+
+/**
+ * FNOL Reserves step, one card per claim the notification creates (one per
+ * policy chosen on the Policies step, BMPCC-22665), as in production
+ * (claims-management-main ReservesPage.ts). Each claim needs an indemnity
+ * reserve or an explanation before Next. Add reserve runs production's
+ * Section, Party, Damage, Reserve type cascade, then the tabbed editor.
+ */
 @Component({
   selector: 'app-step-reserves',
   standalone: true,
-  imports: [
-    CommonModule,
-    NxButtonModule,
-    NxIconModule,
-    NxMessageModule,
-    NxModalModule,
-    ConfirmDialogComponent,
-    WizardFooterComponent,
-    EmptyStateComponent,
-    ReserveNarrativePanelComponent,
-    ReserveListComponent,
-    ReserveDetailPanelComponent
-  ],
+  imports: [NxModalModule, WizardFooterComponent, ReserveClaimCardComponent],
   templateUrl: './step-reserves.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-reserves.component.scss'
 })
-export class StepReservesComponent implements OnInit, OnDestroy {
+export class StepReservesComponent implements OnInit {
   private readonly reservesSvc = inject(MockReservesService);
-  private readonly lookupSvc = inject(MockLookupService);
+  private readonly claimsSvc = inject(ReserveClaimsService);
   private readonly fnolState = inject(FnolStateService);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
 
-  readonly data$ = new BehaviorSubject<ReservesPolicyData | null>(null);
-  readonly typeLabels = RESERVE_TYPE_LABELS;
-
-  // Master/detail squeeze mode
-  readonly selectedSection = signal<Reserve | null>(null);
-  readonly isSqueezed = computed(() => !!this.selectedSection());
-
-  // Edit state — drives the "Save & back" vs "Back to list" label and the
-  // "Saved Xs ago" indicator on the right-panel header.
-  readonly isDirty = signal(false);
-  readonly lastSavedAt = signal<Date | null>(null);
-  readonly nowTick = signal(Date.now());
-
-  readonly savedAgoLabel = computed<string | null>(() => {
-    const t = this.lastSavedAt();
-    if (!t) return null;
-    this.nowTick(); // re-run every tick
-    const seconds = Math.max(0, Math.floor((Date.now() - t.getTime()) / 1000));
-    if (seconds < 5) return 'Saved just now';
-    if (seconds < 60) return `Saved ${seconds}s ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `Saved ${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    return `Saved ${hours}h ago`;
-  });
-
-  private savedAgoTimer: ReturnType<typeof setInterval> | null = null;
-
-  // Reacts to the reserve-list's view-mode toggle: lazily fetch all-policy
-  // data the first time the user leaves "This policy" — allPolicies is
-  // owned here (not by the list) because isCrossPolicy/policyForReserve
-  // below need it too.
-  async onViewModeChanged(m: ReserveListViewMode): Promise<void> {
-    if (m !== 'one' && this.allPolicies().length === 0) {
-      const all = await firstValueFrom(this.reservesSvc.getReservesForAllPolicies());
-      this.allPolicies.set(all);
-    }
-  }
-
-  // All-policy data (lazy-loaded when user picks all-flat/all-grouped)
-  readonly allPolicies = signal<ReservesPolicyData[]>([]);
-
-  // True when the currently selected section belongs to a different policy
-  // than the FNOL flow's policy → panel is read-only.
-  readonly isCrossPolicy = computed(() => {
-    const sel = this.selectedSection();
-    if (!sel) return false;
-    const ownerPolicy = this.policyForReserve(sel.reserveId);
-    return ownerPolicy !== this.policyNumber;
-  });
-
-  policyForReserve(reserveId: string): string | null {
-    if (this.data$.value?.reserves.some(r => r.reserveId === reserveId)) {
-      return this.policyNumber;
-    }
-    for (const pol of this.allPolicies()) {
-      if (pol.reserves.some(r => r.reserveId === reserveId)) return pol.policyNumber;
-    }
-    return null;
-  }
-
-  // Set right before selectSection() when a newly-added reserve should open
-  // with a specific tab active (see onAddReserve below); the detail panel
-  // owns activeTab itself and only seeds from this on a real change.
-  pendingActiveTab: ReserveType | null = null;
-
-  onSectionMutated({ reserve, markDirty }: SectionMutation): void {
-    this.selectedSection.set(reserve);
-    if (markDirty) this.isDirty.set(true);
-  }
-
-  async selectSection(reserve: Reserve): Promise<void> {
-    // Persist any in-flight edits to the previously selected section before
-    // switching away (prevents data loss when clicking a different row).
-    if (this.selectedSection() && this.selectedSection()?.reserveId !== reserve.reserveId) {
-      await this.persistSelectedSection();
-    }
-    // Deep-clone so panel edits don't mutate the cached row until persisted.
-    this.selectedSection.set(structuredClone(reserve));
-    this.isDirty.set(false);
-    this.lastSavedAt.set(null);
-    this.startSavedAgoTicker();
-    this.lockBodyScroll();
-  }
-
-  private startSavedAgoTicker(): void {
-    this.stopSavedAgoTicker();
-    this.savedAgoTimer = setInterval(() => this.nowTick.set(Date.now()), 15000);
-  }
-
-  private stopSavedAgoTicker(): void {
-    if (this.savedAgoTimer) {
-      clearInterval(this.savedAgoTimer);
-      this.savedAgoTimer = null;
-    }
-  }
-
-  async onSaveChanges(): Promise<void> {
-    if (this.isCrossPolicy() || !this.isDirty()) return;
-    await this.persistSelectedSection();
-    this.toast.success('Changes saved');
-  }
-
-  async closeSection(): Promise<void> {
-    if (this.isDirty() && !this.isCrossPolicy()) {
-      const data: ConfirmDialogData = {
-        title: 'Discard unsaved changes?',
-        message: 'Your edits to this section will be lost.',
-        confirmLabel: 'Discard',
-        cancelLabel: 'Keep editing',
-        confirmDanger: true
-      };
-      const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-        data,
-        width: '440px',
-        maxWidth: '92vw'
-      });
-      const discard = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
-      if (!discard) return;
-    }
-    this.selectedSection.set(null);
-    this.isDirty.set(false);
-    this.lastSavedAt.set(null);
-    this.stopSavedAgoTicker();
-    this.unlockBodyScroll();
-  }
-
-  private async persistSelectedSection(): Promise<void> {
-    const sel = this.selectedSection();
-    if (!sel) return;
-    // Don't write back changes for cross-policy view (read-only mode).
-    if (this.isCrossPolicy()) return;
-    try {
-      await firstValueFrom(this.reservesSvc.replaceReserve(this.policyNumber, sel));
-    } catch {
-      this.toast.error('Failed to save reserve', 'Please try again.');
-      return;
-    }
-    await this.loadReserves();
-    this.lastSavedAt.set(new Date());
-    this.isDirty.set(false);
-  }
-
-  get policyNumber(): string {
-    return this.fnolState.policyNumber;
-  }
-  get reserves(): Reserve[] {
-    return this.data$.value?.reserves ?? [];
-  }
-  get totalReserve(): number {
-    return this.data$.value?.totalReserve ?? 0;
-  }
-  get allianzShare(): number {
-    return this.data$.value?.allianzShare ?? 50;
-  }
-
-  get narrative(): ReserveNarrative | undefined {
-    return this.data$.value?.narrative;
-  }
+  readonly cards = signal<ClaimCard[] | null>(null);
+  // Claims Next found without an indemnity reserve and without an explanation.
+  private readonly flagged = signal<Set<number>>(new Set());
 
   async ngOnInit(): Promise<void> {
     if (!this.fnolState.selectedPolicy && !this.fnolState.selectedClient && !this.fnolState.path) {
       this.router.navigate(['/fnol/search']);
       return;
     }
-    this.loadReserves();
+    const claims = await this.claimsSvc.loadClaims();
+    this.cards.set(
+      claims.map(claim => ({ claim, data: this.reservesSvc.getSync(claim.policyNumber) }))
+    );
   }
 
-  onNarrativeSaved(): void {
-    this.loadReserves();
+  isFlagged(card: ClaimCard): boolean {
+    return this.flagged().has(card.claim.index) && this.isMissing(card);
   }
 
-  ngOnDestroy(): void {
-    this.unlockBodyScroll();
-    this.stopSavedAgoTicker();
-  }
+  // ── Add / edit / remove ─────────────────────────────────────────────────────
 
-  // ── Add reserve ─────────────────────────────────────────────────────────────
-
-  async onAddReserve(): Promise<void> {
+  async onAddReserve(card: ClaimCard): Promise<void> {
     const ref = this.dialogSvc.open(AddReserveModalComponent, {
-      data: {
-        policyNumber: this.policyNumber,
-        sections: this.reserves
-      },
-      width: '480px'
+      data: { claim: card.claim } satisfies AddReserveModalData,
+      width: '600px',
+      maxWidth: '92vw'
     });
-    const result = (await firstValueFrom(ref.afterClosed())) as AddReserveResult | null | undefined;
-    if (!result) return;
+    const pick = (await firstValueFrom(ref.afterClosed())) as AddReserveResult | null | undefined;
+    if (!pick) return;
+    const existing = this.claimsSvc.findLine(card.claim, pick);
+    await this.openEditor(
+      card,
+      existing ?? this.claimsSvc.newLine(card.claim, pick),
+      pick.reserveType,
+      !existing
+    );
+  }
 
-    // Find the chosen section + push a fresh sub-reserve into the chosen tab
-    const section = this.reserves.find(r => r.reserveId === result.reserveId);
-    if (!section) return;
-    const sectionClone = structuredClone(section);
+  onEditLine(card: ClaimCard, line: Reserve): Promise<void> {
+    const firstWithAmount = RESERVE_TYPES.find(t => (line.subAmounts?.[t] ?? 0) > 0);
+    return this.openEditor(card, line, firstWithAmount ?? 'indemnity', false);
+  }
 
-    const tab = result.reserveType;
-    const blank: SubReserve = {
-      subReserveId: `${section.reserveId}-${tab}-${Date.now()}`,
-      subType: this.lookupSvc.getReserveSubTypesSync()[0].label,
-      currency: section.currency,
-      amount: 0,
-      coInsurance: 'RI'
-    };
+  private async openEditor(
+    card: ClaimCard,
+    line: Reserve,
+    tab: ReserveType,
+    isNew: boolean
+  ): Promise<void> {
+    const work = structuredClone(line);
+    const ref = this.dialogSvc.open(ReserveEditorSheetComponent, {
+      data: { claim: card.claim, line: work, tab } satisfies ReserveEditorData,
+      panelClass: 'bottom-sheet-modal-panel',
+      showCloseIcon: false,
+      disableClose: true
+    });
+    await firstValueFrom(ref.afterClosed());
 
-    if (result.itemLevel && result.damagedItemId) {
-      const item = (sectionClone.damagedItems ?? []).find(
-        i => i.damagedItemId === result.damagedItemId
-      );
-      if (item) {
-        const list = item.subReserves[tab] ?? [];
-        item.subReserves = { ...item.subReserves, [tab]: [...list, blank] };
-        item.expanded = true;
-      }
-    } else {
-      // Section-level reserve: stash on first damaged item if exists, else create a synthetic one.
-      const items = sectionClone.damagedItems ?? [];
-      if (items.length === 0) {
-        items.push({
-          damagedItemId: `${section.reserveId}-DI-1`,
-          itemName: `${section.partyName}, ${section.damageType}`,
-          expanded: true,
-          subReserves: { [tab]: [blank] }
-        });
-        sectionClone.damagedItems = items;
-      } else {
-        const first = items[0];
-        const list = first.subReserves[tab] ?? [];
-        first.subReserves = { ...first.subReserves, [tab]: [...list, blank] };
-        first.expanded = true;
-      }
+    // Lines without an amount are dropped, so closing an untouched editor leaves nothing behind.
+    const item = work.damagedItems![0];
+    for (const t of RESERVE_TYPES) {
+      item.subReserves[t] = (item.subReserves[t] ?? []).filter(l => l.amount > 0);
     }
-
-    // Recompute totals on the clone, then persist.
-    this.recomputeSectionTotals(sectionClone);
-    try {
-      await firstValueFrom(this.reservesSvc.replaceReserve(this.policyNumber, sectionClone));
-    } catch {
-      this.toast.error('Failed to add reserve', 'Please try again.');
+    applyReserveTotals(work);
+    const claimName = `Claim ${card.claim.index}`;
+    const empty = RESERVE_TYPES.every(t => !item.subReserves[t]!.length);
+    if (empty && isNew) {
+      this.toast.info(
+        'Nothing added',
+        `No amount was entered, so ${claimName} has no new reserve.`
+      );
       return;
     }
-    await this.loadReserves();
-
-    // Open squeezed mode + auto-select the just-added section + switch tab
-    const refreshed = this.reserves.find(r => r.reserveId === sectionClone.reserveId);
-    if (refreshed) {
-      this.pendingActiveTab = tab;
-      await this.selectSection(refreshed);
-    }
-
-    this.toast.success('Reserve added', `Added to ${this.typeLabels[tab].toLowerCase()} reserves.`);
-  }
-
-  private recomputeSectionTotals(sel: Reserve): void {
-    const total = (type: ReserveType): number =>
-      (sel.damagedItems ?? []).reduce(
-        (sum, it) => sum + (it.subReserves[type] ?? []).reduce((s, r) => s + r.amount, 0),
-        0
-      );
-    sel.subAmounts = {
-      indemnity: total('indemnity'),
-      expenses: total('expenses'),
-      recoveries: total('recoveries')
-    };
-    // Recoveries net OFF the reserve, not onto it — money coming back reduces
-    // exposure. Verified against production's Reserves e2e spec
-    // (ReservesPage.ts:590-652, verifyReserveValuesInTable): indemnity 5,000 +
-    // expense 3,000 - recovery 250 = total 7,750.
-    sel.amount =
-      (sel.subAmounts.indemnity ?? 0) +
-      (sel.subAmounts.expenses ?? 0) -
-      (sel.subAmounts.recoveries ?? 0);
-  }
-
-  // ── Kebab actions ────────────────────────────────────────────────────────────
-
-  async onEditReserve(reserve: Reserve): Promise<void> {
-    const ref = this.dialogSvc.open(AddReserveModalComponent, {
-      data: { policyNumber: this.policyNumber, prefill: reserve },
-      width: '480px'
-    });
-    const result = (await firstValueFrom(ref.afterClosed())) as AddReserveResult | null | undefined;
-    if (!result) return;
-    try {
-      await firstValueFrom(
-        this.reservesSvc.updateReserve(this.policyNumber, reserve.reserveId, result)
-      );
-    } catch {
-      this.toast.error('Failed to update reserve', 'Please try again.');
+    if (empty) {
+      await firstValueFrom(this.reservesSvc.removeReserve(card.claim.policyNumber, work.reserveId));
+      this.toast.info('Reserve line removed', `All amounts were cleared on ${claimName}.`);
+      this.refresh();
       return;
     }
-    this.loadReserves();
+    if (!isNew && this.sameAmounts(line, work)) return;
+    await firstValueFrom(this.reservesSvc.upsertReserve(card.claim.policyNumber, work));
+    await this.archiveNarrativeIfReserved(card);
+    this.refresh();
+    this.toast.success(
+      `Reserve saved on ${claimName}`,
+      `${work.partyName}, ${item.itemName}: total ${work.currency} ${work.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+    );
   }
 
-  async onRemoveReserve(reserve: Reserve): Promise<void> {
+  async onRemoveLine(card: ClaimCard, line: Reserve): Promise<void> {
     const data: ConfirmDialogData = {
-      title: 'Remove reserve',
-      message: `Remove reserve for "${reserve.partyName}, ${reserve.damageType}"?`,
+      title: 'Remove reserve line',
+      message: `Remove the reserve for ${line.partyName}, ${line.damagedItems?.[0]?.itemName ?? line.damageType} from Claim ${card.claim.index}?`,
       confirmLabel: 'Remove',
       confirmDanger: true
     };
@@ -379,17 +160,14 @@ export class StepReservesComponent implements OnInit, OnDestroy {
       width: '440px',
       maxWidth: '92vw'
     });
-    const confirmed = (await firstValueFrom(ref.afterClosed())) as boolean | undefined;
-    if (!confirmed) return;
-    try {
-      await firstValueFrom(this.reservesSvc.removeReserve(this.policyNumber, reserve.reserveId));
-    } catch {
-      this.toast.error('Failed to remove reserve', 'Please try again.');
-      return;
-    }
-    await this.autoArchiveNarrativeIfNeeded();
-    this.loadReserves();
-    this.toast.info('Reserve removed', `${reserve.partyName}, ${reserve.damageType}`);
+    if (!(await firstValueFrom(ref.afterClosed()))) return;
+    await firstValueFrom(this.reservesSvc.removeReserve(card.claim.policyNumber, line.reserveId));
+    this.refresh();
+    this.toast.info('Reserve line removed', `Claim ${card.claim.index}: ${line.partyName}`);
+  }
+
+  onNarrativeSaved(): void {
+    this.refresh();
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────
@@ -400,59 +178,66 @@ export class StepReservesComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.router.navigate(['/fnol/parties']);
   }
-  // Production gate (verified against claims-management-main's Reserves e2e spec,
-  // ReservesPage.ts:745-747): a claim with zero reserve AND no narrative is blocked
-  // from proceeding — "Please add a indemnity reserve or a narrative before
-  // proceeding." This prototype previously let Next through unconditionally.
+
+  // Production gate, per claim (ReservesPage.ts:745-747): "The FNOL event may
+  // create multiple claims. Any claim with no reserve and no narrative triggers
+  // a blocking warning: Please add a indemnity reserve or a narrative before
+  // proceeding." The dialog names the claims; their cards are marked after.
   async onNext(): Promise<void> {
-    if (!this.hasReserveOrNarrative()) {
-      const data: ConfirmDialogData = {
-        title: 'Reserve required',
-        message:
-          'Add an indemnity reserve, or explain why none exists yet, before continuing to the next step.',
-        confirmLabel: 'Got it',
-        cancelLabel: 'Close'
-      };
+    const cards = this.cards() ?? [];
+    const missing = cards.filter(c => this.isMissing(c));
+    if (missing.length) {
+      this.flagged.set(new Set(missing.map(c => c.claim.index)));
       const ref = this.dialogSvc.open(ConfirmDialogComponent, {
-        data,
+        data: {
+          title: 'Reserve required',
+          message: this.gateMessage(cards, missing),
+          confirmLabel: 'Got it',
+          cancelLabel: 'Close'
+        } satisfies ConfirmDialogData,
         width: '440px',
         maxWidth: '92vw'
       });
       await firstValueFrom(ref.afterClosed());
+      document
+        .querySelector(`[data-claim-index="${missing[0].claim.index}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
     this.fnolState.markStepComplete('reserves');
     this.router.navigate(['/fnol/summary']);
   }
 
-  private hasReserveOrNarrative(): boolean {
-    return this.totalReserve > 0 || (!!this.narrative && !this.narrative.archivedAt);
+  private gateMessage(cards: ClaimCard[], missing: ClaimCard[]): string {
+    if (cards.length === 1) {
+      return 'Add an indemnity reserve, or explain why there is none yet, before you continue.';
+    }
+    const names = missing.map(c => `Claim ${c.claim.index} (${c.claim.policyNumber})`);
+    const list =
+      names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0];
+    return `${list} ${missing.length > 1 ? 'have' : 'has'} no indemnity reserve and no explanation. Add a reserve, or explain why there is none yet, on ${missing.length > 1 ? 'each of them' : 'it'} before you continue.`;
   }
 
   // ── Private ──────────────────────────────────────────────────────────────────
 
-  private async loadReserves(): Promise<void> {
-    try {
-      const data = await firstValueFrom(this.reservesSvc.getReservesForPolicy(this.policyNumber));
-      this.data$.next(data);
-    } catch {
-      this.toast.error('Failed to load reserves', 'Please try again.');
+  private isMissing(card: ClaimCard): boolean {
+    return !hasIndemnityReserve(card.data) && !isNarrativeActive(card.data.narrative);
+  }
+
+  private sameAmounts(before: Reserve, after: Reserve): boolean {
+    const strip = (r: Reserve) =>
+      JSON.stringify(applyReserveTotals(structuredClone(r)).damagedItems);
+    return strip(before) === strip(after);
+  }
+
+  // Once a claim has an indemnity reserve its "no reserve" explanation no longer applies.
+  private async archiveNarrativeIfReserved(card: ClaimCard): Promise<void> {
+    if (hasIndemnityReserve(card.data) && isNarrativeActive(card.data.narrative)) {
+      await firstValueFrom(this.reservesSvc.archiveNarrative(card.claim.policyNumber));
     }
   }
 
-  private async autoArchiveNarrativeIfNeeded(): Promise<void> {
-    const data = this.data$.value;
-    if (!data || !data.narrative || data.narrative.archivedAt) return;
-    const total = data.reserves.reduce((s, r) => s + (r.amount || 0), 0);
-    if (total > 0) {
-      await firstValueFrom(this.reservesSvc.archiveNarrative(this.policyNumber));
-    }
-  }
-
-  private lockBodyScroll(): void {
-    document.body.style.overflow = 'hidden';
-  }
-  private unlockBodyScroll(): void {
-    document.body.style.overflow = '';
+  private refresh(): void {
+    this.cards.update(list => (list ? [...list] : list));
   }
 }

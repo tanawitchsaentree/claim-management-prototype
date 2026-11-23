@@ -147,6 +147,25 @@
     { "value": "consequential", "label": "Consequential" },
     { "value": "salvage", "label": "Salvage" }
   ],
+  "reserveSubTypesByType": {
+    "indemnity": [
+      { "value": "property-damage", "label": "Property damage" },
+      { "value": "business-interruption", "label": "Business interruption" },
+      { "value": "bodily-injury", "label": "Bodily injury" },
+      { "value": "third-party-property", "label": "Third-party property damage" }
+    ],
+    "expenses": [
+      { "value": "legal-fees", "label": "Legal fees" },
+      { "value": "loss-adjuster-fees", "label": "Loss adjuster fees" },
+      { "value": "expert-fees", "label": "Expert fees" },
+      { "value": "other-expenses", "label": "Other expenses" }
+    ],
+    "recoveries": [
+      { "value": "salvage", "label": "Salvage" },
+      { "value": "subrogation", "label": "Subrogation" },
+      { "value": "deductible", "label": "Deductible recovery" }
+    ]
+  },
   "operatingEntities": [
     { "value": "Allianz Commercial Germany", "label": "Allianz Commercial Germany" },
     { "value": "Allianz Commercial UK", "label": "Allianz Commercial UK" },

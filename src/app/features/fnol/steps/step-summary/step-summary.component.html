@@ -149,13 +149,7 @@
                 <div class="ss-row">
                   <dt class="ss-label">Total reserve</dt>
                   <dd class="ss-value">
-                    @if (group.reservesOnClaim) {
-                      <span class="ss-empty"
-                        >Set on the claim once it is created ({{ group.currency }})</span
-                      >
-                    } @else {
-                      {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
-                    }
+                    {{ group.currency }} {{ group.totalReserve | number: '1.2-2' }}
                   </dd>
                 </div>
               </dl>
