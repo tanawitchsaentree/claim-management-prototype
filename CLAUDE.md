@@ -4,15 +4,17 @@ This file is the entry point. Detailed rules live in `.claude/`.
 
 ---
 
-## RULE -2: No building from tickets nobody assigned — HARD STOP
-
-**Never implement from a Jira ticket that is unstarted, unassigned, or sourced from `.agents/` scrapes. A ticket description is not a requirement to build. Work begins only from a ticket the user has explicitly handed over in conversation. If you spot relevant work in `.agents/` or elsewhere, report it — do not build it.**
+## RULE -2: What may be built, and everything built is committed
 
 **Every feature must be committed in the same session it is built. Uncommitted work in the tree is invisible to review and gets swept into unrelated commits by accident.**
 
-This is not a judgment call — a "To Do" / "Unassigned" ticket in `.agents/jira-clone/*.json` (or any other scrape) is source material for reporting, never a build trigger, no matter how complete or well-specified its description reads. Before writing any feature code, check: did the user hand me this requirement directly in this conversation? If the only source is a ticket file, a scrape, or your own inference from a Jira export, stop and report what you found instead of building it.
+What counts as a build trigger:
 
-Found via audit 2026-08-20: dozens of uncommitted files across 10+ features (circumstance selection on Sections, reassign-claim modal, attach-document modal, recovery-bookings, make-payment-modal, etc.) traced back to tickets that were still "To Do"/"Unassigned" in `.agents/jira-clone/` scrapes — none of them asked-for by the user, none committed, all invisible to review until this audit.
+- A requirement the user hands over in conversation.
+- Any `not_started` ticket in this repo's tracker (Supabase `ticket` / `ticket_state`) that has a real UI surface. The user authorised building ahead of Jira assignment on 2026-08-28 and repeated it on 2026-09-02. An open spec question is not a reason to stop: pick the defensible reading, build it, and record the assumption in the pipeline (numbered `ASSUMPTION [X-n]` comments, the CONVERSIONS.md entry, the tracker's `blocked_note`), never as a question back in chat.
+- NOT a trigger: raw `.agents/` scrapes (stale since 2026-08-19), tickets outside this prototype's domain (other teams' MFEs, backend or infra only). Report those, don't build them.
+
+History: the 2026-08-20 audit found dozens of uncommitted files across 10+ features built from `.agents/jira-clone/` scrapes, none committed and none visible to review. That is why the commit rule exists and why scrapes are not a trigger.
 
 ---
 
@@ -58,6 +60,12 @@ For **any** task involving UI, layout, components, or SCSS — answer the pre-bu
 3. Wait for "proceed" / "go" / "ได้เลย"
 4. THEN write code
 
+**When the wait does NOT apply** (the user has been explicit about these):
+
+- Fixing a bug in work from this session, or a bug found in self-QA: fix it, then report. Asking "want me to fix?" reads as stalling.
+- The user already said go for this exact work ("เอาเลย", "ทำให้หมด", a hand-off to a worker session). The hand-off is the approval; record the checklist answers in the commit message instead of waiting.
+- Still wait for genuine product or UX decisions the user owns.
+
 **User shortcuts (act immediately, no questions):**
 
 - `/pre-build first` → stop and run the checklist
@@ -65,6 +73,12 @@ For **any** task involving UI, layout, components, or SCSS — answer the pre-bu
 - `stop, what pattern?` → pause and identify the pattern source
 
 Skipping = token waste. User has explicit permission to interrupt.
+
+---
+
+## RULE 1: Check the build the team opens, not only the dev server
+
+The deployed build is different from `npm start` (production environment, DEV banner off). After every `npm run deploy`, run `npm run verify:live`. Before removing or moving anything that lives in the DEV banner, ask: can the team still do this on the deployed link? (2026-11-23: the dashboard Persona strip was removed because the DEV banner has View as, and the team lost user switching for 10 days.)
 
 ---
 
@@ -129,6 +143,7 @@ Skipping = token waste. User has explicit permission to interrupt.
 - `nx-formfield appearance="outline"`
 - Hardcoded hex/rgb in component scss
 - `font-size` below 14px on readable text
+- Em dash (—) in any on-screen text, mock data or ticket text (`audit:emdash-copy` enforces; code comments are fine)
 
 ---
 
@@ -138,6 +153,7 @@ Skipping = token waste. User has explicit permission to interrupt.
 - `.html` ≤ 200 lines
 - `.scss` ≤ 250 lines
 - Exceeds → split before adding more code
+- Enforced by `audit:file-size` (in pre-commit) as a ratchet: the ~40 files already over on 2026-11-23 are frozen in `scripts/file-size-baseline.json` and may only shrink
 
 ---
 

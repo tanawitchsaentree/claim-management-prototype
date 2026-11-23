@@ -11,7 +11,7 @@ export interface LimitHeadroom {
 const clean = (name: string): string =>
   name
     .replace(/^section\s*\d+\s*:\s*-?\s*/i, '')
-    .split(/\s[—–-]\s/)[0]
+    .split(/\s[—–-]\s/)[0] // audit-exempt: emdash, reads old names, never shown
     .trim()
     .toLowerCase();
 
