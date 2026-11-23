@@ -69,7 +69,26 @@ export interface SectionEntity {
   // to edit starts from the actual chosen address, not a re-parsed string.
   cbiOriginatingLocation?: string;
   cbiOriginatingLocationDetail?: LocationItem;
+  // Category-specific fields from the same FD table, copied from FNOL Loss
+  // information: Denial of Access asks for an authority order (Y/N), Service
+  // Interruption for the utility type (lookups.cbiUtilityTypes value).
+  cbiAuthorityOrder?: 'yes' | 'no';
+  cbiUtilityType?: string;
 }
+
+/** The CBI answers a BI entity carries, as FNOL submit and Edit claim details copy them. */
+export type CbiEntityFields = Pick<
+  SectionEntity,
+  | 'isContingentBi'
+  | 'cbiCaseType'
+  | 'thirdPartyName'
+  | 'thirdPartyRelationship'
+  | 'thirdPartyIndustry'
+  | 'cbiOriginatingLocation'
+  | 'cbiOriginatingLocationDetail'
+  | 'cbiAuthorityOrder'
+  | 'cbiUtilityType'
+>;
 
 export interface SectionBlockers {
   hasOpenDeductible: boolean;

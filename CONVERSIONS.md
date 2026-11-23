@@ -1244,3 +1244,10 @@ Open: scripts/audit-ac-logic.mjs still reads `buttonEnabled` / `tooltipContains`
 - **New:** `widgets/gg-claim-flag/` (triangle + nx-popover, copied from entity-limit-cell and mass-event-card). Portfolio sorts GG claims first and has the "Global Genius issues" chip copied from list-toolbar.
 - **Mock data:** CLM-2024-028 got a seeded overview in claim-overview.json (overviewPatch only patches existing overviews); STATE_VERSION pi5-all-v2.
 - **Claim banner:** first failure uses the design wording with GG's root cause inline and a "Retry" link. bmpcc-22661 AC-01 / AC-03 and gg-1 AC-01 / AC-02 text updated to match.
+
+## 2026-11-23: FNOL-CBI-FIELDS, CBI questions per case type (docs/ux/cbi-fields.md)
+
+- **Source:** CBI functional design, Confluence 3163290837 v32 (Category-specific fields, Open Points 10, 13, 14, embedded flow diagram) and UI/UX alignment page 3157631012 row 1. Asked for by the user on 2026-11-23.
+- **Found:** Authority order (Denial of Access) and Utility type (Service Interruption) were already asked on FNOL Loss information since BMPCC-18492 (shared `cbi-panel`). The gap was after submit: the section entity only kept case type, third party, industry and location.
+- **Built:** `SectionEntity.cbiAuthorityOrder` / `cbiUtilityType` plus a `CbiEntityFields` type. `cbiEntityFields()` and `cbiEntityRows()` in `shared/utils/cbi-rules.ts` are now the one place FNOL submit, Edit claim details sync and the entity panel read the CBI answers from. Utility label "Telecom" became "Telecommunications" (design wording); bmpcc-18492 AC-04b text updated.
+- **File:** `public/tickets/fnol-cbi-fields.json`, 7 ACs, all `done`. Loss of Attraction, (Air)Port Blockage, Extension Limits and a WB/AOC industry picker are not built: the design leaves them open or says manual entry only in baseline.

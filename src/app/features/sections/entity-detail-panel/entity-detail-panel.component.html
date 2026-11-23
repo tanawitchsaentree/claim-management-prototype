@@ -62,29 +62,11 @@
         </div>
       }
       @if (entity.isContingentBi) {
-        <div class="edp-field">
-          <span class="edp-field__label">CBI case type</span>
-          <span class="edp-field__value">{{ entity.cbiCaseType | cbiCaseTypeLabel }}</span>
-        </div>
-        <div class="edp-field">
-          <span class="edp-field__label">Third party</span>
-          <span class="edp-field__value">
-            {{ entity.thirdPartyName ?? '–' }}
-            @if (entity.thirdPartyRelationship) {
-              ({{ entity.thirdPartyRelationship }})
-            }
-          </span>
-        </div>
-        @if (entity.thirdPartyIndustry) {
+        <!-- Only the rows the CBI case type asks for, see cbiEntityRows(). -->
+        @for (row of cbiRows(); track row.label) {
           <div class="edp-field">
-            <span class="edp-field__label">Industry</span>
-            <span class="edp-field__value">{{ entity.thirdPartyIndustry }}</span>
-          </div>
-        }
-        @if (showCbiLocation) {
-          <div class="edp-field">
-            <span class="edp-field__label">Originating loss location</span>
-            <span class="edp-field__value">{{ cbiLocationLine() }}</span>
+            <span class="edp-field__label">{{ row.label }}</span>
+            <span class="edp-field__value">{{ row.value }}</span>
           </div>
         }
       }

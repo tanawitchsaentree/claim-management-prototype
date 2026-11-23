@@ -1,9 +1,15 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { LocationPickerOutput, LookupOption } from '../../core/models';
+import {
+  CbiEntityFields,
+  LocationPickerOutput,
+  LookupOption,
+  LossInformationFormValue,
+  formatLocationItem
+} from '../../core/models';
 
 // Contingent business interruption (CBI) rules, shared by the FNOL Loss
-// information step and the Link policy "Complete the claim" step, so both ask
-// the same questions in the same way.
+// information step and Edit claim details, so both ask the same questions in
+// the same way.
 
 /** 'supplier-*' / 'customer-*' case types are the only ones with a named counterparty. */
 export const cbiShowThirdPartyName = (caseType: string | null): boolean =>
@@ -15,9 +21,15 @@ export const cbiThirdPartyRequired = (caseType: string | null): boolean => !!cas
 export const cbiThirdPartyLabel = (caseType: string | null): string =>
   caseType?.startsWith('customer-') ? 'Customer name' : 'Supplier name';
 
-// BMPCC-18492: the extra fields the CBI functional-design diagram gives two of
-// the other branches. Loss of Attraction has none; (Air)Port Blockage is left
-// "?" in the diagram, so it gets none here either (DESIGN DECISION CBI-EDIT-3).
+// BMPCC-18492: the category-specific fields of the CBI functional design
+// (Confluence 3163290837, "Category-specific fields" table). Denial of Access
+// (all 4) asks for an authority order (Y/N), as the UI/UX alignment page
+// (3157631012, row 1) lists; Service Interruption asks for the utility type.
+// Loss of Attraction is given a "Trigger event location" there, but flagged
+// "may overlap with Originating Loss Location; needs field-level
+// reconciliation" and the diagram asks "need use case", so it gets no field
+// until that is decided. (Air)Port Blockage is "?" (Open Point 14): no field
+// either (DESIGN DECISION CBI-EDIT-3).
 export const cbiNeedsAuthorityOrder = (caseType: string | null): boolean =>
   !!caseType?.startsWith('denial-of-access');
 export const cbiNeedsUtilityType = (caseType: string | null): boolean =>
@@ -142,4 +154,56 @@ export function cbiRelationshipFor(caseType: string): 'supplier' | 'customer' | 
   if (caseType.startsWith('supplier-')) return 'supplier';
   if (caseType.startsWith('customer-')) return 'customer';
   return 'other';
+}
+
+/**
+ * The CBI answers to copy onto a Business Interruption entity: at FNOL submit
+ * (one section per damage type) and when Edit claim details saves. Fields the
+ * case type does not ask for are left out, so the entity panel shows none.
+ */
+export function cbiEntityFields(v: LossInformationFormValue): CbiEntityFields {
+  const caseType = v.cbiCaseType!;
+  const loc = v.cbiLocation?.locations?.[0];
+  return {
+    isContingentBi: true,
+    cbiCaseType: caseType,
+    thirdPartyName: v.cbiThirdPartyName || undefined,
+    thirdPartyRelationship: cbiRelationshipFor(caseType),
+    thirdPartyIndustry: v.cbiThirdPartyIndustry || undefined,
+    cbiOriginatingLocation: loc ? formatLocationItem(loc) : undefined,
+    cbiOriginatingLocationDetail: loc,
+    cbiAuthorityOrder: cbiNeedsAuthorityOrder(caseType) ? v.cbiAuthorityOrder ?? undefined : undefined,
+    cbiUtilityType: cbiNeedsUtilityType(caseType) ? v.cbiUtilityType ?? undefined : undefined
+  };
+}
+
+/**
+ * Read rows for a CBI entity on Sections (entity detail panel), with the same
+ * labels Edit claim details reads them with. Only the rows its case type asks
+ * for: third party / industry / location for Supplier and Customer, the
+ * authority answer for Denial of Access, the utility for Service Interruption.
+ */
+export function cbiEntityRows(
+  e: CbiEntityFields,
+  labels: { caseTypes: LookupOption[]; utilityTypes: LookupOption[] }
+): { label: string; value: string }[] {
+  const caseType = e.cbiCaseType ?? null;
+  const find = (opts: LookupOption[], key?: string) =>
+    key ? (opts.find(o => o.value === key)?.label ?? key) : '–';
+  const rows = [{ label: 'CBI case type', value: find(labels.caseTypes, e.cbiCaseType) }];
+  if (cbiShowThirdPartyName(caseType)) {
+    rows.push({ label: cbiThirdPartyLabel(caseType), value: e.thirdPartyName || '–' });
+    if (e.thirdPartyIndustry) {
+      rows.push({ label: cbiIndustryLabel(caseType).replace(' (optional)', ''), value: e.thirdPartyIndustry });
+    }
+    rows.push({ label: 'Originating loss location', value: e.cbiOriginatingLocation || '–' });
+  }
+  if (cbiNeedsAuthorityOrder(caseType)) {
+    const answer = e.cbiAuthorityOrder === 'yes' ? 'Yes' : e.cbiAuthorityOrder === 'no' ? 'No' : '–';
+    rows.push({ label: 'Access denied by order of an authority', value: answer });
+  }
+  if (cbiNeedsUtilityType(caseType)) {
+    rows.push({ label: 'Utility type', value: find(labels.utilityTypes, e.cbiUtilityType) });
+  }
+  return rows;
 }

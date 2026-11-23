@@ -5,8 +5,8 @@ import { MockSectionService } from '../mock/services/mock-section.service';
 import { MockClaimOverviewService } from '../mock/services/mock-claim-overview.service';
 import { MockLookupService } from '../mock/services/mock-lookup.service';
 import { LossInformationFormValue } from '../models/loss-information.model';
-import { LocationPickerOutput, formatLocationItem } from '../models/location-picker.model';
-import { cbiRelationshipFor } from '../../shared/utils/cbi-rules';
+import { LocationPickerOutput } from '../models/location-picker.model';
+import { cbiEntityFields } from '../../shared/utils/cbi-rules';
 import lookupsData from '../mock/data/lookups.json';
 
 /**
@@ -75,15 +75,7 @@ export class LossInfoSyncService {
    */
   syncCbiToSections(claimId: string, v: LossInformationFormValue): void {
     if (v.cbiApplicable !== 'yes' || !v.cbiCaseType) return;
-    const loc = v.cbiLocation?.locations?.[0];
-    const patch = {
-      cbiCaseType: v.cbiCaseType,
-      thirdPartyName: v.cbiThirdPartyName || undefined,
-      thirdPartyIndustry: v.cbiThirdPartyIndustry || undefined,
-      thirdPartyRelationship: cbiRelationshipFor(v.cbiCaseType),
-      cbiOriginatingLocation: loc ? formatLocationItem(loc) : undefined,
-      cbiOriginatingLocationDetail: loc
-    };
+    const patch = cbiEntityFields(v);
     for (const s of this.sectionSvc.getByClaimIdSync(claimId)) {
       if (s.status !== 'Open' || s.damageType !== 'business-interruption') continue;
       for (const e of s.entities.filter(x => x.isContingentBi)) {

@@ -5,10 +5,10 @@ import {
   InstructionStatus,
   SectionClosureReason,
   SectionReopenReason,
-  SectionEntity
+  SectionEntity,
+  CbiEntityFields
 } from '../../models/section.model';
 import { ClaimActivity } from '../../models/claim-overview.model';
-import { LocationItem } from '../../models/location-picker.model';
 import { MockBaseService } from './mock-base.service';
 import { MockStateService } from '../state/mock-state.service';
 import { MockLookupService } from './mock-lookup.service';
@@ -65,20 +65,13 @@ export class MockSectionService extends MockBaseService {
   createSection(
     claimId: string,
     damageType: string,
-    entities: {
+    entities: ({
       name: string;
       instructionStatus?: InstructionStatus;
       dateOfOccurrence?: string;
       interruptionStartDate?: string;
       interruptionEndDate?: string;
-      isContingentBi?: boolean;
-      cbiCaseType?: string;
-      thirdPartyName?: string;
-      thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
-      thirdPartyIndustry?: string;
-      cbiOriginatingLocation?: string;
-      cbiOriginatingLocationDetail?: LocationItem;
-    }[],
+    } & CbiEntityFields)[],
     createdBy: { userId: string; name: string } = { userId: 'usr-lf', name: 'Leonie Fischer' }
   ): Observable<ClaimSection> {
     const sections = this.forClaim(claimId);
@@ -123,7 +116,9 @@ export class MockSectionService extends MockBaseService {
         thirdPartyRelationship: e.thirdPartyRelationship,
         thirdPartyIndustry: e.thirdPartyIndustry,
         cbiOriginatingLocation: e.cbiOriginatingLocation,
-        cbiOriginatingLocationDetail: e.cbiOriginatingLocationDetail
+        cbiOriginatingLocationDetail: e.cbiOriginatingLocationDetail,
+        cbiAuthorityOrder: e.cbiAuthorityOrder,
+        cbiUtilityType: e.cbiUtilityType
       }))
     };
     sections.push(newSection);
@@ -339,14 +334,7 @@ export class MockSectionService extends MockBaseService {
       dateOfOccurrence?: string;
       interruptionStartDate?: string;
       interruptionEndDate?: string;
-      isContingentBi?: boolean;
-      cbiCaseType?: string;
-      thirdPartyName?: string;
-      thirdPartyRelationship?: 'supplier' | 'customer' | 'other';
-      thirdPartyIndustry?: string;
-      cbiOriginatingLocation?: string;
-      cbiOriginatingLocationDetail?: LocationItem;
-    }
+    } & CbiEntityFields
   ): Observable<SectionEntity> {
     for (const [, sections] of this.cache) {
       const section = sections.find(s => s.id === sectionId);
