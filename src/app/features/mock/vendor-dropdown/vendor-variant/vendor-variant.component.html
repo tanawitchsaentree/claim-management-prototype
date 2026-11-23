@@ -67,6 +67,9 @@
               @if (mode === 'none') {
                 <nx-dropdown-item [value]="null">None</nx-dropdown-item>
               }
+              @if (mode === 'clear' && row.controls.vendorId.value) {
+                <nx-dropdown-item [value]="null">Clear selection</nx-dropdown-item>
+              }
               @for (v of optionsFor(i); track v.id) {
                 <nx-dropdown-item [value]="v.id">{{ v.businessName }}</nx-dropdown-item>
               }

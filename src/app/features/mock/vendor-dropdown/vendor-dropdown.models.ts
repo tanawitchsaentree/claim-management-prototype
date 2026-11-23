@@ -14,8 +14,10 @@ export interface MockVendor {
  * current     = "Select" is a real, pickable option (what the screen does today)
  * placeholder = "Select" is only placeholder text; remove the row with the bin
  * none        = a "None" option at the top of the list clears the choice
+ * clear       = "Select" is placeholder only; once a vendor is picked a
+ *               "Clear selection" option appears at the top of the list
  */
-export type ClearMode = 'current' | 'placeholder' | 'none';
+export type ClearMode = 'current' | 'placeholder' | 'none' | 'clear';
 
 export const MOCK_VENDORS: MockVendor[] = [
   {
