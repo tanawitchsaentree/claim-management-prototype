@@ -1,0 +1,114 @@
+:host {
+  display: block;
+}
+
+.vv {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+  padding: var(--space-xl);
+  background: var(--ui-01);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+}
+
+.vv__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-base);
+}
+
+.vv__title {
+  margin: 0;
+  font-size: var(--paragraph-01-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.vv__desc {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+}
+
+.vv__party {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.vv__owner {
+  max-width: 340px; // theme-exempt: matches the Owner name field width in the reference screenshot
+}
+
+nx-formfield {
+  width: 100%;
+}
+
+.vv-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.vv-row__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.vv-card {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-base) var(--space-xl);
+  padding: var(--space-base);
+  border: 1px solid var(--ui-04);
+  border-radius: var(--radius-s);
+}
+
+.vv-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  &__label {
+    font-size: var(--paragraph-02-font-size);
+    font-weight: 600;
+    color: var(--text-01);
+  }
+
+  &__value {
+    font-size: var(--paragraph-02-font-size);
+    color: var(--text-01);
+    overflow-wrap: anywhere;
+  }
+}
+
+.vv-state {
+  padding: var(--space-base);
+  background: var(--ui-02);
+  border-radius: var(--radius-s);
+
+  p {
+    font-size: var(--paragraph-02-font-size);
+  }
+
+  &__title {
+    font-weight: 600;
+    color: var(--text-01);
+    margin: 0 0 var(--space-xs);
+  }
+
+  &__line {
+    margin: 0;
+    color: var(--text-01);
+  }
+
+  &__warn {
+    margin: 0;
+    color: var(--danger);
+    font-weight: 600;
+  }
+}

@@ -195,5 +195,12 @@ export const routes: Routes = [
         m => m.AccordionCompareComponent
       )
   },
+  {
+    path: 'mock/vendor-dropdown',
+    loadComponent: () =>
+      import('./features/mock/vendor-dropdown/vendor-dropdown.component').then(
+        m => m.VendorDropdownComponent
+      )
+  },
   { path: '**', redirectTo: 'dashboard' }
 ];

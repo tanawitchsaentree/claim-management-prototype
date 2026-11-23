@@ -1,0 +1,108 @@
+<ng-template #card let-v>
+  <div class="vv-card">
+    <div class="vv-field">
+      <span class="vv-field__label">Business name</span>
+      <span class="vv-field__value">{{ v.businessName }}</span>
+    </div>
+    <div class="vv-field">
+      <span class="vv-field__label">Tax ID</span>
+      <span class="vv-field__value">{{ v.taxId }}</span>
+    </div>
+    <div class="vv-field">
+      <span class="vv-field__label">Address</span>
+      <span class="vv-field__value">{{ v.address }}</span>
+    </div>
+    <div class="vv-field">
+      <span class="vv-field__label">Clearance status</span>
+      <app-status-chip status="pending" domain="clearance" label="Unknown"></app-status-chip>
+    </div>
+    <div class="vv-field">
+      <span class="vv-field__label">Country</span>
+      <span class="vv-field__value">{{ v.country }}</span>
+    </div>
+    <div class="vv-field">
+      <span class="vv-field__label">Email</span>
+      <span class="vv-field__value">{{ v.email }}</span>
+    </div>
+    <div class="vv-field">
+      <span class="vv-field__label">Telephone number</span>
+      <span class="vv-field__value">{{ v.phone }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<section class="vv">
+  <header class="vv__head">
+    <div>
+      <h2 class="vv__title">{{ title }}</h2>
+      @if (description) {
+        <p class="vv__desc">{{ description }}</p>
+      }
+    </div>
+    <button nxButton="tertiary small" type="button" (click)="reset()">Reset</button>
+  </header>
+
+  <div class="vv__party">
+    <div class="vv__owner">
+      <nx-formfield label="Owner name">
+        <nx-dropdown [formControl]="owner" placeholder="Select">
+          @for (v of vendors; track v.id) {
+            <nx-dropdown-item [value]="v.id">{{ v.businessName }}</nx-dropdown-item>
+          }
+        </nx-dropdown>
+      </nx-formfield>
+    </div>
+    @if (vendor(owner.value); as o) {
+      <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: o }"></ng-container>
+    }
+
+    @for (row of rows.controls; track row; let i = $index) {
+      <div class="vv-row" [formGroup]="row">
+        <div class="vv-row__fields">
+          <nx-formfield label="Salvage vendor name (optional)">
+            <nx-dropdown formControlName="vendorId" placeholder="Select">
+              @if (mode === 'current') {
+                <nx-dropdown-item [value]="null">Select</nx-dropdown-item>
+              }
+              @if (mode === 'none') {
+                <nx-dropdown-item [value]="null">None</nx-dropdown-item>
+              }
+              @for (v of optionsFor(i); track v.id) {
+                <nx-dropdown-item [value]="v.id">{{ v.businessName }}</nx-dropdown-item>
+              }
+            </nx-dropdown>
+          </nx-formfield>
+          <nx-formfield label="Note (optional)">
+            <textarea nxInput formControlName="note" rows="1"></textarea>
+          </nx-formfield>
+          <button
+            nxIconButton="tertiary small"
+            type="button"
+            class="vv-row__bin"
+            aria-label="Remove salvage vendor"
+            (click)="removeRow(i)"
+          >
+            <nx-icon name="trash-o"></nx-icon>
+          </button>
+        </div>
+        @if (vendor(row.controls.vendorId.value); as v) {
+          <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: v }"></ng-container>
+        }
+      </div>
+    }
+
+    <div>
+      <button nxPlainButton type="button" (click)="addRow()">Add Salvage vendor</button>
+    </div>
+  </div>
+
+  <div class="vv-state" aria-live="polite">
+    <p class="vv-state__title">What the system is holding now</p>
+    @for (line of stateLines(); track $index) {
+      <p class="vv-state__line">{{ line }}</p>
+    }
+    @for (w of warnings(); track $index) {
+      <p class="vv-state__warn">{{ w }}</p>
+    }
+  </div>
+</section>

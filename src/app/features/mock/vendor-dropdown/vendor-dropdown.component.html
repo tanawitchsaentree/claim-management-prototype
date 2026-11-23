@@ -1,0 +1,28 @@
+<div class="vd-page">
+  <header class="vd-intro">
+    <h1 class="vd-intro__title">Salvage vendor dropdown: how to clear a choice</h1>
+    <p class="vd-intro__text">
+      Each version starts with WanjalaWilkinson - Dare picked. Type a note, then try to clear the
+      vendor, pick a different one, add a second row and remove rows. The grey box under each
+      version shows what would be saved.
+    </p>
+  </header>
+
+  <app-vendor-variant
+    mode="current"
+    title="A. Today: 'Select' is a pickable option"
+    description="Picking 'Select' clears the vendor. The bin removes the row straight away, no question asked."
+  ></app-vendor-variant>
+
+  <app-vendor-variant
+    mode="placeholder"
+    title="B. Recommended: 'Select' is only placeholder text"
+    description="To change, pick another vendor (the note stays). To take it off, use the bin, which asks first."
+  ></app-vendor-variant>
+
+  <app-vendor-variant
+    mode="none"
+    title="C. A 'None' option at the top of the list"
+    description="Picking 'None' clears the vendor. The bin asks first before removing the row."
+  ></app-vendor-variant>
+</div>

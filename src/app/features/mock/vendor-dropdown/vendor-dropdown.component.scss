@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  background: var(--ui-02);
+  min-height: 100vh;
+}
+
+.vd-page {
+  max-width: 1200px; // theme-exempt: mock canvas width, close to the claim page content width
+  margin: 0 auto;
+  padding: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.vd-intro__title {
+  margin: 0;
+  font-size: var(--heading-05-font-size);
+  font-weight: 600;
+  color: var(--text-01);
+}
+
+.vd-intro__text {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-muted);
+}
