@@ -5,6 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { ClaimDevBannerComponent } from './features/claims/dev-banner/claim-dev-banner.component';
 import { ClaimDevHelperService } from './features/claims/dev-banner/claim-dev-helper.service';
+import { PersonaSwitcherComponent } from './features/dashboard/widgets/persona-switcher';
 import { DevHelperBannerComponent } from './features/fnol/components/dev-helper-banner/dev-helper-banner.component';
 import { AccessGateComponent } from './features/access-gate/access-gate.component';
 import { ToastStackComponent } from './shared/components/toast/toast-stack.component';
@@ -22,6 +23,7 @@ import { environment } from '../environments/environment';
     RouterOutlet,
     ClaimDevBannerComponent,
     DevHelperBannerComponent,
+    PersonaSwitcherComponent,
     AccessGateComponent,
     ToastStackComponent,
     TourStepRendererComponent,
@@ -40,6 +42,12 @@ import { environment } from '../environments/environment';
       <div class="dev-banner-row">
         @if (devBannerMode !== 'off') {
           <app-claim-dev-banner />
+        }
+        <!-- View as lives in the DEV banner menu, which only the 'full' build
+             has. The deployed link (banner off) still needs to switch user on
+             the dashboard, so the Persona strip comes back there. -->
+        @if (devBannerMode !== 'full' && currentRoute() === '/dashboard') {
+          <app-persona-switcher />
         }
         @if (helper.shouldShowFnolHelper() && devBannerMode === 'full') {
           <app-dev-helper-banner />

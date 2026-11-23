@@ -1,0 +1,88 @@
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+
+import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { AuthService, PERSONAS } from '../../../core/services/auth';
+
+const ROLE_LABEL: Record<string, string> = {
+  'claims-handler': 'All',
+  kcm: 'KCM',
+  'claims-manager': 'Manager'
+};
+
+@Component({
+  selector: 'app-persona-switcher',
+  standalone: true,
+  imports: [NxButtonModule],
+  template: `
+    <div class="ps-bar">
+      <span class="ps-label">Persona:</span>
+      @for (p of personas; track p.id) {
+        <button
+          type="button"
+          class="ps-btn"
+          [class.ps-btn--active]="auth.user()?.id === p.id"
+          (click)="auth.setActivePersona(p.id)"
+        >
+          {{ p.name }} <span class="ps-role-tag">{{ roleLabel(p.dashboardRole) }}</span>
+        </button>
+      }
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+      .ps-bar {
+        display: flex;
+        align-items: center;
+        gap: var(--space-ndbx-6);
+        padding: var(--space-xs) var(--space-md);
+      }
+      .ps-label {
+        font-size: var(--paragraph-03-font-size);
+        color: var(--text-muted);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .ps-btn {
+        font-size: var(--paragraph-03-font-size);
+        padding: 3px var(--space-ndbx-10);
+        border-radius: var(--radius-ndbx-12);
+        border: 1px solid var(--ui-04);
+        background: var(--ui-01);
+        color: var(--text-01);
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+      }
+      .ps-btn:hover {
+        background: var(--ui-02);
+      }
+      /* Selected = the app's usual selected look (light blue fill, blue text).
+         The old white-on-primary fill rendered as white text on white. */
+      .ps-btn--active,
+      .ps-btn--active:hover {
+        background: var(--action-selected-background-color);
+        color: var(--interactive-primary);
+        border-color: var(--interactive-primary);
+        font-weight: 600;
+      }
+      .ps-role-tag {
+        font-size: var(--paragraph-03-font-size);
+        opacity: 0.75;
+        margin-left: 3px;
+      }
+    `
+  ]
+})
+export class PersonaSwitcherComponent {
+  readonly auth = inject(AuthService);
+  readonly personas = PERSONAS;
+  roleLabel(r: string): string {
+    return ROLE_LABEL[r] ?? r;
+  }
+}
