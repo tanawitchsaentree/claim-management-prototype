@@ -470,6 +470,10 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
   onRestrictionChanged(restriction: FileRestriction): void {
     const cur = this.vm$.value;
     if (!cur.claim) return;
+    // Persist, same as the two cards above. Kept on screen only, the reload
+    // that follows any other card's save read the old value back and the
+    // switch flipped itself off again.
+    this.stateSvc.patchOverview(cur.claim.claimId, { restriction });
     this.vm$.next({ ...cur, claim: { ...cur.claim, restriction } });
   }
 
@@ -626,12 +630,9 @@ export class ClaimOverviewComponent implements OnInit, OnDestroy, OverviewStage 
     this.vm$.next({ ...cur, tasksExpanded: !cur.tasksExpanded });
   }
 
-  // Owned here, not as a local signal on the card itself — this page's card
-  // list remounts every sibling card ~900ms after any one of them saves (see
-  // trade-sanctions-card's class doc), which would reset a local "expanded"
-  // signal back to its default on every unrelated save. Pending-tasks-widget
-  // already proved the fix: the boolean lives on the VM, survives the card's
-  // own remount because the VM never does.
+  // Owned here on the VM, not as a local signal on the card. Added when every
+  // save remounted the card list (gone since 781ab85, see CONVERSIONS.md
+  // 2026-11-23); kept because reloads keep these flags (loadOverview `prev`).
   toggleTradeSanctions(): void {
     const cur = this.vm$.value;
     this.vm$.next({ ...cur, tradeSanctionsExpanded: !cur.tradeSanctionsExpanded });

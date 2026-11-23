@@ -37,13 +37,10 @@ export interface RecoveryPotentialUpdated {
 /**
  * Recovery potential — collapsible (reinstated 2026-10-05; built, then
  * reverted same-day on 2026-09-30 per "ไม่เอา accordion กางออกมาก่อน" — this
- * time by direct request). `expanded` is an `@Input`, not a local signal —
- * this page's card list remounts every sibling card ~900ms after any one of
- * them saves (see trade-sanctions-card's class doc for how that was found),
- * which would silently reset a local boolean back to its default on an
- * unrelated save. The parent (claim-overview.component.ts) owns the state on
- * its VM and survives the remount, same fix already proven by
- * pending-tasks-widget. Collapsed view shows a one-line status summary
+ * time by direct request). `expanded` is an `@Input` owned by the parent's
+ * VM (claim-overview.component.ts), not a local signal: it was added while
+ * every save still remounted the card list (gone since 781ab85, 2026-10-12;
+ * see CONVERSIONS.md 2026-11-23). Collapsed view shows a one-line status summary
  * (`RECOVERY_STATE_MESSAGE[state]`) instead of the question/radios. The
  * closure checklist still refuses to pass without an answer regardless of
  * collapse state.

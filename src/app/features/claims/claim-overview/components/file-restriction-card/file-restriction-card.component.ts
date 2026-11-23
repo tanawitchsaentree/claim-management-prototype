@@ -4,6 +4,7 @@ import {
   Input,
   OnChanges,
   Output,
+  SimpleChanges,
   effect,
   inject,
   signal,
@@ -50,8 +51,8 @@ import {
 export class FileRestrictionCardComponent implements OnChanges {
   @Input({ required: true }) restriction: FileRestriction | undefined;
   @Output() restrictionChanged = new EventEmitter<FileRestriction>();
-  // `expanded` is an @Input, owned by the parent's VM, because this page's
-  // card list remounts every card after any save (same as recovery-potential-card).
+  // `expanded` is an @Input, owned by the parent's VM, so the open/closed
+  // state lives with the page rather than the card.
   @Input() expanded = false;
   @Output() toggled = new EventEmitter<void>();
 
@@ -115,7 +116,15 @@ export class FileRestrictionCardComponent implements OnChanges {
     });
   }
 
-  ngOnChanges(): void {
+  // Re-sync only when the stored restriction itself changed, not on every
+  // expand/collapse or on another card's save re-feeding the same value.
+  private syncedKey: string | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['restriction']) return;
+    const key = JSON.stringify(this.restriction ?? null);
+    if (key === this.syncedKey) return;
+    this.syncedKey = key;
     const r = this.restriction;
     this.restrictionForm.patchValue(
       {
@@ -130,7 +139,9 @@ export class FileRestrictionCardComponent implements OnChanges {
   onToggleRestriction(checked: boolean): void {
     this.restrictionForm.get('isRestricted')!.setValue(checked);
     if (!checked) {
-      this.restrictionForm.get('reason')!.setValue('');
+      // Model only: the reason dropdown leaves the DOM with this switch, and
+      // nx-dropdown applies a written value a microtask later (NG0911).
+      this.restrictionForm.get('reason')!.setValue('', { emitModelToViewChange: false });
       this.coAccessList.set([]);
     }
     this.saveRestrictionToClaim();
@@ -147,6 +158,8 @@ export class FileRestrictionCardComponent implements OnChanges {
         : undefined,
       accessList: isRestricted ? this.coAccessList() : []
     };
+    // The form already shows this; don't re-sync when the parent echoes it back.
+    this.syncedKey = JSON.stringify(restriction);
     this.restrictionChanged.emit(restriction);
   }
 

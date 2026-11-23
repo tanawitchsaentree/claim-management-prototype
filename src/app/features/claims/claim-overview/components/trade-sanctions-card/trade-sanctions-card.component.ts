@@ -4,6 +4,7 @@ import {
   Input,
   OnChanges,
   Output,
+  SimpleChanges,
   computed,
   inject,
   signal,
@@ -45,12 +46,8 @@ export interface TradeSanctionsUpdated {
  *
  * Collapsible (reinstated 2026-10-05 — built, then reverted same-day on
  * 2026-09-30 per "ไม่เอา accordion กางออกมาก่อน"; this time by direct request).
- * `expanded` is an `@Input`, not a local signal — this page's card list
- * remounts every sibling card ~900ms after any one of them saves (see the
- * "Yes" paragraph below), which would silently reset a local boolean back to
- * its default on an unrelated save. The parent (claim-overview.component.ts)
- * owns the state on its VM and survives the remount, same fix already proven
- * by pending-tasks-widget. Collapsed view shows a one-line answer summary
+ * `expanded` is an `@Input` owned by the parent's VM, not a local signal
+ * (see the "Yes" paragraph below for the remount history). Collapsed view shows a one-line answer summary
  * instead of the question/radios/sub-form.
  *
  * Two different commit models on one card (2026-09-30, team call — same
@@ -58,17 +55,12 @@ export interface TradeSanctionsUpdated {
  * "No" auto-saves the instant it's picked, no Save button, no confirm — it's
  * the whole fact, same reasoning as recovery potential.
  *
- * "Yes" does NOT auto-save by itself, unlike recovery potential's Yes/No —
- * found live (2026-09-30) that this page's card list is torn down and
- * rebuilt on every `(updated)` emit (confirmed via MutationObserver: every
- * sibling card unmounts/remounts ~900ms after any one card saves, not just
- * this one). "Yes" here REVEALS a multi-field sub-form (referral applicable,
- * ESRA date/ID, referral approved, comments); auto-saving the bare fact
- * first would open a ~900ms window where the handler could start typing
- * into that sub-form and have the remount wipe it before their first "Save
- * details" click. So "Yes" just reveals the form; exposure + whatever
- * sub-fields are filled in commit together on "Save details", exactly like
- * before this change — same deliberate Save + confirm dialog, unchanged.
+ * "Yes" does NOT auto-save by itself: it reveals a multi-field sub-form and
+ * exposure + sub-fields commit together on "Save details" (Save + confirm).
+ * Originally chosen (2026-09-30) because every save remounted the whole card
+ * list ~900ms later. That remount is gone (781ab85, 2026-10-12) and other
+ * cards' saves no longer reset this form (CONVERSIONS.md 2026-11-23), so
+ * auto-saving "Yes" would now be safe; kept as is.
  *
  * Same confirm-gated "Clear answer" as recovery potential for the top-level
  * exposure fact — the one action here that still asks first, since erasing a
@@ -168,8 +160,21 @@ export class TradeSanctionsCardComponent implements OnChanges {
     return exposure === 'yes' ? 'Yes' : exposure === 'no' ? 'No' : null;
   });
 
-  ngOnChanges(): void {
+  // Re-sync the form only when the saved check itself changed. Any save
+  // anywhere on the page re-feeds a fresh claim object; resetting on that
+  // wiped a half-filled "Yes" sub-form whenever another card saved.
+  private syncedKey: string | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['claim']) return;
     this.claimSig.set(this.claim);
+    const key = JSON.stringify(this.claim.tradeSanctions ?? null);
+    if (key === this.syncedKey) return;
+    this.syncedKey = key;
+    this.resetForm();
+  }
+
+  private resetForm(): void {
     const ts = this.claim.tradeSanctions ?? null;
     // Emit normally (unlike recovery-potential-card's re-sync) — showExpanded/
     // canSave/referralApprovedDisabled are all computed off these controls'
@@ -257,7 +262,7 @@ export class TradeSanctionsCardComponent implements OnChanges {
   }
 
   onResetDetails(): void {
-    this.ngOnChanges();
+    this.resetForm();
   }
 
   private confirmDetailChanges(next: TradeSanctionsCheck): ConfirmDialogChange[] {
