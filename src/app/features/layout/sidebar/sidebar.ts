@@ -27,11 +27,13 @@ function isGroup(e: NavEntry): e is NavGroup {
   return 'children' in e;
 }
 
+// audit-exempt: side menu items (navigation config), not lookup data.
 const GLOBAL_NAV: NavItem[] = [
   { label: 'Dashboard', icon: 'home', path: '/dashboard', exact: true },
   { label: 'New Claim', icon: 'plus-circle', path: '/fnol', exact: true }
 ];
 
+// audit-exempt: claim side menu items (navigation config), not lookup data.
 const CLAIM_NAV_TEMPLATE: NavEntry[] = [
   { label: 'Claim overview', icon: 'file-text', path: 'overview' },
   { label: 'Policy overview', icon: 'card-o', path: 'policy' },

@@ -77,6 +77,7 @@ export class MassEventsComponent {
   readonly pageSize = PAGE_SIZE;
   readonly toast = signal<string | null>(null);
 
+  // audit-exempt: breadcrumb trail (navigation config), not lookup data.
   readonly breadcrumb: BreadcrumbItem[] = [
     { label: 'Administration', route: '/administration' },
     { label: 'Mass events' }

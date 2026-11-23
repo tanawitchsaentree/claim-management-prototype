@@ -35,6 +35,7 @@ import type {
 import { TicketDetailPanelComponent } from '../ticket-detail-panel/ticket-detail-panel.component';
 import { TrackerOwnerUnlockComponent } from '../tracker-owner-unlock/tracker-owner-unlock.component';
 
+// audit-exempt: prototype build tracker blocker filter (internal dev tool), not claims business data.
 const BLOCKED_BY_OPTIONS: { value: BlockedReason; label: string }[] = [
   { value: 'waiting_product', label: 'Waiting: Product' },
   { value: 'waiting_ba', label: 'Waiting: BA' },
@@ -43,6 +44,7 @@ const BLOCKED_BY_OPTIONS: { value: BlockedReason; label: string }[] = [
   { value: 'scope_unclear', label: 'Scope unclear' }
 ];
 
+// audit-exempt: prototype build tracker route filter (internal dev tool), not claims business data.
 const HAS_ROUTE_OPTIONS: { value: boolean | null; label: string }[] = [
   { value: null, label: 'Any' },
   { value: true, label: 'Has prototype route' },

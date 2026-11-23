@@ -72,6 +72,7 @@ export class SectionClosureModalComponent {
 
   readonly closureReasons = CLOSURE_REASONS;
 
+  // audit-exempt: closure checklist built from this section's own data at open time, not a lookup list.
   readonly checklistItems: ChecklistItem[] = [
     {
       label: 'No open deductible tasks',

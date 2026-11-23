@@ -21,6 +21,20 @@ export class MockLookupService extends MockBaseService {
   getTaskStatuses(): Observable<LookupOption[]> {
     return this.respond(this.lookups.taskStatuses);
   }
+  // Sync variants below are read as field initialisers (option lists bound
+  // straight into a template), same reason as getTypeOfDamageSync().
+  getTaskStatusesSync(): LookupOption[] {
+    return this.lookups.taskStatuses;
+  }
+  getProviderTypesSync(): LookupOption[] {
+    return this.lookups.providerTypes;
+  }
+  getSkeletonReasonsSync(): LookupOption[] {
+    return this.lookups.skeletonReasons;
+  }
+  getNoteCategoriesSync(): LookupOption[] {
+    return this.lookups.noteCategories;
+  }
   getCurrencies(): Observable<LookupOption[]> {
     return this.respond(this.lookups.currencies);
   }

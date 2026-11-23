@@ -17,6 +17,7 @@ import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { scrollToRow } from '../../shared/utils/scroll-to-row';
 import { Navbar } from '../layout/navbar/navbar';
 import { MockTaskService } from '../../core/mock/services/mock-task.service';
+import { MockLookupService } from '../../core/mock/services/mock-lookup.service';
 import { AuthService } from '../../core/services/auth';
 import { Task, TaskStatus } from '../../core/models/task.model';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
@@ -27,11 +28,6 @@ import { ToastService } from '../../shared/components/toast/toast.service';
 
 type StatusFilter = 'all' | TaskStatus;
 
-const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
-  { value: 'open', label: 'Open' },
-  { value: 'in-progress', label: 'In progress' },
-  { value: 'done', label: 'Done' }
-];
 import { ClaimNumberPipe } from '../../shared/pipes/claim-number.pipe';
 
 @Component({
@@ -58,6 +54,7 @@ export class TaskManagerComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
+  private readonly lookupSvc = inject(MockLookupService);
 
   /** Task to highlight when arriving from a "Needs fixing" row. */
   private readonly params = toSignal(this.route.queryParamMap, {
@@ -65,7 +62,11 @@ export class TaskManagerComponent implements OnInit {
   });
   readonly highlightTaskId = computed(() => this.params().get('task'));
 
-  readonly statusOptions = STATUS_OPTIONS;
+  // lookups.json taskStatuses; its values are exactly the TaskStatus union.
+  readonly statusOptions = this.lookupSvc.getTaskStatusesSync() as {
+    value: TaskStatus;
+    label: string;
+  }[];
   readonly loading = signal(true);
   readonly allTasks = signal<Task[]>([]);
   readonly showMyTasksOnly = signal(false);

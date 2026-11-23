@@ -48,6 +48,7 @@ export class ClaimRightStripComponent {
   pendingQuickAddEntity: string | null = null;
   pendingScope: NotesScope | null = null;
 
+  // audit-exempt: right-strip panel buttons (navigation config), not lookup data.
   readonly items: StripItem[] = [
     { icon: 'info-circle-o', label: 'Claim info', key: 'info' },
     { icon: 'bolt-o', label: 'Quick actions', key: 'actions' },

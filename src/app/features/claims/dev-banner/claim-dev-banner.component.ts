@@ -96,6 +96,7 @@ export class ClaimDevBannerComponent implements OnInit, OnDestroy {
   readonly isJiraKey = (id: string): boolean => /^[A-Z]+-\d+$/.test(id);
   readonly variantCtrl = new FormControl<ReferenceVariant>('none');
 
+  // audit-exempt: DEV-banner prototype variant toggle (dev tool), not business data.
   readonly variantOptions: { value: ReferenceVariant; label: string }[] = [
     { value: 'none', label: 'Off' },
     { value: 'panel', label: 'Variant 1: Side panel' },

@@ -95,12 +95,14 @@ export class ClaimsPortfolioWidgetComponent {
   // filter compares against the real wall-clock date, so as real time moves
   // on, claims silently age out of "Last 30/90 days" with no way back to
   // them short of clearing localStorage. Exposing both here is the fix.
+  // audit-exempt: view filter for this widget (date range), not business lookup data.
   readonly dateRangeOptions: { value: ClaimsDateRange; label: string }[] = [
     { value: '30', label: 'Last 30 days' },
     { value: '90', label: 'Last 90 days' },
     { value: 'all', label: 'All time' }
   ];
 
+  // audit-exempt: view filter for this widget (whose claims to show), not business lookup data.
   readonly scopeOptions: { value: 'mine' | 'group' | 'all'; label: string }[] = [
     { value: 'mine', label: 'My claims' },
     { value: 'group', label: 'My group' },

@@ -87,6 +87,7 @@ export class ClaimsListComponent {
   readonly pageSize = PAGE_SIZE;
   readonly selected = signal<Set<string>>(new Set());
 
+  // audit-exempt: breadcrumb trail (navigation config), not lookup data.
   readonly breadcrumb: BreadcrumbItem[] = [{ label: 'Claims' }];
 
   // "Awaiting policy" is not a status (the model only has Open / Closed); it is a claim

@@ -7,6 +7,7 @@ import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { MockProviderService } from '../../../core/mock/services/mock-provider.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
+import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { MockLossAdjusterSurveyService } from '../../../core/mock/services/mock-loss-adjuster-survey.service';
 import {
   ProviderAssignment,
@@ -41,13 +42,6 @@ import { ClaimSection } from '../../../core/models/section.model';
 // else (legal/expert/other) is treated as an external provider communication.
 const INTERNAL_TYPES: ProviderType[] = ['adjuster'];
 
-const TYPE_LABEL: Record<ProviderType, string> = {
-  adjuster: 'Adjuster',
-  legal: 'Legal',
-  expert: 'Expert',
-  other: 'Other'
-};
-
 @Component({
   selector: 'app-provider-management',
   standalone: true,
@@ -72,6 +66,7 @@ export class ProviderManagementComponent implements OnInit {
   private readonly surveySvc = inject(MockLossAdjusterSurveyService);
   private readonly dialogSvc = inject(NxDialogService);
   private readonly toast = inject(ToastService);
+  private readonly providerTypes = inject(MockLookupService).getProviderTypesSync();
 
   private claimId = '';
 
@@ -98,7 +93,7 @@ export class ProviderManagementComponent implements OnInit {
   }
 
   typeLabel(t: ProviderType): string {
-    return TYPE_LABEL[t];
+    return this.providerTypes.find(o => o.value === t)?.label ?? t;
   }
 
   chipStatus(s: ProviderAssignmentStatus): string {

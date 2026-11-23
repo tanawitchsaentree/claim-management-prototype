@@ -33,6 +33,7 @@ const PLACEHOLDER_DESC =
 export class AdministrationComponent {
   private readonly router = inject(Router);
 
+  // audit-exempt: navigation cards for the Administration page (menu config), not lookup data.
   readonly groups: AdminGroup[] = [
     {
       title: 'Administration',
