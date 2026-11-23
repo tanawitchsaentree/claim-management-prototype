@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
 import { NxTooltipModule } from '@allianz/ng-aquila/tooltip';
+import { NxInputModule } from '@allianz/ng-aquila/input';
 import { MockClaimOverviewService } from '../../../core/mock/services/mock-claim-overview.service';
 import { MockSectionService } from '../../../core/mock/services/mock-section.service';
 import { MockStateService } from '../../../core/mock/state/mock-state.service';
@@ -39,6 +40,7 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
     NxIconModule,
     NxButtonModule,
     NxTooltipModule,
+    NxInputModule,
     StatusChipComponent,
     EmptyStateComponent
   ],

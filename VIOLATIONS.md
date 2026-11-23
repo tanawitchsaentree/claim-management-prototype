@@ -26,10 +26,12 @@
 | `audit:ac-route-overrides` | ✅ PASS | 0                                               |
 | `audit:stage-pattern`      | ✅ PASS | 0                                               |
 | `audit:appearance`         | ✅ PASS | 0                                               |
-| `audit:ndbx-wrapper`       | ❌ FAIL | 34 lines — see "2026-09-16 detector fix" below  |
+| `audit:ndbx-wrapper`       | ✅ PASS | 0 — see "2026-11-23 update" below              |
 | `audit:wizard-footer`      | ✅ PASS | 0                                               |
 
 **2026-09-16 detector fix — this count is not new debt, it's newly-visible debt.** The check's regex was `<input ` (literal trailing space), which only matches a bare `<input ...>` written on a single line. Angular template formatting (and this repo's own `prettier --write .` run today) routinely wraps a multi-attribute `<input\n  attr=...` across lines, putting no space after `<input` on its own line — so the old regex silently stopped matching those. Fixed to `<input\b` (word-boundary), which catches the tag regardless of line-wrapping. Re-running it found 34 real bare `<input>`s, not the 2 documented exemptions below — most of that gap predates this fix; it was never caught, at any point, once a file's `<input>` happened to wrap across lines. Exempted from a blind mass-fix here per this file's own rule ("existing violations are fixed in dedicated cleanup PRs, not inline with feature work") — needs its own pass to triage which of the 34 get an `nx-formfield` and which get a documented exemption like the 2 below.
+
+**2026-11-23 update — `audit:ndbx-wrapper` now passes with 0 exemptions.** The 34 lines were mostly a detector artefact: the grep only saw the line holding `<input`, so a prettier-wrapped tag whose `nxInput` / `nxDatefield` sits on a following line counted as bare. The check is now `scripts/audit-ndbx-wrapper.mjs`, which reads the whole tag (same allowed markers, nothing loosened). That left 4 real bare inputs, all dense search boxes (navbar, file-restriction user search, reference-claim popover in panel and tabs mode). Each now carries `nxInput`, keeping its custom wrapper (no `nx-formfield`, per the spacing-trap skill); each component's SCSS re-asserts its own padding/placeholder font against the global `.c-input` rules, so they render pixel-identical to before.
 
 ## Fix-forward checks (excluded from `pre-commit`/`audit:all` — run manually)
 
@@ -42,16 +44,9 @@ These are excluded from the blocking gate because they're manual spot-checks, no
 
 ---
 
-## `audit:ndbx-wrapper` — 2 lines (documented exemptions)
+## `audit:ndbx-wrapper` — 0 lines
 
-Bare `<input>` outside `nxInput`/NDBX wrapper (scope: `src/app/features` only — the script does not walk `src/app/shared`).
-
-| File                                                                   | Line | Reason                                                                                                                                                                                            |
-| ---------------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/features/layout/navbar/navbar.html`                           | 21   | Top-chrome search-as-you-type box, no visible `<label>`, fully inert (no binding). Wrapped in `.app-header__search-input-wrap` matching the `co-restrict-search` exemplar pattern below.          |
-| `src/app/features/claims/claim-overview/claim-overview.component.html` | 275  | File-restriction user-search input. No label, dense layout, uses the canonical `.co-restrict-search__input-wrap` pattern — the reference implementation the navbar fix above was matched against. |
-
-Both follow the `nx-formfield-spacing-trap` skill's documented exception: no label, no inline validation, dense layout where `nx-formfield`'s reserved label/error zone would create visible gaps. Every OTHER bare `<input>` found in this codebase (approvals filter bar ×3, claim-notes-panel Title field) had a visible `<label>` and was properly wrapped in `nx-formfield` instead — see commit `548edcb`.
+The dense search boxes formerly listed here as exemptions (navbar search, file-restriction user search) now use `nxInput` inside their custom wrapper instead of a bare `<input>`, together with the reference-claim popover search in `claim-reference-panel` and `claim-reference-tabs`. Pattern: keep the `__input-wrap` + icon markup from BLESSED.md, add `nxInput`, and in the component SCSS set `padding` and the `::placeholder` font explicitly (`revert` / `inherit`) so NDBX's global `.c-input` styles don't change the look.
 
 ## `audit:spacing` — 38 lines (documented exemption: pill/badge/chip padding)
 
@@ -73,7 +68,7 @@ All genuine layout spacing (card padding, section gaps, row padding — 245 of t
 
 - **`audit:spacing`:** the 38 pill/badge/chip padding lines above are a permanent, documented exemption class — not legacy debt pending cleanup. New pill/badge/chip components may use literal small padding values paired with `border-radius` following this same pattern; new _layout_ spacing (card insets, section gaps, row padding) MUST use the `--space-*` token scale in `src/styles.scss`.
 - **`audit:font-size`:** clean — 0 violations. Every literal font-size px value maps to a typography or icon-size token (see `9b4c44a`).
-- **`audit:ndbx-wrapper`:** 2 of the 34 currently-flagged lines are the documented, narrow exception (dense search box, no label, no validation) per the `nx-formfield-spacing-trap` skill. The other 32 are real, newly-surfaced (2026-09-16 detector fix) debt awaiting a dedicated cleanup pass — not yet triaged into "needs `nx-formfield`" vs "qualifies for the same exemption."
+- **`audit:ndbx-wrapper`:** clean, 0 violations, 0 exemptions (2026-11-23). Dense search boxes use `nxInput` in a custom wrapper, not a bare `<input>`.
 - **`audit:colors`:** 2 lines (`rgba(210, 53, 29, 0.1)` / `rgba(255, 165, 0, 0.12)` tint backgrounds in `claim-closure-modal.component.scss`) surfaced by the same detector-masking issue — the old regex's `grep -v 'var(--'` filter silently excluded any line that *also* contained an unrelated `var(--...)` call, which both of these did. Real hardcoded-color debt, not yet tokenized (no existing `--danger`/`--warning` tint token matches these exact alpha values — needs a design decision, not a blind swap).
 - **All other blocking checks (`audit:radio-size`, `audit:formfield-error`, `audit:imports`, `audit:any`, `audit:subscribe`, `audit:hardcoded-data`, `audit:status-colors`, `audit:date-format`, `audit:button-size`, `audit:table-empty`, `audit:ac-logic`, `audit:ac-route-overrides`, `audit:stage-pattern`, `audit:appearance`, `audit:wizard-footer`):** zero violations, zero exemptions.
 

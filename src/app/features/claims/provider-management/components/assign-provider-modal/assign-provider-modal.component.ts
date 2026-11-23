@@ -8,6 +8,7 @@ import { NxInputModule } from '@allianz/ng-aquila/input';
 import { NxDropdownModule } from '@allianz/ng-aquila/dropdown';
 import { NxDatefieldModule } from '@allianz/ng-aquila/datefield';
 import { ClaimSection } from '../../../../../core/models/section.model';
+import { MockLookupService } from '../../../../../core/mock/services/mock-lookup.service';
 import {
   ProviderAssignment,
   ProviderType
@@ -20,13 +21,6 @@ export interface AssignProviderModalData {
 }
 
 export type AssignProviderModalResult = Omit<ProviderAssignment, 'assignmentId'>;
-
-const PROVIDER_TYPE_OPTIONS: { value: ProviderType; label: string }[] = [
-  { value: 'adjuster', label: 'Adjuster' },
-  { value: 'legal', label: 'Legal' },
-  { value: 'expert', label: 'Expert' },
-  { value: 'other', label: 'Other' }
-];
 
 @Component({
   selector: 'app-assign-provider-modal',
@@ -49,7 +43,7 @@ export class AssignProviderModalComponent {
   readonly modalRef =
     inject<NxModalRef<AssignProviderModalComponent, AssignProviderModalResult | null>>(NxModalRef);
 
-  readonly providerTypeOptions = PROVIDER_TYPE_OPTIONS;
+  readonly providerTypeOptions = inject(MockLookupService).getProviderTypesSync();
   submitted = false;
 
   readonly form = new FormGroup({

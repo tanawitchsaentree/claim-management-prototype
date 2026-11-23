@@ -75,6 +75,7 @@ export class LossEventOverviewComponent {
   readonly loading = computed(() => this.overview() === undefined);
   readonly notFound = computed(() => this.overview() === null);
 
+  // audit-exempt: breadcrumb trail (navigation config), not lookup data.
   readonly breadcrumb: BreadcrumbItem[] = [
     { label: 'Loss events', route: '/loss-events' },
     { label: 'Loss event overview' }

@@ -10,7 +10,7 @@
   ],
   "taskStatuses": [
     { "value": "open", "label": "Open" },
-    { "value": "in-progress", "label": "In Progress" },
+    { "value": "in-progress", "label": "In progress" },
     { "value": "done", "label": "Done" }
   ],
   "priorities": [
@@ -199,5 +199,22 @@
     { "value": "steam", "label": "Steam" },
     { "value": "telecom", "label": "Telecommunications" },
     { "value": "it", "label": "IT" }
+  ],
+  "providerTypes": [
+    { "value": "adjuster", "label": "Adjuster" },
+    { "value": "legal", "label": "Legal" },
+    { "value": "expert", "label": "Expert" },
+    { "value": "other", "label": "Other" }
+  ],
+  "skeletonReasons": [
+    { "value": "policy_not_issued", "label": "Policy not yet issued" },
+    { "value": "policy_not_found", "label": "Policy not found in system" },
+    { "value": "multi_policy_pending", "label": "Multi-policy case (pending investigation)" },
+    { "value": "other", "label": "Other" }
+  ],
+  "noteCategories": [
+    { "value": "general", "label": "General" },
+    { "value": "recovery", "label": "Recovery" },
+    { "value": "litigation", "label": "Litigation" }
   ]
 }

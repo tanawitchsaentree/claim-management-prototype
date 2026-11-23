@@ -20,6 +20,7 @@ import { NxFormfieldModule } from '@allianz/ng-aquila/formfield';
 import { NxDialogService } from '@allianz/ng-aquila/modal';
 import { Note, NoteCategory } from '../../../core/models';
 import { MockNotesService } from '../../../core/mock/services/mock-notes.service';
+import { MockLookupService } from '../../../core/mock/services/mock-lookup.service';
 import { NotesScope } from '../../../core/services/right-strip.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 // Dynamic import, not static — ClaimNotesFullComponent's own template needs
@@ -41,12 +42,6 @@ const EN_WEEKDAY: Record<number, string> = {
   4: 'Thu',
   5: 'Fri',
   6: 'Sat'
-};
-
-const CATEGORY_LABEL: Record<NoteCategory, string> = {
-  general: 'General',
-  recovery: 'Recovery',
-  litigation: 'Litigation'
 };
 
 @Component({
@@ -104,12 +99,9 @@ export class ClaimNotesPanelComponent implements OnChanges {
     body: new FormControl('')
   });
 
-  readonly categoryOptions: { value: NoteCategory; label: string }[] = [
-    { value: 'general', label: 'General' },
-    { value: 'recovery', label: 'Recovery' },
-    { value: 'litigation', label: 'Litigation' }
-  ];
+  readonly categoryOptions = inject(MockLookupService).getNoteCategoriesSync();
 
+  // audit-exempt: filter-chip config for the notes list (All / Pinned / per category); the category values themselves come from lookups.json noteCategories.
   readonly filterOptions: { value: FilterValue; label: string }[] = [
     { value: 'all', label: 'All' },
     { value: 'pinned', label: 'Pinned' },
@@ -134,7 +126,7 @@ export class ClaimNotesPanelComponent implements OnChanges {
   });
 
   categoryLabel(category: NoteCategory): string {
-    return CATEGORY_LABEL[category];
+    return this.categoryOptions.find(o => o.value === category)?.label ?? category;
   }
 
   // Single flat, pinned-first-then-newest list — scoped view filters by

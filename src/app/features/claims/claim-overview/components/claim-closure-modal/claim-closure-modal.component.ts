@@ -87,6 +87,7 @@ export class ClaimClosureModalComponent {
 
   readonly closureReasons = CLOSURE_REASONS;
 
+  // audit-exempt: closure checklist built from this claim's own blocker data at open time, not a lookup list.
   readonly checklistItems: ChecklistItem[] = [
     {
       label: 'No open tasks',

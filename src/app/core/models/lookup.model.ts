@@ -47,4 +47,10 @@ export interface Lookups {
   /** CBI Service Interruption: which utility failed (CBI functional design diagram). */
   cbiUtilityTypes: LookupOption[];
   operatingEntities: LookupOption[];
+  /** Provider management: kind of external provider assigned to a claim. */
+  providerTypes: LookupOption[];
+  /** FNOL skeleton claim: why the claim is registered without a policy. */
+  skeletonReasons: LookupOption[];
+  /** Claim notes: the category a note is filed under. */
+  noteCategories: LookupOption[];
 }

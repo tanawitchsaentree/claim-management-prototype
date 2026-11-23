@@ -24,13 +24,6 @@ import {
   SkeletonJourneyService
 } from '../../services/skeleton-journey.service';
 
-const REASON_LABELS: Record<SkeletonReason, string> = {
-  policy_not_issued: 'Policy not yet issued',
-  policy_not_found: 'Policy not found in system',
-  multi_policy_pending: 'Multi-policy case (pending investigation)',
-  other: 'Other'
-};
-
 @Component({
   selector: 'app-step-skeleton-summary',
   standalone: true,
@@ -77,7 +70,8 @@ export class StepSkeletonSummaryComponent implements OnInit {
   }
 
   reasonLabel(key: SkeletonReason | undefined): string {
-    return key ? REASON_LABELS[key] : '-';
+    if (!key) return '-';
+    return this.lookupSvc.getSkeletonReasonsSync().find(o => o.value === key)?.label ?? key;
   }
 
   ngOnInit(): void {

@@ -40,6 +40,9 @@ const featuresDir = resolve(root, 'src/app/features');
 // old single-line grep couldn't cross.
 const DECL_LINE = /^\s*(?:private\s+|protected\s+|public\s+)?(?:const|readonly)\s+[a-zA-Z0-9_]+\b/;
 
+const OWN_ARRAY_OF_OBJECTS =
+  /^\s*(?:private\s+|protected\s+|public\s+)?(?:const|readonly)\s+[a-zA-Z0-9_]+\s*(?::[^=]*(?:=>[^=]*)*)?=\s*\[\s*\{/;
+
 function walkTs(dir, files = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
@@ -60,9 +63,13 @@ function findViolations(file) {
     if (i > 0 && /audit-exempt/.test(lines[i - 1])) continue;
 
     // Look ahead a few lines for an array literal whose first non-whitespace
-    // token is `{` — i.e. `= [` then (optionally on later lines) `{`.
+    // token is `{` — i.e. `= [` then (optionally on later lines) `{`. The `=`
+    // must be THIS declaration's own initializer (after its name and optional
+    // type), otherwise a short declaration directly above a real hit, e.g.
+    // `readonly page = signal(1);`, was reported a second time because the
+    // window reached into the next declaration (fixed 2026-11-23).
     const window = lines.slice(i, i + 4).join('\n');
-    if (/=\s*\[\s*\{/.test(window)) {
+    if (OWN_ARRAY_OF_OBJECTS.test(window)) {
       violations.push(i + 1);
     }
   }

@@ -47,6 +47,7 @@ import { RecentApprovalsWidgetComponent } from './widgets/recent-approvals-widge
 import { RecoveryPotentialPanelComponent } from './widgets/recovery-potential-panel';
 import { GgDowntimeBannerComponent } from './widgets/gg-downtime-banner';
 
+// audit-exempt: static Quick links shown on the dashboard (navigation links), not lookup data.
 const QUICK_LINKS: QuickLink[] = [
   {
     label: 'AGCS Corporate Rules Book',

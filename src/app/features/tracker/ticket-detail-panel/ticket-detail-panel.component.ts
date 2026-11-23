@@ -28,12 +28,14 @@ import {
   AddNoteModalData
 } from '../add-note-modal/add-note-modal.component';
 
+// audit-exempt: prototype build tracker states (internal dev tool), not claims business data.
 const STAGE_OPTIONS: { value: TrackerStageStatus; label: string }[] = [
   { value: 'not_started', label: 'Not started' },
   { value: 'in_progress', label: 'In progress' },
   { value: 'done', label: 'Done' }
 ];
 
+// audit-exempt: prototype build tracker blocker reasons (internal dev tool), not claims business data.
 const BLOCKED_OPTIONS: { value: BlockedReason; label: string }[] = [
   { value: 'none', label: 'Not blocked' },
   { value: 'waiting_product', label: 'Waiting: Product' },

@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NxAvatarModule } from '@allianz/ng-aquila/avatar';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
 import { NxButtonModule } from '@allianz/ng-aquila/button';
+import { NxInputModule } from '@allianz/ng-aquila/input';
 import { AuthService } from '../../../core/services/auth';
 import { NotificationPanelComponent } from '../../../shared/components/notification-panel/notification-panel.component';
 
@@ -16,6 +17,7 @@ import { NotificationPanelComponent } from '../../../shared/components/notificat
     NxAvatarModule,
     NxIconModule,
     NxButtonModule,
+    NxInputModule,
     NotificationPanelComponent
   ],
   templateUrl: './navbar.html',

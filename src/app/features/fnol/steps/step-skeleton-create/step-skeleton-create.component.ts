@@ -43,22 +43,10 @@ import { getCauseSchema, DEFAULT_CAUSE_SCHEMA, CauseSchema } from '../../config/
 
 export type NotifierType = 'broker' | 'insured';
 
-interface ReasonOption {
-  value: SkeletonReason;
-  label: string;
-}
-
 interface LossInfoVM {
   causeOfLoss: LookupOption[];
   typeOfDamage: LookupOption[];
 }
-
-const REASON_OPTIONS: ReasonOption[] = [
-  { value: 'policy_not_issued', label: 'Policy not yet issued' },
-  { value: 'policy_not_found', label: 'Policy not found in system' },
-  { value: 'multi_policy_pending', label: 'Multi-policy case (pending investigation)' },
-  { value: 'other', label: 'Other' }
-];
 
 @Component({
   selector: 'app-step-skeleton-create',
@@ -97,7 +85,7 @@ export class StepSkeletonCreateComponent implements OnInit {
   private toast = inject(ToastService);
   private saving = false;
 
-  readonly reasonOptions = REASON_OPTIONS;
+  readonly reasonOptions = this.lookupSvc.getSkeletonReasonsSync();
   readonly maxNotes = 500;
   readonly maxDesc = 500;
 
