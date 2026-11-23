@@ -193,7 +193,7 @@ export class StepReservesComponent implements OnInit {
           title: 'Reserve required',
           message: this.gateMessage(cards, missing),
           confirmLabel: 'Got it',
-          cancelLabel: 'Close'
+          acknowledgeOnly: true
         } satisfies ConfirmDialogData,
         width: '440px',
         maxWidth: '92vw'

@@ -48,9 +48,11 @@
 }
 
 <div class="cd-footer">
-  <button nxButton="secondary small" type="button" (click)="onCancel()">
-    {{ data.cancelLabel ?? 'Cancel' }}
-  </button>
+  @if (!data.acknowledgeOnly) {
+    <button nxButton="secondary small" type="button" (click)="onCancel()">
+      {{ data.cancelLabel ?? 'Cancel' }}
+    </button>
+  }
   <button
     nxButton="primary small"
     type="button"

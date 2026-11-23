@@ -24,6 +24,9 @@ export interface ConfirmDialogData {
   changes?: ConfirmDialogChange[];
   confirmLabel?: string;
   cancelLabel?: string;
+  // Info-only window ("Got it"): one button, no second one that does the
+  // same thing. The X still closes it.
+  acknowledgeOnly?: boolean;
   confirmDanger?: boolean;
   // A normal "are you sure" confirm needs no warning triangle.
   hideIcon?: boolean;

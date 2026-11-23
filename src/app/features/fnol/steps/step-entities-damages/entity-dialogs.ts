@@ -66,7 +66,7 @@ export function warnSelectEntity(dialog: NxDialogService): void {
     title: 'Select an entity',
     message: 'Select at least one entity that was damaged before continuing.',
     confirmLabel: 'Got it',
-    cancelLabel: 'Close'
+    acknowledgeOnly: true
   };
   dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
     data,
