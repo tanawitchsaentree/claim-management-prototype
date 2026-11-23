@@ -242,6 +242,7 @@ export class ClaimDevHelperService {
     if (page === 'fnol-policies') return '/fnol/policies';
     if (page === 'fnol-skeleton') return '/fnol/skeleton-create';
     if (page === 'fnol-skeleton-parties') return '/fnol/skeleton-parties';
+    if (page === 'fnol-reserves') return '/fnol/reserves';
     if (page === 'fnol-summary') return '/fnol/summary';
     if (page === 'any') return '';
     return `/claims/${claimId}/${page}`;

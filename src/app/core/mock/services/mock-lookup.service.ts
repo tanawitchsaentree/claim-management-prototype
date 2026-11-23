@@ -101,6 +101,9 @@ export class MockLookupService extends MockBaseService {
   getReserveSubTypesSync(): LookupOption[] {
     return this.lookups.reserveSubTypes;
   }
+  getReserveSubTypesForSync(type: 'indemnity' | 'expenses' | 'recoveries'): LookupOption[] {
+    return this.lookups.reserveSubTypesByType[type];
+  }
   getLinesOfBusiness(): Observable<LookupOption[]> {
     return this.respond(this.lookups.linesOfBusiness);
   }

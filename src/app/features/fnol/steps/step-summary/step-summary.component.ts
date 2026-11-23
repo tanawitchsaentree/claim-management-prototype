@@ -74,8 +74,6 @@ export interface ClaimGroup {
   earliestSectionTime: string;
   /** BMPCC-22665: set on the per-policy groups of the Policies step. */
   lineOfBusiness?: string;
-  /** Reserves are captured in FNOL for the first policy only (DESIGN DECISION IMP-7). */
-  reservesOnClaim?: boolean;
 }
 
 export interface SummaryViewModel {
@@ -461,7 +459,8 @@ export class StepSummaryComponent implements OnInit {
         this.selectionSvc.entitiesFor(all, p, lead, others)
       );
       await this.writeLossInformationToClaim(claimId, p === lead ? undefined : pol);
-      if (p === lead) await this.seedFinancialReservesFromFnol(claimId);
+      // RES-D6: every claim brings the reserves entered on its own Reserves card.
+      await this.seedFinancialReservesFromFnol(claimId, p);
       return { ...base, status: 'created', claimId };
     } catch {
       return { ...base, status: 'failed', reason: 'Something went wrong while creating it.' };
@@ -499,8 +498,8 @@ export class StepSummaryComponent implements OnInit {
   ): ClaimGroup[] {
     const lead = this.policyNumber;
     const others = selection.filter(p => p !== lead);
-    const total = reserves.reserves.reduce((sum, r) => sum + (r.amount ?? 0), 0);
     return selection.map(p => {
+      const own = p === lead ? reserves : this.reservesSvc.getSync(p);
       const groups = selectedSectionGroups(
         this.selectionSvc.entitiesFor(data, p, lead, others),
         this.selectedTypeKeys()
@@ -511,14 +510,14 @@ export class StepSummaryComponent implements OnInit {
         damageTypes: [...groups.keys()].map(k => this.label(damageLookups, k)),
         sectionCount: groups.size,
         // DESIGN DECISION IMP-7: parties and loss information are entered once
-        // and go onto every claim; reserves belong to the first policy only.
+        // and go onto every claim. Reserves are entered per claim on the
+        // Reserves step (RES-D6, production asks each claim for one).
         partyCount,
-        totalReserve: p === lead ? total : 0,
-        currency: p === lead ? reserves.currency : (pol?.currency ?? reserves.currency),
+        totalReserve: own.totalReserve,
+        currency: own.currency,
         earliestSectionDate: earliest.date,
         earliestSectionTime: earliest.time,
-        lineOfBusiness: pol?.lineOfBusiness,
-        reservesOnClaim: p !== lead
+        lineOfBusiness: pol?.lineOfBusiness
       };
     });
   }
@@ -761,7 +760,7 @@ export class StepSummaryComponent implements OnInit {
     const leadReserves = await firstValueFrom(
       this.reservesSvc.getReservesForPolicy(this.policyNumber)
     );
-    const reservesData = other ? { totalReserve: 0, currency: other.currency } : leadReserves;
+    const reservesData = other ? this.reservesSvc.getSync(other.policyNumber) : leadReserves;
 
     const claim: Claim = {
       claimId,
@@ -909,10 +908,11 @@ export class StepSummaryComponent implements OnInit {
   // bookingId, reinsuranceId, ...), not a reserve subtype, so FNOL's
   // recoveries sub-amounts are deliberately NOT seeded here. Matches
   // MockFinancialOverviewService's own reserve/recovery split.
-  private async seedFinancialReservesFromFnol(claimId: string): Promise<void> {
-    const reservesData = await firstValueFrom(
-      this.reservesSvc.getReservesForPolicy(this.policyNumber)
-    );
+  private async seedFinancialReservesFromFnol(
+    claimId: string,
+    policyNumber = this.policyNumber
+  ): Promise<void> {
+    const reservesData = await firstValueFrom(this.reservesSvc.getReservesForPolicy(policyNumber));
     if (!reservesData.reserves.length) return;
     const sections = this.sectionSvc.getByClaimIdSync(claimId);
 

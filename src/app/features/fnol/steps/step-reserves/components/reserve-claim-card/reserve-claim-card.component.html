@@ -1,0 +1,61 @@
+<section
+  class="rcc"
+  [class.rcc--flagged]="flagged"
+  [attr.aria-label]="'Claim ' + claim.index + ', policy ' + claim.policyNumber"
+>
+  <header class="rcc-header">
+    <h2 class="rcc-title">Claim {{ claim.index }}</h2>
+    <span class="rcc-lob">{{ claim.lineOfBusiness }}</span>
+    <div class="rcc-header__action">
+      <button nxButton="secondary small" type="button" (click)="addReserve.emit()">
+        <nx-icon name="plus" nxIconPositionStart></nx-icon>
+        Add reserve
+      </button>
+    </div>
+  </header>
+
+  @if (flagged) {
+    <nx-message context="error" class="rcc-message">
+      This claim needs an indemnity reserve, or an explanation why there is none yet.
+    </nx-message>
+  }
+
+  <div class="rcc-summary">
+    <div class="rcc-field">
+      <span class="rcc-label">Policy ID</span>
+      <span class="rcc-value">{{ claim.policyNumber || '-' }}</span>
+    </div>
+    <div class="rcc-field">
+      <span class="rcc-label">Total reserve</span>
+      <span class="rcc-value">{{ data.currency }} {{ data.totalReserve | number: '1.2-2' }}</span>
+    </div>
+    <div class="rcc-field">
+      <span class="rcc-label">Allianz share</span>
+      <span class="rcc-value">{{ data.allianzShare }}%</span>
+    </div>
+    <div class="rcc-field">
+      <span class="rcc-label">Allianz reserves</span>
+      <span class="rcc-value">{{ data.currency }} {{ allianzReserves | number: '1.2-2' }}</span>
+    </div>
+  </div>
+
+  <app-reserve-narrative-panel
+    [narrative]="data.narrative"
+    [policyNumber]="claim.policyNumber"
+    [totalReserve]="indemnityTotal"
+    (narrativeSaved)="narrativeSaved.emit()"
+  ></app-reserve-narrative-panel>
+
+  @if (data.reserves.length === 0) {
+    <app-empty-state
+      message="No reserves on this claim yet."
+      hint="Add reserve asks for the section, party, damage and reserve type."
+    ></app-empty-state>
+  } @else {
+    <app-reserve-list
+      [rows]="data.reserves"
+      (editRequested)="editLine.emit($event)"
+      (removeRequested)="removeLine.emit($event)"
+    ></app-reserve-list>
+  }
+</section>

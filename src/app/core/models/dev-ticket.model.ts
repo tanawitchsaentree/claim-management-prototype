@@ -17,6 +17,7 @@ export type PreconditionPage =
   | 'fnol-policies'
   | 'fnol-skeleton'
   | 'fnol-skeleton-parties'
+  | 'fnol-reserves'
   | 'fnol-summary'
   // /claims/:id/financial — GG booking ticket (pageRoute's default branch).
   | 'financial'

@@ -1,4 +1,8 @@
+// BLESSED: modal shell from BLESSED.md "Mandatory modal SCSS pattern" (shared
+// _modal-layout mixin); field stack from FORM_RHYTHM.md (fr.group between
+// fields, the formfield reserve absorbed so the gap is the scale gap).
 @use '../../../../shared/styles/modal-layout' as modal;
+@use '../../../../shared/styles/form-rhythm' as fr;
 
 :host {
   @include modal.shell;
@@ -6,13 +10,18 @@
 
 .arm-header {
   @include modal.header;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+}
+
+.arm-header-row {
+  @include modal.header-row;
 }
 
 .arm-title {
   @include modal.title;
+}
+
+.arm-subtitle {
+  @include modal.subtitle;
 }
 
 .arm-body {
@@ -20,17 +29,12 @@
 }
 
 .arm-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-
-  nx-formfield {
-    width: 100%;
-  }
+  @include fr.group;
 }
 
-.arm-checkbox-row {
-  padding: var(--space-xs) 0;
+.arm-field {
+  width: 100%;
+  @include fr.absorb-formfield-reserve;
 }
 
 .arm-footer {

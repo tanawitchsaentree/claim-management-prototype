@@ -1,0 +1,87 @@
+// BLESSED: bottom-sheet family (_bottom-sheet-layout.scss), same mixins as
+// convert-skeleton-modal / policy-overview-modal, opened with panelClass
+// 'bottom-sheet-modal-panel'. Fact rows copy the label/value type of the
+// Reserves claim card (reserve-claim-card .rcc-field) so both read alike.
+@use '../../../../../../shared/styles/bottom-sheet-layout' as sheet;
+@use '../../../../../../shared/styles/form-rhythm' as fr;
+
+:host {
+  @include sheet.shell;
+}
+
+.res-sheet__close {
+  @include sheet.close;
+}
+
+.res-sheet__close-x {
+  @include sheet.close-x;
+}
+
+.res-sheet__header {
+  @include sheet.header;
+}
+
+.res-sheet__title {
+  @include sheet.title;
+}
+
+.res-sheet__subtitle {
+  @include sheet.subtitle;
+}
+
+.res-sheet__body {
+  @include sheet.body;
+  @include fr.stack;
+}
+
+.res-facts,
+.res-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-base) var(--space-4xl);
+  margin: 0;
+}
+
+.res-totals {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--ui-02);
+  border-radius: var(--radius-s);
+}
+
+.res-fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  &--total {
+    padding-left: var(--space-xl);
+    border-left: 1px solid var(--ui-04);
+  }
+}
+
+.res-fact__label {
+  font-size: var(--paragraph-04-font-size);
+  color: var(--text-muted);
+}
+
+.res-fact__value {
+  margin: 0;
+  font-size: var(--paragraph-02-font-size);
+  color: var(--text-01);
+
+  &--amount {
+    font-weight: 600;
+  }
+}
+
+.res-tab-body {
+  padding-top: var(--space-xl);
+}
+
+.res-sheet__footer {
+  @include sheet.footer;
+}
+
+.res-sheet__footer-actions {
+  @include sheet.footer-actions;
+}

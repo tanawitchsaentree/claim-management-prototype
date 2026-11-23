@@ -1,0 +1,56 @@
+@if (lines.length === 0) {
+  <app-empty-state [message]="'No ' + typeLabel.toLowerCase() + ' reserve on this line yet.'">
+    <button action nxButton="secondary small" type="button" (click)="added.emit()">
+      <nx-icon name="plus" nxIconPositionStart></nx-icon>
+      Add {{ typeLabel.toLowerCase() }} reserve
+    </button>
+  </app-empty-state>
+} @else {
+  <div class="rl-list">
+    @for (line of lines; track line.subReserveId) {
+      <div class="rl-row">
+        <div class="rl-group">
+          <div class="rl-fields">
+            <nx-formfield label="Sub-type" class="rl-field rl-field--type">
+              <nx-dropdown
+                placeholder="Select"
+                [value]="line.subType || null"
+                (valueChange)="changed.emit({ id: line.subReserveId, patch: { subType: $event } })"
+              >
+                @for (opt of subTypes; track opt) {
+                  <nx-dropdown-item [value]="opt">{{ opt }}</nx-dropdown-item>
+                }
+              </nx-dropdown>
+            </nx-formfield>
+            <nx-formfield [label]="'Amount (' + currency + ')'" class="rl-field rl-field--amount">
+              <!-- kept on one line: audit:ndbx-wrapper looks for nxInput on the input's first line -->
+              <!-- prettier-ignore -->
+              <input nxInput type="number" min="0" title="Amount" [value]="line.amount || ''"
+                (input)="onAmount(line.subReserveId, $any($event.target).value)" />
+            </nx-formfield>
+            <button
+              nxIconButton="tertiary small"
+              type="button"
+              class="rl-remove"
+              [attr.aria-label]="'Remove ' + typeLabel.toLowerCase() + ' line'"
+              (click)="removed.emit(line.subReserveId)"
+            >
+              <nx-icon name="trash-o"></nx-icon>
+            </button>
+          </div>
+          @if (missingSubType(line)) {
+            <nx-error class="group-error"
+              >Choose a sub-type for this amount, or remove the line.</nx-error
+            >
+          }
+        </div>
+      </div>
+    }
+    <div class="rl-actions">
+      <button nxPlainButton type="button" (click)="added.emit()">
+        <nx-icon name="plus" nxIconPositionStart></nx-icon>
+        Add another {{ typeLabel.toLowerCase() }} line
+      </button>
+    </div>
+  </div>
+}

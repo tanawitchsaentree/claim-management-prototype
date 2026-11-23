@@ -14,6 +14,7 @@ import { MockScenario, MOCK_SCENARIOS } from '../mock-config';
 import { FinancialPatchOverride, applyFinancialPatch, appendTasks } from './apply-financial-overrides';
 import { ScenarioSimulation } from '../../models/team.model';
 import { GgDowntime } from '../../models/gg-dashboard.model';
+import { ReservesStepOverride } from '../../models/reserve.model';
 
 export interface ScenarioOverrides {
   taskStatuses?: Record<string, TaskStatus>;
@@ -38,6 +39,8 @@ export interface ScenarioOverrides {
     policySelection?: string[];
     policyCreationFailFor?: string[];
     impactedPoliciesError?: boolean;
+    // v2.6 (FNOL-RESERVES-MULTI), Reserves step ready to use, see ReservesStepOverride.
+    reservesStep?: ReservesStepOverride;
   };
   cwbLocationsAppend?: CwbLocation[];
   notesAppend?: { claimId: string; notes: Note[] };
