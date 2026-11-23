@@ -85,6 +85,11 @@ export class MockPartiesService extends MockBaseService {
     this.orphanParties = [];
   }
 
+  /** DEV banner Apply: FNOL parties entered in an earlier scenario are dropped. */
+  resetPolicyParties(): void {
+    this.cache.clear();
+  }
+
   addParty(
     policyNumber: string,
     party: Party,

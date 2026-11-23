@@ -36,6 +36,12 @@ const RULES = [
       'route /fnol/policies requires fnolStateOverride.selectedPolicy plus policiesStep or policySelection (BMPCC-22665; otherwise the step redirects to Entities & Damages)'
   },
   {
+    route: '/fnol/reserves',
+    requires: ovr => !!ovr?.fnolStateOverride?.selectedPolicy,
+    message:
+      'route /fnol/reserves requires fnolStateOverride.selectedPolicy (otherwise step-reserves redirects to /fnol/search)'
+  },
+  {
     route: '/fnol/skeleton-create',
     requires: ovr => ovr?.fnolStateOverride?.path === 'orphan',
     message:

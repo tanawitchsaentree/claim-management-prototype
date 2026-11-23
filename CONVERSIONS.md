@@ -4,6 +4,17 @@ Append-only log of ticket → JSON conversions. Newest at top. Each entry should
 
 ---
 
+## 2026-11-23 · FNOL-RESERVES-MULTI (prototype ticket, no Jira source)
+
+- **Source:** production page object `claims-management-main/testing/src/pages/ReservesPage.ts` and the FNOL smoke spec (the Reserves MFE `finance-service-reserve` itself is not in the local copy). UX basis: `docs/ux/fnol-reserves-multi-claim.md` (scenarios RES-01..09, decisions RES-D1..D11).
+- **File:** `public/tickets/fnol-reserves-multi.json`, 9 ACs, all done with `[accepted-deviation]` notes where production does not settle it.
+- **Built:** Reserves step shows one `reserve-claim-card` per claim (Policies step selection, else the searched policy). Add reserve = Section, Party, Damage, Reserve type cascade (`add-reserve-modal`), then the tabbed editor `reserve-editor-sheet` (bottom sheet, Indemnity / Expenses / Recoveries, sub-type + amount). Next gate per claim, names the claims and marks their cards. Removed: the side detail panel and the made-up "All policies / By policy" switch with its POLICY_SEEDS.
+- **Data:** `MockReservesService` now starts every claim empty (no generated zero lines) and has one totals rule (`applyReserveTotals` in reserve.model.ts, indemnity + expenses - recoveries; the old side panel still added recoveries). `lookups.json` gains `reserveSubTypesByType`. Allianz share from policy-details co-insurance.
+- **IMP-7 changed (BMPCC-22665):** reserves are no longer first-policy-only; Summary and Submit read each policy's own reserves (`seedFinancialReservesFromFnol(claimId, policy)`, `Claim.lossAmount`).
+- **Schema:** v2.6 `fnolStateOverride.reservesStep`; page `fnol-reserves`; `audit-ac-route-overrides` rule for `/fnol/reserves`.
+
+---
+
 ## 2026-11-13 — BMPCC-22666 (Manual reassignment of claims, epic BMPCC-13925) and BMPCC-22395 (Claims Manager dashboard, epic BMPCC-22394)
 
 - **Source:** Jira text of both stories and epics (PI 2026.5 UI/UX hand-over, 2026-11-13). Design stories: the prototype screen is the deliverable.

@@ -1,6 +1,8 @@
 import { Injectable, Injector, inject, signal } from '@angular/core';
 import { MockImpactedPoliciesService } from '../mock/services/mock-impacted-policies.service';
 import { MockEntitiesDamagesService } from '../mock/services/mock-entities-damages.service';
+import { MockReservesService } from '../mock/services/mock-reserves.service';
+import { MockPartiesService } from '../mock/services/mock-parties.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { MockStateService, ScenarioOverrides } from '../mock/state/mock-state.service';
@@ -193,6 +195,14 @@ export class PrototypeScenarioService {
     if (seed.selectedPolicy) this.fnolStateSvc.setSelectedPolicy(seed.selectedPolicy);
     if (seed.path !== undefined) this.fnolStateSvc.path = seed.path;
     await this.applyPolicyStepOverride(seed);
+    // FNOL-RESERVES-MULTI: every scenario starts with no reserves; reservesStep
+    // ticks the entities, adds parties and can enter a first reserve.
+    this.injector.get(MockReservesService).resetState();
+    this.injector.get(MockPartiesService).resetPolicyParties();
+    if (seed.reservesStep) {
+      const m = await import('../../features/fnol/services/reserve-claims.service');
+      await this.injector.get(m.ReserveClaimsService).applyScenario(seed.reservesStep);
+    }
   }
 
   // BMPCC-22665: FNOL Policies step scenarios. Also clears entity merges left
