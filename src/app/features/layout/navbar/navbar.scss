@@ -180,6 +180,11 @@
   min-width: 0;
   &::placeholder {
     color: var(--text-muted);
+    // nxInput's global .c-input::placeholder sets its own font; keep the input's font.
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
   }
 
   @media (max-width: $medium-bp) {

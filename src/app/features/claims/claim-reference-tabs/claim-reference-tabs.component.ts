@@ -6,6 +6,7 @@ import { filter, map, startWith } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NxIconModule } from '@allianz/ng-aquila/icon';
+import { NxInputModule } from '@allianz/ng-aquila/input';
 import { ReferenceViewService, RefTab } from '../claim-reference-panel/reference-view.service';
 import { MockClaimService } from '../../../core/mock/services/mock-claim.service';
 import { Claim } from '../../../core/models/claim.model';
@@ -14,7 +15,7 @@ import { ClaimNumberPipe } from '../../../shared/pipes/claim-number.pipe';
 @Component({
   selector: 'app-claim-reference-tabs',
   standalone: true,
-  imports: [ClaimNumberPipe, FormsModule, NxIconModule],
+  imports: [ClaimNumberPipe, FormsModule, NxIconModule, NxInputModule],
   templateUrl: './claim-reference-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './claim-reference-tabs.component.scss'
