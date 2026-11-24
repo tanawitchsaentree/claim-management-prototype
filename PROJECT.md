@@ -2,7 +2,7 @@
 project: claim-management-prototype
 domain: insurance-claims
 modules: [Claims, FNOL]
-schema-version: v2.6
+schema-version: v2.7
 deployed: https://tanawitchsaentree.github.io/claim-management-prototype/
 
 ticket-schema:
@@ -122,8 +122,16 @@ interface AC {
   };
   expectedUI: { description: string; visualCues: string[] };
   expectedOutcome?: ExpectedOutcome; // machine-checkable; see audit-ac-logic.mjs
-  howToTest: { route: string; trigger: string; expectedResult: string };
+  howToTest: { route: string; trigger: string; expectedResult: string; steps?: ReviewStep[] };
 }
+
+// v2.7: the trigger as replayable clicks for `npm run shots` (scripts/review-shots.mjs).
+// Not read by the app or by audit-ac-logic. Names are visible text or aria-label.
+type ReviewStep =
+  | { click: string; nth?: number } // button / link / menu item, nth match (0 = first)
+  | { choose: string; option: string } // dropdown by field label, then option text
+  | { waitFor: string } // until this text is on screen
+  | { waitMs: number }; // prefer waitFor
 
 interface PreconditionItem {
   text: string;

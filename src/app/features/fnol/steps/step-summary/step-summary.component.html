@@ -68,7 +68,7 @@
           </div>
           <div class="ss-row">
             <dt class="ss-label">Date of loss (proximate)</dt>
-            <dd class="ss-value">{{ vm.dateOfOccurrence }} at {{ vm.timeOfOccurrence }}</dd>
+            <dd class="ss-value">{{ vm.dateOfOccurrence === '-' ? '-' : vm.dateOfOccurrence + (vm.timeOfOccurrence === '-' ? '' : ' at ' + vm.timeOfOccurrence) }}</dd>
           </div>
           <div class="ss-row">
             <dt class="ss-label">Date received by Allianz</dt>
@@ -135,7 +135,7 @@
                 <div class="ss-row">
                   <dt class="ss-label">Earliest section date</dt>
                   <dd class="ss-value">
-                    {{ group.earliestSectionDate }} at {{ group.earliestSectionTime }}
+                    {{ group.earliestSectionDate === '-' ? '-' : group.earliestSectionDate + (group.earliestSectionTime === '-' ? '' : ' at ' + group.earliestSectionTime) }}
                   </dd>
                 </div>
                 <div class="ss-row">

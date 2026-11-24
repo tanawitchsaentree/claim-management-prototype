@@ -50,10 +50,44 @@ const IGNORE = /ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED|supabase|Failed 
 const targets = [{ key: 'dev', label: 'This computer', base: DEV }];
 if (withLive) targets.push({ key: 'live', label: 'Team link', base: LIVE });
 
+const describe = step =>
+  'click' in step ? `press "${step.click}"${step.nth ? ` #${step.nth + 1}` : ''}`
+  : 'choose' in step ? `${step.choose}: ${step.option}`
+  : 'waitFor' in step ? `wait for "${step.waitFor}"`
+  : `wait ${step.waitMs}ms`;
+
+// One howToTest step (schema v2.7, PROJECT.md). Returns nothing on success.
+// Buttons inside an open window (dialog/menu) win over the page behind it.
+async function runStep(page, step) {
+  if ('waitMs' in step) return void (await page.waitForTimeout(step.waitMs));
+  if ('waitFor' in step) return void (await page.getByText(step.waitFor).first().waitFor({ timeout: 30000 }));
+  const overlay = page.locator('.cdk-overlay-container');
+  if ('choose' in step) {
+    const field = overlay.locator('nx-formfield').filter({ has: page.locator('label', { hasText: step.choose }) });
+    const scope = (await field.count()) ? field : page.locator('nx-formfield').filter({ has: page.locator('label', { hasText: step.choose }) });
+    await scope.first().locator('nx-dropdown').click({ timeout: 8000 });
+    await page.locator('nx-dropdown-item', { hasText: step.option }).first().click({ timeout: 8000 });
+  } else {
+    // Exact name first ("Next" must not hit "Opens: ... next ..."), then a
+    // contains-match for buttons whose name also carries an icon label.
+    const byRole = (root, exact) => root.getByRole('button', { name: step.click, exact })
+      .or(root.getByRole('menuitem', { name: step.click, exact }))
+      .or(root.getByRole('link', { name: step.click, exact }));
+    let target = null;
+    for (const [root, exact] of [[overlay, true], [page, true], [overlay, false], [page, false]]) {
+      const found = byRole(root, exact);
+      if (await found.count()) { target = found; break; }
+    }
+    if (!target) return `no button or link named "${step.click}"`;
+    await target.nth(step.nth ?? 0).click({ timeout: 8000 });
+  }
+  await page.waitForTimeout(700);
+}
+
 // Text of the page itself (DEV banner excluded) once it stops changing: some
 // scenarios seed a lot of state, and the deployed link loads every ticket file
 // before the first screen, so this can take several seconds. Max 20s.
-async function settled(page) {
+async function settled(page, max = 20000) {
   const read = () =>
     page
       // Visible text only (innerText on the live body skips anything not drawn;
@@ -63,7 +97,7 @@ async function settled(page) {
       .catch(() => '');
   let last = await read();
   let stableFor = 0;
-  for (let waited = 0; waited < 20000; waited += 500) {
+  for (let waited = 0; waited < max; waited += 500) {
     await page.waitForTimeout(500);
     const now = await read();
     stableFor = now.length === last.length && now.length > 100 ? stableFor + 500 : 0;
@@ -94,6 +128,19 @@ for (const ac of acs) {
     if (text.length < 100) flags.push('blank or almost empty page');
     if (/\bundefined\b|\bNaN\b/.test(text)) flags.push('"undefined" or "NaN" on screen');
     if (landed !== route) flags.push(`landed on ${landed}, expected ${route}`);
+    const steps = ac.howToTest?.steps ?? [];
+    const errorsBefore = errors.length;
+    for (const [i, step] of steps.entries()) {
+      const failed = await runStep(page, step).catch(e => String(e).split('\n')[0].slice(0, 160));
+      if (failed) {
+        flags.push(`step ${i + 1} (${describe(step)}) failed: ${failed}`);
+        break;
+      }
+    }
+    if (steps.length) {
+      await settled(page, 3000);
+      flags.push(...errors.slice(errorsBefore));
+    }
     const file = `${ac.id}-${t.key}.png`;
     await page.screenshot({ path: join(outDir, file), fullPage: true });
     await page.close();
@@ -112,6 +159,7 @@ const firstWithHash = new Map();
 for (const r of results) {
   const dev = r.shots[0];
   const hash = createHash('md5').update(readFileSync(join(outDir, dev.file))).digest('hex');
+  if (r.ac.howToTest?.steps?.length) continue;
   if (firstWithHash.has(hash)) r.sameAs = firstWithHash.get(hash);
   else firstWithHash.set(hash, r.ac.id);
 }
@@ -150,6 +198,7 @@ ${r.sameAs ? `<div class="note">Same starting screen as ${esc(r.sameAs)}. This s
 <div class="box"><b class="t">Should show</b>${esc(r.ac.expectedUI?.description)}${r.ac.expectedUI?.visualCues?.length ? `<ul>${r.ac.expectedUI.visualCues.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}</div>
 <div class="box"><b class="t">How to try it</b>${esc(r.ac.howToTest?.trigger)}<br><b class="t" style="margin-top:6px">Expected</b>${esc(r.ac.howToTest?.expectedResult)}</div>
 </div>
+${r.ac.howToTest?.steps?.length ? `<div class="route">Picture taken after: ${esc(r.ac.howToTest.steps.map(describe).join(', then '))}</div>` : ''}
 <div class="shots">${r.shots.map(s => `<figure><figcaption>${esc(s.label)} ${s.flags.map(f => `<div class="flag">${esc(f)}</div>`).join('')}</figcaption><a href="${s.file}" target="_blank"><img src="${s.file}" loading="lazy"></a></figure>`).join('')}</div>
 </section>`).join('')}
 </body></html>`;

@@ -34,6 +34,20 @@ export interface PreconditionItem {
 
 export type BuildStatus = 'done' | 'partial' | 'todo';
 
+/**
+ * One replayable step of an AC's howToTest (scripts/review-shots.mjs).
+ * - click: a button/link/menu item by its visible name or aria-label; nth picks
+ *   the nth match (0 = first), e.g. "Add reserve" on Claim 2 = nth 1.
+ * - choose: open the dropdown whose field label is `choose`, pick `option`.
+ * - waitFor: wait until this text is on screen (e.g. "claims created" after Submit).
+ * - waitMs: pause, for an animation that has to finish. Prefer waitFor.
+ */
+export type ReviewStep =
+  | { click: string; nth?: number }
+  | { choose: string; option: string }
+  | { waitFor: string }
+  | { waitMs: number };
+
 export interface TicketAC {
   id: string;
   statement: string;
@@ -64,6 +78,13 @@ export interface TicketAC {
     route: string;
     trigger: string;
     expectedResult: string;
+    /**
+     * v2.7 (2026-11-24): the trigger as clicks a script can replay, so
+     * `npm run shots` pictures the state the AC is about, not only the
+     * landing screen. Optional; without it the review page shows the landing
+     * screen and marks it "needs a click" when it matches another AC's.
+     */
+    steps?: ReviewStep[];
   };
   expectedOutcome?: {
     pendingTasks?: number;

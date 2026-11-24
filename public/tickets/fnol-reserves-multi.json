@@ -87,7 +87,16 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, then press Add reserve on Claim 1",
-        "expectedResult": "Add reserve dialog for Claim 1: Section pre-picked, Party, Damage and Reserve type open up one after the other, Proceed to add enabled only when all four are set"
+        "expectedResult": "Add reserve dialog for Claim 1: Section pre-picked, Party, Damage and Reserve type open up one after the other, Proceed to add enabled only when all four are set",
+        "steps": [
+          {
+            "click": "Add reserve"
+          },
+          {
+            "choose": "Party",
+            "option": "Finn Dahl"
+          }
+        ]
       }
     },
     {
@@ -127,7 +136,27 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, Add reserve on Claim 1, Proceed to add",
-        "expectedResult": "Editor titled Material damage, tabs Indemnity / Expenses / Recoveries, totals strip with recoveries as minus; after Done the card shows the line with Total, Indemnity, Expenses, Recoveries rows"
+        "expectedResult": "Editor titled Material damage, tabs Indemnity / Expenses / Recoveries, totals strip with recoveries as minus; after Done the card shows the line with Total, Indemnity, Expenses, Recoveries rows",
+        "steps": [
+          {
+            "click": "Add reserve"
+          },
+          {
+            "choose": "Party",
+            "option": "Finn Dahl"
+          },
+          {
+            "choose": "Damage",
+            "option": "Munich Warehouse"
+          },
+          {
+            "choose": "Reserve type",
+            "option": "Indemnity"
+          },
+          {
+            "click": "Proceed to add"
+          }
+        ]
       }
     },
     {
@@ -173,7 +202,27 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, Add reserve on Claim 1 with the same choices",
-        "expectedResult": "Re-adding Finn Dahl / Munich Warehouse on Claim 1 opens the existing line on the chosen tab; the card keeps one line"
+        "expectedResult": "Re-adding Finn Dahl / Munich Warehouse on Claim 1 opens the existing line on the chosen tab; the card keeps one line",
+        "steps": [
+          {
+            "click": "Add reserve"
+          },
+          {
+            "choose": "Party",
+            "option": "Finn Dahl"
+          },
+          {
+            "choose": "Damage",
+            "option": "Munich Warehouse"
+          },
+          {
+            "choose": "Reserve type",
+            "option": "Indemnity"
+          },
+          {
+            "click": "Proceed to add"
+          }
+        ]
       }
     },
     {
@@ -221,7 +270,12 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, open the row menu on Claim 1",
-        "expectedResult": "Row menu with Edit details and Remove; edits update the total, Remove asks first and empties the card"
+        "expectedResult": "Row menu with Edit details and Remove; edits update the total, Remove asks first and empties the card",
+        "steps": [
+          {
+            "click": "Open menu"
+          }
+        ]
       }
     },
     {
@@ -267,7 +321,12 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, press Next",
-        "expectedResult": "Reserve required dialog names Claim 2 and Claim 3; after closing, both cards are marked until each has a reserve or an explanation; then Next goes to Summary"
+        "expectedResult": "Reserve required dialog names Claim 2 and Claim 3; after closing, both cards are marked until each has a reserve or an explanation; then Next goes to Summary",
+        "steps": [
+          {
+            "click": "Next"
+          }
+        ]
       }
     },
     {
@@ -362,7 +421,18 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, press Next, then Submit claim on Summary",
-        "expectedResult": "Summary shows each policy's own total; after Submit each claim's Overview and Financial tab show its own reserves"
+        "expectedResult": "Summary shows each policy's own total; after Submit each claim's Overview and Financial tab show its own reserves",
+        "steps": [
+          {
+            "click": "Next"
+          },
+          {
+            "click": "Submit claim"
+          },
+          {
+            "waitFor": "claims created"
+          }
+        ]
       }
     },
     {
@@ -402,7 +472,13 @@
       "howToTest": {
         "route": "/fnol/reserves",
         "trigger": "Apply, then press Add reserve on Claim 2",
-        "expectedResult": "Add reserve with no parties: info note pointing to the Parties step, the rest of the dialog stays closed"
+        "expectedResult": "Add reserve with no parties: info note pointing to the Parties step, the rest of the dialog stays closed",
+        "steps": [
+          {
+            "click": "Add reserve",
+            "nth": 1
+          }
+        ]
       }
     }
   ]
