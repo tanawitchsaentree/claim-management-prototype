@@ -1,0 +1,1 @@
+import{O as H,Vr as qv}from"./chunk-Bzwlp4yb.js";import{t as l}from"./chunk-De6pq4Rb.js";import{t as i}from"./chunk-wxW4jlos.js";var m=class t extends l{data=i;getByClaimId(a){return this.list(this.data.filter(e=>e.claimId===a))}static ɵfac=(()=>{let a;return function(c){return(a||(a=qv(t)))(c||t)}})();static ɵprov=H({token:t,factory:t.ɵfac,providedIn:`root`})};export{m as t};
