@@ -15,6 +15,10 @@ import { environment } from '../../../environments/environment';
 
 export const PROTOTYPE_TICKET_PARAM = 'pt';
 export const PROTOTYPE_JIRA_KEY_PARAM = 'tk';
+// Optional, with pt: which AC to apply (e.g. ?pt=BMPCC-22665&ac=AC-03). Without
+// it the first 'done' AC is used. Lets a link, or scripts/review-shots.mjs, open
+// any scenario of a ticket instead of only the first.
+export const PROTOTYPE_AC_PARAM = 'ac';
 
 // Receiving end of PrototypeScenarioService.buildPrototypeUrl(): a link opened in
 // a new tab (or pasted into a chat, or bookmarked) carries `?pt=<ticketId>` and/or
@@ -55,6 +59,7 @@ export class PrototypeEntryService {
 
   private entryTicketId: string | null = null;
   private entryJiraKey: string | null = null;
+  private entryAcId: string | null = null;
   private appliedRoute: string | null = null;
   private entryHandled = false;
 
@@ -65,11 +70,12 @@ export class PrototypeEntryService {
   async applyFromUrl(): Promise<void> {
     this.entryTicketId = this.param(PROTOTYPE_TICKET_PARAM);
     this.entryJiraKey = this.param(PROTOTYPE_JIRA_KEY_PARAM);
+    this.entryAcId = this.param(PROTOTYPE_AC_PARAM);
     if (!this.entryTicketId && !this.entryJiraKey) return;
 
     if (this.entryTicketId) {
       await this.prototypeSvc.loadTickets();
-      this.appliedRoute = await this.prototypeSvc.applyTicket(this.entryTicketId);
+      this.appliedRoute = await this.prototypeSvc.applyTicket(this.entryTicketId, this.entryAcId);
     }
   }
 
@@ -149,9 +155,9 @@ export class PrototypeEntryService {
     const ticketId = this.entryTicketId;
     if (!ticketId || !this.appliedRoute) return;
     const ticket = this.prototypeSvc.getTicketById(ticketId);
-    const ac = ticket?.acceptanceCriteria.find(a => a.buildStatus === 'done');
+    const ac = this.prototypeSvc.pickAc(ticket, this.entryAcId);
     if (!ac?.setup.postLand?.length) return;
     const claimId = route.match(/^\/claims\/([^/]+)\//)?.[1];
-    await this.prototypeSvc.runPostLandForTicket(ticketId, claimId);
+    await this.prototypeSvc.runPostLandForTicket(ticketId, claimId, this.entryAcId);
   }
 }

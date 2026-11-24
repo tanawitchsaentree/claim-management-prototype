@@ -46,6 +46,7 @@
     "precommit": "npm run pre-commit",
     "smoke": "node scripts/smoke-sweep.mjs",
     "verify:live": "node scripts/verify-live.mjs",
+    "shots": "node scripts/review-shots.mjs",
     "audit:emdash-copy": "node scripts/audit-emdash-copy.mjs"
   },
   "private": true,

@@ -15,9 +15,19 @@ npm run build
 # 2. Full pre-commit suite (= audit:all + audit:appearance + audit:ndbx-wrapper)
 npm run pre-commit
 
-# 3. File size report
+# 3. File size ratchet (also in pre-commit)
 npm run audit:file-size
+
+# 4. Visual gate for a ticket: every AC opened with its own setup, screenshotted,
+#    next to its "Should show". Opens review/<ticket>/index.html. Send the owner
+#    this page, not a written report. Add --live after a deploy for side by side.
+npm run shots -- <TICKET-ID>
+
+# 5. After npm run deploy: the build the team opens (CLAUDE.md RULE 1)
+npm run verify:live
 ```
+
+Any scenario link can be opened directly: `<route>?pt=<TICKET-ID>&ac=<AC-ID>` applies that AC's setup, on the dev server and on the deployed link. Scenarios marked "same starting screen" in the review page only differ after the click in their "How to try it".
 
 `pre-commit` includes:
 

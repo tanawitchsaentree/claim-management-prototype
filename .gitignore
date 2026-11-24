@@ -59,3 +59,6 @@ supabase/.temp/
 
 # Theme refactor snapshots (scripts/theme-snapshot.mjs) - local evidence, not source
 .theme-snapshots/
+
+# review-shots output (npm run shots)
+/review

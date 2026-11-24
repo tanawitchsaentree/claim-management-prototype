@@ -8,7 +8,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { MockStateService, ScenarioOverrides } from '../mock/state/mock-state.service';
 import { FnolStateService } from './fnol-state.service';
 import { ScenarioStageService } from '../scenario/scenario-stage.service';
-import { DevTicket, TicketIndex } from '../models/dev-ticket.model';
+import { DevTicket, TicketAC, TicketIndex } from '../models/dev-ticket.model';
 import { resolveTourSteps } from './arrival-context.builder';
 import { AuthService } from './auth';
 import { MockTeamService } from '../mock/services/mock-team.service';
@@ -147,9 +147,11 @@ export class PrototypeScenarioService {
   // scenario this ticket represents". Returns null (triggering the plain-
   // navigation fallback in the caller) when there's no linked ticket or no
   // done AC to apply.
-  async applyTicket(ticketId: string): Promise<string | null> {
+  // `acId` (from the `?ac=` link param) picks one specific AC instead, so a
+  // link or the review-shots script can open any scenario, not only the first.
+  async applyTicket(ticketId: string, acId?: string | null): Promise<string | null> {
     const ticket = this.getTicketById(ticketId);
-    const ac = ticket?.acceptanceCriteria.find(a => a.buildStatus === 'done');
+    const ac = this.pickAc(ticket, acId);
     if (!ticket || !ac) return null;
     await this.applyOverrides(ac.setup.stateOverrides);
     return ac.howToTest.route;
@@ -160,9 +162,9 @@ export class PrototypeScenarioService {
   // to run in the tab that RECEIVES the link, so PrototypeEntryService owns it now
   // (applyFromUrl before the router, runEntryTour after the access gate) and calls
   // applyTicket() + runPostLandForTicket() here for the two halves it needs.
-  async runPostLandForTicket(ticketId: string, claimId?: string): Promise<void> {
+  async runPostLandForTicket(ticketId: string, claimId?: string, acId?: string | null): Promise<void> {
     const ticket = this.getTicketById(ticketId);
-    const ac = ticket?.acceptanceCriteria.find(a => a.buildStatus === 'done');
+    const ac = this.pickAc(ticket, acId);
     if (!ticket || !ac) return;
     const declaredHooks = ac.setup.postLand ?? [];
     const tourSteps = resolveTourSteps(ticket);
@@ -173,6 +175,13 @@ export class PrototypeScenarioService {
           ? [{ kind: 'tour.start' as const, steps: tourSteps }]
           : [];
     await this.stageSvc.run(hooks, claimId);
+  }
+
+  /** The AC named by `acId`, else the first 'done' AC (the ticket's stand-in scenario). */
+  pickAc(ticket: DevTicket | null, acId?: string | null): TicketAC | undefined {
+    if (!ticket) return undefined;
+    if (acId) return ticket.acceptanceCriteria.find(a => a.id === acId);
+    return ticket.acceptanceCriteria.find(a => a.buildStatus === 'done');
   }
 
   async applyOverrides(overrides: ScenarioOverrides): Promise<void> {
