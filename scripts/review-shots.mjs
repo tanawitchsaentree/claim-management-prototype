@@ -73,10 +73,15 @@ async function runStep(page, step) {
     const byRole = (root, exact) => root.getByRole('button', { name: step.click, exact })
       .or(root.getByRole('menuitem', { name: step.click, exact }))
       .or(root.getByRole('link', { name: step.click, exact }));
+    // The next screen may still be drawing (the deployed link is slower), so
+    // keep looking for up to 10s instead of once.
     let target = null;
-    for (const [root, exact] of [[overlay, true], [page, true], [overlay, false], [page, false]]) {
-      const found = byRole(root, exact);
-      if (await found.count()) { target = found; break; }
+    for (let waited = 0; !target && waited <= 10000; waited += 500) {
+      for (const [root, exact] of [[overlay, true], [page, true], [overlay, false], [page, false]]) {
+        const found = byRole(root, exact);
+        if (await found.count()) { target = found; break; }
+      }
+      if (!target) await page.waitForTimeout(500);
     }
     if (!target) return `no button or link named "${step.click}"`;
     await target.nth(step.nth ?? 0).click({ timeout: 8000 });
