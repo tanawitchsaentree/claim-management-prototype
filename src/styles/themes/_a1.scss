@@ -166,6 +166,24 @@
   --claim-overlay-shadow-heavy: var(--semantic-color-shadow-first);
 }
 
+// ── 1b. Density for our screens ('a1-compact' only) ────────────────────────
+// allianz-one-compact.css shrinks A1's own body sizes (16/14) but leaves the
+// NDBX-named --paragraph-* tokens at the spacious values (20/18/16/14), and
+// our screens are built on those. So on real pages A1 compact looked exactly
+// like A1 pure (found 2026-11-24, user: "ไม่เห็นเปลี่ยน"). Point them at A1's
+// body roles so our text follows the density. A translation, not a size of
+// our own: every value is an A1 semantic token.
+:root:where([data-theme='a1-compact']) {
+  --paragraph-01-font-size: var(--semantic-font-size-body-l);
+  --paragraph-02-font-size: var(--semantic-font-size-body-m);
+  --paragraph-03-font-size: var(--semantic-font-size-body-s);
+  --paragraph-04-font-size: var(--semantic-font-size-body-s);
+  --paragraph-01-line-height: var(--semantic-line-height-body-l);
+  --paragraph-02-line-height: var(--semantic-line-height-body-m);
+  --paragraph-03-line-height: var(--semantic-line-height-body-s);
+  --paragraph-04-line-height: var(--semantic-line-height-body-s);
+}
+
 // ── 2. Adjustments on top of A1 ('a1' only, never 'a1-pure') ─────────────────
 :root:where([data-theme='a1']) {
   // A1 text roles. The library maps --text-01 to the interactive navy, which
