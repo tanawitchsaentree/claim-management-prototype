@@ -18,6 +18,10 @@
 // product being shown. The tracker is a separate page you navigate to; the
 // banner is an overlay on every claim page. 'off' means AppComponent never
 // renders the banner at all, so nothing is merely visually hidden.
+//
+// 2026-11-24 (user's call, "ทีมรอเล่น"): devBannerMode back to 'full' on the
+// deployed link. The team reviews tickets there and needs to pick a ticket,
+// open its AC cards, Apply, Reset and switch persona (View as) themselves.
 import type { Environment } from './environment.type';
 
 export const environment: Environment = {
@@ -25,5 +29,5 @@ export const environment: Environment = {
   buildTag: 'stable',
   supabaseUrl: 'https://ryhnvtzlybdbqlwzcqrw.supabase.co',
   supabaseAnonKey: 'sb_publishable_liEqGoFw_RNdnmpdXQgg-w_UuTrHGP7',
-  devBannerMode: 'off'
+  devBannerMode: 'full'
 };
