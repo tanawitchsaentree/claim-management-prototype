@@ -202,5 +202,10 @@ export const routes: Routes = [
         m => m.VendorDropdownComponent
       )
   },
+  {
+    path: 'mock/a1-native',
+    loadComponent: () =>
+      import('./features/mock/a1-native/a1-native.component').then(m => m.A1NativeComponent)
+  },
   { path: '**', redirectTo: 'dashboard' }
 ];

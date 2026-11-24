@@ -5,19 +5,24 @@ import { Injectable, signal } from '@angular/core';
 // layer (themes/_a1.scss: type-scale pins, text roles, weights, spacing and
 // radius mapping, status/tint mapping). <html data-theme="a1-pure"> matches
 // neither themes/_a1.scss nor themes/_ndbx.scss, so both stay off.
-export type AppTheme = 'ndbx' | 'a1' | 'a1-pure';
+// 'a1-compact' (2026-11-24): the target the CHAMP A1 work uses (Confluence
+// "Claim Handling NOM (CHAMP) - A1 defects" and the NDBX-to-A1 migration
+// guide: "A1 Light, Compact M (expert)"). allianz-one-compact.css + our token
+// translation, none of our adjustments.
+export type AppTheme = 'ndbx' | 'a1' | 'a1-pure' | 'a1-compact';
 
 /** Theme choices as shown in the DEV banner's settings menu. */
 export const APP_THEMES: readonly { value: AppTheme; label: string }[] = [
   { value: 'ndbx', label: 'NDBX' },
   { value: 'a1', label: 'A1 (with our adjustments)' },
-  { value: 'a1-pure', label: 'A1 pure (library only)' }
+  { value: 'a1-pure', label: 'A1 pure (library only)' },
+  { value: 'a1-compact', label: 'A1 compact (CHAMP target)' }
 ];
 
 const isTheme = (v: string | null): v is AppTheme => APP_THEMES.some(t => t.value === v);
 
-/** True for both A1 variants: same library stylesheet, same component switch. */
-export const isA1 = (t: AppTheme): boolean => t === 'a1' || t === 'a1-pure';
+/** True for every A1 variant: the ALLIANZ_ONE component switch is on. */
+export const isA1 = (t: AppTheme): boolean => t !== 'ndbx';
 
 // Dev-only visual A/B toggle between the current NDBX theme and the new
 // Allianz One (A1) theme — both CSS files already ship inside
@@ -47,7 +52,8 @@ export class ThemeService {
     const current = this.theme();
     document.documentElement.dataset['theme'] = current;
     this.setLinkDisabled('theme-link-ndbx', current !== 'ndbx');
-    this.setLinkDisabled('theme-link-a1', !isA1(current));
+    this.setLinkDisabled('theme-link-a1', current !== 'a1' && current !== 'a1-pure');
+    this.setLinkDisabled('theme-link-a1-compact', current !== 'a1-compact');
   }
 
   set(next: AppTheme): void {

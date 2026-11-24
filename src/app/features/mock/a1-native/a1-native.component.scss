@@ -1,0 +1,65 @@
+// Layout only. Colour, type, borders and spacing inside components come from
+// the A1 library; this file just places the pieces (BLESSED-less test page,
+// layout copied from mock/vendor-dropdown).
+:host {
+  display: block;
+}
+
+.a1n-page {
+  min-height: 100vh;
+  padding: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.a1n-note,
+.a1n-head,
+.a1n-card,
+.a1n-compare {
+  width: 100%;
+  max-width: 1200px; // theme-exempt: mock canvas width, same as vendor-dropdown
+  margin: 0 auto;
+}
+
+.a1n-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-xl);
+}
+
+.a1n-badges,
+.a1n-actions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.a1n-badges {
+  margin-top: var(--space-sm);
+}
+
+.a1n-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-base);
+}
+
+.a1n-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.a1n-toggle {
+  margin-bottom: var(--space-base);
+}
+
+.a1n-money {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}

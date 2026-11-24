@@ -1,12 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // A1 (Allianz One, standard density) theme layer, in two parts (2026-11-24):
 //
-//   1. Translation, for BOTH 'a1' and 'a1-pure': our own project tokens
+//   1. Translation, for 'a1', 'a1-pure' and 'a1-compact': our own project tokens
 //      (spacing, radius, status chips, tints, shadows, backgrounds) mapped
 //      onto A1 values, so our screens use A1's scale. Not a patch on A1.
 //   2. Adjustments, 'a1' ONLY (block at the end): where we override A1 itself
 //      (text colour roles, label/value weights, smaller type scale). 'a1-pure'
-//      skips these and shows the library as shipped.
+//      and 'a1-compact' skip these and show the library as shipped.
 //
 // allianz-one.css already defines every NDBX-named token (--text-01, --ui-04,
 // --button-*, --paragraph-*, ...) from A1's semantic palette. Part 1 overrides
@@ -19,7 +19,7 @@
 // banner, navbar scrims, tree indent, z-index, sizes) are deliberately not
 // mapped and keep their _tokens.scss value. See .claude/THEMING.md.
 // ─────────────────────────────────────────────────────────────────────────────
-:root:where([data-theme='a1'], [data-theme='a1-pure']) {
+:root:where([data-theme='a1'], [data-theme='a1-pure'], [data-theme='a1-compact']) {
   // ── App chrome + text ──────────────────────────────────────────
   --app-background: var(--semantic-color-background-default);
   --page-content-bg: var(--semantic-color-background-emphasis);

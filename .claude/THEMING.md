@@ -70,6 +70,13 @@ modal motion, DEV banner dropdown) and each component's own SCSS.
 `isA1()` in `theme.service.ts` is true for both A1 variants.
 New A1 token mappings: put them in part 1 unless they change what A1 itself decides.
 
+## A1 compact and the A1-native test page (2026-11-24)
+
+- **Theme 'A1 compact (CHAMP target)':** `allianz-one-compact.css` + part 1 of `_a1.scss`, no adjustments. Source for the target: Confluence 3229947080 "Claim Handling NOM (CHAMP) - A1 defects" (defects like "Input text size following spacious density mode in a expert compact application", "Card with mixed A1 and NDBX UI styling", "Button text should not be in CAPS") and 2929349658 (NDBX to A1 migration guide: "A1 Light theme with Compact M (expert) density"). Design reference: Figma "Claims-CHAMP" (bs1kFq4KTXvOxDYD26SBpt), linked from Confluence 3234285794 (Case Manager A1 QA: widget title 22/28 semantic blue, one 1px semantic-blue container, 16px between data rows).
+- **The official A1 setup is `provideA1Theme()`** (`@allianz/ngx-brand-kit/config`): formfield outline + float label always, error text, data-display size m, footer/small-stage/layout defaults, grid styles. This app only provides the `ALLIANZ_ONE` flag (so the theme can switch at runtime) plus `NxExpertModule`, which already gives the same formfield defaults.
+- **`/mock/a1-native`:** the claim overview's General information and Financial summary rebuilt only from A1 building blocks (nxEyebrow + nxHeadline, nx-badge type, nx-data-display, nx-link, nx-card on nxSurface="emphasis", nx-toggle-button-group). Seen in A1 compact: links are underlined (the affordance A1 pure loses on our screens comes back with nx-link), fields fit on one line, buttons are not in caps. The 22px card title from the CHAMP spec is not on A1's scale at 1440px wide: nxHeadline `xl` renders 25px, `l` 20px. Check against the Figma.
+- **What "A1 native" changes vs our screens:** our label/value pairs are hand-styled in 28 files; A1's are `nx-data-display`. None of data-display, eyebrow, text, surface, toggle-button, signal-button, tile, indicator or list was used anywhere before this page.
+
 ## How a theme switch works
 
 1. The dev banner calls `ThemeService.toggle()` (`src/app/core/services/theme.service.ts`).

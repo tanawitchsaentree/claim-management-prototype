@@ -1,0 +1,86 @@
+<div class="a1n-page" nxSurface="emphasis">
+  @if (theme.theme() !== 'a1-compact') {
+    <nx-message context="info" class="a1n-note">
+      This test page is built for the A1 compact theme (the CHAMP A1 target).
+      <button nxPlainButton type="button" (click)="theme.set('a1-compact')">Switch to A1 compact</button>
+    </nx-message>
+  }
+
+  @if (overview$ | async; as claim) {
+    <header class="a1n-head">
+      <div>
+        <span nxEyebrow size="m">Claim</span>
+        <h1 nxHeadline size="2xl">{{ claim.claimId }}</h1>
+        <div class="a1n-badges">
+          <nx-badge [type]="badgeType(claim.status)">{{ claim.status }}</nx-badge>
+          <nx-badge [type]="badgeType(claim.riskStatus)">{{ claim.riskStatus }}</nx-badge>
+        </div>
+      </div>
+      <div class="a1n-actions">
+        <button nxButton="secondary" type="button">Reject claim</button>
+        <button nxButton="primary" type="button">Close claim</button>
+      </div>
+    </header>
+
+    <nx-card class="a1n-card">
+      <div class="a1n-card-head">
+        <h2 nxHeadline size="xl">General information</h2>
+        <nx-link><a [routerLink]="['/claims', claim.claimId, 'loss-information', 'edit']">Edit claim details</a></nx-link>
+      </div>
+      <div class="a1n-grid">
+        <nx-data-display label="Claim ID">{{ claim.claimId }}</nx-data-display>
+        <nx-data-display label="Client">{{ claim.client }}</nx-data-display>
+        <nx-data-display label="Assigned claim handler">{{ claim.assignedHandler }}</nx-data-display>
+        <nx-data-display label="Loss event ID">
+          @if (claim.lossEventId) {
+            <nx-link><a [routerLink]="['/loss-events', claim.lossEventId, 'overview']">{{ claim.lossEventId }}</a></nx-link>
+          } @else {
+            -
+          }
+        </nx-data-display>
+        <nx-data-display label="Broker">{{ claim.broker ?? '-' }}</nx-data-display>
+        <nx-data-display label="Notification date">{{ (claim.dateReported ?? claim.dateCreated) | appDate }}</nx-data-display>
+        <nx-data-display label="Client contact">{{ claim.clientContact ?? '-' }}</nx-data-display>
+        <nx-data-display label="Policy">
+          <nx-link><a [routerLink]="['/claims', claim.claimId, 'policy']">{{ claim.policyNumber }}</a></nx-link>
+        </nx-data-display>
+        <nx-data-display label="Proximate loss cause">{{ claim.proximateLossCause }}</nx-data-display>
+        <nx-data-display label="Incident circumstance">{{ claim.incidentCircumstance | circumstanceLabel }}</nx-data-display>
+        <nx-data-display label="Date of loss">{{ claim.dateOfLoss | appDate }}</nx-data-display>
+        <nx-data-display label="Risk score">{{ claim.riskScore }}/{{ claim.riskScoreMax }}</nx-data-display>
+      </div>
+      <nx-data-display label="Claim description" class="a1n-full">{{ claim.description }}</nx-data-display>
+    </nx-card>
+
+    <nx-card class="a1n-card">
+      <div class="a1n-card-head">
+        <h2 nxHeadline size="xl">Financial summary</h2>
+      </div>
+      <nx-toggle-button-group [formControl]="moneyView" name="a1n-money" class="a1n-toggle">
+        <nx-toggle-button value="reserve">Reserve</nx-toggle-button>
+        <nx-toggle-button value="payments">Payments</nx-toggle-button>
+        <nx-toggle-button value="recoveries">Recoveries</nx-toggle-button>
+      </nx-toggle-button-group>
+      @let money = claim.financialSummary;
+      <div class="a1n-money">
+        @switch (moneyView.value) {
+          @case ('reserve') {
+            <nx-data-display label="Total reserve" orientation="horizontal">{{ money.totalReserve | currency: money.currency }}</nx-data-display>
+            <nx-data-display label="Outstanding" orientation="horizontal">{{ money.outstanding | currency: money.currency }}</nx-data-display>
+          }
+          @case ('payments') {
+            <nx-data-display label="Total payments" orientation="horizontal">{{ money.totalPayments | currency: money.currency }}</nx-data-display>
+          }
+          @case ('recoveries') {
+            <nx-data-display label="Total recoveries" orientation="horizontal">{{ money.totalRecoveries | currency: money.currency }}</nx-data-display>
+          }
+        }
+      </div>
+    </nx-card>
+
+    <p class="a1n-compare">
+      Compare with the current screen:
+      <nx-link><a [routerLink]="['/claims', claim.claimId, 'overview']">Claim overview today</a></nx-link>
+    </p>
+  }
+</div>
