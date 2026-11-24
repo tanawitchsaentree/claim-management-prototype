@@ -51,16 +51,24 @@ use their own A1 sizes. Used by the claim overview field mixins
 ## Three themes (2026-11-24)
 
 The DEV banner ⋮ menu offers NDBX, **A1 (with our adjustments)** and **A1 pure (library only)**.
-A1 pure = `allianz-one.css` + the `ALLIANZ_ONE` component switch, and nothing from
-`themes/_a1.scss` (no type-scale pins, text roles, label/value weights, spacing/radius
-mapping or status/tint mapping). `<html data-theme="a1-pure">` matches neither theme
-layer. Project tokens then fall back to `_tokens.scss`, most of which point at library
-tokens (`--text-heading: var(--text-01)`), so they follow A1 as shipped. Still applied in
-every theme: `_globals.scss` / `_overlays.scss` (icon font fix, tooltip, modal motion,
-DEV banner dropdown) and each component's own SCSS (layout of our screens).
-Seen on claim overview: A1 pure type is 16-18px, and label, value and link are all
-navy, so links stop looking clickable. That is the library, not a bug.
+`themes/_a1.scss` has two parts:
+
+1. **Translation** (`[data-theme='a1']` and `[data-theme='a1-pure']`): our project tokens
+   (spacing, radius, display sizes, status chips, tints, shadows, backgrounds, text-muted,
+   error colour, hover) mapped onto A1 values, so our own screens use A1's scale. This is
+   not a patch on A1, it is how our screens speak A1.
+2. **Adjustments** (`[data-theme='a1']` only): where we override A1 itself: text colour
+   roles (`--text-01` slate, `--text-heading` navy, `--text-label` grey), label/value
+   weights 400/600, and the smaller type scale (`--paragraph-*`, formfield label/hint).
+
+A1 pure = library A1 (`allianz-one.css` + `ALLIANZ_ONE`) + part 1, no part 2. Seen on
+claim overview: type 16-18px, label, value and link all navy (links stop looking
+clickable), bold labels. That is the library, not a bug. Proven 2026-11-24: splitting the
+file left A1 (adjusted) and NDBX pixel-identical on dashboard, overview and sections.
+Still applied in every theme: `_globals.scss` / `_overlays.scss` (icon font fix, tooltip,
+modal motion, DEV banner dropdown) and each component's own SCSS.
 `isA1()` in `theme.service.ts` is true for both A1 variants.
+New A1 token mappings: put them in part 1 unless they change what A1 itself decides.
 
 ## How a theme switch works
 
