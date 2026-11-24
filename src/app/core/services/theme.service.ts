@@ -1,12 +1,23 @@
 import { Injectable, signal } from '@angular/core';
 
-export type AppTheme = 'ndbx' | 'a1';
+// 'a1-pure' (2026-11-24, user's ask): the A1 library exactly as it ships,
+// allianz-one.css + the ALLIANZ_ONE component switch, with NONE of our A1
+// layer (themes/_a1.scss: type-scale pins, text roles, weights, spacing and
+// radius mapping, status/tint mapping). <html data-theme="a1-pure"> matches
+// neither themes/_a1.scss nor themes/_ndbx.scss, so both stay off.
+export type AppTheme = 'ndbx' | 'a1' | 'a1-pure';
 
 /** Theme choices as shown in the DEV banner's settings menu. */
 export const APP_THEMES: readonly { value: AppTheme; label: string }[] = [
   { value: 'ndbx', label: 'NDBX' },
-  { value: 'a1', label: 'A1' }
+  { value: 'a1', label: 'A1 (with our adjustments)' },
+  { value: 'a1-pure', label: 'A1 pure (library only)' }
 ];
+
+const isTheme = (v: string | null): v is AppTheme => APP_THEMES.some(t => t.value === v);
+
+/** True for both A1 variants: same library stylesheet, same component switch. */
+export const isA1 = (t: AppTheme): boolean => t === 'a1' || t === 'a1-pure';
 
 // Dev-only visual A/B toggle between the current NDBX theme and the new
 // Allianz One (A1) theme — both CSS files already ship inside
@@ -25,7 +36,9 @@ export class ThemeService {
   private static readonly STORAGE_KEY = 'app:theme';
 
   readonly theme = signal<AppTheme>(
-    localStorage.getItem(ThemeService.STORAGE_KEY) === 'a1' ? 'a1' : 'ndbx'
+    isTheme(localStorage.getItem(ThemeService.STORAGE_KEY))
+      ? (localStorage.getItem(ThemeService.STORAGE_KEY) as AppTheme)
+      : 'ndbx'
   );
 
   // Called once from an APP_INITIALIZER so the <link disabled> state
@@ -34,11 +47,10 @@ export class ThemeService {
     const current = this.theme();
     document.documentElement.dataset['theme'] = current;
     this.setLinkDisabled('theme-link-ndbx', current !== 'ndbx');
-    this.setLinkDisabled('theme-link-a1', current !== 'a1');
+    this.setLinkDisabled('theme-link-a1', !isA1(current));
   }
 
-  toggle(): void {
-    const next: AppTheme = this.theme() === 'ndbx' ? 'a1' : 'ndbx';
+  set(next: AppTheme): void {
     this.theme.set(next);
     localStorage.setItem(ThemeService.STORAGE_KEY, next);
     this.sync();

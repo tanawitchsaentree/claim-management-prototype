@@ -133,7 +133,7 @@
               selectable="single"
               [selected]="themeSvc.theme() === t.value"
               type="button"
-              (click)="themeSvc.theme() !== t.value && themeSvc.toggle()"
+              (click)="themeSvc.set(t.value)"
             >
               {{ t.label }}
             </button>

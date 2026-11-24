@@ -48,6 +48,20 @@ use their own A1 sizes. Used by the claim overview field mixins
 
 ---
 
+## Three themes (2026-11-24)
+
+The DEV banner ⋮ menu offers NDBX, **A1 (with our adjustments)** and **A1 pure (library only)**.
+A1 pure = `allianz-one.css` + the `ALLIANZ_ONE` component switch, and nothing from
+`themes/_a1.scss` (no type-scale pins, text roles, label/value weights, spacing/radius
+mapping or status/tint mapping). `<html data-theme="a1-pure">` matches neither theme
+layer. Project tokens then fall back to `_tokens.scss`, most of which point at library
+tokens (`--text-heading: var(--text-01)`), so they follow A1 as shipped. Still applied in
+every theme: `_globals.scss` / `_overlays.scss` (icon font fix, tooltip, modal motion,
+DEV banner dropdown) and each component's own SCSS (layout of our screens).
+Seen on claim overview: A1 pure type is 16-18px, and label, value and link are all
+navy, so links stop looking clickable. That is the library, not a bug.
+`isA1()` in `theme.service.ts` is true for both A1 variants.
+
 ## How a theme switch works
 
 1. The dev banner calls `ThemeService.toggle()` (`src/app/core/services/theme.service.ts`).

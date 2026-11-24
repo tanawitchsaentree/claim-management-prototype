@@ -26,7 +26,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
 import { PrototypeEntryService } from './core/services/prototype-entry.service';
-import { ThemeService } from './core/services/theme.service';
+import { ThemeService, isA1 } from './core/services/theme.service';
 import { MockBookingService } from './core/mock/services/mock-booking.service';
 
 // Manual SVG fallbacks ONLY for icons NOT in the Allianz icon font.
@@ -78,7 +78,7 @@ export const appConfig: ApplicationConfig = {
       provide: ALLIANZ_ONE,
       useFactory: () => {
         const theme = inject(ThemeService);
-        return { enabled: computed(() => theme.theme() === 'a1') };
+        return { enabled: computed(() => isA1(theme.theme())) };
       }
     },
     // CDK's dialog focus-trap defaults to autoFocus: 'first-tabbable' — in
