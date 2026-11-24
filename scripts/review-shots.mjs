@@ -51,19 +51,19 @@ const targets = [{ key: 'dev', label: 'This computer', base: DEV }];
 if (withLive) targets.push({ key: 'live', label: 'Team link', base: LIVE });
 
 // Text of the page itself (DEV banner excluded) once it stops changing: some
-// scenarios seed a lot of state and take several seconds to draw. Max 15s.
+// scenarios seed a lot of state, and the deployed link loads every ticket file
+// before the first screen, so this can take several seconds. Max 20s.
 async function settled(page) {
   const read = () =>
     page
-      .evaluate(() => {
-        const clone = document.body.cloneNode(true);
-        clone.querySelectorAll('.dev-banner-row, app-arrival-panel, app-tour-step-renderer').forEach(n => n.remove());
-        return clone.innerText ?? clone.textContent ?? '';
-      })
+      // Visible text only (innerText on the live body skips anything not drawn;
+      // the overlays are already hidden by the HIDE style). A detached clone's
+      // innerText includes undrawn text and let a blank page pass (2026-11-24).
+      .evaluate(() => document.body.innerText ?? '')
       .catch(() => '');
   let last = await read();
   let stableFor = 0;
-  for (let waited = 0; waited < 15000; waited += 500) {
+  for (let waited = 0; waited < 20000; waited += 500) {
     await page.waitForTimeout(500);
     const now = await read();
     stableFor = now.length === last.length && now.length > 100 ? stableFor + 500 : 0;
